@@ -18,8 +18,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.validator.ArtifactValueProvider;
 import org.eclipse.osee.ats.core.validator.IValueProvider;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -217,7 +217,7 @@ public class ReviewDefectManager {
          builder.append("<TD>" + item.getSeverity() + "</TD>");
          builder.append("<TD>" + item.getDisposition() + "</TD>");
          builder.append("<TD>" + item.getInjectionActivity() + "</TD>");
-         if (user != null && user.equals(AtsUsersClient.getUser())) {
+         if (user != null && user.equals(AtsClientService.get().getUserAdmin().getCurrentUser())) {
             builder.append("<TD bgcolor=\"#CCCCCC\">" + user.getName() + "</TD>");
          } else {
             builder.append("<TD>NONE</TD>");

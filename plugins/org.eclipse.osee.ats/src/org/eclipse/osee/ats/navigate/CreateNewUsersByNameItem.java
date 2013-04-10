@@ -14,8 +14,8 @@ package org.eclipse.osee.ats.navigate;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -69,7 +69,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
                resultData.logError("user name can't be blank");
             }
             try {
-               if (AtsUsersClient.getUserByName(newUserName) != null) {
+               if (AtsClientService.get().getUserAdmin().getUserByName(newUserName) != null) {
                   resultData.logError(String.format("User [%s] already exists", newUserName));
                }
             } catch (UserNotInDatabase ex) {

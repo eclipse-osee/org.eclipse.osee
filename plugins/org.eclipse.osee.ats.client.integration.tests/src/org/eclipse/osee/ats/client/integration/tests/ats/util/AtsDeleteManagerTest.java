@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.client.demo.DemoActionableItems;
 import org.eclipse.osee.ats.client.demo.DemoArtifactTypes;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -29,7 +30,6 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.util.AtsDeleteManager;
@@ -203,7 +203,7 @@ public class AtsDeleteManagerTest {
 
    private TeamWorkFlowArtifact createAction(TestNames testName, Collection<IAtsActionableItem> actionableItems, SkynetTransaction transaction) throws OseeCoreException {
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsersClient.getUser();
+      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
       Artifact actionArt =
          ActionManager.createAction(null, testName.name(), "Description", ChangeType.Improvement, "2", false, null,
             actionableItems, createdDate, createdBy, null, transaction);
@@ -221,7 +221,7 @@ public class AtsDeleteManagerTest {
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReview(teamArt, ReviewBlockType.None, testName.name(),
             TeamState.Endorse.getName(), "Description", DecisionReviewManager.getDefaultDecisionReviewOptions(),
-            Arrays.asList(AtsUsersClient.getUser()), createdDate, createdBy);
+            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), createdDate, createdBy);
       decRev.persist(transaction);
 
       return teamArt;

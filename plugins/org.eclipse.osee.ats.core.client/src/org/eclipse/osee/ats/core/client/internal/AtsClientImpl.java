@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.client.IAtsClient;
+import org.eclipse.osee.ats.core.client.IAtsUserAdmin;
 import org.eclipse.osee.ats.core.client.IAtsVersionAdmin;
 import org.eclipse.osee.ats.core.client.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.core.client.internal.config.ActionableItemFactory;
@@ -43,6 +44,7 @@ import org.eclipse.osee.ats.core.client.internal.store.TeamDefinitionArtifactRea
 import org.eclipse.osee.ats.core.client.internal.store.TeamDefinitionArtifactWriter;
 import org.eclipse.osee.ats.core.client.internal.store.VersionArtifactReader;
 import org.eclipse.osee.ats.core.client.internal.store.VersionArtifactWriter;
+import org.eclipse.osee.ats.core.client.internal.user.AtsUserAdminImpl;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCache;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCacheProvider;
@@ -77,6 +79,7 @@ public class AtsClientImpl implements IAtsClient {
    private ITeamDefinitionFactory teamDefFactory;
    private IVersionFactory versionFactory;
    private CacheProvider<AtsWorkDefinitionCache> workDefCacheProvider;
+   private IAtsUserAdmin atsUserAdmin;
 
    public void setAtsWorkDefinitionService(IAtsWorkDefinitionService workDefService) {
       this.workDefService = workDefService;
@@ -111,10 +114,12 @@ public class AtsClientImpl implements IAtsClient {
       teamDefFactory = new TeamDefinitionFactory();
       versionFactory = new VersionFactory(versionService);
 
+      atsUserAdmin = new AtsUserAdminImpl();
+
       readers.put(AtsArtifactTypes.ActionableItem, new ActionableItemArtifactReader(actionableItemFactory,
-         teamDefFactory, versionFactory));
+         teamDefFactory, versionFactory, atsUserAdmin));
       readers.put(AtsArtifactTypes.TeamDefinition, new TeamDefinitionArtifactReader(actionableItemFactory,
-         teamDefFactory, versionFactory, versionService));
+         teamDefFactory, versionFactory, versionService, atsUserAdmin));
       readers.put(AtsArtifactTypes.Version, new VersionArtifactReader(actionableItemFactory, teamDefFactory,
          versionFactory, versionService));
 
@@ -146,6 +151,8 @@ public class AtsClientImpl implements IAtsClient {
       actionableItemFactory = null;
       teamDefFactory = null;
       versionFactory = null;
+
+      atsUserAdmin = null;
    }
 
    @Override
@@ -259,6 +266,11 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public IAtsVersionAdmin getAtsVersionService() {
       return versionService;
+   }
+
+   @Override
+   public IAtsUserAdmin getUserAdmin() {
+      return atsUserAdmin;
    }
 
    @Override

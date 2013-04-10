@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
@@ -142,7 +141,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      NewDecisionReviewJob job =
                         new NewDecisionReviewJob(teamArt, null, dialog.getReviewTitle(), dialog.getSelectedState(),
                            null, DecisionReviewManager.getDefaultDecisionReviewOptions(), null, new Date(),
-                           AtsUsersClient.getUser());
+                           AtsClientService.get().getUserAdmin().getCurrentUser());
                      job.setUser(true);
                      job.setPriority(Job.LONG);
                      job.schedule();
@@ -306,7 +305,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      for (AbstractReviewArtifact revArt : ReviewManager.getReviewsFromCurrentState(teamArt)) {
                         if (!revArt.isCompletedOrCancelled()) {
                            if (revArt.getStateMgr().isUnAssigned()) {
-                              revArt.getStateMgr().setAssignee(AtsUsersClient.getUser());
+                              revArt.getStateMgr().setAssignee(AtsClientService.get().getUserAdmin().getCurrentUser());
                            }
                            awas.add(revArt);
                         }

@@ -18,10 +18,10 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -45,7 +45,7 @@ public class PrivilegedUserManager {
          users.addAll(parentSma.getStateMgr().getAssignees());
       }
       if (AtsUtilCore.isAtsAdmin()) {
-         users.add(AtsUsersClient.getUser());
+         users.add(AtsClientService.get().getUserAdmin().getCurrentUser());
       }
       return users;
    }
@@ -58,9 +58,9 @@ public class PrivilegedUserManager {
          IAtsStateDefinition stateDefinition = teamArt.getStateDefinition();
 
          // Add user if allowing privileged edit to all users
-         if (!users.contains(AtsUsersClient.getUser()) && (stateDefinition.hasRule(RuleDefinitionOption.AllowPrivilegedEditToAll.name()) || teamArt.getTeamDefinition().hasRule(
+         if (!users.contains(AtsClientService.get().getUserAdmin().getCurrentUser()) && (stateDefinition.hasRule(RuleDefinitionOption.AllowPrivilegedEditToAll.name()) || teamArt.getTeamDefinition().hasRule(
             RuleDefinitionOption.AllowPrivilegedEditToAll.name()))) {
-            users.add(AtsUsersClient.getUser());
+            users.add(AtsClientService.get().getUserAdmin().getCurrentUser());
          }
 
          // Add user if user is team member and rule exists
@@ -68,9 +68,9 @@ public class PrivilegedUserManager {
             stateDefinition.hasRule(RuleDefinitionOption.AllowPrivilegedEditToTeamMember.name());
          boolean teamDefToTeamMember =
             teamArt.getTeamDefinition().hasRule(RuleDefinitionOption.AllowPrivilegedEditToTeamMember.name());
-         if (!users.contains(AtsUsersClient.getUser()) && (workPageToTeamMember || teamDefToTeamMember) && //
-         teamArt.getTeamDefinition().getMembers().contains(AtsUsersClient.getUser())) {
-            users.add(AtsUsersClient.getUser());
+         if (!users.contains(AtsClientService.get().getUserAdmin().getCurrentUser()) && (workPageToTeamMember || teamDefToTeamMember) && //
+         teamArt.getTeamDefinition().getMembers().contains(AtsClientService.get().getUserAdmin().getCurrentUser())) {
+            users.add(AtsClientService.get().getUserAdmin().getCurrentUser());
          }
 
          // Add user if team member is originator and rule exists
@@ -79,10 +79,10 @@ public class PrivilegedUserManager {
          boolean teamDefToMemberAndOriginator =
             teamArt.getTeamDefinition().hasRule(
                RuleDefinitionOption.AllowPrivilegedEditToTeamMemberAndOriginator.name());
-         if (!users.contains(AtsUsersClient.getUser()) && (workPageToMemberAndOriginator || teamDefToMemberAndOriginator) && //
-         teamArt.getCreatedBy().equals(AtsUsersClient.getUser()) && teamArt.getTeamDefinition().getMembers().contains(
-            AtsUsersClient.getUser())) {
-            users.add(AtsUsersClient.getUser());
+         if (!users.contains(AtsClientService.get().getUserAdmin().getCurrentUser()) && (workPageToMemberAndOriginator || teamDefToMemberAndOriginator) && //
+         teamArt.getCreatedBy().equals(AtsClientService.get().getUserAdmin().getCurrentUser()) && teamArt.getTeamDefinition().getMembers().contains(
+            AtsClientService.get().getUserAdmin().getCurrentUser())) {
+            users.add(AtsClientService.get().getUserAdmin().getCurrentUser());
          }
 
       } catch (Exception ex) {

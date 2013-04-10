@@ -12,10 +12,10 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.users.AtsUsers;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -65,8 +65,8 @@ public class SMAAssigneesHeader extends Composite {
                      if (editor.isDirty()) {
                         editor.doSave(null);
                      }
-                     if (!isEditable && !sma.getStateMgr().getAssignees().contains(AtsUsers.getUnAssigned()) && !sma.getStateMgr().getAssignees().contains(
-                        AtsUsersClient.getUser())) {
+                     if (!isEditable && !sma.getStateMgr().getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER) && !sma.getStateMgr().getAssignees().contains(
+                        AtsClientService.get().getUserAdmin().getCurrentUser())) {
                         AWorkbench.popup(
                            "ERROR",
                            "You must be assigned to modify assignees.\nContact current Assignee or Select Privileged Edit for Authorized Overriders.");

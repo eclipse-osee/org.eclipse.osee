@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorUISearchItemProvider;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
@@ -32,7 +32,7 @@ public class MyWorldAction extends AbstractAtsAction {
 
    @Override
    public void runWithException() throws OseeCoreException {
-      WorldEditor.open(new WorldEditorUISearchItemProvider(new MyWorldSearchItem("My World", AtsUsersClient.getUser()),
+      WorldEditor.open(new WorldEditorUISearchItemProvider(new MyWorldSearchItem("My World", AtsClientService.get().getUserAdmin().getCurrentUser()),
          null, TableLoadOption.None));
    }
 

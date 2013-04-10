@@ -106,7 +106,7 @@ public class ValidateReviewManager {
 
    public static String getValidateReviewFollowupUsersStr(TeamWorkFlowArtifact teamArt) {
       try {
-         return org.eclipse.osee.ats.core.client.util.UsersByIds.getStorageString(getValidateReviewFollowupUsers(teamArt));
+         return org.eclipse.osee.ats.core.client.internal.user.UsersByIds.getStorageString(getValidateReviewFollowupUsers(teamArt));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();

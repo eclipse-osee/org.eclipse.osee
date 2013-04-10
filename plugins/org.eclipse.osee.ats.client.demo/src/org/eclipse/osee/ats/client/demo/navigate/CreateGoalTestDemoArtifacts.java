@@ -16,6 +16,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.artifact.GoalManager;
+import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
@@ -23,7 +24,6 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -60,7 +60,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
          return;
       }
       createdDate = new Date();
-      createdBy = AtsUsersClient.getUser();
+      createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getName());
       GoalArtifact sawCodeGoal = GoalManager.createGoal("SAW Code");
       GoalArtifact sawTestGoal = GoalManager.createGoal("SAW Test");

@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.n
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.workflow.note.NoteItem;
 import org.eclipse.osee.ats.core.client.workflow.note.NoteType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -30,26 +30,26 @@ public class NoteItemTest {
    public void testNoteItemNoteTypeStringStringUserString() throws OseeCoreException {
       Date date = new Date();
       NoteItem item =
-         new NoteItem(NoteType.Comment, "Implement", String.valueOf(date.getTime()), AtsUsersClient.getUser(), "my msg");
+         new NoteItem(NoteType.Comment, "Implement", String.valueOf(date.getTime()), AtsClientService.get().getUserAdmin().getCurrentUser(), "my msg");
       validate(item, date);
    }
 
    public static void validate(NoteItem item, Date date) throws OseeCoreException {
       Assert.assertEquals(NoteType.Comment, item.getType());
       Assert.assertEquals("Implement", item.getState());
-      Assert.assertEquals(AtsUsersClient.getUser(), item.getUser());
+      Assert.assertEquals(AtsClientService.get().getUserAdmin().getCurrentUser(), item.getUser());
       Assert.assertEquals("my msg", item.getMsg());
    }
 
    public static NoteItem getTestNoteItem(Date date) throws OseeCoreException {
-      return new NoteItem(NoteType.Comment, "Implement", String.valueOf(date.getTime()), AtsUsersClient.getUser(), "my msg");
+      return new NoteItem(NoteType.Comment, "Implement", String.valueOf(date.getTime()), AtsClientService.get().getUserAdmin().getCurrentUser(), "my msg");
    }
 
    @Test
    public void testNoteItemStringStringStringUserString() throws OseeCoreException {
       Date date = new Date();
       NoteItem item =
-         new NoteItem(NoteType.Comment.name(), "Implement", String.valueOf(date.getTime()), AtsUsersClient.getUser(),
+         new NoteItem(NoteType.Comment.name(), "Implement", String.valueOf(date.getTime()), AtsClientService.get().getUserAdmin().getCurrentUser(),
             "my msg");
       validate(item, date);
    }
@@ -60,7 +60,7 @@ public class NoteItemTest {
       NoteItem item = getTestNoteItem(date);
 
       Assert.assertEquals(
-         "Note: Comment from " + AtsUsersClient.getUser().getName() + " for \"Implement\" on " + DateUtil.getMMDDYYHHMM(date) + " - my msg",
+         "Note: Comment from " + AtsClientService.get().getUserAdmin().getCurrentUser().getName() + " for \"Implement\" on " + DateUtil.getMMDDYYHHMM(date) + " - my msg",
          item.toString());
    }
 
@@ -69,14 +69,14 @@ public class NoteItemTest {
       Date date = new Date();
       NoteItem item = getTestNoteItem(date);
       NoteItem item2 =
-         new NoteItem(NoteType.Question.name(), "Analyze", String.valueOf(date.getTime()), AtsUsersClient.getUser(),
+         new NoteItem(NoteType.Question.name(), "Analyze", String.valueOf(date.getTime()), AtsClientService.get().getUserAdmin().getCurrentUser(),
             "another message");
 
       String xml = NoteItem.toXml(Arrays.asList(item, item2));
       Assert.assertEquals(
          "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><AtsNote>" + //
-         "<Item date=\"" + date.getTime() + "\" msg=\"my msg\" state=\"Implement\" type=\"Comment\" userId=\"" + AtsUsersClient.getUser().getUserId() + "\"/>" + //
-         "<Item date=\"" + date.getTime() + "\" msg=\"another message\" state=\"Analyze\" type=\"Question\" userId=\"" + AtsUsersClient.getUser().getUserId() + "\"/></AtsNote>",
+         "<Item date=\"" + date.getTime() + "\" msg=\"my msg\" state=\"Implement\" type=\"Comment\" userId=\"" + AtsClientService.get().getUserAdmin().getCurrentUser().getUserId() + "\"/>" + //
+         "<Item date=\"" + date.getTime() + "\" msg=\"another message\" state=\"Analyze\" type=\"Question\" userId=\"" + AtsClientService.get().getUserAdmin().getCurrentUser().getUserId() + "\"/></AtsNote>",
          xml);
 
       List<NoteItem> items = NoteItem.fromXml(xml, "ASDF4");
@@ -85,7 +85,7 @@ public class NoteItemTest {
       NoteItem fromXmlItem2 = items.get(1);
       Assert.assertEquals(NoteType.Question, fromXmlItem2.getType());
       Assert.assertEquals("Analyze", fromXmlItem2.getState());
-      Assert.assertEquals(AtsUsersClient.getUser(), fromXmlItem2.getUser());
+      Assert.assertEquals(AtsClientService.get().getUserAdmin().getCurrentUser(), fromXmlItem2.getUser());
       Assert.assertEquals("another message", fromXmlItem2.getMsg());
 
    }
@@ -96,7 +96,7 @@ public class NoteItemTest {
       NoteItem item = getTestNoteItem(date);
 
       Assert.assertEquals(
-         "<b>Note:</b>Comment from " + AtsUsersClient.getUser().getName() + " for \"Implement\" on " + DateUtil.getMMDDYYHHMM(date) + " - my msg",
+         "<b>Note:</b>Comment from " + AtsClientService.get().getUserAdmin().getCurrentUser().getName() + " for \"Implement\" on " + DateUtil.getMMDDYYHHMM(date) + " - my msg",
          item.toHTML());
    }
 

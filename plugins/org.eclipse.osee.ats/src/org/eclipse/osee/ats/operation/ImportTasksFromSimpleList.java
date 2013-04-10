@@ -20,9 +20,9 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -66,7 +66,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                final List<IAtsUser> assignees = new ArrayList<IAtsUser>();
                for (Artifact art : variableMap.getArtifacts(ASSIGNEES)) {
                   if (art instanceof User) {
-                     IAtsUser atsUser = AtsUsersClient.getUserFromOseeUser((User) art);
+                     IAtsUser atsUser = AtsClientService.get().getUserAdmin().getUserFromOseeUser((User) art);
                      assignees.add(atsUser);
                   }
                }
@@ -100,7 +100,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   SkynetTransaction transaction =
                      TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Simple List");
                   Date createdDate = new Date();
-                  IAtsUser createdBy = AtsUsersClient.getUser();
+                  IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
                   teamArt.createTasks(titles, assignees, createdDate, createdBy, transaction);
                   teamArt.persist(transaction);
                   transaction.execute();

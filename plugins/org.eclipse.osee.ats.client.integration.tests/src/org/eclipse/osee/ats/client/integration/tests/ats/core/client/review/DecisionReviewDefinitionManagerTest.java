@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.transition.MockTransitionHelper;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
@@ -24,7 +25,6 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
@@ -76,7 +76,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), implement.getName(),
-            Arrays.asList(AtsUsersClient.getUser()), null, TransitionOption.None);
+            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null, TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transMgr.handleAll();
       transaction.execute();
@@ -122,7 +122,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), implement.getName(),
-            Arrays.asList(AtsUsersClient.getUser()), null, TransitionOption.None);
+            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null, TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transMgr.handleAll();
       transaction.execute();

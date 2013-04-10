@@ -16,9 +16,9 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -151,7 +151,7 @@ public class SMADetailsSection extends SectionPart {
             }
          } else {
             try {
-               ids = accessControl.getContextId(AtsUsersClient.getOseeUser(AtsUsersClient.getUser()), workingBranch);
+               ids = accessControl.getContextId(AtsClientService.get().getUserAdmin().getOseeUser(AtsClientService.get().getUserAdmin().getCurrentUser()), workingBranch);
                message = ids.toString();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

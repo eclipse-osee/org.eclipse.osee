@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.users.AtsUsers;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -113,14 +114,17 @@ public class NoteItem {
             for (int i = 0; i < nodes.getLength(); i++) {
                Element element = (Element) nodes.item(i);
                try {
-                  IAtsUser user = AtsUsers.getUser(element.getAttribute("userId"));
+                  IAtsUser user = AtsClientService.get().getUserAdmin().getUserById(element.getAttribute("userId"));
                   NoteItem item = new NoteItem(element.getAttribute("type"), element.getAttribute("state"), // NOPMD by b0727536 on 9/29/10 8:52 AM
                      element.getAttribute("date"), user, element.getAttribute("msg"));
                   logItems.add(item);
                } catch (UserNotInDatabase ex) {
                   OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error parsing notes for [%s]", hrid);
-                  NoteItem item = new NoteItem(element.getAttribute("type"), element.getAttribute("state"), // NOPMD by b0727536 on 9/29/10 8:52 AM
-                     element.getAttribute("date"), AtsUsers.getGuestUser(), element.getAttribute("msg"));
+                  NoteItem item =
+                     new NoteItem(element.getAttribute("type"),
+                        element.getAttribute("state"), // NOPMD by b0727536 on 9/29/10 8:52 AM
+                        element.getAttribute("date"), AtsCoreUsers.GUEST_USER,
+                        element.getAttribute("msg"));
                   logItems.add(item);
                }
             }

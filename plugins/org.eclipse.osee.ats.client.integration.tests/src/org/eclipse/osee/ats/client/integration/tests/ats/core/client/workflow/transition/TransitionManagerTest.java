@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
@@ -36,7 +37,6 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.ITransitionListener;
@@ -76,7 +76,7 @@ public class TransitionManagerTest {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-A");
       TransitionHelper helper =
          new TransitionHelper(getClass().getSimpleName(), EMPTY_AWAS, AtsTestUtil.getImplementStateDef().getName(),
-            Arrays.asList(AtsUsersClient.getUser()), null, TransitionOption.None);
+            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null, TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
       transMgr.handleTransitionValidation(results);
@@ -87,7 +87,7 @@ public class TransitionManagerTest {
    public void testHandleTransitionValidation__ToStateNotNull() throws OseeCoreException {
       TransitionHelper helper =
          new TransitionHelper(getClass().getSimpleName(), Arrays.asList(AtsTestUtil.getTeamWf()), null,
-            Arrays.asList(AtsUsersClient.getUser()), null, TransitionOption.None);
+            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null, TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
       transMgr.handleTransitionValidation(results);
@@ -98,7 +98,7 @@ public class TransitionManagerTest {
    public void testHandleTransitionValidation__InvalidToState() throws OseeCoreException {
       TransitionHelper helper =
          new TransitionHelper(getClass().getSimpleName(), Arrays.asList(AtsTestUtil.getTeamWf()), "InvalidStateName",
-            Arrays.asList(AtsUsersClient.getUser()), null, TransitionOption.None);
+            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null, TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
       transMgr.handleTransitionValidation(results);
@@ -114,7 +114,7 @@ public class TransitionManagerTest {
 
       TransitionHelper helper =
          new TransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
@@ -127,7 +127,7 @@ public class TransitionManagerTest {
       results.clear();
       Assert.assertFalse(helper.isPrivilegedEditEnabled());
       Assert.assertFalse(helper.isOverrideAssigneeCheck());
-      teamArt.getStateMgr().setAssignee(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay));
+      teamArt.getStateMgr().setAssignee(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay));
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(AtsTestUtil.getTeamWf(), TransitionResult.MUST_BE_ASSIGNED));
 
@@ -136,7 +136,7 @@ public class TransitionManagerTest {
       Assert.assertFalse(helper.isOverrideAssigneeCheck());
       helper.addTransitionOption(TransitionOption.PrivilegedEditEnabled);
       Assert.assertTrue(helper.isPrivilegedEditEnabled());
-      teamArt.getStateMgr().setAssignee(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay));
+      teamArt.getStateMgr().setAssignee(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay));
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
 
@@ -146,7 +146,7 @@ public class TransitionManagerTest {
       helper.addTransitionOption(TransitionOption.OverrideAssigneeCheck);
       Assert.assertFalse(helper.isPrivilegedEditEnabled());
       Assert.assertTrue(helper.isOverrideAssigneeCheck());
-      teamArt.getStateMgr().setAssignee(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay));
+      teamArt.getStateMgr().setAssignee(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay));
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
 
@@ -155,12 +155,12 @@ public class TransitionManagerTest {
       helper.removeTransitionOption(TransitionOption.OverrideAssigneeCheck);
       Assert.assertFalse(helper.isPrivilegedEditEnabled());
       Assert.assertFalse(helper.isOverrideAssigneeCheck());
-      teamArt.getStateMgr().setAssignee(AtsUsersClient.getUserFromToken(SystemUser.UnAssigned));
+      teamArt.getStateMgr().setAssignee(AtsClientService.get().getUserAdmin().getUserFromToken(SystemUser.UnAssigned));
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
 
       // cleanup test
-      teamArt.getStateMgr().setAssignee(AtsUsersClient.getUserFromToken(SystemUser.UnAssigned));
+      teamArt.getStateMgr().setAssignee(AtsClientService.get().getUserAdmin().getUserFromToken(SystemUser.UnAssigned));
    }
 
    @org.junit.Test
@@ -169,7 +169,7 @@ public class TransitionManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
@@ -207,7 +207,7 @@ public class TransitionManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
@@ -233,7 +233,7 @@ public class TransitionManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
             TransitionOption.None);
       IAtsStateDefinition fromStateDef = AtsTestUtil.getAnalyzeStateDef();
       fromStateDef.getLayoutItems().clear();
@@ -273,7 +273,7 @@ public class TransitionManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
             TransitionOption.None);
       IAtsStateDefinition fromStateDef = AtsTestUtil.getAnalyzeStateDef();
       fromStateDef.getLayoutItems().clear();
@@ -328,7 +328,7 @@ public class TransitionManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
@@ -338,7 +338,7 @@ public class TransitionManagerTest {
       Assert.assertTrue(results.isEmpty());
 
       // validate that can't transition with InWork task
-      TaskArtifact taskArt = teamArt.createNewTask("New Tasks", new Date(), AtsUsersClient.getUser());
+      TaskArtifact taskArt = teamArt.createNewTask("New Tasks", new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
       results.clear();
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(teamArt, TransitionResult.TASKS_NOT_COMPLETED));
@@ -359,7 +359,7 @@ public class TransitionManagerTest {
          // attempt to transition parent to cancelled, should not be able to transition with un-completed/cancelled tasks
          helper =
             new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-               AtsTestUtil.getCancelledStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+               AtsTestUtil.getCancelledStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
                TransitionOption.None);
          transMgr = new TransitionManager(helper);
          results.clear();
@@ -387,7 +387,7 @@ public class TransitionManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
@@ -415,7 +415,7 @@ public class TransitionManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
@@ -444,7 +444,7 @@ public class TransitionManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
@@ -478,7 +478,7 @@ public class TransitionManagerTest {
       results.clear();
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
-      DecisionReviewManager.transitionTo(decArt, DecisionReviewState.Completed, AtsUsersClient.getUser(), false,
+      DecisionReviewManager.transitionTo(decArt, DecisionReviewState.Completed, AtsClientService.get().getUserAdmin().getCurrentUser(), false,
          transaction);
       transaction.execute();
       transMgr.handleTransitionValidation(results);
@@ -492,7 +492,7 @@ public class TransitionManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
@@ -569,7 +569,7 @@ public class TransitionManagerTest {
       //1. Initially transition workflows to Implement
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt01, teamArt02),
-            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
@@ -579,7 +579,7 @@ public class TransitionManagerTest {
       //2. redundant transition workflows to Implement
       MockTransitionHelper helper01 =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt01, teamArt02),
-            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
             TransitionOption.None);
       TransitionManager transMgr01 = new TransitionManager(helper01);
       TransitionResults results01 = new TransitionResults();
@@ -589,7 +589,7 @@ public class TransitionManagerTest {
       //3. Transition one TeamWf to Complete
       MockTransitionHelper helper02 =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt01),
-            AtsTestUtil.getCompletedStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            AtsTestUtil.getCompletedStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
             TransitionOption.None);
       TransitionManager transMgr02 = new TransitionManager(helper02);
       TransitionResults results02 = new TransitionResults();
@@ -599,7 +599,7 @@ public class TransitionManagerTest {
       //4. redundant transition workflows to Implement
       MockTransitionHelper helper03 =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt01, teamArt02),
-            AtsTestUtil.getCompletedStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            AtsTestUtil.getCompletedStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
             TransitionOption.None);
       TransitionManager transMgr03 = new TransitionManager(helper03);
       TransitionResults results03 = new TransitionResults();
@@ -659,7 +659,7 @@ public class TransitionManagerTest {
       // Setup - Transition to Implement
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranchToken(), "create");
       Result result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsUsersClient.getUser(), transaction,
+         AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsClientService.get().getUserAdmin().getCurrentUser(), transaction,
             TransitionOption.OverrideAssigneeCheck);
       transaction.execute();
       Assert.assertTrue("Transition Error: " + result.getText(), result.isTrue());
@@ -669,7 +669,7 @@ public class TransitionManagerTest {
       // Transition to completed should set percent to 100
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-            AtsTestUtil.getCompletedStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            AtsTestUtil.getCompletedStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
             TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
@@ -682,7 +682,7 @@ public class TransitionManagerTest {
       // Transition to Implement should set percent to 0
       helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            AtsTestUtil.getImplementStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
             TransitionOption.None);
       transMgr = new TransitionManager(helper);
       results = new TransitionResults();
@@ -696,7 +696,7 @@ public class TransitionManagerTest {
       // Transition to Cancelled should set percent to 0
       helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-            AtsTestUtil.getCancelledStateDef().getName(), Arrays.asList(AtsUsersClient.getUser()), null,
+            AtsTestUtil.getCancelledStateDef().getName(), Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null,
             TransitionOption.None);
       transMgr = new TransitionManager(helper);
       results = new TransitionResults();

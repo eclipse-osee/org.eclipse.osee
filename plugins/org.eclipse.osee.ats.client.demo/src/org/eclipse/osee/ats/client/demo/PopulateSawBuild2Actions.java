@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.client.demo.config.DemoDbAIs;
 import org.eclipse.osee.ats.client.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.client.demo.config.DemoDbUtil.SoftwareRequirementStrs;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
+import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
@@ -31,7 +32,6 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
@@ -103,7 +103,7 @@ public class PopulateSawBuild2Actions {
       Collection<IAtsActionableItem> aias =
          DemoDbUtil.getActionableItems(new String[] {DemoDbAIs.SAW_Requirements.getAIName()});
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsersClient.getUser();
+      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
       String priority = "3";
 
       ActionArtifact actionArt =
@@ -144,7 +144,7 @@ public class PopulateSawBuild2Actions {
             DemoDbAIs.SAW_Requirements.getAIName(),
             DemoDbAIs.SAW_Test.getAIName()});
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsersClient.getUser();
+      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
       String priority = "3";
 
       ActionArtifact actionArt =
@@ -219,7 +219,7 @@ public class PopulateSawBuild2Actions {
             DemoDbAIs.SAW_Requirements.getAIName(),
             DemoDbAIs.SAW_Test.getAIName()});
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsersClient.getUser();
+      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
       String priority = "3";
 
       ActionArtifact actionArt =
@@ -295,7 +295,7 @@ public class PopulateSawBuild2Actions {
             DemoDbAIs.SAW_Code.getAIName(),
             DemoDbAIs.SAW_Test.getAIName()});
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsersClient.getUser();
+      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
       String priority = "1";
 
       ActionArtifact actionArt =

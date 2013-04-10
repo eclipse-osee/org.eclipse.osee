@@ -18,8 +18,8 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
@@ -72,7 +72,7 @@ public class ReviewNavigateViewItems implements XNavigateViewItems, IXNavigateCo
 
    public void addOseePeerSectionChildren(XNavigateItem item) throws OseeCoreException {
       try {
-         IAtsUser user = AtsUsersClient.getUser();
+         IAtsUser user = AtsClientService.get().getUserAdmin().getCurrentUser();
          items.add(new SearchNavigateItem(item, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
          items.add(new SearchNavigateItem(item, new MyReviewWorkflowItem("User's Reviews", null, ReviewState.InWork)));
       } catch (OseeCoreException ex) {

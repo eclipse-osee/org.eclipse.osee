@@ -18,6 +18,6 @@ import org.junit.runners.Suite;
 /**
  * @author Donald G. Dunne
  */
-public class WorkDefTestSuite {
+public class InternalWorkDefTestSuite {
    // TestSuite
 }

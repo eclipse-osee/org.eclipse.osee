@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.world;
 import java.util.regex.Pattern;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.column.AssigneeColumn;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -29,7 +29,7 @@ public class WorldAssigneeFilter extends ViewerFilter {
    Pattern p;
 
    public WorldAssigneeFilter() throws OseeCoreException {
-      p = Pattern.compile(AtsUsersClient.getUser().getName());
+      p = Pattern.compile(AtsClientService.get().getUserAdmin().getCurrentUser().getName());
    }
 
    @Override

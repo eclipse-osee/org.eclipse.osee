@@ -21,7 +21,7 @@ public abstract class AbstractAtsUser implements IAtsUser {
 
    private String userId;
 
-   public AbstractAtsUser(String userId) {
+   protected AbstractAtsUser(String userId) {
       this.userId = userId;
    }
 

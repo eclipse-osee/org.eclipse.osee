@@ -14,9 +14,8 @@ import java.text.NumberFormat;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -36,7 +35,7 @@ public class UserRole {
    private Boolean completed = false;
 
    public UserRole() throws OseeCoreException {
-      this(Role.Reviewer, AtsUsersClient.getUser().getUserId(), null, false);
+      this(Role.Reviewer, AtsClientService.get().getUserAdmin().getCurrentUser().getUserId(), null, false);
    }
 
    public UserRole(Role role, IAtsUser user) throws OseeCoreException {
@@ -125,8 +124,8 @@ public class UserRole {
       this.role = role;
    }
 
-   public IAtsUser getUser() {
-      return AtsUsers.getUser(userId);
+   public IAtsUser getUser() throws OseeCoreException {
+      return AtsClientService.get().getUserAdmin().getUserById(userId);
    }
 
    public void setUser(User user) throws OseeCoreException {

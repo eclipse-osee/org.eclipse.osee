@@ -24,8 +24,8 @@ import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
@@ -159,7 +159,7 @@ public class DecisionReviewManager {
 
    public static List<IAtsDecisionReviewOption> getDefaultDecisionReviewOptions() throws OseeCoreException {
       List<IAtsDecisionReviewOption> options = new ArrayList<IAtsDecisionReviewOption>();
-      options.add(new SimpleDecisionReviewOption("Yes", true, Arrays.asList(AtsUsersClient.getUser().getUserId())));
+      options.add(new SimpleDecisionReviewOption("Yes", true, Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser().getUserId())));
       options.add(new SimpleDecisionReviewOption("No", false, null));
       return options;
    }

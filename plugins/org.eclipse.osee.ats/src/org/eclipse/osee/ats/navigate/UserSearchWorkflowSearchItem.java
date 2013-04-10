@@ -22,9 +22,9 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.util.widgets.XStateSearchCombo;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -251,12 +251,12 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       if (userCombo == null) {
          return null;
       }
-      return AtsUsersClient.getUserFromOseeUser(userCombo.getUser());
+      return AtsClientService.get().getUserAdmin().getUserFromOseeUser(userCombo.getUser());
    }
 
    public void setSelectedUser(IAtsUser user) throws OseeCoreException {
       if (userCombo != null) {
-         userCombo.set(AtsUsersClient.getOseeUser(user));
+         userCombo.set(AtsClientService.get().getUserAdmin().getOseeUser(user));
       }
    }
 

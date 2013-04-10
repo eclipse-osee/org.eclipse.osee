@@ -37,7 +37,6 @@ import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.notify.AtsNotifyType;
 import org.eclipse.osee.ats.core.client.team.CreateTeamOption;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
@@ -150,7 +149,7 @@ public class ExcelAtsActionArtifactExtractor {
                try {
                   assignee = assignee.replaceFirst("^ *", "");
                   assignee = assignee.replaceFirst(" *$", "");
-                  IAtsUser user = AtsUsersClient.getUserByName(assignee);
+                  IAtsUser user = AtsClientService.get().getUserAdmin().getUserByName(assignee);
                   if (user == null) {
                      rd.logError("Row " + rowNum + ": Couldn't retrieve user \"" + assignee + "\"");
                   } else {
@@ -170,7 +169,7 @@ public class ExcelAtsActionArtifactExtractor {
       Set<TeamWorkFlowArtifact> teamWfs = new HashSet<TeamWorkFlowArtifact>();
       Date createdDate = new Date();
       try {
-         IAtsUser createdBy = AtsUsersClient.getUser();
+         IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
          for (ActionData aData : actionDatas) {
             Artifact actionArt = actionNameToAction.get(aData.title);
             Collection<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();

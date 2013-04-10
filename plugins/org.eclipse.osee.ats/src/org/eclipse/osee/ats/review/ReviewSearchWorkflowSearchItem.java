@@ -21,10 +21,10 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.review.ReviewFormalType;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelActionableItemSelection;
 import org.eclipse.osee.ats.util.widgets.XReviewStateSearchCombo;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -232,12 +232,12 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       if (assigneeCombo == null) {
          return null;
       }
-      return AtsUsersClient.getUserFromOseeUser(assigneeCombo.getUser());
+      return AtsClientService.get().getUserAdmin().getUserFromOseeUser(assigneeCombo.getUser());
    }
 
    public void setSelectedUser(IAtsUser user) throws OseeCoreException {
       if (assigneeCombo != null) {
-         assigneeCombo.set(AtsUsersClient.getOseeUser(user));
+         assigneeCombo.set(AtsClientService.get().getUserAdmin().getOseeUser(user));
       }
    }
 

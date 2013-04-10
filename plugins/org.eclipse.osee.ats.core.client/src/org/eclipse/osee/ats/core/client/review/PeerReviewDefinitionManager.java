@@ -18,11 +18,12 @@ import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionAdapter;
-import org.eclipse.osee.ats.core.users.AtsUsers;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -60,7 +61,7 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
       if (Strings.isValid(peerRevDef.getLocation())) {
          peerArt.setSoleAttributeFromString(AtsAttributeTypes.Location, peerRevDef.getLocation());
       }
-      Collection<IAtsUser> assignees = AtsUsers.getUsersByUserIds(peerRevDef.getAssignees());
+      Collection<IAtsUser> assignees = AtsClientService.get().getUserAdmin().getUsersByUserIds(peerRevDef.getAssignees());
       if (assignees.size() > 0) {
          peerArt.getStateMgr().setAssignees(assignees);
       }
@@ -78,7 +79,7 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
          return;
       }
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsers.getSystemUser();
+      IAtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) sma;
 
       for (IAtsPeerReviewDefinition peerRevDef : teamArt.getStateDefinition().getPeerReviews()) {

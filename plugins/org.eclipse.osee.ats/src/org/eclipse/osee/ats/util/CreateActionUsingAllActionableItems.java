@@ -18,10 +18,10 @@ import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -76,7 +76,7 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create Action using all AIs");
       ActionArtifact action =
          ActionManager.createAction(null, "Big Action Test - Delete Me", "Description", ChangeType.Improvement, "1",
-            false, null, aias, new Date(), AtsUsersClient.getUser(), null, transaction);
+            false, null, aias, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
       transaction.execute();
       return action;
    }

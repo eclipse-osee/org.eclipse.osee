@@ -31,12 +31,12 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.config.ValidateAtsConfiguration;
 import org.eclipse.osee.ats.config.editor.AtsConfigResultsEditorNavigateItem;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.goal.GoalSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.internal.ATSPerspective;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.notify.AtsNotificationNavigateItem;
 import org.eclipse.osee.ats.notify.EmailActionsBlam;
@@ -138,7 +138,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
 
    public void addAtsSectionChildren(XNavigateItem item) {
       try {
-         IAtsUser user = AtsUsersClient.getUser();
+         IAtsUser user = AtsClientService.get().getUserAdmin().getCurrentUser();
 
          items.add(new SearchNavigateItem(item, new MyWorldSearchItem("My World", user)));
          items.add(new SearchNavigateItem(item, new MyFavoritesSearchItem("My Favorites", user)));
@@ -300,7 +300,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          new SearchNavigateItem(goalItem, new GoalSearchItem("InWork Goals", new ArrayList<IAtsTeamDefinition>(),
             false, null));
          new SearchNavigateItem(goalItem, new GoalSearchWorkflowSearchItem());
-         new SearchNavigateItem(goalItem, new MyFavoritesGoalsSearchItem("Favorites", AtsUsersClient.getUser()));
+         new SearchNavigateItem(goalItem, new MyFavoritesGoalsSearchItem("Favorites", AtsClientService.get().getUserAdmin().getCurrentUser()));
          items.add(goalItem);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");

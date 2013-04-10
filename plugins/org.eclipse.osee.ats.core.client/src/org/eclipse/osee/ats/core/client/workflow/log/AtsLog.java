@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -274,7 +274,7 @@ public class AtsLog {
     * @param state name of state or null
     */
    public void addLog(LogType type, String state, String msg) throws OseeCoreException {
-      addLog(type, state, msg, new Date(), AtsUsersClient.getUser());
+      addLog(type, state, msg, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
    }
 
    /**

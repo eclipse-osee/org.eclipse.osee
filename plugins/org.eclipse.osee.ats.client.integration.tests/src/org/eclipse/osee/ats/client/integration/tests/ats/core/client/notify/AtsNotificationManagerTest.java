@@ -18,6 +18,7 @@ import junit.framework.Assert;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
@@ -32,7 +33,6 @@ import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
@@ -96,7 +96,8 @@ public class AtsNotificationManagerTest {
       UserManager.getUser(DemoUsers.Alex_Kay).persist(getClass().getSimpleName());
 
       // reset the originator
-      teamArt.setCreatedBy(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay), false, new Date());
+      teamArt.setCreatedBy(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay), false,
+         new Date());
       // persist will kick event which will log the notification event and send
       teamArt.persist("Change originator");
 
@@ -110,7 +111,8 @@ public class AtsNotificationManagerTest {
       //---------------------------------------------------
 
       // reset the originator back to joe smith
-      teamArt.setCreatedBy(AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith), false, new Date());
+      teamArt.setCreatedBy(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith), false,
+         new Date());
       // persist will kick event which will log the notification event and send
       teamArt.persist("Change originator");
       AtsNotificationManager.setInTest(true);
@@ -124,7 +126,8 @@ public class AtsNotificationManagerTest {
       UserManager.getUser(DemoUsers.Alex_Kay).persist(getClass().getSimpleName());
 
       // reset the originator
-      teamArt.setCreatedBy(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay), false, new Date());
+      teamArt.setCreatedBy(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay), false,
+         new Date());
       // persist will kick event which will log the notification event and send
       teamArt.persist("Change originator");
 
@@ -136,7 +139,8 @@ public class AtsNotificationManagerTest {
       //---------------------------------------------------
 
       // reset the originator back to joe smith
-      teamArt.setCreatedBy(AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith), false, new Date());
+      teamArt.setCreatedBy(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith), false,
+         new Date());
       // persist will kick event which will log the notification event and send
       teamArt.persist("Change originator");
       AtsNotificationManager.setInTest(true);
@@ -150,7 +154,8 @@ public class AtsNotificationManagerTest {
       UserManager.getUser(DemoUsers.Alex_Kay).persist(getClass().getSimpleName());
 
       // reset the originator
-      teamArt.setCreatedBy(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay), false, new Date());
+      teamArt.setCreatedBy(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay), false,
+         new Date());
       // persist will kick event which will log the notification event and send
       teamArt.persist("Change originator");
 
@@ -195,7 +200,7 @@ public class AtsNotificationManagerTest {
       UserManager.getUser().setEmail("joe.smith@boeing.com");
       users.add(UserManager.getUser());
 
-      teamArt.getStateMgr().addAssignees(AtsUsersClient.getAtsUsers(users));
+      teamArt.getStateMgr().addAssignees(AtsClientService.get().getUserAdmin().getAtsUsers(users));
 
       // verify notification exists now only for active, valid email Alex, not for others
       Assert.assertEquals(1, mgr.getNotificationEvents().size());
@@ -230,7 +235,7 @@ public class AtsNotificationManagerTest {
       User Alex_Kay = UserManager.getUser(DemoUsers.Alex_Kay);
       Alex_Kay.setSoleAttributeValue(CoreAttributeTypes.Email, "alex.kay@boeing.com");
       Alex_Kay.persist(getClass().getSimpleName());
-      teamArt.getStateMgr().addAssignee(AtsUsersClient.getUserFromOseeUser(Alex_Kay));
+      teamArt.getStateMgr().addAssignee(AtsClientService.get().getUserAdmin().getUserFromOseeUser(Alex_Kay));
       teamArt.persist(getClass().getSimpleName());
       Assert.assertEquals("Alex and Joe should be assigned; currently = " + teamArt.getStateMgr().getAssigneesStr(), 2,
          teamArt.getStateMgr().getAssignees().size());
@@ -253,7 +258,7 @@ public class AtsNotificationManagerTest {
       usersToSet.add(UserManager.getUser());
       usersToSet.add(Alex_Kay);
 
-      teamArt.getStateMgr().setAssignees(AtsUsersClient.getAtsUsers(usersToSet));
+      teamArt.getStateMgr().setAssignees(AtsClientService.get().getUserAdmin().getAtsUsers(usersToSet));
 
       // verify notification exists now only for Jason_Michael, not for others
       Assert.assertEquals(1, mgr.getNotificationEvents().size());
@@ -283,7 +288,8 @@ public class AtsNotificationManagerTest {
 
       // set originator as Alex Kay
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      teamArt.setCreatedBy(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay), false, new Date());
+      teamArt.setCreatedBy(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay), false,
+         new Date());
       teamArt.persist(getClass().getSimpleName() + " - set originator");
 
       // set alex kay having valid email address
@@ -297,7 +303,8 @@ public class AtsNotificationManagerTest {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       Result result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsUsersClient.getUser(), transaction,
+         AtsTestUtil.transitionTo(AtsTestUtilState.Completed,
+            AtsClientService.get().getUserAdmin().getCurrentUser(), transaction,
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Completed.getName());
@@ -325,7 +332,8 @@ public class AtsNotificationManagerTest {
 
       // set originator as Alex Kay
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      teamArt.setCreatedBy(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay), false, new Date());
+      teamArt.setCreatedBy(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay), false,
+         new Date());
       teamArt.persist(getClass().getSimpleName() + " - set originator");
 
       // set alex kay having valid email address
@@ -339,7 +347,8 @@ public class AtsNotificationManagerTest {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       Result result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled, AtsUsersClient.getUser(), transaction,
+         AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled,
+            AtsClientService.get().getUserAdmin().getCurrentUser(), transaction,
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Cancelled.getName());
@@ -371,7 +380,8 @@ public class AtsNotificationManagerTest {
       alex.setSoleAttributeValue(CoreAttributeTypes.Email, "alex.kay@boeing.com");
       alex.persist(getClass().getSimpleName() + "- set alex email address");
 
-      AtsTestUtil.getTestTeamDef().getSubscribed().add(AtsUsersClient.getUserFromOseeUser(alex));
+      AtsTestUtil.getTestTeamDef().getSubscribed().add(
+         AtsClientService.get().getUserAdmin().getUserFromOseeUser(alex));
 
       mgr.clear();
 
@@ -381,7 +391,7 @@ public class AtsNotificationManagerTest {
       ActionArtifact actionArt =
          ActionManager.createAction(null, getClass().getSimpleName() + " - testSubscribedTeam", "description",
             ChangeType.Improvement, "1", false, null, Arrays.asList(AtsTestUtil.getTestAi()), new Date(),
-            AtsUsersClient.getUser(), null, transaction);
+            AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
 
       // verify notification to subscriber
       Assert.assertEquals(1, mgr.getNotificationEvents().size());
@@ -424,7 +434,7 @@ public class AtsNotificationManagerTest {
       alex.setSoleAttributeValue(CoreAttributeTypes.Email, "alex.kay@boeing.com");
       alex.persist(getClass().getSimpleName() + "- set alex email address");
 
-      AtsTestUtil.getTestAi().getSubscribed().add(AtsUsersClient.getUserFromOseeUser(alex));
+      AtsTestUtil.getTestAi().getSubscribed().add(AtsClientService.get().getUserAdmin().getUserFromOseeUser(alex));
 
       mgr.clear();
 
@@ -434,7 +444,7 @@ public class AtsNotificationManagerTest {
       ActionArtifact actionArt =
          ActionManager.createAction(null, getClass().getSimpleName() + " - testSubscribedAI", "description",
             ChangeType.Improvement, "1", false, null, Arrays.asList(AtsTestUtil.getTestAi()), new Date(),
-            AtsUsersClient.getUser(), null, transaction);
+            AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
 
       // verify notification to subscriber
       Assert.assertEquals(1, mgr.getNotificationEvents().size());
@@ -487,7 +497,8 @@ public class AtsNotificationManagerTest {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       Result result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsUsersClient.getUser(), transaction,
+         AtsTestUtil.transitionTo(AtsTestUtilState.Implement,
+            AtsClientService.get().getUserAdmin().getCurrentUser(), transaction,
             TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
       transaction.execute();
@@ -529,18 +540,20 @@ public class AtsNotificationManagerTest {
       PeerToPeerReviewArtifact peerArt =
          AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None, AtsTestUtilState.Analyze, transaction);
       List<UserRole> roles = new ArrayList<UserRole>();
-      UserRole author = new UserRole(Role.Author, AtsUsersClient.getUserFromOseeUser(alex));
+      UserRole author = new UserRole(Role.Author, AtsClientService.get().getUserAdmin().getUserFromOseeUser(alex));
       roles.add(author);
-      UserRole moderator = new UserRole(Role.Moderator, AtsUsersClient.getUserFromOseeUser(kay));
+      UserRole moderator =
+         new UserRole(Role.Moderator, AtsClientService.get().getUserAdmin().getUserFromOseeUser(kay));
       roles.add(moderator);
-      UserRole reviewer1 = new UserRole(Role.Reviewer, AtsUsersClient.getUser());
+      UserRole reviewer1 = new UserRole(Role.Reviewer, AtsClientService.get().getUserAdmin().getCurrentUser());
       roles.add(reviewer1);
-      UserRole reviewer2 = new UserRole(Role.Reviewer, AtsUsersClient.getUserFromToken(DemoUsers.Jason_Michael));
+      UserRole reviewer2 =
+         new UserRole(Role.Reviewer, AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Jason_Michael));
       roles.add(reviewer2);
 
       Result result =
          PeerToPeerReviewManager.transitionTo(peerArt, PeerToPeerReviewState.Review, roles, null,
-            AtsUsersClient.getUser(), false, transaction);
+            AtsClientService.get().getUserAdmin().getCurrentUser(), false, transaction);
       Assert.assertEquals(Result.TrueResult, result);
       peerArt.persist(transaction);
       transaction.execute();

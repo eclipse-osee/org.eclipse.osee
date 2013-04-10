@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -29,8 +29,8 @@ public class ResourceHistoryActionTest extends AbstractAtsActionTest {
    public void test() throws Exception {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
-      Assert.assertFalse(AtsUsersClient.getOseeUser().getRelatedArtifacts(AtsRelationTypes.FavoriteUser_Artifact).contains(
-         AtsTestUtil.getTeamWf()));
+      Assert.assertFalse(AtsClientService.get().getUserAdmin().getCurrentOseeUser().getRelatedArtifacts(
+         AtsRelationTypes.FavoriteUser_Artifact).contains(AtsTestUtil.getTeamWf()));
       ResourceHistoryAction action = createAction();
       action.runWithException();
       TestUtil.severeLoggingEnd(monitor);

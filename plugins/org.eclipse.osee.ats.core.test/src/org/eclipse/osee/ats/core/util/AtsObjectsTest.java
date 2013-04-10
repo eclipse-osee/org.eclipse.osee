@@ -16,9 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.core.users.Guest;
-import org.eclipse.osee.ats.core.users.SystemUser;
-import org.eclipse.osee.ats.core.users.UnAssigned;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.junit.Test;
 
 /**
@@ -34,9 +32,9 @@ public class AtsObjectsTest {
    @Test
    public void testToGuids() {
       List<IAtsObject> objs = new ArrayList<IAtsObject>();
-      objs.add(SystemUser.instance);
-      objs.add(Guest.instance);
-      Assert.assertEquals(Arrays.asList(SystemUser.instance.getGuid(), Guest.instance.getGuid()),
+      objs.add(AtsCoreUsers.SYSTEM_USER);
+      objs.add(AtsCoreUsers.GUEST_USER);
+      Assert.assertEquals(Arrays.asList(AtsCoreUsers.SYSTEM_USER.getGuid(), AtsCoreUsers.GUEST_USER.getGuid()),
          AtsObjects.toGuids(objs));
    }
 
@@ -45,23 +43,23 @@ public class AtsObjectsTest {
       Assert.assertEquals("", AtsObjects.toString("; ", Collections.emptyList()));
 
       List<Object> objs = new ArrayList<Object>();
-      objs.add(SystemUser.instance);
-      objs.add(Guest.instance);
-      objs.add(UnAssigned.instance);
+      objs.add(AtsCoreUsers.SYSTEM_USER);
+      objs.add(AtsCoreUsers.GUEST_USER);
+      objs.add(AtsCoreUsers.UNASSIGNED_USER);
       objs.add("Just a String");
-      Assert.assertEquals(String.format("%s; %s; %s; Just a String", SystemUser.instance.getName(),
-         Guest.instance.getName(), UnAssigned.instance.getName()), AtsObjects.toString("; ", objs));
+      Assert.assertEquals(
+         String.format("%s; %s; %s; Just a String", AtsCoreUsers.SYSTEM_USER.getName(),
+            AtsCoreUsers.GUEST_USER.getName(), AtsCoreUsers.UNASSIGNED_USER.getName()), AtsObjects.toString("; ", objs));
    }
 
    @Test
    public void testGetNames() {
       List<IAtsObject> objs = new ArrayList<IAtsObject>();
-      objs.add(SystemUser.instance);
-      objs.add(Guest.instance);
-      objs.add(UnAssigned.instance);
-      Assert.assertEquals(
-         Arrays.asList(SystemUser.instance.getName(), Guest.instance.getName(), UnAssigned.instance.getName()),
-         AtsObjects.getNames(objs));
+      objs.add(AtsCoreUsers.SYSTEM_USER);
+      objs.add(AtsCoreUsers.GUEST_USER);
+      objs.add(AtsCoreUsers.UNASSIGNED_USER);
+      Assert.assertEquals(Arrays.asList(AtsCoreUsers.SYSTEM_USER.getName(), AtsCoreUsers.GUEST_USER.getName(),
+         AtsCoreUsers.UNASSIGNED_USER.getName()), AtsObjects.getNames(objs));
    }
 
 }

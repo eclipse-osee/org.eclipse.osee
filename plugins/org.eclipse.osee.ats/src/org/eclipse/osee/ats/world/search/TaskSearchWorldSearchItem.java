@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.internal.Activator;
@@ -361,7 +360,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       if (assigneeCombo == null) {
          return null;
       }
-      return AtsUsersClient.getUserFromOseeUser(assigneeCombo.getUser());
+      return AtsClientService.get().getUserAdmin().getUserFromOseeUser(assigneeCombo.getUser());
    }
 
    public void setSelectedUser(User user) {

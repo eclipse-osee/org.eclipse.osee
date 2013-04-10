@@ -17,8 +17,8 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionableItemListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -60,7 +60,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
                   TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "New Stand-alone Peer To Peer Review");
                PeerToPeerReviewArtifact peerArt =
                   PeerToPeerReviewManager.createNewPeerToPeerReview(ld.getSelected().iterator().next(), ed.getEntry(),
-                     null, new Date(), AtsUsersClient.getUser(), transaction);
+                     null, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), transaction);
                peerArt.persist(transaction);
                transaction.execute();
                AtsUtil.openATSAction(peerArt, AtsOpenOption.OpenAll);

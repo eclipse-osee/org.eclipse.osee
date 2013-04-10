@@ -22,9 +22,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -111,7 +111,7 @@ public class EmailActionsBlam extends AbstractBlam {
 
    private void sendEmailTo(EmailActionsData data, final AbstractWorkflowArtifact awa) throws OseeCoreException {
       Set<User> assignees = new HashSet<User>();
-      assignees.addAll(AtsUsersClient.getOseeUsers(awa.getStateMgr().getAssignees()));
+      assignees.addAll(AtsClientService.get().getUserAdmin().getOseeUsers(awa.getStateMgr().getAssignees()));
       Collection<User> activeEmailUsers = EmailUtil.getActiveEmailUsers(assignees);
       if (assignees.isEmpty()) {
          logf("No active assignees for workflow [%s].", awa.toStringWithId());
@@ -131,14 +131,15 @@ public class EmailActionsBlam extends AbstractBlam {
          return;
       }
 
-      if (!EmailUtil.isEmailValid(AtsUsersClient.getOseeUser())) {
-         logf("Can't email from user account [%s] cause email not valid.", AtsUsersClient.getUser());
+      if (!EmailUtil.isEmailValid(AtsClientService.get().getUserAdmin().getCurrentOseeUser())) {
+         logf("Can't email from user account [%s] cause email not valid.",
+            AtsClientService.get().getUserAdmin().getCurrentUser());
          return;
       }
 
       final OseeEmail emailMessage =
-         new OseeEmail(emailAddresses, AtsUsersClient.getUser().getEmail(), AtsUsersClient.getUser().getEmail(), data.getSubject(),
-            "", BodyType.Html);
+         new OseeEmail(emailAddresses, AtsClientService.get().getUserAdmin().getCurrentUser().getEmail(),
+            AtsClientService.get().getUserAdmin().getCurrentUser().getEmail(), data.getSubject(), "", BodyType.Html);
       emailMessage.setHTMLBody("<p>" + AHTML.textToHtml(data.getBody()) + "</p><p>--------------------------------------------------------</p>");
       emailMessage.addHTMLBody(getHtmlMessage(data, awa));
       String description = String.format("%s for %s", awa.toStringWithId(), emailAddresses);

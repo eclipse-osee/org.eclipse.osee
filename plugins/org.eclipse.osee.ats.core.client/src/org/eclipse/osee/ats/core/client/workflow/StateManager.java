@@ -36,7 +36,6 @@ import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.notify.AtsNotifyType;
 import org.eclipse.osee.ats.core.client.team.SimpleTeamState;
 import org.eclipse.osee.ats.core.client.team.TeamState;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
@@ -44,7 +43,6 @@ import org.eclipse.osee.ats.core.model.WorkStateFactory;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.model.impl.WorkStateProviderImpl;
 import org.eclipse.osee.ats.core.notify.IAtsNotificationListener;
-import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -170,7 +168,8 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
          awa.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
       }
       if (logMetrics) {
-         logMetrics(awa.getStateMgr().getCurrentState(), AtsUsersClient.getUser(), new Date());
+         logMetrics(awa.getStateMgr().getCurrentState(), AtsClientService.get().getUserAdmin().getCurrentUser(),
+            new Date());
       }
       writeToArtifact();
    }
@@ -205,7 +204,8 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
       boolean changed = setMetricsIfChanged(state, hours, percentComplete);
       if (changed) {
          if (logMetrics) {
-            logMetrics(awa.getStateMgr().getCurrentState(), AtsUsersClient.getUser(), new Date());
+            logMetrics(awa.getStateMgr().getCurrentState(), AtsClientService.get().getUserAdmin().getCurrentUser(),
+               new Date());
          }
          writeToArtifact();
       }
@@ -249,7 +249,7 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
    }
 
    public void setAssignees(Collection<? extends IAtsUser> assignees) throws OseeCoreException {
-      setAssignees(getCurrentStateName(), AtsUsers.toList(assignees));
+      setAssignees(getCurrentStateName(), new LinkedList<IAtsUser>(assignees));
    }
 
    /**
@@ -266,7 +266,7 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
             throw new OseeStateException("Can't assign completed/cancelled states.");
          }
       }
-      getStateProvider().setAssignees(stateName, AtsUsers.toList(assignees));
+      getStateProvider().setAssignees(stateName, new LinkedList<IAtsUser>(assignees));
       writeToArtifact();
    }
 

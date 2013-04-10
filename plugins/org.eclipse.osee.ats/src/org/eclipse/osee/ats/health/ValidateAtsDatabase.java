@@ -55,7 +55,7 @@ import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.core.users.AtsUsers;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -1188,8 +1188,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testStateMachineAssignees(Collection<Artifact> artifacts) {
       Date date = new Date();
       if (unAssignedUser == null) {
-         unAssignedUser = AtsUsers.getUnAssigned();
-         oseeSystemUser = AtsUsers.getSystemUser();
+         unAssignedUser = AtsCoreUsers.UNASSIGNED_USER;
+         oseeSystemUser = AtsCoreUsers.SYSTEM_USER;
       }
       for (Artifact art : artifacts) {
          if (art.isDeleted()) {

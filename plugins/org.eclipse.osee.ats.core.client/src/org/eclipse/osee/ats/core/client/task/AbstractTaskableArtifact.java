@@ -26,8 +26,8 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
@@ -98,7 +98,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    }
 
    public TaskArtifact createNewTask(String title, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
-      return createNewTask(Arrays.asList(AtsUsersClient.getUser()), title, createdDate, createdBy);
+      return createNewTask(Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), title, createdDate, createdBy);
    }
 
    public TaskArtifact createNewTask(List<? extends IAtsUser> assignees, String title, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
@@ -108,7 +108,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
 
       addRelation(AtsRelationTypes.TeamWfToTask_Task, taskArt);
       taskArt.initializeNewStateMachine(assignees, new Date(),
-         (createdBy == null ? AtsUsersClient.getUser() : createdBy));
+         (createdBy == null ? AtsClientService.get().getUserAdmin().getCurrentUser() : createdBy));
 
       // Set parent state task is related to
       taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, getStateMgr().getCurrentStateName());

@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
@@ -144,13 +143,13 @@ public class PeerToPeerReviewManager {
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, SkynetTransaction transaction) throws OseeCoreException {
-      return createNewPeerToPeerReview(teamArt, reviewTitle, againstState, new Date(), AtsUsersClient.getUser(),
+      return createNewPeerToPeerReview(teamArt, reviewTitle, againstState, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(),
          transaction);
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, SkynetTransaction transaction) throws OseeCoreException {
       return createNewPeerToPeerReview(workDefinition, teamArt, reviewTitle, againstState, new Date(),
-         AtsUsersClient.getUser(), transaction);
+         AtsClientService.get().getUserAdmin().getCurrentUser(), transaction);
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {

@@ -26,49 +26,49 @@ import org.junit.Test;
  * 
  * @author Donald G. Dunne
  */
-public class SystemUsersTest {
+public class CoreAtsUsersTest {
 
    @Test
    public void testGetDescription() {
-      Assert.assertEquals("System User", SystemUser.instance.getDescription());
-      Assert.assertEquals("Guest", Guest.instance.getDescription());
-      Assert.assertEquals("UnAssigned", UnAssigned.instance.getDescription());
+      Assert.assertEquals("System User", AtsCoreUsers.SYSTEM_USER.getDescription());
+      Assert.assertEquals("Guest", AtsCoreUsers.GUEST_USER.getDescription());
+      Assert.assertEquals("UnAssigned", AtsCoreUsers.UNASSIGNED_USER.getDescription());
    }
 
    @Test
    public void testIsActive() {
-      SystemUser.instance.isActive();
-      Guest.instance.isActive();
-      UnAssigned.instance.isActive();
+      AtsCoreUsers.SYSTEM_USER.isActive();
+      AtsCoreUsers.GUEST_USER.isActive();
+      AtsCoreUsers.UNASSIGNED_USER.isActive();
       new TestUser().isActive();
    }
 
    @Test
    public void testGetName() {
-      Assert.assertEquals("OSEE System", SystemUser.instance.getName());
-      Assert.assertEquals("Guest", Guest.instance.getName());
-      Assert.assertEquals("UnAssigned", UnAssigned.instance.getName());
+      Assert.assertEquals("OSEE System", AtsCoreUsers.SYSTEM_USER.getName());
+      Assert.assertEquals("Guest", AtsCoreUsers.GUEST_USER.getName());
+      Assert.assertEquals("UnAssigned", AtsCoreUsers.UNASSIGNED_USER.getName());
    }
 
    @Test
    public void testGetGuid() {
-      Assert.assertEquals("AAABDBYPet4AGJyrc9dY1w", SystemUser.instance.getGuid());
-      Assert.assertEquals("AAABDi35uzwAxJLISLBZdA", Guest.instance.getGuid());
-      Assert.assertEquals("AAABDi1tMx8Al92YWMjeRw", UnAssigned.instance.getGuid());
+      Assert.assertEquals("AAABDBYPet4AGJyrc9dY1w", AtsCoreUsers.SYSTEM_USER.getGuid());
+      Assert.assertEquals("AAABDi35uzwAxJLISLBZdA", AtsCoreUsers.GUEST_USER.getGuid());
+      Assert.assertEquals("AAABDi1tMx8Al92YWMjeRw", AtsCoreUsers.UNASSIGNED_USER.getGuid());
    }
 
    @Test
    public void testGetHumanReadableId() {
-      Assert.assertEquals("FTNT9", SystemUser.instance.getHumanReadableId());
-      Assert.assertEquals("TBRQV", Guest.instance.getHumanReadableId());
-      Assert.assertEquals("7G020", UnAssigned.instance.getHumanReadableId());
+      Assert.assertEquals("FTNT9", AtsCoreUsers.SYSTEM_USER.getHumanReadableId());
+      Assert.assertEquals("TBRQV", AtsCoreUsers.GUEST_USER.getHumanReadableId());
+      Assert.assertEquals("7G020", AtsCoreUsers.UNASSIGNED_USER.getHumanReadableId());
    }
 
    @Test
    public void testGetUserId() {
-      Assert.assertEquals("99999999", SystemUser.instance.getUserId());
-      Assert.assertEquals("99999998", Guest.instance.getUserId());
-      Assert.assertEquals("99999997", UnAssigned.instance.getUserId());
+      Assert.assertEquals("99999999", AtsCoreUsers.SYSTEM_USER.getUserId());
+      Assert.assertEquals("99999998", AtsCoreUsers.GUEST_USER.getUserId());
+      Assert.assertEquals("99999997", AtsCoreUsers.UNASSIGNED_USER.getUserId());
    }
 
    @Test
@@ -80,14 +80,14 @@ public class SystemUsersTest {
 
    @Test
    public void testGetEmail() {
-      Assert.assertEquals("", SystemUser.instance.getEmail());
-      Assert.assertEquals("", Guest.instance.getEmail());
-      Assert.assertEquals("", UnAssigned.instance.getEmail());
+      Assert.assertEquals("", AtsCoreUsers.SYSTEM_USER.getEmail());
+      Assert.assertEquals("", AtsCoreUsers.GUEST_USER.getEmail());
+      Assert.assertEquals("", AtsCoreUsers.UNASSIGNED_USER.getEmail());
    }
 
    @Test
    public void testToString() {
-      Assert.assertEquals("User [Guest - 99999998 - ]", Guest.instance.toString());
+      Assert.assertEquals("User [Guest - 99999998 - ]", AtsCoreUsers.GUEST_USER.toString());
    }
 
    @Test
@@ -103,14 +103,14 @@ public class SystemUsersTest {
    public void testEqualsObject() {
       TestUser user = new TestUser();
       user.setUserId("99999999");
-      Assert.assertTrue(SystemUser.instance.equals(user));
+      Assert.assertTrue(AtsCoreUsers.SYSTEM_USER.equals(user));
       user.setUserId("234");
-      Assert.assertFalse(SystemUser.instance.equals(user));
-      Assert.assertFalse(SystemUser.instance.equals("asfd"));
-      Assert.assertFalse(SystemUser.instance.equals(null));
-      Assert.assertTrue(SystemUser.instance.equals(SystemUser.instance));
+      Assert.assertFalse(AtsCoreUsers.SYSTEM_USER.equals(user));
+      Assert.assertFalse(AtsCoreUsers.SYSTEM_USER.equals("asfd"));
+      Assert.assertFalse(AtsCoreUsers.SYSTEM_USER.equals(null));
+      Assert.assertTrue(AtsCoreUsers.SYSTEM_USER.equals(AtsCoreUsers.SYSTEM_USER));
       user.setUserId(null);
-      Assert.assertFalse(user.equals(SystemUser.instance));
+      Assert.assertFalse(user.equals(AtsCoreUsers.SYSTEM_USER));
 
       TestUser user2 = new TestUser();
       user2.setUserId(null);
@@ -126,9 +126,9 @@ public class SystemUsersTest {
       user1.setUserId("234");
 
       TestUser user2 = new TestUser();
-      user2.setUserId(SystemUser.instance.getUserId());
+      user2.setUserId(AtsCoreUsers.SYSTEM_USER.getUserId());
 
-      IAtsUser mapToPi = SystemUser.instance;
+      IAtsUser mapToPi = AtsCoreUsers.SYSTEM_USER;
       IAtsUser alsoMapToPi = user2;
 
       IAtsUser mapToE = user1;
@@ -159,14 +159,14 @@ public class SystemUsersTest {
 
    @Test
    public void testCompareTo() {
-      Assert.assertEquals(-8, Guest.instance.compareTo(SystemUser.instance));
-      Assert.assertEquals(1, Guest.instance.compareTo(null));
-      Assert.assertEquals(-1, Guest.instance.compareTo("asdf"));
+      Assert.assertEquals(-8, AtsCoreUsers.GUEST_USER.compareTo(AtsCoreUsers.SYSTEM_USER));
+      Assert.assertEquals(1, AtsCoreUsers.GUEST_USER.compareTo(null));
+      Assert.assertEquals(-1, AtsCoreUsers.GUEST_USER.compareTo("asdf"));
 
       TestUser user = new TestUser();
       user.setName(null);
-      Assert.assertEquals(1, Guest.instance.compareTo(user));
-      Assert.assertEquals(-1, user.compareTo(Guest.instance));
+      Assert.assertEquals(1, AtsCoreUsers.GUEST_USER.compareTo(user));
+      Assert.assertEquals(-1, user.compareTo(AtsCoreUsers.GUEST_USER));
       Assert.assertEquals(0, user.compareTo(user));
    }
 

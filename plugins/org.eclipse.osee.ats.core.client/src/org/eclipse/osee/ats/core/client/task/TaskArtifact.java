@@ -19,9 +19,9 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
@@ -73,7 +73,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
             return new Result("Transition Error %s", results.toString());
          }
       } else if (fromState.getName().equals(TeamState.Cancelled.getName()) && isCancelled()) {
-         Result result = TaskManager.transitionToInWork(this, AtsUsersClient.getUser(), 99, 0, transaction);
+         Result result = TaskManager.transitionToInWork(this, AtsClientService.get().getUserAdmin().getCurrentUser(), 99, 0, transaction);
          return result;
       }
       return Result.TrueResult;

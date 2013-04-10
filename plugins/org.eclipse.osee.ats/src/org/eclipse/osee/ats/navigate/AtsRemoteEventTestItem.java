@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
@@ -141,7 +140,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(actionArt);
 
       // Make current user assignee for convenience to developer
-      teamArt.getStateMgr().addAssignee(AtsUsersClient.getUser());
+      teamArt.getStateMgr().addAssignee(AtsClientService.get().getUserAdmin().getCurrentUser());
       teamArt.persist(getClass().getSimpleName());
 
       validateActionAtStart(actionArt);
@@ -197,7 +196,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
       TransitionHelper helper =
          new TransitionHelper("Remote Event Test", Arrays.asList(teamArt), TeamState.Analyze.getName(),
-            Collections.singleton(AtsUsersClient.getUser()), null, TransitionOption.None);
+            Collections.singleton(AtsClientService.get().getUserAdmin().getCurrentUser()), null, TransitionOption.None);
       TransitionManager transitionMgr = new TransitionManager(helper, transaction);
       TransitionResults results = transitionMgr.handleAll();
       if (!results.isEmpty()) {

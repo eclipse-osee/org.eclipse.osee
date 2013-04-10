@@ -13,12 +13,12 @@ package org.eclipse.osee.ats.client.integration.tests.ats.core.client.review;
 import java.util.Date;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -52,7 +52,7 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
 
       PeerToPeerReviewArtifact peerArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, reviewTitle,
-            AtsTestUtil.getAnalyzeStateDef().getName(), new Date(), AtsUsersClient.getUser(), transaction);
+            AtsTestUtil.getAnalyzeStateDef().getName(), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), transaction);
       transaction.execute();
 
       Assert.assertNotNull(peerArt);

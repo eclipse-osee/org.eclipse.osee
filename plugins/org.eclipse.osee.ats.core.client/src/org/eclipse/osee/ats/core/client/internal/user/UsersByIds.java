@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.util;
+package org.eclipse.osee.ats.core.client.internal.user;
 
 import java.util.ArrayList;
 import java.util.Collection;

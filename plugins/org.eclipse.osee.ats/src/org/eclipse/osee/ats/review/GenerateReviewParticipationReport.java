@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.column.LegacyPcrIdColumn;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.column.StateColumn;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerReviewRoleColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaCompletedDateColumn;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
@@ -73,7 +73,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
                AWorkbench.popup("ERROR", "Must select user");
                return;
             }
-            useUser = AtsUsersClient.getUserFromOseeUser(ld.getSelection());
+            useUser = AtsClientService.get().getUserAdmin().getUserFromOseeUser(ld.getSelection());
          }
       }
 

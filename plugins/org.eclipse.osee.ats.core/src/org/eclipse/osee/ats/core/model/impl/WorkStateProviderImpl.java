@@ -24,7 +24,9 @@ import org.eclipse.osee.ats.api.workflow.WorkStateProvider;
 import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.ats.core.model.WorkStateFactory;
 import org.eclipse.osee.ats.core.notify.IAtsNotificationListener;
-import org.eclipse.osee.ats.core.users.AtsUsers;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.core.users.SystemUser;
+import org.eclipse.osee.ats.core.users.UnAssigned;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -66,7 +68,7 @@ public class WorkStateProviderImpl implements WorkStateProvider {
     */
    @Override
    public boolean isUnAssigned() throws OseeCoreException {
-      return getAssignees().contains(AtsUsers.getUnAssigned());
+      return getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER);
    }
 
    @Override
@@ -109,7 +111,7 @@ public class WorkStateProviderImpl implements WorkStateProvider {
          return;
       }
       for (IAtsUser assignee : assignees) {
-         if (AtsUsers.isGuestUser(assignee)) {
+         if (AtsCoreUsers.isGuestUser(assignee)) {
             throw new OseeArgumentException("Can not assign workflow to Guest");
          }
       }
@@ -126,11 +128,11 @@ public class WorkStateProviderImpl implements WorkStateProvider {
       if (listener != null) {
          listener.notifyAssigned(notifyAssignees);
       }
-      if (getAssignees().size() > 1 && getAssignees().contains(AtsUsers.getUnAssigned())) {
-         removeAssignee(getCurrentStateName(), AtsUsers.getUnAssigned());
+      if (getAssignees().size() > 1 && getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER)) {
+         removeAssignee(getCurrentStateName(), AtsCoreUsers.UNASSIGNED_USER);
       }
-      if (getAssignees().size() > 1 && getAssignees().contains(AtsUsers.getSystemUser())) {
-         removeAssignee(getCurrentStateName(), AtsUsers.getSystemUser());
+      if (getAssignees().size() > 1 && getAssignees().contains(AtsCoreUsers.SYSTEM_USER)) {
+         removeAssignee(getCurrentStateName(), AtsCoreUsers.SYSTEM_USER);
       }
    }
 
@@ -162,7 +164,7 @@ public class WorkStateProviderImpl implements WorkStateProvider {
          return;
       }
       for (IAtsUser assignee : assignees) {
-         if (AtsUsers.isGuestUser(assignee)) {
+         if (AtsCoreUsers.isGuestUser(assignee)) {
             throw new OseeArgumentException("Can not assign workflow to Guest");
          }
       }
@@ -186,8 +188,8 @@ public class WorkStateProviderImpl implements WorkStateProvider {
       }
 
       // Remove UnAssigned if part of assignees
-      if (getAssignees().size() > 1 && getAssignees().contains(AtsUsers.getUnAssigned())) {
-         removeAssignee(getCurrentStateName(), AtsUsers.getUnAssigned());
+      if (getAssignees().size() > 1 && getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER)) {
+         removeAssignee(getCurrentStateName(), AtsCoreUsers.UNASSIGNED_USER);
       }
 
    }

@@ -28,35 +28,37 @@ public class WorkDefUserResolver implements IUserResolver {
 
    @Override
    public boolean isUserIdValid(String userId) {
+      boolean result = false;
       try {
-         return UserManager.getUserByUserId(userId) != null;
+         result = UserManager.getUserByUserId(userId) != null;
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         // Do nothing
       }
-      return false;
+      return result;
    }
 
    @Override
    public boolean isUserNameValid(String name) {
+      boolean result = false;
       try {
-         return UserManager.getUserByName(name) != null;
+         result = UserManager.getUserByName(name) != null;
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         // Do Nothing
       }
-      return false;
+      return result;
    }
 
    @Override
    public String getUserIdByName(String name) {
+      String userId = null;
       try {
          User user = UserManager.getUserByName(name);
          if (user != null) {
-            return user.getUserId();
+            userId = user.getUserId();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      return null;
+      return userId;
    }
-
 }

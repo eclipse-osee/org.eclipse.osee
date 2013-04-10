@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.model.IActionGroup;
-import org.eclipse.osee.ats.core.users.UnAssigned;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * 3) Users identified by object's getImplementers() call, if any <br/>
  * <br/>
  * For ActionGroup, it's the set of users for each case above for each Action
- *
+ * 
  * @author Donald G. Dunne
  */
 public class ImplementersColumn implements ImplementersStringProvider {
@@ -53,7 +53,7 @@ public class ImplementersColumn implements ImplementersStringProvider {
       } else if (object instanceof IAtsWorkItem) {
          implementers.addAll(getWorkItemImplementers((IAtsWorkItem) object));
       }
-      implementers.remove(UnAssigned.instance);
+      implementers.remove(AtsCoreUsers.UNASSIGNED_USER);
       Collections.sort(implementers);
       return implementers;
    }

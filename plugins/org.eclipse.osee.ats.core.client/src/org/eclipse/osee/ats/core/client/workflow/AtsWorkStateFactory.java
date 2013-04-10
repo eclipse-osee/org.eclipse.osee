@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.client.workflow;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.core.client.util.UsersByIds;
+import org.eclipse.osee.ats.core.client.internal.user.UsersByIds;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -28,7 +28,7 @@ public class AtsWorkStateFactory {
    public static String toXml(StateManager stateMgr, String stateName) throws OseeCoreException {
       StringBuffer sb = new StringBuffer(stateName);
       sb.append(";");
-      sb.append(org.eclipse.osee.ats.core.client.util.UsersByIds.getStorageString(stateMgr.getAssignees(stateName)));
+      sb.append(org.eclipse.osee.ats.core.client.internal.user.UsersByIds.getStorageString(stateMgr.getAssignees(stateName)));
       sb.append(";");
       double hoursSpent = stateMgr.getHoursSpent(stateName);
       if (hoursSpent > 0) {

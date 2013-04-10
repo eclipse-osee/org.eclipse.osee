@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.editor;
 import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.column.OriginatorColumn;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -81,7 +81,7 @@ public class SMAOriginatorHeader extends Composite {
                Label errorLabel = editor.getToolkit().createLabel(this, "Error: No originator identified.");
                errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
             } else {
-               User origUser = AtsUsersClient.getOseeUser(sma.getCreatedBy());
+               User origUser = AtsClientService.get().getUserAdmin().getOseeUser(sma.getCreatedBy());
                userIconLabel = editor.getToolkit().createLabel(this, "");
                userIconLabel.setImage(FrameworkArtifactImageProvider.getUserImage(Arrays.asList(origUser)));
                origLabel = editor.getToolkit().createLabel(this, sma.getCreatedBy().getName());
@@ -95,7 +95,7 @@ public class SMAOriginatorHeader extends Composite {
                Label origLabel = editor.getToolkit().createLabel(this, ORIGINATOR);
                origLabel.setLayoutData(new GridData());
 
-               User origUser = AtsUsersClient.getOseeUser(sma.getCreatedBy());
+               User origUser = AtsClientService.get().getUserAdmin().getOseeUser(sma.getCreatedBy());
                userIconLabel = editor.getToolkit().createLabel(this, "");
                userIconLabel.setImage(FrameworkArtifactImageProvider.getUserImage(Arrays.asList(origUser)));
                origLabel = editor.getToolkit().createLabel(this, sma.getCreatedBy().getName());

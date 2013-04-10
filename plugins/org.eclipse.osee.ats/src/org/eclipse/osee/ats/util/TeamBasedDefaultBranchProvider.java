@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -34,10 +34,10 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
 
    @Override
    public Collection<Branch> getDefaultInitialBranches() throws OseeCoreException {
-      IAtsUser user = AtsUsersClient.getUser();
+      IAtsUser user = AtsClientService.get().getUserAdmin().getCurrentUser();
       try {
          Collection<IAtsTeamDefinition> teams = new ArrayList<IAtsTeamDefinition>();
-         for (Artifact art : AtsUsersClient.getOseeUser(user).getRelatedArtifacts(AtsRelationTypes.TeamMember_Team)) {
+         for (Artifact art : AtsClientService.get().getUserAdmin().getOseeUser(user).getRelatedArtifacts(AtsRelationTypes.TeamMember_Team)) {
             teams.add(AtsClientService.get().getAtsConfig().getSoleByGuid(art.getGuid(), IAtsTeamDefinition.class));
          }
          Collection<Branch> branches = new LinkedList<Branch>();

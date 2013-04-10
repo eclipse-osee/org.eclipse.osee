@@ -20,7 +20,7 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsUserTest.class, CopyActionDetailsTest.class})
+@Suite.SuiteClasses({AtsUsersTest.class, AtsUserTest.class, CopyActionDetailsTest.class})
 public class AtsCoreClient_Util_Suite {
    @BeforeClass
    public static void setUp() throws Exception {

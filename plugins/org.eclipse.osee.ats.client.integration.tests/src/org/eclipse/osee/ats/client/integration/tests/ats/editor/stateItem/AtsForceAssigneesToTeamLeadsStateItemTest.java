@@ -15,11 +15,11 @@ import java.util.Arrays;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.editor.stateItem.AtsForceAssigneesToTeamLeadsStateItem;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -74,14 +74,14 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
 
       // assignee should be Joe Smith
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(AtsUsersClient.getUserByName(JOE_SMITH),
+      Assert.assertEquals(AtsClientService.get().getUserAdmin().getUserByName(JOE_SMITH),
          teamArt.getStateMgr().getAssignees().iterator().next());
 
       // set assignee to Alex Kay
-      teamArt.getStateMgr().setAssignee(AtsUsersClient.getUserByName(ALEX_KAY));
+      teamArt.getStateMgr().setAssignee(AtsClientService.get().getUserAdmin().getUserByName(ALEX_KAY));
       teamArt.persist(getClass().getSimpleName());
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(AtsUsersClient.getUserByName(ALEX_KAY),
+      Assert.assertEquals(AtsClientService.get().getUserAdmin().getUserByName(ALEX_KAY),
          teamArt.getStateMgr().getAssignees().iterator().next());
 
       IStateToken fromState = teamArt.getWorkDefinition().getStateByName(TeamState.Analyze.getName());
@@ -94,12 +94,12 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
       AtsForceAssigneesToTeamLeadsStateItem stateItem = new AtsForceAssigneesToTeamLeadsStateItem();
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
-      stateItem.transitioned(teamArt, fromState, toState, Arrays.asList(AtsUsersClient.getUser()), transaction);
+      stateItem.transitioned(teamArt, fromState, toState, Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), transaction);
       transaction.execute();
 
       // assignee should be Joe Smith
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(AtsUsersClient.getUserByName(JOE_SMITH),
+      Assert.assertEquals(AtsClientService.get().getUserAdmin().getUserByName(JOE_SMITH),
          teamArt.getStateMgr().getAssignees().iterator().next());
    }
 }

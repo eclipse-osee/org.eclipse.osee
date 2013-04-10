@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
@@ -54,7 +53,7 @@ public class TaskManager {
       // Assign current user if unassigned
       try {
          if (taskArt.getStateMgr().isUnAssigned()) {
-            taskArt.getStateMgr().setAssignee(AtsUsersClient.getUser());
+            taskArt.getStateMgr().setAssignee(AtsClientService.get().getUserAdmin().getCurrentUser());
          }
          taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, 100, true);
          if (estimatedHours > 0.0) {

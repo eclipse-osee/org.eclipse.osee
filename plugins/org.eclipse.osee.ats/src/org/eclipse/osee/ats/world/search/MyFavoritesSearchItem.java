@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -41,7 +41,7 @@ public class MyFavoritesSearchItem extends UserSearchItem {
 
    @Override
    protected Collection<Artifact> searchIt(IAtsUser user) throws OseeCoreException {
-      return AtsUsersClient.getOseeUser(user).getRelatedArtifacts(AtsRelationTypes.FavoriteUser_Artifact);
+      return AtsClientService.get().getUserAdmin().getOseeUser(user).getRelatedArtifacts(AtsRelationTypes.FavoriteUser_Artifact);
    }
 
    @Override

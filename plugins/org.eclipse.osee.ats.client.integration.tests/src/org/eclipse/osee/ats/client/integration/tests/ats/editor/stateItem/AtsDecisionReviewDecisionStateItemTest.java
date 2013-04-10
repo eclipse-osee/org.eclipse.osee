@@ -16,11 +16,11 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewDecisionStateItem;
 import org.eclipse.osee.ats.mocks.MockStateDefinition;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -103,7 +103,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
       AtsDecisionReviewDecisionStateItem stateItem = new AtsDecisionReviewDecisionStateItem();
       Collection<IAtsUser> users = stateItem.getOverrideTransitionToAssignees(decRevArt, decisionComboDam.get());
       Assert.assertEquals(1, users.size());
-      Assert.assertEquals(AtsUsersClient.getUser(), users.iterator().next());
+      Assert.assertEquals(AtsClientService.get().getUserAdmin().getCurrentUser(), users.iterator().next());
 
       // Set No
       decisionComboDam.set(2);

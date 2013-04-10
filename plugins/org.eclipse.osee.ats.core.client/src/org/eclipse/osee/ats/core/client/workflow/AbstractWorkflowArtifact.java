@@ -41,7 +41,6 @@ import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.log.ArtifactLog;
 import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
@@ -50,7 +49,7 @@ import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.workflow.note.ArtifactNote;
 import org.eclipse.osee.ats.core.client.workflow.note.AtsNote;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.core.users.AtsUsers;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.framework.access.AccessControlManager;
@@ -109,8 +108,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    private void initializeNewStateMachine(IStateToken state, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
-      getStateMgr().initializeStateMachine(state, assignees, (createdBy == null ? AtsUsersClient.getUser() : createdBy));
-      IAtsUser user = createdBy == null ? AtsUsersClient.getUser() : createdBy;
+      getStateMgr().initializeStateMachine(state, assignees,
+         (createdBy == null ? AtsClientService.get().getUserAdmin().getCurrentUser() : createdBy));
+      IAtsUser user = createdBy == null ? AtsClientService.get().getUserAdmin().getCurrentUser() : createdBy;
       setCreatedBy(user, true, createdDate);
       TransitionManager.logStateStartedEvent(this, state, createdDate, user);
    }
@@ -428,6 +428,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public IAtsWorkDefinition getWorkDefinition() {
       WorkDefinitionMatch match = getWorkDefinitionMatch();
+      if (match == null) {
+         return null;
+      }
       if (!match.isMatched()) {
          OseeLog.log(Activator.class, Level.SEVERE, match.toString());
          return null;
@@ -494,7 +497,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          if (getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null) == null) {
             atsLog.addLog(LogType.Originated, "", "", date, user);
          } else {
-            atsLog.addLog(LogType.Originated, "", "Changed by " + AtsUsersClient.getUser().getName(), date, user);
+            atsLog.addLog(LogType.Originated, "",
+               "Changed by " + AtsClientService.get().getUserAdmin().getCurrentUser().getName(), date, user);
             atsLog.internalResetOriginator(user);
          }
       }
@@ -532,7 +536,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public IAtsUser getCreatedBy() throws OseeCoreException {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null);
       if (Strings.isValid(userId)) {
-         return AtsUsers.getUser(userId);
+         return AtsClientService.get().getUserAdmin().getUserById(userId);
       }
       return null;
    }
@@ -544,7 +548,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public IAtsUser getCancelledBy() throws OseeCoreException {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CancelledBy, null);
       if (Strings.isValid(userId)) {
-         return AtsUsers.getUser(userId);
+         return AtsClientService.get().getUserAdmin().getUserById(userId);
       }
       return null;
    }
@@ -572,7 +576,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public IAtsUser getCompletedBy() throws OseeCoreException {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CompletedBy, null);
       if (Strings.isValid(userId)) {
-         return AtsUsers.getUser(userId);
+         return AtsClientService.get().getUserAdmin().getUserById(userId);
       }
       return null;
    }
@@ -626,17 +630,17 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public void setTransitionAssignees(Collection<IAtsUser> assignees) throws OseeCoreException {
-      if (assignees.contains(AtsUsers.getSystemUser()) || assignees.contains(AtsUsers.getGuestUser())) {
+      if (assignees.contains(AtsCoreUsers.SYSTEM_USER) || assignees.contains(AtsCoreUsers.GUEST_USER)) {
          throw new OseeArgumentException("Can not assign workflow to OseeSystem or Guest");
       }
-      if (assignees.size() > 1 && assignees.contains(AtsUsers.getUnAssigned())) {
+      if (assignees.size() > 1 && assignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
          throw new OseeArgumentException("Can not assign to user and UnAssigned");
       }
       transitionAssignees = assignees;
    }
 
    public boolean isAssigneeMe() throws OseeCoreException {
-      return stateMgr.getAssignees().contains(AtsUsersClient.getUser());
+      return stateMgr.getAssignees().contains(AtsClientService.get().getUserAdmin().getCurrentUser());
    }
 
    /*
@@ -645,8 +649,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     */
    public Collection<? extends IAtsUser> getTransitionAssignees() throws OseeCoreException {
       if (transitionAssignees != null) {
-         if (!transitionAssignees.isEmpty() && transitionAssignees.contains(AtsUsers.getUnAssigned())) {
-            transitionAssignees.remove(AtsUsers.getUnAssigned());
+         if (!transitionAssignees.isEmpty() && transitionAssignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
+            transitionAssignees.remove(AtsCoreUsers.UNASSIGNED_USER);
          }
          if (!transitionAssignees.isEmpty()) {
             return transitionAssignees;

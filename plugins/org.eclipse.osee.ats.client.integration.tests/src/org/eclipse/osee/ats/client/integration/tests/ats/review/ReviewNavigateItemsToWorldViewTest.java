@@ -15,10 +15,10 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.NavigateTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.WorldEditorUtil;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.review.GenerateReviewParticipationReport;
@@ -57,16 +57,16 @@ public class ReviewNavigateItemsToWorldViewTest {
    public void testOtherUsersWorld_KayJones() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's Reviews").iterator().next();
       runGeneralLoadingTest(item, AtsArtifactTypes.PeerToPeerReview, 1,
-         AtsUsersClient.getUserFromToken(DemoUsers.Kay_Jones));
+         AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Kay_Jones));
    }
 
    @org.junit.Test
    public void testOtherUsersWorld_JoeSmith() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's Reviews").iterator().next();
       runGeneralLoadingTest(item, AtsArtifactTypes.DecisionReview, 2,
-         AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith));
+         AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith));
       runGeneralLoadingTest(item, AtsArtifactTypes.PeerToPeerReview, 2,
-         AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith));
+         AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith));
    }
 
    @org.junit.Test
@@ -94,7 +94,7 @@ public class ReviewNavigateItemsToWorldViewTest {
       MassArtifactEditor.closeAll();
       XNavigateItem item =
          NavigateTestUtil.getAtsNavigateItems("Generate Review Participation Report").iterator().next();
-      ((GenerateReviewParticipationReport) item).setSelectedUser(AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith));
+      ((GenerateReviewParticipationReport) item).setSelectedUser(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith));
 
       item.run(TableLoadOption.ForcePend);
 

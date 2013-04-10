@@ -18,13 +18,13 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -132,7 +132,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
                         for (TaskArtifact taskArt : taskableArt.getTaskArtifacts(forState)) {
                            if (!taskArt.isCompletedOrCancelled()) {
                               if (taskArt.getStateMgr().isUnAssigned()) {
-                                 taskArt.getStateMgr().setAssignee(AtsUsersClient.getUser());
+                                 taskArt.getStateMgr().setAssignee(AtsClientService.get().getUserAdmin().getCurrentUser());
                               }
                               TransitionHelper helper =
                                  new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),

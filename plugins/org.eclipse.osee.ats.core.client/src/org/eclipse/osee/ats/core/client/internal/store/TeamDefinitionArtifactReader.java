@@ -18,8 +18,8 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
+import org.eclipse.osee.ats.core.client.IAtsUserAdmin;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.IVersionFactory;
@@ -35,10 +35,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class TeamDefinitionArtifactReader extends AbstractAtsArtifactReader<IAtsTeamDefinition> {
 
    private final IAtsVersionService versionService;
+   private final IAtsUserAdmin userAdmin;
 
-   public TeamDefinitionArtifactReader(IActionableItemFactory actionableItemFactory, ITeamDefinitionFactory teamDefFactory, IVersionFactory versionFactory, IAtsVersionService versionService) {
+   public TeamDefinitionArtifactReader(IActionableItemFactory actionableItemFactory, ITeamDefinitionFactory teamDefFactory, IVersionFactory versionFactory, IAtsVersionService versionService, IAtsUserAdmin userAdmin) {
       super(actionableItemFactory, teamDefFactory, versionFactory);
       this.versionService = versionService;
+      this.userAdmin = userAdmin;
    }
 
    @Override
@@ -84,19 +86,19 @@ public class TeamDefinitionArtifactReader extends AbstractAtsArtifactReader<IAts
          versionService.setTeamDefinition(version, teamDef);
       }
       for (Artifact userArt : teamDefArt.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User)) {
-         IAtsUser user = AtsUsersClient.getUserFromOseeUser((User) userArt);
+         IAtsUser user = userAdmin.getUserFromOseeUser((User) userArt);
          teamDef.getSubscribed().add(user);
       }
       for (Artifact userArt : teamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead)) {
-         IAtsUser user = AtsUsersClient.getUserFromOseeUser((User) userArt);
+         IAtsUser user = userAdmin.getUserFromOseeUser((User) userArt);
          teamDef.getLeads().add(user);
       }
       for (Artifact userArt : teamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamMember_Member)) {
-         IAtsUser user = AtsUsersClient.getUserFromOseeUser((User) userArt);
+         IAtsUser user = userAdmin.getUserFromOseeUser((User) userArt);
          teamDef.getMembers().add(user);
       }
       for (Artifact userArt : teamDefArt.getRelatedArtifacts(AtsRelationTypes.PrivilegedMember_Member)) {
-         IAtsUser user = AtsUsersClient.getUserFromOseeUser((User) userArt);
+         IAtsUser user = userAdmin.getUserFromOseeUser((User) userArt);
          teamDef.getPrivilegedMembers().add(user);
       }
       for (String ruleStr : teamDefArt.getAttributesToStringList(AtsAttributeTypes.RuleDefinition)) {

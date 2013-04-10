@@ -23,8 +23,8 @@ import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -130,12 +130,12 @@ public class UserWorldSearchItem {
    }
 
    private Collection<AbstractWorkflowArtifact> getSubscribedArtifacts() throws OseeCoreException {
-      return AtsUsersClient.getOseeUser(user).getRelatedArtifactsOfType(AtsRelationTypes.SubscribedUser_Artifact,
+      return AtsClientService.get().getUserAdmin().getOseeUser(user).getRelatedArtifactsOfType(AtsRelationTypes.SubscribedUser_Artifact,
          AbstractWorkflowArtifact.class);
    }
 
    private Collection<AbstractWorkflowArtifact> getFavoritesArtifacts() throws OseeCoreException {
-      return AtsUsersClient.getOseeUser(user).getRelatedArtifactsOfType(AtsRelationTypes.FavoriteUser_Artifact,
+      return AtsClientService.get().getUserAdmin().getOseeUser(user).getRelatedArtifactsOfType(AtsRelationTypes.FavoriteUser_Artifact,
          AbstractWorkflowArtifact.class);
    }
 

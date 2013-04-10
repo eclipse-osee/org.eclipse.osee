@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -135,7 +135,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       }
       for (User user : users) {
          UserRelatedToAtsObjectSearch srch =
-            new UserRelatedToAtsObjectSearch("User search", AtsUsersClient.getUserFromOseeUser(user), false,
+            new UserRelatedToAtsObjectSearch("User search", AtsClientService.get().getUserAdmin().getUserFromOseeUser(user), false,
                LoadView.None);
          if (srch.performSearchGetResults().size() > 0) {
             return String.format(

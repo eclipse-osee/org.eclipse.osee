@@ -19,8 +19,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.mock.MockAtsUser;
 import org.eclipse.osee.ats.core.mock.MockWorkStateFactory;
 import org.eclipse.osee.ats.core.notify.IAtsNotificationListener;
-import org.eclipse.osee.ats.core.users.Guest;
-import org.eclipse.osee.ats.core.users.UnAssigned;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -89,7 +88,7 @@ public class WorkStateProviderImplTest {
       provider.addState(new WorkStateImpl("endorse"));
       provider.setCurrentStateName("endorse");
 
-      provider.addAssignee(Guest.instance);
+      provider.addAssignee(AtsCoreUsers.GUEST_USER);
    }
 
    @Test
@@ -123,11 +122,11 @@ public class WorkStateProviderImplTest {
       provider.addState(new WorkStateImpl("endorse"));
       provider.setCurrentStateName("endorse");
 
-      provider.setAssignee(UnAssigned.instance);
+      provider.setAssignee(AtsCoreUsers.UNASSIGNED_USER);
       Assert.assertEquals(1, provider.getAssignees().size());
-      Assert.assertEquals(UnAssigned.instance, provider.getAssignees().iterator().next());
+      Assert.assertEquals(AtsCoreUsers.UNASSIGNED_USER, provider.getAssignees().iterator().next());
 
-      provider.setAssignees(Arrays.asList(joe, UnAssigned.instance));
+      provider.setAssignees(Arrays.asList(joe, AtsCoreUsers.UNASSIGNED_USER));
       Assert.assertEquals(1, provider.getAssignees().size());
       Assert.assertEquals(joe, provider.getAssignees().iterator().next());
    }
@@ -201,7 +200,7 @@ public class WorkStateProviderImplTest {
       provider.addState(new WorkStateImpl("endorse"));
       provider.setCurrentStateName("endorse");
 
-      provider.setAssignee(Guest.instance);
+      provider.setAssignee(AtsCoreUsers.GUEST_USER);
    }
 
    @Test
@@ -209,7 +208,7 @@ public class WorkStateProviderImplTest {
       provider.addState(new WorkStateImpl("endorse"));
       provider.setCurrentStateName("endorse");
       Assert.assertFalse(provider.isUnAssigned());
-      provider.addAssignee(UnAssigned.instance);
+      provider.addAssignee(AtsCoreUsers.UNASSIGNED_USER);
       Assert.assertTrue(provider.isUnAssigned());
    }
 
@@ -218,11 +217,11 @@ public class WorkStateProviderImplTest {
       provider.addState(new WorkStateImpl("endorse"));
       provider.setCurrentStateName("endorse");
       Assert.assertFalse(provider.isUnAssignedSolely());
-      provider.addAssignee(UnAssigned.instance);
+      provider.addAssignee(AtsCoreUsers.UNASSIGNED_USER);
       Assert.assertTrue(provider.isUnAssignedSolely());
       provider.addAssignee(joe);
       Assert.assertFalse(provider.isUnAssignedSolely());
-      provider.removeAssignee(UnAssigned.instance);
+      provider.removeAssignee(AtsCoreUsers.UNASSIGNED_USER);
       Assert.assertFalse(provider.isUnAssignedSolely());
    }
 

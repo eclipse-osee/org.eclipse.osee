@@ -18,8 +18,8 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -53,7 +53,8 @@ public class DefectLabelProvider extends XViewerLabelProvider {
          return ImageManager.getImage(defectItem.isClosed() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);
       } else if (dCol.equals(DefectXViewerFactory.User_Col)) {
          try {
-            return ArtifactImageManager.getImage(AtsUsersClient.getOseeUser(defectItem.getUser()));
+            return ArtifactImageManager.getImage(AtsClientService.get().getUserAdmin().getOseeUser(
+               defectItem.getUser()));
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -65,7 +66,14 @@ public class DefectLabelProvider extends XViewerLabelProvider {
    public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) {
       ReviewDefectItem defectItem = (ReviewDefectItem) element;
       if (aCol.equals(DefectXViewerFactory.User_Col)) {
-         return defectItem.getUser().getName();
+         String name;
+         try {
+            name = defectItem.getUser().getName();
+         } catch (OseeCoreException ex) {
+            name = String.format("Erroring getting user name: [%s]", ex.getLocalizedMessage());
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+         return name;
       } else if (aCol.equals(DefectXViewerFactory.Closed_Col)) {
          return String.valueOf(defectItem.isClosed());
       } else if (aCol.equals(DefectXViewerFactory.Created_Date_Col)) {

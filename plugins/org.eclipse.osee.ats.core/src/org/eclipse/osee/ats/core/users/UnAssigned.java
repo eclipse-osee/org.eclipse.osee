@@ -13,11 +13,9 @@ package org.eclipse.osee.ats.core.users;
 /**
  * @author Donald G. Dunne
  */
-public class UnAssigned extends AbstractAtsUser {
+public final class UnAssigned extends AbstractAtsUser {
 
-   public static UnAssigned instance = new UnAssigned();
-
-   private UnAssigned() {
+   protected UnAssigned() {
       super("99999997");
    }
 

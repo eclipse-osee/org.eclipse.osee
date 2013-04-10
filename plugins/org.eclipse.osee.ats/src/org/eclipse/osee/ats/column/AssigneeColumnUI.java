@@ -23,10 +23,10 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.column.AssigneeColumn;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -124,16 +124,16 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
       UserCheckTreeDialog uld = new UserCheckTreeDialog();
       uld.setMessage("Select to assign.\nDeSelect to un-assign.");
       if (awas.iterator().next().getParentTeamWorkflow() != null) {
-         uld.setTeamMembers(AtsUsersClient.getOseeUsers(awas.iterator().next().getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));
+         uld.setTeamMembers(AtsClientService.get().getUserAdmin().getOseeUsers(awas.iterator().next().getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));
       }
 
       if (awas.size() == 1) {
-         uld.setInitialSelections(AtsUsersClient.getOseeUsers(awas.iterator().next().getStateMgr().getAssignees()));
+         uld.setInitialSelections(AtsClientService.get().getUserAdmin().getOseeUsers(awas.iterator().next().getStateMgr().getAssignees()));
       }
       if (uld.open() != 0) {
          return false;
       }
-      Collection<IAtsUser> users = AtsUsersClient.getAtsUsers(uld.getUsersSelected());
+      Collection<IAtsUser> users = AtsClientService.get().getUserAdmin().getAtsUsers(uld.getUsersSelected());
       if (users.isEmpty()) {
          AWorkbench.popup("ERROR", "Must have at least one assignee");
          return false;
@@ -203,7 +203,7 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
          return null;
       }
       if (artifact instanceof AbstractWorkflowArtifact) {
-         return FrameworkArtifactImageProvider.getUserImage(AtsUsersClient.getOseeUsers(((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees()));
+         return FrameworkArtifactImageProvider.getUserImage(AtsClientService.get().getUserAdmin().getOseeUsers(((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees()));
       }
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {

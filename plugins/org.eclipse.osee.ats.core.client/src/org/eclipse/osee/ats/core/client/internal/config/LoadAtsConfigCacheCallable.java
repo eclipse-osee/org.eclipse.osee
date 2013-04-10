@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.internal.IAtsArtifactStore;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -40,8 +39,6 @@ public class LoadAtsConfigCacheCallable implements Callable<AtsArtifactConfigCac
 
    @Override
    public AtsArtifactConfigCache call() throws Exception {
-      AtsUsersClient.start();
-
       AtsArtifactConfigCache cache = new AtsArtifactConfigCache();
 
       List<IArtifactType> typesToLoad = getTypesToLoad();

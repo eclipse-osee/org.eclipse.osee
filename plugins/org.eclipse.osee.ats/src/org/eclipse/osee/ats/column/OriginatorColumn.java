@@ -24,9 +24,9 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -113,7 +113,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
       UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New Originator", Active.Active);
       int result = ld.open();
       if (result == 0) {
-         IAtsUser selectedUser = AtsUsersClient.getUserFromOseeUser(ld.getSelection());
+         IAtsUser selectedUser = AtsClientService.get().getUserAdmin().getUserFromOseeUser(ld.getSelection());
          Date createdDate = new Date();
 
          for (AbstractWorkflowArtifact awa : awas) {
@@ -151,13 +151,13 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
       try {
          if (element instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) element;
-            User origUser = AtsUsersClient.getOseeUser(awa.getCreatedBy());
+            User origUser = AtsClientService.get().getUserAdmin().getOseeUser(awa.getCreatedBy());
             return FrameworkArtifactImageProvider.getUserImage(Arrays.asList(origUser));
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<User> users = new HashSet<User>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
-               users.add(AtsUsersClient.getOseeUser(team.getCreatedBy()));
+               users.add(AtsClientService.get().getUserAdmin().getOseeUser(team.getCreatedBy()));
             }
             return FrameworkArtifactImageProvider.getUserImage(users);
          }

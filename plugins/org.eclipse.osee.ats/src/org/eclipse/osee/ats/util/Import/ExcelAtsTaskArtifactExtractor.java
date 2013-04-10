@@ -28,10 +28,10 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -114,7 +114,7 @@ public class ExcelAtsTaskArtifactExtractor {
          this.emailPOCs = emailPOCs;
          this.sma = sma;
          createdDate = new Date();
-         createdBy = AtsUsersClient.getUser();
+         createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
       }
 
       @Override
@@ -301,10 +301,10 @@ public class ExcelAtsTaskArtifactExtractor {
             userName = userName.replaceAll("\\+$", "");
             IAtsUser user = null;
             if (!Strings.isValid(userName)) {
-               user = AtsUsersClient.getUser();
+               user = AtsClientService.get().getUserAdmin().getCurrentUser();
             } else {
                try {
-                  user = AtsUsersClient.getUserByName(userName);
+                  user = AtsClientService.get().getUserAdmin().getUserByName(userName);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
@@ -312,7 +312,7 @@ public class ExcelAtsTaskArtifactExtractor {
             if (user == null) {
                OseeLog.logf(Activator.class, Level.SEVERE, "Invalid Assignee \"%s\" for row %d.  Using current user.",
                   userName, rowNum);
-               user = AtsUsersClient.getUser();
+               user = AtsClientService.get().getUserAdmin().getCurrentUser();
             }
             assignees.add(user);
          }
@@ -323,9 +323,9 @@ public class ExcelAtsTaskArtifactExtractor {
          String userName = row[i];
          IAtsUser user = null;
          if (!Strings.isValid(userName)) {
-            user = AtsUsersClient.getUser();
+            user = AtsClientService.get().getUserAdmin().getCurrentUser();
          } else {
-            user = AtsUsersClient.getUserByName(userName);
+            user = AtsClientService.get().getUserAdmin().getUserByName(userName);
          }
          if (user == null) {
             OseeLog.logf(Activator.class, Level.SEVERE,

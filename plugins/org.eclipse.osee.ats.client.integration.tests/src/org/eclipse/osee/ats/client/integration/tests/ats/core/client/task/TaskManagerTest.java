@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -162,7 +162,7 @@ public class TaskManagerTest extends TaskManager {
       transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
             getClass().getSimpleName() + " testTransitionToCompletedThenInWork() 2");
-      result = TaskManager.transitionToInWork(taskArt, AtsUsersClient.getUser(), 45, .5, transaction);
+      result = TaskManager.transitionToInWork(taskArt, AtsClientService.get().getUserAdmin().getCurrentUser(), 45, .5, transaction);
       Assert.assertEquals(Result.TrueResult, result);
       transaction.execute();
       Assert.assertEquals(TaskStates.InWork.getName(), taskArt.getCurrentStateName());

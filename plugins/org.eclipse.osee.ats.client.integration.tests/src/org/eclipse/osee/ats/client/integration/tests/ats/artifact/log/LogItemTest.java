@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.artifact.log;
 
 import java.util.Date;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -36,8 +36,8 @@ public class LogItemTest {
    public static void validateItem(LogItem item, Date date) throws OseeCoreException {
       Assert.assertEquals(LogType.Error, item.getType());
       Assert.assertEquals(date, item.getDate());
-      Assert.assertEquals(AtsUsersClient.getUser(), item.getUser());
-      Assert.assertEquals(AtsUsersClient.getUser().getUserId(), item.getUserId());
+      Assert.assertEquals(AtsClientService.get().getUserAdmin().getCurrentUser(), item.getUser());
+      Assert.assertEquals(AtsClientService.get().getUserAdmin().getCurrentUser().getUserId(), item.getUserId());
       Assert.assertEquals("Analyze", item.getState());
       Assert.assertEquals("my msg", item.getMsg());
    }
@@ -46,7 +46,7 @@ public class LogItemTest {
    public void testLogItemLogTypeStringStringStringStringString() throws OseeCoreException {
       Date date = new Date();
       LogItem item =
-         new LogItem(LogType.Error, String.valueOf(date.getTime()), AtsUsersClient.getUser().getUserId(), "Analyze",
+         new LogItem(LogType.Error, String.valueOf(date.getTime()), AtsClientService.get().getUserAdmin().getCurrentUser().getUserId(), "Analyze",
             "my msg", "ASDF4");
 
       validateItem(item, date);
@@ -56,14 +56,14 @@ public class LogItemTest {
    public void testLogItemStringStringStringStringStringString() throws OseeCoreException {
       Date date = new Date();
       LogItem item =
-         new LogItem(LogType.Error.name(), String.valueOf(date.getTime()), AtsUsersClient.getUser().getUserId(),
+         new LogItem(LogType.Error.name(), String.valueOf(date.getTime()), AtsClientService.get().getUserAdmin().getCurrentUser().getUserId(),
             "Analyze", "my msg", "ASDF4");
 
       validateItem(item, date);
    }
 
    public static LogItem getTestLogItem(Date date) throws OseeCoreException {
-      return new LogItem(LogType.Error, date, AtsUsersClient.getUser(), "Analyze", "my msg", "ASDF4");
+      return new LogItem(LogType.Error, date, AtsClientService.get().getUserAdmin().getCurrentUser(), "Analyze", "my msg", "ASDF4");
    }
 
    @Test
@@ -72,7 +72,7 @@ public class LogItemTest {
       LogItem item = getTestLogItem(date);
 
       Assert.assertEquals(
-         "my msg (Error)from Analyze by " + AtsUsersClient.getUser().getName() + " on " + DateUtil.getMMDDYYHHMM(date),
+         "my msg (Error)from Analyze by " + AtsClientService.get().getUserAdmin().getCurrentUser().getName() + " on " + DateUtil.getMMDDYYHHMM(date),
          item.toString());
    }
 
@@ -81,7 +81,7 @@ public class LogItemTest {
       Date date = new Date();
       LogItem item = getTestLogItem(date);
 
-      Assert.assertEquals("NOTE (Error): my msg (" + AtsUsersClient.getUser().getName() + ")",
+      Assert.assertEquals("NOTE (Error): my msg (" + AtsClientService.get().getUserAdmin().getCurrentUser().getName() + ")",
          item.toHTML(AHTML.LABEL_FONT));
    }
 

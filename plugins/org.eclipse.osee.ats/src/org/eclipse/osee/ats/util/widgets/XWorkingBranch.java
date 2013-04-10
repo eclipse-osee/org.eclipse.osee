@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
@@ -259,7 +259,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
 
    private void markWorkingBranchAsFavorite() {
       try {
-         User user = AtsUsersClient.getOseeUser(AtsUsersClient.getUser());
+         User user = AtsClientService.get().getUserAdmin().getOseeUser(AtsClientService.get().getUserAdmin().getCurrentUser());
          if (user.isSystemUser()) {
             AWorkbench.popup("Can't set preference as System User = " + user);
             return;

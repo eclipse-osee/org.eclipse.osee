@@ -25,11 +25,11 @@ import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -132,7 +132,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
          }
          ActionArtifact action =
             ActionManager.createAction(monitor, useTitle, getDescription(task), changeType, priority, false, null,
-               aias, new Date(), AtsUsersClient.getUser(), null, transaction);
+               aias, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
 
          for (TeamWorkFlowArtifact teamArt : action.getTeams()) {
             newTeamArts.add(teamArt);

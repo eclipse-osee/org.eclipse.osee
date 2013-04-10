@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.core.client.config.AtsArtifactToken;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
@@ -124,8 +124,8 @@ public class AtsConfigOperation extends AbstractOperation {
 
    private IAtsTeamDefinition createTeamDefinition(SkynetTransaction transaction) throws OseeCoreException {
       IAtsTeamDefinition teamDef = AtsClientService.get().createTeamDefinition(GUID.create(), teamDefName);
-      teamDef.getLeads().add(AtsUsersClient.getUser());
-      teamDef.getMembers().add(AtsUsersClient.getUser());
+      teamDef.getLeads().add(AtsClientService.get().getUserAdmin().getCurrentUser());
+      teamDef.getMembers().add(AtsClientService.get().getUserAdmin().getCurrentUser());
       TeamDefinitions.getTopTeamDefinition().getChildrenTeamDefinitions().add(teamDef);
       AtsClientService.get().storeConfigObject(teamDef, transaction);
       return teamDef;

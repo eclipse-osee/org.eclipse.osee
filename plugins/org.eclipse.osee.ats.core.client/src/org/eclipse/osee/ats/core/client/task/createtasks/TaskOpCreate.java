@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.users.AtsUsers;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -40,7 +40,8 @@ public class TaskOpCreate extends AbstractTaskOp {
       String taskTitle = taskTitleProvider.getTaskTitle(metadata);
       Date creationDate = new Date();
 
-      TaskArtifact taskArt = parentTeamWf.createNewTask(taskTitle, creationDate, AtsUsers.getSystemUser());
+      TaskArtifact taskArt =
+         parentTeamWf.createNewTask(taskTitle, creationDate, AtsCoreUsers.SYSTEM_USER);
 
       // create for Implement state regardless of which state workflow is in
       taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, TeamState.Implement.getName());

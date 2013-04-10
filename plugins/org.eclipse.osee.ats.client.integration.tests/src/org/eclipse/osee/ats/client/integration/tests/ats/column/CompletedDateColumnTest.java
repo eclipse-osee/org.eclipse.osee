@@ -12,12 +12,12 @@ package org.eclipse.osee.ats.client.integration.tests.ats.column;
 
 import java.util.Arrays;
 import java.util.Date;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.column.CompletedDateColumn;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
@@ -76,7 +76,7 @@ public class CompletedDateColumnTest {
 
       helper =
          new TransitionHelper("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getName(),
-            Arrays.asList(AtsUsersClient.getUser()), null, TransitionOption.OverrideTransitionValidityCheck,
+            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null, TransitionOption.OverrideTransitionValidityCheck,
             TransitionOption.OverrideAssigneeCheck);
       transitionMgr = new TransitionManager(helper);
       results = transitionMgr.handleAll();

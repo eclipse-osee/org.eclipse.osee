@@ -17,8 +17,8 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.core.client.IAtsUserAdmin;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.IVersionFactory;
@@ -32,8 +32,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class ActionableItemArtifactReader extends AbstractAtsArtifactReader<IAtsActionableItem> {
 
-   public ActionableItemArtifactReader(IActionableItemFactory actionableItemFactory, ITeamDefinitionFactory teamDefFactory, IVersionFactory versionFactory) {
+   private final IAtsUserAdmin userAdmin;
+
+   public ActionableItemArtifactReader(IActionableItemFactory actionableItemFactory, ITeamDefinitionFactory teamDefFactory, IVersionFactory versionFactory, IAtsUserAdmin userAdmin) {
       super(actionableItemFactory, teamDefFactory, versionFactory);
+      this.userAdmin = userAdmin;
    }
 
    @Override
@@ -63,11 +66,11 @@ public class ActionableItemArtifactReader extends AbstractAtsArtifactReader<IAts
          parentAi.getChildrenActionableItems().add(aia);
       }
       for (Artifact userArt : aiArt.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User)) {
-         IAtsUser user = AtsUsersClient.getUserFromOseeUser((User) userArt);
+         IAtsUser user = userAdmin.getUserFromOseeUser((User) userArt);
          aia.getSubscribed().add(user);
       }
       for (Artifact userArt : aiArt.getRelatedArtifacts(AtsRelationTypes.ActionableItemLead_Lead)) {
-         IAtsUser user = AtsUsersClient.getUserFromOseeUser((User) userArt);
+         IAtsUser user = userAdmin.getUserFromOseeUser((User) userArt);
          aia.getLeads().add(user);
       }
       for (Artifact childAiArt : aiArt.getChildren()) {

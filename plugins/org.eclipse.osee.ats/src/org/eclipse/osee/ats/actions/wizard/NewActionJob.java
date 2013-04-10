@@ -22,9 +22,9 @@ import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.action.INewActionListener;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -75,7 +75,7 @@ public class NewActionJob extends Job {
          }
          actionArt =
             ActionManager.createAction(monitor, title, desc, changeType, priority, validationRequired, needByDate,
-               actionableItems, new Date(), AtsUsersClient.getUser(), newActionListener, transaction);
+               actionableItems, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), newActionListener, transaction);
 
          if (wizard != null) {
             wizard.notifyAtsWizardItemExtensions(actionArt, transaction);

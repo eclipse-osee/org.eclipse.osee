@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.review.ValidateReviewManager;
@@ -35,14 +36,13 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.client.validator.AtsXWidgetValidateManagerClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
-import org.eclipse.osee.ats.core.users.AtsUsers;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionResult;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
@@ -149,7 +149,7 @@ public class TransitionManager {
                // Validate Editable
                boolean stateIsEditable =
                   WorkflowManagerCore.isEditable(awa, awa.getStateDefinition(), helper.isPrivilegedEditEnabled());
-               boolean currentlyUnAssigned = awa.getStateMgr().getAssignees().contains(AtsUsers.getUnAssigned());
+               boolean currentlyUnAssigned = awa.getStateMgr().getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER);
                awa.getStateMgr().validateNoBootstrapUser();
                boolean overrideAssigneeCheck = helper.isOverrideAssigneeCheck();
                // Allow anyone to transition any task to completed/cancelled/working if parent is working
@@ -502,7 +502,7 @@ public class TransitionManager {
     */
    public IAtsUser getTransitionAsUser() throws OseeCoreException {
       if (transitionAsUser == null) {
-         return AtsUsersClient.getUser();
+         return AtsClientService.get().getUserAdmin().getCurrentUser();
       }
       return transitionAsUser;
    }
@@ -545,15 +545,15 @@ public class TransitionManager {
                   assignees.add(user);
                }
             }
-            if (assignees.contains(AtsUsers.getUnAssigned())) {
-               assignees.remove(AtsUsers.getUnAssigned());
-               assignees.add(AtsUsersClient.getUser());
+            if (assignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
+               assignees.remove(AtsCoreUsers.UNASSIGNED_USER);
+               assignees.add(AtsClientService.get().getUserAdmin().getCurrentUser());
             }
             if (assignees.isEmpty()) {
                if (helper.isSystemUser()) {
-                  assignees.add(AtsUsers.getUnAssigned());
+                  assignees.add(AtsCoreUsers.UNASSIGNED_USER);
                } else {
-                  assignees.add(AtsUsersClient.getUser());
+                  assignees.add(AtsClientService.get().getUserAdmin().getCurrentUser());
                }
             }
          }

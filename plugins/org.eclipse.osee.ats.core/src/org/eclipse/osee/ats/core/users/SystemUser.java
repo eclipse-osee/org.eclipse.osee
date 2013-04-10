@@ -13,11 +13,9 @@ package org.eclipse.osee.ats.core.users;
 /**
  * @author Donald G. Dunne
  */
-public class SystemUser extends AbstractAtsUser {
+public final class SystemUser extends AbstractAtsUser {
 
-   public static SystemUser instance = new SystemUser();
-
-   private SystemUser() {
+   protected SystemUser() {
       super("99999999");
    }
 

@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.util;
 
+
 /**
  * @author Donald G. Dunne
  */
 public class AtsUtilCoreCore {
+
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
 
    public static boolean isInTest() {

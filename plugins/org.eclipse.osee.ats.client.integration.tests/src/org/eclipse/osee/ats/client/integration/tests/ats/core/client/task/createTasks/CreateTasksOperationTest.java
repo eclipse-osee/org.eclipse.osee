@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.core.client.task.createtasks.TaskOpModify;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
-import org.eclipse.osee.ats.core.users.AtsUsers;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -308,15 +308,15 @@ public class CreateTasksOperationTest {
       Date createdDate = new Date();
 
       TaskArtifact task01 =
-         destTeamWf.createNewTask(artifactNamePrefix + " Task 01", createdDate, AtsUsers.getSystemUser());
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 01", createdDate, AtsCoreUsers.SYSTEM_USER);
       TaskArtifact task02 =
-         destTeamWf.createNewTask(artifactNamePrefix + " Task 02", createdDate, AtsUsers.getSystemUser());
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 02", createdDate, AtsCoreUsers.SYSTEM_USER);
       TaskArtifact task03 =
-         destTeamWf.createNewTask(artifactNamePrefix + " Task 03", createdDate, AtsUsers.getSystemUser());
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 03", createdDate, AtsCoreUsers.SYSTEM_USER);
       TaskArtifact task04 =
-         destTeamWf.createNewTask(artifactNamePrefix + " Task 04", createdDate, AtsUsers.getSystemUser());
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 04", createdDate, AtsCoreUsers.SYSTEM_USER);
       TaskArtifact task05 =
-         destTeamWf.createNewTask(artifactNamePrefix + " Task 05", createdDate, AtsUsers.getSystemUser());
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 05", createdDate, AtsCoreUsers.SYSTEM_USER);
 
       task01.setSoleAttributeFromString(AtsAttributeTypes.TaskToChangedArtifactReference, changeArt01.getGuid());
       task02.setSoleAttributeFromString(AtsAttributeTypes.TaskToChangedArtifactReference, changeArt02.getGuid());
@@ -400,19 +400,19 @@ public class CreateTasksOperationTest {
       Date createdDate = new Date();
       TaskArtifact task01 =
          destTeamWf.createNewTask(artifactNamePrefix + " Task 01 - No changed artifact", createdDate,
-            AtsUsers.getSystemUser());
+            AtsCoreUsers.SYSTEM_USER);
       TaskArtifact task02 =
          destTeamWf.createNewTask(artifactNamePrefix + " Task 02 - No changed artifact", createdDate,
-            AtsUsers.getSystemUser());
+            AtsCoreUsers.SYSTEM_USER);
       TaskArtifact task03 =
          destTeamWf.createNewTask(artifactNamePrefix + " Task 03 - No changed artifact", createdDate,
-            AtsUsers.getSystemUser());
+            AtsCoreUsers.SYSTEM_USER);
       TaskArtifact task04 =
          destTeamWf.createNewTask(artifactNamePrefix + " Task 04 - No changed artifact", createdDate,
-            AtsUsers.getSystemUser());
+            AtsCoreUsers.SYSTEM_USER);
       TaskArtifact task05 =
          destTeamWf.createNewTask(artifactNamePrefix + " Task 05 - No changed artifact", createdDate,
-            AtsUsers.getSystemUser());
+            AtsCoreUsers.SYSTEM_USER);
 
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),

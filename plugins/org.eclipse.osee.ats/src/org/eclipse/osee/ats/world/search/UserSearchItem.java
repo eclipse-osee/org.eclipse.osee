@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -112,7 +112,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       UserListDialog ld = new UserListDialog(Displays.getActiveShell(), active);
       int result = ld.open();
       if (result == 0) {
-         selectedUser = AtsUsersClient.getUserFromOseeUser(ld.getSelection());
+         selectedUser = AtsClientService.get().getUserAdmin().getUserFromOseeUser(ld.getSelection());
          return;
       }
       cancelled = true;

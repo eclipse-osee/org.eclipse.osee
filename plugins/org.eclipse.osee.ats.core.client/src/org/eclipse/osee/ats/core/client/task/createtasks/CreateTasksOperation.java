@@ -28,10 +28,10 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.CreateTeamOption;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -181,7 +181,7 @@ public class CreateTasksOperation extends AbstractOperation {
     */
    private TeamWorkFlowArtifact ensureDestTeamWfExists(TeamWorkFlowArtifact reqTeamWf, IAtsActionableItem actionableItemArt, IAtsVersion destVersion, SkynetTransaction transaction, boolean reportOnly) throws OseeCoreException {
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsersClient.getUser();
+      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
 
       TeamWorkFlowArtifact destTeamWf = findDestTeamWf(reqTeamWf, actionableItemArt, destVersion);
 
@@ -192,7 +192,7 @@ public class CreateTasksOperation extends AbstractOperation {
 
          destTeamWf =
             ActionManager.createTeamWorkflow(actionArt, teamDef, Collections.singleton(actionableItemArt),
-               Arrays.asList(AtsUsersClient.getUser()), transaction, createdDate, createdBy, null,
+               Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), transaction, createdDate, createdBy, null,
                CreateTeamOption.Duplicate_If_Exists);
          if (destTeamWf != null) {
             AtsVersionService.get().setTargetedVersionAndStore(destTeamWf, destVersion);

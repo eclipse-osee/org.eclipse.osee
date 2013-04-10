@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.artifact;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -21,9 +22,8 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.core.users.AtsUsers;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -70,7 +70,7 @@ public class EditActionableItems {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Edit Actionable Items");
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsersClient.getUser();
+      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
 
       // Add new aias
       for (IAtsActionableItem aia : diag.getChecked()) {
@@ -114,8 +114,8 @@ public class EditActionableItems {
          }
          if (!teamExists) {
             TeamWorkFlowArtifact teamArt =
-               ActionManager.createTeamWorkflow(actionArt, tda, Arrays.asList(aia), AtsUsers.toList(tda.getLeads()),
-                  transaction, createdDate, createdBy, null);
+               ActionManager.createTeamWorkflow(actionArt, tda, Arrays.asList(aia),
+                  new LinkedList<IAtsUser>(tda.getLeads()), transaction, createdDate, createdBy, null);
             teamArt.persist(transaction);
             sb.append(aia.getName() + " => added team workflow \"" + tda.getName() + "\"\n");
          }

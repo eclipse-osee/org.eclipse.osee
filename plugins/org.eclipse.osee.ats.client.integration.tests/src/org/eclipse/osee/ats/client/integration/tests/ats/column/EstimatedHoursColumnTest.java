@@ -12,13 +12,13 @@ package org.eclipse.osee.ats.client.integration.tests.ats.column;
 
 import java.util.Date;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.EstimatedHoursUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -55,10 +55,10 @@ public class EstimatedHoursColumnTest {
       TeamWorkFlowArtifact teamArt2 =
          DemoTestUtil.addTeamWorkflow(actionArt, EstimatedHoursColumnTest.class.getSimpleName(), transaction);
       TaskArtifact taskArt1 =
-         teamArt1.createNewTask(EstimatedHoursColumnTest.class.getSimpleName(), new Date(), AtsUsersClient.getUser());
+         teamArt1.createNewTask(EstimatedHoursColumnTest.class.getSimpleName(), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
       taskArt1.persist(transaction);
       TaskArtifact taskArt2 =
-         teamArt1.createNewTask(EstimatedHoursColumnTest.class.getSimpleName(), new Date(), AtsUsersClient.getUser());
+         teamArt1.createNewTask(EstimatedHoursColumnTest.class.getSimpleName(), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
       taskArt2.persist(transaction);
       PeerToPeerReviewArtifact peerArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt1, getClass().getSimpleName(),

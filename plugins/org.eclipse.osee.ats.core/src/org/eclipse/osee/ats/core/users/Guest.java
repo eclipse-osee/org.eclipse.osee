@@ -13,11 +13,9 @@ package org.eclipse.osee.ats.core.users;
 /**
  * @author Donald G. Dunne
  */
-public class Guest extends AbstractAtsUser {
+public final class Guest extends AbstractAtsUser {
 
-   public static Guest instance = new Guest();
-
-   private Guest() {
+   protected Guest() {
       super("99999998");
    }
 

@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.mock.MockActionGroup;
 import org.eclipse.osee.ats.core.mock.MockAtsUser;
 import org.eclipse.osee.ats.core.mock.MockWorkItem;
-import org.eclipse.osee.ats.core.users.UnAssigned;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -119,13 +119,13 @@ public class ImplementersColumnTest {
       MockWorkItem workItem = new MockWorkItem("this", "Completed", StateType.Completed);
       workItem.getWorkData().setCompletedBy(steve);
       workItem.getWorkData().setCompletedFromState("Implement");
-      workItem.getStateData().addState("Implement", Arrays.asList(alice, UnAssigned.instance));
+      workItem.getStateData().addState("Implement", Arrays.asList(alice, AtsCoreUsers.UNASSIGNED_USER));
       Assert.assertEquals("alice; steve", ImplementersColumn.instance.getImplementersStr(workItem));
 
       workItem = new MockWorkItem("this", "Cancelled", StateType.Cancelled);
       workItem.getWorkData().setCancelledBy(steve);
       workItem.getWorkData().setCancelledFromState("Implement");
-      workItem.getStateData().addState("Implement", Arrays.asList(alice, UnAssigned.instance));
+      workItem.getStateData().addState("Implement", Arrays.asList(alice, AtsCoreUsers.UNASSIGNED_USER));
       Assert.assertEquals("alice; steve", ImplementersColumn.instance.getImplementersStr(workItem));
    }
 

@@ -27,12 +27,12 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.CreateTeamOption;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -128,12 +128,12 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Duplicate Workflow");
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsersClient.getUser();
+      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          List<IAtsUser> assignees = new LinkedList<IAtsUser>();
          assignees.addAll(teamArt.getStateMgr().getAssignees());
-         if (!assignees.contains(AtsUsersClient.getUser())) {
-            assignees.add(AtsUsersClient.getUser());
+         if (!assignees.contains(AtsClientService.get().getUserAdmin().getCurrentUser())) {
+            assignees.add(AtsClientService.get().getUserAdmin().getCurrentUser());
          }
          TeamWorkFlowArtifact newTeamArt =
             ActionManager.createTeamWorkflow(teamArt.getParentActionArtifact(), teamArt.getTeamDefinition(),

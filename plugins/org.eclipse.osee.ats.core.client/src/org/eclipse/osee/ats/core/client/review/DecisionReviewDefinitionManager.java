@@ -18,12 +18,12 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionAdapter;
-import org.eclipse.osee.ats.core.users.AtsUsers;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -47,9 +47,9 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
       }
       // Add current user if no valid users specified
       List<IAtsUser> users = new LinkedList<IAtsUser>();
-      users.addAll(AtsUsers.getUsersByUserIds(revDef.getAssignees()));
+      users.addAll(AtsClientService.get().getUserAdmin().getUsersByUserIds(revDef.getAssignees()));
       if (users.isEmpty()) {
-         users.add(AtsUsersClient.getUser());
+         users.add(AtsClientService.get().getUserAdmin().getCurrentUser());
       }
       if (!Strings.isValid(revDef.getReviewTitle())) {
          throw new OseeStateException("ReviewDefinition must specify title for Team Workflow [%s] WorkDefinition [%s]",
@@ -81,7 +81,7 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
          return;
       }
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsers.getSystemUser();
+      IAtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) sma;
 
       for (IAtsDecisionReviewDefinition decRevDef : teamArt.getStateDefinition().getDecisionReviews()) {

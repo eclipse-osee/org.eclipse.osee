@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -30,13 +31,15 @@ public class SubscribeManager {
 
    public static void addSubscribed(AbstractWorkflowArtifact workflow, IAtsUser user, SkynetTransaction transaction) throws OseeCoreException {
       if (!workflow.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User).contains(user)) {
-         workflow.addRelation(AtsRelationTypes.SubscribedUser_User, AtsUsersClient.getOseeUser(user));
+         workflow.addRelation(AtsRelationTypes.SubscribedUser_User,
+            AtsClientService.get().getUserAdmin().getOseeUser(user));
          workflow.persist(transaction);
       }
    }
 
    public static void removeSubscribed(AbstractWorkflowArtifact workflow, IAtsUser user, SkynetTransaction transaction) throws OseeCoreException {
-      workflow.deleteRelation(AtsRelationTypes.SubscribedUser_User, AtsUsersClient.getOseeUser(user));
+      workflow.deleteRelation(AtsRelationTypes.SubscribedUser_User,
+         AtsClientService.get().getUserAdmin().getOseeUser(user));
       workflow.persist(transaction);
    }
 
@@ -47,14 +50,14 @@ public class SubscribeManager {
    public static List<IAtsUser> getSubscribed(AbstractWorkflowArtifact workflow) throws OseeCoreException {
       ArrayList<IAtsUser> arts = new ArrayList<IAtsUser>();
       for (Artifact art : workflow.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User)) {
-         arts.add(AtsUsersClient.getUserFromOseeUser((User) art));
+         arts.add(AtsClientService.get().getUserAdmin().getUserFromOseeUser((User) art));
       }
       return arts;
    }
 
    public static boolean amISubscribed(AbstractWorkflowArtifact workflow) {
       try {
-         return isSubscribed(workflow, AtsUsersClient.getUser());
+         return isSubscribed(workflow, AtsClientService.get().getUserAdmin().getCurrentUser());
       } catch (OseeCoreException ex) {
          return false;
       }
@@ -69,14 +72,15 @@ public class SubscribeManager {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Toggle Subscribed");
          for (AbstractWorkflowArtifact awa : awas) {
-            SubscribeManager.removeSubscribed(awa, AtsUsersClient.getUser(), transaction);
+            SubscribeManager.removeSubscribed(awa, AtsClientService.get().getUserAdmin().getCurrentUser(),
+               transaction);
          }
          transaction.execute();
       } else {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Toggle Subscribed");
          for (AbstractWorkflowArtifact awa : awas) {
-            SubscribeManager.addSubscribed(awa, AtsUsersClient.getUser(), transaction);
+            SubscribeManager.addSubscribed(awa, AtsClientService.get().getUserAdmin().getCurrentUser(), transaction);
          }
          transaction.execute();
       }

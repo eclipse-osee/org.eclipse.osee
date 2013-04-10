@@ -56,4 +56,6 @@ public interface IAtsClient extends IAtsConfigProvider, ITeamDefinitionFactory, 
    @Override
    IAtsVersionAdmin getAtsVersionService();
 
+   IAtsUserAdmin getUserAdmin();
+
 }

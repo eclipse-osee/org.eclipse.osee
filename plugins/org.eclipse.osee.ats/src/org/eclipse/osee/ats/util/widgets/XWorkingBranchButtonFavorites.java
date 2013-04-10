@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.util.widgets;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -56,7 +56,7 @@ public class XWorkingBranchButtonFavorites extends XWorkingBranchButtonAbstract 
 
    private void markWorkingBranchAsFavorite() {
       try {
-         User user = AtsUsersClient.getOseeUser(AtsUsersClient.getUser());
+         User user = AtsClientService.get().getUserAdmin().getOseeUser(AtsClientService.get().getUserAdmin().getCurrentUser());
          if (user.isSystemUser()) {
             AWorkbench.popup("Can't set preference as System User = " + user);
             return;

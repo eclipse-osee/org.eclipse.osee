@@ -36,9 +36,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.users.AtsUsers;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
@@ -392,12 +390,17 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
       private void getUsersFromDecisionReviewOpt(IAtsDecisionReviewOption revOpt, List<Object> items) {
          for (String userId : revOpt.getUserIds()) {
-            IAtsUser user = AtsUsers.getUser(userId);
-            items.add(user);
+            try {
+               IAtsUser user = AtsClientService.get().getUserAdmin().getUserById(userId);
+               items.add(user);
+            } catch (OseeCoreException ex) {
+               items.add(String.format("Erroring getting user by id [%s] : [%s]", userId, ex.getLocalizedMessage()));
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
          }
          for (String userName : revOpt.getUserNames()) {
             try {
-               IAtsUser user = AtsUsersClient.getUserByName(userName);
+               IAtsUser user = AtsClientService.get().getUserAdmin().getUserByName(userName);
                items.add(user);
             } catch (OseeCoreException ex) {
                items.add(String.format("Erroring getting user by name [%s] : [%s]", userName, ex.getLocalizedMessage()));

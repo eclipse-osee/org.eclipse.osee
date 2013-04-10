@@ -45,7 +45,6 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
@@ -323,7 +322,7 @@ public class AtsTestUtil {
       teamDef = AtsClientService.get().createTeamDefinition(GUID.create(), getTitle("Team Def", postFixName));
       teamDef.setWorkflowDefinition(WORK_DEF_NAME);
       teamDef.setActive(true);
-      teamDef.getLeads().add(AtsUsersClient.getUser());
+      teamDef.getLeads().add(AtsClientService.get().getUserAdmin().getCurrentUser());
 
       testAi.setTeamDefinition(teamDef);
       testAi2.setTeamDefinition(teamDef);
@@ -346,7 +345,7 @@ public class AtsTestUtil {
 
       actionArt =
          ActionManager.createAction(null, getTitle("Team WF", postFixName), "description", ChangeType.Improvement, "1",
-            false, null, Arrays.asList(testAi), new Date(), AtsUsersClient.getUser(), null, transaction);
+            false, null, Arrays.asList(testAi), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
 
       teamArt = actionArt.getFirstTeam();
 
@@ -358,7 +357,7 @@ public class AtsTestUtil {
    public static TaskArtifact getOrCreateTaskOffTeamWf1() throws OseeCoreException {
       ensureLoaded();
       if (taskArtWf1 == null) {
-         taskArtWf1 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(), AtsUsersClient.getUser());
+         taskArtWf1 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
          taskArtWf1.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
          taskArtWf1.persist("AtsTestUtil - addTaskWf1");
       }
@@ -368,7 +367,7 @@ public class AtsTestUtil {
    public static TaskArtifact getOrCreateTaskOffTeamWf2() throws OseeCoreException {
       ensureLoaded();
       if (taskArtWf2 == null) {
-         taskArtWf2 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(), AtsUsersClient.getUser());
+         taskArtWf2 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
          taskArtWf2.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
          taskArtWf2.persist("AtsTestUtil - addTaskWf2");
       }
@@ -381,12 +380,12 @@ public class AtsTestUtil {
          List<IAtsDecisionReviewOption> options = new ArrayList<IAtsDecisionReviewOption>();
          options.add(new SimpleDecisionReviewOption(DecisionReviewState.Completed.getName(), false, null));
          options.add(new SimpleDecisionReviewOption(DecisionReviewState.Followup.getName(), true,
-            Arrays.asList(AtsUsersClient.getUser().getUserId())));
+            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser().getUserId())));
          decRevArt =
             DecisionReviewManager.createNewDecisionReview(teamArt, reviewBlockType,
                AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getName(),
-               "Decision Review", options, Arrays.asList(AtsUsersClient.getUser()), new Date(),
-               AtsUsersClient.getUser());
+               "Decision Review", options, Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), new Date(),
+               AtsClientService.get().getUserAdmin().getCurrentUser());
       }
       return decRevArt;
    }
@@ -601,7 +600,7 @@ public class AtsTestUtil {
             TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
          actionArt2 =
             ActionManager.createAction(null, getTitle("Team WF2", postFixName), "description", ChangeType.Improvement,
-               "1", false, null, Arrays.asList(testAi2), new Date(), AtsUsersClient.getUser(), null, transaction);
+               "1", false, null, Arrays.asList(testAi2), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
 
          teamArt2 = actionArt2.getFirstTeam();
          transaction.execute();
@@ -621,7 +620,7 @@ public class AtsTestUtil {
             TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
          actionArt3 =
             ActionManager.createAction(null, getTitle("Team WF3", postFixName), "description", ChangeType.Improvement,
-               "1", false, null, Arrays.asList(testAi3), new Date(), AtsUsersClient.getUser(), null, transaction);
+               "1", false, null, Arrays.asList(testAi3), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
 
          teamArt3 = actionArt3.getFirstTeam();
          transaction.execute();
@@ -641,7 +640,7 @@ public class AtsTestUtil {
             TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
          actionArt4 =
             ActionManager.createAction(null, getTitle("Team WF4", postFixName), "description", ChangeType.Improvement,
-               "1", false, null, Arrays.asList(testAi4), new Date(), AtsUsersClient.getUser(), null, transaction);
+               "1", false, null, Arrays.asList(testAi4), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
 
          teamArt4 = actionArt4.getFirstTeam();
          AtsVersionService.get().setTargetedVersion(teamArt4, verArt4);

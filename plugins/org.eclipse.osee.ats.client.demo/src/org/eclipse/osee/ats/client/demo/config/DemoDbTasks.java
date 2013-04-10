@@ -19,9 +19,9 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
+import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -37,17 +37,20 @@ public class DemoDbTasks {
          OseeLog.log(Activator.class, Level.INFO, "Create tasks off code workflows");
       }
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsUsersClient.getUser();
+      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Tasks");
       boolean firstTaskWorkflow = true;
       for (TeamWorkFlowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
          List<IAtsUser> demoUsers = new ArrayList<IAtsUser>();
          if (firstTaskWorkflow) {
-            demoUsers.add(AtsUsersClient.getUserFromOseeUser(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith)));
-            demoUsers.add(AtsUsersClient.getUserFromOseeUser(DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)));
+            demoUsers.add(AtsClientService.get().getUserAdmin().getUserFromOseeUser(
+               DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith)));
+            demoUsers.add(AtsClientService.get().getUserAdmin().getUserFromOseeUser(
+               DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)));
          } else {
-            demoUsers.add(AtsUsersClient.getUserFromOseeUser(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith)));
+            demoUsers.add(AtsClientService.get().getUserAdmin().getUserFromOseeUser(
+               DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith)));
          }
          for (String title : getTaskTitles(firstTaskWorkflow)) {
             TaskArtifact taskArt = codeArt.createNewTask(demoUsers, title, createdDate, createdBy);

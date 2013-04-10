@@ -16,12 +16,13 @@ import java.util.HashSet;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
-import org.eclipse.osee.ats.core.client.util.AtsUser;
-import org.eclipse.osee.ats.core.client.util.AtsUsersClient;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.junit.Before;
 import org.mockito.Mockito;
 
 /**
@@ -29,31 +30,32 @@ import org.mockito.Mockito;
  */
 public class AtsUserTest {
 
+   private IAtsUser atsUser;
+   private User user;
+
+   @Before
+   public void setUp() throws OseeCoreException {
+      user = UserManager.getUser();
+      atsUser = AtsClientService.get().getUserAdmin().getCurrentUser();
+   }
+
    @org.junit.Test
    public void testGetUserId() throws OseeCoreException {
-      User user = UserManager.getUser();
-      AtsUser atsUser = new AtsUser(user);
       Assert.assertEquals(user.getUserId(), atsUser.getUserId());
    }
 
    @org.junit.Test
-   public void testGetName() throws OseeCoreException {
-      User user = UserManager.getUser();
-      AtsUser atsUser = new AtsUser(user);
+   public void testGetName() {
       Assert.assertEquals(user.getName(), atsUser.getName());
    }
 
    @org.junit.Test
    public void testGetEmail() throws OseeCoreException {
-      User user = UserManager.getUser();
-      AtsUser atsUser = new AtsUser(user);
       Assert.assertEquals(user.getEmail(), atsUser.getEmail());
    }
 
    @org.junit.Test
    public void testEquals() throws OseeCoreException {
-      User user = UserManager.getUser();
-      AtsUser atsUser = new AtsUser(user);
       Assert.assertEquals(atsUser, user);
 
       IAtsUser atsUser2 = Mockito.mock(IAtsUser.class);
@@ -65,16 +67,16 @@ public class AtsUserTest {
    @org.junit.Test
    public void testRemove() throws OseeCoreException {
       Collection<IAtsUser> assignees = new HashSet<IAtsUser>();
-      assignees.add(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay));
-      assignees.add(AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith));
+      assignees.add(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay));
+      assignees.add(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith));
       Assert.assertTrue(Collections.isEqual(
          assignees,
-         Arrays.asList(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay),
-            AtsUsersClient.getUserFromToken(DemoUsers.Joe_Smith))));
+         Arrays.asList(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay),
+            AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith))));
 
-      assignees.remove(AtsUsersClient.getUser());
+      assignees.remove(AtsClientService.get().getUserAdmin().getCurrentUser());
       Assert.assertTrue(Collections.isEqual(assignees,
-         Arrays.asList(AtsUsersClient.getUserFromToken(DemoUsers.Alex_Kay))));
+         Arrays.asList(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay))));
    }
 
 }
