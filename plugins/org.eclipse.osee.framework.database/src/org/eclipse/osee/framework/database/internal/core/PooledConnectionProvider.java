@@ -20,14 +20,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.FutureTask;
 import javax.sql.DataSource;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
+import org.eclipse.osee.framework.core.data.LazyObject;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 
 public class PooledConnectionProvider implements ConnectionProvider {
 
-   private final ConcurrentHashMap<String, FutureTask<DataSource>> dataSourceCache =
-      new ConcurrentHashMap<String, FutureTask<DataSource>>();
+   private final ConcurrentHashMap<String, LazyObject<DataSource>> dataSourceCache =
+      new ConcurrentHashMap<String, LazyObject<DataSource>>();
 
    private final PoolFactory poolFactory;
    private final IDatabaseInfoProvider dbInfoProvider;
@@ -53,26 +54,23 @@ public class PooledConnectionProvider implements ConnectionProvider {
       return getOseeConnection(dataSource);
    }
 
-   private DataSource getDataSource(IDatabaseInfo dbInfo) throws OseeCoreException {
+   private DataSource getDataSource(final IDatabaseInfo dbInfo) throws OseeCoreException {
       String poolId = dbInfo.getId();
-      FutureTask<DataSource> task = dataSourceCache.get(poolId);
-      if (task == null) {
-         Callable<DataSource> newCallable = poolFactory.createDataSourceFetcher(dbInfo);
-         FutureTask<DataSource> newTask = new FutureTask<DataSource>(newCallable);
-         task = dataSourceCache.putIfAbsent(poolId, newTask);
-         if (task == null) {
-            task = newTask;
-            newTask.run();
+      LazyObject<DataSource> provider = dataSourceCache.get(poolId);
+      if (provider == null) {
+         LazyObject<DataSource> newProvider = new LazyObject<DataSource>() {
+            @Override
+            protected FutureTask<DataSource> createLoaderTask() {
+               Callable<DataSource> newCallable = poolFactory.createDataSourceFetcher(dbInfo);
+               return new FutureTask<DataSource>(newCallable);
+            }
+         };
+         provider = dataSourceCache.putIfAbsent(poolId, newProvider);
+         if (provider == null) {
+            provider = newProvider;
          }
       }
-
-      DataSource dataSource = null;
-      try {
-         dataSource = task.get();
-      } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      }
-      return dataSource;
+      return provider.get();
    }
 
    private BaseOseeConnection getOseeConnection(DataSource dataSource) throws OseeCoreException {
