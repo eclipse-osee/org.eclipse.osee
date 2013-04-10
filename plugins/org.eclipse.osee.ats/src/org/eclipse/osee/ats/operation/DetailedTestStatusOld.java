@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -46,9 +47,9 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.XVersionList;
 import org.eclipse.osee.ats.util.widgets.XAtsProgramComboWidget;
-import org.eclipse.osee.define.traceability.BranchTraceabilityOperation;
 import org.eclipse.osee.define.traceability.RequirementTraceabilityData;
 import org.eclipse.osee.define.traceability.ScriptTraceabilityOperation;
+import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.define.traceability.TraceabilityProviderOperation;
 import org.eclipse.osee.define.traceability.report.RequirementStatus;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -56,7 +57,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -91,7 +91,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
    private final Matcher taskNameMatcher = taskNamePattern.matcher("");
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
-   //                            reqName  legacyId
+
    private final CompositeKeyHashMap<String, String, RequirementStatus> reqTaskMap =
       new CompositeKeyHashMap<String, String, RequirementStatus>();
    private final StringBuilder sumFormula = new StringBuilder(500);
@@ -108,9 +108,12 @@ public class DetailedTestStatusOld extends AbstractBlam {
    private Collection<IAtsVersion> versions;
 
    private XBranchSelectWidget requirementsBranchWidget;
-   private XBranchSelectWidget scriptsBranchWidget;
    private XBranchSelectWidget testProcedureBranchWidget;
    private XVersionList versionsListViewer;
+
+   private static final String TRACE_HANDLER_CHECKBOX =
+      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"%s\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
+   private Collection<String> availableTraceHandlers;
 
    private IOseeBranch selectedBranch;
    private IAtsProgram selectedProgram;
@@ -145,7 +148,6 @@ public class DetailedTestStatusOld extends AbstractBlam {
                selectedBranch = BranchManager.getBranchByGuid(versionArtifact.getBaselineBranchGuidInherited());
 
                requirementsBranchWidget.setSelection(selectedBranch);
-               scriptsBranchWidget.setSelection(selectedBranch);
                testProcedureBranchWidget.setSelection(selectedBranch);
             } catch (OseeCoreException ex) {
                log(ex);
@@ -170,7 +172,6 @@ public class DetailedTestStatusOld extends AbstractBlam {
                versionsListViewer.setInputAtsObjects(versionArtifacts);
 
                requirementsBranchWidget.setSelection(null);
-               scriptsBranchWidget.setSelection(null);
                testProcedureBranchWidget.setSelection(null);
 
                versionsListViewer.addSelectionChangedListener(branchSelectionListener);
@@ -224,7 +225,6 @@ public class DetailedTestStatusOld extends AbstractBlam {
       IOseeBranch requirementsBranch = variableMap.getBranch("Requirements Branch");
       IOseeBranch scriptsBranch = variableMap.getBranch("Test Results Branch");
       IOseeBranch procedureBranch = variableMap.getBranch("Test Procedure Branch");
-      IOseeBranch traceabilityBranch = variableMap.getBranch("Traceability Branch");
 
       File scriptDir = new File(variableMap.getString("Script Root Directory"));
       versions = new ArrayList<IAtsVersion>();
@@ -235,13 +235,16 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
       loadTestRunArtifacts(scriptsBranch);
 
-      // Load Requirements Data
-      TraceabilityProviderOperation provider = null;
-      if (traceabilityBranch != null) {
-         provider = new BranchTraceabilityOperation((Branch) traceabilityBranch);
-      } else {
-         provider = new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false);
+      Collection<String> traceHandlerIds = new LinkedList<String>();
+      for (String handler : availableTraceHandlers) {
+         if (variableMap.getBoolean(handler)) {
+            traceHandlerIds.add(handler);
+         }
       }
+
+      // Load Requirements Data
+      TraceabilityProviderOperation provider =
+         new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, traceHandlerIds);
       RequirementTraceabilityData traceabilityData = new RequirementTraceabilityData(procedureBranch, provider);
 
       IStatus status = traceabilityData.initialize(monitor);
@@ -536,8 +539,6 @@ public class DetailedTestStatusOld extends AbstractBlam {
          versionsListViewer = (XVersionList) xWidget;
       } else if (widgetLabel.equals("Requirements Branch")) {
          requirementsBranchWidget = (XBranchSelectWidget) xWidget;
-      } else if (widgetLabel.equals("Test Results Branch")) {
-         scriptsBranchWidget = (XBranchSelectWidget) xWidget;
       } else if (widgetLabel.equals("Test Procedure Branch")) {
          testProcedureBranchWidget = (XBranchSelectWidget) xWidget;
       }
@@ -592,14 +593,21 @@ public class DetailedTestStatusOld extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() {
+   public String getXWidgetsXml() throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
       sb.append("<xWidgets>");
       sb.append("<XWidget xwidgetType=\"XAtsProgramComboWidget\" horizontalLabel=\"true\" displayName=\"Program\" />");
       sb.append("<XWidget xwidgetType=\"XVersionList\" displayName=\"Versions\" multiSelect=\"true\" />");
       sb.append("<XWidget xwidgetType=\"XText\" displayName=\"Script Root Directory\" defaultValue=\"C:/UserData/workspaceScripts\" />");
-      sb.append("<XWidget xwidgetType=\"XLabel\" displayName=\"or (Note: If traceability branch is selected, requirements branch is not used as they will be pulled from the traceability branch)\"/>");
-      sb.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Traceability Branch\" toolTip=\"Select a requirements branch.\" />");
+
+      availableTraceHandlers = new LinkedList<String>();
+      sb.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select appropriate script parser:\" />");
+      Collection<String> traceHandlers = TraceUnitExtensionManager.getInstance().getAllTraceHandlerNames();
+      for (String handler : traceHandlers) {
+         sb.append(String.format(TRACE_HANDLER_CHECKBOX, handler));
+         availableTraceHandlers.add(handler);
+      }
+
       sb.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Requirements Branch\" toolTip=\"Select a requirements branch.\" />");
       sb.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Test Results Branch\" toolTip=\"Select a scripts results branch.\" />");
       sb.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Test Procedure Branch\" toolTip=\"Select a test procedures branch.\" />");

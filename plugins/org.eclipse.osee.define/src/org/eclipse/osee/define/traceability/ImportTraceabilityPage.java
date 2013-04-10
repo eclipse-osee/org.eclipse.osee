@@ -13,6 +13,10 @@ package org.eclipse.osee.define.traceability;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
@@ -20,14 +24,18 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.define.internal.Activator;
+import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
@@ -39,8 +47,11 @@ import org.eclipse.ui.dialogs.WizardDataTransferPage;
 public class ImportTraceabilityPage extends WizardDataTransferPage {
    public static final String PAGE_NAME = "org.eclipse.osee.define.wizardPage.importTraceabilityPage";
 
+   private static final String TRACE_UNIT_HANDLER_GROUP = "Select trace unit parser";
+
    private DirectoryOrFileSelector directoryFileSelector;
    private BranchSelectComposite branchSelectComposite;
+   private final Map<Button, Boolean> traceUnitHandlers;
 
    private IResource currentResourceSelection;
 
@@ -49,6 +60,7 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
 
       setTitle("Import traceability into OSEE Define");
       setDescription("Import relations between artifacts");
+      traceUnitHandlers = new HashMap<Button, Boolean>();
 
       if (selection != null && selection.size() == 1) {
          Object firstElement = selection.getFirstElement();
@@ -69,6 +81,7 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
       composite.setFont(parent.getFont());
 
       createSourceGroup(composite);
+      createParserSelectArea(composite);
 
       restoreWidgetValues();
       updateWidgetEnablements();
@@ -113,6 +126,51 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
       branchSelectComposite = new BranchSelectComposite(composite, SWT.BORDER, false);
 
       setPageComplete(determinePageCompletion());
+   }
+
+   protected void createParserSelectArea(Composite parent) {
+      Group composite = new Group(parent, SWT.NONE);
+      composite.setText(TRACE_UNIT_HANDLER_GROUP);
+      composite.setLayout(new GridLayout());
+      composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+      try {
+         for (TraceHandler handler : TraceUnitExtensionManager.getInstance().getAllTraceHandlers()) {
+            createTraceHandler(composite, handler.getName(), handler.getId());
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+   }
+
+   private void createTraceHandler(Composite parent, String text, String handlerId) {
+      Button handlerButton = new Button(parent, SWT.CHECK);
+      handlerButton.setText(text);
+      handlerButton.setData(handlerId);
+      handlerButton.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            Object source = e.getSource();
+            if (source instanceof Button) {
+               Button button = (Button) source;
+               traceUnitHandlers.put(button, button.getSelection());
+            }
+            setPageComplete(determinePageCompletion());
+         }
+      });
+      traceUnitHandlers.put(handlerButton, false);
+   }
+
+   public String[] getTraceUnitHandlerIds() {
+      List<String> selectedIds = new ArrayList<String>();
+      for (Button button : traceUnitHandlers.keySet()) {
+         Boolean value = traceUnitHandlers.get(button);
+         if (value != null && value == true) {
+            selectedIds.add((String) button.getData());
+         }
+      }
+      return selectedIds.toArray(new String[selectedIds.size()]);
    }
 
    /*
@@ -191,4 +249,5 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
       }
 
    }
+
 }

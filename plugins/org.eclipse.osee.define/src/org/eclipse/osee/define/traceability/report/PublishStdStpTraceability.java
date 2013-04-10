@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -21,6 +22,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.define.traceability.BranchTraceabilityOperation;
 import org.eclipse.osee.define.traceability.RequirementTraceabilityData;
 import org.eclipse.osee.define.traceability.ScriptTraceabilityOperation;
+import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.define.traceability.TraceabilityFactory;
 import org.eclipse.osee.define.traceability.TraceabilityFactory.OutputFormat;
 import org.eclipse.osee.define.traceability.TraceabilityFactory.TraceabilityStyle;
@@ -29,6 +31,7 @@ import org.eclipse.osee.define.traceability.TraceabilityTable;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -59,13 +62,17 @@ public class PublishStdStpTraceability extends AbstractBlam {
    private static final String pullAllDataFromBranch =
       "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + PULL_ALL_DATA_LABEL + "\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
 
+   private static final String TRACE_HANDLER_CHECKBOX =
+      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"%s\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
+   private Collection<String> availableTraceHandlers;
+
    @Override
    public String getName() {
       return "Publish STD/STP Traceability";
    }
 
    @Override
-   public String getXWidgetsXml() {
+   public String getXWidgetsXml() throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select tables to generate:\"/>");
@@ -75,6 +82,15 @@ public class PublishStdStpTraceability extends AbstractBlam {
          builder.append("\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       }
       builder.append(scriptDirectory);
+
+      availableTraceHandlers = new LinkedList<String>();
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select appropriate script parser:\" />");
+      Collection<String> traceHandlers = TraceUnitExtensionManager.getInstance().getAllTraceHandlerNames();
+      for (String handler : traceHandlers) {
+         builder.append(String.format(TRACE_HANDLER_CHECKBOX, handler));
+         availableTraceHandlers.add(handler);
+      }
+
       builder.append(requirementsBranch);
       builder.append(pullAllDataFromBranch);
       builder.append(testProceduresBranch);
@@ -105,6 +121,13 @@ public class PublishStdStpTraceability extends AbstractBlam {
       File scriptDir = new File(variableMap.getString("Script Root Directory"));
       List<TraceabilityStyle> selectedReports = getStyles(variableMap);
 
+      Collection<String> traceHandlerIds = new LinkedList<String>();
+      for (String handler : availableTraceHandlers) {
+         if (variableMap.getBoolean(handler)) {
+            traceHandlerIds.add(handler);
+         }
+      }
+
       int totalWork = selectedReports.size() * 2 + 1;
 
       monitor.beginTask("Generate Traceability Tables", totalWork);
@@ -115,7 +138,9 @@ public class PublishStdStpTraceability extends AbstractBlam {
          if (variableMap.getBoolean(PULL_ALL_DATA_LABEL)) {
             provider = new BranchTraceabilityOperation(testProcedureBranch, types, searchInherited);
          } else {
-            provider = new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, types, searchInherited);
+            provider =
+               new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, types, searchInherited,
+                  traceHandlerIds);
          }
          RequirementTraceabilityData traceabilityData = new RequirementTraceabilityData(testProcedureBranch, provider);
          IStatus status = traceabilityData.initialize(monitor);

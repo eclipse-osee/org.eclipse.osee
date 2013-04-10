@@ -15,11 +15,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.traceability.ScriptTraceabilityOperation;
+import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -68,6 +70,10 @@ public class SubsystemFullTraceReport extends AbstractBlam {
    private XCheckBox useTraceInOsee;
    private XText scriptDir;
 
+   private static final String TRACE_HANDLER_CHECKBOX =
+      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"%s\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
+   private Collection<String> availableTraceHandlers;
+
    @Override
    public String getName() {
       return "Subsystem Full Trace Report";
@@ -90,11 +96,18 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       String scriptDir = variableMap.getString(SCRIPT_ROOT_DIR);
       Boolean checked = variableMap.getBoolean(USE_TRACE_IN_OSEE);
 
+      Collection<String> traceHandlerIds = new LinkedList<String>();
+      for (String handler : availableTraceHandlers) {
+         if (variableMap.getBoolean(handler)) {
+            traceHandlerIds.add(handler);
+         }
+      }
+
       if (!checked) {
          File dir = new File(scriptDir);
          if (dir.exists()) {
             ScriptTraceabilityOperation traceOperation =
-               new ScriptTraceabilityOperation(dir.getParentFile(), branch, false);
+               new ScriptTraceabilityOperation(dir.getParentFile(), branch, false, traceHandlerIds);
             Operations.executeWorkAndCheckStatus(traceOperation, monitor);
             requirementsToCodeUnits = traceOperation.getRequirementToCodeUnitsMap();
          }
@@ -197,11 +210,18 @@ public class SubsystemFullTraceReport extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() {
+   public String getXWidgetsXml() throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
       sb.append("<xWidgets>");
       sb.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + USE_TRACE_IN_OSEE + "\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\" />");
       sb.append("<XWidget xwidgetType=\"XText\" displayName=\"" + SCRIPT_ROOT_DIR + "\" defaultValue=\"C:/UserData/workspaceScripts\" toolTip=\"Leave blank if test script traceability is not needed.\" />");
+      availableTraceHandlers = new LinkedList<String>();
+      sb.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select appropriate script parser (if script traceability needed):\" />");
+      Collection<String> traceHandlers = TraceUnitExtensionManager.getInstance().getAllTraceHandlerNames();
+      for (String handler : traceHandlers) {
+         sb.append(String.format(TRACE_HANDLER_CHECKBOX, handler));
+         availableTraceHandlers.add(handler);
+      }
       sb.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"Subsystem Requirements\" />");
       sb.append("</xWidgets>");
       return sb.toString();

@@ -12,28 +12,33 @@ package org.eclipse.osee.define.traceability;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.internal.Activator;
+import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
 import org.eclipse.osee.define.traceability.data.RequirementData;
+import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
@@ -50,8 +55,14 @@ import org.eclipse.swt.program.Program;
  */
 public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    private static final Pattern filePattern = Pattern.compile(".*\\.(java|ada|ads|adb|c|h)");
-   private static final TraceabilityExtractor traceExtractor = TraceabilityExtractor.getInstance();
+   //   private static final TraceabilityExtractor traceExtractor = TraceabilityExtractor.getInstance();
 
+   private static final Matcher structuredRequirementMatcher = Pattern.compile("\\[?(\\{[^\\}]+\\})(.*)").matcher("");
+   private static final Matcher embeddedVolumeMatcher = Pattern.compile("\\{\\d+ (.*)\\}[ .]*").matcher("");
+   private static final Matcher stripTrailingReqNameMatcher = Pattern.compile("(\\}|\\])(.*)").matcher("");
+   private static final Matcher nonWordMatcher = Pattern.compile("[^A-Z_0-9]").matcher("");
+
+   private final Collection<String> traceHandlerIds;
    private final File file;
    private final RequirementData requirementData;
    private final ArrayList<String> noTraceabilityFiles = new ArrayList<String>(200);
@@ -64,25 +75,27 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    private int pathPrefixLength;
    private final boolean writeOutResults;
 
-   private ScriptTraceabilityOperation(RequirementData requirementData, File file, boolean writeOutResults) throws IOException {
+   private ScriptTraceabilityOperation(RequirementData requirementData, File file, boolean writeOutResults, Collection<String> traceHandlerIds) throws IOException {
       super("Importing Traceability", Activator.PLUGIN_ID);
       this.file = file;
       this.requirementData = requirementData;
       this.writeOutResults = writeOutResults;
+      this.traceHandlerIds = traceHandlerIds;
       charBak = new CharBackedInputStream();
       excelWriter = new ExcelXmlWriter(charBak.getWriter());
    }
 
-   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults) throws IOException {
-      this(new RequirementData(branch), file, writeOutResults);
+   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults, Collection<String> traceHandlerIds) throws IOException {
+      this(new RequirementData(branch), file, writeOutResults, traceHandlerIds);
    }
 
-   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults, Collection<? extends IArtifactType> types, boolean withInheritance) throws IOException {
-      this(new RequirementData(branch, types, withInheritance), file, writeOutResults);
+   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults, Collection<? extends IArtifactType> types, boolean withInheritance, Collection<String> traceHandlerIds) throws IOException {
+      this(new RequirementData(branch, types, withInheritance), file, writeOutResults, traceHandlerIds);
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
+      Collection<TraceHandler> traceHandlers = getTraceHandlers();
       monitor.worked(1);
 
       requirementData.initialize(monitor);
@@ -94,11 +107,11 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       if (file.isFile()) {
          for (String path : Lib.readListFromFile(file, true)) {
             monitor.subTask(path);
-            handleDirectory(new File(path));
+            handleDirectory(new File(path), traceHandlers);
             checkForCancelledStatus(monitor);
          }
       } else if (file.isDirectory()) {
-         handleDirectory(file);
+         handleDirectory(file, traceHandlers);
       } else {
          throw new OseeStateException("Invalid path [%s]", file.getCanonicalPath());
       }
@@ -117,7 +130,18 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       }
    }
 
-   private void handleDirectory(File directory) throws IOException, OseeCoreException {
+   private Collection<TraceHandler> getTraceHandlers() throws OseeCoreException {
+      Conditions.checkNotNullOrEmpty(traceHandlerIds, "traceHandlerIds");
+      Collection<TraceHandler> handlers = new LinkedList<TraceHandler>();
+      for (String id : traceHandlerIds) {
+         TraceHandler handler = TraceUnitExtensionManager.getInstance().getTraceUnitHandlerById(id);
+         Conditions.checkNotNull(handler, "handler");
+         handlers.add(handler);
+      }
+      return handlers;
+   }
+
+   private void handleDirectory(File directory, Collection<TraceHandler> traceHandlers) throws IOException, OseeCoreException {
       if (directory == null || directory.getParentFile() == null) {
          throw new OseeArgumentException("The path [%s] is invalid.", directory);
       }
@@ -125,12 +149,17 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       pathPrefixLength = directory.getParentFile().getAbsolutePath().length();
 
       for (File sourceFile : Lib.recursivelyListFiles(directory, filePattern)) {
-         List<String> traceMarks = traceExtractor.getTraceMarksFromFile(sourceFile);
+         CharBuffer buffer = Lib.fileToCharBuffer(sourceFile);
+         Collection<TraceMark> tracemarks = new LinkedList<TraceMark>();
+         for (TraceHandler handler : traceHandlers) {
+            Collection<TraceMark> marks = handler.getParser().getTraceMarks(buffer);
+            tracemarks.addAll(marks);
+         }
 
          int matchCount = 0;
          String relativePath = sourceFile.getPath().substring(pathPrefixLength);
          codeUnits.add(relativePath);
-         for (String traceMark : traceMarks) {
+         for (TraceMark traceMark : tracemarks) {
             handelReqTrace(relativePath, traceMark);
             matchCount++;
          }
@@ -161,16 +190,55 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       excelWriter.endSheet();
    }
 
-   private void handelReqTrace(String path, String traceMark) throws OseeCoreException, IOException {
+   private Pair<String, String> getStructuredRequirement(String requirementMark) {
+      Pair<String, String> toReturn = null;
+      structuredRequirementMatcher.reset(requirementMark);
+      if (structuredRequirementMatcher.matches() != false) {
+         String primary = structuredRequirementMatcher.group(1);
+         String secondary = structuredRequirementMatcher.group(2);
+         if (Strings.isValid(primary) != false) {
+            toReturn = new Pair<String, String>(primary, secondary);
+         }
+      }
+      return toReturn;
+   }
+
+   public String getCanonicalRequirementName(String requirementMark) {
+      String canonicalReqReference = requirementMark;
+      if (Strings.isValid(requirementMark) != false) {
+         canonicalReqReference = requirementMark.toUpperCase();
+
+         embeddedVolumeMatcher.reset(canonicalReqReference);
+         if (embeddedVolumeMatcher.find()) {
+            canonicalReqReference = embeddedVolumeMatcher.group(1);
+         }
+
+         // Added to strip trailing artifact descriptive names } ... or ] ....
+         stripTrailingReqNameMatcher.reset(canonicalReqReference);
+         if (stripTrailingReqNameMatcher.find()) {
+            String trail = stripTrailingReqNameMatcher.group(2);
+            if (Strings.isValid(trail) && !trail.startsWith(".")) {
+               canonicalReqReference = canonicalReqReference.substring(0, stripTrailingReqNameMatcher.start(1) + 1);
+            }
+         }
+
+         nonWordMatcher.reset(canonicalReqReference);
+         canonicalReqReference = nonWordMatcher.replaceAll("");
+
+      }
+      return canonicalReqReference;
+   }
+
+   private void handelReqTrace(String path, TraceMark traceMark) throws OseeCoreException, IOException {
       String foundStr;
       Artifact reqArtifact = null;
 
-      if (traceExtractor.isValidTraceMark(traceMark) != true) {
+      if (traceMark.getTraceType().equals("Uses")) {
          foundStr = "invalid trace mark";
       } else {
-         reqArtifact = requirementData.getRequirementFromTraceMark(traceMark);
+         reqArtifact = requirementData.getRequirementFromTraceMark(traceMark.getRawTraceMark());
          if (reqArtifact == null) {
-            Pair<String, String> structuredRequirement = traceExtractor.getStructuredRequirement(traceMark);
+            Pair<String, String> structuredRequirement = getStructuredRequirement(traceMark.getRawTraceMark());
             if (structuredRequirement != null) {
                reqArtifact = requirementData.getRequirementFromTraceMark(structuredRequirement.getFirst());
 
@@ -181,7 +249,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
                   // example local data [{SUBSCRIBER}.ID] and example procedure {CURSOR_ACKNOWLEDGE}.NORMAL
                   String textContent =
                      WordUtil.textOnly(reqArtifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "")).toUpperCase();
-                  if (textContent.contains(traceExtractor.getCanonicalRequirementName(structuredRequirement.getSecond()))) {
+                  if (textContent.contains(getCanonicalRequirementName(structuredRequirement.getSecond()))) {
                      foundStr = "req body match";
                   } else {
                      foundStr = "req name match/element missing in body";

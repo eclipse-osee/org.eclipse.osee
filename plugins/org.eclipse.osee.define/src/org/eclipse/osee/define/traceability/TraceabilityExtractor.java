@@ -68,7 +68,7 @@ public class TraceabilityExtractor {
       return getTraceMarks(buffer, matcher);
    }
 
-   public List<String> getTraceMarks(CharBuffer buffer, Matcher matcher) {
+   private List<String> getTraceMarks(CharBuffer buffer, Matcher matcher) {
       List<String> toReturn = new ArrayList<String>();
       matcher.reset(buffer);
       while (matcher.find() != false) {
@@ -85,7 +85,7 @@ public class TraceabilityExtractor {
       return invalidTraceMatcher.matches() != true;
    }
 
-   public Matcher getScriptTraceMarkMatcher() {
+   private Matcher getScriptTraceMarkMatcher() {
       return scriptReqTraceMatcher;
    }
 
@@ -93,7 +93,7 @@ public class TraceabilityExtractor {
       return ofpReqTraceMatcher;
    }
 
-   public boolean isScriptFile(File sourceFile) {
+   private boolean isScriptFile(File sourceFile) {
       return sourceFile.getName().endsWith("java");
    }
 
@@ -136,4 +136,5 @@ public class TraceabilityExtractor {
       }
       return toReturn;
    }
+
 }
