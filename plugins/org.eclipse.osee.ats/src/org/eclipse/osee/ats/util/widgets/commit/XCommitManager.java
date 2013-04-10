@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -36,6 +35,8 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -164,10 +165,10 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                            Arrays.sort(branchIds.toArray(new Integer[branchIds.size()]));
                            for (Integer branchId : branchIds) {
                               Branch destinationBranch = branchIdToBranchMap.get(branchId);
-                              Job job =
+                              IOperation operation =
                                  AtsBranchManager.commitWorkingBranch(teamArt, false, true, destinationBranch,
                                     branchId == branchIds.get(branchIds.size() - 1));
-                              job.join();
+                              Operations.executeWorkAndCheckStatus(operation);
                            }
                         } catch (Exception ex) {
                            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

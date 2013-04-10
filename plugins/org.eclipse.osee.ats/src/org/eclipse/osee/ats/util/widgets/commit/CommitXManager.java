@@ -25,6 +25,8 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -110,12 +112,11 @@ public class CommitXManager extends XViewer {
          } else if (commitStatus == CommitStatus.Branch_Commit_Disabled) {
             AWorkbench.popup(commitStatus.getDisplayName(),
                "Talk to project lead as to why commit disabled for version [" + displayName + "]");
-         } else if (commitStatus == CommitStatus.Commit_Needed) {
-            AtsBranchManager.commitWorkingBranch(xCommitManager.getTeamArt(), true, false, branch,
-               AtsBranchManagerCore.isBranchesAllCommittedExcept(xCommitManager.getTeamArt(), branch));
-         } else if (commitStatus == CommitStatus.Merge_In_Progress) {
-            AtsBranchManager.commitWorkingBranch(xCommitManager.getTeamArt(), true, false, branch,
-               AtsBranchManagerCore.isBranchesAllCommittedExcept(xCommitManager.getTeamArt(), branch));
+         } else if (commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Merge_In_Progress) {
+            IOperation operation =
+               AtsBranchManager.commitWorkingBranch(xCommitManager.getTeamArt(), true, false, branch,
+                  AtsBranchManagerCore.isBranchesAllCommittedExcept(xCommitManager.getTeamArt(), branch));
+            Operations.executeAsJob(operation, true);
          } else if (commitStatus == CommitStatus.Committed) {
             AtsBranchManager.showChangeReportForBranch(xCommitManager.getTeamArt(), branch);
          } else if (commitStatus == CommitStatus.Committed_With_Merge) {

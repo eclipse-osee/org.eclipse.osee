@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.client.demo;
 import java.util.Collection;
 import java.util.Date;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -42,6 +41,8 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -426,15 +427,11 @@ public class PopulateSawBuild2Actions {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Committing branch");
       }
-      Job job =
+      IOperation op =
          AtsBranchManager.commitWorkingBranch(reqTeam, false, true,
             BranchManager.getBranchByGuid(AtsVersionService.get().getTargetedVersion(reqTeam).getBaslineBranchGuid()),
             true);
-      try {
-         job.join();
-      } catch (InterruptedException ex) {
-         OseeLog.log(Activator.class, Level.INFO, "Completing Action");
-      }
+      Operations.executeWorkAndCheckStatus(op);
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Completing Action");
       }

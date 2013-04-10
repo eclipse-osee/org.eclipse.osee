@@ -12,9 +12,6 @@ package org.eclipse.osee.ats.util;
 
 import java.util.Date;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
@@ -27,10 +24,11 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -41,15 +39,15 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 /**
  * @author Donald G. Dunne
  */
-public class AtsBranchCommitJob extends Job {
+public class AtsBranchCommitOperation extends AbstractOperation {
    private final boolean commitPopup;
    private final boolean overrideStateValidation;
    private final Branch destinationBranch;
    private final boolean archiveWorkingBranch;
    private final TeamWorkFlowArtifact teamArt;
 
-   public AtsBranchCommitJob(TeamWorkFlowArtifact teamArt, boolean commitPopup, boolean overrideStateValidation, Branch destinationBranch, boolean archiveWorkingBranch) {
-      super("Commit Branch");
+   public AtsBranchCommitOperation(TeamWorkFlowArtifact teamArt, boolean commitPopup, boolean overrideStateValidation, Branch destinationBranch, boolean archiveWorkingBranch) {
+      super("Commit Branch", Activator.PLUGIN_ID);
       this.teamArt = teamArt;
       this.commitPopup = commitPopup;
       this.overrideStateValidation = overrideStateValidation;
@@ -57,17 +55,14 @@ public class AtsBranchCommitJob extends Job {
       this.archiveWorkingBranch = archiveWorkingBranch;
    }
 
-   private boolean adminOverride;
-
    @Override
-   protected IStatus run(IProgressMonitor monitor) {
-      Branch workflowWorkingBranch = null;
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      Branch workflowWorkingBranch = teamArt.getWorkingBranch();
       try {
-         workflowWorkingBranch = teamArt.getWorkingBranch();
          AtsBranchManagerCore.branchesInCommit.add(workflowWorkingBranch);
          if (workflowWorkingBranch == null) {
-            return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-               "Commit Branch Failed: Can not locate branch for workflow " + teamArt.getHumanReadableId());
+            throw new OseeStateException("Commit Branch Failed: Can not locate branch for workflow [%s]",
+               teamArt.getHumanReadableId());
          }
 
          // Confirm that all blocking reviews are completed
@@ -75,14 +70,13 @@ public class AtsBranchCommitJob extends Job {
          if (teamArt.isTeamWorkflow()) {
             for (AbstractReviewArtifact reviewArt : ReviewManager.getReviewsFromCurrentState(teamArt)) {
                if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.isCompletedOrCancelled()) {
-                  return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-                     "Blocking Review must be completed before commit.");
+                  throw new OseeStateException("Blocking Review must be completed before commit.");
                }
             }
          }
 
          if (!overrideStateValidation) {
-            adminOverride = false;
+            final MutableBoolean adminOverride = new MutableBoolean(false);
             // Check extension points for valid commit
             for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
                final Result tempResult = item.committing(teamArt);
@@ -94,15 +88,15 @@ public class AtsBranchCommitJob extends Job {
                         public void run() {
                            if (MessageDialog.openConfirm(Displays.getActiveShell(), "Override State Validation",
                               tempResult.getText() + "\n\nYou are set as Admin, OVERRIDE this?")) {
-                              adminOverride = true;
+                              adminOverride.setValue(true);
                            } else {
-                              adminOverride = false;
+                              adminOverride.setValue(false);
                            }
                         }
                      });
                   }
-                  if (!adminOverride) {
-                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, tempResult.getText());
+                  if (!adminOverride.getValue()) {
+                     throw new OseeStateException(tempResult.getText());
                   }
                }
             }
@@ -126,15 +120,10 @@ public class AtsBranchCommitJob extends Job {
                AtsCoreUsers.SYSTEM_USER, transaction);
             transaction.execute();
          }
-      } catch (OseeCoreException ex) {
-         return new Status(IStatus.ERROR, Activator.PLUGIN_ID, Strings.truncate(ex.getLocalizedMessage(), 250, true),
-            ex);
       } finally {
          if (workflowWorkingBranch != null) {
             AtsBranchManagerCore.branchesInCommit.remove(workflowWorkingBranch);
          }
       }
-      return Status.OK_STATUS;
    }
-
 }

@@ -14,7 +14,6 @@ package org.eclipse.osee.ats.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -254,14 +253,12 @@ public final class AtsBranchManager {
     * @param overrideStateValidation if true, don't do checks to see if commit can be performed. This should only be
     * used for developmental testing or automation
     */
-   public static Job commitWorkingBranch(final TeamWorkFlowArtifact teamArt, final boolean commitPopup, final boolean overrideStateValidation, Branch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
+   public static IOperation commitWorkingBranch(final TeamWorkFlowArtifact teamArt, final boolean commitPopup, final boolean overrideStateValidation, Branch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
       if (AtsBranchManagerCore.isBranchInCommit(teamArt)) {
          throw new OseeCoreException("Branch is currently being committed.");
       }
-      Job job =
-         new AtsBranchCommitJob(teamArt, commitPopup, overrideStateValidation, destinationBranch, archiveWorkingBranch);
-      Operations.scheduleJob(job, true, Job.LONG, null);
-      return job;
+      return new AtsBranchCommitOperation(teamArt, commitPopup, overrideStateValidation, destinationBranch,
+         archiveWorkingBranch);
    }
 
    public static ChangeData getChangeDataFromEarliestTransactionId(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
