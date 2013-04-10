@@ -146,7 +146,11 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       createBranchButton.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {
-            enablement.disableAll();
+            try {
+               enablement.disableAll();
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
             refreshEnablement();
             // Create working branch
             Result result = AtsBranchManagerCore.createWorkingBranch_Validate(teamArt);
@@ -202,7 +206,11 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       deleteBranchButton.addListener(SWT.Selection, new Listener() {
          @Override
          public void handleEvent(Event e) {
-            enablement.disableAll();
+            try {
+               enablement.disableAll();
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
             refreshEnablement();
             AtsBranchManager.deleteWorkingBranch(teamArt, true);
             enablement.refresh();
@@ -259,7 +267,9 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
 
    private void markWorkingBranchAsFavorite() {
       try {
-         User user = AtsClientService.get().getUserAdmin().getOseeUser(AtsClientService.get().getUserAdmin().getCurrentUser());
+         User user =
+            AtsClientService.get().getUserAdmin().getOseeUser(
+               AtsClientService.get().getUserAdmin().getCurrentUser());
          if (user.isSystemUser()) {
             AWorkbench.popup("Can't set preference as System User = " + user);
             return;
