@@ -23,32 +23,35 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
  * @author Roberto E. Escobar
  */
 public class TraceabilityTable {
-   private static final Pattern WORKSHEET_START_PATTERN = Pattern.compile("(<Worksheet.*?>)");
    private static final Pattern TABLE_START_PATTERN = Pattern.compile("(<Table.*?>)");
    private static final Pattern STYLE_PATTERN = Pattern.compile("<Styles>.*</Styles>\\s*", Pattern.DOTALL);
 
    private CharSequence result;
    private final StringWriter stringWriter;
    private final ISheetWriter sheetWriter;
-   private final ISimpleTable style;
+   private final ISimpleTable[] styles;
 
-   protected TraceabilityTable(StringWriter stringWriter, ISheetWriter sheetWriter, ISimpleTable style) {
+   public TraceabilityTable(StringWriter stringWriter, ISheetWriter sheetWriter, ISimpleTable... styles) {
       this.stringWriter = stringWriter;
       this.sheetWriter = sheetWriter;
-      this.style = style;
+      this.styles = styles;
       this.result = null;
    }
 
    public void setOptions(IVariantData data) {
-      if (style != null && style instanceof ICustomizable) {
-         ((ICustomizable) style).setOptions(data);
+      for (ISimpleTable style : styles) {
+         if (style != null && style instanceof ICustomizable) {
+            ((ICustomizable) style).setOptions(data);
+         }
       }
    }
 
    public void run(IProgressMonitor monitor) throws Exception {
-      style.initializeSheet(sheetWriter);
-      style.generateBody(sheetWriter);
-      sheetWriter.endSheet();
+      for (ISimpleTable style : styles) {
+         style.initializeSheet(sheetWriter);
+         style.generateBody(sheetWriter);
+         sheetWriter.endSheet();
+      }
       sheetWriter.endWorkbook();
       postProcess();
    }
@@ -56,14 +59,18 @@ public class TraceabilityTable {
    private void postProcess() throws Exception {
       String source = stringWriter.toString();
       ChangeSet changeSet = new ChangeSet(source);
+      Matcher styleMatcher = STYLE_PATTERN.matcher(source);
+      Matcher tableMatcher = TABLE_START_PATTERN.matcher(source);
 
-      Matcher match = STYLE_PATTERN.matcher(source);
-      if (match.find()) {
-         changeSet.replace(match.start(), match.end(), style.getHeaderStyles());
+      // if more than one style present, this will only apply once, so first style's header is applied
+      if (styleMatcher.find()) {
+         changeSet.replace(styleMatcher.start(), styleMatcher.end(), styles[0].getHeaderStyles());
       }
-      Matcher match2 = TABLE_START_PATTERN.matcher(source);
-      if (match2.find()) {
-         changeSet.insertBefore(match2.end(), style.getHeader());
+
+      for (ISimpleTable style : styles) {
+         if (tableMatcher.find()) {
+            changeSet.insertBefore(tableMatcher.end(), style.getHeader());
+         }
       }
       result = changeSet.applyChangesToSelf();
    }
