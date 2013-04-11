@@ -174,7 +174,7 @@ osee.log.default=INFO
 		<attribute name="filepath" />
 		<attribute name="serverport" />
 		<attribute name="connection.id" />
-		<attribute name="db.connection.pool.size" default="8" />		
+		<attribute name="db.connection.pool.size" default="100" />		
 		<attribute name="launcher" />
 		<attribute name="session.timeout" default="3600" />
 		<attribute name="serverMaxMem" default="1024m" />
