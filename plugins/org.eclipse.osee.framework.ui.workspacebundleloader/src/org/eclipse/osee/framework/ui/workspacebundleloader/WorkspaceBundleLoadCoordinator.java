@@ -173,23 +173,25 @@ public class WorkspaceBundleLoadCoordinator {
 	
 	
 	public synchronized void uninstallBundles(){
-		saveAndCloseViews();
-		for(BundleInfoLite info:managedArea.getInstalledBundles()){
-			try {
-				info.uninstall();
-			} catch (BundleException e) {
-				OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, e);
-			}
-		}
-		if(wiring != null){
-		   wiring.refreshBundles(null);
-		}
-		IWorkbench workbench = PlatformUI.getWorkbench();     
-      if (workbench != null && workbench.getActiveWorkbenchWindow() != null){
-         IViewRegistry registry = workbench.getViewRegistry();
-         forceViewRegistryReload(workbench, registry);
-      }
-		waitForViewsToBeRegistered(null);
+	   if(managedArea.getInstalledBundles().size() > 0){
+	      saveAndCloseViews();
+	      for(BundleInfoLite info:managedArea.getInstalledBundles()){
+	         try {
+	            info.uninstall();
+	         } catch (BundleException e) {
+	            OseeLog.log(WorkspaceBundleLoadCoordinator.class, Level.WARNING, e);
+	         }
+	      }
+	      if(wiring != null){
+	         wiring.refreshBundles(null);
+	      }
+	      IWorkbench workbench = PlatformUI.getWorkbench();     
+	      if (workbench != null && workbench.getActiveWorkbenchWindow() != null){
+	         IViewRegistry registry = workbench.getViewRegistry();
+	         forceViewRegistryReload(workbench, registry);
+	      }
+	      waitForViewsToBeRegistered(null);
+	   }
 	}
 
 	
@@ -231,11 +233,18 @@ public class WorkspaceBundleLoadCoordinator {
 				}
 				IViewReference[] activeReferences = page.getViewReferences();
 				for (IViewReference viewReference : activeReferences) {
-					if (managedViewIds.contains(viewReference.getId())){
+				   int index = viewReference.getId().indexOf(":");
+				   String id = null;
+				   if(index>0){
+				      id = viewReference.getId().substring(0, index);
+				   } else {
+				      id = viewReference.getId();
+				   }
+					if (managedViewIds.contains(id)){
 						if(perspectiveMemento != null){
 							try{
 								IMemento viewMemento = perspectiveMemento.createChild(TAG_VIEW);
-								viewMemento.putString("id", viewReference.getId());
+								viewMemento.putString("id", id);
 								String secondaryId = viewReference.getSecondaryId();
 								if(secondaryId != null){
 									viewMemento.putString("secondId", secondaryId);
