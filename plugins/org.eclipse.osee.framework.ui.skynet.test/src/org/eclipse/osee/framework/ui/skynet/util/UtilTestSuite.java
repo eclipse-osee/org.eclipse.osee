@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ArtifactPasteConfigurationTest.class})
+@Suite.SuiteClasses({ArtifactPasteConfigurationTest.class, VbaWordDiffGeneratorTest.class})
 /**
  * @author Roberto E. Escobar
  */
