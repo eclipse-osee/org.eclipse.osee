@@ -58,7 +58,8 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
 
    private void loadFields(VariableMap variableMap) throws OseeCoreException {
       branch = variableMap.getBranch("Branch");
-      subsystemRequirements = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirementMSWord, branch);
+      subsystemRequirements =
+         ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirementMSWord, branch);
       bulkRequirements =
          RelationManager.getRelatedArtifacts(subsystemRequirements, 1, CoreRelationTypes.Requirement_Trace__Lower_Level);
       report = new StringBuilder(AHTML.beginMultiColumnTable(100, 1));
@@ -128,7 +129,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
          verificationLevel = req.getSoleAttributeValue(CoreAttributeTypes.VerificationLevel, "UNDEFINED");
       }
 
-      private int getHardwareComponentCount() {
+      private int getHardwareComponentCount() throws OseeCoreException {
          return RelationManager.getRelatedArtifactsCount(req, CoreRelationTypes.Allocation__Component);
       }
 

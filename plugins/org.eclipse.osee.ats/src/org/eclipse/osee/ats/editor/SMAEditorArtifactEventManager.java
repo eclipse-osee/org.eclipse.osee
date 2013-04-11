@@ -90,7 +90,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
       }
    }
 
-   private void safelyProcessHandler(final ArtifactEvent artifactEvent, final ISMAEditorEventHandler handler) {
+   private void safelyProcessHandler(final ArtifactEvent artifactEvent, final ISMAEditorEventHandler handler) throws OseeCoreException {
       final AbstractWorkflowArtifact awa = handler.getSMAEditor().getAwa();
       Artifact actionArt = null;
       boolean refreshed = false;

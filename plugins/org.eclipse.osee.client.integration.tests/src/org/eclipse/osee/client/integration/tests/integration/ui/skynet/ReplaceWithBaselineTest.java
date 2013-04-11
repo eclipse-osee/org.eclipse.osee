@@ -160,25 +160,13 @@ public final class ReplaceWithBaselineTest {
 
       List<Object[]> data = new LinkedList<Object[]>();
 
-      data.add(new Object[] {
-         "Case 0",
-         Arrays.asList(new TestData(Item.RELATION, ChangeItem.RELATION_ORDER_ATTR, true)),
-         CASE_0_EXPECTED});
+      data.add(new Object[] {"Case 0", Arrays.asList(new TestData(Item.ARTIFACT, ChangeItem.NEW, false)), 0});
+      data.add(new Object[] {"Case 1", Arrays.asList(new TestData(Item.ARTIFACT, ChangeItem.DELETED, true)), 0});
+      data.add(new Object[] {"Case 2", Arrays.asList(new TestData(Item.ARTIFACT, ChangeItem.INTRODUCED, false)), 0});
 
-      data.add(new Object[] {"Case 1", Arrays.asList(new TestData(Item.ARTIFACT, ChangeItem.NEW, false)), 0});
-      data.add(new Object[] {"Case 2", Arrays.asList(new TestData(Item.ARTIFACT, ChangeItem.DELETED, true)), 0});
-      data.add(new Object[] {"Case 3", Arrays.asList(new TestData(Item.ARTIFACT, ChangeItem.INTRODUCED, false)), 0});
-
-      data.add(new Object[] {"Case 4", Arrays.asList(new TestData(Item.ATTRBUTE, ChangeItem.NEW, true)), 0});
-      data.add(new Object[] {"Case 5", Arrays.asList(new TestData(Item.ATTRBUTE, ChangeItem.DELETED, true)), 0});
-      data.add(new Object[] {"Case 6", Arrays.asList(new TestData(Item.ATTRBUTE, ChangeItem.MODIFIED, true)), 0});
-
-      data.add(new Object[] {"Case 7", Arrays.asList(new TestData(Item.RELATION, ChangeItem.NEW, true)), 0});
-      data.add(new Object[] {"Case 8", Arrays.asList(new TestData(Item.RELATION, ChangeItem.DELETED, true)), 0});
-      data.add(new Object[] {
-         "Case 9",
-         Arrays.asList(new TestData(Item.RELATION, ChangeItem.MOVED, true)),
-         CASE_10_EXPECTED});
+      data.add(new Object[] {"Case 3", Arrays.asList(new TestData(Item.ATTRBUTE, ChangeItem.NEW, true)), 0});
+      data.add(new Object[] {"Case 4", Arrays.asList(new TestData(Item.ATTRBUTE, ChangeItem.DELETED, true)), 0});
+      data.add(new Object[] {"Case 5", Arrays.asList(new TestData(Item.ATTRBUTE, ChangeItem.MODIFIED, true)), 0});
 
       List<TestData> combinedCases = new ArrayList<TestData>(data.size());
 
@@ -187,9 +175,9 @@ public final class ReplaceWithBaselineTest {
          List<TestData> caseTestDatas = (List<TestData>) objects[1];
          combinedCases.addAll(caseTestDatas);
       }
-      data.add(new Object[] {"Case 10", combinedCases, CASE_10_EXPECTED + CASE_0_EXPECTED});
+      data.add(new Object[] {"Case 6", combinedCases, 0});
       Collections.reverse(combinedCases);
-      data.add(new Object[] {"Case 11", combinedCases, CASE_10_EXPECTED + CASE_0_EXPECTED});
+      data.add(new Object[] {"Case 7", combinedCases, 0});
 
       return data;
    }

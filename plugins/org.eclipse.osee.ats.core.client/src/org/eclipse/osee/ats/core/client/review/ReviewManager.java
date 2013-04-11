@@ -90,7 +90,7 @@ public class ReviewManager {
       return arts;
    }
 
-   public static boolean hasReviews(TeamWorkFlowArtifact teamArt) {
+   public static boolean hasReviews(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       return teamArt.getRelatedArtifactsCount(AtsRelationTypes.TeamWorkflowToReview_Review) > 0;
    }
 

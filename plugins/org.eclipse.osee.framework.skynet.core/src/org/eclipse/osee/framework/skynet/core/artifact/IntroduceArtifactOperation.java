@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -21,8 +22,10 @@ import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
@@ -80,14 +83,19 @@ public class IntroduceArtifactOperation {
 
    private void processArtifact(Artifact sourceArtifact, Artifact destinationArtifact) throws OseeCoreException {
       introduceAttributes(sourceArtifact, destinationArtifact);
-      introduceRelations(sourceArtifact, destinationArtifact);
 
-      try {
-         if (sourceArtifact.hasParent() && !sourceArtifacts.contains(sourceArtifact.getParent()) && !destinationArtifact.hasParent()) {
+      if (!sourceArtifact.isHistorical()) {
+         introduceRelations(sourceArtifact, destinationArtifact);
+         try {
+            if (sourceArtifact.hasParent() && !destinationArtifact.hasParent() && !sourceArtifacts.contains(sourceArtifact.getParent())) {
+               fosterParent.addChild(destinationArtifact);
+            }
+         } catch (MultipleArtifactsExist ex) {
             fosterParent.addChild(destinationArtifact);
          }
-      } catch (MultipleArtifactsExist ex) {
-         fosterParent.addChild(destinationArtifact);
+      } else {
+         OseeLog.logf(Activator.class, Level.INFO,
+            "Historical relations are only supported on the server. Artifact [%s] is historical", sourceArtifact);
       }
    }
 

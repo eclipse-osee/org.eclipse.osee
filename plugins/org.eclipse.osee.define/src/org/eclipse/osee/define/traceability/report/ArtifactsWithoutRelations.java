@@ -12,6 +12,7 @@ package org.eclipse.osee.define.traceability.report;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -24,7 +25,7 @@ public class ArtifactsWithoutRelations extends AbstractArtifactRelationReport {
    }
 
    @Override
-   public void process(IProgressMonitor monitor) {
+   public void process(IProgressMonitor monitor) throws OseeCoreException {
       notifyOnTableHeader("Item Name", "Type");
       IRelationTypeSide[] relations = getRelationsToCheck();
       for (Artifact artifact : getArtifactsToCheck()) {

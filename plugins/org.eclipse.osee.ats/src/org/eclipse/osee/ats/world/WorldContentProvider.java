@@ -152,12 +152,16 @@ public class WorldContentProvider implements ITreeContentProvider {
          return true;
       }
       if (element instanceof AbstractWorkflowArtifact) {
-         return hasAtsWorldChildren((AbstractWorkflowArtifact) element);
+         try {
+            return hasAtsWorldChildren((AbstractWorkflowArtifact) element);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex.toString());
+         }
       }
       return true;
    }
 
-   private boolean hasAtsWorldChildren(AbstractWorkflowArtifact workflow) {
+   private boolean hasAtsWorldChildren(AbstractWorkflowArtifact workflow) throws OseeCoreException {
       if (workflow.isOfType(AtsArtifactTypes.Task)) {
          return false;
       }

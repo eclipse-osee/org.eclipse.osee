@@ -93,7 +93,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       return arts;
    }
 
-   public boolean hasTaskArtifacts() {
+   public boolean hasTaskArtifacts() throws OseeCoreException {
       return getRelatedArtifactsCount(AtsRelationTypes.TeamWfToTask_Task) > 0;
    }
 

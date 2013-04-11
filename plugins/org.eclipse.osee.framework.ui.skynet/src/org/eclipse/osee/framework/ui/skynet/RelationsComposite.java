@@ -100,18 +100,12 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
 
    public RelationsComposite(IDirtiableEditor editor, Composite parent, int style, Artifact artifact, ToolBar toolBar) {
       super(parent, style);
-
-      if (artifact == null) {
-         throw new IllegalArgumentException("Can not edit a null artifact");
-      }
-
       this.artifact = artifact;
       this.editor = editor;
       this.relationLabelProvider = new RelationLabelProvider(artifact);
       this.toolBar = toolBar;
 
       createPartControl();
-
    }
 
    public TreeViewer getTreeViewer() {
@@ -173,12 +167,19 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
 
    private void expandItemsThatHaveChildren() {
       //expand items that have children
+      if (artifact.isHistorical()) {
+         return;
+      }
       Object[] types = ((ITreeContentProvider) treeViewer.getContentProvider()).getChildren(treeViewer.getInput());
       for (Object obj : types) {
          if (obj instanceof RelationType) {
             RelationType type = (RelationType) obj;
-            if (RelationManager.getRelatedArtifactsCount(artifact, type, null) > 0) {
-               treeViewer.expandToLevel(obj, 1);
+            try {
+               if (RelationManager.getRelatedArtifactsCount(artifact, type, null) > 0) {
+                  treeViewer.expandToLevel(obj, 1);
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       }

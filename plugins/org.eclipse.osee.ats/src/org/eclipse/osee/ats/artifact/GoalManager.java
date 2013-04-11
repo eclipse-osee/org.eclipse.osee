@@ -74,7 +74,7 @@ public final class GoalManager {
       return promptChangeGoalOrder(goal, artifact);
    }
 
-   public static boolean isHasGoal(Artifact artifact) {
+   public static boolean isHasGoal(Artifact artifact) throws OseeCoreException {
       return artifact.getRelatedArtifactsCount(AtsRelationTypes.Goal_Goal) > 0;
    }
 

@@ -113,9 +113,14 @@ public class RelationManager {
 
    @SuppressWarnings("unused")
    private static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationType relationType, RelationSide relationSide, boolean sort) throws OseeCoreException {
+      if (artifact.isHistorical()) {
+         throw new OseeCoreException("Artifact [%s] is historical.  Historical relations are only supported on server",
+            artifact);
+      }
       if (relationSide == null) {
          throw new OseeArgumentException("RelationSide cannot be null");
       }
+
       List<RelationLink> selectedRelations = null;
       if (relationType == null) {
          selectedRelations = relationCache.getAll(artifact);
@@ -171,6 +176,8 @@ public class RelationManager {
    }
 
    public static Set<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, DeletionFlag allowDeleted, IRelationTypeSide... relationEnums) throws OseeCoreException {
+      findHistoricalArtifacts(artifacts);
+
       Set<Artifact> relatedArtifacts = new HashSet<Artifact>(artifacts.size() * 8);
       Collection<Artifact> newArtifactsToSearch = new ArrayList<Artifact>(artifacts);
       Collection<Artifact> newArtifacts = new ArrayList<Artifact>();
@@ -224,6 +231,15 @@ public class RelationManager {
          relatedArtifacts.addAll(newArtifacts);
       }
       return relatedArtifacts;
+   }
+
+   private static void findHistoricalArtifacts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
+      for (Artifact artifact : artifacts) {
+         if (artifact.isHistorical()) {
+            throw new OseeCoreException(
+               "Artifact [%s] is historical. Historical relations are only supported on the server.", artifact);
+         }
+      }
    }
 
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationTypeSide relationType, DeletionFlag deletionFlag) throws OseeCoreException {
@@ -286,11 +302,15 @@ public class RelationManager {
       return getRelatedArtifact(artifact, relationEnum, relationEnum.getSide());
    }
 
-   public static int getRelatedArtifactsCount(Artifact artifact, IRelationTypeSide relationTypeEnum) {
+   public static int getRelatedArtifactsCount(Artifact artifact, IRelationTypeSide relationTypeEnum) throws OseeCoreException {
       return getRelatedArtifactsCount(artifact, relationTypeEnum, relationTypeEnum.getSide());
    }
 
-   public static int getRelatedArtifactsCount(Artifact artifact, IRelationType relationType, RelationSide relationSide) {
+   public static int getRelatedArtifactsCount(Artifact artifact, IRelationType relationType, RelationSide relationSide) throws OseeCoreException {
+      if (artifact.isHistorical()) {
+         throw new OseeCoreException("Artifact [%s] is historical.  Historical relations are only supported on server",
+            artifact);
+      }
       List<RelationLink> selectedRelations = relationCache.getAllByType(artifact, relationType);
 
       int artifactCount = 0;
@@ -352,6 +372,11 @@ public class RelationManager {
    }
 
    public static List<RelationLink> getRelations(Artifact artifact, IRelationType relationType, RelationSide relationSide) throws OseeCoreException {
+      if (artifact.isHistorical()) {
+         throw new OseeCoreException("Artifact [%s] is historical.  Historical relations are only supported on server",
+            artifact);
+      }
+
       List<RelationLink> selectedRelations =
          relationCache.getAllByType(artifact, RelationTypeManager.getType(relationType));
       if (selectedRelations == null) {
@@ -432,6 +457,10 @@ public class RelationManager {
    }
 
    public static void deleteRelationsAll(Artifact artifact, boolean reorderRelations, SkynetTransaction transaction) throws OseeCoreException {
+      if (artifact.isHistorical()) {
+         throw new OseeCoreException(
+            "Artifact [%s] is historical. Historical relations are only supported on the server.", artifact);
+      }
       List<RelationLink> selectedRelations = relationCache.getAll(artifact);
       Set<Pair<IRelationType, RelationSide>> typesToUpdate = new HashSet<Pair<IRelationType, RelationSide>>();
       if (selectedRelations != null) {
@@ -449,6 +478,10 @@ public class RelationManager {
    }
 
    public static void deleteRelations(Artifact artifact, IRelationType relationType, RelationSide relationSide) throws OseeCoreException {
+      if (artifact.isHistorical()) {
+         throw new OseeCoreException(
+            "Artifact [%s] is historical. Historical relations are only supported on the server.", artifact);
+      }
       List<RelationLink> selectedRelations = relationCache.getAllByType(artifact, relationType);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
@@ -466,6 +499,10 @@ public class RelationManager {
     * Remove all relations stored in the list awaiting to be deleted.
     */
    public static void purgeRelationsFor(Artifact artifact) throws OseeCoreException {
+      if (artifact.isHistorical()) {
+         throw new OseeCoreException(
+            "Artifact [%s] is historical. Historical relations are only supported on the server.", artifact);
+      }
       Collection<RelationLink> links = relationCache.getAll(artifact);
       if (!links.isEmpty()) {
          List<Object[]> batchArgs = new ArrayList<Object[]>(links.size());
@@ -596,7 +633,11 @@ public class RelationManager {
       return relationCache.getByRelIdOnArtifact(relLinkId, aArtifactId, bArtifactId, branch);
    }
 
-   public static List<RelationLink> getRelationsAll(Artifact artifact, DeletionFlag deletionFlag) {
+   public static List<RelationLink> getRelationsAll(Artifact artifact, DeletionFlag deletionFlag) throws OseeCoreException {
+      if (artifact.isHistorical()) {
+         throw new OseeCoreException("Artifact [%s] is historical.  Historical relations are only supported on server",
+            artifact);
+      }
       return relationCache.getRelations(artifact, deletionFlag);
    }
 

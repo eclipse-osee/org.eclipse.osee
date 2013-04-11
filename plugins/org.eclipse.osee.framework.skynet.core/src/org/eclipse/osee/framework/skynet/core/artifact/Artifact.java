@@ -162,6 +162,10 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    }
 
    public final String getRelationRationale(Artifact artifact, IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      if (artifact.isHistorical()) {
+         throw new OseeCoreException("Artifact [%s] is historical.  Historical relations are only supported on server",
+            artifact);
+      }
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
       RelationLink link = RelationManager.getRelationLink(sides.getFirst(), sides.getSecond(), relationTypeSide);
       return link.getRationale();
@@ -195,7 +199,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       return RelationManager.getRelatedArtifact(this, relationEnum);
    }
 
-   public final int getRelatedArtifactsCount(IRelationTypeSide relationEnum) {
+   public final int getRelatedArtifactsCount(IRelationTypeSide relationEnum) throws OseeCoreException {
       return RelationManager.getRelatedArtifactsCount(this, relationEnum, relationEnum.getSide());
    }
 
@@ -1690,7 +1694,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       return relations;
    }
 
-   public final List<RelationLink> getRelationsAll(DeletionFlag deletionFlag) {
+   public final List<RelationLink> getRelationsAll(DeletionFlag deletionFlag) throws OseeCoreException {
       return RelationManager.getRelationsAll(this, deletionFlag);
    }
 
