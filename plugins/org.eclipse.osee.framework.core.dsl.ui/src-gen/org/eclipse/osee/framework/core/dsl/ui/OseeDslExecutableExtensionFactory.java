@@ -8,6 +8,8 @@ import org.osgi.framework.Bundle;
 
 import com.google.inject.Injector;
 
+import org.eclipse.osee.framework.core.dsl.ui.internal.OseeDslActivator;
+
 /**
  * This class was generated. Customizations should only happen in a newly
  * introduced subclass. 
@@ -16,12 +18,12 @@ public class OseeDslExecutableExtensionFactory extends AbstractGuiceAwareExecuta
 
 	@Override
 	protected Bundle getBundle() {
-		return org.eclipse.osee.framework.core.dsl.ui.internal.OseeDslActivator.getInstance().getBundle();
+		return OseeDslActivator.getInstance().getBundle();
 	}
 	
 	@Override
 	protected Injector getInjector() {
-		return org.eclipse.osee.framework.core.dsl.ui.internal.OseeDslActivator.getInstance().getInjector("org.eclipse.osee.framework.core.dsl.OseeDsl");
+		return OseeDslActivator.getInstance().getInjector(OseeDslActivator.ORG_ECLIPSE_OSEE_FRAMEWORK_CORE_DSL_OSEEDSL);
 	}
 	
 }

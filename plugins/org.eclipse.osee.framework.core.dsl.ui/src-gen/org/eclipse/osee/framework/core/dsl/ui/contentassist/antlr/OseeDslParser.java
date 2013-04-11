@@ -46,6 +46,7 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getXAttributeTypeAccess().getTaggerIdAlternatives_14_1_0(), "rule__XAttributeType__TaggerIdAlternatives_14_1_0");
 					put(grammarAccess.getAttributeBaseTypeAccess().getAlternatives(), "rule__AttributeBaseType__Alternatives");
 					put(grammarAccess.getOverrideOptionAccess().getAlternatives(), "rule__OverrideOption__Alternatives");
+					put(grammarAccess.getAttributeOverrideOptionAccess().getAlternatives(), "rule__AttributeOverrideOption__Alternatives");
 					put(grammarAccess.getRelationOrderTypeAccess().getAlternatives(), "rule__RelationOrderType__Alternatives");
 					put(grammarAccess.getCONDITION_VALUEAccess().getAlternatives(), "rule__CONDITION_VALUE__Alternatives");
 					put(grammarAccess.getConditionAccess().getAlternatives(), "rule__Condition__Alternatives");
@@ -89,6 +90,10 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getAddEnumAccess().getGroup_3(), "rule__AddEnum__Group_3__0");
 					put(grammarAccess.getAddEnumAccess().getGroup_4(), "rule__AddEnum__Group_4__0");
 					put(grammarAccess.getRemoveEnumAccess().getGroup(), "rule__RemoveEnum__Group__0");
+					put(grammarAccess.getXOseeArtifactTypeOverrideAccess().getGroup(), "rule__XOseeArtifactTypeOverride__Group__0");
+					put(grammarAccess.getAddAttributeAccess().getGroup(), "rule__AddAttribute__Group__0");
+					put(grammarAccess.getRemoveAttributeAccess().getGroup(), "rule__RemoveAttribute__Group__0");
+					put(grammarAccess.getUpdateAttributeAccess().getGroup(), "rule__UpdateAttribute__Group__0");
 					put(grammarAccess.getXRelationTypeAccess().getGroup(), "rule__XRelationType__Group__0");
 					put(grammarAccess.getXRelationTypeAccess().getGroup_3(), "rule__XRelationType__Group_3__0");
 					put(grammarAccess.getSimpleConditionAccess().getGroup(), "rule__SimpleCondition__Group__0");
@@ -118,6 +123,7 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getOseeDslAccess().getAttributeTypesAssignment_1_2(), "rule__OseeDsl__AttributeTypesAssignment_1_2");
 					put(grammarAccess.getOseeDslAccess().getEnumTypesAssignment_1_3(), "rule__OseeDsl__EnumTypesAssignment_1_3");
 					put(grammarAccess.getOseeDslAccess().getEnumOverridesAssignment_1_4(), "rule__OseeDsl__EnumOverridesAssignment_1_4");
+					put(grammarAccess.getOseeDslAccess().getArtifactTypeOverridesAssignment_1_5(), "rule__OseeDsl__ArtifactTypeOverridesAssignment_1_5");
 					put(grammarAccess.getOseeDslAccess().getArtifactMatchRefsAssignment_2_0(), "rule__OseeDsl__ArtifactMatchRefsAssignment_2_0");
 					put(grammarAccess.getOseeDslAccess().getAccessDeclarationsAssignment_2_1(), "rule__OseeDsl__AccessDeclarationsAssignment_2_1");
 					put(grammarAccess.getOseeDslAccess().getRoleDeclarationsAssignment_2_2(), "rule__OseeDsl__RoleDeclarationsAssignment_2_2");
@@ -160,6 +166,12 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getAddEnumAccess().getEntryGuidAssignment_3_1(), "rule__AddEnum__EntryGuidAssignment_3_1");
 					put(grammarAccess.getAddEnumAccess().getDescriptionAssignment_4_1(), "rule__AddEnum__DescriptionAssignment_4_1");
 					put(grammarAccess.getRemoveEnumAccess().getEnumEntryAssignment_1(), "rule__RemoveEnum__EnumEntryAssignment_1");
+					put(grammarAccess.getXOseeArtifactTypeOverrideAccess().getOverridenArtifactTypeAssignment_1(), "rule__XOseeArtifactTypeOverride__OverridenArtifactTypeAssignment_1");
+					put(grammarAccess.getXOseeArtifactTypeOverrideAccess().getInheritAllAssignment_3(), "rule__XOseeArtifactTypeOverride__InheritAllAssignment_3");
+					put(grammarAccess.getXOseeArtifactTypeOverrideAccess().getOverrideOptionsAssignment_4(), "rule__XOseeArtifactTypeOverride__OverrideOptionsAssignment_4");
+					put(grammarAccess.getAddAttributeAccess().getAttributeAssignment_1(), "rule__AddAttribute__AttributeAssignment_1");
+					put(grammarAccess.getRemoveAttributeAccess().getAttributeAssignment_2(), "rule__RemoveAttribute__AttributeAssignment_2");
+					put(grammarAccess.getUpdateAttributeAccess().getAttributeAssignment_1(), "rule__UpdateAttribute__AttributeAssignment_1");
 					put(grammarAccess.getXRelationTypeAccess().getNameAssignment_1(), "rule__XRelationType__NameAssignment_1");
 					put(grammarAccess.getXRelationTypeAccess().getTypeGuidAssignment_3_1(), "rule__XRelationType__TypeGuidAssignment_3_1");
 					put(grammarAccess.getXRelationTypeAccess().getUuidAssignment_5(), "rule__XRelationType__UuidAssignment_5");

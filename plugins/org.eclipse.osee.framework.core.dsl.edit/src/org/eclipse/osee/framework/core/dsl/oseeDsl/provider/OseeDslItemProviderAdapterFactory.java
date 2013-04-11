@@ -375,6 +375,121 @@ public class OseeDslItemProviderAdapterFactory extends OseeDslAdapterFactory imp
    }
 
    /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected XOseeArtifactTypeOverrideItemProvider xOseeArtifactTypeOverrideItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createXOseeArtifactTypeOverrideAdapter() {
+      if (xOseeArtifactTypeOverrideItemProvider == null) {
+         xOseeArtifactTypeOverrideItemProvider = new XOseeArtifactTypeOverrideItemProvider(this);
+      }
+
+      return xOseeArtifactTypeOverrideItemProvider;
+   }
+
+   /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeOverrideOption} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected AttributeOverrideOptionItemProvider attributeOverrideOptionItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeOverrideOption}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createAttributeOverrideOptionAdapter() {
+      if (attributeOverrideOptionItemProvider == null) {
+         attributeOverrideOptionItemProvider = new AttributeOverrideOptionItemProvider(this);
+      }
+
+      return attributeOverrideOptionItemProvider;
+   }
+
+   /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.AddAttribute} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected AddAttributeItemProvider addAttributeItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.AddAttribute}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createAddAttributeAdapter() {
+      if (addAttributeItemProvider == null) {
+         addAttributeItemProvider = new AddAttributeItemProvider(this);
+      }
+
+      return addAttributeItemProvider;
+   }
+
+   /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveAttribute} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected RemoveAttributeItemProvider removeAttributeItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveAttribute}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createRemoveAttributeAdapter() {
+      if (removeAttributeItemProvider == null) {
+         removeAttributeItemProvider = new RemoveAttributeItemProvider(this);
+      }
+
+      return removeAttributeItemProvider;
+   }
+
+   /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.UpdateAttribute} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected UpdateAttributeItemProvider updateAttributeItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.UpdateAttribute}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createUpdateAttributeAdapter() {
+      if (updateAttributeItemProvider == null) {
+         updateAttributeItemProvider = new UpdateAttributeItemProvider(this);
+      }
+
+      return updateAttributeItemProvider;
+   }
+
+   /**
     * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType} instances.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
@@ -923,6 +1038,11 @@ public class OseeDslItemProviderAdapterFactory extends OseeDslAdapterFactory imp
       if (overrideOptionItemProvider != null) overrideOptionItemProvider.dispose();
       if (addEnumItemProvider != null) addEnumItemProvider.dispose();
       if (removeEnumItemProvider != null) removeEnumItemProvider.dispose();
+      if (xOseeArtifactTypeOverrideItemProvider != null) xOseeArtifactTypeOverrideItemProvider.dispose();
+      if (attributeOverrideOptionItemProvider != null) attributeOverrideOptionItemProvider.dispose();
+      if (addAttributeItemProvider != null) addAttributeItemProvider.dispose();
+      if (removeAttributeItemProvider != null) removeAttributeItemProvider.dispose();
+      if (updateAttributeItemProvider != null) updateAttributeItemProvider.dispose();
       if (xRelationTypeItemProvider != null) xRelationTypeItemProvider.dispose();
       if (conditionItemProvider != null) conditionItemProvider.dispose();
       if (simpleConditionItemProvider != null) simpleConditionItemProvider.dispose();

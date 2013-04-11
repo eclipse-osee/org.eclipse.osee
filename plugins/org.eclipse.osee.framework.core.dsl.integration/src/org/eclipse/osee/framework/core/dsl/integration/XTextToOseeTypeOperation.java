@@ -14,30 +14,37 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.internal.DslIntegrationConstants;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.AddAttribute;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AddEnum;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeOverrideOption;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OverrideOption;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveAttribute;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveEnum;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.UpdateAttribute;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumOverride;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.util.OseeDslSwitch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -72,42 +79,48 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       double workAmount = 1.0;
 
       int workTotal = model.getArtifactTypes().size();
+      workTotal += model.getArtifactTypeOverrides().size();
       workTotal += model.getAttributeTypes().size();
       workTotal += model.getRelationTypes().size();
       workTotal += model.getEnumTypes().size();
       workTotal += model.getEnumOverrides().size();
 
       if (workTotal > 0) {
-         double workPercentage = workAmount / workTotal;
+         int amount = calculateWork(workAmount / workTotal);
+
+         for (XOseeArtifactTypeOverride xArtifactTypeOverride : model.getArtifactTypeOverrides()) {
+            translateXArtifactTypeOverride(xArtifactTypeOverride);
+            monitor.worked(amount);
+         }
 
          for (XArtifactType xArtifactType : model.getArtifactTypes()) {
             translateXArtifactType(xArtifactType);
-            monitor.worked(calculateWork(workPercentage));
+            monitor.worked(amount);
          }
 
          for (XOseeEnumOverride xEnumOverride : model.getEnumOverrides()) {
             translateXEnumOverride(xEnumOverride);
-            monitor.worked(calculateWork(workPercentage));
+            monitor.worked(amount);
          }
 
          for (XOseeEnumType xEnumType : model.getEnumTypes()) {
             translateXEnumType(xEnumType);
-            monitor.worked(calculateWork(workPercentage));
+            monitor.worked(amount);
          }
 
          for (XAttributeType xAttributeType : model.getAttributeTypes()) {
             translateXAttributeType(xAttributeType);
-            monitor.worked(calculateWork(workPercentage));
+            monitor.worked(amount);
          }
 
          for (XArtifactType xArtifactType : model.getArtifactTypes()) {
             handleXArtifactTypeCrossRef(xArtifactType);
-            monitor.worked(calculateWork(workPercentage));
+            monitor.worked(amount);
          }
 
          for (XRelationType xRelationType : model.getRelationTypes()) {
             translateXRelationType(xRelationType);
-            monitor.worked(calculateWork(workPercentage));
+            monitor.worked(amount);
          }
       }
    }
@@ -168,6 +181,60 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       }
    }
 
+   private void translateXArtifactTypeOverride(XOseeArtifactTypeOverride xArtTypeOverride) {
+      XArtifactType xArtifactType = xArtTypeOverride.getOverridenArtifactType();
+      final EList<XAttributeTypeRef> validAttributeTypes = xArtifactType.getValidAttributeTypes();
+      if (!xArtTypeOverride.isInheritAll()) {
+         validAttributeTypes.clear();
+      }
+
+      OseeDslSwitch<Void> overrideVisitor = new OseeDslSwitch<Void>() {
+
+         @Override
+         public Void caseAddAttribute(AddAttribute addOption) {
+            XAttributeTypeRef attributeRef = addOption.getAttribute();
+            validAttributeTypes.add(attributeRef);
+            return super.caseAddAttribute(addOption);
+         }
+
+         @Override
+         public Void caseRemoveAttribute(RemoveAttribute removeOption) {
+            XAttributeType attribute = removeOption.getAttribute();
+            String guidToMatch = attribute.getTypeGuid();
+            List<XAttributeTypeRef> toRemove = new LinkedList<XAttributeTypeRef>();
+            for (XAttributeTypeRef xAttributeTypeRef : validAttributeTypes) {
+               String itemGuid = xAttributeTypeRef.getValidAttributeType().getTypeGuid();
+               if (guidToMatch.equals(itemGuid)) {
+                  toRemove.add(xAttributeTypeRef);
+               }
+            }
+            validAttributeTypes.removeAll(toRemove);
+            return super.caseRemoveAttribute(removeOption);
+         }
+
+         @Override
+         public Void caseUpdateAttribute(UpdateAttribute updateAttribute) {
+            XAttributeTypeRef refToUpdate = updateAttribute.getAttribute();
+            String guidToMatch = refToUpdate.getValidAttributeType().getTypeGuid();
+            List<XAttributeTypeRef> toRemove = new LinkedList<XAttributeTypeRef>();
+            for (XAttributeTypeRef xAttributeTypeRef : validAttributeTypes) {
+               String itemGuid = xAttributeTypeRef.getValidAttributeType().getTypeGuid();
+               if (guidToMatch.equals(itemGuid)) {
+                  toRemove.add(xAttributeTypeRef);
+               }
+            }
+            validAttributeTypes.removeAll(toRemove);
+            validAttributeTypes.add(refToUpdate);
+            return super.caseUpdateAttribute(updateAttribute);
+         }
+
+      };
+
+      for (AttributeOverrideOption xOverrideOption : xArtTypeOverride.getOverrideOptions()) {
+         overrideVisitor.doSwitch(xOverrideOption);
+      }
+   }
+
    private void translateXArtifactType(XArtifactType xArtifactType) throws OseeCoreException {
       String artifactTypeName = xArtifactType.getName();
 
@@ -199,28 +266,47 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       oseeEnumType.setEntries(oseeEnumEntries);
    }
 
-   private void translateXEnumOverride(XOseeEnumOverride xEnumOverride) throws OseeCoreException {
+   private void translateXEnumOverride(XOseeEnumOverride xEnumOverride) {
       XOseeEnumType xEnumType = xEnumOverride.getOverridenEnumType();
+      final EList<XOseeEnumEntry> enumEntries = xEnumType.getEnumEntries();
       if (!xEnumOverride.isInheritAll()) {
-         xEnumType.getEnumEntries().clear();
+         enumEntries.clear();
       }
-      OseeDslFactory factory = OseeDslFactory.eINSTANCE;
-      for (OverrideOption xOverrideOption : xEnumOverride.getOverrideOptions()) {
-         if (xOverrideOption instanceof AddEnum) {
-            String entryName = ((AddEnum) xOverrideOption).getEnumEntry();
-            String entryGuid = ((AddEnum) xOverrideOption).getEntryGuid();
-            String description = ((AddEnum) xOverrideOption).getDescription();
-            XOseeEnumEntry xEnumEntry = factory.createXOseeEnumEntry();
+
+      OseeDslSwitch<Void> overrideVisitor = new OseeDslSwitch<Void>() {
+
+         @Override
+         public Void caseAddEnum(AddEnum addEnum) {
+            String entryName = addEnum.getEnumEntry();
+            String entryGuid = addEnum.getEntryGuid();
+            String description = addEnum.getDescription();
+            XOseeEnumEntry xEnumEntry = OseeDslFactory.eINSTANCE.createXOseeEnumEntry();
             xEnumEntry.setName(entryName);
             xEnumEntry.setEntryGuid(entryGuid);
             xEnumEntry.setDescription(description);
-            xEnumType.getEnumEntries().add(xEnumEntry);
-         } else if (xOverrideOption instanceof RemoveEnum) {
-            XOseeEnumEntry enumEntry = ((RemoveEnum) xOverrideOption).getEnumEntry();
-            xEnumType.getEnumEntries().remove(enumEntry);
-         } else {
-            throw new OseeStateException("Unsupported Override Operation");
+            enumEntries.add(xEnumEntry);
+            return super.caseAddEnum(addEnum);
          }
+
+         @Override
+         public Void caseRemoveEnum(RemoveEnum removeEnum) {
+            XOseeEnumEntry enumEntry = removeEnum.getEnumEntry();
+            String guidToMatch = enumEntry.getEntryGuid();
+            List<XOseeEnumEntry> toRemove = new LinkedList<XOseeEnumEntry>();
+            for (XOseeEnumEntry item : enumEntries) {
+               String itemGuid = item.getEntryGuid();
+               if (guidToMatch.equals(itemGuid)) {
+                  toRemove.add(item);
+               }
+            }
+            enumEntries.removeAll(toRemove);
+            return super.caseRemoveEnum(removeEnum);
+         }
+
+      };
+
+      for (OverrideOption xOverrideOption : xEnumOverride.getOverrideOptions()) {
+         overrideVisitor.doSwitch(xOverrideOption);
       }
    }
 

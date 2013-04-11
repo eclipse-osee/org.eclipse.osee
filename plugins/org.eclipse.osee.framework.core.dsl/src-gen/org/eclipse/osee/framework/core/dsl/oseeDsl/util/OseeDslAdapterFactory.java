@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
-
  */
 package org.eclipse.osee.framework.core.dsl.oseeDsl.util;
 
@@ -142,6 +138,31 @@ public class OseeDslAdapterFactory extends AdapterFactoryImpl
       public Adapter caseRemoveEnum(RemoveEnum object)
       {
         return createRemoveEnumAdapter();
+      }
+      @Override
+      public Adapter caseXOseeArtifactTypeOverride(XOseeArtifactTypeOverride object)
+      {
+        return createXOseeArtifactTypeOverrideAdapter();
+      }
+      @Override
+      public Adapter caseAttributeOverrideOption(AttributeOverrideOption object)
+      {
+        return createAttributeOverrideOptionAdapter();
+      }
+      @Override
+      public Adapter caseAddAttribute(AddAttribute object)
+      {
+        return createAddAttributeAdapter();
+      }
+      @Override
+      public Adapter caseRemoveAttribute(RemoveAttribute object)
+      {
+        return createRemoveAttributeAdapter();
+      }
+      @Override
+      public Adapter caseUpdateAttribute(UpdateAttribute object)
+      {
+        return createUpdateAttributeAdapter();
       }
       @Override
       public Adapter caseXRelationType(XRelationType object)
@@ -451,6 +472,81 @@ public class OseeDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createRemoveEnumAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride <em>XOsee Artifact Type Override</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride
+   * @generated
+   */
+  public Adapter createXOseeArtifactTypeOverrideAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeOverrideOption <em>Attribute Override Option</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeOverrideOption
+   * @generated
+   */
+  public Adapter createAttributeOverrideOptionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AddAttribute <em>Add Attribute</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.AddAttribute
+   * @generated
+   */
+  public Adapter createAddAttributeAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveAttribute <em>Remove Attribute</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveAttribute
+   * @generated
+   */
+  public Adapter createRemoveAttributeAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.UpdateAttribute <em>Update Attribute</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.UpdateAttribute
+   * @generated
+   */
+  public Adapter createUpdateAttributeAdapter()
   {
     return null;
   }

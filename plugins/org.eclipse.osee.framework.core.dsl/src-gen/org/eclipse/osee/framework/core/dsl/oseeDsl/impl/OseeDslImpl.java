@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
-
  */
 package org.eclipse.osee.framework.core.dsl.oseeDsl.impl;
 
@@ -28,6 +24,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.Role;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumOverride;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
@@ -45,6 +42,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getAttributeTypes <em>Attribute Types</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getEnumTypes <em>Enum Types</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getEnumOverrides <em>Enum Overrides</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getArtifactTypeOverrides <em>Artifact Type Overrides</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getArtifactMatchRefs <em>Artifact Match Refs</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getAccessDeclarations <em>Access Declarations</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getRoleDeclarations <em>Role Declarations</em>}</li>
@@ -114,6 +112,16 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
    * @ordered
    */
   protected EList<XOseeEnumOverride> enumOverrides;
+
+  /**
+   * The cached value of the '{@link #getArtifactTypeOverrides() <em>Artifact Type Overrides</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getArtifactTypeOverrides()
+   * @generated
+   * @ordered
+   */
+  protected EList<XOseeArtifactTypeOverride> artifactTypeOverrides;
 
   /**
    * The cached value of the '{@link #getArtifactMatchRefs() <em>Artifact Match Refs</em>}' containment reference list.
@@ -255,6 +263,20 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
    * <!-- end-user-doc -->
    * @generated
    */
+  public EList<XOseeArtifactTypeOverride> getArtifactTypeOverrides()
+  {
+    if (artifactTypeOverrides == null)
+    {
+      artifactTypeOverrides = new EObjectContainmentEList<XOseeArtifactTypeOverride>(XOseeArtifactTypeOverride.class, this, OseeDslPackage.OSEE_DSL__ARTIFACT_TYPE_OVERRIDES);
+    }
+    return artifactTypeOverrides;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EList<XArtifactMatcher> getArtifactMatchRefs()
   {
     if (artifactMatchRefs == null)
@@ -314,6 +336,8 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
         return ((InternalEList<?>)getEnumTypes()).basicRemove(otherEnd, msgs);
       case OseeDslPackage.OSEE_DSL__ENUM_OVERRIDES:
         return ((InternalEList<?>)getEnumOverrides()).basicRemove(otherEnd, msgs);
+      case OseeDslPackage.OSEE_DSL__ARTIFACT_TYPE_OVERRIDES:
+        return ((InternalEList<?>)getArtifactTypeOverrides()).basicRemove(otherEnd, msgs);
       case OseeDslPackage.OSEE_DSL__ARTIFACT_MATCH_REFS:
         return ((InternalEList<?>)getArtifactMatchRefs()).basicRemove(otherEnd, msgs);
       case OseeDslPackage.OSEE_DSL__ACCESS_DECLARATIONS:
@@ -346,6 +370,8 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
         return getEnumTypes();
       case OseeDslPackage.OSEE_DSL__ENUM_OVERRIDES:
         return getEnumOverrides();
+      case OseeDslPackage.OSEE_DSL__ARTIFACT_TYPE_OVERRIDES:
+        return getArtifactTypeOverrides();
       case OseeDslPackage.OSEE_DSL__ARTIFACT_MATCH_REFS:
         return getArtifactMatchRefs();
       case OseeDslPackage.OSEE_DSL__ACCESS_DECLARATIONS:
@@ -391,6 +417,10 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
         getEnumOverrides().clear();
         getEnumOverrides().addAll((Collection<? extends XOseeEnumOverride>)newValue);
         return;
+      case OseeDslPackage.OSEE_DSL__ARTIFACT_TYPE_OVERRIDES:
+        getArtifactTypeOverrides().clear();
+        getArtifactTypeOverrides().addAll((Collection<? extends XOseeArtifactTypeOverride>)newValue);
+        return;
       case OseeDslPackage.OSEE_DSL__ARTIFACT_MATCH_REFS:
         getArtifactMatchRefs().clear();
         getArtifactMatchRefs().addAll((Collection<? extends XArtifactMatcher>)newValue);
@@ -435,6 +465,9 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
       case OseeDslPackage.OSEE_DSL__ENUM_OVERRIDES:
         getEnumOverrides().clear();
         return;
+      case OseeDslPackage.OSEE_DSL__ARTIFACT_TYPE_OVERRIDES:
+        getArtifactTypeOverrides().clear();
+        return;
       case OseeDslPackage.OSEE_DSL__ARTIFACT_MATCH_REFS:
         getArtifactMatchRefs().clear();
         return;
@@ -470,6 +503,8 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
         return enumTypes != null && !enumTypes.isEmpty();
       case OseeDslPackage.OSEE_DSL__ENUM_OVERRIDES:
         return enumOverrides != null && !enumOverrides.isEmpty();
+      case OseeDslPackage.OSEE_DSL__ARTIFACT_TYPE_OVERRIDES:
+        return artifactTypeOverrides != null && !artifactTypeOverrides.isEmpty();
       case OseeDslPackage.OSEE_DSL__ARTIFACT_MATCH_REFS:
         return artifactMatchRefs != null && !artifactMatchRefs.isEmpty();
       case OseeDslPackage.OSEE_DSL__ACCESS_DECLARATIONS:

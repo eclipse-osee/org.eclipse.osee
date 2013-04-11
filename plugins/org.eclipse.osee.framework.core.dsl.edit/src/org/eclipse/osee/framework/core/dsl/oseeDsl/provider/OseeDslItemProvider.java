@@ -87,6 +87,7 @@ public class OseeDslItemProvider
          childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__ATTRIBUTE_TYPES);
          childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__ENUM_TYPES);
          childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__ENUM_OVERRIDES);
+         childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__ARTIFACT_TYPE_OVERRIDES);
          childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__ARTIFACT_MATCH_REFS);
          childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__ACCESS_DECLARATIONS);
          childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__ROLE_DECLARATIONS);
@@ -147,6 +148,7 @@ public class OseeDslItemProvider
          case OseeDslPackage.OSEE_DSL__ATTRIBUTE_TYPES:
          case OseeDslPackage.OSEE_DSL__ENUM_TYPES:
          case OseeDslPackage.OSEE_DSL__ENUM_OVERRIDES:
+         case OseeDslPackage.OSEE_DSL__ARTIFACT_TYPE_OVERRIDES:
          case OseeDslPackage.OSEE_DSL__ARTIFACT_MATCH_REFS:
          case OseeDslPackage.OSEE_DSL__ACCESS_DECLARATIONS:
          case OseeDslPackage.OSEE_DSL__ROLE_DECLARATIONS:
@@ -196,6 +198,11 @@ public class OseeDslItemProvider
          (createChildParameter
             (OseeDslPackage.Literals.OSEE_DSL__ENUM_OVERRIDES,
              OseeDslFactory.eINSTANCE.createXOseeEnumOverride()));
+
+      newChildDescriptors.add
+         (createChildParameter
+            (OseeDslPackage.Literals.OSEE_DSL__ARTIFACT_TYPE_OVERRIDES,
+             OseeDslFactory.eINSTANCE.createXOseeArtifactTypeOverride()));
 
       newChildDescriptors.add
          (createChildParameter

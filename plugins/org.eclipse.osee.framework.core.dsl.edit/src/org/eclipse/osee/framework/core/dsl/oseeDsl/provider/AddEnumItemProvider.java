@@ -64,6 +64,7 @@ public class AddEnumItemProvider
          addEnumEntryPropertyDescriptor(object);
          addOrdinalPropertyDescriptor(object);
          addEntryGuidPropertyDescriptor(object);
+         addDescriptionPropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
    }
@@ -135,6 +136,28 @@ public class AddEnumItemProvider
    }
 
    /**
+    * This adds a property descriptor for the Description feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected void addDescriptionPropertyDescriptor(Object object) {
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_AddEnum_description_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_AddEnum_description_feature", "_UI_AddEnum_type"),
+             OseeDslPackage.Literals.ADD_ENUM__DESCRIPTION,
+             true,
+             false,
+             false,
+             ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+             null,
+             null));
+   }
+
+   /**
     * This returns AddEnum.gif.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
@@ -174,6 +197,7 @@ public class AddEnumItemProvider
          case OseeDslPackage.ADD_ENUM__ENUM_ENTRY:
          case OseeDslPackage.ADD_ENUM__ORDINAL:
          case OseeDslPackage.ADD_ENUM__ENTRY_GUID:
+         case OseeDslPackage.ADD_ENUM__DESCRIPTION:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
             return;
       }

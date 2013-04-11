@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
-
  */
 package org.eclipse.osee.framework.core.dsl.oseeDsl.util;
 
@@ -174,6 +170,44 @@ public class OseeDslSwitch<T> extends Switch<T>
         RemoveEnum removeEnum = (RemoveEnum)theEObject;
         T result = caseRemoveEnum(removeEnum);
         if (result == null) result = caseOverrideOption(removeEnum);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE:
+      {
+        XOseeArtifactTypeOverride xOseeArtifactTypeOverride = (XOseeArtifactTypeOverride)theEObject;
+        T result = caseXOseeArtifactTypeOverride(xOseeArtifactTypeOverride);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case OseeDslPackage.ATTRIBUTE_OVERRIDE_OPTION:
+      {
+        AttributeOverrideOption attributeOverrideOption = (AttributeOverrideOption)theEObject;
+        T result = caseAttributeOverrideOption(attributeOverrideOption);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case OseeDslPackage.ADD_ATTRIBUTE:
+      {
+        AddAttribute addAttribute = (AddAttribute)theEObject;
+        T result = caseAddAttribute(addAttribute);
+        if (result == null) result = caseAttributeOverrideOption(addAttribute);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case OseeDslPackage.REMOVE_ATTRIBUTE:
+      {
+        RemoveAttribute removeAttribute = (RemoveAttribute)theEObject;
+        T result = caseRemoveAttribute(removeAttribute);
+        if (result == null) result = caseAttributeOverrideOption(removeAttribute);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case OseeDslPackage.UPDATE_ATTRIBUTE:
+      {
+        UpdateAttribute updateAttribute = (UpdateAttribute)theEObject;
+        T result = caseUpdateAttribute(updateAttribute);
+        if (result == null) result = caseAttributeOverrideOption(updateAttribute);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -528,6 +562,86 @@ public class OseeDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseRemoveEnum(RemoveEnum object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>XOsee Artifact Type Override</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>XOsee Artifact Type Override</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseXOseeArtifactTypeOverride(XOseeArtifactTypeOverride object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Attribute Override Option</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Attribute Override Option</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseAttributeOverrideOption(AttributeOverrideOption object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Add Attribute</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Add Attribute</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseAddAttribute(AddAttribute object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Remove Attribute</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Remove Attribute</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRemoveAttribute(RemoveAttribute object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Update Attribute</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Update Attribute</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseUpdateAttribute(UpdateAttribute object)
   {
     return null;
   }

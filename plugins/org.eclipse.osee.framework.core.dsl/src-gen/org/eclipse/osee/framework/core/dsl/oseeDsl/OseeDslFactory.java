@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
-
  */
 package org.eclipse.osee.framework.core.dsl.oseeDsl;
 
@@ -142,6 +138,51 @@ public interface OseeDslFactory extends EFactory
    * @generated
    */
   RemoveEnum createRemoveEnum();
+
+  /**
+   * Returns a new object of class '<em>XOsee Artifact Type Override</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>XOsee Artifact Type Override</em>'.
+   * @generated
+   */
+  XOseeArtifactTypeOverride createXOseeArtifactTypeOverride();
+
+  /**
+   * Returns a new object of class '<em>Attribute Override Option</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Attribute Override Option</em>'.
+   * @generated
+   */
+  AttributeOverrideOption createAttributeOverrideOption();
+
+  /**
+   * Returns a new object of class '<em>Add Attribute</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Add Attribute</em>'.
+   * @generated
+   */
+  AddAttribute createAddAttribute();
+
+  /**
+   * Returns a new object of class '<em>Remove Attribute</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remove Attribute</em>'.
+   * @generated
+   */
+  RemoveAttribute createRemoveAttribute();
+
+  /**
+   * Returns a new object of class '<em>Update Attribute</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Update Attribute</em>'.
+   * @generated
+   */
+  UpdateAttribute createUpdateAttribute();
 
   /**
    * Returns a new object of class '<em>XRelation Type</em>'.

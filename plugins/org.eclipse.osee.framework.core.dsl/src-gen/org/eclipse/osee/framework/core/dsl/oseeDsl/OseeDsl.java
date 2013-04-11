@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
-
  */
 package org.eclipse.osee.framework.core.dsl.oseeDsl;
 
@@ -24,6 +20,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getAttributeTypes <em>Attribute Types</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getEnumTypes <em>Enum Types</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getEnumOverrides <em>Enum Overrides</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getArtifactTypeOverrides <em>Artifact Type Overrides</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getArtifactMatchRefs <em>Artifact Match Refs</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getAccessDeclarations <em>Access Declarations</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getRoleDeclarations <em>Role Declarations</em>}</li>
@@ -131,6 +128,22 @@ public interface OseeDsl extends EObject
    * @generated
    */
   EList<XOseeEnumOverride> getEnumOverrides();
+
+  /**
+   * Returns the value of the '<em><b>Artifact Type Overrides</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Artifact Type Overrides</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Artifact Type Overrides</em>' containment reference list.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getOseeDsl_ArtifactTypeOverrides()
+   * @model containment="true"
+   * @generated
+   */
+  EList<XOseeArtifactTypeOverride> getArtifactTypeOverrides();
 
   /**
    * Returns the value of the '<em><b>Artifact Match Refs</b></em>' containment reference list.

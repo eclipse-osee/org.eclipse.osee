@@ -5,7 +5,7 @@ generate oseeDsl "http://www.eclipse.org/osee/framework/core/dsl/OseeDsl"
 OseeDsl:
 	(imports+=Import)*
 	(artifactTypes+=XArtifactType | relationTypes+=XRelationType | attributeTypes+=XAttributeType |
-	enumTypes+=XOseeEnumType | enumOverrides+=XOseeEnumOverride)*
+	enumTypes+=XOseeEnumType | enumOverrides+=XOseeEnumOverride | artifactTypeOverrides+=XOseeArtifactTypeOverride)*
 	(artifactMatchRefs+=XArtifactMatcher |
 	accessDeclarations+=AccessContext | roleDeclarations+=Role)*;
 
@@ -61,7 +61,7 @@ XOseeEnumType:
 	'oseeEnumType' name=STRING '{' ('guid' typeGuid=STRING)? 'uuid' uuid=HEX_INT (enumEntries+=XOseeEnumEntry)* '}';
 
 XOseeEnumEntry:
-	'entry' name=STRING (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid=STRING)? ('description' description=STRING)? ;
+	'entry' name=STRING (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid=STRING)? ('description' description=STRING)?;
 
 XOseeEnumOverride:
 	'overrides enum' overridenEnumType=[XOseeEnumType|STRING] '{' (inheritAll?='inheritAll')?
@@ -71,10 +71,28 @@ OverrideOption:
 	AddEnum | RemoveEnum;
 
 AddEnum:
-	'add' enumEntry=STRING (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid=STRING)? ('description' description=STRING)? ;
+	'add' enumEntry=STRING (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid=STRING)? ('description' description=STRING)?;
 
 RemoveEnum:
 	'remove' enumEntry=[XOseeEnumEntry|STRING];
+
+XOseeArtifactTypeOverride:
+	'overrides artifactType' overridenArtifactType=[XArtifactType|STRING] '{'
+	(inheritAll?='inheritAll')?
+	(overrideOptions+=AttributeOverrideOption)+
+	'}';
+
+AttributeOverrideOption:
+	AddAttribute | RemoveAttribute | UpdateAttribute;
+
+AddAttribute:
+	'add' attribute=XAttributeTypeRef;
+
+RemoveAttribute:
+	'remove' 'attribute' attribute=[XAttributeType|STRING];
+
+UpdateAttribute:
+	'update' attribute=XAttributeTypeRef;
 
 XRelationType:
 	'relationType' name=STRING '{' ('guid' typeGuid=STRING)? 'uuid' uuid=HEX_INT

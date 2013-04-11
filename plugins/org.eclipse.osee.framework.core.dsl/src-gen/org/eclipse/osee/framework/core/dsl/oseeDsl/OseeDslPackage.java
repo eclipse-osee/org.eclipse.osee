@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
-
  */
 package org.eclipse.osee.framework.core.dsl.oseeDsl;
 
@@ -126,13 +122,22 @@ public interface OseeDslPackage extends EPackage
   int OSEE_DSL__ENUM_OVERRIDES = 5;
 
   /**
+   * The feature id for the '<em><b>Artifact Type Overrides</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OSEE_DSL__ARTIFACT_TYPE_OVERRIDES = 6;
+
+  /**
    * The feature id for the '<em><b>Artifact Match Refs</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int OSEE_DSL__ARTIFACT_MATCH_REFS = 6;
+  int OSEE_DSL__ARTIFACT_MATCH_REFS = 7;
 
   /**
    * The feature id for the '<em><b>Access Declarations</b></em>' containment reference list.
@@ -141,7 +146,7 @@ public interface OseeDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int OSEE_DSL__ACCESS_DECLARATIONS = 7;
+  int OSEE_DSL__ACCESS_DECLARATIONS = 8;
 
   /**
    * The feature id for the '<em><b>Role Declarations</b></em>' containment reference list.
@@ -150,7 +155,7 @@ public interface OseeDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int OSEE_DSL__ROLE_DECLARATIONS = 8;
+  int OSEE_DSL__ROLE_DECLARATIONS = 9;
 
   /**
    * The number of structural features of the '<em>Osee Dsl</em>' class.
@@ -159,7 +164,7 @@ public interface OseeDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int OSEE_DSL_FEATURE_COUNT = 9;
+  int OSEE_DSL_FEATURE_COUNT = 10;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ImportImpl <em>Import</em>}' class.
@@ -759,6 +764,155 @@ public interface OseeDslPackage extends EPackage
   int REMOVE_ENUM_FEATURE_COUNT = OVERRIDE_OPTION_FEATURE_COUNT + 1;
 
   /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XOseeArtifactTypeOverrideImpl <em>XOsee Artifact Type Override</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XOseeArtifactTypeOverrideImpl
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXOseeArtifactTypeOverride()
+   * @generated
+   */
+  int XOSEE_ARTIFACT_TYPE_OVERRIDE = 13;
+
+  /**
+   * The feature id for the '<em><b>Overriden Artifact Type</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDEN_ARTIFACT_TYPE = 0;
+
+  /**
+   * The feature id for the '<em><b>Inherit All</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int XOSEE_ARTIFACT_TYPE_OVERRIDE__INHERIT_ALL = 1;
+
+  /**
+   * The feature id for the '<em><b>Override Options</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDE_OPTIONS = 2;
+
+  /**
+   * The number of structural features of the '<em>XOsee Artifact Type Override</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int XOSEE_ARTIFACT_TYPE_OVERRIDE_FEATURE_COUNT = 3;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AttributeOverrideOptionImpl <em>Attribute Override Option</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AttributeOverrideOptionImpl
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getAttributeOverrideOption()
+   * @generated
+   */
+  int ATTRIBUTE_OVERRIDE_OPTION = 14;
+
+  /**
+   * The number of structural features of the '<em>Attribute Override Option</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTRIBUTE_OVERRIDE_OPTION_FEATURE_COUNT = 0;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AddAttributeImpl <em>Add Attribute</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AddAttributeImpl
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getAddAttribute()
+   * @generated
+   */
+  int ADD_ATTRIBUTE = 15;
+
+  /**
+   * The feature id for the '<em><b>Attribute</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ADD_ATTRIBUTE__ATTRIBUTE = ATTRIBUTE_OVERRIDE_OPTION_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Add Attribute</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ADD_ATTRIBUTE_FEATURE_COUNT = ATTRIBUTE_OVERRIDE_OPTION_FEATURE_COUNT + 1;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RemoveAttributeImpl <em>Remove Attribute</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RemoveAttributeImpl
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRemoveAttribute()
+   * @generated
+   */
+  int REMOVE_ATTRIBUTE = 16;
+
+  /**
+   * The feature id for the '<em><b>Attribute</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOVE_ATTRIBUTE__ATTRIBUTE = ATTRIBUTE_OVERRIDE_OPTION_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Remove Attribute</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REMOVE_ATTRIBUTE_FEATURE_COUNT = ATTRIBUTE_OVERRIDE_OPTION_FEATURE_COUNT + 1;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.UpdateAttributeImpl <em>Update Attribute</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.UpdateAttributeImpl
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getUpdateAttribute()
+   * @generated
+   */
+  int UPDATE_ATTRIBUTE = 17;
+
+  /**
+   * The feature id for the '<em><b>Attribute</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UPDATE_ATTRIBUTE__ATTRIBUTE = ATTRIBUTE_OVERRIDE_OPTION_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Update Attribute</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UPDATE_ATTRIBUTE_FEATURE_COUNT = ATTRIBUTE_OVERRIDE_OPTION_FEATURE_COUNT + 1;
+
+  /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XRelationTypeImpl <em>XRelation Type</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -766,7 +920,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXRelationType()
    * @generated
    */
-  int XRELATION_TYPE = 13;
+  int XRELATION_TYPE = 18;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -866,7 +1020,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getCondition()
    * @generated
    */
-  int CONDITION = 14;
+  int CONDITION = 19;
 
   /**
    * The number of structural features of the '<em>Condition</em>' class.
@@ -885,7 +1039,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getSimpleCondition()
    * @generated
    */
-  int SIMPLE_CONDITION = 15;
+  int SIMPLE_CONDITION = 20;
 
   /**
    * The feature id for the '<em><b>Field</b></em>' attribute.
@@ -931,7 +1085,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getCompoundCondition()
    * @generated
    */
-  int COMPOUND_CONDITION = 16;
+  int COMPOUND_CONDITION = 21;
 
   /**
    * The feature id for the '<em><b>Conditions</b></em>' containment reference list.
@@ -968,7 +1122,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXArtifactMatcher()
    * @generated
    */
-  int XARTIFACT_MATCHER = 17;
+  int XARTIFACT_MATCHER = 22;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1014,7 +1168,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRole()
    * @generated
    */
-  int ROLE = 18;
+  int ROLE = 23;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1069,7 +1223,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getReferencedContext()
    * @generated
    */
-  int REFERENCED_CONTEXT = 19;
+  int REFERENCED_CONTEXT = 24;
 
   /**
    * The feature id for the '<em><b>Access Context Ref</b></em>' attribute.
@@ -1097,7 +1251,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getUsersAndGroups()
    * @generated
    */
-  int USERS_AND_GROUPS = 20;
+  int USERS_AND_GROUPS = 25;
 
   /**
    * The feature id for the '<em><b>User Or Group Guid</b></em>' attribute.
@@ -1125,7 +1279,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getAccessContext()
    * @generated
    */
-  int ACCESS_CONTEXT = 21;
+  int ACCESS_CONTEXT = 26;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1189,7 +1343,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getHierarchyRestriction()
    * @generated
    */
-  int HIERARCHY_RESTRICTION = 22;
+  int HIERARCHY_RESTRICTION = 27;
 
   /**
    * The feature id for the '<em><b>Artifact Matcher Ref</b></em>' reference.
@@ -1226,7 +1380,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypePredicate()
    * @generated
    */
-  int RELATION_TYPE_PREDICATE = 25;
+  int RELATION_TYPE_PREDICATE = 30;
 
   /**
    * The number of structural features of the '<em>Relation Type Predicate</em>' class.
@@ -1245,7 +1399,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypeArtifactTypePredicate()
    * @generated
    */
-  int RELATION_TYPE_ARTIFACT_TYPE_PREDICATE = 23;
+  int RELATION_TYPE_ARTIFACT_TYPE_PREDICATE = 28;
 
   /**
    * The feature id for the '<em><b>Artifact Type Ref</b></em>' reference.
@@ -1273,7 +1427,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypeArtifactPredicate()
    * @generated
    */
-  int RELATION_TYPE_ARTIFACT_PREDICATE = 24;
+  int RELATION_TYPE_ARTIFACT_PREDICATE = 29;
 
   /**
    * The feature id for the '<em><b>Artifact Matcher Ref</b></em>' reference.
@@ -1301,7 +1455,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getObjectRestriction()
    * @generated
    */
-  int OBJECT_RESTRICTION = 26;
+  int OBJECT_RESTRICTION = 31;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1329,7 +1483,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getArtifactMatchRestriction()
    * @generated
    */
-  int ARTIFACT_MATCH_RESTRICTION = 27;
+  int ARTIFACT_MATCH_RESTRICTION = 32;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1366,7 +1520,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getArtifactTypeRestriction()
    * @generated
    */
-  int ARTIFACT_TYPE_RESTRICTION = 28;
+  int ARTIFACT_TYPE_RESTRICTION = 33;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1403,7 +1557,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getAttributeTypeRestriction()
    * @generated
    */
-  int ATTRIBUTE_TYPE_RESTRICTION = 29;
+  int ATTRIBUTE_TYPE_RESTRICTION = 34;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1449,7 +1603,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getLegacyRelationTypeRestriction()
    * @generated
    */
-  int LEGACY_RELATION_TYPE_RESTRICTION = 30;
+  int LEGACY_RELATION_TYPE_RESTRICTION = 35;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1504,7 +1658,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypeRestriction()
    * @generated
    */
-  int RELATION_TYPE_RESTRICTION = 31;
+  int RELATION_TYPE_RESTRICTION = 36;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1568,7 +1722,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationMultiplicityEnum()
    * @generated
    */
-  int RELATION_MULTIPLICITY_ENUM = 32;
+  int RELATION_MULTIPLICITY_ENUM = 37;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.CompareOp <em>Compare Op</em>}' enum.
@@ -1578,7 +1732,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getCompareOp()
    * @generated
    */
-  int COMPARE_OP = 33;
+  int COMPARE_OP = 38;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XLogicOperator <em>XLogic Operator</em>}' enum.
@@ -1588,7 +1742,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXLogicOperator()
    * @generated
    */
-  int XLOGIC_OPERATOR = 34;
+  int XLOGIC_OPERATOR = 39;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.MatchField <em>Match Field</em>}' enum.
@@ -1598,7 +1752,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getMatchField()
    * @generated
    */
-  int MATCH_FIELD = 35;
+  int MATCH_FIELD = 40;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum <em>Access Permission Enum</em>}' enum.
@@ -1608,7 +1762,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getAccessPermissionEnum()
    * @generated
    */
-  int ACCESS_PERMISSION_ENUM = 36;
+  int ACCESS_PERMISSION_ENUM = 41;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch <em>Relation Type Match</em>}' enum.
@@ -1618,7 +1772,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypeMatch()
    * @generated
    */
-  int RELATION_TYPE_MATCH = 37;
+  int RELATION_TYPE_MATCH = 42;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum <em>XRelation Side Enum</em>}' enum.
@@ -1628,7 +1782,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXRelationSideEnum()
    * @generated
    */
-  int XRELATION_SIDE_ENUM = 38;
+  int XRELATION_SIDE_ENUM = 43;
 
 
   /**
@@ -1706,6 +1860,17 @@ public interface OseeDslPackage extends EPackage
    * @generated
    */
   EReference getOseeDsl_EnumOverrides();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getArtifactTypeOverrides <em>Artifact Type Overrides</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Artifact Type Overrides</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getArtifactTypeOverrides()
+   * @see #getOseeDsl()
+   * @generated
+   */
+  EReference getOseeDsl_ArtifactTypeOverrides();
 
   /**
    * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getArtifactMatchRefs <em>Artifact Match Refs</em>}'.
@@ -2211,6 +2376,122 @@ public interface OseeDslPackage extends EPackage
    * @generated
    */
   EReference getRemoveEnum_EnumEntry();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride <em>XOsee Artifact Type Override</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>XOsee Artifact Type Override</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride
+   * @generated
+   */
+  EClass getXOseeArtifactTypeOverride();
+
+  /**
+   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride#getOverridenArtifactType <em>Overriden Artifact Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>Overriden Artifact Type</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride#getOverridenArtifactType()
+   * @see #getXOseeArtifactTypeOverride()
+   * @generated
+   */
+  EReference getXOseeArtifactTypeOverride_OverridenArtifactType();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride#isInheritAll <em>Inherit All</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Inherit All</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride#isInheritAll()
+   * @see #getXOseeArtifactTypeOverride()
+   * @generated
+   */
+  EAttribute getXOseeArtifactTypeOverride_InheritAll();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride#getOverrideOptions <em>Override Options</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Override Options</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride#getOverrideOptions()
+   * @see #getXOseeArtifactTypeOverride()
+   * @generated
+   */
+  EReference getXOseeArtifactTypeOverride_OverrideOptions();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeOverrideOption <em>Attribute Override Option</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Attribute Override Option</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeOverrideOption
+   * @generated
+   */
+  EClass getAttributeOverrideOption();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AddAttribute <em>Add Attribute</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Add Attribute</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.AddAttribute
+   * @generated
+   */
+  EClass getAddAttribute();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AddAttribute#getAttribute <em>Attribute</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Attribute</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.AddAttribute#getAttribute()
+   * @see #getAddAttribute()
+   * @generated
+   */
+  EReference getAddAttribute_Attribute();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveAttribute <em>Remove Attribute</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Remove Attribute</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveAttribute
+   * @generated
+   */
+  EClass getRemoveAttribute();
+
+  /**
+   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveAttribute#getAttribute <em>Attribute</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the reference '<em>Attribute</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveAttribute#getAttribute()
+   * @see #getRemoveAttribute()
+   * @generated
+   */
+  EReference getRemoveAttribute_Attribute();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.UpdateAttribute <em>Update Attribute</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Update Attribute</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.UpdateAttribute
+   * @generated
+   */
+  EClass getUpdateAttribute();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.UpdateAttribute#getAttribute <em>Attribute</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Attribute</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.UpdateAttribute#getAttribute()
+   * @see #getUpdateAttribute()
+   * @generated
+   */
+  EReference getUpdateAttribute_Attribute();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType <em>XRelation Type</em>}'.
@@ -3016,6 +3297,14 @@ public interface OseeDslPackage extends EPackage
     EReference OSEE_DSL__ENUM_OVERRIDES = eINSTANCE.getOseeDsl_EnumOverrides();
 
     /**
+     * The meta object literal for the '<em><b>Artifact Type Overrides</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference OSEE_DSL__ARTIFACT_TYPE_OVERRIDES = eINSTANCE.getOseeDsl_ArtifactTypeOverrides();
+
+    /**
      * The meta object literal for the '<em><b>Artifact Match Refs</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3414,6 +3703,104 @@ public interface OseeDslPackage extends EPackage
      * @generated
      */
     EReference REMOVE_ENUM__ENUM_ENTRY = eINSTANCE.getRemoveEnum_EnumEntry();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XOseeArtifactTypeOverrideImpl <em>XOsee Artifact Type Override</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XOseeArtifactTypeOverrideImpl
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXOseeArtifactTypeOverride()
+     * @generated
+     */
+    EClass XOSEE_ARTIFACT_TYPE_OVERRIDE = eINSTANCE.getXOseeArtifactTypeOverride();
+
+    /**
+     * The meta object literal for the '<em><b>Overriden Artifact Type</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDEN_ARTIFACT_TYPE = eINSTANCE.getXOseeArtifactTypeOverride_OverridenArtifactType();
+
+    /**
+     * The meta object literal for the '<em><b>Inherit All</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute XOSEE_ARTIFACT_TYPE_OVERRIDE__INHERIT_ALL = eINSTANCE.getXOseeArtifactTypeOverride_InheritAll();
+
+    /**
+     * The meta object literal for the '<em><b>Override Options</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDE_OPTIONS = eINSTANCE.getXOseeArtifactTypeOverride_OverrideOptions();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AttributeOverrideOptionImpl <em>Attribute Override Option</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AttributeOverrideOptionImpl
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getAttributeOverrideOption()
+     * @generated
+     */
+    EClass ATTRIBUTE_OVERRIDE_OPTION = eINSTANCE.getAttributeOverrideOption();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AddAttributeImpl <em>Add Attribute</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AddAttributeImpl
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getAddAttribute()
+     * @generated
+     */
+    EClass ADD_ATTRIBUTE = eINSTANCE.getAddAttribute();
+
+    /**
+     * The meta object literal for the '<em><b>Attribute</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ADD_ATTRIBUTE__ATTRIBUTE = eINSTANCE.getAddAttribute_Attribute();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RemoveAttributeImpl <em>Remove Attribute</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.RemoveAttributeImpl
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRemoveAttribute()
+     * @generated
+     */
+    EClass REMOVE_ATTRIBUTE = eINSTANCE.getRemoveAttribute();
+
+    /**
+     * The meta object literal for the '<em><b>Attribute</b></em>' reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference REMOVE_ATTRIBUTE__ATTRIBUTE = eINSTANCE.getRemoveAttribute_Attribute();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.UpdateAttributeImpl <em>Update Attribute</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.UpdateAttributeImpl
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getUpdateAttribute()
+     * @generated
+     */
+    EClass UPDATE_ATTRIBUTE = eINSTANCE.getUpdateAttribute();
+
+    /**
+     * The meta object literal for the '<em><b>Attribute</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference UPDATE_ATTRIBUTE__ATTRIBUTE = eINSTANCE.getUpdateAttribute_Attribute();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XRelationTypeImpl <em>XRelation Type</em>}' class.

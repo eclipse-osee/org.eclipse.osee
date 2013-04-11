@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
-
  */
 package org.eclipse.osee.framework.core.dsl.oseeDsl.impl;
 
@@ -82,6 +78,11 @@ public class OseeDslFactoryImpl extends EFactoryImpl implements OseeDslFactory
       case OseeDslPackage.OVERRIDE_OPTION: return createOverrideOption();
       case OseeDslPackage.ADD_ENUM: return createAddEnum();
       case OseeDslPackage.REMOVE_ENUM: return createRemoveEnum();
+      case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE: return createXOseeArtifactTypeOverride();
+      case OseeDslPackage.ATTRIBUTE_OVERRIDE_OPTION: return createAttributeOverrideOption();
+      case OseeDslPackage.ADD_ATTRIBUTE: return createAddAttribute();
+      case OseeDslPackage.REMOVE_ATTRIBUTE: return createRemoveAttribute();
+      case OseeDslPackage.UPDATE_ATTRIBUTE: return createUpdateAttribute();
       case OseeDslPackage.XRELATION_TYPE: return createXRelationType();
       case OseeDslPackage.CONDITION: return createCondition();
       case OseeDslPackage.SIMPLE_CONDITION: return createSimpleCondition();
@@ -305,6 +306,61 @@ public class OseeDslFactoryImpl extends EFactoryImpl implements OseeDslFactory
   {
     RemoveEnumImpl removeEnum = new RemoveEnumImpl();
     return removeEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public XOseeArtifactTypeOverride createXOseeArtifactTypeOverride()
+  {
+    XOseeArtifactTypeOverrideImpl xOseeArtifactTypeOverride = new XOseeArtifactTypeOverrideImpl();
+    return xOseeArtifactTypeOverride;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AttributeOverrideOption createAttributeOverrideOption()
+  {
+    AttributeOverrideOptionImpl attributeOverrideOption = new AttributeOverrideOptionImpl();
+    return attributeOverrideOption;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AddAttribute createAddAttribute()
+  {
+    AddAttributeImpl addAttribute = new AddAttributeImpl();
+    return addAttribute;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RemoveAttribute createRemoveAttribute()
+  {
+    RemoveAttributeImpl removeAttribute = new RemoveAttributeImpl();
+    return removeAttribute;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public UpdateAttribute createUpdateAttribute()
+  {
+    UpdateAttributeImpl updateAttribute = new UpdateAttributeImpl();
+    return updateAttribute;
   }
 
   /**

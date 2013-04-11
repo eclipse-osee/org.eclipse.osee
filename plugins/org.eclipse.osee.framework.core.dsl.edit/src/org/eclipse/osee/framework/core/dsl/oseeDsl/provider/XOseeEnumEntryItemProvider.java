@@ -67,6 +67,7 @@ public class XOseeEnumEntryItemProvider
          addNamePropertyDescriptor(object);
          addOrdinalPropertyDescriptor(object);
          addEntryGuidPropertyDescriptor(object);
+         addDescriptionPropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
    }
@@ -138,6 +139,28 @@ public class XOseeEnumEntryItemProvider
    }
 
    /**
+    * This adds a property descriptor for the Description feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected void addDescriptionPropertyDescriptor(Object object) {
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_XOseeEnumEntry_description_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_XOseeEnumEntry_description_feature", "_UI_XOseeEnumEntry_type"),
+             OseeDslPackage.Literals.XOSEE_ENUM_ENTRY__DESCRIPTION,
+             true,
+             false,
+             false,
+             ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+             null,
+             null));
+   }
+
+   /**
     * This returns XOseeEnumEntry.gif.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
@@ -177,6 +200,7 @@ public class XOseeEnumEntryItemProvider
          case OseeDslPackage.XOSEE_ENUM_ENTRY__NAME:
          case OseeDslPackage.XOSEE_ENUM_ENTRY__ORDINAL:
          case OseeDslPackage.XOSEE_ENUM_ENTRY__ENTRY_GUID:
+         case OseeDslPackage.XOSEE_ENUM_ENTRY__DESCRIPTION:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
             return;
       }

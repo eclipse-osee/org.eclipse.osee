@@ -1,8 +1,4 @@
 /**
- * <copyright>
- * </copyright>
- *
-
  */
 package org.eclipse.osee.framework.core.dsl.oseeDsl.impl;
 
@@ -16,9 +12,11 @@ import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.AddAttribute;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AddEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactTypeRestriction;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeOverrideOption;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.CompareOp;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.CompoundCondition;
@@ -41,15 +39,18 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactTypePredi
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeMatch;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypePredicate;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveAttribute;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.Role;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.UpdateAttribute;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XLogicOperator;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumOverride;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
@@ -154,6 +155,41 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * @generated
    */
   private EClass removeEnumEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass xOseeArtifactTypeOverrideEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass attributeOverrideOptionEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass addAttributeEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass removeAttributeEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass updateAttributeEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -475,7 +511,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getOseeDsl_ArtifactMatchRefs()
+  public EReference getOseeDsl_ArtifactTypeOverrides()
   {
     return (EReference)oseeDslEClass.getEStructuralFeatures().get(6);
   }
@@ -485,7 +521,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getOseeDsl_AccessDeclarations()
+  public EReference getOseeDsl_ArtifactMatchRefs()
   {
     return (EReference)oseeDslEClass.getEStructuralFeatures().get(7);
   }
@@ -495,9 +531,19 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getOseeDsl_RoleDeclarations()
+  public EReference getOseeDsl_AccessDeclarations()
   {
     return (EReference)oseeDslEClass.getEStructuralFeatures().get(8);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getOseeDsl_RoleDeclarations()
+  {
+    return (EReference)oseeDslEClass.getEStructuralFeatures().get(9);
   }
 
   /**
@@ -938,6 +984,116 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
   public EReference getRemoveEnum_EnumEntry()
   {
     return (EReference)removeEnumEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getXOseeArtifactTypeOverride()
+  {
+    return xOseeArtifactTypeOverrideEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getXOseeArtifactTypeOverride_OverridenArtifactType()
+  {
+    return (EReference)xOseeArtifactTypeOverrideEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getXOseeArtifactTypeOverride_InheritAll()
+  {
+    return (EAttribute)xOseeArtifactTypeOverrideEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getXOseeArtifactTypeOverride_OverrideOptions()
+  {
+    return (EReference)xOseeArtifactTypeOverrideEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getAttributeOverrideOption()
+  {
+    return attributeOverrideOptionEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getAddAttribute()
+  {
+    return addAttributeEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getAddAttribute_Attribute()
+  {
+    return (EReference)addAttributeEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getRemoveAttribute()
+  {
+    return removeAttributeEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getRemoveAttribute_Attribute()
+  {
+    return (EReference)removeAttributeEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getUpdateAttribute()
+  {
+    return updateAttributeEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getUpdateAttribute_Attribute()
+  {
+    return (EReference)updateAttributeEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -1657,6 +1813,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     createEReference(oseeDslEClass, OSEE_DSL__ATTRIBUTE_TYPES);
     createEReference(oseeDslEClass, OSEE_DSL__ENUM_TYPES);
     createEReference(oseeDslEClass, OSEE_DSL__ENUM_OVERRIDES);
+    createEReference(oseeDslEClass, OSEE_DSL__ARTIFACT_TYPE_OVERRIDES);
     createEReference(oseeDslEClass, OSEE_DSL__ARTIFACT_MATCH_REFS);
     createEReference(oseeDslEClass, OSEE_DSL__ACCESS_DECLARATIONS);
     createEReference(oseeDslEClass, OSEE_DSL__ROLE_DECLARATIONS);
@@ -1716,6 +1873,22 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
 
     removeEnumEClass = createEClass(REMOVE_ENUM);
     createEReference(removeEnumEClass, REMOVE_ENUM__ENUM_ENTRY);
+
+    xOseeArtifactTypeOverrideEClass = createEClass(XOSEE_ARTIFACT_TYPE_OVERRIDE);
+    createEReference(xOseeArtifactTypeOverrideEClass, XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDEN_ARTIFACT_TYPE);
+    createEAttribute(xOseeArtifactTypeOverrideEClass, XOSEE_ARTIFACT_TYPE_OVERRIDE__INHERIT_ALL);
+    createEReference(xOseeArtifactTypeOverrideEClass, XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDE_OPTIONS);
+
+    attributeOverrideOptionEClass = createEClass(ATTRIBUTE_OVERRIDE_OPTION);
+
+    addAttributeEClass = createEClass(ADD_ATTRIBUTE);
+    createEReference(addAttributeEClass, ADD_ATTRIBUTE__ATTRIBUTE);
+
+    removeAttributeEClass = createEClass(REMOVE_ATTRIBUTE);
+    createEReference(removeAttributeEClass, REMOVE_ATTRIBUTE__ATTRIBUTE);
+
+    updateAttributeEClass = createEClass(UPDATE_ATTRIBUTE);
+    createEReference(updateAttributeEClass, UPDATE_ATTRIBUTE__ATTRIBUTE);
 
     xRelationTypeEClass = createEClass(XRELATION_TYPE);
     createEAttribute(xRelationTypeEClass, XRELATION_TYPE__SIDE_ANAME);
@@ -1843,6 +2016,9 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     xOseeEnumOverrideEClass.getESuperTypes().add(this.getOseeElement());
     addEnumEClass.getESuperTypes().add(this.getOverrideOption());
     removeEnumEClass.getESuperTypes().add(this.getOverrideOption());
+    addAttributeEClass.getESuperTypes().add(this.getAttributeOverrideOption());
+    removeAttributeEClass.getESuperTypes().add(this.getAttributeOverrideOption());
+    updateAttributeEClass.getESuperTypes().add(this.getAttributeOverrideOption());
     xRelationTypeEClass.getESuperTypes().add(this.getOseeType());
     simpleConditionEClass.getESuperTypes().add(this.getCondition());
     compoundConditionEClass.getESuperTypes().add(this.getCondition());
@@ -1861,6 +2037,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     initEReference(getOseeDsl_AttributeTypes(), this.getXAttributeType(), null, "attributeTypes", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getOseeDsl_EnumTypes(), this.getXOseeEnumType(), null, "enumTypes", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getOseeDsl_EnumOverrides(), this.getXOseeEnumOverride(), null, "enumOverrides", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getOseeDsl_ArtifactTypeOverrides(), this.getXOseeArtifactTypeOverride(), null, "artifactTypeOverrides", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getOseeDsl_ArtifactMatchRefs(), this.getXArtifactMatcher(), null, "artifactMatchRefs", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getOseeDsl_AccessDeclarations(), this.getAccessContext(), null, "accessDeclarations", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getOseeDsl_RoleDeclarations(), this.getRole(), null, "roleDeclarations", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1920,6 +2097,22 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
 
     initEClass(removeEnumEClass, RemoveEnum.class, "RemoveEnum", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getRemoveEnum_EnumEntry(), this.getXOseeEnumEntry(), null, "enumEntry", null, 0, 1, RemoveEnum.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(xOseeArtifactTypeOverrideEClass, XOseeArtifactTypeOverride.class, "XOseeArtifactTypeOverride", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getXOseeArtifactTypeOverride_OverridenArtifactType(), this.getXArtifactType(), null, "overridenArtifactType", null, 0, 1, XOseeArtifactTypeOverride.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getXOseeArtifactTypeOverride_InheritAll(), ecorePackage.getEBoolean(), "inheritAll", null, 0, 1, XOseeArtifactTypeOverride.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getXOseeArtifactTypeOverride_OverrideOptions(), this.getAttributeOverrideOption(), null, "overrideOptions", null, 0, -1, XOseeArtifactTypeOverride.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(attributeOverrideOptionEClass, AttributeOverrideOption.class, "AttributeOverrideOption", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(addAttributeEClass, AddAttribute.class, "AddAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getAddAttribute_Attribute(), this.getXAttributeTypeRef(), null, "attribute", null, 0, 1, AddAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(removeAttributeEClass, RemoveAttribute.class, "RemoveAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getRemoveAttribute_Attribute(), this.getXAttributeType(), null, "attribute", null, 0, 1, RemoveAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(updateAttributeEClass, UpdateAttribute.class, "UpdateAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getUpdateAttribute_Attribute(), this.getXAttributeTypeRef(), null, "attribute", null, 0, 1, UpdateAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(xRelationTypeEClass, XRelationType.class, "XRelationType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getXRelationType_SideAName(), ecorePackage.getEString(), "sideAName", null, 0, 1, XRelationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
