@@ -491,6 +491,7 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
       public void performDrop(final DropTargetEvent event) {
          final ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
          final List<Artifact> droppedArtifacts = Arrays.asList(artData.getArtifacts());
+         Collections.reverse(droppedArtifacts);
          final Artifact dropTarget = getSelectedArtifact(event);
          if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
             try {
