@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -60,6 +61,7 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
       builder.append("<XWidget xwidgetType=\"XButtonPush\" displayName=\"Open Excel Import Example Spreadsheet\" displayLabel=\"false\"/>");
       builder.append("<XWidget xwidgetType=\"XFileTextWithSelectionDialog\" displayName=\"Excel Spreadsheet saved as xml\" />");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Email POCs\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+      builder.append("<XWidget xwidgetType=\"XGoalCombo\" displayName=\"Add to Goal\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       builder.append("</xWidgets>");
       return builder.toString();
    }
@@ -75,9 +77,10 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
             return;
          }
          boolean emailPocs = variableMap.getBoolean("Email POCs");
+         IAtsGoal toGoal = (IAtsGoal) variableMap.getValue("Add to Goal");
 
          try {
-            importActions(file, ImportOption.POPUP_ERROR_REPORT,
+            importActions(file, toGoal, ImportOption.POPUP_ERROR_REPORT,
                (emailPocs ? ImportOption.EMAIL_POCS : ImportOption.NONE));
          } catch (Exception ex) {
             log(ex);
@@ -88,10 +91,10 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
       }
    }
 
-   public XResultData importActions(File file, ImportOption... importOption) throws Exception {
+   public XResultData importActions(File file, IAtsGoal toGoal, ImportOption... importOption) throws Exception {
       boolean emailPocs = Collections.getAggregate(importOption).contains(ImportOption.EMAIL_POCS);
       boolean popupReport = Collections.getAggregate(importOption).contains(ImportOption.POPUP_ERROR_REPORT);
-      ExcelAtsActionArtifactExtractor extractor = new ExcelAtsActionArtifactExtractor(emailPocs);
+      ExcelAtsActionArtifactExtractor extractor = new ExcelAtsActionArtifactExtractor(emailPocs, toGoal);
       extractor.process(file.toURI());
       XResultData rd = extractor.dataIsValid();
       if (!rd.toString().equals("")) {

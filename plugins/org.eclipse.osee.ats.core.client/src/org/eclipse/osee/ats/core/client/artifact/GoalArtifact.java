@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.GoalArtifactMembersCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -25,9 +26,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * @author Donald G. Dunne
  */
 public class GoalArtifact extends AbstractWorkflowArtifact implements IAtsGoal {
-
-   private List<Artifact> members;
-   private volatile boolean firstTime = true;
 
    public GoalArtifact(String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(guid, humanReadableId, branch, artifactType);
@@ -62,7 +60,7 @@ public class GoalArtifact extends AbstractWorkflowArtifact implements IAtsGoal {
 
    public void addMember(Artifact artifact) throws OseeCoreException {
       if (!getMembers().contains(artifact)) {
-         addRelation(AtsRelationTypes.Goal_Member, artifact);
+         addRelation(RelationOrderBaseTypes.USER_DEFINED, AtsRelationTypes.Goal_Member, artifact);
       }
    }
 

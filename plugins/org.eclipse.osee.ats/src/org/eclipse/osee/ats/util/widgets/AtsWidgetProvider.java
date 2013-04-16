@@ -97,6 +97,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          }
       } else if (widgetName.equals(XVersionList.WIDGET_ID)) {
          return new XVersionList();
+      } else if (widgetName.equals(XGoalCombo.WIDGET_ID)) {
+         return new XGoalCombo();
       }
       return toReturn;
    }

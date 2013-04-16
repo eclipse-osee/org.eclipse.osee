@@ -35,6 +35,11 @@ public interface IAtsClient extends IAtsConfigProvider, ITeamDefinitionFactory, 
 
    Artifact getConfigArtifact(IAtsConfigObject atsConfigObject) throws OseeCoreException;
 
+   /**
+    * @return corresponding Artifact or null if not found
+    */
+   Artifact getArtifact(IAtsObject atsObject) throws OseeCoreException;
+
    List<Artifact> getConfigArtifacts(Collection<? extends IAtsObject> atsObjects) throws OseeCoreException;
 
    <T extends IAtsConfigObject> Collection<T> getConfigObjects(Collection<? extends Artifact> artifacts, Class<T> clazz) throws OseeCoreException;

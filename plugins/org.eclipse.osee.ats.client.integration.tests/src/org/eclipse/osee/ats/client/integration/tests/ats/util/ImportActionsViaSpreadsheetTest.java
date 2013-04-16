@@ -17,7 +17,9 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -25,11 +27,11 @@ import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam.ImportOption;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 /**
  * This test is intended to be run against a demo database.
@@ -41,12 +43,12 @@ public class ImportActionsViaSpreadsheetTest {
    private static final String FIRST_ACTION_TITLE = "Fix the SAW Editor";
    private static final String SECOND_ACTION_TITLE = "Add the new feature";
    private static final String THIRD_ACTION_TITLE = "Help the users";
-   private static List<String> ActionTitles =
-      Arrays.asList(FIRST_ACTION_TITLE, SECOND_ACTION_TITLE, THIRD_ACTION_TITLE);
+   private static List<String> ActionTitles = Arrays.asList(FIRST_ACTION_TITLE, SECOND_ACTION_TITLE,
+      THIRD_ACTION_TITLE, "ImportActionsViaSpreadsheetTest");
 
-   @BeforeClass
-   @AfterClass
-   public static void cleanUp() throws Exception {
+   @Before
+   @After
+   public void cleanUp() throws Exception {
       AtsTestUtil.cleanupSimpleTest(ActionTitles);
    }
 
@@ -69,7 +71,7 @@ public class ImportActionsViaSpreadsheetTest {
       File file = blam.getSampleSpreadsheetFile();
       Assert.assertNotNull(file);
 
-      XResultData rd = blam.importActions(file, ImportOption.NONE);
+      XResultData rd = blam.importActions(file, null, ImportOption.NONE);
       Assert.assertEquals("No errors should be reported", "", rd.toString());
 
       List<Artifact> arts =
@@ -96,5 +98,32 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertTrue(testWf.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0) == 4.0);
       Assert.assertEquals("Improvement", testWf.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
       Assert.assertEquals("SAW_Bld_3", AtsVersionService.get().getTargetedVersion(testWf).getName());
+   }
+
+   @org.junit.Test
+   public void testImport_withGoal() throws Exception {
+      GoalArtifact goal =
+         (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal, AtsUtil.getAtsBranchToken());
+      goal.persist(getClass().getSimpleName());
+
+      ImportActionsViaSpreadsheetBlam blam = new ImportActionsViaSpreadsheetBlam();
+
+      File file = blam.getSampleSpreadsheetFile();
+      Assert.assertNotNull(file);
+
+      XResultData rd = blam.importActions(file, goal, ImportOption.NONE);
+      Assert.assertEquals("No errors should be reported", "", rd.toString());
+      List<Artifact> members = goal.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
+      Assert.assertEquals("Should be 5 members", 5, members.size());
+      Assert.assertTrue("members should be in order",
+         ((Artifact) members.toArray()[0]).getDescription().startsWith("Phase 1"));
+      Assert.assertTrue("members should be in order",
+         ((Artifact) members.toArray()[1]).getDescription().startsWith("Phase 2"));
+      Assert.assertTrue("members should be in order",
+         ((Artifact) members.toArray()[2]).getDescription().startsWith("What needs"));
+      Assert.assertEquals("members should be in order", "This is the description of what to do",
+         ((Artifact) members.toArray()[3]).getDescription());
+      Assert.assertEquals("members should be in order", "Support what they need",
+         ((Artifact) members.toArray()[4]).getDescription());
    }
 }

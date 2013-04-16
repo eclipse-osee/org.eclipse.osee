@@ -16,6 +16,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,7 +33,9 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
+import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.notify.AtsNotifyType;
 import org.eclipse.osee.ats.core.client.team.CreateTeamOption;
@@ -74,9 +77,11 @@ public class ExcelAtsActionArtifactExtractor {
    private final Map<String, Artifact> actionNameToAction = new HashMap<String, Artifact>(100);
    private final boolean emailPOCs;
    private boolean dataIsValid = true;
+   private final IAtsGoal toGoal;
 
-   public ExcelAtsActionArtifactExtractor(boolean emailPOCs) {
+   public ExcelAtsActionArtifactExtractor(boolean emailPOCs, IAtsGoal toGoal) {
       this.emailPOCs = emailPOCs;
+      this.toGoal = toGoal;
    }
 
    public XResultData dataIsValid() throws OseeCoreException {
@@ -100,8 +105,7 @@ public class ExcelAtsActionArtifactExtractor {
                   for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
                      actionableItemName, AtsUtilCore.getAtsBranchToken())) {
                      IAtsActionableItem ai =
-                        AtsClientService.get().getAtsConfig().getSoleByGuid(aiaArt.getGuid(),
-                           IAtsActionableItem.class);
+                        AtsClientService.get().getAtsConfig().getSoleByGuid(aiaArt.getGuid(), IAtsActionableItem.class);
                      if (ai != null) {
                         aias.add(ai);
                      }
@@ -110,13 +114,14 @@ public class ExcelAtsActionArtifactExtractor {
                      rd.logError("Row " + rowNum + ": Couldn't find actionable item for \"" + actionableItemName + "\"");
                   } else if (aias.size() > 1) {
                      rd.logError("Row " + rowNum + ": Duplicate actionable items found with name \"" + actionableItemName + "\"");
-                  }
-                  IAtsActionableItem aia = aias.iterator().next();
-                  teamDefs.addAll(ActionableItems.getImpactedTeamDefs(Arrays.asList(aia)));
-                  if (teamDefs.isEmpty()) {
-                     rd.logError("Row " + rowNum + ": No related Team Definition for Actionable Item\"" + actionableItemName + "\"");
-                  } else if (teamDefs.size() > 1) {
-                     rd.logError("Row " + rowNum + ": Duplicate Team Definitions found for Actionable Item\"" + actionableItemName + "\"");
+                  } else {
+                     IAtsActionableItem aia = aias.iterator().next();
+                     teamDefs.addAll(ActionableItems.getImpactedTeamDefs(Arrays.asList(aia)));
+                     if (teamDefs.isEmpty()) {
+                        rd.logError("Row " + rowNum + ": No related Team Definition for Actionable Item\"" + actionableItemName + "\"");
+                     } else if (teamDefs.size() > 1) {
+                        rd.logError("Row " + rowNum + ": Duplicate Team Definitions found for Actionable Item\"" + actionableItemName + "\"");
+                     }
                   }
 
                } catch (Exception ex) {
@@ -179,6 +184,7 @@ public class ExcelAtsActionArtifactExtractor {
                      aData.priorityStr, false, null, ActionableItems.getActionableItems(aData.actionableItems),
                      createdDate, createdBy, null, transaction);
                newTeamArts = ActionManager.getTeams(actionArt);
+               addToGoal(newTeamArts, transaction);
                actionNameToAction.put(aData.title, actionArt);
                actionArts.add(actionArt);
             } else {
@@ -195,6 +201,7 @@ public class ExcelAtsActionArtifactExtractor {
                   }
                   teamWorkflow.setSoleAttributeValue(AtsAttributeTypes.ChangeType, aData.changeType);
                   newTeamArts.add(teamWorkflow);
+                  addToGoal(Collections.singleton(teamWorkflow), transaction);
                }
             }
             if (!aData.version.equals("")) {
@@ -233,6 +240,19 @@ public class ExcelAtsActionArtifactExtractor {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       } finally {
          AtsUtilCore.setEmailEnabled(true);
+      }
+   }
+
+   private void addToGoal(Collection<TeamWorkFlowArtifact> newTeamArts, SkynetTransaction transaction) throws OseeCoreException {
+      if (toGoal != null) {
+         GoalArtifact goal = (GoalArtifact) AtsClientService.get().getArtifact(toGoal);
+         if (goal == null) {
+            throw new OseeArgumentException("Goal artifact does not exist for goal %s", toGoal.toStringWithId());
+         }
+         for (Artifact art : newTeamArts) {
+            goal.addMember(art);
+         }
+         goal.persist(transaction);
       }
    }
 

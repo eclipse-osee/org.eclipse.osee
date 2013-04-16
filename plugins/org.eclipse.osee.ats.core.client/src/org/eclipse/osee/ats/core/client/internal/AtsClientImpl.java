@@ -50,14 +50,17 @@ import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCache;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.core.client.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.IVersionFactory;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
@@ -319,6 +322,20 @@ public class AtsClientImpl implements IAtsClient {
          getConfigCache().invalidate(configObject);
       }
 
+   }
+
+   /**
+    * @return corresponding Artifact or null if not found
+    */
+   @Override
+   public Artifact getArtifact(IAtsObject atsObject) throws OseeCoreException {
+      Artifact results = null;
+      try {
+         results = ArtifactQuery.getArtifactFromId(atsObject.getGuid(), AtsUtilCore.getAtsBranchToken());
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return results;
    }
 
 }
