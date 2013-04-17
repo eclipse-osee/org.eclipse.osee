@@ -77,6 +77,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -247,7 +248,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   AtsTaskCache.decache((TeamWorkFlowArtifact) artifact);
                   AtsReviewCache.decache((TeamWorkFlowArtifact) artifact);
                }
-               ArtifactCache.deCache(artifact);
+               if (!(artifact instanceof User)) {
+                  ArtifactCache.deCache(artifact);
+               }
             }
 
             if (monitor != null) {
