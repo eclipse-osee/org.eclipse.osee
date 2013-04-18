@@ -58,6 +58,7 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.mocks.MockStateDefinition;
 import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
 import org.eclipse.osee.ats.mocks.MockWorkDefinition;
+import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -345,7 +346,8 @@ public class AtsTestUtil {
 
       actionArt =
          ActionManager.createAction(null, getTitle("Team WF", postFixName), "description", ChangeType.Improvement, "1",
-            false, null, Arrays.asList(testAi), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
+            false, null, Arrays.asList(testAi), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(),
+            null, transaction);
 
       teamArt = actionArt.getFirstTeam();
 
@@ -357,7 +359,9 @@ public class AtsTestUtil {
    public static TaskArtifact getOrCreateTaskOffTeamWf1() throws OseeCoreException {
       ensureLoaded();
       if (taskArtWf1 == null) {
-         taskArtWf1 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
+         taskArtWf1 =
+            teamArt.createNewTask(getTitle("Task", postFixName), new Date(),
+               AtsClientService.get().getUserAdmin().getCurrentUser());
          taskArtWf1.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
          taskArtWf1.persist("AtsTestUtil - addTaskWf1");
       }
@@ -367,7 +371,9 @@ public class AtsTestUtil {
    public static TaskArtifact getOrCreateTaskOffTeamWf2() throws OseeCoreException {
       ensureLoaded();
       if (taskArtWf2 == null) {
-         taskArtWf2 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
+         taskArtWf2 =
+            teamArt.createNewTask(getTitle("Task", postFixName), new Date(),
+               AtsClientService.get().getUserAdmin().getCurrentUser());
          taskArtWf2.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
          taskArtWf2.persist("AtsTestUtil - addTaskWf2");
       }
@@ -384,8 +390,8 @@ public class AtsTestUtil {
          decRevArt =
             DecisionReviewManager.createNewDecisionReview(teamArt, reviewBlockType,
                AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getName(),
-               "Decision Review", options, Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), new Date(),
-               AtsClientService.get().getUserAdmin().getCurrentUser());
+               "Decision Review", options, Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()),
+               new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
       }
       return decRevArt;
    }
@@ -452,6 +458,7 @@ public class AtsTestUtil {
    public static void cleanup() throws OseeCoreException {
       WorldEditor.closeAll();
       SMAEditor.closeAll();
+      TaskEditor.closeAll();
 
       SkynetTransaction transaction1 =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
@@ -600,7 +607,8 @@ public class AtsTestUtil {
             TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
          actionArt2 =
             ActionManager.createAction(null, getTitle("Team WF2", postFixName), "description", ChangeType.Improvement,
-               "1", false, null, Arrays.asList(testAi2), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
+               "1", false, null, Arrays.asList(testAi2), new Date(),
+               AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
 
          teamArt2 = actionArt2.getFirstTeam();
          transaction.execute();
@@ -620,7 +628,8 @@ public class AtsTestUtil {
             TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
          actionArt3 =
             ActionManager.createAction(null, getTitle("Team WF3", postFixName), "description", ChangeType.Improvement,
-               "1", false, null, Arrays.asList(testAi3), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
+               "1", false, null, Arrays.asList(testAi3), new Date(),
+               AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
 
          teamArt3 = actionArt3.getFirstTeam();
          transaction.execute();
@@ -640,7 +649,8 @@ public class AtsTestUtil {
             TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
          actionArt4 =
             ActionManager.createAction(null, getTitle("Team WF4", postFixName), "description", ChangeType.Improvement,
-               "1", false, null, Arrays.asList(testAi4), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
+               "1", false, null, Arrays.asList(testAi4), new Date(),
+               AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
 
          teamArt4 = actionArt4.getFirstTeam();
          AtsVersionService.get().setTargetedVersion(teamArt4, verArt4);
