@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal.event.handlers;
 
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
@@ -38,6 +39,7 @@ public class BranchRemoteEventHandler implements EventHandlerRemote<RemoteBranch
 
    private void updateBranches(Sender sender, BranchEvent branchEvent) {
       BranchEventType eventType = branchEvent.getEventType();
+      Branch branch = null;
       try {
          switch (eventType) {
             case Committing:
@@ -46,18 +48,35 @@ public class BranchRemoteEventHandler implements EventHandlerRemote<RemoteBranch
             case Purging:
                return;
             case Committed:
-               Branch branch = BranchManager.getBranchByGuid(branchEvent.getBranchGuid());
+               branch = BranchManager.getBranchByGuid(branchEvent.getBranchGuid());
                Artifact artifact = BranchManager.getAssociatedArtifact(branch);
                TransactionManager.clearCommitArtifactCacheForAssociatedArtifact(artifact);
+               break;
+            case Purged:
+               handleBranchRemoval(BranchState.PURGED, branchEvent.getBranchGuid());
+               break;
+            case Deleted:
+               handleBranchRemoval(BranchState.DELETED, branchEvent.getBranchGuid());
                break;
             default:
                break;
          }
-         // TODO Need to update only branch(s) that changed, not refresh all branches cause it will
+         // Need to update only branch(s) that changed, not refresh all branches cause it will
          // clear any local flags that have not yet been persisted to the database like DELETED or COMMIT_IN_PROGRESS
          BranchManager.refreshBranches();
       } catch (Exception ex) {
          EventUtil.eventLog("REM: updateBranches", ex);
       }
    }
+
+   private void handleBranchRemoval(BranchState state, String guid) throws OseeCoreException {
+      if (BranchManager.branchExists(guid)) {
+         Branch branch = BranchManager.getBranchByGuid(guid);
+         branch.setBranchState(state);
+         branch.setArchived(true);
+         branch.clearDirty();
+         BranchManager.decache(branch);
+      }
+   }
+
 }

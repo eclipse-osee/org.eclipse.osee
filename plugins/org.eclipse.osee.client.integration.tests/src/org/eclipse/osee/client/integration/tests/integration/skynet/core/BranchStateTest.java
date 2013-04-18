@@ -128,6 +128,32 @@ public class BranchStateTest {
    }
 
    @Test
+   public void testPurgeState() throws OseeCoreException, InterruptedException {
+      String originalBranchName = "Purged State Branch";
+      Branch workingBranch = null;
+      boolean branchPurged = false;
+      try {
+         workingBranch = BranchManager.createWorkingBranch(BRANCH, originalBranchName);
+         assertEquals(BranchState.CREATED, workingBranch.getBranchState());
+         assertTrue(workingBranch.isEditable());
+
+         BranchManager.purgeBranch(workingBranch);
+         branchPurged = true;
+
+         assertEquals(BranchState.PURGED, workingBranch.getBranchState());
+         assertTrue(workingBranch.getArchiveState().isArchived());
+         assertTrue(!workingBranch.isEditable());
+         assertTrue(workingBranch.getBranchState().isPurged());
+      } finally {
+         if (workingBranch != null && !branchPurged) {
+            // needed to allow for archiving to occur
+            Thread.sleep(5000);
+            BranchManager.purgeBranch(workingBranch);
+         }
+      }
+   }
+
+   @Test
    public void testCommitState() throws OseeCoreException, InterruptedException {
       String originalBranchName = "Commit State Branch";
       Branch workingBranch = null;

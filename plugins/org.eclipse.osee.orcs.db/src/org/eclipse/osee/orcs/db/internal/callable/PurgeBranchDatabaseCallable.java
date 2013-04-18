@@ -12,6 +12,7 @@
 package org.eclipse.osee.orcs.db.internal.callable;
 
 import org.eclipse.osee.database.schema.DatabaseTxCallable;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -71,6 +72,7 @@ public class PurgeBranchDatabaseCallable extends DatabaseTxCallable<Branch> {
 
          branch.setStorageState(StorageState.PURGED);
          branchCache.storeItems(branch);
+         branch.setBranchState(BranchState.PURGED);
          branch.internalRemovePurgedBranchFromParent();
       }
       return branch;

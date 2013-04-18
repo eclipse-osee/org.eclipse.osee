@@ -20,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -411,6 +410,15 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
                            break;
                         case REBASELINED:
                            warningStr = "Branch Rebaselined, Please Close Artifact Explorer.";
+                           break;
+                        case DELETE_IN_PROGRESS:
+                           warningStr = "Branch Delete in Progress, Please Close Artifact Explorer.";
+                           break;
+                        case PURGE_IN_PROGRESS:
+                           warningStr = "Branch Purge in Progress, Please Close Artifact Explorer.";
+                           break;
+                        case PURGED:
+                           warningStr = "Branch Purged, Please Close Artifact Explorer.";
                            break;
                         default:
                            break;

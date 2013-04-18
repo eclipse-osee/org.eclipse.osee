@@ -43,13 +43,23 @@ public class DeleteBranchOperation extends AbstractOperation {
       ArtifactCache.deCache(this.branch);
 
       try {
-         branch.setBranchState(BranchState.DELETED);
+         branch.setBranchState(BranchState.DELETE_IN_PROGRESS);
          branch.setArchived(true);
          OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleting, branch.getGuid()));
          BranchManager.persist(branch);
+
+         branch.setBranchState(BranchState.DELETED);
+         OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleted, branch.getGuid()));
+         BranchManager.persist(branch);
       } catch (Exception ex) {
-         branch.setBranchState(originalState);
-         branch.setArchived(originalArchivedState.isArchived());
+         try {
+            branch.setBranchState(originalState);
+            branch.setArchived(originalArchivedState.isArchived());
+            OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.StateUpdated, branch.getGuid()));
+            BranchManager.persist(branch);
+         } catch (Exception ex2) {
+            log(ex2);
+         }
          throw ex;
       }
    }

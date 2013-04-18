@@ -92,8 +92,11 @@ public class AtsBranchManagerCore {
       long now = new Date().getTime();
       boolean notSet = hridToWorkingBranchCacheUpdated.get(teamArt.getHumanReadableId()) == null;
       if (notSet || force || (now - hridToWorkingBranchCacheUpdated.get(teamArt.getHumanReadableId()) > 1000)) {
-         hridToWorkingBranchCache.put(teamArt.getHumanReadableId(),
-            getWorkingBranchExcludeStates(teamArt, BranchState.REBASELINED, BranchState.DELETED));
+         hridToWorkingBranchCache.put(
+            teamArt.getHumanReadableId(),
+            getWorkingBranchExcludeStates(teamArt, BranchState.REBASELINED, BranchState.DELETED, BranchState.PURGED,
+               BranchState.COMMIT_IN_PROGRESS, BranchState.CREATION_IN_PROGRESS, BranchState.DELETE_IN_PROGRESS,
+               BranchState.PURGE_IN_PROGRESS));
          hridToWorkingBranchCacheUpdated.put(teamArt.getHumanReadableId(), now);
       }
       return hridToWorkingBranchCache.get(teamArt.getHumanReadableId());

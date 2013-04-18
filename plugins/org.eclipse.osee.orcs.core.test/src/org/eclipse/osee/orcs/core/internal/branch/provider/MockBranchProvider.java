@@ -49,8 +49,7 @@ public final class MockBranchProvider implements BranchProvider {
       child3.setBranchType(BranchType.MERGE);
       child3.setParentBranch(parent);
 
-      Branch grandChild1 = new Branch(GUID.create(), "grandChild1", BranchType.MERGE, BranchState.UNKNOWN, false);
-      grandChild1.setBranchState(BranchState.DELETED);
+      Branch grandChild1 = new Branch(GUID.create(), "grandChild1", BranchType.MERGE, BranchState.DELETED, false);
       grandChild1.setArchived(true);
       grandChild1.setParentBranch(child1);
 

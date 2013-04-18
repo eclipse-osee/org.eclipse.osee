@@ -15,6 +15,8 @@ import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.enums.StorageState;
@@ -48,25 +50,42 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
-      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purging, branch.getGuid()));
-
-      PurgeBranchRequest requestData = new PurgeBranchRequest(branch.getId(), recursive);
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", Function.PURGE_BRANCH.name());
 
+      BranchState currentState = branch.getBranchState();
+      BranchArchivedState archivedState = branch.getArchiveState();
+
       ArtifactCache.deCache(branch);
 
-      AcquireResult response =
-         HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.PURGE_BRANCH_REQUEST,
-            requestData, null);
+      branch.setBranchState(BranchState.PURGE_IN_PROGRESS);
+      branch.setArchived(true);
+      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purging, branch.getGuid()));
+
+      AcquireResult response = null;
+      try {
+         PurgeBranchRequest requestData = new PurgeBranchRequest(branch.getId(), recursive);
+         response =
+            HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.PURGE_BRANCH_REQUEST,
+               requestData, null);
+      } catch (OseeCoreException ex) {
+         try {
+            branch.setBranchState(currentState);
+            branch.setArchived(archivedState.isArchived());
+            OseeEventManager.kickBranchEvent(getClass(),
+               new BranchEvent(BranchEventType.StateUpdated, branch.getGuid()));
+         } catch (Exception ex2) {
+            log(ex2);
+         }
+         throw ex;
+      }
 
       if (response.wasSuccessful()) {
          branch.setStorageState(StorageState.PURGED);
+         branch.setBranchState(BranchState.PURGED);
          branch.setArchived(true);
-
-         //The access control list could be updated here
-
          BranchManager.decache(branch);
+         BranchManager.getCache().reloadCache();
          OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purged, branch.getGuid()));
       }
    }

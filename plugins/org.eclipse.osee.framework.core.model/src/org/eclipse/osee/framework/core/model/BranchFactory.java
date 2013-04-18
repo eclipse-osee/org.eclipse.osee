@@ -68,6 +68,7 @@ public class BranchFactory implements IOseeTypeFactory {
          branch.setArchived(isArchived);
          branch.setBranchState(branchState);
          branch.setBranchType(branchType);
+         branch.setStorageState(storageState);
       }
       cache.cache(branch);
       return branch;

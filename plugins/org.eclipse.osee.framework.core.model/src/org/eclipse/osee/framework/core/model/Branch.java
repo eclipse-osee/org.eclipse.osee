@@ -161,9 +161,15 @@ public class Branch extends AbstractOseeType<String> implements WriteableBranch,
    @Override
    public boolean isEditable() {
       BranchState state = getBranchState();
-      return !state.isCommitInProgress() && !state.isCommitted() && !state.isRebaselined() && //
-      !state.isDeleted() && !state.isCreationInProgress() && //
-      !getArchiveState().isArchived() && !isPurged();
+      return (state.isCreated() || state.isModified() || state.isRebaselineInProgress()) && getArchiveState().isUnArchived();
+   }
+
+   public boolean isCreated() {
+      return getStorageState() == StorageState.CREATED;
+   }
+
+   public boolean isModified() {
+      return getStorageState() == StorageState.MODIFIED;
    }
 
    public boolean isPurged() {
@@ -172,6 +178,14 @@ public class Branch extends AbstractOseeType<String> implements WriteableBranch,
 
    public boolean isDeleted() {
       return getBranchState() == BranchState.DELETED;
+   }
+
+   public boolean isDeleteInProgress() {
+      return getBranchState() == BranchState.DELETE_IN_PROGRESS;
+   }
+
+   public boolean isPurgeInProgress() {
+      return getBranchState() == BranchState.PURGE_IN_PROGRESS;
    }
 
    @Override

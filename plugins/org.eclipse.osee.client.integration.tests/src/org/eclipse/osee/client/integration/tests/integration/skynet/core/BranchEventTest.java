@@ -181,7 +181,7 @@ public class BranchEventTest {
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Purging, guid);
       verifyReceivedBranchStatesEvent(branchEventListener.getSecondResults(), BranchEventType.Purged, guid);
 
-      Assert.assertEquals(BranchState.CREATED, workingBranch.getBranchState());
+      Assert.assertEquals(BranchState.PURGED, workingBranch.getBranchState());
       Assert.assertEquals(StorageState.PURGED, workingBranch.getStorageState());
       Assert.assertFalse(workingBranch.isEditable());
       Assert.assertFalse("Branch should not exist", BranchManager.branchExists(guid));

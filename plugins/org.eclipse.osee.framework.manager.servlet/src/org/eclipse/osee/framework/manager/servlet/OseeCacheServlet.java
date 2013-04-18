@@ -147,12 +147,14 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
       BranchCache cache = caching.getBranchCache();
       if (updateRequest.isServerUpdateMessage()) {
          for (Branch branch : updated) {
-            if (StorageState.CREATED == branch.getStorageState()) {
+            if (branch.isCreated()) {
                branch.setStorageState(StorageState.MODIFIED);
             }
             branch.clearDirty();
             cache.decache(branch);
-            cache.cache(branch);
+            if (!branch.isPurged()) {
+               cache.cache(branch);
+            }
          }
       } else {
          cache.storeItems(updated);

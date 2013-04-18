@@ -279,10 +279,10 @@ public class ChangeArtifactType {
    private IdJoinQuery populateBranchIdsJoinIdTable() throws OseeDataStoreException, OseeCoreException {
       IdJoinQuery branchJoin = JoinUtility.createIdJoinQuery();
 
-      // loop through all non-archieved non-deleted
+      // loop through all non-archieved non-deleted non-purged
 
       BranchFilter branchFilter = new BranchFilter(BranchArchivedState.UNARCHIVED);
-      branchFilter.setNegatedBranchStates(BranchState.DELETED);
+      branchFilter.setNegatedBranchStates(BranchState.PURGED, BranchState.DELETED);
       for (Branch branch : BranchManager.getBranches(branchFilter)) {
          branchJoin.add(branch.getId());
       }
