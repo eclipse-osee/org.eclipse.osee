@@ -552,12 +552,10 @@
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="TRANSACTION_ID" type="INTEGER" />
 		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
-		<Index id="OSEE_JOIN_ART__Q_A_B_T_IDX" type="UNIQUE" tablespace="osee_index">
+		<Index id="OSEE_JOIN_ART__Q_A_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="QUERY_ID"/>
 			<AppliesTo id="ART_ID"/>
-			<AppliesTo id="BRANCH_ID"/>
-			<AppliesTo id="TRANSACTION_ID"/>
-		</Index>
+       </Index>
 	</Table>
 
 	<TableDescription referenceTable="OSEE_JOIN_ARTIFACT">
