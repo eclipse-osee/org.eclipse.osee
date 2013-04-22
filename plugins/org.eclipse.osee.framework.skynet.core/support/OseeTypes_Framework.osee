@@ -790,6 +790,16 @@ abstract artifactType "Function" extends "MS Word Template" {
 artifactType "System Function" extends "Function" , "System Design" {
 	guid "AAMFDjisx2s6BUTDo3wA"
 	uuid 0x0000000000000023
+	attribute "Functional Category"
+}
+
+attributeType "Functional Category" extends StringAttribute {
+	guid "AVGz73NVWERzQDxJQsQA"
+	uuid 0x100000000000038E
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	description "Functional Category in support of System Safety Report"
 }
 
 artifactType "Subsystem Function" extends "Function" , "Subsystem Design" {
