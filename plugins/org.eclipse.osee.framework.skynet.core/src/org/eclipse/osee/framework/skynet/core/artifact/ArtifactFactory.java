@@ -92,7 +92,7 @@ public abstract class ArtifactFactory {
    public synchronized Artifact reflectExisitingArtifact(int artId, String guid, String humandReadableId, IArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modificationType) throws OseeCoreException {
       Artifact toReturn =
          internalExistingArtifact(artId, guid, humandReadableId, artifactType, gammaId, branch, modificationType,
-            false, Artifact.TRANSACTION_SENTINEL);
+            false, Artifact.TRANSACTION_SENTINEL, true);
       ArtifactCache.cache(toReturn);
       return toReturn;
    }
@@ -100,11 +100,11 @@ public abstract class ArtifactFactory {
    /**
     * This method does not cache the artifact, ArtifactLoader will cache existing artifacts
     */
-   private Artifact internalExistingArtifact(int artId, String guid, String humandReadableId, IArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modType, boolean historical, int transactionId) throws OseeCoreException {
+   private Artifact internalExistingArtifact(int artId, String guid, String humandReadableId, IArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modType, boolean historical, int transactionId, boolean useBackingData) throws OseeCoreException {
       Artifact artifact = getArtifactInstance(guid, humandReadableId, BranchManager.getBranch(branch), artifactType);
 
       artifact.setArtId(artId);
-      artifact.internalSetPersistenceData(gammaId, transactionId, modType, historical);
+      artifact.internalSetPersistenceData(gammaId, transactionId, modType, historical, useBackingData);
 
       return artifact;
    }
@@ -114,7 +114,7 @@ public abstract class ArtifactFactory {
     */
    public synchronized Artifact loadExisitingArtifact(int artId, String guid, String humandReadableId, IArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical) throws OseeCoreException {
       return internalExistingArtifact(artId, guid, humandReadableId, artifactType, gammaId, branch, modType,
-         historical, transactionId);
+         historical, transactionId, false);
    }
 
    /**

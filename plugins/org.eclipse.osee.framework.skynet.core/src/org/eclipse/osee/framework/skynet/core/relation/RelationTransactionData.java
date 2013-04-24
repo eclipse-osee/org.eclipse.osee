@@ -45,7 +45,7 @@ public class RelationTransactionData extends BaseTransactionData {
    @Override
    protected void addInsertToBatch(InsertDataCollector collector) throws OseeCoreException {
       super.addInsertToBatch(collector);
-      if (!useExistingBackingData()) {
+      if (!relation.isUseBackingData()) {
          internalAddInsertToBatch(collector, 4, INSERT_INTO_RELATION_TABLE, relation.getId(),
             relation.getRelationType().getId(), relation.getAArtifactId(), relation.getBArtifactId(),
             relation.getRationale(), getGammaId());
@@ -70,7 +70,7 @@ public class RelationTransactionData extends BaseTransactionData {
    @Override
    protected int createGammaId() throws OseeCoreException {
       int newGammaId = 0;
-      if (useExistingBackingData()) {
+      if (relation.isUseBackingData()) {
          newGammaId = relation.getGammaId();
       } else {
          newGammaId = ConnectionHandler.getSequence().getNextGammaId();
@@ -96,4 +96,5 @@ public class RelationTransactionData extends BaseTransactionData {
 
       //      }
    }
+
 }

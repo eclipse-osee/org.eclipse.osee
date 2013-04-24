@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.update;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -26,6 +27,8 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IntroduceArtifactOperation;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -69,39 +72,44 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
             }
          });
       } else if (isAccessAllowed(sourceBranch, destinationBranch)) {
-         if (prompt) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  CheckBoxDialog confirm =
-                     new CheckBoxDialog(Displays.getActiveShell(), "Introduce Artifact(s)", null,
-                        "Introduce " + sourceArtifacts.size() + " Artifact(s)", "Include Children",
-                        MessageDialog.QUESTION, 0);
-                  if (confirm.open() == 0) {
-                     try {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               try {
+                  if (prompt) {
+                     CheckBoxDialog confirm =
+                        new CheckBoxDialog(Displays.getActiveShell(), "Introduce Artifact(s)", null,
+                           "Introduce " + sourceArtifacts.size() + " Artifact(s)", "Include Children",
+                           MessageDialog.QUESTION, 0);
+                     if (confirm.open() == 0) {
                         if (confirm.isChecked()) {
                            sourceArtifacts.addAll(getRecurseChildren());
                         }
-                        IntroduceArtifactOperation introduceOperation =
-                           new IntroduceArtifactOperation(destinationBranch);
-                        introduceOperation.introduce(sourceArtifacts);
-                     } catch (OseeCoreException ex) {
-                        OseeLog.log(InterArtifactExplorerDropHandlerOperation.class, Level.WARNING,
-                           ex.getLocalizedMessage());
                      }
                   }
+                  SkynetTransaction transaction =
+                     TransactionManager.createTransaction(destinationBranch,
+                        String.format("Introduce %d artifact(s)", sourceArtifacts.size()));
+                  List<Artifact> destinationArtifacts =
+                     new IntroduceArtifactOperation(destinationBranch).introduce(sourceArtifacts);
+                  for (Artifact destinationArtifact : destinationArtifacts) {
+                     transaction.addArtifact(destinationArtifact);
+                  }
+                  transaction.execute();
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(InterArtifactExplorerDropHandlerOperation.class, Level.WARNING, ex.getLocalizedMessage());
                }
-            });
-         } else {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  MessageDialog.openError(Displays.getActiveShell(), ACCESS_ERROR_MSG_TITLE, ACCESS_ERROR_MSG);
-               }
-            });
-         }
-         monitor.done();
+            }
+         });
+      } else {
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               MessageDialog.openError(Displays.getActiveShell(), ACCESS_ERROR_MSG_TITLE, ACCESS_ERROR_MSG);
+            }
+         });
       }
+      monitor.done();
    }
 
    private boolean isAccessAllowed(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {

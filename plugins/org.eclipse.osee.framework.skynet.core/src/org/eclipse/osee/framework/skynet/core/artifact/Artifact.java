@@ -110,11 +110,12 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    private ModificationType modType;
    private ModificationType lastValidModType;
    private EditState objectEditState;
+   private boolean useBackingData;
 
    public Artifact(String guid, String humanReadableId, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
       super(GUID.checkOrCreate(guid), "");
       objectEditState = EditState.NO_CHANGE;
-      modType = ModificationType.NEW;
+      internalSetModType(ModificationType.NEW, false);
 
       this.humanReadableId = humanReadableId;
       this.branch = branch;
@@ -1028,20 +1029,29 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
     * data in memory
     */
    public void replaceWithVersion(int gammaId) {
-      this.gammaId = gammaId;
-      internalSetModType(ModificationType.REPLACED_WITH_VERSION);
+      replaceWithVersion(gammaId, ModificationType.REPLACED_WITH_VERSION);
    }
 
-   private final void internalSetModType(ModificationType modType) {
+   public void replaceWithVersion(int gammaId, ModificationType modType) {
+      internalSetGammaId(gammaId);
+      internalSetModType(modType, true);
+   }
+
+   private final void internalSetGammaId(int gammaId) {
+      this.gammaId = gammaId;
+   }
+
+   protected final void internalSetModType(ModificationType modType, boolean useBackingData) {
       lastValidModType = this.modType;
       this.modType = modType;
+      this.useBackingData = useBackingData;
    }
 
    /**
     * This is used to mark that the artifact deleted.
     */
    public final void internalSetDeleted() throws OseeCoreException {
-      internalSetModType(ModificationType.DELETED);
+      internalSetModType(ModificationType.DELETED, true);
 
       for (Attribute<?> attribute : getAttributes()) {
          attribute.setArtifactDeleted();
@@ -1054,7 +1064,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
          ArtifactCache.deCache(this);
 
          for (Attribute<?> attribute : getAttributes()) {
-            attribute.internalSetDeletedFromRemoteEvent();
+            attribute.internalSetModType(ModificationType.DELETED, true, false);
          }
       }
    }
@@ -1490,17 +1500,18 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    }
 
    Artifact introduceShallowArtifact(IOseeBranch destinationBranch) throws OseeCoreException {
-      return ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(artId, getGuid(), humanReadableId,
-         artifactType, gammaId, destinationBranch, ModificationType.INTRODUCED);
+      Artifact shallowArt =
+         ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(artId, getGuid(), humanReadableId,
+            artifactType, gammaId, destinationBranch, modType);
+      return shallowArt;
    }
 
    void introduce(Artifact sourceArtifact) {
-      int sourceGamma = sourceArtifact.getGammaId();
-      if (gammaId != sourceGamma) {
-         replaceWithVersion(sourceGamma);
-      } else if (!sourceArtifact.getModType().equals(modType)) {
-         internalSetModType(sourceArtifact.getModType());
-      }
+      replaceWithVersion(sourceArtifact.getGammaId(), sourceArtifact.getModType());
+   }
+
+   public boolean isUseBackingdata() {
+      return useBackingData;
    }
 
    /**
@@ -1544,8 +1555,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
          this.artifactType = ArtifactTypeManager.getType(artifactType);
          objectEditState = EditState.ARTIFACT_TYPE_MODIFIED;
          if (isInDb()) {
-            lastValidModType = modType;
-            modType = ModificationType.MODIFIED;
+            internalSetModType(ModificationType.MODIFIED, false);
          }
       }
    }
@@ -1701,12 +1711,11 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    /**
     * This method should never be called from outside the OSEE Application Framework
     */
-   void internalSetPersistenceData(int gammaId, int transactionId, ModificationType modType, boolean historical) {
+   void internalSetPersistenceData(int gammaId, int transactionId, ModificationType modType, boolean historical, boolean useBackingData) {
       this.gammaId = gammaId;
       this.transactionId = transactionId;
       this.historical = historical;
-      this.modType = modType;
-      this.lastValidModType = modType;
+      internalSetModType(modType, useBackingData);
       this.objectEditState = EditState.NO_CHANGE;
    }
 

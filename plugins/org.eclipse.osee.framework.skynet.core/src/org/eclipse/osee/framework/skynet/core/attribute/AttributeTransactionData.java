@@ -51,7 +51,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    @Override
    protected void addInsertToBatch(InsertDataCollector collector) throws OseeCoreException {
       super.addInsertToBatch(collector);
-      if (!useExistingBackingData()) {
+      if (!attribute.isUseBackingData()) {
          attribute.getAttributeDataProvider().persist(getGammaId());
          daoToSql.setData(attribute.getAttributeDataProvider().getData());
          internalAddInsertToBatch(collector, 3, INSERT_ATTRIBUTE, attribute.getArtifact().getArtId(), getItemId(),
@@ -72,7 +72,7 @@ public class AttributeTransactionData extends BaseTransactionData {
 
    @Override
    protected void internalOnRollBack() throws OseeCoreException {
-      if (!useExistingBackingData() && Strings.isValid(daoToSql.getUri())) {
+      if (!attribute.isUseBackingData() && Strings.isValid(daoToSql.getUri())) {
          try {
             HttpProcessor.delete(AttributeURL.getDeleteURL(daoToSql.getUri()));
          } catch (Exception ex) {
@@ -83,13 +83,7 @@ public class AttributeTransactionData extends BaseTransactionData {
 
    @Override
    protected int createGammaId() throws OseeCoreException {
-      int newGammaId = 0;
-      if (useExistingBackingData()) {
-         newGammaId = attribute.getGammaId();
-      } else {
-         newGammaId = ConnectionHandler.getSequence().getNextGammaId();
-      }
-      return newGammaId;
+      return attribute.isUseBackingData() ? attribute.getGammaId() : ConnectionHandler.getSequence().getNextGammaId();
    }
 
    private static final class DAOToSQL {
@@ -134,4 +128,5 @@ public class AttributeTransactionData extends BaseTransactionData {
    protected void internalAddToEvents(ArtifactEvent artifactEvent) {
       return;
    }
+
 }

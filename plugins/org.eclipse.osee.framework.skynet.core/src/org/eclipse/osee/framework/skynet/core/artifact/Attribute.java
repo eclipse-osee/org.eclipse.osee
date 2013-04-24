@@ -44,11 +44,12 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
    private int gammaId;
    private boolean dirty;
    private ModificationType modificationType;
+   private boolean useBackingData;
 
    void internalInitialize(IAttributeType attributeType, Artifact artifact, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
       this.attributeType = AttributeTypeManager.getType(attributeType);
       this.artifactRef = new WeakReference<Artifact>(artifact);
-      this.modificationType = modificationType;
+      internalSetModType(modificationType, false, markDirty);
 
       try {
          Class<? extends IAttributeDataProvider> providerClass =
@@ -63,8 +64,6 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
       if (setDefaultValue) {
          setToDefaultValue();
       }
-
-      dirty = markDirty;
       uponInitialize();
    }
 
@@ -102,11 +101,11 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
       this.gammaId = gammaId;
    }
 
-   private void markAsNewOrChanged() {
+   protected void markAsNewOrChanged() {
       if (isInDb()) {
-         markAsChanged(ModificationType.MODIFIED);
+         internalSetModType(ModificationType.MODIFIED, false, true);
       } else {
-         markAsChanged(ModificationType.NEW);
+         internalSetModType(ModificationType.NEW, false, true);
       }
    }
 
@@ -142,7 +141,6 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
    protected abstract T convertStringToValue(String value) throws OseeCoreException;
 
    public final void resetToDefaultValue() throws OseeCoreException {
-      modificationType = ModificationType.MODIFIED;
       setToDefaultValue();
    }
 
@@ -198,11 +196,6 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
       return dirty;
    }
 
-   protected void markAsChanged(ModificationType modificationType) {
-      setDirtyFlag(true);
-      this.modificationType = modificationType;
-   }
-
    public void setNotDirty() {
       setDirtyFlag(false);
    }
@@ -248,14 +241,14 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
    }
 
    public void resetModType() {
-      this.modificationType = ModificationType.MODIFIED;
+      internalSetModType(ModificationType.MODIFIED, false, true);
    }
 
    /**
     * Deletes the attribute
     */
    public final void setArtifactDeleted() {
-      markAsChanged(ModificationType.ARTIFACT_DELETED);
+      internalSetModType(ModificationType.ARTIFACT_DELETED, true, true);
    }
 
    /**
@@ -263,7 +256,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
     */
    public final void delete() throws OseeCoreException {
       if (isInDb()) {
-         markAsChanged(ModificationType.DELETED);
+         internalSetModType(ModificationType.DELETED, true, true);
       } else {
          getArtifact().deleteAttribute(this);
       }
@@ -289,8 +282,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
    }
 
    public void markAsPurged() {
-      modificationType = ModificationType.DELETED;
-      setDirtyFlag(false);
+      internalSetModType(ModificationType.DELETED, false, false);
    }
 
    /**
@@ -338,29 +330,27 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
     * data in memory
     */
    public void replaceWithVersion(int gammaId) {
-      modificationType = ModificationType.REPLACED_WITH_VERSION;
-      this.gammaId = gammaId;
-      setDirtyFlag(true);
+      internalSetPersistenceData(gammaId, ModificationType.REPLACED_WITH_VERSION);
+   }
+
+   private void internalSetPersistenceData(int gammaId, ModificationType modType) {
+      internalSetModType(modType, true, true);
+      internalSetGammaId(gammaId);
    }
 
    public void introduce(Attribute<?> sourceAttr) {
-      int sourceGamma = sourceAttr.getGammaId();
-      if (gammaId != sourceGamma) {
-         replaceWithVersion(sourceGamma);
-      } else if (!sourceAttr.getModificationType().equals(modificationType)) {
-         markAsChanged(sourceAttr.getModificationType());
-      }
+      internalSetPersistenceData(sourceAttr.getGammaId(), sourceAttr.getModificationType());
    }
 
-   /**
-    * @param modificationType the modificationType to set
-    */
-   public void internalSetModificationType(ModificationType modificationType) {
+   public boolean isUseBackingData() {
+      return useBackingData;
+   }
+
+   public void internalSetModType(ModificationType modificationType, boolean useBackingData, boolean dirty) {
       this.modificationType = modificationType;
-   }
+      this.useBackingData = useBackingData;
+      setDirtyFlag(dirty);
 
-   public void internalSetDeletedFromRemoteEvent() {
-      internalSetModificationType(ModificationType.DELETED);
    }
 
    @Override

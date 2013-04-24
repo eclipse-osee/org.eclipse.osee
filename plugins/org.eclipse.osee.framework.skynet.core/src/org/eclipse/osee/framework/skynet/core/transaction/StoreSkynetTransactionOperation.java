@@ -132,9 +132,12 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
       Set<Integer> gammasToTag = new LinkedHashSet<Integer>();
       for (BaseTransactionData transactionData : txDatas) {
          if (!transactionData.getModificationType().isExistingVersionUsed() && transactionData instanceof AttributeTransactionData) {
-            Attribute<?> attr = ((AttributeTransactionData) transactionData).getAttribute();
-            if (attr.getAttributeType().isTaggable()) {
-               gammasToTag.add(transactionData.getGammaId());
+            AttributeTransactionData attrData = (AttributeTransactionData) transactionData;
+            if (!attrData.getAttribute().isUseBackingData()) {
+               Attribute<?> attr = ((AttributeTransactionData) transactionData).getAttribute();
+               if (attr.getAttributeType().isTaggable()) {
+                  gammasToTag.add(transactionData.getGammaId());
+               }
             }
          }
       }

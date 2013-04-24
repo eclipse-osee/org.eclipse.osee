@@ -45,10 +45,6 @@ public abstract class BaseTransactionData {
       this.itemId = itemId;
    }
 
-   protected final boolean useExistingBackingData() {
-      return modificationType.isExistingVersionUsed();
-   }
-
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof BaseTransactionData) {

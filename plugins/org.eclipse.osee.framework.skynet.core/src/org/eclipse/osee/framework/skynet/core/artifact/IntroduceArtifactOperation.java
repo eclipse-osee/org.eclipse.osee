@@ -74,10 +74,11 @@ public class IntroduceArtifactOperation {
       if (destinationArtifact == null) {
          destinationArtifact = sourceArtifact.introduceShallowArtifact(destinationBranch);
          processArtifact(sourceArtifact, destinationArtifact);
-      } else if (!destinationArtifact.isDeleted()) {
+      } else {
          destinationArtifact.introduce(sourceArtifact);
          processArtifact(sourceArtifact, destinationArtifact);
       }
+
       destinationArtifacts.add(destinationArtifact);
    }
 
@@ -120,8 +121,9 @@ public class IntroduceArtifactOperation {
 
          if (destinationAttribute == null) {
             destinationArtifact.internalInitializeAttribute(sourceAttribute.getAttributeType(),
-               sourceAttribute.getId(), sourceAttribute.getGammaId(), ModificationType.INTRODUCED, true,
-               sourceAttribute.getAttributeDataProvider().getData());
+               sourceAttribute.getId(), sourceAttribute.getGammaId(), sourceAttribute.getModificationType(), true,
+               sourceAttribute.getAttributeDataProvider().getData()).internalSetModType(
+               sourceAttribute.getModificationType(), true, true);
          } else {
             destinationAttribute.introduce(sourceAttribute);
          }
@@ -152,11 +154,12 @@ public class IntroduceArtifactOperation {
             int aArtifactId = sourceRelation.getAArtifactId();
             int bArtifactId = sourceRelation.getBArtifactId();
             if (doesRelatedArtifactExist(destinationArtifact, aArtifactId, bArtifactId)) {
+               ModificationType modType = sourceRelation.getModificationType();
                destinationRelation =
                   RelationManager.getOrCreate(aArtifactId, bArtifactId, destinationBranch,
                      sourceRelation.getRelationType(), sourceRelation.getId(), sourceRelation.getGammaId(),
-                     sourceRelation.getRationale(), ModificationType.INTRODUCED);
-               destinationRelation.setDirty();
+                     sourceRelation.getRationale(), modType);
+               destinationRelation.internalSetModType(modType, true, true);
             }
          } else {
             destinationRelation.introduce(sourceRelation.getGammaId(), sourceRelation.getModificationType());

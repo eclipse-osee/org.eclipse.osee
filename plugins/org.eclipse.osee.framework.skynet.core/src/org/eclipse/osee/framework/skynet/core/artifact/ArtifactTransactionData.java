@@ -41,7 +41,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
    @Override
    protected void addInsertToBatch(InsertDataCollector collector) throws OseeCoreException {
       super.addInsertToBatch(collector);
-      if (!useExistingBackingData()) {
+      if (!artifact.isUseBackingdata()) {
          internalAddInsertToBatch(collector, 1, INSERT_ARTIFACT, getGammaId(), artifact.getArtId(),
             artifact.getArtTypeId(), artifact.getGuid(), artifact.getHumanReadableId());
       }
@@ -49,12 +49,12 @@ public class ArtifactTransactionData extends BaseTransactionData {
 
    @Override
    protected void internalUpdate(TransactionRecord transactionId) throws OseeCoreException {
-      artifact.internalSetPersistenceData(getGammaId(), transactionId.getId(), getModificationType(), false);
+      artifact.internalSetPersistenceData(getGammaId(), transactionId.getId(), getModificationType(), false, false);
    }
 
    @Override
    protected void internalClearDirtyState() {
-      // provided for subclass implementation
+      // provided for subclass implementation      
    }
 
    @Override
@@ -64,10 +64,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
 
    @Override
    protected int createGammaId() throws OseeCoreException {
-      if (useExistingBackingData()) {
-         return artifact.getGammaId();
-      }
-      return ConnectionHandler.getSequence().getNextGammaId();
+      return artifact.isUseBackingdata() ? artifact.getGammaId() : ConnectionHandler.getSequence().getNextGammaId();
    }
 
    @Override

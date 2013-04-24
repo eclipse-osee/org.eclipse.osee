@@ -219,7 +219,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
    }
 
    private void addArtifactAndAttributes(Artifact artifact) throws OseeCoreException {
-      if (artifact.hasDirtyAttributes() || artifact.hasDirtyArtifactType() || artifact.getModType() == REPLACED_WITH_VERSION) {
+      if (artifact.hasDirtyAttributes() || artifact.hasDirtyArtifactType() || artifact.getModType() == REPLACED_WITH_VERSION || artifact.isUseBackingdata()) {
          if (artifact.isDeleted() && !artifact.isInDb()) {
             for (Attribute<?> attribute : artifact.internalGetAttributes()) {
                if (attribute.isDirty()) {
@@ -231,7 +231,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
          checkAccess(artifact);
          setTxState(TxState.MODIFIED);
 
-         if (!artifact.isInDb() || artifact.hasDirtyArtifactType() || artifact.getModType().isDeleted() || artifact.getModType() == REPLACED_WITH_VERSION) {
+         if (!artifact.isInDb() || artifact.hasDirtyArtifactType() || artifact.getModType().isDeleted() || artifact.getModType() == REPLACED_WITH_VERSION || artifact.isUseBackingdata()) {
             BaseTransactionData txItem = transactionDataItems.get(ArtifactTransactionData.class, artifact.getArtId());
             if (txItem == null) {
                modifiedArtifacts.add(artifact);
@@ -304,7 +304,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
                   relationEventType = RelationEventType.Deleted;
                }
             } else {
-               if (link.getModificationType().matches(REPLACED_WITH_VERSION, INTRODUCED)) {
+               if (link.isUseBackingData() || link.getModificationType().matches(REPLACED_WITH_VERSION, INTRODUCED)) {
                   modificationType = link.getModificationType();
                } else {
                   modificationType = MODIFIED;

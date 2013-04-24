@@ -128,13 +128,13 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                               continue;
                            }
                            if (modificationType.isDeleted()) {
-                              attribute.internalSetModificationType(modificationType);
+                              attribute.internalSetModType(modificationType, false, false);
                            } else {
                               attribute.getAttributeDataProvider().loadData(
                                  attrChange.getData().toArray(new Object[attrChange.getData().size()]));
                            }
-                           attribute.internalSetGammaId(attrChange.getGammaId());
                            attribute.setNotDirty();
+                           attribute.internalSetGammaId(attrChange.getGammaId());
                         } catch (OseeCoreException ex) {
                            EventUtil.eventLog(
                               String.format("REM: Exception updating %s's attribute %d [/n%s/n].",

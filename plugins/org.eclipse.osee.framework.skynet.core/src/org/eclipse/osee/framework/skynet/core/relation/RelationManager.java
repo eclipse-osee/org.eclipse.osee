@@ -528,21 +528,15 @@ public class RelationManager {
 
       RelationType relationType = RelationTypeManager.getType(relationTypeToken);
       if (relation == null) {
-         try {
-            ensureRelationCanBeAdded(relationTypeToken, artifactA, artifactB);
+         ensureRelationCanBeAdded(relationTypeToken, artifactA, artifactB);
 
-            relation =
-               getOrCreate(artifactA.getArtId(), artifactB.getArtId(), artifactA.getBranch(), relationType, 0, 0,
-                  rationale, ModificationType.NEW);
-            relation.setDirty();
+         relation =
+            getOrCreate(artifactA.getArtId(), artifactB.getArtId(), artifactA.getBranch(), relationType, 0, 0,
+               rationale, ModificationType.NEW);
+         relation.setDirty();
 
-            RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationTypeToken, RelationSide.SIDE_B);
-            sorter.addItem(sorterId, artifactB);
-
-         } catch (OseeArgumentException e) {
-            // skipped the relation adding code
-            System.out.println("Warning: skipping relation [" + relation + "] type [" + relationTypeToken + "], artifacts [" + artifactA + "," + artifactB + "]");
-         }
+         RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationTypeToken, RelationSide.SIDE_B);
+         sorter.addItem(sorterId, artifactB);
 
       } else if (relation.isDeleted()) {
          relation.undelete();

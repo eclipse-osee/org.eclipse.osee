@@ -62,6 +62,7 @@ public class RelationLink {
    private static final boolean SET_NOT_DIRTY = false;
 
    private final ArtifactLinker artifactLinker;
+   private boolean useBackingData;
 
    public RelationLink(ArtifactLinker artifactLinker, int aArtifactId, int bArtifactId, IOseeBranch branch, RelationType relationType, int relationId, int gammaId, String rationale, ModificationType modificationType) {
       this.artifactLinker = artifactLinker;
@@ -73,11 +74,13 @@ public class RelationLink {
       this.aArtifactId = aArtifactId;
       this.bArtifactId = bArtifactId;
       this.branch = branch;
-      this.modificationType = modificationType;
+      internalSetModType(modificationType, false, false);
    }
 
-   public void internalSetModificationType(ModificationType modificationType) {
+   public void internalSetModType(ModificationType modificationType, boolean useBackingData, boolean dirty) {
       this.modificationType = modificationType;
+      this.useBackingData = useBackingData;
+      this.dirty = dirty;
    }
 
    public RelationSide getSide(Artifact artifact) {
@@ -99,9 +102,12 @@ public class RelationLink {
     * data in memory
     */
    public void replaceWithVersion(int gammaId) {
-      modificationType = ModificationType.REPLACED_WITH_VERSION;
-      this.gammaId = gammaId;
-      setDirtyFlag(true);
+      internalSetPersistenceData(gammaId, ModificationType.REPLACED_WITH_VERSION);
+   }
+
+   private void internalSetPersistenceData(int gammaId, ModificationType modType) {
+      internalSetModType(modType, true, true);
+      internalSetGammaId(gammaId);
    }
 
    public int getAArtifactId() {
@@ -165,7 +171,7 @@ public class RelationLink {
    }
 
    public void internalUnDelete() {
-      markedAsChanged(ModificationType.UNDELETED, true);
+      internalSetModType(ModificationType.UNDELETED, false, true);
    }
 
    public void internalRemoteEventDelete() {
@@ -182,16 +188,12 @@ public class RelationLink {
             }
          }
 
-         markAsDeleted(setDirty);
+         internalSetModType(ModificationType.DELETED, true, setDirty);
       }
    }
 
-   private void markAsDeleted(boolean setDirty) {
-      markedAsChanged(ModificationType.DELETED, setDirty);
-   }
-
    public void markAsPurged() {
-      markAsDeleted(SET_NOT_DIRTY);
+      internalSetModType(ModificationType.DELETED, false, SET_NOT_DIRTY);
    }
 
    public Artifact getArtifact(RelationSide relationSide) throws OseeCoreException {
@@ -222,7 +224,7 @@ public class RelationLink {
          return;
       }
       internalSetRationale(rationale);
-      markedAsChanged(ModificationType.MODIFIED, SET_DIRTY);
+      internalSetModType(ModificationType.MODIFIED, false, SET_DIRTY);
 
    }
 
@@ -318,19 +320,6 @@ public class RelationLink {
       return branch;
    }
 
-   private void markedAsChanged(ModificationType modificationType, boolean setDirty) {
-      //Because deletes can reorder links and we want the final mod type to be the delete and not the modify.
-      if (modificationType != ModificationType.DELETED || modificationType != ModificationType.ARTIFACT_DELETED) {
-         this.modificationType = modificationType;
-      }
-
-      if (setDirty) {
-         setDirty();
-      } else {
-         setNotDirty();
-      }
-   }
-
    public ModificationType getModificationType() {
       return modificationType;
    }
@@ -400,11 +389,11 @@ public class RelationLink {
    }
 
    public void introduce(int sourceGamma, ModificationType sourceModificationType) {
-      if (gammaId != sourceGamma) {
-         replaceWithVersion(sourceGamma);
-      } else if (!sourceModificationType.equals(modificationType)) {
-         internalSetModificationType(sourceModificationType);
-         setDirty();
-      }
+      internalSetPersistenceData(sourceGamma, sourceModificationType);
    }
+
+   public boolean isUseBackingData() {
+      return useBackingData;
+   }
+
 }
