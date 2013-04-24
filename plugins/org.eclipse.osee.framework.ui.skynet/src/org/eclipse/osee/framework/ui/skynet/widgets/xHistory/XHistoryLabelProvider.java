@@ -16,6 +16,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -36,39 +37,46 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) {
+      String toReturn = "";
       try {
-         if (!(element instanceof Change)) {
-            return "";
-         }
-         Change data = (Change) element;
+         if ((element instanceof Change)) {
+            Change data = (Change) element;
 
-         if (cCol.equals(HistoryXViewerFactory.transaction)) {
-            return String.valueOf(data.getTxDelta().getEndTx().getId());
-         } else if (cCol.equals(HistoryXViewerFactory.gamma)) {
-            return String.valueOf(data.getGamma());
-         } else if (cCol.equals(HistoryXViewerFactory.itemType)) {
-            return data instanceof RelationChange ? data.getName() : data.getItemTypeName();
-         } else if (cCol.equals(HistoryXViewerFactory.itemChange)) {
-            return data.getItemKind();
-         } else if (cCol.equals(HistoryXViewerFactory.modType)) {
-            return data.getModificationType().getDisplayName();
-         } else if (cCol.equals(HistoryXViewerFactory.itemId)) {
-            return String.valueOf(data.getItemId());
-         } else if (cCol.equals(HistoryXViewerFactory.was)) {
-            return data.getWasValue();
-         } else if (cCol.equals(HistoryXViewerFactory.is)) {
-            return data.getIsValue();
-         } else if (cCol.equals(HistoryXViewerFactory.timeStamp)) {
-            return new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(data.getTxDelta().getEndTx().getTimeStamp());
-         } else if (cCol.equals(HistoryXViewerFactory.author)) {
-            return UserManager.getSafeUserNameById(data.getTxDelta().getEndTx().getAuthor());
-         } else if (cCol.equals(HistoryXViewerFactory.comment)) {
-            return data.getTxDelta().getEndTx().getComment();
+            if (cCol.equals(HistoryXViewerFactory.transaction)) {
+               toReturn = String.valueOf(data.getTxDelta().getEndTx().getId());
+            } else if (cCol.equals(HistoryXViewerFactory.gamma)) {
+               toReturn = String.valueOf(data.getGamma());
+            } else if (cCol.equals(HistoryXViewerFactory.itemType)) {
+               if (data instanceof ArtifactChange && data.getChangeArtifact() == null) {
+                  toReturn = "Artifact Does Exist In This Transaction";
+               } else {
+                  toReturn = data instanceof RelationChange ? data.getName() : data.getItemTypeName();
+               }
+            } else if (cCol.equals(HistoryXViewerFactory.itemChange)) {
+               toReturn = data.getItemKind();
+            } else if (cCol.equals(HistoryXViewerFactory.modType)) {
+               toReturn = data.getModificationType().getDisplayName();
+            } else if (cCol.equals(HistoryXViewerFactory.itemId)) {
+               toReturn = String.valueOf(data.getItemId());
+            } else if (cCol.equals(HistoryXViewerFactory.was)) {
+               toReturn = data.getWasValue();
+            } else if (cCol.equals(HistoryXViewerFactory.is)) {
+               toReturn = data.getIsValue();
+            } else if (cCol.equals(HistoryXViewerFactory.timeStamp)) {
+               toReturn =
+                  new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(data.getTxDelta().getEndTx().getTimeStamp());
+            } else if (cCol.equals(HistoryXViewerFactory.author)) {
+               toReturn = UserManager.getSafeUserNameById(data.getTxDelta().getEndTx().getAuthor());
+            } else if (cCol.equals(HistoryXViewerFactory.comment)) {
+               toReturn = data.getTxDelta().getEndTx().getComment();
+            } else {
+               toReturn = "unhandled column";
+            }
          }
       } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
+         toReturn = XViewerCells.getCellExceptionString(ex);
       }
-      return "unhandled column";
+      return toReturn;
    }
 
    /**
