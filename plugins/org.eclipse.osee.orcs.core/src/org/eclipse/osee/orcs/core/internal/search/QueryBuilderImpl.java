@@ -259,13 +259,15 @@ public class QueryBuilderImpl implements QueryBuilder {
    @Override
    public QueryBuilder and(IAttributeType attributeType, String value, QueryOption... options) throws OseeCoreException {
       Criteria<QueryOptions> criteria =
-         criteriaFactory.createAttributeCriteria(Collections.singleton(attributeType), value, options);
+         criteriaFactory.createAttributeCriteria(Collections.singleton(attributeType), Collections.singleton(value),
+            options);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
    public QueryBuilder and(Collection<? extends IAttributeType> attributeTypes, String value, QueryOption... options) throws OseeCoreException {
-      Criteria<QueryOptions> criteria = criteriaFactory.createAttributeCriteria(attributeTypes, value, options);
+      Criteria<QueryOptions> criteria =
+         criteriaFactory.createAttributeCriteria(attributeTypes, Collections.singleton(value), options);
       return addAndCheck(getQueryData(), criteria);
    }
 

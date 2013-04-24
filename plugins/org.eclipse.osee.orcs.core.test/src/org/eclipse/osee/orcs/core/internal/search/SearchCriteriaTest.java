@@ -20,14 +20,14 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 /**
- * Test Case for {@link CriteriaAttributeKeyword}
+ * Test Case for {@link CriteriaAttributeKeywords}
  * 
  * @author Megumi Telles
  */
@@ -51,8 +51,8 @@ public class SearchCriteriaTest {
       when(cache.get(CoreAttributeTypes.Name)).thenReturn(type);
       when(type.getName()).thenReturn("Name");
       when(type.isTaggable()).thenReturn(true);
-      CriteriaAttributeKeyword keyword =
-         new CriteriaAttributeKeyword(Collections.singletonList(CoreAttributeTypes.Name), cache, "");
+      CriteriaAttributeKeywords keyword =
+         new CriteriaAttributeKeywords(Collections.singletonList(CoreAttributeTypes.Name), cache, "");
       keyword.checkNotTaggable();
       Assert.assertTrue("Attribute type is taggable", true);
    }
@@ -62,8 +62,8 @@ public class SearchCriteriaTest {
       when(cache.get(CoreAttributeTypes.Active)).thenReturn(type);
       when(type.getName()).thenReturn("Active");
       when(type.isTaggable()).thenReturn(false);
-      CriteriaAttributeKeyword keyword =
-         new CriteriaAttributeKeyword(Collections.singletonList(CoreAttributeTypes.Active), cache, "");
+      CriteriaAttributeKeywords keyword =
+         new CriteriaAttributeKeywords(Collections.singletonList(CoreAttributeTypes.Active), cache, "");
       keyword.checkNotTaggable();
       Assert.fail("checkNotTaggable should have thrown an exception on this attribute type");
 
@@ -76,7 +76,7 @@ public class SearchCriteriaTest {
       when(cache.get(CoreAttributeTypes.FavoriteBranch)).thenReturn(type);
       when(type.getName()).thenReturn("Favorite Branch");
       when(type.isTaggable()).thenReturn(false);
-      CriteriaAttributeKeyword keyword = new CriteriaAttributeKeyword(types, cache, "");
+      CriteriaAttributeKeywords keyword = new CriteriaAttributeKeywords(types, cache, "");
 
       keyword.checkNotTaggable();
       Assert.fail("checkNotTaggable should have thrown an exception on this attribute type");

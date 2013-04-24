@@ -26,18 +26,18 @@ import org.eclipse.osee.orcs.core.ds.QueryOptions;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaAttributeKeyword extends Criteria<QueryOptions> {
+public class CriteriaAttributeKeywords extends Criteria<QueryOptions> {
 
    private final AttributeTypeCache attributeTypeCache;
    private final Collection<? extends IAttributeType> attributeType;
-   private final String value;
+   private final Collection<String> values;
    private final QueryOption[] options;
 
-   public CriteriaAttributeKeyword(Collection<? extends IAttributeType> attributeType, AttributeTypeCache attributeTypeCache, String value, QueryOption... options) {
+   public CriteriaAttributeKeywords(Collection<? extends IAttributeType> attributeType, AttributeTypeCache attributeTypeCache, Collection<String> values, QueryOption... options) {
       super();
       this.attributeTypeCache = attributeTypeCache;
       this.attributeType = attributeType;
-      this.value = value;
+      this.values = values;
       this.options = options;
    }
 
@@ -45,8 +45,8 @@ public class CriteriaAttributeKeyword extends Criteria<QueryOptions> {
       return attributeType;
    }
 
-   public String getValue() {
-      return value;
+   public Collection<String> getValues() {
+      return values;
    }
 
    public QueryOption[] getOptions() {
@@ -56,15 +56,22 @@ public class CriteriaAttributeKeyword extends Criteria<QueryOptions> {
    @Override
    public void checkValid(QueryOptions options) throws OseeCoreException {
       super.checkValid(options);
-      Conditions.checkNotNullOrEmpty(getValue(), "search value");
+      Conditions.checkNotNullOrEmpty(getValues(), "search value");
       Conditions.checkNotNullOrEmpty(getTypes(), "attribute types");
+      checkMultipleValues();
       checkNotTaggable();
    }
 
    @Override
    public String toString() {
-      return String.format("CriteriaAttributeKeyword [attributeType=%s, value=%s, options=%s]", attributeType, value,
-         Collections.toString(",", Arrays.asList(options)));
+      return String.format("CriteriaAttributeKeyword [attributeType=%s, value=%s, options=%s]", attributeType,
+         Collections.toString(",", values), Collections.toString(",", Arrays.asList(options)));
+   }
+
+   private void checkMultipleValues() throws OseeCoreException {
+      if (getTypes().size() > 1 && getValues().size() > 1) {
+         throw new OseeArgumentException("Multiple values is not valid with multiple types");
+      }
    }
 
    public void checkNotTaggable() throws OseeCoreException {

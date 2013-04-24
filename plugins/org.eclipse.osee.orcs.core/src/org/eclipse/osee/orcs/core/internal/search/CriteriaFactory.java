@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -29,7 +30,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
@@ -69,12 +70,16 @@ public class CriteriaFactory {
    }
 
    public Criteria<QueryOptions> createAttributeCriteria(IAttributeType attributeType, Operator operator, Collection<String> values) throws OseeCoreException {
-      return new CriteriaAttributeOther(attributeType, values, operator);
+      if (operator == Operator.EQUAL) {
+         return createAttributeCriteria(Collections.singleton(attributeType), values);
+      } else {
+         return new CriteriaAttributeOther(attributeType, values, operator);
+      }
    }
 
-   public Criteria<QueryOptions> createAttributeCriteria(Collection<? extends IAttributeType> attributeTypes, String value, QueryOption... options) throws OseeCoreException {
+   public Criteria<QueryOptions> createAttributeCriteria(Collection<? extends IAttributeType> attributeTypes, Collection<String> values, QueryOption... options) throws OseeCoreException {
       Collection<? extends IAttributeType> toReturn = checkForAnyType(attributeTypes);
-      return new CriteriaAttributeKeyword(toReturn, attributeTypeCache, value, options);
+      return new CriteriaAttributeKeywords(toReturn, attributeTypeCache, values, options);
    }
 
    public Criteria<QueryOptions> createArtifactTypeCriteria(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {

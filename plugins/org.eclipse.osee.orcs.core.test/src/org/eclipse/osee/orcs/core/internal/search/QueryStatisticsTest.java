@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.statistics.QueryStatistics;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -53,7 +53,7 @@ public class QueryStatisticsTest {
    private static QueryData createQueryData(IOseeBranch branch, String value) {
       QueryData queryData = new QueryData(new CriteriaSet(branch), new QueryOptions());
       Collection<? extends IAttributeType> types = Collections.singleton(CoreAttributeTypes.Name);
-      queryData.addCriteria(new CriteriaAttributeKeyword(types, null, value, TokenDelimiterMatch.ANY,
+      queryData.addCriteria(new CriteriaAttributeKeywords(types, null, value, TokenDelimiterMatch.ANY,
          TokenOrderType.MATCH_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT, CaseType.MATCH_CASE));
       return queryData;
    }

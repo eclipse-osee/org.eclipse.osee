@@ -30,7 +30,7 @@ import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoader;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoaderFactory;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
@@ -66,7 +66,7 @@ public class LocalIdSearchCallable extends AbstractSearchCallable<ResultSet<HasL
       checkForCancelled();
 
       boolean requiresAttributeScan =
-         queryData.hasCriteriaType(CriteriaAttributeKeyword.class) && !queryContext.getPostProcessors().isEmpty();
+         queryData.hasCriteriaType(CriteriaAttributeKeywords.class) && !queryContext.getPostProcessors().isEmpty();
 
       List<HasLocalId> results = new ArrayList<HasLocalId>();
       if (requiresAttributeScan) {

@@ -67,46 +67,48 @@ public class LoadSqlWriter extends AbstractSqlWriter<LoadOptions> {
    }
 
    @Override
-   public void writeTxBranchFilter(String txsAlias) throws OseeCoreException {
+   public String getTxBranchFilter(String txsAlias) {
+      StringBuilder sb = new StringBuilder();
       String artJoinAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_JOIN_TABLE);
-      writeTxFilter(txsAlias, artJoinAlias);
-      write(" AND ");
-      write(txsAlias);
-      write(".branch_id = ");
-      write(artJoinAlias);
-      write(".branch_id");
+      writeTxFilter(txsAlias, artJoinAlias, sb);
+      sb.append(" AND ");
+      sb.append(txsAlias);
+      sb.append(".branch_id = ");
+      sb.append(artJoinAlias);
+      sb.append(".branch_id");
+      return sb.toString();
    }
 
-   private void writeTxFilter(String txsAlias, String artJoinAlias) throws OseeCoreException {
+   private void writeTxFilter(String txsAlias, String artJoinAlias, StringBuilder sb) {
       if (getOptions().isHistorical()) {
-         write(txsAlias);
-         write(".transaction_id <= ");
-         write(artJoinAlias);
-         write(".transaction_id");
+         sb.append(txsAlias);
+         sb.append(".transaction_id <= ");
+         sb.append(artJoinAlias);
+         sb.append(".transaction_id");
          if (!getOptions().areDeletedIncluded()) {
-            write(" AND ");
-            write(txsAlias);
-            write(".tx_current");
-            write(" IN (");
-            write(String.valueOf(TxChange.CURRENT.getValue()));
-            write(", ");
-            write(String.valueOf(TxChange.NOT_CURRENT.getValue()));
-            write(")");
+            sb.append(" AND ");
+            sb.append(txsAlias);
+            sb.append(".tx_current");
+            sb.append(" IN (");
+            sb.append(String.valueOf(TxChange.CURRENT.getValue()));
+            sb.append(", ");
+            sb.append(String.valueOf(TxChange.NOT_CURRENT.getValue()));
+            sb.append(")");
          }
       } else {
-         write(txsAlias);
-         write(".tx_current");
+         sb.append(txsAlias);
+         sb.append(".tx_current");
          if (getOptions().areDeletedIncluded()) {
-            write(" IN (");
-            write(String.valueOf(TxChange.CURRENT.getValue()));
-            write(", ");
-            write(String.valueOf(TxChange.DELETED.getValue()));
-            write(", ");
-            write(String.valueOf(TxChange.ARTIFACT_DELETED.getValue()));
-            write(")");
+            sb.append(" IN (");
+            sb.append(String.valueOf(TxChange.CURRENT.getValue()));
+            sb.append(", ");
+            sb.append(String.valueOf(TxChange.DELETED.getValue()));
+            sb.append(", ");
+            sb.append(String.valueOf(TxChange.ARTIFACT_DELETED.getValue()));
+            sb.append(")");
          } else {
-            write(" = ");
-            write(String.valueOf(TxChange.CURRENT.getValue()));
+            sb.append(" = ");
+            sb.append(String.valueOf(TxChange.CURRENT.getValue()));
          }
       }
    }

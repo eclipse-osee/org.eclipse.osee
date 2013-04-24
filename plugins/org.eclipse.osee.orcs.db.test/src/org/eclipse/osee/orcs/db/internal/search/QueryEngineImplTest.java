@@ -43,7 +43,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
@@ -77,7 +77,7 @@ public class QueryEngineImplTest {
    private static final Criteria<?> REL_TYPE_EXISTS = new CriteriaRelationTypeExists(
       CoreRelationTypes.Default_Hierarchical__Child);
 
-   private static final Criteria<?> ATTRIBUTE_KEYWORD = new CriteriaAttributeKeyword(Arrays.asList(
+   private static final Criteria<?> ATTRIBUTE_KEYWORD = new CriteriaAttributeKeywords(Arrays.asList(
       CoreAttributeTypes.Name, CoreAttributeTypes.WordTemplateContent), null, "hello1_two_three",
       TokenDelimiterMatch.ANY, TokenOrderType.MATCH_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT, CaseType.MATCH_CASE);
 
@@ -116,7 +116,7 @@ public class QueryEngineImplTest {
 
       TaggingEngine taggingEngine = queryModule.createTaggingEngine(attributeTypeCache);
 
-      DataPostProcessorFactory<CriteriaAttributeKeyword> postProcessorFactory =
+      DataPostProcessorFactory<CriteriaAttributeKeywords> postProcessorFactory =
          queryModule.createAttributeKeywordPostProcessor(executorAdmin, taggingEngine);
       SqlHandlerFactory handlerFactory =
          queryModule.createHandlerFactory(identityService, cache, postProcessorFactory, taggingEngine.getTagProcessor());
@@ -421,23 +421,24 @@ public class QueryEngineImplTest {
 
    @Test
    public void testQueryAtttributeKeyword() throws OseeCoreException {
-      String expected =
-         "SELECT art1.art_id, txs1.branch_id\n" + // 
-         " FROM \n" + //
-         "osee_search_tags tag1, osee_search_tags tag2, osee_search_tags tag3, osee_attribute att1, osee_join_id jid1, osee_txs txs1, osee_artifact art1, osee_txs txs2\n" + //
-         " WHERE \n" + //
-         "att1.attr_type_id = jid1.id AND jid1.query_id = ?\n" + //
-         " AND \n" + //
-         "tag1.coded_tag_id = ? AND tag2.coded_tag_id = ? AND tag3.coded_tag_id = ?\n" + //
-         " AND \n" + //
-         "tag1.gamma_id = tag2.gamma_id AND tag2.gamma_id = tag3.gamma_id\n" + //
-         " AND \n" + //
-         "art1.art_id = att1.art_id\n" + //
-         " AND \n" + //
-         "tag1.gamma_id = att1.gamma_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
-         " AND \n" + //
-         "art1.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
-         " ORDER BY art1.art_id, txs1.branch_id";
+      String expected = "WITH gamma1 as ((SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+      " INTERSECT \n" + //
+      "SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+      " INTERSECT \n" + //
+      "SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?) ), \n" + //
+      "att1 as (SELECT art_id FROM osee_attribute att, osee_txs txs, osee_join_id jid1, " + //
+      "gamma1 WHERE att.gamma_id = gamma1.gamma_id AND att.gamma_id = txs.gamma_id AND " + //
+      "txs.tx_current = 1 AND txs.branch_id = ? AND att.attr_type_id = jid1.id AND jid1.query_id = ?)\n" + //
+      "SELECT art1.art_id, txs1.branch_id\n" + //
+      " FROM \n" + //
+      "osee_artifact art1, osee_txs txs1, att1\n" + //
+      " WHERE \n" + //
+      "art1.art_id = att1.art_id\n" + //
+      " AND \n" + //
+      "txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " AND \n" + //
+      "txs1.gamma_id = art1.gamma_id\n" + //
+      " ORDER BY art1.art_id, txs1.branch_id";
 
       queryData.addCriteria(ATTRIBUTE_KEYWORD);
 
@@ -451,39 +452,42 @@ public class QueryEngineImplTest {
       Assert.assertEquals(1, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
       Assert.assertEquals(1520625L, iterator.next()); // Coded Hello
       Assert.assertEquals(6106L, iterator.next()); // Coded two
       Assert.assertEquals(981274L, iterator.next()); // Coded three
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
+      Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
    }
 
    @Test
    public void testQueryAtttributeCombined() throws OseeCoreException {
-      String expected =
-         "SELECT art1.art_id, txs1.branch_id\n" + // 
-         " FROM \n" + //
-         "osee_attribute att1, osee_txs txs1, osee_artifact art1, osee_txs txs2, osee_search_tags tag1, osee_search_tags tag2, osee_search_tags tag3, osee_attribute att2, osee_join_id jid1, osee_txs txs3\n" + //
-         " WHERE \n" + //
-         "att1.attr_type_id = ? AND att1.value = ?\n" + //
-         " AND \n" + //
-         "art1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
-         " AND \n" + //
-         "art1.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
-         " AND \n" + //
-         "att2.attr_type_id = jid1.id AND jid1.query_id = ?\n" + //
-         " AND \n" + //
-         "tag1.coded_tag_id = ? AND tag2.coded_tag_id = ? AND tag3.coded_tag_id = ?\n" + //
-         " AND \n" + //
-         "tag1.gamma_id = tag2.gamma_id AND tag2.gamma_id = tag3.gamma_id\n" + //
-         " AND \n" + //
-         "art1.art_id = att2.art_id\n" + //
-         " AND \n" + //
-         "tag1.gamma_id = att2.gamma_id AND att2.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
-         " AND \n" + //
-         "art1.art_type_id = ?\n" + //
-         " ORDER BY art1.art_id, txs1.branch_id";
+      String expected = "WITH gamma1 as ((SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+      " INTERSECT \n" + //
+      "SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+      " INTERSECT \n" + //
+      "SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?) ), \n" + //
+      "att2 as (SELECT art_id FROM osee_attribute att, osee_txs txs, osee_join_id jid1, " + //
+      "gamma1 WHERE att.gamma_id = gamma1.gamma_id AND att.gamma_id = txs.gamma_id AND " + //
+      "txs.tx_current = 1 AND txs.branch_id = ? AND att.attr_type_id = jid1.id AND jid1.query_id = ?)\n" + //
+      "SELECT art1.art_id, txs1.branch_id\n" + //
+      " FROM \n" + //
+      "osee_attribute att1, osee_txs txs1, osee_artifact art1, osee_txs txs2, att2\n" + //
+      " WHERE \n" + //
+      "att1.attr_type_id = ? AND att1.value = ?\n" + //
+      " AND \n" + //
+      "art1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " AND \n" + //
+      "art1.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
+      " AND \n" + //
+      "art1.art_id = att2.art_id\n" + //
+      " AND \n" + //
+      "txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " AND \n" + //
+      "txs1.gamma_id = art1.gamma_id\n" + //
+      " AND \n" + //
+      "art1.art_type_id = ?\n" + //
+      " ORDER BY art1.art_id, txs1.branch_id";
 
       queryData.addCriteria(ATTRIBUTE, ATTRIBUTE_KEYWORD, TYPES);
 
@@ -491,21 +495,22 @@ public class QueryEngineImplTest {
       Assert.assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
-      Assert.assertEquals(10, parameters.size());
+      Assert.assertEquals(11, parameters.size());
 
       List<AbstractJoinQuery> joins = context.getJoins();
       Assert.assertEquals(1, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      Assert.assertEquals(CoreAttributeTypes.Name.getGuid().intValue(), iterator.next());
-      Assert.assertEquals("Hello", iterator.next());
-      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
-      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
-
-      Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
       Assert.assertEquals(1520625L, iterator.next()); // Coded Hello
       Assert.assertEquals(6106L, iterator.next()); // Coded two
       Assert.assertEquals(981274L, iterator.next()); // Coded three
+      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
+      Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
+      Assert.assertEquals(CoreAttributeTypes.Name.getGuid().intValue(), iterator.next());
+      Assert.assertEquals("Hello", iterator.next());
+      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
+
+      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
       Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
    }

@@ -101,7 +101,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
       writer.write(".gamma_id = ");
       writer.write(txsAlias);
       writer.write(".gamma_id AND ");
-      writer.writeTxBranchFilter(txsAlias);
+      writer.write(writer.getTxBranchFilter(txsAlias));
       return true;
    }
 

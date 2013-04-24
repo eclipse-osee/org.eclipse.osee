@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
@@ -41,11 +41,11 @@ import org.eclipse.osee.orcs.search.Match;
 public abstract class AbstractQueryPostProcessor extends QueryPostProcessor implements PartitionFactory<ArtifactReadable, Match<ArtifactReadable, AttributeReadable<?>>> {
 
    private final QueryOptions options;
-   private final CriteriaAttributeKeyword criteria;
+   private final CriteriaAttributeKeywords criteria;
    private final ExecutorAdmin executorAdmin;
    private List<Future<Collection<Match<ArtifactReadable, AttributeReadable<?>>>>> futures;
 
-   protected AbstractQueryPostProcessor(Log logger, ExecutorAdmin executorAdmin, CriteriaAttributeKeyword criteria, QueryOptions options) {
+   protected AbstractQueryPostProcessor(Log logger, ExecutorAdmin executorAdmin, CriteriaAttributeKeywords criteria, QueryOptions options) {
       super(logger);
       this.executorAdmin = executorAdmin;
       this.criteria = criteria;
@@ -57,7 +57,7 @@ public abstract class AbstractQueryPostProcessor extends QueryPostProcessor impl
    }
 
    protected String getQuery() {
-      return criteria.getValue();
+      return criteria.getValues().iterator().next();
    }
 
    protected QueryOptions getOptions() {

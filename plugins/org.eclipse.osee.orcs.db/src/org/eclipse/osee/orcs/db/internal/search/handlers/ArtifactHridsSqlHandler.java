@@ -67,7 +67,7 @@ public class ArtifactHridsSqlHandler extends SqlHandler<CriteriaArtifactHrids, Q
       writer.write(".gamma_id = ");
       writer.write(txsAlias);
       writer.write(".gamma_id AND ");
-      writer.writeTxBranchFilter(txsAlias);
+      writer.write(writer.getTxBranchFilter(txsAlias));
       return true;
    }
 

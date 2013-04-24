@@ -14,13 +14,11 @@ import java.util.List;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
-import org.eclipse.osee.orcs.db.internal.sql.SqlAliasManager;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
@@ -84,60 +82,49 @@ public class QuerySqlWriter extends AbstractSqlWriter<QueryOptions> {
    }
 
    @Override
-   public void writeTxBranchFilter(String txsAlias) throws OseeCoreException {
-      writeTxFilter(txsAlias);
+   public String getTxBranchFilter(String txsAlias) {
+      StringBuilder sb = new StringBuilder();
+      writeTxFilter(txsAlias, sb);
       if (branchId > 0) {
-         write(" AND ");
-         write(txsAlias);
-         write(".branch_id = ?");
+         sb.append(" AND ");
+         sb.append(txsAlias);
+         sb.append(".branch_id = ?");
          addParameter(branchId);
       }
+      return sb.toString();
    }
 
-   private void writeTxFilter(String txsAlias) throws OseeCoreException {
+   private void writeTxFilter(String txsAlias, StringBuilder sb) {
       if (getOptions().isHistorical()) {
-         write(txsAlias);
-         write(".transaction_id <= ?");
+         sb.append(txsAlias);
+         sb.append(".transaction_id <= ?");
          addParameter(getOptions().getFromTransaction());
          if (!getOptions().areDeletedIncluded()) {
-            writeAndLn();
-            write(txsAlias);
-            write(".tx_current");
-            write(" IN (");
-            write(String.valueOf(TxChange.CURRENT.getValue()));
-            write(", ");
-            write(String.valueOf(TxChange.NOT_CURRENT.getValue()));
-            write(")");
+            sb.append(AND_WITH_NEWLINES);
+            sb.append(txsAlias);
+            sb.append(".tx_current");
+            sb.append(" IN (");
+            sb.append(String.valueOf(TxChange.CURRENT.getValue()));
+            sb.append(", ");
+            sb.append(String.valueOf(TxChange.NOT_CURRENT.getValue()));
+            sb.append(")");
          }
       } else {
-         write(txsAlias);
-         write(".tx_current");
+         sb.append(txsAlias);
+         sb.append(".tx_current");
          if (getOptions().areDeletedIncluded()) {
-            write(" IN (");
-            write(String.valueOf(TxChange.CURRENT.getValue()));
-            write(", ");
-            write(String.valueOf(TxChange.DELETED.getValue()));
-            write(", ");
-            write(String.valueOf(TxChange.ARTIFACT_DELETED.getValue()));
-            write(")");
+            sb.append(" IN (");
+            sb.append(String.valueOf(TxChange.CURRENT.getValue()));
+            sb.append(", ");
+            sb.append(String.valueOf(TxChange.DELETED.getValue()));
+            sb.append(", ");
+            sb.append(String.valueOf(TxChange.ARTIFACT_DELETED.getValue()));
+            sb.append(")");
          } else {
-            write(" = ");
-            write(String.valueOf(TxChange.CURRENT.getValue()));
+            sb.append(" = ");
+            sb.append(String.valueOf(TxChange.CURRENT.getValue()));
          }
       }
-   }
-
-   @Override
-   protected String getSqlHint() throws OseeCoreException {
-      String hint = Strings.EMPTY_STRING;
-      SqlAliasManager aliasManager = getAliasManager();
-
-      boolean hintAllowed = aliasManager.getCount(TableEnum.SEARCH_TAGS_TABLE) <= 2;
-
-      if (hintAllowed) {
-         hint = super.getSqlHint();
-      }
-      return hint;
    }
 
 }

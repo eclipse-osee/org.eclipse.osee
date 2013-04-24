@@ -130,7 +130,7 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute, LoadOptio
       writer.write(txsAlias);
       writer.write(".gamma_id");
       writer.write("\n AND ");
-      writer.writeTxBranchFilter(txsAlias);
+      writer.write(writer.getTxBranchFilter(txsAlias));
       return true;
    }
 

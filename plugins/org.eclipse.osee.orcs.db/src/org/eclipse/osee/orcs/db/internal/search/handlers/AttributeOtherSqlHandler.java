@@ -136,7 +136,7 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther,
       writer.write(".gamma_id = ");
       writer.write(txsAlias1);
       writer.write(".gamma_id AND ");
-      writer.writeTxBranchFilter(txsAlias1);
+      writer.write(writer.getTxBranchFilter(txsAlias1));
 
       if (txs2Alias2 != null && artAlias2 != null) {
          writer.writeAndLn();
@@ -144,7 +144,7 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther,
          writer.write(".gamma_id = ");
          writer.write(txs2Alias2);
          writer.write(".gamma_id AND ");
-         writer.writeTxBranchFilter(txs2Alias2);
+         writer.write(writer.getTxBranchFilter(txs2Alias2));
       }
       return true;
    }

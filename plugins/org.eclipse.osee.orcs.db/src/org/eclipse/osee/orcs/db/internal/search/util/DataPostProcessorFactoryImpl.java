@@ -15,13 +15,13 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessorFactory;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DataPostProcessorFactoryImpl implements DataPostProcessorFactory<CriteriaAttributeKeyword> {
+public class DataPostProcessorFactoryImpl implements DataPostProcessorFactory<CriteriaAttributeKeywords> {
 
    private final Log logger;
    private final TaggingEngine taggingEngine;
@@ -35,10 +35,14 @@ public class DataPostProcessorFactoryImpl implements DataPostProcessorFactory<Cr
    }
 
    @Override
-   public DataPostProcessor<?> createPostProcessor(CriteriaAttributeKeyword criteria, QueryOptions options) {
+   public DataPostProcessor<?> createPostProcessor(CriteriaAttributeKeywords criteria, QueryOptions options) {
       DataPostProcessor<?> processor;
       //      if (criteria.getStringOp().isTokenized()) {
-      processor = new TokenQueryPostProcessor(logger, executorAdmin, taggingEngine, criteria, options);
+      if (criteria.getValues().size() > 1) {
+         processor = new SimpleOrPostProcessor(logger, criteria, options.getIncludeDeleted());
+      } else {
+         processor = new TokenQueryPostProcessor(logger, executorAdmin, taggingEngine, criteria, options);
+      }
       //      } else {
       //         processor = new AttributeQueryPostProcessor(logger, executorAdmin, taggingEngine, criteria, options);
       //      }

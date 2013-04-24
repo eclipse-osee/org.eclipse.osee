@@ -29,7 +29,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
@@ -83,7 +83,7 @@ public class QueryModuleFactory {
    public void create(ExecutorAdmin executorAdmin, IOseeDatabaseService dbService, IdentityService identityService, SqlProvider sqlProvider, IOseeCachingService cacheService, IResourceManager resourceManager) {
       TaggingEngine taggingEngine = createTaggingEngine(cacheService.getAttributeTypeCache());
 
-      DataPostProcessorFactory<CriteriaAttributeKeyword> postProcessor =
+      DataPostProcessorFactory<CriteriaAttributeKeywords> postProcessor =
          createAttributeKeywordPostProcessor(executorAdmin, taggingEngine);
       SqlHandlerFactory handlerFactory =
          createHandlerFactory(identityService, cacheService, postProcessor, taggingEngine.getTagProcessor());
@@ -131,7 +131,7 @@ public class QueryModuleFactory {
       return new QueryEngineIndexerImpl(logger, dbService, attributeTypeCache, indexConsumer);
    }
 
-   protected SqlHandlerFactory createHandlerFactory(IdentityService identityService, IOseeCachingService cacheService, DataPostProcessorFactory<CriteriaAttributeKeyword> postProcessorFactory, TagProcessor tagProcessor) {
+   protected SqlHandlerFactory createHandlerFactory(IdentityService identityService, IOseeCachingService cacheService, DataPostProcessorFactory<CriteriaAttributeKeywords> postProcessorFactory, TagProcessor tagProcessor) {
       Map<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>> handleMap =
          new HashMap<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>>();
 
@@ -147,7 +147,7 @@ public class QueryModuleFactory {
       handleMap.put(CriteriaRelationTypeExists.class, RelationTypeExistsSqlHandler.class);
       handleMap.put(CriteriaAttributeTypeExists.class, AttributeTypeExistsSqlHandler.class);
       handleMap.put(CriteriaAttributeOther.class, AttributeOtherSqlHandler.class);
-      handleMap.put(CriteriaAttributeKeyword.class, AttributeTokenSqlHandler.class);
+      handleMap.put(CriteriaAttributeKeywords.class, AttributeTokenSqlHandler.class);
       handleMap.put(CriteriaAllArtifacts.class, AllArtifactsSqlHandler.class);
 
       factoryMap.put(AttributeTokenSqlHandler.class, postProcessorFactory);
@@ -155,7 +155,7 @@ public class QueryModuleFactory {
       return new SqlHandlerFactoryImpl(logger, identityService, cacheService, tagProcessor, handleMap, factoryMap);
    }
 
-   protected DataPostProcessorFactory<CriteriaAttributeKeyword> createAttributeKeywordPostProcessor(ExecutorAdmin executorAdmin, TaggingEngine taggingEngine) {
+   protected DataPostProcessorFactory<CriteriaAttributeKeywords> createAttributeKeywordPostProcessor(ExecutorAdmin executorAdmin, TaggingEngine taggingEngine) {
       return new DataPostProcessorFactoryImpl(logger, taggingEngine, executorAdmin);
    }
 }

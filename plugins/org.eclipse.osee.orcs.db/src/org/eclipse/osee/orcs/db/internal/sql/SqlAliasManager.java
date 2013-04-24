@@ -15,50 +15,40 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar
  */
 public class SqlAliasManager {
 
-   private final HashMap<TableEnum, Alias> aliases = new HashMap<TableEnum, Alias>();
-   private final Map<TableEnum, List<String>> usedAliases = new HashMap<TableEnum, List<String>>();
+   private final HashMap<String, Alias> aliases = new HashMap<String, Alias>();
+   private final Map<AliasEntry, List<String>> usedAliases = new HashMap<AliasEntry, List<String>>();
 
-   public SqlAliasManager() {
-      for (TableEnum table : TableEnum.values()) {
-         aliases.put(table, new Alias(table.getAliasPrefix()));
-      }
-   }
-
-   public boolean hasAlias(TableEnum table) {
+   public boolean hasAlias(AliasEntry table) {
       return usedAliases.get(table) != null;
    }
 
-   public String getFirstAlias(TableEnum table) {
+   public String getFirstAlias(AliasEntry table) {
       return getAliases(table).get(0);
    }
 
-   public List<String> getAliases(TableEnum table) {
+   public List<String> getAliases(AliasEntry table) {
       List<String> values = usedAliases.get(table);
       return values != null ? values : Collections.<String> emptyList();
    }
 
-   public int getCount(TableEnum table) {
-      List<String> list = usedAliases.get(table);
-      return list == null ? 0 : list.size();
-   }
-
-   public String getNextAlias(TableEnum table) throws OseeCoreException {
-      Alias alias = aliases.get(table);
-      Conditions.checkNotNull(alias, "alias", "Unable to find alias for [%s]", table);
+   public String getNextAlias(AliasEntry table) {
+      Alias alias = aliases.get(table.getAliasPrefix());
+      if (alias == null) {
+         alias = new Alias(table.getAliasPrefix());
+         aliases.put(table.getAliasPrefix(), alias);
+      }
       String toReturn = alias.next();
       putUsedAlias(table, toReturn);
       return toReturn;
    }
 
-   private void putUsedAlias(TableEnum table, String alias) {
+   private void putUsedAlias(AliasEntry table, String alias) {
       List<String> values = usedAliases.get(table);
       if (values == null) {
          values = new LinkedList<String>();

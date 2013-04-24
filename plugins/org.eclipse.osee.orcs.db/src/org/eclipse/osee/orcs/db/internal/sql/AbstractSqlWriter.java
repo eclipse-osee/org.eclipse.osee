@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.database.core.CharJoinQuery;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -31,18 +32,17 @@ import org.eclipse.osee.orcs.db.internal.SqlProvider;
  */
 public abstract class AbstractSqlWriter<O extends Options> {
 
-   private static final String AND_WITH_NEWLINES = "\n AND \n";
+   protected static final String AND_WITH_NEWLINES = "\n AND \n";
 
    private final StringBuilder output = new StringBuilder();
    private final List<String> tableEntries = new ArrayList<String>();
+   private final List<WithClause> withClauses = new ArrayList<WithClause>();
    private final SqlAliasManager aliasManager = new SqlAliasManager();
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
    private final SqlProvider sqlProvider;
    private final SqlContext<O, ? extends DataPostProcessor<?>> context;
-
-   private boolean isFirstTable = true;
 
    public AbstractSqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext<O, ? extends DataPostProcessor<?>> context) {
       this.logger = logger;
@@ -60,7 +60,9 @@ public abstract class AbstractSqlWriter<O extends Options> {
       output.delete(0, output.length());
 
       computeTables(handlers);
+      computeWithClause(handlers);
 
+      writeWithClause();
       writeSelect(handlers);
       write("\n FROM \n");
       writeTables();
@@ -75,6 +77,41 @@ public abstract class AbstractSqlWriter<O extends Options> {
       }
    }
 
+   private void writeWithClause() throws OseeCoreException {
+      if (Conditions.hasValues(withClauses)) {
+         write("WITH ");
+         int size = withClauses.size();
+         for (int i = 0; i < size; i++) {
+            WithClause clause = withClauses.get(i);
+            write(clause.getGeneratedAlias());
+            write(" as (");
+            write(clause.getEntry());
+            write(")");
+            if (i + 1 < size) {
+               write(", \n");
+            }
+         }
+         write("\n");
+      }
+   }
+
+   public String addWithClause(WithClause clause) {
+      String alias = getNextAlias(clause);
+      clause.setGeneratedAlias(alias);
+      withClauses.add(clause);
+      return alias;
+   }
+
+   protected void computeWithClause(List<SqlHandler<?, O>> handlers) throws OseeCoreException {
+      for (SqlHandler<?, O> handler : handlers) {
+         handler.addWithTables(this);
+      }
+   }
+
+   public String getNextAlias(AliasEntry table) {
+      return getAliasManager().getNextAlias(table);
+   }
+
    protected SqlAliasManager getAliasManager() {
       return aliasManager;
    }
@@ -85,13 +122,17 @@ public abstract class AbstractSqlWriter<O extends Options> {
 
    protected abstract void writeSelect(List<SqlHandler<?, O>> handlers) throws OseeCoreException;
 
-   public abstract void writeTxBranchFilter(String txsAlias) throws OseeCoreException;
+   public abstract String getTxBranchFilter(String txsAlias) throws OseeCoreException;
 
    protected abstract void writeGroupAndOrder() throws OseeCoreException;
 
    protected void writeTables() throws OseeCoreException {
-      for (String entry : tableEntries) {
-         write(entry);
+      int size = tableEntries.size();
+      for (int i = 0; i < size; i++) {
+         write(tableEntries.get(i));
+         if (i + 1 < size) {
+            write(", ");
+         }
       }
    }
 
@@ -129,18 +170,13 @@ public abstract class AbstractSqlWriter<O extends Options> {
       return getAliasManager().getAliases(table);
    }
 
-   public String addTable(TableEnum table) throws OseeCoreException {
+   public void addTable(String table) {
+      tableEntries.add(table);
+   }
+
+   public String addTable(AliasEntry table) {
       String alias = getAliasManager().getNextAlias(table);
-      StringBuilder builder = new StringBuilder();
-      if (isFirstTable) {
-         isFirstTable = false;
-      } else {
-         builder.append(", ");
-      }
-      builder.append(table.getName());
-      builder.append(" ");
-      builder.append(alias);
-      tableEntries.add(builder.toString());
+      tableEntries.add(String.format("%s %s", table.getEntry(), alias));
       return alias;
    }
 
@@ -190,7 +226,11 @@ public abstract class AbstractSqlWriter<O extends Options> {
    }
 
    protected String getSqlHint() throws OseeCoreException {
-      return sqlProvider.getSql(OseeSql.QUERY_BUILDER);
+      String hint = Strings.EMPTY_STRING;
+      if (!Conditions.hasValues(withClauses)) {
+         hint = sqlProvider.getSql(OseeSql.QUERY_BUILDER);
+      }
+      return hint;
    }
 
    @Override

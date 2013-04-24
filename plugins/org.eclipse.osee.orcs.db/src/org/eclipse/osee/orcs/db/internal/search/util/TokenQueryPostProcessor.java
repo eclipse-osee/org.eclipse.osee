@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
@@ -27,7 +27,7 @@ public class TokenQueryPostProcessor extends AbstractQueryPostProcessor {
 
    private final TaggingEngine engine;
 
-   public TokenQueryPostProcessor(Log logger, ExecutorAdmin executorAdmin, TaggingEngine engine, CriteriaAttributeKeyword criteria, QueryOptions options) {
+   public TokenQueryPostProcessor(Log logger, ExecutorAdmin executorAdmin, TaggingEngine engine, CriteriaAttributeKeywords criteria, QueryOptions options) {
       super(logger, executorAdmin, criteria, options);
       this.engine = engine;
    }

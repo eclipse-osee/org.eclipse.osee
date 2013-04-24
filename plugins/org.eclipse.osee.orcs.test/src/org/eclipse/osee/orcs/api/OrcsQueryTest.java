@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
 import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -188,7 +189,7 @@ public class OrcsQueryTest {
    @Test
    public void testQueryArtifactTypeAndNameValue() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1);
-      builder.and(CoreAttributeTypes.Name, Operator.EQUAL, "%Requirement%");
+      builder.and(CoreAttributeTypes.Name, "Requirements", MatchTokenCountType.IGNORE_TOKEN_COUNT);
 
       Assert.assertEquals(7, builder.getCount());
       List<ArtifactReadable> artifacts = builder.getResults().getList();
@@ -211,7 +212,7 @@ public class OrcsQueryTest {
 
       //////////////////////
       QueryBuilder builder1 = factory.fromBranch(TestBranches.SAW_Bld_1);
-      builder1.and(CoreAttributeTypes.Name, Operator.EQUAL, "%Requirement%");
+      builder1.and(CoreAttributeTypes.Name, "Requirements", MatchTokenCountType.IGNORE_TOKEN_COUNT);
       builder1.andIsOfType(CoreArtifactTypes.SubsystemRequirementMSWord);
       Assert.assertEquals(1, builder1.getCount());
       List<ArtifactReadable> subSystemReqs = builder1.getResults().getList();
@@ -221,7 +222,7 @@ public class OrcsQueryTest {
 
       //////////////////////
       QueryBuilder builder2 = factory.fromBranch(TestBranches.SAW_Bld_1);
-      builder2.and(CoreAttributeTypes.Name, Operator.EQUAL, "%Requirement%");
+      builder2.and(CoreAttributeTypes.Name, "Requirements", MatchTokenCountType.IGNORE_TOKEN_COUNT);
       builder2.includeTypeInheritance();
       builder2.andIsOfType(CoreArtifactTypes.Requirement);
       Assert.assertEquals(3, builder2.getCount());

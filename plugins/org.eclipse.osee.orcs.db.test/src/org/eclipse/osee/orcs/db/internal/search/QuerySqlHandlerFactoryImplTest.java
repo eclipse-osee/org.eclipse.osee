@@ -30,7 +30,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
@@ -73,7 +73,7 @@ public class QuerySqlHandlerFactoryImplTest {
    // @formatter:on
 
    private SqlHandlerFactory factory;
-   private DataPostProcessorFactory<CriteriaAttributeKeyword> postProcessorFactory;
+   private DataPostProcessorFactory<CriteriaAttributeKeywords> postProcessorFactory;
 
    @Before
    public void setUp() {
@@ -97,7 +97,7 @@ public class QuerySqlHandlerFactoryImplTest {
       criteria.add(new CriteriaRelationTypeExists(null));
       criteria.add(new CriteriaAttributeTypeExists(null));
       criteria.add(new CriteriaAttributeOther(null, null, null));
-      criteria.add(new CriteriaAttributeKeyword(null, null, null, null, null, null));
+      criteria.add(new CriteriaAttributeKeywords(null, null, null, null, null, null));
       criteria.add(new CriteriaRelatedTo(null, null));
       criteria.add(new CriteriaAllArtifacts());
 
@@ -118,7 +118,7 @@ public class QuerySqlHandlerFactoryImplTest {
       assertSqlHandler(tokenHandler, AttributeTokenSqlHandler.class, SqlHandlerPriority.ATTRIBUTE_TOKENIZED_VALUE);
       Assert.assertTrue(tokenHandler instanceof HasDataPostProcessorFactory);
       Assert.assertEquals(postProcessorFactory,
-         ((HasDataPostProcessorFactory<CriteriaAttributeKeyword>) tokenHandler).getDataPostProcessorFactory());
+         ((HasDataPostProcessorFactory<CriteriaAttributeKeywords>) tokenHandler).getDataPostProcessorFactory());
 
       assertSqlHandler(iterator.next(), ArtifactTypeSqlHandler.class, SqlHandlerPriority.ARTIFACT_TYPE);
       assertSqlHandler(iterator.next(), AttributeTypeExistsSqlHandler.class, SqlHandlerPriority.ATTRIBUTE_TYPE_EXISTS);

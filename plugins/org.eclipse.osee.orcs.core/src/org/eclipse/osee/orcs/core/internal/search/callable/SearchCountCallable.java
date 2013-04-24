@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeyword;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoader;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoaderFactory;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
@@ -42,7 +42,7 @@ public class SearchCountCallable extends AbstractArtifactSearchCallable<Integer>
    protected Integer innerCall() throws Exception {
       int count = -1;
 
-      if (queryData.hasCriteriaType(CriteriaAttributeKeyword.class)) {
+      if (queryData.hasCriteriaType(CriteriaAttributeKeywords.class)) {
          queryContext = queryEngine.create(sessionContext.getSessionId(), queryData);
          checkForCancelled();
 

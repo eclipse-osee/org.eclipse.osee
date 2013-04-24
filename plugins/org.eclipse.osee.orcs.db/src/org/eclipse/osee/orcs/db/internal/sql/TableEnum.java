@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql;
 
+
 /**
  * @author Roberto E. Escobar
  */
-public enum TableEnum {
+public enum TableEnum implements AliasEntry {
    TXS_TABLE("osee_txs", "txs"),
    ARTIFACT_TABLE("osee_artifact", "art"),
    ATTRIBUTE_TABLE("osee_attribute", "att"),
@@ -23,8 +24,8 @@ public enum TableEnum {
    SEARCH_TAGS_TABLE("osee_search_tags", "tag"),
    ARTIFACT_JOIN_TABLE("osee_join_artifact", "jart");
 
-   private String tableName;
-   private String aliasPrefix;
+   private final String tableName;
+   private final String aliasPrefix;
 
    private TableEnum(String tableName, String aliasPrefix) {
       this.tableName = tableName;
@@ -35,7 +36,14 @@ public enum TableEnum {
       return tableName;
    }
 
+   @Override
    public String getAliasPrefix() {
       return aliasPrefix;
    }
+
+   @Override
+   public String getEntry() {
+      return tableName;
+   }
+
 }
