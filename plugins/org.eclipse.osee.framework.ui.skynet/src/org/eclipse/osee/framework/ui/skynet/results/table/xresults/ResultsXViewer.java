@@ -81,6 +81,7 @@ public class ResultsXViewer extends XViewer {
       MenuManager menuManager = getMenuManager();
       if (isArtifactContent()) {
          OpenContributionItem contrib = new OpenContributionItem(getClass().getSimpleName() + ".open");
+         contrib.fill(menuManager.getMenu(), -1);
          menuManager.insertBefore(XViewer.MENU_GROUP_PRE, contrib);
       }
    }

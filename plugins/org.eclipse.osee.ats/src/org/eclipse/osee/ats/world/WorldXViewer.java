@@ -410,6 +410,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
       // OPEN MENU BLOCK
       OpenContributionItem contrib = new OpenContributionItem(getClass().getSimpleName() + ".open");
+      contrib.fill(mm.getMenu(), -1);
       mm.insertBefore(XViewer.MENU_GROUP_PRE, contrib);
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
 
