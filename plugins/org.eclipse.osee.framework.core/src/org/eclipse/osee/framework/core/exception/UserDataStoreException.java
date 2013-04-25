@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,30 +14,29 @@ package org.eclipse.osee.framework.core.exception;
 import org.eclipse.core.runtime.IStatus;
 
 /**
- * @author Ryan D. Brooks
- * @author Donald G. Dunne
+ * @author Roberto E. Escobar
  */
-public class UserNotInDatabase extends UserDataStoreException {
+public class UserDataStoreException extends OseeCoreException {
 
-   private static final long serialVersionUID = -676895641120036141L;
+   private static final long serialVersionUID = 6332029869706688372L;
 
-   public UserNotInDatabase(IStatus status) {
+   public UserDataStoreException(IStatus status) {
       super(status);
    }
 
-   public UserNotInDatabase(String message, Throwable cause) {
+   public UserDataStoreException(String message, Throwable cause) {
       super(message, cause);
    }
 
-   public UserNotInDatabase(Throwable cause, String message, Object... args) {
+   public UserDataStoreException(Throwable cause, String message, Object... args) {
       super(cause, message, args);
    }
 
-   public UserNotInDatabase(Throwable cause) {
+   public UserDataStoreException(Throwable cause) {
       super(cause);
    }
 
-   public UserNotInDatabase(String message, Object... args) {
+   public UserDataStoreException(String message, Object... args) {
       super(message, args);
    }
 }

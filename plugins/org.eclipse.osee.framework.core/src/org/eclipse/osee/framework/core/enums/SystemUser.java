@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.enums;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
@@ -25,7 +26,7 @@ public final class SystemUser {
    public static final IUserToken Guest = TokenFactory.createUserToken("AAABDi35uzwAxJLISLBZdA", "Guest", "", "99999998", false, false, false);
    public static final IUserToken BootStrap = TokenFactory.createUserToken("noguid", "Boot Strap", "bootstrap@osee.org", "bootstrap", true, false, false);
    public static final IUserToken UnAssigned = TokenFactory.createUserToken("AAABDi1tMx8Al92YWMjeRw", "UnAssigned", "", "99999997", true, false, false);
-   public static List<IUserToken> values = Arrays.asList(OseeSystem, Guest, BootStrap, UnAssigned);
+   public static final List<IUserToken> values = Arrays.asList(OseeSystem, Guest, BootStrap, UnAssigned);
    // @formatter:on
 
    private SystemUser() {
@@ -34,6 +35,10 @@ public final class SystemUser {
 
    public static List<IUserToken> values() {
       return values;
+   }
+
+   public static boolean isSystemUser(Identity<String> identity) {
+      return values().contains(identity);
    }
 
 }

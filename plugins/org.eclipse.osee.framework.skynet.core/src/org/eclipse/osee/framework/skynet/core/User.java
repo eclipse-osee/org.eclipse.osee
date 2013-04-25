@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -53,14 +54,6 @@ public class User extends Artifact {
          return String.format("%s (%s)", getName(), getUserId());
       } catch (Exception ex) {
          return "Exception: " + ex.getLocalizedMessage();
-      }
-   }
-
-   public boolean isMe() {
-      try {
-         return getUserId().equals(UserManager.getUser().getUserId());
-      } catch (Exception ex) {
-         return false;
       }
    }
 
@@ -183,8 +176,8 @@ public class User extends Artifact {
       }
    }
 
-   public boolean isSystemUser() throws OseeCoreException {
-      return UserManager.isSystemUser(this);
+   public boolean isSystemUser() {
+      return SystemUser.isSystemUser(this);
    }
 
    public void setBooleanSetting(String key, boolean value) throws OseeCoreException {

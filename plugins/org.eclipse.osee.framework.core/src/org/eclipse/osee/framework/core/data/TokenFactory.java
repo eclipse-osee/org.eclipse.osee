@@ -170,6 +170,12 @@ public final class TokenFactory {
          return creationRequired;
       }
 
+      @Override
+      public String toString() {
+         return String.format("UserToken [userId=[%s], active=[%s], admin=[%s], email=[%s], creationRequired=[%s]",
+            userId, active, admin, email, creationRequired);
+      }
+
    }
 
    private final static class AccessContextIdToken extends NamedIdentity<String> implements IAccessContextId {

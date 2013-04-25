@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.history.column;
 
+import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.swt.SWT;
@@ -44,7 +47,11 @@ public class AuthorColumn extends XViewerValueColumn {
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       if (element instanceof Change) {
-         return UserManager.getUserNameById(((Change) element).getTxDelta().getEndTx().getAuthor());
+         try {
+            return UserManager.getSafeUserNameById(((Change) element).getTxDelta().getEndTx().getAuthor());
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
       }
       return "";
    }

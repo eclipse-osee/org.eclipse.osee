@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -120,9 +119,8 @@ public class EmailActionsBlam extends AbstractBlam {
 
       List<String> emailAddresses = new ArrayList<String>();
       for (User basicUser : activeEmailUsers) {
-         User oseeUser = UserManager.getUser(basicUser);
-         if (EmailUtil.isEmailValid(oseeUser.getEmail())) {
-            emailAddresses.add(oseeUser.getEmail());
+         if (EmailUtil.isEmailValid(basicUser.getEmail())) {
+            emailAddresses.add(basicUser.getEmail());
          }
       }
 

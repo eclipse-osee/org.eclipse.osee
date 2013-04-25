@@ -139,7 +139,7 @@ public abstract class ArtifactFactory {
       return artifactTypeNames.contains(artifactType);
    }
 
-   public void registerAsResponsible(IArtifactType artifactType) {
+   protected void registerAsResponsible(IArtifactType artifactType) {
       if (!artifactTypeNames.contains(artifactType)) {
          artifactTypeNames.add(artifactType);
       }

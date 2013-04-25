@@ -57,11 +57,11 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
 
    public static org.eclipse.swt.graphics.Image getUserImage(Collection<User> users) throws OseeCoreException {
       if (users.size() > 0) {
-         if (UserManager.isUserSystem(users)) {
+         if (containsSystemUser(users)) {
             return ImageManager.getImage(FrameworkImage.USER_GREY);
-         } else if (UserManager.isUserInactive(users)) {
+         } else if (containsInactiveUser(users)) {
             return ImageManager.getImage(FrameworkImage.USER_YELLOW);
-         } else if (UserManager.isUserCurrentUser(users)) {
+         } else if (containsCurrentUser(users)) {
             return ImageManager.getImage(FrameworkImage.USER_RED);
          } else {
             return ArtifactImageManager.getImage(CoreArtifactTypes.User);
@@ -70,4 +70,30 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
       return null;
    }
 
+   private static boolean containsCurrentUser(Collection<User> users) throws OseeCoreException {
+      for (User user : users) {
+         if (UserManager.getUser().equals(user)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   private static boolean containsSystemUser(Collection<User> users) {
+      for (User user : users) {
+         if (user.isSystemUser()) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   private static boolean containsInactiveUser(Collection<User> users) throws OseeCoreException {
+      for (User user : users) {
+         if (!user.isActive()) {
+            return true;
+         }
+      }
+      return false;
+   }
 }

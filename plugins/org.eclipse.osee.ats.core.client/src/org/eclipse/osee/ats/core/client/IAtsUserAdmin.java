@@ -31,6 +31,8 @@ public interface IAtsUserAdmin {
 
    User getOseeUser(IAtsUser user) throws OseeCoreException;
 
+   User getOseeUserById(String userId) throws OseeCoreException;
+
    IAtsUser getUserFromOseeUser(User user) throws OseeCoreException;
 
    User getCurrentOseeUser() throws OseeCoreException;

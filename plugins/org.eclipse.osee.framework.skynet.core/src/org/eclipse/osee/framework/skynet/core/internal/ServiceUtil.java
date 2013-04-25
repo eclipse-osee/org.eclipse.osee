@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.internal;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -51,6 +52,10 @@ public final class ServiceUtil {
       T service = context.getService(reference);
       Conditions.checkNotNull(service, "service");
       return service;
+   }
+
+   public static CacheAdmin getCacheAdmin() throws OseeCoreException {
+      return getService(CacheAdmin.class);
    }
 
    public static OseeEventService getEventService() throws OseeCoreException {

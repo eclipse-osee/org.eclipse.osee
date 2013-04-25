@@ -61,7 +61,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          } else if (cCol.equals(HistoryXViewerFactory.timeStamp)) {
             return new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(data.getTxDelta().getEndTx().getTimeStamp());
          } else if (cCol.equals(HistoryXViewerFactory.author)) {
-            return UserManager.getUserNameById(data.getTxDelta().getEndTx().getAuthor());
+            return UserManager.getSafeUserNameById(data.getTxDelta().getEndTx().getAuthor());
          } else if (cCol.equals(HistoryXViewerFactory.comment)) {
             return data.getTxDelta().getEndTx().getComment();
          }

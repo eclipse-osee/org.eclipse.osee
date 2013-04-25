@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -35,10 +32,4 @@ public class UserArtifactFactory extends ArtifactFactory {
       return new User(guid, humandReadableId, branch, artifactType);
    }
 
-   @Override
-   public Collection<IArtifactType> getEternalArtifactTypes() {
-      List<IArtifactType> artifactTypes = new ArrayList<IArtifactType>();
-      artifactTypes.add(CoreArtifactTypes.User);
-      return artifactTypes;
-   }
 }

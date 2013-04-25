@@ -110,13 +110,14 @@ public class OseeNotifyUsersJob extends Job {
          return;
       }
       String html = notificationEventsToHtml(notificationEvents);
-      if (!Strings.isValid(UserManager.getEmail(user))) {
+      String email = user.getEmail();
+      if (!Strings.isValid(email)) {
          // do nothing
          return;
       } else {
          OseeEmail emailMessage =
-            new OseeEmail(Arrays.asList(UserManager.getEmail(user)), UserManager.getUser().getEmail(),
-               UserManager.getUser().getEmail(), getNotificationEmailSubject(notificationEvents), html, BodyType.Html);
+            new OseeEmail(Arrays.asList(email), UserManager.getUser().getEmail(), UserManager.getUser().getEmail(),
+               getNotificationEmailSubject(notificationEvents), html, BodyType.Html);
          emailMessage.send();
       }
    }

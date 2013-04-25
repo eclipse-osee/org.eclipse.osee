@@ -135,4 +135,9 @@ public class AtsUserAdminImpl implements IAtsUserAdmin {
       return results;
    }
 
+   @Override
+   public User getOseeUserById(String userId) throws OseeCoreException {
+      return UserManager.getUserByUserId(userId);
+   }
+
 }

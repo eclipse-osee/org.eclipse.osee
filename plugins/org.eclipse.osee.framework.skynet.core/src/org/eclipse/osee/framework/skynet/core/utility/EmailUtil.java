@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -33,14 +32,14 @@ public class EmailUtil {
    }
 
    public static boolean isEmailValid(User user) throws OseeCoreException {
-      return isEmailValid(UserManager.getUser(user).getEmail());
+      return isEmailValid(user.getEmail());
    }
 
    public static Collection<User> getValidEmailUsers(Collection<User> users) {
       Set<User> validUsers = new HashSet<User>();
       for (User user : users) {
          try {
-            if (isEmailValid(UserManager.getUser(user))) {
+            if (isEmailValid(user)) {
                validUsers.add(user);
             }
          } catch (OseeCoreException ex) {

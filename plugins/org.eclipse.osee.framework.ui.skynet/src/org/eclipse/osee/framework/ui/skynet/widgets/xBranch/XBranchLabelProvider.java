@@ -108,7 +108,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          String userName = "";
          try {
             if (branch.getBaseTransaction() != null) {
-               userName = UserManager.getUserNameById(branch.getBaseTransaction().getAuthor());
+               userName = UserManager.getSafeUserNameById(branch.getBaseTransaction().getAuthor());
             }
             return userName;
          } catch (OseeCoreException ex) {
@@ -159,7 +159,11 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       if (cCol.equals(BranchXViewerFactory.timeStamp)) {
          columnText = DATE_FORMAT.format(transaction.getTimeStamp());
       } else if (cCol.equals(BranchXViewerFactory.author)) {
-         columnText = UserManager.getUserNameById(transaction.getAuthor());
+         try {
+            columnText = UserManager.getSafeUserNameById(transaction.getAuthor());
+         } catch (Exception ex) {
+            return XViewerCells.getCellExceptionString(ex);
+         }
       } else if (cCol.equals(BranchXViewerFactory.comment)) {
          columnText = transaction.getComment();
       } else if (cCol.equals(BranchXViewerFactory.associatedArtifact)) {

@@ -210,7 +210,7 @@ public class AtsNotificationManagerTest {
       Assert.assertEquals(4, teamArt.getStateMgr().getAssignees().size());
 
       for (User user : users) {
-         UserManager.getUser(user).reloadAttributesAndRelations();
+         user.reloadAttributesAndRelations();
       }
       AtsTestUtil.cleanup();
    }
@@ -268,7 +268,7 @@ public class AtsNotificationManagerTest {
       Assert.assertEquals(4, teamArt.getStateMgr().getAssignees().size());
 
       for (User user : usersToSet) {
-         UserManager.getUser(user).reloadAttributesAndRelations();
+         user.reloadAttributesAndRelations();
       }
       AtsTestUtil.cleanup();
    }
@@ -303,9 +303,8 @@ public class AtsNotificationManagerTest {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       Result result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Completed,
-            AtsClientService.get().getUserAdmin().getCurrentUser(), transaction,
-            TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
+         AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsClientService.get().getUserAdmin().getCurrentUser(),
+            transaction, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Completed.getName());
       transaction.execute();
@@ -347,9 +346,8 @@ public class AtsNotificationManagerTest {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       Result result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled,
-            AtsClientService.get().getUserAdmin().getCurrentUser(), transaction,
-            TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
+         AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled, AtsClientService.get().getUserAdmin().getCurrentUser(),
+            transaction, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Cancelled.getName());
       transaction.execute();
@@ -380,8 +378,7 @@ public class AtsNotificationManagerTest {
       alex.setSoleAttributeValue(CoreAttributeTypes.Email, "alex.kay@boeing.com");
       alex.persist(getClass().getSimpleName() + "- set alex email address");
 
-      AtsTestUtil.getTestTeamDef().getSubscribed().add(
-         AtsClientService.get().getUserAdmin().getUserFromOseeUser(alex));
+      AtsTestUtil.getTestTeamDef().getSubscribed().add(AtsClientService.get().getUserAdmin().getUserFromOseeUser(alex));
 
       mgr.clear();
 
@@ -497,9 +494,8 @@ public class AtsNotificationManagerTest {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       Result result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Implement,
-            AtsClientService.get().getUserAdmin().getCurrentUser(), transaction,
-            TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
+         AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsClientService.get().getUserAdmin().getCurrentUser(),
+            transaction, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
       transaction.execute();
 
@@ -542,8 +538,7 @@ public class AtsNotificationManagerTest {
       List<UserRole> roles = new ArrayList<UserRole>();
       UserRole author = new UserRole(Role.Author, AtsClientService.get().getUserAdmin().getUserFromOseeUser(alex));
       roles.add(author);
-      UserRole moderator =
-         new UserRole(Role.Moderator, AtsClientService.get().getUserAdmin().getUserFromOseeUser(kay));
+      UserRole moderator = new UserRole(Role.Moderator, AtsClientService.get().getUserAdmin().getUserFromOseeUser(kay));
       roles.add(moderator);
       UserRole reviewer1 = new UserRole(Role.Reviewer, AtsClientService.get().getUserAdmin().getCurrentUser());
       roles.add(reviewer1);

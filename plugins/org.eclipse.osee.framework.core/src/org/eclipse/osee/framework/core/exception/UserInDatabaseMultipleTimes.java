@@ -17,7 +17,10 @@ import org.eclipse.core.runtime.IStatus;
  * @author Ryan D. Brooks
  * @author Donald G. Dunne
  */
-public class UserInDatabaseMultipleTimes extends OseeCoreException {
+public class UserInDatabaseMultipleTimes extends UserDataStoreException {
+
+   private static final long serialVersionUID = 5497730793552605424L;
+
    public UserInDatabaseMultipleTimes(IStatus status) {
       super(status);
    }
@@ -33,8 +36,6 @@ public class UserInDatabaseMultipleTimes extends OseeCoreException {
    public UserInDatabaseMultipleTimes(Throwable cause) {
       super(cause);
    }
-
-   private static final long serialVersionUID = 1L;
 
    public UserInDatabaseMultipleTimes(String message, Object... args) {
       super(message, args);
