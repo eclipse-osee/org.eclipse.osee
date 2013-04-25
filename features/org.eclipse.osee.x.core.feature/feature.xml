@@ -27,13 +27,16 @@
       <import plugin="org.slf4j.api"/>
       <import plugin="ch.qos.logback.classic" version="0.9.27" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.codec"/>
-      <import plugin="org.apache.commons.httpclient"/>
       <import plugin="org.apache.xerces"/>
       <import plugin="javax.mail.glassfish"/>
       <import plugin="com.vaadin" version="6.6.6" match="greaterOrEqual"/>
-      <import plugin="com.sun.jersey"/>
-      <import plugin="javax.ws.rs"/>
       <import plugin="javax.servlet" version="2.5.0" match="greaterOrEqual"/>
+      <import plugin="javax.ws.rs"/>
+      <import plugin="com.sun.jersey" version="1.8.0" match="greaterOrEqual"/>
+      <import plugin="org.junit"/>
+      <import plugin="com.google.guava" version="12.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.osee.framework.core"/>
    </requires>
 
    <plugin
@@ -138,6 +141,13 @@
 
    <plugin
          id="org.eclipse.osee.console.admin"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.cache.admin"
          download-size="0"
          install-size="0"
          version="0.0.0"

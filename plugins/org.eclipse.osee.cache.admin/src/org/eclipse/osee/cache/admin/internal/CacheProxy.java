@@ -8,15 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.server.internal.session;
+package org.eclipse.osee.cache.admin.internal;
 
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
-import com.google.common.cache.LoadingCache;
-import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.ExecutionError;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
@@ -26,22 +28,44 @@ import com.google.common.util.concurrent.UncheckedExecutionException;
  */
 public class CacheProxy<K, V> implements Cache<K, V> {
 
-   private final LoadingCache<K, V> proxied;
-   private final ReadDataAccessor<K, V> accessor;
+   private final com.google.common.cache.Cache<K, V> proxied;
 
-   public CacheProxy(LoadingCache<K, V> proxied, ReadDataAccessor<K, V> accessor) {
+   public CacheProxy(com.google.common.cache.Cache<K, V> proxied) {
       this.proxied = proxied;
-      this.accessor = accessor;
    }
 
    @Override
-   public Iterable<V> getAll() throws OseeCoreException {
-      Iterable<? extends K> keys = accessor.getAllKeys();
-      ImmutableCollection<V> toReturn = null;
+   public V getIfPresent(K key) {
+      return proxied.getIfPresent(key);
+   }
+
+   @Override
+   public Iterable<V> getAllPresent() {
+      Iterable<? extends K> keys = getAllKeysPresent();
+      return getIfPresent(keys).values();
+   }
+
+   @Override
+   public Iterable<? extends K> getAllKeysPresent() {
+      return Iterables.unmodifiableIterable(proxied.asMap().keySet());
+   }
+
+   @Override
+   public Iterable<? extends K> getAllKeys() {
+      return getAllKeysPresent();
+
+   }
+
+   @Override
+   public Map<K, V> getIfPresent(Iterable<? extends K> keys) {
+      return proxied.getAllPresent(keys);
+   }
+
+   @Override
+   public Map<K, V> get(Iterable<? extends K> keys) throws OseeCoreException {
+      ImmutableMap<K, V> items = null;
       try {
-         toReturn = proxied.getAll(keys).values();
-      } catch (ExecutionException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         items = proxied.getAllPresent(keys);
       } catch (InvalidCacheLoadException ex) {
          OseeExceptions.wrapAndThrow(ex);
       } catch (UncheckedExecutionException ex) {
@@ -49,16 +73,20 @@ public class CacheProxy<K, V> implements Cache<K, V> {
       } catch (ExecutionError ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
-      return toReturn;
+      return items;
+   }
+
+   @Override
+   public Iterable<V> getAll() throws OseeCoreException {
+      Iterable<? extends K> allKeys = getAllKeys();
+      return get(allKeys).values();
    }
 
    @Override
    public V get(K key) throws OseeCoreException {
       V toReturn = null;
       try {
-         toReturn = proxied.get(key);
-      } catch (ExecutionException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         toReturn = proxied.getIfPresent(key);
       } catch (InvalidCacheLoadException ex) {
          OseeExceptions.wrapAndThrow(ex);
       } catch (UncheckedExecutionException ex) {
@@ -71,7 +99,7 @@ public class CacheProxy<K, V> implements Cache<K, V> {
 
    @Override
    public void refresh(K key) {
-      proxied.refresh(key);
+      // Does nothing;
    }
 
    @Override
@@ -80,7 +108,7 @@ public class CacheProxy<K, V> implements Cache<K, V> {
    }
 
    @Override
-   public void invalidateAll(Iterable<? extends K> keys) {
+   public void invalidate(Iterable<? extends K> keys) {
       proxied.invalidateAll(keys);
    }
 
@@ -109,6 +137,11 @@ public class CacheProxy<K, V> implements Cache<K, V> {
          OseeExceptions.wrapAndThrow(ex);
       }
       return toReturn;
+   }
+
+   @Override
+   public boolean isEmpty() {
+      return proxied.size() == 0;
    }
 
 }

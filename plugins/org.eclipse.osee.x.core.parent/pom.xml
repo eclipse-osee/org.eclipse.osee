@@ -31,6 +31,9 @@
 		<module>../../plugins/org.eclipse.osee.console.admin</module>
 		<module>../../plugins/org.eclipse.osee.console.admin.test</module>
 
+		<module>../../plugins/org.eclipse.osee.cache.admin</module>
+		<module>../../plugins/org.eclipse.osee.cache.admin.test</module>
+
 		<module>../../plugins/org.eclipse.osee.executor.admin</module>
 		<module>../../plugins/org.eclipse.osee.executor.admin.test</module>
 

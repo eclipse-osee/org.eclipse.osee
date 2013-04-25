@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,20 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.server.test.internal.session;
+package org.eclipse.osee.cache.admin;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ //
-SessionTest.class, //
-   SessionFactoryTest.class, //
-   SessionManagerTest.class, //
-})
 /**
+ * Service in-charge of creating application caches.
+ * 
+ * @author John Misinco
  * @author Roberto E. Escobar
  */
-public class SessionTestSuite {
-   // Test Suite
+public interface CacheAdmin {
+
+   <K, V> Cache<K, V> createCache(CacheConfiguration configuration) throws OseeCoreException;
+
+   <K, V> Cache<K, V> createLoadingCache(CacheConfiguration configuration, CacheDataLoader<K, V> dataLoader, CacheKeysLoader<K> keyLoader) throws OseeCoreException;
+
 }

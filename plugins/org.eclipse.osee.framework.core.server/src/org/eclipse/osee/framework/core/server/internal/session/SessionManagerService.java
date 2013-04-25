@@ -11,6 +11,9 @@
 package org.eclipse.osee.framework.core.server.internal.session;
 
 import java.util.Collection;
+import org.eclipse.osee.cache.admin.Cache;
+import org.eclipse.osee.cache.admin.CacheAdmin;
+import org.eclipse.osee.cache.admin.CacheConfiguration;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -34,7 +37,7 @@ public final class SessionManagerService implements ISessionManager {
    private IOseeDatabaseService dbService;
    private IApplicationServerManager serverManager;
    private IAuthenticationManager authenticationManager;
-
+   private CacheAdmin cacheAdmin;
    private ISessionManager proxiedSessionManager;
 
    public void setLogger(Log logger) {
@@ -57,6 +60,10 @@ public final class SessionManagerService implements ISessionManager {
       this.authenticationManager = authenticationManager;
    }
 
+   public void setCacheAdmin(CacheAdmin cacheAdmin) {
+      this.cacheAdmin = cacheAdmin;
+   }
+
    private IOseeDatabaseService getDbService() {
       return dbService;
    }
@@ -69,7 +76,7 @@ public final class SessionManagerService implements ISessionManager {
       return authenticationManager;
    }
 
-   public void start() {
+   public void start() throws OseeCoreException {
       String serverId = getServerManager().getId();
       BuildTypeIdentifier identifier = new BuildTypeIdentifier(new BuildTypeDataProvider());
 
@@ -80,8 +87,8 @@ public final class SessionManagerService implements ISessionManager {
       DatabaseSessionAccessor accessor =
          new DatabaseSessionAccessor(serverId, sessionFactory, sessionQuery, getDbService());
 
-      CacheFactory cacheFactory = new CacheFactory();
-      Cache<String, Session> sessionCache = cacheFactory.create(accessor);
+      CacheConfiguration config = CacheConfiguration.newConfiguration();
+      Cache<String, Session> sessionCache = cacheAdmin.createLoadingCache(config, accessor, accessor);
 
       proxiedSessionManager =
          new SessionManagerImpl(serverId, sessionFactory, sessionQuery, sessionCache, getAuthenticationManager(),

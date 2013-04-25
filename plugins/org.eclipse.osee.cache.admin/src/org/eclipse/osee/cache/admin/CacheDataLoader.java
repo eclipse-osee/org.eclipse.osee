@@ -8,31 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.server.internal.session;
+package org.eclipse.osee.cache.admin;
 
-import java.util.concurrent.Callable;
+import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author John Misinco
  * @author Roberto E. Escobar
  */
-public interface Cache<K, V> {
+public interface CacheDataLoader<K, V> {
 
-   V get(K key) throws OseeCoreException;
+   Map<K, V> load(Iterable<? extends K> keys) throws OseeCoreException;
 
-   V get(K key, Callable<? extends V> callable) throws OseeCoreException;
+   V load(K key) throws OseeCoreException;
 
-   Iterable<V> getAll() throws OseeCoreException;
-
-   void refresh(K key);
-
-   void invalidateAll();
-
-   void invalidateAll(Iterable<? extends K> keys);
-
-   void invalidate(K key);
-
-   long size();
-
+   V reload(K key, V oldValue) throws OseeCoreException;
 }

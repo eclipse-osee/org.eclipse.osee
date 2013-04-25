@@ -18,6 +18,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.cache.admin.CacheDataLoader;
+import org.eclipse.osee.cache.admin.CacheKeysLoader;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.DatabaseTransactions;
@@ -27,7 +29,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 /**
  * @author Roberto E. Escobar
  */
-public final class DatabaseSessionAccessor implements ReadDataAccessor<String, Session>, WriteDataAccessor<Session> {
+public final class DatabaseSessionAccessor implements CacheDataLoader<String, Session>, CacheKeysLoader<String>, WriteDataAccessor<Session> {
 
    private static final String INSERT_SESSION =
       "INSERT INTO osee_session (managed_by_server_id, session_id, user_id, client_machine_name, client_address, client_port, client_version, created_on, last_interaction_date, last_interaction) VALUES (?,?,?,?,?,?,?,?,?,?)";
@@ -113,6 +115,11 @@ public final class DatabaseSessionAccessor implements ReadDataAccessor<String, S
       }
       return toReturn;
    }
+
+   @Override
+   public Session reload(String key, Session oldValue) throws OseeCoreException {
+      return load(key);
+   };
 
    @Override
    public Iterable<? extends String> getAllKeys() throws OseeCoreException {
@@ -233,5 +240,6 @@ public final class DatabaseSessionAccessor implements ReadDataAccessor<String, S
       public void handleTxFinally() {
          //
       }
-   };
+   }
+
 }

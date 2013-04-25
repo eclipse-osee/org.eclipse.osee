@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
@@ -163,7 +164,7 @@ public final class SessionManagerImpl implements ISessionManager {
       if (!sessions.isEmpty()) {
          storeDataAccessor.delete(sessions);
       }
-      sessionCache.invalidateAll(Arrays.asList(sessionIds));
+      sessionCache.invalidate(Arrays.asList(sessionIds));
    }
 
 }
