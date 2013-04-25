@@ -795,7 +795,7 @@ artifactType "System Function" extends "Function" , "System Design" {
 
 attributeType "Functional Category" extends StringAttribute {
 	guid "AVGz73NVWERzQDxJQsQA"
-	uuid 0x100000000000038E
+	uuid 0x100000000000037F
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
