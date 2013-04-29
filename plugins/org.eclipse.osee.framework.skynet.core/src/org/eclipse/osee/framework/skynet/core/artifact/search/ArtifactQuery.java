@@ -53,7 +53,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
@@ -534,12 +533,10 @@ public class ArtifactQuery {
     * Since the application server can support non taggable attribute types, the artifact query is filtering only
     * taggable types here.
     */
-   private static void determineSearchAll(SearchRequest searchRequest) throws OseeCoreException {
+   private static void determineSearchAll(SearchRequest searchRequest) {
       if (searchRequest.getOptions().getAttributeTypeFilter().isEmpty()) {
          searchRequest.getOptions().setIsSearchAll(true);
-         for (IAttributeType attrType : AttributeTypeManager.getTaggableTypes()) {
-            searchRequest.getOptions().addAttributeTypeFilter(attrType);
-         }
+         searchRequest.getOptions().addAttributeTypeFilter(QueryBuilder.ANY_ATTRIBUTE_TYPE);
       }
    }
 

@@ -97,7 +97,7 @@ public class QuerySqlHandlerFactoryImplTest {
       criteria.add(new CriteriaRelationTypeExists(null));
       criteria.add(new CriteriaAttributeTypeExists(null));
       criteria.add(new CriteriaAttributeOther(null, null, null));
-      criteria.add(new CriteriaAttributeKeywords(null, null, null, null, null, null));
+      criteria.add(new CriteriaAttributeKeywords(false, null, null, Collections.<String> emptyList(), null, null, null));
       criteria.add(new CriteriaRelatedTo(null, null));
       criteria.add(new CriteriaAllArtifacts());
 

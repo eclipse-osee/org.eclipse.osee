@@ -78,8 +78,9 @@ public class CriteriaFactory {
    }
 
    public Criteria<QueryOptions> createAttributeCriteria(Collection<? extends IAttributeType> attributeTypes, Collection<String> values, QueryOption... options) throws OseeCoreException {
-      Collection<? extends IAttributeType> toReturn = checkForAnyType(attributeTypes);
-      return new CriteriaAttributeKeywords(toReturn, attributeTypeCache, values, options);
+      Collection<? extends IAttributeType> types = checkForAnyType(attributeTypes);
+      boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
+      return new CriteriaAttributeKeywords(isIncludeAllTypes, types, attributeTypeCache, values, options);
    }
 
    public Criteria<QueryOptions> createArtifactTypeCriteria(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {

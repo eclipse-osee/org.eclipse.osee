@@ -77,7 +77,7 @@ public class QueryEngineImplTest {
    private static final Criteria<?> REL_TYPE_EXISTS = new CriteriaRelationTypeExists(
       CoreRelationTypes.Default_Hierarchical__Child);
 
-   private static final Criteria<?> ATTRIBUTE_KEYWORD = new CriteriaAttributeKeywords(Arrays.asList(
+   private static final Criteria<?> ATTRIBUTE_KEYWORD = new CriteriaAttributeKeywords(false, Arrays.asList(
       CoreAttributeTypes.Name, CoreAttributeTypes.WordTemplateContent), null, "hello1_two_three",
       TokenDelimiterMatch.ANY, TokenOrderType.MATCH_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT, CaseType.MATCH_CASE);
 

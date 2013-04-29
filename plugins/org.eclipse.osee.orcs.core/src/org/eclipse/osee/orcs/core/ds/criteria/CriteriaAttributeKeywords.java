@@ -32,13 +32,23 @@ public class CriteriaAttributeKeywords extends Criteria<QueryOptions> {
    private final Collection<? extends IAttributeType> attributeType;
    private final Collection<String> values;
    private final QueryOption[] options;
+   private final boolean includeAllTypes;
 
-   public CriteriaAttributeKeywords(Collection<? extends IAttributeType> attributeType, AttributeTypeCache attributeTypeCache, Collection<String> values, QueryOption... options) {
+   public CriteriaAttributeKeywords(boolean includeAllTypes, Collection<? extends IAttributeType> attributeType, AttributeTypeCache attributeTypeCache, Collection<String> values, QueryOption... options) {
       super();
+      this.includeAllTypes = includeAllTypes;
       this.attributeTypeCache = attributeTypeCache;
       this.attributeType = attributeType;
       this.values = values;
       this.options = options;
+   }
+
+   public CriteriaAttributeKeywords(boolean includeAllTypes, Collection<? extends IAttributeType> attributeType, AttributeTypeCache attributeTypeCache, String value, QueryOption... options) {
+      this(includeAllTypes, attributeType, attributeTypeCache, java.util.Collections.singleton(value), options);
+   }
+
+   public boolean isIncludeAllTypes() {
+      return includeAllTypes;
    }
 
    public Collection<? extends IAttributeType> getTypes() {
@@ -75,15 +85,17 @@ public class CriteriaAttributeKeywords extends Criteria<QueryOptions> {
    }
 
    public void checkNotTaggable() throws OseeCoreException {
-      ArrayList<String> notTaggable = new ArrayList<String>();
-      if (attributeTypeCache != null) {
-         for (IAttributeType type : attributeType) {
-            if (!(attributeTypeCache.get(type)).isTaggable()) {
-               notTaggable.add((attributeTypeCache.get(type)).getName());
+      if (!includeAllTypes) {
+         ArrayList<String> notTaggable = new ArrayList<String>();
+         if (attributeTypeCache != null) {
+            for (IAttributeType type : attributeType) {
+               if (!(attributeTypeCache.get(type)).isTaggable()) {
+                  notTaggable.add((attributeTypeCache.get(type)).getName());
+               }
             }
-         }
-         if (!notTaggable.isEmpty()) {
-            throw new OseeArgumentException("Attribute types [%s] is not taggable", notTaggable.toString());
+            if (!notTaggable.isEmpty()) {
+               throw new OseeArgumentException("Attribute types [%s] is not taggable", notTaggable.toString());
+            }
          }
       }
    }

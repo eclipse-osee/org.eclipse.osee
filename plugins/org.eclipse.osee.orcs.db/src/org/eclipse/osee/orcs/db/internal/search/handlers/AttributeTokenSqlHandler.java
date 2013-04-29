@@ -46,11 +46,6 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    private String artAlias;
    private String attrAlias;
    private String txsAlias;
-   private String jIdAlias;
-
-   private AbstractJoinQuery joinQuery;
-
-   private Collection<? extends IAttributeType> types;
 
    private DataPostProcessorFactory<CriteriaAttributeKeywords> factory;
    private TagProcessor tagProcessor;
@@ -83,6 +78,8 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    @Override
    public void addWithTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
       List<String> values = new ArrayList<String>(criteria.getValues());
+      Collection<? extends IAttributeType> types = criteria.getTypes();
+
       int valueCount = values.size();
       int tagsCount = 0;
 
@@ -113,18 +110,40 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
 
       WithClause gammaWith = new WithClause(gammaSb.toString(), WithAlias.GAMMA);
       String gammaAlias = writer.addWithClause(gammaWith);
+      String jIdAlias = null;
 
       StringBuilder attrSb = new StringBuilder();
       attrSb.append("SELECT art_id FROM osee_attribute att, osee_txs txs, ");
+      if (!criteria.isIncludeAllTypes() && types.size() > 1) {
+         jIdAlias = writer.getNextAlias(TableEnum.ID_JOIN_TABLE);
+         attrSb.append("osee_join_id ");
+         attrSb.append(jIdAlias);
+         attrSb.append(", ");
+      }
       attrSb.append(gammaAlias);
       attrSb.append(" WHERE att.gamma_id = ");
       attrSb.append(gammaAlias);
       attrSb.append(".gamma_id AND att.gamma_id = txs.gamma_id AND ");
       attrSb.append(writer.getTxBranchFilter("txs"));
-      if (criteria.getTypes().size() == 1) {
-         attrSb.append(" AND att.attr_type_id = ?");
-         int localId = toLocalId(criteria.getTypes().iterator().next());
-         writer.addParameter(localId);
+      if (!criteria.isIncludeAllTypes()) {
+         attrSb.append(" AND att.attr_type_id = ");
+         if (types.size() == 1) {
+            attrSb.append("?");
+            int localId = toLocalId(criteria.getTypes().iterator().next());
+            writer.addParameter(localId);
+         } else {
+            Set<Integer> typeIds = new HashSet<Integer>();
+            for (IAttributeType type : types) {
+               typeIds.add(toLocalId(type));
+            }
+            AbstractJoinQuery joinQuery = writer.writeIdJoin(typeIds);
+
+            attrSb.append(jIdAlias);
+            attrSb.append(".id AND ");
+            attrSb.append(jIdAlias);
+            attrSb.append(".query_id = ?");
+            writer.addParameter(joinQuery.getQueryId());
+         }
       }
 
       WithClause attrWith = new WithClause(attrSb.toString(), WithAlias.ATTRIBUTE);
@@ -133,21 +152,9 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    }
 
    @Override
-   public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
-      types = criteria.getTypes();
-
-      if (types.size() > 1) {
-         Set<Integer> typeIds = new HashSet<Integer>();
-         for (IAttributeType type : types) {
-            typeIds.add(toLocalId(type));
-         }
-         joinQuery = writer.writeIdJoin(typeIds);
-      }
-
+   public void addTables(AbstractSqlWriter<QueryOptions> writer) {
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       List<String> txs = writer.getAliases(TableEnum.TXS_TABLE);
-
-      //      txsAlias1 = writer.addTable(TableEnum.TXS_TABLE);
 
       if (aliases.isEmpty()) {
          artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);

@@ -52,7 +52,7 @@ public class SearchCriteriaTest {
       when(type.getName()).thenReturn("Name");
       when(type.isTaggable()).thenReturn(true);
       CriteriaAttributeKeywords keyword =
-         new CriteriaAttributeKeywords(Collections.singletonList(CoreAttributeTypes.Name), cache, "");
+         new CriteriaAttributeKeywords(false, Collections.singletonList(CoreAttributeTypes.Name), cache, "");
       keyword.checkNotTaggable();
       Assert.assertTrue("Attribute type is taggable", true);
    }
@@ -63,7 +63,7 @@ public class SearchCriteriaTest {
       when(type.getName()).thenReturn("Active");
       when(type.isTaggable()).thenReturn(false);
       CriteriaAttributeKeywords keyword =
-         new CriteriaAttributeKeywords(Collections.singletonList(CoreAttributeTypes.Active), cache, "");
+         new CriteriaAttributeKeywords(false, Collections.singletonList(CoreAttributeTypes.Active), cache, "");
       keyword.checkNotTaggable();
       Assert.fail("checkNotTaggable should have thrown an exception on this attribute type");
 
@@ -76,7 +76,7 @@ public class SearchCriteriaTest {
       when(cache.get(CoreAttributeTypes.FavoriteBranch)).thenReturn(type);
       when(type.getName()).thenReturn("Favorite Branch");
       when(type.isTaggable()).thenReturn(false);
-      CriteriaAttributeKeywords keyword = new CriteriaAttributeKeywords(types, cache, "");
+      CriteriaAttributeKeywords keyword = new CriteriaAttributeKeywords(false, types, cache, "");
 
       keyword.checkNotTaggable();
       Assert.fail("checkNotTaggable should have thrown an exception on this attribute type");

@@ -53,7 +53,7 @@ public class QueryStatisticsTest {
    private static QueryData createQueryData(IOseeBranch branch, String value) {
       QueryData queryData = new QueryData(new CriteriaSet(branch), new QueryOptions());
       Collection<? extends IAttributeType> types = Collections.singleton(CoreAttributeTypes.Name);
-      queryData.addCriteria(new CriteriaAttributeKeywords(types, null, value, TokenDelimiterMatch.ANY,
+      queryData.addCriteria(new CriteriaAttributeKeywords(false, types, null, value, TokenDelimiterMatch.ANY,
          TokenOrderType.MATCH_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT, CaseType.MATCH_CASE));
       return queryData;
    }
