@@ -71,50 +71,44 @@ public class OrcsQueryTest {
    @Test
    public void testAllArtifactsFromBranch() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON);
-      Assert.assertEquals(191, builder.getCount());
+      Assert.assertEquals(26, builder.getCount());
 
-      Assert.assertEquals(191, builder.getResults().getList().size());
+      Assert.assertEquals(26, builder.getResults().getList().size());
    }
 
    @Test
    public void testQueryByIds() throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON).andGuidsOrHrids("AEmLGXnw0WaGLxcK5qwA");
+      QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON).andGuidsOrHrids("AkA2AmNuEDDL4VolM9AA");
       Assert.assertEquals(1, builder.getCount());
 
       ArtifactReadable artifact = builder.getResults().getExactlyOne();
-      Assert.assertEquals("AEmLGXnw0WaGLxcK5qwA", artifact.getGuid());
+      Assert.assertEquals("AkA2AmNuEDDL4VolM9AA", artifact.getGuid());
    }
 
    @Test
    public void testQueryArtifactType() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.Folder);
 
-      Assert.assertEquals(5, builder.getCount());
+      Assert.assertEquals(2, builder.getCount());
 
       List<ArtifactReadable> artifacts = builder.getResults().getList();
-      Assert.assertEquals(5, artifacts.size());
+      Assert.assertEquals(2, artifacts.size());
 
       checkContainsTypes(artifacts, CoreArtifactTypes.Folder);
 
       Collections.sort(artifacts, new NameComparator(SortOrder.ASCENDING));
 
       Iterator<ArtifactReadable> iterator = artifacts.iterator();
-      Assert.assertEquals("Action Tracking System", iterator.next().getName());
-      Assert.assertEquals("Config", iterator.next().getName());
       Assert.assertEquals("Document Templates", iterator.next().getName());
       Assert.assertEquals("User Groups", iterator.next().getName());
-      Assert.assertEquals("Work Definitions", iterator.next().getName());
 
       if (includeMatchLocationTests) {
          List<Match<ArtifactReadable, AttributeReadable<?>>> matches = builder.getMatches().getList();
-         Assert.assertEquals(5, matches.size());
+         Assert.assertEquals(2, matches.size());
 
          Iterator<Match<ArtifactReadable, AttributeReadable<?>>> matchIterator = matches.iterator();
-         checkMatch(matchIterator.next(), "Action Tracking System");
-         checkMatch(matchIterator.next(), "Config");
          checkMatch(matchIterator.next(), "Document Templates");
          checkMatch(matchIterator.next(), "User Groups");
-         checkMatch(matchIterator.next(), "Work Definitions");
       }
    }
 
@@ -144,24 +138,20 @@ public class OrcsQueryTest {
       builder.excludeTypeInheritance();
       builder.andIsOfType(CoreArtifactTypes.OseeTypeDefinition, CoreArtifactTypes.Folder);
 
-      Assert.assertEquals(10, builder.getCount());
+      Assert.assertEquals(6, builder.getCount());
 
       List<ArtifactReadable> artifacts = builder.getResults().getList();
-      Assert.assertEquals(10, artifacts.size());
+      Assert.assertEquals(6, artifacts.size());
 
       checkContainsTypes(artifacts, CoreArtifactTypes.OseeTypeDefinition, CoreArtifactTypes.Folder);
 
       Collections.sort(artifacts, new NameComparator(SortOrder.ASCENDING));
 
       Iterator<ArtifactReadable> iterator = artifacts.iterator();
-      Assert.assertEquals("Action Tracking System", iterator.next().getName());
-      Assert.assertEquals("Config", iterator.next().getName());
       Assert.assertEquals("Document Templates", iterator.next().getName());
       Assert.assertEquals("User Groups", iterator.next().getName());
-      Assert.assertEquals("Work Definitions", iterator.next().getName());
 
-      Assert.assertEquals("org.eclipse.osee.ats.OseeTypes_ATS", iterator.next().getName());
-      Assert.assertEquals("org.eclipse.osee.ats.config.demo.OseeTypes_Demo", iterator.next().getName());
+      Assert.assertEquals("org.eclipse.osee.client.demo.OseeTypes_ClientDemo", iterator.next().getName());
       Assert.assertEquals("org.eclipse.osee.coverage.OseeTypes_Coverage", iterator.next().getName());
       Assert.assertEquals("org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", iterator.next().getName());
       Assert.assertEquals("org.eclipse.osee.ote.define.OseeTypesOTE", iterator.next().getName());
@@ -170,20 +160,20 @@ public class OrcsQueryTest {
    @Test
    public void testQueryAttributeValue() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON);
-      builder.and(CoreAttributeTypes.Name, Operator.EQUAL, "Action Tracking System");
+      builder.and(CoreAttributeTypes.Name, Operator.EQUAL, "User Groups");
 
       Assert.assertEquals(1, builder.getCount());
 
       ArtifactReadable artifact = builder.getResults().getExactlyOne();
 
-      Assert.assertEquals("Action Tracking System", artifact.getName());
+      Assert.assertEquals("User Groups", artifact.getName());
       Assert.assertEquals(CoreArtifactTypes.Folder, artifact.getArtifactType());
 
       if (includeMatchLocationTests) {
          Match<ArtifactReadable, AttributeReadable<?>> result = builder.getMatches().getExactlyOne();
 
          Assert.assertEquals(artifact, result.getItem());
-         checkMatch(result, "Action Tracking System", CoreAttributeTypes.Name);
+         checkMatch(result, "User Groups", CoreAttributeTypes.Name);
 
          AttributeReadable<?> attr = result.getElements().iterator().next();
          List<MatchLocation> location = result.getLocation(attr);
@@ -191,7 +181,7 @@ public class OrcsQueryTest {
 
          MatchLocation loc1 = location.iterator().next();
          Assert.assertEquals(0, loc1.getStartPosition());
-         Assert.assertEquals("Action Tracking System".length(), loc1.getEndPosition());
+         Assert.assertEquals("User Groups".length(), loc1.getEndPosition());
       }
    }
 
@@ -243,7 +233,8 @@ public class OrcsQueryTest {
       Assert.assertEquals("Performance Requirements", reqIterator.next().getName());
       Assert.assertEquals("Safety Requirements", reqIterator.next().getName());
       Assert.assertEquals("Subsystem Requirements", reqIterator.next().getName());
-      checkContainsTypes(subSystemReqs, CoreArtifactTypes.SubsystemRequirementMSWord, CoreArtifactTypes.SystemRequirementMSWord);
+      checkContainsTypes(subSystemReqs, CoreArtifactTypes.SubsystemRequirementMSWord,
+         CoreArtifactTypes.SystemRequirementMSWord);
    }
 
    @Test

@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.h2.H2DbServer;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
+import org.eclipse.osee.hsqldb.HyperSqlDbServer;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.junit.Assert;
 import org.junit.runners.model.FrameworkMethod;
@@ -68,16 +68,15 @@ public class TestDatabase {
       tempFolder = createTempFolder(method, target);
       Assert.assertNotNull("TempFolder cannot be null", tempFolder);
 
-      addResource(tempFolder, bundle, "data/h2.zip");
+      addResource(tempFolder, bundle, "data/hsql.zip");
       addResource(tempFolder, bundle, "data/binary_data.zip");
 
-      checkExist(tempFolder, "h2");
+      checkExist(tempFolder, "hsql");
       checkExist(tempFolder, "attr");
 
-      String dbPath = getDbHomePath(tempFolder, "h2");
+      String dbPath = getDbHomePath(tempFolder, "hsql");
 
       int port = PortUtil.getInstance().getConsecutiveValidPorts(2);
-      int webPort = port + 1;
 
       IDatabaseInfo databaseInfo = new DbInfo(connectionId, port, dbPath);
       TestDbProvider provider = new TestDbProvider(databaseInfo);
@@ -89,7 +88,7 @@ public class TestDatabase {
       IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
       Assert.assertNotNull(dbService);
 
-      H2DbServer.startServer("0.0.0.0", port, webPort);
+      HyperSqlDbServer.startServer("0.0.0.0", port, port + 1, databaseInfo);
 
       OseeConnection connection = dbService.getConnection();
       try {
@@ -105,7 +104,7 @@ public class TestDatabase {
    }
 
    private String getDbHomePath(File tempFolder, String dbFolder) {
-      return String.format("~/%s/%s", tempFolder.getName(), dbFolder);
+      return String.format("file:~/%s/%s/osee.hsql.db", tempFolder.getName(), dbFolder);
    }
 
    private void checkExist(File tempFolder, String name) {
@@ -132,7 +131,7 @@ public class TestDatabase {
 
       System.setProperty("osee.application.server.data", "");
       System.setProperty("osee.db.embedded.server", "");
-      H2DbServer.stopServer();
+      HyperSqlDbServer.stopServer();
       Runtime.getRuntime().addShutdownHook(new Thread() {
          @Override
          public void run() {

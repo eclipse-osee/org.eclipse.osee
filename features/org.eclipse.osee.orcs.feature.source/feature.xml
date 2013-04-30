@@ -109,7 +109,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.framework.h2.source"
+         id="org.eclipse.osee.hsqldb.source"
          download-size="0"
          install-size="0"
          version="0.0.0"

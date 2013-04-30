@@ -42,11 +42,11 @@
 		<echo message="Osee Application Server Db Type: [${xserver-db-type}]" />
 	</target>
 
-	<target name="writeH2ConnectionFile" depends="init">
-		<writeConnectionFile dbType="h2" dbHome="${xserver-db-home}" dbPrefix="jdbc:h2" dbDriver="h2.db.connection" dbName="${xserver-db-name}" dbUser="${xserver-db-username}" dbPasswd="${xserver-db-password}" dbAddress="${xserver-db-address}" dbPort="${xserver-db-port}" connectionFilePath="${osee.app.server.connectionFile}" connectionid="${osee.app.server.connectionId}" />
+	<target name="writeHsqlConnectionFile" depends="init">
+			<writeConnectionFile dbType="hsql" dbHome="${xserver-db-home}" dbPrefix="jdbc:hsqldb:hsql" dbDriver="hsql.db.connection" dbName="${xserver-db-name}" dbUser="${xserver-db-username}" dbPasswd="${xserver-db-password}" dbAddress="${xserver-db-address}" dbPort="${xserver-db-port}" connectionFilePath="${osee.app.server.connectionFile}" connectionid="${osee.app.server.connectionId}" />
 	</target>
 
-	<target name="run" depends="init,writeH2ConnectionFile,startServer" />
+	<target name="run" depends="init,writeHsqlConnectionFile,startServer" />
 
 	<target name="startServer">
 		<pathconvert property="launcherJarPath" setonempty="false">
@@ -140,6 +140,12 @@
 				&lt;ConnectionDescription id=&quot;postgresql.db.connection&quot;&gt;${line.separator}
 					&lt;Driver&gt;org.postgresql.Driver&lt;/Driver&gt;${line.separator}
 					&lt;Url&gt;#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#&lt;/Url&gt;${line.separator}
+				&lt;/ConnectionDescription&gt;${line.separator}
+				${line.separator}
+				&lt;ConnectionDescription id=&quot;hsql.db.connection&quot;&gt;${line.separator}
+					&lt;Driver&gt;org.hsqldb.jdbc.JDBCDriver&lt;/Driver&gt;${line.separator}
+					&lt;Url&gt;#PREFIX#://#HOST#:#PORT#/#DBNAME#&lt;/Url&gt;${line.separator}
+					&lt;Property key=&quot;hsqldb.tx&quot; value=&quot;MVCC&quot; /&gt;${line.separator}
 				&lt;/ConnectionDescription&gt;${line.separator}
 				${line.separator}
 			</echo>

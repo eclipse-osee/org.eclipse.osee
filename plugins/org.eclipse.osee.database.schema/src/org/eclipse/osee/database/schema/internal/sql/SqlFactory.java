@@ -12,6 +12,7 @@ package org.eclipse.osee.database.schema.internal.sql;
 
 import java.sql.DatabaseMetaData;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.logger.Log;
 
@@ -29,7 +30,7 @@ public class SqlFactory {
       return getSqlManager(logger, db);
    }
 
-   private static SqlManager getSqlManager(Log logger, SupportedDatabase db) {
+   private static SqlManager getSqlManager(Log logger, SupportedDatabase db) throws OseeCoreException {
       SqlManager instance = null;
       switch (db) {
          case oracle:
@@ -47,8 +48,11 @@ public class SqlFactory {
          case h2:
             instance = new H2SqlManager(logger, new H2DataType());
             break;
-         default:
+         case hsql:
+            instance = new HyperSqlManager(logger, new HyperSqlDataType());
             break;
+         default:
+            throw new OseeDataStoreException("Unsupported database type [%s] ", db);
       }
       return instance;
    }

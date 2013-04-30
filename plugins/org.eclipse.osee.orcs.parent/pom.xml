@@ -40,7 +40,7 @@
 		<module>../../plugins/org.eclipse.osee.orcs.rest.model</module>
 		<module>../../plugins/org.eclipse.osee.orcs.rest</module>
 		<module>../../plugins/org.eclipse.osee.orcs.rest.test</module>
-		<module>../../plugins/org.eclipse.osee.framework.h2</module>
+		<module>../../plugins/org.eclipse.osee.hsqldb</module>
 		<module>../../plugins/org.eclipse.osee.orcs.db.test</module>
 		<module>../../plugins/org.eclipse.osee.orcs.test</module>
 

@@ -38,7 +38,7 @@ public class OseeInfoDataAccessorTest {
    public OsgiRule osgi = new OsgiRule(this);
 
    @Rule
-   public OseeDatabase db = new OseeDatabase("osee.demo.h2");
+   public OseeDatabase db = new OseeDatabase("osee.demo.hsql");
 
    @OsgiService
    IOseeDatabaseService dbService;

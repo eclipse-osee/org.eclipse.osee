@@ -50,7 +50,7 @@ public class OrcsAttributeLoadingTest {
       ApplicationContext context = null; // TODO use real application context
 
       QueryFactory queryFactory = orcsApi.getQueryFactory(context);
-      QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(7, 8, 9));
+      QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(6, 7, 8));
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
       List<ArtifactReadable> moreArts = resultSet.getList();
 
@@ -58,18 +58,18 @@ public class OrcsAttributeLoadingTest {
       Assert.assertEquals(3, builder.getCount());
 
       Map<Integer, ArtifactReadable> lookup = creatLookup(moreArts);
+      ArtifactReadable art6 = lookup.get(6);
       ArtifactReadable art7 = lookup.get(7);
       ArtifactReadable art8 = lookup.get(8);
-      ArtifactReadable art9 = lookup.get(9);
 
       //Test loading name attributes
-      Assert.assertEquals(art7.getSoleAttributeAsString(CoreAttributeTypes.Name),
-         "org.eclipse.osee.ats.config.demo.OseeTypes_Demo");
-      Assert.assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.Name), "User Groups");
-      Assert.assertEquals(art9.getSoleAttributeAsString(CoreAttributeTypes.Name), "Everyone");
+      Assert.assertEquals(art6.getSoleAttributeAsString(CoreAttributeTypes.Name),
+         "org.eclipse.osee.coverage.OseeTypes_Coverage");
+      Assert.assertEquals(art7.getSoleAttributeAsString(CoreAttributeTypes.Name), "User Groups");
+      Assert.assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.Name), "Everyone");
 
       //Test boolean attributes
-      Assert.assertEquals(art9.getSoleAttributeAsString(CoreAttributeTypes.DefaultGroup), "true");
+      Assert.assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.DefaultGroup), "true");
 
       //Load WTC attributes
       loadWordTemplateContentAttributes(queryFactory, orcsApi.getBranchCache());

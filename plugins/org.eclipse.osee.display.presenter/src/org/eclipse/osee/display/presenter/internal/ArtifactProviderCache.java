@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -38,7 +37,7 @@ public class ArtifactProviderCache {
    public ArtifactProviderCache() {
       this.parentCache = new MapMaker()//
       .initialCapacity(500)//
-      .expiration(30, TimeUnit.MINUTES)//
+      //      .expiration(30, TimeUnit.MINUTES)//
       .makeMap();
       clearSearchCache();
    }

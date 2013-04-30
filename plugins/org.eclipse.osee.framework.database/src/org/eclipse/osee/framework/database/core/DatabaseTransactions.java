@@ -79,6 +79,9 @@ public final class DatabaseTransactions {
          case h2:
             dbService.runPreparedUpdate(connection, "SET REFERENTIAL_INTEGRITY = FALSE");
             break;
+         case hsql:
+            dbService.runPreparedUpdate(connection, "SET DATABASE REFERENTIAL INTEGRITY FALSE");
+            break;
          default:
             // NOTE: this must be a PreparedStatement to play correctly with DB Transactions.
             dbService.runPreparedUpdate(connection, "SET CONSTRAINTS ALL DEFERRED");

@@ -68,7 +68,7 @@ public class OrcsAttributeSearchTest {
       List<ArtifactReadable> moreArts = resultSet.getList();
 
       for (ArtifactReadable artifact : moreArts) {
-         Assert.assertTrue(artifact.getLocalId() != 8);
+         Assert.assertTrue(artifact.getLocalId() != 7);
       }
    }
 
@@ -84,10 +84,10 @@ public class OrcsAttributeSearchTest {
       Assert.assertEquals(1, builder.getCount());
 
       Map<Integer, ArtifactReadable> lookup = creatLookup(moreArts);
-      ArtifactReadable art8 = lookup.get(8);
+      ArtifactReadable art7 = lookup.get(7);
 
       //Test loading name attributes
-      Assert.assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.Name), "User Groups");
+      Assert.assertEquals(art7.getSoleAttributeAsString(CoreAttributeTypes.Name), "User Groups");
    }
 
    @Test
@@ -96,7 +96,8 @@ public class OrcsAttributeSearchTest {
       Branch branch = branchCache.getBySoleName("SAW_Bld_1");
       QueryBuilder builder =
          queryFactory.fromBranch(branch).and(CoreAttributeTypes.WordTemplateContent, "commands",
-            TokenDelimiterMatch.ANY, TokenOrderType.MATCH_ORDER, CaseType.IGNORE_CASE, MatchTokenCountType.IGNORE_TOKEN_COUNT);
+            TokenDelimiterMatch.ANY, TokenOrderType.MATCH_ORDER, CaseType.IGNORE_CASE,
+            MatchTokenCountType.IGNORE_TOKEN_COUNT);
 
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
       List<ArtifactReadable> moreArts = resultSet.getList();
@@ -117,8 +118,8 @@ public class OrcsAttributeSearchTest {
       Assert.assertEquals(1, builder.getCount());
 
       Map<Integer, ArtifactReadable> lookup = creatLookup(moreArts);
-      ArtifactReadable art9 = lookup.get(9);
-      Assert.assertEquals(art9.getSoleAttributeAsString(CoreAttributeTypes.Name), "Everyone");
+      ArtifactReadable art8 = lookup.get(8);
+      Assert.assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.Name), "Everyone");
    }
 
    private Map<Integer, ArtifactReadable> creatLookup(List<ArtifactReadable> arts) {

@@ -21,7 +21,8 @@ public enum SupportedDatabase {
    oracle,
    foxpro,
    mysql,
-   postgresql;
+   postgresql,
+   hsql;
 
    public static String getDatabaseName(DatabaseMetaData metaData) throws OseeCoreException {
       String name = "";
@@ -51,6 +52,8 @@ public enum SupportedDatabase {
          toReturn = mysql;
       } else if (lowerCaseName.contains(postgresql.toString())) {
          toReturn = postgresql;
+      } else if (lowerCaseName.contains(hsql.toString())) {
+         toReturn = hsql;
       }
       return toReturn;
    }

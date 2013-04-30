@@ -60,7 +60,7 @@ public class OrcsRelationLoadingTest {
    }
 
    private void checkRelationsForCommonBranch(OrcsApi oseeApi, QueryFactory queryFactory, GraphReadable graph, ApplicationContext context) throws OseeCoreException {
-      QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(7, 8, 9));
+      QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(6, 7, 8));
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
       List<ArtifactReadable> moreArts = resultSet.getList();
 
@@ -68,51 +68,35 @@ public class OrcsRelationLoadingTest {
       Assert.assertEquals(3, builder.getCount());
 
       Map<Integer, ArtifactReadable> lookup = creatLookup(moreArts);
+      ArtifactReadable art6 = lookup.get(6);
       ArtifactReadable art7 = lookup.get(7);
       ArtifactReadable art8 = lookup.get(8);
-      ArtifactReadable art9 = lookup.get(9);
 
-      //art 7 has no relations
-      Assert.assertEquals(0, graph.getExistingRelationTypes(art7).size());
-      //art 8 has 4 
+      //art 6 has no relations
+      Assert.assertEquals(0, graph.getExistingRelationTypes(art6).size());
+      //art 7 has 3 
       //      REL_LINK_ID    REL_LINK_TYPE_ID     A_ART_ID    B_ART_ID    RATIONALE   GAMMA_ID    TX_CURRENT     MOD_TYPE    BRANCH_ID   TRANSACTION_ID    GAMMA_ID  
-      //      2  397   1  8     36 1  1  2  6  36
-      //      3  397   8  16    37 1  1  2  6  37
-      //      1  397   8  9     41 1  1  2  6  41
-      //      173   397   8  121      699   1  1  2  16
+      //      1  219   7  8     53
+      //      3  219   7  15    54
+      //      2  219   1  7     52
+      Assert.assertEquals(2, graph.getExistingRelationTypes(art7).size());
+      Assert.assertEquals(2,
+         graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, art7).getList().size());
+      Assert.assertEquals(1,
+         graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, art7).getList().size());
+
+      //art8 has 
+      //      REL_LINK_ID    REL_LINK_TYPE_ID     A_ART_ID    B_ART_ID    RATIONALE   GAMMA_ID    TX_CURRENT     MOD_TYPE    BRANCH_ID   TRANSACTION_ID    GAMMA_ID
+      //      7  233   8  20    62
+      //      8  233   8  21    63
+      //      4  233   8  17    74
+      //      6  233   8  19    76
+      //      5  233   8  18    78
+      //      1  219   7  8     53
       Assert.assertEquals(2, graph.getExistingRelationTypes(art8).size());
-      Assert.assertEquals(3,
-         graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, art8).getList().size());
       Assert.assertEquals(1,
          graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, art8).getList().size());
-
-      //art9 has 
-      //      REL_LINK_ID    REL_LINK_TYPE_ID     A_ART_ID    B_ART_ID    RATIONALE   GAMMA_ID    TX_CURRENT     MOD_TYPE    BRANCH_ID   TRANSACTION_ID    GAMMA_ID  
-      //      1  397   8  9     41 1  1  2  6  41
-      //      21 382   9  34    326   1  1  2  14 326
-      //      20 382   9  33    327   1  1  2  14 327
-      //      23 382   9  36    328   1  1  2  14 328
-      //      22 382   9  35    329   1  1  2  14 329
-      //      28 382   9  41    334   1  1  2  14 334
-      //      29 382   9  42    335   1  1  2  14 335
-      //      30 382   9  43    336   1  1  2  14 336
-      //      31 382   9  44    337   1  1  2  14 337
-      //      24 382   9  37    338   1  1  2  14 338
-      //      25 382   9  38    339   1  1  2  14 339
-      //      26 382   9  39    340   1  1  2  14 340
-      //      27 382   9  40    341   1  1  2  14 341
-      //      36 382   9  49    342   1  1  2  14 342
-      //      37 382   9  50    343   1  1  2  14 343
-      //      38 382   9  51    344   1  1  2  14 344
-      //      32 382   9  45    346   1  1  2  14 346
-      //      33 382   9  46    347   1  1  2  14 347
-      //      34 382   9  47    348   1  1  2  14 348
-      //      35 382   9  48    349   1  1  2  14 349
-      //      218   382   9  166      898   1  1  2  21 898
-      Assert.assertEquals(2, graph.getExistingRelationTypes(art9).size());
-      Assert.assertEquals(1,
-         graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, art9).getList().size());
-      Assert.assertEquals(20, graph.getRelatedArtifacts(CoreRelationTypes.Users_User, art9).getList().size());
+      Assert.assertEquals(5, graph.getRelatedArtifacts(CoreRelationTypes.Users_User, art8).getList().size());
 
    }
 

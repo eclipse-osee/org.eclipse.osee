@@ -22,12 +22,17 @@ public class DbInfo implements IDatabaseInfo {
    private final int port;
    private final String connectionId;
    private final String dbPath;
+   private final Properties properties;
 
    public DbInfo(String connectionId, int port, String dbPath) {
       super();
       this.port = port;
       this.connectionId = connectionId;
       this.dbPath = dbPath;
+      properties = new Properties();
+      properties.setProperty("user", getDatabaseLoginName());
+      properties.put("password", "");
+      properties.put("hsqldb.tx", "MVCC");
    }
 
    @Override
@@ -37,31 +42,26 @@ public class DbInfo implements IDatabaseInfo {
 
    @Override
    public String getDatabaseName() {
-      return "osee.h2.db";
+      return "osee.hsql.db";
    }
 
    @Override
    public String getDatabaseLoginName() {
-      return "osee";
+      return "public";
    }
 
    @Override
    public String getDriver() {
-      return "org.h2.Driver";
+      return "org.hsqldb.jdbc.JDBCDriver";
    }
 
    @Override
    public String getConnectionUrl() {
-      return String.format(
-         "jdbc:h2:tcp://127.0.0.1:%s/%s/osee.h2.db;IGNORECASE=TRUE;SCHEMA_SEARCH_PATH=OSEE,PUBLIC;MVCC=TRUE;LOG=2",
-         port, dbPath);
+      return String.format("jdbc:hsqldb:hsql://127.0.0.1:%s/osee.hsql.db", port);
    }
 
    @Override
    public Properties getConnectionProperties() {
-      Properties properties = new Properties();
-      properties.setProperty("user", getDatabaseLoginName());
-      properties.put("password", "osee");
       return properties;
    }
 
