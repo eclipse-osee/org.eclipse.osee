@@ -60,7 +60,14 @@ artifactType "Action" extends "ats.Ats Artifact" {
 	attribute "ats.Validation Required"
 }
 
-artifactType "Team Definition" extends "ats.Ats Artifact" , "Abstract Access Controlled" {
+abstract artifactType "ats.Ats Config Artifact" extends "Artifact" {
+	guid "AOtcz6fvn2ZTASCBOtQA"
+	uuid 0x0000000000000321
+	attribute "ats.Active"
+	attribute "ats.Actionable"
+}
+
+artifactType "Team Definition" extends "ats.Ats Config Artifact" , "Abstract Access Controlled" {
 	guid "AAMFDhUrlytusKbaQGAA"
 	uuid 0x0000000000000044
 	attribute "ats.Hours Per Work Day"
@@ -69,8 +76,6 @@ artifactType "Team Definition" extends "ats.Ats Artifact" , "Abstract Access Con
 	attribute "ats.Require Targeted Version"
 	attribute "ats.Baseline Branch Guid"
 	attribute "ats.Action Details Format"
-	attribute "ats.Active"
-	attribute "ats.Actionable"
 	attribute "ats.Allow Create Branch"
 	attribute "ats.Allow Commit Branch"
 	attribute "ats.Related Task Workflow Definition Old"
@@ -81,11 +86,9 @@ artifactType "Team Definition" extends "ats.Ats Artifact" , "Abstract Access Con
 	attribute "ats.Rule Definition"
 }
 
-artifactType "Actionable Item" extends "ats.Ats Artifact" , "Abstract Access Controlled" {
+artifactType "Actionable Item" extends "ats.Ats Config Artifact" , "Abstract Access Controlled" {
 	guid "AAMFDhW2LmhtRFsVyzwA"
 	uuid 0x0000000000000045
-	attribute "ats.Active"
-	attribute "ats.Actionable"
 }
 
 artifactType "Version" extends "ats.Ats Artifact" {
@@ -1220,6 +1223,17 @@ relationType "Goal" {
 	sideAArtifactType "Goal"
 	sideBName "Member"
 	sideBArtifactType "ats.Ats Artifact"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity MANY_TO_MANY
+}
+
+relationType "AutoAddActionToGoal" {
+	guid "AOu0b71YJ2c7+eKyr8AA"
+	uuid 0x200000000000017D
+	sideAName "Goal"
+	sideAArtifactType "Goal"
+	sideBName "Ats Config Object"
+	sideBArtifactType "ats.Ats Config Artifact"
 	defaultOrderType Lexicographical_Ascending
 	multiplicity MANY_TO_MANY
 }

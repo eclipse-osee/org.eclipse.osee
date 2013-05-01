@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.team.CreateTeamOption;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -158,10 +159,43 @@ public class ActionManager {
       // Relate Action to WorkFlow
       actionArt.addRelation(AtsRelationTypes.ActionToWorkflow_WorkFlow, teamArt);
 
+      // Auto-add actions to configured goals
+      addActionToConfiguredGoal(teamDef, teamArt, actionableItems, transaction);
+
       teamArt.persist(transaction);
       AtsNotificationManager.notifySubscribedByTeamOrActionableItem(teamArt);
 
       return teamArt;
+   }
+
+   /**
+    * Auto-add actions to a goal configured with relations to the given ActionableItem or Team Definition
+    */
+   private static void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, TeamWorkFlowArtifact teamArt, Collection<IAtsActionableItem> actionableItems, SkynetTransaction transaction) throws OseeCoreException {
+      // Auto-add this team artifact to configured goals
+      Artifact teamDefArt = AtsClientService.get().getConfigArtifact(teamDef);
+      if (teamDefArt != null) {
+         for (Artifact goalArt : teamDefArt.getRelatedArtifacts(AtsRelationTypes.AutoAddActionToGoal_Goal)) {
+            if (!goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member).contains(teamArt)) {
+               goalArt.addRelation(AtsRelationTypes.Goal_Member, teamArt);
+               goalArt.persist(transaction);
+            }
+         }
+      }
+
+      // Auto-add this actionable item to configured goals
+      for (IAtsActionableItem aia : actionableItems) {
+         Artifact aiDefArt = AtsClientService.get().getConfigArtifact(aia);
+         if (aiDefArt != null) {
+            for (Artifact goalArt : aiDefArt.getRelatedArtifacts(AtsRelationTypes.AutoAddActionToGoal_Goal)) {
+               if (!goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member).contains(teamArt)) {
+                  goalArt.addRelation(AtsRelationTypes.Goal_Member, teamArt);
+                  goalArt.persist(transaction);
+               }
+            }
+         }
+      }
+
    }
 
    /**

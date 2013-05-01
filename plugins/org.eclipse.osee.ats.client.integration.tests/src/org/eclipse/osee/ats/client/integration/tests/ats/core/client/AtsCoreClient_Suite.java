@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client;
 
+import org.eclipse.osee.ats.client.integration.tests.ats.core.client.action.AtsCoreClient_Action_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.branch.AtsCoreClient_Branch_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.config.AtsCoreClient_Config_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.notify.AtsCoreClient_Notify_Suite;
@@ -30,6 +31,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AtsTestUtilTest.class,
+   AtsCoreClient_Action_Suite.class,
    AtsCoreClient_Branch_Suite.class,
    AtsCoreClient_Config_Suite.class,
    AtsCoreClient_Notify_Suite.class,

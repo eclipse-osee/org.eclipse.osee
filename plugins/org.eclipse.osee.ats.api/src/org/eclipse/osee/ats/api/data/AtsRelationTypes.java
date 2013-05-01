@@ -70,6 +70,9 @@ public final class AtsRelationTypes {
    
    public static final IRelationTypeSide ActionableItem_Artifact = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000178L, "ActionableItem Owner");
    public static final IRelationTypeSide ActionableItem_User = ActionableItem_Artifact.getOpposite();
+   
+   public static final IRelationTypeSide AutoAddActionToGoal_Goal = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000017DL, "AutoAddActionToGoal");
+   public static final IRelationTypeSide AutoAddActionToGoal_ConfigObject = AutoAddActionToGoal_Goal.getOpposite();
    //@formatter:on
 
    private AtsRelationTypes() {
