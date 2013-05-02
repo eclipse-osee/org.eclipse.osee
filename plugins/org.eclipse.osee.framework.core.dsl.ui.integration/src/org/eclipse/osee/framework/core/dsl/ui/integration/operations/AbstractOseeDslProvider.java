@@ -11,9 +11,8 @@
 package org.eclipse.osee.framework.core.dsl.ui.integration.operations;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslProvider;
-import org.eclipse.osee.framework.core.dsl.integration.util.ModelUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -44,7 +43,7 @@ public abstract class AbstractOseeDslProvider implements OseeDslProvider {
       Operations.executeWorkAndCheckStatus(operation);
       try {
          outputStream.write(accessModel.getBytes("utf-8"));
-         oseeDsl = ModelUtil.loadModel(locationUri, outputStream.toString("utf-8"));
+         oseeDsl = OseeDslResourceUtil.loadModel(locationUri, outputStream.toString("utf-8")).getModel();
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
@@ -62,10 +61,10 @@ public abstract class AbstractOseeDslProvider implements OseeDslProvider {
    public void storeDsl(OseeDsl dsl) throws OseeCoreException {
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       try {
-         ModelUtil.saveModel(dsl, locationUri, outputStream, false);
+         OseeDslResourceUtil.saveModel(dsl, locationUri, outputStream, false);
          saveModelToStorage(outputStream.toString("UTF-8"));
          loadDsl();
-      } catch (IOException ex) {
+      } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
    }

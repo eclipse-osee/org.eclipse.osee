@@ -17,12 +17,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.osee.framework.core.dsl.integration.util.ModelUtil;
+import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.HexUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -34,8 +35,13 @@ import org.eclipse.osee.framework.ui.skynet.render.AttributeModifier;
 public class OseeTypeModifier implements AttributeModifier {
 
    @Override
-   public InputStream modifyForSave(Artifact owner, File file) throws OseeCoreException, IOException {
-      String value = Lib.fileToString(file);
+   public InputStream modifyForSave(Artifact owner, File file) throws OseeCoreException {
+      String value = null;
+      try {
+         value = Lib.fileToString(file);
+      } catch (IOException ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
 
       List<Artifact> artifacts =
          ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.OseeTypeDefinition, BranchManager.getCommonBranch());
@@ -49,7 +55,12 @@ public class OseeTypeModifier implements AttributeModifier {
          }
          combinedSheets.append(sheetData.replaceAll("import\\s+\"", "// import \""));
       }
-      OseeDsl oseeDsl = ModelUtil.loadModel("osee:/TypeModel.osee", combinedSheets.toString());
+      OseeDsl oseeDsl = null;
+      try {
+         oseeDsl = OseeDslResourceUtil.loadModel("osee:/TypeModel.osee", combinedSheets.toString()).getModel();
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
 
       Set<Long> uuids = new HashSet<Long>();
       for (EObject object : oseeDsl.eContents()) {
@@ -58,7 +69,14 @@ public class OseeTypeModifier implements AttributeModifier {
          }
       }
       Conditions.checkExpressionFailOnTrue(uuids.contains(0L), "Uuid of 0L is not allowed");
-      return Lib.stringToInputStream(value);
+
+      InputStream inputStream = null;
+      try {
+         inputStream = Lib.stringToInputStream(value);
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+      return inputStream;
    }
 
    private void addUuid(Set<Long> set, OseeType type) throws OseeCoreException {

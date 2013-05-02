@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.core.dsl.integration.util;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
 import org.junit.Test;
@@ -47,10 +46,10 @@ public class ModelUtilTest {
    private static final String ACCESS_TEST_INPUT = "testAccessModel.osee";
 
    @Test
-   public void testModelUtilLoadType() throws OseeCoreException, IOException {
+   public void testModelUtilLoadType() throws Exception {
       String rawXTextData = Lib.fileToString(getClass(), TYPE_TEST_INPUT);
 
-      OseeDsl model1 = ModelUtil.loadModel("osee:/text.osee", rawXTextData);
+      OseeDsl model1 = OseeDslResourceUtil.loadModel("osee:/text.osee", rawXTextData).getModel();
 
       Assert.assertEquals(5, model1.getArtifactTypes().size());
       Iterator<XArtifactType> type1 = model1.getArtifactTypes().iterator();
@@ -82,20 +81,20 @@ public class ModelUtilTest {
          "Lexicographical_Ascending", RelationMultiplicityEnum.ONE_TO_MANY);
 
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      ModelUtil.saveModel(model1, "osee:/text.osee", outputStream, false);
+      OseeDslResourceUtil.saveModel(model1, "osee:/text.osee", outputStream, false);
       outputStream.flush();
       String value = outputStream.toString("UTF-8");
       modelEquals(rawXTextData, value);
 
-      OseeDsl model2 = ModelUtil.loadModel("osee:/text2.osee", value);
+      OseeDsl model2 = OseeDslResourceUtil.loadModel("osee:/text2.osee", value).getModel();
       DslAsserts.assertEquals(model1, model2);
    }
 
    @Test
-   public void testModelUtilLoadAccess() throws OseeCoreException, IOException {
+   public void testModelUtilLoadAccess() throws Exception {
       String rawXTextData = Lib.fileToString(getClass(), ACCESS_TEST_INPUT);
 
-      OseeDsl model1 = ModelUtil.loadModel("osee:/text.osee", rawXTextData);
+      OseeDsl model1 = OseeDslResourceUtil.loadModel("osee:/text.osee", rawXTextData).getModel();
       Assert.assertEquals(2, model1.getArtifactTypes().size());
       Iterator<XArtifactType> type1 = model1.getArtifactTypes().iterator();
       DslAsserts.assertEquals(type1.next(), "Artifact", "BZOUrxO35x+LBZkEYzAA", new String[0]);
@@ -158,16 +157,16 @@ public class ModelUtilTest {
       // @formatter:on
 
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      ModelUtil.saveModel(model1, "osee:/text.osee", outputStream, false);
+      OseeDslResourceUtil.saveModel(model1, "osee:/text.osee", outputStream, false);
       outputStream.flush();
       String value = outputStream.toString("UTF-8");
       modelEquals(rawXTextData, value);
 
-      OseeDsl model2 = ModelUtil.loadModel("osee:/text2.osee", value);
+      OseeDsl model2 = OseeDslResourceUtil.loadModel("osee:/text2.osee", value).getModel();
       DslAsserts.assertEquals(model1, model2);
    }
-   
-   private static void modelEquals(String rawExpected, String actual){
+
+   private static void modelEquals(String rawExpected, String actual) {
       String expected = rawExpected.replaceAll("\n", System.getProperty("line.separator"));
       Assert.assertEquals(expected, actual);
    }

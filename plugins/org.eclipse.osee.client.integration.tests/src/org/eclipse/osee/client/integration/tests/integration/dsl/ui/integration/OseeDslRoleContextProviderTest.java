@@ -18,13 +18,12 @@ import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
-import org.eclipse.osee.framework.core.dsl.integration.util.ModelUtil;
+import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.ui.integration.operations.OseeDslRoleContextProvider;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -46,10 +45,10 @@ public class OseeDslRoleContextProviderTest {
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    @Test
-   public void testGetContextId() throws OseeCoreException {
+   public void testGetContextId() throws Exception {
       String contextGuid = GUID.create();
       String testSheet = getTestSheet1(contextGuid, SystemUser.Guest.getGuid());
-      OseeDsl model = ModelUtil.loadModel("osee:/text.osee", testSheet);
+      OseeDsl model = OseeDslResourceUtil.loadModel("osee:/text.osee", testSheet).getModel();
       MockDslProvider dslProvider = new MockDslProvider(model);
       OseeDslRoleContextProvider contextProvider = new OseeDslRoleContextProvider(dslProvider);
       Artifact guest = ArtifactQuery.getArtifactFromId(SystemUser.Guest.getGuid(), CoreBranches.COMMON);
@@ -60,12 +59,12 @@ public class OseeDslRoleContextProviderTest {
    }
 
    @Test
-   public void testGetContextIdExtended() throws OseeCoreException {
+   public void testGetContextIdExtended() throws Exception {
       String contextGuid1 = GUID.create();
       String contextGuid2 = GUID.create();
       String role2Guid = GUID.create();
       String testSheet = getTestSheet2(contextGuid1, SystemUser.Guest.getGuid(), contextGuid2, role2Guid);
-      OseeDsl model = ModelUtil.loadModel("osee:/text.osee", testSheet);
+      OseeDsl model = OseeDslResourceUtil.loadModel("osee:/text.osee", testSheet).getModel();
       MockDslProvider dslProvider = new MockDslProvider(model);
       OseeDslRoleContextProvider contextProvider = new OseeDslRoleContextProvider(dslProvider);
       Artifact guest = ArtifactQuery.getArtifactFromId(SystemUser.Guest.getGuid(), CoreBranches.COMMON);

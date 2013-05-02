@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +17,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.compare.diff.metamodel.ComparisonResourceSnapshot;
 import org.eclipse.emf.compare.diff.metamodel.DiffFactory;
+import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
 import org.eclipse.osee.framework.core.dsl.integration.CreateOseeTypeChangesReportOperation;
 import org.eclipse.osee.framework.core.dsl.integration.EMFCompareOperation;
 import org.eclipse.osee.framework.core.dsl.integration.OseeToXtextOperation;
@@ -94,8 +94,9 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
       IOperation operation = new OseeToXtextOperation(cache, modelFactory, model);
       Operations.executeWorkAndCheckStatus(operation, monitor);
       try {
-         ModelUtil.saveModel(model, "osee:/oseeTypes_" + Lib.getDateTimeString() + ".osee", outputStream, false);
-      } catch (IOException ex) {
+         OseeDslResourceUtil.saveModel(model, "osee:/oseeTypes_" + Lib.getDateTimeString() + ".osee", outputStream,
+            false);
+      } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
    }
@@ -106,7 +107,12 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
       if (!modelName.endsWith(".osee")) {
          modelName += ".osee";
       }
-      OseeDsl inputModel = ModelUtil.loadModel("osee:/" + modelName, request.getModel());
+      OseeDsl inputModel = null;
+      try {
+         inputModel = OseeDslResourceUtil.loadModel("osee:/" + modelName, request.getModel()).getModel();
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
 
       IOseeCachingService tempCacheService = getService(IOseeCachingServiceFactory.class).createCachingService(false);
       OseeTypeCache tempCache =
@@ -119,10 +125,6 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
       OseeDsl modifiedModel = modelFactory.createOseeDsl();
 
       List<IOperation> ops = new ArrayList<IOperation>();
-
-      if (request.isCreateCompareReport()) {
-         ops.add(new OseeToXtextOperation(tempCache, modelFactory, baseModel));
-      }
 
       ops.add(new XTextToOseeTypeOperation(modelFactoryService, tempCache, tempCacheService.getBranchCache(),
          inputModel));
@@ -138,7 +140,6 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
 
       if (request.isPersistAllowed()) {
          IOseeCachingService caches = getService(IOseeCachingService.class);
-         ;
 
          // TODO Make this call transaction based
          tempCache.storeAllModified();

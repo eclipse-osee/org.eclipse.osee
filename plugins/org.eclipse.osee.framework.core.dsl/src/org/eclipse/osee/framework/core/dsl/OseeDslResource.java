@@ -8,14 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.render;
+package org.eclipse.osee.framework.core.dsl;
 
-import java.io.File;
-import java.io.InputStream;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import java.util.Collection;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 
-public interface AttributeModifier {
+/**
+ * @author Roberto E. Escobar
+ */
+public interface OseeDslResource {
 
-   InputStream modifyForSave(Artifact owner, File file) throws OseeCoreException;
+   Collection<String> getErrors();
+
+   OseeDsl getModel();
+
 }
