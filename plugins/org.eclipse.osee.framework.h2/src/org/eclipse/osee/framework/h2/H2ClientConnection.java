@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.h2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.Properties;
+import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.database.core.IConnectionFactory;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -27,7 +27,7 @@ public class H2ClientConnection implements IConnectionFactory {
    private boolean firstTime = true;
 
    @Override
-   public Connection getConnection(Properties properties, String connectionURL) throws Exception {
+   public Connection getConnection(IDatabaseInfo dbInfo) throws Exception {
       Class.forName(driver);
 
       if (firstTime) {
@@ -41,7 +41,7 @@ public class H2ClientConnection implements IConnectionFactory {
             H2DbServer.startServer(addressAndPort.getFirst(), addressAndPort.getSecond(), webPort);
          }
       }
-      Connection connection = DriverManager.getConnection(connectionURL, properties);
+      Connection connection = DriverManager.getConnection(dbInfo.getConnectionUrl(), dbInfo.getConnectionProperties());
       return connection;
    }
 

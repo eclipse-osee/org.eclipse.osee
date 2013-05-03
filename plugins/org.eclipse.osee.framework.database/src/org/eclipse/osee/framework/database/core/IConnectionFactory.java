@@ -11,14 +11,14 @@
 package org.eclipse.osee.framework.database.core;
 
 import java.sql.Connection;
-import java.util.Properties;
+import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public interface IConnectionFactory {
 
-   Connection getConnection(Properties properties, String connectionURL) throws Exception;
+   Connection getConnection(IDatabaseInfo dbInfo) throws Exception;
 
    String getDriver();
 }

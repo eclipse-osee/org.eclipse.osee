@@ -77,13 +77,11 @@ public class PooledDataSourceFetcher implements Callable<DataSource> {
       Properties configProps = configuration.getProperties();
 
       IConnectionFactory proxiedFactory = getFactory(dbInfo.getDriver());
-      String connectionURL = dbInfo.getConnectionUrl();
-      Properties properties = dbInfo.getConnectionProperties();
 
-      MetaData metadata = getMetaData(proxiedFactory, connectionURL, properties);
+      MetaData metadata = getMetaData(proxiedFactory, dbInfo);
 
       ConnectionFactory connectionFactory =
-         new ConnectionFactoryProxy(proxiedFactory, connectionURL, properties, metadata.isTxIsolationLevelSupported());
+         new ConnectionFactoryProxy(proxiedFactory, dbInfo, metadata.isTxIsolationLevelSupported());
 
       AbandonedObjectPool connectionPool =
          new AbandonedObjectPool(null, PoolConfigUtil.getAbandonedConnectionConfig(configProps));
@@ -115,11 +113,11 @@ public class PooledDataSourceFetcher implements Callable<DataSource> {
       return factory;
    }
 
-   private MetaData getMetaData(IConnectionFactory proxiedFactory, String connectionURL, Properties properties) throws Exception {
+   private MetaData getMetaData(IConnectionFactory proxiedFactory, IDatabaseInfo dbInfo) throws Exception {
       MetaData metaData = new MetaData();
       Connection connection = null;
       try {
-         connection = proxiedFactory.getConnection(properties, connectionURL);
+         connection = proxiedFactory.getConnection(dbInfo);
          DatabaseMetaData metadata = connection.getMetaData();
          metaData.setTxIsolationLevelSupported(metadata.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED));
          metaData.setValidationQuery(SupportedDatabase.getValidationSql(metadata));
@@ -162,13 +160,13 @@ public class PooledDataSourceFetcher implements Callable<DataSource> {
       }
 
       @Override
-      public Connection getConnection(Properties properties, String connectionURL) throws Exception {
+      public Connection getConnection(IDatabaseInfo dbInfo) throws Exception {
          try {
             Class.forName(driver);
          } catch (Exception ex) {
             throw new OseeNotFoundException("Unable to find connection factory with driver [%s]", driver);
          }
-         return DriverManager.getConnection(connectionURL, properties);
+         return DriverManager.getConnection(dbInfo.getConnectionUrl(), dbInfo.getConnectionProperties());
       }
 
       @Override
@@ -179,16 +177,14 @@ public class PooledDataSourceFetcher implements Callable<DataSource> {
 
    private static final class ConnectionFactoryProxy implements ConnectionFactory {
       private final IConnectionFactory proxiedFactory;
-      private final String connectionURL;
-      private final Properties properties;
+      private final IDatabaseInfo dbInfo;
 
       private final boolean supportsIsolationLevel;
 
-      public ConnectionFactoryProxy(IConnectionFactory proxiedFactory, String connectionURL, Properties properties, boolean supportsIsolationLevel) {
+      public ConnectionFactoryProxy(IConnectionFactory proxiedFactory, IDatabaseInfo dbInfo, boolean supportsIsolationLevel) {
          super();
          this.proxiedFactory = proxiedFactory;
-         this.connectionURL = connectionURL;
-         this.properties = properties;
+         this.dbInfo = dbInfo;
          this.supportsIsolationLevel = supportsIsolationLevel;
       }
 
@@ -196,7 +192,7 @@ public class PooledDataSourceFetcher implements Callable<DataSource> {
       public Connection createConnection() throws SQLException {
          Connection connection = null;
          try {
-            connection = proxiedFactory.getConnection(properties, connectionURL);
+            connection = proxiedFactory.getConnection(dbInfo);
             if (supportsIsolationLevel) {
                connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             }
