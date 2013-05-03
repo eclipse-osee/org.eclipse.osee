@@ -24,16 +24,18 @@ public class DatabaseConnectionInfo implements IDatabaseInfo {
    private final String databaseName;
    private final String driver;
    private final String id;
+   private final String dbHome;
    private final boolean isProduction;
    private final Properties properties;
 
-   public DatabaseConnectionInfo(String databaseLoginName, String connectionPrefix, String databaseName, String driver, String id, Properties properties, boolean isProduction) {
+   public DatabaseConnectionInfo(String databaseLoginName, String connectionPrefix, String databaseName, String driver, String id, String dbHome, Properties properties, boolean isProduction) {
       super();
       this.databaseLoginName = databaseLoginName;
       this.connectionPrefix = connectionPrefix;
       this.databaseName = databaseName;
       this.driver = driver;
       this.id = id;
+      this.dbHome = dbHome;
       this.isProduction = isProduction;
       this.properties = properties;
       properties.setProperty("user", databaseLoginName);
@@ -77,5 +79,10 @@ public class DatabaseConnectionInfo implements IDatabaseInfo {
    @Override
    public String toString() {
       return getId() + ": " + getConnectionUrl();
+   }
+
+   @Override
+   public String getDatabaseHome() {
+      return dbHome;
    }
 }

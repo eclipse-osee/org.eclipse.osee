@@ -31,4 +31,7 @@ public interface IDatabaseInfo extends Serializable {
    Properties getConnectionProperties();
 
    boolean isProduction();
+
+   String getDatabaseHome();
+
 }

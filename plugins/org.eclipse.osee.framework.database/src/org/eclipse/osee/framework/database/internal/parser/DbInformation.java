@@ -123,4 +123,9 @@ public class DbInformation implements IDatabaseInfo {
    public boolean isProduction() {
       return Boolean.valueOf(getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.isProduction));
    }
+
+   @Override
+   public String getDatabaseHome() {
+      return getDatabaseDetails().getFieldValue(ConfigField.DatabaseHome);
+   }
 }

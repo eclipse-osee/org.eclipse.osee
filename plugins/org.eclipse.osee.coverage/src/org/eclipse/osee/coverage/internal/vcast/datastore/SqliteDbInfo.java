@@ -64,4 +64,9 @@ public class SqliteDbInfo implements IDatabaseInfo {
    public boolean isProduction() {
       return false;
    }
+
+   @Override
+   public String getDatabaseHome() {
+      return dbPath;
+   }
 }

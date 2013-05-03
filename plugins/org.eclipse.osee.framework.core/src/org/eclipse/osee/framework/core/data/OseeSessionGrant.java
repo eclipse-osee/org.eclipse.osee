@@ -30,6 +30,7 @@ public class OseeSessionGrant extends BaseExchangeData {
    private static final String DB_LOGIN_NAME = "dbLogin";
    private static final String DB_DATABASE_NAME = "dbDatabaseName";
    private static final String DB_IS_PRODUCTION = "dbIsProduction";
+   private static final String DB_PATH = "dbDatabasePath";
    private static final String DB_ID = "dbId";
 
    private static final String OSEE_USER_IS_CREATION_REQUIRED = "oseeUserNeedsCreation";
@@ -68,6 +69,7 @@ public class OseeSessionGrant extends BaseExchangeData {
       this.backingData.put(DB_DATABASE_NAME, dbInfo.getDatabaseName());
       this.backingData.put(DB_IS_PRODUCTION, dbInfo.isProduction());
       this.backingData.put(DB_ID, dbInfo.getId());
+      this.backingData.put(DB_PATH, dbInfo.getDatabaseHome());
       putProperties(DB_CONNECT_PROPERTIES, dbInfo.getConnectionProperties());
    }
 
@@ -175,6 +177,11 @@ public class OseeSessionGrant extends BaseExchangeData {
       @Override
       public String toString() {
          return getId() + ": " + getConnectionUrl();
+      }
+
+      @Override
+      public String getDatabaseHome() {
+         return getString(DB_PATH);
       }
 
    }
