@@ -12,11 +12,6 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -24,23 +19,21 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Vector;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.events.Characters;
-import javax.xml.stream.events.EndElement;
-import javax.xml.stream.events.StartElement;
-import javax.xml.stream.events.XMLEvent;
+import org.cyberneko.html.parsers.SAXParser;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
+import org.eclipse.osee.framework.skynet.core.utility.NormalizeHtml;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 
 /**
  * @author Marc A. Potter
@@ -50,9 +43,30 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    private final Vector<String> postProcessGuids = new Vector<String>();
    private final Map<Integer, RowTypeEnum> rowIndexToRowTypeMap = new HashMap<Integer, RowTypeEnum>();
    private String[] headerRow;
-   RoughArtifactCollector collector;
-   private static final String imageBaseName = "Image Content_";
-   private static int READ_BUFFER_LEN = 4096;
+   private RoughArtifactCollector collector;
+   private boolean inArtifact = false;
+   private final Vector<String> theArtifact = new Vector<String>();
+   private String paragraphNumber = "", paragraphName = "";
+   private String uriDirectoryName = "";
+   private final static String BODY_START_TAG = "<body>";
+   private final static String BODY_END_TAG = "</body>";
+   private static final String IMAGE_BASE_NAME = "Image Content_";
+   private final static String[] VERIFICATION_KEYWORDS = {
+      "Effectivity:",
+      "Verf Method:",
+      "Verf Level:",
+      "Verf Location:",
+      "Verf Type:",
+      "Verified By:",
+      "Criteria:"};
+   private final static IAttributeType[] FIELD_TYPE = {
+      null,
+      CoreAttributeTypes.QualificationMethod,
+      CoreAttributeTypes.VerificationLevel,
+      CoreAttributeTypes.VerificationEvent,
+      null,
+      null,
+      null}; // Last one is actually a string
 
    @Override
    public String getDescription() {
@@ -79,374 +93,191 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       return false;
    }
 
-   @Override
-   public void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector) throws Exception {
+   private class Handler extends AbstractSaxHandler {
 
-      /**************************************************************
-       * DOORS uses non standard HTML. Read in the file and standardize it
-       */
-      this.collector = collector;
-      String fileName = source.getAuthority();
-      if (fileName == null) {
-         fileName = "";
+      private boolean isTitle = false;
+      private final Vector<String> currentRow = new Vector<String>();
+      private final StringBuilder cell = new StringBuilder("");
+      private boolean tableFound = false;
+      private int embededTableCount = 0;
+      private boolean inHeaderCell = false;
+
+      public Handler() {
       }
-      fileName += source.getPath();
-      String standardHTML = standardizeDOORS(fileName);
 
-      XMLInputFactory factory = XMLInputFactory.newInstance();
-      Reader myStringReader = new StringReader(standardHTML);
-      XMLEventReader reader = factory.createXMLEventReader(myStringReader);
-      XMLEvent event = null;
-
-      boolean tableFound = false, inHeaderCell = false;
-      int embededTableCount = 0;
-      String cell = "";
-      String title = fileName;
-      title = title.replaceAll("\\\\", "_");
-      title = title.replaceAll("/", "_");
-      title = title.replaceAll(" ", "_");
-      Boolean isTitle = false;
-      Vector<String> currentRow = new Vector<String>();
-
-      while (reader.hasNext()) {
-         event = reader.nextEvent();
-         if (event.isStartElement()) {
-            isTitle = false;
-            StartElement startElement = (StartElement) event;
-            String qName = startElement.getName().toString().trim();
-            if (qName.equalsIgnoreCase("title")) {
-               cell = "";
-               isTitle = true;
-            } else if (qName.equalsIgnoreCase("table")) {
-               if (tableFound) {
-                  // table within the table
-                  cell += event.toString();
-                  embededTableCount++;
-               } else {
-                  tableFound = true;
+      private String elementToString(String qName, Attributes attributes, boolean isEndElement) {
+         StringBuilder returnValue = new StringBuilder("<");
+         if (isEndElement) {
+            returnValue.append('/');
+         }
+         returnValue.append(qName);
+         if (attributes != null) {
+            for (int i = 0; i < attributes.getLength(); i++) {
+               returnValue.append(" ");
+               returnValue.append(attributes.getQName(i));
+               String value = attributes.getValue(i);
+               if (Strings.isValid(value)) {
+                  returnValue.append("=\"");
+                  returnValue.append(value);
+                  returnValue.append('"');
                }
-            } else if (qName.equalsIgnoreCase("tr")) {
-               // Do nothing here -- no processing needed
-            } else if (qName.equalsIgnoreCase("th")) {
-               if (embededTableCount > 0) {
-                  // table within the table
-                  cell += event.toString();
-               } else {
-                  inHeaderCell = true;
-                  cell = "";
-               }
-            } else if (qName.equalsIgnoreCase("td")) {
-               if (embededTableCount > 0) {
-                  // table within the table
-                  cell += event.toString();
-               } else {
-                  cell = "";
-               }
-            } else {
-               cell += event.toString();
             }
-         } else if (event.isEndElement()) {
-            isTitle = false;
-            EndElement endElement = (EndElement) event;
-            String qName = endElement.getName().toString().trim();
-            if (qName.equalsIgnoreCase("title")) {
-               foundStartOfWorksheet(cell);
-               cell = "";
-            } else if (qName.equalsIgnoreCase("table")) {
-               if (embededTableCount > 0) {
-                  // end of table within the table
-                  cell += event.toString();
-                  embededTableCount--;
+         }
+         returnValue.append(">");
+         return returnValue.toString();
+      }
+
+      @Override
+      public void startElementFound(String uri, String localName, String qName, Attributes attributes) {
+         isTitle = false;
+         if (qName.equalsIgnoreCase("title")) {
+            cell.delete(0, cell.length());
+            isTitle = true;
+         } else if (qName.equalsIgnoreCase("table")) {
+            if (tableFound) {
+               // table within the table
+               cell.append(elementToString(qName, attributes, false));
+               embededTableCount++;
+            } else {
+               tableFound = true;
+            }
+         } else if (qName.equalsIgnoreCase("tr")) {
+            // Do nothing here -- no processing needed
+         } else if (qName.equalsIgnoreCase("th")) {
+            if (embededTableCount > 0) {
+               // table within the table
+               cell.append(elementToString(qName, attributes, false));
+            } else {
+               inHeaderCell = true;
+               cell.delete(0, cell.length());
+            }
+         } else if (qName.equalsIgnoreCase("td")) {
+            if (embededTableCount > 0) {
+               // table within the table
+               cell.append(elementToString(qName, attributes, false));
+            } else {
+               cell.delete(0, cell.length());
+            }
+         } else {
+            cell.append(elementToString(qName, attributes, false));
+         }
+      }
+
+      @Override
+      public void endElementFound(String uri, String localName, String qName) throws SAXException {
+         isTitle = false;
+         if (qName.equalsIgnoreCase("title")) {
+            foundStartOfWorksheet(cell.toString());
+            cell.delete(0, cell.length());
+         } else if (qName.equalsIgnoreCase("table")) {
+            if (embededTableCount > 0) {
+               // end of table within the table
+               cell.append(elementToString(qName, null, true));
+               embededTableCount--;
+            } else {
+               // we are done!
+               tableFound = false;
+            }
+         } else if (qName.equalsIgnoreCase("tr")) {
+            if (embededTableCount == 0) {
+               String[] row = new String[currentRow.size()];
+               row = currentRow.toArray(row);
+               currentRow.clear();
+               if (inHeaderCell) {
+                  processHeaderRow(row);
+                  inHeaderCell = false;
                } else {
-                  // we are done!
-                  tableFound = false;
-               }
-            } else if (qName.equalsIgnoreCase("tr")) {
-               if (embededTableCount == 0) {
-                  String[] row = new String[currentRow.size()];
-                  row = currentRow.toArray(row);
-                  currentRow.clear();
-                  if (inHeaderCell) {
-                     processHeaderRow(row);
-                     inHeaderCell = false;
-                  } else {
+                  try {
                      processRow(row);
+                  } catch (OseeCoreException ex) {
+                     throw new SAXException(ex);
                   }
                }
-            } else if (qName.equalsIgnoreCase("th")) {
-               if (embededTableCount > 0) {
-                  // table within the table
-                  cell += event.toString();
-               } else {
-                  /***********************************************
-                   * In order to parse the DOORS import, ='xXx' had to be added to some keywords. This is because the
-                   * parser does not support simple keywords (e.g.
-                   * <table nowrap>
-                   * ) remove the additional code before adding it to the row
-                   */
-
-                  String StripCell = cell.replaceAll("=\'xXx\'", " ");
-                  currentRow.add(StripCell);
-                  cell = "";
-               }
-            } else if (qName.equalsIgnoreCase("td")) {
-               if (embededTableCount > 0) {
-                  // table within the table
-                  cell += event.toString();
-               } else {
-                  /***********************************************
-                   * In order to parse the DOORS import, ='xXx' had to be added to some keywords. This is because the
-                   * parser does not support simple keywords (e.g.
-                   * <table nowrap>
-                   * ) remove the additional code before adding it to the row
-                   */
-
-                  String StripCell = cell.replaceAll("=\'xXx\'", " ");
-                  currentRow.add(StripCell);
-                  cell = "";
-               }
-            } else {
-               cell += event.toString();
             }
+         } else if (qName.equalsIgnoreCase("th")) {
+            if (embededTableCount > 0) {
+               // table within the table
+               cell.append(elementToString(qName, null, true));
+            } else {
+               currentRow.add(cell.toString());
+               cell.delete(0, cell.length());
+            }
+         } else if (qName.equalsIgnoreCase("td")) {
+            if (embededTableCount > 0) {
+               // table within the table
+               cell.append(elementToString(qName, null, true));
+            } else {
+               currentRow.add(cell.toString());
+               cell.delete(0, cell.length());
+            }
+         } else {
+            cell.append(elementToString(qName, null, true));
+         }
+      }
 
-         } else if (event.isCharacters()) {
-            Characters characters = (Characters) event;
-            cell += characters.toString();
-            if (isTitle) {
-               title = cell;
-               title = title.replaceAll("/", "_");
-               title = title.replaceAll(" ", "_");
-               if (title.equals("")) {
-                  title = "empty_title";
-               }
+      @Override
+      public void characters(char ch[], int start, int length) {
+         for (int i = 0; i < length; i++) {
+            cell.append(Character.toString(ch[i + start]));
+         }
+         String title = "";
+         if (isTitle) {
+            title = cell.toString();
+            title = title.replaceAll("/", "_");
+            title = title.replaceAll(" ", "_");
+            if (title.equals("")) {
+               title = "empty_title";
+            }
+            try {
                RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.CONTAINER);
                roughArtifact.addAttribute(CoreAttributeTypes.Name, title.trim());
                roughArtifact.setGuid(GUID.create());
                roughArtifact.setSectionNumber("0");
                collector.addRoughArtifact(roughArtifact);
                isTitle = false;
+            } catch (OseeCoreException ex) {
+               // do nothing
             }
          }
       }
-      myStringReader.close();
-      // Do last artifact
-      processArtifact();
 
-   }
-
-   private String getToken(byte[] input, int startChar) {
-      String returnValue = "";
-      int iPos = 0;
-      boolean inSingleQuote = false, inDoubleQuote = false;
-      while (returnValue.equals("") && iPos < input.length - startChar) {
-         char theChar = (char) input[iPos + startChar];
-         switch (theChar) {
-
-            case '\'':
-               if (inSingleQuote) {
-                  // have to include closing ' (iPos + 1);
-                  returnValue = new String(input, startChar, iPos + 1);
-                  iPos++;
-                  inSingleQuote = false;
-               } else {
-                  inSingleQuote = true;
-               }
-               break;
-
-            case '\"':
-               if (inDoubleQuote) {
-                  // have to include closing " (iPos + 1);
-                  returnValue = new String(input, startChar, iPos + 1);
-                  iPos++;
-                  inDoubleQuote = false;
-               } else {
-                  inDoubleQuote = true;
-               }
-               break;
-
-            case '<':
-            case '>':
-               inDoubleQuote = inSingleQuote = false;
-            case '=':
-            case ' ':
-               if ((!inSingleQuote) && (!inDoubleQuote)) {
-                  // end of token
-                  if (iPos == 0) {
-                     // starts with a terminator, token is 1 char
-                     returnValue = String.valueOf(theChar);
-                  } else {
-                     returnValue = new String(input, startChar, iPos);
-                     iPos++;
-                  }
-               }
-               break;
-         }
-         iPos++;
-      }
-      return returnValue;
-   }
-
-   /**********************************************************************
-    * @param file name of the DOORS export file
-    * @return HTML representation of the DOORS export in standard HTML format DOORS export uses nonstandard HTML, this
-    * method standardizes it for use with the parser Known issues The opening <META> tab is not terminated (no </META>). <br>
-    * tags are not terminated (no </br>) <img> tags are not terminated (no </img>)
-    * <p>
-    * not terminated (no
-    * </p>
-    * ). This is a problem because it would take a lot to determine the point where the </p> needs to go. However, the
-    * way
-    * <p>
-    * is used it looks like it can simply be ignored (converted to
-    * </p>
-    * ) attributes within tags are not given values (<td border>instead of <td border='small'>) attributes values not
-    * quoted (
-    * <th width=50>instead of
-    * <th width='50'>)
-    */
-   private String standardizeDOORS(String input) throws OseeArgumentException {
-      StringBuilder rawValue = new StringBuilder(""), returnValue = new StringBuilder("");
-      int iLastSlash = input.lastIndexOf('/'), iLastBackslash = input.lastIndexOf('\\');
-      int iLast = (iLastBackslash > iLastSlash) ? iLastBackslash : iLastSlash;
-      String filePath = input.substring(0, iLast + 1);
-      FileInputStream readStream = null;
-      try {
-         readStream = new FileInputStream(input);
-         int iRead = 0;
-         byte[] readBytes = new byte[READ_BUFFER_LEN];
-         iRead = READ_BUFFER_LEN;
-         while (iRead == READ_BUFFER_LEN) {
-            iRead = readStream.read(readBytes);
-            String readString = new String(readBytes, 0, iRead);
-            rawValue.append(readString);
-         }
-      } catch (Exception e) {
-         e.printStackTrace();
-      } finally {
+      @Override
+      public void endDocument() throws SAXException {
          try {
-            readStream.close();
-         } catch (IOException e) {
+            processArtifact();
+         } catch (OseeCoreException ex) {
+            throw new SAXException(ex);
+         }
+      }
+   }
 
-         }
+   @Override
+   public void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector) throws Exception {
+
+      /**************************************************************
+       * DOORS uses non standard HTML. Read in the file and standardize it
+       */
+
+      postProcessGuids.clear();
+      inArtifact = false;
+      theArtifact.clear();
+      paragraphNumber = "";
+      paragraphName = "";
+
+      this.collector = collector;
+      String fileName = source.getAuthority();
+      if (fileName == null) {
+         fileName = "";
       }
-      // We now have the whole file as a string --
-      // walk through it one token at a time
-      int iStart = 0;
-      boolean inTag = false, inMeta = false, inBr = false, inImg = false, inP = false, tagName = false, equalFound =
-               false, attributeFound = false, LiteralTag = false, isSrcTag = false;
-      byte[] rawBytes = null;
-      try {
-         rawBytes = rawValue.toString().getBytes("UTF-8");
-      } catch (UnsupportedEncodingException e) {
-         // use default encoding
-         rawBytes = rawValue.toString().getBytes();
-      }
-      while (iStart < rawValue.length()) {
-         String token = getToken(rawBytes, iStart);
-         iStart += token.length();
-         if (token.length() == 0) {
-            // do nothing, we are done
-            inTag = false; // breakpoint
-         } else if (token.equals("<")) {
-            if (inTag) {
-               throw (new OseeArgumentException("< within a tag in HTML"));
-            }
-            inTag = true;
-         } else if (token.equals(">")) {
-            if (!inTag) {
-               throw (new OseeArgumentException("> outside a tag in HTML"));
-            }
-            inTag = false;
-            if (inMeta) {
-               token = " />";
-               inMeta = false;
-            } else if (inBr) {
-               token = " />";
-               inBr = false;
-            } else if (inImg) {
-               token += "</img>";
-               inImg = false;
-            } else if (inP) {
-               token = "/>";
-               inP = false;
-            } else if (attributeFound) {
-               token = "='xXx'>";
-            }
-            tagName = false;
-            attributeFound = false;
-            LiteralTag = false;
-            equalFound = false;
-         } else if (token.equalsIgnoreCase("META") && inTag) {
-            inMeta = true;
-            tagName = true;
-         } else if (token.equalsIgnoreCase("br") && inTag) {
-            inBr = true;
-            tagName = true;
-         } else if (token.equalsIgnoreCase("img") && inTag) {
-            inImg = true;
-            tagName = true;
-         } else if (token.equalsIgnoreCase("p") && inTag) {
-            inP = true;
-            tagName = true;
-         } else if (token.equalsIgnoreCase("!DOCTYPE") && inTag) {
-            LiteralTag = true;
-         } else if (token.equalsIgnoreCase("BODY") && inTag) {
-            // This is a parser issue has to be same case?
-            token = "body";
-         } else if (token.equalsIgnoreCase("/BODY") && inTag) {
-            // This is a parser issue has to be same case?
-            token = "/body";
-         } else if (token.equalsIgnoreCase("!--") && inTag) {
-            LiteralTag = true;
-         } else if (token.equalsIgnoreCase("&nbsp") && !inTag) {
-            // no closing semicolon
-            token = "&nbsp;";
-         } else if (!LiteralTag) {
-            if (inTag) {
-               /***************************************************
-                * If this is an attribute verify that the value is of the form 'value' or "value"
-                */
-               if (!tagName) {
-                  tagName = true;
-               } else if (!attributeFound) {
-                  attributeFound = !token.equals(" ");
-                  /************************************
-                   * for images, DOORS exports the file to the same directory as the HTML file and does not qualify the
-                   * src= keyword. This is fine for rendering in a browser, but in order to import the file later, it
-                   * must be qualified
-                   */
-                  if (attributeFound && token.equalsIgnoreCase("src")) {
-                     isSrcTag = true;
-                  } else {
-                     isSrcTag = false;
-                  }
-               } else if (!equalFound) {
-                  if (token.equals("=")) {
-                     equalFound = true;
-                  } else if (!token.equals(" ")) {
-                     // this is just an attribute no =
-                     token = "='xXx' " + token;
-                  }
-               } else if (!token.equals(" ")) {
-                  // is the value quoted?
-                  if (!((token.charAt(0) == '\'') || (token.charAt(0) == '"'))) {
-                     // add quotes
-                     token = "'" + token + "'";
-                  }
-                  if (isSrcTag) {
-                     // if not qualified, qualify it
-                     if ((token.indexOf('/') == -1) && (token.indexOf('\\') == -1) && token.indexOf("://") == -1) {
-                        token = token.substring(0, 1) + "file:///" + filePath + token.substring(1);
-                     }
-                  }
-                  attributeFound = false;
-                  equalFound = false;
-               }
-            }
-         }
-         returnValue.append(token);
-      }
-      return returnValue.toString();
+      fileName += source.getPath();
+      fileName = "file://" + fileName;
+      uriDirectoryName = fileName.substring(0, fileName.lastIndexOf('/') + 1);
+
+      SAXParser parser = new SAXParser();
+      Handler theHandler = new Handler();
+      parser.setContentHandler(theHandler);
+      parser.parse(fileName);
+
    }
 
    @Override
@@ -462,16 +293,17 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             for (String htmlVal : HTML) {
                int iCount = 0;
                for (Integer imageNumber : Ids) {
-                  htmlVal = htmlVal.replaceAll(imageBaseName + Integer.toString(iCount), imageNumber.toString());
+                  htmlVal = htmlVal.replaceAll(IMAGE_BASE_NAME + Integer.toString(iCount), imageNumber.toString());
                   iCount++;
                }
                theArtifact.addAttribute(CoreAttributeTypes.HTMLContent, htmlVal);
             }
          } catch (OseeCoreException e) {
-            e.printStackTrace();
+            // do nothing
          }
       }
    }
+
    private static enum RowTypeEnum {
       ID("ID"),
       REQUIREMENTS("Requirements"),
@@ -533,10 +365,6 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       }
    }
 
-   private boolean inArtifact = false;
-   private final Vector<String> theArtifact = new Vector<String>();
-   private String paragraphNumber = "", paragraphName = "";
-
    public void processRow(String[] row) throws OseeCoreException {
       /***************************************************************
        * First check the document applicability box, if it is empty this is a header row
@@ -546,8 +374,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       for (rowIndex = 0; rowIndex < row.length; rowIndex++) {
          RowTypeEnum rowType = rowIndexToRowTypeMap.get(rowIndex);
          if (rowType == RowTypeEnum.DOCUMENT_APPLICABILITY) {
-            String rowValue = row[rowIndex];
-            if (rowValue.trim().equals("") || rowValue.trim().equals("<br></br>")) {
+            String rowValue = row[rowIndex].toLowerCase();
+            if (rowValue.trim().equals("") || rowValue.trim().equals("<br></br>") || rowValue.trim().equals("<br>")) {
                if (inArtifact) {
                   processArtifact();
                }
@@ -583,6 +411,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                            }
                         }
                      }
+                     rowValue = "";
                   }
 
                   break;
@@ -618,10 +447,10 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             if (inArtifact) {
                ListIterator<String> iter = theArtifact.listIterator(rowIndex);
                String theColumnValue = iter.next();
-               theColumnValue += "\n" + rowValue;
+               theColumnValue += "\n" + rowValue.trim();
                iter.set(theColumnValue);
             } else {
-               theArtifact.add(rowValue);
+               theArtifact.add(rowValue.trim());
             }
 
          }
@@ -646,7 +475,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
             case REQUIREMENTS:
                StringBuffer imageFileList = new StringBuffer("");
-               rowValue = translateRequirements(rowValue, imageFileList);
+               getImageList(rowValue, imageFileList);
+               rowValue = normailizeHtml(rowValue);
                String imageFile = imageFileList.toString();
                if (!imageFile.isEmpty()) {
                   String theImage;
@@ -656,23 +486,25 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                   do {
                      comma = imageFile.indexOf(',');
                      if (comma == -1) {
-                        theImage = imageFile;
+                        theImage = uriDirectoryName + imageFile;
                         imageFile = " ";
                      } else {
-                        theImage = imageFile.substring(0, comma);
+                        theImage = uriDirectoryName + imageFile.substring(0, comma);
                         imageFile = imageFile.substring(comma + 1);
                      }
                      try {
                         URI imageURI = new URI(theImage);
                         roughArtifact.addAttribute("Image Content", imageURI);
-                        rowValue = rowValue.replace(theImage, imageBaseName + Integer.toString(imageNumber));
+                        rowValue = rowValue.replace(theImage, IMAGE_BASE_NAME + Integer.toString(imageNumber));
                         imageNumber++;
                      } catch (URISyntaxException e) {
                         e.printStackTrace();
                      }
                   } while (comma != -1);
                }
-               roughArtifact.addAttribute(CoreAttributeTypes.HTMLContent, rowValue);
+               if (Strings.isValid(rowValue)) {
+                  roughArtifact.addAttribute(CoreAttributeTypes.HTMLContent, rowValue);
+               }
                break;
 
             case ID:
@@ -719,12 +551,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
        * The followings possibilities exist for this field 1) Field empty 2) Some/all keywords The keywords may not be
        * filled in. In other words a keyword may be followed by a keyword instead of data.
        */
-      String[] keywords =
-               {"Effectivity:", "Verf Method:", "Verf Level:", "Verf Location:", "Verf Type:", "Verified By:",
-                        "Criteria:"};
-      IAttributeType[] FieldType =
-               {null, CoreAttributeTypes.QualificationMethod, CoreAttributeTypes.VerificationLevel,
-                        CoreAttributeTypes.VerificationEvent, null, null, null}; // Last one is actually a string
+
       String trimmed = clearHTML(column);
       if (trimmed.trim().isEmpty()) {
          // empty
@@ -733,44 +560,45 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       /*****************************************************************
        * There are some keywords that do not map-- need them in the list to check if there is data
        */
-      for (int i = 0; i < keywords.length; i++) {
+      for (int i = 0; i < VERIFICATION_KEYWORDS.length; i++) {
          // special case Criteria is a string attribute
-         if ((FieldType[i] == null) && (!keywords[i].equals("Criteria:"))) {
+         if ((FIELD_TYPE[i] == null) && (!VERIFICATION_KEYWORDS[i].equals("Criteria:"))) {
             continue;
          }
-         int iStart = trimmed.indexOf(keywords[i]);
+         int iStart = trimmed.indexOf(VERIFICATION_KEYWORDS[i]);
          if (iStart != -1) {
             boolean dataFound = true;
             // any data?
-            String rest = trimmed.substring(iStart + keywords[i].length());
+            String rest = trimmed.substring(iStart + VERIFICATION_KEYWORDS[i].length());
             rest = rest.trim();
             // is it empty?
             dataFound = !rest.isEmpty();
-            for (int j = 0; (j < keywords.length) && dataFound; j++) {
-               dataFound = !rest.startsWith(keywords[j]);
+            for (int j = 0; (j < VERIFICATION_KEYWORDS.length) && dataFound; j++) {
+               dataFound = !rest.startsWith(VERIFICATION_KEYWORDS[j]);
             }
             if (dataFound) {
                // find the data 
                int colon = rest.indexOf(':');
                if (colon == -1) {
-                  if (keywords[i].equals("Criteria:")) {
+                  if (VERIFICATION_KEYWORDS[i].equals("Criteria:")) {
                      // special case Criteria is a string attribute
                      roughArtifact.addAttribute("Verification Acceptance Criteria", rest);
                   } else {
-                     roughArtifact.addAttribute(FieldType[i], rest);
+                     roughArtifact.addAttribute(FIELD_TYPE[i], rest);
                   }
                } else {
                   // find the start of the keyword
                   boolean foundKeyword = false;
-                  for (int j = 0; (j < keywords.length); j++) {
-                     if (rest.indexOf(keywords[j]) == (colon - keywords[j].length() + 1)) {
-                        roughArtifact.addAttribute(FieldType[i], rest.substring(0, rest.indexOf(keywords[j]) - 1));
+                  for (int j = 0; (j < VERIFICATION_KEYWORDS.length); j++) {
+                     if (rest.indexOf(VERIFICATION_KEYWORDS[j]) == (colon - VERIFICATION_KEYWORDS[j].length() + 1)) {
+                        roughArtifact.addAttribute(FIELD_TYPE[i],
+                           rest.substring(0, rest.indexOf(VERIFICATION_KEYWORDS[j]) - 1));
                         foundKeyword = true;
                         break;
                      }
                   }
                   if (!foundKeyword) {
-                     roughArtifact.addAttribute(FieldType[i], rest);
+                     roughArtifact.addAttribute(FIELD_TYPE[i], rest);
                   }
 
                }
@@ -785,83 +613,32 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
    /*************************************************************
     * @param inputHTML Input value of the requirements field (as exported from DOORS)
-    * @param imageFileList is a comma separated list of image file names in the HTML
-    * @return HTML translated to common format Following transformations will be performed <code>
-    * DOORS format Common format
-    * <i></i>        <em></em> 
-    * <b></b>        <strong></strong> 
-    * &#9            &nbsp;&nbsp;&nbsp;&nbsp;
-    * <br></br>      <p>&nbsp;</p>
-    * 
-    * DOORS also puts <div tags within other tags, For example 
-    * <b>xxx<div ... >yyy</div></b>. 
-    * Translate this to
-    * <b>xxx</b><div ...><b>yyy</b></div>
-    * 
-    * If there is an <img tag, add the file name of the image file in imageFile
-    * </code>
+    * @param imageFileList is a comma separated list of image file names in the HTML If there is an <img tag, add the
+    * file name of the image file in imageFile
     */
-   private String translateRequirements(String inputHTML, StringBuffer imageFileList) {
-      String outputHTML = inputHTML;
-      String imageFiles = "";
-      outputHTML = outputHTML.replaceAll("<i>", "<em>");
-      outputHTML = outputHTML.replaceAll("</i>", "</em>");
-      outputHTML = outputHTML.replaceAll("<b>", "<strong>");
-      outputHTML = outputHTML.replaceAll("</b>", "</strong>");
-      outputHTML = outputHTML.replaceAll("&#9", "&nbsp;&nbsp;&nbsp;&nbsp;");
-      outputHTML = outputHTML.replaceAll("<br></br>", "<p>&nbsp;</p>");
-
-      String Lower = outputHTML.toLowerCase();
-      if (Lower.indexOf("<div") != -1) {
-         // is the DIV inside of a <strong> or <i>
-         int div = Lower.indexOf("<div"), bold = Lower.indexOf("<strong>"), italic = Lower.indexOf("<em>");
-         if ((bold != -1) && (bold < div)) {
-            // find the </b>
-            int boldEnd = Lower.indexOf("</strong>");
-            if (boldEnd > div) {
-               int divEND = Lower.indexOf(">", div), divClose = Lower.indexOf("</div>", div);
-               Lower =
-                        outputHTML.substring(0, div - 1) + "</strong>" + outputHTML.substring(div - 1, divEND + 1) + "<strong>" + outputHTML.substring(
-                                 divEND + 1, divClose) + "</strong>" + outputHTML.substring(divClose, boldEnd) + outputHTML.substring(boldEnd + "</strong>".length());
-               outputHTML = Lower;
-               // Set up in case there is also an <em>
-               Lower = outputHTML.toLowerCase();
-               italic = Lower.indexOf("<em>");
-               div = Lower.indexOf("<div");
-            }
-         }
-         if ((italic != -1) && (italic < div)) {
-            // find the </b>
-            int italicEnd = Lower.indexOf("</em>");
-            if (italicEnd > div) {
-               int divEND = Lower.indexOf(">", div), divClose = Lower.indexOf("</div>", div);
-               Lower =
-                        outputHTML.substring(0, div - 1) + "</em>" + outputHTML.substring(div - 1, divEND + 1) + "<em>" + outputHTML.substring(
-                                 divEND + 1, divClose) + "</em>" + outputHTML.substring(divClose, italicEnd) + outputHTML.substring(italicEnd + "</em>".length());
-               outputHTML = Lower;
-            }
-         }
-
-      }
-      Lower = outputHTML.toLowerCase();
+   private void getImageList(String inputHTML, StringBuffer imageFileList) {
+      String outputHtml = inputHTML;
+      String Lower = outputHtml.toLowerCase();
       int img = Lower.indexOf("img ");
+      imageFileList.setLength(0);
+      boolean first = true;
       while (img != -1) {
          int src = Lower.indexOf("src=", img);
          if (src != -1) {
             src += 4;
             char qte = Lower.charAt(src);
             int iEnd = Lower.indexOf(qte, src + 1);
-            if (imageFiles.isEmpty()) {
-               imageFiles = outputHTML.substring(src + 1, iEnd);
+            if (first) {
+               imageFileList.append(inputHTML.substring(src + 1, iEnd));
+               first = false;
             } else {
-               imageFiles += "," + outputHTML.substring(src + 1, iEnd);
+               imageFileList.append("," + outputHtml.substring(src + 1, iEnd));
             }
             img = Lower.indexOf("img ", src);
+         } else {
+            img = -1;
          }
       }
-      imageFileList.append(imageFiles);
-
-      return outputHTML;
    }
 
    /************************************************************
@@ -871,6 +648,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    private String clearHTML(String input) {
       String returnValue = "", processString = input;
       int openBracket = processString.indexOf('<'), closeBracket;
+      if (openBracket == -1) {
+         returnValue = input;
+      }
       while (openBracket >= 0) {
          /************************************************************
           * if the bracket doesn't start the string, copy the start to the return (plus a space). Find the close bracket
@@ -885,6 +665,28 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          }
          openBracket = processString.indexOf('<');
       }
+      return returnValue;
+   }
+
+   private String normailizeHtml(String inputHtml) {
+
+      String returnValue = NormalizeHtml.convertToNormalizedHTML(inputHtml);
+      int bodyStart = returnValue.indexOf(BODY_START_TAG);
+      int bodyEnd = returnValue.indexOf(BODY_END_TAG);
+      if (bodyStart != -1) {
+         bodyStart += BODY_START_TAG.length();
+         if (bodyEnd == -1) {
+            bodyEnd = returnValue.length() - 1;
+         } else {
+            bodyEnd--;
+         }
+         if (bodyEnd <= bodyStart) {
+            returnValue = ""; // no body 
+         } else {
+            returnValue = returnValue.substring(bodyStart, bodyEnd);
+         }
+      }
+      returnValue = returnValue.trim();
       return returnValue;
    }
 }
