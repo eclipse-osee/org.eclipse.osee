@@ -15,6 +15,14 @@
       	   classname="org.eclipse.osee.ats.client.demo.config.DemoDatabaseConfig">
    	</DatabaseInitializationTask>
 	</extension>
+      <extension
+      	id="DemoWebDatabaseConfig"
+         point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
+   	<DatabaseInitializationTask
+   			rule="org.eclipse.osee.framework.database.init.NotOnProductionDbInitializationRule"
+      	   classname="org.eclipse.osee.ats.client.demo.config.DemoWebDatabaseConfig">
+   	</DatabaseInitializationTask>
+	</extension>
    <extension
          point="org.eclipse.osee.ats.AtsNavigateItem">
       <AtsNavigateItem

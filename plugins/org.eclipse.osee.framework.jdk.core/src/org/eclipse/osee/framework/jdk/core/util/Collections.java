@@ -71,10 +71,6 @@ public class Collections {
       return toString(c, null, separator, null);
    }
 
-   public static interface Filter<T> {
-      boolean accept(T item) throws Exception;
-   }
-
    public static <T> void filter(Collection<T> items, Filter<T> filter) throws Exception {
       Iterator<T> it = items.iterator();
       while (it.hasNext()) {

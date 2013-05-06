@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.display.presenter.ArtifactFilter;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Collections.Filter;
+import org.eclipse.osee.framework.jdk.core.util.Filter;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;

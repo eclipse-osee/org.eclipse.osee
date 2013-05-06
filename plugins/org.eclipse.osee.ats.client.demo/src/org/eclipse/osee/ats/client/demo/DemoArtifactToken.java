@@ -56,6 +56,9 @@ public final class DemoArtifactToken {
    public static IArtifactToken Facilities_Team = TokenFactory.createArtifactToken("At2WHxIMOz66yR56eRAA",
       "Facilities_Team", CoreArtifactTypes.Folder);
 
+   public static IArtifactToken DemoPrograms = TokenFactory.createArtifactToken("Awsk_RtnczAchcuSxagA",
+      "Demo Programs", CoreArtifactTypes.Artifact);
+
    private DemoArtifactToken() {
       // Constants
    }

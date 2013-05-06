@@ -33,6 +33,7 @@ public class AddDbInitDemoChoice implements IAddDbInitChoice {
       config.addTask("org.eclipse.osee.framework.database.init.SimpleTemplateProviderTask");
       config.addTask("org.eclipse.osee.ats.AtsDatabaseConfig");
       config.addTask("org.eclipse.osee.ats.client.demo.DemoDatabaseConfig");
+      config.addTask("org.eclipse.osee.ats.client.demo.DemoWebDatabaseConfig");
 
       config.addOseeType(DefaultOseeTypeDefinitions.OSEE_BASE_TYPES);
       config.addOseeType(DefaultOseeTypeDefinitions.DEFINE_TYPES);

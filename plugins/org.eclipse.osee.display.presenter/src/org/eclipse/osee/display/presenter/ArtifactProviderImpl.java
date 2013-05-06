@@ -69,6 +69,10 @@ public class ArtifactProviderImpl implements ArtifactProvider {
       this.graph = graph;
    }
 
+   protected void setFilterAllTypesAllowed(boolean allTypesAllowed) {
+      filter.setAllTypesAllowed(allTypesAllowed);
+   }
+
    protected QueryFactory getFactory() {
       return queryFactory;
    }

@@ -16,7 +16,7 @@ import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.jdk.core.util.Collections.Filter;
+import org.eclipse.osee.framework.jdk.core.util.Filter;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -33,6 +33,8 @@ public class ArtifactFilter implements Filter<ArtifactReadable> {
       CoreArtifactTypes.IndirectSoftwareRequirement,
       CoreArtifactTypes.TestUnit};
 
+   private boolean allTypesAllowed = false;
+
    private static final List<String> allowed = Arrays.asList("System Requirements", "Subsystem Requirements",
       "Software Requirements");
 
@@ -42,14 +44,16 @@ public class ArtifactFilter implements Filter<ArtifactReadable> {
       this.provider = provider;
    }
 
-   public IArtifactType[] getAllowedTypes() {
-      return allowedTypes;
+   public void setAllTypesAllowed(boolean allTypesAllowed) {
+      this.allTypesAllowed = allTypesAllowed;
    }
 
    @Override
    public boolean accept(ArtifactReadable item) throws Exception {
       boolean isAllowed = false;
-      if (item != null) {
+      if (allTypesAllowed) {
+         isAllowed = true;
+      } else if (item != null) {
          if (item.isOfType(allowedTypes) || item.getBranch().equals(CoreBranches.COMMON)) {
             isAllowed = true;
          } else if (!item.isOfType(notAllowedTypes)) {
