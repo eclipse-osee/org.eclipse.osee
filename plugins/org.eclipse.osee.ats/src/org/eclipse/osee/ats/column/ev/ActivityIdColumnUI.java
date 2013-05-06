@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.column;
+package org.eclipse.osee.ats.column.ev;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,11 +19,11 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.column.WorkPackageFilterTreeDialog;
 import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -58,7 +58,7 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
    }
 
    private ActivityIdColumnUI() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".activityId", "Activity Id", 80, SWT.LEFT, true,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".activityId", "Activity Id", 80, SWT.LEFT, false,
          SortDataType.String, true, "");
    }
 
@@ -75,11 +75,7 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      try {
-         return AtsCore.getActivityIdColumn().getWorkPackageStr(element);
-      } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
+      return AtsCore.getColumnUtilities().getActivityIdUtility().getColumnText(element);
    }
 
    @Override

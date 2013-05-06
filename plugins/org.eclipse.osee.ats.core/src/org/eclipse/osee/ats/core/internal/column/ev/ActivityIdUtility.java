@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.column;
+package org.eclipse.osee.ats.core.internal.column.ev;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.team.IAtsTeamWorkflowProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.column.IActivityIdUtility;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -25,30 +26,36 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * 
  * @author Donald G. Dunne
  */
-public class ActivityIdColumn {
+public class ActivityIdUtility implements IActivityIdUtility {
 
    private final IAtsEarnedValueServiceProvider earnedValueServiceProvider;
 
-   public ActivityIdColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
+   public ActivityIdUtility(IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
       this.earnedValueServiceProvider = earnedValueServiceProvider;
    }
 
-   public String getWorkPackageStr(Object object) throws OseeCoreException {
+   @Override
+   public String getColumnText(Object object) {
       String result = "";
       StringBuilder sb = new StringBuilder();
-      Collection<IAtsWorkPackage> workPackages = getWorkPackages(object, new HashSet<IAtsWorkPackage>());
-      if (!workPackages.isEmpty()) {
-         for (IAtsWorkPackage workPackage : workPackages) {
-            sb.append(workPackage.getActivityId());
-            sb.append(" - ");
-            sb.append(workPackage.getActivityName());
-            sb.append(", ");
+      try {
+         Collection<IAtsWorkPackage> workPackages = getWorkPackages(object, new HashSet<IAtsWorkPackage>());
+         if (!workPackages.isEmpty()) {
+            for (IAtsWorkPackage workPackage : workPackages) {
+               sb.append(workPackage.getActivityId());
+               sb.append(" - ");
+               sb.append(workPackage.getActivityName());
+               sb.append(", ");
+            }
+            result = sb.toString().replaceFirst(", $", "");
          }
-         result = sb.toString().replaceFirst(", $", "");
+      } catch (OseeCoreException ex) {
+         return AbstractRelatedWorkPackageColumn.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
       }
       return result;
    }
 
+   @Override
    public Collection<IAtsWorkPackage> getWorkPackages(Object object, Set<IAtsWorkPackage> workPackages) throws OseeCoreException {
       // If object has children team workflows, roll-up results of all work packages
       if (object instanceof IAtsTeamWorkflowProvider) {
@@ -66,5 +73,10 @@ public class ActivityIdColumn {
          }
       }
       return workPackages;
+   }
+
+   @Override
+   public String getDescription() {
+      return "Provides Activity Id and Name from the selected Work Package related to the selected workflow.";
    }
 }

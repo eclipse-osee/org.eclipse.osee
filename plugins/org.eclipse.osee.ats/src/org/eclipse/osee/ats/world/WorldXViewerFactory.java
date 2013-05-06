@@ -17,7 +17,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.ats.column.ActionableItemOwner;
 import org.eclipse.osee.ats.column.ActionableItemsColumnUI;
-import org.eclipse.osee.ats.column.ActivityIdColumnUI;
 import org.eclipse.osee.ats.column.AnnualCostAvoidanceColumn;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.column.BranchStatusColumn;
@@ -102,6 +101,12 @@ import org.eclipse.osee.ats.column.ValidationRequiredColumn;
 import org.eclipse.osee.ats.column.WeeklyBenefitHrsColumn;
 import org.eclipse.osee.ats.column.WorkDaysNeededColumn;
 import org.eclipse.osee.ats.column.WorkPackageColumn;
+import org.eclipse.osee.ats.column.ev.ActivityIdColumnUI;
+import org.eclipse.osee.ats.column.ev.WorkPackageGuidColumnUI;
+import org.eclipse.osee.ats.column.ev.WorkPackageIdColumnUI;
+import org.eclipse.osee.ats.column.ev.WorkPackageNameColumnUI;
+import org.eclipse.osee.ats.column.ev.WorkPackageProgramColumnUI;
+import org.eclipse.osee.ats.column.ev.WorkPackageTypeColumnUI;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.ats.internal.Activator;
@@ -152,6 +157,11 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       ReleaseDateColumn.getInstance(),
       WorkPackageColumn.getInstance(),
       ActivityIdColumnUI.getInstance(),
+      WorkPackageIdColumnUI.getInstance(),
+      WorkPackageNameColumnUI.getInstance(),
+      WorkPackageTypeColumnUI.getInstance(),
+      WorkPackageProgramColumnUI.getInstance(),
+      WorkPackageGuidColumnUI.getInstance(),
       CategoryColumn.getCategory1Instance(),
       CategoryColumn.getCategory2Instance(),
       CategoryColumn.getCategory3Instance(),

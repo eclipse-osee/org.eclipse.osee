@@ -26,9 +26,9 @@ public interface IAtsWorkPackage {
 
    public String getGuid();
 
-   public String getWorkPacakgeId() throws OseeCoreException;
+   public String getWorkPackageId() throws OseeCoreException;
 
-   public String getWorkPacakgeProgram() throws OseeCoreException;
+   public String getWorkPackageProgram() throws OseeCoreException;
 
    public AtsWorkPackageType getWorkPackageType() throws OseeCoreException;
 

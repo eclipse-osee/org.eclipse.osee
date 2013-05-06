@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.internal.column.ev.ActivityIdUtility;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +30,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 /**
- * Test case for {@link ActivityIdColumn}
+ * Test case for {@link ActivityIdUtility}
  * 
  * @author Donald G. Dunne
  */
@@ -73,7 +74,7 @@ public class ActivityIdColumnTest {
 
    @Test
    public void testGetWorkPackages_teamWf1() throws OseeCoreException {
-      ActivityIdColumn col = new ActivityIdColumn(earnedValueServiceProvider);
+      ActivityIdUtility col = new ActivityIdUtility(earnedValueServiceProvider);
 
       Set<IAtsWorkPackage> workPackages = new HashSet<IAtsWorkPackage>();
       col.getWorkPackages(teamWf1, workPackages);
@@ -84,7 +85,7 @@ public class ActivityIdColumnTest {
 
    @Test
    public void testGetWorkPackages_task() throws OseeCoreException {
-      ActivityIdColumn col = new ActivityIdColumn(earnedValueServiceProvider);
+      ActivityIdUtility col = new ActivityIdUtility(earnedValueServiceProvider);
 
       Set<IAtsWorkPackage> workPackages = new HashSet<IAtsWorkPackage>();
       col.getWorkPackages(task1, workPackages);
@@ -95,12 +96,12 @@ public class ActivityIdColumnTest {
 
    @Test
    public void testGetWorkPackageStr() throws OseeCoreException {
-      ActivityIdColumn col = new ActivityIdColumn(earnedValueServiceProvider);
+      ActivityIdUtility col = new ActivityIdUtility(earnedValueServiceProvider);
 
-      Assert.assertEquals("ActId 1 - ActId 1 Name", col.getWorkPackageStr(teamWf1));
-      String workPackageStr = col.getWorkPackageStr(action);
+      Assert.assertEquals("ActId 1 - ActId 1 Name", col.getColumnText(teamWf1));
+      String workPackageStr = col.getColumnText(action);
       Assert.assertTrue(workPackageStr.equals("ActId 1 - ActId 1 Name, ActId 2 - ActId 2 Name") || workPackageStr.equals("ActId 2 - ActId 2 Name, ActId 1 - ActId 1 Name"));
 
-      Assert.assertEquals("", col.getWorkPackageStr(teamWf3));
+      Assert.assertEquals("", col.getColumnText(teamWf3));
    }
 }

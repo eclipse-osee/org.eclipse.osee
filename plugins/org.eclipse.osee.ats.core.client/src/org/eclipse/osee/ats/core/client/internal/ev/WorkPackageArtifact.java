@@ -54,12 +54,12 @@ public class WorkPackageArtifact implements IAtsWorkPackage {
    }
 
    @Override
-   public String getWorkPacakgeId() throws OseeCoreException {
+   public String getWorkPackageId() throws OseeCoreException {
       return artifact.getSoleAttributeValue(AtsAttributeTypes.WorkPackageId, "");
    }
 
    @Override
-   public String getWorkPacakgeProgram() throws OseeCoreException {
+   public String getWorkPackageProgram() throws OseeCoreException {
       return artifact.getSoleAttributeValue(AtsAttributeTypes.WorkPackageProgram, "");
    }
 
@@ -96,7 +96,7 @@ public class WorkPackageArtifact implements IAtsWorkPackage {
    @Override
    public String toString() {
       try {
-         return String.format("%s - %s", getWorkPacakgeId(), getName());
+         return String.format("%s - %s", getWorkPackageId(), getName());
       } catch (OseeCoreException ex) {
          OseeLog.log(org.eclipse.osee.ats.core.client.internal.Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
