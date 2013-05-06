@@ -21,6 +21,8 @@ import java.util.Stack;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
@@ -38,11 +40,20 @@ public final class UtfReadingRuleTest {
 
    private static final String FILE_INPUT = "utf8_input.xml";
 
-   @org.junit.Rule
+   @Rule
    public TemporaryFolder tempFolder = new TemporaryFolder();
 
+   private File inputFile;
+
+   @Before
+   public void testSetup() throws IOException {
+      inputFile = getInputFile();
+   }
+
    private File getInputFile() throws IOException {
-      File outfile = tempFolder.newFile("utf8_input_copy.xml");
+      String copyName = String.format("utf8_input_copy.%s.xml", Lib.getDateTimeString());
+
+      File outfile = tempFolder.newFile(copyName);
       URL url = UtfReadingRuleTest.class.getResource(FILE_INPUT);
       InputStream inputStream = null;
       try {
@@ -70,7 +81,6 @@ public final class UtfReadingRuleTest {
       Utf8TestRule rule = new Utf8TestRule();
       while (!charsetStack.isEmpty()) {
          try {
-            File inputFile = getInputFile();
             rule.setCharsetString(charsetStack.pop());
             rule.process(inputFile);
          } catch (Exception ex) {
@@ -84,7 +94,6 @@ public final class UtfReadingRuleTest {
    public void testUtf8ReadData() throws IOException {
       Utf8TestRule rule = new Utf8TestRule();
       try {
-         File inputFile = getInputFile();
          rule.process(inputFile);
       } catch (UnsupportedCharsetException ex) {
          Assert.assertTrue(true);
@@ -97,7 +106,7 @@ public final class UtfReadingRuleTest {
       Assert.assertEquals(expectedUtf8String, actual);
    }
 
-   private static final class Utf8TestRule extends Rule {
+   private static final class Utf8TestRule extends org.eclipse.osee.framework.jdk.core.text.Rule {
       private CharSequence lastOutput;
 
       @Override
