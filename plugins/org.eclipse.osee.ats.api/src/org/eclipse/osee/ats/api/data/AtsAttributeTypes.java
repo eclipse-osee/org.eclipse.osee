@@ -118,6 +118,12 @@ public final class AtsAttributeTypes {
    public static final IAttributeType WorkPackage = createType(0x10000000000000E6L, "Work Package", "Designated accounting work package for completing workflow.");
    public static final IAttributeType RelatedPeerWorkflowDefinition = createType(0x100000000000037EL, "Related Peer Workflow Definition", "Specific work flow definition id used by Peer To Peer Reviews for this Team");
 
+   public static final IAttributeType WorkPackageId = createType(0x1000000000000380L, "Work Package ID");
+   public static final IAttributeType WorkPackageProgram = createType(0x1000000000000381L, "Work Package Program");
+   public static final IAttributeType WorkPackageType = createType(0x100000000000081L, "Work Package Type");
+   public static final IAttributeType ActivityId = createType(0x1000000000000382L, "Activity ID");
+   public static final IAttributeType ActivityName = createType(0x1000000000000383L, "Activity Name");
+   public static final IAttributeType WorkPackageGuid = createType(0x1000000000000384L, "Work Package Guid", "Work Package for this Team Workflow, Review, Task or Goal");
 
    // @formatter:on
 

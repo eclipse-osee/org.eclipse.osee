@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -34,6 +35,7 @@ import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.client.internal.config.AtsConfigCacheProvider;
 import org.eclipse.osee.ats.core.client.internal.config.TeamDefinitionFactory;
 import org.eclipse.osee.ats.core.client.internal.config.VersionFactory;
+import org.eclipse.osee.ats.core.client.internal.ev.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.core.client.internal.query.AtsQuery;
 import org.eclipse.osee.ats.core.client.internal.store.ActionableItemArtifactReader;
 import org.eclipse.osee.ats.core.client.internal.store.ActionableItemArtifactWriter;
@@ -83,6 +85,7 @@ public class AtsClientImpl implements IAtsClient {
    private IVersionFactory versionFactory;
    private CacheProvider<AtsWorkDefinitionCache> workDefCacheProvider;
    private IAtsUserAdmin atsUserAdmin;
+   private IAtsEarnedValueService earnedValueService;
 
    public void setAtsWorkDefinitionService(IAtsWorkDefinitionService workDefService) {
       this.workDefService = workDefService;
@@ -109,6 +112,7 @@ public class AtsClientImpl implements IAtsClient {
 
       artifactStore = new AtsArtifactStore(readers, writers);
       configCacheProvider = new AtsConfigCacheProvider(artifactStore);
+      earnedValueService = new AtsEarnedValueImpl();
 
       AtsVersionCache versionCache = new AtsVersionCache(configCacheProvider);
       versionService = new AtsVersionServiceImpl(configCacheProvider, artifactStore, versionCache);
@@ -330,12 +334,26 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public Artifact getArtifact(IAtsObject atsObject) throws OseeCoreException {
       Artifact results = null;
-      try {
-         results = ArtifactQuery.getArtifactFromId(atsObject.getGuid(), AtsUtilCore.getAtsBranchToken());
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
+      if (atsObject instanceof Artifact) {
+         results = (Artifact) atsObject;
+      } else {
+         try {
+            results = ArtifactQuery.getArtifactFromId(atsObject.getGuid(), AtsUtilCore.getAtsBranchToken());
+         } catch (ArtifactDoesNotExist ex) {
+            // do nothing
+         }
       }
       return results;
+   }
+
+   @Override
+   public IAtsWorkItemService getWorkItemService() {
+      return workItemService;
+   }
+
+   @Override
+   public IAtsEarnedValueService getEarnedValueService() {
+      return earnedValueService;
    }
 
 }

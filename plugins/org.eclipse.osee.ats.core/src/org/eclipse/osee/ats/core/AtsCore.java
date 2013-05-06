@@ -10,15 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core;
 
+import org.eclipse.osee.ats.core.column.ActivityIdColumn;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.internal.AtsConfigUtility;
+import org.eclipse.osee.ats.core.internal.AtsEarnedValueService;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsCore {
+   private static ActivityIdColumn activityIdColumn;
 
    public static IAtsConfig getAtsConfig() {
       return AtsConfigUtility.getAtsConfigProvider().getAtsConfig();
+   }
+
+   public static ActivityIdColumn getActivityIdColumn() {
+      if (activityIdColumn == null) {
+         activityIdColumn = new ActivityIdColumn(AtsEarnedValueService.getEarnedValueServiceProvider());
+      }
+      return activityIdColumn;
    }
 }

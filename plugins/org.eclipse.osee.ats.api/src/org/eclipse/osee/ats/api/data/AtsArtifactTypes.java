@@ -32,6 +32,7 @@ public final class AtsArtifactTypes {
    public static final IArtifactType Goal = TokenFactory.createArtifactType(0x0000000000000048L, "Goal");
    public static final IArtifactType AtsArtifact = TokenFactory.createArtifactType(0x000000000000003FL, "ats.Ats Artifact");
    public static final IArtifactType WorkDefinition = TokenFactory.createArtifactType(0x000000000000003EL, "Work Definition");
+   public static final IArtifactType WorkPackage = TokenFactory.createArtifactType(0x0000000000000322L, "Work Definition");
    // @formatter:on
 
    private AtsArtifactTypes() {

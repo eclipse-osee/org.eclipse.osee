@@ -53,6 +53,9 @@ public final class AtsRelationTypes {
    public static final IRelationTypeSide TeamDefinitionToVersion_TeamDefinition = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000170L, "TeamDefinitionToVersion");
    public static final IRelationTypeSide TeamDefinitionToVersion_Version = TeamDefinitionToVersion_TeamDefinition.getOpposite();
    
+   public static final IRelationTypeSide TeamDefinitionToAtsConfigObject_TeamDefinition = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000170L, "TeamDefinitionAtsConfigObject");
+   public static final IRelationTypeSide TeamDefinitionToAtsConfigObject_AtsConfigObject = TeamDefinitionToVersion_TeamDefinition.getOpposite();
+   
    public static final IRelationTypeSide TeamLead_Team = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000169L, "TeamLead");
    public static final IRelationTypeSide TeamLead_Lead = TeamLead_Team.getOpposite();
    
@@ -73,6 +76,9 @@ public final class AtsRelationTypes {
    
    public static final IRelationTypeSide AutoAddActionToGoal_Goal = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000017DL, "AutoAddActionToGoal");
    public static final IRelationTypeSide AutoAddActionToGoal_ConfigObject = AutoAddActionToGoal_Goal.getOpposite();
+
+   public static final IRelationTypeSide WorkPackage_WorkPackage = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000017EL, "Work Package");
+   public static final IRelationTypeSide WorkPackage_TeamDefOrAi = WorkPackage_WorkPackage.getOpposite();
    //@formatter:on
 
    private AtsRelationTypes() {

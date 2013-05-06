@@ -20,21 +20,24 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
  */
 public final class DemoArtifactToken {
 
+   public static final IArtifactToken SAW_Test_AI = TokenFactory.createArtifactToken("ABirZS0j81dpAiAyqUwA",
+      "SAW Test", AtsArtifactTypes.ActionableItem);
+
    public static IArtifactToken Process_Team = TokenFactory.createArtifactToken("At2WHxBtYhx4Nxrck6gA", "Process_Team",
-      CoreArtifactTypes.Folder);
+      AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken Tools_Team = TokenFactory.createArtifactToken("At2WHxCFyQPidx78iuAA", "Tools_Team",
-      CoreArtifactTypes.Folder);
+      AtsArtifactTypes.TeamDefinition);
 
    public static IArtifactToken SAW_HW = TokenFactory.createArtifactToken("At2WHxCeMCHfcr02EkAA", "SAW_HW",
-      CoreArtifactTypes.Folder);
+      AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken SAW_Code = TokenFactory.createArtifactToken("At2WHxC2lxLOGB0YiuQA", "SAW_Code",
-      CoreArtifactTypes.Folder);
+      AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken SAW_Test = TokenFactory.createArtifactToken("At2WHxDuXkCIJFEtQ0AA", "SAW_Test",
-      CoreArtifactTypes.Folder);
+      AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken SAW_SW_Design = TokenFactory.createArtifactToken("At2WHxEGxl7nWuqx7FQA",
-      "SAW_SW_Design", CoreArtifactTypes.Folder);
+      "SAW_SW_Design", AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken SAW_Requirements = TokenFactory.createArtifactToken("At2WHxEfLXfCLytmLlAA",
-      "SAW_Requirements", CoreArtifactTypes.Folder);
+      "SAW_Requirements", AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken SAW_SW = TokenFactory.createArtifactToken("At2WHxFk5VVE2cafF5AA", "SAW_SW",
       CoreArtifactTypes.Folder);
 
@@ -47,11 +50,11 @@ public final class DemoArtifactToken {
       AtsArtifactTypes.Version);
 
    public static IArtifactToken CIS_SW = TokenFactory.createArtifactToken("At2WHxF7jmUa8jXR3iwA", "CIS_SW",
-      CoreArtifactTypes.Folder);
+      AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken CIS_Code = TokenFactory.createArtifactToken("At2WHxGo4A1nnGWYjgwA", "CIS_Code",
-      CoreArtifactTypes.Folder);
+      AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken CIS_Test = TokenFactory.createArtifactToken("At2WHxHZrl0bKPA6uUgA", "CIS_Test",
-      CoreArtifactTypes.Folder);
+      AtsArtifactTypes.TeamDefinition);
 
    public static IArtifactToken Facilities_Team = TokenFactory.createArtifactToken("At2WHxIMOz66yR56eRAA",
       "Facilities_Team", CoreArtifactTypes.Folder);

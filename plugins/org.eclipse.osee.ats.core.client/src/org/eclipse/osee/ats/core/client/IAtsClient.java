@@ -14,8 +14,11 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
+import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
+import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
@@ -27,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsClient extends IAtsConfigProvider, ITeamDefinitionFactory, IActionableItemFactory, IVersionFactory, IAtsQueryService, IAtsVersionServiceProvider {
+public interface IAtsClient extends IAtsConfigProvider, ITeamDefinitionFactory, IActionableItemFactory, IVersionFactory, IAtsQueryService, IAtsVersionServiceProvider, IAtsEarnedValueServiceProvider {
 
    <T extends IAtsConfigObject> Artifact storeConfigObject(T configObject, SkynetTransaction transaction) throws OseeCoreException;
 
@@ -62,5 +65,10 @@ public interface IAtsClient extends IAtsConfigProvider, ITeamDefinitionFactory, 
    IAtsVersionAdmin getAtsVersionService();
 
    IAtsUserAdmin getUserAdmin();
+
+   IAtsWorkItemService getWorkItemService();
+
+   @Override
+   IAtsEarnedValueService getEarnedValueService();
 
 }

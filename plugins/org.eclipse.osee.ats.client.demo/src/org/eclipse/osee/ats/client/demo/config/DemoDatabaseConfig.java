@@ -10,11 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo.config;
 
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.client.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.client.demo.DemoCISBuilds;
 import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
 import org.eclipse.osee.ats.client.demo.DemoSubsystems;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
+import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -24,6 +29,9 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.support.test.util.TestUtil;
 
@@ -49,6 +57,49 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
 
       AtsGroup.AtsTempAdmin.addMember(UserManager.getUser(DemoUsers.Joe_Smith));
       AtsGroup.AtsTempAdmin.getArtifact().persist("Set Joe as Temp Admin");
+
+      // Create Work Packages
+      createWorkPackages();
+   }
+
+   private void createWorkPackages() throws OseeCoreException {
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranchToken(), "Create Work Packages");
+
+      Artifact codeTeamArt =
+         ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Code, AtsUtilCore.getAtsBranchToken());
+
+      Artifact workPkg1 = createWorkPackage("1", "ASDHFA443");
+      workPkg1.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, codeTeamArt);
+      workPkg1.persist(transaction);
+
+      Artifact workPkg2 = createWorkPackage("2", "ASDHFA443");
+      workPkg2.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, codeTeamArt);
+      workPkg2.persist(transaction);
+
+      Artifact testTeamArt =
+         ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Test_AI, AtsUtilCore.getAtsBranchToken());
+
+      Artifact workPkg11 = createWorkPackage("A", "AHESSH3");
+      workPkg11.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, testTeamArt);
+      workPkg11.persist(transaction);
+
+      Artifact workPkg21 = createWorkPackage("B", "HAKSHD3");
+      workPkg21.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, testTeamArt);
+      workPkg21.persist(transaction);
+
+      transaction.execute();
+   }
+
+   private Artifact createWorkPackage(String id, String activityId) throws OseeCoreException {
+      Artifact workPkg1 =
+         ArtifactTypeManager.addArtifact(AtsArtifactTypes.WorkPackage, AtsUtilCore.getAtsBranchToken(), "WP 0" + id);
+      workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageId, "WP_0" + id);
+      workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageProgram, "Program A");
+      workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageType, "LOE");
+      workPkg1.addAttributeFromString(AtsAttributeTypes.ActivityId, activityId);
+      workPkg1.addAttributeFromString(AtsAttributeTypes.ActivityName, "HUF 2" + id + "0");
+      return workPkg1;
    }
 
    private void populateProgramBranch(IOseeBranch programBranch) throws OseeCoreException {

@@ -1,0 +1,41 @@
+/*******************************************************************************
+ * Copyright (c) 2013 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.ats.api.ev;
+
+import java.util.Date;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
+/**
+ * @author Donald G. Dunne
+ */
+public interface IAtsWorkPackage {
+
+   public String getActivityId() throws OseeCoreException;
+
+   public String getActivityName() throws OseeCoreException;
+
+   public String getName();
+
+   public String getGuid();
+
+   public String getWorkPacakgeId() throws OseeCoreException;
+
+   public String getWorkPacakgeProgram() throws OseeCoreException;
+
+   public AtsWorkPackageType getWorkPackageType() throws OseeCoreException;
+
+   public boolean isActive() throws OseeCoreException;
+
+   public Date getStartDate() throws OseeCoreException;
+
+   public Date getEndDate() throws OseeCoreException;
+
+}

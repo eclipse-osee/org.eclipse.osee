@@ -18,6 +18,11 @@ abstract artifactType "ats.Ats Artifact" extends "Artifact" {
 	attribute "ats.Goal Order Vote"
 }
 
+abstract artifactType "ats.Ats Team Definition or AI" extends "ats.Ats Config Artifact" {
+	guid "ABZeucbqtR9WQUHxtGQA"
+	uuid 0x200000000000017E
+}
+
 artifactType "ats.Review" extends "ats.State Machine" {
 	guid "ABMa6P4TwzXA1b8K3RAA"
 	uuid 0x0000000000000040
@@ -67,7 +72,7 @@ abstract artifactType "ats.Ats Config Artifact" extends "Artifact" {
 	attribute "ats.Actionable"
 }
 
-artifactType "Team Definition" extends "ats.Ats Config Artifact" , "Abstract Access Controlled" {
+artifactType "Team Definition" extends "ats.Ats Team Definition or AI" , "Abstract Access Controlled" {
 	guid "AAMFDhUrlytusKbaQGAA"
 	uuid 0x0000000000000044
 	attribute "ats.Hours Per Work Day"
@@ -86,7 +91,7 @@ artifactType "Team Definition" extends "ats.Ats Config Artifact" , "Abstract Acc
 	attribute "ats.Rule Definition"
 }
 
-artifactType "Actionable Item" extends "ats.Ats Config Artifact" , "Abstract Access Controlled" {
+artifactType "Actionable Item" extends "ats.Ats Team Definition or AI" , "Abstract Access Controlled" {
 	guid "AAMFDhW2LmhtRFsVyzwA"
 	uuid 0x0000000000000045
 }
@@ -140,6 +145,7 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
 	attribute "ats.Cancelled Reason"
 	attribute "ats.Workflow Definition Old"
 	attribute "ats.Workflow Definition"
+	attribute "ats.Work Package Guid"
 }
 
 artifactType "Goal" extends "ats.State Machine" {
@@ -175,6 +181,19 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Related Task Workflow Definition"
 }
 
+artifactType "Work Package" extends "Artifact" {
+	guid "Bwju0G4b6QzUSN6vdZAA"
+	uuid 0x0000000000000322
+	attribute "ats.Work Package Id"
+	attribute "ats.Work Package Type"
+	attribute "ats.Activity Id"
+	attribute "ats.Activity Name"
+	attribute "ats.Active"
+	attribute "ats.Start Date"
+	attribute "ats.End Date"
+	attribute "ats.Percent Complete"
+}
+
 artifactType "Task" extends "ats.State Machine" {
 	guid "AAMFDhbTAAB6h+06fuAA"
 	uuid 0x000000000000004A
@@ -201,6 +220,64 @@ attributeType "ats.Task To Changed Artifact Reference" extends ArtifactReference
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	description "Task reference to the changed artifact"
+}
+
+attributeType "ats.Work Package Id" extends StringAttribute {
+	guid "BwbO3irKeGgYZcSdZ1wA"
+	uuid 0x1000000000000380
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+}
+
+attributeType "ats.Work Package Program" extends StringAttribute {
+	guid "AA9Z2oC4eXzmjZonN5AA"
+	uuid 0x1000000000000381
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+}
+
+oseeEnumType "enum.ats.work.package.type" {
+	guid "BwhmqfpfY3_zEmyGyuwA"
+	uuid 0x3000000000000195
+	entry "Discrete"
+	entryGuid "Bwht_BKlJhvXevH9wgwA"
+	entry "LOE"
+	entryGuid "Bwhv914yDlTLh0AfNZAA"
+}
+
+attributeType "ats.Work Package Type" extends EnumeratedAttribute {
+	guid "Bwh7PQnsHTmcC8UT_RwA"
+	uuid 0x100000000000081
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	enumType "enum.ats.work.package.type"
+}
+
+attributeType "ats.Activity Id" extends StringAttribute {
+	guid "Bwi2RiLlsS5tMrNJ8AwA"
+	uuid 0x1000000000000382
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+}
+
+attributeType "ats.Activity Name" extends StringAttribute {
+	guid "BwjMdajo8TojuilGJkAA"
+	uuid 0x1000000000000383
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+}
+
+attributeType "ats.Work Package Guid" extends StringAttribute {
+	guid "BwlnACWTx3lsV_IAtoQA"
+	uuid 0x1000000000000384
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 }
 
 attributeType "ats.Baseline Branch Guid" extends StringAttribute {
@@ -1038,6 +1115,17 @@ attributeType "ats.SW Enhancement" extends StringAttribute {
 	min 0
 	max unlimited
 	taggerId DefaultAttributeTaggerProvider
+}
+
+relationType "Work Package" {
+	guid "BwmO9ZkpSR76kcGlKvQA"
+	uuid 0x200000000000017E
+	sideAName "Work Package"
+	sideAArtifactType "Work Package"
+	sideBName "ATS Team Def or AI"
+	sideBArtifactType "ats.Ats Team Definition or AI"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
 
 relationType "TeamLead" {
