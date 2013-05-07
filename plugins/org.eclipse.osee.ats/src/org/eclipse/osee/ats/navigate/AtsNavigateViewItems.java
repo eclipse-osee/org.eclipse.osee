@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.config.ValidateAtsConfiguration;
 import org.eclipse.osee.ats.config.editor.AtsConfigResultsEditorNavigateItem;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.ev.EvNavigateItems;
 import org.eclipse.osee.ats.goal.GoalSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.internal.ATSPerspective;
@@ -160,6 +161,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
 
          createGoalsSection(item, items);
          createVersionsSection(item, items);
+         EvNavigateItems.createSection(item, items);
          addExtensionPointItems(item, items);
 
          // Search Items
@@ -300,7 +302,8 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          new SearchNavigateItem(goalItem, new GoalSearchItem("InWork Goals", new ArrayList<IAtsTeamDefinition>(),
             false, null));
          new SearchNavigateItem(goalItem, new GoalSearchWorkflowSearchItem());
-         new SearchNavigateItem(goalItem, new MyFavoritesGoalsSearchItem("Favorites", AtsClientService.get().getUserAdmin().getCurrentUser()));
+         new SearchNavigateItem(goalItem, new MyFavoritesGoalsSearchItem("Favorites",
+            AtsClientService.get().getUserAdmin().getCurrentUser()));
          items.add(goalItem);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");

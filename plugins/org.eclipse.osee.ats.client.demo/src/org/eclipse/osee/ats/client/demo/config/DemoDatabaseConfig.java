@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo.config;
 
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.client.demo.DemoArtifactToken;
@@ -20,6 +19,7 @@ import org.eclipse.osee.ats.client.demo.DemoSubsystems;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -69,36 +69,46 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
       Artifact codeTeamArt =
          ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Code, AtsUtilCore.getAtsBranchToken());
 
-      Artifact workPkg1 = createWorkPackage("1", "ASDHFA443");
+      Artifact workPkg1 = createWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01, "ASDHFA443");
       workPkg1.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, codeTeamArt);
       workPkg1.persist(transaction);
 
-      Artifact workPkg2 = createWorkPackage("2", "ASDHFA443");
+      Artifact workPkg2 = createWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_02, "ASDHFA443");
       workPkg2.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, codeTeamArt);
       workPkg2.persist(transaction);
+
+      Artifact workPkg3 = createWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_03, "ASDHFA443");
+      workPkg3.setSoleAttributeValue(AtsAttributeTypes.Active, false);
+      workPkg3.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, codeTeamArt);
+      workPkg3.persist(transaction);
 
       Artifact testTeamArt =
          ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Test_AI, AtsUtilCore.getAtsBranchToken());
 
-      Artifact workPkg11 = createWorkPackage("A", "AHESSH3");
+      Artifact workPkg11 = createWorkPackage(DemoArtifactToken.SAW_Test_AI_WorkPackage_0A, "AHESSH3");
       workPkg11.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, testTeamArt);
       workPkg11.persist(transaction);
 
-      Artifact workPkg21 = createWorkPackage("B", "HAKSHD3");
+      Artifact workPkg21 = createWorkPackage(DemoArtifactToken.SAW_Test_AI_WorkPackage_0B, "HAKSHD3");
       workPkg21.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, testTeamArt);
       workPkg21.persist(transaction);
+
+      Artifact workPkg31 = createWorkPackage(DemoArtifactToken.SAW_Test_AI_WorkPackage_0C, "EHA4DS");
+      workPkg31.setSoleAttributeValue(AtsAttributeTypes.Active, false);
+      workPkg31.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, testTeamArt);
+      workPkg31.persist(transaction);
 
       transaction.execute();
    }
 
-   private Artifact createWorkPackage(String id, String activityId) throws OseeCoreException {
-      Artifact workPkg1 =
-         ArtifactTypeManager.addArtifact(AtsArtifactTypes.WorkPackage, AtsUtilCore.getAtsBranchToken(), "WP 0" + id);
-      workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageId, "WP_0" + id);
+   private Artifact createWorkPackage(IArtifactToken workPackageToken, String activityId) throws OseeCoreException {
+      Artifact workPkg1 = ArtifactTypeManager.addArtifact(workPackageToken, AtsUtilCore.getAtsBranchToken());
+      workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageId, "WP_0" + workPackageToken);
       workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageProgram, "Program A");
       workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageType, "LOE");
       workPkg1.addAttributeFromString(AtsAttributeTypes.ActivityId, activityId);
-      workPkg1.addAttributeFromString(AtsAttributeTypes.ActivityName, "HUF 2" + id + "0");
+      workPkg1.addAttributeFromString(AtsAttributeTypes.ActivityName,
+         "HUF 2" + workPackageToken.getName().charAt(workPackageToken.getName().length() - 1) + "0");
       return workPkg1;
    }
 

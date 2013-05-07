@@ -40,6 +40,8 @@ public final class DemoArtifactToken {
       "SAW_Requirements", AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken SAW_SW = TokenFactory.createArtifactToken("At2WHxFk5VVE2cafF5AA", "SAW_SW",
       CoreArtifactTypes.Folder);
+   public static IArtifactToken SAW_SW_AI = TokenFactory.createArtifactToken("AZ2uRHybOnvKPIuRqKAA", "SAW CSCI",
+      AtsArtifactTypes.ActionableItem);
 
    // SAW_SW Versions
    public static IArtifactToken SAW_Bld_1 = TokenFactory.createArtifactToken("A8msa8LTDG36oWAnq3QA", "SAW_Bld_1",
@@ -61,6 +63,20 @@ public final class DemoArtifactToken {
 
    public static IArtifactToken DemoPrograms = TokenFactory.createArtifactToken("Awsk_RtnczAchcuSxagA",
       "Demo Programs", CoreArtifactTypes.Artifact);
+
+   public static IArtifactToken SAW_Code_Team_WorkPackage_01 = TokenFactory.createArtifactToken("AZp8M1dPuESWYBPPbDgA",
+      "Work Pkg O1", AtsArtifactTypes.WorkPackage);
+   public static IArtifactToken SAW_Code_Team_WorkPackage_02 = TokenFactory.createArtifactToken("AZp8M1d7TCJiBw6A5bgA",
+      "Work Pkg O2", AtsArtifactTypes.WorkPackage);
+   public static IArtifactToken SAW_Code_Team_WorkPackage_03 = TokenFactory.createArtifactToken("AZp8M1em4EC1xE6bPEwA",
+      "Work Pkg O3", AtsArtifactTypes.WorkPackage);
+
+   public static IArtifactToken SAW_Test_AI_WorkPackage_0A = TokenFactory.createArtifactToken("AZp8M1fSc1JwMDQBtLwA",
+      "Work Pkg OA", AtsArtifactTypes.WorkPackage);
+   public static IArtifactToken SAW_Test_AI_WorkPackage_0B = TokenFactory.createArtifactToken("AZp8M1hP81QOm6W9yNgA",
+      "Work Pkg OB", AtsArtifactTypes.WorkPackage);
+   public static IArtifactToken SAW_Test_AI_WorkPackage_0C = TokenFactory.createArtifactToken("AZp8M1kvEGrRt9tybTwA",
+      "Work Pkg OC", AtsArtifactTypes.WorkPackage);
 
    private DemoArtifactToken() {
       // Constants
