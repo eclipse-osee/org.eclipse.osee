@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.orcs.OrcsTypes;
+
 /**
  * @author Roberto E. Escobar
  */
-public interface OrcsDataStore {
+public interface OrcsDataStore extends OrcsTypes {
 
    BranchDataStore getBranchDataStore();
 
@@ -26,4 +28,5 @@ public interface OrcsDataStore {
    QueryEngine getQueryEngine();
 
    QueryEngineIndexer getQueryEngineIndexer();
+
 }

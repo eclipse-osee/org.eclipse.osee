@@ -14,7 +14,6 @@ import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
@@ -41,7 +40,6 @@ public class OrcsIntegrationRule extends OsgiRule {
       @OsgiService public IOseeDatabaseService dbService;
       @OsgiService public IOseeModelFactoryService modelFactory;
       @OsgiService public IOseeCachingService cachingService;
-      @OsgiService public IOseeModelingService modelService;
       // @formatter:on
    }
 

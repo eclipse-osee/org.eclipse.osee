@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.dsl.ui.integration.operations;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -25,10 +26,14 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.compare.diff.metamodel.ComparisonSnapshot;
 import org.eclipse.emf.compare.ui.editor.ModelCompareEditorInput;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.dsl.integration.util.ModelUtil;
 import org.eclipse.osee.framework.core.dsl.ui.integration.internal.DslUiIntegrationConstants;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
 import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.model.TableData;
@@ -108,10 +113,23 @@ public class OseeTypesImportOperation extends AbstractOperation {
          String compareName = response.getComparisonSnapshotModelName();
          String compareData = response.getComparisonSnapshotModel();
          if (Strings.isValid(compareData) && Strings.isValid(compareName)) {
-            ComparisonSnapshot snapshot = ModelUtil.loadComparisonSnapshot(compareName, compareData);
+            ComparisonSnapshot snapshot = loadComparisonSnapshot(compareName, compareData);
             openCompareEditor(snapshot);
          }
       }
+   }
+
+   private static ComparisonSnapshot loadComparisonSnapshot(String compareName, String compareData) throws OseeCoreException {
+      ComparisonSnapshot snapshot = null;
+      try {
+         ResourceSet resourceSet = new ResourceSetImpl();
+         Resource resource = resourceSet.createResource(org.eclipse.emf.common.util.URI.createURI(compareName));
+         resource.load(new ByteArrayInputStream(compareData.getBytes("UTF-8")), resourceSet.getLoadOptions());
+         snapshot = (ComparisonSnapshot) resource.getContents().get(0);
+      } catch (IOException ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
+      return snapshot;
    }
 
    private void openCompareEditor(final ComparisonSnapshot snapshot) {
@@ -126,7 +144,8 @@ public class OseeTypesImportOperation extends AbstractOperation {
                page.openEditor(input, "org.eclipse.compare.CompareEditor", true);
                status = Status.OK_STATUS;
             } catch (Exception ex) {
-               status = new Status(IStatus.ERROR, DslUiIntegrationConstants.PLUGIN_ID, "Error opening compare editor", ex);
+               status =
+                  new Status(IStatus.ERROR, DslUiIntegrationConstants.PLUGIN_ID, "Error opening compare editor", ex);
             }
             return status;
          }

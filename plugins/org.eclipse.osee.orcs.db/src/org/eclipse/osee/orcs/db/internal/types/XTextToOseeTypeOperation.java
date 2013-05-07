@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration;
+package org.eclipse.osee.orcs.db.internal.types;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,8 +22,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.dsl.integration.internal.DslIntegrationConstants;
-import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AddAttribute;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AddEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeOverrideOption;
@@ -67,7 +65,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    private final BranchCache branchCache;
 
    public XTextToOseeTypeOperation(IOseeModelFactoryService provider, OseeTypeCache typeCache, BranchCache branchCache, OseeDsl model) {
-      super("OSEE Text Model to OSEE", DslIntegrationConstants.PLUGIN_ID);
+      super("OSEE Text Model to OSEE", "");
       this.provider = provider;
       this.typeCache = typeCache;
       this.branchCache = branchCache;

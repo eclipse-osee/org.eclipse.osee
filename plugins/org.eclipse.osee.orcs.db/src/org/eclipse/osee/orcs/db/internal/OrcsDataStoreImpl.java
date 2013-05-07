@@ -10,10 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal;
 
+import java.io.OutputStream;
+import java.util.Collection;
+import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
+import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
+import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
+import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.cache.IOseeCache;
+import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
+import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -35,27 +48,31 @@ import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
 import org.eclipse.osee.orcs.db.internal.loader.data.IdFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.QueryModuleFactory;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
+import org.eclipse.osee.orcs.db.internal.types.OseeModelingServiceImpl;
+import org.osgi.framework.BundleContext;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OrcsDataStoreImpl implements OrcsDataStore {
+public class OrcsDataStoreImpl implements OrcsDataStore, IOseeCachingService {
 
    private Log logger;
    private IOseeDatabaseService dbService;
    private IdentityService identityService;
-   private IOseeCachingService cacheService;
    private SystemPreferences preferences;
    private ExecutorAdmin executorAdmin;
    private IResourceManager resourceManager;
    private DataProxyFactoryProvider proxyProvider;
    private IOseeModelFactoryService modelFactory;
-   private IOseeModelingService typeModelService;
+   private EventService eventService;
 
    private DataStoreAdmin dataStoreAdmin;
    private BranchDataStore branchStore;
    private DataModuleFactory dataModuleFactory;
    private QueryModuleFactory queryModule;
+
+   private OseeModelingServiceImpl modelingService;
+   private IOseeCachingService cacheService;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -67,10 +84,6 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
 
    public void setDatabaseService(IOseeDatabaseService dbService) {
       this.dbService = dbService;
-   }
-
-   public void setCachingService(IOseeCachingService cacheService) {
-      this.cacheService = cacheService;
    }
 
    public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
@@ -93,11 +106,18 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       this.modelFactory = modelFactory;
    }
 
-   public void setTypeModelService(IOseeModelingService typeModelService) {
-      this.typeModelService = typeModelService;
+   public void setEventService(EventService eventService) {
+      this.eventService = eventService;
    }
 
-   public void start() {
+   public void start(BundleContext context) {
+
+      modelingService =
+         new OseeModelingServiceImpl(logger, dbService, identityService, executorAdmin, resourceManager, modelFactory,
+            eventService, this);
+
+      cacheService = modelingService.createCachingService(true);
+
       StaticSqlProvider sqlProvider = new StaticSqlProvider();
       sqlProvider.setLogger(logger);
       sqlProvider.setPreferences(preferences);
@@ -112,7 +132,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
 
       branchStore =
          new BranchDataStoreImpl(logger, dbService, identityService, cacheService, preferences, executorAdmin,
-            resourceManager, modelFactory, typeModelService, idFactory, dataModuleFactory.getDataLoaderFactory(),
+            resourceManager, modelFactory, modelingService, idFactory, dataModuleFactory.getDataLoaderFactory(),
             missingChangeItemFactory);
 
       dataStoreAdmin = new DataStoreAdminImpl(logger, dbService, identityService, branchStore, preferences);
@@ -161,4 +181,74 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
    public QueryEngineIndexer getQueryEngineIndexer() {
       return queryModule.getQueryIndexer();
    }
+
+   @Override
+   public void importOseeTypes(boolean isInitializing, OseeImportModelRequest request, OseeImportModelResponse response) throws OseeCoreException {
+      modelingService.importOseeTypes(isInitializing, request, response);
+   }
+
+   @Override
+   public void exportOseeTypes(OutputStream outputStream) throws OseeCoreException {
+      modelingService.exportOseeTypes(outputStream);
+   }
+
+   private IOseeCachingService getProxied() {
+      return cacheService;
+   }
+
+   @Override
+   public BranchCache getBranchCache() {
+      return getProxied().getBranchCache();
+   }
+
+   @Override
+   public TransactionCache getTransactionCache() {
+      return getProxied().getTransactionCache();
+   }
+
+   @Override
+   public ArtifactTypeCache getArtifactTypeCache() {
+      return getProxied().getArtifactTypeCache();
+   }
+
+   @Override
+   public AttributeTypeCache getAttributeTypeCache() {
+      return getProxied().getAttributeTypeCache();
+   }
+
+   @Override
+   public RelationTypeCache getRelationTypeCache() {
+      return getProxied().getRelationTypeCache();
+   }
+
+   @Override
+   public OseeEnumTypeCache getEnumTypeCache() {
+      return getProxied().getEnumTypeCache();
+   }
+
+   @Override
+   public IdentityService getIdentityService() {
+      return getProxied().getIdentityService();
+   }
+
+   @Override
+   public Collection<?> getCaches() {
+      return getProxied().getCaches();
+   }
+
+   @Override
+   public IOseeCache<?, ?> getCache(OseeCacheEnum cacheId) throws OseeCoreException {
+      return getProxied().getCache(cacheId);
+   }
+
+   @Override
+   public void reloadAll() throws OseeCoreException {
+      getProxied().reloadAll();
+   }
+
+   @Override
+   public void clearAll() {
+      getProxied().clearAll();
+   }
+
 }

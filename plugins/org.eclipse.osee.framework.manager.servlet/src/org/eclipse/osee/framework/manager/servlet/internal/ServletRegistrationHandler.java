@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.manager.servlet.AdminServlet;
 import org.eclipse.osee.framework.manager.servlet.ArtifactFileServlet;
@@ -56,7 +55,6 @@ public class ServletRegistrationHandler {
    private IApplicationServerLookup serverLookup;
    private IApplicationServerManager appServerManager;
    private IDataTranslationService translationService;
-   private IOseeModelingService modeling;
    private IOseeCachingService caching;
    private IAuthenticationManager authenticationManager;
    private IOseeModelFactoryService factoryService;
@@ -79,10 +77,6 @@ public class ServletRegistrationHandler {
 
    public void setTranslationService(IDataTranslationService translationService) {
       this.translationService = translationService;
-   }
-
-   public void setModeling(IOseeModelingService modeling) {
-      this.modeling = modeling;
    }
 
    public void setCaching(IOseeCachingService caching) {
@@ -147,7 +141,7 @@ public class ServletRegistrationHandler {
       register(new SessionClientLoopbackServlet(logger, sessionManager), OseeServerContext.CLIENT_LOOPBACK_CONTEXT);
       register(new OseeCacheServlet(logger, sessionManager, translationService, caching, factoryService),
          OseeServerContext.CACHE_CONTEXT);
-      register(new OseeModelServlet(logger, sessionManager, translationService, modeling),
+      register(new OseeModelServlet(logger, sessionManager, translationService, orcsApi),
          OseeServerContext.OSEE_MODEL_CONTEXT);
       register(new UnsubscribeServlet(logger, context, orcsApi), "osee/unsubscribe");
 

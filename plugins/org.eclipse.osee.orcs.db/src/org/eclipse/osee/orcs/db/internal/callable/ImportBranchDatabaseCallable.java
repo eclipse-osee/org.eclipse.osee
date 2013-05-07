@@ -18,7 +18,6 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.database.schema.DatabaseCallable;
 import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -30,7 +29,6 @@ import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
 import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -60,6 +58,7 @@ import org.eclipse.osee.orcs.db.internal.exchange.transform.ExchangeTransformPro
 import org.eclipse.osee.orcs.db.internal.exchange.transform.ExchangeTransformer;
 import org.eclipse.osee.orcs.db.internal.exchange.transform.IExchangeTransformProvider;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
+import org.eclipse.osee.orcs.db.internal.types.IOseeModelingService;
 
 /**
  * @author Roberto E. Escobar
@@ -287,7 +286,7 @@ public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
       OseeImportModelResponse response = new OseeImportModelResponse();
 
       getLogger().info("Updating Type Model with [%s]", model);
-      typeModelService.importOseeTypes(new NullProgressMonitor(), true, modelRequest, response);
+      typeModelService.importOseeTypes(true, modelRequest, response);
       getLogger().info("Type Model Import complete");
    }
 

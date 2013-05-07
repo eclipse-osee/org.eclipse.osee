@@ -17,7 +17,6 @@ import java.util.Random;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -32,6 +31,7 @@ import org.eclipse.osee.orcs.db.internal.exchange.export.ManifestExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.MetadataExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.OseeTypeModelExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
+import org.eclipse.osee.orcs.db.internal.types.IOseeModelingService;
 
 public class ExportItemFactory {
    private static final String GET_MAX_TX =

@@ -7,11 +7,18 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/*.xml
 Import-Package: com.google.common.collect,
+ org.eclipse.emf.common.notify,
+ org.eclipse.emf.common.util,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.ecore.util,
  org.eclipse.osee.console.admin,
  org.eclipse.osee.database.schema,
  org.eclipse.osee.event,
  org.eclipse.osee.executor.admin,
  org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.dsl,
+ org.eclipse.osee.framework.core.dsl.oseeDsl,
+ org.eclipse.osee.framework.core.dsl.oseeDsl.util,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model,

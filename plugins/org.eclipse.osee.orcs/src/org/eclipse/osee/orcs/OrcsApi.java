@@ -37,6 +37,8 @@ public interface OrcsApi {
 
    OrcsPerformance getOrcsPerformance(ApplicationContext context);
 
+   OrcsTypes getOrcsTypes(ApplicationContext context);
+
    // TODO remove this call
    BranchCache getBranchCache();
 

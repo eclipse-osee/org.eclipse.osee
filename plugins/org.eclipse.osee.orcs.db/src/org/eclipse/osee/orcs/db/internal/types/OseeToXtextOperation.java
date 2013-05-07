@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration;
+package org.eclipse.osee.orcs.db.internal.types;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,8 +17,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.dsl.integration.internal.DslIntegrationConstants;
-import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationMultiplicityEnum;
@@ -48,7 +46,7 @@ public class OseeToXtextOperation extends AbstractOperation {
    private final OseeTypeCache cache;
 
    public OseeToXtextOperation(OseeTypeCache cache, OseeDslFactory factory, OseeDsl oseeModel) {
-      super("OSEE to Text Model", DslIntegrationConstants.PLUGIN_ID);
+      super("OSEE to Text Model", "");
       this.oseeModel = oseeModel;
       this.factory = factory;
       this.cache = cache;

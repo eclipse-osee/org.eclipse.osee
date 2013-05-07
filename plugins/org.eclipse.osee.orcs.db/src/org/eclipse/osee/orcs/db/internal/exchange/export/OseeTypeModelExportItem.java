@@ -13,11 +13,10 @@ package org.eclipse.osee.orcs.db.internal.exchange.export;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
+import org.eclipse.osee.orcs.db.internal.types.IOseeModelingService;
 
 /**
  * @author Roberto E. Escobar
@@ -36,7 +35,7 @@ public class OseeTypeModelExportItem extends AbstractExportItem {
       OutputStream outputStream = null;
       try {
          outputStream = new FileOutputStream(outputFile);
-         modelingService.exportOseeTypes(new NullProgressMonitor(), outputStream);
+         modelingService.exportOseeTypes(outputStream);
       } finally {
          Lib.close(outputStream);
       }

@@ -8,7 +8,6 @@
    <reference bind="setServerLookup" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IApplicationServerLookup" name="IApplicationServerLookup" policy="static"/>
    <reference bind="setAppServerManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IApplicationServerManager" name="IApplicationServerManager" policy="static"/>
    <reference bind="setTranslationService" cardinality="1..1" interface="org.eclipse.osee.framework.core.translation.IDataTranslationService" name="IDataTranslationService" policy="static"/>
-   <reference bind="setModeling" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeModelingService" name="IOseeModelingService" policy="static"/>
    <reference bind="setCaching" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeCachingService" name="IOseeCachingService" policy="static"/>
    <reference bind="setAuthenticationManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IAuthenticationManager" name="IAuthenticationManager" policy="static"/>
    <reference bind="setFactoryService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeModelFactoryService" name="IOseeModelFactoryService" policy="static"/>

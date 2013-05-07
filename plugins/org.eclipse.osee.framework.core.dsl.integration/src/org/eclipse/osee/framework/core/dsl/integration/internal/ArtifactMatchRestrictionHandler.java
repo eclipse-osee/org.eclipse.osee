@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
-import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;

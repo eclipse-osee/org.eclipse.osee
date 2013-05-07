@@ -27,6 +27,7 @@ import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsPerformance;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactBuilderFactoryImpl;
@@ -115,6 +116,7 @@ public class OrcsApiImpl implements OrcsApi {
 
       indexerModule = new IndexerModule(logger, preferences, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start();
+
    }
 
    public void stop() {
@@ -206,6 +208,11 @@ public class OrcsApiImpl implements OrcsApi {
          sessionId = GUID.create();
       }
       return new SessionContextImpl(sessionId);
+   }
+
+   @Override
+   public OrcsTypes getOrcsTypes(ApplicationContext context) {
+      return dataStore;
    }
 
 }

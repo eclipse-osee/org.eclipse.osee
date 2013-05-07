@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
-import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactPredicate;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeArtifactTypePredicate;

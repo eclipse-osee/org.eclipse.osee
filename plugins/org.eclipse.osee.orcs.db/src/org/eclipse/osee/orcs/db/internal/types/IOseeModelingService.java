@@ -8,23 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.internal;
+package org.eclipse.osee.orcs.db.internal.types;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.io.OutputStream;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
+import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
 
 /**
  * @author Roberto E. Escobar
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-   AccessModelInterpreterImplTest.class,
-   ArtifactMatchInterpreterTest.class,
-   ArtifactMatchRestrictionHandlerTest.class,
-   ArtifactTypeRestrictionHandlerTest.class,
-   AttributeTypeRestrictionHandlerTest.class,
-   RelationTypeRestrictionHandlerTest.class,
-   OseeUtilTest.class})
-public class InternalTestSuite {
-   // Test Suite
+public interface IOseeModelingService {
+
+   void importOseeTypes(boolean isInitializing, OseeImportModelRequest request, OseeImportModelResponse response) throws OseeCoreException;
+
+   void exportOseeTypes(OutputStream outputStream) throws OseeCoreException;
+
 }

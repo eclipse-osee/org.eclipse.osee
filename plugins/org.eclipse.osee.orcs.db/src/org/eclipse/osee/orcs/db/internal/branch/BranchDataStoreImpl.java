@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -55,6 +54,7 @@ import org.eclipse.osee.orcs.db.internal.transaction.TransactionCheck;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter;
 import org.eclipse.osee.orcs.db.internal.transaction.TxSqlBuilderImpl;
 import org.eclipse.osee.orcs.db.internal.transaction.UnsubscribeTransaction;
+import org.eclipse.osee.orcs.db.internal.types.IOseeModelingService;
 
 /**
  * @author Roberto E. Escobar

@@ -23,10 +23,7 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.osgi.framework
 Require-Bundle: org.eclipse.xtext,
  org.eclipse.core.runtime,
- com.google.guava;bundle-version="10.0.1",
- org.eclipse.emf.compare,
- org.eclipse.emf.compare.diff,
- org.eclipse.emf.compare.match
+ com.google.guava;bundle-version="10.0.1"
 Export-Package: org.eclipse.osee.framework.core.dsl.integration,
  org.eclipse.osee.framework.core.dsl.integration.util
 Service-Component: OSGI-INF/*.xml

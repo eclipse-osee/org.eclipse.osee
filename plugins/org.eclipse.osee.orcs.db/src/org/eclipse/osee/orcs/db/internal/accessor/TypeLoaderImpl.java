@@ -16,7 +16,6 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -27,7 +26,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
 import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -38,6 +36,7 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.orcs.db.internal.accessor.ArtifactTypeDataAccessor.TypeLoader;
+import org.eclipse.osee.orcs.db.internal.types.IOseeModelingService;
 
 public class TypeLoaderImpl implements TypeLoader {
    private static final String LOAD_OSEE_TYPE_DEF_URIS =
@@ -81,7 +80,7 @@ public class TypeLoaderImpl implements TypeLoader {
          String modelName = String.format("osee.types.%s.osee", Lib.getDateTimeString());
          OseeImportModelRequest request = new OseeImportModelRequest(modelName, modelData, false, false, true);
          OseeImportModelResponse response = new OseeImportModelResponse();
-         modelingService.importOseeTypes(new NullProgressMonitor(), true, request, response);
+         modelingService.importOseeTypes(true, request, response);
       }
    }
 

@@ -20,13 +20,13 @@ import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
 import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
-import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
-import org.eclipse.osee.framework.core.services.IOseeModelingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsTypes;
 
 /**
  * @author Roberto E. Escobar
@@ -35,17 +35,17 @@ public class OseeModelServlet extends SecureOseeHttpServlet {
 
    private static final long serialVersionUID = -2639113870500561780L;
 
-   private final IOseeModelingService modelingService;
+   private final OrcsApi orcsApi;
    private final IDataTranslationService dataTransalatorService;
 
-   public OseeModelServlet(Log logger, ISessionManager sessionManager, IDataTranslationService dataTransalatorService, IOseeModelingService modelingService) {
+   public OseeModelServlet(Log logger, ISessionManager sessionManager, IDataTranslationService dataTransalatorService, OrcsApi orcsApi) {
       super(logger, sessionManager);
       this.dataTransalatorService = dataTransalatorService;
-      this.modelingService = modelingService;
+      this.orcsApi = orcsApi;
    }
 
-   private IOseeModelingService getModelingService() {
-      return modelingService;
+   private OrcsTypes getOrcsTypes() {
+      return orcsApi.getOrcsTypes(null);
    }
 
    @Override
@@ -69,7 +69,7 @@ public class OseeModelServlet extends SecureOseeHttpServlet {
       try {
          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-         getModelingService().exportOseeTypes(new LogProgressMonitor(), outputStream);
+         getOrcsTypes().exportOseeTypes(outputStream);
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/plain");
          resp.setCharacterEncoding("UTF-8");
@@ -89,8 +89,7 @@ public class OseeModelServlet extends SecureOseeHttpServlet {
 
          OseeImportModelResponse modelResponse = new OseeImportModelResponse();
 
-         getModelingService().importOseeTypes(new LogProgressMonitor(), isInitializing(req), modelRequest,
-            modelResponse);
+         getOrcsTypes().importOseeTypes(isInitializing(req), modelRequest, modelResponse);
 
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/xml");
