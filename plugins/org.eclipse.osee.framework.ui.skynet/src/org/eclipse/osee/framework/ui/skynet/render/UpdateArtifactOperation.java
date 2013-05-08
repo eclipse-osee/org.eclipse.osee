@@ -71,14 +71,20 @@ public class UpdateArtifactOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      IElementExtractor elementExtractor;
-      Document document = extractJaxpDocument();
-      if (threeWayMerge) {
-         elementExtractor = new MergeEditArtifactElementExtractor(document);
-      } else {
-         elementExtractor = new WordImageArtifactElementExtractor(document);
+      Collection<WordExtractorData> extractorDatas;
+      Element oleDataElement;
+      {
+         IElementExtractor elementExtractor;
+         Document document = extractJaxpDocument();
+         if (threeWayMerge) {
+            elementExtractor = new MergeEditArtifactElementExtractor(document);
+         } else {
+            elementExtractor = new WordImageArtifactElementExtractor(document);
+         }
+         extractorDatas = elementExtractor.extractElements();
+         oleDataElement = elementExtractor.getOleDataElement();
       }
-      wordArtifactUpdate(elementExtractor);
+      wordArtifactUpdate(extractorDatas, oleDataElement);
    }
 
    private Document extractJaxpDocument() throws ParserConfigurationException, SAXException, IOException {
@@ -92,18 +98,14 @@ public class UpdateArtifactOperation extends AbstractOperation {
       return document;
    }
 
-   private void wordArtifactUpdate(IElementExtractor elementExtractor) throws OseeCoreException, XMLStreamException, DOMException, ParserConfigurationException, SAXException, IOException {
+   private void wordArtifactUpdate(Collection<WordExtractorData> extractorDatas, Element oleDataElement) throws OseeCoreException, XMLStreamException, DOMException {
       List<Artifact> deletedArtifacts = new LinkedList<Artifact>();
-      Collection<WordExtractorData> extractorDatas = elementExtractor.extractElements();
-      Element oleDataElement = elementExtractor.getOleDataElement();
-
       try {
+
          boolean singleArtifact = extractorDatas.size() == 1;
          boolean containsOleData = false;
          for (WordExtractorData extractorData : extractorDatas) {
-
             Artifact artifact = getArtifact(extractorData);
-
             if (artifact.isDeleted()) {
                deletedArtifacts.add(artifact);
             } else {
@@ -127,15 +129,19 @@ public class UpdateArtifactOperation extends AbstractOperation {
                } catch (IOException ex) {
                   OseeExceptions.wrapAndThrow(ex);
                }
+
                // Only update if editing a single artifact or if in
                // multi-edit mode only update if the artifact has at least one textual change (if
                // the MUTI_EDIT_SAVE_ALL_CHANGES preference is not set).
-               String originalContent =
-                  artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent).toString();
-               boolean multiSave =
-                  UserManager.getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES) || !WordUtil.textOnly(
-                     originalContent).equals(WordUtil.textOnly(content)) || !WordUtil.referencesOnly(originalContent).equals(
-                     WordUtil.referencesOnly(content));
+               boolean multiSave;
+               {
+                  String originalContent =
+                     artifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent).toString();
+                  multiSave =
+                     UserManager.getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES) || !WordUtil.textOnly(
+                        originalContent).equals(WordUtil.textOnly(content)) || !WordUtil.referencesOnly(originalContent).equals(
+                        WordUtil.referencesOnly(content));
+               }
 
                if (singleArtifact || multiSave) {
                   // TODO Do we need this?
