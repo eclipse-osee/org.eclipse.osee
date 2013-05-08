@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal.event.handlers;
 
+import static org.eclipse.osee.framework.skynet.core.event.model.BranchEventType.Committed;
+import static org.eclipse.osee.framework.skynet.core.event.model.BranchEventType.Deleted;
+import static org.eclipse.osee.framework.skynet.core.event.model.BranchEventType.Purged;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -39,31 +42,20 @@ public class BranchRemoteEventHandler implements EventHandlerRemote<RemoteBranch
 
    private void updateBranches(Sender sender, BranchEvent branchEvent) {
       BranchEventType eventType = branchEvent.getEventType();
-      Branch branch = null;
       try {
-         switch (eventType) {
-            case Committing:
-            case CommitFailed:
-            case Deleting:
-            case Purging:
-               return;
-            case Committed:
-               branch = BranchManager.getBranchByGuid(branchEvent.getBranchGuid());
-               Artifact artifact = BranchManager.getAssociatedArtifact(branch);
-               TransactionManager.clearCommitArtifactCacheForAssociatedArtifact(artifact);
-               break;
-            case Purged:
-               handleBranchRemoval(BranchState.PURGED, branchEvent.getBranchGuid());
-               break;
-            case Deleted:
-               handleBranchRemoval(BranchState.DELETED, branchEvent.getBranchGuid());
-               break;
-            default:
-               break;
+         if (eventType == Committed) {
+            Branch branch = BranchManager.getBranchByGuid(branchEvent.getBranchGuid());
+            Artifact artifact = BranchManager.getAssociatedArtifact(branch);
+            TransactionManager.clearCommitArtifactCacheForAssociatedArtifact(artifact);
+         } else if (eventType == Purged) {
+            handleBranchRemoval(BranchState.PURGED, branchEvent.getBranchGuid());
+         } else if (eventType == Deleted) {
+            handleBranchRemoval(BranchState.DELETED, branchEvent.getBranchGuid());
          }
-         // Need to update only branch(s) that changed, not refresh all branches cause it will
-         // clear any local flags that have not yet been persisted to the database like DELETED or COMMIT_IN_PROGRESS
-         BranchManager.refreshBranches();
+
+         if (eventType.justifiesCacheRefresh()) {
+            BranchManager.refreshBranches();
+         }
       } catch (Exception ex) {
          EventUtil.eventLog("REM: updateBranches", ex);
       }
