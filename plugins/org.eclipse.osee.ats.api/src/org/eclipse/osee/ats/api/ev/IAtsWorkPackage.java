@@ -32,6 +32,8 @@ public interface IAtsWorkPackage {
 
    public AtsWorkPackageType getWorkPackageType() throws OseeCoreException;
 
+   public int getWorkPackagePercent() throws OseeCoreException;
+
    public boolean isActive() throws OseeCoreException;
 
    public Date getStartDate() throws OseeCoreException;

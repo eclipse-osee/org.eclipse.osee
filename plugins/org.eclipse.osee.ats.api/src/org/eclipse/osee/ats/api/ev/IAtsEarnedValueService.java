@@ -23,4 +23,5 @@ public interface IAtsEarnedValueService {
    public IAtsWorkPackage getWorkPackage(IAtsWorkItem workItem) throws OseeCoreException;
 
    public Collection<IAtsWorkPackage> getWorkPackageOptions(IAtsObject object) throws OseeCoreException;
+
 }

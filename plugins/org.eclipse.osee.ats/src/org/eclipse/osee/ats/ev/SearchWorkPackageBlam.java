@@ -39,6 +39,7 @@ public class SearchWorkPackageBlam extends AbstractBlam {
    private static final String INCLUDE_CHILD_TEAM_DEFS = "Include Child Team Definitions";
    private static final String INCLUDE_CHILD_AIS = "Include Child Actionable Items";
    private static final String TEAM_DEFINITIONS = "Team Definitions(s)";
+   private static final String RUN_EV_REPORT_ON_RESULTS = "Run EV Report on Results";
 
    @Override
    public String getName() {
@@ -54,6 +55,7 @@ public class SearchWorkPackageBlam extends AbstractBlam {
          Active returnActiveWorkPkgs = Active.valueOf(returnActiveSel);
          boolean includeChildrenTeamDefs = variableMap.getBoolean(INCLUDE_CHILD_TEAM_DEFS);
          boolean includeChildrenAis = variableMap.getBoolean(INCLUDE_CHILD_AIS);
+         final boolean runEvReportOnResults = variableMap.getBoolean(RUN_EV_REPORT_ON_RESULTS);
          Collection<IAtsTeamDefinition> teamDefs =
             variableMap.getCollection(IAtsTeamDefinition.class, TEAM_DEFINITIONS);
          Collection<IAtsActionableItem> ais = variableMap.getCollection(IAtsActionableItem.class, ACTIONABLE_ITEMS);
@@ -71,6 +73,9 @@ public class SearchWorkPackageBlam extends AbstractBlam {
                   AWorkbench.popup(getName() + " - No Results Returned");
                } else {
                   MassArtifactEditor.editArtifacts(getName(), results);
+                  if (runEvReportOnResults) {
+                     EarnedValueWorkPacakgeReportBlam.runReport("Earned Value Work Package Report", results);
+                  }
                }
             }
 
@@ -86,7 +91,8 @@ public class SearchWorkPackageBlam extends AbstractBlam {
       "<XWidget displayName=\"" + INCLUDE_CHILD_TEAM_DEFS + "\" xwidgetType=\"XCheckBox\" />" +
       "<XWidget displayName=\"" + ACTIONABLE_ITEMS + "\" xwidgetType=\"XHyperlabelActionableItemSelection\" horizontalLabel=\"true\"/>" +
       "<XWidget displayName=\"" + INCLUDE_CHILD_AIS + "\" xwidgetType=\"XCheckBox\" />" +
-      "<XWidget displayName=\"" + RETURN_ACTIVE_WORK_PACKAGES + "\" xwidgetType=\"XCombo(Active,InActive,Both)\" />" +
+      "<XWidget displayName=\"" + RETURN_ACTIVE_WORK_PACKAGES + "\" xwidgetType=\"XCombo(Active,InActive,Both)\" defaultValue=\"Active\"/>" +
+      "<XWidget displayName=\"" + RUN_EV_REPORT_ON_RESULTS + "\" xwidgetType=\"XCheckBox\" />" +
       "</xWidgets>";
       // @formatter:on
    }

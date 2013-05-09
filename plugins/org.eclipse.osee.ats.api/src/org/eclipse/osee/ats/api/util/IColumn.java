@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.client.integration.tests.ats.ev;
+package org.eclipse.osee.ats.api.util;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({SearchWorkPackageOperationTest.class, EarnedValueReportOperationTest.class})
 /**
- *
  * @author Donald G. Dunne
  */
-public class AtsTest_EV_TestSuite {
-   // TestSuite
+public interface IColumn {
+
+   public abstract String getId();
+
+   public abstract String getName();
+
+   public abstract ColumnType getDataType();
+
+   public abstract String getDescription();
+
 }

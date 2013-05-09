@@ -103,12 +103,12 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
 
    private Artifact createWorkPackage(IArtifactToken workPackageToken, String activityId) throws OseeCoreException {
       Artifact workPkg1 = ArtifactTypeManager.addArtifact(workPackageToken, AtsUtilCore.getAtsBranchToken());
-      workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageId, "WP_0" + workPackageToken);
+      char charAt = workPackageToken.getName().charAt(workPackageToken.getName().length() - 1);
+      workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageId, "WP_0" + charAt);
       workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageProgram, "Program A");
       workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageType, "LOE");
       workPkg1.addAttributeFromString(AtsAttributeTypes.ActivityId, activityId);
-      workPkg1.addAttributeFromString(AtsAttributeTypes.ActivityName,
-         "HUF 2" + workPackageToken.getName().charAt(workPackageToken.getName().length() - 1) + "0");
+      workPkg1.addAttributeFromString(AtsAttributeTypes.ActivityName, "HUF 2" + charAt + "0");
       return workPkg1;
    }
 

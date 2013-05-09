@@ -10,9 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo;
 
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.OseeInfo;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 
 public class DemoUtil {
 
@@ -50,4 +56,29 @@ public class DemoUtil {
    public static void setPopulateDbSuccessful(boolean success) throws OseeCoreException {
       OseeInfo.setBoolean("PopulateSuccessful", success);
    }
+
+   public static TeamWorkFlowArtifact getSawCodeCommittedWf() throws OseeCoreException {
+      return getCodeTeamWorkflowNamed("SAW (committed) Reqt Changes for Diagram View");
+   }
+
+   public static TeamWorkFlowArtifact getSawCodeUnCommittedWf() throws OseeCoreException {
+      return getCodeTeamWorkflowNamed("SAW (uncommitted) More Reqt Changes for Diagram View");
+   }
+
+   public static TeamWorkFlowArtifact getSawCodeNoBranchWf() throws OseeCoreException {
+      return getCodeTeamWorkflowNamed("SAW (no-branch) Even More Requirement Changes for Diagram View");
+   }
+
+   public static TeamWorkFlowArtifact getCodeTeamWorkflowNamed(String name) throws OseeCoreException {
+      TeamWorkFlowArtifact result = null;
+      for (Artifact art : ArtifactQuery.getArtifactListFromName(name, AtsUtil.getAtsBranchToken(),
+         DeletionFlag.EXCLUDE_DELETED, QueryOptions.EXACT_MATCH_OPTIONS)) {
+         if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
+            result = (TeamWorkFlowArtifact) art;
+            break;
+         }
+      }
+      return result;
+   }
+
 }

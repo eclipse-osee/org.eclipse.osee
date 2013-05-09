@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.internal.ev;
+package org.eclipse.osee.ats.core.client.ev;
 
 import java.util.Date;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -91,6 +91,11 @@ public class WorkPackageArtifact implements IAtsWorkPackage {
    @Override
    public Date getEndDate() throws OseeCoreException {
       return artifact.getSoleAttributeValue(AtsAttributeTypes.EndDate, null);
+   }
+
+   @Override
+   public int getWorkPackagePercent() throws OseeCoreException {
+      return artifact.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
    }
 
    @Override
