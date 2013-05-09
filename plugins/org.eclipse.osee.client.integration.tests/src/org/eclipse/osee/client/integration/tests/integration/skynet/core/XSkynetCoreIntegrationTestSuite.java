@@ -58,7 +58,8 @@ import org.junit.runners.Suite;
    TransactionManagerTest.class,
    UserManagerTest.class,
    WordMlLinkHandlerTest.class,
-   WordOutlineTest.class})
+   WordOutlineTest.class,
+   ChangeDataTest.class})
 public final class XSkynetCoreIntegrationTestSuite {
    // Test Suite
 }
