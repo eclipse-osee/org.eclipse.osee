@@ -11,10 +11,10 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
-import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.*;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.*;
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.*;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.*;
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
 import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
@@ -342,14 +342,15 @@ public class WordTemplateProcessor {
             boolean ignoreArtifact = excludeFolders && artifact.isOfType(CoreArtifactTypes.Folder);
             boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
             boolean startedSection = false;
+            boolean templateOnly = renderer.getBooleanOption("TEMPLATE ONLY");
 
             if (!ignoreArtifact) {
                handleLandscapeArtifactSectionBreak(artifact, wordMl, multipleArtifacts);
 
-               if (outlining) {
+               if (outlining && !templateOnly) {
                   String headingText = artifact.getSoleAttributeValue(headingAttributeType, "");
 
-                  if (!publishInline) {
+                  if (!publishInline && !templateOnly) {
                      paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
                      startedSection = true;
                   }
@@ -442,6 +443,10 @@ public class WordTemplateProcessor {
                }
             }
          }
+      }
+      boolean templateOnly = renderer.getBooleanOption("TEMPLATE ONLY");
+      if (templateOnly && !attributeType.equals(WordTemplateContent)) {
+         return;
       }
 
       // Create a wordTemplateContent for new guys when opening them for edit.

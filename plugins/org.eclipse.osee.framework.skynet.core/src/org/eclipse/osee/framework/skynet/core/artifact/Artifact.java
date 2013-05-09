@@ -1449,7 +1449,11 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    }
 
    public final Artifact duplicate(IOseeBranch branch, Collection<IAttributeType> excudeAttributeTypes) throws OseeCoreException {
-      Artifact newArtifact = ArtifactTypeManager.addArtifact(artifactType, branch);
+      return duplicate(branch, artifactType, excudeAttributeTypes);
+   }
+
+   public final Artifact duplicate(IOseeBranch branch, IArtifactType newType, Collection<IAttributeType> excudeAttributeTypes) throws OseeCoreException {
+      Artifact newArtifact = ArtifactTypeManager.addArtifact(newType, branch);
       // we do this because attributes were added on creation to meet the
       // minimum attribute requirements
       newArtifact.attributes.clear();
@@ -1459,7 +1463,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
 
    private void copyAttributes(Artifact artifact, Collection<IAttributeType> excudeAttributeTypes) throws OseeCoreException {
       for (Attribute<?> attribute : getAttributes()) {
-         if (!excudeAttributeTypes.contains(attribute) && isCopyAllowed(attribute) && artifact.isAttributeTypeValid(attribute.getAttributeType())) {
+         if (!excudeAttributeTypes.contains(attribute.getAttributeType()) && isCopyAllowed(attribute) && artifact.isAttributeTypeValid(attribute.getAttributeType())) {
             artifact.addAttribute(attribute.getAttributeType(), attribute.getValue());
          }
       }
