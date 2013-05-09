@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.messaging.event.res,
  org.eclipse.osee.framework.messaging,
- org.eclipse.osee.framework.lifecycle
+ org.eclipse.osee.framework.lifecycle,
+ org.jsoup;bundle-version="1.7.2"
 Export-Package: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.artifact,
  org.eclipse.osee.framework.skynet.core.artifact.factory,

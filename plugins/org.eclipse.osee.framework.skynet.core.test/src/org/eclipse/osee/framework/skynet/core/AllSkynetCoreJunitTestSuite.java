@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.skynet.core.internal.event.InternalEventTestSu
 import org.eclipse.osee.framework.skynet.core.linking.LinkingTestSuite;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTestSuite;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionTestSuite;
+import org.eclipse.osee.framework.skynet.core.utility.UtilityTestSuite;
 import org.eclipse.osee.framework.skynet.core.word.WordTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -30,6 +31,7 @@ import org.junit.runners.Suite;
    LinkingTestSuite.class,
    RelationTestSuite.class,
    TransactionTestSuite.class,
+   UtilityTestSuite.class,
    WordTestSuite.class})
 public class AllSkynetCoreJunitTestSuite {
    //
