@@ -574,6 +574,7 @@ abstract artifactType "Abstract Access Controlled" extends "Artifact" {
 	attribute "Access Context Id"
 }
 
+
 artifactType "MS Word Whole Document" extends "MS Word" {
 	guid "ABM9Dt9SyGjwuvem7SQA"
 	uuid 0x0000000000000012
@@ -1568,9 +1569,9 @@ relationType "Supporting Info" {
 relationType "Supporting Requirement" {
     guid "AAN_OjEwzF2w5j4Zr3gA"
     uuid 0x200000000000017C
-    sideAName "supports requirement"
+    sideAName "is supported by"
     sideAArtifactType "Requirement"
-    sideBName "is supported by"
+    sideBName "supporting requirement"
     sideBArtifactType "Requirement"
     defaultOrderType Unordered
     multiplicity MANY_TO_MANY
