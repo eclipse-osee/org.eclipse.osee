@@ -1,14 +1,13 @@
 <?xml version="1.0"?>
-<!-- Copyright (c) Robert Bosch Engineering and Business Solutions Ltd India. <br>
-All rights reserved.This program and the accompanying materials <br>
-are made available under the terms of the Eclipse Public License v1.0 which accompanies <br>
-this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html. -->
-<component name="authentication.provider.ldap">
-	<implementation class="org.eclipse.osee.framework.authentication.ldap.core.LDAPAuthenticationProvider"/>
+<!-- Copyright (c) Robert Bosch Engineering and Business Solutions Ltd India. 
+	<br> All rights reserved.This program and the accompanying materials <br> 
+	are made available under the terms of the Eclipse Public License v1.0 which 
+	accompanies <br> this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html. -->
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="authentication.provider.ldap">
+	<implementation class="org.eclipse.osee.framework.authentication.ldap.core.LDAPAuthenticationProvider" />
 	<service>
-		<provide interface="org.eclipse.osee.framework.core.server.IAuthenticationProvider"/>
+		<provide interface="org.eclipse.osee.framework.core.server.IAuthenticationProvider" />
 	</service>
- <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
- <reference bind="setDatabaseService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
- <reference bind="setCachingService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeCachingService" name="IOseeCachingService" policy="static"/>
-</component>
+	<reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static" />
+	<reference bind="setOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
+</scr:component>

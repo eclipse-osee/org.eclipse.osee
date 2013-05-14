@@ -6,7 +6,6 @@
 package org.eclipse.osee.framework.authentication.ldap.core;
 
 import java.util.Hashtable;
-import java.util.logging.Level;
 import javax.naming.Context;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -15,7 +14,6 @@ import org.eclipse.osee.framework.authentication.ldap.core.service.ILDAPService;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.server.AbstractAuthenticationProvider;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
 
 /**
@@ -65,8 +63,7 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
 
       boolean authLDAP = checkLDAPAuthenticated(credential);
       if (!authLDAP) {
-
-         OseeLog.logf(Activator.class, Level.SEVERE, Messages.LDAPAuthenticationFailed, (Object) null);
+         getLogger().error(Messages.LDAPAuthenticationFailed);
       }
       return authLDAP;
 
@@ -100,7 +97,7 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
       if (this.connector == null) {
          Hashtable<String, String> props = createLDAPContextProperies(ldapService);
 
-         this.connector = new LDAPConnector(props, ldapService.getLDAPSearchBase());
+         this.connector = new LDAPConnector(getLogger(), props, ldapService.getLDAPSearchBase());
 
       }
       /**
@@ -116,7 +113,7 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
    }
 
    /**
-    * This method creates the environement properites required for LDAPContext
+    * This method creates the environment properties required for LDAPContext
     * 
     * @param ldapService
     * @return
@@ -167,9 +164,7 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
             }
          }
       } catch (Exception ex) {
-
-         OseeLog.logf(Activator.class, Level.SEVERE, ex.getMessage(), (Object) null);
-
+         getLogger().error(ex, "Error reading LDAPServiceExtensionPoints");
       }
       return null;
    }

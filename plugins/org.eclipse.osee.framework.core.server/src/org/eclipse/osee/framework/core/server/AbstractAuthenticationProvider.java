@@ -12,29 +12,25 @@ package org.eclipse.osee.framework.core.server;
 
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class AbstractAuthenticationProvider implements IAuthenticationProvider {
 
-   private static final String LOAD_OSEE_USER =
-      "select att.value as user_id from osee_attribute att, osee_txs txs where att.attr_type_id = ? and txs.branch_id = ? and att.gamma_id = txs.gamma_id and txs.tx_current = ? and att.value = ?";
-
    private Log logger;
-   private IOseeDatabaseService dbService;
-   private IOseeCachingService cachingService;
+   private OrcsApi orcsApi;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -44,46 +40,32 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
       return logger;
    }
 
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
+   public void setOrcsApi(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
    }
 
-   protected IOseeDatabaseService getDatabaseService() {
-      return dbService;
-   }
-
-   public void setCachingService(IOseeCachingService cachingService) {
-      this.cachingService = cachingService;
-   }
-
-   protected IOseeCachingService getCachingService() {
-      return cachingService;
+   protected OrcsApi getOrcsApi() {
+      return orcsApi;
    }
 
    protected IUserToken getUserTokenFromOseeDb(String userId) {
       IUserToken toReturn = null;
-      IOseeStatement chStmt = null;
       try {
+         QueryFactory queryFactory = orcsApi.getQueryFactory(null);
+         QueryBuilder query =
+            queryFactory.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).and(
+               CoreAttributeTypes.UserId, Operator.EQUAL, userId);
 
-         int attributeTypeId = getCachingService().getAttributeTypeCache().getLocalId(CoreAttributeTypes.UserId);
-         Branch branch = getCachingService().getBranchCache().get(CoreBranches.COMMON);
-         if (branch != null) {
-            int branchId = branch.getId();
-
-            chStmt = getDatabaseService().getStatement();
-            chStmt.runPreparedQuery(LOAD_OSEE_USER, attributeTypeId, branchId, TxChange.CURRENT.getValue(), userId);
-            if (chStmt.next()) {
-               toReturn =
-                  TokenFactory.createUserToken(GUID.create(), "-", "-", chStmt.getString("user_id"), true, false, false);
-            }
-         }
-         if (toReturn == null) {
-            getLogger().info("Unable to find userId:[%s] on [%s]", userId, branch);
+         ArtifactReadable artifact = query.getResults().getOneOrNull();
+         if (artifact != null) {
+            toReturn =
+               TokenFactory.createUserToken(artifact.getGuid(), artifact.getName(),
+                  artifact.getSoleAttributeAsString(CoreAttributeTypes.Email), userId, true, false, false);
+         } else {
+            getLogger().info("Unable to find userId:[%s] on [%s]", userId, CoreBranches.COMMON);
          }
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Unable to find userId [%s] in OSEE database.", userId);
-      } finally {
-         Lib.close(chStmt);
       }
       return toReturn;
    }
