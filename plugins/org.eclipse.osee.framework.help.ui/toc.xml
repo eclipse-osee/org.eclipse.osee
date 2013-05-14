@@ -175,8 +175,14 @@
 			</topic>
 			<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Make_tracked_changes_in_Word_appear_inline_instead_of_in_balloons" label="Make tracked changes in Word appear inline instead of in balloons"></topic>
 			<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Keep_MS_Word_from_prompting_to_save_Normal.doc" label="Keep MS Word from prompting to save Normal.doc"></topic>
-			<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#What_do_I_do_when_I_am_seeing_some_characters_.28such_as_smart_quotes_and_.21.3D_signs.29_show_up_as_a_little_black_rectangle_instead.3F" label="What do I do when I am seeing some characters (such as smart quotes and != signs) show up as a little black rectangle instead?"></topic>
+			<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#What_do_I_do_when_I_am_seeing_some_characters_.28such_as_smart_quotes_and_.21.3D_signs.29_show_up_as_a_little_black_rectangle_instead.3F" label="What do I do when I am seeing some characters (such as smart quotes and != signs) show up as a little black rectangle instead?">
+				<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Office_2007_Preference_Settings_2" label="Office 2007 Preference Settings"></topic>
+			</topic>
 			<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Configure_MS_Word_.282003.2F2007.29_so_it_does_NOT_auto-format_bulleted_and_numbered_lists" label="Configure MS Word (2003/2007) so it does NOT auto-format bulleted and numbered lists"></topic>
+			<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Creating_Cross-References_between_Multiple_Word_Artifacts_having_OLE_Data" label="Creating Cross-References between Multiple Word Artifacts having OLE Data">
+				<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Method1:_Use_single_edit" label="Method1: Use single edit"></topic>
+				<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Method2:_Separate_contents_and_reference_with_hyperlinks" label="Method2: Separate contents and reference with hyperlinks"></topic>
+			</topic>
 		</topic>
 		<topic href="OSEE/Users_Guide/Tips/Updating-This-Document.html" label="Updating This Document"></topic>
 	</topic>

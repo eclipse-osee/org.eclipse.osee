@@ -11,6 +11,11 @@
 			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Common_Java_System_Properties" label="Common Java System Properties"></topic>
 			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Application_Server_Java_System_Properties" label="Application Server Java System Properties"></topic>
 			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Client_Java_System_Properties" label="Client Java System Properties"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Setting_Up_Clients_and_Servers_to_work_together" label="Setting Up Clients and Servers to work together"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Developer_Workspace_Configuration" label="Developer Workspace Configuration">
+				<topic href="OSEE/Developers_Guide/Developers-Guide.html#Import_Java_Code_Auto_Formatting_Preferences" label="Import Java Code Auto Formatting Preferences"></topic>
+				<topic href="OSEE/Developers_Guide/Developers-Guide.html#Configure_New_Code_Template_Preferences" label="Configure New Code Template Preferences"></topic>
+			</topic>
 		</topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Database_Connection_Information" label="Database Connection Information"></topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Custom_Data_Model" label="Custom Data Model">
@@ -44,12 +49,14 @@
 			</topic>
 		</topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Use_Cases" label="Use Cases"></topic>
-		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Building_OSEE_using_PDE_Build" label="Building OSEE using PDE Build">
-			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Non-Eclipse_System_Requirements" label="Non-Eclipse System Requirements"></topic>
-			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Install_Eclipse" label="Install Eclipse"></topic>
-			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Install_Plug-ins" label="Install Plug-ins"></topic>
-			<topic href="OSEE/Developers_Guide/Developers-Guide.html#If_Using_Windows" label="If Using Windows"></topic>
-			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Build" label="Build"></topic>
+		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Building_OSEE_using_Tycho.2FMaven" label="Building OSEE using Tycho/Maven">
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Build_Requirements" label="Build Requirements"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Build_Steps" label="Build Steps"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Interactive_Build" label="Interactive Build"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Build_Module_Hierarchy_.28from_highest_to_lowest.29" label="Build Module Hierarchy (from highest to lowest)"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Build_Artifacts" label="Build Artifacts">
+				<topic href="OSEE/Developers_Guide/Developers-Guide.html#OSEE_System_Requirements" label="OSEE System Requirements"></topic>
+			</topic>
 		</topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Database_Schema" label="Database Schema"></topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#How_to_Define_Classes_for_Coverage_Importing" label="How to Define Classes for Coverage Importing"></topic>
@@ -72,6 +79,7 @@
 			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Design" label="Design"></topic>
 			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Implementation" label="Implementation"></topic>
 			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Migration" label="Migration"></topic>
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#OSEE_Framework_Patterns" label="OSEE Framework Patterns"></topic>
 		</topic>
 		<topic href="OSEE/Developers_Guide/Updating-This-Document.html" label="Updating This Document"></topic>
 	</topic>

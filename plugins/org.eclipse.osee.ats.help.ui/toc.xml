@@ -118,6 +118,13 @@
 			<topic href="OSEE/ATS/Users_Guide/Usage/Decision-Review-Workflow.html#Decision_State" label="Decision State"></topic>
 			<topic href="OSEE/ATS/Users_Guide/Usage/Decision-Review-Workflow.html#Followup_State" label="Followup State"></topic>
 		</topic>
+		<topic href="OSEE/ATS/Users_Guide/Usage/ATS-Notifications.html" label="ATS Notifications">
+			<topic href="OSEE/ATS/Users_Guide/Usage/ATS-Notifications.html#Configuration" label="Configuration"></topic>
+			<topic href="OSEE/ATS/Users_Guide/Usage/ATS-Notifications.html#Default_Notifications" label="Default Notifications"></topic>
+			<topic href="OSEE/ATS/Users_Guide/Usage/ATS-Notifications.html#Subscribe_by_Workflow" label="Subscribe by Workflow"></topic>
+			<topic href="OSEE/ATS/Users_Guide/Usage/ATS-Notifications.html#Subscribe_by_Actionable_Item" label="Subscribe by Actionable Item"></topic>
+			<topic href="OSEE/ATS/Users_Guide/Usage/ATS-Notifications.html#Subscribe_by_Team_Definition" label="Subscribe by Team Definition"></topic>
+		</topic>
 		<topic href="OSEE/ATS/Users_Guide/Usage/Configure-ATS-for-Change-Tracking.html" label="Configure ATS for Change Tracking">
 			<topic href="OSEE/ATS/Users_Guide/Usage/Configure-ATS-for-Change-Tracking.html#Purpose_4" label="Purpose"></topic>
 			<topic href="OSEE/ATS/Users_Guide/Usage/Configure-ATS-for-Change-Tracking.html#How_to_do_it_4" label="How to do it"></topic>
