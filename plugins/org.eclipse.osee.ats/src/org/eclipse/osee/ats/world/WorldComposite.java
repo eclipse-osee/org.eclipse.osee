@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Image;
@@ -139,37 +140,39 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
       Displays.pendInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            worldArts.clear();
-            otherArts.clear();
-            for (Artifact art : arts) {
-               if (AtsUtil.isAtsArtifact(art)) {
-                  worldArts.add(art);
-               } else {
-                  otherArts.add(art);
+            if (Widgets.isAccessible(worldXViewer.getTree())) {
+               worldArts.clear();
+               otherArts.clear();
+               for (Artifact art : arts) {
+                  if (AtsUtil.isAtsArtifact(art)) {
+                     worldArts.add(art);
+                  } else {
+                     otherArts.add(art);
+                  }
                }
+               if (customizeData != null && !worldXViewer.getCustomizeMgr().generateCustDataFromTable().equals(
+                  customizeData)) {
+                  setCustomizeData(customizeData);
+               }
+               if (arts.isEmpty()) {
+                  setTableTitle("No Results Found - " + name, true);
+               } else {
+                  setTableTitle(name, false);
+               }
+               try {
+                  AtsBulkLoad.bulkLoadArtifacts(worldArts);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+               worldXViewer.setInput(worldArts);
+               worldXViewer.updateStatusLabel();
+               if (otherArts.size() > 0 && MessageDialog.openConfirm(Displays.getActiveShell(),
+                  "Open in Artifact Editor?",
+                  otherArts.size() + " Non-WorldView Artifacts were returned from request.\n\nOpen in Artifact Editor?")) {
+                  RendererManager.openInJob(otherArts, PresentationType.GENERALIZED_EDIT);
+               }
+               worldXViewer.getTree().setFocus();
             }
-            if (customizeData != null && !worldXViewer.getCustomizeMgr().generateCustDataFromTable().equals(
-               customizeData)) {
-               setCustomizeData(customizeData);
-            }
-            if (arts.isEmpty()) {
-               setTableTitle("No Results Found - " + name, true);
-            } else {
-               setTableTitle(name, false);
-            }
-            try {
-               AtsBulkLoad.bulkLoadArtifacts(worldArts);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-            worldXViewer.setInput(worldArts);
-            worldXViewer.updateStatusLabel();
-            if (otherArts.size() > 0 && MessageDialog.openConfirm(Displays.getActiveShell(),
-               "Open in Artifact Editor?",
-               otherArts.size() + " Non-WorldView Artifacts were returned from request.\n\nOpen in Artifact Editor?")) {
-               RendererManager.openInJob(otherArts, PresentationType.GENERALIZED_EDIT);
-            }
-            worldXViewer.getTree().setFocus();
          }
       });
       // Need to reflow the managed page based on the results.  Don't put this in the above thread.
