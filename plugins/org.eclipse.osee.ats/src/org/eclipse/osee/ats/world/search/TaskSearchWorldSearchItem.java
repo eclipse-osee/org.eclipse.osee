@@ -111,11 +111,13 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       IAtsVersion verArt = getSelectedVersionArtifact();
       Collection<Artifact> groups = getSelectedGroups();
       IAtsUser user = getSelectedUser();
+      boolean includeCompleted = isIncludeCompletedCheckbox();
+      boolean includeCancelled = isIncludeCancelledCheckbox();
 
       // If user selected, handle that case separately cause it's faster to start with assigned
       if (user != null) {
          Set<TaskArtifact> userTaskArts = getUserAssignedTaskArtifacts();
-         if (isIncludeCompletedCheckbox() || isIncludeCancelledCheckbox()) {
+         if (includeCompleted || includeCancelled) {
             // If include cancelled or completed, need to perform extra search
             // Note: Don't need to do this for Originator, Subscribed or Favorites, cause it does completed canceled in it's own searches
             userTaskArts.addAll(Collections.castMatching(TaskArtifact.class,
@@ -151,7 +153,8 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       else if (teamDefs.size() > 0) {
          //         ElapsedTime time = new ElapsedTime("Task Search - Load Team Workflows by Team Defs");
          TeamWorldSearchItem teamWorldSearchItem =
-            new TeamWorldSearchItem("", teamDefs, true, true, false, false, null, null, ReleasedOption.Both, null);
+            new TeamWorldSearchItem("", teamDefs, includeCompleted, includeCancelled, false, false, null, null,
+               ReleasedOption.Both, null);
          workflows.addAll(teamWorldSearchItem.performSearchGetResults(false, SearchType.Search));
          //         time.end();
       } else if (groups.size() > 0) {
