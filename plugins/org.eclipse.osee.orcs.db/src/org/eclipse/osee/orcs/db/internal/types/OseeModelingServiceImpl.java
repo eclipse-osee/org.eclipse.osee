@@ -143,14 +143,22 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
       TypeLoaderImpl loader =
          new TypeLoaderImpl(this, identityService, dbService, resourceManager, branchCache, needsPriming);
 
+      boolean typesSynchronized = false;
       OseeEnumTypeCache oseeEnumTypeCache =
          new OseeEnumTypeCache(new ArtifactTypeDataAccessor<OseeEnumType>(identityService, loader));
+      oseeEnumTypeCache.setSynchronizedEnsurePopulate(typesSynchronized);
+
       AttributeTypeCache attributeCache =
          new AttributeTypeCache(new ArtifactTypeDataAccessor<AttributeType>(identityService, loader));
+      attributeCache.setSynchronizedEnsurePopulate(typesSynchronized);
+
       ArtifactTypeCache artifactCache =
          new ArtifactTypeCache(new ArtifactTypeDataAccessor<ArtifactType>(identityService, loader));
+      artifactCache.setSynchronizedEnsurePopulate(typesSynchronized);
+
       RelationTypeCache relationCache =
          new RelationTypeCache(new ArtifactTypeDataAccessor<RelationType>(identityService, loader));
+      relationCache.setSynchronizedEnsurePopulate(typesSynchronized);
 
       return new OseeCachingService(branchCache, txCache, artifactCache, attributeCache, relationCache,
          oseeEnumTypeCache, identityService);

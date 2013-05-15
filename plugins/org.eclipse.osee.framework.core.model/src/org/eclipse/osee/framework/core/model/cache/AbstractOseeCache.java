@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
@@ -45,17 +46,28 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
    private final IOseeDataAccessor<K, T> dataAccessor;
    private final OseeCacheEnum cacheId;
    private final boolean uniqueName;
-   private volatile boolean ensurePopulatedRanOnce;
+   private final AtomicBoolean wasLoaded;
    private long lastLoaded;
    private boolean ignoreEnsurePopulateException;
+   private boolean isEnsurePopulateSynchronized;
 
    protected AbstractOseeCache(OseeCacheEnum cacheId, IOseeDataAccessor<K, T> dataAccessor, boolean uniqueName) {
       this.lastLoaded = 0;
       this.cacheId = cacheId;
-      this.ensurePopulatedRanOnce = false;
+      this.wasLoaded = new AtomicBoolean(false);
       this.ignoreEnsurePopulateException = false;
       this.dataAccessor = dataAccessor;
       this.uniqueName = uniqueName;
+      this.isEnsurePopulateSynchronized = true;
+   }
+
+   // Temporary fix to avoid deadlock on server types cache loading 
+   public void setSynchronizedEnsurePopulate(boolean isSynchronized) {
+      this.isEnsurePopulateSynchronized = isSynchronized;
+   }
+
+   public boolean isSynchronizedEnsurePopulate() {
+      return isEnsurePopulateSynchronized;
    }
 
    @Override
@@ -64,7 +76,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       nameToTypeMap.clear();
       idToTypeMap.clear();
       guidToTypeMap.clear();
-      this.ensurePopulatedRanOnce = false;
+      wasLoaded.set(false);
    }
 
    protected void clearAdditionalData() {
@@ -263,10 +275,8 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       storeItems(getAllDirty());
    }
 
-   @Override
-   public void ensurePopulated() throws OseeCoreException {
-      if (!ensurePopulatedRanOnce) {
-         ensurePopulatedRanOnce = true;
+   private void populate() throws OseeCoreException {
+      if (wasLoaded.compareAndSet(false, true)) {
          try {
             reloadCache();
          } catch (OseeCoreException ex) {
@@ -274,6 +284,17 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
                throw ex;
             }
          }
+      }
+   }
+
+   @Override
+   public void ensurePopulated() throws OseeCoreException {
+      if (isSynchronizedEnsurePopulate()) {
+         synchronized (this) {
+            populate();
+         }
+      } else {
+         populate();
       }
    }
 
@@ -305,6 +326,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       getDataAccessor().load(this);
       OseeLog.log(this.getClass(), Level.INFO, "Loaded " + getCacheId().toString().toLowerCase());
       setLastLoaded(System.currentTimeMillis());
+      wasLoaded.set(true);
       return true;
    }
 
