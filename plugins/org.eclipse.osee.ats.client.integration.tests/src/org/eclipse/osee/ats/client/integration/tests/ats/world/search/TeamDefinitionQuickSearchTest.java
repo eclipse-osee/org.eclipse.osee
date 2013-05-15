@@ -20,6 +20,8 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.world.search.TeamDefinitionQuickSearch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -28,6 +30,12 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class TeamDefinitionQuickSearchTest {
+
+   @BeforeClass
+   @AfterClass
+   public static void cleanup() throws Exception {
+      AtsTestUtil.cleanup();
+   }
 
    @Test
    public void testPerformSearch() throws OseeCoreException {

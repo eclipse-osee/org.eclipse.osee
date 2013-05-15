@@ -21,12 +21,20 @@ import org.eclipse.osee.ats.core.client.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * @author John Misinco
  */
 public class StateManagerTest {
+
+   @BeforeClass
+   @AfterClass
+   public static void cleanup() throws Exception {
+      AtsTestUtil.cleanup();
+   }
 
    @Test
    public void testUpdateMetrics() throws OseeCoreException {
@@ -39,7 +47,8 @@ public class StateManagerTest {
 
       ITransitionHelper helper =
          new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
-            AtsTestUtil.getImplementStateDef().getName(), Collections.singleton(AtsClientService.get().getUserAdmin().getCurrentUser()), null);
+            AtsTestUtil.getImplementStateDef().getName(),
+            Collections.singleton(AtsClientService.get().getUserAdmin().getCurrentUser()), null);
       TransitionManager manager = new TransitionManager(helper);
       TransitionResults results = manager.handleAll();
       manager.getTransaction().execute();
@@ -48,7 +57,8 @@ public class StateManagerTest {
       stateMgr.updateMetrics(AtsTestUtil.getImplementStateDef(), 2.2, 1, false);
       helper =
          new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
-            AtsTestUtil.getCompletedStateDef().getName(), Collections.singleton(AtsClientService.get().getUserAdmin().getCurrentUser()), null);
+            AtsTestUtil.getCompletedStateDef().getName(),
+            Collections.singleton(AtsClientService.get().getUserAdmin().getCurrentUser()), null);
       manager = new TransitionManager(helper);
       results = manager.handleAll();
       manager.getTransaction().execute();

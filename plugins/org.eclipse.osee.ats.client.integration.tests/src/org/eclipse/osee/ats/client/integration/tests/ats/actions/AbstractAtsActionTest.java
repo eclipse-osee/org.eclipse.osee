@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 import junit.framework.Assert;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -30,7 +29,6 @@ public abstract class AbstractAtsActionTest {
    @AfterClass
    public static void cleanup() throws Throwable {
       AtsTestUtil.cleanup();
-      SMAEditor.closeAll();
    }
 
    @Test
