@@ -23,9 +23,12 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
@@ -42,17 +45,22 @@ public class AutoAddActionToGoalTest {
    @AfterClass
    public static void cleanup() throws Exception {
       AtsTestUtil.cleanup();
+
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), "AutoAddActionToGoalTest - cleanup");
+      for (Artifact art : ArtifactQuery.getArtifactListFromName("AutoAddActionToGoalTest", AtsUtil.getAtsBranchToken(),
+         DeletionFlag.EXCLUDE_DELETED, QueryOptions.CONTAINS_MATCH_OPTIONS)) {
+         art.deleteAndPersist(transaction);
+      }
+      transaction.execute();
    }
 
    // Test that no action is added to the Goal
    @org.junit.Test
    public void testNoActionAddedToGoal() throws OseeCoreException {
-      AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - NoAdd");
+      AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AutoAddActionToGoalTest - NoAdd");
 
-      GoalArtifact goalArt = GoalManager.createGoal("NoActionAddedGoal");
-      TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
-      TeamWorkFlowArtifact teamWf3 = AtsTestUtil.getTeamWf3();
-      TeamWorkFlowArtifact teamWf4 = AtsTestUtil.getTeamWf4();
+      GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - NoActionAddedGoal");
       List<Artifact> memArt = goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
       Assert.assertEquals("Goal should have no memebers", 0, memArt.size());
       ArtifactCache.deCache(goalArt);
@@ -65,7 +73,7 @@ public class AutoAddActionToGoalTest {
       AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithAI");
 
       IAtsWorkDefinition workDef = AtsTestUtil.getWorkDef();
-      GoalArtifact goalArt = GoalManager.createGoal("AddActionToGoalFromAI");
+      GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromAI");
       IAtsActionableItem actionItem2 = AtsTestUtil.getTestAi2();
 
       SkynetTransaction transaction =
@@ -100,7 +108,7 @@ public class AutoAddActionToGoalTest {
    public void testAutoAddActionToGoal_TeamWF() throws OseeCoreException {
       AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithTeamDef");
 
-      GoalArtifact goalArt = GoalManager.createGoal("AddActionToGoalFromTeamDef");
+      GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromTeamDef");
 
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), getClass().getSimpleName());
@@ -130,7 +138,7 @@ public class AutoAddActionToGoalTest {
       AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithAIandTeamDef");
 
       IAtsWorkDefinition workDef = AtsTestUtil.getWorkDef();
-      GoalArtifact goalArt = GoalManager.createGoal("AddActionToGoalFromAIorTeamDef");
+      GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromAIorTeamDef");
       IAtsActionableItem actionItem = AtsTestUtil.getTestAi2();
 
       SkynetTransaction transaction =
@@ -168,8 +176,8 @@ public class AutoAddActionToGoalTest {
       AtsTestUtil.cleanupAndReset("DecisionReviewManagerTest - UnAssigned");
 
       IAtsWorkDefinition workDef = AtsTestUtil.getWorkDef();
-      GoalArtifact goalArt = GoalManager.createGoal("AddTwoActions");
-      GoalArtifact goalArt2 = GoalManager.createGoal("SecondGoal");
+      GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddTwoActions");
+      GoalArtifact goalArt2 = GoalManager.createGoal("AutoAddActionToGoalTest - SecondGoal");
       IAtsActionableItem actionItem2 = AtsTestUtil.getTestAi2();
       IAtsActionableItem actionItem3 = AtsTestUtil.getTestAi3();
 
