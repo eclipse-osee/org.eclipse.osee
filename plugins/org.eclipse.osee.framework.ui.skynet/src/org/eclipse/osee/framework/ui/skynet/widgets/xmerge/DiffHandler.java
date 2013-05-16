@@ -51,7 +51,7 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
                   attributeConflict.getSourceArtifact(), "Source_Diff_For");
                break;
             case 2:
-               MergeUtility.showCompareFile(MergeUtility.getStartArtifact(attributeConflict),
+               MergeUtility.showCompareFile(MergeUtility.getCommonAncestor(attributeConflict),
                   attributeConflict.getDestArtifact(), "Destination_Diff_For");
                break;
             case 3:

@@ -372,7 +372,7 @@ public class ConflictManagerInternal {
     * branches that share a common history. If two branches share the same history than the point at which they diverged
     * should provide the reference for detecting conflicts based on the gamma at that point.
     */
-   private static TransactionRecord findCommonTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
+   public static TransactionRecord findCommonTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       Collection<Branch> sourceBranches = sourceBranch.getAncestors();
       Collection<Branch> destBranches = destBranch.getAncestors();
       Branch commonBranch = null;

@@ -17,6 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -26,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
+import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -145,16 +147,33 @@ public class MergeUtility {
    }
 
    public static Artifact getStartArtifact(Conflict conflict) {
+      Artifact toReturn = null;
       try {
-         if (conflict.getSourceBranch() == null) {
-            return null;
+         if (Conditions.notNull(conflict.getSourceBranch())) {
+            TransactionRecord baseTransaction = conflict.getSourceBranch().getBaseTransaction();
+            toReturn =
+               ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), baseTransaction,
+                  INCLUDE_DELETED);
          }
-         TransactionRecord baseTransaction = conflict.getSourceBranch().getBaseTransaction();
-         return ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), baseTransaction,
-            INCLUDE_DELETED);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      return null;
+      return toReturn;
+   }
+
+   public static Artifact getCommonAncestor(Conflict conflict) {
+      Artifact toReturn = null;
+      try {
+         if (Conditions.notNull(conflict.getSourceBranch())) {
+            TransactionRecord commonTransaction =
+               ConflictManagerInternal.findCommonTransaction(conflict.getSourceBranch(), conflict.getDestBranch());
+            toReturn =
+               ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), commonTransaction,
+                  INCLUDE_DELETED);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return toReturn;
    }
 }
