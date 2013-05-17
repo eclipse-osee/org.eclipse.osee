@@ -14,6 +14,10 @@
 		<property name="aboutText" value="%blurb"/> 
 		<property name="appName" value="OSEE"/> 
         <property name="preferenceCustomization" value="support/plugin_customization.ini" />
+        <property
+              name="cssTheme"
+              value="org.eclipse.e4.ui.css.theme.e4_classic">
+        </property>
       </product>
    </extension>
 <extension  
