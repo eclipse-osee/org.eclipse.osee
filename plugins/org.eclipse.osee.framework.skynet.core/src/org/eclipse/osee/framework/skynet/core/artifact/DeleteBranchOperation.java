@@ -49,7 +49,6 @@ public class DeleteBranchOperation extends AbstractOperation {
          BranchManager.persist(branch);
 
          branch.setBranchState(BranchState.DELETED);
-         OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleted, branch.getGuid()));
          BranchManager.persist(branch);
       } catch (Exception ex) {
          try {
