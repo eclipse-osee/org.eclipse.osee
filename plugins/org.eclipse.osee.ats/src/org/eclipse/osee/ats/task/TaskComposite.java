@@ -59,6 +59,7 @@ import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -147,8 +148,10 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
    }
 
    public void loadTable() throws OseeCoreException {
-      this.taskArts.clear();
-      add(iXTaskViewer.getTaskArtifacts());
+      if (Widgets.isAccessible(taskXViewer.getTree())) {
+         this.taskArts.clear();
+         add(iXTaskViewer.getTaskArtifacts());
+      }
    }
 
    public void handleDeleteTask() {
