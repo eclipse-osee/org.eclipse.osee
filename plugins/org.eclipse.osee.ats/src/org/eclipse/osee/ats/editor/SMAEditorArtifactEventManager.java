@@ -11,11 +11,15 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
@@ -27,6 +31,8 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -35,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -92,6 +99,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
 
    private void safelyProcessHandler(final ArtifactEvent artifactEvent, final ISMAEditorEventHandler handler) throws OseeCoreException {
       final AbstractWorkflowArtifact awa = handler.getSMAEditor().getAwa();
+      final Collection<Artifact> relModifiedArts = artifactEvent.getRelCacheArtifacts();
       Artifact actionArt = null;
       boolean refreshed = false;
       try {
@@ -102,6 +110,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
       if (awa.isInTransition()) {
          return;
       }
+
       if (artifactEvent.isDeletedPurged(awa)) {
          handler.getSMAEditor().closeEditor();
       } else if (artifactEvent.isModifiedReloaded(awa) ||
@@ -110,7 +119,8 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
       //
       (actionArt != null && artifactEvent.isModifiedReloaded(actionArt)) ||
       //
-      (actionArt != null && artifactEvent.isRelAddedChangedDeleted(actionArt))) {
+      (actionArt != null && artifactEvent.isRelAddedChangedDeleted(actionArt)) || (!getVersionRelatedArtifacts(
+         artifactEvent, relModifiedArts).isEmpty())) {
          refreshed = true;
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
@@ -187,6 +197,31 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
          }
       }
 
+   }
+
+   private Set<Artifact> getVersionRelatedArtifacts(final ArtifactEvent artifactEvent, final Collection<Artifact> relModifiedArts) {
+      Set<Artifact> validRelArts = new HashSet<Artifact>();
+      if (artifactEvent.isForBranch(CoreBranches.COMMON) && relModifiedArts != null && !relModifiedArts.isEmpty()) {
+         try {
+            validRelArts =
+               RelationManager.getRelatedArtifacts(getValidRelationArtifacts(relModifiedArts, artifactEvent), 1,
+                  DeletionFlag.INCLUDE_DELETED, AtsRelationTypes.ParallelVersion_Child,
+                  AtsRelationTypes.ParallelVersion_Parent);
+         } catch (OseeCoreException ex) {
+            //do nothing
+         }
+      }
+      return validRelArts;
+   }
+
+   private Collection<Artifact> getValidRelationArtifacts(Collection<Artifact> artifacts, ArtifactEvent artifactEvent) {
+      Collection<Artifact> validArtifacts = new ArrayList<Artifact>();
+      for (Artifact art : artifacts) {
+         if (artifactEvent.isRelAddedChangedDeleted(art) && art.isOfType(AtsArtifactTypes.Version)) {
+            validArtifacts.add(art);
+         }
+      }
+      return validArtifacts;
    }
 
    private boolean isReloaded(ArtifactEvent artifactEvent, AbstractWorkflowArtifact sma) {

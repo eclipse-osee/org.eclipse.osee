@@ -110,7 +110,7 @@ public class AtsClientImpl implements IAtsClient {
       artifactStore = new AtsArtifactStore(readers, writers);
       configCacheProvider = new AtsConfigCacheProvider(artifactStore);
 
-      AtsVersionCache versionCache = new AtsVersionCache();
+      AtsVersionCache versionCache = new AtsVersionCache(configCacheProvider);
       versionService = new AtsVersionServiceImpl(configCacheProvider, artifactStore, versionCache);
 
       actionableItemFactory = new ActionableItemFactory();

@@ -52,7 +52,8 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
    private static List<Long> configReloadRelationTypeGuids = Arrays.asList(
       AtsRelationTypes.ActionableItemLead_Lead.getGuid(), AtsRelationTypes.TeamDefinitionToVersion_Version.getGuid(),
       AtsRelationTypes.TeamActionableItem_Team.getGuid(), AtsRelationTypes.PrivilegedMember_Team.getGuid(),
-      AtsRelationTypes.TeamLead_Team.getGuid());
+      AtsRelationTypes.TeamLead_Team.getGuid(), AtsRelationTypes.ParallelVersion_Child.getGuid(),
+      AtsRelationTypes.ParallelVersion_Parent.getGuid());
    private static List<Long> configReloadArtifactTypeGuids = Arrays.asList(AtsArtifactTypes.Version.getGuid(),
       AtsArtifactTypes.TeamDefinition.getGuid(), AtsArtifactTypes.ActionableItem.getGuid());
 
@@ -91,6 +92,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
 
          }
       }
+
       for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
          try {
             if (guidRel.is(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow)) {
@@ -133,6 +135,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
                   }
                }
             }
+
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

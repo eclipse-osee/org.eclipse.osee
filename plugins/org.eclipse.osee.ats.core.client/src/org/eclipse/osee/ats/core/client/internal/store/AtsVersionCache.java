@@ -10,33 +10,44 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal.store;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.client.internal.CacheProvider;
+import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
+ * This uses the config cache to cache the relation between the team workflow and version
+ * 
  * @author Donald G. Dunne
  */
 public class AtsVersionCache {
 
-   public Map<String, IAtsVersion> targetedTeamWfHridToVersion = new ConcurrentHashMap<String, IAtsVersion>(500);
+   CacheProvider<AtsArtifactConfigCache> configCacheProvider;
 
-   public IAtsVersion getVersion(IAtsTeamWorkflow teamWf) {
-      return targetedTeamWfHridToVersion.get(teamWf.getHumanReadableId());
+   public AtsVersionCache(CacheProvider<AtsArtifactConfigCache> configCacheProvider) {
+      this.configCacheProvider = configCacheProvider;
    }
 
-   public boolean hasVersion(IAtsTeamWorkflow teamWf) {
+   public IAtsVersion getVersion(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+      return configCacheProvider.get().getSoleByGuid(teamWf.getGuid(), IAtsVersion.class);
+   }
+
+   public boolean hasVersion(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       IAtsVersion version = getVersion(teamWf);
       return version != null;
    }
 
-   public IAtsVersion cache(IAtsTeamWorkflow teamWf, IAtsVersion version) {
-      return targetedTeamWfHridToVersion.put(teamWf.getHumanReadableId(), version);
+   public IAtsVersion cache(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException {
+      configCacheProvider.get().cacheByTag(teamWf.getGuid(), version);
+      return version;
    }
 
-   public void deCache(IAtsTeamWorkflow teamWf) {
-      targetedTeamWfHridToVersion.remove(teamWf.getHumanReadableId());
+   public void deCache(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+      IAtsVersion version = configCacheProvider.get().getSoleByGuid(teamWf.getGuid(), IAtsVersion.class);
+      if (version != null) {
+         configCacheProvider.get().invalidate(version);
+      }
    }
 
 }

@@ -40,7 +40,7 @@ public class AtsUtilCore {
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
    private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter = new ArtifactTypeEventFilter(
       AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action, AtsArtifactTypes.Task, AtsArtifactTypes.Goal,
-      AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
+      AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview, AtsArtifactTypes.Version);
    private static ArtifactTypeEventFilter reviewArtifactTypesFilter = new ArtifactTypeEventFilter(
       AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
    private static ArtifactTypeEventFilter teamWorkflowArtifactTypesFilter = new ArtifactTypeEventFilter(
@@ -65,7 +65,7 @@ public class AtsUtilCore {
 
    /**
     * TODO Remove duplicate Active flags, need to convert all ats.Active to Active in DB
-    *
+    * 
     * @param artifacts to iterate through
     * @param active state to validate against; Both will return all artifacts matching type
     * @param clazz type of artifacts to consider; null for all
