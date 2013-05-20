@@ -16,10 +16,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
@@ -27,7 +24,6 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTreeDialog;
 import org.eclipse.swt.widgets.Composite;
@@ -40,11 +36,13 @@ public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog
 
    private final Active active;
    private List<IAtsTeamDefinition> initialTeamDefs;
+   private final boolean requiredSelection;
 
-   public TeamDefinitionCheckTreeDialog(String title, String message, Active active) {
+   public TeamDefinitionCheckTreeDialog(String title, String message, Active active, boolean requiredSelection) {
       super(title, message, new TeamDefinitionTreeContentProvider(active), new AtsObjectLabelProvider(),
          new ArtifactNameSorter());
       this.active = active;
+      this.requiredSelection = requiredSelection;
    }
 
    public Collection<IAtsTeamDefinition> getChecked() {
@@ -63,20 +61,6 @@ public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog
       Control comp = super.createDialogArea(container);
       try {
          getTreeViewer().getViewer().setInput(TeamDefinitions.getTopLevelTeamDefinitions(active));
-         getTreeViewer().getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-               try {
-                  for (IAtsTeamDefinition teamDef : getChecked()) {
-                     if (!teamDef.isActionable()) {
-                        AWorkbench.popup("ERROR", ActionableItems.getNotActionableItemError(teamDef));
-                     }
-                  }
-               } catch (Exception ex) {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-         });
          if (getInitialTeamDefs() != null) {
             getTreeViewer().setInitalChecked(getInitialTeamDefs());
          }
@@ -88,16 +72,15 @@ public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog
 
    @Override
    protected Result isComplete() {
+      Result result = Result.TrueResult;
       try {
-         for (IAtsTeamDefinition aia : getChecked()) {
-            if (!aia.isActionable()) {
-               return Result.FalseResult;
-            }
+         if (requiredSelection && getChecked().isEmpty()) {
+            result = new Result("Must select Team Definition(s)");
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      return super.isComplete();
+      return result;
    }
 
    /**

@@ -22,6 +22,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   SubscribeUtilityTest.class,
    AtsNavigateItemsToMassEditorTest.class,
    AtsNavigateItemsToTaskEditorTest.class,
    AtsNavigateItemsToWorldViewTest.class})

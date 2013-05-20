@@ -80,13 +80,14 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * {@link ArtifactTest}
+ * 
+ * @author Ryan D. Brooks
  */
 
 public class Artifact extends NamedIdentity<String> implements IArtifact, IAdaptable, IBasicGuidArtifact {
@@ -284,7 +285,6 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    /**
     * @return Returns a list of parents starting with this Artifact and ending with the same Artifact that is returned
     * from getArtifactRoot().
-    * @throws OseeCoreException
     */
    public final List<Artifact> getAncestors() throws OseeCoreException {
       List<Artifact> ancestors = new ArrayList<Artifact>();
@@ -1183,9 +1183,6 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
     * </pre>
     * 
     * </p>
-    * 
-    * @param managedTransaction
-    * @throws OseeCoreException
     */
    public final void persist(SkynetTransaction managedTransaction) throws OseeCoreException {
       managedTransaction.addArtifact(this);
@@ -1369,26 +1366,6 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
     */
    public final void setRelations(IRelationTypeSide relationSide, Collection<? extends Artifact> artifacts) throws OseeCoreException {
       setRelations(RelationOrderBaseTypes.PREEXISTING, relationSide, artifacts);
-   }
-
-   /**
-    * Creates new relations that don't already exist and removes relations to artifacts that are not in collection
-    */
-   public final void setRelationsOfTypeUseCurrentOrder(IRelationTypeSide relationSide, Collection<? extends Artifact> artifacts, Class<?> clazz) throws OseeCoreException {
-      RelationTypeSideSorter sorter = RelationManager.createTypeSideSorter(this, relationSide, relationSide.getSide());
-      Collection<Artifact> currentlyRelated = getRelatedArtifacts(relationSide, Artifact.class);
-      // Add new relations if don't exist
-      for (Artifact artifact : artifacts) {
-         if (clazz.isInstance(artifact) && !currentlyRelated.contains(artifact)) {
-            addRelation(sorter.getSorterId(), relationSide, artifact);
-         }
-      }
-      // Remove relations that have been removed
-      for (Artifact artifact : currentlyRelated) {
-         if (clazz.isInstance(artifact) && !artifacts.contains(artifact)) {
-            deleteRelation(relationSide, artifact);
-         }
-      }
    }
 
    public final boolean isLinksLoaded() {

@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.navigate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.internal.Activator;
@@ -42,12 +43,16 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) {
       final TeamDefinitionCheckTreeDialog diag =
          new TeamDefinitionCheckTreeDialog(getName(),
-            "Select Team Definition\n\nEmail will be sent for every Action created against these Teams.", Active.Active);
+            "Select Team Definition\n\nEmail will be sent for every Action created against these Teams.",
+            Active.Active, false);
       try {
          List<IAtsTeamDefinition> objs = new ArrayList<IAtsTeamDefinition>();
-         objs.addAll(AtsClientService.get().getConfigObjects(
-            AtsClientService.get().getUserAdmin().getCurrentOseeUser().getRelatedArtifacts(
-               AtsRelationTypes.SubscribedUser_Artifact), IAtsTeamDefinition.class));
+         for (Artifact art : AtsClientService.get().getUserAdmin().getCurrentOseeUser().getRelatedArtifacts(
+            AtsRelationTypes.SubscribedUser_Artifact)) {
+            if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
+               objs.add((IAtsTeamDefinition) AtsClientService.get().getConfigObject(art));
+            }
+         }
          diag.setInitialTeamDefs(objs);
          if (diag.open() != 0) {
             return;
@@ -55,9 +60,8 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
          Collection<IAtsTeamDefinition> selected = diag.getChecked();
          Collection<Artifact> arts = AtsClientService.get().getConfigArtifacts(selected);
 
-         AtsClientService.get().getUserAdmin().getCurrentOseeUser().setRelationsOfTypeUseCurrentOrder(
-            AtsRelationTypes.SubscribedUser_Artifact, arts, IAtsTeamDefinition.class);
-         AtsClientService.get().getUserAdmin().getCurrentOseeUser().persist(getClass().getSimpleName());
+         SubscribeUtility.setSubcriptionsAndPersist(AtsClientService.get().getUserAdmin().getCurrentOseeUser(),
+            AtsRelationTypes.SubscribedUser_Artifact, arts, AtsArtifactTypes.TeamDefinition, getClass().getSimpleName());
          AWorkbench.popup(getName(), "Subscriptions updated.");
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

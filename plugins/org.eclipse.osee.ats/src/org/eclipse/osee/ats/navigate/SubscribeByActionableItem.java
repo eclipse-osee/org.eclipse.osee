@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -55,9 +56,8 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
          Collection<IAtsActionableItem> selected = diag.getChecked();
          Collection<Artifact> arts = AtsClientService.get().getConfigArtifacts(selected);
 
-         AtsClientService.get().getUserAdmin().getCurrentOseeUser().setRelationsOfTypeUseCurrentOrder(
-            AtsRelationTypes.SubscribedUser_Artifact, arts, IAtsActionableItem.class);
-         AtsClientService.get().getUserAdmin().getCurrentOseeUser().persist(getClass().getSimpleName());
+         SubscribeUtility.setSubcriptionsAndPersist(AtsClientService.get().getUserAdmin().getCurrentOseeUser(),
+            AtsRelationTypes.SubscribedUser_Artifact, arts, AtsArtifactTypes.ActionableItem, getClass().getSimpleName());
          AWorkbench.popup(getName(), "Subscriptions updated.");
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
