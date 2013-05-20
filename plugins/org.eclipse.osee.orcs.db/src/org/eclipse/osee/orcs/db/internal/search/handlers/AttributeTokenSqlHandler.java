@@ -17,9 +17,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessorFactory;
@@ -105,8 +103,8 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          }
       }
 
-      Conditions.checkExpressionFailOnTrue(tagsCount > MAX_TOKEN_SIZE, "Parsed tokens for [%s] is greater than [%d]",
-         Collections.toString(", ", criteria.getValues()), MAX_TOKEN_SIZE);
+      //      Conditions.checkExpressionFailOnTrue(tagsCount > MAX_TOKEN_SIZE, "Parsed tokens for [%s] is greater than [%d]",
+      //         Collections.toString(", ", criteria.getValues()), MAX_TOKEN_SIZE);
 
       WithClause gammaWith = new WithClause(gammaSb.toString(), WithAlias.GAMMA);
       String gammaAlias = writer.addWithClause(gammaWith);
