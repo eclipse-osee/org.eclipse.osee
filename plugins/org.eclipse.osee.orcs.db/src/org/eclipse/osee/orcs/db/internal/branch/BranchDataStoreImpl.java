@@ -142,8 +142,8 @@ public class BranchDataStoreImpl implements BranchDataStore {
    @Override
    public Callable<URI> importBranch(String sessionId, URI fileToImport, List<IOseeBranch> branches, PropertyStore options) {
       ImportBranchDatabaseCallable callable =
-         new ImportBranchDatabaseCallable(logger, dbService, preferences, cachingService, typeModelService,
-            resourceManager, identityService, fileToImport, branches, options);
+         new ImportBranchDatabaseCallable(logger, dbService, preferences, typeModelService, resourceManager,
+            identityService, fileToImport, branches, options);
       return callable;
    }
 

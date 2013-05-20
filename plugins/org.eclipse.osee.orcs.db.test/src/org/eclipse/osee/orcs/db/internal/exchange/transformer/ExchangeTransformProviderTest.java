@@ -12,14 +12,12 @@ package org.eclipse.osee.orcs.db.internal.exchange.transformer;
 
 import java.util.Collection;
 import java.util.Iterator;
-import org.junit.Assert;
 import org.eclipse.osee.orcs.db.internal.exchange.transform.ExchangeTransformProvider;
 import org.eclipse.osee.orcs.db.internal.exchange.transform.IExchangeTransformProvider;
 import org.eclipse.osee.orcs.db.internal.exchange.transform.IOseeExchangeVersionTransformer;
-import org.eclipse.osee.orcs.db.internal.exchange.transform.V0_8_3Transformer;
-import org.eclipse.osee.orcs.db.internal.exchange.transform.V0_9_0Transformer;
 import org.eclipse.osee.orcs.db.internal.exchange.transform.V0_9_2Transformer;
 import org.eclipse.osee.orcs.db.internal.exchange.transform.V0_9_4Transformer;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.Version;
@@ -30,24 +28,21 @@ import org.osgi.framework.Version;
  * @author Roberto E. Escobar
  */
 public class ExchangeTransformProviderTest {
-   private static IExchangeTransformProvider transformProvider = new ExchangeTransformProvider(null);
+   private static IExchangeTransformProvider transformProvider = new ExchangeTransformProvider();
 
    @BeforeClass
    public static void setup() {
-      transformProvider = new ExchangeTransformProvider(null);
+      transformProvider = new ExchangeTransformProvider();
    }
 
    @Test
    @SuppressWarnings("unchecked")
    public void testGetApplicableTransforms() {
-      assertApplicable("0.0.0", V0_8_3Transformer.class, V0_9_0Transformer.class, V0_9_2Transformer.class,
-         V0_9_4Transformer.class);
-      assertApplicable("0.0.0.v201009081001", V0_8_3Transformer.class, V0_9_0Transformer.class,
-         V0_9_2Transformer.class, V0_9_4Transformer.class);
-      assertApplicable("0.8.2.v201009081001", V0_8_3Transformer.class, V0_9_0Transformer.class,
-         V0_9_2Transformer.class, V0_9_4Transformer.class);
-      assertApplicable("0.8.3", V0_9_0Transformer.class, V0_9_2Transformer.class, V0_9_4Transformer.class);
-      assertApplicable("0.8.3.v201009081001", V0_9_0Transformer.class, V0_9_2Transformer.class, V0_9_4Transformer.class);
+      assertApplicable("0.0.0", V0_9_2Transformer.class, V0_9_4Transformer.class);
+      assertApplicable("0.0.0.v201009081001", V0_9_2Transformer.class, V0_9_4Transformer.class);
+      assertApplicable("0.8.2.v201009081001", V0_9_2Transformer.class, V0_9_4Transformer.class);
+      assertApplicable("0.8.3", V0_9_2Transformer.class, V0_9_4Transformer.class);
+      assertApplicable("0.8.3.v201009081001", V0_9_2Transformer.class, V0_9_4Transformer.class);
       assertApplicable("0.9", V0_9_2Transformer.class, V0_9_4Transformer.class);
       assertApplicable("0.9.1.v201009081001", V0_9_2Transformer.class, V0_9_4Transformer.class);
       assertApplicable("0.9.2", V0_9_4Transformer.class);

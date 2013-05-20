@@ -17,7 +17,9 @@ import java.net.URI;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.database.schema.DatabaseCallable;
 import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -28,9 +30,9 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
 import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -66,7 +68,6 @@ import org.eclipse.osee.orcs.db.internal.types.IOseeModelingService;
 public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
 
    private final SystemPreferences preferences;
-   private final IOseeCachingService cachingService;
    private final IOseeModelingService typeModelService;
    private final IResourceManager resourceManager;
    private final IdentityService identityService;
@@ -86,10 +87,9 @@ public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
    private ExchangeDataProcessor exchangeDataProcessor;
    private int[] branchesToImport;
 
-   public ImportBranchDatabaseCallable(Log logger, IOseeDatabaseService dbService, SystemPreferences preferences, IOseeCachingService cachingService, IOseeModelingService typeModelService, IResourceManager resourceManager, IdentityService identityService, URI exchangeFile, List<IOseeBranch> selectedBranches, PropertyStore options) {
+   public ImportBranchDatabaseCallable(Log logger, IOseeDatabaseService dbService, SystemPreferences preferences, IOseeModelingService typeModelService, IResourceManager resourceManager, IdentityService identityService, URI exchangeFile, List<IOseeBranch> selectedBranches, PropertyStore options) {
       super(logger, dbService);
       this.preferences = preferences;
-      this.cachingService = cachingService;
       this.typeModelService = typeModelService;
       this.resourceManager = resourceManager;
       this.identityService = identityService;
@@ -124,8 +124,24 @@ public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
 
          branchesToImport = new int[selectedBranches.size()];
          int index = 0;
-         for (IOseeBranch branch : selectedBranches) {
-            branchesToImport[index++] = cachingService.getBranchCache().getLocalId(branch);
+
+         if (!selectedBranches.isEmpty()) {
+            Map<String, Integer> branchGuidToLocalId = new HashMap<String, Integer>();
+            IOseeStatement chStmt = getDatabaseService().getStatement();
+            try {
+               chStmt.runPreparedQuery("select branch_guid, branch_id from osee_branch");
+               while (chStmt.next()) {
+                  String guid = chStmt.getString("branch_guid");
+                  Integer localId = chStmt.getInt("branch_id");
+                  branchGuidToLocalId.put(guid, localId);
+               }
+            } finally {
+               chStmt.close();
+            }
+
+            for (IOseeBranch branch : selectedBranches) {
+               branchesToImport[index++] = branchGuidToLocalId.get(branch.getGuid());
+            }
          }
 
          processImportFiles(branchesToImport, manifestHandler.getImportFiles());
@@ -173,7 +189,7 @@ public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
 
       savePointManager.setCurrentSetPointId("sourceSetup");
 
-      IExchangeTransformProvider transformProvider = new ExchangeTransformProvider(cachingService);
+      IExchangeTransformProvider transformProvider = new ExchangeTransformProvider();
       exchangeTransformer = new ExchangeTransformer(getDatabaseService(), transformProvider, exchangeDataProcessor);
       exchangeTransformer.applyTransforms(legacyLogger);
 
