@@ -12,15 +12,15 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 
 import java.sql.Timestamp;
 import org.eclipse.osee.database.schema.DatabaseTxCallable;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -38,18 +38,15 @@ public final class UnsubscribeTransaction extends DatabaseTxCallable<String> {
    private final static String INSERT_INTO_TXS =
       "insert into osee_txs (mod_type, tx_current, transaction_id, gamma_id, branch_id) values (?, ?, ?, ?, ?)";
 
-   private Branch common;
    private int relationId;
    private int currentGammaId;
-   private final IOseeCachingService cacheService;
    private final IdentityService identityService;
    private final ArtifactReadable groupArtifact;
    private final ArtifactReadable userArtifact;
    private String completionMethod;
 
-   public UnsubscribeTransaction(Log logger, IOseeDatabaseService databaseService, IOseeCachingService cacheService, IdentityService identityService, ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
+   public UnsubscribeTransaction(Log logger, IOseeDatabaseService databaseService, IdentityService identityService, ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
       super(logger, databaseService, "Delete Relation");
-      this.cacheService = cacheService;
       this.identityService = identityService;
 
       this.groupArtifact = groupArtifact;
@@ -66,24 +63,28 @@ public final class UnsubscribeTransaction extends DatabaseTxCallable<String> {
 
    @Override
    protected String handleTxWork(OseeConnection connection) throws OseeCoreException {
-      if (getRelationTxData()) {
-         UpdatePreviousTxCurrent txc = new UpdatePreviousTxCurrent(getDatabaseService(), common, connection);
+      int branchId =
+         getDatabaseService().runPreparedQueryFetchObject(-2,
+            "select branch_id from osee_branch where branch_guid = ?", CoreBranches.COMMON.getGuid());
+      Conditions.checkExpressionFailOnTrue(branchId == -2, "Common branch was not found");
+
+      if (getRelationTxData(branchId)) {
+         UpdatePreviousTxCurrent txc = new UpdatePreviousTxCurrent(getDatabaseService(), connection, branchId);
          txc.addRelation(relationId);
          txc.updateTxNotCurrents();
 
-         createNewTxAddressing(connection);
+         createNewTxAddressing(connection, branchId);
       }
       return completionMethod;
    }
 
-   private boolean getRelationTxData() throws OseeCoreException {
-      common = cacheService.getBranchCache().getCommonBranch();
+   private boolean getRelationTxData(int branchId) throws OseeCoreException {
       int relationTypeId = identityService.getLocalId(CoreRelationTypes.Users_Artifact);
       IOseeStatement chStmt = getDatabaseService().getStatement();
 
       try {
          chStmt.runPreparedQuery(1, SELECT_RELATION_LINK, getGroup().getLocalId(), getUser().getLocalId(),
-            relationTypeId, common.getId(), TxChange.NOT_CURRENT.getValue());
+            relationTypeId, branchId, TxChange.NOT_CURRENT.getValue());
          if (chStmt.next()) {
             currentGammaId = chStmt.getInt("gamma_id");
             relationId = chStmt.getInt("rel_link_id");
@@ -112,17 +113,17 @@ public final class UnsubscribeTransaction extends DatabaseTxCallable<String> {
    }
 
    @SuppressWarnings("unchecked")
-   private void createNewTxAddressing(OseeConnection connection) throws OseeCoreException {
+   private void createNewTxAddressing(OseeConnection connection, int branchId) throws OseeCoreException {
       int transactionId = getDatabaseService().getSequence().getNextTransactionId();
       String comment =
          String.format("User %s requested unsubscribe from group %s", getUser().getLocalId(), getGroup().getLocalId());
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       int txType = TransactionDetailsType.NonBaselined.getId();
 
-      getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_TX_DETAILS, common.getId(), transactionId,
-         comment, timestamp, getUser().getLocalId(), txType);
+      getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_TX_DETAILS, branchId, transactionId, comment,
+         timestamp, getUser().getLocalId(), txType);
       getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_TXS, ModificationType.DELETED.getValue(),
-         TxChange.DELETED.getValue(), transactionId, currentGammaId, common.getId());
+         TxChange.DELETED.getValue(), transactionId, currentGammaId, branchId);
    }
 
 }

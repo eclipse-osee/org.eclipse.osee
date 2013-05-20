@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
@@ -42,15 +41,15 @@ public class UpdatePreviousTxCurrent {
 // @formatter:on
 
    private final IOseeDatabaseService dbService;
-   private final Branch branch;
+   private final int branchId;
    private final OseeConnection connection;
    private IdJoinQuery artifactJoin;
    private IdJoinQuery attributeJoin;
    private IdJoinQuery relationJoin;
 
-   public UpdatePreviousTxCurrent(IOseeDatabaseService dbService, Branch branch, OseeConnection connection) {
+   public UpdatePreviousTxCurrent(IOseeDatabaseService dbService, OseeConnection connection, int branchId) {
       this.dbService = dbService;
-      this.branch = branch;
+      this.branchId = branchId;
       this.connection = connection;
    }
 
@@ -95,9 +94,9 @@ public class UpdatePreviousTxCurrent {
       List<Object[]> updateData = new ArrayList<Object[]>();
       IOseeStatement chStmt = dbService.getStatement(connection);
       try {
-         chStmt.runPreparedQuery(10000, query, queryId, branch.getId(), TxChange.NOT_CURRENT.getValue());
+         chStmt.runPreparedQuery(10000, query, queryId, branchId, TxChange.NOT_CURRENT.getValue());
          while (chStmt.next()) {
-            updateData.add(new Object[] {branch.getId(), chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id")});
+            updateData.add(new Object[] {branchId, chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id")});
          }
       } finally {
          chStmt.close();
@@ -110,10 +109,10 @@ public class UpdatePreviousTxCurrent {
       List<Object[]> updateData = new ArrayList<Object[]>();
       IOseeStatement chStmt = dbService.getStatement(connection);
       try {
-         chStmt.runPreparedQuery(10000, SELECT_TXS_AND_GAMMAS_FROM_TXS, branch.getId(), transaction_id, branch.getId(),
+         chStmt.runPreparedQuery(10000, SELECT_TXS_AND_GAMMAS_FROM_TXS, branchId, transaction_id, branchId,
             transaction_id, TxChange.NOT_CURRENT.getValue());
          while (chStmt.next()) {
-            updateData.add(new Object[] {branch.getId(), chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id")});
+            updateData.add(new Object[] {branchId, chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id")});
          }
       } finally {
          chStmt.close();

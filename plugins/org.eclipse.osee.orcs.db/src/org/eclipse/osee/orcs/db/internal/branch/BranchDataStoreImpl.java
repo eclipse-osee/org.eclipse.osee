@@ -171,6 +171,6 @@ public class BranchDataStoreImpl implements BranchDataStore {
 
    @Override
    public Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
-      return new UnsubscribeTransaction(logger, dbService, cachingService, identityService, userArtifact, groupArtifact);
+      return new UnsubscribeTransaction(logger, dbService, identityService, userArtifact, groupArtifact);
    }
 }

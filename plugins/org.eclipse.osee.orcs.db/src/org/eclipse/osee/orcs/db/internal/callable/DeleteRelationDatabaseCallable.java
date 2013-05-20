@@ -77,7 +77,7 @@ public class DeleteRelationDatabaseCallable extends DatabaseTxCallable<Branch> {
 
       int modType = relIdModTypeGammaId.getSecond();
       if (modType != ModificationType.ARTIFACT_DELETED.getValue() && modType != ModificationType.DELETED.getValue()) {
-         UpdatePreviousTxCurrent txc = new UpdatePreviousTxCurrent(getDatabaseService(), branch, connection);
+         UpdatePreviousTxCurrent txc = new UpdatePreviousTxCurrent(getDatabaseService(), connection, branch.getId());
          txc.addRelation(relIdModTypeGammaId.getFirst());
          txc.updateTxNotCurrents();
 

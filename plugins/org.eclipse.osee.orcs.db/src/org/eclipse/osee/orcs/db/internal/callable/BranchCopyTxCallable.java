@@ -125,7 +125,7 @@ public final class BranchCopyTxCallable extends DatabaseTxCallable<Branch> {
          populateTransaction(0.30, connection, record.getId(), internalBranch, savedTx);
 
          UpdatePreviousTxCurrent updater =
-            new UpdatePreviousTxCurrent(getDatabaseService(), internalBranch, connection);
+            new UpdatePreviousTxCurrent(getDatabaseService(), connection, internalBranch.getId());
          updater.updateTxNotCurrentsFromTx(record.getId());
 
       } catch (Exception ex) {

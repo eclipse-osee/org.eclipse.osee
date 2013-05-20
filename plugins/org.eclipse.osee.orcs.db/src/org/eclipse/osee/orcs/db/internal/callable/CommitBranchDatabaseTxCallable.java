@@ -136,7 +136,7 @@ public class CommitBranchDatabaseTxCallable extends DatabaseTxCallable<Transacti
 
    private void updatePreviousCurrentsOnDestinationBranch() throws OseeCoreException {
       UpdatePreviousTxCurrent updater =
-         new UpdatePreviousTxCurrent(getDatabaseService(), destinationBranch, connection);
+         new UpdatePreviousTxCurrent(getDatabaseService(), connection, destinationBranch.getId());
       for (ChangeItem change : changes) {
          if (change instanceof ArtifactChangeItem) {
             updater.addArtifact(change.getItemId());
