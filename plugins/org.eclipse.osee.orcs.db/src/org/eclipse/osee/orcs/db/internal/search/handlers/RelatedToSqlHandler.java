@@ -38,7 +38,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo, QueryOpti
    }
 
    @Override
-   public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public void addTables(AbstractSqlWriter<QueryOptions> writer) {
       if (criteria.getIds().size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }

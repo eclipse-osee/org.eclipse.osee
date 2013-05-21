@@ -46,7 +46,7 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther,
    }
 
    @Override
-   public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public void addTables(AbstractSqlWriter<QueryOptions> writer) {
       Collection<String> values = criteria.getValues();
       if (values.size() == 1) {
          this.value = values.iterator().next();

@@ -39,7 +39,6 @@ import org.eclipse.osee.orcs.db.internal.sql.WithClause.WithAlias;
 public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywords, QueryOptions> implements HasTagProcessor, HasDataPostProcessorFactory<CriteriaAttributeKeywords> {
 
    private CriteriaAttributeKeywords criteria;
-   private static final int MAX_TOKEN_SIZE = 20;
 
    private String artAlias;
    private String attrAlias;
@@ -79,7 +78,6 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       Collection<? extends IAttributeType> types = criteria.getTypes();
 
       int valueCount = values.size();
-      int tagsCount = 0;
 
       StringBuilder gammaSb = new StringBuilder();
 
@@ -89,7 +87,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          tokenize(value, tags);
          int tagsSize = tags.size();
          gammaSb.append("(");
-         for (int tagIdx = 0; tagIdx < tagsSize; tagIdx++, tagsCount++) {
+         for (int tagIdx = 0; tagIdx < tagsSize; tagIdx++) {
             Long tag = tags.get(tagIdx);
             gammaSb.append("SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?");
             writer.addParameter(tag);
@@ -102,9 +100,6 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
             gammaSb.append("\n UNION ALL \n");
          }
       }
-
-      //      Conditions.checkExpressionFailOnTrue(tagsCount > MAX_TOKEN_SIZE, "Parsed tokens for [%s] is greater than [%d]",
-      //         Collections.toString(", ", criteria.getValues()), MAX_TOKEN_SIZE);
 
       WithClause gammaWith = new WithClause(gammaSb.toString(), WithAlias.GAMMA);
       String gammaAlias = writer.addWithClause(gammaWith);

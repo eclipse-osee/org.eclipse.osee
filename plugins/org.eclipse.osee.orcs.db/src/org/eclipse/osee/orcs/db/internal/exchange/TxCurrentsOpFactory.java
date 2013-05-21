@@ -12,9 +12,9 @@ package org.eclipse.osee.orcs.db.internal.exchange;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.operation.InvalidTxCurrentsAndModTypes;
 
@@ -29,7 +29,7 @@ public class TxCurrentsOpFactory {
 
    public static IOperation createTxCurrentsAndModTypesOp(IOseeDatabaseService db, OperationLogger logger, boolean archived) {
       List<IOperation> ops = createSubOperations(db, logger, archived);
-      return new CompositeOperation("TxCurrents And Mod Types", "Plugin Id", logger, ops);
+      return Operations.createBuilder("TxCurrents And Mod Types").addAll(ops).build();
    }
 
    private static List<IOperation> createSubOperations(IOseeDatabaseService db, OperationLogger logger, boolean archived) {

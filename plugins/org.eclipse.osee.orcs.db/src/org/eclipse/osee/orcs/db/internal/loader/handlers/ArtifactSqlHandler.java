@@ -43,7 +43,7 @@ public class ArtifactSqlHandler extends SqlHandler<CriteriaArtifact, LoadOptions
    }
 
    @Override
-   public void addTables(AbstractSqlWriter<LoadOptions> writer) throws OseeCoreException {
+   public void addTables(AbstractSqlWriter<LoadOptions> writer) {
       jArtAlias = writer.addTable(TableEnum.ARTIFACT_JOIN_TABLE);
       artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
       txsAlias = writer.addTable(TableEnum.TXS_TABLE);

@@ -35,7 +35,7 @@ public class RelationTypeExistsSqlHandler extends SqlHandler<CriteriaRelationTyp
    }
 
    @Override
-   public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public void addTables(AbstractSqlWriter<QueryOptions> writer) {
       List<String> artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       if (artAliases.isEmpty()) {
          writer.addTable(TableEnum.ARTIFACT_TABLE);

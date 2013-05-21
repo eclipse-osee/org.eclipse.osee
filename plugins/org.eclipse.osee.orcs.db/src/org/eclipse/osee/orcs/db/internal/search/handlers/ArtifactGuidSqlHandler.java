@@ -37,7 +37,7 @@ public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids, Qu
    }
 
    @Override
-   public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public void addTables(AbstractSqlWriter<QueryOptions> writer) {
       if (criteria.getIds().size() > 1) {
          jguidAlias = writer.addTable(TableEnum.CHAR_JOIN_TABLE);
       }

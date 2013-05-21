@@ -32,7 +32,7 @@ public class AllArtifactsSqlHandler extends SqlHandler<CriteriaAllArtifacts, Que
    }
 
    @Override
-   public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public void addTables(AbstractSqlWriter<QueryOptions> writer) {
       List<String> artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       List<String> txsAliases = writer.getAliases(TableEnum.TXS_TABLE);
 

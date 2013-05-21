@@ -42,7 +42,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
    }
 
    @Override
-   public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public void addTables(AbstractSqlWriter<QueryOptions> writer) {
       if (criteria.getTypes().size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
