@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.LazyObject;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -95,7 +96,10 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    @Override
    public Callable<List<ChangeItem>> compareBranch(IOseeBranch branch) throws OseeCoreException {
-      return branchStore.compareBranch(sessionContext.toString(), branchCache.get(branch));
+      Branch fullBranch = branchCache.get(branch);
+      TransactionRecord fromTx = fullBranch.getBaseTransaction();
+      TransactionRecord toTx = txCache.getHeadTransaction(fullBranch);
+      return branchStore.compareBranch(sessionContext.toString(), fromTx, toTx);
    }
 
    @Override
