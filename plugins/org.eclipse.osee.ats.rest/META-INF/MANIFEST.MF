@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Osee Ats Rest(Incubation)
+Bundle-SymbolicName: org.eclipse.osee.ats.rest
+Bundle-Version: 0.11.1.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Service-Component: OSGI-INF/*.xml
+Import-Package: com.google.common.cache;version="10.0.1",
+ com.lowagie.text;version="2.1.7",
+ com.lowagie.text.html;version="2.1.7",
+ com.lowagie.text.rtf.table;version="2.1.7",
+ javax.ws.rs,
+ javax.ws.rs.core,
+ org.eclipse.core.runtime,
+ org.eclipse.osee.ats.api.data,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.server,
+ org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.logger,
+ org.eclipse.osee.orcs,
+ org.eclipse.osee.orcs.data,
+ org.eclipse.osee.orcs.search

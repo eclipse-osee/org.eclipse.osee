@@ -34,6 +34,7 @@
 		<module>../../plugins/org.eclipse.osee.ats.ui.api</module>
 		<module>../../plugins/org.eclipse.osee.ats.view.web</module>
 		<module>../../plugins/org.eclipse.osee.ats.presenter</module>
+		<module>../../plugins/org.eclipse.osee.ats.rest</module>
 		<module>../../plugins/org.eclipse.osee.ats.presenter.test</module>
 
 		<module>../../features/org.eclipse.osee.x.server.legacy.feature</module>
