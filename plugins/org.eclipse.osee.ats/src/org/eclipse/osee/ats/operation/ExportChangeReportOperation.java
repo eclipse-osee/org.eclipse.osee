@@ -18,8 +18,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
@@ -32,6 +34,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
@@ -85,7 +88,8 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       };
 
       for (Artifact workflow : workflows) {
-         Collection<Change> changes = computeChanges(workflow, monitor);
+         Set<Integer> artIds = new HashSet<Integer>();
+         Collection<Change> changes = computeChanges(workflow, monitor, artIds);
          if (!changes.isEmpty() && changes.size() < 4000) {
             String id =
                workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, workflow.getHumanReadableId());
@@ -93,6 +97,12 @@ public final class ExportChangeReportOperation extends AbstractOperation {
             Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
             String prefix = "/" + id;
             RendererManager.diff(collector, artifactDeltas, prefix, NO_DISPLAY, true, SKIP_DIALOGS, true);
+            String artIdsAsString = org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", artIds);
+            try {
+               Lib.writeStringToFile(artIdsAsString, new File(resultFolder + prefix + "_ids.txt"));
+            } catch (IOException ex) {
+               OseeExceptions.wrapAndThrow(ex);
+            }
          }
          monitor.worked(calculateWork(0.50));
       }
@@ -115,7 +125,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       });
    }
 
-   private Collection<Change> computeChanges(Artifact workflow, IProgressMonitor monitor) throws OseeCoreException {
+   private Collection<Change> computeChanges(Artifact workflow, IProgressMonitor monitor, Set<Integer> artIds) throws OseeCoreException {
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) workflow;
 
       List<Change> changes = new ArrayList<Change>();
@@ -133,8 +143,11 @@ public final class ExportChangeReportOperation extends AbstractOperation {
 
          Iterator<Change> iterator = changes.iterator();
          while (iterator.hasNext()) {
-            if (!(iterator.next() instanceof ArtifactChange)) {
+            Change change = iterator.next();
+            if (!(change instanceof ArtifactChange)) {
                iterator.remove();
+            } else {
+               artIds.add(change.getArtId());
             }
          }
 
