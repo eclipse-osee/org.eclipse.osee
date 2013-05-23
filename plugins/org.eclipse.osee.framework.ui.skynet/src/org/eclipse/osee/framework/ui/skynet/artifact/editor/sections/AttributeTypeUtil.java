@@ -55,6 +55,7 @@ public class AttributeTypeUtil {
       AttributeType nameType = null;
       AttributeType annotations = null;
       AttributeType relationOrder = null;
+      AttributeType dslEditableAttribute = null;
 
       for (AttributeType type : typesInExistence) {
          if (CoreAttributeTypes.Name.equals(type)) {
@@ -63,6 +64,8 @@ public class AttributeTypeUtil {
             annotations = type;
          } else if (CoreAttributeTypes.RelationOrder.equals(type)) {
             relationOrder = type;
+         } else if (type.hasMediaType() && type.getMediaType().endsWith("dsl")) {
+            dslEditableAttribute = type;
          } else {
             items.add(type);
          }
@@ -76,6 +79,9 @@ public class AttributeTypeUtil {
       }
       if (relationOrder != null) {
          items.add(relationOrder);
+      }
+      if (dslEditableAttribute != null) {
+         items.add(dslEditableAttribute);
       }
       return items;
    }

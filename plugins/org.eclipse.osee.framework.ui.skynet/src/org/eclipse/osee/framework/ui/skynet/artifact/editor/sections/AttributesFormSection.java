@@ -51,7 +51,7 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
       Section section = getSection();
       section.setText("Attributes");
       section.setLayout(new GridLayout(1, false));
-      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
 
       addToolBar(form);
       updateDataPart();

@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDslEditorWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog.Type;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
@@ -373,6 +374,9 @@ public final class FrameworkXWidgetProvider {
 
          } else if (xWidgetName.equals(XTextFlatDam.WIDGET_ID)) {
             XTextFlatDam widget = new XTextFlatDam();
+            xWidget = widget;
+         } else if (xWidgetName.equals(XDslEditorWidget.WIDGET_ID)) {
+            XDslEditorWidget widget = new XDslEditorWidget(name);
             xWidget = widget;
          } else {
             xWidget = new XLabel("Error: Unhandled XWidget \"" + xWidgetName + "\"");

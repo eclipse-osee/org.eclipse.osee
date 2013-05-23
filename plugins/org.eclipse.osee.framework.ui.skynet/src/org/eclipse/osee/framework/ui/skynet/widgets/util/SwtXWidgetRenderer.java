@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDslEditorWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -217,6 +218,14 @@ public class SwtXWidgetRenderer {
                xText.setHeight(xWidgetLayoutData.getHeight());
             }
             xText.setDynamicallyCreated(true);
+         } else if (xWidget instanceof XDslEditorWidget) {
+            XDslEditorWidget xDslEditorWidget = (XDslEditorWidget) xWidget;
+            if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY)) {
+               xDslEditorWidget.setFillHorizontally(true);
+            }
+            if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
+               xDslEditorWidget.setFillVertically(true);
+            }
          }
 
          xWidget.createWidgets(managedForm, currentComp, 2);

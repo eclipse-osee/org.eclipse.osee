@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.DslGrammarManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -270,6 +271,14 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
             xLabel.setLabel(initialInput);
          }
          xWidget = xLabel;
+      } else if (DslGrammarManager.isDslAttributeType(attributeType)) {
+         XDslEditorWidget xEditor = new XDslEditorWidget("");
+         xEditor.setFillHorizontally(true);
+         xEditor.setFillVertically(true);
+         xEditor.createWidgets(getManagedForm(), parent, 2);
+         if (Strings.isValid(initialInput)) {
+            xEditor.setText(initialInput);
+         }
       }
 
       if (xWidget == null) {
@@ -295,7 +304,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
       @Override
       protected int getTextStyle() {
          int styleBase = SWT.NONE;
-         if (isEditable()) {
+         if (!isEditable()) {
             styleBase |= SWT.READ_ONLY;
          }
          return styleBase | (fillVertically ? SWT.WRAP | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL : SWT.SINGLE);
