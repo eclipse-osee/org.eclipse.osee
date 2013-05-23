@@ -6,3 +6,18 @@ artifactType "Demo Artifact With Selective Partition" extends "Artifact" {
 	uuid 0x0000000000000056
 	attribute "Partition" branchGuid "AyH_f2sSKy3l07fIvAAA"
 }
+
+artifactType "Demo DSL Artifact" extends "Artifact" {
+	guid "AxRkVfg7KGoSh26NZFgA"
+	uuid 0x0000BA0400000022
+	attribute "Demo DSL Attribute"
+}
+
+attributeType "Demo DSL Attribute" extends StringAttribute {
+	guid "AxRbLlj+c2ZHjBeumfgA"
+	uuid 0x1000BA00000001CF
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	mediaType "application/osee+dsl"
+}

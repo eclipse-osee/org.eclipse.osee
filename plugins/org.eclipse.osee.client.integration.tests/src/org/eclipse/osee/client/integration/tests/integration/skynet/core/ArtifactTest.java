@@ -12,7 +12,7 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
-import org.eclipse.osee.client.demo.DemoArtifactTypes;
+import org.eclipse.osee.client.demo.DemoTypes;
 import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
@@ -48,7 +48,7 @@ public final class ArtifactTest {
    @Before
    public void setUp() throws Exception {
       artifactWithSpecialAttr =
-         ArtifactTypeManager.addArtifact(DemoArtifactTypes.DemoTestRequirement, DemoBranches.SAW_Bld_1);
+         ArtifactTypeManager.addArtifact(DemoTypes.DemoTestRequirement, DemoBranches.SAW_Bld_1);
    }
 
    @After
