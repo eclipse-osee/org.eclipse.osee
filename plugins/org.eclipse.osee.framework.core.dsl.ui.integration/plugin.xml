@@ -61,4 +61,9 @@
          </enabledWhen>
       </handler>
    </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.DslGrammar">
+      <DslGrammar
+            classname="org.eclipse.osee.framework.core.dsl.ui.integration.internal.OseeDslGrammar"></DslGrammar>
+   </extension>
 </plugin>

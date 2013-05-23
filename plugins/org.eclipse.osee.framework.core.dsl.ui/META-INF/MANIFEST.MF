@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.osee.framework.core.dsl;visibility:=reexport,
  org.antlr.runtime
 Import-Package: org.apache.log4j,
  org.eclipse.osee.framework.jdk.core.util
-Export-Package: org.eclipse.osee.framework.core.dsl.ui.contentassist.antlr,
- org.eclipse.osee.framework.core.dsl.ui.contentassist
+Export-Package: org.eclipse.osee.framework.core.dsl.ui,
+ org.eclipse.osee.framework.core.dsl.ui.contentassist,
+ org.eclipse.osee.framework.core.dsl.ui.contentassist.antlr
 Bundle-Activator: org.eclipse.osee.framework.core.dsl.ui.internal.OseeDslActivator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -180,5 +180,11 @@
             class="org.eclipse.osee.ats.dsl.ui.AtsDslExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator">
       </markerResolutionGenerator>
    </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.DslGrammar">
+      <DslGrammar
+            classname="org.eclipse.osee.ats.dsl.ui.internal.AtsDslGrammar">
+      </DslGrammar>
+   </extension>
 
 </plugin>

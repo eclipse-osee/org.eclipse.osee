@@ -18,6 +18,7 @@ Import-Package: org.eclipse.compare,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.dsl.integration,
  org.eclipse.osee.framework.core.dsl.integration.util,
+ org.eclipse.osee.framework.core.dsl.ui,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.message,
@@ -71,6 +72,7 @@ Require-Bundle: org.eclipse.osee.framework.core.dsl,
  org.eclipse.ui.views,
  org.eclipse.jface,
  org.eclipse.xtext,
- org.eclipse.ui.editors
+ org.eclipse.ui.editors,
+ org.eclipse.osee.framework.ui.skynet
 Export-Package: org.eclipse.osee.framework.core.dsl.ui.integration.operations
 Service-Component: OSGI-INF/*.xml
