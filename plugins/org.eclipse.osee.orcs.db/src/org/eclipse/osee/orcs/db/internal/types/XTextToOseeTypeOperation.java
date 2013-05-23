@@ -332,8 +332,8 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          min, //
          max, //
          xAttributeType.getDescription(), //
-         xAttributeType.getTaggerId()//
-      );
+         xAttributeType.getTaggerId(),//
+         xAttributeType.getMediaType());
    }
 
    private String getQualifiedTypeName(String id) {

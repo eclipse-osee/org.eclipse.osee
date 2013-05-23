@@ -156,7 +156,8 @@ public class ModelAsserts {
 
    public static AttributeType createAttributeType(Long guid, String name) {
       AttributeType attributeType =
-         new AttributeType(guid, name, "DummyBase", "DummyProvider", "none", "none", 1, 1, "test data", null);
+         new AttributeType(guid, name, "DummyBase", "DummyProvider", "none", "none", 1, 1, "test data", null,
+            "mediaType");
       Assert.assertNotNull(attributeType);
       return attributeType;
    }

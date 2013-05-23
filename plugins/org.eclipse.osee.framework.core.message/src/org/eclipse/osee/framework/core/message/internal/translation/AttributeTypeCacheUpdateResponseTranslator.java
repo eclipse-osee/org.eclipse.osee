@@ -89,7 +89,8 @@ public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<A
          String.valueOf(type.getMinOccurrences()),
          type.getStorageState().name(),
          type.getName(),
-         type.getTaggerId()};
+         type.getTaggerId(),
+         type.getMediaType()};
    }
 
    private AttributeType createfromArray(AttributeTypeFactory factory, String[] data) throws OseeCoreException {
@@ -105,10 +106,11 @@ public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<A
       StorageState storageState = StorageState.valueOf(data[9]);
       String name = data[10];
       String taggerId = data[11];
+      String mediaType = data[12];
 
       AttributeType type =
          factory.create(remoteId, name, baseAttributeTypeId, attributeProviderId, fileTypeExtension, defaultValue,
-            minOccurrences, maxOccurrences, description, taggerId);
+            minOccurrences, maxOccurrences, description, taggerId, mediaType);
       type.setId(uniqueId);
       type.setStorageState(storageState);
       return type;

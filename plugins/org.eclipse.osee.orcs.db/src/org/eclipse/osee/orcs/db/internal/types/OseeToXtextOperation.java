@@ -132,6 +132,7 @@ public class OseeToXtextOperation extends AbstractOperation {
          modelType.setDescription(attributeType.getDescription());
          modelType.setDefaultValue(attributeType.getDefaultValue());
          modelType.setTaggerId(attributeType.getTaggerId());
+         modelType.setMediaType(attributeType.getMediaType());
 
          OseeEnumType oseeEnumType = attributeType.getOseeEnumType();
          if (oseeEnumType != null) {

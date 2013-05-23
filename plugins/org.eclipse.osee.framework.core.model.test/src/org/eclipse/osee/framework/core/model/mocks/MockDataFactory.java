@@ -75,7 +75,7 @@ public final class MockDataFactory {
       OseeEnumTypeFactory oseeEnumTypeFactory = new OseeEnumTypeFactory();
       AttributeType attributeType =
          new AttributeType(random.nextLong(), "name", "baseType", "providerName", ".xml", "", 1, 1, "description",
-            "tagger");
+            "tagger", "mediaType");
       attributeType.setOseeEnumType(oseeEnumTypeFactory.createEnumType(0x01L, "enum type name"));
       return attributeType;
    }
@@ -111,7 +111,8 @@ public final class MockDataFactory {
    public static AttributeType createAttributeType(int index, OseeEnumType oseeEnumType) throws OseeCoreException {
       AttributeType type =
          new AttributeType(random.nextLong(), "attrType_" + index, "baseClass_" + index, "providerId_" + index,
-            "ext_" + index, "default_" + index, index * 2, index * 7, "description_" + index, "tag_" + index);
+            "ext_" + index, "default_" + index, index * 2, index * 7, "description_" + index, "tag_" + index,
+            "mediaType_" + index);
       type.setOseeEnumType(oseeEnumType);
       return type;
    }

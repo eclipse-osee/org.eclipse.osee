@@ -126,7 +126,7 @@ public class AttributeClassResolverTest {
    }
 
    private static AttributeType createType(String baseType) {
-      return new AttributeType(1L, "dummy", baseType, "", "", "", 1, 1, "", "");
+      return new AttributeType(1L, "dummy", baseType, "", "", "", 1, 1, "", "", "");
    }
 
    @Parameters

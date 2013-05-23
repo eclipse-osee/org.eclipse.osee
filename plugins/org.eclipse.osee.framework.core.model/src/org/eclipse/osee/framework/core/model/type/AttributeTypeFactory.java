@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class AttributeTypeFactory implements IOseeTypeFactory {
 
-   public AttributeType create(long guid, String name, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException {
+   public AttributeType create(long guid, String name, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, int minOccurrences, int maxOccurrences, String tipText, String taggerId, String mediaType) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(name, "attribute type name");
       //      checkNameUnique(cache, name);
       Conditions.checkNotNullOrEmpty(baseAttributeTypeId, "attribute base type id");
@@ -37,42 +37,42 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
 
       return new AttributeType(guid, name, Strings.intern(baseAttributeTypeId),
          Strings.intern(attributeProviderNameId), Strings.intern(fileTypeExtension), defaultValue, minOccurrences,
-         maxOccurrences, tipText, Strings.intern(taggerId));
+         maxOccurrences, tipText, Strings.intern(taggerId), Strings.intern(mediaType));
 
    }
 
-   public AttributeType createOrUpdate(AttributeTypeCache cache, long guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
+   public AttributeType createOrUpdate(AttributeTypeCache cache, long guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId, String mediaType) throws OseeCoreException {
       Conditions.checkNotNull(cache, "AttributeTypeCache");
       AttributeType attributeType = cache.getByGuid(guid);
 
       if (attributeType == null) {
          attributeType =
             create(guid, typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue,
-               minOccurrences, maxOccurrences, description, taggerId);
+               minOccurrences, maxOccurrences, description, taggerId, mediaType);
          attributeType.setOseeEnumType(oseeEnumType);
       } else {
          cache.decache(attributeType);
          attributeType.setFields(typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension,
-            defaultValue, oseeEnumType, minOccurrences, maxOccurrences, description, taggerId);
+            defaultValue, oseeEnumType, minOccurrences, maxOccurrences, description, taggerId, mediaType);
       }
       cache.cache(attributeType);
       return attributeType;
    }
 
-   public AttributeType createOrUpdate(IOseeCache<Long, AttributeType> cache, int uniqueId, StorageState storageState, Long guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
+   public AttributeType createOrUpdate(IOseeCache<Long, AttributeType> cache, int uniqueId, StorageState storageState, Long guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId, String mediaType) throws OseeCoreException {
       Conditions.checkNotNull(cache, "AttributeTypeCache");
       AttributeType attributeType = cache.getById(uniqueId);
       if (attributeType == null) {
          attributeType =
             create(guid, typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue,
-               minOccurrences, maxOccurrences, description, taggerId);
+               minOccurrences, maxOccurrences, description, taggerId, mediaType);
          attributeType.setOseeEnumType(oseeEnumType);
          attributeType.setId(uniqueId);
          attributeType.setStorageState(storageState);
       } else {
          cache.decache(attributeType);
          attributeType.setFields(typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension,
-            defaultValue, oseeEnumType, minOccurrences, maxOccurrences, description, taggerId);
+            defaultValue, oseeEnumType, minOccurrences, maxOccurrences, description, taggerId, mediaType);
       }
       cache.cache(attributeType);
       return attributeType;

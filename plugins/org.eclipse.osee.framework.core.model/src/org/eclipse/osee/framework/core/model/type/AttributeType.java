@@ -33,12 +33,13 @@ public class AttributeType extends AbstractOseeType<Long> implements IAttributeT
    private static final String ATTRIBUTE_DESCRIPTION_FIELD_KEY = "osee.attribute.description.field";
    private static final String ATTRIBUTE_FILE_EXTENSION_FIELD_KEY = "osee.attribute.file.type.extension.field";
    private static final String ATTRIBUTE_TAGGER_ID_FIELD_KEY = "osee.attribute.tagger.id.field";
+   private static final String ATTRIBUTE_MEDIA_TYPE_FIELD_KEY = "osee.attribute.media.type.field";
 
-   public AttributeType(Long guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, int minOccurrences, int maxOccurrences, String description, String taggerId) {
+   public AttributeType(Long guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, int minOccurrences, int maxOccurrences, String description, String taggerId, String mediaType) {
       super(guid, typeName);
       initializeFields();
       setFields(typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue, null,
-         minOccurrences, maxOccurrences, description, taggerId);
+         minOccurrences, maxOccurrences, description, taggerId, mediaType);
    }
 
    protected void initializeFields() {
@@ -51,9 +52,10 @@ public class AttributeType extends AbstractOseeType<Long> implements IAttributeT
       addField(ATTRIBUTE_DESCRIPTION_FIELD_KEY, new OseeField<String>());
       addField(ATTRIBUTE_FILE_EXTENSION_FIELD_KEY, new OseeField<String>());
       addField(ATTRIBUTE_TAGGER_ID_FIELD_KEY, new OseeField<String>());
+      addField(ATTRIBUTE_MEDIA_TYPE_FIELD_KEY, new OseeField<String>());
    }
 
-   public void setFields(String name, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) {
+   public void setFields(String name, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId, String mediaType) {
       String fileExtensionToSet = fileTypeExtension != null ? fileTypeExtension : "";
       setName(name);
       setFieldLogException(ATTRIBUTE_BASE_TYPE_ID_FIELD_KEY, baseAttributeTypeId);
@@ -65,6 +67,7 @@ public class AttributeType extends AbstractOseeType<Long> implements IAttributeT
       setFieldLogException(ATTRIBUTE_DESCRIPTION_FIELD_KEY, description);
       setFieldLogException(ATTRIBUTE_FILE_EXTENSION_FIELD_KEY, fileExtensionToSet);
       setFieldLogException(ATTRIBUTE_TAGGER_ID_FIELD_KEY, taggerId);
+      setFieldLogException(ATTRIBUTE_MEDIA_TYPE_FIELD_KEY, mediaType);
    }
 
    public String getBaseAttributeTypeId() {
@@ -121,6 +124,30 @@ public class AttributeType extends AbstractOseeType<Long> implements IAttributeT
     */
    public String getTaggerId() {
       return getFieldValueLogException("", ATTRIBUTE_TAGGER_ID_FIELD_KEY);
+   }
+
+   /**
+    * Get the media type for this attribute type
+    * 
+    * @return format id
+    */
+   public String getMediaType() {
+      return getFieldValueLogException("", ATTRIBUTE_MEDIA_TYPE_FIELD_KEY);
+   }
+
+   /**
+    * Whether this attribute type has a media type.
+    * 
+    * @return <b>true</b> if this attribute type has a media type. <b>false</b> if this is attribute does not have a
+    * media type.
+    */
+   public boolean hasMediaType() {
+      boolean toReturn = false;
+      String format = getMediaType();
+      if (format != null) {
+         toReturn = Strings.isValid(format.trim());
+      }
+      return toReturn;
    }
 
    /**

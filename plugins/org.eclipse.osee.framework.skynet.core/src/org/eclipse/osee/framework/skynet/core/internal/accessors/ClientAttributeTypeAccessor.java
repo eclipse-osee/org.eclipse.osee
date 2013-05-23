@@ -66,7 +66,7 @@ public class ClientAttributeTypeAccessor extends AbstractClientDataAccessor<Long
          factory.createOrUpdate(cache, row.getId(), row.getStorageState(), row.getGuid(), row.getName(),
             row.getBaseAttributeTypeId(), row.getAttributeProviderId(), row.getFileTypeExtension(),
             row.getDefaultValue(), oseeEnumType, row.getMinOccurrences(), row.getMaxOccurrences(),
-            row.getDescription(), row.getTaggerId());
+            row.getDescription(), row.getTaggerId(), row.getMediaType());
       }
       return updatedItems;
    }

@@ -47,7 +47,8 @@ public class AttributeTypeCacheUpdateResponse {
          AttributeType type =
             factory.create(item.getGuid(), item.getName(), item.getBaseAttributeTypeId(),
                item.getAttributeProviderId(), item.getFileTypeExtension(), item.getDefaultValue(),
-               item.getMinOccurrences(), item.getMaxOccurrences(), item.getDescription(), item.getTaggerId());
+               item.getMinOccurrences(), item.getMaxOccurrences(), item.getDescription(), item.getTaggerId(),
+               item.getMediaType());
          type.setId(item.getId());
          type.setStorageState(item.getStorageState());
          rows.add(type);
