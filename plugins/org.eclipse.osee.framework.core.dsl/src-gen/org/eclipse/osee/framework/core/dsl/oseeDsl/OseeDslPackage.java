@@ -497,13 +497,22 @@ public interface OseeDslPackage extends EPackage
   int XATTRIBUTE_TYPE__FILE_EXTENSION = OSEE_TYPE_FEATURE_COUNT + 9;
 
   /**
+   * The feature id for the '<em><b>Media Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int XATTRIBUTE_TYPE__MEDIA_TYPE = OSEE_TYPE_FEATURE_COUNT + 10;
+
+  /**
    * The number of structural features of the '<em>XAttribute Type</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int XATTRIBUTE_TYPE_FEATURE_COUNT = OSEE_TYPE_FEATURE_COUNT + 10;
+  int XATTRIBUTE_TYPE_FEATURE_COUNT = OSEE_TYPE_FEATURE_COUNT + 11;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XOseeEnumTypeImpl <em>XOsee Enum Type</em>}' class.
@@ -2175,6 +2184,17 @@ public interface OseeDslPackage extends EPackage
   EAttribute getXAttributeType_FileExtension();
 
   /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType#getMediaType <em>Media Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Media Type</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType#getMediaType()
+   * @see #getXAttributeType()
+   * @generated
+   */
+  EAttribute getXAttributeType_MediaType();
+
+  /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType <em>XOsee Enum Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3539,6 +3559,14 @@ public interface OseeDslPackage extends EPackage
      * @generated
      */
     EAttribute XATTRIBUTE_TYPE__FILE_EXTENSION = eINSTANCE.getXAttributeType_FileExtension();
+
+    /**
+     * The meta object literal for the '<em><b>Media Type</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute XATTRIBUTE_TYPE__MEDIA_TYPE = eINSTANCE.getXAttributeType_MediaType();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XOseeEnumTypeImpl <em>XOsee Enum Type</em>}' class.

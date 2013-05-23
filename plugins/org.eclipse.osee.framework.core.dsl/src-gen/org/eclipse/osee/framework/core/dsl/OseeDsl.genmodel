@@ -80,6 +80,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//XAttributeType/description"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//XAttributeType/defaultValue"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//XAttributeType/fileExtension"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//XAttributeType/mediaType"/>
     </genClasses>
     <genClasses ecoreClass="OseeDsl.ecore#//XOseeEnumType">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//XOseeEnumType/enumEntries"/>

@@ -80,6 +80,7 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getXAttributeTypeAccess().getGroup_16(), "rule__XAttributeType__Group_16__0");
 					put(grammarAccess.getXAttributeTypeAccess().getGroup_17(), "rule__XAttributeType__Group_17__0");
 					put(grammarAccess.getXAttributeTypeAccess().getGroup_18(), "rule__XAttributeType__Group_18__0");
+					put(grammarAccess.getXAttributeTypeAccess().getGroup_19(), "rule__XAttributeType__Group_19__0");
 					put(grammarAccess.getXOseeEnumTypeAccess().getGroup(), "rule__XOseeEnumType__Group__0");
 					put(grammarAccess.getXOseeEnumTypeAccess().getGroup_3(), "rule__XOseeEnumType__Group_3__0");
 					put(grammarAccess.getXOseeEnumEntryAccess().getGroup(), "rule__XOseeEnumEntry__Group__0");
@@ -150,6 +151,7 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getXAttributeTypeAccess().getDescriptionAssignment_16_1(), "rule__XAttributeType__DescriptionAssignment_16_1");
 					put(grammarAccess.getXAttributeTypeAccess().getDefaultValueAssignment_17_1(), "rule__XAttributeType__DefaultValueAssignment_17_1");
 					put(grammarAccess.getXAttributeTypeAccess().getFileExtensionAssignment_18_1(), "rule__XAttributeType__FileExtensionAssignment_18_1");
+					put(grammarAccess.getXAttributeTypeAccess().getMediaTypeAssignment_19_1(), "rule__XAttributeType__MediaTypeAssignment_19_1");
 					put(grammarAccess.getXOseeEnumTypeAccess().getNameAssignment_1(), "rule__XOseeEnumType__NameAssignment_1");
 					put(grammarAccess.getXOseeEnumTypeAccess().getTypeGuidAssignment_3_1(), "rule__XOseeEnumType__TypeGuidAssignment_3_1");
 					put(grammarAccess.getXOseeEnumTypeAccess().getUuidAssignment_5(), "rule__XOseeEnumType__UuidAssignment_5");

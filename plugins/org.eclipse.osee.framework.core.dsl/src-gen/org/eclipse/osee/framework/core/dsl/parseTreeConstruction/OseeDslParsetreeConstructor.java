@@ -1792,7 +1792,7 @@ protected class XAttributeTypeRef_BranchGuidAssignment_2_1 extends AssignmentTok
  * 
  * 	("enumType" enumType=[XOseeEnumType|STRING])? ("description" description=STRING)? ("defaultValue"
  * 
- * 	defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? "}";
+ * 	defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? ("mediaType" mediaType=STRING)? "}";
  *
  **/
 
@@ -1806,7 +1806,7 @@ protected class XAttributeTypeRef_BranchGuidAssignment_2_1 extends AssignmentTok
 // 
 // ("enumType" enumType=[XOseeEnumType|STRING])? ("description" description=STRING)? ("defaultValue"
 // 
-// defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? "}"
+// defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? ("mediaType" mediaType=STRING)? "}"
 protected class XAttributeType_Group extends GroupToken {
 	
 	public XAttributeType_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -1821,7 +1821,7 @@ protected class XAttributeType_Group extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new XAttributeType_RightCurlyBracketKeyword_19(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new XAttributeType_RightCurlyBracketKeyword_20(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -2806,16 +2806,38 @@ protected class XAttributeType_FileExtensionAssignment_18_1 extends AssignmentTo
 }
 
 
-// "}"
-protected class XAttributeType_RightCurlyBracketKeyword_19 extends KeywordToken  {
+// ("mediaType" mediaType=STRING)?
+protected class XAttributeType_Group_19 extends GroupToken {
 	
-	public XAttributeType_RightCurlyBracketKeyword_19(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public XAttributeType_Group_19(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getXAttributeTypeAccess().getGroup_19();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new XAttributeType_MediaTypeAssignment_19_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "mediaType"
+protected class XAttributeType_MediaTypeKeyword_19_0 extends KeywordToken  {
+	
+	public XAttributeType_MediaTypeKeyword_19_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getXAttributeTypeAccess().getRightCurlyBracketKeyword_19();
+		return grammarAccess.getXAttributeTypeAccess().getMediaTypeKeyword_19_0();
 	}
 
     @Override
@@ -2827,6 +2849,69 @@ protected class XAttributeType_RightCurlyBracketKeyword_19 extends KeywordToken 
 			case 3: return new XAttributeType_Group_15(lastRuleCallOrigin, this, 3, inst);
 			case 4: return new XAttributeType_Group_14(lastRuleCallOrigin, this, 4, inst);
 			case 5: return new XAttributeType_MaxAssignment_13(lastRuleCallOrigin, this, 5, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// mediaType=STRING
+protected class XAttributeType_MediaTypeAssignment_19_1 extends AssignmentToken  {
+	
+	public XAttributeType_MediaTypeAssignment_19_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getXAttributeTypeAccess().getMediaTypeAssignment_19_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new XAttributeType_MediaTypeKeyword_19_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("mediaType",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("mediaType");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getXAttributeTypeAccess().getMediaTypeSTRINGTerminalRuleCall_19_1_0(), value, null)) {
+			type = AssignmentType.TERMINAL_RULE_CALL;
+			element = grammarAccess.getXAttributeTypeAccess().getMediaTypeSTRINGTerminalRuleCall_19_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// "}"
+protected class XAttributeType_RightCurlyBracketKeyword_20 extends KeywordToken  {
+	
+	public XAttributeType_RightCurlyBracketKeyword_20(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getXAttributeTypeAccess().getRightCurlyBracketKeyword_20();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new XAttributeType_Group_19(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new XAttributeType_Group_18(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new XAttributeType_Group_17(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new XAttributeType_Group_16(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new XAttributeType_Group_15(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new XAttributeType_Group_14(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new XAttributeType_MaxAssignment_13(lastRuleCallOrigin, this, 6, inst);
 			default: return null;
 		}	
 	}

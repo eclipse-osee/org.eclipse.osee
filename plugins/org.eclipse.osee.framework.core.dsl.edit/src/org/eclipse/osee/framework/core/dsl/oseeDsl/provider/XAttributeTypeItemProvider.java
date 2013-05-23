@@ -71,6 +71,7 @@ public class XAttributeTypeItemProvider
          addDescriptionPropertyDescriptor(object);
          addDefaultValuePropertyDescriptor(object);
          addFileExtensionPropertyDescriptor(object);
+         addMediaTypePropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
    }
@@ -296,6 +297,28 @@ public class XAttributeTypeItemProvider
    }
 
    /**
+    * This adds a property descriptor for the Media Type feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected void addMediaTypePropertyDescriptor(Object object) {
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_XAttributeType_mediaType_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_XAttributeType_mediaType_feature", "_UI_XAttributeType_type"),
+             OseeDslPackage.Literals.XATTRIBUTE_TYPE__MEDIA_TYPE,
+             true,
+             false,
+             false,
+             ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+             null,
+             null));
+   }
+
+   /**
     * This returns XAttributeType.gif.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
@@ -340,6 +363,7 @@ public class XAttributeTypeItemProvider
          case OseeDslPackage.XATTRIBUTE_TYPE__DESCRIPTION:
          case OseeDslPackage.XATTRIBUTE_TYPE__DEFAULT_VALUE:
          case OseeDslPackage.XATTRIBUTE_TYPE__FILE_EXTENSION:
+         case OseeDslPackage.XATTRIBUTE_TYPE__MEDIA_TYPE:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
             return;
       }

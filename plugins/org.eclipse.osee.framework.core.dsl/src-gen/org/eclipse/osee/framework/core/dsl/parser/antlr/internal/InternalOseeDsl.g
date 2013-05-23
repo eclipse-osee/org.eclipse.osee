@@ -991,9 +991,31 @@ ruleXAttributeType returns [EObject current=null]
 	    }
 
 )
-))?	otherlv_27='}' 
+))?(	otherlv_27='mediaType' 
     {
-    	newLeafNode(otherlv_27, grammarAccess.getXAttributeTypeAccess().getRightCurlyBracketKeyword_19());
+    	newLeafNode(otherlv_27, grammarAccess.getXAttributeTypeAccess().getMediaTypeKeyword_19_0());
+    }
+(
+(
+		lv_mediaType_28_0=RULE_STRING
+		{
+			newLeafNode(lv_mediaType_28_0, grammarAccess.getXAttributeTypeAccess().getMediaTypeSTRINGTerminalRuleCall_19_1_0()); 
+		}
+		{
+	        if ($current==null) {
+	            $current = createModelElement(grammarAccess.getXAttributeTypeRule());
+	        }
+       		setWithLastConsumed(
+       			$current, 
+       			"mediaType",
+        		lv_mediaType_28_0, 
+        		"STRING");
+	    }
+
+)
+))?	otherlv_29='}' 
+    {
+    	newLeafNode(otherlv_29, grammarAccess.getXAttributeTypeAccess().getRightCurlyBracketKeyword_20());
     }
 )
 ;

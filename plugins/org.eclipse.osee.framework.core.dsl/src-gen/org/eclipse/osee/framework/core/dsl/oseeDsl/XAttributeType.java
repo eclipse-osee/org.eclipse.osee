@@ -21,6 +21,7 @@ package org.eclipse.osee.framework.core.dsl.oseeDsl;
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType#getDescription <em>Description</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType#getDefaultValue <em>Default Value</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType#getFileExtension <em>File Extension</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType#getMediaType <em>Media Type</em>}</li>
  * </ul>
  * </p>
  *
@@ -289,5 +290,31 @@ public interface XAttributeType extends OseeType
    * @generated
    */
   void setFileExtension(String value);
+
+  /**
+   * Returns the value of the '<em><b>Media Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Media Type</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Media Type</em>' attribute.
+   * @see #setMediaType(String)
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXAttributeType_MediaType()
+   * @model
+   * @generated
+   */
+  String getMediaType();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType#getMediaType <em>Media Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Media Type</em>' attribute.
+   * @see #getMediaType()
+   * @generated
+   */
+  void setMediaType(String value);
 
 } // XAttributeType

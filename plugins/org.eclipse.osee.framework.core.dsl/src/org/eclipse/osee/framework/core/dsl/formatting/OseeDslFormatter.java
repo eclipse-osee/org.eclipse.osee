@@ -47,6 +47,7 @@ public class OseeDslFormatter extends AbstractDeclarativeFormatter implements II
       "dataProvider",
       "defaultValue",
       "fileExtension",
+      "mediaType",
       "taggerId",
       "accessContext",
       "ALLOW",

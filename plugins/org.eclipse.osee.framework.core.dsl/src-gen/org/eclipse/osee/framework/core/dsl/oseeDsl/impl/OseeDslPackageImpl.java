@@ -801,6 +801,16 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getXAttributeType_MediaType()
+  {
+    return (EAttribute)xAttributeTypeEClass.getEStructuralFeatures().get(10);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getXOseeEnumType()
   {
     return xOseeEnumTypeEClass;
@@ -1848,6 +1858,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     createEAttribute(xAttributeTypeEClass, XATTRIBUTE_TYPE__DESCRIPTION);
     createEAttribute(xAttributeTypeEClass, XATTRIBUTE_TYPE__DEFAULT_VALUE);
     createEAttribute(xAttributeTypeEClass, XATTRIBUTE_TYPE__FILE_EXTENSION);
+    createEAttribute(xAttributeTypeEClass, XATTRIBUTE_TYPE__MEDIA_TYPE);
 
     xOseeEnumTypeEClass = createEClass(XOSEE_ENUM_TYPE);
     createEReference(xOseeEnumTypeEClass, XOSEE_ENUM_TYPE__ENUM_ENTRIES);
@@ -2072,6 +2083,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     initEAttribute(getXAttributeType_Description(), ecorePackage.getEString(), "description", null, 0, 1, XAttributeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getXAttributeType_DefaultValue(), ecorePackage.getEString(), "defaultValue", null, 0, 1, XAttributeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getXAttributeType_FileExtension(), ecorePackage.getEString(), "fileExtension", null, 0, 1, XAttributeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getXAttributeType_MediaType(), ecorePackage.getEString(), "mediaType", null, 0, 1, XAttributeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(xOseeEnumTypeEClass, XOseeEnumType.class, "XOseeEnumType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getXOseeEnumType_EnumEntries(), this.getXOseeEnumEntry(), null, "enumEntries", null, 0, -1, XOseeEnumType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

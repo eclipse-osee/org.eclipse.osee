@@ -469,7 +469,11 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cFileExtensionKeyword_18_0 = (Keyword)cGroup_18.eContents().get(0);
 		private final Assignment cFileExtensionAssignment_18_1 = (Assignment)cGroup_18.eContents().get(1);
 		private final RuleCall cFileExtensionSTRINGTerminalRuleCall_18_1_0 = (RuleCall)cFileExtensionAssignment_18_1.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_19 = (Keyword)cGroup.eContents().get(19);
+		private final Group cGroup_19 = (Group)cGroup.eContents().get(19);
+		private final Keyword cMediaTypeKeyword_19_0 = (Keyword)cGroup_19.eContents().get(0);
+		private final Assignment cMediaTypeAssignment_19_1 = (Assignment)cGroup_19.eContents().get(1);
+		private final RuleCall cMediaTypeSTRINGTerminalRuleCall_19_1_0 = (RuleCall)cMediaTypeAssignment_19_1.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_20 = (Keyword)cGroup.eContents().get(20);
 		
 		//XAttributeType:
 		//
@@ -483,7 +487,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//
 		//	("enumType" enumType=[XOseeEnumType|STRING])? ("description" description=STRING)? ("defaultValue"
 		//
-		//	defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? "}";
+		//	defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? ("mediaType" mediaType=STRING)? "}";
 		public ParserRule getRule() { return rule; }
 
 		//"attributeType" name=STRING ("extends" baseAttributeType=AttributeBaseType) ("overrides"
@@ -496,7 +500,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//
 		//("enumType" enumType=[XOseeEnumType|STRING])? ("description" description=STRING)? ("defaultValue"
 		//
-		//defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? "}"
+		//defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? ("mediaType" mediaType=STRING)? "}"
 		public Group getGroup() { return cGroup; }
 
 		//"attributeType"
@@ -670,8 +674,20 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//STRING
 		public RuleCall getFileExtensionSTRINGTerminalRuleCall_18_1_0() { return cFileExtensionSTRINGTerminalRuleCall_18_1_0; }
 
+		//("mediaType" mediaType=STRING)?
+		public Group getGroup_19() { return cGroup_19; }
+
+		//"mediaType"
+		public Keyword getMediaTypeKeyword_19_0() { return cMediaTypeKeyword_19_0; }
+
+		//mediaType=STRING
+		public Assignment getMediaTypeAssignment_19_1() { return cMediaTypeAssignment_19_1; }
+
+		//STRING
+		public RuleCall getMediaTypeSTRINGTerminalRuleCall_19_1_0() { return cMediaTypeSTRINGTerminalRuleCall_19_1_0; }
+
 		//"}"
-		public Keyword getRightCurlyBracketKeyword_19() { return cRightCurlyBracketKeyword_19; }
+		public Keyword getRightCurlyBracketKeyword_20() { return cRightCurlyBracketKeyword_20; }
 	}
 
 	public class AttributeBaseTypeElements extends AbstractParserRuleElementFinder {
@@ -2744,7 +2760,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	//
 	//	("enumType" enumType=[XOseeEnumType|STRING])? ("description" description=STRING)? ("defaultValue"
 	//
-	//	defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? "}";
+	//	defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? ("mediaType" mediaType=STRING)? "}";
 	public XAttributeTypeElements getXAttributeTypeAccess() {
 		return (pXAttributeType != null) ? pXAttributeType : (pXAttributeType = new XAttributeTypeElements());
 	}

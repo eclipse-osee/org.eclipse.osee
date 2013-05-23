@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XAttributeTypeImpl#getDescription <em>Description</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XAttributeTypeImpl#getDefaultValue <em>Default Value</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XAttributeTypeImpl#getFileExtension <em>File Extension</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XAttributeTypeImpl#getMediaType <em>Media Type</em>}</li>
  * </ul>
  * </p>
  *
@@ -216,6 +217,26 @@ public class XAttributeTypeImpl extends OseeTypeImpl implements XAttributeType
    * @ordered
    */
   protected String fileExtension = FILE_EXTENSION_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getMediaType() <em>Media Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMediaType()
+   * @generated
+   * @ordered
+   */
+  protected static final String MEDIA_TYPE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getMediaType() <em>Media Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMediaType()
+   * @generated
+   * @ordered
+   */
+  protected String mediaType = MEDIA_TYPE_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -513,6 +534,29 @@ public class XAttributeTypeImpl extends OseeTypeImpl implements XAttributeType
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getMediaType()
+  {
+    return mediaType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setMediaType(String newMediaType)
+  {
+    String oldMediaType = mediaType;
+    mediaType = newMediaType;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XATTRIBUTE_TYPE__MEDIA_TYPE, oldMediaType, mediaType));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -540,6 +584,8 @@ public class XAttributeTypeImpl extends OseeTypeImpl implements XAttributeType
         return getDefaultValue();
       case OseeDslPackage.XATTRIBUTE_TYPE__FILE_EXTENSION:
         return getFileExtension();
+      case OseeDslPackage.XATTRIBUTE_TYPE__MEDIA_TYPE:
+        return getMediaType();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -583,6 +629,9 @@ public class XAttributeTypeImpl extends OseeTypeImpl implements XAttributeType
         return;
       case OseeDslPackage.XATTRIBUTE_TYPE__FILE_EXTENSION:
         setFileExtension((String)newValue);
+        return;
+      case OseeDslPackage.XATTRIBUTE_TYPE__MEDIA_TYPE:
+        setMediaType((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -628,6 +677,9 @@ public class XAttributeTypeImpl extends OseeTypeImpl implements XAttributeType
       case OseeDslPackage.XATTRIBUTE_TYPE__FILE_EXTENSION:
         setFileExtension(FILE_EXTENSION_EDEFAULT);
         return;
+      case OseeDslPackage.XATTRIBUTE_TYPE__MEDIA_TYPE:
+        setMediaType(MEDIA_TYPE_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -662,6 +714,8 @@ public class XAttributeTypeImpl extends OseeTypeImpl implements XAttributeType
         return DEFAULT_VALUE_EDEFAULT == null ? defaultValue != null : !DEFAULT_VALUE_EDEFAULT.equals(defaultValue);
       case OseeDslPackage.XATTRIBUTE_TYPE__FILE_EXTENSION:
         return FILE_EXTENSION_EDEFAULT == null ? fileExtension != null : !FILE_EXTENSION_EDEFAULT.equals(fileExtension);
+      case OseeDslPackage.XATTRIBUTE_TYPE__MEDIA_TYPE:
+        return MEDIA_TYPE_EDEFAULT == null ? mediaType != null : !MEDIA_TYPE_EDEFAULT.equals(mediaType);
     }
     return super.eIsSet(featureID);
   }
@@ -693,6 +747,8 @@ public class XAttributeTypeImpl extends OseeTypeImpl implements XAttributeType
     result.append(defaultValue);
     result.append(", fileExtension: ");
     result.append(fileExtension);
+    result.append(", mediaType: ");
+    result.append(mediaType);
     result.append(')');
     return result.toString();
   }
