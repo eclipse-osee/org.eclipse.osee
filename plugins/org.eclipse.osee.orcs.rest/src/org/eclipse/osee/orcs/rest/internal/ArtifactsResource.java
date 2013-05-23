@@ -35,11 +35,11 @@ public class ArtifactsResource {
    // Allows to insert contextual objects into the class, 
    // e.g. ServletContext, Request, Response, UriInfo
    @Context
-   UriInfo uriInfo;
+   private final UriInfo uriInfo;
    @Context
-   Request request;
+   private final Request request;
 
-   String branchUuid;
+   private final String branchUuid;
 
    public ArtifactsResource(UriInfo uriInfo, Request request, String branchUuid) {
       this.uriInfo = uriInfo;

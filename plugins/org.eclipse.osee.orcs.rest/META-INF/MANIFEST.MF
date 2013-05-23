@@ -21,4 +21,5 @@ Import-Package: javax.ws.rs,
  org.eclipse.osee.orcs.rest.model,
  org.eclipse.osee.orcs.rest.model.search,
  org.eclipse.osee.orcs.search
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ com.google.guava;bundle-version="12.0.0"

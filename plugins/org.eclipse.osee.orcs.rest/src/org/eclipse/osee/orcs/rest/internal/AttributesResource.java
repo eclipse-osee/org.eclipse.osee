@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
-import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -27,40 +27,39 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactResource {
+@Path("attribute")
+public class AttributesResource {
 
+   // Allows to insert contextual objects into the class, 
+   // e.g. ServletContext, Request, Response, UriInfo
    @Context
-   UriInfo uriInfo;
+   private final UriInfo uriInfo;
    @Context
-   Request request;
+   private final Request request;
 
-   String branchUuid;
-   String artifactUuid;
+   private final String branchUuid;
+   private final String artifactUuid;
 
-   public ArtifactResource(UriInfo uriInfo, Request request, String branchUuid, String artifactUuid) {
+   public AttributesResource(UriInfo uriInfo, Request request, String branchUuid, String artifactUuid) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;
       this.artifactUuid = artifactUuid;
    }
 
-   @Path("version")
-   public VersionsResource getArtifactVersions() {
-      return new VersionsResource(uriInfo, request, branchUuid, artifactUuid);
-   }
-
-   @Path("attribute")
-   public AttributesResource getAttributes() {
-      return new AttributesResource(uriInfo, request, branchUuid, artifactUuid);
+   @Path("{attributeId}")
+   public AttributeResource getAttribute(@PathParam("attributeId") int attributeId) {
+      return new AttributeResource(uriInfo, request, branchUuid, artifactUuid, attributeId);
    }
 
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String getAsHtml() throws OseeCoreException {
+   public String getAllAttributes() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
       QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory(null);
-      List<ArtifactReadable> arts = factory.fromBranch(branch).andGuidsOrHrids(artifactUuid).getResults().getList();
+      ArtifactReadable artifact = factory.fromBranch(branch).andGuidsOrHrids(artifactUuid).getResults().getExactlyOne();
+
       HtmlWriter writer = new HtmlWriter(uriInfo);
-      return writer.toHtml(arts);
+      return writer.toHtml(artifact.getAttributes());
    }
 }

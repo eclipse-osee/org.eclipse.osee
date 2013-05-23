@@ -46,6 +46,9 @@ public class HtmlWriter {
          } else if (object instanceof ArtifactReadable) {
             ArtifactReadable artifact = (ArtifactReadable) object;
             addTable(builder, toData(artifact));
+         } else if (object instanceof AttributeReadable) {
+            AttributeReadable<?> attribute = (AttributeReadable<?>) object;
+            addTable(builder, toData(attribute));
          } else if (object instanceof TransactionRecord) {
             TransactionRecord tx = (TransactionRecord) object;
             addTable(builder, toData(tx));
@@ -59,6 +62,16 @@ public class HtmlWriter {
       }
       builder.append("</body></html>");
       return builder.toString();
+   }
+
+   private Map<String, Object> toData(AttributeReadable<?> attribute) {
+      Map<String, Object> data = new LinkedHashMap<String, Object>();
+      data.put("Name", attribute.getAttributeType().getName());
+
+      int attrId = attribute.getId();
+      URI uri = uriInfo.getAbsolutePathBuilder().path("{attributeId}").build(attrId);
+      data.put("AttributeId", asLink(uri.toASCIIString(), String.valueOf(attrId)));
+      return data;
    }
 
    private Map<String, Object> toData(ArtifactReadable artifact) throws OseeCoreException {
@@ -79,8 +92,10 @@ public class HtmlWriter {
       Collection<? extends IAttributeType> types = artifact.getExistingAttributeTypes();
       for (IAttributeType type : types) {
          for (AttributeReadable<?> attr : artifact.getAttributes(type)) {
+            URI attrUri = uriInfo.getAbsolutePathBuilder().path("/attribute/{attributeId}").build(attr.getId());
+            String label = asLink(attrUri.toASCIIString(), type.getName());
             String value = attr.getDisplayableString();
-            data.put(type.getName(), value == null ? "<NULL>" : value);
+            data.put(label, value == null ? "<NULL>" : value);
          }
       }
 
