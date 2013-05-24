@@ -48,16 +48,18 @@ public class ExportBranchDatabaseCallable extends DatabaseCallable<URI> {
 
    private final SystemPreferences preferences;
    private final ExecutorAdmin executorAdmin;
+   private final BranchCache branchCache;
    private final List<IOseeBranch> branches;
    private final PropertyStore options;
 
    private String exportName;
 
-   public ExportBranchDatabaseCallable(ExportItemFactory factory, SystemPreferences preferences, ExecutorAdmin executorAdmin, List<IOseeBranch> branches, PropertyStore options, String exportName) {
+   public ExportBranchDatabaseCallable(ExportItemFactory factory, SystemPreferences preferences, ExecutorAdmin executorAdmin, BranchCache branchCache, List<IOseeBranch> branches, PropertyStore options, String exportName) {
       super(factory.getLogger(), factory.getDbService());
       this.factory = factory;
       this.preferences = preferences;
       this.executorAdmin = executorAdmin;
+      this.branchCache = branchCache;
       this.branches = branches;
       this.options = options;
       this.exportName = exportName;
@@ -68,7 +70,7 @@ public class ExportBranchDatabaseCallable extends DatabaseCallable<URI> {
    }
 
    private BranchCache getBranchCache() {
-      return factory.getCachingService().getBranchCache();
+      return branchCache;
    }
 
    private ExecutorAdmin getExecutorAdmin() {

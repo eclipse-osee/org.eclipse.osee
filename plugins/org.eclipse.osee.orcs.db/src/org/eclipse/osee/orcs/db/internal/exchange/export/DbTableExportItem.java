@@ -20,9 +20,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.AbstractOseeType;
-import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.HexUtil;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -52,13 +50,13 @@ public class DbTableExportItem extends AbstractXmlExportItem {
    private final Object[] bindData;
 
    private final IOseeDatabaseService dbService;
-   private final IOseeCachingService cachingService;
+   private final IdentityService identityService;
    private final IResourceManager resourceManager;
 
-   public DbTableExportItem(Log logger, IOseeDatabaseService dbService, IOseeCachingService cachingService, IResourceManager resourceManager, ExportItem id, String query, Object[] bindData) {
+   public DbTableExportItem(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IResourceManager resourceManager, ExportItem id, String query, Object[] bindData) {
       super(logger, id);
       this.dbService = dbService;
-      this.cachingService = cachingService;
+      this.identityService = identityService;
       this.resourceManager = resourceManager;
       this.query = query;
       this.bindData = bindData;
@@ -128,11 +126,11 @@ public class DbTableExportItem extends AbstractXmlExportItem {
             } else if (columnName.equals(ExportImportXml.RATIONALE)) {
                handleStringContent(rationaleBuffer, value, columnName);
             } else if (columnName.equals(ExportImportXml.ART_TYPE_ID)) {
-               handleTypeId(appendable, value, cachingService.getArtifactTypeCache());
+               handleTypeId(appendable, value);
             } else if (columnName.equals(ExportImportXml.ATTR_TYPE_ID)) {
-               handleTypeId(appendable, value, cachingService.getAttributeTypeCache());
+               handleTypeId(appendable, value);
             } else if (columnName.equals(ExportImportXml.REL_TYPE_ID)) {
-               handleTypeId(appendable, value, cachingService.getRelationTypeCache());
+               handleTypeId(appendable, value);
             } else {
                Timestamp timestamp = asTimestamp(value);
                if (timestamp != null) {
@@ -209,7 +207,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
       }
    }
 
-   private void handleTypeId(Appendable appendable, Object value, AbstractOseeCache<Long, ? extends AbstractOseeType<Long>> cache) throws IOException, OseeCoreException {
+   private void handleTypeId(Appendable appendable, Object value) throws IOException, OseeCoreException {
       int typeId = -1;
       if (value instanceof Short) {
          Short xShort = (Short) value;
@@ -225,9 +223,8 @@ public class DbTableExportItem extends AbstractXmlExportItem {
       } else {
          throw new OseeCoreException("Undefined Type [%s]", value != null ? value.getClass().getSimpleName() : value);
       }
-      AbstractOseeType<Long> type = cache.getById(typeId);
-      Conditions.checkNotNull(type, "abstartOseeType", "localId[%s] for [%s]", typeId, getSource());
-      long uuid = type.getGuid();
+      Long uuid = identityService.getUniversalId(typeId);
+      Conditions.checkNotNull(uuid, "abstartOseeType", "localId[%s] for [%s]", typeId, getSource());
       String uuidString = HexUtil.toString(uuid);
       ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, uuidString);
    }

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Random;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -70,14 +70,14 @@ public class ExportItemFactory {
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
-   private final IOseeCachingService cachingService;
+   private final IdentityService identityService;
    private final IOseeModelingService typeModelService;
    private final IResourceManager resourceManager;
 
-   public ExportItemFactory(Log logger, IOseeDatabaseService dbService, IOseeCachingService cachingService, IOseeModelingService typeModelService, IResourceManager resourceManager) {
+   public ExportItemFactory(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IOseeModelingService typeModelService, IResourceManager resourceManager) {
       this.logger = logger;
       this.dbService = dbService;
-      this.cachingService = cachingService;
+      this.identityService = identityService;
       this.typeModelService = typeModelService;
       this.resourceManager = resourceManager;
    }
@@ -98,8 +98,8 @@ public class ExportItemFactory {
       return resourceManager;
    }
 
-   public IOseeCachingService getCachingService() {
-      return cachingService;
+   public IdentityService getIdentityService() {
+      return identityService;
    }
 
    public List<AbstractExportItem> createTaskList(int joinId, PropertyStore options) throws OseeCoreException {
@@ -130,7 +130,7 @@ public class ExportItemFactory {
    private void addItem(List<AbstractExportItem> items, int exportJoinId, PropertyStore options, int gammaJoinId, ExportItem exportItem, String query) throws OseeCoreException {
       StringBuilder modifiedQuery = new StringBuilder(query);
       Object[] bindData = prepareQuery(exportItem, modifiedQuery, options, exportJoinId, gammaJoinId);
-      items.add(new DbTableExportItem(getLogger(), getDbService(), getCachingService(), getResourceManager(),
+      items.add(new DbTableExportItem(getLogger(), getDbService(), getIdentityService(), getResourceManager(),
          exportItem, modifiedQuery.toString(), bindData));
    }
 

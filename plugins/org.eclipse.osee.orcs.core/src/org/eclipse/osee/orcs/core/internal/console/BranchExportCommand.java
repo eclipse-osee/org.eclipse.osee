@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.orcs.ExportOptions;
@@ -39,7 +38,6 @@ import org.eclipse.osee.orcs.OrcsBranch;
 public final class BranchExportCommand implements ConsoleCommand {
 
    private OrcsApi orcsApi;
-   private IOseeCachingService cachingService;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -47,14 +45,6 @@ public final class BranchExportCommand implements ConsoleCommand {
 
    public OrcsApi getOrcsApi() {
       return orcsApi;
-   }
-
-   public void setCachingService(IOseeCachingService cachingService) {
-      this.cachingService = cachingService;
-   }
-
-   public IOseeCachingService getCachingService() {
-      return cachingService;
    }
 
    @Override
@@ -90,8 +80,8 @@ public final class BranchExportCommand implements ConsoleCommand {
       List<String> includeBranchIds = Arrays.asList(params.getArray("includeBranchIds"));
 
       OrcsBranch orcsBranch = getOrcsApi().getBranchOps(null);
-      return new ExportBranchCallable(console, orcsBranch, getCachingService().getBranchCache(), exportFileName,
-         options, includeArchivedBranches, includeBranchIds, excludeBranchIds);
+      return new ExportBranchCallable(console, orcsBranch, getOrcsApi().getBranchCache(), exportFileName, options,
+         includeArchivedBranches, includeBranchIds, excludeBranchIds);
    }
 
    private static class ExportBranchCallable extends CancellableCallable<URI> {

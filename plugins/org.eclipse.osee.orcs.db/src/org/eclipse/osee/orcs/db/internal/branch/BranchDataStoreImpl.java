@@ -126,8 +126,9 @@ public class BranchDataStoreImpl implements BranchDataStore {
    @Override
    public Callable<URI> exportBranch(String sessionId, List<IOseeBranch> branches, PropertyStore options, String exportName) {
       ExportItemFactory factory =
-         new ExportItemFactory(logger, dbService, cachingService, typeModelService, resourceManager);
-      return new ExportBranchDatabaseCallable(factory, preferences, executorAdmin, branches, options, exportName);
+         new ExportItemFactory(logger, dbService, identityService, typeModelService, resourceManager);
+      return new ExportBranchDatabaseCallable(factory, preferences, executorAdmin, cachingService.getBranchCache(),
+         branches, options, exportName);
    }
 
    @Override

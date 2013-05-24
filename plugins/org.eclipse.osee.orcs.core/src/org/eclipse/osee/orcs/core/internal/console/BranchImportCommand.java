@@ -22,7 +22,6 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.ImportOptions;
@@ -35,7 +34,6 @@ import org.eclipse.osee.orcs.OrcsBranch;
 public final class BranchImportCommand implements ConsoleCommand {
 
    private OrcsApi orcsApi;
-   private IOseeCachingService cachingService;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -43,14 +41,6 @@ public final class BranchImportCommand implements ConsoleCommand {
 
    public OrcsApi getOrcsApi() {
       return orcsApi;
-   }
-
-   public void setCachingService(IOseeCachingService cachingService) {
-      this.cachingService = cachingService;
-   }
-
-   public IOseeCachingService getCachingService() {
-      return cachingService;
    }
 
    @Override
@@ -85,8 +75,8 @@ public final class BranchImportCommand implements ConsoleCommand {
       options.put(ImportOptions.CLEAN_BEFORE_IMPORT.name(), params.getBoolean("clean"));
 
       OrcsBranch orcsBranch = getOrcsApi().getBranchOps(null);
-      return new ImportBranchDelegateCallable(console, orcsBranch, getCachingService().getBranchCache(), options,
-         importFiles, branchIds);
+      return new ImportBranchDelegateCallable(console, orcsBranch, getOrcsApi().getBranchCache(), options, importFiles,
+         branchIds);
    }
 
    private static final class ImportBranchDelegateCallable extends CancellableCallable<Boolean> {

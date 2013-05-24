@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -46,7 +45,6 @@ import org.eclipse.osee.orcs.core.internal.branch.provider.MultiBranchProvider;
 public final class BranchPurgeCommand implements ConsoleCommand {
 
    private OrcsApi orcsApi;
-   private IOseeCachingService cachingService;
    private static final String ERROR_STRING =
       "Branch %s[%s] is a %s branch and that option was not specified!  It will not be purged!\n";
 
@@ -56,14 +54,6 @@ public final class BranchPurgeCommand implements ConsoleCommand {
 
    public OrcsApi getOrcsApi() {
       return orcsApi;
-   }
-
-   public void setCachingService(IOseeCachingService cachingService) {
-      this.cachingService = cachingService;
-   }
-
-   public IOseeCachingService getCachingService() {
-      return cachingService;
    }
 
    @Override
@@ -113,7 +103,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
       boolean runPurge = options.contains("P");
 
       OrcsBranch orcsBranch = getOrcsApi().getBranchOps(null);
-      return new PurgeBranchCallable(console, orcsBranch, getCachingService().getBranchCache(), branchGuids, recurse,
+      return new PurgeBranchCallable(console, orcsBranch, getOrcsApi().getBranchCache(), branchGuids, recurse,
          unArchived, unDeleted, baseline, runPurge);
    }
 
