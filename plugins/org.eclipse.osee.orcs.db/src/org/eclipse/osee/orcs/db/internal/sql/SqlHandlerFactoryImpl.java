@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.jdk.core.util.PriorityComparator;
 import org.eclipse.osee.logger.Log;
@@ -39,17 +38,15 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
 
    private final Log logger;
    private final IdentityService idService;
-   private final IOseeCachingService caches;
    private final TagProcessor tagProcessor;
 
-   public SqlHandlerFactoryImpl(Log logger, IdentityService idService, IOseeCachingService caches, Map<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>> handleMap) {
-      this(logger, idService, caches, null, handleMap, null);
+   public SqlHandlerFactoryImpl(Log logger, IdentityService idService, Map<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>> handleMap) {
+      this(logger, idService, null, handleMap, null);
    }
 
-   public SqlHandlerFactoryImpl(Log logger, IdentityService idService, IOseeCachingService caches, TagProcessor tagProcessor, Map<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>> handleMap, Map<Class<? extends SqlHandler<?, ?>>, DataPostProcessorFactory<?>> factoryMap) {
+   public SqlHandlerFactoryImpl(Log logger, IdentityService idService, TagProcessor tagProcessor, Map<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>> handleMap, Map<Class<? extends SqlHandler<?, ?>>, DataPostProcessorFactory<?>> factoryMap) {
       this.logger = logger;
       this.idService = idService;
-      this.caches = caches;
       this.handleMap = handleMap;
       this.factoryMap = factoryMap;
       this.tagProcessor = tagProcessor;
@@ -86,7 +83,6 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
       handler.setData(criteria);
       handler.setIdentityService(idService);
       handler.setLogger(logger);
-      handler.setTypeCaches(caches);
 
       if (factoryMap != null) {
          DataPostProcessorFactory<C> factory = (DataPostProcessorFactory<C>) factoryMap.get(item);

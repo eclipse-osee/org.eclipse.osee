@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
@@ -68,7 +67,7 @@ public class QueryEngineImplTest {
    private static final Criteria<?> GUIDS = new CriteriaArtifactGuids(Arrays.asList(GUID.create(), GUID.create()));
    private static final Criteria<?> IDS = new CriteriaArtifactIds(Arrays.asList(1, 2, 3, 4, 5));
    private static final Criteria<?> HRIDS = new CriteriaArtifactHrids(Arrays.asList("ABCDE", "FGHIJ"));
-   private static final Criteria<?> TYPES = new CriteriaArtifactType(Arrays.asList(CoreArtifactTypes.CodeUnit));
+   private static final Criteria<?> TYPES = new CriteriaArtifactType(null, Arrays.asList(CoreArtifactTypes.CodeUnit));
    private static final Criteria<?> ATTRIBUTE = new CriteriaAttributeOther(CoreAttributeTypes.Name,
       Arrays.asList("Hello"), Operator.EQUAL);
 
@@ -93,7 +92,6 @@ public class QueryEngineImplTest {
    @Mock private IOseeDatabaseService dbService;
    @Mock private SqlProvider sqlProvider;
    @Mock private IdentityService identityService;
-   @Mock private IOseeCachingService cache;
    @Mock private ExecutorAdmin executorAdmin;
    @Mock private BranchCache branchCache;
    @Mock private AttributeTypeCache attributeTypeCache;
@@ -119,7 +117,7 @@ public class QueryEngineImplTest {
       DataPostProcessorFactory<CriteriaAttributeKeywords> postProcessorFactory =
          queryModule.createAttributeKeywordPostProcessor(executorAdmin, taggingEngine);
       SqlHandlerFactory handlerFactory =
-         queryModule.createHandlerFactory(identityService, cache, postProcessorFactory, taggingEngine.getTagProcessor());
+         queryModule.createHandlerFactory(identityService, postProcessorFactory, taggingEngine.getTagProcessor());
       queryEngine = queryModule.createQueryEngine(dbService, handlerFactory, sqlProvider, branchCache);
 
       CriteriaSet criteriaSet = new CriteriaSet(CoreBranches.COMMON);

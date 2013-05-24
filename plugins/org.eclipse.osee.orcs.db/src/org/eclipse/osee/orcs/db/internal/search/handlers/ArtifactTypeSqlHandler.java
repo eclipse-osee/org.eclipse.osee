@@ -15,8 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
@@ -47,7 +45,7 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType, Que
 
    @Override
    public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
-      typeIds = getLocalTypeIds(writer.getOptions().isTypeInheritanceIncluded());
+      typeIds = getLocalTypeIds(writer.getOptions());
       if (typeIds.size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
@@ -65,17 +63,12 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType, Que
       txsAliases = writer.getAliases(TableEnum.TXS_TABLE);
    }
 
-   private Collection<Integer> getLocalTypeIds(boolean includeTypeInheritance) throws OseeCoreException {
-      ArtifactTypeCache cache = getTypeCaches().getArtifactTypeCache();
+   private Collection<Integer> getLocalTypeIds(QueryOptions options) throws OseeCoreException {
+      Collection<? extends IArtifactType> types = criteria.getTypes(options);
       Collection<Integer> toReturn = new HashSet<Integer>();
-      for (IArtifactType type : criteria.getTypes()) {
-         if (includeTypeInheritance) {
-            ArtifactType realType = cache.getByGuid(type.getGuid());
-            for (ArtifactType descendant : realType.getAllDescendantTypes()) {
-               toReturn.add(descendant.getId());
-            }
-         }
-         toReturn.add(toLocalId(type));
+      for (IArtifactType type : types) {
+         int localId = getIdentityService().getLocalId(type);
+         toReturn.add(localId);
       }
       return toReturn;
    }

@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -68,7 +67,6 @@ public class QuerySqlHandlerFactoryImplTest {
    @Mock private Log logger;
    @Mock private IdentityService identityService;
    @Mock private TaggingEngine taggingEngine;
-   @Mock private IOseeCachingService cache;
    @Mock private ExecutorAdmin executorAdmin;
    // @formatter:on
 
@@ -83,7 +81,7 @@ public class QuerySqlHandlerFactoryImplTest {
 
       postProcessorFactory = queryModule.createAttributeKeywordPostProcessor(executorAdmin, taggingEngine);
       factory =
-         queryModule.createHandlerFactory(identityService, cache, postProcessorFactory, taggingEngine.getTagProcessor());
+         queryModule.createHandlerFactory(identityService, postProcessorFactory, taggingEngine.getTagProcessor());
    }
 
    @SuppressWarnings("unchecked")
@@ -93,7 +91,7 @@ public class QuerySqlHandlerFactoryImplTest {
       criteria.add(new CriteriaArtifactGuids(null));
       criteria.add(new CriteriaArtifactHrids(null));
       criteria.add(new CriteriaArtifactIds(null));
-      criteria.add(new CriteriaArtifactType(null));
+      criteria.add(new CriteriaArtifactType(null, null));
       criteria.add(new CriteriaRelationTypeExists(null));
       criteria.add(new CriteriaAttributeTypeExists(null));
       criteria.add(new CriteriaAttributeOther(null, null, null));
@@ -129,15 +127,14 @@ public class QuerySqlHandlerFactoryImplTest {
 
    @SuppressWarnings("rawtypes")
    private void assertSqlHandler(SqlHandler<?, ?> handler, Class<? extends SqlHandler> clazz, SqlHandlerPriority priority) {
-      assertHandler(handler, clazz, priority, logger, identityService, taggingEngine, cache, executorAdmin);
+      assertHandler(handler, clazz, priority, logger, identityService, taggingEngine, executorAdmin);
    }
 
-   private static void assertHandler(SqlHandler<?, ?> actual, Class<?> type, SqlHandlerPriority priority, Log logger, IdentityService idService, TaggingEngine taggingEngine, IOseeCachingService caches, ExecutorAdmin executorAdmin) {
+   private static void assertHandler(SqlHandler<?, ?> actual, Class<?> type, SqlHandlerPriority priority, Log logger, IdentityService idService, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin) {
       Assert.assertNotNull(actual);
       Assert.assertEquals(type, actual.getClass());
       Assert.assertEquals(logger, actual.getLogger());
       Assert.assertEquals(idService, actual.getIdentityService());
-      Assert.assertEquals(caches, actual.getTypeCaches());
       Assert.assertEquals(priority.ordinal(), actual.getPriority());
    }
 

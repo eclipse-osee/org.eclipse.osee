@@ -11,8 +11,11 @@
 package org.eclipse.osee.orcs.core.ds.criteria;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
@@ -23,10 +26,12 @@ import org.eclipse.osee.orcs.core.ds.QueryOptions;
 public class CriteriaArtifactType extends Criteria<QueryOptions> {
 
    private final Collection<? extends IArtifactType> artifactTypes;
+   private final ArtifactTypeCache artTypeCache;
 
-   public CriteriaArtifactType(Collection<? extends IArtifactType> artifactTypes) {
+   public CriteriaArtifactType(ArtifactTypeCache artTypeCache, Collection<? extends IArtifactType> artifactTypes) {
       super();
       this.artifactTypes = artifactTypes;
+      this.artTypeCache = artTypeCache;
    }
 
    @Override
@@ -42,6 +47,21 @@ public class CriteriaArtifactType extends Criteria<QueryOptions> {
    @Override
    public String toString() {
       return "CriteriaArtifactType [artifactTypes=" + artifactTypes + "]";
+   }
+
+   public Collection<? extends IArtifactType> getTypes(QueryOptions options) throws OseeCoreException {
+      Collection<IArtifactType> typesToUse = new LinkedHashSet<IArtifactType>();
+      boolean includeTypeInheritance = options.isTypeInheritanceIncluded();
+      for (IArtifactType type : artifactTypes) {
+         if (includeTypeInheritance) {
+            ArtifactType fullType = artTypeCache.get(type);
+            for (IArtifactType descendant : fullType.getAllDescendantTypes()) {
+               typesToUse.add(descendant);
+            }
+         }
+         typesToUse.add(type);
+      }
+      return typesToUse;
    }
 
 }

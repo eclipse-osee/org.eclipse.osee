@@ -125,7 +125,8 @@ public class OrcsDataStoreImpl implements OrcsDataStore, IOseeCachingService {
       IdFactory idFactory = new IdFactoryImpl(dbService, cacheService.getBranchCache());
 
       dataModuleFactory = new DataModuleFactory(logger);
-      dataModuleFactory.create(dbService, idFactory, identityService, sqlProvider, cacheService, proxyProvider);
+      dataModuleFactory.create(dbService, idFactory, identityService, sqlProvider, proxyProvider,
+         cacheService.getBranchCache(), cacheService.getArtifactTypeCache(), cacheService.getAttributeTypeCache());
 
       MissingChangeItemFactory missingChangeItemFactory =
          new MissingChangeItemFactoryImpl(dataModuleFactory.getDataLoaderFactory(), identityService);
@@ -138,7 +139,8 @@ public class OrcsDataStoreImpl implements OrcsDataStore, IOseeCachingService {
       dataStoreAdmin = new DataStoreAdminImpl(logger, dbService, identityService, branchStore, preferences);
 
       queryModule = new QueryModuleFactory(logger);
-      queryModule.create(executorAdmin, dbService, identityService, sqlProvider, cacheService, resourceManager);
+      queryModule.create(executorAdmin, dbService, identityService, sqlProvider, resourceManager,
+         cacheService.getBranchCache(), cacheService.getAttributeTypeCache());
    }
 
    public void stop() {

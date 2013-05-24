@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
@@ -68,7 +67,6 @@ public class DataLoaderImplTest {
     
     @Mock private IdentityService identityService;
     @Mock private SqlProvider sqlProvider;
-    @Mock private IOseeCachingService cacheService;
    
     @Mock private ArtifactBuilder builder;
     
@@ -98,13 +96,11 @@ public class DataLoaderImplTest {
 
       DataModuleFactory module = new DataModuleFactory(logger);
 
-      when(cacheService.getBranchCache()).thenReturn(branchCache);
-
-      SqlHandlerFactory handlerFactory = module.createHandlerFactory(identityService, cacheService);
+      SqlHandlerFactory handlerFactory = module.createHandlerFactory(identityService);
       SqlArtifactLoader loader = module.createArtifactLoader(dbService, handlerFactory, sqlProvider, rowDataFactory);
 
       spyLoader = spy(loader);
-      factory = module.createDataLoader(dbService, spyLoader, cacheService.getBranchCache());
+      factory = module.createDataLoader(dbService, spyLoader, branchCache);
 
       when(branchCache.getLocalId(CoreBranches.COMMON)).thenReturn(EXPECTED_BRANCH_ID);
       when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");

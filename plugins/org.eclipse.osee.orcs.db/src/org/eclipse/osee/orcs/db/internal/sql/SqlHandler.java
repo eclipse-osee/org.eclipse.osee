@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.sql;
 
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.jdk.core.type.HasPriority;
 import org.eclipse.osee.logger.Log;
@@ -26,15 +25,6 @@ public abstract class SqlHandler<T extends Criteria<?>, O extends Options> imple
 
    private Log logger;
    private IdentityService idService;
-   private IOseeCachingService caches;
-
-   public IOseeCachingService getTypeCaches() {
-      return caches;
-   }
-
-   public void setTypeCaches(IOseeCachingService caches) {
-      this.caches = caches;
-   }
 
    public void setIdentityService(IdentityService idService) {
       this.idService = idService;

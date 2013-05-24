@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -43,9 +44,11 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 @SuppressWarnings("unused")
 public class CriteriaFactory {
 
+   private final ArtifactTypeCache artifactTypeCache;
    private final AttributeTypeCache attributeTypeCache;
 
-   public CriteriaFactory(AttributeTypeCache attributeTypeCache) {
+   public CriteriaFactory(ArtifactTypeCache artifactTypeCache, AttributeTypeCache attributeTypeCache) {
+      this.artifactTypeCache = artifactTypeCache;
       this.attributeTypeCache = attributeTypeCache;
    }
 
@@ -84,7 +87,7 @@ public class CriteriaFactory {
    }
 
    public Criteria<QueryOptions> createArtifactTypeCriteria(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {
-      return new CriteriaArtifactType(artifactTypes);
+      return new CriteriaArtifactType(artifactTypeCache, artifactTypes);
    }
 
    public Criteria<QueryOptions> createArtifactIdCriteria(Collection<Integer> artifactIds) throws OseeCoreException {

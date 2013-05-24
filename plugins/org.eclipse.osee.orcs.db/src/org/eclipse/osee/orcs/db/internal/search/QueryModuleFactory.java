@@ -15,7 +15,6 @@ import java.util.Map;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -80,18 +79,17 @@ public class QueryModuleFactory {
       this.logger = logger;
    }
 
-   public void create(ExecutorAdmin executorAdmin, IOseeDatabaseService dbService, IdentityService identityService, SqlProvider sqlProvider, IOseeCachingService cacheService, IResourceManager resourceManager) {
-      TaggingEngine taggingEngine = createTaggingEngine(cacheService.getAttributeTypeCache());
+   public void create(ExecutorAdmin executorAdmin, IOseeDatabaseService dbService, IdentityService identityService, SqlProvider sqlProvider, IResourceManager resourceManager, BranchCache branchCache, AttributeTypeCache attributeTypeCache) {
+      TaggingEngine taggingEngine = createTaggingEngine(attributeTypeCache);
 
       DataPostProcessorFactory<CriteriaAttributeKeywords> postProcessor =
          createAttributeKeywordPostProcessor(executorAdmin, taggingEngine);
       SqlHandlerFactory handlerFactory =
-         createHandlerFactory(identityService, cacheService, postProcessor, taggingEngine.getTagProcessor());
+         createHandlerFactory(identityService, postProcessor, taggingEngine.getTagProcessor());
 
-      queryEngine = createQueryEngine(dbService, handlerFactory, sqlProvider, cacheService.getBranchCache());
+      queryEngine = createQueryEngine(dbService, handlerFactory, sqlProvider, branchCache);
       queryIndexer =
-         createQueryEngineIndexer(dbService, executorAdmin, taggingEngine, resourceManager,
-            cacheService.getAttributeTypeCache());
+         createQueryEngineIndexer(dbService, executorAdmin, taggingEngine, resourceManager, attributeTypeCache);
    }
 
    public void stop() {
@@ -131,7 +129,7 @@ public class QueryModuleFactory {
       return new QueryEngineIndexerImpl(logger, dbService, attributeTypeCache, indexConsumer);
    }
 
-   protected SqlHandlerFactory createHandlerFactory(IdentityService identityService, IOseeCachingService cacheService, DataPostProcessorFactory<CriteriaAttributeKeywords> postProcessorFactory, TagProcessor tagProcessor) {
+   protected SqlHandlerFactory createHandlerFactory(IdentityService identityService, DataPostProcessorFactory<CriteriaAttributeKeywords> postProcessorFactory, TagProcessor tagProcessor) {
       Map<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>> handleMap =
          new HashMap<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>>();
 
@@ -152,7 +150,7 @@ public class QueryModuleFactory {
 
       factoryMap.put(AttributeTokenSqlHandler.class, postProcessorFactory);
 
-      return new SqlHandlerFactoryImpl(logger, identityService, cacheService, tagProcessor, handleMap, factoryMap);
+      return new SqlHandlerFactoryImpl(logger, identityService, tagProcessor, handleMap, factoryMap);
    }
 
    protected DataPostProcessorFactory<CriteriaAttributeKeywords> createAttributeKeywordPostProcessor(ExecutorAdmin executorAdmin, TaggingEngine taggingEngine) {

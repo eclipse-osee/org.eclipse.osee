@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -49,7 +48,6 @@ public class LoaderSqlHandlerFactoryImplTest {
    // @formatter:off
    @Mock private Log logger;
    @Mock private IdentityService identityService;
-   @Mock private IOseeCachingService cache;
    // @formatter:on
 
    private SqlHandlerFactory factory;
@@ -59,7 +57,7 @@ public class LoaderSqlHandlerFactoryImplTest {
       MockitoAnnotations.initMocks(this);
 
       DataModuleFactory module = new DataModuleFactory(logger);
-      factory = module.createHandlerFactory(identityService, cache);
+      factory = module.createHandlerFactory(identityService);
    }
 
    @Test
@@ -84,15 +82,14 @@ public class LoaderSqlHandlerFactoryImplTest {
 
    @SuppressWarnings("rawtypes")
    private void assertSqlHandler(SqlHandler<?, ?> handler, Class<? extends SqlHandler> clazz, SqlHandlerPriority priority) {
-      assertHandler(handler, clazz, priority, logger, identityService, cache);
+      assertHandler(handler, clazz, priority, logger, identityService);
    }
 
-   private static void assertHandler(SqlHandler<?, ?> actual, Class<?> type, SqlHandlerPriority priority, Log logger, IdentityService idService, IOseeCachingService caches) {
+   private static void assertHandler(SqlHandler<?, ?> actual, Class<?> type, SqlHandlerPriority priority, Log logger, IdentityService idService) {
       Assert.assertNotNull(actual);
       Assert.assertEquals(type, actual.getClass());
       Assert.assertEquals(logger, actual.getLogger());
       Assert.assertEquals(idService, actual.getIdentityService());
-      Assert.assertEquals(caches, actual.getTypeCaches());
       Assert.assertEquals(priority.ordinal(), actual.getPriority());
    }
 

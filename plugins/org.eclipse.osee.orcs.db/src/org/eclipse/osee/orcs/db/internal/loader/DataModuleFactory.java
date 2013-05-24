@@ -15,7 +15,6 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
@@ -50,15 +49,15 @@ public class DataModuleFactory {
       this.logger = logger;
    }
 
-   public void create(IOseeDatabaseService dbService, IdFactory idFactory, IdentityService identityService, SqlProvider sqlProvider, IOseeCachingService cacheService, DataProxyFactoryProvider proxyProvider) {
-      ProxyDataFactory proxyDataFactory = createDataFactory(proxyProvider, cacheService.getAttributeTypeCache());
+   public void create(IOseeDatabaseService dbService, IdFactory idFactory, IdentityService identityService, SqlProvider sqlProvider, DataProxyFactoryProvider proxyProvider, BranchCache branchCache, ArtifactTypeCache artifactTypeCache, AttributeTypeCache attributeTypeCache) {
+      ProxyDataFactory proxyDataFactory = createDataFactory(proxyProvider, attributeTypeCache);
       OrcsObjectFactory rowDataFactory = createOrcsObjectFactory(identityService, proxyDataFactory);
 
-      dataFactory = createDataFactory(rowDataFactory, idFactory, cacheService.getArtifactTypeCache());
+      dataFactory = createDataFactory(rowDataFactory, idFactory, artifactTypeCache);
 
-      SqlHandlerFactory handlerFactory = createHandlerFactory(identityService, cacheService);
+      SqlHandlerFactory handlerFactory = createHandlerFactory(identityService);
       SqlArtifactLoader loader = createArtifactLoader(dbService, handlerFactory, sqlProvider, rowDataFactory);
-      dataLoaderFactory = createDataLoader(dbService, loader, cacheService.getBranchCache());
+      dataLoaderFactory = createDataLoader(dbService, loader, branchCache);
    }
 
    public void stop() {
@@ -86,7 +85,7 @@ public class DataModuleFactory {
       return new DataFactoryImpl(idFactory, factory, artifactTypeCache);
    }
 
-   protected SqlHandlerFactory createHandlerFactory(IdentityService identityService, IOseeCachingService cache) {
+   protected SqlHandlerFactory createHandlerFactory(IdentityService identityService) {
       Map<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>> handleMap =
          new HashMap<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>>();
 
@@ -95,7 +94,7 @@ public class DataModuleFactory {
       handleMap.put(CriteriaAttribute.class, AttributeSqlHandler.class);
       handleMap.put(CriteriaRelation.class, RelationSqlHandler.class);
 
-      return new SqlHandlerFactoryImpl(logger, identityService, cache, handleMap);
+      return new SqlHandlerFactoryImpl(logger, identityService, handleMap);
    }
 
    protected SqlArtifactLoader createArtifactLoader(IOseeDatabaseService dbService, SqlHandlerFactory handlerFactory, SqlProvider sqlProvider, OrcsObjectFactory factory) {
