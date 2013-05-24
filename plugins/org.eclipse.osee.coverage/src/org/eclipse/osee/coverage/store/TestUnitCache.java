@@ -91,6 +91,7 @@ public class TestUnitCache implements ITestUnitProvider {
       ensurePopulated();
       Collection<Integer> entries = itemsToTestUnit.getValues(coverageItem);
       Set<String> names = new LinkedHashSet<String>();
+      Map<Integer, CoverageItem> fails = new HashMap<Integer, CoverageItem>();
       if (entries != null) {
          for (Integer entry : entries) {
             if (idToNameCache.containsKey(entry)) {
@@ -100,7 +101,7 @@ public class TestUnitCache implements ITestUnitProvider {
                   break;
                }
             } else {
-               names.add("UNRESOLVED_ID");
+               names.add(String.format("UNRESOLVED_ID [%s]", entry));
             }
          }
          return names;

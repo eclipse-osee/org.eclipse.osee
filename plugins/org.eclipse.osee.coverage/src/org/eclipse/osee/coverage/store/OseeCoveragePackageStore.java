@@ -150,7 +150,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       coverageEvent.getPackage().setEventType(newCoveragePackage ? CoverageEventType.Added : CoverageEventType.Modified);
       artifact.setSoleAttributeValue(CoreAttributeTypes.Active, coveragePackage.isEditable().isTrue());
       for (CoverageUnit coverageUnit : coveragePackage.getCoverageUnits()) {
-         OseeCoverageUnitStore store = new OseeCoverageUnitStore(coverageUnit, artifact.getBranch());
+         OseeCoverageUnitStore store = new OseeCoverageUnitStore(coverageUnit, artifact.getBranch(), artifact, null);
          store.save(transaction, coverageEvent, coveragePackage.getCoverageOptionManager(), artifact);
          Artifact childArt = store.getArtifact(false);
          if (childArt.getParent() == null && !artifact.getChildren().contains(childArt)) {
@@ -278,8 +278,15 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
    }
 
    @Override
-   public void saveTestUnitNames(SkynetTransaction transaction) {
-      //do nothing
+   public void saveTestUnitNames(SkynetTransaction transaction) throws OseeCoreException {
+      for (CoverageUnit coverageUnit : coveragePackage.getCoverageUnits()) {
+         OseeCoverageUnitStore store = new OseeCoverageUnitStore(coverageUnit, artifact.getBranch(), artifact, null);
+         store.saveTestUnitNames(transaction);
+         Artifact childArt = store.getArtifact(false);
+         if (childArt.getParent() == null && !artifact.getChildren().contains(childArt)) {
+            artifact.addChild(store.getArtifact(false));
+         }
+      }
    }
 
    @Override

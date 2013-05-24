@@ -48,8 +48,8 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
    private final CoverageUnit coverageUnit;
    private final Artifact coveragePackage;
    private final Artifact readOnlyTestUnitNames;
-   private final static Map<IOseeBranch, ITestUnitProvider> testUnitProviderMap =
-      new HashMap<IOseeBranch, ITestUnitProvider>();
+   private final static Map<Artifact, ITestUnitProvider> testUnitProviderMap =
+      new HashMap<Artifact, ITestUnitProvider>();
 
    public OseeCoverageUnitStore(ICoverage parent, Artifact artifact, CoverageOptionManager coverageOptionManager, Artifact coveragePackage) throws OseeCoreException {
       super(null, artifact.getArtifactType(), artifact.getBranch());
@@ -70,11 +70,11 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       this.readOnlyTestUnitNames = null;
    }
 
-   public OseeCoverageUnitStore(CoverageUnit coverageUnit, IOseeBranch branch, Artifact testUnitNames) {
+   public OseeCoverageUnitStore(CoverageUnit coverageUnit, IOseeBranch branch, Artifact coveragePackage, Artifact testUnitNames) {
       super(coverageUnit,
          coverageUnit.isFolder() ? CoverageArtifactTypes.CoverageFolder : CoverageArtifactTypes.CoverageUnit, branch);
       this.coverageUnit = coverageUnit;
-      this.coveragePackage = null;
+      this.coveragePackage = coveragePackage;
       this.readOnlyTestUnitNames = testUnitNames;
    }
 
@@ -133,12 +133,12 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
    }
 
    private ITestUnitProvider getTestUnitProvider() {
-      ITestUnitProvider testUnitProvider = testUnitProviderMap.get(branch);
+      ITestUnitProvider testUnitProvider = testUnitProviderMap.get(coveragePackage);
 
       if (testUnitProvider == null) {
          ArtifactTestUnitStore store = new ArtifactTestUnitStore(coveragePackage, readOnlyTestUnitNames);
          testUnitProvider = new TestUnitCache(store);
-         testUnitProviderMap.put(branch, testUnitProvider);
+         testUnitProviderMap.put(coveragePackage, testUnitProvider);
       }
       return testUnitProvider;
    }
@@ -257,8 +257,8 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       }
       // Save current/new coverage items
       for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {
-         new OseeCoverageUnitStore(childCoverageUnit, branch).save(transaction, coverageEvent, coverageOptionManager,
-            artifact);
+         new OseeCoverageUnitStore(childCoverageUnit, branch, coveragePackage, null).save(transaction, coverageEvent,
+            coverageOptionManager, artifact);
       }
       // Delete removed coverage units and folders
       for (Artifact childArt : artifact.getChildren()) {
