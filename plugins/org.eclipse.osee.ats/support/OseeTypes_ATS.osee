@@ -20,7 +20,7 @@ abstract artifactType "ats.Ats Artifact" extends "Artifact" {
 
 abstract artifactType "ats.Ats Team Definition or AI" extends "ats.Ats Config Artifact" {
 	guid "ABZeucbqtR9WQUHxtGQA"
-	uuid 0x200000000000017E
+	uuid  0x0000000000000323
 }
 
 artifactType "ats.Review" extends "ats.State Machine" {
