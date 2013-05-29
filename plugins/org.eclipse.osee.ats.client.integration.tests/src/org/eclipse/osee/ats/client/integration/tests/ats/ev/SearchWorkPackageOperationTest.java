@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.ev.SearchWorkPackageOperation;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.junit.Test;
@@ -113,7 +114,7 @@ public class SearchWorkPackageOperationTest {
       SearchWorkPackageOperation operation =
          new SearchWorkPackageOperation("test", teamDefs, includeChildrenTeamDefs, ais, includeChildrenAIs,
             activeOption);
-      operation.run(null);
+      Operations.executeWorkAndCheckStatus(operation);
       Set<Artifact> resultArtifacts = operation.getResultArtifacts();
       Collection<String> resultArtifactGuids = Artifacts.toGuids(resultArtifacts);
       Assert.assertEquals(resultSize, expectedWpGuids.size(), resultArtifacts.size());

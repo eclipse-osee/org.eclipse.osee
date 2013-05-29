@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.Test;
@@ -47,14 +48,14 @@ public class EarnedValueReportOperationTest {
       teamDefs.add(teamDef);
       SearchWorkPackageOperation srch =
          new SearchWorkPackageOperation("srch", teamDefs, true, new ArrayList<IAtsActionableItem>(), false, Active.Both);
-      srch.run(null);
+      Operations.executeWorkAndCheckStatus(srch);
       Set<IAtsWorkPackage> workPackages = srch.getResults();
       Assert.assertEquals(3, workPackages.size());
 
       // Confirm that report is empty for Work Packages
-      EarnedValueReportOperation operation = new EarnedValueReportOperation("report", workPackages);
-      operation.run(null);
-      Assert.assertEquals(0, operation.getResults().size());
+      EarnedValueReportOperation earnedValueoperation = new EarnedValueReportOperation("report", workPackages);
+      Operations.executeWorkAndCheckStatus(earnedValueoperation);
+      Assert.assertEquals(0, earnedValueoperation.getResults().size());
 
       // Setup TeamWfs to have selected Work Pacakges
       SkynetTransaction transaction =
@@ -76,11 +77,11 @@ public class EarnedValueReportOperationTest {
       transaction.execute();
 
       // Run report and validate results
-      operation = new EarnedValueReportOperation("report2", workPackages);
-      operation.run(null);
-      Assert.assertEquals(3, operation.getResults().size());
+      EarnedValueReportOperation earnedValueOperation2 = new EarnedValueReportOperation("report2", workPackages);
+      Operations.executeWorkAndCheckStatus(earnedValueOperation2);
+      Assert.assertEquals(3, earnedValueOperation2.getResults().size());
       int num01 = 0, num03 = 0;
-      for (EarnedValueReportResult result : operation.getResults()) {
+      for (EarnedValueReportResult result : earnedValueOperation2.getResults()) {
          String id = result.getValue(EarnedValueReportOperation.Work_Package_Id);
          if (id.endsWith("01")) {
             num01++;
