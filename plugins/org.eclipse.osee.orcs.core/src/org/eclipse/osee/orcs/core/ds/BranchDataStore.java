@@ -11,9 +11,11 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -43,6 +45,8 @@ public interface BranchDataStore {
    Callable<URI> checkBranchExchangeIntegrity(String sessionId, URI fileToCheck);
 
    Callable<TransactionResult> commitTransaction(String sessionId, TransactionData transaction);
+
+   Callable<?> purgeTransactions(String sessionId, Collection<? extends ITransaction> transactions);
 
    // Temp
    Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact);

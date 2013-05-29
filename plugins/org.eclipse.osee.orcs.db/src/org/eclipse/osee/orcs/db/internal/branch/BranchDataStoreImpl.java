@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -42,6 +43,7 @@ import org.eclipse.osee.orcs.db.internal.callable.CreateBranchDatabaseTxCallable
 import org.eclipse.osee.orcs.db.internal.callable.ExportBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ImportBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeBranchDatabaseCallable;
+import org.eclipse.osee.orcs.db.internal.callable.PurgeTransactionTxCallable;
 import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportItemFactory;
 import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
@@ -164,5 +166,10 @@ public class BranchDataStoreImpl implements BranchDataStore {
    @Override
    public Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
       return new UnsubscribeTransaction(logger, dbService, identityService, userArtifact, groupArtifact);
+   }
+
+   @Override
+   public Callable<?> purgeTransactions(String sessionId, Collection<? extends ITransaction> transactionsToPurge) {
+      return new PurgeTransactionTxCallable(logger, dbService, transactionsToPurge);
    }
 }

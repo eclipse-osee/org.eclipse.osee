@@ -12,8 +12,12 @@ package org.eclipse.osee.orcs.db.internal;
 
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.concurrent.Callable;
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
@@ -40,6 +44,9 @@ import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.db.internal.branch.BranchDataStoreImpl;
+import org.eclipse.osee.orcs.db.internal.callable.PurgeArtifactTypeDatabaseTxCallable;
+import org.eclipse.osee.orcs.db.internal.callable.PurgeAttributeTypeDatabaseTxCallable;
+import org.eclipse.osee.orcs.db.internal.callable.PurgeRelationTypeDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
 import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.loader.DataModuleFactory;
@@ -251,6 +258,21 @@ public class OrcsDataStoreImpl implements OrcsDataStore, IOseeCachingService {
    @Override
    public void clearAll() {
       getProxied().clearAll();
+   }
+
+   @Override
+   public Callable<?> purgeArtifactType(Collection<? extends IArtifactType> typesToPurge) {
+      return new PurgeArtifactTypeDatabaseTxCallable(logger, dbService, identityService, typesToPurge);
+   }
+
+   @Override
+   public Callable<?> purgeAttributeType(Collection<? extends IAttributeType> typesToPurge) {
+      return new PurgeAttributeTypeDatabaseTxCallable(logger, dbService, identityService, typesToPurge);
+   }
+
+   @Override
+   public Callable<?> purgeRelationType(Collection<? extends IRelationType> typesToPurge) {
+      return new PurgeRelationTypeDatabaseTxCallable(logger, dbService, identityService, typesToPurge);
    }
 
 }

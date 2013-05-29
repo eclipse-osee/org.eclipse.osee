@@ -11,13 +11,11 @@
 package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.database.schema.DatabaseTxCallable;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -36,7 +34,7 @@ import org.eclipse.osee.logger.Log;
  * 
  * @author Karol M. Wilk
  */
-public final class PurgeRelationTypeDatabaseTxCallable extends DatabaseTxCallable<Object> {
+public final class PurgeRelationTypeDatabaseTxCallable extends DatabaseTxCallable<Void> {
    private static final String RETRIEVE_GAMMAS_OF_REL_LINK_TXS =
       "SELECT rel_link.gamma_id FROM osee_relation_link rel_link WHERE rel_link.rel_link_type_id = ?";
 
@@ -46,58 +44,28 @@ public final class PurgeRelationTypeDatabaseTxCallable extends DatabaseTxCallabl
    private static final String DELETE_FROM_CONFLICT_TABLE_DEST_SIDE =
       "DELETE FROM osee_conflict WHERE dest_gamma_id = ?";
 
-   private final RelationTypeCache relationCache;
-   private final String[] typesToPurge;
-   private final boolean forcePurge;
+   private final Collection<? extends IRelationType> typesToPurge;
    private final IdentityService identityService;
-   private final Console console;
 
-   public PurgeRelationTypeDatabaseTxCallable(Log logger, IOseeDatabaseService databaseService, IdentityService identityService, RelationTypeCache relationCache, Console console, boolean force, String... typesToPurge) {
+   public PurgeRelationTypeDatabaseTxCallable(Log logger, IOseeDatabaseService databaseService, IdentityService identityService, Collection<? extends IRelationType> typesToPurge) {
       super(logger, databaseService, "Purge Relation Type");
       this.identityService = identityService;
-      this.relationCache = relationCache;
-      this.console = console;
-      this.forcePurge = force;
       this.typesToPurge = typesToPurge;
    }
 
    @Override
-   protected Object handleTxWork(OseeConnection connection) throws OseeCoreException {
-      console.writeln();
-      console.writeln(!forcePurge ? "Relation Types:" : "Purging relation types:");
-
-      List<Long> types = convertTypeNamesToUuids();
-      boolean found = !types.isEmpty();
-      if (forcePurge && found) {
-         console.writeln("Removing from osee_* tables...");
-         processDeletes(connection, retrieveGammaIds(types));
-      }
-
-      console.writeln((found && !forcePurge) ? "To >DELETE Relation DATA!< add --force to confirm." : "Operation finished.");
+   protected Void handleTxWork(OseeConnection connection) throws OseeCoreException {
+      List<Integer[]> gammaIds = retrieveGammaIds(connection, typesToPurge);
+      processDeletes(connection, gammaIds);
       return null;
    }
 
-   private List<Long> convertTypeNamesToUuids() throws OseeCoreException {
-      List<Long> guids = new ArrayList<Long>();
-      for (String typeName : typesToPurge) {
-         try {
-            RelationType type = relationCache.getBySoleName(typeName);
-            console.writeln("Type [%s] found. Guid: [%s]", typeName, type.getGuid());
-            guids.add(type.getGuid());
-         } catch (OseeArgumentException ex) {
-            console.writeln("Type [%s] NOT found.", typeName);
-            console.writeln(ex);
-         }
-      }
-      return guids;
-   }
-
-   private List<Integer[]> retrieveGammaIds(List<Long> types) throws OseeCoreException {
+   private List<Integer[]> retrieveGammaIds(OseeConnection connection, Collection<? extends IRelationType> types) throws OseeCoreException {
       List<Integer[]> gammas = new ArrayList<Integer[]>(50000);
-      IOseeStatement chStmt = getDatabaseService().getStatement();
+      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
       try {
-         for (Long relationTypeId : types) {
-            chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_REL_LINK_TXS, identityService.getLocalId(relationTypeId));
+         for (IRelationType type : types) {
+            chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_REL_LINK_TXS, identityService.getLocalId(type));
             while (chStmt.next()) {
                gammas.add(new Integer[] {chStmt.getInt("gamma_id")});
             }

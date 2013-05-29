@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.transaction;
 
+import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -24,4 +26,6 @@ public interface TransactionFactory {
 
    // Temp method
    Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact);
+
+   Callable<?> purgeTransaction(Collection<? extends ITransaction> transactions);
 }

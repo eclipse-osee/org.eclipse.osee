@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.transaction;
 
+import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
@@ -59,5 +61,10 @@ public class TransactionFactoryImpl implements TransactionFactory {
    @Override
    public Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
       return branchDataStore.createUnsubscribeTx(userArtifact, groupArtifact);
+   }
+
+   @Override
+   public Callable<?> purgeTransaction(Collection<? extends ITransaction> transactions) {
+      return branchDataStore.purgeTransactions(sessionContext.getSessionId(), transactions);
    }
 }
