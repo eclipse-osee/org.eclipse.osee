@@ -52,7 +52,7 @@ public interface OrcsBranch {
 
    Callable<ReadableBranch> createWorkingBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException;
 
-   Callable<ReadableBranch> createCopyTxBranch(IOseeBranch branch, ArtifactReadable author, int fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException;
+   Callable<ReadableBranch> createCopyTxBranch(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException;
 
    /////////////////////////////////////////////////////////////////////////
 

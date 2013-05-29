@@ -14,6 +14,8 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -130,7 +132,9 @@ public class BranchDataFactoryTest {
       when(txCache.getOrLoad(99)).thenReturn(txRecord);
       when(txRecord.getBranch()).thenReturn(parent);
 
-      CreateBranchData result = factory.createCopyTxBranchData(branch, author, 99, null);
+      ITransaction tx = TokenFactory.createTransaction(99);
+
+      CreateBranchData result = factory.createCopyTxBranchData(branch, author, tx, null);
 
       verify(txCache).getOrLoad(99);
       verify(txRecord).getBranch();

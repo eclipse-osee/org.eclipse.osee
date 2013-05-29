@@ -59,12 +59,13 @@ public class BranchDataFactory {
       return createBranchData(branch, BranchType.WORKING, creationComment, fromTx, author, associatedArtifact, false);
    }
 
-   public CreateBranchData createCopyTxBranchData(IOseeBranch branch, ArtifactReadable author, int fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
-      TransactionRecord fromTx = txCache.getOrLoad(fromTransaction);
+   public CreateBranchData createCopyTxBranchData(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
+      int value = fromTransaction.getGuid();
+      TransactionRecord fromTx = txCache.getOrLoad(value);
       IOseeBranch parent = fromTx.getBranch();
 
       String creationComment =
-         String.format("Transaction %d copied from %s to create Branch %s", fromTransaction, parent.getName(),
+         String.format("Transaction %s copied from %s to create Branch %s", fromTransaction, parent.getName(),
             branch.getName());
       return createBranchData(branch, BranchType.WORKING, creationComment, fromTx, author, associatedArtifact, true);
    }

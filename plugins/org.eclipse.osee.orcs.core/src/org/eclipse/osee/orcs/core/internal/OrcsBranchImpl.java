@@ -153,7 +153,7 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<ReadableBranch> createCopyTxBranch(IOseeBranch branch, ArtifactReadable author, int fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public Callable<ReadableBranch> createCopyTxBranch(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
       CreateBranchData branchData =
          branchDataFactory.createCopyTxBranchData(branch, author, fromTransaction, associatedArtifact);
       return createBranch(branchData);

@@ -164,7 +164,7 @@ public class OrcsPortingTest {
       // create the branch with the copied transaction
       IOseeBranch branch = TokenFactory.createBranch(GUID.create(), "CopiedTxBranch");
       // the new branch will contain two transactions -
-      return branchApi.createCopyTxBranch(branch, author, transactionToCopy.getId(), null).call();
+      return branchApi.createCopyTxBranch(branch, author, transactionToCopy, null).call();
    }
 
    private TransactionRecord commitToDestinationBranch(IOseeBranch copyTxBranch) throws Exception {
