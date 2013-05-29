@@ -34,7 +34,8 @@ public final class CoreArtifactTypes {
    public static final IArtifactType GeneralDocument = TokenFactory.createArtifactType(0x000000000000000EL, "General Document");
    public static final IArtifactType GlobalPreferences = TokenFactory.createArtifactType(0x0000000000000003L, "Global Preferences");
    public static final IArtifactType HardwareRequirement = TokenFactory.createArtifactType(0x0000000000000021L, "Hardware Requirement");
-   public static final IArtifactType Heading = TokenFactory.createArtifactType(0x0000000000000038L, "Heading");
+   public static final IArtifactType HeadingMSWord = TokenFactory.createArtifactType(0x0000000000000038L, "Heading - MS Word");
+   public static final IArtifactType HeadingHTML = TokenFactory.createArtifactType(0x0000000000000324L, "Heading - HTML");
    public static final IArtifactType HTMLArtifact = TokenFactory.createArtifactType(0x000000000000031EL, "HTML Artifact");
    public static final IArtifactType ImageArtifact = TokenFactory.createArtifactType(0x0000000000000320L, "Image Artifact");
    public static final IArtifactType IndirectSoftwareRequirement = TokenFactory.createArtifactType(0x0000000000000019L, "Indirect Software Requirement");

@@ -37,7 +37,11 @@ public final class ArtifactResolverFactory {
    }
 
    public static IArtifactImportResolver createAlwaysNewArtifacts(IArtifactType primaryArtifactType) {
-      return createAlwaysNewArtifacts(primaryArtifactType, CoreArtifactTypes.Heading);
+      IArtifactType secondaryArtifactType = CoreArtifactTypes.HeadingMSWord;
+      if (primaryArtifactType.equals(CoreArtifactTypes.SubsystemRequirementHTML) || primaryArtifactType.equals(CoreArtifactTypes.SystemRequirementHTML)) {
+         secondaryArtifactType = CoreArtifactTypes.HeadingHTML;
+      }
+      return createAlwaysNewArtifacts(primaryArtifactType, secondaryArtifactType);
    }
 
    public static IArtifactImportResolver createAlwaysNewArtifacts(IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType) {
@@ -51,12 +55,12 @@ public final class ArtifactResolverFactory {
          case CREATE_ON_DIFFERENT_ATTRIBUTES:
             toReturn =
                new AttributeBasedArtifactResolver(new RoughArtifactTranslatorImpl(), primaryArtifactType,
-                  CoreArtifactTypes.Heading, nonChangingAttributes, createNewIfNotExist, deleteUnmatchedArtifacts);
+                  CoreArtifactTypes.HeadingMSWord, nonChangingAttributes, createNewIfNotExist, deleteUnmatchedArtifacts);
             break;
          case CREATE_ON_NEW_ART_GUID:
             toReturn =
                new GuidBasedArtifactResolver(new RoughArtifactTranslatorImpl(), primaryArtifactType,
-                  CoreArtifactTypes.Heading, createNewIfNotExist, deleteUnmatchedArtifacts);
+                  CoreArtifactTypes.HeadingMSWord, createNewIfNotExist, deleteUnmatchedArtifacts);
             break;
          case CREATE_NEW_ALWAYS:
          default:

@@ -27,7 +27,7 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
    @Override
    public void init() throws OseeCoreException {
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.RootArtifact, FrameworkImage.ROOT_HIERARCHY, this);
-      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.Heading, FrameworkImage.HEADING, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.HeadingMSWord, FrameworkImage.HEADING, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.Folder, PluginUiImage.FOLDER, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.User, FrameworkImage.USER, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.GlobalPreferences, FrameworkImage.GEAR, this);

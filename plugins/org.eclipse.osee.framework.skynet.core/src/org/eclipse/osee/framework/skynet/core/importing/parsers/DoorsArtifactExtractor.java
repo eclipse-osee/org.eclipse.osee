@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Vector;
 import org.cyberneko.html.parsers.SAXParser;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -67,6 +68,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       null,
       null,
       null}; // Last one is actually a string
+   private String guidString = "";
+   private boolean isRequirement;
+   private String subsystem;
 
    @Override
    public String getDescription() {
@@ -263,6 +267,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       theArtifact.clear();
       paragraphNumber = "";
       paragraphName = "";
+      isRequirement = false;
+      subsystem = "";
 
       this.collector = collector;
       String fileName = source.getAuthority();
@@ -318,6 +324,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       OBJECT_TEXT("Proposed Object Text"),
       CHANGE_RATIONALE("Change Rationale"),
       LINKS("Links"),
+      GUID("OSEE GUID"),
+      SUBSYSTEM("Subsystem"),
       OTHER("");
 
       private final static Map<String, RowTypeEnum> rawStringToRowType = new HashMap<String, RowTypeEnum>();
@@ -431,13 +439,24 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                    */
                   break;
 
+               case GUID:
+                  guidString = GUID.checkOrCreate(rowValue.trim());
+                  break;
+
+               case IS_REQ:
+                  isRequirement = rowValue.trim().equals("True");
+                  break;
+
+               case SUBSYSTEM:
+                  subsystem = rowValue.trim();
+                  break;
+
                case CHANGE_STATUS:
                case OBJECT_HEADING:
                case OBJECT_TEXT:
                case CHANGE_RATIONALE:
                case LINKS:
                case OBJECT_NUMBER:
-               case IS_REQ:
                case PARAGRAPH_HEADING:
                case OTHER:
                   break;
@@ -461,11 +480,18 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
    private void processArtifact() throws OseeCoreException {
       RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY);
-      roughArtifact.setSectionNumber(paragraphNumber);
+      roughArtifact.setSectionNumber(paragraphNumber.trim());
       roughArtifact.addAttribute(CoreAttributeTypes.ParagraphNumber, paragraphNumber);
       roughArtifact.addAttribute(CoreAttributeTypes.Name, paragraphName.trim());
-      String guid = GUID.create();
-      roughArtifact.setGuid(guid);
+      if (!isRequirement) {
+         roughArtifact.setPrimaryArtifactType(CoreArtifactTypes.HeadingHTML);
+         roughArtifact.setRoughArtifactKind(RoughArtifactKind.SECONDARY);
+      }
+      if (!Strings.isValid(guidString)) {
+         guidString = GUID.create();
+      }
+      roughArtifact.setGuid(guidString);
+      guidString = "";
       for (int rowIndex = 0; rowIndex < theArtifact.size(); rowIndex++) {
          RowTypeEnum rowType = rowIndexToRowTypeMap.get(rowIndex);
 
@@ -482,7 +508,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                   String theImage;
                   int comma = 0;
                   int imageNumber = 0;
-                  postProcessGuids.add(guid);
+                  postProcessGuids.add(guidString);
                   do {
                      comma = imageFile.indexOf(',');
                      if (comma == -1) {
@@ -512,6 +538,13 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                roughArtifact.addAttribute(CoreAttributeTypes.LegacyId, rowValue);
                break;
 
+            case SUBSYSTEM:
+               if (!Strings.isValid(subsystem)) {
+                  roughArtifact.addAttribute(CoreAttributeTypes.Subsystem, subsystem);
+                  subsystem = "";
+               }
+               break;
+
             case DOCUMENT_APPLICABILITY:
                break;
 
@@ -538,7 +571,6 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       collector.addRoughArtifact(roughArtifact);
       inArtifact = false;
       theArtifact.clear();
-
    }
 
    /**********************************************************************

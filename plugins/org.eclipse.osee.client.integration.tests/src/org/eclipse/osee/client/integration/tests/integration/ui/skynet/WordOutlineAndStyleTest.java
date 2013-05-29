@@ -166,7 +166,7 @@ public final class WordOutlineAndStyleTest {
       try {
          IArtifactImportResolver resolver =
             ArtifactResolverFactory.createResolver(ArtifactCreationStrategy.CREATE_ON_NEW_ART_GUID,
-               CoreArtifactTypes.Heading, null, true, true);
+               CoreArtifactTypes.HeadingMSWord, null, true, true);
 
          RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
          collector.reset();
@@ -175,7 +175,7 @@ public final class WordOutlineAndStyleTest {
          extractor.setDelegate(new WordOutlineExtractorDelegate());
 
          List<IArtifactType> list = new ArrayList<IArtifactType>();
-         list.add(CoreArtifactTypes.Heading);
+         list.add(CoreArtifactTypes.HeadingMSWord);
 
          IOperation operation =
             ArtifactImportOperationFactory.createOperation(inputTestCase, folder, NullOperationLogger.getSingleton(),

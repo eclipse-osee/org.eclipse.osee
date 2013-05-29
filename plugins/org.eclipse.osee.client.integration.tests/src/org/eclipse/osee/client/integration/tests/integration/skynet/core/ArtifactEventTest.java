@@ -312,7 +312,7 @@ public class ArtifactEventTest {
 
       // reload Artifact
       Assert.assertTrue(newArt.isOfType(CoreArtifactTypes.GeneralData));
-      ChangeArtifactType.changeArtifactType(Arrays.asList(newArt), CoreArtifactTypes.Heading, true);
+      ChangeArtifactType.changeArtifactType(Arrays.asList(newArt), CoreArtifactTypes.HeadingMSWord, true);
 
       Assert.assertEquals(1, listener.getArtifacts().size());
       EventChangeTypeBasicGuidArtifact guidArt =
@@ -325,11 +325,11 @@ public class ArtifactEventTest {
       }
       Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
       Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());
-      Assert.assertEquals(CoreArtifactTypes.Heading.getGuid(), guidArt.getArtTypeGuid());
+      Assert.assertEquals(CoreArtifactTypes.HeadingMSWord.getGuid(), guidArt.getArtTypeGuid());
       Assert.assertEquals(CoreArtifactTypes.GeneralData.getGuid(), guidArt.getFromArtTypeGuid());
       // Reload artifact; since artifact cache cleared, it should be loaded as new artifact type
       Artifact changedArt = ArtifactQuery.getArtifactFromId(newArt.getGuid(), newArt.getBranch());
-      Assert.assertEquals(CoreArtifactTypes.Heading.getGuid(), changedArt.getArtifactType().getGuid());
+      Assert.assertEquals(CoreArtifactTypes.HeadingMSWord.getGuid(), changedArt.getArtifactType().getGuid());
    }
 
    protected boolean isRemoteTest() {

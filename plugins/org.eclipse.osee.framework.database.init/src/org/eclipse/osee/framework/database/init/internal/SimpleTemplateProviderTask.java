@@ -76,7 +76,7 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
 
    private Artifact getTemplateFolder() throws OseeCoreException {
       Artifact templateFolder =
-         ArtifactQuery.checkArtifactFromTypeAndName(CoreArtifactTypes.Heading, "Document Templates",
+         ArtifactQuery.checkArtifactFromTypeAndName(CoreArtifactTypes.HeadingMSWord, "Document Templates",
             BranchManager.getCommonBranch());
       if (templateFolder == null) {
          Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch());
