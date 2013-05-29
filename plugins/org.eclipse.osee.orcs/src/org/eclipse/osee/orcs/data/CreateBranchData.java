@@ -14,17 +14,12 @@ import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.data.Identifiable;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CreateBranchData implements Identifiable {
 
-   private static final int NULL_PARENT_BRANCH_ID = -1;
-   private static final int NULL_SOURCE_TRANSACTION_ID = -1;
    private static final int NULL_ARTIFACT_ID = -1;
    private final int MERGE_DESTINATION_BRANCH_ID = -1; // only used on merge branches
    private final int MERGE_ADDRESSING_QUERY_ID = -1; // only used on merge branches
@@ -131,27 +126,6 @@ public class CreateBranchData implements Identifiable {
 
    public void setMergeDestinationBranchId(int destinationBranchId) {
       this.mergeDestinationBranchId = destinationBranchId;
-   }
-
-   public int getParentBranchId(TransactionCache txCache) throws OseeCoreException {
-
-      int parentBranchId = NULL_PARENT_BRANCH_ID;
-
-      if (BranchType.SYSTEM_ROOT != branchType) {
-         TransactionRecord sourceTx = txCache.getOrLoad(fromTransaction.getGuid());
-         parentBranchId = sourceTx.getBranchId();
-      }
-      return parentBranchId;
-   }
-
-   public int getSourceTransactionId(TransactionCache txCache) throws OseeCoreException {
-      int sourceTransactionId = NULL_SOURCE_TRANSACTION_ID;
-
-      if (BranchType.SYSTEM_ROOT != branchType) {
-         TransactionRecord sourceTx = txCache.getOrLoad(fromTransaction.getGuid());
-         sourceTransactionId = sourceTx.getId();
-      }
-      return sourceTransactionId;
    }
 
    @Override

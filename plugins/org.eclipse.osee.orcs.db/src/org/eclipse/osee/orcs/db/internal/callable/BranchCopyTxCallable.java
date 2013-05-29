@@ -36,6 +36,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
 import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
+import org.eclipse.osee.orcs.db.internal.util.IdUtil;
 
 /**
  * the behavior of this class - it needs to: have a branch
@@ -83,7 +84,8 @@ public final class BranchCopyTxCallable extends DatabaseTxCallable<Branch> {
    public Branch handleTxWork(OseeConnection connection) throws OseeCoreException {
       // get the previous transaction, if there is one
       // TODO figure out what happens when there isn't one
-      TransactionRecord savedTx = txCache.getOrLoad(branchData.getSourceTransactionId(txCache));
+      int sourceTx = IdUtil.getSourceTxId(branchData, txCache);
+      TransactionRecord savedTx = txCache.getOrLoad(sourceTx);
 
       TransactionRecord priorTx = txCache.getPriorTransaction(savedTx);
       // copy the branch up to the prior transaction - the goal is to have the provided

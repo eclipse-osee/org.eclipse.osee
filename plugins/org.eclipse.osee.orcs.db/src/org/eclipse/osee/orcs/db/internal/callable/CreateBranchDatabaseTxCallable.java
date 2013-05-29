@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.CreateBranchData;
+import org.eclipse.osee.orcs.db.internal.util.IdUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -140,7 +141,7 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
    @SuppressWarnings("unchecked")
    @Override
    protected Branch handleTxWork(OseeConnection connection) throws OseeCoreException {
-      Branch parentBranch = branchCache.getById(newBranchData.getParentBranchId(txCache));
+      Branch parentBranch = branchCache.getById(IdUtil.getParentBranchId(newBranchData, txCache));
       Branch destinationBranch = branchCache.getById(newBranchData.getMergeDestinationBranchId());
 
       passedPreConditions = false;
@@ -169,7 +170,7 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
                newBranchData.getUserArtifactId(), -1, TransactionDetailsType.Baselined, branchCache);
          branch.setSourceTransaction(systemTx);
       } else {
-         int srcTx = newBranchData.getSourceTransactionId(txCache);
+         int srcTx = IdUtil.getSourceTxId(newBranchData, txCache);
 
          branch.setSourceTransaction(txCache.getOrLoad(srcTx));
       }
