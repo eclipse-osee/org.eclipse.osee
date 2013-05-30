@@ -61,7 +61,7 @@ public class AttributeFactory {
 
       Reference<AttributeManager> artifactRef = new WeakReference<AttributeManager>(container);
 
-      attribute.internalInitialize(artifactRef, data, type, isDirty, createWithDefaults);
+      attribute.internalInitialize(cache, artifactRef, data, isDirty, createWithDefaults);
       container.add(type, attribute);
 
       return attribute;
@@ -89,12 +89,22 @@ public class AttributeFactory {
       return introducedAttribute;
    }
 
-   public AttributeType getAttribeType(IAttributeType token) throws OseeCoreException {
+   private AttributeType getAttribeType(IAttributeType token) throws OseeCoreException {
       return token instanceof AttributeType ? (AttributeType) token : cache.get(token);
    }
 
    private ResourceNameResolver createResolver(Attribute<?> attribute) {
-      return new AttributeResourceNameResolver(attribute);
+      return new AttributeResourceNameResolver(cache, attribute);
+   }
+
+   public int getMaxOccurrenceLimit(IAttributeType attributeType) throws OseeCoreException {
+      AttributeType type = getAttribeType(attributeType);
+      return type.getMaxOccurrences();
+   }
+
+   public int getMinOccurrenceLimit(IAttributeType attributeType) throws OseeCoreException {
+      AttributeType type = getAttribeType(attributeType);
+      return type.getMinOccurrences();
    }
 
 }

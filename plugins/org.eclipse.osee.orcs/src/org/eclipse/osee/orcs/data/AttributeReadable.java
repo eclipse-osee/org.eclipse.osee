@@ -27,9 +27,9 @@ public interface AttributeReadable<T> extends Readable {
 
    ModificationType getModificationType();
 
-   IAttributeType getAttributeType();
+   IAttributeType getAttributeType() throws OseeCoreException;
 
-   boolean isOfType(IAttributeType otherAttributeType);
+   boolean isOfType(IAttributeType otherAttributeType) throws OseeCoreException;
 
    T getValue() throws OseeCoreException;
 

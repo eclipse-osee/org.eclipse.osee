@@ -12,11 +12,12 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -29,8 +30,10 @@ public class AttributeResourceNameResolver implements ResourceNameResolver {
    private final static int MAX_NAME_SIZE = 60;
 
    private final Attribute<?> attribute;
+   private final AttributeTypeCache attributeTypeCache;
 
-   public AttributeResourceNameResolver(Attribute<?> attribute) {
+   public AttributeResourceNameResolver(AttributeTypeCache attributeTypeCache, Attribute<?> attribute) {
+      this.attributeTypeCache = attributeTypeCache;
       this.attribute = attribute;
    }
 
@@ -69,13 +72,13 @@ public class AttributeResourceNameResolver implements ResourceNameResolver {
    }
 
    private String getExtension(Attribute<?> attribute) throws OseeCoreException {
-      AttributeType attributeType = attribute.getAttributeType();
+      IAttributeType attributeType = attribute.getAttributeType();
       String fileTypeExtension = null;
       if (attribute.isOfType(CoreAttributeTypes.NativeContent)) {
          fileTypeExtension = (String) attribute.getValue();
       }
       if (!Strings.isValid(fileTypeExtension)) {
-         fileTypeExtension = attributeType.getFileTypeExtension();
+         fileTypeExtension = attributeTypeCache.get(attributeType).getFileTypeExtension();
       }
       return fileTypeExtension;
    }

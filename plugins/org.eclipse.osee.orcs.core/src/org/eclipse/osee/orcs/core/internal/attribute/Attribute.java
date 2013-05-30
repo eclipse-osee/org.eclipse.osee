@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -32,17 +33,18 @@ import org.eclipse.osee.orcs.data.AttributeWriteable;
  * @author Ryan D. Brooks
  */
 public abstract class Attribute<T> implements HasOrcsData<AttributeData>, Comparable<Attribute<T>>, AttributeWriteable<T> {
-   private AttributeType attributeType;
+   private AttributeTypeCache attributeTypeCache;
    private Reference<AttributeManager> containerReference;
    private boolean dirty;
    private String defaultValue;
    private Log logger;
    private AttributeData attributeData;
 
-   public void internalInitialize(Reference<AttributeManager> containerReference, AttributeData attributeData, AttributeType attributeType, boolean isDirty, boolean setDefaultValue) throws OseeCoreException {
+   public void internalInitialize(AttributeTypeCache attributeTypeCache, Reference<AttributeManager> containerReference, AttributeData attributeData, boolean isDirty, boolean setDefaultValue) throws OseeCoreException {
+      this.attributeTypeCache = attributeTypeCache;
       this.containerReference = containerReference;
       this.attributeData = attributeData;
-      this.attributeType = attributeType;
+
       if (setDefaultValue) {
          setToDefaultValue();
       }
@@ -207,30 +209,31 @@ public abstract class Attribute<T> implements HasOrcsData<AttributeData>, Compar
       return containerReference.get();
    }
 
+   protected String getDefaultValueFromMetaData() throws OseeCoreException {
+      return getType().getDefaultValue();
+   }
+
+   private AttributeType getType() throws OseeCoreException {
+      return attributeTypeCache.getByGuid(getOrcsData().getTypeUuid());
+   }
+
    /**
     * @return attributeType Attribute Type Information
+    * @throws OseeCoreException
     */
    @Override
-   public AttributeType getAttributeType() {
-      return attributeType;
+   public IAttributeType getAttributeType() throws OseeCoreException {
+      return attributeTypeCache.getByGuid(getOrcsData().getTypeUuid());
    }
 
    /**
     * Currently this method provides support for quasi attribute type inheritance
     * 
     * @return whether this attribute's type or any of its super-types are the specified type
-    */
-   public boolean isOfType(String otherAttributeTypeName) {
-      return getAttributeType().getName().equals(otherAttributeTypeName);
-   }
-
-   /**
-    * Currently this method provides support for quasi attribute type inheritance
-    * 
-    * @return whether this attribute's type or any of its super-types are the specified type
+    * @throws OseeCoreException
     */
    @Override
-   public boolean isOfType(IAttributeType otherAttributeType) {
+   public boolean isOfType(IAttributeType otherAttributeType) throws OseeCoreException {
       return getAttributeType().equals(otherAttributeType);
    }
 
@@ -251,7 +254,7 @@ public abstract class Attribute<T> implements HasOrcsData<AttributeData>, Compar
     * @throws OseeStateException
     */
    @Override
-   public final void delete() throws OseeStateException {
+   public final void delete() throws OseeCoreException {
       if (isInDb()) {
          markAsChanged(ModificationType.DELETED);
       } else {
@@ -267,7 +270,7 @@ public abstract class Attribute<T> implements HasOrcsData<AttributeData>, Compar
    @Override
    public boolean canDelete() {
       try {
-         return getContainer().getAttributeCount(getAttributeType()) > getAttributeType().getMinOccurrences();
+         return getContainer().getAttributeCount(getAttributeType()) > getType().getMinOccurrences();
       } catch (OseeCoreException ex) {
          return false;
       }

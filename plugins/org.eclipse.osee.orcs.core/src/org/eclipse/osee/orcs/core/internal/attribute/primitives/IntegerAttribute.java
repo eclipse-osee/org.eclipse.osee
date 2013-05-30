@@ -38,7 +38,7 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
    }
 
    @Override
-   protected Integer convertStringToValue(String value) {
+   protected Integer convertStringToValue(String value) throws OseeCoreException {
       Integer toReturn = null;
       if (isValidInteger(value)) {
          toReturn = Integer.valueOf(value);
@@ -48,9 +48,9 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
       return toReturn;
    }
 
-   public Integer getDefaultValue() {
+   public Integer getDefaultValue() throws OseeCoreException {
       Integer toReturn = DEFAULT_INTEGER;
-      String defaultValue = getAttributeType().getDefaultValue();
+      String defaultValue = getDefaultValueFromMetaData();
       if (isValidInteger(defaultValue)) {
          toReturn = Integer.valueOf(defaultValue);
       }

@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeDirtyFilter.DirtyFlag;
 
@@ -55,8 +54,8 @@ public class AttributeCollection {
       return attributes.getValues();
    }
 
-   public Collection<AttributeType> getExistingTypes(DeletionFlag includeDeleted) throws OseeCoreException {
-      List<AttributeType> toReturn = new ArrayList<AttributeType>();
+   public Collection<IAttributeType> getExistingTypes(DeletionFlag includeDeleted) throws OseeCoreException {
+      List<IAttributeType> toReturn = new ArrayList<IAttributeType>();
       for (Attribute<?> attribute : getAttributeList(includeDeleted)) {
          toReturn.add(attribute.getAttributeType());
       }

@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
-import static junit.framework.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import java.lang.ref.WeakReference;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -101,8 +105,7 @@ public class AttributeFactoryTest {
       assertTrue(attribute == actual);
 
       verify(proxy).setResolver(resolverCapture.capture());
-      verify(attribute).internalInitialize(refCapture.capture(), eq(attributeData), eq(attributeType), eq(false),
-         eq(false));
+      verify(attribute).internalInitialize(eq(cache), refCapture.capture(), eq(attributeData), eq(false), eq(false));
       verify(container).add(attributeType, attribute);
       assertEquals(container, refCapture.getValue().get());
 
@@ -128,8 +131,7 @@ public class AttributeFactoryTest {
       assertTrue(attribute == actual);
 
       verify(proxy).setResolver(resolverCapture.capture());
-      verify(attribute).internalInitialize(refCapture.capture(), eq(attributeData), eq(attributeType), eq(true),
-         eq(true));
+      verify(attribute).internalInitialize(eq(cache), refCapture.capture(), eq(attributeData), eq(true), eq(true));
       verify(container).add(attributeType, attribute);
       assertEquals(container, refCapture.getValue().get());
 
@@ -154,7 +156,7 @@ public class AttributeFactoryTest {
       verify(dataFactory).copy(branch, attributeData);
 
       verify(proxy).setResolver(resolverCapture.capture());
-      verify(attribute).internalInitialize(refCapture.capture(), eq(copiedAttributeData), eq(attributeType), eq(true),
+      verify(attribute).internalInitialize(eq(cache), refCapture.capture(), eq(copiedAttributeData), eq(true),
          eq(false));
       verify(container).add(attributeType, attribute);
       assertEquals(container, refCapture.getValue().get());
@@ -190,26 +192,37 @@ public class AttributeFactoryTest {
       verify(dataFactory).introduce(branch, attributeData);
 
       verify(proxy).setResolver(resolverCapture.capture());
-      verify(attribute).internalInitialize(refCapture.capture(), eq(introducedAttributeData), eq(attributeType),
-         eq(true), eq(false));
+      verify(attribute).internalInitialize(eq(cache), refCapture.capture(), eq(introducedAttributeData), eq(true),
+         eq(false));
       verify(container).add(attributeType, attribute);
       assertEquals(container, refCapture.getValue().get());
    }
 
    @Test
-   public void testGetAttributeType() throws OseeCoreException {
+   public void testGetMaxOccurrenceLimit() throws OseeCoreException {
       IAttributeType token = mock(IAttributeType.class);
 
       when(cache.get(token)).thenReturn(attributeType);
+      when(attributeType.getMaxOccurrences()).thenReturn(56);
 
-      AttributeType actual = factory.getAttribeType(attributeType);
+      int actual = factory.getMaxOccurrenceLimit(token);
 
-      Assert.assertTrue(actual == attributeType);
-      verify(cache, times(0)).get(attributeType);
+      assertEquals(56, actual);
 
-      AttributeType actual1 = factory.getAttribeType(token);
+      verify(attributeType).getMaxOccurrences();
+   }
 
-      assertTrue(actual1 == attributeType);
-      verify(cache).get(token);
+   @Test
+   public void testGetMinOccurrenceLimit() throws OseeCoreException {
+      IAttributeType token = mock(IAttributeType.class);
+
+      when(cache.get(token)).thenReturn(attributeType);
+      when(attributeType.getMinOccurrences()).thenReturn(99);
+
+      int actual = factory.getMinOccurrenceLimit(token);
+
+      assertEquals(99, actual);
+
+      verify(attributeType).getMinOccurrences();
    }
 }

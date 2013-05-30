@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -118,8 +117,7 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    public int getMaximumAttributeTypeAllowed(IAttributeType attributeType) throws OseeCoreException {
       int result = -1;
       if (isAttributeTypeValid(attributeType)) {
-         AttributeType fullType = attributeFactory.getAttribeType(attributeType);
-         result = fullType.getMaxOccurrences();
+         result = attributeFactory.getMaxOccurrenceLimit(attributeType);
       }
       return result;
    }
@@ -128,8 +126,7 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    public int getMinimumAttributeTypeAllowed(IAttributeType attributeType) throws OseeCoreException {
       int result = -1;
       if (isAttributeTypeValid(attributeType)) {
-         AttributeType fullType = attributeFactory.getAttribeType(attributeType);
-         result = fullType.getMinOccurrences();
+         result = attributeFactory.getMinOccurrenceLimit(attributeType);
       }
       return result;
    }
@@ -526,10 +523,9 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
 
    private MultiplicityState getAttributeMuliplicityState(IAttributeType attributeType, int count) throws OseeCoreException {
       MultiplicityState state = MultiplicityState.IS_VALID;
-      AttributeType fullType = attributeFactory.getAttribeType(attributeType);
-      if (count > fullType.getMaxOccurrences()) {
+      if (count > attributeFactory.getMaxOccurrenceLimit(attributeType)) {
          state = MultiplicityState.MAX_VIOLATION;
-      } else if (count < fullType.getMinOccurrences()) {
+      } else if (count < attributeFactory.getMinOccurrenceLimit(attributeType)) {
          state = MultiplicityState.MIN_VIOLATION;
       }
       return state;
@@ -559,9 +555,9 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
       }
    }
 
-   private final int getRemainingAttributeCount(IAttributeType token) throws OseeCoreException {
-      AttributeType attributeType = attributeFactory.getAttribeType(token);
-      return attributeType.getMinOccurrences() - getAttributeCount(attributeType);
+   private final int getRemainingAttributeCount(IAttributeType attributeType) throws OseeCoreException {
+      int minLimit = attributeFactory.getMinOccurrenceLimit(attributeType);
+      return minLimit - getAttributeCount(attributeType);
    }
 
    //////////////////////////////////////////////////////////////

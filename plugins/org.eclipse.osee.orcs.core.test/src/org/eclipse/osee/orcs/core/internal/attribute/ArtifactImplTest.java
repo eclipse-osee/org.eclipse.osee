@@ -10,8 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import java.util.List;
 import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -73,6 +78,7 @@ public class ArtifactImplTest {
 
    private final String guid = GUID.create();
 
+   @SuppressWarnings("unchecked")
    @Before
    public void init() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
@@ -80,14 +86,15 @@ public class ArtifactImplTest {
          new ArtifactImpl(artifactData, attributeFactory, relationContainer, branchProvider, artifactTypeProvider);
       when(artifactTypeProvider.get()).thenReturn(artifactType);
       when(artifactType.isValidAttributeType(any(IAttributeType.class), any(Branch.class))).thenReturn(true);
-      when(attributeFactory.getAttribeType(any(IAttributeType.class))).thenReturn(attributeType);
+      when(attributeFactory.getMaxOccurrenceLimit(any(IAttributeType.class))).thenReturn(1);
+
       when(attributeFactory.createAttribute(any(AttributeManager.class), any(AttributeData.class))).thenReturn(
          attribute);
       when(
          attributeFactory.createAttributeWithDefaults(any(AttributeManager.class), any(ArtifactData.class),
             any(IAttributeType.class))).thenReturn(attribute);
       when(attribute.getOrcsData()).thenReturn(attributeData);
-      when(attributeType.getMaxOccurrences()).thenReturn(1);
+
       when(artifactData.getGuid()).thenReturn(guid);
       when(artifactData.getVersion()).thenReturn(version);
       when(branchProvider.get()).thenReturn(branch);
@@ -300,9 +307,10 @@ public class ArtifactImplTest {
 
    @Test
    public void testGetMaximumAttributeTypeAllowed() throws OseeCoreException {
-      reset(attributeType);
       int expected = 5;
-      when(attributeType.getMaxOccurrences()).thenReturn(expected);
+
+      when(attributeFactory.getMaxOccurrenceLimit(CoreAttributeTypes.AccessContextId)).thenReturn(expected);
+
       int result = artifactImpl.getMaximumAttributeTypeAllowed(CoreAttributeTypes.AccessContextId);
       Assert.assertEquals(expected, result);
 
@@ -313,9 +321,10 @@ public class ArtifactImplTest {
 
    @Test
    public void testGetMinimumAttributeTypeAllowed() throws OseeCoreException {
-      reset(attributeType);
       int expected = 5;
-      when(attributeType.getMinOccurrences()).thenReturn(expected);
+
+      when(attributeFactory.getMinOccurrenceLimit(CoreAttributeTypes.AccessContextId)).thenReturn(expected);
+
       int result = artifactImpl.getMinimumAttributeTypeAllowed(CoreAttributeTypes.AccessContextId);
       Assert.assertEquals(expected, result);
 
@@ -415,7 +424,8 @@ public class ArtifactImplTest {
    @Test
    @SuppressWarnings("unchecked")
    public void testDeleteSoleAttributeException() throws OseeCoreException {
-      when(attributeType.getMinOccurrences()).thenReturn(1);
+      when(attributeFactory.getMinOccurrenceLimit(attributeType)).thenReturn(1);
+
       when(notDeleted.getAttributeType()).thenReturn(attributeType);
       artifactImpl.add(attributeType, notDeleted);
 
@@ -432,7 +442,9 @@ public class ArtifactImplTest {
       when(one.getOrcsData()).thenReturn(attributeData);
       when(two.getOrcsData()).thenReturn(attributeData);
       when(three.getOrcsData()).thenReturn(attributeData);
-      when(attributeType.getMaxOccurrences()).thenReturn(3);
+
+      when(attributeFactory.getMaxOccurrenceLimit(attributeType)).thenReturn(3);
+
       when(attributeFactory.createAttributeWithDefaults(eq(artifactImpl), any(ArtifactData.class), eq(attributeType))).thenReturn(
          one, two, three);
       artifactImpl.setAttributesFromStrings(attributeType, "one", "two", "three");
@@ -448,7 +460,9 @@ public class ArtifactImplTest {
       Attribute two = mock(Attribute.class);
       when(one.getOrcsData()).thenReturn(attributeData);
       when(two.getOrcsData()).thenReturn(attributeData);
-      when(attributeType.getMaxOccurrences()).thenReturn(3);
+
+      when(attributeFactory.getMaxOccurrenceLimit(attributeType)).thenReturn(3);
+
       when(attributeFactory.createAttributeWithDefaults(eq(artifactImpl), any(ArtifactData.class), eq(attributeType))).thenReturn(
          two);
       artifactImpl.add(attributeType, one);

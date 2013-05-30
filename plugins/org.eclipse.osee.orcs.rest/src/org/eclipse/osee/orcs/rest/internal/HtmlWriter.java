@@ -64,7 +64,7 @@ public class HtmlWriter {
       return builder.toString();
    }
 
-   private Map<String, Object> toData(AttributeReadable<?> attribute) {
+   private Map<String, Object> toData(AttributeReadable<?> attribute) throws OseeCoreException {
       Map<String, Object> data = new LinkedHashMap<String, Object>();
       data.put("Name", attribute.getAttributeType().getName());
 

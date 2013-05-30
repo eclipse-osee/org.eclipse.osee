@@ -38,7 +38,7 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
    }
 
    @Override
-   protected Double convertStringToValue(String value) {
+   protected Double convertStringToValue(String value) throws OseeCoreException {
       Double toReturn = null;
       if (isValidDouble(value)) {
          toReturn = Double.valueOf(value);
@@ -48,9 +48,9 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
       return toReturn;
    }
 
-   public Double getDefaultValue() {
+   public Double getDefaultValue() throws OseeCoreException {
       Double toReturn = DEFAULT_DOUBLE;
-      String defaultValue = getAttributeType().getDefaultValue();
+      String defaultValue = getDefaultValueFromMetaData();
       if (isValidDouble(defaultValue)) {
          toReturn = Double.valueOf(defaultValue);
       }

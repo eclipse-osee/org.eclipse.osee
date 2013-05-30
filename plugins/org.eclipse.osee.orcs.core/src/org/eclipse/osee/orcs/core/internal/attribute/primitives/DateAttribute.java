@@ -56,7 +56,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
 
    @Override
    protected void setToDefaultValue() throws OseeCoreException {
-      String defaultValue = getAttributeType().getDefaultValue();
+      String defaultValue = getDefaultValueFromMetaData();
       if (Strings.isValid(defaultValue)) {
          subClassSetValue(convertStringToValue(defaultValue));
       } else {
