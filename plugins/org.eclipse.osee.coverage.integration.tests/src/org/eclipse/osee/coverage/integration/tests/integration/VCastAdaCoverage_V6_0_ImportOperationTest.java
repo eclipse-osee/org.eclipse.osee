@@ -258,6 +258,7 @@ public class VCastAdaCoverage_V6_0_ImportOperationTest {
             String.format("Coverage Package Save: %s.%s", getClass().getSimpleName(), testName.getMethodName());
          SkynetTransaction transaction =
             TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(), txComment);
+
          CoveragePackageEvent coverageEvent = new CoveragePackageEvent(coveragePackage, CoverageEventType.Modified);
          store.save(transaction, coverageEvent, coveragePackage.getCoverageOptionManager());
          store.getArtifact(false).persist(transaction);

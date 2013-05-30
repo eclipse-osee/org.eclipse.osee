@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.integration.tests.integration;
 
-import static org.eclipse.osee.coverage.demo.CoverageChoice.*;
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.*;
+import static org.eclipse.osee.coverage.demo.CoverageChoice.OSEE_COVERAGE_DEMO;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.util.Collection;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
@@ -240,6 +240,7 @@ public class CoveragePackageImportTest {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(CoverageTestUtil.getTestBranch(),
                "Coverage Package Save " + testName.getMethodName());
+
          store.save(transaction, getTestCoveragePackageEvent(), coveragePackage.getCoverageOptionManager());
          Artifact artifactX = store.getArtifact(false);
          artifactX.persist(transaction);

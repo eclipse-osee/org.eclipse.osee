@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -91,7 +92,8 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          }
          transaction1.execute();
 
-         SkynetTransaction transaction = TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Add Common Branch");
+         SkynetTransaction transaction =
+            TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Add Common Branch");
 
          //create everyone group
          Artifact everyonGroup = SystemGroup.Everyone.getArtifact();
@@ -110,6 +112,11 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
 
          // Create OseeAdmin group
          SystemGroup.OseeAdmin.getArtifact().persist(transaction);
+
+         // Need to set some Test Unit Table data
+         Artifact art =
+            ArtifactQuery.getOrCreate("Bs+PvSVQf3R5EHSTcyQA", null, CoreArtifactTypes.Artifact, CoreBranches.COMMON);
+         art.persist(transaction);
 
          transaction.execute();
       }
