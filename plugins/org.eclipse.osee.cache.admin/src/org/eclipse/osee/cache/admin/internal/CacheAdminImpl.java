@@ -15,7 +15,6 @@ import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.cache.admin.CacheConfiguration;
 import org.eclipse.osee.cache.admin.CacheDataLoader;
 import org.eclipse.osee.cache.admin.CacheKeysLoader;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * Creating and keeping track of application caches.
@@ -36,12 +35,12 @@ public class CacheAdminImpl implements CacheAdmin {
    }
 
    @Override
-   public <K, V> Cache<K, V> createCache(CacheConfiguration configuration) throws OseeCoreException {
+   public <K, V> Cache<K, V> createCache(CacheConfiguration configuration) throws Exception {
       return cacheFactory.createCache(configuration);
    }
 
    @Override
-   public <K, V> Cache<K, V> createLoadingCache(CacheConfiguration configuration, CacheDataLoader<K, V> accessor, CacheKeysLoader<K> keyLoader) throws OseeCoreException {
+   public <K, V> Cache<K, V> createLoadingCache(CacheConfiguration configuration, CacheDataLoader<K, V> accessor, CacheKeysLoader<K> keyLoader) throws Exception {
       return cacheFactory.createLoadingCache(configuration, accessor, keyLoader);
    }
 

@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
+
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
@@ -24,6 +25,7 @@ import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
@@ -83,9 +85,12 @@ public final class SessionManagerImpl implements ISessionManager {
             }
          };
 
-         Session session = sessionCache.get(newSessionId, callable);
-
-         sessionGrant = sessionFactory.createSessionGrant(session, userToken, authenticationManager.getProtocol());
+         try {
+            Session session = sessionCache.get(newSessionId, callable);
+            sessionGrant = sessionFactory.createSessionGrant(session, userToken, authenticationManager.getProtocol());
+         } catch (Exception e) {
+            OseeExceptions.wrapAndThrow(e);
+         }
 
       }
       return sessionGrant;
@@ -109,16 +114,30 @@ public final class SessionManagerImpl implements ISessionManager {
    @Override
    public Session getSessionById(String sessionId) throws OseeCoreException {
       Conditions.checkNotNull(sessionId, "sessionId");
-      return sessionCache.get(sessionId);
+      Session session = null;
+      try {
+         session = sessionCache.get(sessionId);
+      } catch (Exception e) {
+         OseeExceptions.wrapAndThrow(e);
+      }
+      return session;
    }
 
    @Override
    public Collection<ISession> getSessionByClientAddress(String clientAddress) throws OseeCoreException {
       Conditions.checkNotNull(clientAddress, "clientAddress");
       Set<ISession> sessions = new HashSet<ISession>();
-      for (Session session : sessionCache.getAll()) {
-         if (session.getClientAddress().equals(clientAddress)) {
-            sessions.add(session);
+      Iterable<Session> all = null;
+      try {
+         all = sessionCache.getAll();
+      } catch (Exception e) {
+         OseeExceptions.wrapAndThrow(e);
+      }
+      if(all != null){
+         for (Session session : all) {
+            if (session.getClientAddress().equals(clientAddress)) {
+               sessions.add(session);
+            }
          }
       }
       return sessions;
@@ -139,12 +158,20 @@ public final class SessionManagerImpl implements ISessionManager {
    @Override
    public Collection<ISession> getAllSessions(boolean includeNonServerManagedSessions) throws OseeCoreException {
       Collection<ISession> toReturn = new HashSet<ISession>();
-      for (Session session : sessionCache.getAll()) {
-         toReturn.add(session);
+      Iterable<Session> all = null;
+      try {
+         all = sessionCache.getAll();
+      } catch (Exception e) {
+         OseeExceptions.wrapAndThrow(e);
       }
-      if (includeNonServerManagedSessions) {
-         ISessionCollector collector = new DefaultSessionCollector(serverId, sessionFactory, toReturn);
-         sessionQuery.selectNonServerManagedSessions(collector);
+      if(all != null){
+         for (Session session : all) {
+            toReturn.add(session);
+         }
+         if (includeNonServerManagedSessions) {
+            ISessionCollector collector = new DefaultSessionCollector(serverId, sessionFactory, toReturn);
+            sessionQuery.selectNonServerManagedSessions(collector);
+         }
       }
       return toReturn;
    }

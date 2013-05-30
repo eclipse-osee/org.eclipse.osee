@@ -17,15 +17,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 import java.util.concurrent.Callable;
+
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.cache.admin.CacheConfiguration;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
+
 import com.google.common.collect.Iterables;
 
 /**
@@ -48,14 +50,14 @@ public class NoneLoadingCacheTest {
    private final CacheConfiguration config = CacheConfiguration.newConfiguration();
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup() throws Exception {
       MockitoAnnotations.initMocks(this);
 
       cache = factory.createCache(config);
    }
 
    @Test
-   public void testGetIfPresent() throws OseeCoreException {
+   public void testGetIfPresent() throws Exception {
       Object value = cache.getIfPresent(KEY_1);
       assertNull(value);
 
@@ -69,7 +71,7 @@ public class NoneLoadingCacheTest {
    }
 
    @Test
-   public void testGetAllPresent() throws OseeCoreException {
+   public void testGetAllPresent() throws Exception {
       Iterable<Object> values = cache.getAllPresent();
       assertEquals(false, values.iterator().hasNext());
 
@@ -91,7 +93,7 @@ public class NoneLoadingCacheTest {
    }
 
    @Test
-   public void testGet() throws OseeCoreException {
+   public void testGet() throws Exception {
       assertEquals(true, cache.isEmpty());
 
       Object value = cache.get(KEY_1);
@@ -110,7 +112,7 @@ public class NoneLoadingCacheTest {
    }
 
    @Test
-   public void testGetAll() throws OseeCoreException {
+   public void testGetAll() throws Exception {
       assertEquals(true, cache.isEmpty());
 
       cache.get(KEY_1, createCallable(OBJECT_1));
@@ -128,7 +130,7 @@ public class NoneLoadingCacheTest {
    }
 
    @Test
-   public void testGetAllKeys() throws OseeCoreException {
+   public void testGetAllKeys() throws Exception {
       assertEquals(true, cache.isEmpty());
 
       cache.get(KEY_1, createCallable(OBJECT_1));
@@ -146,7 +148,7 @@ public class NoneLoadingCacheTest {
    }
 
    @Test
-   public void testInvalidateAll() throws OseeCoreException {
+   public void testInvalidateAll() throws Exception {
       assertEquals(true, cache.isEmpty());
       assertEquals(0, cache.size());
 
@@ -162,7 +164,7 @@ public class NoneLoadingCacheTest {
    }
 
    @Test
-   public void testInvalidateKeys() throws OseeCoreException {
+   public void testInvalidateKeys() throws Exception {
       assertEquals(true, cache.isEmpty());
       assertEquals(0, cache.size());
 
@@ -181,7 +183,7 @@ public class NoneLoadingCacheTest {
    }
 
    @Test
-   public void testInvalidate() throws OseeCoreException {
+   public void testInvalidate() throws Exception {
       assertEquals(true, cache.isEmpty());
       assertEquals(0, cache.size());
 

@@ -11,7 +11,6 @@
 package org.eclipse.osee.cache.admin;
 
 import java.util.Map;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author John Misinco
@@ -19,9 +18,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface CacheDataLoader<K, V> {
 
-   Map<K, V> load(Iterable<? extends K> keys) throws OseeCoreException;
+   Map<K, V> load(Iterable<? extends K> keys) throws Exception;
 
-   V load(K key) throws OseeCoreException;
+   V load(K key) throws Exception;
 
-   V reload(K key, V oldValue) throws OseeCoreException;
+   V reload(K key, V oldValue) throws Exception;
 }

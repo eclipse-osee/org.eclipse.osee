@@ -12,10 +12,9 @@ package org.eclipse.osee.cache.admin.internal;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
+
 import org.eclipse.osee.cache.admin.Cache;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
+
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
@@ -62,37 +61,37 @@ public class CacheProxy<K, V> implements Cache<K, V> {
    }
 
    @Override
-   public Map<K, V> get(Iterable<? extends K> keys) throws OseeCoreException {
+   public Map<K, V> get(Iterable<? extends K> keys) throws Exception {
       ImmutableMap<K, V> items = null;
       try {
          items = proxied.getAllPresent(keys);
-      } catch (InvalidCacheLoadException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+      }  catch (InvalidCacheLoadException ex) {
+         throw new Exception(ex); 
       } catch (UncheckedExecutionException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw new Exception(ex);
       } catch (ExecutionError ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw new Exception(ex);
       }
       return items;
    }
 
    @Override
-   public Iterable<V> getAll() throws OseeCoreException {
+   public Iterable<V> getAll() throws Exception {
       Iterable<? extends K> allKeys = getAllKeys();
       return get(allKeys).values();
    }
 
    @Override
-   public V get(K key) throws OseeCoreException {
+   public V get(K key) throws Exception {
       V toReturn = null;
       try {
          toReturn = proxied.getIfPresent(key);
-      } catch (InvalidCacheLoadException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+      }  catch (InvalidCacheLoadException ex) {
+         throw new Exception(ex); 
       } catch (UncheckedExecutionException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw new Exception(ex);
       } catch (ExecutionError ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw new Exception(ex);
       }
       return toReturn;
    }
@@ -123,18 +122,16 @@ public class CacheProxy<K, V> implements Cache<K, V> {
    }
 
    @Override
-   public V get(K key, Callable<? extends V> callable) throws OseeCoreException {
+   public V get(K key, Callable<? extends V> callable) throws Exception {
       V toReturn = null;
       try {
          toReturn = proxied.get(key, callable);
-      } catch (ExecutionException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      } catch (InvalidCacheLoadException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+      }  catch (InvalidCacheLoadException ex) {
+         throw new Exception(ex); 
       } catch (UncheckedExecutionException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw new Exception(ex);
       } catch (ExecutionError ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw new Exception(ex);
       }
       return toReturn;
    }

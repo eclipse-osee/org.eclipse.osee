@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.cache.admin;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * Service in-charge of creating application caches.
@@ -20,8 +19,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface CacheAdmin {
 
-   <K, V> Cache<K, V> createCache(CacheConfiguration configuration) throws OseeCoreException;
+   <K, V> Cache<K, V> createCache(CacheConfiguration configuration) throws Exception;
 
-   <K, V> Cache<K, V> createLoadingCache(CacheConfiguration configuration, CacheDataLoader<K, V> dataLoader, CacheKeysLoader<K> keyLoader) throws OseeCoreException;
+   <K, V> Cache<K, V> createLoadingCache(CacheConfiguration configuration, CacheDataLoader<K, V> dataLoader, CacheKeysLoader<K> keyLoader) throws Exception;
 
 }

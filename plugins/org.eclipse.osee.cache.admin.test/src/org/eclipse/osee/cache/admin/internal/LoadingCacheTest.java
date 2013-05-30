@@ -19,15 +19,16 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
+
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.cache.admin.CacheConfiguration;
 import org.eclipse.osee.cache.admin.CacheDataLoader;
 import org.eclipse.osee.cache.admin.CacheKeysLoader;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +39,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+
 import com.google.common.collect.Iterables;
 
 /**
@@ -67,14 +69,14 @@ public class LoadingCacheTest {
    private final CacheConfiguration config = CacheConfiguration.newConfiguration();
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup() throws Exception {
       MockitoAnnotations.initMocks(this);
 
       cache = factory.createLoadingCache(config, dataLoader, keyLoader);
    }
 
    @Test
-   public void testGetIfPresent() throws OseeCoreException {
+   public void testGetIfPresent() throws Exception {
       Object value = cache.getIfPresent(KEY_1);
       assertNull(value);
 
@@ -94,7 +96,7 @@ public class LoadingCacheTest {
    }
 
    @Test
-   public void testGetAllPresent() throws OseeCoreException {
+   public void testGetAllPresent() throws Exception {
       Iterable<Object> values = cache.getAllPresent();
       assertEquals(false, values.iterator().hasNext());
 
@@ -125,7 +127,7 @@ public class LoadingCacheTest {
    }
 
    @Test
-   public void testGet() throws OseeCoreException {
+   public void testGet() throws Exception {
       assertEquals(true, cache.isEmpty());
 
       when(dataLoader.load(KEY_1)).thenReturn(OBJECT_1);
@@ -141,7 +143,7 @@ public class LoadingCacheTest {
    }
 
    @Test
-   public void testGetAll() throws OseeCoreException {
+   public void testGetAll() throws Exception {
       Iterable<? extends String> keysInStore = Arrays.asList(KEY_1, KEY_2);
       when(keyLoader.getAllKeys()).thenAnswer(createAnswer(keysInStore));
 
@@ -186,7 +188,7 @@ public class LoadingCacheTest {
    }
 
    @Test
-   public void testGetAllKeys() throws OseeCoreException {
+   public void testGetAllKeys() throws Exception {
       Iterable<? extends String> keysInStore = Arrays.asList(KEY_1, KEY_2);
       when(keyLoader.getAllKeys()).thenAnswer(createAnswer(keysInStore));
 
@@ -241,7 +243,7 @@ public class LoadingCacheTest {
    }
 
    @Test
-   public void testInvalidateAll() throws OseeCoreException {
+   public void testInvalidateAll() throws Exception {
       Iterable<? extends String> keysInStore = Arrays.asList(KEY_1, KEY_2, KEY_3);
       when(keyLoader.getAllKeys()).thenAnswer(createAnswer(keysInStore));
 
@@ -263,7 +265,7 @@ public class LoadingCacheTest {
    }
 
    @Test
-   public void testInvalidateKeys() throws OseeCoreException {
+   public void testInvalidateKeys() throws Exception {
       Iterable<? extends String> keysInStore = Arrays.asList(KEY_1, KEY_2, KEY_3);
       when(keyLoader.getAllKeys()).thenAnswer(createAnswer(keysInStore));
 
@@ -288,7 +290,7 @@ public class LoadingCacheTest {
    }
 
    @Test
-   public void testInvalidate() throws OseeCoreException {
+   public void testInvalidate() throws Exception {
       Iterable<? extends String> keysInStore = Arrays.asList(KEY_1, KEY_2, KEY_3);
       when(keyLoader.getAllKeys()).thenAnswer(createAnswer(keysInStore));
 
@@ -313,7 +315,7 @@ public class LoadingCacheTest {
    }
 
    @Test
-   public void testRefresh() throws OseeCoreException {
+   public void testRefresh() throws Exception {
       Iterable<? extends String> keysInStore = Arrays.asList(KEY_1, KEY_2, KEY_3);
       when(keyLoader.getAllKeys()).thenAnswer(createAnswer(keysInStore));
 

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.cache.admin;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author John Misinco
@@ -18,6 +17,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface CacheKeysLoader<K> {
 
-   Iterable<? extends K> getAllKeys() throws OseeCoreException;
+   Iterable<? extends K> getAllKeys() throws Exception;
 
 }

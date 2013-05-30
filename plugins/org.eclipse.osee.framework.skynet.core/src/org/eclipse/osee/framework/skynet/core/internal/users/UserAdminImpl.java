@@ -13,13 +13,14 @@ package org.eclipse.osee.framework.skynet.core.internal.users;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.LazyObject;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.UserDataStoreException;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -119,9 +120,13 @@ public class UserAdminImpl implements UserAdmin {
       User user = null;
       try {
          user = cache.get(userId);
-      } catch (OseeWrappedException ex) {
+      } catch (Exception ex) {
          UserDataStoreException userEx = unwrapUserException(ex);
-         throw userEx != null ? userEx : ex;
+         if(userEx != null){
+            throw userEx;
+         } else {
+            OseeExceptions.wrapAndThrow(ex);
+         }
       }
       return user;
    }
@@ -141,7 +146,13 @@ public class UserAdminImpl implements UserAdmin {
    public List<User> getActiveUsers() throws OseeCoreException {
       Cache<String, User> cache = getCache();
       List<User> activeUsers = new ArrayList<User>();
-      for (User user : cache.getAll()) {
+      Iterable<User> all = null;
+      try {
+         all = cache.getAll();
+      } catch (Exception e) {
+         OseeExceptions.wrapAndThrow(e);
+      }
+      for (User user : all) {
          if (user.isActive()) {
             activeUsers.add(user);
          }
@@ -153,7 +164,13 @@ public class UserAdminImpl implements UserAdmin {
    public List<User> getUsersAll() throws OseeCoreException {
       Cache<String, User> cache = getCache();
       List<User> users = new ArrayList<User>();
-      for (User user : cache.getAll()) {
+      Iterable<User> all = null;
+      try {
+         all = cache.getAll();
+      } catch (Exception e) {
+         OseeExceptions.wrapAndThrow(e);
+      }
+      for (User user : all) {
          users.add(user);
       }
       return users;

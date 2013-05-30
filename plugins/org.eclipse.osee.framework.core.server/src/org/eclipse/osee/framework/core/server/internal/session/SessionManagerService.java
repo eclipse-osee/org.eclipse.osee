@@ -11,12 +11,14 @@
 package org.eclipse.osee.framework.core.server.internal.session;
 
 import java.util.Collection;
+
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.cache.admin.CacheConfiguration;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISession;
@@ -88,12 +90,16 @@ public final class SessionManagerService implements ISessionManager {
          new DatabaseSessionAccessor(serverId, sessionFactory, sessionQuery, getDbService());
 
       CacheConfiguration config = CacheConfiguration.newConfiguration();
-      Cache<String, Session> sessionCache = cacheAdmin.createLoadingCache(config, accessor, accessor);
+      Cache<String, Session> sessionCache = null;
+      try {
+         sessionCache = cacheAdmin.createLoadingCache(config, accessor, accessor);
+      } catch (Exception e) {
+         OseeExceptions.wrapAndThrow(e);
+      }
 
       proxiedSessionManager =
          new SessionManagerImpl(serverId, sessionFactory, sessionQuery, sessionCache, getAuthenticationManager(),
             accessor);
-
    }
 
    public void stop() {

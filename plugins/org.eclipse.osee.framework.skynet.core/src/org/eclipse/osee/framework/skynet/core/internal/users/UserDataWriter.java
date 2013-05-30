@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
@@ -87,12 +88,17 @@ public class UserDataWriter {
    }
 
    private void cacheUser(final User newUser) throws OseeCoreException {
-      cacheProvider.get().get(newUser.getUserId(), new Callable<User>() {
-         @Override
-         public User call() throws Exception {
-            return newUser;
-         }
-      });
+      Cache<String, User> cache = cacheProvider.get();
+      try {
+         cache.get(newUser.getUserId(), new Callable<User>() {
+            @Override
+            public User call() {
+               return newUser;
+            }
+         });
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      }
    }
 
    private void addUserToUserGroups(Artifact user) throws OseeCoreException {

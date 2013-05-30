@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.LazyObject;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -109,7 +110,13 @@ public class CurrentUserProvider extends LazyObject<User> {
       }
 
       private User getUser(IUserToken token) throws OseeCoreException {
-         return cacheProvider.get().get(token.getUserId());
+         User user = null;
+         try {
+            user = cacheProvider.get().get(token.getUserId());
+         } catch (Exception ex) {
+            OseeExceptions.wrapAndThrow(ex);
+         }
+         return user;
       }
 
    }

@@ -12,7 +12,6 @@ package org.eclipse.osee.cache.admin;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author John Misinco
@@ -24,19 +23,19 @@ public interface Cache<K, V> {
 
    Map<K, V> getIfPresent(Iterable<? extends K> keys);
 
-   V get(K key, Callable<? extends V> loader) throws OseeCoreException;
+   V get(K key, Callable<? extends V> loader) throws Exception;
 
-   V get(K key) throws OseeCoreException;
+   V get(K key) throws Exception;
 
-   Map<K, V> get(Iterable<? extends K> keys) throws OseeCoreException;
+   Map<K, V> get(Iterable<? extends K> keys) throws Exception;
 
    Iterable<V> getAllPresent();
 
-   Iterable<V> getAll() throws OseeCoreException;
+   Iterable<V> getAll() throws Exception;
 
    Iterable<? extends K> getAllKeysPresent();
 
-   Iterable<? extends K> getAllKeys() throws OseeCoreException;
+   Iterable<? extends K> getAllKeys() throws Exception;
 
    void refresh(K key);
 

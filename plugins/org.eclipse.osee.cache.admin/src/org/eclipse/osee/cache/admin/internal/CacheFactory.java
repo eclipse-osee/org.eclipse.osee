@@ -12,13 +12,14 @@ package org.eclipse.osee.cache.admin.internal;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.cache.admin.CacheConfiguration;
 import org.eclipse.osee.cache.admin.CacheDataLoader;
 import org.eclipse.osee.cache.admin.CacheKeysLoader;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+
+import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -31,17 +32,17 @@ import com.google.common.util.concurrent.ListenableFuture;
  */
 public class CacheFactory {
 
-   public <K, V> Cache<K, V> createCache(final CacheConfiguration config) throws OseeCoreException {
-      Conditions.checkNotNull(config, "cacheConfiguration");
+   public <K, V> Cache<K, V> createCache(final CacheConfiguration config) throws Exception {
+      Preconditions.checkNotNull(config, "cacheConfiguration");
       com.google.common.cache.Cache<K, V> cache = createCacheBuilder(config).build();
       Cache<K, V> toReturn = new CacheProxy<K, V>(cache);
       return toReturn;
    }
 
-   public <K, V> Cache<K, V> createLoadingCache(final CacheConfiguration config, final CacheDataLoader<K, V> dataLoader, final CacheKeysLoader<K> keyLoader) throws OseeCoreException {
-      Conditions.checkNotNull(config, "cacheConfiguration");
-      Conditions.checkNotNull(dataLoader, "cacheDataLoader");
-      Conditions.checkNotNull(keyLoader, "cacheKeysLoader");
+   public <K, V> Cache<K, V> createLoadingCache(final CacheConfiguration config, final CacheDataLoader<K, V> dataLoader, final CacheKeysLoader<K> keyLoader) throws Exception {
+      Preconditions.checkNotNull(config, "cacheConfiguration");
+      Preconditions.checkNotNull(dataLoader, "cacheDataLoader");
+      Preconditions.checkNotNull(keyLoader, "cacheKeysLoader");
 
       final LoadingCache<K, V> loadingCache = createCacheBuilder(config).build(new CacheLoader<K, V>() {
 
