@@ -61,12 +61,12 @@
 		<createLaunch filepath="${server-path}/runExample.sh" connection.id="[id from connection file]" serverport="8089" executable="false" launcher="${equinox-launcher-jar}" extraVMArgs="-Dosee.connection.info.uri=[custom connection file path] \${line.separator}-Dosee.application.server.data=[binary data path] \${line.separator}-Dosee.authentication.protocol=[trustAll,demo]" />
 	</target>
 
-	<target name="generateH2Launch">
-		<createLaunch filepath="${server-path}/runH2.sh" connection.id="h2" serverport="8089" launcher="${equinox-launcher-jar}" extraVMArgs="-Dosee.authentication.protocol=trustAll \${line.separator}-Dosee.db.embedded.server=0.0.0.0:8088" />
+	<target name="generateHSQLLaunch">
+		<createLaunch filepath="${server-path}/runHSQL.sh" connection.id="hsql" serverport="8089" launcher="${equinox-launcher-jar}" extraVMArgs="-Dosee.authentication.protocol=trustAll \${line.separator}-Dosee.db.embedded.server=0.0.0.0:8088" />
 	</target>
 
 	<target name="generateDemoLaunch">
-		<createLaunch filepath="${server-path}/runDemo.sh" connection.id="osee.demo.h2" serverport="8089" launcher="${equinox-launcher-jar}" extraVMArgs="-Dosee.authentication.protocol=demo \${line.separator}-Dosee.db.embedded.server=0.0.0.0:8088 \${line.separator}-Dosee.connection.info.uri=&quot;demo/osee.demo.db.connection.xml&quot; \${line.separator}-Dosee.application.server.data=&quot;demo/binary_data&quot;" />
+		<createLaunch filepath="${server-path}/runDemo.sh" connection.id="hsql" serverport="8089" launcher="${equinox-launcher-jar}" extraVMArgs="-Dosee.authentication.protocol=demo \${line.separator}-Dosee.db.embedded.server=0.0.0.0:8088 \${line.separator}-Dosee.connection.info.uri=&quot;demo/osee.demo.db.connection.xml&quot; \${line.separator}-Dosee.application.server.data=&quot;demo/binary_data&quot;" />
 
 		<copy file="${server-path}/runDemo.sh" tofile="${server-path}/runDemo.bat" overwrite="true" />
 		<replaceregexp file="${server-path}/runDemo.bat" match="\\" replace="^" flags="g" />
@@ -77,7 +77,7 @@
 		<mkdir dir="${server-demo-path}" />
 		<mkdir dir="${server-demo-path}/binary_data" />
 
-		<unzip src="${demo-content-path}/h2.zip" dest="${server-demo-path}" />
+		<unzip src="${demo-content-path}/hsql.zip" dest="${server-demo-path}" />
 		<unzip src="${demo-content-path}/binary_data.zip" dest="${server-demo-path}/binary_data" />
 		<copy file="${demo-content-path}/osee.demo.db.connection.xml" tofile="${server-demo-path}/osee.demo.db.connection.xml" />
 	</target>
@@ -86,7 +86,7 @@
 		<createLaunch filepath="${server-path}/runPostgresqlLocal.sh" connection.id="postgresqlLocalhost" serverport="8089" launcher="${equinox-launcher-jar}" extraVMArgs="-Dosee.authentication.protocol=trustAll"/>
 	</target>
 
-	<target name="generateLaunchScripts" depends="generateTemplate,generateDemoLaunch,generateH2Launch,generateLocalPostgresLaunch" />
+	<target name="generateLaunchScripts" depends="generateTemplate,generateDemoLaunch,generateHSQLLaunch,generateLocalPostgresLaunch" />
 
 	<!-- *************************************************************** -->
 	<!--   GENERATE CONFIG.INI                                           -->

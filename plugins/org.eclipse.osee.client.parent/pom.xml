@@ -31,7 +31,6 @@
 		<!--<module>../../plugins/org.eclipse.osee.framework.core.dsl.integration</module> -->
 		<!--<module>../../plugins/org.eclipse.osee.framework.database</module> -->
 		<module>../../plugins/org.eclipse.osee.framework.database.init</module>
-		<!--<module>../../plugins/org.eclipse.osee.framework.h2</module> -->
 
 		<module>../../plugins/org.eclipse.osee.framework.messaging.event.res</module>
 		<module>../../plugins/org.eclipse.osee.framework.messaging.event.res.test</module>

@@ -171,7 +171,7 @@
 										<property name="xserver-db-address" value="127.0.0.1" />
 										<property name="xserver-db-port" value="${osee-server-db-port}" />
 										<property name="xserver-db-web-port" value="${osee-server-db-web-port}" />
-										<property name="xserver-db-type" value="H2" />
+										<property name="xserver-db-type" value="HSQL" />
 										<property name="additionalJvmArgs" value=" " />
 
 										<property name="xserver-log-output"

@@ -11,7 +11,7 @@
    $xserver-db-address=127.0.0.1 \
    $xserver-db-port=1623 \
    $xserver-db-web-port=1623 \
-   $xserver-db-type=H2,PGSQL \
+   $xserver-db-type=HSQL,PGSQL \
    
    ${xserver-authentication} 
 	${xserver-data}
@@ -131,12 +131,7 @@
 					&lt;Host key=&quot;#HOST#&quot; value=&quot;@AvailableDbServices.hostAddress&quot; /&gt;${line.separator}
 					&lt;Port key=&quot;#PORT#&quot; value=&quot;@AvailableDbServices.port&quot; /&gt;${line.separator}
 				&lt;/DatabaseInfo&gt;${line.separator}
-				${line.separator}
-				&lt;ConnectionDescription id=&quot;h2.db.connection&quot;&gt;${line.separator}
-					&lt;Driver&gt;org.h2.Driver&lt;/Driver&gt;${line.separator}
-					&lt;Url&gt;#PREFIX#:tcp://#HOST#:#PORT#/#DBHOME##DBNAME#;IGNORECASE=TRUE;SCHEMA_SEARCH_PATH=@{dbUser}, PUBLIC;MVCC=TRUE&lt;/Url&gt;${line.separator}
-				&lt;/ConnectionDescription&gt;${line.separator}
-				${line.separator}				
+				${line.separator}	
 				&lt;ConnectionDescription id=&quot;postgresql.db.connection&quot;&gt;${line.separator}
 					&lt;Driver&gt;org.postgresql.Driver&lt;/Driver&gt;${line.separator}
 					&lt;Url&gt;#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#&lt;/Url&gt;${line.separator}

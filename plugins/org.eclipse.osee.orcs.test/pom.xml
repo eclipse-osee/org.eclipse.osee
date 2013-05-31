@@ -181,7 +181,7 @@
 						</dependency>
 						<dependency>
 							<type>eclipse-plugin</type>
-							<artifactId>org.h2</artifactId>
+							<artifactId>org.hsqldb</artifactId>
 							<version>0.0.0</version>
 						</dependency>
 

@@ -1,24 +1,25 @@
 <DbConnection>
 
-	<DatabaseInfo id="h2.db.info">
-		<DatabaseHome key="#DBHOME#" value="demo/h2/" />
-		<DatabaseName key="#DBNAME#" value="osee.h2.db" />
-		<DatabaseType key="#TYPE#" value="h2" />
-		<Prefix key="#PREFIX#" value="jdbc:h2:tcp" />
-		<UserName key="#USERNAME#" value="osee" />
-		<Password key="#PASSWORD#" value="osee" />
+	<DatabaseInfo id="hsql.db.info">
+		<DatabaseHome key="#DBHOME#" value="file:~/hsql/osee.hsql.db" />
+		<DatabaseName key="#DBNAME#" value="osee.hsql.db" />
+		<DatabaseType key="#TYPE#" value="hsql" />
+		<Prefix key="#PREFIX#" value="jdbc:hsqldb:hsql" />
+		<UserName key="#USERNAME#" value="public" />
+		<Password key="#PASSWORD#" value="" />
 		<Host key="#HOST#" value="@AvailableDbServices.hostAddress" />
 		<Port key="#PORT#" value="@AvailableDbServices.port" />
 	</DatabaseInfo>
 
-	<ConnectionDescription id="h2.db.connection">
-		<Driver>org.h2.Driver</Driver>
-		<Url>#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#;IGNORECASE=TRUE;SCHEMA_SEARCH_PATH=OSEE,PUBLIC;MVCC=TRUE;LOG=2</Url>
+	<ConnectionDescription id="hsql.db.connection">
+		<Driver>org.hsqldb.jdbc.JDBCDriver</Driver>
+		<Url>#PREFIX#://#HOST#:#PORT#/#DBNAME#</Url>
+		<Property key="hsqldb.tx" value="MVCC" />
 	</ConnectionDescription>
 
 	<AvailableDbServices>
-		<Server id="osee.demo.h2" dbInfo="h2.db.info" hostAddress="127.0.0.1"
-			port="8088" connectsWith="h2.db.connection" />
+		<Server id="hsql" dbInfo="hsql.db.info" hostAddress="127.0.0.1"
+			port="8088" connectsWith="hsql.db.connection" />			
 	</AvailableDbServices>
 
 </DbConnection>
