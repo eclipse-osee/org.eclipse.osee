@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="OteMasterProduct" uid="org.eclipse.osee.ote.master.product" id="org.eclipse.osee.ote.master.rest.OTEMasterServerProduct" application="org.eclipse.osee.ote.master.app" version="1.0.0" useFeatures="true" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-console</programArgs>
+      <vmArgs>-Dorg.osgi.service.http.port=8008
+-Dequinox.ds.debug=true
+-Dequinox.ds.print=true</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <launcher>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.osee.x.core.external.feature" version="0.11.1.qualifier"/>
+      <feature id="org.eclipse.osee.x.core.feature" version="0.11.1.qualifier"/>
+      <feature id="org.eclipse.osee.ote.master.feature" version="1.0.0.qualifier"/>
+      <feature id="org.eclipse.osee.ote.server.external.feature" version="1.0.0.qualifier"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.eclipse.osee.rest.admin" autoStart="true" startLevel="0" />
+   </configurations>
+
+</product>
