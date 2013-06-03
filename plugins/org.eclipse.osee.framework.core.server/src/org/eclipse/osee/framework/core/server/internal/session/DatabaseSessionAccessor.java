@@ -185,14 +185,16 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
          }
       }
 
-      private void update(OseeConnection connection) throws OseeCoreException {
-         List<Object[]> updateData = new ArrayList<Object[]>();
-         for (Session session : sessions) {
-            updateData.add(toUpdate(session));
-         }
-         if (!updateData.isEmpty()) {
-            dbService.runBatchUpdate(connection, UPDATE_SESSION, updateData);
-         }
+      private void update(OseeConnection connection) {
+         // do not update session table for now
+
+         //         List<Object[]> updateData = new ArrayList<Object[]>();
+         //         for (Session session : sessions) {
+         //            updateData.add(toUpdate(session));
+         //         }
+         //         if (!updateData.isEmpty()) {
+         //            dbService.runBatchUpdate(connection, UPDATE_SESSION, updateData);
+         //         }
       }
 
       private void delete(OseeConnection connection) throws OseeCoreException {
