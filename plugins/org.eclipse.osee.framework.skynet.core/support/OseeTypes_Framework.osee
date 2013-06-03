@@ -500,6 +500,7 @@ attributeType "Plain Text Content" extends StringAttribute {
 	dataProvider UriAttributeDataProvider
 	min 0
 	max 1
+	taggerId DefaultAttributeTaggerProvider
 	description "plain text file"
 	fileExtension "txt"
 }
