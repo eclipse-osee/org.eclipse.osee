@@ -55,6 +55,7 @@ public class ClientAPITest {
       server.setStartTime(new Date().toString());
       server.setType("oteserver");
       server.setOteActivemqServer("tcp://localhost:8998");
+      server.setOteRestServer("http://localhost:8009");
       return server;
    }
    
