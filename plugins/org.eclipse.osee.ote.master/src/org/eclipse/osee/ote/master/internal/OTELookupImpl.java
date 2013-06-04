@@ -36,6 +36,7 @@ public class OTELookupImpl implements OTELookup {
          server.setUpdateTime(new Date());
          servers.add(server);
       } else {
+         oldone.setConnectedUsers(server.getConnectedUsers());
          oldone.setUpdateTime(new Date());
       }
    }

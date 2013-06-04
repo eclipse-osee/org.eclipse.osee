@@ -30,6 +30,8 @@ Import-Package: org.apache.felix.service.command;status=provisional;version="0.8
  org.eclipse.osee.ote.core.environment.status,
  org.eclipse.osee.ote.core.framework.command,
  org.eclipse.osee.ote.core.model,
+ org.eclipse.osee.ote.master.rest.client,
+ org.eclipse.osee.ote.master.rest.model,
  org.eclipse.osee.ote.message,
  org.eclipse.osee.ote.message.instrumentation,
  org.eclipse.osee.ote.message.interfaces,

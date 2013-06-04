@@ -54,7 +54,7 @@ public class ClientAPITest {
       server.setName("test");
       server.setStartTime(new Date().toString());
       server.setType("oteserver");
-      server.setUri("tcp://localhost:8998");
+      server.setOteActivemqServer("tcp://localhost:8998");
       return server;
    }
    

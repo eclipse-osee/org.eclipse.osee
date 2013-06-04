@@ -10,4 +10,5 @@
    <reference unbind="unbindIConnectionService" bind="bindIConnectionService" cardinality="1..1" interface="org.eclipse.osee.connection.service.IConnectionService" name="IConnectionService" policy="static"/>
    <reference unbind="unbindPackageAdmin" bind="bindPackageAdmin" cardinality="1..1" interface="org.osgi.service.packageadmin.PackageAdmin" name="PackageAdmin" policy="static"/>
    <reference bind="bindOTESessionManager" cardinality="1..1" interface="org.eclipse.osee.ote.core.OTESessionManager" name="OTESessionManager" policy="static" unbind="unbindOTESessionManager"/>
+   <reference bind="bindOTEMasterServer" cardinality="1..1" interface="org.eclipse.osee.ote.master.rest.client.OTEMasterServer" name="OTEMasterServer" policy="static" unbind="unbindOTEMasterServer"/>
 </scr:component>

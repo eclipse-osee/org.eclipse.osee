@@ -16,8 +16,9 @@ import org.eclipse.osee.framework.messaging.MessageID;
  * @author Andrew M. Finkbeiner
  */
 public enum OteBaseMessages implements MessageID {
-   RequestOteHost(true, "ABjyjamBQRvvgsdgwers", "topic:lba.ote.get.host", null, true);
-
+   RequestOteHost(true, "ABjyjamBQRvvgsdgwers", "topic:lba.ote.get.host", null, true),
+   OteHostShutdown(true, "topic:lba.ote.host.shutdown", "topic:lba.ote.host.shutdown", null, false);
+   
    private String name;
    private Class<?> clazz;
    boolean isReplyRequired;
