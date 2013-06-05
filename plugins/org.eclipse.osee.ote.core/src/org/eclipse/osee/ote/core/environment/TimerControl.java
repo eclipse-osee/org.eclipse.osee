@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
 import org.eclipse.osee.ote.core.environment.interfaces.BasicTimeout;
 import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
 import org.eclipse.osee.ote.core.environment.interfaces.ITimerControl;
@@ -46,8 +47,8 @@ public abstract class TimerControl implements ITimerControl {
 
    @Override
    public void envWait(ITimeout obj, int milliseconds) throws InterruptedException {
-      setTimerFor(obj, milliseconds);
       synchronized (obj) {
+         setTimerFor(obj, milliseconds);
          obj.wait();
       }
    }
