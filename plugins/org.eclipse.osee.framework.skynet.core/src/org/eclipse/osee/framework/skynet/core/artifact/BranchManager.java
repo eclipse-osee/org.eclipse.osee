@@ -155,7 +155,13 @@ public class BranchManager {
    }
 
    public static Branch getBranchByGuid(String guid) throws OseeCoreException {
-      Branch branch = getCache().getByGuid(guid);
+      BranchCache cache = getCache();
+      Branch branch = cache.getByGuid(guid);
+      if (branch == null) {
+         if (cache.reloadCache()) {
+            branch = cache.getByGuid(guid);
+         }
+      }
       if (branch == null) {
          throw new BranchDoesNotExist("Branch with guid [%s] does not exist", guid);
       }
