@@ -539,7 +539,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                break;
 
             case SUBSYSTEM:
-               if (!Strings.isValid(subsystem)) {
+               if (Strings.isValid(subsystem)) {
                   roughArtifact.addAttribute(CoreAttributeTypes.Subsystem, subsystem);
                   subsystem = "";
                }

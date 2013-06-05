@@ -1588,7 +1588,7 @@ artifactType "Heading - HTML" extends "Abstract Heading", "HTML Artifact" {
  	uuid 0x0000000000000324   
 }  
     
-abstract artifactType "Abstract Heading" {   
+abstract artifactType "Abstract Heading" extends "Artifact" {   
 	guid "ABpvzZEpSDzqyEwrGzAA"   
 	uuid 0x0000000000000325   
 }  
