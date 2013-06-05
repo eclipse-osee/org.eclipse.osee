@@ -548,4 +548,8 @@ public class BranchManager {
       }
       return associatedArtifact;
    }
+
+   public static void invalidateBranches() throws OseeCoreException {
+      getCache().invalidate();
+   }
 }

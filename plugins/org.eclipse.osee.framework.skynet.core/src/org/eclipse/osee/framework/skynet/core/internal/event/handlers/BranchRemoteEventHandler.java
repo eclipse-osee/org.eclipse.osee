@@ -54,7 +54,7 @@ public class BranchRemoteEventHandler implements EventHandlerRemote<RemoteBranch
          }
 
          if (eventType.justifiesCacheRefresh()) {
-            BranchManager.refreshBranches();
+            BranchManager.invalidateBranches();
          }
       } catch (Exception ex) {
          EventUtil.eventLog("REM: updateBranches", ex);

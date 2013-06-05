@@ -70,6 +70,10 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       return isEnsurePopulateSynchronized;
    }
 
+   public void invalidate() {
+      wasLoaded.set(false);
+   }
+
    @Override
    public final synchronized void decacheAll() {
       clearAdditionalData();
