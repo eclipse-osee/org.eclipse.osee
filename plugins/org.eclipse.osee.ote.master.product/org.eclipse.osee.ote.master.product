@@ -3,6 +3,7 @@
 
 <product name="OteMasterProduct" uid="org.eclipse.osee.ote.master.product" id="org.eclipse.osee.ote.master.rest.OTEMasterServerProduct" application="org.eclipse.osee.ote.master.app" version="1.0.0" useFeatures="true" includeLaunchers="true">
 
+
    <configIni use="default">
    </configIni>
 
@@ -14,12 +15,16 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
+   <windowImages/>
+
+
    <launcher>
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
@@ -28,13 +33,15 @@
    </plugins>
 
    <features>
-      <feature id="org.eclipse.osee.x.core.external.feature" version="0.11.1.qualifier"/>
-      <feature id="org.eclipse.osee.x.core.feature" version="0.11.1.qualifier"/>
-      <feature id="org.eclipse.osee.ote.master.feature" version="1.0.0.qualifier"/>
-      <feature id="org.eclipse.osee.ote.server.external.feature" version="1.0.0.qualifier"/>
+      <feature id="org.eclipse.osee.x.core.external.feature"/>
+      <feature id="org.eclipse.osee.x.core.feature"/>
+      <feature id="org.eclipse.osee.ote.master.feature"/>
+      <feature id="org.eclipse.osee.ote.server.external.feature"/>
    </features>
 
    <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.osee.rest.admin" autoStart="true" startLevel="0" />
    </configurations>
 

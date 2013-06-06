@@ -197,6 +197,8 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 		brokerService.setUseJmx(false);
 		brokerService.start();
 		URI uri = new URI(strUri);
+		
+		System.out.printf("SERVER ACTIVEMQ URI[\n\t%s\n]\n", strUri);
 
 		nodeInfo = new NodeInfo("OTEEmbeddedBroker", uri);
 

@@ -49,5 +49,24 @@
 
 		<module>../../plugins/org.eclipse.osee.orcs.p2</module>
 	</modules>
+	
+	<profiles>
+		<profile>
+			<id>osee-staged</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<osee-xcore-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
+			</properties>
+			<repositories>
+				<repository>
+					<id>osee-xcore</id>
+					<layout>p2</layout>
+					<url>${osee-xcore-site}</url>
+				</repository>
+			</repositories>
+		</profile>
+	</profiles>
 
 </project>
