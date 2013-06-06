@@ -19,30 +19,40 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
  * @author Roberto E. Escobar
  */
 public abstract class LazyObject<T> {
-   private final AtomicReference<FutureTask<T>> loaderReference = new AtomicReference<FutureTask<T>>();
+
    private final AtomicReference<T> instanceReference = new AtomicReference<T>();
 
+   private final Object lock = new Object();
+   private FutureTask<T> lastLoader;
+
    public final T get() throws OseeCoreException {
-      T cache = instanceReference.get();
-      if (cache == null) {
-         FutureTask<T> newTask = createLoaderTask();
-         if (loaderReference.compareAndSet(null, newTask)) {
-            newTask.run();
+      T object = instanceReference.get();
+      if (object == null) {
+         FutureTask<T> task;
+         synchronized (lock) {
+            if (lastLoader != null) {
+               task = lastLoader;
+            } else {
+               task = createLoaderTask();
+               lastLoader = task;
+               task.run();
+            }
          }
-         FutureTask<T> task = loaderReference.get();
          try {
-            cache = task.get();
-            instanceReference.set(cache);
+            object = task.get();
+            instanceReference.set(object);
          } catch (Exception ex) {
             OseeExceptions.wrapAndThrow(ex);
          }
       }
-      return cache;
+      return object;
    }
 
    public final void invalidate() {
-      loaderReference.set(null);
-      instanceReference.set(null);
+      synchronized (lock) {
+         instanceReference.set(null);
+         lastLoader = null;
+      }
    }
 
    protected abstract FutureTask<T> createLoaderTask();
