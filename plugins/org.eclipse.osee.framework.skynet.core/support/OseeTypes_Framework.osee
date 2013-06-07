@@ -1605,15 +1605,22 @@ artifactType "Code Unit" extends "Artifact" {
 	uuid 0x000000000000003A
 }
 
-artifactType "Safety Assessment" extends "MS Word Template" {
+artifactType "Safety Assessment" extends "Artifact" {
 	guid "AAMFDkLwjkgP8iAj8KAA"
 	uuid 0x000000000000003B
-	attribute "Hazard"
-	attribute "AFHA"
+	attribute "Paragraph Number"
 	attribute "SFHA"
-	attribute "Hazard Severity"
-	attribute "Safety Objective"
-	attribute "FTA Results"
+}
+
+relationType "Assessment" {
+	guid "AQaao7wd1i9nAzjg7fwA"
+	uuid 0x2000000000000180
+	sideAName "Assessments"
+	sideAArtifactType "Safety Assessment"
+	sideBName "System Functions"
+	sideBArtifactType "System Function"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity MANY_TO_MANY
 }
 
 attributeType "Developmental" extends BooleanAttribute {

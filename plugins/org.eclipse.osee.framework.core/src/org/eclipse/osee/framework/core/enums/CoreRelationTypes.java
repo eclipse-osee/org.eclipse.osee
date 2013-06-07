@@ -38,6 +38,9 @@ public final class CoreRelationTypes {
    public static final IRelationTypeSide Requirement_Trace__Higher_Level = TokenFactory.createRelationTypeSide(SIDE_A, 0x200000000000015FL, "Requirement Trace");
    public static final IRelationTypeSide Requirement_Trace__Lower_Level = Requirement_Trace__Higher_Level.getOpposite();
    
+   public static final IRelationTypeSide Safety__Safety_Assessment = TokenFactory.createRelationTypeSide(SIDE_A, 0x2000000000000180L, "Safety Assessment");
+   public static final IRelationTypeSide Safety__System_Function = Safety__Safety_Assessment.getOpposite();
+   
    public static final IRelationTypeSide Supercedes_Supercedes = TokenFactory.createRelationTypeSide(SIDE_A, 0x2000000000000165L, "Supercedes");
    public static final IRelationTypeSide Supercedes_Superceded = Supercedes_Supercedes.getOpposite();
    
