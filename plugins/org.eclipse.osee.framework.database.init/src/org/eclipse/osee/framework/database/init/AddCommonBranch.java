@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.init.internal.OseeTypesSetup;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
@@ -84,7 +83,8 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
                inputStream = new BufferedInputStream(entry.getValue().openStream());
                artifact.setSoleAttributeFromStream(CoreAttributeTypes.UriGeneralStringData, inputStream);
             } catch (IOException ex) {
-               OseeExceptions.wrapAndThrow(ex);
+               throw new OseeCoreException(ex, "Unable to find OSEE type file for [%s:%s]", entry.getKey(),
+                  entry.getValue());
             } finally {
                Lib.close(inputStream);
             }
