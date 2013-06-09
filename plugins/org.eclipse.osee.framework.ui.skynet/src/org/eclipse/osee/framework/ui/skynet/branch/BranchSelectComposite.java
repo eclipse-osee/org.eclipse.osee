@@ -128,11 +128,11 @@ public class BranchSelectComposite extends Composite {
    }
 
    public void setSelected(IOseeBranch branch) {
-      if (branch != null) {
-         selectedBranch = branch;
-         branchSelectTextWidget.setText(selectedBranch.getName());
-      } else {
+      selectedBranch = branch;
+      if (branch == null) {
          branchSelectTextWidget.setText(" -- Select A Branch -- ");
+      } else {
+         branchSelectTextWidget.setText(selectedBranch.getName());
       }
    }
 
@@ -168,5 +168,12 @@ public class BranchSelectComposite extends Composite {
     */
    public Text getBranchSelectText() {
       return branchSelectTextWidget;
+   }
+
+   /**
+    * @return the branchSelectLabel
+    */
+   public Button getBranchSelectButton() {
+      return branchSelectButton;
    }
 }

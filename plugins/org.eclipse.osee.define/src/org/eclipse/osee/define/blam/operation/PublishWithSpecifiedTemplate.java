@@ -17,8 +17,8 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -28,6 +28,17 @@ import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Jeff C. Phillips
@@ -35,6 +46,16 @@ import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
  */
 public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private List<Artifact> templates;
+   private XBranchSelectWidget branchWidget;
+   private XCombo slaveWidget;
+   private final String USE_ARTIFACT_NAMES = "Use Artifact Names";
+   private final String USE_PARAGRAPH_NUMBERS = "Use Paragram Numbers";
+   private final String UPDATE_PARAGRAPH_NUMBERS = "Update Paragraph Numbers (If authorized)";
+   private final String MASTER_TEMPLATE = "Master Template";
+   private final String SLAVE_TEMPLATE = "Slave Template";
+   private final String IS_ARTIFACTS = "IS Artifacts";
+   private final String PUBLISH_AS_DIFF = "Publish As Diff";
+   private final String WAS_BRANCH = "WAS Branch";
 
    @Override
    public String getName() {
@@ -45,8 +66,8 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       populateTemplateList();
 
-      boolean useArtifactNameInLinks = variableMap.getBoolean("Use Artifact Names");
-      boolean useParagraphNumbersInLinks = variableMap.getBoolean("Use Paragraph Numbers");
+      boolean useArtifactNameInLinks = variableMap.getBoolean(USE_ARTIFACT_NAMES);
+      boolean useParagraphNumbersInLinks = variableMap.getBoolean(USE_PARAGRAPH_NUMBERS);
 
       if (!useParagraphNumbersInLinks && !useArtifactNameInLinks) {
          throw new OseeArgumentException("Please select at least one Document Link Format");
@@ -60,15 +81,28 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_NAME;
       }
 
-      Artifact master = getTemplate(variableMap.getString("Master Template"));
-      Artifact slave = getTemplate(variableMap.getString("Slave Template"));
-      IOseeBranch branch = variableMap.getBranch("Branch (If Template specifies Artifacts)");
-      List<Artifact> artifacts = variableMap.getArtifacts("Artifacts (If Not Specified in Template)");
+      Artifact master = getTemplate(variableMap.getString(MASTER_TEMPLATE));
+      if (master == null) {
+         throw new OseeArgumentException("Must select a Master Template");
+      }
+      Artifact slave = getTemplate(variableMap.getString(SLAVE_TEMPLATE));
+      IOseeBranch branch = null;
+      List<Artifact> artifacts;
+      try {
+         artifacts = variableMap.getArtifacts(IS_ARTIFACTS);
+      } catch (NullPointerException e) {
+         throw new OseeArgumentException("Must provide an IS artifact.  Please add an IS artifact and rerun.");
+      }
       if (artifacts != null && !artifacts.isEmpty()) {
          branch = artifacts.get(0).getBranch();
-      }
-      if (artifacts != null && artifacts.isEmpty()) {
+      } else if (artifacts != null && artifacts.isEmpty()) {
          artifacts = null;
+      } else {
+         throw new OseeArgumentException("Must provide an artifact");
+      }
+
+      if (branch == null) {
+         throw new OseeArgumentException("Cannot determine IS branch.");
       }
 
       WordTemplateRenderer renderer = new WordTemplateRenderer();
@@ -79,19 +113,25 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
             "Branch",
             branch,
             "compareBranch",
-            variableMap.getBranch("Compare Against Another Branch"),
+            variableMap.getBranch(WAS_BRANCH),
             "Publish As Diff",
-            variableMap.getValue("Publish As Diff"),
+            variableMap.getValue(PUBLISH_AS_DIFF),
             "linkType",
             linkType,
             WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
-            variableMap.getBoolean("Update Paragraph Numbers"),
+            variableMap.getBoolean(UPDATE_PARAGRAPH_NUMBERS),
             ITemplateRenderer.TRANSACTION_OPTION,
             transaction,
             IRenderer.SKIP_ERRORS,
             true,
             "Exclude Folders",
-            variableMap.getBoolean("Exclude Folders")};
+            true,
+            "Recurse On Load",
+            true,
+            "Maintain Order",
+            true,
+            "Progress Monitor",
+            monitor};
 
       renderer.publish(master, slave, artifacts, options);
 
@@ -101,7 +141,14 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    @Override
    public String getDescriptionUsage() {
       StringBuilder sb = new StringBuilder();
-      sb.append("Select a Master or Master/Slave template and click the play button at the top right.\n");
+      sb.append("<form>Use a template to publish a document or diff the document against a different version.<br/>");
+      sb.append("Select Parameters<br/>");
+      sb.append("<li>Select Update Paragraph Numbers if authorized to update them</li>");
+      sb.append("<li>Select the Document Link format(s)</li>");
+      sb.append("<li>Select Master or Master/Slave (for SRS) template.  Only use non-recursive templates</li>");
+      sb.append("<li>Drag &amp; Drop the IS Artifacts into the box</li>");
+      sb.append("<li>Decide to Publish as Diff and select WAS branch as desired</li>");
+      sb.append("<br/>Click the play button at the top right or in the Execute section.</form>");
       return sb.toString();
    }
 
@@ -109,36 +156,89 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    public String getXWidgetsXml() {
       populateTemplateList();
       StringBuilder builder = new StringBuilder();
-      builder.append("<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" />");
+      builder.append(String.format(
+         "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
+         UPDATE_PARAGRAPH_NUMBERS));
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Document Link Format:\"/>");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Use Artifact Names\" />");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Use Paragraph Numbers\" />");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Exclude Folders\" defaultValue=\"true\"/>");
+      builder.append(String.format(
+         "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" defaultValue=\"true\"/>",
+         USE_ARTIFACT_NAMES));
+      builder.append(String.format(
+         "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
+         USE_PARAGRAPH_NUMBERS));
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XCombo(");
       for (Artifact art : templates) {
          builder.append(art.getSafeName());
          builder.append(",");
       }
-      builder.append(")\" displayName=\"Master Template\" horizontalLabel=\"true\"/>");
+      builder.append(String.format(")\" displayName=\"%s\" horizontalLabel=\"true\"/>", MASTER_TEMPLATE));
       builder.append("<XWidget xwidgetType=\"XCombo(");
       for (Artifact art : templates) {
          builder.append(art.getSafeName());
          builder.append(",");
       }
 
-      builder.append(")\" displayName=\"Slave Template\" horizontalLabel=\"true\"/><XWidget xwidgetType=\"XLabel\" displayName=\" \" />");
-      builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch (If Template specifies Artifacts)\" defaultValue=\"" + BranchManager.getLastBranch().getGuid() + "\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Artifacts (If Not Specified in Template)\" />");
+      builder.append(String.format(
+         ")\" displayName=\"%s\" horizontalLabel=\"true\"/><XWidget xwidgetType=\"XLabel\" displayName=\" \" />",
+         SLAVE_TEMPLATE));
+      builder.append(String.format("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"%s\" />", IS_ARTIFACTS));
+
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Generate Differences:\"/>");
-      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Note: If a Compare Against branch is selected, diffs will be between selected artifacts and current version on compare branch\"/>");
-      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"If a Compare Against branch is NOT selected, diffs will be between selected artifacts and baseline version on same branch\"/>");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Publish As Diff\" />");
-      //      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Diff from Baseline\" />");
-      builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Compare Against Another Branch\"/>");
+      builder.append(String.format(
+         "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
+         PUBLISH_AS_DIFF));
+      builder.append(String.format("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"%s\"/>", WAS_BRANCH));
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Note: If a WAS branch is selected, diffs will be between selected IS artifacts and current version on WAS branch\"/>");
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"If a WAS branch is NOT selected, diffs will be between selected IS artifacts and baseline version on IS branch\"/>");
       builder.append("</xWidgets>");
 
       return builder.toString();
+   }
+
+   @Override
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+      super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
+      if (xWidget.getLabel().equals(WAS_BRANCH)) {
+         branchWidget = (XBranchSelectWidget) xWidget;
+         branchWidget.setEditable(false);
+      } else if (xWidget.getLabel().equals(PUBLISH_AS_DIFF)) {
+         final XCheckBox checkBox = (XCheckBox) xWidget;
+         checkBox.addSelectionListener(new SelectionAdapter() {
+
+            // Link the editable setting of the branch widget to the 'Publish As Diff' checkbox
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               super.widgetSelected(e);
+               branchWidget.setEditable(checkBox.isChecked());
+
+               if (!checkBox.isChecked()) {
+                  // reset branchwidget selection when checkbox is unchecked
+                  branchWidget.setSelection(null);
+               }
+            }
+
+         });
+      } else if (xWidget.getLabel().equals(MASTER_TEMPLATE)) {
+         final XCombo masterCombo = (XCombo) xWidget;
+         masterCombo.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+               // only enable slave template selection if Master is for SRS.
+               if (masterCombo.get().contains("srsMaster")) {
+                  slaveWidget.setEnabled(true);
+               } else {
+                  slaveWidget.setEnabled(false);
+                  slaveWidget.set("");
+               }
+            }
+         });
+      } else if (xWidget.getLabel().equals(SLAVE_TEMPLATE)) {
+         slaveWidget = (XCombo) xWidget;
+         slaveWidget.setEnabled(false);
+      }
    }
 
    private void populateTemplateList() {

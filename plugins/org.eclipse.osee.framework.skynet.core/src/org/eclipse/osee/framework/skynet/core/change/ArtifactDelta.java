@@ -22,6 +22,7 @@ public class ArtifactDelta {
 
    private final Artifact startArt;
    private final Artifact endArt;
+   private final Artifact baseArt;
    private final TransactionDelta txDelta;
 
    public ArtifactDelta(TransactionDelta txDelta, Artifact startArt, Artifact endArt) throws OseeArgumentException {
@@ -30,6 +31,17 @@ public class ArtifactDelta {
       }
       this.startArt = startArt;
       this.endArt = endArt;
+      this.baseArt = startArt;
+      this.txDelta = txDelta;
+   }
+
+   public ArtifactDelta(TransactionDelta txDelta, Artifact startArt, Artifact endArt, Artifact baseArt) throws OseeArgumentException {
+      if (startArt == null && endArt == null) {
+         throw new OseeArgumentException("the start and end artifacts can not both be null.");
+      }
+      this.startArt = startArt;
+      this.endArt = endArt;
+      this.baseArt = baseArt;
       this.txDelta = txDelta;
    }
 
@@ -47,6 +59,10 @@ public class ArtifactDelta {
 
    public Artifact getEndArtifact() {
       return endArt;
+   }
+
+   public Artifact getBaseArtifact() {
+      return baseArt;
    }
 
    public IOseeBranch getBranch() {

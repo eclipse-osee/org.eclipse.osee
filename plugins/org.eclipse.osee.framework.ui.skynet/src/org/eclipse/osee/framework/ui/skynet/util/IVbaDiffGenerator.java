@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
 
@@ -18,5 +19,5 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
  */
 public interface IVbaDiffGenerator {
 
-   public void generate(CompareData compareData) throws OseeCoreException;
+   public void generate(IProgressMonitor monitor, CompareData compareData) throws OseeCoreException;
 }

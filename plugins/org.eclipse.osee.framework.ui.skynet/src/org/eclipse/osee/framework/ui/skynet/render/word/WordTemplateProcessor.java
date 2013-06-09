@@ -178,9 +178,8 @@ public class WordTemplateProcessor {
 
          if (elementType.equals(ARTIFACT)) {
             extractOutliningOptions(elementValue);
-            if (artifacts == null) { // This handles the case where
-               // artifacts selected in the
-               // template
+            if (artifacts == null) {
+               // This handles the case where artifacts selected in the template
                Matcher setNameMatcher = setNamePattern.matcher(elementValue);
                setNameMatcher.find();
                artifacts = renderer.getArtifactsOption(WordUtil.textOnly(setNameMatcher.group(2)));
@@ -349,6 +348,10 @@ public class WordTemplateProcessor {
 
                if (outlining && !templateOnly) {
                   String headingText = artifact.getSoleAttributeValue(headingAttributeType, "");
+                  Boolean mergeTag = (Boolean) renderer.getOption("ADD MERGE TAG");
+                  if (mergeTag != null && mergeTag) {
+                     headingText = headingText.concat(" [MERGED]");
+                  }
 
                   if (!publishInline && !templateOnly) {
                      paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
@@ -377,7 +380,8 @@ public class WordTemplateProcessor {
 
                processAttributes(artifact, wordMl, presentationType, multipleArtifacts, publishInline);
             }
-            if (recurseChildren) {
+            // Check for option that may have been set from Publish with Diff BLAM to recurse
+            if (recurseChildren || (renderer.getBooleanOption("Recurse On Load") && !renderer.getBooleanOption("Orig Publish As Diff"))) {
                for (Artifact childArtifact : artifact.getChildren()) {
                   processObjectArtifact(childArtifact, wordMl, outlineType, presentationType, multipleArtifacts);
                }

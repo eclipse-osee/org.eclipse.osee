@@ -92,6 +92,23 @@ public class XBranchSelectWidget extends GenericXWidget implements Listener {
       return selectComposite.getBranchSelectText();
    }
 
+   public Control getButtonControl() {
+      return selectComposite.getBranchSelectButton();
+   }
+
+   @Override
+   public void setEditable(boolean editable) {
+      super.setEditable(editable);
+      if (selectComposite != null) {
+         if (getControl() != null && !getControl().isDisposed()) {
+            getControl().setEnabled(editable);
+         }
+         if (getButtonControl() != null && !getButtonControl().isDisposed()) {
+            getButtonControl().setEnabled(editable);
+         }
+      }
+   }
+
    @Override
    public IOseeBranch getData() {
       return getSelection();

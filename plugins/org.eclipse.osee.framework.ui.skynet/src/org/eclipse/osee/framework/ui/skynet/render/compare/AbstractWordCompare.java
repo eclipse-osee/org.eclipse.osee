@@ -14,8 +14,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -40,6 +42,8 @@ public abstract class AbstractWordCompare implements IComparator {
    private final FileSystemRenderer renderer;
    private final ArtifactDeltaToFileConverter converter;
    private final List<IAttributeType> wordAttributeType = new ArrayList<IAttributeType>();
+   private static final Pattern authorPattern = Pattern.compile("aml:author=\".*?\"",
+      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    public AbstractWordCompare(FileSystemRenderer renderer, IAttributeType... wordAttributeType) {
       this.renderer = renderer;
@@ -80,7 +84,7 @@ public abstract class AbstractWordCompare implements IComparator {
 
       addToCompare(monitor, data, presentationType, artifactDelta);
 
-      diffGenerator.generate(data);
+      diffGenerator.generate(monitor, data);
       collector.onCompare(data);
    }
 
@@ -97,7 +101,8 @@ public abstract class AbstractWordCompare implements IComparator {
       IVbaDiffGenerator diffGenerator =
          createGenerator(Collections.singletonList(newerVersion), branch, presentationType);
 
-      diffGenerator.generate(data);
+      IProgressMonitor monitor = new NullProgressMonitor();
+      diffGenerator.generate(monitor, data);
       collector.onCompare(data);
    }
 
@@ -121,10 +126,21 @@ public abstract class AbstractWordCompare implements IComparator {
       if (!UserManager.getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
          originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
       }
+      monitor.setTaskName("Preparing comparison for: " + (newerArtifact == null ? baseArtifact.getName() : newerArtifact.getName()));
 
-      Pair<IFile, IFile> compareFiles = converter.convertToFile(presentationType, artifactDelta);
+      Pair<IFile, IFile> compareFiles;
+      if (artifactDelta.getStartArtifact() == artifactDelta.getBaseArtifact()) {
+         compareFiles = converter.convertToFile(presentationType, artifactDelta);
+      } else {
+         // The artifactDelta should be a 3 Way Merge
+         List<IFile> outputFiles = new ArrayList<IFile>();
+         converter.convertToFileForMerge(outputFiles, artifactDelta.getBaseArtifact(), artifactDelta.getStartArtifact());
+         converter.convertToFileForMerge(outputFiles, artifactDelta.getBaseArtifact(), artifactDelta.getEndArtifact());
+
+         compareFiles = new Pair<IFile, IFile>(outputFiles.get(0), outputFiles.get(1));
+         data.addMerge(outputFiles.get(0).getLocation().toOSString());
+      }
       WordImageChecker.restoreOriginalValue(baseContent, originalValue);
-      monitor.setTaskName("Adding to Diff Script: " + (newerArtifact == null ? baseArtifact.getName() : newerArtifact.getName()));
       data.add(compareFiles.getFirst().getLocation().toOSString(), compareFiles.getSecond().getLocation().toOSString());
    }
 

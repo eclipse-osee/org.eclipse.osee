@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render.compare;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -18,6 +20,7 @@ import java.util.Set;
 public class CompareData {
 
    private final Map<String, String> dataToCompare = new LinkedHashMap<String, String>();
+   private final List<String> mergeList = new ArrayList<String>();
    private final String outputPath;
    private final String generatorScriptPath;
 
@@ -52,5 +55,15 @@ public class CompareData {
 
    public void clear() {
       dataToCompare.clear();
+   }
+
+   public void addMerge(String fileLocation) {
+      if ((fileLocation != null) && (fileLocation.length() > 0)) {
+         mergeList.add(fileLocation);
+      }
+   }
+
+   public boolean isMerge(String fileLocation) {
+      return mergeList.contains(fileLocation);
    }
 }

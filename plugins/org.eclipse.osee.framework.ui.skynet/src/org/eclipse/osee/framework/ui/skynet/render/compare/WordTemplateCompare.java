@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -63,12 +64,14 @@ public class WordTemplateCompare extends AbstractWordCompare {
       CompareData data = new CompareData(resultPath, vbsPath);
 
       addArtifactDeltas(monitor, artifactDeltas, data);
-      diffGenerator.generate(data);
+      diffGenerator.generate(monitor, data);
 
       collector.onCompare(data);
    }
 
    private void addArtifactDeltas(IProgressMonitor monitor, Collection<ArtifactDelta> artifactDeltas, CompareData data) {
+      double workAmount = 0.70 / artifactDeltas.size();
+
       for (ArtifactDelta artifactDelta : artifactDeltas) {
          if (monitor.isCanceled()) {
             throw new OperationCanceledException();
@@ -78,8 +81,10 @@ public class WordTemplateCompare extends AbstractWordCompare {
             addToCompare(monitor, data, PresentationType.DIFF, artifactDelta);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          } finally {
-            monitor.worked(1);
+            monitor.worked(Operations.calculateWork(Operations.TASK_WORK_RESOLUTION, workAmount));
          }
       }
 

@@ -239,6 +239,13 @@ public final class RendererManager {
    public static void diff(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Object... options) {
       CompareDataCollector collector = new NoOpCompareDataCollector();
       IOperation operation = new DiffUsingRenderer(collector, artifactDeltas, pathPrefix, options);
-      Operations.executeWork(operation);
+      IProgressMonitor monitor = null;
+      for (int i = 0; i < options.length; i += 2) {
+         if (((String) options[i]).equals("Progress Monitor")) {
+            monitor = (IProgressMonitor) options[i + 1];
+            break;
+         }
+      }
+      Operations.executeWork(operation, monitor);
    }
 }

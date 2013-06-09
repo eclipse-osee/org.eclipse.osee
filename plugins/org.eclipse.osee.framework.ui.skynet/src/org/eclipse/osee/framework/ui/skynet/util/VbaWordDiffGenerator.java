@@ -20,8 +20,11 @@ import java.io.InputStreamReader;
 import java.io.Writer;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -54,8 +57,14 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    private final static String comparisonCommandOthers =
       "    mainDoc.Range(mainDoc.Range.End-1, mainDoc.Range.End-1).FormattedText =  compareDoc.Range.FormattedText\n\n    baseDoc.close wdDoNotSaveChanges\n    set baseDoc = Nothing\n\n    compareDoc.close wdDoNotSaveChanges\n    set compareDoc = Nothing\n\n";
 
+   private final static String altComparisonCommandOthers =
+      "    mainDoc.Range(mainDoc.Range.End-1, mainDoc.Range.End-1).FormattedText =  compareDoc.Range.FormattedText\n\n    baseDoc.close wdDoNotSaveChanges\n    set baseDoc = Nothing\n\n    set compareDoc = Nothing\n\n";
+
    private final static String mergeCommand =
       "    baseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n    oWord.ActiveDocument.SaveAs %s, wdFormatXML, , , False\n\n";
+
+   private final static String altMergeCommand =
+      "    baseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n    set compareDoc = oWord.ActiveDocument\n\n";
 
    private final boolean merge;
    private final boolean show;
@@ -72,7 +81,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    }
 
    @Override
-   public void generate(CompareData compareData) throws OseeCoreException {
+   public void generate(IProgressMonitor monitor, CompareData compareData) throws OseeCoreException {
       Writer writer = null;
       try {
          writer = new BufferedWriter(new FileWriter(compareData.getGeneratorScriptPath()));
@@ -88,7 +97,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          writer.append(Boolean.toString(detectFormatChanges));
          writer.append("\n\n");
 
-         addComparison(writer, compareData, merge);
+         addComparison(monitor, writer, compareData, merge);
          writer.append("    oWord.NormalTemplate.Saved = True\n");
 
          if (show) {
@@ -111,15 +120,22 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       }
 
       if (executeVbScript) {
+         monitor.setTaskName("Executing Diff");
          executeScript(new File(compareData.getGeneratorScriptPath()));
       } else {
          OseeLog.logf(Activator.class, Level.INFO, "Test - Skip launch of [%s]", compareData.getGeneratorScriptPath());
       }
    }
 
-   private void addComparison(Appendable appendable, CompareData compareData, boolean merge) throws IOException {
+   private void addComparison(IProgressMonitor monitor, Appendable appendable, CompareData compareData, boolean merge) throws IOException {
       boolean first = true;
+      double workAmount = 0.20 / compareData.entrySet().size();
+      monitor.setTaskName("Creating Diff Script");
       for (Entry<String, String> entry : compareData.entrySet()) {
+
+         if (monitor.isCanceled()) {
+            throw new OperationCanceledException();
+         }
 
          //Unforunately Word seems to need a little extra time to close, otherwise Word 2007 will crash periodically if too many files are being compared.
          String propertyWordDiffSleepMs = System.getProperty(OSEE_WORD_DIFF_SLEEP_MS, "250");// Quarter second is the default sleep value
@@ -142,17 +158,32 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          appendable.append("    compareDoc.Save\n");
          appendable.append("    compareDoc.Close\n\n\n");
 
-         if (merge) {
-            appendable.append(String.format(mergeCommand, "\"" + compareData.getOutputPath() + "\""));
+         boolean mergeFromCompare = compareData.isMerge(entry.getKey());
+         if (merge || mergeFromCompare) {
+            if (mergeFromCompare) {
+               if (first) {
+                  appendable.append(comparisonCommand);
+               } else {
+                  appendable.append(altMergeCommand);
+               }
+            } else {
+               appendable.append(String.format(mergeCommand, "\"" + compareData.getOutputPath() + "\""));
+            }
          } else {
             appendable.append(comparisonCommand);
-            if (first) {
-               appendable.append(comparisonCommandFirst);
-               first = false;
+         }
+         if (first) {
+            appendable.append(comparisonCommandFirst);
+            first = false;
+         } else {
+            if (mergeFromCompare) {
+               appendable.append(altComparisonCommandOthers);
             } else {
                appendable.append(comparisonCommandOthers);
             }
          }
+
+         monitor.worked(Operations.calculateWork(Operations.TASK_WORK_RESOLUTION, workAmount));
       }
    }
 

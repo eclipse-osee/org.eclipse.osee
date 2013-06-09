@@ -71,7 +71,7 @@ public class ChangeDataLoader extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      ChangeReportResponse response = requestChanges(monitor, txDelta);
+      ChangeReportResponse response = requestChanges(txDelta);
       Collection<ChangeItem> changeItems = response.getChangeItems();
 
       monitor.worked(calculateWork(0.20));
@@ -81,10 +81,11 @@ public class ChangeDataLoader extends AbstractOperation {
       } else {
          monitor.setTaskName("Bulk load changed artifacts");
 
+         checkForCancelledStatus(monitor);
          CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded =
             new CompositeKeyHashMap<TransactionRecord, Integer, Artifact>();
 
-         bulkLoadArtifactDeltas(monitor, bulkLoaded, changeItems);
+         bulkLoadArtifactDeltas(bulkLoaded, changeItems);
          monitor.worked(calculateWork(0.20));
 
          monitor.setTaskName("Compute artifact deltas");
@@ -99,20 +100,80 @@ public class ChangeDataLoader extends AbstractOperation {
       }
    }
 
+   public void determineChanges(IProgressMonitor monitor) throws OseeCoreException {
+      monitor.setTaskName("Retrieve Change Items");
+      ChangeReportResponse response = requestChanges(txDelta);
+      Collection<ChangeItem> changeItems = response.getChangeItems();
+
+      checkForCancelledStatus(monitor);
+      monitor.setTaskName("Bulk load changed artifacts");
+      CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded =
+         new CompositeKeyHashMap<TransactionRecord, Integer, Artifact>();
+
+      bulkLoadArtifactDeltas(bulkLoaded, changeItems);
+
+      monitor.setTaskName("Compute artifact deltas");
+      double workAmount = 0.30 / changeItems.size();
+      IOseeBranch startTxBranch = txDelta.getStartTx().getBranch();
+      for (ChangeItem item : changeItems) {
+         checkForCancelledStatus(monitor);
+         Change change = computeChangeFromGamma(bulkLoaded, startTxBranch, item);
+         changes.add(change);
+         monitor.worked(calculateWork(workAmount));
+      }
+   }
+
+   private Change computeChangeFromGamma(CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, IOseeBranch startTxBranch, ChangeItem item) {
+      Change change = null;
+      try {
+         int artId = item.getArtId();
+         Long destGamma = item.getDestinationVersion().getGammaId();
+         Long baseGamma = item.getBaselineVersion().getGammaId();
+         Artifact startTxArtifact;
+         Artifact endTxArtifact;
+         // When start and end transactions are on same branch set them to start and end respectfully
+         // When they are on different branches, they are switched so the difference between them
+         // will be detected and represented appropriately.
+         if (txDelta.areOnTheSameBranch()) {
+            startTxArtifact = bulkLoaded.get(txDelta.getStartTx(), artId);
+            endTxArtifact = bulkLoaded.get(txDelta.getEndTx(), artId);
+         } else {
+            startTxArtifact = bulkLoaded.get(txDelta.getEndTx(), artId);
+            endTxArtifact = bulkLoaded.get(txDelta.getStartTx(), artId);
+         }
+         Artifact baseTxArtifact;
+         if ((baseGamma != null) && baseGamma.equals(destGamma)) {
+            // change must be only on IS branch
+            baseTxArtifact = startTxArtifact;
+         } else {
+            // if basGamma is null then this must be a new artifact
+            // Otherwise, change must be on IS branch and WAS branch.
+            // In either case, set the baseTxArtifact to the base of the start branch
+            baseTxArtifact = bulkLoaded.get(txDelta.getStartTx().getBranch().getBaseTransaction(), artId);
+         }
+
+         ArtifactDelta artifactDelta = new ArtifactDelta(txDelta, startTxArtifact, endTxArtifact, baseTxArtifact);
+         change = createChangeObject(bulkLoaded, item, txDelta, startTxBranch, artifactDelta);
+         change.setChangeItem(item);
+
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         change = new ErrorChange(startTxBranch, item.getArtId(), ex.toString());
+      }
+      return change;
+   }
+
    private Change computeChange(CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, IOseeBranch startTxBranch, ChangeItem item) {
       Change change = null;
       try {
          int artId = item.getArtId();
          Artifact startTxArtifact;
-         if (txDelta.areOnTheSameBranch()) {
-            startTxArtifact = bulkLoaded.get(txDelta.getStartTx(), artId);
-         } else {
-            startTxArtifact = bulkLoaded.get(txDelta.getStartTx().getBranch().getBaseTransaction(), artId);
-         }
          Artifact endTxArtifact;
          if (txDelta.areOnTheSameBranch()) {
+            startTxArtifact = bulkLoaded.get(txDelta.getStartTx(), artId);
             endTxArtifact = bulkLoaded.get(txDelta.getEndTx(), artId);
          } else {
+            startTxArtifact = bulkLoaded.get(txDelta.getStartTx().getBranch().getBaseTransaction(), artId);
             endTxArtifact = bulkLoaded.get(txDelta.getStartTx(), artId);
          }
 
@@ -182,8 +243,7 @@ public class ChangeDataLoader extends AbstractOperation {
       return change;
    }
 
-   private void bulkLoadArtifactDeltas(IProgressMonitor monitor, CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, Collection<ChangeItem> changeItems) throws OseeCoreException {
-      checkForCancelledStatus(monitor);
+   private void bulkLoadArtifactDeltas(CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, Collection<ChangeItem> changeItems) throws OseeCoreException {
       Set<Integer> artIds = asArtIds(changeItems);
 
       preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx(), txDelta.areOnTheSameBranch());
@@ -220,7 +280,7 @@ public class ChangeDataLoader extends AbstractOperation {
       return artIds;
    }
 
-   private static ChangeReportResponse requestChanges(IProgressMonitor monitor, TransactionDelta txDelta) throws OseeCoreException {
+   private static ChangeReportResponse requestChanges(TransactionDelta txDelta) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", Function.CHANGE_REPORT.name());
 
@@ -230,10 +290,6 @@ public class ChangeDataLoader extends AbstractOperation {
       ChangeReportResponse response =
          HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.CHANGE_REPORT_REQUEST,
             requestData, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
-      if (response.wasSuccessful()) {
-         // OseeEventManager.kickBranchEvent(HttpBranchCreation.class, ,
-         // branch.getId());
-      }
       return response;
    }
 }
