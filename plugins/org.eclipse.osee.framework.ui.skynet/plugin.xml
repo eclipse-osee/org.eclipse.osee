@@ -1771,4 +1771,12 @@
             className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteInvalidAttributeTypesFromBranch">
       </Operation>
    </extension>
+   <extension
+         id="XWidgetEnableDisableBlamExample"
+         name="XWidgetEnableDisableBlamExample"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.framework.ui.skynet.blam.operation.XWidgetEnableDisableBlamExample">
+      </Operation>
+   </extension>
 </plugin>
