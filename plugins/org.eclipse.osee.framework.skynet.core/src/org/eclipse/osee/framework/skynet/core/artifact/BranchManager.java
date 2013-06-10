@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -77,6 +78,7 @@ public class BranchManager {
 
    private static final String LAST_DEFAULT_BRANCH = "LastDefaultBranch";
    public static final String COMMIT_COMMENT = "Commit Branch ";
+   private static final String MERGE_RELOAD_KEY = "merge.branch.reload.cache";
 
    private Branch lastBranch;
 
@@ -188,9 +190,11 @@ public class BranchManager {
       // If someone else made a branch on another machine, we may not know about it
       // so refresh the cache.
       MergeBranch mergeBranch = cache.findMergeBranch(sourceBranch, destinationBranch);
-      if (mergeBranch == null && isReLoadAllowed) {
-         if (cache.reloadCache()) {
-            mergeBranch = cache.findMergeBranch(sourceBranch, destinationBranch);
+      if (OseeInfo.isCacheEnabled(MERGE_RELOAD_KEY)) {
+         if (mergeBranch == null && isReLoadAllowed) {
+            if (cache.reloadCache()) {
+               mergeBranch = cache.findMergeBranch(sourceBranch, destinationBranch);
+            }
          }
       }
       return mergeBranch;
