@@ -119,7 +119,7 @@ public class XmlSupport {
 		StringBuilder buff = new StringBuilder(message.length());
 		for (int i = 0; i < message.length(); i++) {
 			char currentChar = message.charAt(i);
-			if (currentChar < 32 || currentChar > 126) {
+			if ((currentChar < 32 || currentChar > 126) && currentChar != '\n' && currentChar != '\r' && currentChar != '\t') {
 				buff.append(" ASCII=" + (int) currentChar + " ");
 			} else if (currentChar == '<') {
 				buff.append(" less-than ");
