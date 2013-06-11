@@ -104,10 +104,6 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       return guidToTypeMap.size();
    }
 
-   protected IOseeDataAccessor<K, T> getDataAccessor() {
-      return dataAccessor;
-   }
-
    public boolean existsByGuid(K guid) throws OseeCoreException {
       ensurePopulated();
       return guidToTypeMap.containsKey(guid);
@@ -326,7 +322,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
 
    @Override
    public synchronized boolean reloadCache() throws OseeCoreException {
-      getDataAccessor().load(this);
+      dataAccessor.load(this);
       OseeLog.log(this.getClass(), Level.INFO, "Loaded " + getCacheId().toString().toLowerCase());
       setLastLoaded(System.currentTimeMillis());
       wasLoaded.set(true);
@@ -342,7 +338,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
    public void storeItems(Collection<T> toStore) throws OseeCoreException {
       Conditions.checkDoesNotContainNulls(toStore, "items to store");
       if (!toStore.isEmpty()) {
-         getDataAccessor().store(toStore);
+         dataAccessor.store(toStore);
          synchronized (this) {
             for (T type : toStore) {
                decache(type);
