@@ -295,10 +295,10 @@ public final class ReplaceWithBaselineTest {
          switch (testData.item) {
             case ATTRBUTE:
                if (testData.changeItem == ChangeItem.NEW) {
-                  Artifact newAtrifact = ArtifactQuery.getArtifactFromId(testData.getArtifactId(), workingBranch);
-                  newAtrifact.addAttributeFromString(CoreAttributeTypes.ParagraphNumber, "1.0");
-                  newAtrifact.persist(testName);
-                  testData.setAttrId(newAtrifact.getSoleAttribute(CoreAttributeTypes.ParagraphNumber).getId());
+                  Artifact newArtifact = ArtifactQuery.getArtifactFromId(testData.getArtifactId(), workingBranch);
+                  newArtifact.addAttributeFromString(CoreAttributeTypes.ParagraphNumber, "1.0");
+                  newArtifact.persist(testName);
+                  testData.setAttrId(newArtifact.getSoleAttribute(CoreAttributeTypes.ParagraphNumber).getId());
 
                }
                break;

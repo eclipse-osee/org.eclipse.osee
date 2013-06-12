@@ -135,7 +135,7 @@ public class ArtifactTypeManager {
    public static ArtifactType getType(int artTypeId) throws OseeCoreException {
       ArtifactType artifactType = getCache().getById(artTypeId);
       if (artifactType == null) {
-         throw new OseeTypeDoesNotExist("Atrifact type: %d is not available.", artTypeId);
+         throw new OseeTypeDoesNotExist("Artifact type: %d is not available.", artTypeId);
       }
       return artifactType;
    }

@@ -64,7 +64,7 @@ public class IssueBurndownLog {
    }
 
    /**
-    * @return the list of workflow atrifacts
+    * @return the list of workflow artifacts
     */
    public List<AbstractWorkflowArtifact> getArtifacts() {
       return this.artifacts;
