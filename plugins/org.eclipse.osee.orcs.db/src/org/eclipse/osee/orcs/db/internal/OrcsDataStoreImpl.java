@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.SystemPreferences;
@@ -44,6 +45,7 @@ import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.db.internal.branch.BranchDataStoreImpl;
+import org.eclipse.osee.orcs.db.internal.callable.OrcsTypeLoaderCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeArtifactTypeDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeAttributeTypeDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeRelationTypeDatabaseTxCallable;
@@ -261,18 +263,43 @@ public class OrcsDataStoreImpl implements OrcsDataStore, IOseeCachingService {
    }
 
    @Override
-   public Callable<?> purgeArtifactType(Collection<? extends IArtifactType> typesToPurge) {
+   public Callable<IResource> getOrcsTypesLoader(String sessionId) {
+      return new OrcsTypeLoaderCallable(dbService, identityService, resourceManager);
+   }
+
+   @Override
+   public Callable<?> purgeArtifactsByArtifactType(String sessionId, Collection<? extends IArtifactType> typesToPurge) {
       return new PurgeArtifactTypeDatabaseTxCallable(logger, dbService, identityService, typesToPurge);
    }
 
    @Override
-   public Callable<?> purgeAttributeType(Collection<? extends IAttributeType> typesToPurge) {
+   public Callable<?> purgeAttributesByAttributeType(String sessionId, Collection<? extends IAttributeType> typesToPurge) {
       return new PurgeAttributeTypeDatabaseTxCallable(logger, dbService, identityService, typesToPurge);
    }
 
    @Override
-   public Callable<?> purgeRelationType(Collection<? extends IRelationType> typesToPurge) {
+   public Callable<?> purgeRelationsByRelationType(String sessionId, Collection<? extends IRelationType> typesToPurge) {
       return new PurgeRelationTypeDatabaseTxCallable(logger, dbService, identityService, typesToPurge);
+   }
+
+   // TODO - REMOVE OrcsTypes interface from OrcsDataStore interface 
+   // TODO - REMOVE the bottom three methods
+   // TODO - REMOVE IOseeCachingService interface from OrcsDataStoreImpl and all cachingService related methods
+   // TODO - REMOVE IOseeModelingService and its implementations
+   // TODO - DELETE types package from org.eclipse.osee.orcs.db.internal
+   @Override
+   public Callable<?> purgeArtifactsByArtifactType(Collection<? extends IArtifactType> artifactTypes) {
+      return purgeArtifactsByArtifactType("", artifactTypes);
+   }
+
+   @Override
+   public Callable<?> purgeAttributesByAttributeType(Collection<? extends IAttributeType> attributeTypes) {
+      return purgeAttributesByAttributeType("", attributeTypes);
+   }
+
+   @Override
+   public Callable<?> purgeRelationsByRelationType(Collection<? extends IRelationType> relationTypes) {
+      return purgeRelationsByRelationType("", relationTypes);
    }
 
 }

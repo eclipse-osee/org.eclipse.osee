@@ -16,6 +16,8 @@ import org.eclipse.osee.orcs.core.internal.branch.BranchTestSuite;
 import org.eclipse.osee.orcs.core.internal.proxy.ProxyTestSuite;
 import org.eclipse.osee.orcs.core.internal.relation.RelationTestSuite;
 import org.eclipse.osee.orcs.core.internal.search.QueryTestSuite;
+import org.eclipse.osee.orcs.core.internal.transaction.TransactionTestSuite;
+import org.eclipse.osee.orcs.core.internal.types.TypesTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -28,8 +30,10 @@ import org.junit.runners.Suite;
    AttributeTestSuite.class,
    BranchTestSuite.class,
    ProxyTestSuite.class,
+   RelationTestSuite.class,
    QueryTestSuite.class,
-   RelationTestSuite.class})
+   TransactionTestSuite.class,
+   TypesTestSuite.class})
 public class InternalTestSuite {
    // Test Suite
 }

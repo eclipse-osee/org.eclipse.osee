@@ -83,7 +83,7 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
             boolean found = !types.isEmpty();
 
             if (forcePurge && found) {
-               orcsTypes.purgeAttributeType(types).call();
+               orcsTypes.purgeAttributesByAttributeType(types).call();
             }
             console.writeln((found && !forcePurge) ? "To >DELETE Attribute DATA!< add --force to confirm." : "Operation finished.");
             return null;

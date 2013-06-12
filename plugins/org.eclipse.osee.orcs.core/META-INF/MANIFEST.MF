@@ -6,10 +6,16 @@ Bundle-Version: 0.11.1.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/*.xml
-Import-Package: com.google.common.collect,
+Import-Package: org.eclipse.emf.common.notify,
+ org.eclipse.emf.common.util,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.ecore.util,
  org.eclipse.osee.console.admin,
  org.eclipse.osee.executor.admin,
  org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.dsl,
+ org.eclipse.osee.framework.core.dsl.oseeDsl,
+ org.eclipse.osee.framework.core.dsl.oseeDsl.util,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model,
@@ -25,10 +31,12 @@ Import-Package: com.google.common.collect,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,
  org.eclipse.osee.orcs.statistics,
- org.eclipse.osee.orcs.transaction
+ org.eclipse.osee.orcs.transaction,
+ org.eclipse.osee.orcs.utility
 Export-Package: org.eclipse.osee.orcs.core,
  org.eclipse.osee.orcs.core.ds,
  org.eclipse.osee.orcs.core.ds.criteria
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.osee.framework.jdk.core
+ org.eclipse.osee.framework.jdk.core,
+ com.google.guava;bundle-version="12.0.0"
 Bundle-ActivationPolicy: lazy

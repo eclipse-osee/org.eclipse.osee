@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,25 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.ds;
+package org.eclipse.osee.orcs.data;
 
-import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.framework.core.data.FullyNamed;
+import org.eclipse.osee.framework.core.data.HasDescription;
+import org.eclipse.osee.framework.core.data.Identity;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface OrcsDataStore extends OrcsTypes, OrcsTypesDataStore {
+public interface EnumEntry extends Identity<String>, FullyNamed, HasDescription {
 
-   BranchDataStore getBranchDataStore();
-
-   DataStoreAdmin getDataStoreAdmin();
-
-   DataFactory getDataFactory();
-
-   DataLoaderFactory getDataLoaderFactory();
-
-   QueryEngine getQueryEngine();
-
-   QueryEngineIndexer getQueryEngineIndexer();
+   int ordinal();
 
 }

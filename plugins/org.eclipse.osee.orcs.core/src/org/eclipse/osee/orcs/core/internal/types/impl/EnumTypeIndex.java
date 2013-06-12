@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,25 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.ds;
+package org.eclipse.osee.orcs.core.internal.types.impl;
 
-import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
+import org.eclipse.osee.orcs.data.EnumType;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface OrcsDataStore extends OrcsTypes, OrcsTypesDataStore {
-
-   BranchDataStore getBranchDataStore();
-
-   DataStoreAdmin getDataStoreAdmin();
-
-   DataFactory getDataFactory();
-
-   DataLoaderFactory getDataLoaderFactory();
-
-   QueryEngine getQueryEngine();
-
-   QueryEngineIndexer getQueryEngineIndexer();
-
+public class EnumTypeIndex extends TokenTypeIndex<Long, EnumType, XOseeEnumType> {
+   //
 }

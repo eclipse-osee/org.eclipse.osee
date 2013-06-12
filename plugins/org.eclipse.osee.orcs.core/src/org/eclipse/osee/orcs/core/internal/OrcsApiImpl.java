@@ -116,7 +116,6 @@ public class OrcsApiImpl implements OrcsApi {
 
       indexerModule = new IndexerModule(logger, preferences, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start();
-
    }
 
    public void stop() {

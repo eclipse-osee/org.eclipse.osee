@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,25 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.ds;
+package org.eclipse.osee.orcs.core.internal.types;
 
-import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
+import org.eclipse.osee.orcs.core.internal.SessionContext;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface OrcsDataStore extends OrcsTypes, OrcsTypesDataStore {
+public interface OrcsTypesLoaderFactory {
 
-   BranchDataStore getBranchDataStore();
+   OrcsTypesLoader createTypesLoader(SessionContext session, OrcsTypesDataStore ds);
 
-   DataStoreAdmin getDataStoreAdmin();
-
-   DataFactory getDataFactory();
-
-   DataLoaderFactory getDataLoaderFactory();
-
-   QueryEngine getQueryEngine();
-
-   QueryEngineIndexer getQueryEngineIndexer();
+   OrcsTypesLoader createTypesLoader(SessionContext session, OrcsTypesResourceProvider provider);
 
 }

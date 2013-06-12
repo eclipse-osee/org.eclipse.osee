@@ -57,4 +57,7 @@ public abstract class LazyObject<T> {
 
    protected abstract FutureTask<T> createLoaderTask();
 
+   protected Object getLock() {
+      return lock;
+   }
 }

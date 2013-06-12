@@ -1,0 +1,139 @@
+attributeType "Name" extends StringAttribute {
+	guid "AAMFEcF1AzV7PKuHmxwA"
+	uuid 0x1000000000000070
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	description "Descriptive Name"
+	defaultValue "unnamed"
+	mediaType "plan/text"
+}
+
+attributeType "Annotation" extends CompressedContentAttribute {
+	guid "AAMFEcWy0xc4e3tcemQA"
+	uuid 0x1000000000000076
+	dataProvider UriAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	description "the version \'1.0\' is this \"1.2.0\""
+	mediaType "plan/text"
+}
+
+attributeType "WordML" extends WordAttribute {
+	guid "AAMFEcfcGS2V3SqQN2wA"
+	uuid 0x100000000000007A
+	dataProvider UriAttributeDataProvider
+	min 0
+	max 1
+	taggerId XmlAttributeTaggerProvider
+	description "value must comply with WordML xml schema"
+	defaultValue "<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>"
+	fileExtension "xml"
+	mediaType "application/xml"
+}
+
+attributeType "Field 1" extends EnumeratedAttribute {
+	guid "AU1W_RDAbiHjGBUHyNQA"
+	uuid 0x1000000000000080
+	dataProvider DefaultAttributeDataProvider
+	min 2
+	max 3
+	enumType "enum.test.proc.status"
+	defaultValue "this is a field"
+	mediaType "application/custom"
+}
+
+oseeEnumType "enum.test.proc.status" {
+	guid "AKkmjINR11UDdTOE1WAA"
+	uuid 0x3000000000000178
+	entry "Not Performed"
+	entryGuid "APt7jzRPv2HBlrjQZXAA"
+	description "it was not performed"
+	entry "Completed -- Analysis in Work"
+	entryGuid "APt7j0WUEAIFUyyzVZgA"
+	entry "Completed -- Passed"
+	entryGuid "APt7j0YZq1AjCER1qzAA"
+	entry "Completed -- With Issues"
+	entryGuid "APt7j0aZWF2BJc_BqnQA"
+	entry "Completed -- With Issues Resolved"
+	entryGuid "APt7j0cv9B1ImjckeTAA"
+	entry "Partially Complete"
+	entryGuid "AAvULbOIbxhPUO_oDFQA"
+	description "is a partial"
+}
+
+attributeType "Field 2" extends DateAttribute {
+	guid "AU1tcZpvAgWKt9wooVQA"
+	uuid 0x1000000000000081
+	dataProvider UriAttributeDataProvider
+	min 1
+	max 1
+	taggerId SomeOtherTagger
+	description "field 2 description"
+	fileExtension "hello"
+	mediaType "**"
+}
+
+relationType "Requirement Relation" {
+	guid "BOkzi3U9VTe2fcUz_9gA"
+	uuid 0x2000000000000157
+	sideAName "requirement-sideA"
+	sideAArtifactType "Requirement"
+	sideBName "subsystem-sideB"
+	sideBArtifactType "SubSystem Requirement"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity ONE_TO_MANY
+}
+
+relationType "Another Relation" {
+	guid "AVM9fT1Ue2QhFnt30FQA"
+	uuid 0x2000000000000158
+	sideAName "other-sideA"
+	sideAArtifactType "Other Artifact"
+	sideBName "last-sideB"
+	sideBArtifactType "Last Artifact"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
+}
+
+artifactType "Artifact" {
+	guid "AAMFDh6S7gRLupAMwywA"
+	uuid 0x0000000000000001
+	attribute "Name"
+	attribute "Annotation"
+}
+
+abstract artifactType "Requirement" extends "Artifact" {
+	guid "BOm4NmAq+HC1O2hkMagA"
+	uuid 0x0000000000000015
+	attribute "WordML"
+}
+
+artifactType "Software Requirement" extends "Requirement" {
+	guid "BOm+AIG2snNbAM5FFcwA"
+	uuid 0x0000000000000018
+}
+
+artifactType "System Requirement" extends "Requirement" {
+	guid "BOnAaYTBOG68_Tw5Y_AA"
+	uuid 0x000000000000001E
+}
+
+artifactType "Other Artifact" extends "Artifact" {
+	guid "AUStoi43TWac2EHzNIAA"
+	uuid 0x0000000000000020
+}
+
+artifactType "SubSystem Requirement" extends "Requirement" , "Other Artifact" {
+	guid "BOnBhJ1XAFGKcrku3LgA"
+	uuid 0x000000000000001D
+	attribute "Field 1" branchGuid "AU2FErW1QwSXWPiP4cwA"
+}
+
+abstract artifactType "Last Artifact" extends "SubSystem Requirement" {
+	guid "AUqqRktDXW9r6YXq0WQA"
+	uuid 0x0000000000000021
+	attribute "Field 2" branchGuid "AU2JKsKQAQAvzkTkk+gA"
+}
