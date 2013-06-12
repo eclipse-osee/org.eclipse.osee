@@ -63,7 +63,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.io.IOInputThread;
 import org.eclipse.osee.framework.jdk.core.util.io.IOOutputThread;
@@ -377,6 +376,27 @@ public final class Lib {
       } finally {
          close(reader);
       }
+   }
+
+   /**
+    * efficiently copy contents of inputStream into builder
+    */
+   public static StringBuilder inputStreamToStringBuilder(InputStream inputStream, String charset, StringBuilder builder) throws IOException {
+      InputStreamReader reader = new InputStreamReader(inputStream, charset);
+      try {
+         char[] chars = new char[8000];
+         int readCount = 0;
+         while ((readCount = reader.read(chars)) != -1) {
+            builder.append(chars, 0, readCount);
+         }
+         return builder;
+      } finally {
+         close(reader);
+      }
+   }
+
+   public static StringBuilder inputStreamToStringBuilder(InputStream inputStream, StringBuilder builder) throws IOException {
+      return inputStreamToStringBuilder(inputStream, "UTF-8", builder);
    }
 
    public static ChangeSet inputStreamToChangeSet(InputStream in) throws IOException {
