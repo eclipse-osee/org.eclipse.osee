@@ -291,7 +291,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
                if (awa.isCompleted()) {
                   IAtsStateDefinition stateDef = awa.getStateDefinition();
-                  if (stateDef.getStateType() != StateType.Completed) {
+                  if (stateDef == null) {
+                     testNameToResultsMap.put("testCompletedCancelledStateAttributesSet", String.format(
+                        "Error: State Definition null for state [%s] for [%s]", awa.getCurrentStateName(),
+                        XResultDataUI.getHyperlink(artifact)));
+                  } else if (stateDef.getStateType() != StateType.Completed) {
                      testNameToResultsMap.put("testCompletedCancelledStateAttributesSet", String.format(
                         "Error: awa.isCompleted()==true but State [%s] not Completed state for [%s]",
                         stateDef.getName(), XResultDataUI.getHyperlink(artifact)));
@@ -599,17 +603,21 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             }
             // Check that duplicate Legacy PCR IDs team arts do not exist with different parent actions
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-               TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
+               TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) artifact;
                String legacyPcrId = artifact.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, null);
                if (legacyPcrId != null) {
-                  if (legacyPcrIdToParentHrid.containsKey(legacyPcrId)) {
-                     if (!legacyPcrIdToParentHrid.get(legacyPcrId).equals(
-                        teamArt.getParentActionArtifact().getHumanReadableId())) {
-                        testNameToResultsMap.put("testArtifactIds",
-                           "Error: Duplicate Legacy PCR Ids in Different Actions: " + legacyPcrId);
+                  String parentActionHrid = teamWf.getParentActionArtifact().getHumanReadableId();
+                  String storedParentActionHrid = legacyPcrIdToParentHrid.get(legacyPcrId);
+                  if (storedParentActionHrid != null) {
+                     if (!storedParentActionHrid.equals(parentActionHrid)) {
+                        String errorStr =
+                           String.format(
+                              "Error: Duplicate Legacy PCR Ids in Different Actions: teamWf %s parentActionHrid[%s] != storedActionHrid [%s] ",
+                              teamWf.toStringWithId(), parentActionHrid, storedParentActionHrid);
+                        testNameToResultsMap.put("testArtifactIds", errorStr);
                      }
                   } else {
-                     legacyPcrIdToParentHrid.put(legacyPcrId, teamArt.getParentActionArtifact().getHumanReadableId());
+                     legacyPcrIdToParentHrid.put(legacyPcrId, parentActionHrid);
                   }
                }
             }
