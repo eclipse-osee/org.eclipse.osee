@@ -49,9 +49,12 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    private final Vector<String> theArtifact = new Vector<String>();
    private String paragraphNumber = "", paragraphName = "";
    private String uriDirectoryName = "";
+   private final static String NAME_TAG = "<a name=";
+   private final static String CLOSING_A_TAG = "</a>";
+   private final static String BR_TAG = "<br />";
    private final static String BODY_START_TAG = "<body>";
    private final static String BODY_END_TAG = "</body>";
-   private static final String IMAGE_BASE_NAME = "Image Content_";
+   private final static String IMAGE_BASE_NAME = "Image Content_";
    private final static String[] VERIFICATION_KEYWORDS = {
       "Effectivity:",
       "Verf Method:",
@@ -718,7 +721,31 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             returnValue = returnValue.substring(bodyStart, bodyEnd);
          }
       }
+      /************************************************************************
+       * The DOORS HTML starts with a tag "<a name="something"> -- remove this tag and the closing </a>
+       */
+      int nameTag = returnValue.indexOf(NAME_TAG);
+      while (nameTag != -1) {
+         int endTag = returnValue.substring(nameTag).indexOf('>') + nameTag;
+         if (endTag > nameTag) {
+            endTag = returnValue.indexOf(CLOSING_A_TAG);
+            returnValue =
+               returnValue.substring(0, nameTag - 1) + returnValue.substring(endTag + CLOSING_A_TAG.length() + 1);
+            nameTag = returnValue.indexOf(NAME_TAG);
+         } else {
+            nameTag = -1;
+         }
+      }
+      /******************************************************************
+       * remove any closing <br />
+       * tags these are not meaningful
+       */
       returnValue = returnValue.trim();
+      int brTag = returnValue.lastIndexOf(BR_TAG);
+      while (brTag == returnValue.length() - BR_TAG.length()) {
+         returnValue = returnValue.substring(0, brTag).trim();
+         brTag = returnValue.lastIndexOf(BR_TAG);
+      }
       return returnValue;
    }
 }
