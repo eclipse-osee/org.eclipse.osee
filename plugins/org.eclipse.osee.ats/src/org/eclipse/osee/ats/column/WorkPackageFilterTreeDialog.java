@@ -107,7 +107,7 @@ public class WorkPackageFilterTreeDialog extends OSEEFilteredTreeDialog<Collecti
    protected Result isComplete() {
       try {
          if (selection == null) {
-            return new Result("Must select Artifact type.");
+            return new Result("A Work Package must be selected.");
          }
       } catch (Exception ex) {
          OseeLog.log(org.eclipse.osee.ats.internal.Activator.class, OseeLevel.SEVERE_POPUP, ex);
