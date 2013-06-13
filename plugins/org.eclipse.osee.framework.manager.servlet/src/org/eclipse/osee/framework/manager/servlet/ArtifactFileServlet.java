@@ -10,13 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.manager.servlet;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -25,6 +21,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -37,7 +34,6 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.logger.Log;
-import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -48,8 +44,6 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
 
    private final IResourceManager resourceManager;
    private final BranchCache branchCache;
-
-   private static Map<Integer, String> branchIdToGuidMap;
 
    public ArtifactFileServlet(Log logger, IResourceManager resourceManager, IOseeCachingService cachingService) {
       super(logger);
@@ -63,19 +57,11 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
          HttpArtifactFileInfo artifactFileInfo = null;
 
          String servletPath = request.getServletPath();
-         //         System.out.println("servletPath: " + servletPath);
          if (!Strings.isValid(servletPath) || "/".equals(servletPath) || "/index".equals(servletPath)) {
-            //            Enumeration<?> enumeration = request.getHeaderNames();
-            //            while (enumeration.hasMoreElements()) {
-            //               String headerField = (String) enumeration.nextElement();
-            //               String value = request.getHeader(headerField);
-            //               System.out.println(String.format("%s: %s", headerField, value));
-            //            }
-
             Pair<String, String> defaultArtifact = DefaultOseeArtifact.get();
             if (defaultArtifact != null) {
                artifactFileInfo =
-                  new HttpArtifactFileInfo(defaultArtifact.getFirst(), null, null, defaultArtifact.getSecond());
+                  new HttpArtifactFileInfo(defaultArtifact.getFirst(), null, defaultArtifact.getSecond());
             }
          } else {
             artifactFileInfo = new HttpArtifactFileInfo(request);
@@ -88,15 +74,8 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
                branch = branchCache.getBySoleName(artifactFileInfo.getBranchName());
             } else if (artifactFileInfo.isBranchGuidValid()) {
                branch = branchCache.getByGuid(artifactFileInfo.getBranchGuid());
-            } else {
-
-               int branchId = artifactFileInfo.getId();
-               if (branchId != HttpArtifactFileInfo.INVALID_BRANCH_ID) {
-                  loadIdToGuidMapping();
-                  branch = branchCache.getByGuid(branchIdToGuidMap.get(branchId));
-               }
-
             }
+            Conditions.checkNotNull(branch, "branch", "Unable to determine branch");
             uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), branch);
          }
          handleArtifactUri(resourceManager, request.getQueryString(), uri, response);
@@ -167,35 +146,4 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
       response.getWriter().write(Lib.exceptionToString(ex));
    }
 
-   private synchronized void loadIdToGuidMapping() {
-      if (branchIdToGuidMap == null) {
-         branchIdToGuidMap = new HashMap<Integer, String>();
-         BufferedReader reader = null;
-
-         try {
-            reader =
-               new BufferedReader(new InputStreamReader(FrameworkUtil.getBundle(ArtifactFileServlet.class).getResource(
-                  "templates/branchIdToBranchGuid.txt").openStream()));
-            String branchIdAndGuidLine = null;
-
-            while ((branchIdAndGuidLine = reader.readLine()) != null) {
-
-               String[] idAndGuid = branchIdAndGuidLine.split(",");
-
-               int branchId;
-               try {
-                  branchId = Integer.parseInt(idAndGuid[0]);
-               } catch (Exception ex) {
-                  branchId = -1;
-               }
-
-               branchIdToGuidMap.put(branchId, idAndGuid[1].trim());
-            }
-         } catch (Exception e) {
-            getLogger().error(e, "Error mapping branchIds to guids");
-         } finally {
-            Lib.close(reader);
-         }
-      }
-   }
 }

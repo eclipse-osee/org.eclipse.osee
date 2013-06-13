@@ -17,27 +17,22 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Roberto E. Escobar
  */
 public class HttpArtifactFileInfo {
-   public static final int INVALID_BRANCH_ID = -1;
    private static final String GUID_KEY = "guid";
    private static final String BRANCH_NAME_KEY = "branch";
-   private static final String BRANCH_ID_KEY = "branchId";
    private static final String BRANCH_GUID_KEY = "branchGuid";
 
    private final String guid;
    private final String branchName;
-   private final String branchId;
    private final String branchGuid;
 
-   public HttpArtifactFileInfo(String guid, String branchName, String branchId, String branchGuid) {
+   public HttpArtifactFileInfo(String guid, String branchName, String branchGuid) {
       this.guid = guid;
       this.branchName = branchName;
-      this.branchId = branchId;
       this.branchGuid = branchGuid;
    }
 
    public HttpArtifactFileInfo(HttpServletRequest request) {
-      this(request.getParameter(GUID_KEY), request.getParameter(BRANCH_NAME_KEY), request.getParameter(BRANCH_ID_KEY),
-         request.getParameter(BRANCH_GUID_KEY));
+      this(request.getParameter(GUID_KEY), request.getParameter(BRANCH_NAME_KEY), request.getParameter(BRANCH_GUID_KEY));
    }
 
    public String getGuid() {
@@ -60,15 +55,4 @@ public class HttpArtifactFileInfo {
       return Strings.isValid(branchGuid);
    }
 
-   public boolean isBranchIdValid() {
-      return Strings.isValid(branchId);
-   }
-
-   public int getId() throws NumberFormatException {
-      int toReturn = INVALID_BRANCH_ID;
-      if (isBranchIdValid()) {
-         toReturn = Integer.parseInt(branchId);
-      }
-      return toReturn;
-   }
 }
