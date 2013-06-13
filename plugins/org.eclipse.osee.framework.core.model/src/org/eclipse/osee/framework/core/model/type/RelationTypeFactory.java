@@ -42,12 +42,11 @@ public class RelationTypeFactory implements IOseeTypeFactory {
          relationType =
             create(guid, typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
                defaultOrderTypeGuid);
+         cache.cache(relationType);
       } else {
-         cache.decache(relationType);
          relationType.setFields(typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
             defaultOrderTypeGuid);
       }
-      cache.cache(relationType);
       return relationType;
    }
 
@@ -60,12 +59,11 @@ public class RelationTypeFactory implements IOseeTypeFactory {
                defaultOrderTypeGuid);
          relationType.setId(typeId);
          relationType.setStorageState(storageState);
+         cache.cache(relationType);
       } else {
-         cache.decache(relationType);
          relationType.setFields(typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
             defaultOrderTypeGuid);
       }
-      cache.cache(relationType);
       return relationType;
    }
 }

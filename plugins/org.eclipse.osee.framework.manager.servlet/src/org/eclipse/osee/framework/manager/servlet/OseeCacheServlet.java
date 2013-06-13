@@ -151,9 +151,8 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
                branch.setStorageState(StorageState.MODIFIED);
             }
             branch.clearDirty();
-            cache.decache(branch);
-            if (!branch.isPurged()) {
-               cache.cache(branch);
+            if (branch.isPurged()) {
+               cache.decache(branch);
             }
          }
       } else {

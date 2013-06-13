@@ -43,11 +43,10 @@ public class OseeEnumTypeFactory implements IOseeTypeFactory {
          oseeEnumType = createEnumType(guid, enumTypeName);
          oseeEnumType.setId(enumTypeId);
          oseeEnumType.setStorageState(storageState);
+         cache.cache(oseeEnumType);
       } else {
-         cache.decache(oseeEnumType);
          oseeEnumType.setName(enumTypeName);
       }
-      cache.cache(oseeEnumType);
       return oseeEnumType;
    }
 
@@ -56,11 +55,10 @@ public class OseeEnumTypeFactory implements IOseeTypeFactory {
       OseeEnumType oseeEnumType = cache.getByGuid(guid);
       if (oseeEnumType == null) {
          oseeEnumType = createEnumType(guid, enumTypeName);
+         cache.cache(oseeEnumType);
       } else {
-         cache.decache(oseeEnumType);
          oseeEnumType.setName(enumTypeName);
       }
-      cache.cache(oseeEnumType);
       return oseeEnumType;
    }
 

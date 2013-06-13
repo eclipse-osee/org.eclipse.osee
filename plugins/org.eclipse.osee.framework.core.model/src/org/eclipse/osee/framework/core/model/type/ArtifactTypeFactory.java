@@ -32,12 +32,11 @@ public final class ArtifactTypeFactory implements IOseeTypeFactory {
       ArtifactType artifactType = cache.getByGuid(guid);
       if (artifactType == null) {
          artifactType = create(guid, isAbstract, name);
+         cache.cache(artifactType);
       } else {
-         cache.decache(artifactType);
          artifactType.setName(name);
          artifactType.setAbstract(isAbstract);
       }
-      cache.cache(artifactType);
       return artifactType;
    }
 
@@ -48,12 +47,11 @@ public final class ArtifactTypeFactory implements IOseeTypeFactory {
          artifactType = create(guid, isAbstract, name);
          artifactType.setId(uniqueId);
          artifactType.setStorageState(storageState);
+         cache.cache(artifactType);
       } else {
-         cache.decache(artifactType);
          artifactType.setName(name);
          artifactType.setAbstract(isAbstract);
       }
-      cache.cache(artifactType);
       return artifactType;
    }
 }

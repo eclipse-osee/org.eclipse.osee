@@ -50,12 +50,11 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
             create(guid, typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue,
                minOccurrences, maxOccurrences, description, taggerId, mediaType);
          attributeType.setOseeEnumType(oseeEnumType);
+         cache.cache(attributeType);
       } else {
-         cache.decache(attributeType);
          attributeType.setFields(typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension,
             defaultValue, oseeEnumType, minOccurrences, maxOccurrences, description, taggerId, mediaType);
       }
-      cache.cache(attributeType);
       return attributeType;
    }
 
@@ -69,12 +68,11 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
          attributeType.setOseeEnumType(oseeEnumType);
          attributeType.setId(uniqueId);
          attributeType.setStorageState(storageState);
+         cache.cache(attributeType);
       } else {
-         cache.decache(attributeType);
          attributeType.setFields(typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension,
             defaultValue, oseeEnumType, minOccurrences, maxOccurrences, description, taggerId, mediaType);
       }
-      cache.cache(attributeType);
       return attributeType;
    }
 }

@@ -44,14 +44,13 @@ public class BranchFactory implements IOseeTypeFactory {
       Branch branch = cache.getByGuid(guid);
       if (branch == null) {
          branch = create(guid, name, branchType, branchState, isArchived);
+         cache.cache(branch);
       } else {
-         cache.decache(branch);
          branch.setName(name);
          branch.setArchived(isArchived);
          branch.setBranchState(branchState);
          branch.setBranchType(branchType);
       }
-      cache.cache(branch);
       return branch;
    }
 
@@ -62,15 +61,14 @@ public class BranchFactory implements IOseeTypeFactory {
          branch = create(guid, name, branchType, branchState, isArchived);
          branch.setId(uniqueId);
          branch.setStorageState(storageState);
+         cache.cache(branch);
       } else {
-         cache.decache(branch);
          branch.setName(name);
          branch.setArchived(isArchived);
          branch.setBranchState(branchState);
          branch.setBranchType(branchType);
          branch.setStorageState(storageState);
       }
-      cache.cache(branch);
       return branch;
    }
 }

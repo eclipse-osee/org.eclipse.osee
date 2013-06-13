@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -40,8 +39,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implements IOseeCache<K, T> {
    private final HashCollection<String, T> nameToTypeMap = new HashCollection<String, T>(true,
       CopyOnWriteArrayList.class);
-   private final Map<Integer, T> idToTypeMap = new ConcurrentHashMap<Integer, T>();
-   private final Map<K, T> guidToTypeMap = new ConcurrentHashMap<K, T>();
+   private final ConcurrentHashMap<Integer, T> idToTypeMap = new ConcurrentHashMap<Integer, T>();
+   private final ConcurrentHashMap<K, T> guidToTypeMap = new ConcurrentHashMap<K, T>();
 
    private final IOseeDataAccessor<K, T> dataAccessor;
    private final OseeCacheEnum cacheId;
@@ -170,7 +169,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       Conditions.checkNotNull(type, "type to cache");
       ensurePopulated();
       nameToTypeMap.put(type.getName(), type);
-      guidToTypeMap.put(type.getGuid(), type);
+      guidToTypeMap.putIfAbsent(type.getGuid(), type);
       cacheById(type);
       if (isNameUniquenessEnforced()) {
          checkNameUnique(type);
@@ -201,7 +200,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       Conditions.checkNotNull(type, "type to cache");
       ensurePopulated();
       if (type.isIdValid()) {
-         idToTypeMap.put(type.getId(), type);
+         idToTypeMap.putIfAbsent(type.getId(), type);
       }
    }
 
@@ -336,13 +335,12 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
 
    @Override
    public void storeItems(T... items) throws OseeCoreException {
-      Conditions.checkNotNull(items, "items to store");
       storeItems(Arrays.asList(items));
    }
 
    @Override
    public void storeItems(Collection<T> toStore) throws OseeCoreException {
-      Conditions.checkNotNull(toStore, "items to store");
+      Conditions.checkDoesNotContainNulls(toStore, "items to store");
       if (!toStore.isEmpty()) {
          getDataAccessor().store(toStore);
          synchronized (this) {
