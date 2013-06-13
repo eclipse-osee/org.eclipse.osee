@@ -953,6 +953,18 @@
          </with>
       </enabledWhen>
    </handler>
+   <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.DslEditorHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.render.dsl.editor.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
+   </handler>   
 </extension>
  <extension
        name="Branch View Handlers"
@@ -1225,6 +1237,10 @@
          id="org.eclipse.osee.framework.ui.skynet.javaeditor.command"
          name="Java Editor">
    </command>
+   <command
+         id="org.eclipse.osee.framework.ui.skynet.render.dsl.editor.command"
+         name="DSL Editor">
+   </command>   
 </extension>
  <extension
        id="Osee Core commands"
