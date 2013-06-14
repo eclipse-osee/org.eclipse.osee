@@ -82,7 +82,7 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
    public void setInput(Object input) {
       if (input instanceof ArtifactEditor) {
          this.editor = (ArtifactEditor) input;
-         if (getTreeViewer() != null) {
+         if (getTreeViewer() != null && Widgets.isAccessible(getTreeViewer().getTree())) {
             getTreeViewer().setInput(editor != null ? editor : "No Input Available");
          }
       }
