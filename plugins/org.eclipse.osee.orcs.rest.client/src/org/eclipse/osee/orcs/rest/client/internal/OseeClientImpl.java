@@ -22,6 +22,7 @@ import org.eclipse.osee.orcs.rest.client.internal.search.QueryBuilderImpl;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutorV1;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
+import com.google.inject.Inject;
 
 /**
  * @author John Misinco
@@ -35,10 +36,12 @@ public class OseeClientImpl implements OseeClient {
    private URIProvider uriProvider;
    private WebClientProvider clientProvider;
 
+   @Inject
    public void setWebClientProvider(WebClientProvider clientProvider) {
       this.clientProvider = clientProvider;
    }
 
+   @Inject
    public void setUriProvider(URIProvider uriProvider) {
       this.uriProvider = uriProvider;
    }

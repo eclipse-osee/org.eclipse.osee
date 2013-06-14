@@ -147,6 +147,8 @@ public class PredicateFactoryImpl implements PredicateFactory {
          case LESS_THAN:
             toReturn = SearchOp.LESS_THAN;
             break;
+         default:
+            break;
       }
       return toReturn;
    }
