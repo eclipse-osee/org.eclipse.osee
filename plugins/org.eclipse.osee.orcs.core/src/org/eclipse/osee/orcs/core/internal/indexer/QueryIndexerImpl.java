@@ -22,6 +22,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.indexer.collector.IndexerCollectorNotifier;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 
@@ -35,13 +36,15 @@ public class QueryIndexerImpl implements QueryIndexer {
    private final ExecutorAdmin executorAdmin;
    private final IndexerCollector systemCollector;
    private final QueryEngineIndexer engineIndexer;
+   private final AttributeTypes attributeTypes;
 
-   public QueryIndexerImpl(Log logger, SessionContext sessionContext, ExecutorAdmin executorAdmin, QueryEngineIndexer engineIndexer, IndexerCollector systemCollector) {
+   public QueryIndexerImpl(Log logger, SessionContext sessionContext, ExecutorAdmin executorAdmin, QueryEngineIndexer engineIndexer, IndexerCollector systemCollector, AttributeTypes attributeTypes) {
       this.logger = logger;
       this.sessionContext = sessionContext;
       this.executorAdmin = executorAdmin;
       this.systemCollector = systemCollector;
       this.engineIndexer = engineIndexer;
+      this.attributeTypes = attributeTypes;
    }
 
    private IndexerCollector merge(IndexerCollector collector) {
@@ -60,7 +63,7 @@ public class QueryIndexerImpl implements QueryIndexer {
 
    @Override
    public CancellableCallable<Integer> indexAllFromQueue(IndexerCollector collector) {
-      return engineIndexer.indexAllFromQueue(sessionContext.getSessionId(), merge(collector));
+      return engineIndexer.indexAllFromQueue(sessionContext.getSessionId(), attributeTypes, merge(collector));
    }
 
    @Override
@@ -69,8 +72,15 @@ public class QueryIndexerImpl implements QueryIndexer {
    }
 
    @Override
-   public CancellableCallable<?> indexBranches(IndexerCollector collector, Set<ReadableBranch> branches, boolean indexOnlyMissing) {
-      return engineIndexer.indexBranches(sessionContext.getSessionId(), merge(collector), branches, indexOnlyMissing);
+   public CancellableCallable<?> indexBranches(final IndexerCollector collector, final Set<ReadableBranch> branches, final boolean indexOnlyMissing) {
+      return new CancellableCallable<Void>() {
+         @Override
+         public Void call() throws Exception {
+            engineIndexer.indexBranches(sessionContext.getSessionId(), attributeTypes, merge(collector),
+               attributeTypes.getAllTaggable(), branches, indexOnlyMissing);
+            return null;
+         }
+      };
    }
 
    @Override
@@ -80,7 +90,7 @@ public class QueryIndexerImpl implements QueryIndexer {
 
    @Override
    public CancellableCallable<List<Future<?>>> indexXmlStream(IndexerCollector collector, InputStream inputStream) {
-      return engineIndexer.indexXmlStream(sessionContext.getSessionId(), merge(collector), inputStream);
+      return engineIndexer.indexXmlStream(sessionContext.getSessionId(), attributeTypes, merge(collector), inputStream);
    }
 
    @Override

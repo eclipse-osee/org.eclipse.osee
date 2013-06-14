@@ -11,11 +11,14 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
 /**
@@ -27,12 +30,12 @@ public interface QueryEngineIndexer {
 
    CancellableCallable<Integer> purgeAllIndexes(String sessionId);
 
-   CancellableCallable<?> indexBranches(String sessionId, IndexerCollector collector, Set<ReadableBranch> branches, boolean indexOnlyMissing);
+   CancellableCallable<?> indexBranches(String sessionId, AttributeTypes types, IndexerCollector collector, Collection<? extends IAttributeType> typeToTag, Set<ReadableBranch> branches, boolean indexOnlyMissing);
 
-   CancellableCallable<Integer> indexAllFromQueue(String sessionId, IndexerCollector collector);
+   CancellableCallable<Integer> indexAllFromQueue(String sessionId, AttributeTypes types, IndexerCollector collector);
 
    CancellableCallable<IndexerData> getIndexerData(String sessionId);
 
-   CancellableCallable<List<Future<?>>> indexXmlStream(String sessionId, IndexerCollector collector, InputStream inputStream);
+   CancellableCallable<List<Future<?>>> indexXmlStream(String sessionId, AttributeTypes types, IndexerCollector collector, InputStream inputStream);
 
 }

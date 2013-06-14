@@ -37,6 +37,7 @@ import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.search.QueryCollector;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.search.Match;
 
@@ -48,8 +49,8 @@ public class LocalIdSearchCallable extends AbstractSearchCallable<ResultSet<HasL
    private final ArtifactLoaderFactory objectLoader;
    private final DataLoaderFactory dataLoaderFactory;
 
-   public LocalIdSearchCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, ArtifactLoaderFactory objectLoader, DataLoaderFactory dataLoaderFactory, SessionContext sessionContext, QueryData queryData) {
-      super(logger, queryEngine, collector, sessionContext, null, queryData);
+   public LocalIdSearchCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, ArtifactLoaderFactory objectLoader, DataLoaderFactory dataLoaderFactory, SessionContext sessionContext, QueryData queryData, AttributeTypes types) {
+      super(logger, queryEngine, collector, sessionContext, null, queryData, types);
       this.dataLoaderFactory = dataLoaderFactory;
       this.objectLoader = objectLoader;
    }
@@ -83,6 +84,7 @@ public class LocalIdSearchCallable extends AbstractSearchCallable<ResultSet<HasL
          if (!queryContext.getPostProcessors().isEmpty()) {
             for (QueryPostProcessor processor : queryContext.getPostProcessors()) {
                processor.setItemsToProcess(artifacts);
+               processor.setAttributeTypes(types);
                checkForCancelled();
                List<Match<ArtifactReadable, AttributeReadable<?>>> matches = processor.call();
                for (Match<ArtifactReadable, AttributeReadable<?>> match : matches) {
@@ -103,7 +105,6 @@ public class LocalIdSearchCallable extends AbstractSearchCallable<ResultSet<HasL
       checkForCancelled();
       return new ResultSetList<HasLocalId>(results);
    }
-
    private static final class AdapterBuidler implements ArtifactBuilder {
 
       private final Collection<HasLocalId> results;

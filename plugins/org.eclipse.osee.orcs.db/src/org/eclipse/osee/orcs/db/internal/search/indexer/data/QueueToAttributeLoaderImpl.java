@@ -11,9 +11,10 @@
 package org.eclipse.osee.orcs.db.internal.search.indexer.data;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -32,14 +33,14 @@ public class QueueToAttributeLoaderImpl implements QueueToAttributeLoader {
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
-   private final AttributeTypeCache cache;
+   private final IdentityService idService;
    private final IResourceManager resourceManager;
 
-   public QueueToAttributeLoaderImpl(Log logger, IOseeDatabaseService dbService, AttributeTypeCache cache, IResourceManager resourceManager) {
+   public QueueToAttributeLoaderImpl(Log logger, IOseeDatabaseService dbService, IdentityService idService, IResourceManager resourceManager) {
       super();
       this.logger = logger;
       this.dbService = dbService;
-      this.cache = cache;
+      this.idService = idService;
       this.resourceManager = resourceManager;
    }
 
@@ -47,8 +48,8 @@ public class QueueToAttributeLoaderImpl implements QueueToAttributeLoader {
       return dbService;
    }
 
-   private AttributeTypeCache getAttributeCache() {
-      return cache;
+   private IdentityService getIdentityService() {
+      return idService;
    }
 
    private IResourceManager getResourceManager() {
@@ -59,9 +60,13 @@ public class QueueToAttributeLoaderImpl implements QueueToAttributeLoader {
       IOseeStatement chStmt = getDatabaseService().getStatement(connection);
       try {
          chStmt.runPreparedQuery(LOAD_ATTRIBUTE, tagQueueQueryId);
-         AttributeTypeCache typeCache = getAttributeCache();
+         IdentityService idService = getIdentityService();
          while (chStmt.next()) {
-            AttributeType attributeType = typeCache.getById(chStmt.getInt("attr_type_id"));
+            int localId = chStmt.getInt("attr_type_id");
+
+            Long uuid = idService.getUniversalId(localId);
+            IAttributeType attributeType = TokenFactory.createAttributeType(uuid, "N/A");
+
             attributeDatas.add(new AttributeForIndexingImpl(getResourceManager(), chStmt.getInt("attr_id"),
                chStmt.getLong("gamma_id"), attributeType, chStmt.getString("value"), chStmt.getString("uri")));
          }

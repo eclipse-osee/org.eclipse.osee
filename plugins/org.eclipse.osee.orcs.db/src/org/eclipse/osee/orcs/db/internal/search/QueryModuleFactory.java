@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.search;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -79,17 +78,15 @@ public class QueryModuleFactory {
       this.logger = logger;
    }
 
-   public void create(ExecutorAdmin executorAdmin, IOseeDatabaseService dbService, IdentityService identityService, SqlProvider sqlProvider, IResourceManager resourceManager, BranchCache branchCache, AttributeTypeCache attributeTypeCache) {
-      TaggingEngine taggingEngine = createTaggingEngine(attributeTypeCache);
-
+   public void start(ExecutorAdmin executorAdmin, IOseeDatabaseService dbService, IdentityService idService, SqlProvider sqlProvider, IResourceManager resourceManager, BranchCache branchCache) {
+      TaggingEngine taggingEngine = createTaggingEngine();
       DataPostProcessorFactory<CriteriaAttributeKeywords> postProcessor =
          createAttributeKeywordPostProcessor(executorAdmin, taggingEngine);
       SqlHandlerFactory handlerFactory =
-         createHandlerFactory(identityService, postProcessor, taggingEngine.getTagProcessor());
+         createHandlerFactory(idService, postProcessor, taggingEngine.getTagProcessor());
 
       queryEngine = createQueryEngine(dbService, handlerFactory, sqlProvider, branchCache);
-      queryIndexer =
-         createQueryEngineIndexer(dbService, executorAdmin, taggingEngine, resourceManager, attributeTypeCache);
+      queryIndexer = createQueryEngineIndexer(dbService, idService, executorAdmin, taggingEngine, resourceManager);
    }
 
    public void stop() {
@@ -105,7 +102,7 @@ public class QueryModuleFactory {
       return queryIndexer;
    }
 
-   protected TaggingEngine createTaggingEngine(AttributeTypeCache attributeTypeCache) {
+   public TaggingEngine createTaggingEngine() {
       TagProcessor tagProcessor = new TagProcessor(new EnglishLanguage(logger), new TagEncoder());
       Map<String, Tagger> taggers = new HashMap<String, Tagger>();
 
@@ -113,20 +110,20 @@ public class QueryModuleFactory {
       taggers.put("DefaultAttributeTaggerProvider", new DefaultAttributeTagger(tagProcessor, matcher));
       taggers.put("XmlAttributeTaggerProvider", new XmlAttributeTagger(tagProcessor, matcher));
 
-      return new TaggingEngine(taggers, tagProcessor, attributeTypeCache);
+      return new TaggingEngine(taggers, tagProcessor);
    }
 
    protected QueryEngineImpl createQueryEngine(IOseeDatabaseService dbService, SqlHandlerFactory handlerFactory, SqlProvider sqlProvider, BranchCache branchCache) {
       return new QueryEngineImpl(logger, dbService, sqlProvider, branchCache, handlerFactory);
    }
 
-   protected QueryEngineIndexer createQueryEngineIndexer(IOseeDatabaseService dbService, ExecutorAdmin executorAdmin, TaggingEngine taggingEngine, IResourceManager resourceManager, AttributeTypeCache attributeTypeCache) {
+   protected QueryEngineIndexer createQueryEngineIndexer(IOseeDatabaseService dbService, IdentityService identityService, ExecutorAdmin executorAdmin, TaggingEngine taggingEngine, IResourceManager resourceManager) {
       QueueToAttributeLoader attributeLoader =
-         new QueueToAttributeLoaderImpl(logger, dbService, attributeTypeCache, resourceManager);
+         new QueueToAttributeLoaderImpl(logger, dbService, identityService, resourceManager);
       IndexerCallableFactory callableFactory =
          new IndexerCallableFactoryImpl(logger, dbService, taggingEngine, attributeLoader);
       IndexingTaskConsumer indexConsumer = new IndexingTaskConsumerImpl(executorAdmin, callableFactory);
-      return new QueryEngineIndexerImpl(logger, dbService, attributeTypeCache, indexConsumer);
+      return new QueryEngineIndexerImpl(logger, dbService, identityService, indexConsumer);
    }
 
    protected SqlHandlerFactory createHandlerFactory(IdentityService identityService, DataPostProcessorFactory<CriteriaAttributeKeywords> postProcessorFactory, TagProcessor tagProcessor) {

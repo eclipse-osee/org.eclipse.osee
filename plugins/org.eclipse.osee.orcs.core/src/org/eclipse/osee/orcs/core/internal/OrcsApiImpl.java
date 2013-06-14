@@ -154,7 +154,7 @@ public class OrcsApiImpl implements OrcsApi {
             orcsTypes.getArtifactTypes(), orcsTypes.getAttributeTypes());
 
       indexerModule = new IndexerModule(logger, preferences, executorAdmin, dataStore.getQueryEngineIndexer());
-      indexerModule.start();
+      indexerModule.start(getSystemSession(), orcsTypes.getAttributeTypes());
    }
 
    public void stop() {
@@ -232,7 +232,7 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public QueryIndexer getQueryIndexer(ApplicationContext context) {
       SessionContext sessionContext = getSessionContext(context);
-      return indexerModule.createQueryIndexer(sessionContext);
+      return indexerModule.createQueryIndexer(sessionContext, getOrcsTypes(context).getAttributeTypes());
    }
 
    private SessionContext getSystemSession() {

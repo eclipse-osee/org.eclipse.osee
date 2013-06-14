@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.TagQueueJoinQuery;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
@@ -26,11 +27,12 @@ public final class IndexAllInQueueCallable extends DatabaseCallable<Integer> {
 
    private final IndexingTaskConsumer consumer;
    private final IndexerCollector collector;
-
+   private final AttributeTypes types;
    private Collection<Integer> queryIds;
 
-   public IndexAllInQueueCallable(Log logger, IOseeDatabaseService service, IndexingTaskConsumer consumer, IndexerCollector collector) {
+   public IndexAllInQueueCallable(Log logger, IOseeDatabaseService service, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector) {
       super(logger, service);
+      this.types = types;
       this.consumer = consumer;
       this.collector = collector;
    }
@@ -42,7 +44,7 @@ public final class IndexAllInQueueCallable extends DatabaseCallable<Integer> {
 
       getLogger().info("Submitting - [%d] index tasks from queue", queryIds.size());
       for (Integer queryId : queryIds) {
-         consumer.submitTaskId(collector, queryId);
+         consumer.submitTaskId(types, collector, queryId);
       }
       return queryIds.size();
    }

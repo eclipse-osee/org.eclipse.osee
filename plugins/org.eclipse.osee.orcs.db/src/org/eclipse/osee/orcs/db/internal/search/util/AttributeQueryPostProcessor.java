@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 
@@ -32,7 +31,7 @@ public class AttributeQueryPostProcessor extends AbstractQueryPostProcessor {
    }
 
    @Override
-   protected Tagger getTagger(AttributeReadable<?> attribute) throws OseeCoreException {
+   protected Tagger getTagger(String taggerId) throws OseeCoreException {
       return engine.getDefaultTagger();
    }
 }

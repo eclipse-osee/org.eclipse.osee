@@ -18,6 +18,7 @@ import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.search.QueryCollector;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Roberto E. Escobar
@@ -30,8 +31,9 @@ public abstract class AbstractSearchCallable<T> extends CancellableCallable<T> {
    protected final LoadLevel loadLevel;
    protected final QueryData queryData;
    private final QueryCollector collector;
+   protected final AttributeTypes types;
 
-   public AbstractSearchCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, SessionContext sessionContext, LoadLevel loadLevel, QueryData queryData) {
+   public AbstractSearchCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, SessionContext sessionContext, LoadLevel loadLevel, QueryData queryData, AttributeTypes types) {
       super();
       this.logger = logger;
       this.queryEngine = queryEngine;
@@ -39,6 +41,7 @@ public abstract class AbstractSearchCallable<T> extends CancellableCallable<T> {
       this.sessionContext = sessionContext;
       this.loadLevel = loadLevel;
       this.queryData = queryData;
+      this.types = types;
    }
 
    protected Log getLogger() {

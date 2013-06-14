@@ -139,8 +139,8 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
       dataStoreAdmin = new DataStoreAdminImpl(logger, dbService, identityService, branchStore, preferences);
 
       queryModule = new QueryModuleFactory(logger);
-      queryModule.create(executorAdmin, dbService, identityService, sqlProvider, resourceManager,
-         cacheService.getBranchCache(), cacheService.getAttributeTypeCache());
+      queryModule.start(executorAdmin, dbService, identityService, sqlProvider, resourceManager,
+         cacheService.getBranchCache());
    }
 
    public void stop() {

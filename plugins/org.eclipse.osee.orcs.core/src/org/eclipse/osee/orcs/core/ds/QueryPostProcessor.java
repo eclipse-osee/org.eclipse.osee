@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
@@ -25,6 +26,7 @@ public abstract class QueryPostProcessor extends CancellableCallable<List<Match<
 
    private final Log logger;
    private List<ArtifactReadable> artifacts;
+   private AttributeTypes types;
 
    protected QueryPostProcessor(Log logger) {
       this.logger = logger;
@@ -40,6 +42,14 @@ public abstract class QueryPostProcessor extends CancellableCallable<List<Match<
 
    protected Log getLogger() {
       return logger;
+   }
+
+   protected AttributeTypes getAttributeTypes() {
+      return types;
+   }
+
+   public void setAttributeTypes(AttributeTypes types) {
+      this.types = types;
    }
 
    @Override

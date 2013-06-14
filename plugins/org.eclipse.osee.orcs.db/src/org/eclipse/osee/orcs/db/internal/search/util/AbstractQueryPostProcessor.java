@@ -32,6 +32,7 @@ import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.search.Match;
 
@@ -91,7 +92,7 @@ public abstract class AbstractQueryPostProcessor extends QueryPostProcessor impl
       }
    }
 
-   protected abstract Tagger getTagger(AttributeReadable<?> attribute) throws OseeCoreException;
+   protected abstract Tagger getTagger(String taggerId) throws OseeCoreException;
 
    @Override
    public Callable<Collection<Match<ArtifactReadable, AttributeReadable<?>>>> createWorker(Collection<ArtifactReadable> toProcess) {
@@ -111,6 +112,8 @@ public abstract class AbstractQueryPostProcessor extends QueryPostProcessor impl
          List<Match<ArtifactReadable, AttributeReadable<?>>> results =
             new ArrayList<Match<ArtifactReadable, AttributeReadable<?>>>();
 
+         AttributeTypes attributeTypes = getAttributeTypes();
+
          DeletionFlag includeDeleted = getOptions().getIncludeDeleted();
          Map<AttributeReadable<?>, List<MatchLocation>> matchedAttributes = null;
          for (ArtifactReadable artifact : artifacts) {
@@ -120,7 +123,9 @@ public abstract class AbstractQueryPostProcessor extends QueryPostProcessor impl
                try {
                   if (getTypes().contains(attribute.getAttributeType())) {
                      checkForCancelled();
-                     Tagger tagger = getTagger(attribute);
+
+                     String taggerId = attributeTypes.getTaggerId(attribute.getAttributeType());
+                     Tagger tagger = getTagger(taggerId);
                      if (tagger != null) {
                         checkForCancelled();
                         List<MatchLocation> locations = tagger.find(attribute, getQuery(), true, criteria.getOptions());

@@ -28,6 +28,7 @@ import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.search.QueryCollector;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
@@ -37,8 +38,8 @@ public class SearchMatchesCallable extends AbstractArtifactSearchCallable<Result
 
    private Collection<QueryPostProcessor> processors;
 
-   public SearchMatchesCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, ArtifactLoaderFactory objectLoader, SessionContext sessionContext, LoadLevel loadLevel, QueryData queryData) {
-      super(logger, queryEngine, collector, objectLoader, sessionContext, loadLevel, queryData);
+   public SearchMatchesCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, ArtifactLoaderFactory objectLoader, SessionContext sessionContext, LoadLevel loadLevel, QueryData queryData, AttributeTypes types) {
+      super(logger, queryEngine, collector, objectLoader, sessionContext, loadLevel, queryData, types);
    }
 
    @Override
@@ -64,6 +65,7 @@ public class SearchMatchesCallable extends AbstractArtifactSearchCallable<Result
       }
       for (QueryPostProcessor processor : processors) {
          processor.setItemsToProcess(artifacts);
+         processor.setAttributeTypes(types);
          checkForCancelled();
          results.addAll(processor.call());
       }

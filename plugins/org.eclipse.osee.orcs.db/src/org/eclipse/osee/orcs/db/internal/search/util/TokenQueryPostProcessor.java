@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
-import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 
@@ -33,8 +32,7 @@ public class TokenQueryPostProcessor extends AbstractQueryPostProcessor {
    }
 
    @Override
-   protected Tagger getTagger(AttributeReadable<?> attribute) throws OseeCoreException {
-      String taggerId = engine.getTaggerId(attribute.getAttributeType());
+   protected Tagger getTagger(String taggerId) throws OseeCoreException {
       Tagger toReturn = null;
       if (Strings.isValid(taggerId)) {
          toReturn = engine.getTagger(taggerId);

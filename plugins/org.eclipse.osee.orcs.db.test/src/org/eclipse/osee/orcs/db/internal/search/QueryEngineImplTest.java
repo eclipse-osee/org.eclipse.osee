@@ -112,7 +112,7 @@ public class QueryEngineImplTest {
 
       QueryModuleFactory queryModule = new QueryModuleFactory(logger);
 
-      TaggingEngine taggingEngine = queryModule.createTaggingEngine(attributeTypeCache);
+      TaggingEngine taggingEngine = queryModule.createTaggingEngine();
 
       DataPostProcessorFactory<CriteriaAttributeKeywords> postProcessorFactory =
          queryModule.createAttributeKeywordPostProcessor(executorAdmin, taggingEngine);

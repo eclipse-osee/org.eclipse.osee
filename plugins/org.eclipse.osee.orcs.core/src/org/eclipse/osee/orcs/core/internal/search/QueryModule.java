@@ -35,7 +35,8 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
       QueryStatsCollectorImpl queryStatsCollector = new QueryStatsCollectorImpl(statistics);
       this.criteriaFctry = new CriteriaFactory(artifactTypeCache, attributeTypeCache);
       this.callableQueryFactory =
-         new CallableQueryFactory(logger, queryEngine, queryStatsCollector, objectLoader, dataLoader);
+         new CallableQueryFactory(logger, queryEngine, queryStatsCollector, objectLoader, dataLoader,
+            attributeTypeCache);
    }
 
    public QueryFactory createQueryFactory(SessionContext sessionContext) {

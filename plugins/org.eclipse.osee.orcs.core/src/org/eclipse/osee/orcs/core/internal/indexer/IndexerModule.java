@@ -21,6 +21,7 @@ import org.eclipse.osee.orcs.core.internal.HasStatistics;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.indexer.statistics.IndexerStatisticsCollectorImpl;
 import org.eclipse.osee.orcs.core.internal.indexer.statistics.IndexerStatisticsImpl;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.statistics.IndexerStatistics;
@@ -47,15 +48,12 @@ public class IndexerModule implements HasStatistics<IndexerStatistics> {
       this.collector = new IndexerStatisticsCollectorImpl(statistics);
    }
 
-   private String getSystemContext() {
-      // TODO: Create a system context and use it here 
-      return "system";
-   }
-
-   public void start() {
+   public void start(SessionContext sessionContext, AttributeTypes attributeTypes) {
       try {
          if (preferences.isBoolean(DataStoreConstants.DATASTORE_INDEX_ON_START_UP)) {
-            task = executorAdmin.schedule(queryIndexer.indexAllFromQueue(getSystemContext(), collector));
+            task =
+               executorAdmin.schedule(queryIndexer.indexAllFromQueue(sessionContext.getSessionId(), attributeTypes,
+                  collector));
          } else {
             logger.info("Indexer was not executed on Server Startup.");
          }
@@ -87,7 +85,7 @@ public class IndexerModule implements HasStatistics<IndexerStatistics> {
       statistics.clear();
    }
 
-   public QueryIndexer createQueryIndexer(SessionContext sessionContext) {
-      return new QueryIndexerImpl(logger, sessionContext, executorAdmin, queryIndexer, collector);
+   public QueryIndexer createQueryIndexer(SessionContext sessionContext, AttributeTypes attributeTypes) {
+      return new QueryIndexerImpl(logger, sessionContext, executorAdmin, queryIndexer, collector, attributeTypes);
    }
 }

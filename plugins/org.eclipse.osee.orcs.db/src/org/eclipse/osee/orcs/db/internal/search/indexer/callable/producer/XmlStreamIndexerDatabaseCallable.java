@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer.IndexerXmlInputStreamParser.IndexItemIdCollector;
 import org.eclipse.osee.orcs.search.IndexerCollector;
@@ -27,8 +28,8 @@ public class XmlStreamIndexerDatabaseCallable extends AbstractIndexerTxDatabaseC
    private final IndexerXmlInputStreamParser parser;
    private final InputStream inputStream;
 
-   public XmlStreamIndexerDatabaseCallable(Log logger, IOseeDatabaseService dbService, IndexingTaskConsumer consumer, IndexerCollector listener, boolean isCacheAll, int cacheLimit, InputStream inputStream) {
-      super(logger, dbService, consumer, listener, isCacheAll, cacheLimit);
+   public XmlStreamIndexerDatabaseCallable(Log logger, IOseeDatabaseService dbService, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector listener, boolean isCacheAll, int cacheLimit, InputStream inputStream) {
+      super(logger, dbService, types, consumer, listener, isCacheAll, cacheLimit);
       parser = new IndexerXmlInputStreamParser();
       this.inputStream = inputStream;
    }

@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.ExecutionCallback;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
 /**
@@ -60,32 +61,33 @@ public class IndexingTaskConsumerImpl implements IndexingTaskConsumer {
 
    @Override
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public Future<?> submitTaskId(IndexerCollector collector, final int queryId) throws Exception {
-      Callable<?> callable = factory.createIndexerTaskCallable(collector, queryId);
+   public Future<?> submitTaskId(AttributeTypes types, IndexerCollector collector, final int queryId) throws Exception {
+      Callable<?> callable = factory.createIndexerTaskCallable(types, collector, queryId);
       if (collector != null) {
          collector.onIndexTaskSubmit(queryId);
       }
-      Future<?> future = executorAdmin.schedule(IndexerConstants.INDEXING_CONSUMER_EXECUTOR_ID, callable, new ExecutionCallback() {
+      Future<?> future =
+         executorAdmin.schedule(IndexerConstants.INDEXING_CONSUMER_EXECUTOR_ID, callable, new ExecutionCallback() {
 
-         @Override
-         public void onCancelled() {
-            removeFromQueue();
-         }
+            @Override
+            public void onCancelled() {
+               removeFromQueue();
+            }
 
-         @Override
-         public void onSuccess(Object result) {
-            removeFromQueue();
-         }
+            @Override
+            public void onSuccess(Object result) {
+               removeFromQueue();
+            }
 
-         @Override
-         public void onFailure(Throwable throwable) {
-            removeFromQueue();
-         }
+            @Override
+            public void onFailure(Throwable throwable) {
+               removeFromQueue();
+            }
 
-         private void removeFromQueue() {
-            futureTasks.remove(queryId);
-         }
-      });
+            private void removeFromQueue() {
+               futureTasks.remove(queryId);
+            }
+         });
       futureTasks.put(queryId, future);
       return future;
    }

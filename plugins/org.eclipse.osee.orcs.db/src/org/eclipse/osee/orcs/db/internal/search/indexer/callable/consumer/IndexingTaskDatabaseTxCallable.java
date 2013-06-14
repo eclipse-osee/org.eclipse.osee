@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.database.core.DatabaseJoinAccessor.JoinItem;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.indexer.QueueToAttributeLoader;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
@@ -47,12 +48,13 @@ public final class IndexingTaskDatabaseTxCallable extends DatabaseTxCallable<Lon
    private final int tagQueueQueryId;
    private final boolean isCacheAll;
    private final int cacheLimit;
+   private final AttributeTypes attributeTypes;
 
    private final long waitStartTime;
    private long startTime;
    private long waitTime;
 
-   public IndexingTaskDatabaseTxCallable(Log logger, IOseeDatabaseService dbService, QueueToAttributeLoader loader, TaggingEngine taggingEngine, IndexerCollector collector, int tagQueueQueryId, boolean isCacheAll, int cacheLimit) {
+   public IndexingTaskDatabaseTxCallable(Log logger, IOseeDatabaseService dbService, QueueToAttributeLoader loader, TaggingEngine taggingEngine, IndexerCollector collector, int tagQueueQueryId, boolean isCacheAll, int cacheLimit, AttributeTypes attributeTypes) {
       super(logger, dbService, "Attribute to Tag Database Transaction");
       waitStartTime = System.currentTimeMillis();
 
@@ -62,6 +64,7 @@ public final class IndexingTaskDatabaseTxCallable extends DatabaseTxCallable<Lon
       this.tagQueueQueryId = tagQueueQueryId;
       this.cacheLimit = cacheLimit;
       this.isCacheAll = isCacheAll;
+      this.attributeTypes = attributeTypes;
    }
 
    public int getTagQueueQueryId() {
@@ -107,7 +110,8 @@ public final class IndexingTaskDatabaseTxCallable extends DatabaseTxCallable<Lon
             toStore.put(gamma, tags);
             tagCollector.setCurrentTag(gamma, tags);
             try {
-               Tagger tagger = taggingEngine.getTagger(attributeData.getAttributeType());
+               String taggerId = attributeTypes.getTaggerId(attributeData.getAttributeType());
+               Tagger tagger = taggingEngine.getTagger(taggerId);
                tagger.tagIt(attributeData, tagCollector);
                if (isStorageAllowed(toStore)) {
                   if (getLogger().isDebugEnabled()) {

@@ -14,9 +14,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.database.schema.DatabaseCallable;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.TagQueueJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
@@ -57,25 +58,27 @@ public final class IndexBranchesDatabaseCallable extends DatabaseCallable<Object
    private static final String COUNT_MISSING_BY_BRANCH =
       COUNT_TAGGABLE_ATTRIBUTES_BY_BRANCH + " AND att.gamma_id NOT IN (SELECT gamma_id FROM osee_search_tags)";
 
+   private final IdentityService idService;
+   private final AttributeTypes types;
    private final IndexingTaskConsumer consumer;
-   private final AttributeTypeCache attTypeCache;
-
    private final IndexerCollector collector;
    private final Collection<ReadableBranch> branches;
+   private final Collection<? extends IAttributeType> typesToTag;
    private final boolean tagOnlyMissingGammas;
 
-   public IndexBranchesDatabaseCallable(Log logger, IOseeDatabaseService service, IndexingTaskConsumer consumer, AttributeTypeCache attTypeCache, IndexerCollector collector, Collection<ReadableBranch> branches, boolean tagOnlyMissingGammas) {
+   public IndexBranchesDatabaseCallable(Log logger, IOseeDatabaseService service, IdentityService idService, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, Collection<? extends IAttributeType> typesToTag, Collection<ReadableBranch> branches, boolean tagOnlyMissingGammas) {
       super(logger, service);
+      this.idService = idService;
+      this.types = types;
       this.consumer = consumer;
-      this.attTypeCache = attTypeCache;
       this.collector = collector;
+      this.typesToTag = typesToTag;
       this.branches = branches;
       this.tagOnlyMissingGammas = tagOnlyMissingGammas;
    }
 
    @Override
    public Object call() throws Exception {
-
       getLogger().info(getParamInfo());
 
       Set<Integer> branchIds = new HashSet<Integer>();
@@ -91,9 +94,10 @@ public final class IndexBranchesDatabaseCallable extends DatabaseCallable<Object
          String searchQuery = data.getSecond();
          Object[] params = data.getThird();
 
-         for (AttributeType attributeType : attTypeCache.getAll()) {
-            if (attributeType.isTaggable()) {
-               typeJoin.add(attributeType.getId());
+         for (IAttributeType attributeType : typesToTag) {
+            if (types.isTaggable(attributeType)) {
+               int typeLocalId = idService.getLocalId(attributeType);
+               typeJoin.add(typeLocalId);
             }
          }
 
@@ -116,7 +120,7 @@ public final class IndexBranchesDatabaseCallable extends DatabaseCallable<Object
    public void storeAndAddQueryId(TagQueueJoinQuery joinQuery) throws Exception {
       if (!joinQuery.isEmpty()) {
          joinQuery.store();
-         consumer.submitTaskId(collector, joinQuery.getQueryId());
+         consumer.submitTaskId(types, collector, joinQuery.getQueryId());
       }
    }
 

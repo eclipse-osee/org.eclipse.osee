@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -38,12 +37,12 @@ public class AttributeForIndexingImpl implements AttributeReadable<String> {
    private final int attrId;
    private final long gammaId;
 
-   private final AttributeType attributeType;
+   private final IAttributeType attributeType;
 
    private final String value;
    private final String uri;
 
-   public AttributeForIndexingImpl(IResourceManager resourceManager, int attrId, long gammaId, AttributeType attributeType, String value, String uri) {
+   public AttributeForIndexingImpl(IResourceManager resourceManager, int attrId, long gammaId, IAttributeType attributeType, String value, String uri) {
       super();
       this.resourceManager = resourceManager;
       this.attrId = attrId;

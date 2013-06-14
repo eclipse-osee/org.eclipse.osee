@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.TagQueueJoinQuery;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
@@ -31,6 +32,7 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
  */
 public abstract class AbstractIndexerTxDatabaseCallable extends DatabaseTxCallable<List<Future<?>>> {
 
+   private final AttributeTypes types;
    private final IndexerCollector collector;
    private final int cacheLimit;
    private final boolean isCacheAll;
@@ -41,8 +43,9 @@ public abstract class AbstractIndexerTxDatabaseCallable extends DatabaseTxCallab
    private long totalGammas;
    private List<Future<?>> futures;
 
-   protected AbstractIndexerTxDatabaseCallable(Log logger, IOseeDatabaseService dbService, IndexingTaskConsumer consumer, IndexerCollector collector, boolean isCacheAll, int cacheLimit) {
+   protected AbstractIndexerTxDatabaseCallable(Log logger, IOseeDatabaseService dbService, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, boolean isCacheAll, int cacheLimit) {
       super(logger, dbService, "Indexing Database Transaction");
+      this.types = types;
       this.consumer = consumer;
       this.collector = collector;
       this.cacheLimit = cacheLimit;
@@ -90,7 +93,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends DatabaseTxCallab
       if (isOkToDispatch && !queryIds.isEmpty()) {
          for (int queryId : queryIds) {
             try {
-               Future<?> future = consumer.submitTaskId(collector, queryId);
+               Future<?> future = consumer.submitTaskId(types, collector, queryId);
                futures.add(future);
             } catch (Exception ex) {
                OseeExceptions.wrapAndThrow(ex);
