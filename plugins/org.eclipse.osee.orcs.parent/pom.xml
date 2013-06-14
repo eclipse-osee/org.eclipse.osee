@@ -37,6 +37,7 @@
 		<module>../../plugins/org.eclipse.osee.orcs.db</module>
 		<module>../../plugins/org.eclipse.osee.orcs.db.mock</module>
 		<module>../../plugins/org.eclipse.osee.orcs.rest.model</module>
+		<module>../../plugins/org.eclipse.osee.orcs.rest.client</module>
 		<module>../../plugins/org.eclipse.osee.orcs.rest</module>
 		<module>../../plugins/org.eclipse.osee.orcs.rest.test</module>
 		<module>../../plugins/org.eclipse.osee.hsqldb</module>

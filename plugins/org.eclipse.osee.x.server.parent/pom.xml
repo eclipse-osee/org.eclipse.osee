@@ -35,16 +35,17 @@
 		<module>../../plugins/org.eclipse.osee.ats.view.web</module>
 		<module>../../plugins/org.eclipse.osee.ats.presenter</module>
 		<module>../../plugins/org.eclipse.osee.ats.rest</module>
-		<module>../../plugins/org.eclipse.osee.ats.presenter.test</module>
+		<module>../../plugins/org.eclipse.osee.ats.presenter.test</module> 
 
-        <module>../../plugins/org.eclipse.osee.database</module>
+      <module>../../plugins/org.eclipse.osee.database</module>
         
 		<module>../../features/org.eclipse.osee.x.server.legacy.feature</module>
 
 		<module>../../features/org.eclipse.osee.x.server.feature</module>
 		<module>../../features/org.eclipse.osee.x.server.external.feature</module>
 
-		<module>../../plugins/org.eclipse.osee.x.server.p2</module>
+		<module>../../plugins/org.eclipse.osee.x.server.p2</module> 
+		<module>../../plugins/org.eclipse.osee.x.server.integration.tests</module>
 	</modules>
 
 </project>
