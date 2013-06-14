@@ -11,13 +11,13 @@
 package org.eclipse.osee.orcs.db.internal.types;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.orcs.core.ds.TempCachingService;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface CacheServiceFactory {
 
-   IOseeCachingService createCachingService(boolean needsPriming) throws OseeCoreException;
+   TempCachingService createCachingService(boolean needsPriming) throws OseeCoreException;
 
 }

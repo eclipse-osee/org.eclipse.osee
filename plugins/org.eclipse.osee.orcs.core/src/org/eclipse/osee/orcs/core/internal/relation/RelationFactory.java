@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation;
 
-import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
+import org.eclipse.osee.orcs.data.RelationTypes;
 
 public class RelationFactory {
 
-   private final RelationTypeCache relationTypeCache;
+   private final RelationTypes relationTypeCache;
 
-   public RelationFactory(RelationTypeCache relationTypeCache) {
+   public RelationFactory(RelationTypes relationTypeCache) {
       this.relationTypeCache = relationTypeCache;
    }
 

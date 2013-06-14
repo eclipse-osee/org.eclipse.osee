@@ -19,9 +19,10 @@ import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.display.api.search.AsyncSearchListener;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.RelationsReadable;
@@ -90,7 +91,7 @@ public class MockArtifactProvider implements ArtifactProvider {
    }
 
    @Override
-   public Collection<RelationType> getValidRelationTypes(ArtifactReadable art) {
+   public Collection<? extends IRelationType> getValidRelationTypes(ArtifactReadable art) {
       if (art instanceof MockArtifact) {
          return ((MockArtifact) art).getValidRelationTypes();
       } else {
@@ -106,5 +107,15 @@ public class MockArtifactProvider implements ArtifactProvider {
    @Override
    public void cancelSearch() {
       //do nothing
+   }
+
+   @Override
+   public String getSideAName(IRelationType type) {
+      return String.format("%s:%s", type, RelationSide.SIDE_A);
+   }
+
+   @Override
+   public String getSideBName(IRelationType type) {
+      return String.format("%s:%s", type, RelationSide.SIDE_B);
    }
 }

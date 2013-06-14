@@ -21,25 +21,38 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.orcs.ApplicationContext;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.core.ds.TempCachingService;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CacheUpdateCommand implements ConsoleCommand {
 
-   private static final OseeCacheEnum[] reloadableCaches = {
-      OseeCacheEnum.ARTIFACT_TYPE_CACHE,
-      OseeCacheEnum.BRANCH_CACHE,
-      OseeCacheEnum.TRANSACTION_CACHE};
+   private static enum CacheType {
+      BRANCH_CACHE,
+      TRANSACTION_CACHE,
+      TYPE_CACHE;
+   }
 
-   private IOseeCachingService cachingService;
+   private OrcsApi orcsApi;
+   private TempCachingService cachingService;
 
-   public IOseeCachingService getCachingService() {
+   public void setOrcsApi(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
+   }
+
+   public OrcsApi getOrcsApi() {
+      return orcsApi;
+   }
+
+   public TempCachingService getCachingService() {
       return cachingService;
    }
 
-   public void setCachingService(IOseeCachingService cachingService) {
+   public void setCachingService(TempCachingService cachingService) {
       this.cachingService = cachingService;
    }
 
@@ -58,60 +71,79 @@ public class CacheUpdateCommand implements ConsoleCommand {
       StringBuilder builder = new StringBuilder();
       builder.append("                 - Update all caches.\n");
       builder.append("cache=<");
-      builder.append(Arrays.deepToString(reloadableCaches).replaceAll(",", " | "));
+      builder.append(Arrays.deepToString(CacheType.values()).replaceAll(",", " | "));
       builder.append("> - Caches to update.\n");
       return builder.toString();
    }
 
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
-      Set<OseeCacheEnum> cacheIds = new HashSet<OseeCacheEnum>();
-      for (String cacheId : params.getArray("cacheId")) {
-         cacheIds.add(OseeCacheEnum.valueOf(cacheId.toUpperCase()));
-      }
-      if (cacheIds.isEmpty()) {
-         cacheIds.addAll(Arrays.asList(reloadableCaches));
-      }
-      return new CacheUpdateCallable(console, getCachingService(), cacheIds, true);
+      return new CacheUpdateCallable(console, params, true);
    }
 
-   private final static class CacheUpdateCallable extends CancellableCallable<Boolean> {
+   private class CacheUpdateCallable extends CancellableCallable<Boolean> {
 
       private final Console console;
-      private final IOseeCachingService cachingService;
-      private final Set<OseeCacheEnum> cacheIds;
+      private final ConsoleParameters params;
       private final boolean reload;
       private final String verb;
 
-      public CacheUpdateCallable(Console console, IOseeCachingService cachingService, Set<OseeCacheEnum> cacheIds, boolean reload) {
+      public CacheUpdateCallable(Console console, ConsoleParameters params, boolean reload) {
          this.console = console;
-         this.cachingService = cachingService;
-         this.cacheIds = cacheIds;
+         this.params = params;
          this.reload = reload;
          this.verb = reload ? "Reloaded" : "Cleared";
       }
 
+      private Set<CacheType> getSelectedType() {
+         Set<CacheType> cacheIds = new HashSet<CacheType>();
+         for (String cacheId : params.getArray("cacheId")) {
+            cacheIds.add(CacheType.valueOf(cacheId.toUpperCase()));
+         }
+         if (cacheIds.isEmpty()) {
+            for (CacheType type : CacheType.values()) {
+               cacheIds.add(type);
+            }
+         }
+         return cacheIds;
+      }
+
+      private OrcsTypes getOrcTypes() {
+         return getOrcsApi().getOrcsTypes(new ApplicationContext() {
+
+            @Override
+            public String getSessionId() {
+               return "Update Cache Console Command";
+            }
+         });
+      }
+
       @Override
       public Boolean call() throws OseeCoreException {
-         if (cacheIds.isEmpty()) {
-            if (reload) {
-               cachingService.reloadAll();
-            } else {
-               cachingService.clearAll();
+         OrcsTypes orcsTypes = getOrcTypes();
+
+         Set<CacheType> selectedType = getSelectedType();
+         for (CacheType type : selectedType) {
+            OseeCacheEnum cacheId = null;
+
+            if (CacheType.BRANCH_CACHE == type) {
+               cacheId = OseeCacheEnum.BRANCH_CACHE;
+            } else if (CacheType.TRANSACTION_CACHE == type) {
+               cacheId = OseeCacheEnum.TRANSACTION_CACHE;
             }
-            console.writeln("%s the following caches: %s", verb,
-               Arrays.deepToString(OseeCacheEnum.values()).replaceAll(", SESSION_CACHE", ""));
-         } else {
-            for (OseeCacheEnum cacheId : cacheIds) {
+
+            if (cacheId != null) {
                IOseeCache<?, ?> cache = cachingService.getCache(cacheId);
                if (reload) {
                   cache.reloadCache();
                } else {
                   cache.decacheAll();
                }
+            } else {
+               orcsTypes.invalidateAll();
             }
-            console.writeln("%s %s", verb, cacheIds);
          }
+         console.writeln("%s %s", verb, selectedType);
          return Boolean.TRUE;
       }
    }

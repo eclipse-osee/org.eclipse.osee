@@ -17,24 +17,24 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CriteriaAttributeKeywords extends Criteria<QueryOptions> {
 
-   private final AttributeTypeCache attributeTypeCache;
+   private final AttributeTypes attributeTypeCache;
    private final Collection<? extends IAttributeType> attributeType;
    private final Collection<String> values;
    private final QueryOption[] options;
    private final boolean includeAllTypes;
 
-   public CriteriaAttributeKeywords(boolean includeAllTypes, Collection<? extends IAttributeType> attributeType, AttributeTypeCache attributeTypeCache, Collection<String> values, QueryOption... options) {
+   public CriteriaAttributeKeywords(boolean includeAllTypes, Collection<? extends IAttributeType> attributeType, AttributeTypes attributeTypeCache, Collection<String> values, QueryOption... options) {
       super();
       this.includeAllTypes = includeAllTypes;
       this.attributeTypeCache = attributeTypeCache;
@@ -43,7 +43,7 @@ public class CriteriaAttributeKeywords extends Criteria<QueryOptions> {
       this.options = options;
    }
 
-   public CriteriaAttributeKeywords(boolean includeAllTypes, Collection<? extends IAttributeType> attributeType, AttributeTypeCache attributeTypeCache, String value, QueryOption... options) {
+   public CriteriaAttributeKeywords(boolean includeAllTypes, Collection<? extends IAttributeType> attributeType, AttributeTypes attributeTypeCache, String value, QueryOption... options) {
       this(includeAllTypes, attributeType, attributeTypeCache, java.util.Collections.singleton(value), options);
    }
 
@@ -89,8 +89,8 @@ public class CriteriaAttributeKeywords extends Criteria<QueryOptions> {
          ArrayList<String> notTaggable = new ArrayList<String>();
          if (attributeTypeCache != null) {
             for (IAttributeType type : attributeType) {
-               if (!(attributeTypeCache.get(type)).isTaggable()) {
-                  notTaggable.add((attributeTypeCache.get(type)).getName());
+               if (!attributeTypeCache.isTaggable(type)) {
+                  notTaggable.add((attributeTypeCache.getByUuid(type.getGuid())).getName());
                }
             }
             if (!notTaggable.isEmpty()) {

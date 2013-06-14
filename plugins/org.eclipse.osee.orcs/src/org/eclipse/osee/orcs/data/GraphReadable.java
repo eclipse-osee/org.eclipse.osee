@@ -13,17 +13,17 @@ package org.eclipse.osee.orcs.data;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.Readable;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 
 public interface GraphReadable extends Readable {
 
    Collection<IRelationTypeSide> getExistingRelationTypes(ArtifactReadable art);
 
-   List<RelationType> getValidRelationTypes(ArtifactReadable art) throws OseeCoreException;
+   List<IRelationType> getValidRelationTypes(ArtifactReadable art) throws OseeCoreException;
 
    ///////
    ArtifactReadable getParent(ArtifactReadable art) throws OseeCoreException;
@@ -32,8 +32,7 @@ public interface GraphReadable extends Readable {
 
    RelationsReadable getRelatedArtifacts(IRelationTypeSide relationTypeSide, ArtifactReadable art) throws OseeCoreException;
 
-   RelationType getFullRelationType(IRelationTypeSide relationTypeSide) throws OseeCoreException;
+   int getRelationSideMax(IRelationType relationType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException;
 
-   int getRelationSideMax(RelationType relationType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException;
-
+   RelationTypes getTypes();
 }

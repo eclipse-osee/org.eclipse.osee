@@ -12,8 +12,10 @@ package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
@@ -27,8 +29,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
-import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -36,11 +36,12 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ImportOptions;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.IOseeExchangeDataProvider;
@@ -60,7 +61,6 @@ import org.eclipse.osee.orcs.db.internal.exchange.transform.ExchangeTransformPro
 import org.eclipse.osee.orcs.db.internal.exchange.transform.ExchangeTransformer;
 import org.eclipse.osee.orcs.db.internal.exchange.transform.IExchangeTransformProvider;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
-import org.eclipse.osee.orcs.db.internal.types.IOseeModelingService;
 
 /**
  * @author Roberto E. Escobar
@@ -68,9 +68,10 @@ import org.eclipse.osee.orcs.db.internal.types.IOseeModelingService;
 public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
 
    private final SystemPreferences preferences;
-   private final IOseeModelingService typeModelService;
+
    private final IResourceManager resourceManager;
    private final IdentityService identityService;
+   private final OrcsTypes orcsTypes;
 
    private final SavePointManager savePointManager;
    private final OperationLogger legacyLogger;
@@ -87,12 +88,12 @@ public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
    private ExchangeDataProcessor exchangeDataProcessor;
    private int[] branchesToImport;
 
-   public ImportBranchDatabaseCallable(Log logger, IOseeDatabaseService dbService, SystemPreferences preferences, IOseeModelingService typeModelService, IResourceManager resourceManager, IdentityService identityService, URI exchangeFile, List<IOseeBranch> selectedBranches, PropertyStore options) {
+   public ImportBranchDatabaseCallable(Log logger, IOseeDatabaseService dbService, SystemPreferences preferences, IResourceManager resourceManager, IdentityService identityService, OrcsTypes orcsTypes, URI exchangeFile, List<IOseeBranch> selectedBranches, PropertyStore options) {
       super(logger, dbService);
       this.preferences = preferences;
-      this.typeModelService = typeModelService;
       this.resourceManager = resourceManager;
       this.identityService = identityService;
+      this.orcsTypes = orcsTypes;
       this.savePointManager = new SavePointManager(dbService);
       this.legacyLogger = new OperationLoggerAdaptor();
       this.exchangeFile = exchangeFile;
@@ -282,30 +283,46 @@ public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
       }
    }
 
-   private void loadTypeModel(URI modelUri) throws Exception {
-      String name = modelUri.toASCIIString();
-      int index = name.lastIndexOf("/");
-      if (index > 0) {
-         name = name.substring(index + 1, name.length());
-      }
+   private void loadTypeModel(final URI modelUri) throws Exception {
+      IResource typesResource = new IResource() {
 
-      String model;
-      InputStream inputStream = null;
-      try {
-         inputStream = new BufferedInputStream(modelUri.toURL().openStream());
-         model = Lib.inputStreamToString(inputStream);
-      } finally {
-         Lib.close(inputStream);
-      }
+         @Override
+         public InputStream getContent() throws OseeCoreException {
+            InputStream inputStream = null;
+            try {
+               URL url = modelUri.toURL();
+               inputStream = new BufferedInputStream(url.openStream());
+            } catch (IOException ex) {
+               OseeExceptions.wrapAndThrow(ex);
+            }
+            return inputStream;
+         }
 
-      OseeImportModelRequest modelRequest = new OseeImportModelRequest(name, model, false, false, true);
-      OseeImportModelResponse response = new OseeImportModelResponse();
+         @Override
+         public URI getLocation() {
+            return modelUri;
+         }
 
-      getLogger().info("Updating Type Model with [%s]", model);
-      typeModelService.importOseeTypes(true, modelRequest, response);
+         @Override
+         public String getName() {
+            String name = modelUri.toASCIIString();
+            int index = name.lastIndexOf("/");
+            if (index > 0) {
+               name = name.substring(index + 1, name.length());
+            }
+            return name;
+         }
+
+         @Override
+         public boolean isCompressed() {
+            return false;
+         }
+      };
+
+      getLogger().info("Updating Type Model with [%s]", typesResource.getLocation());
+      orcsTypes.loadTypes(typesResource, true).call();
       getLogger().info("Type Model Import complete");
    }
-
    private final class CommitImportSavePointsTx extends DatabaseTxCallable<Boolean> {
       private static final String INSERT_INTO_IMPORT_SOURCES =
          "INSERT INTO osee_import_source (import_id, db_source_guid, source_export_date, date_imported) VALUES (?, ?, ?, ?)";

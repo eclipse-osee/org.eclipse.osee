@@ -19,12 +19,10 @@ import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.IOseeCache;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.HexUtil;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.data.ArtifactTypes;
 
 /**
  * @author Angel Avila
@@ -32,7 +30,6 @@ import org.eclipse.osee.orcs.OrcsTypes;
 public class PurgeArtifactTypeCommand implements ConsoleCommand {
 
    private OrcsApi orcsApi;
-   private IOseeCachingService cachingService;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -40,14 +37,6 @@ public class PurgeArtifactTypeCommand implements ConsoleCommand {
 
    public OrcsApi getOrcsApi() {
       return orcsApi;
-   }
-
-   public IOseeCachingService getCachingService() {
-      return cachingService;
-   }
-
-   public void setCachingService(IOseeCachingService cachingService) {
-      this.cachingService = cachingService;
    }
 
    @Override
@@ -68,7 +57,6 @@ public class PurgeArtifactTypeCommand implements ConsoleCommand {
    @Override
    public Callable<?> createCallable(final Console console, final ConsoleParameters params) {
       final OrcsTypes orcsTypes = orcsApi.getOrcsTypes(null);
-      final IOseeCache<Long, ArtifactType> types = getCachingService().getArtifactTypeCache();
       return new Callable<Void>() {
 
          @Override
@@ -90,11 +78,12 @@ public class PurgeArtifactTypeCommand implements ConsoleCommand {
          }
 
          private Set<IArtifactType> getTypes(String[] typesToPurge) throws OseeCoreException {
+            ArtifactTypes artifactTypes = orcsTypes.getArtifactTypes();
             Set<IArtifactType> toReturn = new HashSet<IArtifactType>();
             for (String uuid : typesToPurge) {
                try {
-                  Long converted = HexUtil.toLong(uuid);
-                  IArtifactType type = types.getByGuid(converted);
+                  Long typeId = HexUtil.toLong(uuid);
+                  IArtifactType type = artifactTypes.getByUuid(typeId);
                   console.writeln("Type [%s] found. Guid: [0x%X]", type.getName(), type.getGuid());
                   toReturn.add(type);
                } catch (OseeArgumentException ex) {

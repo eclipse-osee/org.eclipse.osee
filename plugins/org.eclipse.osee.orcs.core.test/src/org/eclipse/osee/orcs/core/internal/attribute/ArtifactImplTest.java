@@ -19,6 +19,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.List;
 import org.junit.Assert;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -27,8 +28,6 @@ import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -37,6 +36,7 @@ import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
 import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
 import org.eclipse.osee.orcs.core.internal.artifact.ValueProvider;
 import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
+import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.junit.Before;
 import org.junit.Rule;
@@ -59,9 +59,8 @@ public class ArtifactImplTest {
    @Mock private AttributeFactory attributeFactory;
    @Mock private RelationContainer relationContainer;
    @Mock private ValueProvider<Branch, ArtifactData> branchProvider;
-   @Mock private ValueProvider<ArtifactType, ArtifactData> artifactTypeProvider;
-   @Mock private ArtifactType artifactType;
-   @Mock private AttributeType attributeType;
+   @Mock private ArtifactTypes types;
+
    @Mock private VersionData version;
    @Mock private AttributeData attributeData;
    @Mock private Branch branch;
@@ -77,15 +76,17 @@ public class ArtifactImplTest {
    // @formatter:on
 
    private final String guid = GUID.create();
+   private final IAttributeType attributeType = CoreAttributeTypes.Annotation;
+   private final IArtifactType artifactType = CoreArtifactTypes.GeneralData;
 
    @SuppressWarnings("unchecked")
    @Before
    public void init() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
-      artifactImpl =
-         new ArtifactImpl(artifactData, attributeFactory, relationContainer, branchProvider, artifactTypeProvider);
-      when(artifactTypeProvider.get()).thenReturn(artifactType);
-      when(artifactType.isValidAttributeType(any(IAttributeType.class), any(Branch.class))).thenReturn(true);
+      artifactImpl = new ArtifactImpl(types, artifactData, attributeFactory, relationContainer, branchProvider);
+
+      when(types.isValidAttributeType(any(IArtifactType.class), any(Branch.class), any(IAttributeType.class))).thenReturn(
+         true);
       when(attributeFactory.getMaxOccurrenceLimit(any(IAttributeType.class))).thenReturn(1);
 
       when(attributeFactory.createAttribute(any(AttributeManager.class), any(AttributeData.class))).thenReturn(
@@ -97,11 +98,16 @@ public class ArtifactImplTest {
 
       when(artifactData.getGuid()).thenReturn(guid);
       when(artifactData.getVersion()).thenReturn(version);
+      when(artifactData.getTypeUuid()).thenReturn(artifactType.getGuid());
       when(branchProvider.get()).thenReturn(branch);
+
       when(deleted.isDeleted()).thenReturn(true);
       when(notDeleted.getOrcsData()).thenReturn(attributeData);
       when(deleted.getOrcsData()).thenReturn(attributeData);
       when(differentType.getOrcsData()).thenReturn(attributeData);
+
+      when(types.getByUuid(CoreArtifactTypes.GeneralData.getGuid())).thenReturn(CoreArtifactTypes.GeneralData);
+      when(types.getByUuid(CoreArtifactTypes.CodeUnit.getGuid())).thenReturn(CoreArtifactTypes.CodeUnit);
    }
 
    @Test
@@ -122,7 +128,8 @@ public class ArtifactImplTest {
       Attribute two = mock(Attribute.class);
       when(one.getOrcsData()).thenReturn(attributeData);
       when(two.getOrcsData()).thenReturn(attributeData);
-      when(attributeType.getMaxOccurrences()).thenReturn(1);
+
+      when(attributeFactory.getMaxOccurrenceLimit(attributeType)).thenReturn(1);
       artifactImpl.add(attributeType, one);
       artifactImpl.add(attributeType, two);
       Assert.assertEquals(2, artifactImpl.getAttributes(attributeType).size());
@@ -150,7 +157,6 @@ public class ArtifactImplTest {
       ArtifactData newOrcsData = mock(ArtifactData.class);
       artifactImpl.setOrcsData(newOrcsData);
       verify(branchProvider).setOrcsData(newOrcsData);
-      verify(artifactTypeProvider).setOrcsData(newOrcsData);
    }
 
    @Test
@@ -192,7 +198,7 @@ public class ArtifactImplTest {
    @Test
    public void testArtifactType() throws OseeCoreException {
       artifactImpl.getArtifactType();
-      verify(artifactTypeProvider).get();
+      verify(types).getByUuid(artifactData.getTypeUuid());
    }
 
    @Test
@@ -210,13 +216,20 @@ public class ArtifactImplTest {
    @Test
    public void testSetArtifactType() throws OseeCoreException {
       when(version.isInStorage()).thenReturn(true);
+
       artifactImpl.setArtifactType(CoreArtifactTypes.CodeUnit);
+
       verify(artifactData).setTypeUuid(CoreArtifactTypes.CodeUnit.getGuid());
       verify(artifactData).setModType(ModificationType.MODIFIED);
 
       reset(version);
       reset(artifactData);
+
       when(artifactData.getVersion()).thenReturn(version);
+      when(artifactData.getGuid()).thenReturn(guid);
+      when(artifactData.getVersion()).thenReturn(version);
+      when(artifactData.getTypeUuid()).thenReturn(artifactType.getGuid());
+
       artifactImpl.setArtifactType(CoreArtifactTypes.CodeUnit);
       verify(artifactData, never()).setModType(ModificationType.MODIFIED);
    }
@@ -224,7 +237,8 @@ public class ArtifactImplTest {
    @Test
    public void testIsOfType() throws OseeCoreException {
       artifactImpl.isOfType(CoreArtifactTypes.CodeUnit);
-      verify(artifactType).inheritsFrom(CoreArtifactTypes.CodeUnit);
+
+      verify(types).inheritsFrom(CoreArtifactTypes.GeneralData, CoreArtifactTypes.CodeUnit);
    }
 
    @Test
@@ -264,13 +278,13 @@ public class ArtifactImplTest {
    @Test
    public void testIsAttributeTypeValid() throws OseeCoreException {
       artifactImpl.isAttributeTypeValid(CoreAttributeTypes.Afha);
-      verify(artifactType).isValidAttributeType(CoreAttributeTypes.Afha, branch);
+      verify(types).isValidAttributeType(artifactType, branch, CoreAttributeTypes.Afha);
    }
 
    @Test
    public void testGetValidAttributeTypes() throws OseeCoreException {
       artifactImpl.getValidAttributeTypes();
-      verify(artifactType).getAttributeTypes(branch);
+      verify(types).getAttributeTypes(artifactType, branch);
    }
 
    @Test
@@ -314,7 +328,7 @@ public class ArtifactImplTest {
       int result = artifactImpl.getMaximumAttributeTypeAllowed(CoreAttributeTypes.AccessContextId);
       Assert.assertEquals(expected, result);
 
-      reset(artifactType);
+      reset(types);
       result = artifactImpl.getMaximumAttributeTypeAllowed(CoreAttributeTypes.AccessContextId);
       Assert.assertEquals(-1, result);
    }
@@ -328,7 +342,7 @@ public class ArtifactImplTest {
       int result = artifactImpl.getMinimumAttributeTypeAllowed(CoreAttributeTypes.AccessContextId);
       Assert.assertEquals(expected, result);
 
-      reset(artifactType);
+      reset(types);
       result = artifactImpl.getMaximumAttributeTypeAllowed(CoreAttributeTypes.AccessContextId);
       Assert.assertEquals(-1, result);
    }
@@ -413,7 +427,7 @@ public class ArtifactImplTest {
    @Test
    @SuppressWarnings("unchecked")
    public void testDeleteSoleAttribute() throws OseeCoreException {
-      when(attributeType.getMinOccurrences()).thenReturn(0);
+      when(attributeFactory.getMinOccurrenceLimit(attributeType)).thenReturn(0);
       when(notDeleted.getAttributeType()).thenReturn(attributeType);
       when(notDeleted.getContainer()).thenReturn(artifactImpl);
       artifactImpl.add(attributeType, notDeleted);

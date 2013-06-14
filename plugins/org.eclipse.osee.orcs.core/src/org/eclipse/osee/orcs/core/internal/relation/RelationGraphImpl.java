@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.relation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -23,16 +24,13 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoaderFactory;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.proxy.HasProxiedObject;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
 import org.eclipse.osee.orcs.data.GraphWriteable;
+import org.eclipse.osee.orcs.data.RelationTypes;
 import org.eclipse.osee.orcs.data.RelationsReadable;
 import org.eclipse.osee.orcs.data.RelationsWriteable;
 
@@ -43,14 +41,12 @@ public class RelationGraphImpl implements GraphWriteable, Cloneable {
 
    private final SessionContext sessionContext;
    private final ArtifactLoaderFactory loader;
-   private final ArtifactTypeCache artifactTypeCache;
-   private final RelationTypeCache relationTypeCache;
+   private final RelationTypes relationTypeCache;
 
-   public RelationGraphImpl(SessionContext sessionContext, ArtifactLoaderFactory loader, ArtifactTypeCache artifactTypeCache, RelationTypeCache relationTypeCache) {
+   public RelationGraphImpl(SessionContext sessionContext, ArtifactLoaderFactory loader, RelationTypes relationTypeCache) {
       super();
       this.sessionContext = sessionContext;
       this.loader = loader;
-      this.artifactTypeCache = artifactTypeCache;
       this.relationTypeCache = relationTypeCache;
    }
 
@@ -106,11 +102,12 @@ public class RelationGraphImpl implements GraphWriteable, Cloneable {
    }
 
    @Override
-   public List<RelationType> getValidRelationTypes(ArtifactReadable art) throws OseeCoreException {
+   public List<IRelationType> getValidRelationTypes(ArtifactReadable art) throws OseeCoreException {
       IArtifactType artifactType = art.getArtifactType();
-      Collection<RelationType> relationTypes = relationTypeCache.getAll();
-      List<RelationType> validRelationTypes = new ArrayList<RelationType>();
-      for (RelationType relationType : relationTypes) {
+
+      Collection<? extends IRelationType> relationTypes = relationTypeCache.getAll();
+      List<IRelationType> validRelationTypes = new LinkedList<IRelationType>();
+      for (IRelationType relationType : relationTypes) {
          int sideAMax = getRelationSideMax(relationType, artifactType, RelationSide.SIDE_A);
          int sideBMax = getRelationSideMax(relationType, artifactType, RelationSide.SIDE_B);
          boolean onSideA = sideBMax > 0;
@@ -123,18 +120,12 @@ public class RelationGraphImpl implements GraphWriteable, Cloneable {
    }
 
    @Override
-   public int getRelationSideMax(RelationType relationType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
+   public int getRelationSideMax(IRelationType relationType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
       int toReturn = 0;
-      ArtifactType type = artifactTypeCache.get(artifactType);
-      if (relationType.isArtifactTypeAllowed(relationSide, type)) {
-         toReturn = relationType.getMultiplicity().getLimit(relationSide);
+      if (relationTypeCache.isArtifactTypeAllowed(relationType, relationSide, artifactType)) {
+         toReturn = relationTypeCache.getMultiplicity(relationType).getLimit(relationSide);
       }
       return toReturn;
-   }
-
-   @Override
-   public RelationType getFullRelationType(IRelationTypeSide relationTypeSide) throws OseeCoreException {
-      return relationTypeCache.get(relationTypeSide);
    }
 
    @SuppressWarnings("unused")
@@ -187,5 +178,10 @@ public class RelationGraphImpl implements GraphWriteable, Cloneable {
    public RelationGraphImpl clone() throws CloneNotSupportedException {
       // TX_TODO
       return null;
+   }
+
+   @Override
+   public RelationTypes getTypes() {
+      return relationTypeCache;
    }
 }

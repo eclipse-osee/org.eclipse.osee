@@ -16,23 +16,32 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
-import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
+import org.eclipse.osee.framework.resource.management.IResource;
+import org.eclipse.osee.orcs.data.ArtifactTypes;
+import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface OrcsTypes {
 
-   void importOseeTypes(boolean isInitializing, OseeImportModelRequest request, OseeImportModelResponse response) throws OseeCoreException;
+   ArtifactTypes getArtifactTypes();
 
-   void exportOseeTypes(OutputStream outputStream) throws OseeCoreException;
+   AttributeTypes getAttributeTypes();
+
+   RelationTypes getRelationTypes();
+
+   Callable<?> loadTypes(IResource resource, boolean isInitializing);
+
+   Callable<?> writeTypes(OutputStream outputStream);
 
    Callable<?> purgeArtifactsByArtifactType(Collection<? extends IArtifactType> artifactTypes);
 
    Callable<?> purgeAttributesByAttributeType(Collection<? extends IAttributeType> attributeTypes);
 
    Callable<?> purgeRelationsByRelationType(Collection<? extends IRelationType> relationTypes);
+
+   void invalidateAll();
 
 }

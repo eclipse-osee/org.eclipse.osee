@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.enums.EditState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
@@ -26,20 +25,21 @@ import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManagerImpl;
 import org.eclipse.osee.orcs.core.internal.relation.HasRelationContainer;
 import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
+import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
 
 public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWriteable, HasRelationContainer, ArtifactVisitable {
 
+   private final ArtifactTypes artifactTypeCache;
    private final RelationContainer relationContainer;
    private EditState objectEditState;
    private ArtifactData artifactData;
    private final ValueProvider<Branch, ArtifactData> branchProvider;
-   private final ValueProvider<ArtifactType, ArtifactData> artifactTypeProvider;
 
-   public ArtifactImpl(ArtifactData artifactData, AttributeFactory attributeFactory, RelationContainer relationContainer, ValueProvider<Branch, ArtifactData> branchProvider, ValueProvider<ArtifactType, ArtifactData> artifactTypeProvider) {
+   public ArtifactImpl(ArtifactTypes artifactTypeCache, ArtifactData artifactData, AttributeFactory attributeFactory, RelationContainer relationContainer, ValueProvider<Branch, ArtifactData> branchProvider) {
       super(attributeFactory);
+      this.artifactTypeCache = artifactTypeCache;
       this.artifactData = artifactData;
-      this.artifactTypeProvider = artifactTypeProvider;
       this.branchProvider = branchProvider;
       this.relationContainer = relationContainer;
       this.objectEditState = EditState.NO_CHANGE;
@@ -60,7 +60,6 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
       this.artifactData = data;
       objectEditState = EditState.NO_CHANGE;
       branchProvider.setOrcsData(data);
-      artifactTypeProvider.setOrcsData(data);
    }
 
    public ModificationType getModificationType() {
@@ -93,8 +92,8 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
    }
 
    @Override
-   public ArtifactType getArtifactType() throws OseeCoreException {
-      return artifactTypeProvider.get();
+   public IArtifactType getArtifactType() throws OseeCoreException {
+      return artifactTypeCache.getByUuid(getOrcsData().getTypeUuid());
    }
 
    @Override
@@ -117,7 +116,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
 
    @Override
    public boolean isOfType(IArtifactType... otherTypes) throws OseeCoreException {
-      return getArtifactType().inheritsFrom(otherTypes);
+      return artifactTypeCache.inheritsFrom(getArtifactType(), otherTypes);
    }
 
    @Override
@@ -140,12 +139,12 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
 
    @Override
    public boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
-      return getArtifactType().isValidAttributeType(attributeType, getBranch());
+      return artifactTypeCache.isValidAttributeType(getArtifactType(), getBranch(), attributeType);
    }
 
    @Override
    public Collection<? extends IAttributeType> getValidAttributeTypes() throws OseeCoreException {
-      return getArtifactType().getAttributeTypes(getBranch());
+      return artifactTypeCache.getAttributeTypes(getArtifactType(), getBranch());
    }
 
    @Override

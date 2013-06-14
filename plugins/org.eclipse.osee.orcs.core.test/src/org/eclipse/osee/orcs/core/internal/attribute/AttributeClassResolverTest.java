@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
+import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.junit.Assert;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.orcs.core.AttributeClassProvider;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.BooleanAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.CompressedContentAttribute;
@@ -27,11 +28,14 @@ import org.eclipse.osee.orcs.core.internal.attribute.primitives.IntegerAttribute
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.JavaObjectAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.PrimitiveAttributeClassProvider;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.StringAttribute;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link AttributeClassResolver}
@@ -41,9 +45,15 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class AttributeClassResolverTest {
 
+   //@formatter:off
+   @Mock private AttributeTypes cache;
+   @Mock private IAttributeType type;
+   //@formatter:on
+
    private final String alias;
    private final Class<? extends Attribute<?>> expected;
    private AttributeClassResolver resolver;
+   private AttributeClassRegistry registry;
 
    public AttributeClassResolverTest(String alias, Class<? extends Attribute<?>> expected) {
       this.alias = alias;
@@ -52,9 +62,13 @@ public class AttributeClassResolverTest {
 
    @Before
    public void setup() {
-      resolver = new AttributeClassResolver();
+      MockitoAnnotations.initMocks(this);
+
+      registry = new AttributeClassRegistry();
+      resolver = new AttributeClassResolver(registry, cache);
+
       PrimitiveAttributeClassProvider provider = new PrimitiveAttributeClassProvider();
-      resolver.addProvider(provider);
+      registry.addProvider(provider);
    }
 
    @Test
@@ -64,24 +78,25 @@ public class AttributeClassResolverTest {
    }
 
    @Test
-   public void testGetBaseClazzByType() {
-      AttributeType type = createType(alias);
+   public void testGetBaseClazzByType() throws OseeCoreException {
+      when(cache.getBaseAttributeTypeId(type)).thenReturn(alias);
+
       Class<? extends Attribute<?>> actual = resolver.getBaseClazz(type);
       Assert.assertEquals(expected, actual);
    }
 
    @Test
-   public void testRemoveProvider() {
+   public void testRemoveProvider() throws OseeCoreException {
       Class<? extends Attribute<?>> actual1 = resolver.getBaseClazz(alias);
       Assert.assertNotNull(actual1);
 
-      AttributeType type = createType(alias);
+      when(cache.getBaseAttributeTypeId(type)).thenReturn(alias);
       Class<? extends Attribute<?>> actual2 = resolver.getBaseClazz(type);
 
       Assert.assertNotNull(actual2);
       Assert.assertEquals(actual1, actual2);
 
-      resolver.removeProvider(new AttributeClassProvider() {
+      registry.removeProvider(new AttributeClassProvider() {
 
          @Override
          public List<Class<? extends Attribute<?>>> getClasses() {
@@ -98,7 +113,8 @@ public class AttributeClassResolverTest {
 
    @Test(expected = OseeCoreException.class)
    public void testIsBaseCompatibleException1() throws OseeCoreException {
-      AttributeType type = createType(alias);
+      when(cache.getBaseAttributeTypeId(type)).thenReturn(alias);
+
       resolver.isBaseTypeCompatible(null, type);
    }
 
@@ -109,24 +125,23 @@ public class AttributeClassResolverTest {
 
    @Test(expected = OseeCoreException.class)
    public void testIsBaseCompatibleException3() throws OseeCoreException {
-      AttributeType type2 = createType(alias + "1");
-      resolver.isBaseTypeCompatible(expected, type2);
+      when(cache.getBaseAttributeTypeId(type)).thenReturn(alias + "1");
+
+      resolver.isBaseTypeCompatible(expected, type);
    }
 
    @Test
    public void testIsBaseCompatible() throws OseeCoreException {
-      AttributeType type1 = createType(alias);
-      boolean result1 = resolver.isBaseTypeCompatible(expected, type1);
+      when(cache.getBaseAttributeTypeId(type)).thenReturn(alias);
+
+      boolean result1 = resolver.isBaseTypeCompatible(expected, type);
       Assert.assertTrue(result1);
 
       String other = !alias.equals("BooleanAttribute") ? "BooleanAttribute" : "StringAttribute";
-      AttributeType type2 = createType(other);
-      boolean result2 = resolver.isBaseTypeCompatible(expected, type2);
-      Assert.assertFalse(result2);
-   }
+      when(cache.getBaseAttributeTypeId(type)).thenReturn(other);
 
-   private static AttributeType createType(String baseType) {
-      return new AttributeType(1L, "dummy", baseType, "", "", "", 1, 1, "", "", "");
+      boolean result2 = resolver.isBaseTypeCompatible(expected, type);
+      Assert.assertFalse(result2);
    }
 
    @Parameters

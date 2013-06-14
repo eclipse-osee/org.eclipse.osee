@@ -29,6 +29,7 @@ import org.eclipse.osee.executor.admin.PassThroughCallable;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CaseType;
@@ -39,7 +40,6 @@ import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -174,15 +174,25 @@ public class ArtifactProviderImpl implements ArtifactProvider {
    }
 
    @Override
-   public List<RelationType> getValidRelationTypes(ArtifactReadable art) throws OseeCoreException {
+   public Collection<? extends IRelationType> getValidRelationTypes(ArtifactReadable art) {
       Collection<IRelationTypeSide> existingRelationTypes = graph.getExistingRelationTypes(art);
-      Set<RelationType> toReturn = new HashSet<RelationType>();
+      Set<IRelationType> toReturn = new HashSet<IRelationType>();
       for (IRelationTypeSide side : existingRelationTypes) {
-         toReturn.add(graph.getFullRelationType(side));
+         toReturn.add(side);
       }
-      List<RelationType> listToReturn = Lists.newLinkedList(toReturn);
+      List<? extends IRelationType> listToReturn = Lists.newLinkedList(toReturn);
       java.util.Collections.sort(listToReturn);
       return listToReturn;
+   }
+
+   @Override
+   public String getSideAName(IRelationType type) throws OseeCoreException {
+      return graph.getTypes().getSideAName(type);
+   }
+
+   @Override
+   public String getSideBName(IRelationType type) throws OseeCoreException {
+      return graph.getTypes().getSideBName(type);
    }
 
    @Override
@@ -191,4 +201,5 @@ public class ArtifactProviderImpl implements ArtifactProvider {
          cache.getSearchFuture().cancel(true);
       }
    }
+
 }

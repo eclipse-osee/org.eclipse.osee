@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoaderFactory;
 import org.eclipse.osee.orcs.core.internal.HasStatistics;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
+import org.eclipse.osee.orcs.data.ArtifactTypes;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.statistics.QueryStatistics;
 
@@ -31,7 +31,7 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
    private final CriteriaFactory criteriaFctry;
    private final CallableQueryFactory callableQueryFactory;
 
-   public QueryModule(Log logger, QueryEngine queryEngine, ArtifactLoaderFactory objectLoader, ArtifactTypeCache artifactTypeCache, AttributeTypeCache attributeTypeCache, DataLoaderFactory dataLoader) {
+   public QueryModule(Log logger, QueryEngine queryEngine, ArtifactLoaderFactory objectLoader, DataLoaderFactory dataLoader, ArtifactTypes artifactTypeCache, AttributeTypes attributeTypeCache) {
       QueryStatsCollectorImpl queryStatsCollector = new QueryStatsCollectorImpl(statistics);
       this.criteriaFctry = new CriteriaFactory(artifactTypeCache, attributeTypeCache);
       this.callableQueryFactory =

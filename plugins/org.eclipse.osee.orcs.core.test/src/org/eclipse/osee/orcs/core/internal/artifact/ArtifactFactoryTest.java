@@ -10,21 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataFactory;
@@ -34,6 +37,7 @@ import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
+import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -57,7 +61,7 @@ public class ArtifactFactoryTest {
 
    // @formatter:off
    @Mock private Branch branch;
-   @Mock private ArtifactType artifactType;
+   @Mock private IArtifactType artifactType;
    @Mock private ArtifactData artifactData;
    @Mock private RelationContainer relationContainer;
    @Mock private VersionData artifactVersion;
@@ -65,7 +69,7 @@ public class ArtifactFactoryTest {
    @Mock private ArtifactDataFactory dataFactory;
    @Mock private AttributeFactory attributeFactory;
    @Mock private RelationFactory relationFactory;
-   @Mock private ArtifactTypeCache artifactTypeCache;
+   @Mock private ArtifactTypes artifactTypeCache;
    @Mock private BranchCache branchCache;
    
    @Mock private Attribute<Object> attribute;
@@ -84,7 +88,7 @@ public class ArtifactFactoryTest {
       MockitoAnnotations.initMocks(this);
 
       artifactFactory =
-         new ArtifactFactory(dataFactory, attributeFactory, relationFactory, artifactTypeCache, branchCache);
+         new ArtifactFactory(dataFactory, attributeFactory, relationFactory, branchCache, artifactTypeCache);
 
       guid = GUID.create();
 
@@ -109,8 +113,9 @@ public class ArtifactFactoryTest {
       when(otherArtifactData.getVersion()).thenReturn(artifactVersion);
 
       when(relationFactory.createRelationContainer(45)).thenReturn(relationContainer);
-      when(artifactTypeCache.getByGuid(65L)).thenReturn(artifactType);
       when(branchCache.getById(23)).thenReturn(branch);
+
+      when(artifactTypeCache.getByUuid(65L)).thenReturn(artifactType);
    }
 
    @Test
@@ -127,7 +132,6 @@ public class ArtifactFactoryTest {
    @Test
    public void testCreateArtifactFromArtifactData() throws OseeCoreException {
       when(relationFactory.createRelationContainer(45)).thenReturn(relationContainer);
-      when(artifactTypeCache.getByGuid(65L)).thenReturn(artifactType);
       when(branchCache.getById(23)).thenReturn(branch);
 
       ArtifactImpl artifact = artifactFactory.createArtifact(artifactData);
@@ -143,7 +147,7 @@ public class ArtifactFactoryTest {
 
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
-      when(artifactType.isValidAttributeType(CoreAttributeTypes.Annotation, branch)).thenReturn(true);
+      when(artifactTypeCache.isValidAttributeType(artifactType, branch, CoreAttributeTypes.Annotation)).thenReturn(true);
 
       ArgumentCaptor<ArtifactImpl> implCapture = ArgumentCaptor.forClass(ArtifactImpl.class);
 
@@ -153,6 +157,7 @@ public class ArtifactFactoryTest {
       verify(source, times(0)).getAttributes(CoreAttributeTypes.City);
       verify(source, times(1)).getAttributes(CoreAttributeTypes.Annotation);
       verify(attributeFactory).copyAttribute(eq(attributeData), eq(branch), implCapture.capture());
+
       Assert.assertTrue(implCapture.getValue().isLoaded());
       Assert.assertTrue(actual == implCapture.getValue());
    }
@@ -178,7 +183,7 @@ public class ArtifactFactoryTest {
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
-      when(artifactType.isValidAttributeType(CoreAttributeTypes.Annotation, branch)).thenReturn(true);
+      when(artifactTypeCache.isValidAttributeType(artifactType, branch, CoreAttributeTypes.Annotation)).thenReturn(true);
 
       ArgumentCaptor<ArtifactImpl> implCapture = ArgumentCaptor.forClass(ArtifactImpl.class);
 
@@ -202,7 +207,7 @@ public class ArtifactFactoryTest {
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
-      when(artifactType.isValidAttributeType(CoreAttributeTypes.Annotation, branch)).thenReturn(true);
+      when(artifactTypeCache.isValidAttributeType(artifactType, branch, CoreAttributeTypes.Annotation)).thenReturn(true);
 
       ArgumentCaptor<ArtifactImpl> implCapture = ArgumentCaptor.forClass(ArtifactImpl.class);
 

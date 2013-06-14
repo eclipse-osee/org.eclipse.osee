@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -34,6 +33,7 @@ import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,13 +54,13 @@ public class AttributeFactoryTest {
 
    // @formatter:off
    @Mock private AttributeClassResolver classResolver;
-   @Mock private AttributeTypeCache cache;
+   @Mock private AttributeTypes cache;
    @Mock private AttributeDataFactory dataFactory;
    
    @Mock private AttributeData attributeData;
    @Mock private VersionData attrVersionData;
    
-   @Mock private AttributeType attributeType;
+   @Mock private IAttributeType attributeType;
    @Mock private Attribute<Object> attribute;
 
    @Mock private AttributeManager container;
@@ -75,19 +75,19 @@ public class AttributeFactoryTest {
    public void init() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
 
-      factory = new AttributeFactory(classResolver, cache, dataFactory);
+      factory = new AttributeFactory(classResolver, dataFactory, cache);
 
       expectedGuid = CoreAttributeTypes.Name.getGuid();
 
       when(attributeData.getTypeUuid()).thenReturn(expectedGuid);
-      when(cache.getByGuid(expectedGuid)).thenReturn(attributeType);
+      when(cache.getByUuid(expectedGuid)).thenReturn(attributeType);
       when(classResolver.createAttribute(attributeType)).thenReturn(attribute);
       when(attributeData.getDataProxy()).thenReturn(proxy);
    }
 
    @Test
    public void testCreateAttributeNullType() throws OseeCoreException {
-      when(cache.getByGuid(expectedGuid)).thenReturn(null);
+      when(cache.getByUuid(expectedGuid)).thenReturn(null);
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("attributeType cannot be null - Cannot find attribute type with uuid[" + expectedGuid + "]");
@@ -202,27 +202,25 @@ public class AttributeFactoryTest {
    public void testGetMaxOccurrenceLimit() throws OseeCoreException {
       IAttributeType token = mock(IAttributeType.class);
 
-      when(cache.get(token)).thenReturn(attributeType);
-      when(attributeType.getMaxOccurrences()).thenReturn(56);
+      when(cache.getMaxOccurrences(token)).thenReturn(56);
 
       int actual = factory.getMaxOccurrenceLimit(token);
 
       assertEquals(56, actual);
 
-      verify(attributeType).getMaxOccurrences();
+      verify(cache).getMaxOccurrences(token);
    }
 
    @Test
    public void testGetMinOccurrenceLimit() throws OseeCoreException {
       IAttributeType token = mock(IAttributeType.class);
 
-      when(cache.get(token)).thenReturn(attributeType);
-      when(attributeType.getMinOccurrences()).thenReturn(99);
+      when(cache.getMinOccurrences(token)).thenReturn(99);
 
       int actual = factory.getMinOccurrenceLimit(token);
 
       assertEquals(99, actual);
 
-      verify(attributeType).getMinOccurrences();
+      verify(cache).getMinOccurrences(token);
    }
 }

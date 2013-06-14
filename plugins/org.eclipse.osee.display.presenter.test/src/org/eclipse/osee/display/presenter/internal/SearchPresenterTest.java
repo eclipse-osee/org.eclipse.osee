@@ -35,6 +35,7 @@ import org.eclipse.osee.display.presenter.mocks.MockSearchResultComponent;
 import org.eclipse.osee.display.presenter.mocks.MockSearchResultsListComponent;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -288,7 +289,7 @@ public class SearchPresenterTest {
       }
 
       @Override
-      public Collection<RelationType> getValidRelationTypes(ArtifactReadable art) throws OseeCoreException {
+      public Collection<? extends IRelationType> getValidRelationTypes(ArtifactReadable art) throws OseeCoreException {
          throw new OseeCoreException("test");
       }
 
@@ -300,6 +301,16 @@ public class SearchPresenterTest {
       @Override
       public void cancelSearch() {
          // do nothing
+      }
+
+      @Override
+      public String getSideAName(IRelationType type) throws OseeCoreException {
+         throw new OseeCoreException("test");
+      }
+
+      @Override
+      public String getSideBName(IRelationType type) throws OseeCoreException {
+         throw new OseeCoreException("test");
       }
 
    }

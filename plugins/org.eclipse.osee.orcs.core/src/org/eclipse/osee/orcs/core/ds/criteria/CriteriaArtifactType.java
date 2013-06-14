@@ -14,11 +14,10 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.data.ArtifactTypes;
 
 /**
  * @author Roberto E. Escobar
@@ -26,9 +25,9 @@ import org.eclipse.osee.orcs.core.ds.QueryOptions;
 public class CriteriaArtifactType extends Criteria<QueryOptions> {
 
    private final Collection<? extends IArtifactType> artifactTypes;
-   private final ArtifactTypeCache artTypeCache;
+   private final ArtifactTypes artTypeCache;
 
-   public CriteriaArtifactType(ArtifactTypeCache artTypeCache, Collection<? extends IArtifactType> artifactTypes) {
+   public CriteriaArtifactType(ArtifactTypes artTypeCache, Collection<? extends IArtifactType> artifactTypes) {
       super();
       this.artifactTypes = artifactTypes;
       this.artTypeCache = artTypeCache;
@@ -54,8 +53,7 @@ public class CriteriaArtifactType extends Criteria<QueryOptions> {
       boolean includeTypeInheritance = options.isTypeInheritanceIncluded();
       for (IArtifactType type : artifactTypes) {
          if (includeTypeInheritance) {
-            ArtifactType fullType = artTypeCache.get(type);
-            for (IArtifactType descendant : fullType.getAllDescendantTypes()) {
+            for (IArtifactType descendant : artTypeCache.getAllDescendantTypes(type)) {
                typesToUse.add(descendant);
             }
          }

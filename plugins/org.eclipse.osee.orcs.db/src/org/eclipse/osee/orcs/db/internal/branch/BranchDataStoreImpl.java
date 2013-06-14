@@ -21,16 +21,17 @@ import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
+import org.eclipse.osee.orcs.core.ds.TempCachingService;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -54,7 +55,6 @@ import org.eclipse.osee.orcs.db.internal.transaction.TransactionCheck;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter;
 import org.eclipse.osee.orcs.db.internal.transaction.TxSqlBuilderImpl;
 import org.eclipse.osee.orcs.db.internal.transaction.UnsubscribeTransaction;
-import org.eclipse.osee.orcs.db.internal.types.IOseeModelingService;
 
 /**
  * @author Roberto E. Escobar
@@ -65,19 +65,18 @@ public class BranchDataStoreImpl implements BranchDataStore {
    private final Log logger;
    private final IOseeDatabaseService dbService;
    private final IdentityService identityService;
-   private final IOseeCachingService cachingService;
+   private final TempCachingService cachingService;
    private final SystemPreferences preferences;
    private final ExecutorAdmin executorAdmin;
    private final IResourceManager resourceManager;
 
    private final IOseeModelFactoryService modelFactory;
-   private final IOseeModelingService typeModelService;
 
    private final IdFactory idFactory;
    private final DataLoaderFactory dataLoader;
    private final MissingChangeItemFactory missingChangeItemFactory;
 
-   public BranchDataStoreImpl(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IOseeCachingService cachingService, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager, IOseeModelFactoryService modelFactory, IOseeModelingService typeModelService, IdFactory idFactory, DataLoaderFactory dataLoader, MissingChangeItemFactory missingChangeItemFactory) {
+   public BranchDataStoreImpl(Log logger, IOseeDatabaseService dbService, IdentityService identityService, TempCachingService cachingService, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager, IOseeModelFactoryService modelFactory, IdFactory idFactory, DataLoaderFactory dataLoader, MissingChangeItemFactory missingChangeItemFactory) {
       super();
       this.logger = logger;
       this.dbService = dbService;
@@ -87,7 +86,6 @@ public class BranchDataStoreImpl implements BranchDataStore {
       this.executorAdmin = executorAdmin;
       this.resourceManager = resourceManager;
       this.modelFactory = modelFactory;
-      this.typeModelService = typeModelService;
       this.idFactory = idFactory;
       this.dataLoader = dataLoader;
       this.missingChangeItemFactory = missingChangeItemFactory;
@@ -126,18 +124,17 @@ public class BranchDataStoreImpl implements BranchDataStore {
    }
 
    @Override
-   public Callable<URI> exportBranch(String sessionId, List<IOseeBranch> branches, PropertyStore options, String exportName) {
-      ExportItemFactory factory =
-         new ExportItemFactory(logger, dbService, identityService, typeModelService, resourceManager);
+   public Callable<URI> exportBranch(String sessionId, OrcsTypes orcsTypes, List<IOseeBranch> branches, PropertyStore options, String exportName) {
+      ExportItemFactory factory = new ExportItemFactory(logger, dbService, identityService, resourceManager, orcsTypes);
       return new ExportBranchDatabaseCallable(factory, preferences, executorAdmin, cachingService.getBranchCache(),
          branches, options, exportName);
    }
 
    @Override
-   public Callable<URI> importBranch(String sessionId, URI fileToImport, List<IOseeBranch> branches, PropertyStore options) {
+   public Callable<URI> importBranch(String sessionId, OrcsTypes orcsTypes, URI fileToImport, List<IOseeBranch> branches, PropertyStore options) {
       ImportBranchDatabaseCallable callable =
-         new ImportBranchDatabaseCallable(logger, dbService, preferences, typeModelService, resourceManager,
-            identityService, fileToImport, branches, options);
+         new ImportBranchDatabaseCallable(logger, dbService, preferences, resourceManager, identityService, orcsTypes,
+            fileToImport, branches, options);
       return callable;
    }
 

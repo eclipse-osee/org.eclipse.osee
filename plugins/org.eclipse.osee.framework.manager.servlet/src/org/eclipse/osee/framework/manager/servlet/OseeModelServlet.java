@@ -14,16 +14,20 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
 import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
@@ -66,15 +70,14 @@ public class OseeModelServlet extends SecureOseeHttpServlet {
 
    @Override
    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+      ByteArrayOutputStream output = new ByteArrayOutputStream();
       try {
-         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-         getOrcsTypes().exportOseeTypes(outputStream);
+         getOrcsTypes().writeTypes(output).call();
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/plain");
          resp.setCharacterEncoding("UTF-8");
 
-         Lib.inputStreamToOutputStream(new ByteArrayInputStream(outputStream.toByteArray()), resp.getOutputStream());
+         Lib.inputStreamToOutputStream(new ByteArrayInputStream(output.toByteArray()), resp.getOutputStream());
       } catch (Exception ex) {
          handleError(resp, req.getQueryString(), ex);
       }
@@ -84,12 +87,42 @@ public class OseeModelServlet extends SecureOseeHttpServlet {
    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
       try {
          IDataTranslationService service = dataTransalatorService;
-         OseeImportModelRequest modelRequest =
+         final OseeImportModelRequest modelRequest =
             service.convert(req.getInputStream(), CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST);
+
+         IResource resource = new IResource() {
+
+            @Override
+            public InputStream getContent() throws OseeCoreException {
+               InputStream inputStream = null;
+               try {
+                  inputStream = new ByteArrayInputStream(modelRequest.getModel().getBytes("UTF-8"));
+               } catch (UnsupportedEncodingException ex) {
+                  OseeExceptions.wrapAndThrow(ex);
+               }
+               return inputStream;
+            }
+
+            @Override
+            public URI getLocation() {
+               return null;
+            }
+
+            @Override
+            public String getName() {
+               return modelRequest.getModelName();
+            }
+
+            @Override
+            public boolean isCompressed() {
+               return false;
+            }
+
+         };
 
          OseeImportModelResponse modelResponse = new OseeImportModelResponse();
 
-         getOrcsTypes().importOseeTypes(isInitializing(req), modelRequest, modelResponse);
+         getOrcsTypes().loadTypes(resource, isInitializing(req)).call();
 
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/xml");

@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsBranch;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.internal.branch.ArchiveUnarchiveBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.BranchDataFactory;
@@ -54,14 +55,16 @@ public class OrcsBranchImpl implements OrcsBranch {
    private final BranchCache branchCache;
    private final TransactionCache txCache;
    private final BranchDataFactory branchDataFactory;
+   private final OrcsTypes orcsTypes;
 
-   public OrcsBranchImpl(Log logger, SessionContext sessionContext, BranchDataStore branchStore, BranchCache branchCache, TransactionCache txCache, LazyObject<ArtifactReadable> systemUser) {
+   public OrcsBranchImpl(Log logger, SessionContext sessionContext, BranchDataStore branchStore, BranchCache branchCache, TransactionCache txCache, LazyObject<ArtifactReadable> systemUser, OrcsTypes orcsTypes) {
       this.logger = logger;
       this.sessionContext = sessionContext;
       this.branchStore = branchStore;
       this.branchCache = branchCache;
       this.txCache = txCache;
       branchDataFactory = new BranchDataFactory(branchCache, txCache);
+      this.orcsTypes = orcsTypes;
    }
 
    @Override
@@ -119,12 +122,12 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    @Override
    public Callable<URI> exportBranch(List<IOseeBranch> branches, PropertyStore options, String exportName) {
-      return branchStore.exportBranch(sessionContext.toString(), branches, options, exportName);
+      return branchStore.exportBranch(sessionContext.toString(), orcsTypes, branches, options, exportName);
    }
 
    @Override
    public Callable<URI> importBranch(URI fileToImport, List<IOseeBranch> branches, PropertyStore options) {
-      return branchStore.importBranch(sessionContext.toString(), fileToImport, branches, options);
+      return branchStore.importBranch(sessionContext.toString(), orcsTypes, fileToImport, branches, options);
    }
 
    @Override

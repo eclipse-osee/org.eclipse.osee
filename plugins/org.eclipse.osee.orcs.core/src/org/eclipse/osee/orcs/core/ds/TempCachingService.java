@@ -8,20 +8,29 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.types;
+package org.eclipse.osee.orcs.core.ds;
 
-import java.io.OutputStream;
+import java.util.Collection;
+import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
-import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.cache.IOseeCache;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IOseeModelingService {
+public interface TempCachingService {
 
-   void importOseeTypes(boolean isInitializing, OseeImportModelRequest request, OseeImportModelResponse response) throws OseeCoreException;
+   BranchCache getBranchCache();
 
-   void exportOseeTypes(OutputStream outputStream) throws OseeCoreException;
+   TransactionCache getTransactionCache();
 
+   Collection<?> getCaches();
+
+   IOseeCache<?, ?> getCache(OseeCacheEnum cacheId) throws OseeCoreException;
+
+   void reloadAll() throws OseeCoreException;
+
+   void clearAll();
 }

@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -29,6 +28,7 @@ import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
@@ -36,19 +36,19 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
  */
 public class ArtifactFactory {
 
+   private final ArtifactDataFactory factory;
    private final AttributeFactory attributeFactory;
    private final RelationFactory relationFactory;
-   private final ArtifactTypeCache artifactTypeCache;
    private final BranchCache branchCache;
-   private final ArtifactDataFactory factory;
+   private final ArtifactTypes artifactTypeCache;
 
-   public ArtifactFactory(ArtifactDataFactory factory, AttributeFactory attributeFactory, RelationFactory relationFactory, ArtifactTypeCache artifactTypeCache, BranchCache branchCache) {
+   public ArtifactFactory(ArtifactDataFactory factory, AttributeFactory attributeFactory, RelationFactory relationFactory, BranchCache branchCache, ArtifactTypes artifactTypeCache) {
       super();
       this.factory = factory;
       this.attributeFactory = attributeFactory;
       this.relationFactory = relationFactory;
-      this.artifactTypeCache = artifactTypeCache;
       this.branchCache = branchCache;
+      this.artifactTypeCache = artifactTypeCache;
    }
 
    @SuppressWarnings("unused")
@@ -56,8 +56,8 @@ public class ArtifactFactory {
       //TODO implement an artifact class resolver for specific artifact types
       RelationContainer relationContainer = relationFactory.createRelationContainer(artifactData.getLocalId());
 
-      return new ArtifactImpl(artifactData, attributeFactory, relationContainer, new BranchProvider(branchCache,
-         artifactData), new ArtifactTypeProvider(artifactTypeCache, artifactData));
+      return new ArtifactImpl(artifactTypeCache, artifactData, attributeFactory, relationContainer, new BranchProvider(
+         branchCache, artifactData));
    }
 
    public ArtifactImpl createArtifact(IOseeBranch branch, IArtifactType artifactType, String guid) throws OseeCoreException {

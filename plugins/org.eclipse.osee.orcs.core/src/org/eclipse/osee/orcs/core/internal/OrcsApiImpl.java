@@ -10,15 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
+import java.util.Collections;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.LazyObject;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -30,8 +34,10 @@ import org.eclipse.osee.orcs.OrcsPerformance;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
+import org.eclipse.osee.orcs.core.ds.TempCachingService;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactBuilderFactoryImpl;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
+import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassRegistry;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassResolver;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.indexer.IndexerModule;
@@ -42,11 +48,14 @@ import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.core.internal.session.SessionContextImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.TransactionFactoryImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.handler.TxDataHandlerFactoryImpl;
+import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
+import org.eclipse.osee.orcs.core.internal.types.OrcsTypesModule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import com.google.common.collect.Sets;
 
 /**
  * @author Roberto E. Escobar
@@ -55,8 +64,8 @@ public class OrcsApiImpl implements OrcsApi {
 
    private Log logger;
    private OrcsDataStore dataStore;
-   private AttributeClassResolver resolver;
-   private IOseeCachingService cacheService;
+   private AttributeClassRegistry registry;
+   private TempCachingService cacheService;
 
    private ExecutorAdmin executorAdmin;
    private SystemPreferences preferences;
@@ -66,6 +75,8 @@ public class OrcsApiImpl implements OrcsApi {
    private QueryModule queryModule;
    private IndexerModule indexerModule;
    private TxDataHandlerFactoryImpl txUpdateFactory;
+   private OrcsTypesModule typesModule;
+   private SessionContext systemSession;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -75,11 +86,11 @@ public class OrcsApiImpl implements OrcsApi {
       this.dataStore = dataStore;
    }
 
-   public void setAttributeClassResolver(AttributeClassResolver resolver) {
-      this.resolver = resolver;
+   public void setAttributeClassRegistry(AttributeClassRegistry registry) {
+      this.registry = registry;
    }
 
-   public void setCacheService(IOseeCachingService cacheService) {
+   public void setCacheService(TempCachingService cacheService) {
       this.cacheService = cacheService;
    }
 
@@ -92,14 +103,42 @@ public class OrcsApiImpl implements OrcsApi {
    }
 
    public void start() {
-      RelationFactory relationFactory = new RelationFactory(cacheService.getRelationTypeCache());
+      systemSession = createSession();
 
+      BranchHierarchyProvider hierarchyProvider = new BranchHierarchyProvider() {
+
+         @Override
+         public Iterable<? extends IOseeBranch> getParentHierarchy(IOseeBranch branch) throws OseeCoreException {
+            Set<IOseeBranch> branches = Sets.newLinkedHashSet();
+            BranchCache branchCache = cacheService.getBranchCache();
+
+            Branch branchPtr = branchCache.get(branch);
+            while (branchPtr != null) {
+               if (!branches.add(branchPtr)) {
+                  logger.error("Cycle detected with branch: [%s]", branchPtr);
+                  return Collections.emptyList();
+               }
+               branchPtr = branchPtr.getParentBranch();
+            }
+
+            return branches;
+         }
+      };
+
+      typesModule = new OrcsTypesModule(logger, dataStore, hierarchyProvider);
+      typesModule.start(getSystemSession());
+
+      OrcsTypes orcsTypes = typesModule.createOrcsTypes(getSystemSession());
+
+      RelationFactory relationFactory = new RelationFactory(orcsTypes.getRelationTypes());
+
+      AttributeClassResolver resolver = new AttributeClassResolver(registry, orcsTypes.getAttributeTypes());
       AttributeFactory attributeFactory =
-         new AttributeFactory(resolver, cacheService.getAttributeTypeCache(), dataStore.getDataFactory());
+         new AttributeFactory(resolver, dataStore.getDataFactory(), orcsTypes.getAttributeTypes());
 
       ArtifactFactory artifactFactory =
          new ArtifactFactory(dataStore.getDataFactory(), attributeFactory, relationFactory,
-            cacheService.getArtifactTypeCache(), cacheService.getBranchCache());
+            cacheService.getBranchCache(), orcsTypes.getArtifactTypes());
 
       proxyFactory = new ArtifactProxyFactory(artifactFactory);
 
@@ -111,8 +150,8 @@ public class OrcsApiImpl implements OrcsApi {
       loaderFactory = new ArtifactLoaderFactoryImpl(dataStore.getDataLoaderFactory(), builderFactory);
 
       queryModule =
-         new QueryModule(logger, dataStore.getQueryEngine(), loaderFactory, cacheService.getArtifactTypeCache(),
-            cacheService.getAttributeTypeCache(), dataStore.getDataLoaderFactory());
+         new QueryModule(logger, dataStore.getQueryEngine(), loaderFactory, dataStore.getDataLoaderFactory(),
+            orcsTypes.getArtifactTypes(), orcsTypes.getAttributeTypes());
 
       indexerModule = new IndexerModule(logger, preferences, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start();
@@ -147,8 +186,7 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public GraphReadable getGraph(ApplicationContext context) {
       SessionContext sessionContext = getSessionContext(context);
-      return new RelationGraphImpl(sessionContext, loaderFactory, cacheService.getArtifactTypeCache(),
-         cacheService.getRelationTypeCache());
+      return new RelationGraphImpl(sessionContext, loaderFactory, getOrcsTypes(context).getRelationTypes());
    }
 
    @Override
@@ -169,7 +207,7 @@ public class OrcsApiImpl implements OrcsApi {
          }
       };
       return new OrcsBranchImpl(logger, sessionContext, dataStore.getBranchDataStore(), cacheService.getBranchCache(),
-         cacheService.getTransactionCache(), systemUser);
+         cacheService.getTransactionCache(), systemUser, getOrcsTypes(context));
    }
 
    @Override
@@ -197,6 +235,10 @@ public class OrcsApiImpl implements OrcsApi {
       return indexerModule.createQueryIndexer(sessionContext);
    }
 
+   private SessionContext getSystemSession() {
+      return systemSession;
+   }
+
    private SessionContext getSessionContext(ApplicationContext context) {
       // TODO get sessions from a session context cache - improve this
       String sessionId = null;
@@ -209,9 +251,15 @@ public class OrcsApiImpl implements OrcsApi {
       return new SessionContextImpl(sessionId);
    }
 
+   private SessionContext createSession() {
+      String sessionId = GUID.create();
+      return new SessionContextImpl(sessionId);
+   }
+
    @Override
    public OrcsTypes getOrcsTypes(ApplicationContext context) {
-      return dataStore;
+      SessionContext sessionContext = getSessionContext(context);
+      return typesModule.createOrcsTypes(sessionContext);
    }
 
 }

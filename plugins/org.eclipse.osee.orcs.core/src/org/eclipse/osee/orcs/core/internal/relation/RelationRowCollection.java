@@ -21,9 +21,9 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -34,16 +34,16 @@ public class RelationRowCollection {
       new ConcurrentHashMap<IRelationTypeSide, List<RelationData>>();
 
    private final int parentId;
-   private final RelationTypeCache relationTypeCache;
+   private final RelationTypes relationTypeCache;
 
-   RelationRowCollection(int parentId, RelationTypeCache relationTypeCache) {
+   RelationRowCollection(int parentId, RelationTypes relationTypeCache) {
       this.parentId = parentId;
       this.relationTypeCache = relationTypeCache;
    }
 
    private IRelationType getRelationType(RelationData relationRow) throws OseeCoreException {
       long uuid = relationRow.getTypeUuid();
-      IRelationType type = relationTypeCache.getByGuid(uuid);
+      IRelationType type = relationTypeCache.getByUuid(uuid);
       Conditions.checkNotNull(type, "RelationType", "Unknown relation type.  UUID[%d]", uuid);
       return type;
    }

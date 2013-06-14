@@ -21,9 +21,6 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
@@ -36,6 +33,8 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
+import org.eclipse.osee.orcs.data.ArtifactTypes;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
@@ -44,10 +43,10 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 @SuppressWarnings("unused")
 public class CriteriaFactory {
 
-   private final ArtifactTypeCache artifactTypeCache;
-   private final AttributeTypeCache attributeTypeCache;
+   private final ArtifactTypes artifactTypeCache;
+   private final AttributeTypes attributeTypeCache;
 
-   public CriteriaFactory(ArtifactTypeCache artifactTypeCache, AttributeTypeCache attributeTypeCache) {
+   public CriteriaFactory(ArtifactTypes artifactTypeCache, AttributeTypes attributeTypeCache) {
       this.artifactTypeCache = artifactTypeCache;
       this.attributeTypeCache = attributeTypeCache;
    }
@@ -55,7 +54,7 @@ public class CriteriaFactory {
    private Collection<? extends IAttributeType> checkForAnyType(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
       Collection<? extends IAttributeType> toReturn;
       if (attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE)) {
-         Collection<AttributeType> temp = new LinkedList<AttributeType>();
+         Collection<IAttributeType> temp = new LinkedList<IAttributeType>();
          temp.addAll(attributeTypeCache.getAll());
          toReturn = temp;
       } else {

@@ -19,12 +19,10 @@ import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.IOseeCache;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.HexUtil;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Angel Avila
@@ -32,7 +30,6 @@ import org.eclipse.osee.orcs.OrcsTypes;
 public class PurgeAttributeTypeCommand implements ConsoleCommand {
 
    private OrcsApi orcsApi;
-   private IOseeCachingService cachingService;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -40,14 +37,6 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
 
    public OrcsApi getOrcsApi() {
       return orcsApi;
-   }
-
-   public IOseeCachingService getCachingService() {
-      return cachingService;
-   }
-
-   public void setCachingService(IOseeCachingService cachingService) {
-      this.cachingService = cachingService;
    }
 
    @Override
@@ -68,7 +57,6 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
    @Override
    public Callable<?> createCallable(final Console console, final ConsoleParameters params) {
       final OrcsTypes orcsTypes = orcsApi.getOrcsTypes(null);
-      final IOseeCache<Long, AttributeType> types = getCachingService().getAttributeTypeCache();
       return new Callable<Void>() {
 
          @Override
@@ -90,11 +78,12 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
          }
 
          private Set<IAttributeType> getTypes(String[] typesToPurge) throws OseeCoreException {
+            AttributeTypes attributeTypes = orcsTypes.getAttributeTypes();
             Set<IAttributeType> toReturn = new HashSet<IAttributeType>();
             for (String uuid : typesToPurge) {
                try {
-                  Long converted = HexUtil.toLong(uuid);
-                  IAttributeType type = types.getByGuid(converted);
+                  Long typeId = HexUtil.toLong(uuid);
+                  IAttributeType type = attributeTypes.getByUuid(typeId);
                   console.writeln("Type [%s] found. Guid: [0x%X]", type.getName(), type.getGuid());
                   toReturn.add(type);
                } catch (OseeArgumentException ex) {

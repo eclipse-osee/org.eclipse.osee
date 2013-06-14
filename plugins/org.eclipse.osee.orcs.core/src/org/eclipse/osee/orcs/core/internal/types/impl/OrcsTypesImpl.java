@@ -22,16 +22,15 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
 import org.eclipse.osee.orcs.core.internal.SessionContext;
-import org.eclipse.osee.orcs.core.internal.types.OrcsTypes;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesIndexProvider;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesLoaderFactory;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesResourceProvider;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.RelationTypes;
-import org.eclipse.osee.orcs.utility.ObjectProvider;
 
 /**
  * @author Roberto E. Escobar
@@ -100,16 +99,14 @@ public class OrcsTypesImpl implements OrcsTypes {
    }
 
    @Override
-   public Callable<?> writeTypes(final ObjectProvider<? extends OutputStream> supplier) {
+   public Callable<?> writeTypes(final OutputStream outputStream) {
       return new CancellableCallable<Void>() {
          @Override
          public Void call() throws Exception {
             logger.trace("Writing OrcsTypes for session [%s]", session);
             IResource resource = indexProvider.getOrcsTypesResource();
             InputStream inputStream = null;
-            OutputStream outputStream = null;
             try {
-               outputStream = supplier.get();
                inputStream = resource.getContent();
                checkForCancelled();
                Lib.inputStreamToOutputStream(inputStream, outputStream);

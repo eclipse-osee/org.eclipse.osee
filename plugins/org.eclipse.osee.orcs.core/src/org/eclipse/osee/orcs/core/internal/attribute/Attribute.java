@@ -18,8 +18,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
@@ -27,20 +25,21 @@ import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.HasOrcsData;
 import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.AttributeWriteable;
 
 /**
  * @author Ryan D. Brooks
  */
 public abstract class Attribute<T> implements HasOrcsData<AttributeData>, Comparable<Attribute<T>>, AttributeWriteable<T> {
-   private AttributeTypeCache attributeTypeCache;
+   private AttributeTypes attributeTypeCache;
    private Reference<AttributeManager> containerReference;
    private boolean dirty;
    private String defaultValue;
    private Log logger;
    private AttributeData attributeData;
 
-   public void internalInitialize(AttributeTypeCache attributeTypeCache, Reference<AttributeManager> containerReference, AttributeData attributeData, boolean isDirty, boolean setDefaultValue) throws OseeCoreException {
+   public void internalInitialize(AttributeTypes attributeTypeCache, Reference<AttributeManager> containerReference, AttributeData attributeData, boolean isDirty, boolean setDefaultValue) throws OseeCoreException {
       this.attributeTypeCache = attributeTypeCache;
       this.containerReference = containerReference;
       this.attributeData = attributeData;
@@ -210,11 +209,7 @@ public abstract class Attribute<T> implements HasOrcsData<AttributeData>, Compar
    }
 
    protected String getDefaultValueFromMetaData() throws OseeCoreException {
-      return getType().getDefaultValue();
-   }
-
-   private AttributeType getType() throws OseeCoreException {
-      return attributeTypeCache.getByGuid(getOrcsData().getTypeUuid());
+      return attributeTypeCache.getDefaultValue(getAttributeType());
    }
 
    /**
@@ -223,7 +218,7 @@ public abstract class Attribute<T> implements HasOrcsData<AttributeData>, Compar
     */
    @Override
    public IAttributeType getAttributeType() throws OseeCoreException {
-      return attributeTypeCache.getByGuid(getOrcsData().getTypeUuid());
+      return attributeTypeCache.getByUuid(getOrcsData().getTypeUuid());
    }
 
    /**
@@ -270,7 +265,7 @@ public abstract class Attribute<T> implements HasOrcsData<AttributeData>, Compar
    @Override
    public boolean canDelete() {
       try {
-         return getContainer().getAttributeCount(getAttributeType()) > getType().getMinOccurrences();
+         return getContainer().getAttributeCount(getAttributeType()) > attributeTypeCache.getMinOccurrences(getAttributeType());
       } catch (OseeCoreException ex) {
          return false;
       }

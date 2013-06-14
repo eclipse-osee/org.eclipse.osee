@@ -18,9 +18,8 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -34,23 +33,21 @@ import org.mockito.MockitoAnnotations;
 public class SearchCriteriaTest {
 
    @Mock
-   private AttributeTypeCache cache;
-   @Mock
-   private AttributeType type;
-   private final ArrayList<IAttributeType> types = new ArrayList<IAttributeType>();
+   private AttributeTypes cache;
 
    @Before
-   public void setup() {
+   public void setup() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
-      types.add(CoreAttributeTypes.Active);
-      types.add(CoreAttributeTypes.FavoriteBranch);
+
+      when(cache.getByUuid(CoreAttributeTypes.Name.getGuid())).thenReturn(CoreAttributeTypes.Name);
+      when(cache.getByUuid(CoreAttributeTypes.Active.getGuid())).thenReturn(CoreAttributeTypes.Active);
+      when(cache.getByUuid(CoreAttributeTypes.FavoriteBranch.getGuid())).thenReturn(CoreAttributeTypes.FavoriteBranch);
    }
 
    @Test
    public void isTagged() throws OseeCoreException {
-      when(cache.get(CoreAttributeTypes.Name)).thenReturn(type);
-      when(type.getName()).thenReturn("Name");
-      when(type.isTaggable()).thenReturn(true);
+      when(cache.isTaggable(CoreAttributeTypes.Name)).thenReturn(true);
+
       CriteriaAttributeKeywords keyword =
          new CriteriaAttributeKeywords(false, Collections.singletonList(CoreAttributeTypes.Name), cache, "");
       keyword.checkNotTaggable();
@@ -59,9 +56,9 @@ public class SearchCriteriaTest {
 
    @Test(expected = OseeArgumentException.class)
    public void notTagged() throws OseeCoreException {
-      when(cache.get(CoreAttributeTypes.Active)).thenReturn(type);
-      when(type.getName()).thenReturn("Active");
-      when(type.isTaggable()).thenReturn(false);
+
+      when(cache.isTaggable(CoreAttributeTypes.Active)).thenReturn(false);
+
       CriteriaAttributeKeywords keyword =
          new CriteriaAttributeKeywords(false, Collections.singletonList(CoreAttributeTypes.Active), cache, "");
       keyword.checkNotTaggable();
@@ -71,11 +68,13 @@ public class SearchCriteriaTest {
 
    @Test(expected = OseeArgumentException.class)
    public void notTaggedList() throws OseeCoreException {
-      when(cache.get(CoreAttributeTypes.Active)).thenReturn(type);
-      when(type.getName()).thenReturn("Active");
-      when(cache.get(CoreAttributeTypes.FavoriteBranch)).thenReturn(type);
-      when(type.getName()).thenReturn("Favorite Branch");
-      when(type.isTaggable()).thenReturn(false);
+
+      when(cache.isTaggable(CoreAttributeTypes.FavoriteBranch)).thenReturn(false);
+
+      ArrayList<IAttributeType> types = new ArrayList<IAttributeType>();
+      types.add(CoreAttributeTypes.Active);
+      types.add(CoreAttributeTypes.FavoriteBranch);
+
       CriteriaAttributeKeywords keyword = new CriteriaAttributeKeywords(false, types, cache, "");
 
       keyword.checkNotTaggable();

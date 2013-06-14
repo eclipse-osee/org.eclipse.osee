@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -184,18 +183,18 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
 
       relComp.clearAll();
       relComp.setArtifact(artifact);
-      Collection<RelationType> relationTypes = null;
+
       try {
-         relationTypes = artifactProvider.getValidRelationTypes(displayArt);
+         Collection<? extends IRelationType> relationTypes = artifactProvider.getValidRelationTypes(displayArt);
+         for (IRelationType relType : relationTypes) {
+            ViewId toAdd = new ViewId(relType.getGuid().toString(), relType.getName());
+            toAdd.setAttribute(SIDE_A_KEY, artifactProvider.getSideAName(relType));
+            toAdd.setAttribute(SIDE_B_KEY, artifactProvider.getSideBName(relType));
+            relComp.addRelationType(toAdd);
+         }
       } catch (Exception ex) {
          setErrorMessage(relComp, "Error in initArtifactPage:\n Cannot load valid relation types", ex);
          return;
-      }
-      for (RelationType relTypeSide : relationTypes) {
-         ViewId toAdd = new ViewId(relTypeSide.getGuid().toString(), relTypeSide.getName());
-         toAdd.setAttribute(SIDE_A_KEY, relTypeSide.getSideAName());
-         toAdd.setAttribute(SIDE_B_KEY, relTypeSide.getSideBName());
-         relComp.addRelationType(toAdd);
       }
 
       attrComp.clearAll();

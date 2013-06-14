@@ -25,13 +25,13 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ExportOptions;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.db.internal.exchange.export.AbstractExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.DbTableExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.ManifestExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.MetadataExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.OseeTypeModelExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
-import org.eclipse.osee.orcs.db.internal.types.IOseeModelingService;
 
 public class ExportItemFactory {
    private static final String GET_MAX_TX =
@@ -71,15 +71,15 @@ public class ExportItemFactory {
    private final Log logger;
    private final IOseeDatabaseService dbService;
    private final IdentityService identityService;
-   private final IOseeModelingService typeModelService;
    private final IResourceManager resourceManager;
+   private final OrcsTypes orcsTypes;
 
-   public ExportItemFactory(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IOseeModelingService typeModelService, IResourceManager resourceManager) {
+   public ExportItemFactory(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IResourceManager resourceManager, OrcsTypes orcsTypes) {
       this.logger = logger;
       this.dbService = dbService;
       this.identityService = identityService;
-      this.typeModelService = typeModelService;
       this.resourceManager = resourceManager;
+      this.orcsTypes = orcsTypes;
    }
 
    public Log getLogger() {
@@ -90,16 +90,16 @@ public class ExportItemFactory {
       return dbService;
    }
 
-   public IOseeModelingService getModelingService() {
-      return typeModelService;
-   }
-
    public IResourceManager getResourceManager() {
       return resourceManager;
    }
 
    public IdentityService getIdentityService() {
       return identityService;
+   }
+
+   private OrcsTypes getOrcsTypes() {
+      return orcsTypes;
    }
 
    public List<AbstractExportItem> createTaskList(int joinId, PropertyStore options) throws OseeCoreException {
@@ -111,7 +111,7 @@ public class ExportItemFactory {
 
       items.add(new ManifestExportItem(logger, items, options));
       items.add(new MetadataExportItem(logger, items, getMetaData(getDbService())));
-      items.add(new OseeTypeModelExportItem(logger, getModelingService()));
+      items.add(new OseeTypeModelExportItem(logger, getOrcsTypes()));
 
       addItem(items, joinId, options, gammaJoinId, ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY);
       addItem(items, joinId, options, gammaJoinId, ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY);

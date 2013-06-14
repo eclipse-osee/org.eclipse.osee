@@ -15,27 +15,27 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
-import org.eclipse.osee.orcs.db.internal.types.IOseeModelingService;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeTypeModelExportItem extends AbstractExportItem {
-   private final IOseeModelingService modelingService;
+   private final OrcsTypes orcsTypes;
 
-   public OseeTypeModelExportItem(Log logger, IOseeModelingService modelingService) {
+   public OseeTypeModelExportItem(Log logger, OrcsTypes orcsTypes) {
       super(logger, ExportItem.EXPORT_TYPE_MODEL);
-      this.modelingService = modelingService;
+      this.orcsTypes = orcsTypes;
    }
 
    @Override
    protected void executeWork() throws Exception {
-      File outputFile = new File(getWriteLocation(), getFileName());
       OutputStream outputStream = null;
       try {
+         File outputFile = new File(getWriteLocation(), getFileName());
          outputStream = new FileOutputStream(outputFile);
-         modelingService.exportOseeTypes(outputStream);
+         orcsTypes.writeTypes(outputStream).call();
       } finally {
          Lib.close(outputStream);
       }

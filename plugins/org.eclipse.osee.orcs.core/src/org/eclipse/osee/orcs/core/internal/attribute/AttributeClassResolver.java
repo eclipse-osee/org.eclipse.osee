@@ -10,79 +10,40 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.AttributeClassProvider;
-import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Roberto E. Escobar
  */
 public class AttributeClassResolver {
 
-   private final Map<String, Class<? extends Attribute<?>>> map =
-      new ConcurrentHashMap<String, Class<? extends Attribute<?>>>();
+   private final AttributeClassRegistry registry;
+   private final AttributeTypes attributeTypes;
 
-   private Log logger;
-
-   public void setLogger(Log logger) {
-      this.logger = logger;
-   }
-
-   public void start() {
-      //
-   }
-
-   public void stop() {
-      //
-   }
-
-   public void addProvider(AttributeClassProvider provider) {
-      for (Class<? extends Attribute<?>> clazz : provider.getClasses()) {
-         String alias = toAlias(clazz);
-         map.put(alias, clazz);
-      }
-   }
-
-   public void removeProvider(AttributeClassProvider provider) {
-      for (Class<? extends Attribute<?>> clazz : provider.getClasses()) {
-         String alias = toAlias(clazz);
-         map.remove(alias);
-      }
-   }
-
-   private String toAlias(Class<? extends Attribute<?>> clazz) {
-      OseeAttribute annotation = clazz.getAnnotation(OseeAttribute.class);
-      String toReturn;
-      if (annotation != null) {
-         toReturn = annotation.value();
-      } else {
-         toReturn = clazz.getSimpleName();
-         logger.warn("Unable to find OseeAttribute annotation for [%s] - registering using clazz simple name [%s]",
-            clazz, toReturn);
-      }
-      return toReturn;
+   public AttributeClassResolver(AttributeClassRegistry registry, AttributeTypes attributeTypes) {
+      super();
+      this.registry = registry;
+      this.attributeTypes = attributeTypes;
    }
 
    public Class<? extends Attribute<?>> getBaseClazz(String alias) {
-      return map.get(alias);
+      return registry.getBaseClazz(alias);
    }
 
-   protected Class<? extends Attribute<?>> getBaseClazz(AttributeType attributeType) {
-      String alias = attributeType.getBaseAttributeTypeId();
+   protected Class<? extends Attribute<?>> getBaseClazz(IAttributeType attributeType) throws OseeCoreException {
+      String alias = attributeTypes.getBaseAttributeTypeId(attributeType);
       if (alias.contains(".")) {
          alias = Lib.getExtension(alias);
       }
       return getBaseClazz(alias);
    }
 
-   public boolean isBaseTypeCompatible(Class<? extends Attribute<?>> baseType, AttributeType attributeType) throws OseeCoreException {
+   public boolean isBaseTypeCompatible(Class<? extends Attribute<?>> baseType, IAttributeType attributeType) throws OseeCoreException {
       Conditions.checkNotNull(baseType, "baseType", "Unable to determine base type from null");
       Conditions.checkNotNull(attributeType, "attributeType");
       Class<? extends Attribute<?>> clazz = getBaseClazz(attributeType);
@@ -91,14 +52,14 @@ public class AttributeClassResolver {
       return baseType.isAssignableFrom(clazz);
    }
 
-   public <T> Attribute<T> createAttribute(AttributeType type) throws OseeCoreException {
+   public <T> Attribute<T> createAttribute(IAttributeType type) throws OseeCoreException {
       Class<? extends Attribute<?>> attributeClass = getAttributeClass(type);
       Conditions.checkNotNull(attributeClass, "attributeClass",
          "Cannot find attribute class base type for attributeType[%s]", type);
       return createAttribute(attributeClass);
    }
 
-   private Class<? extends Attribute<?>> getAttributeClass(AttributeType type) {
+   private Class<? extends Attribute<?>> getAttributeClass(IAttributeType type) throws OseeCoreException {
       Class<? extends Attribute<?>> attributeClass = getBaseClazz(type);
       if (attributeClass == null) {
          // TODO Word Attributes etc -  Default to StringAttribute if Null

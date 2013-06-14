@@ -15,8 +15,6 @@ import java.lang.ref.WeakReference;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -24,6 +22,7 @@ import org.eclipse.osee.orcs.core.ds.AttributeDataFactory;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Roberto E. Escobar
@@ -31,13 +30,13 @@ import org.eclipse.osee.orcs.core.internal.artifact.AttributeManager;
 public class AttributeFactory {
 
    private final AttributeClassResolver classResolver;
-   private final AttributeTypeCache cache;
    private final AttributeDataFactory dataFactory;
+   private final AttributeTypes cache;
 
-   public AttributeFactory(AttributeClassResolver classResolver, AttributeTypeCache cache, AttributeDataFactory dataFactory) {
+   public AttributeFactory(AttributeClassResolver classResolver, AttributeDataFactory dataFactory, AttributeTypes cache) {
       this.classResolver = classResolver;
-      this.cache = cache;
       this.dataFactory = dataFactory;
+      this.cache = cache;
    }
 
    public <T> Attribute<T> createAttributeWithDefaults(AttributeManager container, ArtifactData artifactData, IAttributeType attributeType) throws OseeCoreException {
@@ -50,7 +49,7 @@ public class AttributeFactory {
    }
 
    private <T> Attribute<T> createAttribute(AttributeManager container, AttributeData data, boolean isDirty, boolean createWithDefaults) throws OseeCoreException {
-      AttributeType type = cache.getByGuid(data.getTypeUuid());
+      IAttributeType type = cache.getByUuid(data.getTypeUuid());
       Conditions.checkNotNull(type, "attributeType", "Cannot find attribute type with uuid[%s]", data.getTypeUuid());
 
       Attribute<T> attribute = classResolver.createAttribute(type);
@@ -89,22 +88,16 @@ public class AttributeFactory {
       return introducedAttribute;
    }
 
-   private AttributeType getAttribeType(IAttributeType token) throws OseeCoreException {
-      return token instanceof AttributeType ? (AttributeType) token : cache.get(token);
-   }
-
    private ResourceNameResolver createResolver(Attribute<?> attribute) {
       return new AttributeResourceNameResolver(cache, attribute);
    }
 
    public int getMaxOccurrenceLimit(IAttributeType attributeType) throws OseeCoreException {
-      AttributeType type = getAttribeType(attributeType);
-      return type.getMaxOccurrences();
+      return cache.getMaxOccurrences(attributeType);
    }
 
    public int getMinOccurrenceLimit(IAttributeType attributeType) throws OseeCoreException {
-      AttributeType type = getAttribeType(attributeType);
-      return type.getMinOccurrences();
+      return cache.getMinOccurrences(attributeType);
    }
 
 }

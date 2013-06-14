@@ -14,9 +14,9 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -34,7 +34,11 @@ public interface ArtifactProvider {
 
    ArtifactReadable getParent(ArtifactReadable art) throws OseeCoreException;
 
-   Collection<RelationType> getValidRelationTypes(ArtifactReadable art) throws OseeCoreException;
+   Collection<? extends IRelationType> getValidRelationTypes(ArtifactReadable art) throws OseeCoreException;
+
+   String getSideAName(IRelationType type) throws OseeCoreException;
+
+   String getSideBName(IRelationType type) throws OseeCoreException;
 
    void getSearchResults(IOseeBranch branch, boolean nameOnly, String searchPhrase, final AsyncSearchListener callback) throws OseeCoreException;
 

@@ -10,23 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
-import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.data.RelationTypes;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -39,7 +42,7 @@ public class RelationLoadingTest {
 
    @Test
    public void testRelationCountMatches() throws OseeCoreException, IOException {
-      RelationTypeCache cache = createAndPopulate();
+      RelationTypes cache = createAndPopulate();
       Map<Integer, RelationContainer> providersThatWillBeLoaded = getRelationProviderList(cache, 22);
       RelationRowMapper relationRowMapper = new RelationRowMapper(providersThatWillBeLoaded);
 
@@ -57,7 +60,7 @@ public class RelationLoadingTest {
    @Ignore
    @Test
    public void testRelatedArtifactsMatch() throws OseeCoreException, IOException {
-      RelationTypeCache cache = createAndPopulate();
+      RelationTypes cache = createAndPopulate();
       Map<Integer, RelationContainer> providersThatWillBeLoaded = getRelationProviderList(cache, 22);
       RelationRowMapper relationRowMapper = new RelationRowMapper(providersThatWillBeLoaded);
 
@@ -72,15 +75,29 @@ public class RelationLoadingTest {
    }
    //@formatter:on
 
-   public RelationTypeCache createAndPopulate() throws OseeCoreException {
-      RelationTypeCache cache = new RelationTypeCache(new MockOseeDataAccessor<Long, RelationType>());
-      cache.cache(new RelationType(1l, "test", "sideAName", "sideBName", CoreArtifactTypes.Artifact,
-         CoreArtifactTypes.Artifact, RelationTypeMultiplicity.MANY_TO_MANY, ""));
+   public RelationTypes createAndPopulate() throws OseeCoreException {
+      IRelationType type = mock(IRelationType.class);
+      RelationTypes cache = mock(RelationTypes.class);
+
+      when(type.getGuid()).thenReturn(1L);
+      when(type.getName()).thenReturn("test");
+
+      when(cache.getByUuid(1L)).thenReturn(type);
+      when(cache.getSideAName(type)).thenReturn("sideAName");
+      when(cache.getSideBName(type)).thenReturn("sideBName");
+      when(cache.getArtifactTypeSideA(type)).thenReturn(CoreArtifactTypes.Artifact);
+      when(cache.getArtifactTypeSideB(type)).thenReturn(CoreArtifactTypes.Artifact);
+      when(cache.getMultiplicity(type)).thenReturn(RelationTypeMultiplicity.MANY_TO_MANY);
+      when(cache.getDefaultOrderTypeGuid(type)).thenReturn("");
+
+      when(cache.getSideName(type, RelationSide.SIDE_A)).thenReturn("sideAName");
+      when(cache.getSideName(type, RelationSide.SIDE_B)).thenReturn("sideBName");
+
+      when(cache.getArtifactType(eq(type), any(RelationSide.class))).thenReturn(CoreArtifactTypes.Artifact);
       return cache;
    }
 
    private void checkRelationCount(RelationContainer relationContainer, RelationSide side, int size) {
-      //      int count = relationContainer.getRelationCount(1, side);
       int count = relationContainer.getRelationCount(TokenFactory.createRelationTypeSide(side, 1, "blah"));
       Assert.assertEquals(
          String.format("We did not get the expected number of relations back [%d != %d]", size, count), size, count);
@@ -96,7 +113,7 @@ public class RelationLoadingTest {
       }
    }
 
-   private Map<Integer, RelationContainer> getRelationProviderList(RelationTypeCache relationTypeCache, int size) {
+   private Map<Integer, RelationContainer> getRelationProviderList(RelationTypes relationTypeCache, int size) {
       Map<Integer, RelationContainer> providersThatWillBeLoaded = new HashMap<Integer, RelationContainer>();
       for (int i = 1; i <= size; i++) {
          providersThatWillBeLoaded.put(i, createRelationContainer(relationTypeCache, i));
@@ -104,7 +121,7 @@ public class RelationLoadingTest {
       return providersThatWillBeLoaded;
    }
 
-   private RelationContainer createRelationContainer(RelationTypeCache relationTypeCache, final int parentId) {
+   private RelationContainer createRelationContainer(RelationTypes relationTypeCache, final int parentId) {
       return new RelationContainerImpl(parentId, relationTypeCache);
    }
 
