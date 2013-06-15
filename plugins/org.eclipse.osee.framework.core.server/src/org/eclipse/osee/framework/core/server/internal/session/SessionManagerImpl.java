@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
-
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
@@ -133,7 +132,7 @@ public final class SessionManagerImpl implements ISessionManager {
       } catch (Exception e) {
          OseeExceptions.wrapAndThrow(e);
       }
-      if(all != null){
+      if (all != null) {
          for (Session session : all) {
             if (session.getClientAddress().equals(clientAddress)) {
                sessions.add(session);
@@ -158,20 +157,17 @@ public final class SessionManagerImpl implements ISessionManager {
    @Override
    public Collection<ISession> getAllSessions(boolean includeNonServerManagedSessions) throws OseeCoreException {
       Collection<ISession> toReturn = new HashSet<ISession>();
-      Iterable<Session> all = null;
       try {
-         all = sessionCache.getAll();
-      } catch (Exception e) {
-         OseeExceptions.wrapAndThrow(e);
-      }
-      if(all != null){
+         Iterable<Session> all = sessionCache.getAll();
          for (Session session : all) {
             toReturn.add(session);
          }
-         if (includeNonServerManagedSessions) {
-            ISessionCollector collector = new DefaultSessionCollector(serverId, sessionFactory, toReturn);
-            sessionQuery.selectNonServerManagedSessions(collector);
-         }
+      } catch (Exception e) {
+         OseeExceptions.wrapAndThrow(e);
+      }
+      if (includeNonServerManagedSessions) {
+         ISessionCollector collector = new DefaultSessionCollector(serverId, sessionFactory, toReturn);
+         sessionQuery.selectNonServerManagedSessions(collector);
       }
       return toReturn;
    }

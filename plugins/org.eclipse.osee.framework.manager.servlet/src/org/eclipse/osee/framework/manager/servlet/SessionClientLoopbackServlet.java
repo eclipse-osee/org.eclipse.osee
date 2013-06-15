@@ -19,7 +19,9 @@ import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
@@ -29,6 +31,10 @@ import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Ordering;
 
 /**
  * @author Roberto E. Escobar
@@ -152,36 +158,54 @@ public class SessionClientLoopbackServlet extends UnsecuredOseeHttpServlet {
 
    private int getSessionPort(HttpServletRequest request) throws UnknownHostException, OseeCoreException {
       String remoteAddress = getNormalizedAddress(request.getRemoteAddr());
-      String sessionId = request.getParameter("sessionId");
+      final String sessionId = request.getParameter("sessionId");
+
+      Iterable<? extends ISession> filteredByAddress = getSessionsByClientAddress(remoteAddress);
 
       ISession sessionData = null;
       if (Strings.isValid(sessionId)) {
-         sessionData = sessionManager.getSessionById(sessionId);
-         if (sessionData != null) {
-            if (!sessionData.getClientAddress().equals(remoteAddress) || !isSessionValid(sessionData)) {
-               sessionData = null;
+         Optional<? extends ISession> data = Iterables.tryFind(filteredByAddress, new Predicate<ISession>() {
+            @Override
+            public boolean apply(ISession session) {
+               return sessionId.equals(session.getGuid());
+            }
+         });
+         if (data.isPresent()) {
+            if (isSessionValid(data.get())) {
+               sessionData = data.get();
             }
          }
       }
-
       if (sessionData == null) {
-         Collection<ISession> sessions = sessionManager.getSessionByClientAddress(remoteAddress);
-         if (!sessions.isEmpty()) {
-            for (ISession session : sessions) {
-               if (sessionData == null) {
-                  if (isSessionValid(session)) {
-                     sessionData = session;
-                  }
-               } else {
-                  if (sessionData.getLastInteractionDate().getTime() < session.getLastInteractionDate().getTime()) {
-                     if (isSessionValid(session)) {
-                        sessionData = session;
-                     }
-                  }
-               }
+         List<? extends ISession> sortedByLastInteractionDate = sortByLastInteractionDate(filteredByAddress);
+         for (ISession session : sortedByLastInteractionDate) {
+            if (isSessionValid(session)) {
+               sessionData = session;
+               break;
             }
          }
       }
       return sessionData != null ? sessionData.getClientPort() : -1;
+   }
+
+   private Iterable<? extends ISession> getSessionsByClientAddress(final String remoteAddress) throws OseeCoreException {
+      Collection<? extends ISession> allSessions = sessionManager.getAllSessions(true);
+      return Iterables.filter(allSessions, new Predicate<ISession>() {
+         @Override
+         public boolean apply(ISession session) {
+            return remoteAddress.equals(session.getClientAddress());
+         }
+      });
+   }
+
+   private List<? extends ISession> sortByLastInteractionDate(Iterable<? extends ISession> sessions) {
+      Ordering<ISession> ordered = Ordering.from(new Comparator<ISession>() {
+         @Override
+         public int compare(ISession arg1, ISession arg2) {
+            return Long.valueOf(arg1.getLastInteractionDate().getTime()).compareTo(
+               Long.valueOf(arg2.getLastInteractionDate().getTime()));
+         }
+      });
+      return ordered.reverse().sortedCopy(sessions);
    }
 }
