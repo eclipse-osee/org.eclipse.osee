@@ -198,10 +198,10 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          @Override
          public Void caseRemoveAttribute(RemoveAttribute removeOption) {
             XAttributeType attribute = removeOption.getAttribute();
-            String guidToMatch = attribute.getTypeGuid();
+            String guidToMatch = attribute.getUuid();
             List<XAttributeTypeRef> toRemove = new LinkedList<XAttributeTypeRef>();
             for (XAttributeTypeRef xAttributeTypeRef : validAttributeTypes) {
-               String itemGuid = xAttributeTypeRef.getValidAttributeType().getTypeGuid();
+               String itemGuid = xAttributeTypeRef.getValidAttributeType().getUuid();
                if (guidToMatch.equals(itemGuid)) {
                   toRemove.add(xAttributeTypeRef);
                }
@@ -213,10 +213,10 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          @Override
          public Void caseUpdateAttribute(UpdateAttribute updateAttribute) {
             XAttributeTypeRef refToUpdate = updateAttribute.getAttribute();
-            String guidToMatch = refToUpdate.getValidAttributeType().getTypeGuid();
+            String guidToMatch = refToUpdate.getValidAttributeType().getUuid();
             List<XAttributeTypeRef> toRemove = new LinkedList<XAttributeTypeRef>();
             for (XAttributeTypeRef xAttributeTypeRef : validAttributeTypes) {
-               String itemGuid = xAttributeTypeRef.getValidAttributeType().getTypeGuid();
+               String itemGuid = xAttributeTypeRef.getValidAttributeType().getUuid();
                if (guidToMatch.equals(itemGuid)) {
                   toRemove.add(xAttributeTypeRef);
                }

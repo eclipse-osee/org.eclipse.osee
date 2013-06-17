@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.Identity;
-import org.eclipse.osee.framework.core.dsl.integration.internal.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
@@ -187,11 +186,10 @@ public class OseeUtilTest {
       typeToCheck.setName(name);
       String uuid = HexUtil.toString(expected.getGuid());
       typeToCheck.setUuid(uuid);
-      typeToCheck.setTypeGuid(uuid);
 
       Assert.assertEquals(name, typeToCheck.getName());
       Assert.assertEquals(expected.getGuid().longValue(), HexUtil.toLong(typeToCheck.getUuid()));
-      Assert.assertEquals(uuid, typeToCheck.getTypeGuid());
+      Assert.assertEquals(uuid, typeToCheck.getUuid());
    }
 
    private static void checkIsRestricted(XRelationSideEnum side, boolean expectedSideA, boolean expectedSideB) throws OseeCoreException {

@@ -84,7 +84,7 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
    @Check
    public void checkTypeNameValidity(OseeDsl oseeDsl) {
       Set<String> typeNames = new HashSet<String>(50);
-      Map<String, String> guidToTypeName = new HashMap<String, String>(500);
+      Map<String, String> uuidToTypeName = new HashMap<String, String>(500);
       for (XAttributeType attrType : oseeDsl.getAttributeTypes()) {
          if (typeNames.contains(attrType.getName())) {
             String message = String.format("Duplicate attribute type name [%s]", attrType.getName());
@@ -92,18 +92,17 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
          } else {
             typeNames.add(attrType.getName());
          }
-         if (guidToTypeName.containsKey(attrType.getTypeGuid())) {
+         if (uuidToTypeName.containsKey(attrType.getUuid())) {
             String message =
-               String.format("Duplicate guid [%s] for attribute types [%s] and [%s]", attrType.getTypeGuid(),
-                  attrType.getName(), guidToTypeName.get(attrType.getTypeGuid()));
-            error(message, attrType, OseeDslPackage.Literals.OSEE_TYPE__TYPE_GUID,
-               OseeDslPackage.XATTRIBUTE_TYPE__TYPE_GUID);
+               String.format("Duplicate uuid [%s] for attribute types [%s] and [%s]", attrType.getUuid(),
+                  attrType.getName(), uuidToTypeName.get(attrType.getUuid()));
+            error(message, attrType, OseeDslPackage.Literals.OSEE_TYPE__UUID, OseeDslPackage.XATTRIBUTE_TYPE__UUID);
          } else {
-            guidToTypeName.put(attrType.getTypeGuid(), attrType.getName());
+            uuidToTypeName.put(attrType.getUuid(), attrType.getName());
          }
       }
       typeNames.clear();
-      guidToTypeName.clear();
+      uuidToTypeName.clear();
       for (XArtifactType artType : oseeDsl.getArtifactTypes()) {
          if (typeNames.contains(artType.getName())) {
             String message = String.format("Duplicate artifact type name [%s]", artType.getName());
@@ -111,18 +110,17 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
          } else {
             typeNames.add(artType.getName());
          }
-         if (guidToTypeName.containsKey(artType.getTypeGuid())) {
+         if (uuidToTypeName.containsKey(artType.getUuid())) {
             String message =
-               String.format("Duplicate guid [%s] for artifact types [%s] and [%s]", artType.getTypeGuid(),
-                  artType.getName(), guidToTypeName.get(artType.getTypeGuid()));
-            error(message, artType, OseeDslPackage.Literals.OSEE_TYPE__TYPE_GUID,
-               OseeDslPackage.XARTIFACT_TYPE__TYPE_GUID);
+               String.format("Duplicate uuid [%s] for artifact types [%s] and [%s]", artType.getUuid(),
+                  artType.getName(), uuidToTypeName.get(artType.getUuid()));
+            error(message, artType, OseeDslPackage.Literals.OSEE_TYPE__UUID, OseeDslPackage.XARTIFACT_TYPE__UUID);
          } else {
-            guidToTypeName.put(artType.getTypeGuid(), artType.getName());
+            uuidToTypeName.put(artType.getUuid(), artType.getName());
          }
       }
       typeNames.clear();
-      guidToTypeName.clear();
+      uuidToTypeName.clear();
       for (XRelationType relType : oseeDsl.getRelationTypes()) {
          if (typeNames.contains(relType.getName())) {
             String message = String.format("Duplicate relation type name [%s]", relType.getName());
@@ -130,14 +128,13 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
          } else {
             typeNames.add(relType.getName());
          }
-         if (guidToTypeName.containsKey(relType.getTypeGuid())) {
+         if (uuidToTypeName.containsKey(relType.getUuid())) {
             String message =
-               String.format("Duplicate guid [%s] for relation types [%s] and [%s]", relType.getTypeGuid(),
-                  relType.getName(), guidToTypeName.get(relType.getTypeGuid()));
-            error(message, relType, OseeDslPackage.Literals.OSEE_TYPE__TYPE_GUID,
-               OseeDslPackage.XRELATION_TYPE__TYPE_GUID);
+               String.format("Duplicate uuid [%s] for relation types [%s] and [%s]", relType.getUuid(),
+                  relType.getName(), uuidToTypeName.get(relType.getUuid()));
+            error(message, relType, OseeDslPackage.Literals.OSEE_TYPE__UUID, OseeDslPackage.XRELATION_TYPE__UUID);
          } else {
-            guidToTypeName.put(relType.getTypeGuid(), relType.getName());
+            uuidToTypeName.put(relType.getUuid(), relType.getName());
          }
       }
    }
@@ -205,17 +202,16 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
 
       @Override
       public Object caseArtifactTypeRestriction(ArtifactTypeRestriction restriction) {
-         String guid = restriction.getArtifactTypeRef().getTypeGuid();
-         XArtifactType reference = artifactTypeRestrictions.get(guid);
+         String uuid = restriction.getArtifactTypeRef().getUuid();
+         XArtifactType reference = artifactTypeRestrictions.get(uuid);
          if (reference == null) {
-            artifactTypeRestrictions.put(guid, restriction.getArtifactTypeRef());
+            artifactTypeRestrictions.put(uuid, restriction.getArtifactTypeRef());
          } else {
             String message =
                String.format("Duplicate artifact type restriction [%s] in context[%s]", reference.toString(),
                   accessContext.getName());
             error(message, restriction, OseeDslPackage.Literals.ARTIFACT_TYPE_RESTRICTION__ARTIFACT_TYPE_REF,
-               OseeDslPackage.ACCESS_CONTEXT__ACCESS_RULES, NON_UNIQUE_ARTIFACT_TYPE_RESTRICTION,
-               reference.getTypeGuid());
+               OseeDslPackage.ACCESS_CONTEXT__ACCESS_RULES, NON_UNIQUE_ARTIFACT_TYPE_RESTRICTION, reference.getUuid());
          }
          return restriction;
       }
@@ -223,15 +219,15 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
       @Override
       public Object caseAttributeTypeRestriction(AttributeTypeRestriction object) {
          XArtifactType artifactType = object.getArtifactTypeRef();
-         String attrGuidToMatch = object.getAttributeTypeRef().getTypeGuid();
+         String attrUuidToMatch = object.getAttributeTypeRef().getUuid();
 
          for (AttributeTypeRestriction r1 : attrTypeRetrictions) {
-            String storedGuid = r1.getAttributeTypeRef().getTypeGuid();
-            if (attrGuidToMatch.equals(storedGuid)) {
+            String storedUuid = r1.getAttributeTypeRef().getUuid();
+            if (attrUuidToMatch.equals(storedUuid)) {
                XArtifactType storedArtType = r1.getArtifactTypeRef();
                boolean dispatchError = false;
                if (storedArtType != null && artifactType != null) {
-                  dispatchError = storedArtType.getTypeGuid().equals(artifactType.getTypeGuid());
+                  dispatchError = storedArtType.getUuid().equals(artifactType.getUuid());
                } else if (storedArtType == null && artifactType == null) {
                   dispatchError = true;
                }
@@ -242,7 +238,7 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
                         accessContext.getName());
                   error(message, object, OseeDslPackage.Literals.ATTRIBUTE_TYPE_RESTRICTION__ARTIFACT_TYPE_REF,
                      OseeDslPackage.ACCESS_CONTEXT__ACCESS_RULES, NON_UNIQUE_ATTRIBUTE_TYPE_RESTRICTION,
-                     r1.getAttributeTypeRef().getTypeGuid());
+                     r1.getAttributeTypeRef().getUuid());
                }
             }
          }
@@ -254,23 +250,22 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
       public Object caseRelationTypeRestriction(RelationTypeRestriction restriction) {
          XRelationType relationTypeRef = restriction.getRelationTypeRef();
 
-         String guid = relationTypeRef.getTypeGuid();
+         String key = relationTypeRef.getUuid();
          RelationTypePredicate predicate = restriction.getPredicate();
          if (predicate instanceof RelationTypeArtifactPredicate) {
-            guid += ((RelationTypeArtifactPredicate) predicate).getArtifactMatcherRef().getName();
+            key += ((RelationTypeArtifactPredicate) predicate).getArtifactMatcherRef().getName();
          } else if (predicate instanceof RelationTypeArtifactTypePredicate) {
-            guid += ((RelationTypeArtifactTypePredicate) predicate).getArtifactTypeRef().getName();
+            key += ((RelationTypeArtifactTypePredicate) predicate).getArtifactTypeRef().getName();
          }
-         XRelationType reference = relationTypeRetrictions.get(guid);
+         XRelationType reference = relationTypeRetrictions.get(key);
          if (reference == null) {
-            relationTypeRetrictions.put(guid, relationTypeRef);
+            relationTypeRetrictions.put(key, relationTypeRef);
          } else {
             String message =
                String.format("Duplicate artifact type restriction [%s] in context[%s]", reference.toString(),
                   accessContext.getName());
             error(message, restriction, OseeDslPackage.Literals.RELATION_TYPE_RESTRICTION__RELATION_TYPE_REF,
-               OseeDslPackage.ACCESS_CONTEXT__ACCESS_RULES, NON_UNIQUE_RELATION_TYPE_RESTRICTION,
-               reference.getTypeGuid());
+               OseeDslPackage.ACCESS_CONTEXT__ACCESS_RULES, NON_UNIQUE_RELATION_TYPE_RESTRICTION, reference.getUuid());
          }
          return restriction;
       }

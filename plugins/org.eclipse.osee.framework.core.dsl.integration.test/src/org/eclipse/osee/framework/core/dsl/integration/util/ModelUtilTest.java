@@ -54,30 +54,30 @@ public class ModelUtilTest {
       Assert.assertEquals(5, model1.getArtifactTypes().size());
       Iterator<XArtifactType> type1 = model1.getArtifactTypes().iterator();
       // @formatter:off
-      DslAsserts.assertEquals(type1.next(), "Artifact", "AAMFDh6S7gRLupAMwywA", new String[0], "Name", "Annotation");
-      DslAsserts.assertEquals(type1.next(), "Requirement", "BOm4NmAq+HC1O2hkMagA", new String[] {"Artifact"}, "WordML");
-      DslAsserts.assertEquals(type1.next(), "Software Requirement", "BOm+AIG2snNbAM5FFcwA", new String[] {"Requirement"});
-      DslAsserts.assertEquals(type1.next(), "System Requirement", "BOnAaYTBOG68_Tw5Y_AA", new String[] {"Requirement"});
-      DslAsserts.assertEquals(type1.next(), "SubSystem Requirement", "BOnBhJ1XAFGKcrku3LgA", new String[] {"Requirement"});
+      DslAsserts.assertEquals(type1.next(), "Artifact", "0x0000000000000001", new String[0], "Name", "Annotation");
+      DslAsserts.assertEquals(type1.next(), "Requirement", "0x0000000000000015", new String[] {"Artifact"}, "WordML");
+      DslAsserts.assertEquals(type1.next(), "Software Requirement", "0x0000000000000018", new String[] {"Requirement"});
+      DslAsserts.assertEquals(type1.next(), "System Requirement", "0x000000000000001E", new String[] {"Requirement"});
+      DslAsserts.assertEquals(type1.next(), "SubSystem Requirement", "0x000000000000001D", new String[] {"Requirement"});
       // @formatter:on
 
       Assert.assertEquals(3, model1.getAttributeTypes().size());
       Iterator<XAttributeType> type2 = model1.getAttributeTypes().iterator();
-      DslAsserts.assertEquals(type2.next(), "Name", "AAMFEcF1AzV7PKuHmxwA", "StringAttribute",
+      DslAsserts.assertEquals(type2.next(), "Name", "0x1000000000000070", "StringAttribute",
          "DefaultAttributeDataProvider", "1", "1", "DefaultAttributeTaggerProvider", //
          "Descriptive Name", "unnamed", null);
-      DslAsserts.assertEquals(type2.next(), "Annotation", "AAMFEcWy0xc4e3tcemQA", "CompressedContentAttribute",
+      DslAsserts.assertEquals(type2.next(), "Annotation", "0x1000000000000076", "CompressedContentAttribute",
          "UriAttributeDataProvider", "0", "unlimited", "DefaultAttributeTaggerProvider", //
          "the version \'1.0\' is this \"1.2.0\"", null, null);
-      DslAsserts.assertEquals(type2.next(), "WordML", "AAMFEcfcGS2V3SqQN2wA", "WordAttribute",
+      DslAsserts.assertEquals(type2.next(), "WordML", "0x100000000000007A", "WordAttribute",
          "UriAttributeDataProvider", "0", "1", "XmlAttributeTaggerProvider",
          "value must comply with WordML xml schema",
          "<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>", "xml");
 
       Assert.assertEquals(1, model1.getRelationTypes().size());
       Iterator<XRelationType> type3 = model1.getRelationTypes().iterator();
-      DslAsserts.assertEquals(type3.next(), "Requirement Relation", "BOkzi3U9VTe2fcUz_9gA", "requirement-sideA",
-         "Requirement", "BOm4NmAq+HC1O2hkMagA", "subsystem-sideB", "SubSystem Requirement", "BOnBhJ1XAFGKcrku3LgA",
+      DslAsserts.assertEquals(type3.next(), "Requirement Relation", "0x2000000000000157", "requirement-sideA",
+         "Requirement", "0x0000000000000015", "subsystem-sideB", "SubSystem Requirement", "0x000000000000001D",
          "Lexicographical_Ascending", RelationMultiplicityEnum.ONE_TO_MANY);
 
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -97,18 +97,18 @@ public class ModelUtilTest {
       OseeDsl model1 = OseeDslResourceUtil.loadModel("osee:/text.osee", rawXTextData).getModel();
       Assert.assertEquals(2, model1.getArtifactTypes().size());
       Iterator<XArtifactType> type1 = model1.getArtifactTypes().iterator();
-      DslAsserts.assertEquals(type1.next(), "Artifact", "BZOUrxO35x+LBZkEYzAA", new String[0]);
-      DslAsserts.assertEquals(type1.next(), "Software Requirement", "BZO4PuM+Oz58hpAcTGwA", new String[] {"Artifact"});
+      DslAsserts.assertEquals(type1.next(), "Artifact", "0x0000000000000001", new String[0]);
+      DslAsserts.assertEquals(type1.next(), "Software Requirement", "0x0000000000000002", new String[] {"Artifact"});
 
       Assert.assertEquals(1, model1.getAttributeTypes().size());
       Iterator<XAttributeType> type2 = model1.getAttributeTypes().iterator();
-      DslAsserts.assertEquals(type2.next(), "Qualification Method", "BZPB25t9fRVnLuII6+wA", "StringAttribute",
+      DslAsserts.assertEquals(type2.next(), "Qualification Method", "0x1000000000000056", "StringAttribute",
          "DefaultAttributeDataProvider", "0", "1", null, null, "test", null);
 
       Assert.assertEquals(1, model1.getRelationTypes().size());
       Iterator<XRelationType> type3 = model1.getRelationTypes().iterator();
-      DslAsserts.assertEquals(type3.next(), "Requirement Relation", "BOkzi3U9VTe2fcUz_9gA", "requirement-sideA",
-         "Software Requirement", "BZO4PuM+Oz58hpAcTGwA", "artifact-sideB", "Artifact", "BZOUrxO35x+LBZkEYzAA",
+      DslAsserts.assertEquals(type3.next(), "Requirement Relation", "0x2000000000000163", "requirement-sideA",
+         "Software Requirement", "0x0000000000000002", "artifact-sideB", "Artifact", "0x0000000000000001",
          "Lexicographical_Ascending", RelationMultiplicityEnum.ONE_TO_MANY);
 
       Assert.assertEquals(3, model1.getArtifactMatchRefs().size());
