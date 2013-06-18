@@ -57,6 +57,7 @@ attributeType "Outfile URL" extends StringAttribute {
    min 1
    max 1 description "Test Run Content"
    defaultValue "\"\"" fileExtension "tmo"
+   mediaType "text/plain"
 }
 
 attributeType "Test Script URL" extends StringAttribute {
@@ -65,6 +66,7 @@ attributeType "Test Script URL" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Url of the test script used"
+   mediaType "text/plain"
 }
 
 attributeType "Revision" extends StringAttribute {
@@ -73,6 +75,7 @@ attributeType "Revision" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Version"
+   mediaType "text/plain"
 }
 
 attributeType "Modified Flag" extends StringAttribute {
@@ -81,6 +84,7 @@ attributeType "Modified Flag" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "File Modification Flag from Repository"
+   mediaType "text/plain"
 }
 
 attributeType "Last Author" extends StringAttribute {
@@ -90,6 +94,7 @@ attributeType "Last Author" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider description "Last Author"
+   mediaType "text/plain"
 }
 
 attributeType "Last Modified Date" extends DateAttribute {
@@ -98,6 +103,7 @@ attributeType "Last Modified Date" extends DateAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Last Modified"
+   mediaType "text/calendar"
 }
 
 attributeType "OS Architecture" extends StringAttribute {
@@ -107,6 +113,7 @@ attributeType "OS Architecture" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider description "OS Architecture"
+   mediaType "text/plain"
 }
 
 attributeType "OS Name" extends StringAttribute {
@@ -115,6 +122,7 @@ attributeType "OS Name" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "OS Name"
+   mediaType "text/plain"
 }
 
 attributeType "OS Version" extends StringAttribute {
@@ -123,6 +131,7 @@ attributeType "OS Version" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "OS Version"
+   mediaType "text/plain"
 }
 
 attributeType "OSEE Version" extends StringAttribute {
@@ -131,6 +140,7 @@ attributeType "OSEE Version" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "OSEE Version"
+   mediaType "text/plain"
 }
 
 attributeType "OSEE Server Title" extends StringAttribute {
@@ -139,6 +149,7 @@ attributeType "OSEE Server Title" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "OSEE Server Title"
+   mediaType "text/plain"
 }
 
 attributeType "OSEE Server Jar Version" extends StringAttribute {
@@ -147,6 +158,7 @@ attributeType "OSEE Server Jar Version" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "OSEE Server Jar Version"
+   mediaType "text/plain"
 }
 
 attributeType "Processor ID" extends StringAttribute {
@@ -155,6 +167,7 @@ attributeType "Processor ID" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Processor ID"
+   mediaType "text/plain"
 }
 
 attributeType "Start Date" extends DateAttribute {
@@ -163,6 +176,7 @@ attributeType "Start Date" extends DateAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Start Date"
+   mediaType "text/calendar"
 }
 
 attributeType "End Date" extends DateAttribute {
@@ -171,6 +185,7 @@ attributeType "End Date" extends DateAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Stop Date"
+   mediaType "text/calendar"
 }
 
 attributeType "Elapsed Date" extends StringAttribute {
@@ -179,6 +194,7 @@ attributeType "Elapsed Date" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Time Elapsed from the start to the end of the script"
+   mediaType "text/plain"
 }
 
 attributeType "Passed" extends IntegerAttribute {
@@ -188,6 +204,7 @@ attributeType "Passed" extends IntegerAttribute {
    min 1
    max 1 description "Number of test points that passed"
    defaultValue "0"
+   mediaType "text/plain"
 }
 
 attributeType "Failed" extends IntegerAttribute {
@@ -197,6 +214,7 @@ attributeType "Failed" extends IntegerAttribute {
    min 1
    max 1 description "Number of test points that failed"
    defaultValue "0"
+   mediaType "text/plain"
 }
 
 attributeType "Total Test Points" extends IntegerAttribute {
@@ -206,6 +224,7 @@ attributeType "Total Test Points" extends IntegerAttribute {
    min 1
    max 1 description "Total test points"
    defaultValue "0"
+   mediaType "text/plain"
 }
 
 attributeType "Script Aborted" extends BooleanAttribute {
@@ -216,6 +235,7 @@ attributeType "Script Aborted" extends BooleanAttribute {
    max 1
    taggerId DefaultAttributeTaggerProvider description "Test Abort status"
    defaultValue "true"
+   mediaType "text/plain"
 }
 
 attributeType "Test Script GUID" extends StringAttribute {
@@ -224,6 +244,7 @@ attributeType "Test Script GUID" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Test Case GUID"
+   mediaType "text/plain"
 }
 
 attributeType "Ran In Batch Mode" extends BooleanAttribute {
@@ -233,6 +254,7 @@ attributeType "Ran In Batch Mode" extends BooleanAttribute {
    min 1
    max 1 description "Run was performed as part of a batch"
    defaultValue "false"
+   mediaType "text/plain"
 }
 
 attributeType "Is Batch Mode Allowed" extends BooleanAttribute {
@@ -242,6 +264,7 @@ attributeType "Is Batch Mode Allowed" extends BooleanAttribute {
    min 1
    max 1 description "Whether Test Script is allowed to run as part of a batch"
    defaultValue "true"
+   mediaType "text/plain"
 }
 
 attributeType "Last Date Uploaded" extends DateAttribute {
@@ -250,6 +273,7 @@ attributeType "Last Date Uploaded" extends DateAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Last time outfile was uploaded"
+   mediaType "text/calendar"
 }
 
 attributeType "Qualification Level" extends StringAttribute {
@@ -260,6 +284,7 @@ attributeType "Qualification Level" extends StringAttribute {
    max 1
    taggerId DefaultAttributeTaggerProvider description "Qualification level"
    defaultValue "DEVELOPMENT"
+   mediaType "text/plain"
 }
 
 attributeType "Build Id" extends StringAttribute {
@@ -270,6 +295,7 @@ attributeType "Build Id" extends StringAttribute {
    max 1
    taggerId DefaultAttributeTaggerProvider description "Build Id"
    defaultValue "unknown"
+   mediaType "text/plain"
 }
 
 attributeType "Checksum" extends StringAttribute {
@@ -278,6 +304,7 @@ attributeType "Checksum" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Test Case Checksum"
+   mediaType "text/plain"
 }
 
 attributeType "Disposition" extends StringAttribute {
@@ -286,6 +313,7 @@ attributeType "Disposition" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Disposition"
+   mediaType "text/plain"
 }
 
 oseeEnumType "enum.test.run.status" {
@@ -305,6 +333,7 @@ attributeType "Test Status" extends EnumeratedAttribute {
    max 1
    enumType "enum.test.run.status"
    description "Test Status"
+   mediaType "text/plain"
 }
 
 attributeType "Test Pass" extends IntegerAttribute {
@@ -314,6 +343,7 @@ attributeType "Test Pass" extends IntegerAttribute {
    min 1
    max 1
    defaultValue "0"
+   mediaType "text/plain"
 }
 
 attributeType "Test Fail" extends IntegerAttribute {
@@ -323,6 +353,7 @@ attributeType "Test Fail" extends IntegerAttribute {
    min 1
    max 1
    defaultValue "0"
+   mediaType "text/plain"
 }
 
 attributeType "Version" extends StringAttribute {
@@ -331,6 +362,7 @@ attributeType "Version" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Version"
+   mediaType "text/plain"
 }
 
 attributeType "Repository Type" extends StringAttribute {
@@ -339,6 +371,7 @@ attributeType "Repository Type" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Repository Type"
+   mediaType "text/plain"
 }
 
 attributeType "Modification Flag" extends StringAttribute {
@@ -347,6 +380,7 @@ attributeType "Modification Flag" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "File Modification Flag from Repository"
+   mediaType "text/plain"
 }
 
 attributeType "Test Log" extends CompressedContentAttribute {
@@ -355,6 +389,7 @@ attributeType "Test Log" extends CompressedContentAttribute {
    dataProvider UriAttributeDataProvider
    min 0
    max 1 description "Compressed Data" fileExtension "txt"
+   mediaType "application/zip"
 }
 
 relationType "Test Case to Run Relation" {

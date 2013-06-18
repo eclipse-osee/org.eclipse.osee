@@ -27,6 +27,7 @@ attributeType "Artifact Reference" extends ArtifactReferenceAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	description "Light-weight artifact reference"
+	mediaType "application/http"
 }
 
 attributeType "Branch Reference" extends BranchReferenceAttribute {
@@ -37,6 +38,7 @@ attributeType "Branch Reference" extends BranchReferenceAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	description "Light-weight branch reference"
+	mediaType "application/http"
 }
 
 attributeType "osee.config.Default Mail Server" extends StringAttribute {
@@ -48,6 +50,7 @@ attributeType "osee.config.Default Mail Server" extends StringAttribute {
 	taggerId DefaultAttributeTaggerProvider
 	description
 	"fully qualified name of the machine running the SMTP server which will be used by default for sending email"
+	mediaType "text/plain"
 }
 
 abstract artifactType "Test Unit" extends "Artifact" {
@@ -61,6 +64,7 @@ attributeType "Extension" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 artifactType "User" extends "Artifact" {
@@ -95,6 +99,7 @@ attributeType "Active" extends BooleanAttribute {
 	min 1
 	max 1
 	defaultValue "true"
+	mediaType "text/plain"
 }
 
 attributeType "Company" extends StringAttribute {
@@ -104,6 +109,7 @@ attributeType "Company" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "Company Title" extends StringAttribute {
@@ -113,6 +119,7 @@ attributeType "Company Title" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "City" extends StringAttribute {
@@ -122,6 +129,7 @@ attributeType "City" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "Street" extends StringAttribute {
@@ -131,6 +139,7 @@ attributeType "Street" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "State" extends StringAttribute {
@@ -140,6 +149,7 @@ attributeType "State" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "Zip" extends StringAttribute {
@@ -158,6 +168,7 @@ attributeType "Country" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "User Id" extends StringAttribute {
@@ -167,6 +178,7 @@ attributeType "User Id" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "Favorite Branch" extends StringAttribute {
@@ -175,6 +187,7 @@ attributeType "Favorite Branch" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.test.proc.status" {
@@ -201,6 +214,7 @@ attributeType "Test Procedure Status" extends EnumeratedAttribute {
 	min 0
 	max 1
 	enumType "enum.test.proc.status"
+	mediaType "text/plain"
 }
 
 attributeType "User Settings" extends StringAttribute {
@@ -210,6 +224,7 @@ attributeType "User Settings" extends StringAttribute {
 	min 0
 	max 1
 	fileExtension "xml"
+	mediaType "text/plain"
 }
 
 attributeType "XViewer Customization" extends StringAttribute {
@@ -227,6 +242,7 @@ attributeType "XViewer Defaults" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
+	mediaType "text/plain"
 }
 
 attributeType "Phone" extends StringAttribute {
@@ -235,6 +251,7 @@ attributeType "Phone" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "Mobile Phone" extends StringAttribute {
@@ -243,6 +260,7 @@ attributeType "Mobile Phone" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "Fax Phone" extends StringAttribute {
@@ -251,6 +269,7 @@ attributeType "Fax Phone" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "Email" extends StringAttribute {
@@ -260,6 +279,7 @@ attributeType "Email" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "Dictionary" extends StringAttribute {
@@ -269,6 +289,7 @@ attributeType "Dictionary" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "Website" extends StringAttribute {
@@ -278,6 +299,7 @@ attributeType "Website" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "application/http"
 }
 
 attributeType "Notes" extends StringAttribute {
@@ -287,6 +309,7 @@ attributeType "Notes" extends StringAttribute {
 	min 0
 	max unlimited
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 artifactType "Group Artifact" extends "Artifact" {
@@ -303,6 +326,7 @@ attributeType "Default Group" extends BooleanAttribute {
 	taggerId DefaultAttributeTaggerProvider
 	description "Specifies whether to automatically add new users into this group"
 	defaultValue "false"
+	mediaType "text/plain"
 }
 
 artifactType "User Group" extends "Abstract Access Controlled" , "Group Artifact" {
@@ -331,6 +355,7 @@ attributeType "Template Match Criteria" extends StringAttribute {
 	max unlimited
 	taggerId DefaultAttributeTaggerProvider
 	description "Criteria that determines what template is selected ie: \'Render Artifact PresentationType Option\'"
+	mediaType "text/plain"
 }
 
 relationType "Default Hierarchical" {
@@ -387,6 +412,7 @@ attributeType "Name" extends StringAttribute {
 	taggerId DefaultAttributeTaggerProvider
 	description "Descriptive Name"
 	defaultValue "unnamed"
+	mediaType "text/plain"
 }
 
 attributeType "Relation Order" extends StringAttribute {
@@ -396,6 +422,7 @@ attributeType "Relation Order" extends StringAttribute {
 	min 0
 	max 1
 	description "Defines relation ordering information"
+	mediaType "text/plain"
 }
 
 attributeType "Description" extends StringAttribute {
@@ -405,6 +432,7 @@ attributeType "Description" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.doc.page.type" {
@@ -426,6 +454,7 @@ attributeType "Page Type" extends EnumeratedAttribute {
 	enumType "enum.doc.page.type"
 	description "Page Type: Landscape/Portrait"
 	defaultValue "Portrait"
+	mediaType "text/plain"
 }
 
 attributeType "Word Ole Data" extends StringAttribute {
@@ -436,6 +465,7 @@ attributeType "Word Ole Data" extends StringAttribute {
 	max 1
 	description "Word Ole Data"
 	fileExtension "xml"
+	mediaType "application/msword"
 }
 
 attributeType "Workflow Definition" extends StringAttribute {
@@ -446,6 +476,7 @@ attributeType "Workflow Definition" extends StringAttribute {
 	max 1
 	description "xml definition of a Workflow"
 	fileExtension "vue"
+	mediaType "text/xml"
 }
 
 attributeType "Annotation" extends StringAttribute {
@@ -455,6 +486,7 @@ attributeType "Annotation" extends StringAttribute {
 	min 0
 	max unlimited
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "Static Id" extends StringAttribute {
@@ -464,6 +496,7 @@ attributeType "Static Id" extends StringAttribute {
 	min 0
 	max unlimited
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "General String Data" extends StringAttribute {
@@ -472,6 +505,7 @@ attributeType "General String Data" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
+	mediaType "text/plain"
 }
 
 attributeType "Native Content" extends CompressedContentAttribute {
@@ -482,6 +516,7 @@ attributeType "Native Content" extends CompressedContentAttribute {
 	max 1
 	description "content that will be edited by a native program"
 	fileExtension "bin"
+	mediaType "application/octet-stream"
 }
 
 attributeType "Image Content" extends CompressedContentAttribute {
@@ -492,6 +527,7 @@ attributeType "Image Content" extends CompressedContentAttribute {
 	max unlimited
 	description "Binary Image content"
 	fileExtension "bin"
+	mediaType "image"
 }
 
 attributeType "Plain Text Content" extends StringAttribute {
@@ -503,6 +539,7 @@ attributeType "Plain Text Content" extends StringAttribute {
 	taggerId DefaultAttributeTaggerProvider
 	description "plain text file"
 	fileExtension "txt"
+	mediaType "text/plain"
 }
 
 attributeType "HTML Content" extends StringAttribute {
@@ -514,6 +551,7 @@ attributeType "HTML Content" extends StringAttribute {
 	taggerId XmlAttributeTaggerProvider
 	description "HTML format text must be a valid xhtml file"
 	fileExtension "html"
+	mediaType "text/html"
 }
 
 attributeType "Word Template Content" extends WordAttribute {
@@ -526,6 +564,7 @@ attributeType "Word Template Content" extends WordAttribute {
 	description "value must comply with WordML xml schema"
 	defaultValue "<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>"
 	fileExtension "xml"
+	mediaType "application/msword"
 }
 
 attributeType "Whole Word Content" extends WordAttribute {
@@ -539,6 +578,7 @@ attributeType "Whole Word Content" extends WordAttribute {
 	defaultValue
 	"<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?><?mso-application progid=\'Word.Document\'?><w:wordDocument xmlns:w=\'http://schemas.microsoft.com/office/word/2003/wordml\' xmlns:v=\'urn:schemas-microsoft-com:vml\' xmlns:w10=\'urn:schemas-microsoft-com:office:word\' xmlns:sl=\'http://schemas.microsoft.com/schemaLibrary/2003/core\' xmlns:aml=\'http://schemas.microsoft.com/aml/2001/core\' xmlns:wx=\'http://schemas.microsoft.com/office/word/2003/auxHint\' xmlns:o=\'urn:schemas-microsoft-com:office:office\' xmlns:dt=\'uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\' xmlns:wsp=\'http://schemas.microsoft.com/office/word/2003/wordml/sp2\' xmlns:ns0=\'http://www.w3.org/2001/XMLSchema\' xmlns:ns1=\'http://eclipse.org/artifact.xsd\' xmlns:st1=\'urn:schemas-microsoft-com:office:smarttags\' w:macrosPresent=\'no\' w:embeddedObjPresent=\'no\' w:ocxPresent=\'no\' xml:space=\'preserve\'><w:body></w:body></w:wordDocument>"
 	fileExtension "xml"
+	mediaType "application/msword"
 }
 
 relationType "Dependency" {
@@ -633,6 +673,7 @@ attributeType "Paragraph Number" extends OutlineNumberAttribute {
 	taggerId DefaultAttributeTaggerProvider
 	description
 	"This is the corresponding section number from the outline of document from which this artifact was imported"
+	mediaType "text/plain"
 }
 
 attributeType "Access Context Id" extends StringAttribute {
@@ -641,6 +682,7 @@ attributeType "Access Context Id" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
+	mediaType "text/plain"
 }
 
 artifactType "Requirement" extends "Artifact" {
@@ -661,6 +703,7 @@ attributeType "Test Frequency" extends EnumeratedAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.req.test.frequency"
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.req.test.frequency" {
@@ -802,6 +845,7 @@ attributeType "Functional Category" extends StringAttribute {
 	min 0
 	max 1
 	description "Functional Category in support of System Safety Report"
+	mediaType "text/plain"
 }
 
 artifactType "Subsystem Function" extends "Function" , "Subsystem Design" {
@@ -891,6 +935,7 @@ attributeType "Common NAL Requirement" extends BooleanAttribute {
 	description
 	"Requirement that is common to all NCORE (Networked Common Operating Real-time Environment) Application Layers"
 	defaultValue "false"
+	mediaType "text/plain"
 }
 
 attributeType "Crew Interface Requirement" extends BooleanAttribute {
@@ -900,6 +945,7 @@ attributeType "Crew Interface Requirement" extends BooleanAttribute {
 	min 0
 	max 1
 	defaultValue "false"
+	mediaType "text/plain"
 }
 
 attributeType "Legacy Id" extends StringAttribute {
@@ -909,6 +955,7 @@ attributeType "Legacy Id" extends StringAttribute {
 	min 0
 	max 1
 	description "SLATE unique identifier (caution: not guaranteed to be immutable)"
+	mediaType "text/plain"
 }
 
 attributeType "Effectivity" extends StringAttribute {
@@ -918,6 +965,7 @@ attributeType "Effectivity" extends StringAttribute {
 	min 0
 	max 1
 	defaultValue "Unspecified"
+	mediaType "text/plain"
 }
 
 attributeType "System Security Requirement" extends BooleanAttribute {
@@ -927,6 +975,7 @@ attributeType "System Security Requirement" extends BooleanAttribute {
 	min 0
 	max 1
 	defaultValue "false"
+	mediaType "text/plain"
 }
 
 attributeType "Training Effectivity" extends BooleanAttribute {
@@ -936,6 +985,7 @@ attributeType "Training Effectivity" extends BooleanAttribute {
 	min 0
 	max 1
 	defaultValue "false"
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.req.partition" {
@@ -964,6 +1014,7 @@ attributeType "Partition" extends EnumeratedAttribute {
 	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.req.partition"
 	defaultValue "Unspecified"
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.req.subsystem" {
@@ -1007,6 +1058,7 @@ attributeType "Subsystem" extends EnumeratedAttribute {
 	max 1
 	enumType "enum.req.subsystem"
 	defaultValue "Unspecified"
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.req.qualification.method" {
@@ -1041,6 +1093,7 @@ attributeType "Qualification Method" extends EnumeratedAttribute {
 	description
 	"Demonstration:  The operation of the CSCI, or a part of the CSCI, that relies on observable functional operation not requiring the use of instrumentation, special test equipment, or subsequent analysis.\n\nTest:  The operation of the CSCI, or a part of the CSCI, using instrumentation or other special test equipment to collect data for later analysis.\n\nAnalysis:  The processing of accumulated data obtained from other qualification methods.  Examples are reduction, interpretation, or extrapolation of test results.\n\nInspection:  The visual examination of CSCI code, documentation, etc.\n\nSpecial Qualification Methods:  Any special qualification methods for the CSCI, such as special tools, techniques, procedures, facilities, and acceptance limits.\n\nLegacy:  Requirement, design, or implementation has not changed since last qualification (use sparingly - Not to be used with functions implemented in internal software).\n\nUnspecified:  The qualification method has yet to be set."
 	defaultValue "Unspecified"
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.req.safety.criticality" {
@@ -1067,6 +1120,7 @@ attributeType "Safety Criticality" extends EnumeratedAttribute {
 	enumType "enum.req.safety.criticality"
 	description "Criticality Classification"
 	defaultValue "V"
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.req.verification.level" {
@@ -1093,6 +1147,7 @@ attributeType "Verification Level" extends EnumeratedAttribute {
 	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.req.verification.level"
 	defaultValue "Unspecified"
+	mediaType "text/plain"
 }
 
 attributeType "TIS Test Number" extends StringAttribute {
@@ -1102,6 +1157,7 @@ attributeType "TIS Test Number" extends StringAttribute {
 	min 0
 	max 1
 	description "Test Number"
+	mediaType "text/plain"
 }
 
 attributeType "Verification Acceptance Criteria" extends StringAttribute {
@@ -1110,6 +1166,7 @@ attributeType "Verification Acceptance Criteria" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.test.tis.type" {
@@ -1130,6 +1187,7 @@ attributeType "TIS Test Type" extends EnumeratedAttribute {
 	enumType "enum.test.tis.type"
 	description "TIS Test Type"
 	defaultValue "Stationary Vehicle"
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.test.tis.category" {
@@ -1152,6 +1210,7 @@ attributeType "TIS Test Category" extends EnumeratedAttribute {
 	enumType "enum.test.tis.category"
 	description "TIS Test Category"
 	defaultValue "DEV"
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.req.development.assurance.level" {
@@ -1178,6 +1237,7 @@ attributeType "Development Assurance Level" extends EnumeratedAttribute {
 	enumType "enum.req.development.assurance.level"
 	description "Development Assurance Level"
 	defaultValue "E"
+	mediaType "text/plain"
 }
 
 attributeType "Category" extends StringAttribute {
@@ -1186,6 +1246,7 @@ attributeType "Category" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "PublishInline" extends BooleanAttribute {
@@ -1195,6 +1256,7 @@ attributeType "PublishInline" extends BooleanAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "Technical Performance Parameter" extends BooleanAttribute {
@@ -1204,6 +1266,7 @@ attributeType "Technical Performance Parameter" extends BooleanAttribute {
 	min 1
 	max 1
 	defaultValue "false"
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.req.verification.event" {
@@ -1221,6 +1284,7 @@ attributeType "Verification Event" extends EnumeratedAttribute {
 	max 1
 	enumType "enum.req.verification.event"
 	defaultValue "Unspecified"
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.req.component" {
@@ -1240,6 +1304,7 @@ attributeType "Component" extends EnumeratedAttribute {
 	max 1
 	enumType "enum.req.component"
 	defaultValue "Unspecified"
+	mediaType "text/plain"
 }
 
 relationType "Allocation" {
@@ -1411,6 +1476,7 @@ attributeType "osee.wi.Work Data" extends StringAttribute {
 	min 0
 	max unlimited
 	fileExtension "xml"
+	mediaType "text/xml"
 }
 
 attributeType "osee.wi.Work Id" extends StringAttribute {
@@ -1419,6 +1485,7 @@ attributeType "osee.wi.Work Id" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "osee.wi.Work Type" extends StringAttribute {
@@ -1427,6 +1494,7 @@ attributeType "osee.wi.Work Type" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "osee.wi.Work Description" extends StringAttribute {
@@ -1435,6 +1503,7 @@ attributeType "osee.wi.Work Description" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "osee.wi.Work Parent Id" extends StringAttribute {
@@ -1443,6 +1512,7 @@ attributeType "osee.wi.Work Parent Id" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "osee.wi.Work Page Name" extends StringAttribute {
@@ -1451,6 +1521,7 @@ attributeType "osee.wi.Work Page Name" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
+	mediaType "text/plain"
 }
 
 attributeType "osee.wi.Work Page Ordinal" extends IntegerAttribute {
@@ -1459,6 +1530,7 @@ attributeType "osee.wi.Work Page Ordinal" extends IntegerAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "osee.wi.Transition" extends StringAttribute {
@@ -1467,6 +1539,7 @@ attributeType "osee.wi.Transition" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
+	mediaType "text/plain"
 }
 
 attributeType "osee.wi.Work Page Type" extends StringAttribute {
@@ -1475,6 +1548,7 @@ attributeType "osee.wi.Work Page Type" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "osee.wi.Start Page" extends StringAttribute {
@@ -1483,6 +1557,7 @@ attributeType "osee.wi.Start Page" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 relationType "Work Item" {
@@ -1554,6 +1629,7 @@ attributeType "CSCI" extends EnumeratedAttribute {
 	max unlimited
 	enumType "enum.req.csci"
 	defaultValue "Unspecified"
+	mediaType "text/plain"
 }
 
 relationType "Supporting Info" {
@@ -1630,6 +1706,7 @@ attributeType "Developmental" extends BooleanAttribute {
 	min 1
 	max 1
 	defaultValue "true"
+	mediaType "text/plain"
 }
 
 attributeType "Hazard" extends StringAttribute {
@@ -1639,6 +1716,7 @@ attributeType "Hazard" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "AFHA" extends StringAttribute {
@@ -1648,6 +1726,7 @@ attributeType "AFHA" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "SFHA" extends StringAttribute {
@@ -1657,6 +1736,7 @@ attributeType "SFHA" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.req.hazard.severity" {
@@ -1690,6 +1770,7 @@ attributeType "Hazard Severity" extends EnumeratedAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.req.hazard.severity"
+	mediaType "text/plain"
 }
 
 attributeType "Safety Objective" extends FloatingPointAttribute {
@@ -1699,6 +1780,7 @@ attributeType "Safety Objective" extends FloatingPointAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "FTA Results" extends FloatingPointAttribute {
@@ -1708,6 +1790,7 @@ attributeType "FTA Results" extends FloatingPointAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.req.gfe.cfe" {
@@ -1730,6 +1813,7 @@ attributeType "GFE / CFE" extends EnumeratedAttribute {
 	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.req.gfe.cfe"
 	defaultValue "Unspecified"
+	mediaType "text/plain"
 }
 
 relationType "Functional decomposition " {
@@ -1760,6 +1844,7 @@ attributeType "Uri General String Data" extends StringAttribute {
 	dataProvider UriAttributeDataProvider
 	min 0
 	max unlimited
+	mediaType "text/uri-list"
 }
 
 artifactType "Osee Type Definition" extends "Artifact" {

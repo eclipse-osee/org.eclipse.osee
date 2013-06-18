@@ -210,6 +210,7 @@ attributeType "ats.Artifact Reference" extends ArtifactReferenceAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	description "Reference to an artifact"
+	mediaType "application/http"
 }
 
 attributeType "ats.Task To Changed Artifact Reference" extends ArtifactReferenceAttribute {
@@ -220,6 +221,7 @@ attributeType "ats.Task To Changed Artifact Reference" extends ArtifactReference
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	description "Task reference to the changed artifact"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Work Package Id" extends StringAttribute {
@@ -229,6 +231,7 @@ attributeType "ats.Work Package Id" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Work Package Program" extends StringAttribute {
@@ -238,6 +241,7 @@ attributeType "ats.Work Package Program" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.ats.work.package.type" {
@@ -257,6 +261,7 @@ attributeType "ats.Work Package Type" extends EnumeratedAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.ats.work.package.type"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Activity Id" extends StringAttribute {
@@ -266,6 +271,7 @@ attributeType "ats.Activity Id" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Activity Name" extends StringAttribute {
@@ -275,6 +281,7 @@ attributeType "ats.Activity Name" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Work Package Guid" extends StringAttribute {
@@ -284,6 +291,7 @@ attributeType "ats.Work Package Guid" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Baseline Branch Guid" extends StringAttribute {
@@ -292,6 +300,7 @@ attributeType "ats.Baseline Branch Guid" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.Validation Required" extends BooleanAttribute {
@@ -301,6 +310,7 @@ attributeType "ats.Validation Required" extends BooleanAttribute {
 	min 0
 	max 1
 	defaultValue "false"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Current State Type" extends StringAttribute {
@@ -310,6 +320,7 @@ attributeType "ats.Current State Type" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Workflow Definition Old" extends StringAttribute {
@@ -327,6 +338,7 @@ attributeType "ats.Workflow Definition" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Rule Definition" extends StringAttribute {
@@ -335,6 +347,7 @@ attributeType "ats.Rule Definition" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
+	mediaType "text/plain"
 }
 
 attributeType "ats.Related Task Workflow Definition Old" extends StringAttribute {
@@ -343,6 +356,7 @@ attributeType "ats.Related Task Workflow Definition Old" extends StringAttribute
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.Related Task Workflow Definition" extends StringAttribute {
@@ -351,6 +365,7 @@ attributeType "ats.Related Task Workflow Definition" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.Related Peer Workflow Definition" extends StringAttribute {
@@ -359,6 +374,7 @@ attributeType "ats.Related Peer Workflow Definition" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+	mediaType "text/plain"
 }
 
 
@@ -369,6 +385,7 @@ attributeType "ats.Active" extends BooleanAttribute {
 	min 1
 	max 1
 	defaultValue "true"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Uses Resolution Options" extends BooleanAttribute {
@@ -378,6 +395,7 @@ attributeType "ats.Uses Resolution Options" extends BooleanAttribute {
 	min 0
 	max 1
 	defaultValue "false"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Released" extends BooleanAttribute {
@@ -387,6 +405,7 @@ attributeType "ats.Released" extends BooleanAttribute {
 	min 0
 	max 1
 	defaultValue "false"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Version Locked" extends BooleanAttribute {
@@ -396,6 +415,7 @@ attributeType "ats.Version Locked" extends BooleanAttribute {
 	min 0
 	max 1
 	defaultValue "false"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Next Version" extends BooleanAttribute {
@@ -405,6 +425,7 @@ attributeType "ats.Next Version" extends BooleanAttribute {
 	min 0
 	max 1
 	defaultValue "false"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Team Uses Versions" extends BooleanAttribute {
@@ -423,6 +444,7 @@ attributeType "ats.Require Targeted Version" extends BooleanAttribute {
 	min 0
 	max 1
 	defaultValue "false"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Actionable" extends BooleanAttribute {
@@ -432,6 +454,7 @@ attributeType "ats.Actionable" extends BooleanAttribute {
 	min 0
 	max 1
 	defaultValue "true"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Allow Create Branch" extends BooleanAttribute {
@@ -441,6 +464,7 @@ attributeType "ats.Allow Create Branch" extends BooleanAttribute {
 	min 0
 	max 1
 	defaultValue "true"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Allow Commit Branch" extends BooleanAttribute {
@@ -450,6 +474,7 @@ attributeType "ats.Allow Commit Branch" extends BooleanAttribute {
 	min 0
 	max 1
 	defaultValue "true"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Need By" extends DateAttribute {
@@ -458,6 +483,7 @@ attributeType "ats.Need By" extends DateAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/calendar"
 }
 
 attributeType "ats.Estimated Release Date" extends DateAttribute {
@@ -466,6 +492,7 @@ attributeType "ats.Estimated Release Date" extends DateAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/calendar"
 }
 
 attributeType "ats.Estimated Completion Date" extends DateAttribute {
@@ -474,6 +501,7 @@ attributeType "ats.Estimated Completion Date" extends DateAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/calendar"
 }
 
 attributeType "ats.Completed Date" extends DateAttribute {
@@ -482,6 +510,7 @@ attributeType "ats.Completed Date" extends DateAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/calendar"
 }
 
 attributeType "ats.Completed By" extends StringAttribute {
@@ -490,6 +519,7 @@ attributeType "ats.Completed By" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.Completed From State" extends StringAttribute {
@@ -498,6 +528,7 @@ attributeType "ats.Completed From State" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.Cancelled Date" extends DateAttribute {
@@ -506,6 +537,7 @@ attributeType "ats.Cancelled Date" extends DateAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/calendar"
 }
 
 attributeType "ats.Cancelled By" extends StringAttribute {
@@ -514,6 +546,7 @@ attributeType "ats.Cancelled By" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.Cancelled Reason" extends StringAttribute {
@@ -522,6 +555,7 @@ attributeType "ats.Cancelled Reason" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.Cancelled From State" extends StringAttribute {
@@ -530,6 +564,7 @@ attributeType "ats.Cancelled From State" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.Created Date" extends DateAttribute {
@@ -538,6 +573,7 @@ attributeType "ats.Created Date" extends DateAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/calendar"
 }
 
 attributeType "ats.Created By" extends StringAttribute {
@@ -547,6 +583,7 @@ attributeType "ats.Created By" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Release Date" extends DateAttribute {
@@ -555,6 +592,7 @@ attributeType "ats.Release Date" extends DateAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/calendar"
 }
 
 attributeType "ats.Start Date" extends DateAttribute {
@@ -563,6 +601,7 @@ attributeType "ats.Start Date" extends DateAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/calendar"
 }
 
 attributeType "ats.End Date" extends DateAttribute {
@@ -571,6 +610,7 @@ attributeType "ats.End Date" extends DateAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/calendar"
 }
 
 oseeEnumType "enum.ats.review.blocks" {
@@ -591,6 +631,7 @@ attributeType "ats.Review Blocks" extends EnumeratedAttribute {
 	min 0
 	max 1
 	enumType "enum.ats.review.blocks"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Review Formal Type" extends EnumeratedAttribute {
@@ -600,6 +641,7 @@ attributeType "ats.Review Formal Type" extends EnumeratedAttribute {
 	min 0
 	max 1
 	enumType "enum.ats.review.formalType"
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.ats.review.formalType" {
@@ -643,6 +685,7 @@ attributeType "ats.Points" extends EnumeratedAttribute {
 	min 0
 	max 1
 	enumType "enum.ats.point"
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.ats.priority" {
@@ -667,6 +710,7 @@ attributeType "ats.Priority" extends EnumeratedAttribute {
 	min 0
 	max 1
 	enumType "enum.ats.priority"
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.ats.change.type" {
@@ -689,6 +733,7 @@ attributeType "ats.Change Type" extends EnumeratedAttribute {
 	min 0
 	max 1
 	enumType "enum.ats.change.type"
+	mediaType "text/plain"
 }
 
 oseeEnumType "enum.ats.user.community" {
@@ -714,6 +759,7 @@ attributeType "ats.User Community" extends EnumeratedAttribute {
 	max unlimited
 	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.ats.user.community"	
+	mediaType "text/plain"
 }
 
 attributeType "ats.Estimated Hours" extends FloatingPointAttribute {
@@ -723,6 +769,7 @@ attributeType "ats.Estimated Hours" extends FloatingPointAttribute {
 	min 0
 	max 1
 	defaultValue "0.0"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Percent Complete" extends IntegerAttribute {
@@ -732,6 +779,7 @@ attributeType "ats.Percent Complete" extends IntegerAttribute {
 	min 0
 	max 1
 	defaultValue "0"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Numeric1" extends FloatingPointAttribute {
@@ -741,6 +789,7 @@ attributeType "ats.Numeric1" extends FloatingPointAttribute {
 	min 0
 	max 1
 	defaultValue "0.0"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Numeric2" extends FloatingPointAttribute {
@@ -750,6 +799,7 @@ attributeType "ats.Numeric2" extends FloatingPointAttribute {
 	min 0
 	max 1
 	defaultValue "0.0"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Weekly Benefit" extends FloatingPointAttribute {
@@ -759,6 +809,7 @@ attributeType "ats.Weekly Benefit" extends FloatingPointAttribute {
 	min 0
 	max 1
 	defaultValue "0"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Hours Per Work Day" extends FloatingPointAttribute {
@@ -768,6 +819,7 @@ attributeType "ats.Hours Per Work Day" extends FloatingPointAttribute {
 	min 0
 	max 1
 	defaultValue "0.0"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Meeting Length" extends FloatingPointAttribute {
@@ -777,6 +829,7 @@ attributeType "ats.Meeting Length" extends FloatingPointAttribute {
 	min 0
 	max 1
 	defaultValue "0.0"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Percent Rework" extends IntegerAttribute {
@@ -785,6 +838,7 @@ attributeType "ats.Percent Rework" extends IntegerAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.Branch Metrics" extends StringAttribute {
@@ -793,6 +847,7 @@ attributeType "ats.Branch Metrics" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.State" extends StringAttribute {
@@ -802,6 +857,7 @@ attributeType "ats.State" extends StringAttribute {
 	min 0
 	max unlimited
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Current State" extends StringAttribute {
@@ -811,6 +867,7 @@ attributeType "ats.Current State" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Problem" extends StringAttribute {
@@ -821,6 +878,7 @@ attributeType "ats.Problem" extends StringAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	fileExtension "txt"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Proposed Resolution" extends StringAttribute {
@@ -830,6 +888,7 @@ attributeType "ats.Proposed Resolution" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Resolution" extends StringAttribute {
@@ -840,6 +899,7 @@ attributeType "ats.Resolution" extends StringAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	fileExtension "txt"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Description" extends StringAttribute {
@@ -850,6 +910,7 @@ attributeType "ats.Description" extends StringAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	fileExtension "txt"
+	mediaType "text/plain"
 }
 
 attributeType "ats.DSL Sheet" extends StringAttribute {
@@ -859,6 +920,7 @@ attributeType "ats.DSL Sheet" extends StringAttribute {
 	min 0
 	max 1
 	fileExtension "txt"
+	mediaType "application/ats+dsl"
 }
 
 attributeType "ats.Full Name" extends StringAttribute {
@@ -868,6 +930,7 @@ attributeType "ats.Full Name" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Action Details Format" extends StringAttribute {
@@ -876,6 +939,7 @@ attributeType "ats.Action Details Format" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.Actionable Item" extends StringAttribute {
@@ -885,6 +949,7 @@ attributeType "ats.Actionable Item" extends StringAttribute {
 	min 0
 	max unlimited
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Team Definition" extends StringAttribute {
@@ -894,6 +959,7 @@ attributeType "ats.Team Definition" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Log" extends StringAttribute {
@@ -904,6 +970,7 @@ attributeType "ats.Log" extends StringAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	fileExtension "xml"
+	mediaType "text/xml"
 }
 
 attributeType "ats.State Notes" extends StringAttribute {
@@ -913,6 +980,7 @@ attributeType "ats.State Notes" extends StringAttribute {
 	min 0
 	max 1
 	fileExtension "xml"
+	mediaType "text/xml"
 }
 
 attributeType "ats.Related To State" extends StringAttribute {
@@ -921,6 +989,7 @@ attributeType "ats.Related To State" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.SMA Note" extends StringAttribute {
@@ -930,6 +999,7 @@ attributeType "ats.SMA Note" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Work Package" extends StringAttribute {
@@ -939,6 +1009,7 @@ attributeType "ats.Work Package" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.LOC Changed" extends IntegerAttribute {
@@ -947,6 +1018,7 @@ attributeType "ats.LOC Changed" extends IntegerAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.LOC Reviewed" extends IntegerAttribute {
@@ -955,6 +1027,7 @@ attributeType "ats.LOC Reviewed" extends IntegerAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.Pages Changed" extends IntegerAttribute {
@@ -971,6 +1044,7 @@ attributeType "ats.Pages Reviewed" extends IntegerAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.Goal Order Vote" extends StringAttribute {
@@ -980,6 +1054,7 @@ attributeType "ats.Goal Order Vote" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Category" extends StringAttribute {
@@ -989,6 +1064,7 @@ attributeType "ats.Category" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Operational Impact" extends StringAttribute {
@@ -997,6 +1073,7 @@ attributeType "ats.Operational Impact" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.Operational Impact Description" extends StringAttribute {
@@ -1006,6 +1083,7 @@ attributeType "ats.Operational Impact Description" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Operational Impact Workaround" extends StringAttribute {
@@ -1014,6 +1092,7 @@ attributeType "ats.Operational Impact Workaround" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.Operational Impact Workaround Description" extends StringAttribute {
@@ -1023,6 +1102,7 @@ attributeType "ats.Operational Impact Workaround Description" extends StringAttr
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Category2" extends StringAttribute {
@@ -1032,6 +1112,7 @@ attributeType "ats.Category2" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Category3" extends StringAttribute {
@@ -1041,6 +1122,7 @@ attributeType "ats.Category3" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Legacy PCR Id" extends StringAttribute {
@@ -1050,6 +1132,7 @@ attributeType "ats.Legacy PCR Id" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Decision Review Options" extends StringAttribute {
@@ -1058,6 +1141,7 @@ attributeType "ats.Decision Review Options" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
 }
 
 attributeType "ats.Decision" extends StringAttribute {
@@ -1067,6 +1151,7 @@ attributeType "ats.Decision" extends StringAttribute {
 	min 0
 	max 1
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.Review Defect" extends StringAttribute {
@@ -1075,6 +1160,7 @@ attributeType "ats.Review Defect" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
+	mediaType "text/plain"
 }
 
 attributeType "ats.Location" extends StringAttribute {
@@ -1085,6 +1171,7 @@ attributeType "ats.Location" extends StringAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	fileExtension "txt"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Meeting Location" extends StringAttribute {
@@ -1095,6 +1182,7 @@ attributeType "ats.Meeting Location" extends StringAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	fileExtension "txt"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Meeting Attendee" extends StringAttribute {
@@ -1104,6 +1192,7 @@ attributeType "ats.Meeting Attendee" extends StringAttribute {
 	min 0
 	max unlimited
 	fileExtension "txt"
+	mediaType "text/plain"
 }
 
 attributeType "ats.Role" extends StringAttribute {
@@ -1112,6 +1201,7 @@ attributeType "ats.Role" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
+	mediaType "text/plain"
 }
 
 attributeType "ats.SW Enhancement" extends StringAttribute {
@@ -1121,6 +1211,7 @@ attributeType "ats.SW Enhancement" extends StringAttribute {
 	min 0
 	max unlimited
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 relationType "Work Package" {

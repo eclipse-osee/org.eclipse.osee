@@ -75,6 +75,7 @@ attributeType "demo.code.Category" extends EnumeratedAttribute {
    min 0
    max 1
    enumType "enum.demo.code.category"
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Close Detection" extends StringAttribute {
@@ -84,6 +85,7 @@ attributeType "demo.code.Close Detection" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Code Change Req" extends StringAttribute {
@@ -93,6 +95,7 @@ attributeType "demo.code.Code Change Req" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.CSCI" extends StringAttribute {
@@ -102,6 +105,7 @@ attributeType "demo.code.CSCI" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 oseeEnumType "enum.demo.code.defect.code" {
@@ -136,6 +140,7 @@ attributeType "demo.code.Defect Code" extends EnumeratedAttribute {
    min 0
    max 1
    enumType "enum.demo.code.defect.code"
+   mediaType "text/plain"
 }
 
 oseeEnumType "enum.demo.code.detection" {
@@ -157,6 +162,7 @@ attributeType "demo.code.Detection" extends EnumeratedAttribute {
    min 0
    max 1
    enumType "enum.demo.code.detection"
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Include Build" extends StringAttribute {
@@ -166,6 +172,7 @@ attributeType "demo.code.Include Build" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.LOC Affected" extends IntegerAttribute {
@@ -174,6 +181,7 @@ attributeType "demo.code.LOC Affected" extends IntegerAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Originating Build" extends StringAttribute {
@@ -183,6 +191,7 @@ attributeType "demo.code.Originating Build" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 oseeEnumType "enum.demo.code.req.doc" {
@@ -202,6 +211,7 @@ attributeType "demo.code.Req Doc" extends EnumeratedAttribute {
    min 0
    max 1
    enumType "enum.demo.code.req.doc"
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Subsystem" extends StringAttribute {
@@ -211,6 +221,7 @@ attributeType "demo.code.Subsystem" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Test Build" extends StringAttribute {
@@ -220,6 +231,7 @@ attributeType "demo.code.Test Build" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Test Mode" extends StringAttribute {
@@ -229,6 +241,7 @@ attributeType "demo.code.Test Mode" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Test Notes" extends StringAttribute {
@@ -238,6 +251,7 @@ attributeType "demo.code.Test Notes" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Test Script" extends StringAttribute {
@@ -247,6 +261,7 @@ attributeType "demo.code.Test Script" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Change Type" extends StringAttribute {
@@ -256,6 +271,7 @@ attributeType "demo.code.Change Type" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Action" extends StringAttribute {
@@ -265,6 +281,7 @@ attributeType "demo.code.Action" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Volume" extends IntegerAttribute {
@@ -274,6 +291,7 @@ attributeType "demo.code.Volume" extends IntegerAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Verify Date" extends StringAttribute {
@@ -282,6 +300,7 @@ attributeType "demo.code.Verify Date" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Verifyer" extends StringAttribute {
@@ -291,6 +310,7 @@ attributeType "demo.code.Verifyer" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Verify Note" extends StringAttribute {
@@ -300,6 +320,7 @@ attributeType "demo.code.Verify Note" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Verify Detection" extends StringAttribute {
@@ -309,6 +330,7 @@ attributeType "demo.code.Verify Detection" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Hold Start" extends StringAttribute {
@@ -317,6 +339,7 @@ attributeType "demo.code.Hold Start" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Hold End" extends StringAttribute {
@@ -325,6 +348,7 @@ attributeType "demo.code.Hold End" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Verify Mode" extends StringAttribute {
@@ -334,6 +358,7 @@ attributeType "demo.code.Verify Mode" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Verified Build" extends StringAttribute {
@@ -343,6 +368,7 @@ attributeType "demo.code.Verified Build" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Peer Review Reqd" extends StringAttribute {
@@ -351,6 +377,7 @@ attributeType "demo.code.Peer Review Reqd" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Peer Review Id" extends StringAttribute {
@@ -359,6 +386,7 @@ attributeType "demo.code.Peer Review Id" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Ref PCR" extends StringAttribute {
@@ -367,6 +395,7 @@ attributeType "demo.code.Ref PCR" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.References" extends StringAttribute {
@@ -376,6 +405,7 @@ attributeType "demo.code.References" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Requirement Id" extends StringAttribute {
@@ -384,6 +414,7 @@ attributeType "demo.code.Requirement Id" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Dup CPCR No" extends StringAttribute {
@@ -392,6 +423,7 @@ attributeType "demo.code.Dup CPCR No" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Dup CSCI" extends StringAttribute {
@@ -400,6 +432,7 @@ attributeType "demo.code.Dup CSCI" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Dup CPCR Type" extends StringAttribute {
@@ -408,6 +441,7 @@ attributeType "demo.code.Dup CPCR Type" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Dup of CPCR no seq" extends StringAttribute {
@@ -416,6 +450,7 @@ attributeType "demo.code.Dup of CPCR no seq" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Librarian" extends StringAttribute {
@@ -425,6 +460,7 @@ attributeType "demo.code.Librarian" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Promote Date" extends StringAttribute {
@@ -433,6 +469,7 @@ attributeType "demo.code.Promote Date" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Authorization Notes" extends StringAttribute {
@@ -442,6 +479,7 @@ attributeType "demo.code.Authorization Notes" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Rework Letter" extends StringAttribute {
@@ -450,6 +488,7 @@ attributeType "demo.code.Rework Letter" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.Problem No" extends StringAttribute {
@@ -458,6 +497,7 @@ attributeType "demo.code.Problem No" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.DP Effectivity" extends BooleanAttribute {
@@ -466,6 +506,7 @@ attributeType "demo.code.DP Effectivity" extends BooleanAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.SP Effectivity" extends BooleanAttribute {
@@ -474,6 +515,7 @@ attributeType "demo.code.SP Effectivity" extends BooleanAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }
 
 attributeType "demo.code.WP Effectivity" extends BooleanAttribute {
@@ -482,4 +524,5 @@ attributeType "demo.code.WP Effectivity" extends BooleanAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   mediaType "text/plain"
 }

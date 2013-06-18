@@ -8,6 +8,7 @@ attributeType "coverage.Notes" extends StringAttribute {
    max 1
    taggerId DefaultAttributeTaggerProvider
    fileExtension "txt"
+	mediaType "text/plain"
 }
 
 attributeType "coverage.Coverage Options" extends StringAttribute {
@@ -17,6 +18,7 @@ attributeType "coverage.Coverage Options" extends StringAttribute {
    min 0
    max 1
    fileExtension "txt"
+	mediaType "text/plain"
 }
 
 artifactType "Coverage Package" extends "General Data" {
@@ -35,6 +37,7 @@ attributeType "coverage.File Contents" extends StringAttribute {
    min 0
    max 1
    fileExtension "txt"
+	mediaType "text/plain"
 }
 
 attributeType "coverage.WorkProductTaskGuid" extends StringAttribute {
@@ -44,6 +47,7 @@ attributeType "coverage.WorkProductTaskGuid" extends StringAttribute {
    min 0
    max 1
    fileExtension "txt"
+	mediaType "text/plain"
 }
 
 attributeType "coverage.WorkProductPcrGuid" extends StringAttribute {
@@ -53,6 +57,7 @@ attributeType "coverage.WorkProductPcrGuid" extends StringAttribute {
    min 0
    max unlimited
    fileExtension "txt"
+	mediaType "text/plain"
 }
 
 attributeType "coverage.Assignees" extends StringAttribute {
@@ -62,6 +67,7 @@ attributeType "coverage.Assignees" extends StringAttribute {
    min 0
    max 1
    fileExtension "txt"
+	mediaType "text/plain"
 }
 
 attributeType "coverage.Order" extends StringAttribute {
@@ -71,6 +77,7 @@ attributeType "coverage.Order" extends StringAttribute {
    min 0
    max 1
    fileExtension "txt"
+	mediaType "text/plain"
 }
 
 attributeType "coverage.Location" extends StringAttribute {
@@ -80,6 +87,7 @@ attributeType "coverage.Location" extends StringAttribute {
    min 0
    max 1
    fileExtension "txt"
+	mediaType "text/plain"
 }
 
 attributeType "coverage.Coverage Item" extends StringAttribute {
@@ -89,6 +97,7 @@ attributeType "coverage.Coverage Item" extends StringAttribute {
    min 0
    max unlimited
    fileExtension "xml"
+	mediaType "text/xml"
 }
 
 attributeType "coverage.Namespace" extends StringAttribute {
@@ -98,6 +107,7 @@ attributeType "coverage.Namespace" extends StringAttribute {
    min 0
    max 1
    fileExtension "txt"
+	mediaType "text/plain"
 }
 
 abstract artifactType "Abstract Coverage Unit" extends "General Data" {
@@ -130,4 +140,5 @@ attributeType "coverage.UnitTestTable" extends StringAttribute {
    min 0
    max 1
    fileExtension "txt"
+	mediaType "text/plain"
 }
