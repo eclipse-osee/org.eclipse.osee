@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
@@ -90,12 +90,12 @@ public class ActivityIdColumnTest {
       Set<IAtsWorkPackage> workPackages = new HashSet<IAtsWorkPackage>();
       col.getWorkPackages(task1, workPackages);
 
-      // Each workflow stores it's own work package, so none should be returned
+      // Each work flow stores it's own work package, so none should be returned
       Assert.assertEquals(0, workPackages.size());
    }
 
    @Test
-   public void testGetWorkPackageStr() throws OseeCoreException {
+   public void testGetWorkPackageStr() {
       ActivityIdUtility col = new ActivityIdUtility(earnedValueServiceProvider);
 
       Assert.assertEquals("ActId 1 - ActId 1 Name", col.getColumnText(teamWf1));

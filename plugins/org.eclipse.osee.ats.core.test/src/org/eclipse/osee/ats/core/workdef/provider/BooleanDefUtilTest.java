@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef.provider;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.dsl.BooleanDefUtil;
 import org.eclipse.osee.ats.dsl.atsDsl.BooleanDef;
 import org.junit.Test;

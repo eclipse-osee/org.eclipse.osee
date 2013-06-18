@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.util;
 
 import java.util.Arrays;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.core.mock.MockAtsUser;
 import org.junit.Test;
 

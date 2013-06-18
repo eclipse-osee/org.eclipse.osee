@@ -37,6 +37,8 @@
 		<module>../../plugins/org.eclipse.osee.ats.rest</module>
 		<module>../../plugins/org.eclipse.osee.ats.presenter.test</module>
 
+        <module>../../plugins/org.eclipse.osee.database</module>
+        
 		<module>../../features/org.eclipse.osee.x.server.legacy.feature</module>
 
 		<module>../../features/org.eclipse.osee.x.server.feature</module>

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.task;
 
 import java.util.Arrays;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -81,8 +80,8 @@ public class TaskManagerTest extends TaskManager {
       XResultData resultData = new XResultData();
       AtsClientService.get().getWorkDefinitionAdmin();
       IAtsWorkDefinition differentTaskWorkDef =
-         AtsClientService.get().getWorkDefinitionAdmin().copyWorkDefinition(taskWorkDef.getName() + "2",
-            taskWorkDef, resultData);
+         AtsClientService.get().getWorkDefinitionAdmin().copyWorkDefinition(taskWorkDef.getName() + "2", taskWorkDef,
+            resultData);
       Assert.assertFalse("Should be no errors", resultData.isErrors());
       AtsClientService.get().getWorkDefinitionAdmin().addWorkDefinition(differentTaskWorkDef);
 
@@ -115,8 +114,8 @@ public class TaskManagerTest extends TaskManager {
       XResultData resultData = new XResultData();
       AtsClientService.get().getWorkDefinitionAdmin();
       IAtsWorkDefinition differentTaskWorkDef =
-         AtsClientService.get().getWorkDefinitionAdmin().copyWorkDefinition(taskWorkDef.getName() + "2",
-            taskWorkDef, resultData);
+         AtsClientService.get().getWorkDefinitionAdmin().copyWorkDefinition(taskWorkDef.getName() + "2", taskWorkDef,
+            resultData);
       Assert.assertFalse("Should be no errors", resultData.isErrors());
       AtsClientService.get().getWorkDefinitionAdmin().addWorkDefinition(differentTaskWorkDef);
 
@@ -152,7 +151,7 @@ public class TaskManagerTest extends TaskManager {
       transaction.execute();
 
       Assert.assertEquals(TaskStates.Completed.getName(), taskArt.getCurrentStateName());
-      Assert.assertEquals(3.0, HoursSpentUtil.getHoursSpentTotal(taskArt));
+      Assert.assertEquals(3.0, HoursSpentUtil.getHoursSpentTotal(taskArt), 0.0);
       Assert.assertEquals("", taskArt.getStateMgr().getAssigneesStr());
 
       // ensure nothing dirty
@@ -162,11 +161,13 @@ public class TaskManagerTest extends TaskManager {
       transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
             getClass().getSimpleName() + " testTransitionToCompletedThenInWork() 2");
-      result = TaskManager.transitionToInWork(taskArt, AtsClientService.get().getUserAdmin().getCurrentUser(), 45, .5, transaction);
+      result =
+         TaskManager.transitionToInWork(taskArt, AtsClientService.get().getUserAdmin().getCurrentUser(), 45, .5,
+            transaction);
       Assert.assertEquals(Result.TrueResult, result);
       transaction.execute();
       Assert.assertEquals(TaskStates.InWork.getName(), taskArt.getCurrentStateName());
-      Assert.assertEquals(3.5, HoursSpentUtil.getHoursSpentTotal(taskArt));
+      Assert.assertEquals(3.5, HoursSpentUtil.getHoursSpentTotal(taskArt), 0.0);
       Assert.assertEquals("Joe Smith", taskArt.getStateMgr().getAssigneesStr());
    }
 

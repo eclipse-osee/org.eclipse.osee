@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.internal.search;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collections;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;

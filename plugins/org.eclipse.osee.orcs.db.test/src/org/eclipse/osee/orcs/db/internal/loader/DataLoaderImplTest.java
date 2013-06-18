@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import junit.framework.Assert;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -769,13 +768,13 @@ public class DataLoaderImplTest {
          }
       }
 
-      Assert.assertEquals(joinDatas.size(), context.getJoins().size());
+      assertEquals(joinDatas.size(), context.getJoins().size());
       Iterator<AbstractJoinQuery> jQuerys = context.getJoins().iterator();
       Iterator<Object> queryIds = queryIdsToMatch.iterator();
       for (Object[] data : joinDatas) {
          AbstractJoinQuery jQuery = jQuerys.next();
          assertEquals(queryIds.next(), jQuery.getQueryId());
-         Assert.assertEquals(data.length, jQuery.size());
+         assertEquals(data.length, jQuery.size());
       }
    }
 

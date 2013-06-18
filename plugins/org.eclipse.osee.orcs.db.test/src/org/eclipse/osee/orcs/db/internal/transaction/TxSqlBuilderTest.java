@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.transaction;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.eclipse.osee.framework.core.enums.ModificationType.ARTIFACT_DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.INTRODUCED;

@@ -5,19 +5,20 @@ Bundle-Version: 0.11.1.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-SymbolicName: org.eclipse.osee.framework.core.dsl;singleton:=true
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.xtext;bundle-version="2.0.0";visibility:=reexport,
- org.apache.log4j;bundle-version="1.2.15";visibility:=reexport,
- org.apache.commons.logging;bundle-version="1.0.4";resolution:=optional;visibility:=reexport,
- org.eclipse.xtext.generator;resolution:=optional,
- org.eclipse.emf.codegen.ecore;resolution:=optional,
- org.eclipse.emf.mwe.utils;resolution:=optional,
- org.eclipse.emf.mwe2.launch;resolution:=optional,
+Require-Bundle: org.eclipse.xtext;bundle-version="2.3.0";visibility:=reexport,
+ org.eclipse.xtext.generator;resolution:=optional;x-installation:=greedy,
+ org.eclipse.emf.codegen.ecore;resolution:=optional;x-installation:=greedy,
+ org.eclipse.emf.mwe.utils;resolution:=optional;x-installation:=greedy,
+ org.eclipse.emf.mwe2.launch;resolution:=optional;x-installation:=greedy,
+ org.eclipse.xtext.ui.codetemplates;resolution:=optional;x-installation:=greedy,
  org.eclipse.xtext.util,
  org.eclipse.emf.ecore,
  org.eclipse.emf.common,
- org.antlr.runtime
+ org.antlr.runtime;bundle-version="[3.2.0,3.2.1)",
+ org.eclipse.xtext.common.types,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.3.0"
 Import-Package: org.apache.commons.logging,
- org.apache.log4j
+ org.apache.log4j;version="1.2.15"
 Export-Package: org.eclipse.osee.framework.core.dsl,
  org.eclipse.osee.framework.core.dsl.conversion,
  org.eclipse.osee.framework.core.dsl.oseeDsl,

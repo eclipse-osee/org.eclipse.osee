@@ -17,17 +17,24 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiRule;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OrcsIntegrationRule extends OsgiRule {
+public final class OrcsIntegrationRule extends OsgiRule {
 
-   public OrcsIntegrationRule(Object testObject) {
-      super(new CheckServices(), testObject);
+   private OrcsIntegrationRule() {
+      // Utility
+   }
+
+   public static TestRule integrationRule(Object testObject, String dbId) {
+      return RuleChain.outerRule(new OseeDatabase(dbId)).around(new OsgiRule(new CheckServices(), testObject));
    }
 
    public static class CheckServices {

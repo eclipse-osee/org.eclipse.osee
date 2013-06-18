@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.rest.internal.search.dsl;
 
 import java.util.List;
 import java.util.Random;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;

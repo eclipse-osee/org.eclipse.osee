@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.util;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.util.IResultDataListener;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.core.util.XResultData.Type;

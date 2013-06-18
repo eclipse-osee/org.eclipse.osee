@@ -15,20 +15,24 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 /**
  * Test Case for {@link AbstractOseeCache}
  * 
  * @author Roberto E. Escobar
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public abstract class AbstractOseeCacheTest<K, T extends AbstractOseeType<K>> {
    private final List<T> data;
    private final AbstractOseeCache<K, T> cache;

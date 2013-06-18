@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.workdef.provider;
 
 import java.util.Set;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.osee.ats.dsl.UserRefUtil;

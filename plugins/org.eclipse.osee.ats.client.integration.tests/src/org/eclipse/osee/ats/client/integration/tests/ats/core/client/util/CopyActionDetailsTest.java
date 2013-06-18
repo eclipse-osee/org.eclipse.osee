@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.util;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertEquals;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil.AtsTestUtilState;
@@ -20,11 +20,14 @@ import org.eclipse.osee.ats.core.client.util.CopyActionDetails;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 /**
  * @author Donald G. Dunne
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CopyActionDetailsTest {
 
    @BeforeClass
@@ -34,39 +37,39 @@ public class CopyActionDetailsTest {
    }
 
    @Test
-   public void testGetDetailsStringForTeamWf() throws OseeCoreException {
+   public void test01GetDetailsStringForTeamWf() throws OseeCoreException {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       String str = new CopyActionDetails(AtsTestUtil.getTeamWf()).getDetailsString();
-      Assert.assertEquals(
+      assertEquals(
          "\"Team Workflow\" - " + AtsTestUtil.getTeamWf().getHumanReadableId() + " - \"AtsTestUtil - Team WF [CopyActionDetailsTest]\"",
          str);
    }
 
    @Test
-   public void testGetDetailsStringForTask() throws OseeCoreException {
+   public void test02GetDetailsStringForTask() throws OseeCoreException {
       String str = new CopyActionDetails(AtsTestUtil.getOrCreateTaskOffTeamWf1()).getDetailsString();
-      Assert.assertEquals(
+      assertEquals(
          "\"Task\" - " + AtsTestUtil.getOrCreateTaskOffTeamWf1().getHumanReadableId() + " - \"AtsTestUtil - Task [CopyActionDetailsTest]\"",
          str);
    }
 
    @Test
-   public void testGetDetailsStringForDecisionReview() throws OseeCoreException {
+   public void test03GetDetailsStringForDecisionReview() throws OseeCoreException {
       DecisionReviewArtifact review =
          AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze);
       String str = new CopyActionDetails(review).getDetailsString();
-      Assert.assertEquals(
-         "\"Decision Review\" - " + review.getHumanReadableId() + " - \"AtsTestUtil Test Decision Review\"", str);
+      assertEquals("\"Decision Review\" - " + review.getHumanReadableId() + " - \"AtsTestUtil Test Decision Review\"",
+         str);
       review.persist(getClass().getSimpleName());
    }
 
    @Test
-   public void testGetDetailsStringForPeerReview() throws OseeCoreException {
+   public void test04GetDetailsStringForPeerReview() throws OseeCoreException {
       PeerToPeerReviewArtifact review =
          AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None, AtsTestUtilState.Analyze, null);
       String str = new CopyActionDetails(review).getDetailsString();
-      Assert.assertEquals(
-         "\"PeerToPeer Review\" - " + review.getHumanReadableId() + " - \"AtsTestUtil Test Peer Review\"", str);
+      assertEquals("\"PeerToPeer Review\" - " + review.getHumanReadableId() + " - \"AtsTestUtil Test Peer Review\"",
+         str);
       review.persist(getClass().getSimpleName());
    }
 }

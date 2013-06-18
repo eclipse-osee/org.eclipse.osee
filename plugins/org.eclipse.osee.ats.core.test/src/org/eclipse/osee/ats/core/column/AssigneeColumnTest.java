@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.column;
 
 import java.util.Arrays;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.HasWorkData;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;

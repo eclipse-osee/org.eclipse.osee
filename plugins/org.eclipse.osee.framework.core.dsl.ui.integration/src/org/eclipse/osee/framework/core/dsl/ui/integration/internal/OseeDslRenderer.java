@@ -49,7 +49,6 @@ public final class OseeDslRenderer extends AbstractDslRenderer {
       return new OseeDslRenderer();
    }
 
-   @SuppressWarnings("unused")
    @Override
    public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
       return "osee";

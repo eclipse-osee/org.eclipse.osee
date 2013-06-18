@@ -5,4 +5,4 @@ Bundle-SymbolicName: org.eclipse.osee.ote.version.git.test
 Bundle-Version: 0.11.1.qualifier
 Fragment-Host: org.eclipse.osee.ote.version.git;bundle-version="0.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit4;bundle-version="4.8.1"
+Require-Bundle: org.junit;bundle-version="4.11.0"

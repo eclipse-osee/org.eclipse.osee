@@ -100,7 +100,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       return false;
    }
 
-   private class Handler extends AbstractSaxHandler {
+   public class Handler extends AbstractSaxHandler {
 
       private boolean isTitle = false;
       private final Vector<String> currentRow = new Vector<String>();

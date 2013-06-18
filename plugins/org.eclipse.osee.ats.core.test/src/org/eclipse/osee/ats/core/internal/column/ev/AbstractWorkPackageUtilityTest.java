@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.internal.column.ev;
 
 import static org.mockito.Mockito.when;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;

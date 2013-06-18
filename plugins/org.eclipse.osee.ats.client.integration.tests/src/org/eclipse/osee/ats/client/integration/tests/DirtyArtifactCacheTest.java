@@ -12,11 +12,11 @@ package org.eclipse.osee.ats.client.integration.tests;
 
 import java.util.Collection;
 import java.util.logging.Level;
-import junit.framework.Assert;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.junit.Assert;
 
 /**
  * This test should be run as the last test of a suite to make sure that the ArtifactCache has no dirty artifacts.

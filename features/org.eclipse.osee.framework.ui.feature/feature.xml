@@ -73,13 +73,10 @@
       <import plugin="org.eclipse.xtext"/>
       <import plugin="org.eclipse.core.commands"/>
       <import plugin="org.eclipse.core.jobs"/>
-      <import plugin="org.eclipse.emf.compare.diff"/>
-      <import plugin="org.eclipse.emf.compare.ui"/>
       <import plugin="org.eclipse.osee.framework.core.dsl.integration"/>
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="com.google.guava" version="10.0.1.v201203051515" match="perfect"/>
-      <import plugin="com.google.guava" version="12.0.0" match="greaterOrEqual"/>  
+      <import plugin="com.google.guava" version="11.0.0" match="greaterOrEqual"/>  
       <import plugin="org.eclipse.jdt.core"/>
    </requires>
 

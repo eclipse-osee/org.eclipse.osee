@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.config.copy;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;

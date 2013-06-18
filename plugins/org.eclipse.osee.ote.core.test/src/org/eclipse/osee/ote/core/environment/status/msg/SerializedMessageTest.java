@@ -12,7 +12,7 @@ package org.eclipse.osee.ote.core.environment.status.msg;
 
 import java.io.IOException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.eclipse.osee.ote.core.environment.status.EnvironmentError;
 import org.junit.Test;

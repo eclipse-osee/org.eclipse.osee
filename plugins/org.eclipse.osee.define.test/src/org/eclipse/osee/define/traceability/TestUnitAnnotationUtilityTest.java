@@ -11,7 +11,7 @@
 package org.eclipse.osee.define.traceability;
 
 import java.nio.CharBuffer;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

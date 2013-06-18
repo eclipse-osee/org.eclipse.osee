@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.hsqldb.HyperSqlDbServer;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.junit.Assert;
-import org.junit.runners.model.FrameworkMethod;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -35,23 +34,22 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class TestDatabase {
 
-   private final FrameworkMethod method;
-   private final Object target;
+   private final String className;
+   private final String methodName;
 
    private ServiceRegistration<?> registration;
    private File tempFolder;
    private final String connectionId;
 
-   public TestDatabase(String connectionId, FrameworkMethod method, Object target) {
+   public TestDatabase(String connectionId, String className, String methodName) {
       this.connectionId = connectionId;
-      this.method = method;
-      this.target = target;
+      this.className = className;
+      this.methodName = methodName;
    }
 
-   private File createTempFolder(FrameworkMethod method, Object target) {
+   private File createTempFolder() {
       String tempDir = System.getProperty("user.home");
-      String folderName =
-         String.format("%s_%s_%s", target.getClass().getSimpleName(), method.getName(), Lib.getDateTimeString());
+      String folderName = String.format("%s_%s_%s", className, methodName, Lib.getDateTimeString());
       File tempFolder = new File(tempDir, folderName);
       tempFolder.mkdir();
       return tempFolder;
@@ -65,7 +63,7 @@ public class TestDatabase {
          bundle.start();
       }
 
-      tempFolder = createTempFolder(method, target);
+      tempFolder = createTempFolder();
       Assert.assertNotNull("TempFolder cannot be null", tempFolder);
 
       addResource(tempFolder, bundle, "data/hsql.zip");

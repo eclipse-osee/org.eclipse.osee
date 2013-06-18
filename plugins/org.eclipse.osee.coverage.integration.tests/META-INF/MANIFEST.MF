@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.coverage.integration.tests
 Bundle-Version: 0.11.1.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit;bundle-version="[4.10.0,4.11.0)",
+Require-Bundle: org.junit;bundle-version="4.11.0",
  org.mockito;bundle-version="1.9.0",
  org.hamcrest.core,
  org.objenesis,
@@ -30,4 +30,4 @@ Import-Package: org.eclipse.osee.client.test.framework,
  org.eclipse.osee.framework.plugin.core.util,
  org.eclipse.osee.framework.ui.skynet.blam,
  org.eclipse.osee.framework.ui.skynet.render,
- org.osgi.framework;version="1.6.0"
+ org.osgi.framework

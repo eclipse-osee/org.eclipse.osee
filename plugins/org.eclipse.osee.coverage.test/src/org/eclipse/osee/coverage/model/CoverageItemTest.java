@@ -14,11 +14,14 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 /**
  * @author Donald G. Dunne
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CoverageItemTest {
 
    public static CoverageUnit parent = null;

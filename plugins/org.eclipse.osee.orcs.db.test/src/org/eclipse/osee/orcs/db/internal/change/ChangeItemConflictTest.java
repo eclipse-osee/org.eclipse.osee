@@ -27,7 +27,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * {@link ChangeItem}
- *
+ * 
  * <pre>
  *                                        SRC Art
  *                        Delete | Modified | Merged  | Introduce
@@ -37,7 +37,7 @@ import org.junit.runners.Parameterized.Parameters;
  *            Merged    |    9   |     10   |   11    |   12     |
  *            Introduce |    13  |     14   |   15    |   16     |
  *                      -----------------------------------------
- *
+ * 
  *                               SRC Attr
  *                        Delete | Modified | Merged
  *                      ------------------------------
@@ -46,7 +46,7 @@ import org.junit.runners.Parameterized.Parameters;
  *            Merged    |    7   |     8    |    9   |
  *                      ------------------------------
  * </pre>
- *
+ * 
  * @author Jeff C. Phillips
  * @author Karol M. Wilk
  * @author Ryan D. Brooks
@@ -165,6 +165,8 @@ public class ChangeItemConflictTest {
          case SRC_INT:
             changeVersion(item.getCurrentVersion(), gamma, ModificationType.INTRODUCED);
             break;
+         default:
+            break;
       }
 
       switch (dstCase) {
@@ -179,6 +181,8 @@ public class ChangeItemConflictTest {
             break;
          case DST_INT:
             changeVersion(item.getCurrentVersion(), gamma, ModificationType.INTRODUCED);
+            break;
+         default:
             break;
       }
    }

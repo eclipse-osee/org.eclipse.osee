@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.internal.column.ev;
 
 import static org.mockito.Mockito.when;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.core.column.IAtsColumnUtility;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.Before;

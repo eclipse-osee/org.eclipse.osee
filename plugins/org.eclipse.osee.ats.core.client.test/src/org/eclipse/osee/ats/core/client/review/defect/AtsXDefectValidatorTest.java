@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.client.review.defect;
 
 import java.util.Arrays;
 import java.util.Date;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;

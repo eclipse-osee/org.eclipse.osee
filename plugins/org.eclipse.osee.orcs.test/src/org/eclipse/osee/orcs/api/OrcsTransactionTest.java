@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
+import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import java.lang.reflect.Proxy;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -30,10 +31,8 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
-import org.eclipse.osee.orcs.OrcsIntegrationRule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
-import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.transaction.OrcsTransaction;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -42,6 +41,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.rules.TestRule;
 
 /**
  * @author Roberto E. Escobar
@@ -52,10 +52,7 @@ public class OrcsTransactionTest {
    public ExpectedException thrown = ExpectedException.none();
 
    @Rule
-   public OrcsIntegrationRule osgi = new OrcsIntegrationRule(this);
-
-   @Rule
-   public OseeDatabase db = new OseeDatabase("osee.demo.h2");
+   public TestRule osgi = integrationRule(this, "osee.demo.hsql");
 
    @OsgiService
    private OrcsApi orcsApi;

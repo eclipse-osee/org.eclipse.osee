@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
+import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CaseType;
@@ -30,10 +30,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.OrcsIntegrationRule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -41,9 +39,11 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.utility.MatchComparator;
 import org.eclipse.osee.orcs.utility.NameComparator;
 import org.eclipse.osee.orcs.utility.SortOrder;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 /**
  * @author Roberto E. Escobar
@@ -51,10 +51,7 @@ import org.junit.Test;
 public class OrcsQueryTest {
 
    @Rule
-   public OrcsIntegrationRule osgi = new OrcsIntegrationRule(this);
-
-   @Rule
-   public OseeDatabase db = new OseeDatabase("osee.demo.h2");
+   public TestRule osgi = integrationRule(this, "osee.demo.hsql");
 
    private final boolean includeMatchLocationTests = false;
 

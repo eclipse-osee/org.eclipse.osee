@@ -32,7 +32,7 @@ public class XtextOseeTypesHandler implements IOseeTypesHandler {
    @Override
    public void execute(IProgressMonitor monitor, URI uri) throws OseeCoreException {
       IOseeCachingService cacheService = getCachingService();
-      IOperation operation = new OseeTypesImportOperation(cacheService, uri, false, false, true);
+      IOperation operation = new OseeTypesImportOperation(cacheService, uri, false, true);
       Operations.executeWorkAndCheckStatus(operation, monitor);
    }
 

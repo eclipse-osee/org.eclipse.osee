@@ -25,4 +25,4 @@ Import-Package: org.eclipse.osee.display.api,
  org.eclipse.osee.orcs.utility
 Export-Package: org.eclipse.osee.display.presenter
 Require-Bundle: org.eclipse.core.runtime,
- com.google.guava;bundle-version="[10.0.0,11.0.0)"
+ com.google.guava;bundle-version="[11.0.0,15.0.0)"

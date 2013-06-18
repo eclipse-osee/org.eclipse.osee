@@ -29,7 +29,6 @@
 		<module>../../plugins/org.eclipse.osee.framework.database</module>
 		<module>../../plugins/org.eclipse.osee.framework.database.test</module>
 
-		<module>../../plugins/org.eclipse.osee.database</module>
 		<module>../../plugins/org.eclipse.osee.database.schema</module>
 
 		<module>../../plugins/org.eclipse.osee.orcs</module>

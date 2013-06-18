@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.client.integration.tests.ats.world.search;
 
 import java.util.Arrays;
 import java.util.Collection;
-import junit.framework.Assert;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
@@ -21,6 +20,7 @@ import org.eclipse.osee.ats.world.search.TeamDefinitionQuickSearch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

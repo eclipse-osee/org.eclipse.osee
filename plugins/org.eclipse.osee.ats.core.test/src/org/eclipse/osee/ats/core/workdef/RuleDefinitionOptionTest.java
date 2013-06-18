@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.junit.Test;
 

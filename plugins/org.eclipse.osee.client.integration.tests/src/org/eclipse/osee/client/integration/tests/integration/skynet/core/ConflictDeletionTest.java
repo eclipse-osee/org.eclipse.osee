@@ -41,8 +41,7 @@ import org.junit.Test;
 /**
  * @author Theron Virgin
  */
-@Ignore
-// This test does not work
+@Ignore("This test does not work")
 public class ConflictDeletionTest {
 
    @Rule

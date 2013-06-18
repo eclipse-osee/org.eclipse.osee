@@ -13,15 +13,14 @@ package org.eclipse.osee.ats.client.integration.tests.ats.core.client.util;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import junit.framework.Assert;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.junit.Assert;
 import org.junit.Before;
 import org.mockito.Mockito;
 

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.users;
 
 import java.util.HashMap;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

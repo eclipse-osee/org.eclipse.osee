@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;

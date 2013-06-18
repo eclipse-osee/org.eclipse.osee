@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.impl.internal.model;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;

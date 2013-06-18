@@ -12,10 +12,13 @@ package org.eclipse.osee.framework.core.model.fields;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.internal.fields.UniqueIdField;
+import org.junit.FixMethodOrder;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
@@ -24,6 +27,7 @@ import org.junit.runners.Parameterized.Parameters;
  * 
  * @author Roberto E. Escobar
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(Parameterized.class)
 public class UniqueIdFieldTest extends BaseOseeFieldTest {
 

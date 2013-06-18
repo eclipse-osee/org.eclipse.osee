@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import java.io.File;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

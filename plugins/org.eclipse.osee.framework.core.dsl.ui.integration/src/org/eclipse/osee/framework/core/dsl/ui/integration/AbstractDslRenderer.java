@@ -125,7 +125,6 @@ public abstract class AbstractDslRenderer extends FileSystemRenderer {
       return NO_MATCH;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public final void open(final List<Artifact> artifacts, final PresentationType presentationType) throws OseeCoreException {
 

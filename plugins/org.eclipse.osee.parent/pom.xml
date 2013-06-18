@@ -35,7 +35,7 @@
 		<javadoc-version>2.8</javadoc-version>
 		<build-helper-maven-plugin-version>1.7</build-helper-maven-plugin-version>
 
-		<platform-version-name>juno</platform-version-name>
+		<platform-version-name>kepler</platform-version-name>
 		<orbit-version>R20130517111416</orbit-version>
 		<xtext-version>2.0.0</xtext-version>
 		<subversive-version>1.0</subversive-version>

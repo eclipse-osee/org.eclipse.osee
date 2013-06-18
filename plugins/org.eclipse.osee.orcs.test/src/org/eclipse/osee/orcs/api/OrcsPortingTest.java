@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
+import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -22,10 +23,8 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
-import org.eclipse.osee.orcs.OrcsIntegrationRule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
-import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.OrcsTransaction;
@@ -34,6 +33,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 /**
  * @author David W. Miller
@@ -41,10 +41,7 @@ import org.junit.Test;
 public class OrcsPortingTest {
 
    @Rule
-   public OrcsIntegrationRule osgi = new OrcsIntegrationRule(this);
-
-   @Rule
-   public OseeDatabase db = new OseeDatabase("osee.demo.h2");
+   public TestRule osgi = integrationRule(this, "osee.demo.hsql");
 
    @OsgiService
    private OrcsApi orcsApi;
@@ -76,6 +73,8 @@ public class OrcsPortingTest {
 
       IOseeBranch copyTxBranch = createCopyFromTransactionBranch(transactionToCopy);
       TransactionRecord finalTx = commitToDestinationBranch(copyTxBranch);
+      
+      Thread.sleep(5000);
 
       // now check to make sure everything is as expected
       // we should have a SoftwareRequirement named "SecondRequirement" with an attribute named "test changed" (changed on child branch to this)

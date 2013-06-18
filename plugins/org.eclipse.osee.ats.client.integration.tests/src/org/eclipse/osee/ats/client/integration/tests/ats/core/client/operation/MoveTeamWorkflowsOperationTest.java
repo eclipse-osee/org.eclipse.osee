@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.operation;
 
 import java.util.Arrays;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.operation.MoveTeamWorkflowsOperation;

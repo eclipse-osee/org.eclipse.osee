@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.intergration;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -20,6 +20,10 @@ import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.db.mock.OseeDatabase;
+import org.eclipse.osee.orcs.db.mock.OsgiRule;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 
 /**
  * @author Roberto E. Escobar
@@ -27,6 +31,10 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
 public class IntegrationUtil {
 
    private static final Comparator<OrcsData> SORT_BY_LOCAL_ID = new IdComparator();
+
+   public static TestRule integrationRule(Object testObject, String dbId) {
+      return RuleChain.outerRule(new OseeDatabase(dbId)).around(new OsgiRule(testObject));
+   }
 
    public static void sort(List<? extends OrcsData> data) {
       Collections.sort(data, SORT_BY_LOCAL_ID);

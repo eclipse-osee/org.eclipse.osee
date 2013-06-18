@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
+import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -23,13 +23,13 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.OrcsIntegrationRule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.junit.Assert;
 import org.junit.Rule;
+import org.junit.rules.TestRule;
 
 /**
  * @author Jeff C. Phillips
@@ -37,10 +37,7 @@ import org.junit.Rule;
 public class OrcsAttributeLoadingTest {
 
    @Rule
-   public OrcsIntegrationRule osgi = new OrcsIntegrationRule(this);
-
-   @Rule
-   public OseeDatabase db = new OseeDatabase("osee.demo.h2");
+   public TestRule osgi = integrationRule(this, "osee.demo.hsql");
 
    @OsgiService
    private OrcsApi orcsApi;

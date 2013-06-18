@@ -16,10 +16,13 @@ import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.annotation.AnnotationProcessor;
 import org.eclipse.osee.framework.jdk.core.util.annotation.FieldAnnotationHandler;
 import org.eclipse.osee.orcs.db.mock.internal.OsgiServiceFieldAnnotationHandler;
-import org.junit.rules.TestWatchman;
-import org.junit.runners.model.FrameworkMethod;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 
-public class OsgiRule extends TestWatchman {
+/**
+ * @author Roberto E. Escobar
+ */
+public class OsgiRule extends TestWatcher {
 
    private static final AnnotationProcessor processor = createProcessor();
    private final Object[] objects;
@@ -29,7 +32,8 @@ public class OsgiRule extends TestWatchman {
    }
 
    @Override
-   public void starting(FrameworkMethod method) {
+   protected void starting(Description description) {
+      super.starting(description);
       try {
          processor.initAnnotations(objects);
       } catch (Exception ex) {

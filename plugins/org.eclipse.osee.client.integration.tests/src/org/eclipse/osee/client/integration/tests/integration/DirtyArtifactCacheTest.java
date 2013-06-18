@@ -13,7 +13,7 @@ package org.eclipse.osee.client.integration.tests.integration;
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.Collection;
 import java.util.logging.Level;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

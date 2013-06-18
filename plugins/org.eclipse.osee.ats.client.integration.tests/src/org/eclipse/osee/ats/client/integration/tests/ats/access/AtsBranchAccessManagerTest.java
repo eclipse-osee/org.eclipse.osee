@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.access;
 
 import static java.lang.Thread.sleep;
 import java.util.Arrays;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.client.demo.DemoActionableItems;
@@ -62,9 +62,6 @@ public class AtsBranchAccessManagerTest {
       return getService(OseeEventService.class);
    }
 
-   /**
-    * Test method for {@link org.eclipse.osee.ats.access.AtsBranchAccessManager#AtsBranchAccessManager()}.
-    */
    @Test
    public void testAtsBranchAccessManager() {
       int numListeners = OseeEventManager.getNumberOfListeners();
@@ -72,9 +69,6 @@ public class AtsBranchAccessManagerTest {
       Assert.assertEquals(numListeners + 1, OseeEventManager.getNumberOfListeners());
    }
 
-   /**
-    * Test method for {@link org.eclipse.osee.ats.access.AtsBranchAccessManager#dispose()}.
-    */
    @Test
    public void testDispose() {
       AtsBranchAccessManager mgr = new AtsBranchAccessManager(getEventService());
@@ -83,12 +77,6 @@ public class AtsBranchAccessManagerTest {
       Assert.assertEquals(numListeners - 1, OseeEventManager.getNumberOfListeners());
    }
 
-   /**
-    * Test method for
-    * {@link org.eclipse.osee.ats.access.AtsBranchAccessManager#isApplicable(org.eclipse.osee.framework.core.model.Branch)}
-    * 
-    * @throws OseeCoreException
-    */
    @Test
    public void testIsApplicable() throws OseeCoreException {
       AtsBranchAccessManager mgr = new AtsBranchAccessManager(getEventService());

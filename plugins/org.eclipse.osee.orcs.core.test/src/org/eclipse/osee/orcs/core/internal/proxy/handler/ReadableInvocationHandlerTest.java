@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.internal.proxy.handler;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.orcs.core.internal.proxy.HasProxiedObject;
 import org.eclipse.osee.orcs.core.internal.proxy.ProxyUtil;
 import org.eclipse.osee.orcs.data.ArtifactReadable;

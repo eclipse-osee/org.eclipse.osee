@@ -12,16 +12,20 @@ package org.eclipse.osee.framework.core.model.fields;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.OseeField;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
  * @author Roberto E. Escobar
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public abstract class BaseOseeFieldTest {
    private final OseeFieldTestData<?> test;
 

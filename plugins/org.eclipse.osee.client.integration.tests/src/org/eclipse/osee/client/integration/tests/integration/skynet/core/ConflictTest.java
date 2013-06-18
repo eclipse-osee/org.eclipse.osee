@@ -16,7 +16,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import java.util.Collection;
+
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.ConflictTestManager;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
@@ -40,14 +42,17 @@ import org.eclipse.osee.framework.skynet.core.conflict.RelationConflict;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.MethodRule;
+import org.junit.runners.MethodSorters;
 
 /**
  * @author Jeff C. Phillips
  * @author Theron Virgin
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ConflictTest {
 
    @Rule
@@ -71,7 +76,7 @@ public class ConflictTest {
     * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(Branch, Branch)} .
     */
    @org.junit.Test
-   public void testGetMergeBranchNotCreated() throws Exception {
+   public void test01GetMergeBranchNotCreated() throws Exception {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
@@ -92,7 +97,7 @@ public class ConflictTest {
     * .
     */
    @org.junit.Test
-   public void testGetConflictsPerBranch() {
+   public void test02GetConflictsPerBranch() {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       Collection<Conflict> conflicts = null;
@@ -118,7 +123,7 @@ public class ConflictTest {
     * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(Branch, Branch)} .
     */
    @org.junit.Test
-   public void testGetMergeBranchCreated() throws Exception {
+   public void test03GetMergeBranchCreated() throws Exception {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
@@ -140,7 +145,7 @@ public class ConflictTest {
    }
 
    @org.junit.Test
-   public void testResolveConflicts() {
+   public void test04ResolveConflicts() {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
@@ -178,7 +183,7 @@ public class ConflictTest {
    }
 
    @Ignore
-   public void testCommitWithoutResolutionErrors() {
+   public void test05CommitWithoutResolutionErrors() {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
@@ -199,7 +204,7 @@ public class ConflictTest {
    }
 
    @org.junit.Test
-   public void testCommitFiltering() throws OseeCoreException {
+   public void test06CommitFiltering() throws OseeCoreException {
       checkNoTxCurrent("art_id", "osee_artifact");
       checkNoTxCurrent("attr_id", "osee_attribute");
       checkNoTxCurrent("rel_link_id", "osee_relation_link");

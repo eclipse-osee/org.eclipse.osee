@@ -67,13 +67,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.database"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.orcs.rest"
          download-size="0"
          install-size="0"

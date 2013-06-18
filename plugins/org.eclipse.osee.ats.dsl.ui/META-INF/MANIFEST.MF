@@ -7,13 +7,17 @@ Bundle-SymbolicName: org.eclipse.osee.ats.dsl.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.osee.ats.dsl;visibility:=reexport,
  org.eclipse.xtext.ui,
- org.eclipse.ui.editors,
- org.eclipse.ui.ide,
+ org.eclipse.ui.editors;bundle-version="3.5.0",
+ org.eclipse.ui.ide;bundle-version="3.5.0",
  org.eclipse.xtext.ui.shared,
  org.eclipse.ui,
  org.eclipse.xtext.builder,
- org.antlr.runtime
-Import-Package: org.apache.log4j,
+ org.antlr.runtime;bundle-version="[3.2.0,3.2.1)",
+ org.eclipse.xtext.common.types.ui,
+ org.eclipse.xtext.ui.codetemplates.ui,
+ org.eclipse.compare
+Import-Package: org.apache.log4j;version="1.2.15",
+ org.apache.commons.logging,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.model.type,

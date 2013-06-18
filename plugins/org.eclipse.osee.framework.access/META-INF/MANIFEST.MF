@@ -5,8 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.access;singleton:=true
 Bundle-Version: 0.11.1.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: com.google.common.cache,
- org.eclipse.core.resources,
+Import-Package: org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
@@ -41,4 +40,4 @@ Eclipse-ExtensibleAPI: true
 Export-Package: org.eclipse.osee.framework.access,
  org.eclipse.osee.framework.access.internal.data
 Service-Component: OSGI-INF/*.xml
-Require-Bundle: com.google.guava;bundle-version="12.0.0"
+Require-Bundle: com.google.guava;bundle-version="[11.0.0,15.0.0)"

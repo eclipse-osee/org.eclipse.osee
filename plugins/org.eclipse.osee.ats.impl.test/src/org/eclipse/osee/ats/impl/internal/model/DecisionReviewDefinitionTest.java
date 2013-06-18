@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.model;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.impl.internal.model.DecisionReviewDefinition;

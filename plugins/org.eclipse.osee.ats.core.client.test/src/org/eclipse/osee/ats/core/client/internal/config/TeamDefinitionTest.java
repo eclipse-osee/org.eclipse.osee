@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal.config;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.Before;

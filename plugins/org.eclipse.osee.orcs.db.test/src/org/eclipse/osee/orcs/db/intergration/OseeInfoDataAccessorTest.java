@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.intergration;
 
+import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.integrationRule;
 import java.sql.DatabaseMetaData;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -20,12 +21,11 @@ import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.accessor.OseeInfoDataAccessor;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
-import org.eclipse.osee.orcs.db.mock.OseeDatabase;
-import org.eclipse.osee.orcs.db.mock.OsgiRule;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.db.mocks.MockLog;
 import org.junit.Assert;
 import org.junit.Rule;
+import org.junit.rules.TestRule;
 
 /**
  * Test Case for {@link OseeInfoDataAccessor}
@@ -35,13 +35,11 @@ import org.junit.Rule;
 public class OseeInfoDataAccessorTest {
 
    @Rule
-   public OsgiRule osgi = new OsgiRule(this);
+   public TestRule db = integrationRule(this, "osee.demo.hsql");
 
-   @Rule
-   public OseeDatabase db = new OseeDatabase("osee.demo.hsql");
-
-   @OsgiService
-   IOseeDatabaseService dbService;
+   //@formatter:off
+   @OsgiService private IOseeDatabaseService dbService;
+   //@formatter:on
 
    @org.junit.Test
    public void testGetSetValue() throws OseeCoreException {

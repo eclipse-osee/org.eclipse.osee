@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.client.review.role;
 
 import org.eclipse.osee.ats.core.client.review.role.Role;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Test unit for {@link UserRole}

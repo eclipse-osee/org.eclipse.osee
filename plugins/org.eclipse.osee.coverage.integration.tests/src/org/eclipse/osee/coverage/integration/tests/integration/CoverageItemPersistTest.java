@@ -37,12 +37,15 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 /**
  * @author Donald G. Dunne
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CoverageItemPersistTest {
 
    public static CoverageUnit parentCu = null;
@@ -96,7 +99,7 @@ public class CoverageItemPersistTest {
     * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#asArtifact(boolean)}.
     */
    @Test
-   public void testGetArtifact() throws OseeCoreException {
+   public void test01GetArtifact() throws OseeCoreException {
       try {
          ArtifactQuery.getArtifactFromId(parentGuid, CoverageTestUtil.getTestBranch());
          Assert.fail("Artifact should not yet exist");
@@ -119,7 +122,7 @@ public class CoverageItemPersistTest {
     * {@link org.eclipse.osee.coverage.model.CoverageItem#save(SkynetTransaction, String, CoverageOptionManager)}
     */
    @Test
-   public void testSave() throws OseeCoreException {
+   public void test02Save() throws OseeCoreException {
       // Since test units are stored through provider, ensure they are same before and after save
       Assert.assertEquals(10, ci.getTestUnits().size());
 
@@ -153,7 +156,7 @@ public class CoverageItemPersistTest {
     * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#asArtifact(boolean)}.
     */
    @Test
-   public void testGetArtifact2() throws OseeCoreException {
+   public void test03GetArtifact2() throws OseeCoreException {
       OseeCoverageUnitStore.get(parentCu, CoverageTestUtil.getTestBranch()).load(
          CoverageOptionManagerDefault.instance());
       CoverageItem ci = parentCu.getCoverageItems().iterator().next();
@@ -173,7 +176,7 @@ public class CoverageItemPersistTest {
     * .
     */
    @Test
-   public void testDelete() throws OseeCoreException {
+   public void test04Delete() throws OseeCoreException {
       Artifact artifact =
          new OseeCoverageUnitStore(parentCu, CoverageTestUtil.getTestBranch(), null, readOnlyTestUnitNames).getArtifact(false);
       Assert.assertNotNull(artifact);

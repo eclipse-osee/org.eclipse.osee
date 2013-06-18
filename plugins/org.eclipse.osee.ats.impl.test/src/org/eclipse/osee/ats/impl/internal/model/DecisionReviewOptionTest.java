@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.impl.internal.model;
 
 import java.util.Arrays;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.impl.internal.model.DecisionReviewOption;
 import org.junit.Test;

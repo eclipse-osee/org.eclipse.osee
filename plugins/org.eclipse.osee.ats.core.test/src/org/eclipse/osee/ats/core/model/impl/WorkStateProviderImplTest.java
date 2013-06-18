@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import junit.framework.Assert;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.mock.MockAtsUser;
 import org.eclipse.osee.ats.core.mock.MockWorkStateFactory;
@@ -23,6 +22,7 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -339,7 +339,7 @@ public class WorkStateProviderImplTest {
       Assert.assertTrue(provider.isStateVisited("endorse"));
       Assert.assertEquals(1, provider.getVisitedStateNames().size());
       Assert.assertEquals(1, provider.getAssignees("endorse").size());
-      Assert.assertEquals(4.2, provider.getHoursSpent("endorse"));
+      Assert.assertEquals(4.2, provider.getHoursSpent("endorse"), 0.0);
       Assert.assertEquals(4, provider.getPercentComplete("endorse"));
    }
 
@@ -354,7 +354,7 @@ public class WorkStateProviderImplTest {
       Assert.assertTrue(provider.isStateVisited("endorse"));
       Assert.assertEquals(1, provider.getVisitedStateNames().size());
       Assert.assertEquals(1, provider.getAssignees("endorse").size());
-      Assert.assertEquals(0.0, provider.getHoursSpent("endorse"));
+      Assert.assertEquals(0.0, provider.getHoursSpent("endorse"), 0.0);
       Assert.assertEquals(0, provider.getPercentComplete("endorse"));
    }
 
@@ -379,7 +379,7 @@ public class WorkStateProviderImplTest {
 
    @Test
    public void getHoursSpent() {
-      Assert.assertEquals(0.0, provider.getHoursSpent("endorse"));
+      Assert.assertEquals(0.0, provider.getHoursSpent("endorse"), 0.0);
    }
 
    @Test(expected = OseeStateException.class)
@@ -393,7 +393,7 @@ public class WorkStateProviderImplTest {
       provider.setCurrentStateName("endorse");
       provider.setHoursSpent("endorse", 8.0);
 
-      Assert.assertEquals(8.0, provider.getHoursSpent("endorse"));
+      Assert.assertEquals(8.0, provider.getHoursSpent("endorse"), 0.0);
    }
 
    @Test(expected = OseeStateException.class)

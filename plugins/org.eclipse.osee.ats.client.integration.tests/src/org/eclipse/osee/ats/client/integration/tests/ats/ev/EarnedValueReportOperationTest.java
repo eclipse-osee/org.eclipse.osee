@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.client.integration.tests.ats.ev;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import junit.framework.Assert;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
@@ -31,6 +30,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

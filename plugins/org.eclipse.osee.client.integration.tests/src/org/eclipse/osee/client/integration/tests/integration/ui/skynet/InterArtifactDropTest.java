@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandlerOperation;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -55,7 +55,7 @@ public class InterArtifactDropTest {
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    @Rule
-   public static TestInfo method = new TestInfo();
+   public TestInfo method = new TestInfo();
 
    private static Artifact sourceArtifact1;
    private static Artifact sourceArtifact2;
@@ -69,15 +69,24 @@ public class InterArtifactDropTest {
    private static IOseeBranch updateTestBranch2;
    private static IOseeBranch updateTestBranch3;
 
-   @BeforeClass
-   public static void setUp() throws Exception {
-      initializeBranches();
-      addArtifactsToBranches();
+   private static boolean wasInitialized = false;
+
+   @Before
+   public void setUp() throws Exception {
+      // Initialization must run after the integration rule
+      // Can't use before class here
+      if (!wasInitialized) {
+         wasInitialized = true;
+         initializeBranches();
+         addArtifactsToBranches();
+      }
    }
 
    @AfterClass
    public static void tearDown() throws OseeCoreException {
-      purgeBranches();
+      if (wasInitialized) {
+         purgeBranches();
+      }
    }
 
    @Test
@@ -88,7 +97,7 @@ public class InterArtifactDropTest {
             OseeSystemArtifacts.getDefaultHierarchyRootArtifact(destinationBranch), new Artifact[] {sourceArtifact1},
             false);
       Operations.executeWork(dropHandler);
-      //Acquire the introduced artifact
+      // Acquire the introduced artifact
       Artifact destArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact1.getArtId(), destinationBranch);
 
       assertTrue(sourceArtifact1.getName().equals(destArtifact.getName()));
@@ -98,7 +107,8 @@ public class InterArtifactDropTest {
 
    @Test
    public void testUpdateBranch() throws Exception {
-      // source artifact updated and introduced to existing destination artifact
+      // source artifact updated and introduced to existing destination
+      // artifact
       Artifact updateTestArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact1.getArtId(), updateTestBranch2);
       Attribute<Object> testAttr = updateTestArtifact.getSoleAttribute(CoreAttributeTypes.Name);
       testAttr.setFromString("I am an update branch test");
@@ -110,7 +120,7 @@ public class InterArtifactDropTest {
          new InterArtifactExplorerDropHandlerOperation(sourceArtifact1, new Artifact[] {updateTestArtifact}, false);
       Operations.executeWork(dropHandler);
 
-      //Acquire the updated artifact
+      // Acquire the updated artifact
       Artifact destArtifact =
          ArtifactQuery.getArtifactFromId(updateTestArtifact.getArtId(), sourceArtifact1.getBranch());
       destArtifact.reloadAttributesAndRelations();
@@ -121,7 +131,8 @@ public class InterArtifactDropTest {
 
    @Test
    public void testDeleteAttributeFromArtifactBranch() throws Exception {
-      //attribute deleted and introduced to existing attribute on sourceBranch 
+      // attribute deleted and introduced to existing attribute on
+      // sourceBranch
       Artifact deleteTestArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact2.getArtId(), updateTestBranch1);
       Attribute<Object> destAttribute = deleteTestArtifact.getSoleAttribute(CoreAttributeTypes.StaticId);
       deleteTestArtifact.deleteAttribute(destAttribute);
@@ -139,7 +150,7 @@ public class InterArtifactDropTest {
 
    @Test
    public void testDeleteRelationFromArtifactBranch() throws Exception {
-      //relation deleted and introduced to existing relation on sourceBranch
+      // relation deleted and introduced to existing relation on sourceBranch
       Artifact deleteTestArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact2.getArtId(), updateTestBranch1);
       deleteTestArtifact.deleteRelation(CoreRelationTypes.Default_Hierarchical__Child, sourceChildArtifact1);
       deleteTestArtifact.persist(getClass().getSimpleName());
@@ -182,7 +193,8 @@ public class InterArtifactDropTest {
 
    @Test
    public void testDestinationArtifactDoesNotExistAsDeletedBranch() throws Exception {
-      // artifact deleted on source branch, does not exist on destination branch
+      // artifact deleted on source branch, does not exist on destination
+      // branch
       // the deleted artifact will be introduced as deleted
       InterArtifactExplorerDropHandlerOperation dropHandler =
          new InterArtifactExplorerDropHandlerOperation(
@@ -193,7 +205,7 @@ public class InterArtifactDropTest {
       Artifact destArtifact =
          ArtifactQuery.getArtifactFromId(sourceDeleteArtifact1.getArtId(), destinationBranch,
             DeletionFlag.INCLUDE_DELETED);
-      // artifact should be introduced 
+      // artifact should be introduced
       assertNotNull(destArtifact);
       assertTrue(sourceDeleteArtifact1.getName().equals(destArtifact.getName()));
       assertTrue(sourceDeleteArtifact1.getGammaId() == destArtifact.getGammaId());
@@ -202,7 +214,8 @@ public class InterArtifactDropTest {
 
    @Test
    public void testUndeleteArtifactOnBranch() throws Exception {
-      // artifact deleted on updateBranch2 and introduced as non-deleted artifact on updateTestBranch2
+      // artifact deleted on updateBranch2 and introduced as non-deleted
+      // artifact on updateTestBranch2
       Artifact testArtifact = ArtifactQuery.getArtifactFromId(sourceDeleteArtifact1.getArtId(), updateTestBranch3);
 
       InterArtifactExplorerDropHandlerOperation dropHandler =
@@ -214,29 +227,31 @@ public class InterArtifactDropTest {
       Artifact destArtifact =
          ArtifactQuery.getArtifactFromId(sourceDeleteArtifact1.getArtId(), updateTestBranch2,
             DeletionFlag.EXCLUDE_DELETED);
-      // artifact should be introduced 
+      // artifact should be introduced
       assertNotNull(destArtifact);
       assertTrue(testArtifact.getName().equals(destArtifact.getName()));
       assertTrue(testArtifact.getGammaId() == destArtifact.getGammaId());
       assertTrue(testArtifact.getModType() == destArtifact.getModType());
    }
 
-   private static void addArtifactsToBranches() throws OseeCoreException {
+   private void addArtifactsToBranches() throws OseeCoreException {
       BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, sourceBranch);
       BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, destinationBranch);
 
-      // Add artifacts to source  
+      // Add artifacts to source
       sourceArtifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, sourceBranch);
       sourceArtifact1.persist(method.getQualifiedTestName());
       sourceChildArtifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, sourceBranch);
       sourceChildArtifact1.persist(method.getQualifiedTestName());
-      // sourceArtifact2 has an additional attribute and a child artifact associated to it  
+      // sourceArtifact2 has an additional attribute and a child artifact
+      // associated to it
       sourceArtifact2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, sourceBranch);
       sourceArtifact2.addAttribute(CoreAttributeTypes.StaticId);
       sourceArtifact2.addChild(sourceChildArtifact1);
       sourceArtifact2.persist(method.getQualifiedTestName());
 
-      //updateTestBranch has sourceArtifact1/2, sourceChildArtifact1 and sourceDeleteArtifact   
+      // updateTestBranch has sourceArtifact1/2, sourceChildArtifact1 and
+      // sourceDeleteArtifact
       BranchManager.createWorkingBranch(sourceBranch, updateTestBranch1);
 
       sourceArtifact3 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, sourceBranch);
@@ -244,17 +259,19 @@ public class InterArtifactDropTest {
       sourceDeleteArtifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, sourceBranch);
       sourceDeleteArtifact1.persist(method.getQualifiedTestName());
 
-      //updateTestBranch has sourceArtifact1/2/3, sourceChildArtifact1, sourceDeleteArtifact1   
+      // updateTestBranch has sourceArtifact1/2/3, sourceChildArtifact1,
+      // sourceDeleteArtifact1
       BranchManager.createWorkingBranch(sourceBranch, updateTestBranch3);
 
       sourceDeleteArtifact1.delete();
       sourceDeleteArtifact1.persist(method.getQualifiedTestName());
 
-      //updateTestBranch has sourceArtifact1/2/3, sourceChildArtifact1, sourceDeleteArtifact1 (deleted)   
+      // updateTestBranch has sourceArtifact1/2/3, sourceChildArtifact1,
+      // sourceDeleteArtifact1 (deleted)
       BranchManager.createWorkingBranch(sourceBranch, updateTestBranch2);
    }
 
-   private static void initializeBranches() {
+   private void initializeBranches() {
       sourceBranch = createBranchToken("Source");
       destinationBranch = createBranchToken("Destination");
       updateTestBranch1 = createBranchToken("updateTestBranch");
@@ -270,7 +287,7 @@ public class InterArtifactDropTest {
       BranchManager.purgeBranch(sourceBranch);
    }
 
-   private static IOseeBranch createBranchToken(String name) {
+   private IOseeBranch createBranchToken(String name) {
       String branchName = String.format("%s__%s", method.getQualifiedTestName(), name);
       return TokenFactory.createBranch(GUID.create(), branchName);
    }

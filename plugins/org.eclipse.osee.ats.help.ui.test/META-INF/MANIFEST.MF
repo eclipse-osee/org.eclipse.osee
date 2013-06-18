@@ -7,6 +7,6 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.ats.help.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit
-Import-Package: org.eclipse.core.runtime;version="3.4.0",
+Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.jdk.core.util,
  org.osgi.framework

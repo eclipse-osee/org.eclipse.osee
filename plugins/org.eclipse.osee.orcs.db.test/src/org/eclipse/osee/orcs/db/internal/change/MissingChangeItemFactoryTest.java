@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

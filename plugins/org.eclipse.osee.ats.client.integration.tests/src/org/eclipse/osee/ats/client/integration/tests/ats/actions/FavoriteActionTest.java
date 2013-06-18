@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.actions.FavoriteAction;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;

@@ -40,4 +40,4 @@ Service-Component: OSGI-INF/*.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.core.runtime,
  javax.servlet;bundle-version="2.5.0",
- com.google.guava;bundle-version="12.0.0"
+ com.google.guava;bundle-version="[11.0.0,15.0.0)"

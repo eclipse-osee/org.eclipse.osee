@@ -118,7 +118,7 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public IAtsTeamWorkflow getParentTeamWorkflow() throws OseeCoreException {
+   public IAtsTeamWorkflow getParentTeamWorkflow() {
       return null;
    }
 

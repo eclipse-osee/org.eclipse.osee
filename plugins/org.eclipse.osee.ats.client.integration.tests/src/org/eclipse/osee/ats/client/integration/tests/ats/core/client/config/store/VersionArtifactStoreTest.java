@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.client.integration.tests.ats.core.client.config.sto
 
 import java.util.Arrays;
 import java.util.Date;
-import junit.framework.Assert;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -20,7 +19,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -29,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -57,8 +56,6 @@ public class VersionArtifactStoreTest {
 
    @Test
    public void testLoadFromArtifact() throws OseeCoreException {
-      IAtsConfig cache = new AtsConfigCache();
-
       Artifact verArt = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtilCore.getAtsBranchToken());
       verArt.setName("VersionArtifactStoreTest - version 1");
       verArt.persist(getClass().getSimpleName());
@@ -102,8 +99,6 @@ public class VersionArtifactStoreTest {
 
    @Test
    public void testSaveToArtifact() throws OseeCoreException {
-      IAtsConfig cache = new AtsConfigCache();
-
       Artifact verArt = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtilCore.getAtsBranchToken());
       verArt.setName("VersionArtifactStoreTest - version 2");
 

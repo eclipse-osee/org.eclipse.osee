@@ -8,7 +8,7 @@ package org.eclipse.osee.ats.core.users;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.mock.MockAtsUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
