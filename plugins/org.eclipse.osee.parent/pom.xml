@@ -36,7 +36,7 @@
 		<build-helper-maven-plugin-version>1.7</build-helper-maven-plugin-version>
 
 		<platform-version-name>juno</platform-version-name>
-		<orbit-version>S20130427215344</orbit-version>
+		<orbit-version>R20130517111416</orbit-version>
 		<xtext-version>2.0.0</xtext-version>
 		<subversive-version>1.0</subversive-version>
 		<polarion-version>3.0</polarion-version>
