@@ -1,23 +1,19 @@
 import
 "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
 artifactType "Test Case" extends "Test Unit" {
-   guid "AAMFDikEi0TGK27TKPgA"
    uuid 0x0000000000000052
 }
 
 artifactType "Test Support" extends "Test Unit" {
-   guid "AAMFDj+FW0f_Ut72ocQA"
    uuid 0x0000000000000053
 }
 
 artifactType "Test Run Disposition" extends "Artifact" {
-   guid "AAMFDjeNxhi0KmXZcKQA"
    uuid 0x0000000000000054
    attribute "Disposition"
 }
 
 artifactType "Test Run" extends "Abstract Test Result" {
-   guid "AAMFDjqDHWo+orlSpaQA"
    uuid 0x0000000000000055
    attribute "Test Script GUID"
    attribute "Test Script URL"
@@ -51,7 +47,6 @@ artifactType "Test Run" extends "Abstract Test Result" {
 }
 
 attributeType "Outfile URL" extends StringAttribute {
-   guid "AAMFEVlyBndUvySg+gwA"
    uuid 0x1000000000000131
    dataProvider org.eclipse.osee.ote.define.MappedAttributeDataProvider
    min 1
@@ -61,7 +56,6 @@ attributeType "Outfile URL" extends StringAttribute {
 }
 
 attributeType "Test Script URL" extends StringAttribute {
-   guid "AAMFEVn0+mhxtCuACgAA"
    uuid 0x1000000000000132
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -70,7 +64,6 @@ attributeType "Test Script URL" extends StringAttribute {
 }
 
 attributeType "Revision" extends StringAttribute {
-   guid "AAMFEWAal2I3j7EJligA"
    uuid 0x1000000000000133
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -79,7 +72,6 @@ attributeType "Revision" extends StringAttribute {
 }
 
 attributeType "Modified Flag" extends StringAttribute {
-   guid "AAMFEWCruiS26nCN68wA"
    uuid 0x1000000000000134
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -88,7 +80,6 @@ attributeType "Modified Flag" extends StringAttribute {
 }
 
 attributeType "Last Author" extends StringAttribute {
-   guid "AAMFEWE83iPq3+2DGrQA"
    uuid 0x1000000000000135
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -98,7 +89,6 @@ attributeType "Last Author" extends StringAttribute {
 }
 
 attributeType "Last Modified Date" extends DateAttribute {
-   guid "AAMFEWHw7V1uWv4IKcQA"
    uuid 0x1000000000000136
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -107,7 +97,6 @@ attributeType "Last Modified Date" extends DateAttribute {
 }
 
 attributeType "OS Architecture" extends StringAttribute {
-   guid "AAMFEWKJtG+Jc8OkRYgA"
    uuid 0x1000000000000137
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -117,7 +106,6 @@ attributeType "OS Architecture" extends StringAttribute {
 }
 
 attributeType "OS Name" extends StringAttribute {
-   guid "AAMFEWMdBmP9aCgsysgA"
    uuid 0x1000000000000138
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -126,7 +114,6 @@ attributeType "OS Name" extends StringAttribute {
 }
 
 attributeType "OS Version" extends StringAttribute {
-   guid "AAMFEWOvQWV6JJvh9NQA"
    uuid 0x1000000000000139
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -135,7 +122,6 @@ attributeType "OS Version" extends StringAttribute {
 }
 
 attributeType "OSEE Version" extends StringAttribute {
-   guid "AAMFEWQ_TTkstJvjnGQA"
    uuid 0x100000000000013A
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -144,7 +130,6 @@ attributeType "OSEE Version" extends StringAttribute {
 }
 
 attributeType "OSEE Server Title" extends StringAttribute {
-   guid "AAMFEWTnXGYRfdzY3gAA"
    uuid 0x100000000000013B
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -153,7 +138,6 @@ attributeType "OSEE Server Title" extends StringAttribute {
 }
 
 attributeType "OSEE Server Jar Version" extends StringAttribute {
-   guid "AAMFEWV1OQtXL67OfOQA"
    uuid 0x100000000000013C
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -162,7 +146,6 @@ attributeType "OSEE Server Jar Version" extends StringAttribute {
 }
 
 attributeType "Processor ID" extends StringAttribute {
-   guid "AAMFEWYOAGkplo4RjTQA"
    uuid 0x100000000000013D
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -171,7 +154,6 @@ attributeType "Processor ID" extends StringAttribute {
 }
 
 attributeType "Start Date" extends DateAttribute {
-   guid "AAMFEWpeXjfr2W5ZT5QA"
    uuid 0x100000000000013E
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -180,7 +162,6 @@ attributeType "Start Date" extends DateAttribute {
 }
 
 attributeType "End Date" extends DateAttribute {
-   guid "AAMFEWryxym0P9FFckgA"
    uuid 0x100000000000013F
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -189,7 +170,6 @@ attributeType "End Date" extends DateAttribute {
 }
 
 attributeType "Elapsed Date" extends StringAttribute {
-   guid "AAMFEWuD6yH04y89M3wA"
    uuid 0x1000000000000140
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -198,7 +178,6 @@ attributeType "Elapsed Date" extends StringAttribute {
 }
 
 attributeType "Passed" extends IntegerAttribute {
-   guid "AAMFEWwT92IzQp6Dh3gA"
    uuid 0x1000000000000141
    dataProvider DefaultAttributeDataProvider
    min 1
@@ -208,7 +187,6 @@ attributeType "Passed" extends IntegerAttribute {
 }
 
 attributeType "Failed" extends IntegerAttribute {
-   guid "AAMFEWynSU+XeRG7nRAA"
    uuid 0x1000000000000142
    dataProvider DefaultAttributeDataProvider
    min 1
@@ -218,7 +196,6 @@ attributeType "Failed" extends IntegerAttribute {
 }
 
 attributeType "Total Test Points" extends IntegerAttribute {
-   guid "AAMFEW05hBfECFGfZkgA"
    uuid 0x1000000000000143
    dataProvider DefaultAttributeDataProvider
    min 1
@@ -228,7 +205,6 @@ attributeType "Total Test Points" extends IntegerAttribute {
 }
 
 attributeType "Script Aborted" extends BooleanAttribute {
-   guid "AAMFEW3M12AqHsCve4AA"
    uuid 0x1000000000000144
    dataProvider DefaultAttributeDataProvider
    min 1
@@ -239,7 +215,6 @@ attributeType "Script Aborted" extends BooleanAttribute {
 }
 
 attributeType "Test Script GUID" extends StringAttribute {
-   guid "AAMFEW5fEhinpcjeZ0wA"
    uuid 0x1000000000000145
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -248,7 +223,6 @@ attributeType "Test Script GUID" extends StringAttribute {
 }
 
 attributeType "Ran In Batch Mode" extends BooleanAttribute {
-   guid "AAMFEW7uBlg0KLp8mhQA"
    uuid 0x1000000000000146
    dataProvider DefaultAttributeDataProvider
    min 1
@@ -258,7 +232,6 @@ attributeType "Ran In Batch Mode" extends BooleanAttribute {
 }
 
 attributeType "Is Batch Mode Allowed" extends BooleanAttribute {
-   guid "AAMFEW+CcA6F5GEjsSgA"
    uuid 0x1000000000000147
    dataProvider DefaultAttributeDataProvider
    min 1
@@ -268,7 +241,6 @@ attributeType "Is Batch Mode Allowed" extends BooleanAttribute {
 }
 
 attributeType "Last Date Uploaded" extends DateAttribute {
-   guid "AAMFEXCm5ju5gvq142QA"
    uuid 0x1000000000000148
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -277,7 +249,6 @@ attributeType "Last Date Uploaded" extends DateAttribute {
 }
 
 attributeType "Qualification Level" extends StringAttribute {
-   guid "AAMFEXEvTztOWwoGyRAA"
    uuid 0x1000000000000149
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -288,7 +259,6 @@ attributeType "Qualification Level" extends StringAttribute {
 }
 
 attributeType "Build Id" extends StringAttribute {
-   guid "AAMFEXG6_W9diA9nUXAA"
    uuid 0x100000000000014A
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -299,7 +269,6 @@ attributeType "Build Id" extends StringAttribute {
 }
 
 attributeType "Checksum" extends StringAttribute {
-   guid "AAMFEXJbaHt5uKG9kogA"
    uuid 0x100000000000014B
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -308,7 +277,6 @@ attributeType "Checksum" extends StringAttribute {
 }
 
 attributeType "Disposition" extends StringAttribute {
-   guid "AAMFEXfoPWRZHNiOR3gA"
    uuid 0x100000000000014C
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -317,7 +285,6 @@ attributeType "Disposition" extends StringAttribute {
 }
 
 oseeEnumType "enum.test.run.status" {
-   guid "ABbjHCGo_TQNo1pha8AA"
    uuid 0x3000000000000194
    entry "Pass" entryGuid "CArJmMNCPUkt72j8fGgA"
    entry "Fail" entryGuid "CArJmMOtrEWczci+BkwA"
@@ -326,7 +293,6 @@ oseeEnumType "enum.test.run.status" {
 }
 
 attributeType "Test Status" extends EnumeratedAttribute {
-   guid "AAMFERRDznjwkYn+ugAA"
    uuid 0x100000000000014D
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -337,7 +303,6 @@ attributeType "Test Status" extends EnumeratedAttribute {
 }
 
 attributeType "Test Pass" extends IntegerAttribute {
-   guid "AAMFERTXIHAmwjVkjFgA"
    uuid 0x100000000000014E
    dataProvider DefaultAttributeDataProvider
    min 1
@@ -347,7 +312,6 @@ attributeType "Test Pass" extends IntegerAttribute {
 }
 
 attributeType "Test Fail" extends IntegerAttribute {
-   guid "AAMFERVnLHThpASHn1wA"
    uuid 0x100000000000014F
    dataProvider DefaultAttributeDataProvider
    min 1
@@ -357,7 +321,6 @@ attributeType "Test Fail" extends IntegerAttribute {
 }
 
 attributeType "Version" extends StringAttribute {
-   guid "AAMFERX4UAvPcLnvswwA"
    uuid 0x1000000000000150
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -366,7 +329,6 @@ attributeType "Version" extends StringAttribute {
 }
 
 attributeType "Repository Type" extends StringAttribute {
-   guid "AAMFERaLojPfsL4I2AwA"
    uuid 0x1000000000000151
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -375,7 +337,6 @@ attributeType "Repository Type" extends StringAttribute {
 }
 
 attributeType "Modification Flag" extends StringAttribute {
-   guid "AAMFERccxh8La5wlEmgA"
    uuid 0x1000000000000152
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -384,7 +345,6 @@ attributeType "Modification Flag" extends StringAttribute {
 }
 
 attributeType "Test Log" extends CompressedContentAttribute {
-   guid "AAMFERet6VP3iltwxMwA"
    uuid 0x1000000000000153
    dataProvider UriAttributeDataProvider
    min 0
@@ -393,7 +353,6 @@ attributeType "Test Log" extends CompressedContentAttribute {
 }
 
 relationType "Test Case to Run Relation" {
-   guid "AAMFE+jMyBDK7CV479wA"
    uuid 0x2000000000000176
    sideAName "Test Case"
    sideAArtifactType "Test Case"
@@ -404,7 +363,6 @@ relationType "Test Case to Run Relation" {
 }
 
 relationType "Uses" {
-   guid "AAMFE_GV43rvba32QqwA"
    uuid 0x2000000000000177
    sideAName "requirement"
    sideAArtifactType "Requirement"

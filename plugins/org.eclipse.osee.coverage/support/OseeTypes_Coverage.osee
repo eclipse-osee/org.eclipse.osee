@@ -1,7 +1,6 @@
 import
 "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
 attributeType "coverage.Notes" extends StringAttribute {
-   guid "AARERmIjazD1udUwfLgA"
    uuid 0x10000000000000FC
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -12,7 +11,6 @@ attributeType "coverage.Notes" extends StringAttribute {
 }
 
 attributeType "coverage.Coverage Options" extends StringAttribute {
-   guid "AAF+8+sqyELZ2mdVV_AA"
    uuid 0x10000000000000FD
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -22,7 +20,6 @@ attributeType "coverage.Coverage Options" extends StringAttribute {
 }
 
 artifactType "Coverage Package" extends "General Data" {
-   guid "AARFcyA9zyD3uEK8akgA"
    uuid 0x000000000000004B
    attribute "Active"
    attribute "coverage.Coverage Options"
@@ -31,7 +28,6 @@ artifactType "Coverage Package" extends "General Data" {
 }
 
 attributeType "coverage.File Contents" extends StringAttribute {
-   guid "AARDJK8YAT3SDnghjQgA"
    uuid 0x10000000000000FE
    dataProvider UriAttributeDataProvider
    min 0
@@ -41,7 +37,6 @@ attributeType "coverage.File Contents" extends StringAttribute {
 }
 
 attributeType "coverage.WorkProductTaskGuid" extends StringAttribute {
-   guid "A+m7Y2sV2z83QUlkzIAA"
    uuid 0x10000000000000FF
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -51,7 +46,6 @@ attributeType "coverage.WorkProductTaskGuid" extends StringAttribute {
 }
 
 attributeType "coverage.WorkProductPcrGuid" extends StringAttribute {
-   guid "AWuQmRuq1gwrejEWRgAA"
    uuid 0x1000000000000100
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -61,7 +55,6 @@ attributeType "coverage.WorkProductPcrGuid" extends StringAttribute {
 }
 
 attributeType "coverage.Assignees" extends StringAttribute {
-   guid "AARCA+XjSyKjnh3sweQA"
    uuid 0x1000000000000101
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -71,7 +64,6 @@ attributeType "coverage.Assignees" extends StringAttribute {
 }
 
 attributeType "coverage.Order" extends StringAttribute {
-   guid "AD72opMBR1pFxB0hVpQA"
    uuid 0x1000000000000102
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -81,7 +73,6 @@ attributeType "coverage.Order" extends StringAttribute {
 }
 
 attributeType "coverage.Location" extends StringAttribute {
-   guid "AARA2XwhNRddgQrd0iwA"
    uuid 0x1000000000000103
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -91,7 +82,6 @@ attributeType "coverage.Location" extends StringAttribute {
 }
 
 attributeType "coverage.Coverage Item" extends StringAttribute {
-   guid "AARr8BmsQHKLOHNzOcQA"
    uuid 0x1000000000000104
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -101,7 +91,6 @@ attributeType "coverage.Coverage Item" extends StringAttribute {
 }
 
 attributeType "coverage.Namespace" extends StringAttribute {
-   guid "AAQ_v6uUrh0j39+4D5gA"
    uuid 0x1000000000000105
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -111,7 +100,6 @@ attributeType "coverage.Namespace" extends StringAttribute {
 }
 
 abstract artifactType "Abstract Coverage Unit" extends "General Data" {
-   guid "AARGznFY4jjU6VPLPLAA"
    uuid 0x000000000000004C
    attribute "coverage.Notes" 
    attribute "coverage.File Contents"
@@ -123,18 +111,15 @@ abstract artifactType "Abstract Coverage Unit" extends "General Data" {
 }
 
 artifactType "Coverage Folder" extends "Abstract Coverage Unit" {
-   guid "ALZR_AbpJTTf6QQn2iAA"
    uuid 0x000000000000004D
 }
 
 artifactType "Coverage Unit" extends "Abstract Coverage Unit" {
-   guid "ALZS3MQdCCIUvEYlZeAA"
    uuid 0x000000000000004E
    attribute "coverage.WorkProductTaskGuid"
 }
 
 attributeType "coverage.UnitTestTable" extends StringAttribute {
-   guid "AZAQd2A09VdGcvXOdCAA"
    uuid 0x100000000000037B
    dataProvider DefaultAttributeDataProvider
    min 0
