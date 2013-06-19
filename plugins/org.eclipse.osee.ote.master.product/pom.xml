@@ -32,12 +32,12 @@
 						</goals> </execution> -->
 				</executions>
 			</plugin>
-			<!-- <plugin>
+			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>${maven-antrun-version}</version>
 				<executions>
 					<execution>
-						<id>customize-lba-osee-ide</id>
+						<id>customize-osee-ote-master</id>
 						<phase>package</phase>
 						<configuration>
 							<target>
@@ -49,7 +49,7 @@
 									</classpath>
 								</taskdef>
 
-								<property name="product-name" value="lba.osee.ide.id" />
+								<property name="product-name" value="org.eclipse.osee.ote.master.product" />
 								<property name="zip-product-name" value="${product-name}" />
 								<property name="products-directory" value="${project.build.directory}/products" />
 								<property name="output-directory" value="${project.build.directory}" />
@@ -65,7 +65,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			 -->
 		</plugins>
 	</build>
 

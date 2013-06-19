@@ -46,6 +46,53 @@ public class OTEAvailableServersResource {
       return servers;
    }
    
+   @GET
+   @Produces(MediaType.TEXT_HTML)
+   public String getAsHtml() {
+      OTELookup oteLookup = OTERestApplication.getOTELookup();
+      List<OTELookupServerEntry> availableServers = oteLookup.getAvailableServers();
+     
+      StringBuilder builder = new StringBuilder();
+      builder.append("<html><body>");
+      builder.append("<table border=\"1\">");
+      
+      builder.append("<tr>\n");
+      builder.append("<th>");
+      builder.append("Station");
+      builder.append("</th>");
+      builder.append("<th>");
+      builder.append("Name");
+      builder.append("</th>");
+      builder.append("<th>");
+      builder.append("ConnectedUsers");
+      builder.append("</th>");
+      builder.append("<th>");
+      builder.append("StartTime");
+      builder.append("</th>");
+      builder.append("</tr>\n");
+      
+      for (OTELookupServerEntry entry : availableServers) {
+         builder.append("<tr>\n");
+         builder.append("<td>");
+         builder.append(entry.getStation());
+         builder.append("</td>");
+         builder.append("<td>");
+         builder.append(entry.getName());
+         builder.append("</td>");
+         builder.append("<td>");
+         builder.append(entry.getConnectedUsers());
+         builder.append("</td>");
+         builder.append("<td>");
+         builder.append(entry.getStartTime());
+         builder.append("</td>");
+         builder.append("</tr>\n");
+      }
+      builder.append("</table>");
+      builder.append("<br/>");
+      builder.append("</body></html>");
+      return builder.toString();
+   }
+   
    @POST
    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    public void updateServer(OTEServer server) throws IOException, InterruptedException, ExecutionException, ParseException, URISyntaxException {

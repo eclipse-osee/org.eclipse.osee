@@ -3,20 +3,18 @@
 
 <product name="OteMasterProduct" uid="org.eclipse.osee.ote.master.product" id="org.eclipse.osee.ote.master.rest.OTEMasterServerProduct" application="org.eclipse.osee.ote.master.app" version="1.0.0" useFeatures="true" includeLaunchers="true">
 
-
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
       <programArgs>-console</programArgs>
       <vmArgs>-Dorg.osgi.service.http.port=8008
--Dequinox.ds.debug=true
--Dequinox.ds.print=true</vmArgs>
+-Ddequinox.ds.debug=true
+-Ddequinox.ds.print=true</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
    <windowImages/>
-
 
    <launcher>
       <solaris/>
@@ -24,7 +22,6 @@
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
@@ -42,6 +39,8 @@
    <configurations>
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.http.jetty" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.http.servlet" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.osee.rest.admin" autoStart="true" startLevel="0" />
    </configurations>
 
