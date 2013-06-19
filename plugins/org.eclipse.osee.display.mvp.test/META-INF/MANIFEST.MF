@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Osee Display MVP Test (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.display.mvp.test
-Bundle-Version: 0.11.1.qualifier
+Bundle-Version: 0.12.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.display.mvp
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
