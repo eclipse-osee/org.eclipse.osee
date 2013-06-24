@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * This class is the basic unit of work for OSEE. All operations should be designed such that they can be chained and/or
@@ -37,9 +38,13 @@ public abstract class AbstractOperation implements IOperation {
    }
 
    public AbstractOperation(String operationName, String pluginId, OperationLogger logger) {
-      this.pluginId = pluginId;
       this.name = operationName;
       this.logger = logger;
+      if (Strings.isValid(pluginId)) {
+         this.pluginId = pluginId;
+      } else {
+         this.pluginId = getClass().getPackage().getName();
+      }
    }
 
    @Override
