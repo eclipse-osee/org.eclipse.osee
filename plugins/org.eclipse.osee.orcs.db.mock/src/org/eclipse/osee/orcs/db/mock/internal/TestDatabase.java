@@ -124,21 +124,26 @@ public class TestDatabase {
    }
 
    public void cleanup() {
-      //TODO issue shutdown command to server;
       if (registration != null) {
          registration.unregister();
       }
 
       System.setProperty("osee.application.server.data", "");
       System.setProperty("osee.db.embedded.server", "");
-      HyperSqlDbServer.stopServer();
-      Runtime.getRuntime().addShutdownHook(new Thread() {
-         @Override
-         public void run() {
-            if (tempFolder != null) {
-               Lib.deleteDir(tempFolder);
-            }
+      boolean isDead = HyperSqlDbServer.stopServerWithWait();
+      if (isDead) {
+         if (tempFolder != null) {
+            Lib.deleteDir(tempFolder);
          }
-      });
+      } else {
+         Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+               if (tempFolder != null) {
+                  Lib.deleteDir(tempFolder);
+               }
+            }
+         });
+      }
    }
 }

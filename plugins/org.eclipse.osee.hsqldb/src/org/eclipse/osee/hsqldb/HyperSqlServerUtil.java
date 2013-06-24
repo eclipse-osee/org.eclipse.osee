@@ -19,6 +19,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.hsqldb.Database;
 import org.hsqldb.persist.HsqlProperties;
 import org.hsqldb.server.Server;
 
@@ -63,10 +64,16 @@ public final class HyperSqlServerUtil {
    public void shutdown() {
       for (Server server : serverControls) {
          try {
-            server.shutdown();
+            server.shutdownWithCatalogs(Database.CLOSEMODE_COMPACT);
          } catch (Exception e) {
             OseeLog.log(HyperSqlDbServer.class, Level.SEVERE, e.getMessage(), e);
          }
+      }
+   }
+
+   public void testNotRunning() throws Exception {
+      for (Server server : serverControls) {
+         server.checkRunning(false);
       }
    }
 

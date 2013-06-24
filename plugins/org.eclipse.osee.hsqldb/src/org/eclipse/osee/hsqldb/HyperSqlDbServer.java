@@ -38,6 +38,12 @@ public class HyperSqlDbServer {
       instance.shutdown();
    }
 
+   public static boolean stopServerWithWait() {
+      instance.shutdown();
+      return instance.isShutdown();
+
+   }
+
    private void startServerInternal(String host, int port, int webPort, IDatabaseInfo dbInfo) throws Exception {
       OseeLog.logf(HyperSqlDbServer.class, Level.INFO,
          "Starting HyperSQL Database Server on [%s:%s] with webserver on [%s,%s]....", host, port, host, webPort);
@@ -91,6 +97,26 @@ public class HyperSqlDbServer {
          }
       }
       return knowIfServerUp;
+   }
+
+   private boolean isShutdown() {
+      boolean isDead = false;
+      int numTimes = CHECK_ALIVE_NUMBER_OF_TIMES;
+      while (!isDead && numTimes > 0) {
+         try {
+            numTimes--;
+            nwServer.testNotRunning();
+            isDead = true;
+         } catch (Exception e) {
+            isDead = false;
+            try {
+               Thread.sleep(3000);
+            } catch (InterruptedException ex) {
+               // Do nothing
+            }
+         }
+      }
+      return isDead;
    }
 
 }
