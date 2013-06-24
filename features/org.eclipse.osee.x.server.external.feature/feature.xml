@@ -41,6 +41,7 @@
       <import feature="org.eclipse.emf.ecore" version="2.8.0"/>
       <import plugin="org.apache.commons.dbcp" version="1.4.0" match="compatible"/>
       <import plugin="org.apache.commons.pool" version="1.6.0" match="compatible"/>
+      <import plugin="com.lowagie.text" version="2.0.0" match="compatible"/>
    </requires>
 
    <plugin
@@ -318,6 +319,13 @@
 
    <plugin
          id="org.apache.commons.pool"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.lowagie.text"
          download-size="0"
          install-size="0"
          version="0.0.0"
