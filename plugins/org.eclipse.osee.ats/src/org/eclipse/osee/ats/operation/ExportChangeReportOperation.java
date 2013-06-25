@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
@@ -53,16 +55,18 @@ public final class ExportChangeReportOperation extends AbstractOperation {
    private final List<TeamWorkFlowArtifact> workflows;
    private final Appendable resultFolder;
    private final boolean reverse;
+   private final boolean writeChangeReports;
 
-   public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse, Appendable resultFolder) {
+   public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse, boolean writeChangeReports, Appendable resultFolder) {
       super("Exporting Change Report(s)", Activator.PLUGIN_ID);
       this.workflows = workflows;
       this.reverse = reverse;
+      this.writeChangeReports = writeChangeReports;
       this.resultFolder = resultFolder;
    }
 
    public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse) {
-      this(workflows, reverse, new StringBuilder());
+      this(workflows, reverse, true, new StringBuilder());
    }
 
    @Override
@@ -93,12 +97,19 @@ public final class ExportChangeReportOperation extends AbstractOperation {
          if (!changes.isEmpty() && changes.size() < 4000) {
             String id =
                workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, workflow.getHumanReadableId());
-
-            Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
             String prefix = "/" + id;
-            RendererManager.diff(collector, artifactDeltas, prefix, NO_DISPLAY, true, SKIP_DIALOGS, true);
+            if (writeChangeReports) {
+
+               Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
+               RendererManager.diff(collector, artifactDeltas, prefix, NO_DISPLAY, true, SKIP_DIALOGS, true);
+            }
             String artIdsAsString = org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", artIds);
             try {
+               if (resultFolder.toString().isEmpty()) {
+                  IFolder folder = OseeData.getFolder("ids");
+                  File idsFolder = new File(folder.getLocationURI());
+                  resultFolder.append(idsFolder.getAbsolutePath());
+               }
                Lib.writeStringToFile(artIdsAsString, new File(resultFolder + prefix + "_ids.txt"));
             } catch (IOException ex) {
                OseeExceptions.wrapAndThrow(ex);
