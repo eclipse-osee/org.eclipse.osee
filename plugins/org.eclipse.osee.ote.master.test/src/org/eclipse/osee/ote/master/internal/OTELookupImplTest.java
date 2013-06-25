@@ -88,6 +88,7 @@ public class OTELookupImplTest {
       Assert.assertEquals(0, lookup.getAvailableServers().size());
    }
    
+   @Ignore
    @Test
    public void testTimeoutRemoval() throws URISyntaxException, InterruptedException {
       OTELookupImpl lookup = new OTELookupImpl();
