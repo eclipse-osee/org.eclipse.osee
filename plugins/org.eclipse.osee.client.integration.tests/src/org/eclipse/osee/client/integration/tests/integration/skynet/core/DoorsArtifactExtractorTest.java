@@ -24,13 +24,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.DoorsArtifactExtractor;
 import org.junit.Before;
-import org.junit.Rule;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.osgi.framework.Bundle;
@@ -45,6 +47,7 @@ public class DoorsArtifactExtractorTest {
    private static final String THIS_IS_A_JPEG_IMAGE_JPG = "This_is_a_JPEG_image.jpg";
    private static final String IMAGE_CONTENT = "Image Content";
    private static final String PRIME_ITEM_DIAGRAM = "Prime item diagram.";
+   private static final String COMPANY_DOCUMENTS = "Company documents.";
    private static final String[] ARTIFACT_NAMES = {
       "Door_Requirements",
       "SCOPE",
@@ -61,22 +64,28 @@ public class DoorsArtifactExtractorTest {
       IMAGE_CONTENT,
       "Paragraph Number"};
 
-   @Rule
-   public TemporaryFolder folder = new TemporaryFolder();
+   private static final String DOCUMENT_APPLICABILITY = "Document 1";
 
-   private DoorsArtifactExtractor extractor;
+   @ClassRule
+   public static TemporaryFolder folder = new TemporaryFolder();
+
+   private DoorsArtifactExtractor extractor = null;
    private RoughArtifactCollector collector;
-   private File doorHtmlExport;
+   private static File doorHtmlExport;
 
-   @Before
-   public void setUp() throws IOException {
-      extractor = new DoorsArtifactExtractor();
-      collector = new RoughArtifactCollector(null);
-
+   @BeforeClass
+   public static void setUpResources() throws IOException {
       doorHtmlExport = folder.newFile("sample_DOORS_export.htm");
       copyResource("sample_DOORS_export.htm", doorHtmlExport);
       copyResource(THIS_IS_A_JPEG_IMAGE_JPG, folder.newFile(THIS_IS_A_JPEG_IMAGE_JPG));
       copyResource(THIS_IS_A_PNG_IMAGE_PNG, folder.newFile(THIS_IS_A_PNG_IMAGE_PNG));
+   }
+
+   @Before
+   public void setUp() {
+      extractor = new DoorsArtifactExtractor();
+      collector = new RoughArtifactCollector(null);
+
    }
 
    @Test
@@ -125,6 +134,31 @@ public class DoorsArtifactExtractorTest {
 
             assertEquals("Wrong image stored in slot 0", THIS_IS_A_JPEG_IMAGE_JPG, getName(uri1));
             assertEquals("Wrong image stored in slot 1", THIS_IS_A_PNG_IMAGE_PNG, getName(uri2));
+         }
+      }
+   }
+
+   @Test
+   public void testDocumentFilter() throws Exception {
+      extractor.doExtraction(NullOperationLogger.getSingleton(), doorHtmlExport.toURI(), collector,
+         DOCUMENT_APPLICABILITY);
+      List<RoughArtifact> theOutput = collector.getRoughArtifacts();
+      assertEquals("Wrong number of artifacts detected", ARTIFACT_NAMES.length, theOutput.size());
+
+      for (int index = 0; index < ARTIFACT_NAMES.length; index++) {
+         String expectedName = ARTIFACT_NAMES[index];
+
+         RoughArtifact artifact = theOutput.get(index);
+         String actualName = artifact.getName();
+         assertEquals("Artifact Name is incorrect", expectedName, actualName);
+
+         /***********************************************************
+          * verify only the Document 1 text exists here
+          */
+         if (COMPANY_DOCUMENTS.equals(actualName)) {
+            String theHtml = artifact.getRoughAttribute(CoreAttributeTypes.HTMLContent.getName());
+            int theValue = theHtml.indexOf("ABC-DEF");
+            assertEquals("Document Applicability filter failed", theHtml.indexOf("ABC-DEF"), -1);
          }
       }
    }

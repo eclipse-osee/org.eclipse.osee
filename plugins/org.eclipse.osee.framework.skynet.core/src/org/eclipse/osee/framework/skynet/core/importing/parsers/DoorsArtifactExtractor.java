@@ -70,10 +70,16 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       CoreAttributeTypes.VerificationEvent,
       null,
       null,
-      null}; // Last one is actually a string
+      null}; // Last
+   // one
+   // is
+   // actually
+   // a
+   // string
    private String guidString = "";
    private boolean isRequirement;
    private String subsystem;
+   private String documentApplicability = "";
 
    @Override
    public String getDescription() {
@@ -255,11 +261,15 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
    @Override
    public void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector) throws Exception {
+      doExtraction(logger, source, collector, "");
+   }
 
+   public void doExtraction(OperationLogger logger, URI source, RoughArtifactCollector collector, String documentApplicabilty) throws Exception {
       /**************************************************************
        * DOORS uses non standard HTML. Read in the file and standardize it
        */
 
+      this.documentApplicability = documentApplicabilty;
       postProcessGuids.clear();
       inArtifact = false;
       theArtifact.clear();
@@ -288,7 +298,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    public void artifactCreated(Artifact theArtifact) {
       String artifactGuid = theArtifact.getGuid();
       if (postProcessGuids.contains(artifactGuid)) {
-         // need to modify the HTML so the image references the data stored in the
+         // need to modify the HTML so the image references the data stored
+         // in the
          // artifact.
          try {
             List<Integer> Ids = theArtifact.getAttributeIds(CoreAttributeTypes.ImageContent);
@@ -352,7 +363,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    }
 
    public void foundStartOfWorksheet(String sheetName) {
-      // Nothing to do in DOORS file  Leave in in case this changes (it is called at start)
+      // Nothing to do in DOORS file Leave in in case this changes (it is
+      // called at start)
    }
 
    public void processHeaderRow(String[] headerRow) {
@@ -380,13 +392,19 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       for (rowIndex = 0; rowIndex < row.length; rowIndex++) {
          RowTypeEnum rowType = rowIndexToRowTypeMap.get(rowIndex);
          if (rowType == RowTypeEnum.DOCUMENT_APPLICABILITY) {
-            String rowValue = row[rowIndex].toLowerCase();
-            if (rowValue.trim().equals("") || rowValue.trim().equals("<br></br>") || rowValue.trim().equals("<br>")) {
+            String rowValue = row[rowIndex].toLowerCase().trim();
+            if (rowValue.equals("") || rowValue.equals("<br></br>") || rowValue.equals("<br>")) {
                if (inArtifact) {
                   processArtifact();
                }
                inArtifact = false;
                isHeaderRow = true;
+            } else {
+               if (Strings.isValid(documentApplicability)) {
+                  if (rowValue.indexOf(documentApplicability.toLowerCase()) == -1) {
+                     return;
+                  }
+               }
             }
             break;
          }
@@ -606,7 +624,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                dataFound = !rest.startsWith(VERIFICATION_KEYWORDS[j]);
             }
             if (dataFound) {
-               // find the data 
+               // find the data
                int colon = rest.indexOf(':');
                if (colon == -1) {
                   if (VERIFICATION_KEYWORDS[i].equals("Criteria:")) {
@@ -710,7 +728,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             bodyEnd--;
          }
          if (bodyEnd <= bodyStart) {
-            returnValue = ""; // no body 
+            returnValue = ""; // no body
          } else {
             returnValue = returnValue.substring(bodyStart, bodyEnd);
          }

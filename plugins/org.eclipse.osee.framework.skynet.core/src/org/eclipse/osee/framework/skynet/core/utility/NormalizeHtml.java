@@ -63,6 +63,11 @@ public final class NormalizeHtml {
    private static final String rdquo = String.valueOf('\u201D');
    private static final String lsquo = String.valueOf('\u2018');
    private static final String rsquo = String.valueOf('\u2019');
+   private static final String NON_BREAK_SPACE = String.valueOf('\u00A0');
+   private static final String NON_BREAK_FIGURE_SPACE = String.valueOf('\u2007');
+   private static final String NON_BREAK_NARROW_SPACE = String.valueOf('\u202F');
+   private static final String NON_BREAK_WORD_JOINER = String.valueOf('\u2060');
+   private static final String NON_BREAK_ZERO_WIDTH = String.valueOf('\uFEFF');
 
    private NormalizeHtml() {
       // Utility Class
@@ -237,6 +242,23 @@ public final class NormalizeHtml {
       theText = theText.replaceAll(lsquo, "'");
       theText = theText.replaceAll(rsquo, "'");
       theText = theText.replaceAll("&apos;", "'");
+
+      //@formatter:off
+      /*****************************************************************************
+       * Convert the non-blocking characters to the HTML value (&nbsp;) 
+       * non-break space U+00A0 
+       * figure space U+2007 
+       * narrow no-break space U+202F 
+       * word joiner U+2060 
+       * zero width no-break space U+FEFF
+       * 
+       */
+      //@formatter:on
+      theText = theText.replaceAll(NON_BREAK_SPACE, "&nbsp;");
+      theText = theText.replaceAll(NON_BREAK_FIGURE_SPACE, "&nbsp;");
+      theText = theText.replaceAll(NON_BREAK_NARROW_SPACE, "&nbsp;");
+      theText = theText.replaceAll(NON_BREAK_WORD_JOINER, "&nbsp;");
+      theText = theText.replaceAll(NON_BREAK_ZERO_WIDTH, "&nbsp;");
       return theText;
    }
 
