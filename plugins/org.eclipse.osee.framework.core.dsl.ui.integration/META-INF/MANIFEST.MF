@@ -74,5 +74,6 @@ Require-Bundle: org.eclipse.osee.framework.core.dsl,
  org.eclipse.xtext,
  org.eclipse.ui.editors,
  org.eclipse.osee.framework.ui.skynet
-Export-Package: org.eclipse.osee.framework.core.dsl.ui.integration.operations
+Export-Package: org.eclipse.osee.framework.core.dsl.ui.integration,
+ org.eclipse.osee.framework.core.dsl.ui.integration.operations
 Service-Component: OSGI-INF/*.xml
