@@ -44,9 +44,6 @@
 		<module>../../features/org.eclipse.osee.x.server.feature</module>
 		<module>../../features/org.eclipse.osee.x.server.external.feature</module>
 
-		<module>../../features/org.eclipse.osee.x.server.legacy.feature.source</module>
-		<module>../../features/org.eclipse.osee.x.server.feature.source</module>
-
 		<module>../../plugins/org.eclipse.osee.x.server.p2</module>
 	</modules>
 

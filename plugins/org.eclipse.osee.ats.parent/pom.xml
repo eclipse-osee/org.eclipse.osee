@@ -41,10 +41,8 @@
 		<module>../../plugins/org.eclipse.osee.ats.client.demo</module>
 
 		<module>../../features/org.eclipse.osee.ats.feature</module>
-		<module>../../features/org.eclipse.osee.ats.feature.source</module>
 
 		<module>../../features/org.eclipse.osee.ats.client.demo.feature</module>
-		<module>../../features/org.eclipse.osee.ats.client.demo.feature.source</module>
 
 		<module>../../plugins/org.eclipse.osee.ats.client.integration.tests</module>
 

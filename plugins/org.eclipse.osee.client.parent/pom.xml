@@ -65,26 +65,20 @@
 
 
 		<module>../../features/org.eclipse.osee.framework.feature</module>
-		<module>../../features/org.eclipse.osee.framework.feature.source</module>
 
 		<module>../../features/org.eclipse.osee.framework.ui.feature</module>
-		<module>../../features/org.eclipse.osee.framework.ui.feature.source</module>
 
 		<module>../../features/org.eclipse.osee.define.feature</module>
-		<module>../../features/org.eclipse.osee.define.feature.source</module>
 
 		<module>../../plugins/org.eclipse.osee.client.demo</module>
 
 		<module>../../plugins/org.eclipse.osee.client.test.framework</module>
 
 		<module>../../features/org.eclipse.osee.client.test.framework.feature</module>
-		<module>../../features/org.eclipse.osee.client.test.framework.feature.source</module>
 
 		<module>../../features/org.eclipse.osee.client.demo.feature</module>
-		<module>../../features/org.eclipse.osee.client.demo.feature.source</module>
 
 		<module>../../features/org.eclipse.osee.client.feature</module>
-		<module>../../features/org.eclipse.osee.client.feature.source</module>
 
 		<module>../../plugins/org.eclipse.osee.client.integration.tests</module>
 

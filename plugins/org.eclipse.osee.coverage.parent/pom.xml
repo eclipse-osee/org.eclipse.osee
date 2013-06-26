@@ -24,12 +24,10 @@
 		<module>../../plugins/org.eclipse.osee.coverage.help.ui.test</module>
 
 		<module>../../features/org.eclipse.osee.coverage.feature</module>
-		<module>../../features/org.eclipse.osee.coverage.feature.source</module>
 
 		<module>../../plugins/org.eclipse.osee.coverage.demo</module>
 
 		<module>../../features/org.eclipse.osee.coverage.demo.feature</module>
-		<module>../../features/org.eclipse.osee.coverage.demo.feature.source</module>
 
 		<module>../../plugins/org.eclipse.osee.coverage.integration.tests</module>
 

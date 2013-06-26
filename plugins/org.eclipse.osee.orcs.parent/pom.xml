@@ -44,7 +44,6 @@
 		<module>../../plugins/org.eclipse.osee.orcs.test</module>
 
 		<module>../../features/org.eclipse.osee.orcs.feature</module>
-		<module>../../features/org.eclipse.osee.orcs.feature.source</module>
 
 		<module>../../plugins/org.eclipse.osee.orcs.p2</module>
 	</modules>

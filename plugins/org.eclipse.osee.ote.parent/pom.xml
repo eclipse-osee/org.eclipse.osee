@@ -67,9 +67,7 @@
 
 
 		<module>../../features/org.eclipse.osee.ote.feature</module>
-		<module>../../features/org.eclipse.osee.ote.feature.source</module>
 		<module>../../features/org.eclipse.osee.client.ote.feature</module>
-		<module>../../features/org.eclipse.osee.client.ote.feature.source</module>
 
 		<module>../../plugins/org.eclipse.osee.ote.p2</module>
 	</modules>

@@ -18,16 +18,13 @@
 
 	<modules>
 		<module>../../features/org.eclipse.osee.core.runtime.feature</module>
-		<module>../../features/org.eclipse.osee.core.runtime.feature.source</module>
 
 		<module>../../features/org.eclipse.osee.core.feature</module>
-		<module>../../features/org.eclipse.osee.core.feature.source</module>
 
 		<module>../../plugins/org.eclipse.osee.framework.lifecycle</module>
 		<module>../../plugins/org.eclipse.osee.framework.lifecycle.test</module>
 
 		<module>../../features/org.eclipse.osee.core.plugin.feature</module>
-		<module>../../features/org.eclipse.osee.core.plugin.feature.source</module>
 
 		<module>../../plugins/org.eclipse.osee.framework.jini</module>
 
@@ -37,7 +34,6 @@
 		<module>../../plugins/org.eclipse.osee.framework.plugin.core</module>
 
 		<module>../../features/org.eclipse.osee.core.ui.feature</module>
-		<module>../../features/org.eclipse.osee.core.ui.feature.source</module>
 
 		<module>../../plugins/org.eclipse.osee.framework.ui.plugin</module>
 		<module>../../plugins/org.eclipse.osee.framework.ui.swt</module>
