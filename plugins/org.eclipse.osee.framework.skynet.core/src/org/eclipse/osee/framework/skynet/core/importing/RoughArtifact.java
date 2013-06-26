@@ -39,15 +39,19 @@ public class RoughArtifact {
    private final Collection<RoughArtifact> children;
    private IArtifactType primaryArtifactType;
 
-   public RoughArtifact(RoughArtifactKind roughArtifactKind, String name) throws OseeCoreException {
-      this(roughArtifactKind);
-      addAttribute("Name", name);
-   }
-
-   public RoughArtifact(RoughArtifactKind roughArtifactKind) {
+   public RoughArtifact(RoughArtifactKind roughArtifactKind, String name) {
       this.attributes = new RoughAttributeSet();
       this.children = new ArrayList<RoughArtifact>();
       this.roughArtifactKind = roughArtifactKind;
+      setName(name);
+   }
+
+   public RoughArtifact(RoughArtifactKind roughArtifactKind) {
+      this(roughArtifactKind, "unnamed");
+   }
+
+   public void setName(String name) {
+      attributes.setAttribute(CoreAttributeTypes.Name.getName(), name);
    }
 
    public void clear() {
@@ -83,6 +87,13 @@ public class RoughArtifact {
 
    public void addAttribute(IAttributeType attrType, String value) throws OseeCoreException {
       addAttribute(attrType.getName(), value);
+   }
+
+   /**
+    * This method will set as a singleton collection the value for the typeName, over writing whatever was there
+    */
+   public void setAttribute(String typeName, String value) {
+      attributes.setAttribute(typeName, value);
    }
 
    public void addAttribute(String typeName, String value) throws OseeCoreException {

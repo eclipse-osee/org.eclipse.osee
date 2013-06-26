@@ -16,19 +16,22 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.importing.RoughAttributeSet.RoughAttribute;
 
 public final class RoughAttributeSet implements Iterable<Entry<CaseInsensitiveString, Collection<RoughAttribute>>> {
 
-   private final HashCollection<CaseInsensitiveString, RoughAttribute> attributes =
-      new HashCollection<CaseInsensitiveString, RoughAttribute>();
+   private final Map<CaseInsensitiveString, Collection<RoughAttribute>> attributes =
+      new LinkedHashMap<CaseInsensitiveString, Collection<RoughAttribute>>();
 
    public void clear() {
       attributes.clear();
@@ -36,14 +39,28 @@ public final class RoughAttributeSet implements Iterable<Entry<CaseInsensitiveSt
 
    public void addAttribute(String name, String... values) {
       for (String value : values) {
-         attributes.put(new CaseInsensitiveString(name), new RoughAttribute(value));
+         put(name, new RoughAttribute(value));
       }
    }
 
    public void addAttribute(String name, URI... uris) {
       for (URI uri : uris) {
-         attributes.put(new CaseInsensitiveString(name), new RoughAttribute(uri));
+         put(name, new RoughAttribute(uri));
       }
+   }
+
+   public void setAttribute(String type, String value) {
+      attributes.put(new CaseInsensitiveString(type), Collections.singleton(new RoughAttribute(value)));
+   }
+
+   private void put(String name, RoughAttribute attr) {
+      CaseInsensitiveString key = new CaseInsensitiveString(name);
+      Collection<RoughAttribute> collection = attributes.get(key);
+      if (collection == null) {
+         collection = new LinkedList<RoughAttribute>();
+         attributes.put(key, collection);
+      }
+      collection.add(attr);
    }
 
    public Set<String> getAttributeTypeNames() {
@@ -72,7 +89,7 @@ public final class RoughAttributeSet implements Iterable<Entry<CaseInsensitiveSt
    }
 
    public Collection<String> getAttributeValueList(String attributeTypeName) {
-      Collection<RoughAttribute> roughAttributes = attributes.getValues(new CaseInsensitiveString(attributeTypeName));
+      Collection<RoughAttribute> roughAttributes = attributes.get(new CaseInsensitiveString(attributeTypeName));
       Collection<String> values = new ArrayList<String>();
       for (RoughAttribute attribute : roughAttributes) {
          if (!attribute.hasURI()) {
@@ -83,11 +100,12 @@ public final class RoughAttributeSet implements Iterable<Entry<CaseInsensitiveSt
    }
 
    public Collection<URI> getURIAttributes() {
-      Collection<RoughAttribute> roughAttributes = attributes.getValues();
       Collection<URI> values = new ArrayList<URI>();
-      for (RoughAttribute attribute : roughAttributes) {
-         if (attribute.hasURI()) {
-            values.add(attribute.getURI());
+      for (Collection<RoughAttribute> attributeSets : attributes.values()) {
+         for (RoughAttribute attribute : attributeSets) {
+            if (attribute.hasURI()) {
+               values.add(attribute.getURI());
+            }
          }
       }
       return values;

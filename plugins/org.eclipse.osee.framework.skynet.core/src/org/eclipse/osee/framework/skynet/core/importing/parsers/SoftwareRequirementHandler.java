@@ -48,6 +48,6 @@ public abstract class SoftwareRequirementHandler extends WordOutlineExtractorDel
          roughArtifact.setRoughArtifactKind(RoughArtifactKind.SECONDARY);
       }
 
-      roughArtifact.addAttribute("Name", text.toString().trim());
+      roughArtifact.setName(text.toString().trim());
    }
 }

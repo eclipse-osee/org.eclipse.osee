@@ -235,16 +235,11 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             if (title.equals("")) {
                title = "empty_title";
             }
-            try {
-               RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.CONTAINER);
-               roughArtifact.addAttribute(CoreAttributeTypes.Name, title.trim());
-               roughArtifact.setGuid(GUID.create());
-               roughArtifact.setSectionNumber("0");
-               collector.addRoughArtifact(roughArtifact);
-               isTitle = false;
-            } catch (OseeCoreException ex) {
-               // do nothing
-            }
+            RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.CONTAINER, title.trim());
+            roughArtifact.setGuid(GUID.create());
+            roughArtifact.setSectionNumber("0");
+            collector.addRoughArtifact(roughArtifact);
+            isTitle = false;
          }
       }
 
@@ -482,10 +477,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    }
 
    private void processArtifact() throws OseeCoreException {
-      RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY);
+      RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY, paragraphName.trim());
       roughArtifact.setSectionNumber(paragraphNumber.trim());
       roughArtifact.addAttribute(CoreAttributeTypes.ParagraphNumber, paragraphNumber);
-      roughArtifact.addAttribute(CoreAttributeTypes.Name, paragraphName.trim());
       if (!isRequirement) {
          roughArtifact.setPrimaryArtifactType(CoreArtifactTypes.HeadingHTML);
          roughArtifact.setRoughArtifactKind(RoughArtifactKind.SECONDARY);

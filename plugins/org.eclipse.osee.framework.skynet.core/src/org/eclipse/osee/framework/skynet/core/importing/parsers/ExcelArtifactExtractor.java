@@ -201,7 +201,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
                            roughArtifact.addAttribute(CoreAttributeTypes.ParagraphNumber, rowValue);
                            break;
                         case ARTIFACT_NAME:
-                           roughArtifact.addAttribute(CoreAttributeTypes.Name, rowValue);
+                           roughArtifact.setName(rowValue);
                            break;
                         case GUID:
                            roughArtifact.setGuid(rowValue);

@@ -316,7 +316,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    }
 
    public void processHeadingText(RoughArtifact roughArtifact, String headingText) throws OseeCoreException {
-      roughArtifact.addAttribute("Name", headingText.trim());
+      roughArtifact.setName(headingText.trim());
    }
 
    /**
