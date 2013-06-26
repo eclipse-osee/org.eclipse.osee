@@ -21,7 +21,7 @@
 		<git-repo-root>file:../../..</git-repo-root>
 		<build-alias>-DEV</build-alias>
 
-		<tycho-version>0.16.0</tycho-version>
+		<tycho-version>0.18.0</tycho-version>
 		<maven-antrun-version>1.6</maven-antrun-version>
 		<ant-contrib-version>1.0b3</ant-contrib-version>
 		<jsch-version>0.1.42</jsch-version>
