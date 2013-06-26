@@ -96,8 +96,6 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
    private static final String NO_ADDRESSING_ARTIFACTS_A = String.format(NO_ADDRESSING_QUERY, "a_art_id");
    private static final String NO_ADDRESSING_ARTIFACTS_B = String.format(NO_ADDRESSING_QUERY, "b_art_id");
 
-   public static final String DELETE_FROM_TXS = "DELETE FROM osee_txs where gamma_id = ? AND transaction_id = ?";
-
    public static final String DEL_FROM_TXS_W_SPEC_BRANCH_ID =
       "DELETE FROM osee_txs where gamma_id = ? AND transaction_id = ? AND branch_id = ?";
 
@@ -243,12 +241,12 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
    private void deleteInvalidRelationAddressing() throws OseeCoreException {
       List<Object[]> rowsToDelete = new LinkedList<Object[]>();
       for (LocalRelationLink relLink : deleteMap.allValues()) {
-         rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId});
+         rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId, relLink.branchId});
       }
 
       monitor.subTask("Deleting Relation Addressing with " + TxChange.DELETED + " Artifact");
       if (rowsToDelete.size() != 0) {
-         ConnectionHandler.runBatchUpdate(DELETE_FROM_TXS, rowsToDelete);
+         ConnectionHandler.runBatchUpdate(DEL_FROM_TXS_W_SPEC_BRANCH_ID, rowsToDelete);
       }
       deleteMap = null;
 
@@ -278,7 +276,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
       sbFull.append(AHTML.endMultiColumnTable());
       XResultData rd = new XResultData();
       rd.addRaw(sbFull.toString());
-      XResultDataUI.report(rd,getVerifyTaskName(), Manipulations.RAW_HTML);
+      XResultDataUI.report(rd, getVerifyTaskName(), Manipulations.RAW_HTML);
       monitor.worked(calculateWork(0.10));
    }
 
@@ -343,8 +341,8 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
 
    @SuppressWarnings("unused")
    private void displayUnexpectedRelLinks(LocalRelationLink relationLink) {
-      System.out.println("gam_id \t transaction_id \t rel_link_id \t branch_d \t a_art_id \t b_art_id \t deleted_tran \t commit trans \t commit trans mod type");
-      System.out.println(relationLink.toString());
+      log("gam_id \t transaction_id \t rel_link_id \t branch_d \t a_art_id \t b_art_id \t deleted_tran \t commit trans \t commit trans mod type");
+      log(relationLink.toString());
    }
 
    private boolean isLoadingBrokenRelationsNecessary() {
