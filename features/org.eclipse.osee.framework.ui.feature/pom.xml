@@ -14,4 +14,28 @@
 	<packaging>eclipse-feature</packaging>
 	<name>OSEE Framework Ui Feature (Incubation)</name>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-source-feature-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<id>source-feature</id>
+						<goals>
+							<goal>source-feature</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<plugin id="org.eclipse.osee.framework.ui.product" />
+								<plugin id="org.eclipse.osee.framework.dev.help.ui" />
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

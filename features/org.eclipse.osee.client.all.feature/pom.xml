@@ -14,4 +14,42 @@
 	<packaging>eclipse-feature</packaging>
 	<name>OSEE Client All Feature (Incubation)</name>
 
+	<profiles>
+		<profile>
+			<id>osee-client-skip-source-features</id>
+			<activation>
+				<property>
+					<name>osee-build-stage</name>
+					<value>osee-client-products</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.eclipse.tycho.extras</groupId>
+						<artifactId>tycho-source-feature-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<id>source-feature</id>
+								<goals>
+									<goal>source-feature</goal>
+								</goals>
+								<configuration>
+									<excludes>
+										<feature id="org.eclipse.osee.client.feature" />
+										<feature id="org.eclipse.osee.client.ote.feature" />
+										<feature id="org.eclipse.osee.core.runtime.feature" />
+										<feature id="org.eclipse.osee.coverage.feature" />
+										<feature id="org.eclipse.osee.ats.feature" />
+										<feature id="org.eclipse.osee.ats.client.demo.feature" />
+									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

@@ -14,4 +14,38 @@
 	<packaging>eclipse-feature</packaging>
 	<name>OSEE Client External Feature (Incubation)</name>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-source-feature-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<id>source-feature</id>
+						<goals>
+							<goal>source-feature</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<plugin id="org.apache.xerces" />
+								<plugin id="com.sun.jersey" />
+								<plugin id="org.jvnet.mimepull" />
+								<plugin id="javax.xml" />
+								<plugin id="com.sun.jersey.client.apache" />
+								<plugin id="org.apache.xml.resolver" />
+								<plugin id="org.apache.xml.serializer" />
+								<plugin id="org.eclipse.osee.logback.config" />
+								<plugin id="org.aopalliance" />
+								<plugin id="jms.libraries" />
+								<plugin id="net.jini" />
+								<plugin id="org.json" />
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

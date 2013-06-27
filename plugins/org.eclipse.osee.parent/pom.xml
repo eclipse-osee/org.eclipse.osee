@@ -22,6 +22,8 @@
 		<build-alias>-DEV</build-alias>
 
 		<tycho-version>0.18.0</tycho-version>
+		<tycho-extras-version>0.18.0</tycho-extras-version>
+		
 		<maven-antrun-version>1.6</maven-antrun-version>
 		<ant-contrib-version>1.0b3</ant-contrib-version>
 		<jsch-version>0.1.42</jsch-version>
@@ -34,6 +36,7 @@
 		<checkstyle-version>2.6</checkstyle-version>
 		<javadoc-version>2.8</javadoc-version>
 		<build-helper-maven-plugin-version>1.7</build-helper-maven-plugin-version>
+		<maven-resources-version>2.5</maven-resources-version>
 
 		<platform-version-name>kepler</platform-version-name>
 		<orbit-version>R20130517111416</orbit-version>
@@ -179,7 +182,62 @@
 					</environments>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<executions>
+					<execution>
+						<id>plugin-source</id>
+						<goals>
+							<goal>plugin-source</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-source-feature-plugin</artifactId>
+				<version>${tycho-extras-version}</version>
+				<executions>
+					<execution>
+						<id>source-feature</id>
+						<phase>package</phase>
+						<goals>
+							<goal>source-feature</goal>
+						</goals>
+					</execution>
+				</executions>
+				<!-- optional excludes -->
+				<configuration>
+					<excludes>
+						<plugin id="sourcefeature.bundle.nosource" />
+						<feature id="sourcefeature.feature.nosource" />
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-plugin</artifactId>
+				<version>${tycho-extras-version}</version>
+				<executions>
+					<execution>
+						<id>default-p2-metadata-default</id>
+						<configuration>
+							<attachP2Metadata>false</attachP2Metadata>
+						</configuration>
+					</execution>
+					<execution>
+						<id>attach-p2-metadata</id>
+						<goals>
+							<goal>p2-metadata</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+		
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -192,24 +250,28 @@
 						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
-				<!-- enable source bundle generation -->
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-source-plugin</artifactId>
 					<version>${tycho-version}</version>
-					<executions>
-						<execution>
-							<id>plugin-source</id>
-							<goals>
-								<goal>plugin-source</goal>
-							</goals>
-						</execution>
-					</executions>
+					<configuration>
+						<strictSrcIncludes>false</strictSrcIncludes>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho.extras</groupId>
+					<artifactId>tycho-source-feature-plugin</artifactId>
+					<version>${tycho-extras-version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-p2-plugin</artifactId>
+					<version>${tycho-version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.5</version>
+					<version>${maven-resources-version}</version>
 					<configuration>
 						<encoding>ISO-8859-1</encoding>
 					</configuration>
@@ -274,7 +336,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.8</version>
+				<version>${javadoc-version}</version>
 			</plugin>
 		</plugins>
 	</reporting>
@@ -545,7 +607,7 @@
 			</activation>
 			<properties>
 				<nebula-site>http://download.eclipse.org/technology/nebula/snapshot</nebula-site>
-				<!--<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>-->
+				<!--<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site> -->
 				<subversive-site>http://download.eclipse.org/technology/subversive/${subversive-version}/update-site</subversive-site>
 				<polarion-site>http://community.polarion.com/projects/subversive/download/eclipse/${polarion-version}/update-site</polarion-site>
 				<egit-site>http://download.eclipse.org/egit/updates</egit-site>
@@ -556,11 +618,8 @@
 					<layout>p2</layout>
 					<url>${nebula-site}</url>
 				</repository>
-				<!--<repository>
-					<id>wikitext</id>
-					<layout>p2</layout>
-					<url>${wikitext-site}</url>
-				</repository> -->
+				<!--<repository> <id>wikitext</id> <layout>p2</layout> <url>${wikitext-site}</url> 
+					</repository> -->
 				<repository>
 					<id>polarion</id>
 					<layout>p2</layout>
