@@ -2,7 +2,8 @@
 <feature
       id="org.eclipse.osee.ote.master.feature"
       label="Feature"
-      version="0.11.1.qualifier">
+      version="0.11.1.qualifier"
+      provider-name="Eclipse Open System Engineering Environment">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]

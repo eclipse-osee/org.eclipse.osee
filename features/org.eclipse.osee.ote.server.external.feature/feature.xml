@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.osee.ote.server.external.feature"
-      label="Feature"
-      version="0.11.1.qualifier">
+      label="OTE Server External Feature"
+      version="0.11.1.qualifier"
+      provider-name="Eclipse Open System Engineering Environment">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]

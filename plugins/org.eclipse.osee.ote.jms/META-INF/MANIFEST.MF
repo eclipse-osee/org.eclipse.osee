@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Node
+Bundle-Name: OTE JMS (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.jms
 Bundle-Version: 0.11.1.qualifier
-Bundle-Vendor: The Boeing Company
+Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.connection.service,
  org.eclipse.osee.framework.core.exception,

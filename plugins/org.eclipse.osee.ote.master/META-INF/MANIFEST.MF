@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Master
+Bundle-Name: OTE Master (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.master
 Bundle-Version: 0.11.1.qualifier
 Require-Bundle: org.eclipse.core.runtime
@@ -8,3 +8,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.ote.master
 Service-Component: OSGI-INF/*.xml
+Bundle-Vendor: Eclipse Open System Engineering Environment

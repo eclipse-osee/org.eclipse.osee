@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Ote
+Bundle-Name: OTE (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote
 Bundle-Version: 0.11.1.qualifier
 Require-Bundle: org.eclipse.core.runtime
@@ -10,3 +10,4 @@ Import-Package: org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.io.streams
 Service-Component: OSGI-INF/*.xml
 Export-Package: org.eclipse.osee.ote
+Bundle-Vendor: Eclipse Open System Engineering Environment

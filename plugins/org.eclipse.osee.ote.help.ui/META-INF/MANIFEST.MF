@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: OSEE OTE Help
+Bundle-Name: OSEE OTE Help (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.help.ui;singleton:=true
 Bundle-Version: 0.11.1.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment

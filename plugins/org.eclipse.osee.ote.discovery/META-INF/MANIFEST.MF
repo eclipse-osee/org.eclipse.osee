@@ -10,3 +10,4 @@ Import-Package: org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.messaging.services,
  org.eclipse.osee.framework.messaging.services.messages
 Export-Package: org.eclipse.osee.ote.discovery
+Bundle-Vendor: Eclipse Open System Engineering Environment

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Rest
+Bundle-Name: OTE Master Rest (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.master.rest;singleton:=true
 Bundle-Version: 0.11.1.qualifier
 Require-Bundle: org.eclipse.core.runtime
@@ -12,3 +12,4 @@ Import-Package: javax.ws.rs,
  org.eclipse.osee.ote.master,
  org.eclipse.osee.ote.master.rest.model
 Service-Component: OSGI-INF/*.xml
+Bundle-Vendor: Eclipse Open System Engineering Environment
