@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.validator;
 
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.List;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
@@ -22,14 +23,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public class AtsXComboBooleanValidator extends AtsXWidgetValidator {
 
-   public interface IAllowedBooleanValueProvider {
-      Collection<String> getValues() throws OseeCoreException;
-   }
+   private static final List<String> TRUE_FALSE_VALUES = Arrays.asList("true", "false");
 
-   private final IAllowedBooleanValueProvider provider;
-
-   public AtsXComboBooleanValidator(IAllowedBooleanValueProvider provider) {
-      this.provider = provider;
+   public AtsXComboBooleanValidator() {
    }
 
    @Override
@@ -50,8 +46,7 @@ public class AtsXComboBooleanValidator extends AtsXWidgetValidator {
       return result;
    }
 
-   private boolean isValid(String value) throws OseeCoreException {
-      Collection<String> allowed = provider.getValues();
-      return allowed.contains(value);
+   private boolean isValid(String value) {
+      return TRUE_FALSE_VALUES.contains(value);
    }
 }

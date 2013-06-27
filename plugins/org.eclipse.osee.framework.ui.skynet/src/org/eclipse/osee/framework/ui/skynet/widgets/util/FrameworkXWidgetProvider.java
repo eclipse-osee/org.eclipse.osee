@@ -255,9 +255,9 @@ public final class FrameworkXWidgetProvider {
             xWidget = combo;
             if (Strings.isValid(xWidgetLayoutData.getDefaultValue())) {
                String value = xWidgetLayoutData.getDefaultValue();
-               if ("true".equals(value) || "yes".equals(value)) {
+               if ("true".equals(value)) {
                   combo.set("true");
-               } else if ("false".equals(value) || "no".equals(value)) {
+               } else if ("false".equals(value)) {
                   combo.set("false");
                } else {
                   combo.set("");
