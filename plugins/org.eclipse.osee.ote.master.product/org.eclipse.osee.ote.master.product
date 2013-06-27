@@ -17,7 +17,9 @@
    <windowImages/>
 
    <launcher>
-      <solaris/>
+      <linux useIco="false"/>
+      <macosx useIco="false"/>
+      <solaris useIco="false"/>
       <win useIco="false">
          <bmp/>
       </win>
