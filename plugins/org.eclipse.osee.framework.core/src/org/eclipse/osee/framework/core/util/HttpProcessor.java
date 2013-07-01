@@ -167,6 +167,7 @@ public class HttpProcessor {
             try {
                HttpMethodParams params = new HttpMethodParams();
                params.setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(0, false));
+               params.setSoTimeout(1000);
                method.setParams(params);
                int responseCode = executeMethod(url, method);
                if (responseCode == HttpURLConnection.HTTP_NOT_FOUND || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_ACCEPTED || responseCode == HttpURLConnection.HTTP_OK) {
