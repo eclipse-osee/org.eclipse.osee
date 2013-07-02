@@ -170,6 +170,7 @@ artifactType "Work Package" extends "Artifact" {
 	uuid 0x0000000000000322
 	attribute "ats.Work Package Id"
 	attribute "ats.Work Package Type"
+	attribute "ats.Work Package Program"
 	attribute "ats.Activity Id"
 	attribute "ats.Activity Name"
 	attribute "ats.Active"
