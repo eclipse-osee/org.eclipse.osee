@@ -16,7 +16,7 @@
 <stringAttribute key="org.eclipse.cdt.launch.launchGroup.3.actionParam" value="5"/>
 <stringAttribute key="org.eclipse.cdt.launch.launchGroup.3.enabled" value="true"/>
 <stringAttribute key="org.eclipse.cdt.launch.launchGroup.3.mode" value="default"/>
-<stringAttribute key="org.eclipse.cdt.launch.launchGroup.3.name" value="OSEE_Application_Server_[H2]"/>
+<stringAttribute key="org.eclipse.cdt.launch.launchGroup.3.name" value="OSEE_Application_Server_[HSQLDB]"/>
 <stringAttribute key="org.eclipse.cdt.launch.launchGroup.4.action" value="WAIT_FOR_TERMINATION"/>
 <stringAttribute key="org.eclipse.cdt.launch.launchGroup.4.enabled" value="true"/>
 <stringAttribute key="org.eclipse.cdt.launch.launchGroup.4.mode" value="default"/>
