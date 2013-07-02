@@ -90,7 +90,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       if (input instanceof SMAEditor) {
          this.editor = (SMAEditor) input;
          if (getTreeViewer() != null) {
-            if (editor != null) {
+            if (editor != null && getTreeViewer() != null && Widgets.isAccessible(getTreeViewer().getTree())) {
                getTreeViewer().setInput(editor);
                IAtsStateDefinition stateDef =
                   WorkflowManager.getCurrentAtsWorkPage((editor).getAwa()).getStateDefinition();
