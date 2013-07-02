@@ -3,6 +3,7 @@
 <setAttribute key="additional_plugins">
 <setEntry value="com.google.guava:12.0.0.v201212092141:default:false"/>
 </setAttribute>
+<booleanAttribute key="append.args" value="true"/>
 <booleanAttribute key="askclear" value="true"/>
 <booleanAttribute key="automaticAdd" value="false"/>
 <booleanAttribute key="automaticValidate" value="true"/>
@@ -20,7 +21,7 @@
 <stringAttribute key="location" value="${workspace_loc}/runtime-workspace"/>
 <booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-debug"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -debug"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M&#13;&#10;-XX:MaxPermSize=256m&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.application.server=http://localhost:8089&#13;&#10;-Dosee.authentication.protocol=demo"/>
 <stringAttribute key="pde.version" value="3.3"/>
