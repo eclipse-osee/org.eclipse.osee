@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.DoorsArtifactExtractor;
 import org.junit.Before;
@@ -63,6 +64,16 @@ public class DoorsArtifactExtractorTest {
       "HTML Content",
       IMAGE_CONTENT,
       "Paragraph Number"};
+
+   private static final RoughArtifactKind[] ARTIFACT_TYPES = {
+      RoughArtifactKind.CONTAINER,
+      RoughArtifactKind.SECONDARY,
+      RoughArtifactKind.SECONDARY,
+      RoughArtifactKind.SECONDARY,
+      RoughArtifactKind.SECONDARY,
+      RoughArtifactKind.SECONDARY,
+      RoughArtifactKind.PRIMARY,
+      RoughArtifactKind.SECONDARY,};
 
    private static final String DOCUMENT_APPLICABILITY = "Document 1";
 
@@ -102,6 +113,10 @@ public class DoorsArtifactExtractorTest {
          RoughArtifact artifact = theOutput.get(index);
          String actualName = artifact.getName();
          assertEquals("Artifact Name is incorrect", expectedName, actualName);
+
+         RoughArtifactKind expectedType = ARTIFACT_TYPES[index];
+         RoughArtifactKind actualType = artifact.getRoughArtifactKind();
+         assertEquals("Artifact Type is incorrect", expectedType, actualType);
 
          /***********************************************************
           * Prime item diagram. is checked here because it is the most complicated artifact in the example
@@ -157,7 +172,6 @@ public class DoorsArtifactExtractorTest {
           */
          if (COMPANY_DOCUMENTS.equals(actualName)) {
             String theHtml = artifact.getRoughAttribute(CoreAttributeTypes.HTMLContent.getName());
-            int theValue = theHtml.indexOf("ABC-DEF");
             assertEquals("Document Applicability filter failed", theHtml.indexOf("ABC-DEF"), -1);
          }
       }

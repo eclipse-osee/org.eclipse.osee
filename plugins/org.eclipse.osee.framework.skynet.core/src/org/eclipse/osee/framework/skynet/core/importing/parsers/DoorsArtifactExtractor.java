@@ -70,16 +70,84 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       CoreAttributeTypes.VerificationEvent,
       null,
       null,
-      null}; // Last
-   // one
-   // is
-   // actually
-   // a
-   // string
+      null}; // Last one is actually a string
    private String guidString = "";
    private boolean isRequirement;
    private String subsystem;
    private String documentApplicability = "";
+   private DataTypeEnum lastDataType = DataTypeEnum.OTHER;
+
+   private static enum RowTypeEnum {
+      ID("ID"),
+      REQUIREMENTS("Requirements"),
+      OBJECT_NUMBER("Object Number"),
+      IS_REQ("Req?"),
+      PARENT_ID("Parent ID"),
+      PARAGRAPH_HEADING("Paragraph Heading"),
+      DOCUMENT_APPLICABILITY("Document Applicability"),
+      VERIFICATION_CRITERIA("Verification Criteria (V-PIDS_Verification)"),
+      CHANGE_STATUS("Change Status"),
+      OBJECT_HEADING("Proposed Object Heading"),
+      OBJECT_TEXT("Proposed Object Text"),
+      CHANGE_RATIONALE("Change Rationale"),
+      LINKS("Links"),
+      GUID("OSEE GUID"),
+      SUBSYSTEM("Subsystem"),
+      DATA_TYPE("Data Type"),
+      OTHER("");
+
+      private final static Map<String, RowTypeEnum> rawStringToRowType = new HashMap<String, RowTypeEnum>();
+
+      public String _rowType;
+
+      RowTypeEnum(String rowType) {
+         _rowType = rowType;
+      }
+
+      public static synchronized RowTypeEnum fromString(String value) {
+         if (rawStringToRowType.isEmpty()) {
+            for (RowTypeEnum enumStatus : RowTypeEnum.values()) {
+               RowTypeEnum.rawStringToRowType.put(enumStatus._rowType, enumStatus);
+            }
+         }
+         RowTypeEnum returnVal = rawStringToRowType.get(value);
+         if (returnVal == null) {
+            if (value.indexOf("Requirements") != -1) {
+               returnVal = REQUIREMENTS;
+            }
+         }
+         return returnVal != null ? returnVal : OTHER;
+      }
+
+   }
+
+   private static enum DataTypeEnum {
+      HEADING("Heading"),
+      INFORMATION("Information"),
+      REQUIREMENT("Requirement"),
+      TABLE("Table"),
+      FIGURE("Figure"),
+      LIST("List"),
+      NOT_DEFINED("Not Defined"),
+      OTHER("");
+
+      public String _dataType;
+      private final static Map<String, DataTypeEnum> rawStringToDataType = new HashMap<String, DataTypeEnum>();
+
+      DataTypeEnum(String dataType) {
+         _dataType = dataType;
+      }
+
+      public static synchronized DataTypeEnum fromString(String value) {
+         if (rawStringToDataType.isEmpty()) {
+            for (DataTypeEnum enumStatus : DataTypeEnum.values()) {
+               DataTypeEnum.rawStringToDataType.put(enumStatus._dataType, enumStatus);
+            }
+         }
+         DataTypeEnum returnVal = rawStringToDataType.get(value);
+         return returnVal != null ? returnVal : OTHER;
+      }
+   }
 
    @Override
    public String getDescription() {
@@ -290,8 +358,11 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       SAXParser parser = new SAXParser();
       Handler theHandler = new Handler();
       parser.setContentHandler(theHandler);
-      parser.parse(fileName);
-
+      try {
+         parser.parse(fileName);
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
    }
 
    @Override
@@ -319,49 +390,6 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       }
    }
 
-   private static enum RowTypeEnum {
-      ID("ID"),
-      REQUIREMENTS("Requirements"),
-      OBJECT_NUMBER("Object Number"),
-      IS_REQ("Req?"),
-      PARENT_ID("Parent ID"),
-      PARAGRAPH_HEADING("Paragraph Heading"),
-      DOCUMENT_APPLICABILITY("Document Applicability"),
-      VERIFICATION_CRITERIA("Verification Criteria (V-PIDS_Verification)"),
-      CHANGE_STATUS("Change Status"),
-      OBJECT_HEADING("Proposed Object Heading"),
-      OBJECT_TEXT("Proposed Object Text"),
-      CHANGE_RATIONALE("Change Rationale"),
-      LINKS("Links"),
-      GUID("OSEE GUID"),
-      SUBSYSTEM("Subsystem"),
-      OTHER("");
-
-      private final static Map<String, RowTypeEnum> rawStringToRowType = new HashMap<String, RowTypeEnum>();
-
-      public String _rowType;
-
-      RowTypeEnum(String rowType) {
-         _rowType = rowType;
-      }
-
-      public static synchronized RowTypeEnum fromString(String value) {
-         if (rawStringToRowType.isEmpty()) {
-            for (RowTypeEnum enumStatus : RowTypeEnum.values()) {
-               RowTypeEnum.rawStringToRowType.put(enumStatus._rowType, enumStatus);
-            }
-         }
-         RowTypeEnum returnVal = rawStringToRowType.get(value);
-         if (returnVal == null) {
-            if (value.indexOf("Requirements") != -1) {
-               returnVal = REQUIREMENTS;
-            }
-         }
-         return returnVal != null ? returnVal : OTHER;
-      }
-
-   }
-
    public void foundStartOfWorksheet(String sheetName) {
       // Nothing to do in DOORS file Leave in in case this changes (it is
       // called at start)
@@ -387,7 +415,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       /***************************************************************
        * First check the document applicability box, if it is empty this is a header row
        */
-      boolean isHeaderRow = false;
+      boolean isHeaderRow = false, foundDataType = false;
       int rowIndex;
       for (rowIndex = 0; rowIndex < row.length; rowIndex++) {
          RowTypeEnum rowType = rowIndexToRowTypeMap.get(rowIndex);
@@ -460,11 +488,48 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                   break;
 
                case IS_REQ:
-                  isRequirement = rowValue.trim().equals("True");
+                  if (!foundDataType) {
+                     isRequirement = rowValue.trim().equals("True");
+                  }
                   break;
 
                case SUBSYSTEM:
                   subsystem = rowValue.trim();
+                  break;
+
+               case DATA_TYPE:
+                  foundDataType = true;
+                  DataTypeEnum dataType = DataTypeEnum.fromString(rowValue.trim());
+                  switch (dataType) {
+                     case HEADING:
+                        isRequirement = false;
+                        lastDataType = DataTypeEnum.HEADING;
+                        break;
+
+                     case REQUIREMENT:
+                        isRequirement = true;
+                        lastDataType = DataTypeEnum.REQUIREMENT;
+                        break;
+
+                     case TABLE:
+                     case INFORMATION:
+                     case LIST:
+                     case FIGURE:
+                        isRequirement = lastDataType.equals(DataTypeEnum.REQUIREMENT);
+                        break;
+
+                     case NOT_DEFINED:
+                        // bad row -- clear the artifact and terminate processing
+                        inArtifact = false;
+                        theArtifact.clear();
+                        return;
+
+                     case OTHER:
+                        foundDataType = false;
+                        lastDataType = DataTypeEnum.OTHER;
+                        break;
+                  }
+
                   break;
 
                case CHANGE_STATUS:
@@ -495,6 +560,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    }
 
    private void processArtifact() throws OseeCoreException {
+      if (theArtifact.size() == 0) {
+         return;
+      }
       RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY, paragraphName.trim());
       roughArtifact.setSectionNumber(paragraphNumber.trim());
       roughArtifact.addAttribute(CoreAttributeTypes.ParagraphNumber, paragraphNumber);
