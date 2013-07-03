@@ -221,6 +221,7 @@ public class AtsClientImpl implements IAtsClient {
    public void invalidateAllCaches() {
       invalidateConfigCache();
       invalidateWorkDefinitionCache();
+      versionService.invalidateVersionCache();
    }
 
    @Override

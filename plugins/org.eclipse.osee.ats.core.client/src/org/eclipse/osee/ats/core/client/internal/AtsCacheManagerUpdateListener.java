@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
@@ -24,8 +23,6 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -96,19 +93,9 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
       for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
          try {
             if (guidRel.is(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow)) {
-               for (TeamWorkFlowArtifact teamArt : ArtifactCache.getActive(guidRel, TeamWorkFlowArtifact.class)) {
-                  Artifact verArt = null;
-                  try {
-                     verArt = teamArt.getRelatedArtifact(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
-                  } catch (ArtifactDoesNotExist ex) {
-                     // do nothing
-                  }
-                  if (verArt == null) {
-                     AtsVersionService.get().removeTargetedVersion(teamArt);
-                  } else {
-                     IAtsVersion version = atsClient.getAtsConfig().getSoleByGuid(verArt.getGuid(), IAtsVersion.class);
-                     AtsVersionService.get().setTargetedVersion(teamArt, version);
-                  }
+               for (TeamWorkFlowArtifact teamWf : ArtifactCache.getActive(guidRel, TeamWorkFlowArtifact.class)) {
+                  // Just remove teamWf from cache; reload will occur upon next call to get version
+                  atsClient.getAtsVersionService().invalidateVersionCache(teamWf);
                }
             }
             if (guidRel.is(AtsRelationTypes.TeamWfToTask_Task)) {

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.client;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
@@ -22,5 +23,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 public interface IAtsVersionAdmin extends IAtsVersionService {
 
    Collection<TeamWorkFlowArtifact> getTargetedForTeamWorkflowArtifacts(IAtsVersion verArt) throws OseeCoreException;
+
+   void invalidateVersionCache();
+
+   void invalidateVersionCache(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
 }

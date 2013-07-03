@@ -241,4 +241,14 @@ public class AtsVersionServiceImpl implements IAtsVersionAdmin {
       return teamWorkflows;
    }
 
+   @Override
+   public void invalidateVersionCache() {
+      versionCache.invalidateCache();
+   }
+
+   @Override
+   public void invalidateVersionCache(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+      versionCache.deCache(teamWf);
+   }
+
 }

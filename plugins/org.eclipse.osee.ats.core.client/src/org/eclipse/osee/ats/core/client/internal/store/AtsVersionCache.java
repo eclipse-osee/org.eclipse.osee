@@ -17,7 +17,8 @@ import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
- * This uses the config cache to cache the relation between the team workflow and version
+ * This uses the config cache to cache the relation between the team workflow and version.<br/>
+ * NOTE: Each teamWf can only have one version
  * 
  * @author Donald G. Dunne
  */
@@ -39,15 +40,16 @@ public class AtsVersionCache {
    }
 
    public IAtsVersion cache(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException {
-      configCacheProvider.get().cacheByTag(teamWf.getGuid(), version);
+      configCacheProvider.get().cacheSoleByTag(teamWf.getGuid(), version);
       return version;
    }
 
    public void deCache(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      IAtsVersion version = configCacheProvider.get().getSoleByGuid(teamWf.getGuid(), IAtsVersion.class);
-      if (version != null) {
-         configCacheProvider.get().invalidate(version);
-      }
+      configCacheProvider.get().invalidateByTag(teamWf.getGuid());
+   }
+
+   public void invalidateCache() {
+      configCacheProvider.invalidate();
    }
 
 }

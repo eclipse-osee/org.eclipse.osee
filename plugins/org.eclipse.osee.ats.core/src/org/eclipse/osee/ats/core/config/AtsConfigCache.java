@@ -38,6 +38,17 @@ public class AtsConfigCache implements IAtsConfig {
       tagToConfigObject.put(tag, configObject);
    }
 
+   /**
+    * Clear out all values cached by tag and add sole tag to this configObject
+    */
+   public void cacheSoleByTag(String tag, IAtsConfigObject configObject) {
+      Collection<IAtsConfigObject> values = tagToConfigObject.getValues(tag);
+      if (values != null) {
+         values.clear();
+      }
+      cacheByTag(tag, configObject);
+   }
+
    @Override
    @SuppressWarnings("unchecked")
    public final <A extends IAtsConfigObject> List<A> getByTag(String tag, Class<A> clazz) {
@@ -116,6 +127,10 @@ public class AtsConfigCache implements IAtsConfig {
       for (String key : keysToRemove) {
          tagToConfigObject.removeValue(key, atsObject);
       }
+   }
+
+   public void invalidateByTag(String tag) {
+      tagToConfigObject.removeValues(tag);
    }
 
 }
