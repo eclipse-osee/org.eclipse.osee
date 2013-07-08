@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
+import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -33,8 +34,8 @@ import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsPerformance;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.SystemPreferences;
+import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
-import org.eclipse.osee.orcs.core.ds.TempCachingService;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactBuilderFactoryImpl;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassRegistry;
@@ -130,27 +131,29 @@ public class OrcsApiImpl implements OrcsApi {
 
       OrcsTypes orcsTypes = typesModule.createOrcsTypes(getSystemSession());
 
+      DataModule module = dataStore.createDataModule(orcsTypes.getArtifactTypes(), orcsTypes.getAttributeTypes());
+
       RelationFactory relationFactory = new RelationFactory(orcsTypes.getRelationTypes());
 
       AttributeClassResolver resolver = new AttributeClassResolver(registry, orcsTypes.getAttributeTypes());
       AttributeFactory attributeFactory =
-         new AttributeFactory(resolver, dataStore.getDataFactory(), orcsTypes.getAttributeTypes());
+         new AttributeFactory(resolver, module.getDataFactory(), orcsTypes.getAttributeTypes());
 
       ArtifactFactory artifactFactory =
-         new ArtifactFactory(dataStore.getDataFactory(), attributeFactory, relationFactory,
-            cacheService.getBranchCache(), orcsTypes.getArtifactTypes());
+         new ArtifactFactory(module.getDataFactory(), attributeFactory, relationFactory, cacheService.getBranchCache(),
+            orcsTypes.getArtifactTypes());
 
       proxyFactory = new ArtifactProxyFactory(artifactFactory);
 
-      txUpdateFactory = new TxDataHandlerFactoryImpl(dataStore.getDataFactory());
+      txUpdateFactory = new TxDataHandlerFactoryImpl(module.getDataFactory());
 
       ArtifactBuilderFactory builderFactory =
          new ArtifactBuilderFactoryImpl(logger, proxyFactory, artifactFactory, attributeFactory);
 
-      loaderFactory = new ArtifactLoaderFactoryImpl(dataStore.getDataLoaderFactory(), builderFactory);
+      loaderFactory = new ArtifactLoaderFactoryImpl(module.getDataLoaderFactory(), builderFactory);
 
       queryModule =
-         new QueryModule(logger, dataStore.getQueryEngine(), loaderFactory, dataStore.getDataLoaderFactory(),
+         new QueryModule(logger, dataStore.getQueryEngine(), loaderFactory, module.getDataLoaderFactory(),
             orcsTypes.getArtifactTypes(), orcsTypes.getAttributeTypes());
 
       indexerModule = new IndexerModule(logger, preferences, executorAdmin, dataStore.getQueryEngineIndexer());

@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.core.translation.ITranslatorId;
@@ -40,13 +40,13 @@ public class DataTranslationService implements IDataTranslationService {
       new ConcurrentHashMap<ITranslatorId, ITranslator<?>>();
 
    private IOseeModelFactoryService modelFactory;
-   private IOseeCachingService cachingService;
+   private TempCachingService cachingService;
 
    public void setModelFactory(IOseeModelFactoryService modelFactory) {
       this.modelFactory = modelFactory;
    }
 
-   public void setOseeCachingService(IOseeCachingService cachingService) {
+   public void setTempCachingService(TempCachingService cachingService) {
       this.cachingService = cachingService;
    }
 

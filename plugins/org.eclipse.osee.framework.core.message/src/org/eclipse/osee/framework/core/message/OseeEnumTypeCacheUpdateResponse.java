@@ -10,12 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.OseeEnumEntry;
-import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 
 /**
  * @author Roberto E. Escobar
@@ -38,24 +33,4 @@ public class OseeEnumTypeCacheUpdateResponse {
       return enumEntryRows;
    }
 
-   public static OseeEnumTypeCacheUpdateResponse fromCache(Collection<OseeEnumType> types) throws OseeCoreException {
-      List<String[]> enumTypeRows = new ArrayList<String[]>();
-      List<String[]> enumEntryRows = new ArrayList<String[]>();
-      for (OseeEnumType type : types) {
-         enumTypeRows.add(new String[] {
-            String.valueOf(type.getId()),
-            type.getStorageState().toString(),
-            String.valueOf(type.getGuid()),
-            type.getName()});
-         for (OseeEnumEntry entry : type.values()) {
-            enumEntryRows.add(new String[] {
-               String.valueOf(type.getGuid()),
-               entry.getGuid(),
-               entry.getName(),
-               String.valueOf(entry.ordinal()),
-               entry.getDescription()});
-         }
-      }
-      return new OseeEnumTypeCacheUpdateResponse(enumTypeRows, enumEntryRows);
-   }
 }

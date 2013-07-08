@@ -8,16 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.types;
-
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.TempCachingService;
+package org.eclipse.osee.orcs.data;
 
 /**
- * @author Roberto E. Escobar
+ * @author John Misinco
  */
-public interface CacheServiceFactory {
-
-   TempCachingService createCachingService(boolean needsPriming) throws OseeCoreException;
-
+public interface EnumTypes extends IdentityCollection<Long, EnumType> {
+   // add additional methods here
 }

@@ -39,20 +39,15 @@ import org.eclipse.osee.framework.core.message.internal.translation.TransactionC
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
 import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
-import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
-import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactTypeFactory;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
 import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
 import org.eclipse.osee.framework.core.model.type.RelationTypeFactory;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.IdentityService;
+import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.core.translation.ITranslatorId;
@@ -70,7 +65,7 @@ public class DataTranslationServiceFactoryTest {
    public void testServiceCreation() throws OseeCoreException {
       DataTranslationService srvc = new DataTranslationService();
       srvc.setModelFactory(new MockModelFactoryService());
-      srvc.setOseeCachingService(new MockOseeCachingService());
+      srvc.setTempCachingService(new MockOseeCachingService());
       srvc.start();
 
       checkExists(srvc, TransactionRecordTranslator.class, CoreTranslatorId.TRANSACTION_RECORD);
@@ -148,7 +143,7 @@ public class DataTranslationServiceFactoryTest {
       }
    }
 
-   private final class MockOseeCachingService implements IOseeCachingService {
+   private final class MockOseeCachingService implements TempCachingService {
 
       @Override
       public BranchCache getBranchCache() {
@@ -157,31 +152,6 @@ public class DataTranslationServiceFactoryTest {
 
       @Override
       public TransactionCache getTransactionCache() {
-         return null;
-      }
-
-      @Override
-      public ArtifactTypeCache getArtifactTypeCache() {
-         return null;
-      }
-
-      @Override
-      public AttributeTypeCache getAttributeTypeCache() {
-         return null;
-      }
-
-      @Override
-      public RelationTypeCache getRelationTypeCache() {
-         return null;
-      }
-
-      @Override
-      public OseeEnumTypeCache getEnumTypeCache() {
-         return null;
-      }
-
-      @Override
-      public IdentityService getIdentityService() {
          return null;
       }
 

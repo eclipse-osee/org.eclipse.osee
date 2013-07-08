@@ -36,6 +36,7 @@ import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.db.internal.loader.DataModuleFactory;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -44,12 +45,12 @@ import com.google.common.collect.Multimap;
  */
 public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
-   private final DataLoaderFactory dataLoaderFactory;
+   private final DataModuleFactory dataLoaderFactory;
    private final IdentityService identityService;
 
-   public MissingChangeItemFactoryImpl(DataLoaderFactory dataLoader, IdentityService identityService) {
+   public MissingChangeItemFactoryImpl(DataModuleFactory dataModuleFactory, IdentityService identityService) {
       super();
-      this.dataLoaderFactory = dataLoader;
+      this.dataLoaderFactory = dataModuleFactory;
       this.identityService = identityService;
    }
 
@@ -88,7 +89,8 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
    }
 
    private Set<Integer> determineWhichArtifactsNotOnDestination(Set<Integer> artIds, TransactionRecord destTx, String sessionId) throws OseeCoreException {
-      DataLoader loader = dataLoaderFactory.fromBranchAndArtifactIds(sessionId, destTx.getBranch(), artIds);
+      DataLoaderFactory factory = dataLoaderFactory.getDataLoaderFactory();
+      DataLoader loader = factory.fromBranchAndArtifactIds(sessionId, destTx.getBranch(), artIds);
       final Set<Integer> missingArtIds = new LinkedHashSet<Integer>(artIds);
       loader.includeDeleted();
       loader.fromTransaction(destTx.getId());
@@ -129,7 +131,9 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       final Set<ChangeItem> toReturn = new LinkedHashSet<ChangeItem>();
       final Set<RelationData> relations = new LinkedHashSet<RelationData>();
 
-      DataLoader loader = dataLoaderFactory.fromBranchAndArtifactIds(sessionId, sourceTx.getBranch(), missingArtIds);
+      DataLoader loader =
+         dataLoaderFactory.getDataLoaderFactory().fromBranchAndArtifactIds(sessionId, sourceTx.getBranch(),
+            missingArtIds);
       loader.setLoadLevel(LoadLevel.FULL);
       loader.includeDeleted();
       loader.fromTransaction(sourceTx.getId());
@@ -208,7 +212,8 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       final Set<RelationChangeItem> toReturn = new LinkedHashSet<RelationChangeItem>();
 
       DataLoader loader =
-         dataLoaderFactory.fromBranchAndArtifactIds(sessionId, destTx.getBranch(), relationChangesToAdd.keySet());
+         dataLoaderFactory.getDataLoaderFactory().fromBranchAndArtifactIds(sessionId, destTx.getBranch(),
+            relationChangesToAdd.keySet());
       loader.fromTransaction(destTx.getId());
       loader.load(null, new ArtifactBuilder() {
 

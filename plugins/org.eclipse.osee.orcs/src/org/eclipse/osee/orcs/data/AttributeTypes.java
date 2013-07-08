@@ -47,4 +47,6 @@ public interface AttributeTypes extends IdentityCollection<Long, IAttributeType>
 
    boolean hasMediaType(IAttributeType attrType) throws OseeCoreException;
 
+   boolean isBooleanType(IAttributeType attrType) throws OseeCoreException;
+
 }

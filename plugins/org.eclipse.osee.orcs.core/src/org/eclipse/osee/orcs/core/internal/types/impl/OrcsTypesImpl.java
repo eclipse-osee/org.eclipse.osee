@@ -13,11 +13,13 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -30,6 +32,7 @@ import org.eclipse.osee.orcs.core.internal.types.OrcsTypesLoaderFactory;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesResourceProvider;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.data.EnumTypes;
 import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
@@ -47,6 +50,7 @@ public class OrcsTypesImpl implements OrcsTypes {
    private final ArtifactTypes artifactTypes;
    private final AttributeTypes attributeTypes;
    private final RelationTypes relationTypes;
+   private final EnumTypes enumTypes;
 
    public OrcsTypesImpl(Log logger, SessionContext session, OrcsTypesDataStore dataStore, OrcsTypesLoaderFactory loaderFactory, OrcsTypesIndexProvider indexProvider) {
       this.logger = logger;
@@ -59,6 +63,7 @@ public class OrcsTypesImpl implements OrcsTypes {
       this.artifactTypes = new ArtifactTypesImpl(indexProvider);
       this.attributeTypes = new AttributeTypesImpl(indexProvider, indexProvider);
       this.relationTypes = new RelationTypesImpl(indexProvider);
+      this.enumTypes = new EnumTypesImpl(indexProvider);
    }
 
    @Override
@@ -77,12 +82,17 @@ public class OrcsTypesImpl implements OrcsTypes {
    }
 
    @Override
+   public EnumTypes getEnumTypes() {
+      return enumTypes;
+   }
+
+   @Override
    public void invalidateAll() {
       indexProvider.invalidate();
    }
 
    @Override
-   public Callable<?> loadTypes(final IResource resource, final boolean isInitializing) {
+   public Callable<Void> loadTypes(final IResource resource, final boolean isInitializing) {
       return new CancellableCallable<Void>() {
          @Override
          public Void call() throws Exception {
@@ -99,7 +109,7 @@ public class OrcsTypesImpl implements OrcsTypes {
    }
 
    @Override
-   public Callable<?> writeTypes(final OutputStream outputStream) {
+   public Callable<Void> writeTypes(final OutputStream outputStream) {
       return new CancellableCallable<Void>() {
          @Override
          public Void call() throws Exception {
@@ -122,18 +132,35 @@ public class OrcsTypesImpl implements OrcsTypes {
    }
 
    @Override
-   public Callable<?> purgeArtifactsByArtifactType(Collection<? extends IArtifactType> artifactTypes) {
+   public Callable<Void> purgeArtifactsByArtifactType(Collection<? extends IArtifactType> artifactTypes) {
       return dataStore.purgeArtifactsByArtifactType(session.getSessionId(), artifactTypes);
    }
 
    @Override
-   public Callable<?> purgeAttributesByAttributeType(Collection<? extends IAttributeType> attributeTypes) {
+   public Callable<Void> purgeAttributesByAttributeType(Collection<? extends IAttributeType> attributeTypes) {
       return dataStore.purgeAttributesByAttributeType(session.getSessionId(), attributeTypes);
    }
 
    @Override
-   public Callable<?> purgeRelationsByRelationType(Collection<? extends IRelationType> relationTypes) {
+   public Callable<Void> purgeRelationsByRelationType(Collection<? extends IRelationType> relationTypes) {
       return dataStore.purgeRelationsByRelationType(session.getSessionId(), relationTypes);
+   }
+
+   @Override
+   public Callable<Void> save() {
+      return new Callable<Void>() {
+
+         @Override
+         public Void call() throws Exception {
+            Collection<Identity<Long>> types = new LinkedList<Identity<Long>>();
+            types.addAll(artifactTypes.getAll());
+            types.addAll(attributeTypes.getAll());
+            types.addAll(relationTypes.getAll());
+            types.addAll(enumTypes.getAll());
+            dataStore.persistTypeIdentities(session.getSessionId(), types).call();
+            return null;
+         }
+      };
    }
 
 }

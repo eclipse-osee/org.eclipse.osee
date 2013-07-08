@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -45,10 +44,10 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
    private final IResourceManager resourceManager;
    private final BranchCache branchCache;
 
-   public ArtifactFileServlet(Log logger, IResourceManager resourceManager, IOseeCachingService cachingService) {
+   public ArtifactFileServlet(Log logger, IResourceManager resourceManager, BranchCache branchCache) {
       super(logger);
       this.resourceManager = resourceManager;
-      this.branchCache = cachingService.getBranchCache();
+      this.branchCache = branchCache;
    }
 
    @Override

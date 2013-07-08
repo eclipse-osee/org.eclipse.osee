@@ -290,21 +290,6 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetAllDescendantsWithDepth() throws OseeCoreException {
-      ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
-
-      //@formatter:off
-      assertEquals(true, artTypes.getDescendantTypes(ARTIFACT, 0).isEmpty());
-      assertContains(artTypes.getDescendantTypes(ARTIFACT, 1), REQUIREMENT, OTHER_ARTIFACT);
-      assertContains(artTypes.getDescendantTypes(ARTIFACT, 2), REQUIREMENT, OTHER_ARTIFACT, SOFTWARE_REQUIREMENT, SYSTEM_REQUIREMENT, SUBSYSTEM_REQUIREMENT);
-      assertContains(artTypes.getDescendantTypes(ARTIFACT, 3), REQUIREMENT, OTHER_ARTIFACT, SOFTWARE_REQUIREMENT, SYSTEM_REQUIREMENT, SUBSYSTEM_REQUIREMENT, LAST_ARTIFACT);
-      
-      assertContains(artTypes.getDescendantTypes(ARTIFACT, 10), REQUIREMENT, OTHER_ARTIFACT, SOFTWARE_REQUIREMENT, SYSTEM_REQUIREMENT, SUBSYSTEM_REQUIREMENT, LAST_ARTIFACT);
-      assertContains(artTypes.getDescendantTypes(ARTIFACT, -1), REQUIREMENT, OTHER_ARTIFACT, SOFTWARE_REQUIREMENT, SYSTEM_REQUIREMENT, SUBSYSTEM_REQUIREMENT, LAST_ARTIFACT);
-      //@formatter:on
-   }
-
-   @Test
    public void testIsValidAttributeType() throws OseeCoreException {
       // Field 1 will only be visible on branch A and Branch D
       // Field 2 will only be visible on branch B and Branch E

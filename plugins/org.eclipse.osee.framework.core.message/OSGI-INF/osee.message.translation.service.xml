@@ -5,5 +5,5 @@
       <provide interface="org.eclipse.osee.framework.core.translation.IDataTranslationService"/>
    </service>
    <reference bind="setModelFactory" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeModelFactoryService" name="IOseeModelFactoryService" policy="static"/>
-   <reference bind="setOseeCachingService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeCachingService" name="IOseeCachingService" policy="static"/>
+   <reference bind="setTempCachingService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.TempCachingService" name="TempCachingService" policy="static"/>
 </scr:component>

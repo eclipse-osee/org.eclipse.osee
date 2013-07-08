@@ -22,8 +22,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
@@ -33,6 +31,7 @@ import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
@@ -57,7 +56,7 @@ public class DataFactoryImplTest {
    @Mock private IdFactory idFactory;
    @Mock private ProxyDataFactory proxyFactory;
    @Mock private IdentityService identityService;
-   @Mock private ArtifactTypeCache artifactCache;
+   @Mock private ArtifactTypes artifactCache;
    
    @Mock private ArtifactData artData;
    @Mock private AttributeData attrData;
@@ -66,7 +65,6 @@ public class DataFactoryImplTest {
    @Mock private DataProxy dataProxy;
    @Mock private DataProxy otherDataProxy;
    
-   @Mock private ArtifactType artifactType;
    @Mock private IArtifactType artifactTypeToken;
    //@formatter:on
 
@@ -133,60 +131,49 @@ public class DataFactoryImplTest {
    }
 
    @Test
-   public void testCreateArtifactDataNullType() throws OseeCoreException {
-      when(artifactTypeToken.toString()).thenReturn("artifactTypeToken");
-      when(artifactCache.get(artifactTypeToken)).thenReturn(null);
-
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("artifactType cannot be null - Unable to find artifactType matching [artifactTypeToken]");
-      dataFactory.create(CoreBranches.COMMON, artifactTypeToken, guid, hrid);
-   }
-
-   @Test
    public void testCreateArtifactDataUsingAbstratArtifactType() throws OseeCoreException {
-      when(artifactType.toString()).thenReturn("artifactType");
-      when(artifactCache.get(artifactTypeToken)).thenReturn(artifactType);
-      when(artifactType.isAbstract()).thenReturn(true);
+      when(artifactTypeToken.toString()).thenReturn("artifactTypeToken");
+      when(artifactCache.getByUuid(artifactTypeToken.getGuid())).thenReturn(artifactTypeToken);
+      when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(true);
 
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("Cannot create an instance of abstract type [artifactType]");
+      thrown.expectMessage("Cannot create an instance of abstract type [artifactTypeToken]");
       dataFactory.create(CoreBranches.COMMON, artifactTypeToken, guid, hrid);
    }
 
    @Test
    public void testCreateArtifactDataInvalidGuid() throws OseeCoreException {
-      when(artifactCache.get(artifactTypeToken)).thenReturn(artifactType);
-      when(artifactType.isAbstract()).thenReturn(false);
-      when(artifactType.toString()).thenReturn("artifactType");
+      when(artifactCache.getByUuid(artifactTypeToken.getGuid())).thenReturn(artifactTypeToken);
+      when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(false);
+      when(artifactTypeToken.toString()).thenReturn("artifactTypeToken");
 
       when(idFactory.getUniqueGuid(guid)).thenReturn("123");
 
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("Invalid guid [123] during artifact creation [type: artifactType]");
+      thrown.expectMessage("Invalid guid [123] during artifact creation [type: artifactTypeToken]");
 
       dataFactory.create(CoreBranches.COMMON, artifactTypeToken, guid, hrid);
    }
 
    @Test
    public void testCreateArtifactDataInvalidHrid() throws OseeCoreException {
-      when(artifactCache.get(artifactTypeToken)).thenReturn(artifactType);
-      when(artifactType.isAbstract()).thenReturn(false);
-      when(artifactType.toString()).thenReturn("artifactType");
+      when(artifactCache.getByUuid(artifactTypeToken.getGuid())).thenReturn(artifactTypeToken);
+      when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(false);
+      when(artifactTypeToken.toString()).thenReturn("artifactTypeToken");
 
       when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
       when(idFactory.getUniqueHumanReadableId(hrid)).thenReturn("123");
 
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("Invalid human readable id [123] during artifact creation [type: artifactType, guid: " + guid + "]");
+      thrown.expectMessage("Invalid human readable id [123] during artifact creation [type: artifactTypeToken, guid: " + guid + "]");
 
       dataFactory.create(CoreBranches.COMMON, artifactTypeToken, guid, hrid);
    }
 
    @Test
    public void testCreateArtifactData() throws OseeCoreException {
-      when(artifactCache.get(artifactTypeToken)).thenReturn(artifactType);
-      when(artifactType.getGuid()).thenReturn(4536L);
-      when(artifactType.isAbstract()).thenReturn(false);
+      when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(false);
+      when(artifactTypeToken.getGuid()).thenReturn(4536L);
       when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
       when(idFactory.getUniqueHumanReadableId(hrid)).thenReturn(hrid);
       when(idFactory.getNextArtifactId()).thenReturn(987);
@@ -219,9 +206,9 @@ public class DataFactoryImplTest {
    public void testCreateArtifactDataGenerateHrid() throws OseeCoreException {
       String newHrid = HumanReadableId.generate();
 
-      when(artifactCache.get(artifactTypeToken)).thenReturn(artifactType);
-      when(artifactType.getGuid()).thenReturn(4536L);
-      when(artifactType.isAbstract()).thenReturn(false);
+      when(artifactCache.getByUuid(artifactTypeToken.getGuid())).thenReturn(artifactTypeToken);
+      when(artifactTypeToken.getGuid()).thenReturn(4536L);
+      when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(false);
       when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
       when(idFactory.getUniqueHumanReadableId(null)).thenReturn(newHrid);
       when(idFactory.getNextArtifactId()).thenReturn(987);

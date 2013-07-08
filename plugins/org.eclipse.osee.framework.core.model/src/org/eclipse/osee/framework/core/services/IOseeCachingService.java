@@ -10,25 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.services;
 
-import java.util.Collection;
-import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IOseeCachingService {
-
-   BranchCache getBranchCache();
-
-   TransactionCache getTransactionCache();
+public interface IOseeCachingService extends TempCachingService {
 
    ArtifactTypeCache getArtifactTypeCache();
 
@@ -40,11 +30,4 @@ public interface IOseeCachingService {
 
    IdentityService getIdentityService();
 
-   Collection<?> getCaches();
-
-   IOseeCache<?, ?> getCache(OseeCacheEnum cacheId) throws OseeCoreException;
-
-   void reloadAll() throws OseeCoreException;
-
-   void clearAll();
 }

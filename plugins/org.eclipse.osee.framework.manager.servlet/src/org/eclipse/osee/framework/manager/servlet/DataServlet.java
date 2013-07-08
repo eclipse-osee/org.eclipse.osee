@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -35,7 +35,7 @@ public class DataServlet extends UnsecuredOseeHttpServlet {
    private final IResourceManager resourceManager;
    private final BranchCache branchCache;
 
-   public DataServlet(Log logger, IResourceManager resourceManager, IOseeCachingService cacheService) {
+   public DataServlet(Log logger, IResourceManager resourceManager, TempCachingService cacheService) {
       super(logger);
       this.resourceManager = resourceManager;
       branchCache = cacheService.getBranchCache();

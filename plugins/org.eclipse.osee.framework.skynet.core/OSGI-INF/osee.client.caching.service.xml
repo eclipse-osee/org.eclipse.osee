@@ -3,6 +3,7 @@
     <implementation class="org.eclipse.osee.framework.skynet.core.internal.ClientCachingServiceProxy"/>
    <service>
       <provide interface="org.eclipse.osee.framework.core.services.IOseeCachingService"/>
+      <provide interface="org.eclipse.osee.framework.core.services.TempCachingService"/>
    </service>
    <reference bind="setIdentityService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IdentityService" name="IdentityService" policy="static"/>
    <reference bind="setModelFactory" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeModelFactoryService" name="IOseeModelFactoryService" policy="static"/>

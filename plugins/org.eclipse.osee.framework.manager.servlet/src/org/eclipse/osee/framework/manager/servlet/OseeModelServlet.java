@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
@@ -86,9 +87,8 @@ public class OseeModelServlet extends SecureOseeHttpServlet {
    @Override
    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
       try {
-         IDataTranslationService service = dataTransalatorService;
          final OseeImportModelRequest modelRequest =
-            service.convert(req.getInputStream(), CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST);
+            dataTransalatorService.convert(req.getInputStream(), CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST);
 
          IResource resource = new IResource() {
 
@@ -105,6 +105,15 @@ public class OseeModelServlet extends SecureOseeHttpServlet {
 
             @Override
             public URI getLocation() {
+               try {
+                  String modelName = modelRequest.getModelName();
+                  if (!modelName.endsWith(".osee")) {
+                     modelName += ".osee";
+                  }
+                  return new URI("osee:/" + modelName);
+               } catch (URISyntaxException ex) {
+                  getLogger().error(ex, "Error creating location URI for model import");
+               }
                return null;
             }
 
@@ -124,11 +133,16 @@ public class OseeModelServlet extends SecureOseeHttpServlet {
 
          getOrcsTypes().loadTypes(resource, isInitializing(req)).call();
 
+         if (modelRequest.isPersistAllowed()) {
+            getOrcsTypes().save().call();
+         }
+
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/xml");
          resp.setCharacterEncoding("UTF-8");
 
-         InputStream inputStream = service.convertToStream(modelResponse, CoreTranslatorId.OSEE_IMPORT_MODEL_RESPONSE);
+         InputStream inputStream =
+            dataTransalatorService.convertToStream(modelResponse, CoreTranslatorId.OSEE_IMPORT_MODEL_RESPONSE);
          Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
       } catch (Exception ex) {
          handleError(resp, req.toString(), ex);

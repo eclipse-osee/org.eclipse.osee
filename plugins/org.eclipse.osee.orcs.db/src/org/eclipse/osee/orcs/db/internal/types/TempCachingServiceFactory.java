@@ -22,10 +22,10 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.TempCachingService;
 import org.eclipse.osee.orcs.db.internal.accessor.DatabaseBranchAccessor;
 import org.eclipse.osee.orcs.db.internal.accessor.DatabaseTransactionRecordAccessor;
 

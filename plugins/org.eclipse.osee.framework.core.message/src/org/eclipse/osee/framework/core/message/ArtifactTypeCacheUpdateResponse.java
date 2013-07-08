@@ -10,17 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
 
 /**
@@ -57,7 +49,7 @@ public class ArtifactTypeCacheUpdateResponse {
       private final boolean isAbstract;
       private StorageState storageState;
 
-      protected ArtifactTypeRow(int id, Long guid, String name, boolean isAbstract, StorageState storageState) {
+      public ArtifactTypeRow(int id, Long guid, String name, boolean isAbstract, StorageState storageState) {
          this.id = id;
          this.guid = guid;
          this.name = name;
@@ -111,38 +103,6 @@ public class ArtifactTypeCacheUpdateResponse {
       public String toString() {
          return String.format("%s (%s)", name, guid);
       }
-   }
-
-   public static ArtifactTypeCacheUpdateResponse fromCache(Collection<ArtifactType> types) throws OseeCoreException {
-      List<ArtifactTypeRow> rows = new ArrayList<ArtifactTypeRow>();
-      Map<Integer, Integer[]> baseToSuper = new HashMap<Integer, Integer[]>();
-      List<Triplet<Long, String, Long>> artAttrs = new ArrayList<Triplet<Long, String, Long>>();
-      for (ArtifactType artType : types) {
-         rows.add(new ArtifactTypeRow(artType.getId(), artType.getGuid(), artType.getName(), artType.isAbstract(),
-            artType.getStorageState()));
-
-         Integer artId = artType.getId();
-
-         Collection<ArtifactType> superTypes = artType.getSuperArtifactTypes();
-         if (!superTypes.isEmpty()) {
-            Integer[] intSuperTypes = new Integer[superTypes.size()];
-            int index = 0;
-            for (ArtifactType superType : superTypes) {
-               intSuperTypes[index++] = superType.getId();
-            }
-            baseToSuper.put(artId, intSuperTypes);
-         }
-
-         for (Entry<IOseeBranch, Collection<AttributeType>> entry : artType.getLocalAttributeTypes().entrySet()) {
-            IOseeBranch branch = entry.getKey();
-            Collection<AttributeType> attrTypes = entry.getValue();
-            for (AttributeType type : attrTypes) {
-               artAttrs.add(new Triplet<Long, String, Long>(artType.getGuid(), branch.getGuid(), type.getGuid()));
-            }
-
-         }
-      }
-      return new ArtifactTypeCacheUpdateResponse(rows, baseToSuper, artAttrs);
    }
 
    @Override

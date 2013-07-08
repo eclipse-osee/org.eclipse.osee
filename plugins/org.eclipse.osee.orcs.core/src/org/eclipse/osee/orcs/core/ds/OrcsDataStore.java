@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.orcs.data.ArtifactTypes;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Roberto E. Escobar
@@ -20,9 +22,7 @@ public interface OrcsDataStore extends OrcsTypesDataStore {
 
    DataStoreAdmin getDataStoreAdmin();
 
-   DataFactory getDataFactory();
-
-   DataLoaderFactory getDataLoaderFactory();
+   DataModule createDataModule(ArtifactTypes artifactTypes, AttributeTypes attributeTypes);
 
    QueryEngine getQueryEngine();
 

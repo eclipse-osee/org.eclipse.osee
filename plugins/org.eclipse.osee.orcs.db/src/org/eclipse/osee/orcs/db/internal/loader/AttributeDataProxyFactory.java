@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.DataProxyFactory;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Roberto E. Escobar
@@ -25,20 +25,20 @@ import org.eclipse.osee.orcs.core.ds.DataProxyFactory;
 public class AttributeDataProxyFactory implements ProxyDataFactory {
 
    private final DataProxyFactoryProvider proxyProvider;
-   private final AttributeTypeCache attributeTypeCache;
+   private final AttributeTypes attributeTypeCache;
 
-   public AttributeDataProxyFactory(DataProxyFactoryProvider proxyProvider, AttributeTypeCache attributeTypeCache) {
+   public AttributeDataProxyFactory(DataProxyFactoryProvider proxyProvider, AttributeTypes attributeTypes) {
       super();
       this.proxyProvider = proxyProvider;
-      this.attributeTypeCache = attributeTypeCache;
+      this.attributeTypeCache = attributeTypes;
    }
 
    @Override
    public DataProxy createProxy(long typeUuid, String value, String uri) throws OseeCoreException {
-      AttributeType attributeType = attributeTypeCache.getByGuid(typeUuid);
+      IAttributeType attributeType = attributeTypeCache.getByUuid(typeUuid);
       Conditions.checkNotNull(attributeType, "AttributeType", "Unable to find attributeType for [%s]", typeUuid);
 
-      String dataProxyFactoryId = attributeType.getAttributeProviderId();
+      String dataProxyFactoryId = attributeTypeCache.getAttributeProviderId(attributeType);
       if (dataProxyFactoryId.contains(".")) {
          dataProxyFactoryId = Lib.getExtension(dataProxyFactoryId);
       }
@@ -53,7 +53,7 @@ public class AttributeDataProxyFactory implements ProxyDataFactory {
       return proxy;
    }
 
-   private String intern(AttributeType attributeType, String original) {
+   private String intern(IAttributeType attributeType, String original) throws OseeCoreException {
       String value = original;
       if (isEnumOrBoolean(attributeType)) {
          value = intern(value);
@@ -65,11 +65,9 @@ public class AttributeDataProxyFactory implements ProxyDataFactory {
       return Strings.intern(value);
    }
 
-   protected boolean isEnumOrBoolean(AttributeType attributeType) {
-      boolean isEnumAttribute = attributeType.isEnumerated();
-      String baseType = attributeType.getBaseAttributeTypeId();
-      boolean isBooleanAttribute = baseType != null && baseType.toLowerCase().contains("boolean");
-
+   protected boolean isEnumOrBoolean(IAttributeType attributeType) throws OseeCoreException {
+      boolean isEnumAttribute = attributeTypeCache.isEnumerated(attributeType);
+      boolean isBooleanAttribute = attributeTypeCache.isBooleanType(attributeType);
       return isBooleanAttribute || isEnumAttribute;
    }
 

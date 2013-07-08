@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import org.eclipse.osee.executor.admin.CancellableCallable;
@@ -142,10 +140,13 @@ public class OrcsTypeLoaderCallable extends CancellableCallable<IResource> {
                Lib.close(inputStream);
             }
          }
-         char[] chars = new char[builder.length()];
-         builder.getChars(0, builder.length(), chars, 0);
-         byte[] bytes = Charset.forName("UTF-8").encode(CharBuffer.wrap(chars)).array();
-         return new ByteArrayInputStream(bytes);
+         InputStream toReturn = null;
+         try {
+            toReturn = Lib.stringToInputStream(builder.toString());
+         } catch (UnsupportedEncodingException ex) {
+            OseeExceptions.wrapAndThrow(ex);
+         }
+         return toReturn;
       }
    }
 

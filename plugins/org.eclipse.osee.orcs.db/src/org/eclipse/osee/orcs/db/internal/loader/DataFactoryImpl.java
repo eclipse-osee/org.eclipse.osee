@@ -16,8 +16,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
@@ -27,6 +25,7 @@ import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 
@@ -37,13 +36,13 @@ public class DataFactoryImpl implements DataFactory {
 
    private final IdFactory idFactory;
    private final OrcsObjectFactory objectFactory;
-   private final ArtifactTypeCache artifactCache;
+   private final ArtifactTypes artifactCache;
 
-   public DataFactoryImpl(IdFactory idFactory, OrcsObjectFactory objectFactory, ArtifactTypeCache artifactCache) {
+   public DataFactoryImpl(IdFactory idFactory, OrcsObjectFactory objectFactory, ArtifactTypes artifactTypes) {
       super();
       this.idFactory = idFactory;
       this.objectFactory = objectFactory;
-      this.artifactCache = artifactCache;
+      this.artifactCache = artifactTypes;
    }
 
    @Override
@@ -55,21 +54,17 @@ public class DataFactoryImpl implements DataFactory {
    public ArtifactData create(IOseeBranch branch, IArtifactType token, String guid, String hrid) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
 
-      ArtifactType artifactType = artifactCache.get(token);
-      Conditions.checkNotNull(artifactType, "artifactType", "Unable to find artifactType matching [%s]", token);
-
-      Conditions.checkExpressionFailOnTrue(artifactType.isAbstract(),
-         "Cannot create an instance of abstract type [%s]", artifactType);
+      Conditions.checkExpressionFailOnTrue(artifactCache.isAbstract(token),
+         "Cannot create an instance of abstract type [%s]", token);
 
       String guidToSet = idFactory.getUniqueGuid(guid);
       String humanReadableId = idFactory.getUniqueHumanReadableId(hrid);
 
       Conditions.checkExpressionFailOnTrue(!GUID.isValid(guidToSet),
-         "Invalid guid [%s] during artifact creation [type: %s]", guidToSet, artifactType);
+         "Invalid guid [%s] during artifact creation [type: %s]", guidToSet, token);
 
       Conditions.checkExpressionFailOnTrue(!HumanReadableId.isValid(humanReadableId),
-         "Invalid human readable id [%s] during artifact creation [type: %s, guid: %s]", humanReadableId, artifactType,
-         guid);
+         "Invalid human readable id [%s] during artifact creation [type: %s, guid: %s]", humanReadableId, token, guid);
 
       int branchId = idFactory.getBranchId(branch);
 
@@ -79,7 +74,7 @@ public class DataFactoryImpl implements DataFactory {
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       int artifactId = idFactory.getNextArtifactId();
       ArtifactData artifactData =
-         objectFactory.createArtifactData(version, artifactId, artifactType, modType, guidToSet, humanReadableId);
+         objectFactory.createArtifactData(version, artifactId, token, modType, guidToSet, humanReadableId);
       return artifactData;
    }
 

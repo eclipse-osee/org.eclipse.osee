@@ -16,6 +16,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UriGeneralStringData;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
+import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.integrationRule;
 import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.sort;
 import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.verifyData;
@@ -26,10 +27,10 @@ import java.util.Iterator;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
@@ -40,6 +41,8 @@ import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
+import org.eclipse.osee.orcs.data.ArtifactTypes;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.junit.Before;
 import org.junit.Rule;
@@ -67,25 +70,41 @@ public class LoaderTest {
 	@Captor private ArgumentCaptor<ArtifactData> artifactCaptor;
 	@Captor private ArgumentCaptor<AttributeData> attributeCaptor;
 	@Captor private ArgumentCaptor<RelationData> relationCaptor;
+	@Mock OrcsTypes types;
+	@Mock ArtifactTypes artTypes;
+	@Mock AttributeTypes attrTypes;
 	// @formatter:on
 
    private String sessionId;
    private HasCancellation cancellation;
+   private DataLoaderFactory loaderFactory;
 
    @Before
-   public void setUp() {
+   public void setUp() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
+
+      loaderFactory = dataStore.createDataModule(artTypes, attrTypes).getDataLoaderFactory();
 
       sessionId = GUID.create();
 
       when(builder.createArtifactDataHandler()).thenReturn(artifactHandler);
       when(builder.createAttributeDataHandler()).thenReturn(attributeHandler);
       when(builder.createRelationDataHandler()).thenReturn(relationHandler);
+
+      when(artTypes.getByUuid(OseeTypeDefinition.getGuid())).thenReturn(OseeTypeDefinition);
+      when(artTypes.getByUuid(Folder.getGuid())).thenReturn(Folder);
+
+      when(attrTypes.getByUuid(Name.getGuid())).thenReturn(Name);
+      when(attrTypes.getByUuid(UriGeneralStringData.getGuid())).thenReturn(UriGeneralStringData);
+      when(attrTypes.getByUuid(Active.getGuid())).thenReturn(Active);
+
+      when(attrTypes.getAttributeProviderId(Name)).thenReturn("DefaultAttributeDataProvider");
+      when(attrTypes.getAttributeProviderId(UriGeneralStringData)).thenReturn("DefaultAttributeDataProvider");
+      when(attrTypes.getAttributeProviderId(Active)).thenReturn("DefaultAttributeDataProvider");
    }
 
    @org.junit.Test
    public void testLoad() throws OseeCoreException {
-      DataLoaderFactory loaderFactory = dataStore.getDataLoaderFactory();
       DataLoader loader = loaderFactory.fromBranchAndArtifactIds(sessionId, CoreBranches.COMMON, 5, 6, 7);
       loader.setLoadLevel(LoadLevel.FULL);
 
@@ -103,59 +122,37 @@ public class LoaderTest {
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
 
       // @formatter:off
-		verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA", "3VY6B",
-				ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, 5, -1,
-				15L);
-		verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA", "N782Y",
-				ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, 5, -1,
-				16L);
-		verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA", "LBVP3",
-				ModificationType.NEW, Folder.getGuid(), 2, 6, -1, 43L);
+		verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA", "3VY6B", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 15L);
+		verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA", "N782Y", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 16L);
+		verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA", "LBVP3", NEW, Folder.getGuid(), 2, 6, -1, 43L);
 		// @formatter:on
 
       sort(attributeCaptor.getAllValues());
       Iterator<AttributeData> attrs = attributeCaptor.getAllValues().iterator();
 
       // @formatter:off
-		verifyData(attrs.next(), 9, 5, ModificationType.NEW, Name.getGuid(), 2,
-				5, -1, 5L,
-				"org.eclipse.osee.framework.skynet.core.OseeTypes_Framework",
-				"");
-		verifyData(attrs.next(), 10, 5, ModificationType.NEW,
-				UriGeneralStringData.getGuid(), 2, 5, -1, 6L, "",
-				"attr://6/AkA10I4aUSDLuFNIaegA.zip");
-		verifyData(attrs.next(), 11, 5, ModificationType.NEW, Active.getGuid(),
-				2, 5, -1, 7L, "true", "");
+		verifyData(attrs.next(), 9, 5, NEW, Name.getGuid(), 2, 5, -1, 5L, "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", "");
+		verifyData(attrs.next(), 10, 5, NEW, UriGeneralStringData.getGuid(), 2, 5, -1, 6L, "", "attr://6/AkA10I4aUSDLuFNIaegA.zip");
+		verifyData(attrs.next(), 11, 5, NEW, Active.getGuid(), 2, 5, -1, 7L, "true", "");
 
-		verifyData(attrs.next(), 12, 6, ModificationType.NEW, Name.getGuid(),
-				2, 5, -1, 8L, "org.eclipse.osee.coverage.OseeTypes_Coverage",
-				"");
-		verifyData(attrs.next(), 13, 6, ModificationType.NEW,
-				UriGeneralStringData.getGuid(), 2, 5, -1, 9L, "",
-				"attr://9/AkA10LiAPEZLR4+jdFQA.zip");
-		verifyData(attrs.next(), 14, 6, ModificationType.NEW, Active.getGuid(),
-				2, 5, -1, 10L, "true", "");
-
-		verifyData(attrs.next(), 17, 7, ModificationType.NEW, Name.getGuid(),
-				2, 6, -1, 33L, "User Groups", "");
+		verifyData(attrs.next(), 12, 6, NEW, Name.getGuid(), 2, 5, -1, 8L, "org.eclipse.osee.coverage.OseeTypes_Coverage", "");
+		verifyData(attrs.next(), 13, 6, NEW, UriGeneralStringData.getGuid(), 2, 5, -1, 9L, "", "attr://9/AkA10LiAPEZLR4+jdFQA.zip");
+		verifyData(attrs.next(), 14, 6, NEW, Active.getGuid(), 2, 5, -1, 10L, "true", "");
+		verifyData(attrs.next(), 17, 7, NEW, Name.getGuid(), 2, 6, -1, 33L, "User Groups", "");
 		// @formatter:on
 
       sort(relationCaptor.getAllValues());
       Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
 
       // @formatter:off
-		verifyData(rels.next(), 1, 7, 7, 8, "", ModificationType.NEW,
-				Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 53L);
-		verifyData(rels.next(), 2, 7, 1, 7, "", ModificationType.NEW,
-				Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 52L);
-		verifyData(rels.next(), 3, 7, 7, 15, "", ModificationType.NEW,
-				Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 54L);
+		verifyData(rels.next(), 1, 7, 7, 8, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 53L);
+		verifyData(rels.next(), 2, 7, 1, 7, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 52L);
+		verifyData(rels.next(), 3, 7, 7, 15, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 54L);
 		// @formatter:on
    }
 
    @org.junit.Test
    public void testLoadByTypes() throws OseeCoreException {
-      DataLoaderFactory loaderFactory = dataStore.getDataLoaderFactory();
       DataLoader loader = loaderFactory.fromBranchAndArtifactIds(sessionId, CoreBranches.COMMON, 5, 6, 7);
       loader.setLoadLevel(LoadLevel.FULL);
 
@@ -176,47 +173,32 @@ public class LoaderTest {
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
 
       // @formatter:off
-		verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA", "3VY6B",
-				ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, 5, -1,
-				15L);
-		verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA", "N782Y",
-				ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, 5, -1,
-				16L);
-		verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA", "LBVP3",
-				ModificationType.NEW, Folder.getGuid(), 2, 6, -1, 43L);
+		verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA", "3VY6B", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 15L);
+		verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA", "N782Y", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 16L);
+		verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA", "LBVP3", NEW, Folder.getGuid(), 2, 6, -1, 43L); 
 		// @formatter:on
 
       sort(attributeCaptor.getAllValues());
       Iterator<AttributeData> attrs = attributeCaptor.getAllValues().iterator();
 
       // @formatter:off
-		verifyData(attrs.next(), 9, 5, ModificationType.NEW, Name.getGuid(), 2,
-				5, -1, 5L,
-				"org.eclipse.osee.framework.skynet.core.OseeTypes_Framework",
-				"");
-		verifyData(attrs.next(), 12, 6, ModificationType.NEW, Name.getGuid(),
-				2, 5, -1, 8L, "org.eclipse.osee.coverage.OseeTypes_Coverage",
-				"");
-		verifyData(attrs.next(), 17, 7, ModificationType.NEW, Name.getGuid(),
-				2, 6, -1, 33L, "User Groups", "");
+		verifyData(attrs.next(), 9, 5, NEW, Name.getGuid(), 2, 5, -1, 5L, "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", "");
+		verifyData(attrs.next(), 12, 6, NEW, Name.getGuid(), 2, 5, -1, 8L, "org.eclipse.osee.coverage.OseeTypes_Coverage", "");
+		verifyData(attrs.next(), 17, 7, NEW, Name.getGuid(), 2, 6, -1, 33L, "User Groups", "");
 		// @formatter:on
 
       sort(relationCaptor.getAllValues());
       Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
 
       // @formatter:off
-		verifyData(rels.next(), 1, 7, 7, 8, "", ModificationType.NEW,
-				Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 53L);
-		verifyData(rels.next(), 2, 7, 1, 7, "", ModificationType.NEW,
-				Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 52L);
-		verifyData(rels.next(), 3, 7, 7, 15, "", ModificationType.NEW,
-				Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 54L);
+		verifyData(rels.next(), 1, 7, 7, 8, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 53L);
+		verifyData(rels.next(), 2, 7, 1, 7, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 52L);
+		verifyData(rels.next(), 3, 7, 7, 15, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 54L);
 		// @formatter:on
    }
 
    @org.junit.Test
    public void testLoadByIds() throws OseeCoreException {
-      DataLoaderFactory loaderFactory = dataStore.getDataLoaderFactory();
       DataLoader loader = loaderFactory.fromBranchAndArtifactIds(sessionId, CoreBranches.COMMON, 5, 6, 7);
       loader.setLoadLevel(LoadLevel.FULL);
 
@@ -237,34 +219,25 @@ public class LoaderTest {
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
 
       // @formatter:off
-		verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA", "3VY6B",
-				ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, 5, -1,
-				15L);
-		verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA", "N782Y",
-				ModificationType.NEW, OseeTypeDefinition.getGuid(), 2, 5, -1,
-				16L);
-		verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA", "LBVP3",
-				ModificationType.NEW, Folder.getGuid(), 2, 6, -1, 43L);
+		verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA", "3VY6B", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 15L);
+		verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA", "N782Y", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 16L);
+		verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA", "LBVP3", NEW, Folder.getGuid(), 2, 6, -1, 43L);
 		// @formatter:on
 
       sort(attributeCaptor.getAllValues());
       Iterator<AttributeData> attrs = attributeCaptor.getAllValues().iterator();
 
       // @formatter:off
-		verifyData(attrs.next(), 11, 5, ModificationType.NEW, Active.getGuid(),
-				2, 5, -1, 7L, "true", "");
-		verifyData(attrs.next(), 14, 6, ModificationType.NEW, Active.getGuid(),
-				2, 5, -1, 10L, "true", "");
+		verifyData(attrs.next(), 11, 5, NEW, Active.getGuid(), 2, 5, -1, 7L, "true", "");
+		verifyData(attrs.next(), 14, 6, NEW, Active.getGuid(), 2, 5, -1, 10L, "true", "");
 		// @formatter:on
 
       sort(relationCaptor.getAllValues());
       Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
 
       // @formatter:off
-		verifyData(rels.next(), 2, 7, 1, 7, "", ModificationType.NEW,
-				Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 52L);
-		verifyData(rels.next(), 3, 7, 7, 15, "", ModificationType.NEW,
-				Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 54L);
+		verifyData(rels.next(), 2, 7, 1, 7, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 52L);
+		verifyData(rels.next(), 3, 7, 7, 15, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 54L);
 		// @formatter:on
    }
 

@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.data;
 
 import java.util.Collection;
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -25,8 +26,6 @@ public interface ArtifactTypes extends IdentityCollection<Long, IArtifactType> {
 
    Collection<? extends IArtifactType> getSuperArtifactTypes(IArtifactType artType) throws OseeCoreException;
 
-   Collection<? extends IArtifactType> getDescendantTypes(IArtifactType artType, int depth) throws OseeCoreException;
-
    Collection<? extends IArtifactType> getAllDescendantTypes(IArtifactType artType) throws OseeCoreException;
 
    boolean isValidAttributeType(IArtifactType artType, IOseeBranch branch, IAttributeType attributeType) throws OseeCoreException;
@@ -36,5 +35,7 @@ public interface ArtifactTypes extends IdentityCollection<Long, IArtifactType> {
    boolean isAbstract(IArtifactType artType) throws OseeCoreException;
 
    boolean inheritsFrom(IArtifactType artType, IArtifactType... otherTypes) throws OseeCoreException;
+
+   Map<IOseeBranch, Collection<IAttributeType>> getAllAttributeTypes(IArtifactType artType) throws OseeCoreException;
 
 }

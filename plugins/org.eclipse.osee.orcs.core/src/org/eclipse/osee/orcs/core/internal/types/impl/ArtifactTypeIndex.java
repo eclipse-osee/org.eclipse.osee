@@ -56,6 +56,11 @@ public class ArtifactTypeIndex extends TokenTypeIndex<Long, IArtifactType, XArti
       return metaData;
    }
 
+   public Map<IOseeBranch, Collection<IAttributeType>> getAllAttributeTypes(IArtifactType artifactType) {
+      ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
+      return metaData.attributeTypes;
+   }
+
    public Collection<IArtifactType> getSuperTypes(IArtifactType artifactType) {
       ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
       return metaData != null ? metaData.getSuperTypes() : Collections.<IArtifactType> emptyList();
@@ -138,13 +143,13 @@ public class ArtifactTypeIndex extends TokenTypeIndex<Long, IArtifactType, XArti
          Set<IArtifactType> originals = Sets.newHashSet(superTypes);
          superTypes = Sets.newHashSet(newSuperTypes);
          for (IArtifactType superType : superTypes) {
-            ArtifactTypeMetaData metaData = tokenToTypeData.get(superType);
+            ArtifactTypeMetaData metaData = getOrCreateData(superType);
             if (metaData != null) {
                metaData.getDescendantTypes().add(type);
             }
          }
          for (IArtifactType oldValue : originals) {
-            ArtifactTypeMetaData metaData = tokenToTypeData.get(oldValue);
+            ArtifactTypeMetaData metaData = getOrCreateData(oldValue);
             if (metaData != null) {
                metaData.getDescendantTypes().remove(type);
             }

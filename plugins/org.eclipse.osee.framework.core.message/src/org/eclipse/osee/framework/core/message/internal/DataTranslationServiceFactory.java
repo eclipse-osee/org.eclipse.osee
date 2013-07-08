@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.core.message.internal.translation.TransactionR
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 
 /**
@@ -53,7 +53,7 @@ public class DataTranslationServiceFactory {
       //
    }
 
-   public void configureService(IDataTranslationService service, TransactionRecordFactory txRecordFactory, AttributeTypeFactory attributeTypeFactory, IOseeCachingService cachingService) throws OseeCoreException {
+   public void configureService(IDataTranslationService service, TransactionRecordFactory txRecordFactory, AttributeTypeFactory attributeTypeFactory, TempCachingService cachingService) throws OseeCoreException {
       BranchCache branchCache = cachingService.getBranchCache();
       service.addTranslator(new TransactionRecordTranslator(txRecordFactory, branchCache),
          CoreTranslatorId.TRANSACTION_RECORD);

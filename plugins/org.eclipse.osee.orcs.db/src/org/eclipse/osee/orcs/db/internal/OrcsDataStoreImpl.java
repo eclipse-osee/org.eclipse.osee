@@ -11,12 +11,15 @@
 package org.eclipse.osee.orcs.db.internal;
 
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -24,19 +27,20 @@ import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IdentityService;
+import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
-import org.eclipse.osee.orcs.core.ds.DataFactory;
-import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
+import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
-import org.eclipse.osee.orcs.core.ds.TempCachingService;
+import org.eclipse.osee.orcs.data.ArtifactTypes;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.branch.BranchDataStoreImpl;
 import org.eclipse.osee.orcs.db.internal.callable.OrcsTypeLoaderCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeArtifactTypeDatabaseTxCallable;
@@ -72,6 +76,8 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
    private BranchDataStore branchStore;
    private DataModuleFactory dataModuleFactory;
    private QueryModuleFactory queryModule;
+   private IdFactory idFactory;
+   private SqlProvider sqlProvider;
 
    private TempCachingService cacheService;
 
@@ -118,23 +124,18 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
 
       cacheService = modelingService.createCachingService(true);
 
-      StaticSqlProvider sqlProvider = new StaticSqlProvider();
-      sqlProvider.setLogger(logger);
-      sqlProvider.setPreferences(preferences);
+      sqlProvider = createSqlProvider();
 
-      IdFactory idFactory = new IdFactoryImpl(dbService, cacheService.getBranchCache());
+      idFactory = new IdFactoryImpl(dbService, cacheService.getBranchCache());
 
       dataModuleFactory = new DataModuleFactory(logger);
-      dataModuleFactory.create(dbService, idFactory, identityService, sqlProvider, proxyProvider,
-         cacheService.getBranchCache());
 
       MissingChangeItemFactory missingChangeItemFactory =
-         new MissingChangeItemFactoryImpl(dataModuleFactory.getDataLoaderFactory(), identityService);
+         new MissingChangeItemFactoryImpl(dataModuleFactory, identityService);
 
       branchStore =
          new BranchDataStoreImpl(logger, dbService, identityService, cacheService, preferences, executorAdmin,
-            resourceManager, modelFactory, idFactory, dataModuleFactory.getDataLoaderFactory(),
-            missingChangeItemFactory);
+            resourceManager, modelFactory, idFactory, dataModuleFactory, missingChangeItemFactory);
 
       dataStoreAdmin = new DataStoreAdminImpl(logger, dbService, identityService, branchStore, preferences);
 
@@ -154,6 +155,13 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
       dataStoreAdmin = null;
    }
 
+   private SqlProvider createSqlProvider() {
+      StaticSqlProvider toReturn = new StaticSqlProvider();
+      toReturn.setLogger(logger);
+      toReturn.setPreferences(preferences);
+      return toReturn;
+   }
+
    @Override
    public BranchDataStore getBranchDataStore() {
       return branchStore;
@@ -165,13 +173,9 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
    }
 
    @Override
-   public DataFactory getDataFactory() {
-      return dataModuleFactory.getDataFactory();
-   }
-
-   @Override
-   public DataLoaderFactory getDataLoaderFactory() {
-      return dataModuleFactory.getDataLoaderFactory();
+   public DataModule createDataModule(ArtifactTypes artifactTypes, AttributeTypes attributeTypes) {
+      return dataModuleFactory.create(dbService, idFactory, identityService, sqlProvider, proxyProvider,
+         cacheService.getBranchCache(), artifactTypes, attributeTypes);
    }
 
    @Override
@@ -224,18 +228,33 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
    }
 
    @Override
-   public Callable<?> purgeArtifactsByArtifactType(String sessionId, Collection<? extends IArtifactType> typesToPurge) {
+   public Callable<Void> purgeArtifactsByArtifactType(String sessionId, Collection<? extends IArtifactType> typesToPurge) {
       return new PurgeArtifactTypeDatabaseTxCallable(logger, dbService, identityService, typesToPurge);
    }
 
    @Override
-   public Callable<?> purgeAttributesByAttributeType(String sessionId, Collection<? extends IAttributeType> typesToPurge) {
+   public Callable<Void> purgeAttributesByAttributeType(String sessionId, Collection<? extends IAttributeType> typesToPurge) {
       return new PurgeAttributeTypeDatabaseTxCallable(logger, dbService, identityService, typesToPurge);
    }
 
    @Override
-   public Callable<?> purgeRelationsByRelationType(String sessionId, Collection<? extends IRelationType> typesToPurge) {
+   public Callable<Void> purgeRelationsByRelationType(String sessionId, Collection<? extends IRelationType> typesToPurge) {
       return new PurgeRelationTypeDatabaseTxCallable(logger, dbService, identityService, typesToPurge);
    }
 
+   @Override
+   public Callable<Void> persistTypeIdentities(String sessionId, final Collection<Identity<Long>> types) {
+      return new Callable<Void>() {
+
+         @Override
+         public Void call() throws Exception {
+            List<Long> toPersist = new LinkedList<Long>();
+            for (Identity<Long> type : types) {
+               toPersist.add(type.getGuid());
+            }
+            identityService.store(toPersist);
+            return null;
+         }
+      };
+   }
 }

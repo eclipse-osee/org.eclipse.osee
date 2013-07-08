@@ -12,8 +12,6 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -21,6 +19,9 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
+import org.eclipse.osee.orcs.core.ds.DataModule;
+import org.eclipse.osee.orcs.data.ArtifactTypes;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
@@ -37,52 +38,44 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactoryImpl;
 /**
  * @author Roberto E. Escobar
  */
-public class DataModuleFactory {
+public class DataModuleFactory implements DataModule {
 
    private final Log logger;
-
-   private DataFactory dataFactory;
    private DataLoaderFactory dataLoaderFactory;
+   private DataFactory dataFactory;
 
    public DataModuleFactory(Log logger) {
       super();
       this.logger = logger;
    }
 
-   public void create(IOseeDatabaseService dbService, IdFactory idFactory, IdentityService identityService, SqlProvider sqlProvider, DataProxyFactoryProvider proxyProvider, BranchCache branchCache, ArtifactTypeCache artifactTypeCache, AttributeTypeCache attributeTypeCache) {
-      ProxyDataFactory proxyDataFactory = createDataFactory(proxyProvider, attributeTypeCache);
+   public DataModule create(IOseeDatabaseService dbService, IdFactory idFactory, IdentityService identityService, SqlProvider sqlProvider, DataProxyFactoryProvider proxyProvider, BranchCache branchCache, ArtifactTypes artifactTypes, AttributeTypes attributeTypes) {
+      ProxyDataFactory proxyDataFactory = createDataFactory(proxyProvider, attributeTypes);
       OrcsObjectFactory rowDataFactory = createOrcsObjectFactory(identityService, proxyDataFactory);
 
-      dataFactory = createDataFactory(rowDataFactory, idFactory, artifactTypeCache);
+      dataFactory = createDataFactory(rowDataFactory, idFactory, artifactTypes);
 
       SqlHandlerFactory handlerFactory = createHandlerFactory(identityService);
       SqlArtifactLoader loader = createArtifactLoader(dbService, handlerFactory, sqlProvider, rowDataFactory);
       dataLoaderFactory = createDataLoader(dbService, loader, branchCache);
+      return this;
    }
 
    public void stop() {
-      dataLoaderFactory = null;
       dataFactory = null;
+      dataLoaderFactory = null;
    }
 
-   public DataFactory getDataFactory() {
-      return dataFactory;
-   }
-
-   public DataLoaderFactory getDataLoaderFactory() {
-      return dataLoaderFactory;
-   }
-
-   protected ProxyDataFactory createDataFactory(DataProxyFactoryProvider proxyProvider, AttributeTypeCache attributeTypeCache) {
-      return new AttributeDataProxyFactory(proxyProvider, attributeTypeCache);
+   protected ProxyDataFactory createDataFactory(DataProxyFactoryProvider proxyProvider, AttributeTypes attributeTypes) {
+      return new AttributeDataProxyFactory(proxyProvider, attributeTypes);
    }
 
    protected OrcsObjectFactory createOrcsObjectFactory(IdentityService identityService, ProxyDataFactory proxyDataFactory) {
       return new OrcsObjectFactoryImpl(proxyDataFactory, identityService);
    }
 
-   protected DataFactory createDataFactory(OrcsObjectFactory factory, IdFactory idFactory, ArtifactTypeCache artifactTypeCache) {
-      return new DataFactoryImpl(idFactory, factory, artifactTypeCache);
+   protected DataFactory createDataFactory(OrcsObjectFactory factory, IdFactory idFactory, ArtifactTypes artifactTypes) {
+      return new DataFactoryImpl(idFactory, factory, artifactTypes);
    }
 
    protected SqlHandlerFactory createHandlerFactory(IdentityService identityService) {
@@ -103,5 +96,15 @@ public class DataModuleFactory {
 
    protected DataLoaderFactory createDataLoader(IOseeDatabaseService dbService, SqlArtifactLoader loader, BranchCache branchCache) {
       return new DataLoaderFactoryImpl(logger, dbService, loader, branchCache);
+   }
+
+   @Override
+   public DataFactory getDataFactory() {
+      return dataFactory;
+   }
+
+   @Override
+   public DataLoaderFactory getDataLoaderFactory() {
+      return dataLoaderFactory;
    }
 }

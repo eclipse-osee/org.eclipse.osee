@@ -10,14 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -40,23 +35,4 @@ public class AttributeTypeCacheUpdateResponse {
       return attrToEnum;
    }
 
-   public static AttributeTypeCacheUpdateResponse fromCache(AttributeTypeFactory factory, Collection<AttributeType> types) throws OseeCoreException {
-      List<AttributeType> rows = new ArrayList<AttributeType>();
-      Map<Integer, Integer> attrToEnum = new HashMap<Integer, Integer>();
-      for (AttributeType item : types) {
-         AttributeType type =
-            factory.create(item.getGuid(), item.getName(), item.getBaseAttributeTypeId(),
-               item.getAttributeProviderId(), item.getFileTypeExtension(), item.getDefaultValue(),
-               item.getMinOccurrences(), item.getMaxOccurrences(), item.getDescription(), item.getTaggerId(),
-               item.getMediaType());
-         type.setId(item.getId());
-         type.setStorageState(item.getStorageState());
-         rows.add(type);
-
-         if (item.getOseeEnumType() != null) {
-            attrToEnum.put(item.getId(), item.getOseeEnumTypeId());
-         }
-      }
-      return new AttributeTypeCacheUpdateResponse(rows, attrToEnum);
-   }
 }

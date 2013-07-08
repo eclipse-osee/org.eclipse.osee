@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.change;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -39,6 +42,8 @@ import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
 import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.db.internal.loader.DataModuleFactory;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,6 +69,7 @@ public class MissingChangeItemFactoryTest {
    @Mock private Branch destBranch;
    @Mock private TransactionRecord sourceTx;
    @Mock private TransactionRecord destTx;
+   @Mock private DataModuleFactory dataModuleFactory;
    // @formatter:on
 
    private MissingChangeItemFactory changeItemFactory;
@@ -103,7 +109,8 @@ public class MissingChangeItemFactoryTest {
          destDataLoader);
       when(sourceTx.getBranch()).thenReturn(sourceBranch);
       when(destTx.getBranch()).thenReturn(destBranch);
-      changeItemFactory = new MissingChangeItemFactoryImpl(dataLoaderFactory, identityService);
+      when(dataModuleFactory.getDataLoaderFactory()).thenReturn(dataLoaderFactory);
+      changeItemFactory = new MissingChangeItemFactoryImpl(dataModuleFactory, identityService);
    }
 
    @Test
