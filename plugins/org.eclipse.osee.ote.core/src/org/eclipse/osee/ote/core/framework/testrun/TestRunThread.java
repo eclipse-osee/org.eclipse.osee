@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.core.framework.testrun;
 
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
@@ -35,7 +34,6 @@ public class TestRunThread extends OseeTestThread {
    private final ITestRunListenerDataProvider dataProvider;
    private final IPropertyStore propertyStore;
    private volatile boolean abort = false;
-   private final ReentrantLock lock = new ReentrantLock();
    private final ResultBuilder rb = new ResultBuilder(false);
 
    public TestRunThread(IPropertyStore propertyStore, TestScript test, TestEnvironment env, ITestRunListenerProvider listenerProvider, ITestRunListenerDataProvider dataProvider) {
@@ -64,13 +62,11 @@ public class TestRunThread extends OseeTestThread {
                }
                rb.append(listenerProvider.notifyPreTestCase(dataProvider.createOnPreTestCase(propertyStore, test,
                   testCase)));
-               lock.lock();
                try {
                   testCase.baseDoTestCase(getEnvironment());
                   if (Thread.interrupted()) {
                      throw new InterruptedException("Thread probably aborted");
                   }
-
                } catch (Throwable ex) {
                   if (abort) {
                      addAbortResult(null);
@@ -96,11 +92,8 @@ public class TestRunThread extends OseeTestThread {
                         "Exception running Test Case [" + testCase != null ? testCase.getClass().getName() : "uknown (null test case)" + "]",
                         ex);
                   }
-               } finally {
-                  lock.unlock();
-               }
-               rb.append(listenerProvider.notifyPostTestCase(dataProvider.createOnPostTestCase(propertyStore, test,
-                  testCase)));
+               } 
+               rb.append(listenerProvider.notifyPostTestCase(dataProvider.createOnPostTestCase(propertyStore, test, testCase)));
             }
          }
       } finally {
@@ -129,23 +122,20 @@ public class TestRunThread extends OseeTestThread {
       if (Thread.currentThread() == this.getThread()) {
          throw new TestException("", Level.SEVERE);
       }
-      if (lock.isLocked()) {
-         // test case is in process
-    	 int count = 0;
-    	 do{
-    		 this.interrupt();
-    		 try{
-    			 this.join(10);
-    		 } catch (InterruptedException ex){
-    		 }
-    		 count++;
-    	 } while (this.isAlive() && count < 200);
+      int count = 0;
+      do{
+         this.interrupt();
+         try{
+            this.join(10);
+         } catch (InterruptedException ex){
+         }
+         count++;
+      } while (this.isAlive() && count < 200);
+      if (this.isAlive()) {
+         OseeLog.reportStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE,
+               "Waited 60s for test to abort but the thread did not die."));
+         return false;
       }
-     if (this.isAlive()) {
-        OseeLog.reportStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE,
-           "Waited 60s for test to abort but the thread did not die."));
-        return false;
-     }
       return true;
    }
 
@@ -159,11 +149,7 @@ public class TestRunThread extends OseeTestThread {
       if (Thread.currentThread() == this.getThread()) {
          throw new TestException("", Level.SEVERE);
       }
-      //
-      if (lock.isLocked()) {
-         // test case is in process
-         this.interrupt();
-      }
+      this.interrupt();
       return true;
    }
 
