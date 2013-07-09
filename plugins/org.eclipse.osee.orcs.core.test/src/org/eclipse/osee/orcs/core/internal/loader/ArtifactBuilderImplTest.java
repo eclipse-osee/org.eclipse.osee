@@ -16,8 +16,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -105,10 +103,10 @@ public class ArtifactBuilderImplTest {
    }
 
    @Test
-   public void testRelationCountMatches() throws OseeCoreException, IOException {
+   public void testRelationCountMatches() throws OseeCoreException {
       RelationTypes cache = createAndPopulate();
       Map<Integer, RelationContainer> containers = getRelationProviderList(cache, 22);
-      List<RelationData> datas = getTestData("data.csv");
+      List<RelationData> datas = getTestData();
       doSetup(datas, containers);
 
       for (RelationData data : datas) {
@@ -125,10 +123,10 @@ public class ArtifactBuilderImplTest {
 
    @Ignore
    @Test
-   public void testRelatedArtifactsMatch() throws OseeCoreException, IOException {
+   public void testRelatedArtifactsMatch() throws OseeCoreException {
       RelationTypes cache = createAndPopulate();
       Map<Integer, RelationContainer> containers = getRelationProviderList(cache, 22);
-      List<RelationData> datas = getTestData("data.csv");
+      List<RelationData> datas = getTestData();
       doSetup(datas, containers);
 
       checkRelatedArtifacts(containers.get(1), RelationSide.SIDE_B, 2, 3, 4, 5, 6, 7, 8, 9, 10);
@@ -201,18 +199,37 @@ public class ArtifactBuilderImplTest {
          String.format("We did not get the expected number of relations back [%d != %d]", size, count), size, count);
    }
 
-   private List<RelationData> getTestData(String csvFile) throws IOException {
-      URL url = getClass().getResource(csvFile);
-      Assert.assertNotNull(url);
-
+   private List<RelationData> getTestData() {
       List<RelationData> datas = new ArrayList<RelationData>();
       RelationCsvReader csvReader = new RelationCsvReader(datas);
-      CsvReader reader = new CsvReader(url.openStream(), csvReader);
-      reader.readFile();
+      //      #ArtIdA ArtIdB   BranchId GammaId  ModType  Rationale   RelationId  RelationTypeId 
+      csvReader.onRow(1, 1, 2, 1, 1L, ModificationType.NEW, "yay", 1, 1L);
+      csvReader.onRow(1, 1, 3, 1, 1L, ModificationType.NEW, "yay", 2, 1L);
+      csvReader.onRow(1, 1, 4, 1, 1L, ModificationType.NEW, "yay", 3, 1L);
+      csvReader.onRow(1, 1, 5, 1, 1L, ModificationType.NEW, "yay", 4, 1L);
+      csvReader.onRow(1, 1, 6, 1, 1L, ModificationType.NEW, "yay", 5, 1L);
+      csvReader.onRow(1, 1, 7, 1, 1L, ModificationType.NEW, "yay", 6, 1L);
+      csvReader.onRow(1, 1, 8, 1, 1L, ModificationType.NEW, "yay", 7, 1L);
+      csvReader.onRow(1, 1, 9, 1, 1L, ModificationType.NEW, "yay", 8, 1L);
+      csvReader.onRow(1, 1, 10, 1, 1L, ModificationType.NEW, "yay", 9, 1L);
+      csvReader.onRow(3, 3, 11, 1, 1L, ModificationType.NEW, "yay", 10, 1L);
+      csvReader.onRow(3, 1, 3, 1, 1L, ModificationType.NEW, "yay", 10, 1L);
+      csvReader.onRow(3, 3, 12, 1, 1L, ModificationType.NEW, "yay", 11, 1L);
+      csvReader.onRow(3, 3, 13, 1, 1L, ModificationType.NEW, "yay", 12, 1L);
+      csvReader.onRow(3, 3, 14, 1, 1L, ModificationType.NEW, "yay", 13, 1L);
+      csvReader.onRow(3, 3, 15, 1, 1L, ModificationType.NEW, "yay", 14, 1L);
+      csvReader.onRow(3, 3, 16, 1, 1L, ModificationType.NEW, "yay", 15, 1L);
+      csvReader.onRow(4, 4, 17, 1, 1L, ModificationType.NEW, "yay", 16, 1L);
+      csvReader.onRow(4, 4, 18, 1, 1L, ModificationType.NEW, "yay", 17, 1L);
+      csvReader.onRow(4, 4, 19, 1, 1L, ModificationType.NEW, "yay", 18, 1L);
+      csvReader.onRow(4, 4, 20, 1, 1L, ModificationType.NEW, "yay", 19, 1L);
+      csvReader.onRow(4, 4, 21, 1, 1L, ModificationType.NEW, "yay", 20, 1L);
+      csvReader.onRow(4, 4, 22, 1, 1L, ModificationType.NEW, "yay", 21, 1L);
+      csvReader.onRow(4, 4, 2, 1, 1L, ModificationType.NEW, "yay", 21, 1L);
       return datas;
    }
 
-   public static class RelationCsvReader implements CsvRowHandler {
+   public static class RelationCsvReader {
 
       private final List<RelationData> data;
 
@@ -220,8 +237,7 @@ public class ArtifactBuilderImplTest {
          this.data = data;
       }
 
-      @Override
-      public void onRow(String... row) {
+      public void onRow(Object... row) {
          //ArtIdA,ArtIdB,BranchId,GammaId,ModType,Rationale,RelationId,RelationTypeId
          if (row.length != 9) {
             Assert.assertTrue("Data file is not formatted correctly", false);
@@ -230,16 +246,16 @@ public class ArtifactBuilderImplTest {
          VersionData version = mock(VersionData.class);
          RelationData relationRow = Mockito.mock(RelationData.class);
 
-         when(version.getBranchId()).thenReturn(Integer.parseInt(row[3]));
-         when(version.getGammaId()).thenReturn(Long.parseLong(row[4]));
+         when(version.getBranchId()).thenReturn((Integer) row[3]);
+         when(version.getGammaId()).thenReturn((Long) row[4]);
 
-         when(relationRow.getParentId()).thenReturn(Integer.parseInt(row[0]));
-         when(relationRow.getArtIdA()).thenReturn(Integer.parseInt(row[1]));
-         when(relationRow.getArtIdB()).thenReturn(Integer.parseInt(row[2]));
-         when(relationRow.getModType()).thenReturn(ModificationType.valueOf(row[5]));
-         when(relationRow.getRationale()).thenReturn(row[6]);
-         when(relationRow.getLocalId()).thenReturn(Integer.parseInt(row[7]));
-         when(relationRow.getTypeUuid()).thenReturn(Long.parseLong(row[8]));
+         when(relationRow.getParentId()).thenReturn((Integer) row[0]);
+         when(relationRow.getArtIdA()).thenReturn((Integer) row[1]);
+         when(relationRow.getArtIdB()).thenReturn((Integer) row[2]);
+         when(relationRow.getModType()).thenReturn((ModificationType) row[5]);
+         when(relationRow.getRationale()).thenReturn((String) row[6]);
+         when(relationRow.getLocalId()).thenReturn((Integer) row[7]);
+         when(relationRow.getTypeUuid()).thenReturn((Long) row[8]);
          when(relationRow.getVersion()).thenReturn(version);
 
          data.add(relationRow);

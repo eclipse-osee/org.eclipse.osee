@@ -48,7 +48,7 @@ public class ArtifactLoaderFactoryImplTest {
    @Mock private DataLoaderFactory dataLoaderFactory;
    @Mock private ArtifactBuilderFactory builderFactory;
    
-   @Mock private SessionContext sessionContext;
+   @Mock private SessionContext session;
    @Mock private QueryContext queryContext;
    @Mock private DataLoader dbLoader;
    @Mock private ArtifactBuilder builder;
@@ -61,23 +61,25 @@ public class ArtifactLoaderFactoryImplTest {
    private final IOseeBranch branch = CoreBranches.COMMON;
    private ArtifactLoaderFactory factory;
    private List<ArtifactReadable> artifacts;
+   private String sessionId;
 
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
       factory = new ArtifactLoaderFactoryImpl(dataLoaderFactory, builderFactory);
       artifacts = Arrays.asList(art1, art2);
+
+      sessionId = GUID.create();
+      when(session.getSessionId()).thenReturn(sessionId);
    }
 
    @Test
    public void testLoadArtifactIdsAndMethodCalls() throws OseeCoreException {
       int[] ids = new int[] {1, 2, 3, 4, 5};
 
-      String sessionId = GUID.create();
-      when(sessionContext.getSessionId()).thenReturn(sessionId);
       when(dataLoaderFactory.fromBranchAndArtifactIds(sessionId, branch, ids)).thenReturn(dbLoader);
 
-      ArtifactLoader loader = factory.fromBranchAndArtifactIds(sessionContext, branch, ids);
+      ArtifactLoader loader = factory.fromBranchAndArtifactIds(session, branch, ids);
       verify(dataLoaderFactory).fromBranchAndArtifactIds(sessionId, branch, ids);
 
       loader.includeDeleted();
@@ -115,11 +117,9 @@ public class ArtifactLoaderFactoryImplTest {
    public void testLoad() throws OseeCoreException {
       List<Integer> ids = Arrays.asList(1, 2, 3, 4, 5);
 
-      String sessionId = GUID.create();
-      when(sessionContext.getSessionId()).thenReturn(sessionId);
       when(dataLoaderFactory.fromBranchAndArtifactIds(sessionId, branch, ids)).thenReturn(dbLoader);
 
-      ArtifactLoader loader = factory.fromBranchAndArtifactIds(sessionContext, branch, ids);
+      ArtifactLoader loader = factory.fromBranchAndArtifactIds(session, branch, ids);
       verify(dataLoaderFactory).fromBranchAndArtifactIds(sessionId, branch, ids);
 
       when(builderFactory.createArtifactBuilder()).thenReturn(builder);
@@ -134,11 +134,9 @@ public class ArtifactLoaderFactoryImplTest {
    public void testGetResults() throws OseeCoreException {
       int[] ids = new int[] {1, 2, 3, 4, 5};
 
-      String sessionId = GUID.create();
-      when(sessionContext.getSessionId()).thenReturn(sessionId);
       when(dataLoaderFactory.fromBranchAndArtifactIds(sessionId, branch, ids)).thenReturn(dbLoader);
 
-      ArtifactLoader loader = factory.fromBranchAndArtifactIds(sessionContext, branch, ids);
+      ArtifactLoader loader = factory.fromBranchAndArtifactIds(session, branch, ids);
       verify(dataLoaderFactory).fromBranchAndArtifactIds(sessionId, branch, ids);
 
       when(builderFactory.createArtifactBuilder()).thenReturn(builder);
@@ -152,11 +150,9 @@ public class ArtifactLoaderFactoryImplTest {
 
    @Test
    public void testQueryContext() throws OseeCoreException {
-      String sessionId = GUID.create();
-      when(sessionContext.getSessionId()).thenReturn(sessionId);
       when(dataLoaderFactory.fromQueryContext(queryContext)).thenReturn(dbLoader);
 
-      ArtifactLoader loader = factory.fromQueryContext(sessionContext, queryContext);
+      ArtifactLoader loader = factory.fromQueryContext(session, queryContext);
       verify(dataLoaderFactory).fromQueryContext(queryContext);
 
       when(builderFactory.createArtifactBuilder()).thenReturn(builder);
