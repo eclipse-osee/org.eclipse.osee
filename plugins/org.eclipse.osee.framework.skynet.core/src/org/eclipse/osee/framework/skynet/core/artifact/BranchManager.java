@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -182,26 +181,12 @@ public class BranchManager {
     * returns the merge branch for this source destination pair from the cache or null if not found
     */
    public static MergeBranch getMergeBranch(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
-      return getMergeBranch(sourceBranch, destinationBranch, true);
-   }
-
-   public static MergeBranch getMergeBranch(Branch sourceBranch, Branch destinationBranch, boolean isReLoadAllowed) throws OseeCoreException {
-      BranchCache cache = getCache();
-      // If someone else made a branch on another machine, we may not know about it
-      // so refresh the cache.
-      MergeBranch mergeBranch = cache.findMergeBranch(sourceBranch, destinationBranch);
-      if (OseeInfo.isCacheEnabled(MERGE_RELOAD_KEY)) {
-         if (mergeBranch == null && isReLoadAllowed) {
-            if (cache.reloadCache()) {
-               mergeBranch = cache.findMergeBranch(sourceBranch, destinationBranch);
-            }
-         }
-      }
+      MergeBranch mergeBranch = getCache().findMergeBranch(sourceBranch, destinationBranch);
       return mergeBranch;
    }
 
    public static boolean doesMergeBranchExist(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
-      return getMergeBranch(sourceBranch, destBranch, false) != null;
+      return getMergeBranch(sourceBranch, destBranch) != null;
    }
 
    public static Branch getBranch(Integer branchId) throws OseeCoreException {

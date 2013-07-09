@@ -47,7 +47,7 @@ public class LoadCompareBranchToBranch extends AbstractOperation {
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
       uiData.setTxDelta(txDelta);
 
-      Branch mergeBranch = BranchManager.getMergeBranch(startBranch, otherBranch, true);
+      Branch mergeBranch = BranchManager.getMergeBranch(startBranch, otherBranch);
       uiData.setMergeBranch(mergeBranch);
 
       if (otherBranch.equals(startBranch.getParentBranch())) {
