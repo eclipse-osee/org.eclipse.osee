@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.annotations.ReadAttributes;
 import org.eclipse.osee.orcs.annotations.WriteAttributes;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.proxy.AttributeProxyFactory;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -26,24 +26,24 @@ import org.eclipse.osee.orcs.data.AttributeWriteable;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactWriteableInvocationHandler extends WriteableInvocationHandler<ArtifactImpl> {
+public class ArtifactWriteableInvocationHandler extends WriteableInvocationHandler<Artifact> {
 
    private final ArtifactFactory artifactFactory;
    private final AttributeProxyFactory proxyFactory;
 
-   public ArtifactWriteableInvocationHandler(ArtifactFactory artifactFactory, AttributeProxyFactory proxyFactory, ArtifactImpl proxied) {
+   public ArtifactWriteableInvocationHandler(ArtifactFactory artifactFactory, AttributeProxyFactory proxyFactory, Artifact proxied) {
       super(proxied);
       this.artifactFactory = artifactFactory;
       this.proxyFactory = proxyFactory;
    }
 
    @Override
-   protected ArtifactImpl createCopyForWrite(ArtifactImpl original) throws OseeCoreException {
+   protected Artifact createCopyForWrite(Artifact original) throws OseeCoreException {
       return artifactFactory.clone(original);
    }
 
    @Override
-   protected Object invokeOnDelegate(ArtifactImpl target, Method method, Object[] args) throws Throwable {
+   protected Object invokeOnDelegate(Artifact target, Method method, Object[] args) throws Throwable {
       Object toReturn = super.invokeOnDelegate(target, method, args);
       if (toReturn != null) {
          toReturn = toProxy(method, toReturn);

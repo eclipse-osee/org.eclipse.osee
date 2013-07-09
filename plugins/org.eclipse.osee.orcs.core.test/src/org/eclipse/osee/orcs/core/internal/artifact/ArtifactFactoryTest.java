@@ -75,7 +75,7 @@ public class ArtifactFactoryTest {
    
    @Mock private Attribute<Object> attribute;
    @Mock private AttributeData attributeData;
-   @Mock private ArtifactImpl source;
+   @Mock private Artifact source;
    
    @Mock private ArtifactData otherArtifactData;
    // @formatter:on
@@ -123,7 +123,7 @@ public class ArtifactFactoryTest {
    public void testCreateArtifactFromBranchTypeAndGuid() throws OseeCoreException {
       when(dataFactory.create(branch, artifactType, guid)).thenReturn(artifactData);
 
-      ArtifactImpl artifact = artifactFactory.createArtifact(branch, artifactType, guid);
+      Artifact artifact = artifactFactory.createArtifact(branch, artifactType, guid);
 
       verify(dataFactory).create(branch, artifactType, guid);
       assertEquals(artifactType, artifact.getArtifactType());
@@ -135,7 +135,7 @@ public class ArtifactFactoryTest {
       when(relationFactory.createRelationContainer(45)).thenReturn(relationContainer);
       when(branchCache.getById(23)).thenReturn(branch);
 
-      ArtifactImpl artifact = artifactFactory.createArtifact(artifactData);
+      Artifact artifact = artifactFactory.createArtifact(artifactData);
 
       assertEquals(artifactType, artifact.getArtifactType());
       assertEquals(guid, artifact.getGuid());
@@ -150,9 +150,9 @@ public class ArtifactFactoryTest {
       when(attribute.getOrcsData()).thenReturn(attributeData);
       when(artifactTypeCache.isValidAttributeType(artifactType, branch, CoreAttributeTypes.Annotation)).thenReturn(true);
 
-      ArgumentCaptor<ArtifactImpl> implCapture = ArgumentCaptor.forClass(ArtifactImpl.class);
+      ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
 
-      ArtifactImpl actual = artifactFactory.copyArtifact(source, types, branch);
+      Artifact actual = artifactFactory.copyArtifact(source, types, branch);
 
       verify(source, times(0)).getAttributes(CoreAttributeTypes.RelationOrder);
       verify(source, times(0)).getAttributes(CoreAttributeTypes.City);
@@ -186,9 +186,9 @@ public class ArtifactFactoryTest {
       when(attribute.getOrcsData()).thenReturn(attributeData);
       when(artifactTypeCache.isValidAttributeType(artifactType, branch, CoreAttributeTypes.Annotation)).thenReturn(true);
 
-      ArgumentCaptor<ArtifactImpl> implCapture = ArgumentCaptor.forClass(ArtifactImpl.class);
+      ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
 
-      ArtifactImpl actual = artifactFactory.introduceArtifact(source, branch);
+      Artifact actual = artifactFactory.introduceArtifact(source, branch);
 
       verify(source, times(0)).getAttributes(CoreAttributeTypes.RelationOrder);
       verify(source, times(0)).getAttributes(CoreAttributeTypes.City);
@@ -210,9 +210,9 @@ public class ArtifactFactoryTest {
       when(attribute.getOrcsData()).thenReturn(attributeData);
       when(artifactTypeCache.isValidAttributeType(artifactType, branch, CoreAttributeTypes.Annotation)).thenReturn(true);
 
-      ArgumentCaptor<ArtifactImpl> implCapture = ArgumentCaptor.forClass(ArtifactImpl.class);
+      ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
 
-      ArtifactImpl actual = artifactFactory.copyArtifact(source, types, branch);
+      Artifact actual = artifactFactory.copyArtifact(source, types, branch);
 
       verify(source, times(0)).getAttributes(CoreAttributeTypes.RelationOrder);
       verify(source, times(0)).getAttributes(CoreAttributeTypes.City);

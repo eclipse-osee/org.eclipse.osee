@@ -28,7 +28,7 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
 
-public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWriteable, HasRelationContainer, ArtifactVisitable {
+public class Artifact extends AttributeManagerImpl implements ArtifactWriteable, HasRelationContainer, ArtifactVisitable {
 
    private final ArtifactTypes artifactTypeCache;
    private final RelationContainer relationContainer;
@@ -36,7 +36,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements ArtifactWritea
    private ArtifactData artifactData;
    private final ValueProvider<Branch, ArtifactData> branchProvider;
 
-   public ArtifactImpl(ArtifactTypes artifactTypeCache, ArtifactData artifactData, AttributeFactory attributeFactory, RelationContainer relationContainer, ValueProvider<Branch, ArtifactData> branchProvider) {
+   public Artifact(ArtifactTypes artifactTypeCache, ArtifactData artifactData, AttributeFactory attributeFactory, RelationContainer relationContainer, ValueProvider<Branch, ArtifactData> branchProvider) {
       super(attributeFactory);
       this.artifactTypeCache = artifactTypeCache;
       this.artifactData = artifactData;

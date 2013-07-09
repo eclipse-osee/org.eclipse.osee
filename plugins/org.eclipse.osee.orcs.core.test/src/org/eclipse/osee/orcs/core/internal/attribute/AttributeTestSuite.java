@@ -27,7 +27,7 @@ import org.junit.runners.Suite;
    AttributeFromStringFilterTest.class,
    AttributeResultSetTest.class,
    AttributeValueFilterTest.class,
-   ArtifactImplTest.class})
+   ArtifactTest.class})
 public class AttributeTestSuite {
    // Test Suite
 }

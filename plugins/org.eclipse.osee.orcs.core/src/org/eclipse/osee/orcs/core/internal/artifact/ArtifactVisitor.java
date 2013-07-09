@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
  */
 public interface ArtifactVisitor {
 
-   void visit(ArtifactImpl artifact) throws OseeCoreException;
+   void visit(Artifact artifact) throws OseeCoreException;
 
    void visit(Attribute<?> attribute) throws OseeCoreException;
 

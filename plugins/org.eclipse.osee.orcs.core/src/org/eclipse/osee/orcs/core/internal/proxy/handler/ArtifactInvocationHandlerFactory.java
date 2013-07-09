@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.internal.proxy.handler;
 
 import java.lang.reflect.InvocationHandler;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.proxy.AttributeProxyFactory;
 import org.eclipse.osee.orcs.core.internal.proxy.InvocationHandlerFactory;
@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.core.internal.proxy.InvocationHandlerFactory;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactInvocationHandlerFactory implements InvocationHandlerFactory<ArtifactImpl> {
+public class ArtifactInvocationHandlerFactory implements InvocationHandlerFactory<Artifact> {
 
    private final ArtifactFactory artifactFactory;
    private final AttributeProxyFactory attributeProxyFactory;
@@ -32,12 +32,12 @@ public class ArtifactInvocationHandlerFactory implements InvocationHandlerFactor
    }
 
    @Override
-   public InvocationHandler createReadHandler(ArtifactImpl toProxy) {
-      return new ReadableInvocationHandler<ArtifactImpl>(toProxy);
+   public InvocationHandler createReadHandler(Artifact toProxy) {
+      return new ReadableInvocationHandler<Artifact>(toProxy);
    }
 
    @Override
-   public InvocationHandler createWriteHandler(ArtifactImpl toProxy) {
+   public InvocationHandler createWriteHandler(Artifact toProxy) {
       return new ArtifactWriteableInvocationHandler(artifactFactory, attributeProxyFactory, toProxy);
    }
 

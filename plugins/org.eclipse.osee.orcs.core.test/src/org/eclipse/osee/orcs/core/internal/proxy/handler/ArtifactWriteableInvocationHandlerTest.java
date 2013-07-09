@@ -26,7 +26,7 @@ import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.proxy.AttributeProxyFactory;
 import org.eclipse.osee.orcs.core.internal.proxy.HasProxiedObject;
@@ -52,8 +52,8 @@ import org.mockito.stubbing.Answer;
 public class ArtifactWriteableInvocationHandlerTest {
 
    //@formatter:off
-   @Mock private ArtifactImpl proxiedObject;
-   @Mock private ArtifactImpl copy;
+   @Mock private Artifact proxiedObject;
+   @Mock private Artifact copy;
    @Mock private ArtifactFactory artifactFactory;
    @Mock private AttributeProxyFactory attributeProxyFactory;
    //@formatter:on
@@ -98,7 +98,7 @@ public class ArtifactWriteableInvocationHandlerTest {
       boolean copied = false;
 
       for (Method method : proxy.getClass().getMethods()) {
-         ArtifactImpl object;
+         Artifact object;
          if (!copied && readMethods.contains(method.getName())) {
             object = proxiedObject;
          } else {
@@ -115,7 +115,7 @@ public class ArtifactWriteableInvocationHandlerTest {
       ArtifactWriteableInvocationHandler spy = Mockito.spy(handler);
       ArtifactWriteable proxy = ProxyUtil.create(ArtifactWriteable.class, spy);
 
-      ProxyWriteable<ArtifactImpl> proxied = (ProxyWriteable<ArtifactImpl>) proxy;
+      ProxyWriteable<Artifact> proxied = (ProxyWriteable<Artifact>) proxy;
       Assert.assertEquals(proxiedObject, proxied.getProxiedObject());
       Assert.assertEquals(proxiedObject, proxied.getOriginalObject());
 

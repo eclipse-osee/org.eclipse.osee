@@ -29,7 +29,7 @@ import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
 import org.eclipse.osee.orcs.core.internal.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManager;
 import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
@@ -54,8 +54,8 @@ public class ArtifactBuilderImpl implements ArtifactBuilder {
    private final ArtifactFactory artifactFactory;
    private final AttributeFactory attributeFactory;
 
-   private final Map<Integer, ArtifactImpl> artifacts = new LinkedHashMap<Integer, ArtifactImpl>();
-   private final Set<ArtifactImpl> created = new HashSet<ArtifactImpl>();
+   private final Map<Integer, Artifact> artifacts = new LinkedHashMap<Integer, Artifact>();
+   private final Set<Artifact> created = new HashSet<Artifact>();
    private List<ArtifactReadable> readables;
 
    public ArtifactBuilderImpl(Log logger, ArtifactProxyFactory proxyFactory, ArtifactFactory artifactFactory, AttributeFactory attributeFactory) {
@@ -87,15 +87,15 @@ public class ArtifactBuilderImpl implements ArtifactBuilder {
       created.clear();
 
       readables = new ArrayList<ArtifactReadable>(artifacts.size());
-      for (ArtifactImpl artifact : artifacts.values()) {
+      for (Artifact artifact : artifacts.values()) {
          ArtifactReadable readable = proxyFactory.createReadable(artifact);
          readables.add(readable);
       }
       artifacts.clear();
    }
 
-   private ArtifactImpl getCachedArtifact(ArtifactData data) {
-      ArtifactImpl toReturn = artifacts.get(data.getLocalId());
+   private Artifact getCachedArtifact(ArtifactData data) {
+      Artifact toReturn = artifacts.get(data.getLocalId());
       if (toReturn == null) {
          //         toReturn = cache.get(data);
       }
@@ -118,7 +118,7 @@ public class ArtifactBuilderImpl implements ArtifactBuilder {
    }
 
    private void handle(ArtifactData data) throws OseeCoreException {
-      ArtifactImpl artifact = getCachedArtifact(data);
+      Artifact artifact = getCachedArtifact(data);
       if (artifact == null) {
          artifact = artifactFactory.createArtifact(data);
          created.add(artifact);

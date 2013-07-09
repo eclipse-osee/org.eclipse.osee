@@ -34,7 +34,7 @@ import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
@@ -62,7 +62,7 @@ public class ArtifactBuilderImplTest {
    @Mock private ArtifactFactory artifactFactory;
    @Mock private AttributeFactory attributeFactory;
    
-   @Mock private ArtifactImpl artifact;
+   @Mock private Artifact artifact;
    @Mock private ArtifactData artifactData;
    @Mock private AttributeData attributeData;
    // @formatter:on
@@ -139,7 +139,7 @@ public class ArtifactBuilderImplTest {
 
    private void doSetup(List<RelationData> datas, Map<Integer, RelationContainer> containers) throws OseeCoreException {
       for (RelationData data : datas) {
-         ArtifactImpl artifact = Mockito.mock(ArtifactImpl.class);
+         Artifact artifact = Mockito.mock(Artifact.class);
          ArtifactData artData = Mockito.mock(ArtifactData.class);
          int id = data.getParentId();
          when(artifactFactory.createArtifact(artData)).thenReturn(artifact);

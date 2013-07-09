@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ArtifactFactoryTest.class,})
+@Suite.SuiteClasses({ArtifactFactoryTest.class})
 public class ArtifactTestSuite {
    // Test Suite
 }

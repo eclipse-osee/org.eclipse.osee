@@ -10,8 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.proxy;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,8 +28,8 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
 import org.hamcrest.BaseMatcher;
@@ -50,8 +55,8 @@ public class ArtifactProxyFactoryTest {
    // @formatter:off
    @Mock private ArtifactReadable readable;
    @Mock private ArtifactFactory artifactFactory;
-   @Mock private ArtifactImpl artifact;
-   @Mock private ArtifactImpl otherArtifact;
+   @Mock private Artifact artifact;
+   @Mock private Artifact otherArtifact;
    // @formatter:on
 
    private String guid;
@@ -137,11 +142,11 @@ public class ArtifactProxyFactoryTest {
    @Test
    public void testAsProxyWriteable() throws OseeCoreException {
       ArtifactWriteable proxied = factory.createWriteable(artifact);
-      ProxyWriteable<ArtifactImpl> actual = factory.asProxyWriteable(proxied);
+      ProxyWriteable<Artifact> actual = factory.asProxyWriteable(proxied);
       assertNotNull(actual);
 
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage(new RegExMatcher("Unable to convert from \\[ArtifactImpl(.*?)\\] to ProxyWriteable"));
+      thrown.expectMessage(new RegExMatcher("Unable to convert from \\[Artifact(.*?)\\] to ProxyWriteable"));
       factory.asProxyWriteable(artifact);
    }
 

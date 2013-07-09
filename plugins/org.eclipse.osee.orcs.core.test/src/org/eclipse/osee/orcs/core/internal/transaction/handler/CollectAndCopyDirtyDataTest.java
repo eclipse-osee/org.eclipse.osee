@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.transaction.handler.CollectAndCopyDirtyData;
 import org.junit.Before;
@@ -38,7 +38,7 @@ public class CollectAndCopyDirtyDataTest {
 
    // @formatter:off
    @Mock DataFactory dataFactory;
-   @Mock ArtifactImpl artifact;
+   @Mock Artifact artifact;
    @Mock Attribute<?> attribute;
    
    @Mock ArtifactData artSourceData;

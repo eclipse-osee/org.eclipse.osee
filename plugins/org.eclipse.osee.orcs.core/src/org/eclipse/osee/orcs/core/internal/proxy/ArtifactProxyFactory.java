@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.proxy.handler.ArtifactInvocationHandlerFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
@@ -25,18 +25,18 @@ import org.eclipse.osee.orcs.data.ArtifactWriteable;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactProxyFactory extends ProxyFactory<ArtifactImpl, ArtifactReadable, ArtifactWriteable> {
+public class ArtifactProxyFactory extends ProxyFactory<Artifact, ArtifactReadable, ArtifactWriteable> {
 
    private final ArtifactFactory factory;
 
    public ArtifactProxyFactory(ArtifactFactory artifactFactory) {
-      super(new ArtifactInvocationHandlerFactory(artifactFactory), ArtifactImpl.class, ArtifactReadable.class,
+      super(new ArtifactInvocationHandlerFactory(artifactFactory), Artifact.class, ArtifactReadable.class,
          ArtifactWriteable.class);
       this.factory = artifactFactory;
    }
 
    public ArtifactWriteable create(IOseeBranch branch, IArtifactType artifactType, String guid, String name) throws OseeCoreException {
-      ArtifactImpl toProxy = factory.createArtifact(branch, artifactType, guid);
+      Artifact toProxy = factory.createArtifact(branch, artifactType, guid);
       ArtifactWriteable writeable = createWriteable(toProxy);
       if (name != null) {
          writeable.setName(name);
@@ -45,14 +45,14 @@ public class ArtifactProxyFactory extends ProxyFactory<ArtifactImpl, ArtifactRea
    }
 
    public ArtifactWriteable introduce(ArtifactReadable readable, IOseeBranch ontoBranch) throws OseeCoreException {
-      ArtifactImpl source = getProxiedObject(readable);
-      ArtifactImpl toProxy = factory.introduceArtifact(source, ontoBranch);
+      Artifact source = getProxiedObject(readable);
+      Artifact toProxy = factory.introduceArtifact(source, ontoBranch);
       return createWriteable(toProxy);
    }
 
    public ArtifactWriteable copy(ArtifactReadable readable, Collection<? extends IAttributeType> types, IOseeBranch ontoBranch) throws OseeCoreException {
-      ArtifactImpl source = getProxiedObject(readable);
-      ArtifactImpl toProxy = factory.copyArtifact(source, types, ontoBranch);
+      Artifact source = getProxiedObject(readable);
+      Artifact toProxy = factory.copyArtifact(source, types, ontoBranch);
       return createWriteable(toProxy);
    }
 
@@ -61,7 +61,7 @@ public class ArtifactProxyFactory extends ProxyFactory<ArtifactImpl, ArtifactRea
       if (ProxyUtil.isProxy(readable) && readable instanceof ArtifactWriteable) {
          toReturn = (ArtifactWriteable) readable;
       } else {
-         ArtifactImpl proxied = getProxiedObject(readable);
+         Artifact proxied = getProxiedObject(readable);
          if (proxied != null) {
             toReturn = createWriteable(proxied);
          }

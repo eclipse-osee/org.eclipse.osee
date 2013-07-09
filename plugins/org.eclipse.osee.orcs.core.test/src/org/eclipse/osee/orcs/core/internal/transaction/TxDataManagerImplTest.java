@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
 import org.eclipse.osee.orcs.core.internal.proxy.ProxyWriteable;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManagerImpl.TxDataHandlerFactory;
@@ -121,7 +121,7 @@ public class TxDataManagerImplTest {
 
    @Test
    public void testGetZeroChanges() throws OseeCoreException {
-      ArtifactImpl impl = mock(ArtifactImpl.class);
+      Artifact impl = mock(Artifact.class);
 
       txManager.addWrite(expected);
       when(expected.isDirty()).thenReturn(false);
@@ -133,7 +133,7 @@ public class TxDataManagerImplTest {
 
    @Test
    public void testGetOneDirty() throws OseeCoreException {
-      ArtifactImpl impl = mock(ArtifactImpl.class);
+      Artifact impl = mock(Artifact.class);
 
       txManager.addWrite(expected);
       when(expected.isDirty()).thenReturn(true);

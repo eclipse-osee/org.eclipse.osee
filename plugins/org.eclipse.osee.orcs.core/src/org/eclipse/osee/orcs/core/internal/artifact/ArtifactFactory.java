@@ -52,17 +52,17 @@ public class ArtifactFactory {
    }
 
    @SuppressWarnings("unused")
-   public ArtifactImpl createArtifact(ArtifactData artifactData) throws OseeCoreException {
+   public Artifact createArtifact(ArtifactData artifactData) throws OseeCoreException {
       //TODO implement an artifact class resolver for specific artifact types
       RelationContainer relationContainer = relationFactory.createRelationContainer(artifactData.getLocalId());
 
-      return new ArtifactImpl(artifactTypeCache, artifactData, attributeFactory, relationContainer, new BranchProvider(
+      return new Artifact(artifactTypeCache, artifactData, attributeFactory, relationContainer, new BranchProvider(
          branchCache, artifactData));
    }
 
-   public ArtifactImpl createArtifact(IOseeBranch branch, IArtifactType artifactType, String guid) throws OseeCoreException {
+   public Artifact createArtifact(IOseeBranch branch, IArtifactType artifactType, String guid) throws OseeCoreException {
       ArtifactData artifactData = factory.create(branch, artifactType, guid);
-      ArtifactImpl artifact = createArtifact(artifactData);
+      Artifact artifact = createArtifact(artifactData);
       artifact.setLoaded(true);
 
       // ArtifactCache.cache(artifact);
@@ -70,9 +70,9 @@ public class ArtifactFactory {
       return artifact;
    }
 
-   public ArtifactImpl copyArtifact(ArtifactImpl source, Collection<? extends IAttributeType> types, IOseeBranch ontoBranch) throws OseeCoreException {
+   public Artifact copyArtifact(Artifact source, Collection<? extends IAttributeType> types, IOseeBranch ontoBranch) throws OseeCoreException {
       ArtifactData artifactData = factory.copy(ontoBranch, source.getOrcsData());
-      ArtifactImpl copy = createArtifact(artifactData);
+      Artifact copy = createArtifact(artifactData);
       Collection<? extends IAttributeType> typeToCopy = getAllowedTypes(copy, types);
       for (IAttributeType attributeType : typeToCopy) {
          for (AttributeReadable<?> attributeSource : source.getAttributes(attributeType)) {
@@ -84,12 +84,12 @@ public class ArtifactFactory {
       return copy;
    }
 
-   public ArtifactImpl introduceArtifact(ArtifactImpl source, IOseeBranch ontoBranch) throws OseeCoreException {
+   public Artifact introduceArtifact(Artifact source, IOseeBranch ontoBranch) throws OseeCoreException {
       Conditions.checkExpressionFailOnTrue(ontoBranch.equals(source.getBranch()),
          "Source artifact is on the same branch as [%s]", ontoBranch);
 
       ArtifactData artifactData = factory.introduce(ontoBranch, source.getOrcsData());
-      ArtifactImpl introducedArt = createArtifact(artifactData);
+      Artifact introducedArt = createArtifact(artifactData);
       Collection<? extends IAttributeType> typeToCopy =
          getAllowedTypes(introducedArt, source.getExistingAttributeTypes());
       for (IAttributeType attributeType : typeToCopy) {
@@ -102,9 +102,9 @@ public class ArtifactFactory {
       return introducedArt;
    }
 
-   public ArtifactImpl clone(ArtifactImpl source) throws OseeCoreException {
+   public Artifact clone(Artifact source) throws OseeCoreException {
       ArtifactData artifactData = factory.clone(source.getOrcsData());
-      ArtifactImpl copy = createArtifact(artifactData);
+      Artifact copy = createArtifact(artifactData);
       for (IAttributeType attributeType : source.getExistingAttributeTypes()) {
          for (AttributeReadable<?> attributeSource : source.getAttributes(attributeType)) {
             AttributeData data = getAttributeData(attributeSource);
