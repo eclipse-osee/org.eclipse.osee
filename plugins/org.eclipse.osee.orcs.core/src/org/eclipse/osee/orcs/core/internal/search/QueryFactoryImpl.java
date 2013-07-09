@@ -17,10 +17,10 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -30,11 +30,11 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  */
 public class QueryFactoryImpl implements QueryFactory {
 
-   private final SessionContext context;
+   private final OrcsSession context;
    private final CriteriaFactory criteriaFctry;
    private final CallableQueryFactory queryFctry;
 
-   public QueryFactoryImpl(SessionContext context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry) {
+   public QueryFactoryImpl(OrcsSession context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry) {
       super();
       this.context = context;
       this.criteriaFctry = criteriaFctry;

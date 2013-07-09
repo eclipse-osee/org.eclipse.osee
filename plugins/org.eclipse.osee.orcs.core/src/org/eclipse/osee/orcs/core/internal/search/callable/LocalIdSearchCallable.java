@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
@@ -29,7 +30,6 @@ import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoader;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoaderFactory;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.search.QueryCollector;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -45,8 +45,8 @@ public class LocalIdSearchCallable extends AbstractSearchCallable<ResultSet<HasL
    private final ArtifactLoaderFactory objectLoader;
    private final DataLoaderFactory dataLoaderFactory;
 
-   public LocalIdSearchCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, ArtifactLoaderFactory objectLoader, DataLoaderFactory dataLoaderFactory, SessionContext sessionContext, QueryData queryData, AttributeTypes types) {
-      super(logger, queryEngine, collector, sessionContext, null, queryData, types);
+   public LocalIdSearchCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, ArtifactLoaderFactory objectLoader, DataLoaderFactory dataLoaderFactory, OrcsSession session, QueryData queryData, AttributeTypes types) {
+      super(logger, queryEngine, collector, session, null, queryData, types);
       this.dataLoaderFactory = dataLoaderFactory;
       this.objectLoader = objectLoader;
    }
@@ -58,7 +58,7 @@ public class LocalIdSearchCallable extends AbstractSearchCallable<ResultSet<HasL
 
    @Override
    protected ResultSet<HasLocalId> innerCall() throws Exception {
-      QueryContext queryContext = queryEngine.create(sessionContext.getSessionId(), queryData);
+      QueryContext queryContext = queryEngine.create(getSession(), queryData);
 
       checkForCancelled();
 
@@ -67,7 +67,7 @@ public class LocalIdSearchCallable extends AbstractSearchCallable<ResultSet<HasL
 
       List<HasLocalId> results = new ArrayList<HasLocalId>();
       if (requiresAttributeScan) {
-         ArtifactLoader loader = objectLoader.fromQueryContext(sessionContext, queryContext);
+         ArtifactLoader loader = objectLoader.fromQueryContext(getSession(), queryContext);
          loader.setLoadLevel(loadLevel);
          loader.includeDeleted(queryData.getOptions().areDeletedIncluded());
          loader.fromTransaction(queryData.getOptions().getFromTransaction());

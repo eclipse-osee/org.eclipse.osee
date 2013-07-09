@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -23,11 +22,12 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsConstants;
+import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author Ryan D. Brooks
  */
-public class MoveBranchDatabaseCallable extends DatabaseTxCallable<IStatus> {
+public class MoveBranchDatabaseCallable extends AbstractDatastoreTxCallable<IStatus> {
 
    private static final String INSERT_ADDRESSING =
       "insert into %s (transaction_id, gamma_id, tx_current, mod_type, branch_id) select transaction_id, gamma_id, tx_current, mod_type, branch_id from %s where branch_id = ?";
@@ -38,8 +38,8 @@ public class MoveBranchDatabaseCallable extends DatabaseTxCallable<IStatus> {
 
    private final EventService eventService;
 
-   public MoveBranchDatabaseCallable(Log logger, IOseeDatabaseService databaseService, EventService eventService, boolean archive, Branch branch) {
-      super(logger, databaseService, "Branch Move");
+   public MoveBranchDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, EventService eventService, boolean archive, Branch branch) {
+      super(logger, session, databaseService, "Branch Move");
       this.eventService = eventService;
       this.archive = archive;
       this.branch = branch;

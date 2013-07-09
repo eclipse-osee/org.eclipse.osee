@@ -17,20 +17,21 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.resource.management.IResource;
+import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface OrcsTypesDataStore {
 
-   Callable<IResource> getOrcsTypesLoader(String sessionId);
+   Callable<IResource> getOrcsTypesLoader(OrcsSession session);
 
-   Callable<Void> purgeArtifactsByArtifactType(String sessionId, Collection<? extends IArtifactType> artifactTypes);
+   Callable<Void> purgeArtifactsByArtifactType(OrcsSession session, Collection<? extends IArtifactType> artifactTypes);
 
-   Callable<Void> purgeAttributesByAttributeType(String sessionId, Collection<? extends IAttributeType> attributeTypes);
+   Callable<Void> purgeAttributesByAttributeType(OrcsSession session, Collection<? extends IAttributeType> attributeTypes);
 
-   Callable<Void> purgeRelationsByRelationType(String sessionId, Collection<? extends IRelationType> relationTypes);
+   Callable<Void> purgeRelationsByRelationType(OrcsSession session, Collection<? extends IRelationType> relationTypes);
 
-   Callable<Void> persistTypeIdentities(String sessionId, Collection<Identity<Long>> types);
+   Callable<Void> persistTypeIdentities(OrcsSession session, Collection<Identity<Long>> types);
 
 }

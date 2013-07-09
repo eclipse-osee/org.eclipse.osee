@@ -8,19 +8,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal;
+package org.eclipse.osee.orcs.core.internal.session;
 
-import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.AbstractIdentity;
+import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface SessionContext {
+public class OrcsSessionImpl extends AbstractIdentity<String> implements OrcsSession {
 
-   String getSessionId();
+   private final String sessionId;
 
-   <T extends ArtifactReadable> T getHistorical(int artId, int stripeId);
+   public OrcsSessionImpl(String sessionId) {
+      super();
+      this.sessionId = sessionId;
+   }
 
-   <T extends ArtifactReadable> T getActive(int artId, int branchId);
+   @Override
+   public String getGuid() {
+      return sessionId;
+   }
 
 }

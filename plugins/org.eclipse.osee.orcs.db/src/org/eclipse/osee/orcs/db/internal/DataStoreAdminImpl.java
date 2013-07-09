@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
@@ -47,7 +48,7 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
    }
 
    @Override
-   public Callable<DataStoreInfo> createDataStore(String sessionId, Map<String, String> parameters) {
+   public Callable<DataStoreInfo> createDataStore(OrcsSession session, Map<String, String> parameters) {
       String tableDataSpace = getOption(parameters, DataStoreConfigConstants.SCHEMA_TABLE_DATA_NAMESPACE, "");
       String indexDataSpace = getOption(parameters, DataStoreConfigConstants.SCHEMA_INDEX_DATA_NAMESPACE, "");
       boolean useFileSpecifiedSchemas =
@@ -56,14 +57,14 @@ public class DataStoreAdminImpl implements DataStoreAdmin {
       SchemaResourceProvider schemaProvider = new DynamicSchemaResourceProvider(logger);
 
       SchemaOptions options = new SchemaOptions(tableDataSpace, indexDataSpace, useFileSpecifiedSchemas);
-      return new InitializeDatastoreCallable(logger, dbService, identityService, branchStore, preferences,
+      return new InitializeDatastoreCallable(session, logger, dbService, identityService, branchStore, preferences,
          schemaProvider, options);
    }
 
    @Override
-   public Callable<DataStoreInfo> getDataStoreInfo(String sessionId) {
+   public Callable<DataStoreInfo> getDataStoreInfo(OrcsSession session) {
       SchemaResourceProvider schemaProvider = new DynamicSchemaResourceProvider(logger);
-      return new FetchDatastoreInfoCallable(logger, dbService, schemaProvider, preferences);
+      return new FetchDatastoreInfoCallable(logger, session, dbService, schemaProvider, preferences);
    }
 
    private boolean getOption(Map<String, String> parameters, String key, boolean defaultValue) {

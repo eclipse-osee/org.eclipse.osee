@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.core.model.ReadableBranch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
 
 public class ArchiveUnarchiveBranchCallable extends AbstractBranchCallable<ReadableBranch> {
@@ -27,8 +27,8 @@ public class ArchiveUnarchiveBranchCallable extends AbstractBranchCallable<Reada
    private final IOseeBranch branchToken;
    private final ArchiveOperation archiveOp;
 
-   public ArchiveUnarchiveBranchCallable(Log logger, SessionContext sessionContext, BranchDataStore branchStore, BranchCache cache, IOseeBranch branch, ArchiveOperation archiveOp) {
-      super(logger, sessionContext, branchStore);
+   public ArchiveUnarchiveBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, BranchCache cache, IOseeBranch branch, ArchiveOperation archiveOp) {
+      super(logger, session, branchStore);
       this.cache = cache;
       this.branchToken = branch;
       this.archiveOp = archiveOp;

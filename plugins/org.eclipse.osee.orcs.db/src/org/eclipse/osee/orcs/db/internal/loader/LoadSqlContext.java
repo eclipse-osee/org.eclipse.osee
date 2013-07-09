@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.LoadContext;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
@@ -20,8 +21,8 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlContextImpl;
  */
 public class LoadSqlContext extends SqlContextImpl<LoadOptions, DataPostProcessor<?>> implements LoadContext {
 
-   public LoadSqlContext(String sessionId, LoadOptions options) {
-      super(sessionId, options);
+   public LoadSqlContext(OrcsSession session, LoadOptions options) {
+      super(session, options);
    }
 
 }

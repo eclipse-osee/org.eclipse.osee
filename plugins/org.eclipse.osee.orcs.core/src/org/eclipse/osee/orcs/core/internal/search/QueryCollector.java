@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 
 /**
@@ -17,6 +18,6 @@ import org.eclipse.osee.orcs.core.ds.QueryData;
  */
 public interface QueryCollector {
 
-   void collect(String sessionId, int itemsFound, long processingTime, QueryData data) throws Exception;
+   void collect(OrcsSession session, int itemsFound, long processingTime, QueryData data) throws Exception;
 
 }

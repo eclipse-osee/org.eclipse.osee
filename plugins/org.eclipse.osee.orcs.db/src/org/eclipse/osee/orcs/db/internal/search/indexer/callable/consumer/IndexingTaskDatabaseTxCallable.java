@@ -18,14 +18,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.DatabaseJoinAccessor.JoinItem;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.QueueToAttributeLoader;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
@@ -35,7 +36,7 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
 /**
  * @author Roberto E. Escobar
  */
-public final class IndexingTaskDatabaseTxCallable extends DatabaseTxCallable<Long> {
+public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCallable<Long> {
 
    private static final String INSERT_SEARCH_TAG =
       "insert into osee_search_tags (gamma_id, coded_tag_id) values (?, ?)";
@@ -54,8 +55,8 @@ public final class IndexingTaskDatabaseTxCallable extends DatabaseTxCallable<Lon
    private long startTime;
    private long waitTime;
 
-   public IndexingTaskDatabaseTxCallable(Log logger, IOseeDatabaseService dbService, QueueToAttributeLoader loader, TaggingEngine taggingEngine, IndexerCollector collector, int tagQueueQueryId, boolean isCacheAll, int cacheLimit, AttributeTypes attributeTypes) {
-      super(logger, dbService, "Attribute to Tag Database Transaction");
+   public IndexingTaskDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, QueueToAttributeLoader loader, TaggingEngine taggingEngine, IndexerCollector collector, int tagQueueQueryId, boolean isCacheAll, int cacheLimit, AttributeTypes attributeTypes) {
+      super(logger, session, dbService, "Attribute to Tag Database Transaction");
       waitStartTime = System.currentTimeMillis();
 
       this.loader = loader;

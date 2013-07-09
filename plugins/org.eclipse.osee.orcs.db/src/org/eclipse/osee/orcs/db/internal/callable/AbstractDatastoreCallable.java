@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,57 +8,41 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.admin;
+package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractAdminCallable<T> extends CancellableCallable<T> {
+public abstract class AbstractDatastoreCallable<T> extends CancellableCallable<T> {
 
-   private final Log logger;
    private final OrcsSession session;
+   private final IOseeDatabaseService service;
+   private final Log logger;
    private Callable<?> innerWorker;
 
-   public AbstractAdminCallable(Log logger, OrcsSession session) {
-      super();
+   protected AbstractDatastoreCallable(Log logger, OrcsSession session, IOseeDatabaseService service) {
       this.logger = logger;
       this.session = session;
-   }
-
-   protected Log getLogger() {
-      return logger;
+      this.service = service;
    }
 
    protected OrcsSession getSession() {
       return session;
    }
 
-   @Override
-   public final T call() throws Exception {
-      long startTime = 0;
-      if (logger.isTraceEnabled()) {
-         startTime = System.currentTimeMillis();
-      }
-      T result;
-      try {
-         Conditions.checkNotNull(session, "session");
-         result = innerCall();
-      } finally {
-         if (logger.isTraceEnabled()) {
-            logger.trace("Admin [%s] completed in [%s]", getClass().getSimpleName(), Lib.getElapseString(startTime));
-         }
-      }
-      return result;
+   protected IOseeDatabaseService getDatabaseService() {
+      return service;
    }
 
-   protected abstract T innerCall() throws Exception;
+   protected Log getLogger() {
+      return logger;
+   }
 
    protected <K> K callAndCheckForCancel(Callable<K> callable) throws Exception {
       checkForCancelled();
@@ -84,4 +68,5 @@ public abstract class AbstractAdminCallable<T> extends CancellableCallable<T> {
          }
       }
    }
+
 }

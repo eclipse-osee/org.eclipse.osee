@@ -13,8 +13,8 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesIndex;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesLoader;
@@ -35,18 +35,18 @@ public class OrcsTypesLoaderFactoryImpl implements OrcsTypesLoaderFactory {
    }
 
    @Override
-   public OrcsTypesLoader createTypesLoader(final SessionContext session, final OrcsTypesDataStore ds) {
+   public OrcsTypesLoader createTypesLoader(final OrcsSession session, final OrcsTypesDataStore ds) {
       return createTypesLoader(session, new OrcsTypesResourceProvider() {
 
          @Override
          public IResource getOrcsTypesResource() throws Exception {
-            return ds.getOrcsTypesLoader(session.getSessionId()).call();
+            return ds.getOrcsTypesLoader(session).call();
          }
       });
    }
 
    @Override
-   public OrcsTypesLoader createTypesLoader(final SessionContext session, final OrcsTypesResourceProvider provider) {
+   public OrcsTypesLoader createTypesLoader(final OrcsSession session, final OrcsTypesResourceProvider provider) {
       return new OrcsTypesLoader() {
 
          @Override

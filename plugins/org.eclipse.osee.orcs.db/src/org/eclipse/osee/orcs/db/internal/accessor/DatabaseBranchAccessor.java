@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.event.EventService;
@@ -40,6 +41,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.callable.StoreBranchDatabaseCallable;
 
 /**
@@ -52,6 +54,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<String, Branch>
    private static final String SELECT_MERGE_BRANCHES = "SELECT * FROM osee_merge";
 
    private final Log logger;
+   private final OrcsSession session;
    private final IOseeDatabaseService dbService;
    private final ExecutorAdmin executorAdmin;
    private final EventService eventService;
@@ -59,8 +62,9 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<String, Branch>
    private final TransactionCache txCache;
    private final BranchFactory branchFactory;
 
-   public DatabaseBranchAccessor(Log logger, ExecutorAdmin executorAdmin, EventService eventService, IOseeDatabaseService dbService, TransactionCache txCache, BranchFactory branchFactory) {
+   public DatabaseBranchAccessor(Log logger, OrcsSession session, ExecutorAdmin executorAdmin, EventService eventService, IOseeDatabaseService dbService, TransactionCache txCache, BranchFactory branchFactory) {
       this.logger = logger;
+      this.session = session;
       this.executorAdmin = executorAdmin;
       this.eventService = eventService;
       this.dbService = dbService;
@@ -200,9 +204,9 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<String, Branch>
 
    @Override
    public void store(Collection<Branch> branches) throws OseeCoreException {
-      StoreBranchDatabaseCallable task =
-         new StoreBranchDatabaseCallable(getLogger(), getDatabaseService(), getExecutorAdmin(), getEventService(),
-            branches);
+      Callable<IStatus> task =
+         new StoreBranchDatabaseCallable(getLogger(), session, getDatabaseService(), getExecutorAdmin(),
+            getEventService(), branches);
       try {
          Future<IStatus> future = getExecutorAdmin().schedule(task);
          IStatus status = future.get();

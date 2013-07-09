@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.database.schema.DatabaseCallable;
 import org.eclipse.osee.database.schema.SchemaResource;
 import org.eclipse.osee.database.schema.SchemaResourceProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
@@ -37,13 +37,13 @@ import org.eclipse.osee.orcs.db.internal.util.DataStoreInfoImpl;
 /**
  * @author Roberto E. Escobar
  */
-public class FetchDatastoreInfoCallable extends DatabaseCallable<DataStoreInfo> {
+public class FetchDatastoreInfoCallable extends AbstractDatastoreCallable<DataStoreInfo> {
 
    private final SchemaResourceProvider schemaProvider;
    private final SystemPreferences preferences;
 
-   public FetchDatastoreInfoCallable(Log logger, IOseeDatabaseService dbService, SchemaResourceProvider schemaProvider, SystemPreferences preferences) {
-      super(logger, dbService);
+   public FetchDatastoreInfoCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, SchemaResourceProvider schemaProvider, SystemPreferences preferences) {
+      super(logger, session, dbService);
       this.schemaProvider = schemaProvider;
       this.preferences = preferences;
    }

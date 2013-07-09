@@ -16,12 +16,13 @@ import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author John Misinco
  */
 public interface MissingChangeItemFactory {
 
-   Collection<ChangeItem> createMissingChanges(HasCancellation cancellation, List<ChangeItem> changes, TransactionRecord sourceTx, TransactionRecord destTx, String sessionId) throws OseeCoreException;
+   Collection<ChangeItem> createMissingChanges(HasCancellation cancellation, OrcsSession session, List<ChangeItem> changes, TransactionRecord sourceTx, TransactionRecord destTx) throws OseeCoreException;
 
 }

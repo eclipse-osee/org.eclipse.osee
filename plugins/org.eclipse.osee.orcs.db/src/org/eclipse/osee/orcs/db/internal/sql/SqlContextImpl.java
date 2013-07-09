@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.Options;
 
@@ -27,11 +28,11 @@ public class SqlContextImpl<T extends Options, P extends DataPostProcessor<?>> i
    private final List<AbstractJoinQuery> joinTables = new ArrayList<AbstractJoinQuery>();
    private final List<P> processors = new ArrayList<P>();
 
-   private final String sessionId;
+   private final OrcsSession session;
    private final T options;
 
-   public SqlContextImpl(String sessionId, T options) {
-      this.sessionId = sessionId;
+   public SqlContextImpl(OrcsSession session, T options) {
+      this.session = session;
       this.options = options;
    }
 
@@ -41,8 +42,8 @@ public class SqlContextImpl<T extends Options, P extends DataPostProcessor<?>> i
    }
 
    @Override
-   public String getSessionId() {
-      return sessionId;
+   public OrcsSession getSession() {
+      return session;
    }
 
    @Override
@@ -80,7 +81,7 @@ public class SqlContextImpl<T extends Options, P extends DataPostProcessor<?>> i
 
    @Override
    public String toString() {
-      return "SqlContextImpl [sessionId=" + sessionId + ", sql=" + (Strings.isValid(sql) ? sql.replaceAll("\n", "") : "") + ", parameters=" + parameters + ", joinTables=" + joinTables + ", processors=" + processors + ", options=" + options + "]";
+      return "SqlContextImpl [session=" + session + ", sql=" + (Strings.isValid(sql) ? sql.replaceAll("\n", "") : "") + ", parameters=" + parameters + ", joinTables=" + joinTables + ", processors=" + processors + ", options=" + options + "]";
    }
 
 }

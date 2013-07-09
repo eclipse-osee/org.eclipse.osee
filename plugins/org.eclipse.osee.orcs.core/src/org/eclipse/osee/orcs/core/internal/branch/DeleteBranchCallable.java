@@ -18,16 +18,16 @@ import org.eclipse.osee.framework.core.model.ReadableBranch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 
 public class DeleteBranchCallable extends AbstractBranchCallable<ReadableBranch> {
 
    private final BranchCache cache;
    private final IOseeBranch toDelete;
 
-   public DeleteBranchCallable(Log logger, SessionContext sessionContext, BranchDataStore branchStore, BranchCache cache, IOseeBranch toDelete) {
-      super(logger, sessionContext, branchStore);
+   public DeleteBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, BranchCache cache, IOseeBranch toDelete) {
+      super(logger, session, branchStore);
       this.cache = cache;
       this.toDelete = toDelete;
    }

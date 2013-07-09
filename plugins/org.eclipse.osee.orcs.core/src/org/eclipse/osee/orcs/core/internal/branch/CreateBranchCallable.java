@@ -16,16 +16,16 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 
 public class CreateBranchCallable extends AbstractBranchCallable<ReadableBranch> {
 
    private final CreateBranchData branchData;
 
-   public CreateBranchCallable(Log logger, SessionContext sessionContext, BranchDataStore branchStore, CreateBranchData branchData) {
-      super(logger, sessionContext, branchStore);
+   public CreateBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, CreateBranchData branchData) {
+      super(logger, session, branchStore);
       this.branchData = branchData;
    }
 
@@ -42,9 +42,9 @@ public class CreateBranchCallable extends AbstractBranchCallable<ReadableBranch>
 
       Callable<Branch> callable;
       if (branchData.isTxCopyBranchType()) {
-         callable = getBranchStore().createBranchCopyTx(getSessionContext().getSessionId(), branchData);
+         callable = getBranchStore().createBranchCopyTx(getSession(), branchData);
       } else {
-         callable = getBranchStore().createBranch(getSessionContext().getSessionId(), branchData);
+         callable = getBranchStore().createBranch(getSession(), branchData);
       }
 
       return callAndCheckForCancel(callable);

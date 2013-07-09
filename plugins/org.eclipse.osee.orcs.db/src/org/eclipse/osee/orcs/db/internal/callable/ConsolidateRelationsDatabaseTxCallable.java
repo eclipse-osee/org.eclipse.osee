@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.callable;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.console.admin.Console;
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -26,11 +25,12 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author Ryan D. Brooks
  */
-public class ConsolidateRelationsDatabaseTxCallable extends DatabaseTxCallable<Object> {
+public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxCallable<Object> {
    private static final String SELECT_RELATIONS =
       "select * from osee_relation_link order by rel_link_type_id, a_art_id, b_art_id, gamma_id";
 
@@ -70,8 +70,8 @@ public class ConsolidateRelationsDatabaseTxCallable extends DatabaseTxCallable<O
    ModificationType netModType;
    TxChange netTxCurrent;
 
-   public ConsolidateRelationsDatabaseTxCallable(Log logger, IOseeDatabaseService databaseService, Console console) {
-      super(logger, databaseService, "Consolidate Relations");
+   public ConsolidateRelationsDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, Console console) {
+      super(logger, session, databaseService, "Consolidate Relations");
       this.console = console;
    }
 

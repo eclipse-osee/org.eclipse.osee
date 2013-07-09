@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.types;
+package org.eclipse.osee.orcs;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.TempCachingService;
-import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.framework.core.data.Identity;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface CacheServiceFactory {
-
-   TempCachingService createCachingService(OrcsSession session, boolean needsPriming) throws OseeCoreException;
-
+public interface OrcsSession extends Identity<String> {
+   //
 }

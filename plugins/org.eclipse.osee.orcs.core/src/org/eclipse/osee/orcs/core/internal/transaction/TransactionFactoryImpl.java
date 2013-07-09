@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManagerImpl.TxDataHandlerFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -31,14 +31,14 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
 public class TransactionFactoryImpl implements TransactionFactory {
 
    private final Log logger;
-   private final SessionContext sessionContext;
+   private final OrcsSession session;
    private final BranchDataStore branchDataStore;
    private final ArtifactProxyFactory artifactFactory;
    private final TxDataHandlerFactory handlerF;
 
-   public TransactionFactoryImpl(Log logger, SessionContext sessionContext, BranchDataStore branchDataStore, ArtifactProxyFactory artifactFactory, TxDataHandlerFactory handlerF) {
+   public TransactionFactoryImpl(Log logger, OrcsSession session, BranchDataStore branchDataStore, ArtifactProxyFactory artifactFactory, TxDataHandlerFactory handlerF) {
       this.logger = logger;
-      this.sessionContext = sessionContext;
+      this.session = session;
       this.branchDataStore = branchDataStore;
       this.artifactFactory = artifactFactory;
       this.handlerF = handlerF;
@@ -52,7 +52,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
 
       TxDataManager manager = new TxDataManagerImpl(artifactFactory, handlerF);
       OrcsTransactionImpl orcsTxn =
-         new OrcsTransactionImpl(logger, sessionContext, branchDataStore, artifactFactory, manager, branch);
+         new OrcsTransactionImpl(logger, session, branchDataStore, artifactFactory, manager, branch);
       orcsTxn.setComment(comment);
       orcsTxn.setAuthor(author);
       return orcsTxn;
@@ -65,6 +65,6 @@ public class TransactionFactoryImpl implements TransactionFactory {
 
    @Override
    public Callable<?> purgeTransaction(Collection<? extends ITransaction> transactions) {
-      return branchDataStore.purgeTransactions(sessionContext.getSessionId(), transactions);
+      return branchDataStore.purgeTransactions(session, transactions);
    }
 }

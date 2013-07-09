@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.branch.provider.BranchProvider;
 import org.eclipse.osee.orcs.core.internal.branch.provider.MultiBranchProvider;
 import org.eclipse.osee.orcs.core.internal.branch.provider.SingleBranchProvider;
@@ -37,8 +37,8 @@ public class PurgeBranchCallable extends AbstractBranchCallable<List<ReadableBra
    private final IOseeBranch branchToken;
    private final boolean isRecursive;
 
-   public PurgeBranchCallable(Log logger, SessionContext sessionContext, BranchDataStore branchStore, BranchCache branchCache, IOseeBranch branchToken, boolean isRecursive) {
-      super(logger, sessionContext, branchStore);
+   public PurgeBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, BranchCache branchCache, IOseeBranch branchToken, boolean isRecursive) {
+      super(logger, session, branchStore);
       this.branchCache = branchCache;
       this.branchToken = branchToken;
       this.isRecursive = isRecursive;
@@ -72,7 +72,7 @@ public class PurgeBranchCallable extends AbstractBranchCallable<List<ReadableBra
       List<Branch> orderedBranches = BranchUtil.orderByParent(branches);
       for (Branch aBranch : orderedBranches) {
          checkForCancelled();
-         Callable<Branch> callable = getBranchStore().purgeBranch(getSessionContext().getSessionId(), aBranch);
+         Callable<Branch> callable = getBranchStore().purgeBranch(getSession(), aBranch);
          purged.add(callAndCheckForCancel(callable));
       }
       return purged;

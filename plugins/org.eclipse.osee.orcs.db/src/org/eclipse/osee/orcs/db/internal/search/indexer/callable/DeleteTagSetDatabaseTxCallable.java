@@ -12,17 +12,18 @@ package org.eclipse.osee.orcs.db.internal.search.indexer.callable;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class DeleteTagSetDatabaseTxCallable extends DatabaseTxCallable<Integer> {
+public final class DeleteTagSetDatabaseTxCallable extends AbstractDatastoreTxCallable<Integer> {
 
    private static final String DELETE_SEARCH_TAGS = "delete from osee_search_tags where gamma_id = ?";
 
@@ -31,8 +32,8 @@ public final class DeleteTagSetDatabaseTxCallable extends DatabaseTxCallable<Int
 
    private final int queryId;
 
-   public DeleteTagSetDatabaseTxCallable(Log logger, IOseeDatabaseService dbService, int queryId) {
-      super(logger, dbService, "Delete Indexer Tags Database Transaction");
+   public DeleteTagSetDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, int queryId) {
+      super(logger, session, dbService, "Delete Indexer Tags Database Transaction");
       this.queryId = queryId;
    }
 

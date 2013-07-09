@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -36,12 +35,13 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
 
 /**
  * @author Ryan D. Brooks
  */
-public class CommitBranchDatabaseTxCallable extends DatabaseTxCallable<TransactionRecord> {
+public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<TransactionRecord> {
    private static final String COMMIT_COMMENT = "Commit Branch ";
 
    private static final String INSERT_COMMIT_TRANSACTION =
@@ -73,8 +73,8 @@ public class CommitBranchDatabaseTxCallable extends DatabaseTxCallable<Transacti
    private OseeConnection connection;
    private boolean success;
 
-   public CommitBranchDatabaseTxCallable(Log logger, IOseeDatabaseService databaseService, BranchCache branchCache, int userArtId, Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes, TransactionRecordFactory txFactory) {
-      super(logger, databaseService, "Commit branch");
+   public CommitBranchDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, BranchCache branchCache, int userArtId, Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes, TransactionRecordFactory txFactory) {
+      super(logger, session, databaseService, "Commit branch");
       this.savedBranchStates = new HashMap<Branch, BranchState>();
       this.branchCache = branchCache;
       this.userArtId = userArtId;

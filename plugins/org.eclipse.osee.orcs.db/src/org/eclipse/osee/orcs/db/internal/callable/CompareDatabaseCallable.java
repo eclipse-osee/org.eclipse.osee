@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.database.schema.DatabaseCallable;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -23,29 +22,28 @@ import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.change.AddArtifactChangeDataCallable;
 import org.eclipse.osee.orcs.db.internal.change.ComputeNetChangeCallable;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenBranches;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenTxsOnTheSameBranch;
 import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
 
-public class CompareDatabaseCallable extends DatabaseCallable<List<ChangeItem>> {
+public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<ChangeItem>> {
 
    private final TransactionCache txCache;
    private final BranchCache branchCache;
    private final TransactionRecord sourceTx;
    private final TransactionRecord destinationTx;
    private final MissingChangeItemFactory missingChangeItemFactory;
-   private final String sessionId;
 
-   public CompareDatabaseCallable(Log logger, IOseeDatabaseService service, BranchCache branchCache, TransactionCache txCache, TransactionRecord sourceTx, TransactionRecord destinationTx, MissingChangeItemFactory missingChangeItemFactory, String sessionId) {
-      super(logger, service);
+   public CompareDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service, BranchCache branchCache, TransactionCache txCache, TransactionRecord sourceTx, TransactionRecord destinationTx, MissingChangeItemFactory missingChangeItemFactory) {
+      super(logger, session, service);
       this.branchCache = branchCache;
       this.txCache = txCache;
       this.sourceTx = sourceTx;
       this.destinationTx = destinationTx;
       this.missingChangeItemFactory = missingChangeItemFactory;
-      this.sessionId = sessionId;
    }
 
    private TransactionCache getTxCache() {
@@ -62,14 +60,14 @@ public class CompareDatabaseCallable extends DatabaseCallable<List<ChangeItem>> 
 
       Callable<List<ChangeItem>> callable;
       if (txDelta.areOnTheSameBranch()) {
-         callable = new LoadDeltasBetweenTxsOnTheSameBranch(getLogger(), getDatabaseService(), txDelta);
+         callable = new LoadDeltasBetweenTxsOnTheSameBranch(getLogger(), getSession(), getDatabaseService(), txDelta);
       } else {
          TransactionRecord mergeTx = getMergeTransaction(sourceTx, destinationTx);
-         callable = new LoadDeltasBetweenBranches(getLogger(), getDatabaseService(), txDelta, mergeTx);
+         callable = new LoadDeltasBetweenBranches(getLogger(), getSession(), getDatabaseService(), txDelta, mergeTx);
       }
       List<ChangeItem> changes = callAndCheckForCancel(callable);
 
-      changes.addAll(missingChangeItemFactory.createMissingChanges(this, changes, sourceTx, destinationTx, sessionId));
+      changes.addAll(missingChangeItemFactory.createMissingChanges(this, getSession(), changes, sourceTx, destinationTx));
       Callable<List<ChangeItem>> computeChanges = new ComputeNetChangeCallable(changes);
       changes = callAndCheckForCancel(computeChanges);
 

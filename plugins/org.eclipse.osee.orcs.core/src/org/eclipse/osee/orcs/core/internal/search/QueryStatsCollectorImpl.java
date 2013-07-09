@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 
 /**
@@ -24,7 +25,7 @@ public class QueryStatsCollectorImpl implements QueryCollector {
    }
 
    @Override
-   public void collect(String sessionId, int itemsFound, long processingTime, QueryData data) throws Exception {
+   public void collect(OrcsSession session, int itemsFound, long processingTime, QueryData data) throws Exception {
       stats.addEntry(data, itemsFound, processingTime);
    }
 

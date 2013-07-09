@@ -15,6 +15,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsMetaData;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.internal.admin.CreateDatastoreCallable;
 import org.eclipse.osee.orcs.core.internal.admin.FetchDatastoreMetadataCallable;
@@ -25,22 +26,22 @@ import org.eclipse.osee.orcs.core.internal.admin.FetchDatastoreMetadataCallable;
 public class OrcsAdminImpl implements OrcsAdmin {
 
    private final Log logger;
-   private final SessionContext sessionContext;
+   private final OrcsSession session;
    private final DataStoreAdmin dataStoreAdmin;
 
-   public OrcsAdminImpl(Log logger, SessionContext sessionContext, DataStoreAdmin dataStoreAdmin) {
+   public OrcsAdminImpl(Log logger, OrcsSession session, DataStoreAdmin dataStoreAdmin) {
       this.logger = logger;
-      this.sessionContext = sessionContext;
+      this.session = session;
       this.dataStoreAdmin = dataStoreAdmin;
    }
 
    @Override
    public Callable<OrcsMetaData> createDatastore(Map<String, String> parameters) {
-      return new CreateDatastoreCallable(logger, sessionContext, dataStoreAdmin, parameters);
+      return new CreateDatastoreCallable(logger, session, dataStoreAdmin, parameters);
    }
 
    @Override
    public Callable<OrcsMetaData> createFetchOrcsMetaData() {
-      return new FetchDatastoreMetadataCallable(logger, sessionContext, dataStoreAdmin);
+      return new FetchDatastoreMetadataCallable(logger, session, dataStoreAdmin);
    }
 }

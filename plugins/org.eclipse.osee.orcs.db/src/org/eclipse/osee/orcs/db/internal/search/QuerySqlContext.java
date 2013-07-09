@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search;
 
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
@@ -20,8 +21,8 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlContextImpl;
  */
 public class QuerySqlContext extends SqlContextImpl<QueryOptions, QueryPostProcessor> implements QueryContext {
 
-   public QuerySqlContext(String sessionId, QueryOptions options) {
-      super(sessionId, options);
+   public QuerySqlContext(OrcsSession session, QueryOptions options) {
+      super(session, options);
    }
 
 }

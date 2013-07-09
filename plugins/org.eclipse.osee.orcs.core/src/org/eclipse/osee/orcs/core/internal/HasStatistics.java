@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
+import org.eclipse.osee.orcs.OrcsSession;
+
 /**
  * @author Roberto E. Escobar
  */
 public interface HasStatistics<T> {
 
-   T getStatistics(SessionContext sessionContext);
+   T getStatistics(OrcsSession session);
 
-   void clearStatistics(SessionContext sessionContext);
+   void clearStatistics(OrcsSession session);
 
 }

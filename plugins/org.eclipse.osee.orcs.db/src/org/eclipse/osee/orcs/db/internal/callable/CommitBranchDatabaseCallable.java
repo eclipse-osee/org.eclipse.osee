@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.database.schema.DatabaseCallable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -25,6 +24,7 @@ import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.internal.change.ComputeNetChangeCallable;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenBranches;
@@ -33,7 +33,7 @@ import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
 /**
  * @author Roberto E. Escobar
  */
-public class CommitBranchDatabaseCallable extends DatabaseCallable<TransactionRecord> {
+public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<TransactionRecord> {
 
    private final TransactionRecordFactory txFactory;
    private final TransactionCache txCache;
@@ -42,10 +42,9 @@ public class CommitBranchDatabaseCallable extends DatabaseCallable<TransactionRe
    private final Branch source;
    private final Branch destination;
    private final MissingChangeItemFactory missingChangeItemFactory;
-   private final String sessionId;
 
-   public CommitBranchDatabaseCallable(Log logger, IOseeDatabaseService service, BranchCache branchCache, TransactionCache txCache, TransactionRecordFactory txFactory, ArtifactReadable committer, Branch source, Branch destination, MissingChangeItemFactory missingChangeItemFactory, String sessionId) {
-      super(logger, service);
+   public CommitBranchDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service, BranchCache branchCache, TransactionCache txCache, TransactionRecordFactory txFactory, ArtifactReadable committer, Branch source, Branch destination, MissingChangeItemFactory missingChangeItemFactory) {
+      super(logger, session, service);
       this.branchCache = branchCache;
       this.txCache = txCache;
       this.txFactory = txFactory;
@@ -53,7 +52,6 @@ public class CommitBranchDatabaseCallable extends DatabaseCallable<TransactionRe
       this.source = source;
       this.destination = destination;
       this.missingChangeItemFactory = missingChangeItemFactory;
-      this.sessionId = sessionId;
    }
 
    private TransactionCache getTxCache() {
@@ -86,13 +84,13 @@ public class CommitBranchDatabaseCallable extends DatabaseCallable<TransactionRe
 
    private List<ChangeItem> callComputeChanges(TransactionDelta txDelta, TransactionRecord mergeTx) throws Exception {
       Callable<List<ChangeItem>> loadChanges =
-         new LoadDeltasBetweenBranches(getLogger(), getDatabaseService(), txDelta, mergeTx);
+         new LoadDeltasBetweenBranches(getLogger(), getSession(), getDatabaseService(), txDelta, mergeTx);
       List<ChangeItem> changes = callAndCheckForCancel(loadChanges);
 
       TransactionRecord sourceTx = getHeadTx(source);
       TransactionRecord destTx = getHeadTx(destination);
 
-      changes.addAll(missingChangeItemFactory.createMissingChanges(this, changes, sourceTx, destTx, sessionId));
+      changes.addAll(missingChangeItemFactory.createMissingChanges(this, getSession(), changes, sourceTx, destTx));
 
       Callable<List<ChangeItem>> computeChanges = new ComputeNetChangeCallable(changes);
       return callAndCheckForCancel(computeChanges);
@@ -111,8 +109,8 @@ public class CommitBranchDatabaseCallable extends DatabaseCallable<TransactionRe
       List<ChangeItem> changes = callComputeChanges(txDelta, mergeTx);
 
       CancellableCallable<TransactionRecord> commitCallable =
-         new CommitBranchDatabaseTxCallable(getLogger(), getDatabaseService(), getBranchCache(), getUserArtId(),
-            source, destination, mergeBranch, changes, getTxFactory());
+         new CommitBranchDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(), getBranchCache(),
+            getUserArtId(), source, destination, mergeBranch, changes, getTxFactory());
       TransactionRecord commitTransaction = callAndCheckForCancel(commitCallable);
 
       getTxCache().cache(commitTransaction);

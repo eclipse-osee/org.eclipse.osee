@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.model.ReadableBranch;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.IndexerData;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.data.AttributeTypes;
@@ -50,34 +51,34 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
    }
 
    @Override
-   public CancellableCallable<Integer> deleteIndexByQueryId(String sessionId, int queueId) {
-      return new DeleteTagSetDatabaseTxCallable(logger, dbService, queueId);
+   public CancellableCallable<Integer> deleteIndexByQueryId(OrcsSession session, int queueId) {
+      return new DeleteTagSetDatabaseTxCallable(logger, session, dbService, queueId);
    }
 
    @Override
-   public CancellableCallable<Integer> purgeAllIndexes(String sessionId) {
-      return new PurgeAllTagsDatabaseCallable(logger, dbService);
+   public CancellableCallable<Integer> purgeAllIndexes(OrcsSession session) {
+      return new PurgeAllTagsDatabaseCallable(logger, session, dbService);
    }
 
    @Override
-   public CancellableCallable<IndexerData> getIndexerData(String sessionId) {
-      return new IndexerDatabaseStatisticsCallable(logger, dbService);
+   public CancellableCallable<IndexerData> getIndexerData(OrcsSession session) {
+      return new IndexerDatabaseStatisticsCallable(logger, session, dbService);
    }
 
    @Override
-   public CancellableCallable<?> indexBranches(String sessionId, AttributeTypes types, IndexerCollector collector, Collection<? extends IAttributeType> typeToTag, Set<ReadableBranch> branches, boolean indexOnlyMissing) {
-      return new IndexBranchesDatabaseCallable(logger, dbService, identityService, types, consumer, collector,
+   public CancellableCallable<?> indexBranches(OrcsSession session, AttributeTypes types, IndexerCollector collector, Collection<? extends IAttributeType> typeToTag, Set<ReadableBranch> branches, boolean indexOnlyMissing) {
+      return new IndexBranchesDatabaseCallable(logger, session, dbService, identityService, types, consumer, collector,
          typeToTag, branches, indexOnlyMissing);
    }
 
    @Override
-   public CancellableCallable<Integer> indexAllFromQueue(String sessionId, AttributeTypes types, IndexerCollector collector) {
-      return new IndexAllInQueueCallable(logger, dbService, types, consumer, collector);
+   public CancellableCallable<Integer> indexAllFromQueue(OrcsSession session, AttributeTypes types, IndexerCollector collector) {
+      return new IndexAllInQueueCallable(logger, session, dbService, types, consumer, collector);
    }
 
    @Override
-   public CancellableCallable<List<Future<?>>> indexXmlStream(String sessionId, AttributeTypes types, IndexerCollector collector, InputStream inputStream) {
-      return new XmlStreamIndexerDatabaseCallable(logger, dbService, types, consumer, collector,
+   public CancellableCallable<List<Future<?>>> indexXmlStream(OrcsSession session, AttributeTypes types, IndexerCollector collector, InputStream inputStream) {
+      return new XmlStreamIndexerDatabaseCallable(logger, session, dbService, types, consumer, collector,
          IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, inputStream);
    }
 

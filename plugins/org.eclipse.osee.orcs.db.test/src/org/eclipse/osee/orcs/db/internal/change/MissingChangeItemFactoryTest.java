@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.change;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -29,7 +28,9 @@ import org.eclipse.osee.framework.core.model.change.AttributeChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.RelationChangeItem;
 import org.eclipse.osee.framework.core.services.IdentityService;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -70,6 +71,7 @@ public class MissingChangeItemFactoryTest {
    @Mock private TransactionRecord sourceTx;
    @Mock private TransactionRecord destTx;
    @Mock private DataModuleFactory dataModuleFactory;
+   @Mock private OrcsSession session;
    @Mock private HasCancellation cancellation;
    // @formatter:on
 
@@ -104,9 +106,12 @@ public class MissingChangeItemFactoryTest {
    @Before
    public void init() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
-      when(dataLoaderFactory.fromBranchAndArtifactIds(anyString(), eq(sourceBranch), any(Collection.class))).thenReturn(
+
+      String sessionGuid = GUID.create();
+      when(session.getGuid()).thenReturn(sessionGuid);
+      when(dataLoaderFactory.fromBranchAndArtifactIds(any(OrcsSession.class), eq(sourceBranch), any(Collection.class))).thenReturn(
          sourceDataLoader);
-      when(dataLoaderFactory.fromBranchAndArtifactIds(anyString(), eq(destBranch), any(Collection.class))).thenReturn(
+      when(dataLoaderFactory.fromBranchAndArtifactIds(any(OrcsSession.class), eq(destBranch), any(Collection.class))).thenReturn(
          destDataLoader);
       when(sourceTx.getBranch()).thenReturn(sourceBranch);
       when(destTx.getBranch()).thenReturn(destBranch);
@@ -165,7 +170,7 @@ public class MissingChangeItemFactoryTest {
       }).when(destDataLoader).load(any(HasCancellation.class), any(LoadDataHandler.class));
 
       Collection<ChangeItem> results =
-         changeItemFactory.createMissingChanges(cancellation, changes, sourceTx, destTx, null);
+         changeItemFactory.createMissingChanges(cancellation, session, changes, sourceTx, destTx);
       if (expectedMissingChanges == null) {
          Assert.assertTrue(results.isEmpty());
       } else {

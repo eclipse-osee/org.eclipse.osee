@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.orcs.db.internal.callable;
 
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -21,6 +20,7 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author Megumi Telles
@@ -28,7 +28,7 @@ import org.eclipse.osee.logger.Log;
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public class PurgeBranchDatabaseCallable extends DatabaseTxCallable<Branch> {
+public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Branch> {
    private static final String DELETE_FROM_BRANCH_TABLE = "DELETE FROM osee_branch WHERE branch_id = ?";
    private static final String DELETE_FROM_MERGE =
       "DELETE FROM osee_merge WHERE merge_branch_id = ? AND source_branch_id = ?";
@@ -41,8 +41,9 @@ public class PurgeBranchDatabaseCallable extends DatabaseTxCallable<Branch> {
    private final String sourceTableName;
    private final BranchCache branchCache;
 
-   public PurgeBranchDatabaseCallable(Log logger, IOseeDatabaseService databaseService, BranchCache branchCache, Branch branch) {
-      super(logger, databaseService, String.format("Purge Branch: [(%s)-%s]", branch.getId(), branch.getShortName()));
+   public PurgeBranchDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, BranchCache branchCache, Branch branch) {
+      super(logger, session, databaseService, String.format("Purge Branch: [(%s)-%s]", branch.getId(),
+         branch.getShortName()));
       this.branch = branch;
       this.sourceTableName = branch.getArchiveState().isArchived() ? "osee_txs_archived" : "osee_txs";
       this.branchCache = branchCache;

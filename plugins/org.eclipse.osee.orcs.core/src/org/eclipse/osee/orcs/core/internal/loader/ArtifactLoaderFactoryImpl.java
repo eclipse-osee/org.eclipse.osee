@@ -16,13 +16,13 @@ import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.core.internal.ArtifactBuilderFactory;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoader;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoaderFactory;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -44,22 +44,20 @@ public class ArtifactLoaderFactoryImpl implements ArtifactLoaderFactory {
    }
 
    @Override
-   public ArtifactLoader fromQueryContext(SessionContext sessionContext, QueryContext queryContext) throws OseeCoreException {
+   public ArtifactLoader fromQueryContext(OrcsSession session, QueryContext queryContext) throws OseeCoreException {
       DataLoader loader = dataLoaderFactory.fromQueryContext(queryContext);
       return create(loader);
    }
 
    @Override
-   public ArtifactLoader fromBranchAndArtifactIds(SessionContext sessionContext, IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException {
-      String sessionId = sessionContext.getSessionId();
-      DataLoader loader = dataLoaderFactory.fromBranchAndArtifactIds(sessionId, branch, artifactIds);
+   public ArtifactLoader fromBranchAndArtifactIds(OrcsSession session, IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException {
+      DataLoader loader = dataLoaderFactory.fromBranchAndArtifactIds(session, branch, artifactIds);
       return create(loader);
    }
 
    @Override
-   public ArtifactLoader fromBranchAndArtifactIds(SessionContext sessionContext, IOseeBranch branch, int... artifactIds) throws OseeCoreException {
-      String sessionId = sessionContext.getSessionId();
-      DataLoader loader = dataLoaderFactory.fromBranchAndArtifactIds(sessionId, branch, artifactIds);
+   public ArtifactLoader fromBranchAndArtifactIds(OrcsSession session, IOseeBranch branch, int... artifactIds) throws OseeCoreException {
+      DataLoader loader = dataLoaderFactory.fromBranchAndArtifactIds(session, branch, artifactIds);
       return create(loader);
    }
 

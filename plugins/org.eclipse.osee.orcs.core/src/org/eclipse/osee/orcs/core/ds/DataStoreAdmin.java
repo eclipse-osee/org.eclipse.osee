@@ -12,14 +12,15 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface DataStoreAdmin {
 
-   Callable<DataStoreInfo> createDataStore(String sessionId, Map<String, String> parameters);
+   Callable<DataStoreInfo> createDataStore(OrcsSession session, Map<String, String> parameters);
 
-   Callable<DataStoreInfo> getDataStoreInfo(String sessionId);
+   Callable<DataStoreInfo> getDataStoreInfo(OrcsSession session);
 
 }

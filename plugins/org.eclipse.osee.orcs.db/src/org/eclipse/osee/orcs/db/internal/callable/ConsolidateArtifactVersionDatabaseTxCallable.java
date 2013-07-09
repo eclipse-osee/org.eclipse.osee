@@ -18,7 +18,6 @@ import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.console.admin.Console;
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -31,11 +30,12 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.operation.Address;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author Ryan D. Brooks
  */
-public class ConsolidateArtifactVersionDatabaseTxCallable extends DatabaseTxCallable<Object> {
+public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatastoreTxCallable<Object> {
    private static final String SELECT_ARTIFACT_VERSIONS = "select * from osee_artifact order by art_id, gamma_id";
 
    private static final String SELECT_ADDRESSING =
@@ -78,8 +78,8 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends DatabaseTxCall
 
    private final Console console;
 
-   public ConsolidateArtifactVersionDatabaseTxCallable(Log logger, IOseeDatabaseService databaseService, Console console) {
-      super(logger, databaseService, "Consolidate Artifact Versions");
+   public ConsolidateArtifactVersionDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, Console console) {
+      super(logger, session, databaseService, "Consolidate Artifact Versions");
       this.console = console;
    }
 

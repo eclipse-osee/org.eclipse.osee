@@ -14,7 +14,6 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.database.schema.DatabaseCallable;
 import org.eclipse.osee.database.schema.InitializeSchemaCallable;
 import org.eclipse.osee.database.schema.SchemaOptions;
 import org.eclipse.osee.database.schema.SchemaResourceProvider;
@@ -30,6 +29,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
@@ -41,7 +41,7 @@ import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 /**
  * @author Roberto E. Escobar
  */
-public class InitializeDatastoreCallable extends DatabaseCallable<DataStoreInfo> {
+public class InitializeDatastoreCallable extends AbstractDatastoreCallable<DataStoreInfo> {
 
    private static final String ADD_PERMISSION =
       "INSERT INTO OSEE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) VALUES (?,?)";
@@ -52,8 +52,8 @@ public class InitializeDatastoreCallable extends DatabaseCallable<DataStoreInfo>
    private final IdentityService identityService;
    private final BranchDataStore branchStore;
 
-   public InitializeDatastoreCallable(Log logger, IOseeDatabaseService dbService, IdentityService identityService, BranchDataStore branchStore, SystemPreferences preferences, SchemaResourceProvider schemaProvider, SchemaOptions options) {
-      super(logger, dbService);
+   public InitializeDatastoreCallable(OrcsSession session, Log logger, IOseeDatabaseService dbService, IdentityService identityService, BranchDataStore branchStore, SystemPreferences preferences, SchemaResourceProvider schemaProvider, SchemaOptions options) {
+      super(logger, session, dbService);
       this.identityService = identityService;
       this.branchStore = branchStore;
       this.preferences = preferences;
@@ -86,13 +86,13 @@ public class InitializeDatastoreCallable extends DatabaseCallable<DataStoreInfo>
       CreateBranchData systemRootData = getSystemRootData();
 
       // TODO tie in the session information
-      Callable<Branch> createSystemRoot = branchStore.createBranch("sessionId", systemRootData);
+      Callable<Branch> createSystemRoot = branchStore.createBranch(getSession(), systemRootData);
       Branch systemRoot = callAndCheckForCancel(createSystemRoot);
 
       Conditions.checkNotNull(systemRoot, "System Root Branch");
 
       Callable<DataStoreInfo> fetchCallable =
-         new FetchDatastoreInfoCallable(getLogger(), getDatabaseService(), schemaProvider, preferences);
+         new FetchDatastoreInfoCallable(getLogger(), getSession(), getDatabaseService(), schemaProvider, preferences);
       DataStoreInfo dataStoreInfo = callAndCheckForCancel(fetchCallable);
       return dataStoreInfo;
 

@@ -12,35 +12,13 @@ package org.eclipse.osee.orcs.db.internal.console;
 
 import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
-import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.callable.ConsolidateRelationsDatabaseTxCallable;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ConsolidateRelationsCommand implements ConsoleCommand {
-
-   private Log logger;
-   private IOseeDatabaseService dbService;
-
-   public Log getLogger() {
-      return logger;
-   }
-
-   public void setLogger(Log logger) {
-      this.logger = logger;
-   }
-
-   public IOseeDatabaseService getDatabaseService() {
-      return dbService;
-   }
-
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
-   }
+public class ConsolidateRelationsCommand extends AbstractDatastoreConsoleCommand {
 
    @Override
    public String getName() {
@@ -59,6 +37,6 @@ public class ConsolidateRelationsCommand implements ConsoleCommand {
 
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
-      return new ConsolidateRelationsDatabaseTxCallable(getLogger(), getDatabaseService(), console);
+      return new ConsolidateRelationsDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(), console);
    }
 }

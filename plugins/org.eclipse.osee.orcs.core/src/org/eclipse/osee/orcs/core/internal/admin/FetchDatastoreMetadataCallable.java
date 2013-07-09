@@ -16,9 +16,9 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsMetaData;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 
 /**
  * @author Roberto E. Escobar
@@ -27,15 +27,14 @@ public class FetchDatastoreMetadataCallable extends AbstractAdminCallable<OrcsMe
 
    private final DataStoreAdmin dataStoreAdmin;
 
-   public FetchDatastoreMetadataCallable(Log logger, SessionContext sessionContext, DataStoreAdmin dataStoreAdmin) {
-      super(logger, sessionContext);
+   public FetchDatastoreMetadataCallable(Log logger, OrcsSession session, DataStoreAdmin dataStoreAdmin) {
+      super(logger, session);
       this.dataStoreAdmin = dataStoreAdmin;
    }
 
    @Override
    protected OrcsMetaData innerCall() throws Exception {
-      String sessionId = getSessionContext().getSessionId();
-      Callable<DataStoreInfo> callable = dataStoreAdmin.getDataStoreInfo(sessionId);
+      Callable<DataStoreInfo> callable = dataStoreAdmin.getDataStoreInfo(getSession());
       final DataStoreInfo dataStoreInfo = callAndCheckForCancel(callable);
 
       OrcsMetaData orcsMetaData = new OrcsMetaData() {

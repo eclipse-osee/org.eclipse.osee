@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.core.internal.types;
 
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.types.impl.OrcsTypesImpl;
 import org.eclipse.osee.orcs.core.internal.types.impl.OrcsTypesIndexProviderImpl;
 import org.eclipse.osee.orcs.core.internal.types.impl.OrcsTypesLoaderFactoryImpl;
@@ -36,7 +36,7 @@ public class OrcsTypesModule {
       this.hierarchy = hierarchy;
    }
 
-   public void start(SessionContext session) {
+   public void start(OrcsSession session) {
       factory = createFactory();
       indexer = createIndexer(factory.createTypesLoader(session, dataStore));
    }
@@ -54,7 +54,7 @@ public class OrcsTypesModule {
       return new OrcsTypesIndexProviderImpl(loader);
    }
 
-   public OrcsTypes createOrcsTypes(SessionContext session) {
+   public OrcsTypes createOrcsTypes(OrcsSession session) {
       return new OrcsTypesImpl(logger, session, dataStore, factory, indexer);
    }
 

@@ -16,9 +16,9 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsMetaData;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 
 /**
  * @author Roberto E. Escobar
@@ -28,16 +28,15 @@ public class CreateDatastoreCallable extends AbstractAdminCallable<OrcsMetaData>
    private final DataStoreAdmin dataStoreAdmin;
    private final Map<String, String> parameters;
 
-   public CreateDatastoreCallable(Log logger, SessionContext sessionContext, DataStoreAdmin dataStoreAdmin, Map<String, String> parameters) {
-      super(logger, sessionContext);
+   public CreateDatastoreCallable(Log logger, OrcsSession session, DataStoreAdmin dataStoreAdmin, Map<String, String> parameters) {
+      super(logger, session);
       this.dataStoreAdmin = dataStoreAdmin;
       this.parameters = parameters;
    }
 
    @Override
    protected OrcsMetaData innerCall() throws Exception {
-      String sessionId = getSessionContext().getSessionId();
-      Callable<DataStoreInfo> callable = dataStoreAdmin.createDataStore(sessionId, parameters);
+      Callable<DataStoreInfo> callable = dataStoreAdmin.createDataStore(getSession(), parameters);
       final DataStoreInfo dataStoreInfo = callAndCheckForCancel(callable);
 
       OrcsMetaData orcsMetaData = new OrcsMetaData() {

@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.loader.LoadSqlContext;
@@ -27,13 +28,13 @@ import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
  */
 public class LoadExecutor extends AbstractLoadExecutor {
 
-   private final String sessionId;
+   private final OrcsSession session;
    private final int branchId;
    private final Collection<Integer> artifactIds;
 
-   public LoadExecutor(SqlArtifactLoader loader, IOseeDatabaseService dbService, String sessionId, int branchId, Collection<Integer> artifactIds) {
+   public LoadExecutor(SqlArtifactLoader loader, IOseeDatabaseService dbService, OrcsSession session, int branchId, Collection<Integer> artifactIds) {
       super(loader, dbService);
-      this.sessionId = sessionId;
+      this.session = session;
       this.branchId = branchId;
       this.artifactIds = artifactIds;
    }
@@ -48,7 +49,7 @@ public class LoadExecutor extends AbstractLoadExecutor {
          join.add(artId, branchId, transactionId);
       }
 
-      LoadSqlContext loadContext = new LoadSqlContext(sessionId, options);
+      LoadSqlContext loadContext = new LoadSqlContext(session, options);
       int fetchSize = computeFetchSize(artifactIds.size());
       loadFromJoin(join, cancellation, handler, criteria, loadContext, fetchSize);
    }

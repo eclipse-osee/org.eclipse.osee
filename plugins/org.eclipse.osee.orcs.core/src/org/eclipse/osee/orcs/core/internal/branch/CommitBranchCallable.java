@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 public class CommitBranchCallable extends AbstractBranchCallable<TransactionRecord> {
@@ -28,8 +28,8 @@ public class CommitBranchCallable extends AbstractBranchCallable<TransactionReco
    private final IOseeBranch source;
    private final IOseeBranch destination;
 
-   public CommitBranchCallable(Log logger, SessionContext sessionContext, BranchDataStore branchStore, BranchCache branchCache, ArtifactReadable committer, IOseeBranch source, IOseeBranch destination) {
-      super(logger, sessionContext, branchStore);
+   public CommitBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, BranchCache branchCache, ArtifactReadable committer, IOseeBranch source, IOseeBranch destination) {
+      super(logger, session, branchStore);
       this.branchCache = branchCache;
       this.committer = committer;
       this.source = source;
@@ -53,7 +53,7 @@ public class CommitBranchCallable extends AbstractBranchCallable<TransactionReco
       Conditions.checkNotNull(destinationBranch, "destinationBranch");
 
       Callable<TransactionRecord> commitBranchCallable =
-         getBranchStore().commitBranch(getSessionContext().getSessionId(), committer, sourceBranch, destinationBranch);
+         getBranchStore().commitBranch(getSession(), committer, sourceBranch, destinationBranch);
       return callAndCheckForCancel(commitBranchCallable);
    }
 }

@@ -16,8 +16,8 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManagerImpl.TxDataHandlerFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -41,7 +41,7 @@ public class TransactionFactoryImplTest {
 
    // @formatter:off
    @Mock private Log logger;
-   @Mock private SessionContext sessionContext;
+   @Mock private OrcsSession session;
    @Mock private BranchDataStore branchDataStore;
    @Mock private ArtifactProxyFactory artifactFactory;
    @Mock private TxDataHandlerFactory dataFactory;
@@ -54,7 +54,7 @@ public class TransactionFactoryImplTest {
    @Before
    public void init() {
       MockitoAnnotations.initMocks(this);
-      factory = new TransactionFactoryImpl(logger, sessionContext, branchDataStore, artifactFactory, dataFactory);
+      factory = new TransactionFactoryImpl(logger, session, branchDataStore, artifactFactory, dataFactory);
    }
 
    @Test

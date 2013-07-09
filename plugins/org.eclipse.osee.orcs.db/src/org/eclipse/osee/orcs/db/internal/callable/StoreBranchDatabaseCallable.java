@@ -16,9 +16,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -31,11 +31,12 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsConstants;
+import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author Ryan D. Brooks
  */
-public class StoreBranchDatabaseCallable extends DatabaseTxCallable<IStatus> {
+public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<IStatus> {
    protected static final int NULL_PARENT_BRANCH_ID = -1;
 
    private static final String INSERT_BRANCH =
@@ -50,8 +51,8 @@ public class StoreBranchDatabaseCallable extends DatabaseTxCallable<IStatus> {
    private final ExecutorAdmin executorAdmin;
    private final EventService eventService;
 
-   public StoreBranchDatabaseCallable(Log logger, IOseeDatabaseService dbService, ExecutorAdmin executorAdmin, EventService eventService, Collection<Branch> branches) {
-      super(logger, dbService, "Branch Archive Operation");
+   public StoreBranchDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, ExecutorAdmin executorAdmin, EventService eventService, Collection<Branch> branches) {
+      super(logger, session, dbService, "Branch Archive Operation");
       this.executorAdmin = executorAdmin;
       this.eventService = eventService;
       this.branches = branches;
@@ -89,8 +90,8 @@ public class StoreBranchDatabaseCallable extends DatabaseTxCallable<IStatus> {
             }
          }
          if (branch.isFieldDirty(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY)) {
-            DatabaseTxCallable<?> task =
-               new MoveBranchDatabaseCallable(getLogger(), getDatabaseService(), getEventService(),
+            Callable<?> task =
+               new MoveBranchDatabaseCallable(getLogger(), getSession(), getDatabaseService(), getEventService(),
                   branch.getArchiveState().isArchived(), branch);
             try {
                getExecutorAdmin().schedule(task);

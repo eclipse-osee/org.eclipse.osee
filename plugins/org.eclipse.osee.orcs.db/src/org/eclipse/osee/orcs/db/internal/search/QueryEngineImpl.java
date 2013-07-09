@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
@@ -48,17 +49,17 @@ public class QueryEngineImpl implements QueryEngine {
    }
 
    @Override
-   public QuerySqlContext createCount(String sessionId, QueryData queryData) throws OseeCoreException {
-      return createQuery(sessionId, queryData, QueryType.COUNT_ARTIFACTS);
+   public QuerySqlContext createCount(OrcsSession session, QueryData queryData) throws OseeCoreException {
+      return createQuery(session, queryData, QueryType.COUNT_ARTIFACTS);
    }
 
    @Override
-   public QuerySqlContext create(String sessionId, QueryData queryData) throws OseeCoreException {
-      return createQuery(sessionId, queryData, QueryType.SELECT_ARTIFACTS);
+   public QuerySqlContext create(OrcsSession session, QueryData queryData) throws OseeCoreException {
+      return createQuery(session, queryData, QueryType.SELECT_ARTIFACTS);
    }
 
-   private QuerySqlContext createQuery(String sessionId, QueryData queryData, QueryType queryType) throws OseeCoreException {
-      QuerySqlContext context = createContext(sessionId, queryData.getOptions());
+   private QuerySqlContext createQuery(OrcsSession session, QueryData queryData, QueryType queryType) throws OseeCoreException {
+      QuerySqlContext context = createContext(session, queryData.getOptions());
       CriteriaSet criteriaSet = queryData.getCriteriaSet();
 
       AbstractSqlWriter<QueryOptions> writer = createQueryWriter(context, queryType, criteriaSet.getBranch());
@@ -68,8 +69,8 @@ public class QueryEngineImpl implements QueryEngine {
       return context;
    }
 
-   private QuerySqlContext createContext(String sessionId, QueryOptions options) {
-      return new QuerySqlContext(sessionId, options);
+   private QuerySqlContext createContext(OrcsSession session, QueryOptions options) {
+      return new QuerySqlContext(session, options);
    }
 
    private AbstractSqlWriter<QueryOptions> createQueryWriter(SqlContext<QueryOptions, QueryPostProcessor> context, QueryType queryType, IOseeBranch branch) throws OseeCoreException {

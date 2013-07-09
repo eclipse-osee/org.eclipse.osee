@@ -36,11 +36,11 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
@@ -69,7 +69,7 @@ public class OrcsTransactionImplTest {
 
    // @formatter:off
    @Mock private Log logger;
-   @Mock private SessionContext sessionContext;
+   @Mock private OrcsSession session;
    @Mock private BranchDataStore dataStore;
    @Mock private ArtifactProxyFactory artifactFactory;
    @Mock private TxDataManager txManager;
@@ -88,12 +88,12 @@ public class OrcsTransactionImplTest {
    @Before
    public void init() {
       MockitoAnnotations.initMocks(this);
-      tx = new OrcsTransactionImpl(logger, sessionContext, dataStore, artifactFactory, txManager, branch);
+      tx = new OrcsTransactionImpl(logger, session, dataStore, artifactFactory, txManager, branch);
 
       sessionId = GUID.create();
       guid = GUID.create();
       when(expected.getGuid()).thenReturn(guid);
-      when(sessionContext.getSessionId()).thenReturn(sessionId);
+      when(session.getGuid()).thenReturn(sessionId);
    }
 
    @Test
@@ -234,7 +234,7 @@ public class OrcsTransactionImplTest {
    @Test
    public void testCommitErrorDuringExecution() throws Exception {
       final Callable<TransactionResult> callable = mock(Callable.class);
-      when(dataStore.commitTransaction(eq(sessionId), any(TransactionData.class))).thenAnswer(
+      when(dataStore.commitTransaction(eq(session), any(TransactionData.class))).thenAnswer(
          new Answer<Callable<TransactionResult>>() {
 
             @Override
@@ -265,7 +265,7 @@ public class OrcsTransactionImplTest {
    @Test
    public void testCommitErrorDuringRollback() throws Exception {
       final Callable<TransactionResult> callable = mock(Callable.class);
-      when(dataStore.commitTransaction(eq(sessionId), any(TransactionData.class))).thenAnswer(
+      when(dataStore.commitTransaction(eq(session), any(TransactionData.class))).thenAnswer(
          new Answer<Callable<TransactionResult>>() {
 
             @Override
@@ -302,7 +302,7 @@ public class OrcsTransactionImplTest {
       tx.setComment("My Comment");
 
       when(txManager.getChanges()).thenReturn(changes);
-      when(dataStore.commitTransaction(eq(sessionId), txData.capture())).thenAnswer(
+      when(dataStore.commitTransaction(eq(session), txData.capture())).thenAnswer(
          new Answer<Callable<TransactionResult>>() {
 
             @Override

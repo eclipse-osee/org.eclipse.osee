@@ -17,7 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
-import org.eclipse.osee.database.schema.DatabaseCallable;
 import org.eclipse.osee.executor.admin.ExecutionCallbackAdapter;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -31,6 +30,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.ExportOptions;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportItemFactory;
@@ -40,7 +40,7 @@ import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 /**
  * @author Roberto E. Escobar
  */
-public class ExportBranchDatabaseCallable extends DatabaseCallable<URI> {
+public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI> {
 
    private static final String BRANCH_EXPORT_EXECUTOR_ID = "branch.export.worker";
 
@@ -54,8 +54,8 @@ public class ExportBranchDatabaseCallable extends DatabaseCallable<URI> {
 
    private String exportName;
 
-   public ExportBranchDatabaseCallable(ExportItemFactory factory, SystemPreferences preferences, ExecutorAdmin executorAdmin, BranchCache branchCache, List<IOseeBranch> branches, PropertyStore options, String exportName) {
-      super(factory.getLogger(), factory.getDbService());
+   public ExportBranchDatabaseCallable(OrcsSession session, ExportItemFactory factory, SystemPreferences preferences, ExecutorAdmin executorAdmin, BranchCache branchCache, List<IOseeBranch> branches, PropertyStore options, String exportName) {
+      super(factory.getLogger(), session, factory.getDbService());
       this.factory = factory;
       this.preferences = preferences;
       this.executorAdmin = executorAdmin;

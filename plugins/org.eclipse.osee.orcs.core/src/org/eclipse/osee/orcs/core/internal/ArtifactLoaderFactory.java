@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
 
 /**
@@ -23,10 +24,10 @@ public interface ArtifactLoaderFactory {
 
    int getCount(HasCancellation cancellation, QueryContext queryContext) throws OseeCoreException;
 
-   ArtifactLoader fromQueryContext(SessionContext sessionContext, QueryContext queryContext) throws OseeCoreException;
+   ArtifactLoader fromQueryContext(OrcsSession session, QueryContext queryContext) throws OseeCoreException;
 
-   ArtifactLoader fromBranchAndArtifactIds(SessionContext sessionContext, IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException;
+   ArtifactLoader fromBranchAndArtifactIds(OrcsSession session, IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException;
 
-   ArtifactLoader fromBranchAndArtifactIds(SessionContext sessionContext, IOseeBranch branch, int... artifactIds) throws OseeCoreException;
+   ArtifactLoader fromBranchAndArtifactIds(OrcsSession session, IOseeBranch branch, int... artifactIds) throws OseeCoreException;
 
 }

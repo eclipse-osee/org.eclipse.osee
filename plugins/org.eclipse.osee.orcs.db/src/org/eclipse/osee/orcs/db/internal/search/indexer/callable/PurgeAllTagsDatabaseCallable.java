@@ -13,21 +13,22 @@ package org.eclipse.osee.orcs.db.internal.search.indexer.callable;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.eclipse.osee.database.schema.DatabaseCallable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class PurgeAllTagsDatabaseCallable extends DatabaseCallable<Integer> {
+public final class PurgeAllTagsDatabaseCallable extends AbstractDatastoreCallable<Integer> {
 
    private static final String SEARCH_TAG_TABLE_NAME = "osee_search_tags";
 
-   public PurgeAllTagsDatabaseCallable(Log logger, IOseeDatabaseService service) {
-      super(logger, service);
+   public PurgeAllTagsDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service) {
+      super(logger, session, service);
    }
 
    @Override

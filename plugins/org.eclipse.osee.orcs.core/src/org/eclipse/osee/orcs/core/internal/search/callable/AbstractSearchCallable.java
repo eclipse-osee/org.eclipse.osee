@@ -14,9 +14,9 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.search.QueryCollector;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 
@@ -27,21 +27,25 @@ public abstract class AbstractSearchCallable<T> extends CancellableCallable<T> {
 
    protected final Log logger;
    protected final QueryEngine queryEngine;
-   protected final SessionContext sessionContext;
+   protected final OrcsSession session;
    protected final LoadLevel loadLevel;
    protected final QueryData queryData;
    private final QueryCollector collector;
    protected final AttributeTypes types;
 
-   public AbstractSearchCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, SessionContext sessionContext, LoadLevel loadLevel, QueryData queryData, AttributeTypes types) {
+   public AbstractSearchCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, OrcsSession session, LoadLevel loadLevel, QueryData queryData, AttributeTypes types) {
       super();
       this.logger = logger;
       this.queryEngine = queryEngine;
       this.collector = collector;
-      this.sessionContext = sessionContext;
+      this.session = session;
       this.loadLevel = loadLevel;
       this.queryData = queryData;
       this.types = types;
+   }
+
+   protected OrcsSession getSession() {
+      return session;
    }
 
    protected Log getLogger() {
@@ -74,7 +78,7 @@ public abstract class AbstractSearchCallable<T> extends CancellableCallable<T> {
       if (collector != null) {
          try {
             int itemsFound = getCount(result);
-            collector.collect(sessionContext.getSessionId(), itemsFound, processingTime, queryData);
+            collector.collect(session, itemsFound, processingTime, queryData);
          } catch (Exception ex) {
             logger.error(ex, "Error reporting search to search collector\n%s", queryData);
          }

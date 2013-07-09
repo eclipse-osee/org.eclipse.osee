@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -31,12 +30,13 @@ import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
 
 /**
  * @author Ryan D. Brooks
  */
-public class PurgeTransactionTxCallable extends DatabaseTxCallable<Void> {
+public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Void> {
 
    private static final String UPDATE_TXS_DETAILS_COMMENT =
       "UPDATE osee_tx_details SET osee_comment = replace(osee_comment, ?, ?) WHERE osee_comment like ?";
@@ -62,8 +62,8 @@ public class PurgeTransactionTxCallable extends DatabaseTxCallable<Void> {
 
    private final Collection<? extends ITransaction> txIdsToDelete;
 
-   public PurgeTransactionTxCallable(Log logger, IOseeDatabaseService databaseService, Collection<? extends ITransaction> txIdsToDelete) {
-      super(logger, databaseService, "Purge transactions");
+   public PurgeTransactionTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, Collection<? extends ITransaction> txIdsToDelete) {
+      super(logger, session, databaseService, "Purge transactions");
       this.txIdsToDelete = txIdsToDelete;
    }
 

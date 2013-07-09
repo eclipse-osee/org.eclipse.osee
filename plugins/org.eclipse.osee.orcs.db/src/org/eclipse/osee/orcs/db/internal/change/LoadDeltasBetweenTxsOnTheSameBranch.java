@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.database.schema.DatabaseCallable;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
@@ -27,6 +26,8 @@ import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.TransactionJoinQuery;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.change.ChangeItemLoader.ChangeItemFactory;
 
 /**
@@ -35,7 +36,7 @@ import org.eclipse.osee.orcs.db.internal.change.ChangeItemLoader.ChangeItemFacto
  * @author Ryan Schmitt
  * @author Jeff C. Phillips
  */
-public class LoadDeltasBetweenTxsOnTheSameBranch extends DatabaseCallable<List<ChangeItem>> {
+public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallable<List<ChangeItem>> {
 
    private static final String SELECT_CHANGES_BETWEEN_TRANSACTIONS =
       "select gamma_id, mod_type from osee_txs where branch_id = ? and transaction_id > ? and transaction_id <= ?";
@@ -45,8 +46,8 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends DatabaseCallable<List<C
    private final TransactionDelta txDelta;
    private final ChangeItemLoader changeItemLoader;
 
-   public LoadDeltasBetweenTxsOnTheSameBranch(Log logger, IOseeDatabaseService dbService, TransactionDelta txDelta) {
-      super(logger, dbService);
+   public LoadDeltasBetweenTxsOnTheSameBranch(Log logger, OrcsSession session, IOseeDatabaseService dbService, TransactionDelta txDelta) {
+      super(logger, session, dbService);
       this.txDelta = txDelta;
       this.changeItemLoader = new ChangeItemLoader(dbService, changeByGammaId);
    }

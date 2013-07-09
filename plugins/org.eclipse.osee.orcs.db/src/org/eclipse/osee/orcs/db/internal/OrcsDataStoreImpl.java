@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.data.AbstractIdentity;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -29,9 +30,11 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataModule;
@@ -118,11 +121,12 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
    }
 
    public void start(BundleContext context) throws Exception {
+      String id = String.format("orcs_datastore_system_%s", GUID.create());
+      OrcsSession session = new DatastoreSession(id);
 
       TempCachingServiceFactory modelingService =
          new TempCachingServiceFactory(logger, dbService, executorAdmin, modelFactory, eventService);
-
-      cacheService = modelingService.createCachingService(true);
+      cacheService = modelingService.createCachingService(session, true);
 
       sqlProvider = createSqlProvider();
 
@@ -222,27 +226,27 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
    }
 
    @Override
-   public Callable<IResource> getOrcsTypesLoader(String sessionId) {
-      return new OrcsTypeLoaderCallable(dbService, identityService, resourceManager);
+   public Callable<IResource> getOrcsTypesLoader(OrcsSession session) {
+      return new OrcsTypeLoaderCallable(logger, session, dbService, identityService, resourceManager);
    }
 
    @Override
-   public Callable<Void> purgeArtifactsByArtifactType(String sessionId, Collection<? extends IArtifactType> typesToPurge) {
-      return new PurgeArtifactTypeDatabaseTxCallable(logger, dbService, identityService, typesToPurge);
+   public Callable<Void> purgeArtifactsByArtifactType(OrcsSession session, Collection<? extends IArtifactType> typesToPurge) {
+      return new PurgeArtifactTypeDatabaseTxCallable(logger, session, dbService, identityService, typesToPurge);
    }
 
    @Override
-   public Callable<Void> purgeAttributesByAttributeType(String sessionId, Collection<? extends IAttributeType> typesToPurge) {
-      return new PurgeAttributeTypeDatabaseTxCallable(logger, dbService, identityService, typesToPurge);
+   public Callable<Void> purgeAttributesByAttributeType(OrcsSession session, Collection<? extends IAttributeType> typesToPurge) {
+      return new PurgeAttributeTypeDatabaseTxCallable(logger, session, dbService, identityService, typesToPurge);
    }
 
    @Override
-   public Callable<Void> purgeRelationsByRelationType(String sessionId, Collection<? extends IRelationType> typesToPurge) {
-      return new PurgeRelationTypeDatabaseTxCallable(logger, dbService, identityService, typesToPurge);
+   public Callable<Void> purgeRelationsByRelationType(OrcsSession session, Collection<? extends IRelationType> typesToPurge) {
+      return new PurgeRelationTypeDatabaseTxCallable(logger, session, dbService, identityService, typesToPurge);
    }
 
    @Override
-   public Callable<Void> persistTypeIdentities(String sessionId, final Collection<Identity<Long>> types) {
+   public Callable<Void> persistTypeIdentities(OrcsSession session, final Collection<Identity<Long>> types) {
       return new Callable<Void>() {
 
          @Override
@@ -255,5 +259,21 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
             return null;
          }
       };
+   }
+
+   private static final class DatastoreSession extends AbstractIdentity<String> implements OrcsSession {
+
+      private final String id;
+
+      public DatastoreSession(String id) {
+         super();
+         this.id = id;
+      }
+
+      @Override
+      public String getGuid() {
+         return id;
+      }
+
    }
 }

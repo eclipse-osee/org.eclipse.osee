@@ -17,7 +17,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.database.schema.DatabaseCallable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -27,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
@@ -40,14 +40,14 @@ import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 /**
  * @author Roberto E. Escobar
  */
-public class CheckBranchExchangeIntegrityCallable extends DatabaseCallable<URI> {
+public class CheckBranchExchangeIntegrityCallable extends AbstractDatastoreCallable<URI> {
 
    private final URI fileToCheck;
    private final SystemPreferences preferences;
    private final IResourceManager resourceManager;
 
-   public CheckBranchExchangeIntegrityCallable(Log logger, IOseeDatabaseService service, SystemPreferences preferences, IResourceManager resourceManager, URI fileToCheck) {
-      super(logger, service);
+   public CheckBranchExchangeIntegrityCallable(Log logger, OrcsSession session, IOseeDatabaseService service, SystemPreferences preferences, IResourceManager resourceManager, URI fileToCheck) {
+      super(logger, session, service);
       this.fileToCheck = fileToCheck;
       this.preferences = preferences;
       this.resourceManager = resourceManager;

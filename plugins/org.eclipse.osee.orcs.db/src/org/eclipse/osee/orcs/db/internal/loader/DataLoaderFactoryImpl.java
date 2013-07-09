@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
@@ -92,17 +93,17 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
    }
 
    @Override
-   public DataLoader fromBranchAndArtifactIds(String sessionId, IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException {
+   public DataLoader fromBranchAndArtifactIds(OrcsSession session, IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(artifactIds, "artifactIds");
 
       int branchId = branchCache.getLocalId(branch);
-      AbstractLoadExecutor executor = new LoadExecutor(loader, dbService, sessionId, branchId, artifactIds);
+      AbstractLoadExecutor executor = new LoadExecutor(loader, dbService, session, branchId, artifactIds);
       return new DataLoaderImpl(logger, executor);
    }
 
    @Override
-   public DataLoader fromBranchAndArtifactIds(String sessionId, IOseeBranch branch, int... artifactIds) throws OseeCoreException {
-      return fromBranchAndArtifactIds(sessionId, branch, toCollection(artifactIds));
+   public DataLoader fromBranchAndArtifactIds(OrcsSession session, IOseeBranch branch, int... artifactIds) throws OseeCoreException {
+      return fromBranchAndArtifactIds(session, branch, toCollection(artifactIds));
    }
 
    private QuerySqlContext toSqlContext(QueryContext queryContext) throws OseeCoreException {

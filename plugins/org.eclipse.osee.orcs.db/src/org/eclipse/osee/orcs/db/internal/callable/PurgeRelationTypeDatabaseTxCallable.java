@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.callable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
@@ -21,6 +20,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * Purges given relation types.<br/>
@@ -34,7 +34,7 @@ import org.eclipse.osee.logger.Log;
  * 
  * @author Karol M. Wilk
  */
-public final class PurgeRelationTypeDatabaseTxCallable extends DatabaseTxCallable<Void> {
+public final class PurgeRelationTypeDatabaseTxCallable extends AbstractDatastoreTxCallable<Void> {
    private static final String RETRIEVE_GAMMAS_OF_REL_LINK_TXS =
       "SELECT rel_link.gamma_id FROM osee_relation_link rel_link WHERE rel_link.rel_link_type_id = ?";
 
@@ -47,8 +47,8 @@ public final class PurgeRelationTypeDatabaseTxCallable extends DatabaseTxCallabl
    private final Collection<? extends IRelationType> typesToPurge;
    private final IdentityService identityService;
 
-   public PurgeRelationTypeDatabaseTxCallable(Log logger, IOseeDatabaseService databaseService, IdentityService identityService, Collection<? extends IRelationType> typesToPurge) {
-      super(logger, databaseService, "Purge Relation Type");
+   public PurgeRelationTypeDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, IdentityService identityService, Collection<? extends IRelationType> typesToPurge) {
+      super(logger, session, databaseService, "Purge Relation Type");
       this.identityService = identityService;
       this.typesToPurge = typesToPurge;
    }

@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.callable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
@@ -21,11 +20,12 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author Angel Avila
  */
-public final class PurgeAttributeTypeDatabaseTxCallable extends DatabaseTxCallable<Void> {
+public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastoreTxCallable<Void> {
    private static final String RETRIEVE_GAMMAS_OF_ATTR_TYPE_TXS =
       "SELECT gamma_id FROM osee_attribute WHERE attr_type_id = ?";
 
@@ -38,8 +38,8 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends DatabaseTxCallab
    private final Collection<? extends IAttributeType> typesToPurge;
    private final IdentityService identityService;
 
-   public PurgeAttributeTypeDatabaseTxCallable(Log logger, IOseeDatabaseService databaseService, IdentityService identityService, Collection<? extends IAttributeType> typesToPurge) {
-      super(logger, databaseService, "Purge Attribute Type");
+   public PurgeAttributeTypeDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, IdentityService identityService, Collection<? extends IAttributeType> typesToPurge) {
+      super(logger, session, databaseService, "Purge Attribute Type");
       this.identityService = identityService;
       this.typesToPurge = typesToPurge;
    }

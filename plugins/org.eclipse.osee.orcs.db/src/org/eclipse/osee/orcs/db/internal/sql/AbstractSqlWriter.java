@@ -198,7 +198,7 @@ public abstract class AbstractSqlWriter<O extends Options> {
    }
 
    public CharJoinQuery writeCharJoin(Collection<String> ids) {
-      CharJoinQuery joinQuery = JoinUtility.createCharJoinQuery(dbService, context.getSessionId());
+      CharJoinQuery joinQuery = JoinUtility.createCharJoinQuery(dbService, context.getSession().getGuid());
       for (String id : ids) {
          joinQuery.add(id);
       }
@@ -207,7 +207,7 @@ public abstract class AbstractSqlWriter<O extends Options> {
    }
 
    public IdJoinQuery writeIdJoin(Collection<Integer> ids) {
-      IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery(dbService);
+      IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery(dbService, context.getSession().getGuid());
       for (Integer id : ids) {
          joinQuery.add(id);
       }

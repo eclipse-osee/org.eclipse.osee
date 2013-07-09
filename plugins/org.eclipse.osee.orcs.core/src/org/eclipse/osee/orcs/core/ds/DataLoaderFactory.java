@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author Roberto E. Escobar
@@ -24,8 +25,8 @@ public interface DataLoaderFactory {
 
    DataLoader fromQueryContext(QueryContext queryContext) throws OseeCoreException;
 
-   DataLoader fromBranchAndArtifactIds(String sessionId, IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException;
+   DataLoader fromBranchAndArtifactIds(OrcsSession session, IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException;
 
-   DataLoader fromBranchAndArtifactIds(String sessionId, IOseeBranch branch, int... artifactIds) throws OseeCoreException;
+   DataLoader fromBranchAndArtifactIds(OrcsSession session, IOseeBranch branch, int... artifactIds) throws OseeCoreException;
 
 }

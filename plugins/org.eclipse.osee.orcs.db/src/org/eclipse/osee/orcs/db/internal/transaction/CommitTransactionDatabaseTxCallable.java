@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -28,10 +27,12 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
 
 /**
@@ -39,7 +40,7 @@ import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
  * @author Ryan D. Brooks
  * @author Jeff C. Phillips
  */
-public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallable<TransactionResult> {
+public final class CommitTransactionDatabaseTxCallable extends AbstractDatastoreTxCallable<TransactionResult> {
 
    private final BranchCache branchCache;
    private final TransactionRecordFactory factory;
@@ -47,11 +48,10 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
    private final TransactionData transactionData;
 
    private final CheckProvider checksProvider;
-   private final String sessionId;
    private final TransactionWriter writer;
 
-   public CommitTransactionDatabaseTxCallable(Log logger, IOseeDatabaseService dbService, BranchCache branchCache, TransactionCache transactionCache, TransactionRecordFactory factory, CheckProvider checksProvider, TransactionWriter writer, String sessionId, TransactionData transactionData) {
-      super(logger, dbService, String.format("Committing Transaction: [%s] for branch [%s]",
+   public CommitTransactionDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, BranchCache branchCache, TransactionCache transactionCache, TransactionRecordFactory factory, CheckProvider checksProvider, TransactionWriter writer, TransactionData transactionData) {
+      super(logger, session, dbService, String.format("Committing Transaction: [%s] for branch [%s]",
          transactionData.getComment(), transactionData.getBranch()));
       this.branchCache = branchCache;
       this.factory = factory;
@@ -59,7 +59,6 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
       this.checksProvider = checksProvider;
 
       this.writer = writer;
-      this.sessionId = sessionId;
       this.transactionData = transactionData;
    }
 
@@ -84,7 +83,7 @@ public final class CommitTransactionDatabaseTxCallable extends DatabaseTxCallabl
 
       Collection<TransactionCheck> checks = checksProvider.getTransactionChecks();
       for (TransactionCheck check : checks) {
-         check.verify(this, sessionId, transactionData);
+         check.verify(this, getSession(), transactionData);
       }
 
       TransactionRecord txRecord = createTransactionRecord(branch, author, comment, getNextTransactionId());

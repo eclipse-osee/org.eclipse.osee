@@ -24,9 +24,9 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesIndexProvider;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesLoaderFactory;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesResourceProvider;
@@ -43,7 +43,7 @@ public class OrcsTypesImpl implements OrcsTypes {
    private final OrcsTypesIndexProvider indexProvider;
 
    private final Log logger;
-   private final SessionContext session;
+   private final OrcsSession session;
    private final OrcsTypesDataStore dataStore;
    private final OrcsTypesLoaderFactory loaderFactory;
 
@@ -52,7 +52,7 @@ public class OrcsTypesImpl implements OrcsTypes {
    private final RelationTypes relationTypes;
    private final EnumTypes enumTypes;
 
-   public OrcsTypesImpl(Log logger, SessionContext session, OrcsTypesDataStore dataStore, OrcsTypesLoaderFactory loaderFactory, OrcsTypesIndexProvider indexProvider) {
+   public OrcsTypesImpl(Log logger, OrcsSession session, OrcsTypesDataStore dataStore, OrcsTypesLoaderFactory loaderFactory, OrcsTypesIndexProvider indexProvider) {
       this.logger = logger;
       this.session = session;
       this.dataStore = dataStore;
@@ -133,17 +133,17 @@ public class OrcsTypesImpl implements OrcsTypes {
 
    @Override
    public Callable<Void> purgeArtifactsByArtifactType(Collection<? extends IArtifactType> artifactTypes) {
-      return dataStore.purgeArtifactsByArtifactType(session.getSessionId(), artifactTypes);
+      return dataStore.purgeArtifactsByArtifactType(session, artifactTypes);
    }
 
    @Override
    public Callable<Void> purgeAttributesByAttributeType(Collection<? extends IAttributeType> attributeTypes) {
-      return dataStore.purgeAttributesByAttributeType(session.getSessionId(), attributeTypes);
+      return dataStore.purgeAttributesByAttributeType(session, attributeTypes);
    }
 
    @Override
    public Callable<Void> purgeRelationsByRelationType(Collection<? extends IRelationType> relationTypes) {
-      return dataStore.purgeRelationsByRelationType(session.getSessionId(), relationTypes);
+      return dataStore.purgeRelationsByRelationType(session, relationTypes);
    }
 
    @Override
@@ -157,7 +157,7 @@ public class OrcsTypesImpl implements OrcsTypes {
             types.addAll(attributeTypes.getAll());
             types.addAll(relationTypes.getAll());
             types.addAll(enumTypes.getAll());
-            dataStore.persistTypeIdentities(session.getSessionId(), types).call();
+            dataStore.persistTypeIdentities(session, types).call();
             return null;
          }
       };

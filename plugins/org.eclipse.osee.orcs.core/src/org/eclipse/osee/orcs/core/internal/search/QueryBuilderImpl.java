@@ -30,11 +30,11 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryOptions;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.HasLocalId;
@@ -49,13 +49,13 @@ public class QueryBuilderImpl implements QueryBuilder {
    private final CallableQueryFactory queryFactory;
    private final CriteriaFactory criteriaFactory;
 
-   private final SessionContext sessionContext;
+   private final OrcsSession session;
    private final QueryData queryData;
 
-   public QueryBuilderImpl(CallableQueryFactory queryFactory, CriteriaFactory criteriaFactory, SessionContext sessionContext, QueryData queryData) {
+   public QueryBuilderImpl(CallableQueryFactory queryFactory, CriteriaFactory criteriaFactory, OrcsSession session, QueryData queryData) {
       this.queryFactory = queryFactory;
       this.criteriaFactory = criteriaFactory;
-      this.sessionContext = sessionContext;
+      this.session = session;
       this.queryData = queryData;
    }
 
@@ -371,17 +371,17 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public CancellableCallable<ResultSet<ArtifactReadable>> createSearch() throws OseeCoreException {
-      return queryFactory.createSearch(sessionContext, checkAndCloneQueryData());
+      return queryFactory.createSearch(session, checkAndCloneQueryData());
    }
 
    @Override
    public CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches() throws OseeCoreException {
-      return queryFactory.createSearchWithMatches(sessionContext, checkAndCloneQueryData());
+      return queryFactory.createSearchWithMatches(session, checkAndCloneQueryData());
    }
 
    @Override
    public CancellableCallable<ResultSet<HasLocalId>> createSearchResultsAsLocalIds() throws OseeCoreException {
-      return queryFactory.createLocalIdSearch(sessionContext, checkAndCloneQueryData());
+      return queryFactory.createLocalIdSearch(session, checkAndCloneQueryData());
    }
 
    private QueryData checkAndCloneQueryData() throws OseeCoreException {
@@ -395,6 +395,6 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public CancellableCallable<Integer> createCount() throws OseeCoreException {
-      return queryFactory.createCount(sessionContext, checkAndCloneQueryData());
+      return queryFactory.createCount(session, checkAndCloneQueryData());
    }
 }

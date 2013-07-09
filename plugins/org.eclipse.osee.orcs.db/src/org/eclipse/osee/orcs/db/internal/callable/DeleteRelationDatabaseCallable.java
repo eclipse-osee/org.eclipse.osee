@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.sql.Timestamp;
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -29,12 +28,13 @@ import org.eclipse.osee.framework.jdk.core.type.Triplet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DeleteRelationDatabaseCallable extends DatabaseTxCallable<Branch> {
+public class DeleteRelationDatabaseCallable extends AbstractDatastoreTxCallable<Branch> {
 
    private final static String SELECT_RELATION_LINK =
       "select txs.gamma_id, rel.rel_link_id, txs.mod_type from osee_relation_link rel, osee_txs txs where rel.rel_link_type_id = ? and rel.a_art_id = ? and rel.b_art_id = ? and rel.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.tx_current <> ? order by txs.tx_current";
@@ -55,8 +55,8 @@ public class DeleteRelationDatabaseCallable extends DatabaseTxCallable<Branch> {
    private final int bArtId;
    private final String comment;
 
-   public DeleteRelationDatabaseCallable(Log logger, IOseeDatabaseService databaseService, IdentityService identityService, BranchCache branchCache, IOseeBranch branchToken, IRelationTypeSide relationType, int aArtId, int bArtId, int artUserId, String comment) {
-      super(logger, databaseService, "Delete Relation");
+   public DeleteRelationDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, IdentityService identityService, BranchCache branchCache, IOseeBranch branchToken, IRelationTypeSide relationType, int aArtId, int bArtId, int artUserId, String comment) {
+      super(logger, session, databaseService, "Delete Relation");
       this.identityService = identityService;
       this.branchCache = branchCache;
       this.branchToken = branchToken;

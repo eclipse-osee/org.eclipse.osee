@@ -14,7 +14,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -38,13 +37,14 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.util.IdUtil;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
+public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<Branch> {
 
    private static final String INSERT_TX_DETAILS =
       "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type) VALUES (?,?,?,?,?,?)";
@@ -92,8 +92,8 @@ public class CreateBranchDatabaseTxCallable extends DatabaseTxCallable<Branch> {
    private final CreateBranchData newBranchData;
    private Branch branch;
 
-   public CreateBranchDatabaseTxCallable(Log logger, IOseeDatabaseService databaseService, BranchCache branchCache, TransactionCache txCache, BranchFactory branchFactory, TransactionRecordFactory txFactory, CreateBranchData branchData) {
-      super(logger, databaseService, String.format("Create Branch %s", branchData.getName()));
+   public CreateBranchDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, BranchCache branchCache, TransactionCache txCache, BranchFactory branchFactory, TransactionRecordFactory txFactory, CreateBranchData branchData) {
+      super(logger, session, databaseService, String.format("Create Branch %s", branchData.getName()));
       this.branchCache = branchCache;
       this.txCache = txCache;
       this.branchFactory = branchFactory;

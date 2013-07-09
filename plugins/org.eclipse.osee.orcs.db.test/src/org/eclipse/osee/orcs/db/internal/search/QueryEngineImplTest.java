@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessorFactory;
@@ -95,12 +96,12 @@ public class QueryEngineImplTest {
    @Mock private ExecutorAdmin executorAdmin;
    @Mock private BranchCache branchCache;
    @Mock private AttributeTypeCache attributeTypeCache;
+   @Mock private OrcsSession session;
    // @formatter:on
 
    private final static int EXPECTED_BRANCH_ID = 65;
    private final static int EXPECTED_TX_ID = 45678;
 
-   private String sessionId;
    private QueryEngineImpl queryEngine;
    private QueryData queryData;
 
@@ -108,7 +109,8 @@ public class QueryEngineImplTest {
    public void setUp() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
 
-      sessionId = GUID.create();
+      String sessionId = GUID.create();
+      when(session.getGuid()).thenReturn(sessionId);
 
       QueryModuleFactory queryModule = new QueryModuleFactory(logger, executorAdmin);
 
@@ -152,7 +154,7 @@ public class QueryEngineImplTest {
 
       queryData.addCriteria(GUIDS, IDS, HRIDS, TYPES);
 
-      QuerySqlContext context = queryEngine.createCount(sessionId, queryData);
+      QuerySqlContext context = queryEngine.createCount(session, queryData);
 
       Assert.assertEquals(expected, context.getSql());
 
@@ -189,7 +191,7 @@ public class QueryEngineImplTest {
       queryData.getOptions().setFromTransaction(EXPECTED_TX_ID);
       queryData.addCriteria(TYPES);
 
-      QuerySqlContext context = queryEngine.createCount(sessionId, queryData);
+      QuerySqlContext context = queryEngine.createCount(session, queryData);
 
       Assert.assertEquals(expected, context.getSql());
 
@@ -223,7 +225,7 @@ public class QueryEngineImplTest {
 
       queryData.addCriteria(GUIDS, IDS, HRIDS, TYPES);
 
-      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+      QuerySqlContext context = queryEngine.create(session, queryData);
 
       Assert.assertEquals(expected, context.getSql());
 
@@ -263,7 +265,7 @@ public class QueryEngineImplTest {
       queryData.addCriteria(GUIDS, IDS, HRIDS, TYPES);
       queryData.getOptions().setIncludeDeleted(true);
 
-      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+      QuerySqlContext context = queryEngine.create(session, queryData);
       Assert.assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
@@ -309,7 +311,7 @@ public class QueryEngineImplTest {
       queryData.addCriteria(GUIDS, IDS, HRIDS, TYPES);
       queryData.getOptions().setFromTransaction(EXPECTED_TX_ID);
 
-      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+      QuerySqlContext context = queryEngine.create(session, queryData);
       Assert.assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
@@ -347,7 +349,7 @@ public class QueryEngineImplTest {
 
       queryData.addCriteria(IDS);
 
-      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+      QuerySqlContext context = queryEngine.create(session, queryData);
       Assert.assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
@@ -372,7 +374,7 @@ public class QueryEngineImplTest {
 
       queryData.addCriteria(TYPES);
 
-      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+      QuerySqlContext context = queryEngine.create(session, queryData);
       Assert.assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
@@ -401,7 +403,7 @@ public class QueryEngineImplTest {
 
       queryData.addCriteria(ATTRIBUTE);
 
-      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+      QuerySqlContext context = queryEngine.create(session, queryData);
       Assert.assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
@@ -440,7 +442,7 @@ public class QueryEngineImplTest {
 
       queryData.addCriteria(ATTRIBUTE_KEYWORD);
 
-      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+      QuerySqlContext context = queryEngine.create(session, queryData);
       Assert.assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
@@ -489,7 +491,7 @@ public class QueryEngineImplTest {
 
       queryData.addCriteria(ATTRIBUTE, ATTRIBUTE_KEYWORD, TYPES);
 
-      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+      QuerySqlContext context = queryEngine.create(session, queryData);
       Assert.assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
@@ -553,7 +555,7 @@ public class QueryEngineImplTest {
 
       queryData.addCriteria(GUIDS, TYPES, REL_TYPE_EXISTS, IDS, ATTR_TYPE_EXITS, HRIDS);
 
-      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+      QuerySqlContext context = queryEngine.create(session, queryData);
       Assert.assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
@@ -610,7 +612,7 @@ public class QueryEngineImplTest {
 
       queryData.addCriteria(GUIDS, TYPES, REL_TYPE_EXISTS, IDS, ATTR_TYPE_EXITS, HRIDS);
 
-      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+      QuerySqlContext context = queryEngine.create(session, queryData);
       Assert.assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
@@ -664,7 +666,7 @@ public class QueryEngineImplTest {
 
       queryData.addCriteria(GUIDS, TYPES, IDS, RELATED_TO);
 
-      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+      QuerySqlContext context = queryEngine.create(session, queryData);
       Assert.assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
@@ -696,7 +698,7 @@ public class QueryEngineImplTest {
 
       queryData.addCriteria(ALL_ARTIFACTS);
 
-      QuerySqlContext context = queryEngine.createCount(sessionId, queryData);
+      QuerySqlContext context = queryEngine.createCount(session, queryData);
 
       Assert.assertEquals(expected, context.getSql());
 
@@ -725,7 +727,7 @@ public class QueryEngineImplTest {
       queryData.getOptions().setFromTransaction(EXPECTED_TX_ID);
       queryData.addCriteria(ALL_ARTIFACTS);
 
-      QuerySqlContext context = queryEngine.createCount(sessionId, queryData);
+      QuerySqlContext context = queryEngine.createCount(session, queryData);
 
       Assert.assertEquals(expected, context.getSql());
 
@@ -750,7 +752,7 @@ public class QueryEngineImplTest {
 
       queryData.addCriteria(ALL_ARTIFACTS);
 
-      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+      QuerySqlContext context = queryEngine.create(session, queryData);
 
       Assert.assertEquals(expected, context.getSql());
 
@@ -779,7 +781,7 @@ public class QueryEngineImplTest {
       queryData.getOptions().setFromTransaction(EXPECTED_TX_ID);
       queryData.addCriteria(ALL_ARTIFACTS);
 
-      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+      QuerySqlContext context = queryEngine.create(session, queryData);
 
       Assert.assertEquals(expected, context.getSql());
 
@@ -805,7 +807,7 @@ public class QueryEngineImplTest {
 
       queryData.addCriteria(ALL_ARTIFACTS, IDS);
 
-      QuerySqlContext context = queryEngine.create(sessionId, queryData);
+      QuerySqlContext context = queryEngine.create(session, queryData);
       Assert.assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();

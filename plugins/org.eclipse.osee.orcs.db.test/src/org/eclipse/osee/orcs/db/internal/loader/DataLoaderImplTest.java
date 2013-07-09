@@ -37,9 +37,10 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
-import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
+import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
@@ -78,13 +79,13 @@ public class DataLoaderImplTest {
     @Captor ArgumentCaptor<ArtifactJoinQuery> joinCaptor;
     @Captor ArgumentCaptor<CriteriaOrcsLoad> criteriaCaptor;
     
+    @Mock private OrcsSession session;
    //@formatter:on
 
    private final static int EXPECTED_BRANCH_ID = 65;
    private final static int EXPECTED_TX_ID = 45678;
    private final static IOseeBranch BRANCH = CoreBranches.COMMON;
 
-   private String SESSION_ID;
    private DataLoaderFactory factory;
    private SqlArtifactLoader spyLoader;
 
@@ -92,7 +93,8 @@ public class DataLoaderImplTest {
    public void setUp() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
 
-      SESSION_ID = GUID.create();
+      String sessionId = GUID.create();
+      when(session.getGuid()).thenReturn(sessionId);
 
       DataModuleFactory module = new DataModuleFactory(logger);
 
@@ -124,7 +126,7 @@ public class DataLoaderImplTest {
    public void testLoadFull() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.FULL;
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX_ID);
 
@@ -151,7 +153,7 @@ public class DataLoaderImplTest {
       " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
       " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
@@ -173,7 +175,7 @@ public class DataLoaderImplTest {
       " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
       " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.includeDeleted();
 
@@ -197,7 +199,7 @@ public class DataLoaderImplTest {
          " AND txs1.transaction_id <= jart1.transaction_id AND txs1.tx_current IN (1, 0) AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX_ID);
 
@@ -221,7 +223,7 @@ public class DataLoaderImplTest {
          " AND txs1.transaction_id <= jart1.transaction_id AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX_ID);
       dataLoader.includeDeleted();
@@ -247,7 +249,7 @@ public class DataLoaderImplTest {
       " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
       " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
@@ -271,7 +273,7 @@ public class DataLoaderImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.loadAttributeType(CoreAttributeTypes.Annotation);
 
@@ -296,7 +298,7 @@ public class DataLoaderImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.loadAttributeType(CoreAttributeTypes.Annotation, CoreAttributeTypes.Category);
 
@@ -323,7 +325,7 @@ public class DataLoaderImplTest {
       " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
       " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.loadAttributeLocalId(45);
 
@@ -348,7 +350,7 @@ public class DataLoaderImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.loadAttributeLocalId(45, 55);
 
@@ -373,7 +375,7 @@ public class DataLoaderImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.loadAttributeLocalId(45, 55);
       dataLoader.loadAttributeType(CoreAttributeTypes.Annotation, CoreAttributeTypes.Category);
@@ -403,7 +405,7 @@ public class DataLoaderImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.loadAttributeLocalId(45);
       dataLoader.loadAttributeType(CoreAttributeTypes.Annotation);
@@ -428,7 +430,7 @@ public class DataLoaderImplTest {
       " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
       " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.includeDeleted();
 
@@ -453,7 +455,7 @@ public class DataLoaderImplTest {
          " AND txs1.transaction_id <= jart1.transaction_id AND txs1.tx_current IN (1, 0) AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX_ID);
 
@@ -478,7 +480,7 @@ public class DataLoaderImplTest {
          " AND txs1.transaction_id <= jart1.transaction_id AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX_ID);
       dataLoader.includeDeleted();
@@ -506,7 +508,7 @@ public class DataLoaderImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
@@ -530,7 +532,7 @@ public class DataLoaderImplTest {
          " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.includeDeleted();
 
@@ -555,7 +557,7 @@ public class DataLoaderImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.loadRelationType(CoreRelationTypes.Default_Hierarchical__Child);
 
@@ -580,7 +582,7 @@ public class DataLoaderImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.loadRelationType(CoreRelationTypes.Default_Hierarchical__Child, CoreRelationTypes.Dependency__Artifact);
 
@@ -609,7 +611,7 @@ public class DataLoaderImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.loadRelationLocalId(45);
 
@@ -634,7 +636,7 @@ public class DataLoaderImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.loadRelationLocalId(45, 55);
 
@@ -659,7 +661,7 @@ public class DataLoaderImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.loadRelationLocalId(45, 55);
       dataLoader.loadRelationType(CoreRelationTypes.Default_Hierarchical__Child, CoreRelationTypes.Dependency__Artifact);
@@ -691,7 +693,7 @@ public class DataLoaderImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.loadRelationLocalId(45);
       dataLoader.loadRelationType(CoreRelationTypes.Default_Hierarchical__Child);
@@ -707,7 +709,7 @@ public class DataLoaderImplTest {
    public void testLoadRelationsHistorical() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION;
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(SESSION_ID, BRANCH, Arrays.asList(1, 2, 3));
+      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
       dataLoader.setLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX_ID);
 
@@ -743,7 +745,7 @@ public class DataLoaderImplTest {
 
       LoadSqlContext context = contextCaptor.getValue();
 
-      assertEquals(SESSION_ID, context.getSessionId());
+      assertEquals(session, context.getSession());
       assertEquals(expectedSQL, context.getSql());
       assertTrue(context.getPostProcessors().isEmpty());
 

@@ -43,7 +43,7 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
       int fetchSize = computeFetchSize(queryContext);
 
       ArtifactJoinQuery join = createArtifactIdJoin(getDatabaseService(), cancellation, fetchSize);
-      LoadSqlContext loadContext = new LoadSqlContext(queryContext.getSessionId(), options);
+      LoadSqlContext loadContext = new LoadSqlContext(queryContext.getSession(), options);
       loadFromJoin(join, cancellation, handler, criteria, loadContext, fetchSize);
    }
 

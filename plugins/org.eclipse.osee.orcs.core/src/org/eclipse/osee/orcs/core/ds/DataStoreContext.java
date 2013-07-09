@@ -11,13 +11,14 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.util.List;
+import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface DataStoreContext<T extends Options, P extends DataPostProcessor<?>> {
 
-   String getSessionId();
+   OrcsSession getSession();
 
    T getOptions();
 

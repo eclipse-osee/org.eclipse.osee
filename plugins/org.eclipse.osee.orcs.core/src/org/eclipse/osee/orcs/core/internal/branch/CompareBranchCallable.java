@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 
 public class CompareBranchCallable extends AbstractBranchCallable<List<ChangeItem>> {
 
@@ -27,8 +27,8 @@ public class CompareBranchCallable extends AbstractBranchCallable<List<ChangeIte
    private final ITransaction sourceTx;
    private final ITransaction destinationTx;
 
-   public CompareBranchCallable(Log logger, SessionContext sessionContext, BranchDataStore branchStore, TransactionCache txCache, ITransaction sourceTx, ITransaction destinationTx) {
-      super(logger, sessionContext, branchStore);
+   public CompareBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, TransactionCache txCache, ITransaction sourceTx, ITransaction destinationTx) {
+      super(logger, session, branchStore);
       this.txCache = txCache;
       this.sourceTx = sourceTx;
       this.destinationTx = destinationTx;
@@ -45,8 +45,7 @@ public class CompareBranchCallable extends AbstractBranchCallable<List<ChangeIte
       Conditions.checkNotNull(source, "sourceTx");
       Conditions.checkNotNull(destination, "destinationTx");
 
-      Callable<List<ChangeItem>> callable =
-         getBranchStore().compareBranch(getSessionContext().getSessionId(), source, destination);
+      Callable<List<ChangeItem>> callable = getBranchStore().compareBranch(getSession(), source, destination);
       return callAndCheckForCancel(callable);
 
    }

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -33,6 +32,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
 import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
@@ -43,7 +43,7 @@ import org.eclipse.osee.orcs.db.internal.util.IdUtil;
  * 
  * @author David Miller
  */
-public final class BranchCopyTxCallable extends DatabaseTxCallable<Branch> {
+public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Branch> {
 
    private final BranchCache branchCache;
    private final TransactionCache txCache;
@@ -61,8 +61,8 @@ public final class BranchCopyTxCallable extends DatabaseTxCallable<Branch> {
    private static final String SELECT_ADDRESSING =
       "SELECT gamma_id, mod_type FROM osee_txs txs WHERE txs.branch_id = ? AND txs.transaction_id = ?";
 
-   public BranchCopyTxCallable(Log logger, IOseeDatabaseService databaseService, BranchCache branchCache, TransactionCache txCache, BranchFactory branchFactory, TransactionRecordFactory txFactory, CreateBranchData branchData) {
-      super(logger, databaseService, String.format("Create Branch %s", branchData.getName()));
+   public BranchCopyTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, BranchCache branchCache, TransactionCache txCache, BranchFactory branchFactory, TransactionRecordFactory txFactory, CreateBranchData branchData) {
+      super(logger, session, databaseService, String.format("Create Branch %s", branchData.getName()));
       this.branchCache = branchCache;
       this.txCache = txCache;
       this.branchFactory = branchFactory;
@@ -95,8 +95,8 @@ public final class BranchCopyTxCallable extends DatabaseTxCallable<Branch> {
       branchData.setFromTransaction(priorTx);
 
       Callable<Branch> callable =
-         new CreateBranchDatabaseTxCallable(getLogger(), getDatabaseService(), getBranchCache(), getTxCache(),
-            branchFactory, txFactory, branchData);
+         new CreateBranchDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(), getBranchCache(),
+            getTxCache(), branchFactory, txFactory, branchData);
 
       try {
          internalBranch = callable.call();

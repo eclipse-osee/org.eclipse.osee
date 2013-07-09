@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types;
 
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface OrcsTypesLoaderFactory {
 
-   OrcsTypesLoader createTypesLoader(SessionContext session, OrcsTypesDataStore ds);
+   OrcsTypesLoader createTypesLoader(OrcsSession session, OrcsTypesDataStore ds);
 
-   OrcsTypesLoader createTypesLoader(SessionContext session, OrcsTypesResourceProvider provider);
+   OrcsTypesLoader createTypesLoader(OrcsSession session, OrcsTypesResourceProvider provider);
 
 }

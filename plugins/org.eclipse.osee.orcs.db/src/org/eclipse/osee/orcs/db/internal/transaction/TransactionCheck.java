@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 
 /**
@@ -19,6 +20,6 @@ import org.eclipse.osee.orcs.core.ds.TransactionData;
  */
 public interface TransactionCheck {
 
-   void verify(HasCancellation cancellation, String sessionId, TransactionData txData) throws OseeCoreException;
+   void verify(HasCancellation cancellation, OrcsSession session, TransactionData txData) throws OseeCoreException;
 
 }

@@ -16,7 +16,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -33,23 +32,23 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
+import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OrcsTypeLoaderCallable extends CancellableCallable<IResource> {
+public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource> {
 
    private static final String LOAD_OSEE_TYPE_DEF_URIS =
       "select attr.uri from osee_branch br, osee_txs txs1, osee_artifact art, osee_attribute attr, osee_txs txs2 where br.branch_guid = ? and txs1.branch_id = br.branch_id and txs1.tx_current = ? and txs1.gamma_id = art.gamma_id and txs2.branch_id = br.branch_id and txs2.tx_current = ? and txs2.gamma_id = attr.gamma_id and art.art_type_id = ? and art.art_id = attr.art_id and attr.attr_type_id = ?";
 
    private final IdentityService identityService;
-   private final IOseeDatabaseService dbService;
    private final IResourceManager resourceManager;
 
-   public OrcsTypeLoaderCallable(IOseeDatabaseService dbService, IdentityService identityService, IResourceManager resourceManager) {
-      super();
+   public OrcsTypeLoaderCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, IdentityService identityService, IResourceManager resourceManager) {
+      super(logger, session, dbService);
       this.identityService = identityService;
-      this.dbService = dbService;
       this.resourceManager = resourceManager;
    }
 
@@ -71,7 +70,7 @@ public class OrcsTypeLoaderCallable extends CancellableCallable<IResource> {
 
       IOseeStatement chStmt = null;
       try {
-         chStmt = dbService.getStatement();
+         chStmt = getDatabaseService().getStatement();
 
          chStmt.runPreparedQuery(LOAD_OSEE_TYPE_DEF_URIS, CoreBranches.COMMON.getGuid(), TxChange.CURRENT.getValue(),
             TxChange.CURRENT.getValue(), artifactTypeId, attributeTypeId);

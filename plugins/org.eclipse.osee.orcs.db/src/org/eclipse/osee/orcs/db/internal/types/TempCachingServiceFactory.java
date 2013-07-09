@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.accessor.DatabaseBranchAccessor;
 import org.eclipse.osee.orcs.db.internal.accessor.DatabaseTransactionRecordAccessor;
 
@@ -50,10 +51,10 @@ public class TempCachingServiceFactory implements CacheServiceFactory {
    }
 
    @Override
-   public TempCachingService createCachingService(boolean needsPriming) {
+   public TempCachingService createCachingService(OrcsSession session, boolean needsPriming) {
       final TransactionCache txCache = new TransactionCache();
       final BranchCache branchCache =
-         new BranchCache(new DatabaseBranchAccessor(logger, executorAdmin, eventService, dbService, txCache,
+         new BranchCache(new DatabaseBranchAccessor(logger, session, executorAdmin, eventService, dbService, txCache,
             modelFactoryService.getBranchFactory()));
       txCache.setAccessor(new DatabaseTransactionRecordAccessor(dbService, branchCache,
          modelFactoryService.getTransactionFactory()));

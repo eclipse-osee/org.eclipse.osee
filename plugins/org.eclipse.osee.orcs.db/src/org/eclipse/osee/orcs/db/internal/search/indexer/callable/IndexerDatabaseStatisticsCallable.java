@@ -10,23 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.indexer.callable;
 
-import org.eclipse.osee.database.schema.DatabaseCallable;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.IndexerData;
+import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 
 /**
  * @author Roberto E. Escobar
  */
-public class IndexerDatabaseStatisticsCallable extends DatabaseCallable<IndexerData> {
+public class IndexerDatabaseStatisticsCallable extends AbstractDatastoreCallable<IndexerData> {
 
    private static final String SELECT_TOTAL_TAGS = "select count(1) from osee_search_tags";
 
    private static final String SELECT_TOTAL_QUERY_IDS_IN_QUEUE =
       "select count(DISTINCT query_id) from osee_tag_gamma_queue";
 
-   public IndexerDatabaseStatisticsCallable(Log logger, IOseeDatabaseService service) {
-      super(logger, service);
+   public IndexerDatabaseStatisticsCallable(Log logger, OrcsSession session, IOseeDatabaseService service) {
+      super(logger, session, service);
    }
 
    @Override

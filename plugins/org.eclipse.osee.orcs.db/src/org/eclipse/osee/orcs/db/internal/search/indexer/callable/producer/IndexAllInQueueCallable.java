@@ -11,27 +11,28 @@
 package org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer;
 
 import java.util.Collection;
-import org.eclipse.osee.database.schema.DatabaseCallable;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.TagQueueJoinQuery;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class IndexAllInQueueCallable extends DatabaseCallable<Integer> {
+public final class IndexAllInQueueCallable extends AbstractDatastoreCallable<Integer> {
 
    private final IndexingTaskConsumer consumer;
    private final IndexerCollector collector;
    private final AttributeTypes types;
    private Collection<Integer> queryIds;
 
-   public IndexAllInQueueCallable(Log logger, IOseeDatabaseService service, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector) {
-      super(logger, service);
+   public IndexAllInQueueCallable(Log logger, OrcsSession session, IOseeDatabaseService service, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector) {
+      super(logger, session, service);
       this.types = types;
       this.consumer = consumer;
       this.collector = collector;
@@ -44,7 +45,7 @@ public final class IndexAllInQueueCallable extends DatabaseCallable<Integer> {
 
       getLogger().info("Submitting - [%d] index tasks from queue", queryIds.size());
       for (Integer queryId : queryIds) {
-         consumer.submitTaskId(types, collector, queryId);
+         consumer.submitTaskId(getSession(), types, collector, queryId);
       }
       return queryIds.size();
    }

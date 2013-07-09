@@ -11,14 +11,15 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface QueryEngine {
 
-   QueryContext createCount(String sessionId, QueryData queryData) throws OseeCoreException;
+   QueryContext createCount(OrcsSession session, QueryData queryData) throws OseeCoreException;
 
-   QueryContext create(String sessionId, QueryData queryData) throws OseeCoreException;
+   QueryContext create(OrcsSession session, QueryData queryData) throws OseeCoreException;
 
 }

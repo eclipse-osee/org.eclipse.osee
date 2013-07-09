@@ -18,13 +18,13 @@ import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoader;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoaderFactory;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.search.QueryCollector;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -38,16 +38,16 @@ public class SearchMatchesCallable extends AbstractArtifactSearchCallable<Result
 
    private Collection<QueryPostProcessor> processors;
 
-   public SearchMatchesCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, ArtifactLoaderFactory objectLoader, SessionContext sessionContext, LoadLevel loadLevel, QueryData queryData, AttributeTypes types) {
-      super(logger, queryEngine, collector, objectLoader, sessionContext, loadLevel, queryData, types);
+   public SearchMatchesCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, ArtifactLoaderFactory objectLoader, OrcsSession session, LoadLevel loadLevel, QueryData queryData, AttributeTypes types) {
+      super(logger, queryEngine, collector, objectLoader, session, loadLevel, queryData, types);
    }
 
    @Override
    protected ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> innerCall() throws Exception {
-      QueryContext queryContext = queryEngine.create(sessionContext.getSessionId(), queryData);
+      QueryContext queryContext = queryEngine.create(session, queryData);
       checkForCancelled();
 
-      ArtifactLoader loader = objectLoader.fromQueryContext(sessionContext, queryContext);
+      ArtifactLoader loader = objectLoader.fromQueryContext(session, queryContext);
       loader.setLoadLevel(loadLevel);
       loader.includeDeleted(queryData.getOptions().areDeletedIncluded());
       loader.fromTransaction(queryData.getOptions().getFromTransaction());

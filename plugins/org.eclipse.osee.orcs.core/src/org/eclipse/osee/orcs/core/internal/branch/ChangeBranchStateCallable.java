@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.core.model.ReadableBranch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 
 public class ChangeBranchStateCallable extends AbstractBranchCallable<ReadableBranch> {
 
@@ -26,8 +26,8 @@ public class ChangeBranchStateCallable extends AbstractBranchCallable<ReadableBr
    private final IOseeBranch branchToken;
    private final BranchState branchState;
 
-   public ChangeBranchStateCallable(Log logger, SessionContext sessionContext, BranchDataStore branchStore, BranchCache cache, IOseeBranch branch, BranchState branchState) {
-      super(logger, sessionContext, branchStore);
+   public ChangeBranchStateCallable(Log logger, OrcsSession session, BranchDataStore branchStore, BranchCache cache, IOseeBranch branch, BranchState branchState) {
+      super(logger, session, branchStore);
       this.cache = cache;
       this.branchToken = branch;
       this.branchState = branchState;

@@ -14,11 +14,11 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoaderFactory;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.search.callable.LocalIdSearchCallable;
 import org.eclipse.osee.orcs.core.internal.search.callable.SearchCallable;
 import org.eclipse.osee.orcs.core.internal.search.callable.SearchCountCallable;
@@ -51,23 +51,21 @@ public class CallableQueryFactory {
       this.types = types;
    }
 
-   public CancellableCallable<Integer> createCount(SessionContext sessionContext, QueryData queryData) {
-      return new SearchCountCallable(logger, queryEngine, collector, objectLoader, sessionContext, LoadLevel.ATTRIBUTE,
+   public CancellableCallable<Integer> createCount(OrcsSession session, QueryData queryData) {
+      return new SearchCountCallable(logger, queryEngine, collector, objectLoader, session, LoadLevel.ATTRIBUTE,
          queryData, types);
    }
 
-   public CancellableCallable<ResultSet<ArtifactReadable>> createSearch(SessionContext sessionContext, QueryData queryData) {
-      return new SearchCallable(logger, queryEngine, collector, objectLoader, sessionContext, LoadLevel.FULL,
+   public CancellableCallable<ResultSet<ArtifactReadable>> createSearch(OrcsSession session, QueryData queryData) {
+      return new SearchCallable(logger, queryEngine, collector, objectLoader, session, LoadLevel.FULL,
          queryData, types);
    }
 
-   public CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches(SessionContext sessionContext, QueryData queryData) {
-      return new SearchMatchesCallable(logger, queryEngine, collector, objectLoader, sessionContext, LoadLevel.FULL,
-         queryData, types);
+   public CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches(OrcsSession session, QueryData queryData) {
+      return new SearchMatchesCallable(logger, queryEngine, collector, objectLoader, session, LoadLevel.FULL, queryData, types);
    }
 
-   public CancellableCallable<ResultSet<HasLocalId>> createLocalIdSearch(SessionContext sessionContext, QueryData queryData) {
-      return new LocalIdSearchCallable(logger, queryEngine, collector, objectLoader, dataLoader, sessionContext,
-         queryData, types);
+   public CancellableCallable<ResultSet<HasLocalId>> createLocalIdSearch(OrcsSession session, QueryData queryData) {
+      return new LocalIdSearchCallable(logger, queryEngine, collector, objectLoader, dataLoader, session, queryData, types);
    }
 }

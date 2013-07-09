@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.search.indexer;
 import java.util.Collection;
 import java.util.concurrent.Future;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
 /**
@@ -24,6 +25,6 @@ public interface IndexingTaskConsumer {
 
    int getWorkersInQueue();
 
-   Future<?> submitTaskId(AttributeTypes types, IndexerCollector collector, final int queryId) throws Exception;
+   Future<?> submitTaskId(OrcsSession session, AttributeTypes types, IndexerCollector collector, final int queryId) throws Exception;
 
 }

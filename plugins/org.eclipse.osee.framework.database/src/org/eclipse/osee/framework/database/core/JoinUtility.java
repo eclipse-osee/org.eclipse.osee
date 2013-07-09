@@ -46,6 +46,10 @@ public class JoinUtility {
       return new IdJoinQuery(createAccessor(service), getNewQueryId());
    }
 
+   public static IdJoinQuery createIdJoinQuery(IOseeDatabaseService service, String sessionId) {
+      return new IdJoinQuery(createAccessor(service, sessionId), getNewQueryId());
+   }
+
    public static ArtifactJoinQuery createArtifactJoinQuery(IOseeDatabaseService service) {
       return new ArtifactJoinQuery(createAccessor(service), getNewQueryId());
    }

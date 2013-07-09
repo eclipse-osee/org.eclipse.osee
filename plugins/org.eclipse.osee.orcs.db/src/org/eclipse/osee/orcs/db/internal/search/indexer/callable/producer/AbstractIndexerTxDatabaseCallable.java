@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Future;
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -24,13 +23,15 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.TagQueueJoinQuery;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractIndexerTxDatabaseCallable extends DatabaseTxCallable<List<Future<?>>> {
+public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastoreTxCallable<List<Future<?>>> {
 
    private final AttributeTypes types;
    private final IndexerCollector collector;
@@ -43,8 +44,8 @@ public abstract class AbstractIndexerTxDatabaseCallable extends DatabaseTxCallab
    private long totalGammas;
    private List<Future<?>> futures;
 
-   protected AbstractIndexerTxDatabaseCallable(Log logger, IOseeDatabaseService dbService, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, boolean isCacheAll, int cacheLimit) {
-      super(logger, dbService, "Indexing Database Transaction");
+   protected AbstractIndexerTxDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, boolean isCacheAll, int cacheLimit) {
+      super(logger, session, dbService, "Indexing Database Transaction");
       this.types = types;
       this.consumer = consumer;
       this.collector = collector;
@@ -93,7 +94,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends DatabaseTxCallab
       if (isOkToDispatch && !queryIds.isEmpty()) {
          for (int queryId : queryIds) {
             try {
-               Future<?> future = consumer.submitTaskId(types, collector, queryId);
+               Future<?> future = consumer.submitTaskId(getSession(), types, collector, queryId);
                futures.add(future);
             } catch (Exception ex) {
                OseeExceptions.wrapAndThrow(ex);

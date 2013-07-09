@@ -18,6 +18,7 @@ import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.ExecutionCallback;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
 /**
@@ -56,8 +57,8 @@ public class IndexingTaskConsumerImpl implements IndexingTaskConsumer {
 
    @Override
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public Future<?> submitTaskId(AttributeTypes types, IndexerCollector collector, final int queryId) throws Exception {
-      Callable<?> callable = factory.createIndexerTaskCallable(types, collector, queryId);
+   public Future<?> submitTaskId(OrcsSession session, AttributeTypes types, IndexerCollector collector, final int queryId) throws Exception {
+      Callable<?> callable = factory.createIndexerTaskCallable(session, types, collector, queryId);
       if (collector != null) {
          collector.onIndexTaskSubmit(queryId);
       }

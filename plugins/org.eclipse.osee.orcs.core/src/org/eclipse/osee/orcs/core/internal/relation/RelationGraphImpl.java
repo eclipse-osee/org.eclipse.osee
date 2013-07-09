@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoaderFactory;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.proxy.HasProxiedObject;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
@@ -39,13 +39,13 @@ import org.eclipse.osee.orcs.data.RelationsWriteable;
  */
 public class RelationGraphImpl implements GraphWriteable, Cloneable {
 
-   private final SessionContext sessionContext;
+   private final OrcsSession session;
    private final ArtifactLoaderFactory loader;
    private final RelationTypes relationTypeCache;
 
-   public RelationGraphImpl(SessionContext sessionContext, ArtifactLoaderFactory loader, RelationTypes relationTypeCache) {
+   public RelationGraphImpl(OrcsSession session, ArtifactLoaderFactory loader, RelationTypes relationTypeCache) {
       super();
-      this.sessionContext = sessionContext;
+      this.session = session;
       this.loader = loader;
       this.relationTypeCache = relationTypeCache;
    }
@@ -64,7 +64,7 @@ public class RelationGraphImpl implements GraphWriteable, Cloneable {
    }
 
    private List<ArtifactReadable> loadRelated(IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException {
-      return loader.fromBranchAndArtifactIds(sessionContext, branch, artifactIds).setLoadLevel(LoadLevel.FULL).load();
+      return loader.fromBranchAndArtifactIds(session, branch, artifactIds).setLoadLevel(LoadLevel.FULL).load();
    }
 
    private void loadRelatedArtifactIds(ArtifactReadable art, IRelationTypeSide relationTypeSide, Collection<Integer> results) {

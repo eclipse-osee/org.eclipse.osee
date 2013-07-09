@@ -12,10 +12,10 @@ package org.eclipse.osee.orcs.core.internal.search;
 
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoaderFactory;
 import org.eclipse.osee.orcs.core.internal.HasStatistics;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -39,17 +39,17 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
             attributeTypeCache);
    }
 
-   public QueryFactory createQueryFactory(SessionContext sessionContext) {
-      return new QueryFactoryImpl(sessionContext, criteriaFctry, callableQueryFactory);
+   public QueryFactory createQueryFactory(OrcsSession session) {
+      return new QueryFactoryImpl(session, criteriaFctry, callableQueryFactory);
    }
 
    @Override
-   public QueryStatistics getStatistics(SessionContext sessionContext) {
+   public QueryStatistics getStatistics(OrcsSession session) {
       return statistics.clone();
    }
 
    @Override
-   public void clearStatistics(SessionContext sessionContext) {
+   public void clearStatistics(OrcsSession session) {
       statistics.clear();
    }
 

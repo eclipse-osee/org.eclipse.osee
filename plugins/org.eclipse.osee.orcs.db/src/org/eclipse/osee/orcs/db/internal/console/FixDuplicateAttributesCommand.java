@@ -12,9 +12,7 @@ package org.eclipse.osee.orcs.db.internal.console;
 
 import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
-import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -27,32 +25,24 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 
 /**
  * @author Roberto E. Escobar
  */
-public class FixDuplicateAttributesCommand implements ConsoleCommand {
+public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleCommand {
 
-   private Log logger;
-   private IOseeDatabaseService dbService;
-   private IdentityService identityService;
    private OrcsApi orcsApi;
+   private IdentityService identityService;
 
-   public void setLogger(Log logger) {
-      this.logger = logger;
+   public void setOrcsApi(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
    }
 
    public void setIdentityService(IdentityService identityService) {
       this.identityService = identityService;
-   }
-
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
-   }
-
-   public void setOrcsApi(OrcsApi orcsApi) {
-      this.orcsApi = orcsApi;
    }
 
    @Override
@@ -72,10 +62,10 @@ public class FixDuplicateAttributesCommand implements ConsoleCommand {
 
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
-      return new DuplicateAttributesDatabaseTxCallable(console);
+      return new DuplicateAttributesDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(), console);
    }
 
-   private final class DuplicateAttributesDatabaseTxCallable extends DatabaseTxCallable<Object> {
+   private final class DuplicateAttributesDatabaseTxCallable extends AbstractDatastoreTxCallable<Object> {
       private static final String SELECT_ATTRIBUTES =
          "select att1.gamma_id as gamma1, att2.gamma_id as gamma2 from osee_join_id oji, osee_attribute att1, osee_attribute att2 where oji.query_id = ? AND oji.id = att1.attr_type_id and att1.art_id = att2.art_id and att1.attr_type_id = att2.attr_type_id and att1.attr_id <> att2.attr_id";
       private static final String SELECT_DUPLICATES =
@@ -83,8 +73,8 @@ public class FixDuplicateAttributesCommand implements ConsoleCommand {
 
       private final Console console;
 
-      public DuplicateAttributesDatabaseTxCallable(Console console) {
-         super(logger, dbService, "Duplicate Attributes");
+      public DuplicateAttributesDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, Console console) {
+         super(logger, session, databaseService, "Duplicate Attributes");
          this.console = console;
       }
 

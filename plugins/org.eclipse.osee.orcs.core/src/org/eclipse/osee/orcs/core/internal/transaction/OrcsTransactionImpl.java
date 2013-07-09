@@ -23,11 +23,11 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
@@ -42,7 +42,7 @@ public class OrcsTransactionImpl implements OrcsTransaction {
 
    @SuppressWarnings("unused")
    private final Log logger;
-   private final SessionContext sessionContext;
+   private final OrcsSession session;
    private final BranchDataStore dataStore;
    private final ArtifactProxyFactory factory;
 
@@ -54,10 +54,10 @@ public class OrcsTransactionImpl implements OrcsTransaction {
 
    private volatile boolean isCommitInProgress;
 
-   public OrcsTransactionImpl(Log logger, SessionContext sessionContext, BranchDataStore dataStore, ArtifactProxyFactory factory, TxDataManager manager, IOseeBranch branch) {
+   public OrcsTransactionImpl(Log logger, OrcsSession session, BranchDataStore dataStore, ArtifactProxyFactory factory, TxDataManager manager, IOseeBranch branch) {
       super();
       this.logger = logger;
-      this.sessionContext = sessionContext;
+      this.session = session;
       this.dataStore = dataStore;
       this.factory = factory;
       this.manager = manager;
@@ -109,7 +109,7 @@ public class OrcsTransactionImpl implements OrcsTransaction {
    private Callable<TransactionResult> createCommit() throws OseeCoreException {
       List<ArtifactTransactionData> changes = manager.getChanges();
       TransactionData data = new TransactionDataImpl(getBranch(), getAuthor(), getComment(), changes);
-      return dataStore.commitTransaction(sessionContext.getSessionId(), data);
+      return dataStore.commitTransaction(session, data);
    }
 
    @Override

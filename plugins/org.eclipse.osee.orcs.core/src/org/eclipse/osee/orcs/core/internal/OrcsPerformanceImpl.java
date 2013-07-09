@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal;
 
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsPerformance;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.indexer.IndexerModule;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.statistics.IndexerStatistics;
@@ -24,10 +25,10 @@ public class OrcsPerformanceImpl implements OrcsPerformance {
 
    private final QueryModule queryModule;
    private final IndexerModule indexerModule;
-   private final SessionContext sessionContext;
+   private final OrcsSession session;
 
-   public OrcsPerformanceImpl(Log logger, SessionContext sessionContext, QueryModule queryModule, IndexerModule indexerModule) {
-      this.sessionContext = sessionContext;
+   public OrcsPerformanceImpl(Log logger, OrcsSession session, QueryModule queryModule, IndexerModule indexerModule) {
+      this.session = session;
       this.queryModule = queryModule;
       this.indexerModule = indexerModule;
    }
@@ -38,22 +39,22 @@ public class OrcsPerformanceImpl implements OrcsPerformance {
 
    @Override
    public QueryStatistics getQueryStatistics() {
-      return queryModule.getStatistics(sessionContext);
+      return queryModule.getStatistics(session);
    }
 
    @Override
    public IndexerStatistics getIndexerStatistics() {
-      return indexerModule.getStatistics(sessionContext);
+      return indexerModule.getStatistics(session);
    }
 
    @Override
    public void clearQueryStatistics() {
-      queryModule.clearStatistics(sessionContext);
+      queryModule.clearStatistics(session);
    }
 
    @Override
    public void clearIndexerStatistics() {
-      indexerModule.clearStatistics(sessionContext);
+      indexerModule.clearStatistics(session);
    }
 
 }

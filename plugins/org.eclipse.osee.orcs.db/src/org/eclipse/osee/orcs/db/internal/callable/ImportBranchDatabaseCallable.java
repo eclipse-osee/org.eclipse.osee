@@ -22,8 +22,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.database.schema.DatabaseCallable;
-import org.eclipse.osee.database.schema.DatabaseTxCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -42,6 +40,7 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ImportOptions;
 import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.IOseeExchangeDataProvider;
@@ -65,7 +64,7 @@ import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 /**
  * @author Roberto E. Escobar
  */
-public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
+public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI> {
 
    private final SystemPreferences preferences;
 
@@ -88,8 +87,8 @@ public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
    private ExchangeDataProcessor exchangeDataProcessor;
    private int[] branchesToImport;
 
-   public ImportBranchDatabaseCallable(Log logger, IOseeDatabaseService dbService, SystemPreferences preferences, IResourceManager resourceManager, IdentityService identityService, OrcsTypes orcsTypes, URI exchangeFile, List<IOseeBranch> selectedBranches, PropertyStore options) {
-      super(logger, dbService);
+   public ImportBranchDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, SystemPreferences preferences, IResourceManager resourceManager, IdentityService identityService, OrcsTypes orcsTypes, URI exchangeFile, List<IOseeBranch> selectedBranches, PropertyStore options) {
+      super(logger, session, dbService);
       this.preferences = preferences;
       this.resourceManager = resourceManager;
       this.identityService = identityService;
@@ -117,7 +116,8 @@ public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
          loadTypeModel(modelUri);
 
          ImportBranchesTx importBranchesTx =
-            new ImportBranchesTx(getLogger(), getDatabaseService(), savePointManager, manifestHandler.getBranchFile());
+            new ImportBranchesTx(getLogger(), getSession(), getDatabaseService(), savePointManager,
+               manifestHandler.getBranchFile());
          callAndCheckForCancel(importBranchesTx);
 
          savePointManager.setCurrentSetPointId("init_relational_objects");
@@ -268,7 +268,8 @@ public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
 
    private void cleanup() throws Exception {
       try {
-         CommitImportSavePointsTx callable = new CommitImportSavePointsTx(getLogger(), getDatabaseService());
+         CommitImportSavePointsTx callable =
+            new CommitImportSavePointsTx(getLogger(), getSession(), getDatabaseService());
          callAndCheckForCancel(callable);
       } catch (Exception ex) {
          getLogger().warn(ex, "Error during save point save - you will not be able to reimport from last source again.");
@@ -323,12 +324,12 @@ public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
       orcsTypes.loadTypes(typesResource, true).call();
       getLogger().info("Type Model Import complete");
    }
-   private final class CommitImportSavePointsTx extends DatabaseTxCallable<Boolean> {
+   private final class CommitImportSavePointsTx extends AbstractDatastoreTxCallable<Boolean> {
       private static final String INSERT_INTO_IMPORT_SOURCES =
          "INSERT INTO osee_import_source (import_id, db_source_guid, source_export_date, date_imported) VALUES (?, ?, ?, ?)";
 
-      public CommitImportSavePointsTx(Log logger, IOseeDatabaseService dbService) {
-         super(logger, dbService, "Commit Import Save Points Tx");
+      public CommitImportSavePointsTx(Log logger, OrcsSession session, IOseeDatabaseService dbService) {
+         super(logger, session, dbService, "Commit Import Save Points Tx");
       }
 
       @SuppressWarnings("unchecked")
@@ -362,15 +363,15 @@ public class ImportBranchDatabaseCallable extends DatabaseCallable<URI> {
       }
    }
 
-   private final class ImportBranchesTx extends DatabaseTxCallable<Object> {
+   private final class ImportBranchesTx extends AbstractDatastoreTxCallable<Object> {
 
       private final SavePointManager savePointManager;
       private final BranchDataSaxHandler branchHandler;
       private final IExportItem branchExportItem;
       private int[] branchesStored;
 
-      public ImportBranchesTx(Log logger, IOseeDatabaseService dbService, SavePointManager savePointManager, IExportItem branchExportItem) {
-         super(logger, dbService, "Import Branch Tx");
+      public ImportBranchesTx(Log logger, OrcsSession session, IOseeDatabaseService dbService, SavePointManager savePointManager, IExportItem branchExportItem) {
+         super(logger, session, dbService, "Import Branch Tx");
          this.savePointManager = savePointManager;
          this.branchExportItem = branchExportItem;
          branchHandler = BranchDataSaxHandler.createWithCacheAll(logger, dbService);

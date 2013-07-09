@@ -15,8 +15,8 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 
 /**
  * @author Roberto E. Escobar
@@ -24,14 +24,14 @@ import org.eclipse.osee.orcs.core.internal.SessionContext;
 public abstract class AbstractBranchCallable<T> extends CancellableCallable<T> {
 
    private final Log logger;
-   private final SessionContext sessionContext;
+   private final OrcsSession session;
    private final BranchDataStore branchStore;
    private Callable<?> innerWorker;
 
-   public AbstractBranchCallable(Log logger, SessionContext sessionContext, BranchDataStore branchStore) {
+   public AbstractBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore) {
       super();
       this.logger = logger;
-      this.sessionContext = sessionContext;
+      this.session = session;
       this.branchStore = branchStore;
    }
 
@@ -39,8 +39,8 @@ public abstract class AbstractBranchCallable<T> extends CancellableCallable<T> {
       return logger;
    }
 
-   protected SessionContext getSessionContext() {
-      return sessionContext;
+   protected OrcsSession getSession() {
+      return session;
    }
 
    protected BranchDataStore getBranchStore() {
@@ -55,7 +55,7 @@ public abstract class AbstractBranchCallable<T> extends CancellableCallable<T> {
       }
       T result;
       try {
-         Conditions.checkNotNull(sessionContext, "sessionContext");
+         Conditions.checkNotNull(session, "session");
          Conditions.checkNotNull(branchStore, "branchDataStore");
          result = innerCall();
       } finally {

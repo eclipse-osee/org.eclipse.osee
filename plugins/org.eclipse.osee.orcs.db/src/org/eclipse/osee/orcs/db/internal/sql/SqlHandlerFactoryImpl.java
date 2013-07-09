@@ -52,6 +52,7 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
       this.tagProcessor = tagProcessor;
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public <O extends Options> List<SqlHandler<?, O>> createHandlers(CriteriaSet criteriaSet) throws OseeCoreException {
       List<SqlHandler<?, O>> handlers = new ArrayList<SqlHandler<?, O>>();

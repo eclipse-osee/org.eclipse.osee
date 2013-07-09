@@ -40,8 +40,8 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
-import org.eclipse.osee.orcs.core.internal.SessionContext;
 import org.eclipse.osee.orcs.core.internal.types.impl.OrcsTypesImpl;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
@@ -100,7 +100,7 @@ public class OrcsTypesTest {
    @Mock private Log logger;
    @Mock private OrcsTypesDataStore dataStore;
    @Mock private BranchHierarchyProvider hierarchyProvider;
-   @Mock private SessionContext session;
+   @Mock private OrcsSession session;
    //@formatter:on
 
    private OrcsTypes orcsTypes;
@@ -112,6 +112,8 @@ public class OrcsTypesTest {
    public void setUp() throws Exception {
       MockitoAnnotations.initMocks(this);
 
+      when(session.getGuid()).thenReturn(SESSION_ID);
+
       module = new OrcsTypesModule(logger, dataStore, hierarchyProvider);
       module.start(session);
 
@@ -121,9 +123,7 @@ public class OrcsTypesTest {
       URI uri = new URI("osee:/types.test.data.osee");
 
       IResource resource = new MultiResource(uri, resources);
-      when(dataStore.getOrcsTypesLoader(SESSION_ID)).thenReturn(Callables.returning(resource));
-
-      when(session.getSessionId()).thenReturn(SESSION_ID);
+      when(dataStore.getOrcsTypesLoader(session)).thenReturn(Callables.returning(resource));
 
       resources.add(getResource(TEST_TYPE_MODEL));
 
