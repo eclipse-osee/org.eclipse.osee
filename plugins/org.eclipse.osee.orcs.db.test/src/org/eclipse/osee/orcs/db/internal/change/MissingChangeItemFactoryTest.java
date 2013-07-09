@@ -70,6 +70,7 @@ public class MissingChangeItemFactoryTest {
    @Mock private TransactionRecord sourceTx;
    @Mock private TransactionRecord destTx;
    @Mock private DataModuleFactory dataModuleFactory;
+   @Mock private HasCancellation cancellation;
    // @formatter:on
 
    private MissingChangeItemFactory changeItemFactory;
@@ -163,7 +164,8 @@ public class MissingChangeItemFactoryTest {
          }
       }).when(destDataLoader).load(any(HasCancellation.class), any(LoadDataHandler.class));
 
-      Collection<ChangeItem> results = changeItemFactory.createMissingChanges(changes, sourceTx, destTx, null);
+      Collection<ChangeItem> results =
+         changeItemFactory.createMissingChanges(cancellation, changes, sourceTx, destTx, null);
       if (expectedMissingChanges == null) {
          Assert.assertTrue(results.isEmpty());
       } else {

@@ -92,7 +92,7 @@ public class CommitBranchDatabaseCallable extends DatabaseCallable<TransactionRe
       TransactionRecord sourceTx = getHeadTx(source);
       TransactionRecord destTx = getHeadTx(destination);
 
-      changes.addAll(missingChangeItemFactory.createMissingChanges(changes, sourceTx, destTx, sessionId));
+      changes.addAll(missingChangeItemFactory.createMissingChanges(this, changes, sourceTx, destTx, sessionId));
 
       Callable<List<ChangeItem>> computeChanges = new ComputeNetChangeCallable(changes);
       return callAndCheckForCancel(computeChanges);

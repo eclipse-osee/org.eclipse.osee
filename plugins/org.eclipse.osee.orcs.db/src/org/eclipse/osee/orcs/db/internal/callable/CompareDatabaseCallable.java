@@ -69,7 +69,7 @@ public class CompareDatabaseCallable extends DatabaseCallable<List<ChangeItem>> 
       }
       List<ChangeItem> changes = callAndCheckForCancel(callable);
 
-      changes.addAll(missingChangeItemFactory.createMissingChanges(changes, sourceTx, destinationTx, sessionId));
+      changes.addAll(missingChangeItemFactory.createMissingChanges(this, changes, sourceTx, destinationTx, sessionId));
       Callable<List<ChangeItem>> computeChanges = new ComputeNetChangeCallable(changes);
       changes = callAndCheckForCancel(computeChanges);
 
