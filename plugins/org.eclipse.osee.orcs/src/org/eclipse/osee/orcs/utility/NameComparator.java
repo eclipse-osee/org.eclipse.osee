@@ -20,7 +20,7 @@ public class NameComparator implements Comparator<Named> {
    private static final Pattern numberPattern = Pattern.compile("[+-]?\\d+");
 
    private final Matcher numberMatcher = numberPattern.matcher("");
-   private SortOrder orderType = SortOrder.ASCENDING;
+   private final SortOrder orderType;
 
    public NameComparator(SortOrder orderType) {
       this.orderType = orderType;
@@ -36,16 +36,12 @@ public class NameComparator implements Comparator<Named> {
       String name1 = getName(o1);
       String name2 = getName(o2);
 
-      numberMatcher.reset(name1);
-      if (numberMatcher.matches()) {
-         numberMatcher.reset(name2);
-         if (numberMatcher.matches()) {
-            if ((name1.length() < NUMBER_STRING_LIMIT) && (name2.length() < NUMBER_STRING_LIMIT)) {
-               if (orderType.isAscending()) {
-                  return Long.valueOf(name1).compareTo(Long.valueOf(name2));
-               } else {
-                  return Long.valueOf(name2).compareTo(Long.valueOf(name1));
-               }
+      if (areNumbers(name1, name2)) {
+         if ((name1.length() < NUMBER_STRING_LIMIT) && (name2.length() < NUMBER_STRING_LIMIT)) {
+            if (orderType.isAscending()) {
+               return Long.valueOf(name1).compareTo(Long.valueOf(name2));
+            } else {
+               return Long.valueOf(name2).compareTo(Long.valueOf(name1));
             }
          }
       }
@@ -54,5 +50,19 @@ public class NameComparator implements Comparator<Named> {
       } else {
          return name2.compareTo(name1);
       }
+   }
+
+   private boolean areNumbers(String o1, String o2) {
+      boolean result = false;
+      if (o1 != null && o2 != null) {
+         numberMatcher.reset(o1);
+         if (numberMatcher.matches()) {
+            numberMatcher.reset(o2);
+            if (numberMatcher.matches()) {
+               result = true;
+            }
+         }
+      }
+      return result;
    }
 }
