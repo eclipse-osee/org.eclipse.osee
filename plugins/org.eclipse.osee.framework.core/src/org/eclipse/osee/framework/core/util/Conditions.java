@@ -123,7 +123,7 @@ public final class Conditions {
    }
 
    public static void checkNotNullOrEmpty(String object, String objectName, String details, Object... data) throws OseeCoreException {
-      checkNotNull(object, objectName);
+      checkNotNull(object, objectName, details, data);
       if (object.length() == 0) {
          String message = String.format(details, data);
          throw new OseeArgumentException("%s cannot be empty - %s", objectName, message);
