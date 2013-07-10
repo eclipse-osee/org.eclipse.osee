@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -54,6 +55,15 @@ public class UniqueNameRule extends AbstractValidationRule {
          for (Artifact art : arts) {
             if (art.getName().equalsIgnoreCase(artToValidate.getName()) && art.getGuid() != artToValidate.getGuid() && !hasGuidPairAlreadyBeenEvaluated(
                art.getGuid(), artToValidate.getGuid())) {
+               /**************************************************************************
+                * Special case: Allow duplicate names of artifacts if<br/>
+                * 1) Artifact name is numeric <br/>
+                * 2) Artifact type is different<br/>
+                */
+               if (Strings.isNumeric(artToValidate.getName()) && !artToValidate.getArtifactType().equals(
+                  art.getArtifactType())) {
+                  continue;
+               }
                errorMessages.add(ValidationReportOperation.getRequirementHyperlink(artToValidate) + " and " + ValidationReportOperation.getRequirementHyperlink(art) + " have same name value:\"" + artToValidate.getName() + " \"");
                validationPassed = false;
                addGuidPair(art.getGuid(), artToValidate.getGuid());
