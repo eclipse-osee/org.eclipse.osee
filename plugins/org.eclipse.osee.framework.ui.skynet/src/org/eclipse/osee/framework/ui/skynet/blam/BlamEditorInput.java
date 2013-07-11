@@ -11,8 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -21,8 +19,6 @@ import org.eclipse.ui.IPersistableElement;
  * @author Donald G. Dunne
  */
 public class BlamEditorInput implements IEditorInput {
-
-   private final static String titleEnd = " BLAM";
 
    private final AbstractBlam blamOperation;
 
@@ -40,16 +36,16 @@ public class BlamEditorInput implements IEditorInput {
 
    @Override
    public String getName() {
-      return blamOperation.getName().toLowerCase().contains(titleEnd.toLowerCase().trim()) ? blamOperation.getName() : blamOperation.getName() + titleEnd;
+      return blamOperation.getTitle();
    }
 
    public Image getImage() {
-      return ImageManager.getImage(FrameworkImage.BLAM);
+      return blamOperation.getImage();
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.BLAM);
+      return blamOperation.getImageDescriptor();
    }
 
    public AbstractBlam getBlamOperation() {

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -78,8 +79,8 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
    }
 
    public void executeBlam() {
-      getEditorInput().getBlamOperation().execute(overviewPage.getReporter(), getBlamVariableMap(),
-         new BlamEditorExecutionAdapter());
+      OperationLogger reporter = overviewPage.getReporter();
+      getEditorInput().getBlamOperation().execute(reporter, getBlamVariableMap(), new BlamEditorExecutionAdapter());
    }
 
    public static void edit(final BlamEditorInput blamEditorInput) {
@@ -149,5 +150,9 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
       // set the context (org.eclipse.ui.contexts) to osee to make the osee hotkeys available
       IContextService contextService = (IContextService) getSite().getService(IContextService.class);
       contextService.activateContext("org.eclipse.osee.contexts.window");
+   }
+
+   public String getButtonText() {
+      return getEditorInput().getBlamOperation().getRunText();
    }
 }

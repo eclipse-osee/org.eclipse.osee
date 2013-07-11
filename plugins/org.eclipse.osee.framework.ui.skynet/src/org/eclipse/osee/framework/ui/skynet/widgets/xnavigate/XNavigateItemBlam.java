@@ -22,20 +22,31 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  * @author Donald G. Dunne
  */
 public class XNavigateItemBlam extends XNavigateItem {
-   private final AbstractBlam blamOperation;
+   private final IBlamProvider blamProvider;
 
    public XNavigateItemBlam(XNavigateItem parent, AbstractBlam blamOperation) {
       this(parent, blamOperation, FrameworkImage.BLAM);
    }
 
-   public XNavigateItemBlam(XNavigateItem parent, AbstractBlam blamOperation, KeyedImage keyedImage) {
+   public XNavigateItemBlam(XNavigateItem parent, final AbstractBlam blamOperation, KeyedImage keyedImage) {
       super(parent, blamOperation.getName(), keyedImage);
-      this.blamOperation = blamOperation;
+      blamProvider = new IBlamProvider() {
+
+         @Override
+         public AbstractBlam getBlam() {
+            return blamOperation;
+         }
+      };
+   }
+
+   public XNavigateItemBlam(XNavigateItem parent, IBlamProvider blamProvider, String name, KeyedImage keyedImage) {
+      super(parent, name, keyedImage);
+      this.blamProvider = blamProvider;
    }
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       // Need a new copy of the BLAM operation so widgets don't collide
-      BlamEditor.edit(blamOperation);
+      BlamEditor.edit(blamProvider.getBlam());
    }
 }

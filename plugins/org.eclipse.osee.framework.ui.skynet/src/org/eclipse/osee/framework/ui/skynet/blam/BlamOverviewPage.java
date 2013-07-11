@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -36,7 +37,7 @@ public class BlamOverviewPage extends FormPage {
    private BlamInputSection inputSection;
 
    public BlamOverviewPage(BlamEditor editor) {
-      super(editor, "overview", "BLAM Workflow");
+      super(editor, "overview", editor.getEditorInput().getBlamOperation().getTabTitle());
    }
 
    @Override
@@ -70,17 +71,20 @@ public class BlamOverviewPage extends FormPage {
 
       int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE;
 
-      managedForm.addPart(new BlamUsageSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
-         managedForm.getToolkit(), sectionStyle));
+      if (getEditorInput().getBlamOperation().showUsageSection()) {
+         managedForm.addPart(new BlamUsageSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
+            managedForm.getToolkit(), sectionStyle));
+      }
       inputSection =
          new BlamInputSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
             managedForm.getToolkit(), sectionStyle);
-      outputSection =
-         new BlamOutputSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
-            managedForm.getToolkit(), sectionStyle, getEditor().getActionBarContributor().getExecuteBlamAction());
-
       managedForm.addPart(inputSection);
-      managedForm.addPart(outputSection);
+      if (getEditorInput().getBlamOperation().showExecuteSection()) {
+         outputSection =
+            new BlamOutputSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
+               managedForm.getToolkit(), sectionStyle, getEditor().getActionBarContributor().getExecuteBlamAction());
+         managedForm.addPart(outputSection);
+      }
 
       managedForm.refresh();
       form.layout();
@@ -116,15 +120,25 @@ public class BlamOverviewPage extends FormPage {
    }
 
    public void appendOutput(final String additionalOutput) {
-      outputSection.appendText(additionalOutput);
+      if (outputSection != null) {
+         outputSection.appendText(additionalOutput);
+      }
    }
 
    public void setOuputText(final String text) {
-      outputSection.setText(text);
+      if (outputSection != null) {
+         outputSection.setText(text);
+      }
    }
 
    public OperationLogger getReporter() {
-      return outputSection.getOutput();
+      OperationLogger logger = null;
+      if (outputSection != null) {
+         logger = outputSection.getOutput();
+      } else {
+         logger = NullOperationLogger.getSingleton();
+      }
+      return logger;
    }
 
    public VariableMap getInput() {

@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -33,13 +34,19 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.osgi.framework.Bundle;
 import org.xml.sax.SAXException;
@@ -51,7 +58,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
 
    private static final String DEFAULT_DESCRIPTION =
       "Select parameters below and click the play button at the top right.";
-
+   private final static String titleEnd = " BLAM";
    private final Pattern capitalLetter = Pattern.compile("[A-Z]+[a-z]*");
 
    public enum BlamUiSource {
@@ -197,6 +204,39 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    @Override
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       // provided for subclass implementation
+   }
+
+   public String getRunText() {
+      return "Run BLAM in Job";
+   }
+
+   public Image getImage() {
+      return ImageManager.getImage(FrameworkImage.BLAM);
+   }
+
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(FrameworkImage.BLAM);
+   }
+
+   public String getTitle() {
+      return getName().toLowerCase().contains(titleEnd.toLowerCase().trim()) ? getName() : getName() + titleEnd;
+   }
+
+   @SuppressWarnings("unused")
+   public void addWidgets(IManagedForm managedForm, FormEditor editor, Composite sectionBody) throws OseeCoreException {
+      // provided for subclass implementation
+   }
+
+   public boolean showUsageSection() {
+      return true;
+   }
+
+   public boolean showExecuteSection() {
+      return true;
+   }
+
+   public String getTabTitle() {
+      return "BLAM Workflow";
    }
 
 }

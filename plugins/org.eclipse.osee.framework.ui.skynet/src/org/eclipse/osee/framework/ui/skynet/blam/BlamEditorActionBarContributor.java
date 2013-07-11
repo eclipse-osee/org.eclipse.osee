@@ -46,9 +46,9 @@ public class BlamEditorActionBarContributor implements IActionContributor {
 
    private final class ExecuteBlamAction extends Action {
       public ExecuteBlamAction() {
-         super("Run BLAM in Job", IAction.AS_PUSH_BUTTON);
+         super(editor.getButtonText(), IAction.AS_PUSH_BUTTON);
          setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.RUN_EXC));
-         setToolTipText("Executes the BLAM Operation");
+         setToolTipText(editor.getButtonText());
       }
 
       @Override
@@ -60,4 +60,5 @@ public class BlamEditorActionBarContributor implements IActionContributor {
          }
       }
    }
+
 }

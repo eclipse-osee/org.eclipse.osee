@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.sections;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -21,8 +22,8 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -78,6 +79,12 @@ public class BlamInputSection extends BaseBlamSection {
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
       createWidgets(sectionBody);
+
+      try {
+         getAbstractBlam().addWidgets(getManagedForm(), getEditor(), sectionBody);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
 
       section.setClient(sectionBody);
       toolkit.paintBordersFor(section);
