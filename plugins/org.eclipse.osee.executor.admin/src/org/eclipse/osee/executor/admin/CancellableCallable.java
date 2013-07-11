@@ -18,25 +18,31 @@ import java.util.concurrent.CancellationException;
  */
 public abstract class CancellableCallable<T> implements Callable<T>, HasCancellation {
 
-   private volatile boolean cancelled;
+   private volatile boolean cancelled = false;
 
    protected CancellableCallable() {
-      cancelled = false;
+      // do nothing
    }
 
    @Override
    public boolean isCancelled() {
+      cancelled = cancelled || Thread.currentThread().isInterrupted();
       return cancelled;
    }
 
    @Override
    public void setCancel(boolean isCancelled) {
-      cancelled = isCancelled;
+      if (isCancelled) {
+         cancelled = isCancelled;
+         Thread.currentThread().interrupt();
+      }
    }
 
    @Override
    public void checkForCancelled() throws CancellationException {
       if (isCancelled()) {
+         // clear interrupted flag before throwing exception
+         Thread.interrupted();
          throw new CancellationException();
       }
    }

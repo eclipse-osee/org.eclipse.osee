@@ -45,6 +45,7 @@ import org.eclipse.osee.orcs.db.internal.search.handlers.RelatedToSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.RelationTypeExistsSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerCallableFactory;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerCallableFactoryImpl;
+import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerConstants;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumerImpl;
 import org.eclipse.osee.orcs.db.internal.search.indexer.QueryEngineIndexerImpl;
@@ -70,28 +71,33 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactoryImpl;
 public class QueryModuleFactory {
 
    private final Log logger;
+   private final ExecutorAdmin executorAdmin;
    private QueryEngine queryEngine;
    private QueryEngineIndexer queryIndexer;
 
-   public QueryModuleFactory(Log logger) {
+   public QueryModuleFactory(Log logger, ExecutorAdmin executorAdmin) {
       super();
       this.logger = logger;
+      this.executorAdmin = executorAdmin;
    }
 
-   public void start(ExecutorAdmin executorAdmin, IOseeDatabaseService dbService, IdentityService idService, SqlProvider sqlProvider, IResourceManager resourceManager, BranchCache branchCache) {
+   public void start(IOseeDatabaseService dbService, IdentityService idService, SqlProvider sqlProvider, IResourceManager resourceManager, BranchCache branchCache) throws Exception {
       TaggingEngine taggingEngine = createTaggingEngine();
       DataPostProcessorFactory<CriteriaAttributeKeywords> postProcessor =
-         createAttributeKeywordPostProcessor(executorAdmin, taggingEngine);
+         createAttributeKeywordPostProcessor(taggingEngine);
       SqlHandlerFactory handlerFactory =
          createHandlerFactory(idService, postProcessor, taggingEngine.getTagProcessor());
 
+      executorAdmin.createFixedPoolExecutor(IndexerConstants.INDEXING_CONSUMER_EXECUTOR_ID, 4);
+
       queryEngine = createQueryEngine(dbService, handlerFactory, sqlProvider, branchCache);
-      queryIndexer = createQueryEngineIndexer(dbService, idService, executorAdmin, taggingEngine, resourceManager);
+      queryIndexer = createQueryEngineIndexer(dbService, idService, taggingEngine, resourceManager);
    }
 
-   public void stop() {
+   public void stop() throws Exception {
       queryIndexer = null;
       queryEngine = null;
+      executorAdmin.shutdown(IndexerConstants.INDEXING_CONSUMER_EXECUTOR_ID);
    }
 
    public QueryEngine getQueryEngine() {
@@ -117,7 +123,7 @@ public class QueryModuleFactory {
       return new QueryEngineImpl(logger, dbService, sqlProvider, branchCache, handlerFactory);
    }
 
-   protected QueryEngineIndexer createQueryEngineIndexer(IOseeDatabaseService dbService, IdentityService identityService, ExecutorAdmin executorAdmin, TaggingEngine taggingEngine, IResourceManager resourceManager) {
+   protected QueryEngineIndexer createQueryEngineIndexer(IOseeDatabaseService dbService, IdentityService identityService, TaggingEngine taggingEngine, IResourceManager resourceManager) {
       QueueToAttributeLoader attributeLoader =
          new QueueToAttributeLoaderImpl(logger, dbService, identityService, resourceManager);
       IndexerCallableFactory callableFactory =
@@ -150,7 +156,7 @@ public class QueryModuleFactory {
       return new SqlHandlerFactoryImpl(logger, identityService, tagProcessor, handleMap, factoryMap);
    }
 
-   protected DataPostProcessorFactory<CriteriaAttributeKeywords> createAttributeKeywordPostProcessor(ExecutorAdmin executorAdmin, TaggingEngine taggingEngine) {
+   protected DataPostProcessorFactory<CriteriaAttributeKeywords> createAttributeKeywordPostProcessor(TaggingEngine taggingEngine) {
       return new DataPostProcessorFactoryImpl(logger, taggingEngine, executorAdmin);
    }
 }

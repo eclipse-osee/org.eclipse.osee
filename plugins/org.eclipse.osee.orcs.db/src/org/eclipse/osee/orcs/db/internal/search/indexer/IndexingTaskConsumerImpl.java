@@ -36,11 +36,6 @@ public class IndexingTaskConsumerImpl implements IndexingTaskConsumer {
    }
 
    @Override
-   public int cancelIndexer() throws Exception {
-      return executorAdmin.cancelTasks(IndexerConstants.INDEXING_CONSUMER_EXECUTOR_ID);
-   }
-
-   @Override
    public int cancelTaskId(Collection<Integer> taskIds) {
       int toReturn = 0;
       for (int item : taskIds) {

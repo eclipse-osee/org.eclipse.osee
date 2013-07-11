@@ -24,6 +24,10 @@ public interface ExecutorAdmin {
    //
    //   <T> Callable<T> addCallback(Callable<T> callable, ExecutionCallback<T> callback);
 
+   void createFixedPoolExecutor(String id, int poolSize) throws Exception;
+
+   void createCachedPoolExecutor(String id) throws Exception;
+
    <T> Future<T> schedule(Callable<T> callable, ExecutionCallback<T> callback) throws Exception;
 
    <T> Future<T> schedule(String id, Callable<T> callable, ExecutionCallback<T> callback) throws Exception;
@@ -32,5 +36,6 @@ public interface ExecutorAdmin {
 
    <T> Future<T> schedule(String id, Callable<T> callable) throws Exception;
 
-   int cancelTasks(String id) throws Exception;
+   void shutdown(String id) throws Exception;
+
 }

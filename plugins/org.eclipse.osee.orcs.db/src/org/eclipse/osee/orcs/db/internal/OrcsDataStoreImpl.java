@@ -117,7 +117,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
       this.eventService = eventService;
    }
 
-   public void start(BundleContext context) {
+   public void start(BundleContext context) throws Exception {
 
       TempCachingServiceFactory modelingService =
          new TempCachingServiceFactory(logger, dbService, executorAdmin, modelFactory, eventService);
@@ -139,12 +139,11 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
 
       dataStoreAdmin = new DataStoreAdminImpl(logger, dbService, identityService, branchStore, preferences);
 
-      queryModule = new QueryModuleFactory(logger);
-      queryModule.start(executorAdmin, dbService, identityService, sqlProvider, resourceManager,
-         cacheService.getBranchCache());
+      queryModule = new QueryModuleFactory(logger, executorAdmin);
+      queryModule.start(dbService, identityService, sqlProvider, resourceManager, cacheService.getBranchCache());
    }
 
-   public void stop() {
+   public void stop() throws Exception {
       queryModule.stop();
       queryModule = null;
 

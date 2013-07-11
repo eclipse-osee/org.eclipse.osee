@@ -10,27 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.executor.admin.internal;
 
-import java.lang.Thread.State;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ExecutorThreadFactory implements ThreadFactory {
 
-   private final List<WeakReference<Thread>> threads;
    private final String threadName;
    private final int priority;
+   private final AtomicInteger threadCount = new AtomicInteger(0);
 
    public ExecutorThreadFactory(String threadName, int priority) {
       this.threadName = threadName;
-      this.threads = new CopyOnWriteArrayList<WeakReference<Thread>>();
       this.priority = priority;
    }
 
@@ -42,7 +35,7 @@ public class ExecutorThreadFactory implements ThreadFactory {
    public Thread newThread(Runnable runnable) {
       Thread thread = new Thread(runnable);
 
-      String name = String.format("%s: %s", threadName, threads.size());
+      String name = String.format("%s: %s", threadName, threadCount.getAndAdd(1));
       thread.setName(name);
 
       int priorityToSet = priority;
@@ -53,30 +46,7 @@ public class ExecutorThreadFactory implements ThreadFactory {
       }
       thread.setPriority(priority);
 
-      threads.add(new WeakReference<Thread>(thread));
       return thread;
-   }
-
-   public List<Thread> getThreads() {
-      List<Thread> toReturn = new ArrayList<Thread>();
-      for (WeakReference<Thread> weak : threads) {
-         Thread thread = weak.get();
-         if (thread != null) {
-            toReturn.add(thread);
-         }
-      }
-      return toReturn;
-   }
-
-   public synchronized void cleanUp() {
-      Set<WeakReference<Thread>> toRemove = new HashSet<WeakReference<Thread>>();
-      for (WeakReference<Thread> reference : threads) {
-         Thread thread = reference.get();
-         if (thread == null || State.TERMINATED == thread.getState()) {
-            toRemove.add(reference);
-         }
-      }
-      threads.removeAll(toRemove);
    }
 
 }

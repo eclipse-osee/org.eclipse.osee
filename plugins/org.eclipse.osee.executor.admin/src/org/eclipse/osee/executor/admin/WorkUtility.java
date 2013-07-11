@@ -23,6 +23,8 @@ import org.eclipse.osee.executor.admin.internal.ExecutorAdminImpl;
  */
 public final class WorkUtility {
 
+   private static final int NUM_PARTITIONS = Math.min(4, Runtime.getRuntime().availableProcessors());
+
    private WorkUtility() {
       // Utility Class
    }
@@ -37,8 +39,7 @@ public final class WorkUtility {
       List<Callable<Collection<OUTPUT>>> callables = new LinkedList<Callable<Collection<OUTPUT>>>();
 
       if (!work.isEmpty()) {
-         int numProcessors = Runtime.getRuntime().availableProcessors();
-         int partitionSize = work.size() / numProcessors;
+         int partitionSize = Math.max(1, work.size() / NUM_PARTITIONS);
 
          List<INPUT> subList = new LinkedList<INPUT>();
 

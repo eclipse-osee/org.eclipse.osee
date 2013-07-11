@@ -20,8 +20,6 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
  */
 public interface IndexingTaskConsumer {
 
-   int cancelIndexer() throws Exception;
-
    int cancelTaskId(Collection<Integer> taskIds);
 
    int getWorkersInQueue();

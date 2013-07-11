@@ -77,9 +77,9 @@ public class QuerySqlHandlerFactoryImplTest {
    public void setUp() {
       MockitoAnnotations.initMocks(this);
 
-      QueryModuleFactory queryModule = new QueryModuleFactory(logger);
+      QueryModuleFactory queryModule = new QueryModuleFactory(logger, executorAdmin);
 
-      postProcessorFactory = queryModule.createAttributeKeywordPostProcessor(executorAdmin, taggingEngine);
+      postProcessorFactory = queryModule.createAttributeKeywordPostProcessor(taggingEngine);
       factory =
          queryModule.createHandlerFactory(identityService, postProcessorFactory, taggingEngine.getTagProcessor());
    }

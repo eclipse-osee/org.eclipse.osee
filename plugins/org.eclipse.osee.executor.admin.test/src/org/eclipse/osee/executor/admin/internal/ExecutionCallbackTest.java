@@ -99,10 +99,14 @@ public class ExecutionCallbackTest {
       verify(callback).onFailure(expectedException);
    }
 
-   @Test
+   @Test(timeout = 5000)
    public void testCallbackOnCancel() throws Exception {
       TestCancellableCallable callable = new TestCancellableCallable("results");
       Future<String> future = admin.schedule(callable, callback);
+
+      while (!callable.hasBeenCalled()) {
+         Thread.sleep(20);
+      }
       future.cancel(true);
 
       verify(callback, times(0)).onSuccess(Matchers.anyString());
@@ -119,13 +123,19 @@ public class ExecutionCallbackTest {
    private class TestCancellableCallable extends CancellableCallable<String> {
 
       private final String results;
+      private volatile boolean beenCalled = false;
 
       public TestCancellableCallable(String results) {
          this.results = results;
       }
 
+      public boolean hasBeenCalled() {
+         return beenCalled;
+      }
+
       @Override
       public String call() throws Exception {
+         beenCalled = true;
          while (!isCancelled()) {
             checkForCancelled();
          }

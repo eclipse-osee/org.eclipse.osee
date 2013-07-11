@@ -110,12 +110,12 @@ public class QueryEngineImplTest {
 
       sessionId = GUID.create();
 
-      QueryModuleFactory queryModule = new QueryModuleFactory(logger);
+      QueryModuleFactory queryModule = new QueryModuleFactory(logger, executorAdmin);
 
       TaggingEngine taggingEngine = queryModule.createTaggingEngine();
 
       DataPostProcessorFactory<CriteriaAttributeKeywords> postProcessorFactory =
-         queryModule.createAttributeKeywordPostProcessor(executorAdmin, taggingEngine);
+         queryModule.createAttributeKeywordPostProcessor(taggingEngine);
       SqlHandlerFactory handlerFactory =
          queryModule.createHandlerFactory(identityService, postProcessorFactory, taggingEngine.getTagProcessor());
       queryEngine = queryModule.createQueryEngine(dbService, handlerFactory, sqlProvider, branchCache);
