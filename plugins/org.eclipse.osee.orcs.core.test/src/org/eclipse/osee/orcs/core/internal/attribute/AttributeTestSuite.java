@@ -20,13 +20,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    AttributeClassResolverTest.class,
    AttributeCollectionTest.class,
-   AttributeDeletedFilterTest.class,
-   AttributeDirtyFilterTest.class,
    AttributeFactoryTest.class,
-   AttributeFilterTest.class,
-   AttributeFromStringFilterTest.class,
    AttributeResultSetTest.class,
-   AttributeValueFilterTest.class,
    ArtifactTest.class})
 public class AttributeTestSuite {
    // Test Suite

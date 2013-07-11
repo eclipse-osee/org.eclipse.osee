@@ -45,7 +45,7 @@ public interface AttributeManager extends Identifiable, AttributesWriteable, Has
 
    int getMinimumAttributeTypeAllowed(IAttributeType attributeType) throws OseeCoreException;
 
-   List<Attribute<Object>> getAttributesDirty() throws OseeCoreException;
+   List<Attribute<?>> getAttributesDirty() throws OseeCoreException;
 
    void deleteAttributesByArtifact() throws OseeCoreException;
 

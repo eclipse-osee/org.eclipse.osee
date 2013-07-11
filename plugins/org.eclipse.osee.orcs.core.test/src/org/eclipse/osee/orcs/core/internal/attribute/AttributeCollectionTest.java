@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,8 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
 /**
@@ -53,9 +51,9 @@ public class AttributeCollectionTest {
       MockitoAnnotations.initMocks(this);
       attributeCollection = new AttributeCollection(exceptionFactory);
 
-      attributeCollection.addAttribute(CoreAttributeTypes.Country, dirtyAttr);
-      attributeCollection.addAttribute(CoreAttributeTypes.Active, cleanAttr);
-      attributeCollection.addAttribute(CoreAttributeTypes.Annotation, deletedAttr);
+      attributeCollection.add(CoreAttributeTypes.Country, dirtyAttr);
+      attributeCollection.add(CoreAttributeTypes.Active, cleanAttr);
+      attributeCollection.add(CoreAttributeTypes.Annotation, deletedAttr);
 
       when(dirtyAttr.isDirty()).thenReturn(true);
       when(deletedAttr.isDeleted()).thenReturn(true);
@@ -63,24 +61,24 @@ public class AttributeCollectionTest {
 
    @Test
    public void testGetAttributesDirty() throws OseeCoreException {
-      assertEquals(1, attributeCollection.getAttributeListDirties().size());
-      assertEquals(dirtyAttr, attributeCollection.getAttributeListDirties().iterator().next());
+      assertEquals(1, attributeCollection.getDirties().size());
+      assertEquals(dirtyAttr, attributeCollection.getDirties().iterator().next());
    }
 
    @Test
    public void testHasAttributesDirty() {
-      boolean actual1 = attributeCollection.hasAttributesDirty();
+      boolean actual1 = attributeCollection.hasDirty();
       assertTrue(actual1);
 
-      attributeCollection.removeAttribute(CoreAttributeTypes.Country, dirtyAttr);
+      attributeCollection.remove(CoreAttributeTypes.Country, dirtyAttr);
 
-      boolean actual2 = attributeCollection.hasAttributesDirty();
+      boolean actual2 = attributeCollection.hasDirty();
       assertFalse(actual2);
    }
 
    @Test
    public void testGetAllAttributes() {
-      List<Attribute<?>> attributes = attributeCollection.getAllAttributes();
+      Collection<Attribute<?>> attributes = attributeCollection.getAll();
       assertEquals(3, attributes.size());
 
       assertTrue(attributes.contains(dirtyAttr));
@@ -103,7 +101,7 @@ public class AttributeCollectionTest {
       when(deletedAttr.getAttributeType()).thenReturn(typeC);
       when(deletedAttr.isDeleted()).thenReturn(false);
 
-      Collection<IAttributeType> types = attributeCollection.getExistingTypes(DeletionFlag.INCLUDE_DELETED);
+      Collection<? extends IAttributeType> types = attributeCollection.getExistingTypes(DeletionFlag.INCLUDE_DELETED);
 
       assertEquals(3, types.size());
 
@@ -111,7 +109,7 @@ public class AttributeCollectionTest {
       assertTrue(types.contains(typeB));
       assertTrue(types.contains(typeC));
 
-      Collection<IAttributeType> types2 = attributeCollection.getExistingTypes(DeletionFlag.EXCLUDE_DELETED);
+      Collection<? extends IAttributeType> types2 = attributeCollection.getExistingTypes(DeletionFlag.EXCLUDE_DELETED);
       assertEquals(1, types2.size());
 
       assertFalse(types2.contains(typeA));
@@ -121,14 +119,14 @@ public class AttributeCollectionTest {
 
    @Test
    public void testGetListDeletionFlag() throws OseeCoreException {
-      List<Attribute<Object>> list1 = attributeCollection.getAttributeList(DeletionFlag.INCLUDE_DELETED);
+      List<Attribute<?>> list1 = attributeCollection.getList(DeletionFlag.INCLUDE_DELETED);
 
       assertEquals(3, list1.size());
       assertTrue(list1.contains(dirtyAttr));
       assertTrue(list1.contains(cleanAttr));
       assertTrue(list1.contains(deletedAttr));
 
-      List<Attribute<Object>> list2 = attributeCollection.getAttributeList(DeletionFlag.EXCLUDE_DELETED);
+      List<Attribute<?>> list2 = attributeCollection.getList(DeletionFlag.EXCLUDE_DELETED);
       assertEquals(2, list2.size());
 
       assertTrue(list2.contains(dirtyAttr));
@@ -138,14 +136,14 @@ public class AttributeCollectionTest {
 
    @Test
    public void testGetSetDeletionFlag() throws OseeCoreException {
-      ResultSet<Attribute<Object>> set1 = attributeCollection.getAttributeSet(DeletionFlag.INCLUDE_DELETED);
+      ResultSet<Attribute<?>> set1 = attributeCollection.getResultSet(DeletionFlag.INCLUDE_DELETED);
 
       assertEquals(3, set1.size());
       checkContains(set1, dirtyAttr, true);
       checkContains(set1, cleanAttr, true);
       checkContains(set1, deletedAttr, true);
 
-      ResultSet<Attribute<Object>> set2 = attributeCollection.getAttributeSet(DeletionFlag.EXCLUDE_DELETED);
+      ResultSet<Attribute<?>> set2 = attributeCollection.getResultSet(DeletionFlag.EXCLUDE_DELETED);
       assertEquals(2, set2.size());
 
       checkContains(set2, dirtyAttr, true);
@@ -156,25 +154,25 @@ public class AttributeCollectionTest {
    @Test
    public void testGetListTypeAndDelete() throws OseeCoreException {
       List<Attribute<Object>> list1 =
-         attributeCollection.getAttributeList(CoreAttributeTypes.Annotation, DeletionFlag.INCLUDE_DELETED);
+         attributeCollection.getList(CoreAttributeTypes.Annotation, DeletionFlag.INCLUDE_DELETED);
       assertEquals(1, list1.size());
       assertTrue(list1.contains(deletedAttr));
 
       List<Attribute<Object>> list2 =
-         attributeCollection.getAttributeList(CoreAttributeTypes.Annotation, DeletionFlag.EXCLUDE_DELETED);
+         attributeCollection.getList(CoreAttributeTypes.Annotation, DeletionFlag.EXCLUDE_DELETED);
       assertEquals(0, list2.size());
    }
 
    @Test
    public void testGetSetTypeAndDelete() throws OseeCoreException {
       ResultSet<Attribute<Object>> set1 =
-         attributeCollection.getAttributeSet(CoreAttributeTypes.Annotation, DeletionFlag.INCLUDE_DELETED);
+         attributeCollection.getResultSet(CoreAttributeTypes.Annotation, DeletionFlag.INCLUDE_DELETED);
 
       assertEquals(1, set1.size());
       checkContains(set1, deletedAttr, true);
 
       ResultSet<Attribute<Object>> set2 =
-         attributeCollection.getAttributeSet(CoreAttributeTypes.Annotation, DeletionFlag.EXCLUDE_DELETED);
+         attributeCollection.getResultSet(CoreAttributeTypes.Annotation, DeletionFlag.EXCLUDE_DELETED);
       assertEquals(0, set2.size());
    }
 
@@ -196,14 +194,8 @@ public class AttributeCollectionTest {
       Assert.assertEquals(cleanAttr, set.getExactlyOne());
    }
 
-   private void checkContains(Iterable<Attribute<Object>> items, final Attribute<Object> toFind, boolean findExpected) {
-      Optional<Attribute<Object>> matched = Iterables.tryFind(items, new Predicate<Attribute<Object>>() {
-         @Override
-         public boolean apply(Attribute<Object> entry) {
-            return toFind.equals(entry);
-         }
-      });
-      assertEquals(findExpected, matched.isPresent());
+   private void checkContains(Iterable<? extends Attribute<?>> items, Attribute<Object> toFind, boolean findExpected) {
+      boolean actual = Iterables.contains(items, toFind);
+      assertEquals(findExpected, actual);
    }
-
 }
