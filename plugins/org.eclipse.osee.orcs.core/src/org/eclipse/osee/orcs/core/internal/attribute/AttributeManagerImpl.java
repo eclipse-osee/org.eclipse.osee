@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.HasOrcsData;
+import org.eclipse.osee.orcs.core.internal.util.MultiplicityState;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.AttributeWriteable;
 
@@ -456,20 +457,14 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
       MultiplicityState state = getAttributeMuliplicityState(attributeType, count);
       switch (state) {
          case MAX_VIOLATION:
-            throw new OseeStateException("Attribute type [%s] exceeds max occurrence rule on artifacts [%s]",
-               attributeType, getExceptionString());
+            throw new OseeStateException("Attribute type [%s] exceeds max occurrence rule on [%s]", attributeType,
+               getExceptionString());
          case MIN_VIOLATION:
-            throw new OseeStateException("Attribute type [%s] is less than min occurrence rule on artifacts [%s]",
-               attributeType, getExceptionString());
+            throw new OseeStateException("Attribute type [%s] is less than min occurrence rule on [%s]", attributeType,
+               getExceptionString());
          default:
             break;
       }
-   }
-
-   private static enum MultiplicityState {
-      IS_VALID,
-      MAX_VIOLATION,
-      MIN_VIOLATION;
    }
 
    private MultiplicityState getAttributeMuliplicityState(IAttributeType attributeType, int count) throws OseeCoreException {

@@ -10,16 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation;
 
-import org.eclipse.osee.orcs.core.internal.relation.order.OrderTestSuite;
-import org.eclipse.osee.orcs.core.internal.relation.sorter.SorterTestSuite;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.Identifiable;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.core.internal.relation.order.OrderStore;
+import org.eclipse.osee.orcs.data.CanDelete;
+import org.eclipse.osee.orcs.data.HasLocalId;
 
 /**
  * @author Roberto E. Escobar
+ * @author Megumi Telles
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({OrderTestSuite.class, SorterTestSuite.class, RelationTypeValidityTest.class})
-public class RelationTestSuite {
-   // Test Suite
+
+public interface RelationNode extends Identifiable, CanDelete, HasLocalId, OrderStore {
+
+   IArtifactType getArtifactType() throws OseeCoreException;
+
+   String getExceptionString();
+
 }
