@@ -18,15 +18,18 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataFactory;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
+import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
+import org.eclipse.osee.orcs.core.internal.util.ValueProvider;
+import org.eclipse.osee.orcs.core.internal.util.ValueProviderFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -39,25 +42,24 @@ public class ArtifactFactory {
    private final ArtifactDataFactory factory;
    private final AttributeFactory attributeFactory;
    private final RelationFactory relationFactory;
-   private final BranchCache branchCache;
    private final ArtifactTypes artifactTypeCache;
+   private final ValueProviderFactory providerFactory;
 
-   public ArtifactFactory(ArtifactDataFactory factory, AttributeFactory attributeFactory, RelationFactory relationFactory, BranchCache branchCache, ArtifactTypes artifactTypeCache) {
+   public ArtifactFactory(ArtifactDataFactory factory, AttributeFactory attributeFactory, RelationFactory relationFactory, ArtifactTypes artifactTypeCache, ValueProviderFactory providerFactory) {
       super();
       this.factory = factory;
       this.attributeFactory = attributeFactory;
       this.relationFactory = relationFactory;
-      this.branchCache = branchCache;
       this.artifactTypeCache = artifactTypeCache;
+      this.providerFactory = providerFactory;
    }
 
    @SuppressWarnings("unused")
    public Artifact createArtifact(ArtifactData artifactData) throws OseeCoreException {
       //TODO implement an artifact class resolver for specific artifact types
       RelationContainer relationContainer = relationFactory.createRelationContainer(artifactData.getLocalId());
-
-      return new Artifact(artifactTypeCache, artifactData, attributeFactory, relationContainer, new BranchProvider(
-         branchCache, artifactData));
+      ValueProvider<Branch, OrcsData> branchProvider = providerFactory.createBranchProvider(artifactData);
+      return new Artifact(artifactTypeCache, artifactData, attributeFactory, relationContainer, branchProvider);
    }
 
    public Artifact createArtifact(IOseeBranch branch, IArtifactType artifactType, String guid) throws OseeCoreException {

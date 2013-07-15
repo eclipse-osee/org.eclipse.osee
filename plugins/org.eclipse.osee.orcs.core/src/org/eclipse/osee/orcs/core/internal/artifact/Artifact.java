@@ -20,24 +20,26 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
+import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManagerImpl;
 import org.eclipse.osee.orcs.core.internal.relation.HasRelationContainer;
 import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
+import org.eclipse.osee.orcs.core.internal.util.ValueProvider;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
 
 public class Artifact extends AttributeManagerImpl implements ArtifactWriteable, HasRelationContainer, ArtifactVisitable {
 
    private final ArtifactTypes artifactTypeCache;
-   private final ValueProvider<Branch, ArtifactData> branchProvider;
+   private final ValueProvider<Branch, OrcsData> branchProvider;
    private final RelationContainer relationContainer;
 
    private EditState objectEditState;
    private ArtifactData artifactData;
 
-   public Artifact(ArtifactTypes artifactTypeCache, ArtifactData artifactData, AttributeFactory attributeFactory, RelationContainer relationContainer, ValueProvider<Branch, ArtifactData> branchProvider) {
+   public Artifact(ArtifactTypes artifactTypeCache, ArtifactData artifactData, AttributeFactory attributeFactory, RelationContainer relationContainer, ValueProvider<Branch, OrcsData> branchProvider) {
       super(attributeFactory);
       this.artifactTypeCache = artifactTypeCache;
       this.artifactData = artifactData;

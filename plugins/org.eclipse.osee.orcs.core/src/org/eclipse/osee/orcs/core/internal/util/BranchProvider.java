@@ -8,21 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.artifact;
+package org.eclipse.osee.orcs.core.internal.util;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.orcs.core.ds.ArtifactData;
+import org.eclipse.osee.orcs.core.ds.OrcsData;
 
 /**
  * @author Roberto E. Escobar
  */
-public class BranchProvider extends OrcsLazyObject<Branch, ArtifactData> implements ValueProvider<Branch, ArtifactData> {
+public class BranchProvider extends OrcsLazyObject<Branch, OrcsData> implements ValueProvider<Branch, OrcsData> {
 
    private final BranchCache branchCache;
 
-   public BranchProvider(BranchCache branchCache, ArtifactData data) {
+   public BranchProvider(BranchCache branchCache, OrcsData data) {
       super(data);
       this.branchCache = branchCache;
    }
