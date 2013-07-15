@@ -21,11 +21,11 @@ import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.RelationsReadable;
 import org.eclipse.osee.orcs.search.Match;
 
 /**
@@ -63,8 +63,8 @@ public class MockArtifactProvider implements ArtifactProvider {
    public List<ArtifactReadable> getRelatedArtifacts(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
       if (art instanceof MockArtifact) {
          MockArtifact mArt = (MockArtifact) art;
-         RelationsReadable readable = mArt.getRelatedArtifacts(relationTypeSide);
-         return readable.getList();
+         ResultSet<ArtifactReadable> result = mArt.getRelatedArtifacts(relationTypeSide);
+         return result.getList();
       } else {
          return Collections.emptyList();
       }

@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -31,8 +32,6 @@ import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
-import org.eclipse.osee.orcs.data.GraphReadable;
-import org.eclipse.osee.orcs.data.GraphWriteable;
 import org.eclipse.osee.orcs.transaction.OrcsTransaction;
 
 /**
@@ -198,9 +197,8 @@ public class OrcsTransactionImpl implements OrcsTransaction {
 
    @SuppressWarnings("unused")
    @Override
-   public GraphWriteable asWriteableGraph(GraphReadable readableGraph) throws OseeCoreException {
-      //TX_TODO Relation Stuff?
-      throw new UnsupportedOperationException();
+   public void unrelate(ArtifactReadable side1, IRelationTypeSide typeSide, ArtifactReadable side2) throws OseeCoreException {
+      // do nothing
    }
 
 }

@@ -25,6 +25,8 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.core.data.ResultSet;
+import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -35,7 +37,6 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.RelationsReadable;
 
 /**
  * @author John R. Misinco
@@ -81,13 +82,12 @@ public class MockArtifact implements ArtifactReadable {
       validRelationTypes.add(relationType);
    }
 
-   public RelationsReadable getRelatedArtifacts(IRelationTypeSide side) {
+   public ResultSet<ArtifactReadable> getRelatedArtifacts(IRelationTypeSide side) {
       List<ArtifactReadable> data = relationMap.get(side);
       if (data == null) {
          data = Collections.emptyList();
       }
-      MockRelationsReadable toReturn = new MockRelationsReadable(data);
-      return toReturn;
+      return new ResultSetList<ArtifactReadable>(data);
    }
 
    public void addRelation(IRelationTypeSide relation, ArtifactReadable artifact) {

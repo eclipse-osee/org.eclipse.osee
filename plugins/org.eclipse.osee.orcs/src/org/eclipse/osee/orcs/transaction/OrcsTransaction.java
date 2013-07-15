@@ -16,12 +16,11 @@ import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
-import org.eclipse.osee.orcs.data.GraphReadable;
-import org.eclipse.osee.orcs.data.GraphWriteable;
 
 /**
  * @author Roberto E. Escobar
@@ -58,7 +57,7 @@ public interface OrcsTransaction {
 
    ////////////////////////
 
-   GraphWriteable asWriteableGraph(GraphReadable readableGraph) throws OseeCoreException;
+   void unrelate(ArtifactReadable side1, IRelationTypeSide typeSide, ArtifactReadable side2) throws OseeCoreException;
 
    ////////////////////////
 
