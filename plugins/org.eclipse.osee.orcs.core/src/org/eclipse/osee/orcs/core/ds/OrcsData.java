@@ -21,16 +21,21 @@ public interface OrcsData extends HasLocalId, HasVersion {
 
    void setTypeUuid(long typeUuid);
 
-   long getLoadedTypeUuid();
+   long getBaseTypeUuid();
 
-   void setLoadedTypeUuid(long loadedTypeUuid);
+   void setBaseTypeUuid(long originalTypeUuid);
 
    ModificationType getModType();
 
    void setModType(ModificationType modType);
 
-   void setLoadedModType(ModificationType modType);
+   void setBaseModType(ModificationType modType);
 
-   ModificationType getLoadedModType();
+   ModificationType getBaseModType();
 
+   ModificationType getPreviousModType();
+
+   boolean hasTypeUuidChange();
+
+   boolean hasModTypeChange();
 }

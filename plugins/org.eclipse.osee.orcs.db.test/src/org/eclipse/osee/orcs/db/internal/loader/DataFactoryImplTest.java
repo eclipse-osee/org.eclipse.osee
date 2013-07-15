@@ -96,8 +96,8 @@ public class DataFactoryImplTest {
       when(artData.getLocalId()).thenReturn(555);
       when(artData.getModType()).thenReturn(ModificationType.MODIFIED);
       when(artData.getTypeUuid()).thenReturn(666L);
-      when(artData.getLoadedModType()).thenReturn(ModificationType.NEW);
-      when(artData.getLoadedTypeUuid()).thenReturn(777L);
+      when(artData.getBaseModType()).thenReturn(ModificationType.NEW);
+      when(artData.getBaseTypeUuid()).thenReturn(777L);
       when(artData.getGuid()).thenReturn("abcdefg");
       when(artData.getHumanReadableId()).thenReturn("abc34");
 
@@ -106,8 +106,8 @@ public class DataFactoryImplTest {
       when(attrData.getLocalId()).thenReturn(555);
       when(attrData.getModType()).thenReturn(ModificationType.MODIFIED);
       when(attrData.getTypeUuid()).thenReturn(666L);
-      when(attrData.getLoadedModType()).thenReturn(ModificationType.NEW);
-      when(attrData.getLoadedTypeUuid()).thenReturn(777L);
+      when(attrData.getBaseModType()).thenReturn(ModificationType.NEW);
+      when(attrData.getBaseTypeUuid()).thenReturn(777L);
       when(attrData.getArtifactId()).thenReturn(88);
       when(attrData.getDataProxy()).thenReturn(dataProxy);
 
@@ -121,8 +121,8 @@ public class DataFactoryImplTest {
       when(relData.getLocalId()).thenReturn(555);
       when(relData.getModType()).thenReturn(ModificationType.MODIFIED);
       when(relData.getTypeUuid()).thenReturn(666L);
-      when(relData.getLoadedModType()).thenReturn(ModificationType.NEW);
-      when(relData.getLoadedTypeUuid()).thenReturn(777L);
+      when(relData.getBaseModType()).thenReturn(ModificationType.NEW);
+      when(relData.getBaseTypeUuid()).thenReturn(777L);
       when(relData.getArtIdA()).thenReturn(88);
       when(relData.getArtIdB()).thenReturn(99);
       when(relData.getParentId()).thenReturn(1111);
@@ -197,8 +197,8 @@ public class DataFactoryImplTest {
       assertEquals(987, actual.getLocalId());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
       assertEquals(4536L, actual.getTypeUuid());
-      assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getLoadedModType());
-      assertEquals(4536L, actual.getLoadedTypeUuid());
+      assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
+      assertEquals(4536L, actual.getBaseTypeUuid());
       assertEquals(guid, actual.getGuid());
       assertEquals(hrid, actual.getHumanReadableId());
    }
@@ -231,8 +231,8 @@ public class DataFactoryImplTest {
       assertEquals(987, actual.getLocalId());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
       assertEquals(4536L, actual.getTypeUuid());
-      assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getLoadedModType());
-      assertEquals(4536L, actual.getLoadedTypeUuid());
+      assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
+      assertEquals(4536L, actual.getBaseTypeUuid());
       assertEquals(guid, actual.getGuid());
       assertEquals(newHrid, actual.getHumanReadableId());
    }
@@ -258,8 +258,8 @@ public class DataFactoryImplTest {
       assertEquals(RelationalConstants.DEFAULT_ITEM_ID, actual.getLocalId());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
       assertEquals(2389L, actual.getTypeUuid());
-      assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getLoadedModType());
-      assertEquals(2389L, actual.getLoadedTypeUuid());
+      assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
+      assertEquals(2389L, actual.getBaseTypeUuid());
 
       assertEquals(555, actual.getArtifactId());
       assertNotSame(dataProxy, actual.getDataProxy());
@@ -293,8 +293,8 @@ public class DataFactoryImplTest {
       assertEquals(RelationalConstants.DEFAULT_ITEM_ID, actual.getLocalId());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
       assertEquals(2389L, actual.getTypeUuid());
-      assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getLoadedModType());
-      assertEquals(2389L, actual.getLoadedTypeUuid());
+      assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
+      assertEquals(2389L, actual.getBaseTypeUuid());
 
       assertEquals(4562, actual.getArtIdA());
       assertEquals(9513, actual.getArtIdB());
@@ -319,8 +319,8 @@ public class DataFactoryImplTest {
       assertEquals(555, actual.getLocalId());
       assertEquals(ModificationType.INTRODUCED, actual.getModType());
       assertEquals(666L, actual.getTypeUuid());
-      assertEquals(ModificationType.NEW, actual.getLoadedModType());
-      assertEquals(777L, actual.getLoadedTypeUuid());
+      assertEquals(ModificationType.NEW, actual.getBaseModType());
+      assertEquals(777L, actual.getBaseTypeUuid());
       assertEquals("abcdefg", actual.getGuid());
       assertEquals("abc34", actual.getHumanReadableId());
    }
@@ -342,8 +342,8 @@ public class DataFactoryImplTest {
       assertEquals(555, actual.getLocalId());
       assertEquals(ModificationType.INTRODUCED, actual.getModType());
       assertEquals(666L, actual.getTypeUuid());
-      assertEquals(ModificationType.NEW, actual.getLoadedModType());
-      assertEquals(777L, actual.getLoadedTypeUuid());
+      assertEquals(ModificationType.NEW, actual.getBaseModType());
+      assertEquals(777L, actual.getBaseTypeUuid());
 
       assertEquals(88, actual.getArtifactId());
       assertNotSame(dataProxy, actual.getDataProxy());
@@ -380,8 +380,8 @@ public class DataFactoryImplTest {
       assertEquals(987, actual.getLocalId());
       assertEquals(ModificationType.NEW, actual.getModType());
       assertEquals(666L, actual.getTypeUuid());
-      assertEquals(ModificationType.NEW, actual.getLoadedModType());
-      assertEquals(777L, actual.getLoadedTypeUuid());
+      assertEquals(ModificationType.NEW, actual.getBaseModType());
+      assertEquals(777L, actual.getBaseTypeUuid());
       assertEquals(newGuid, actual.getGuid());
       assertEquals(newHrid, actual.getHumanReadableId());
    }
@@ -403,8 +403,8 @@ public class DataFactoryImplTest {
       assertEquals(RelationalConstants.DEFAULT_ITEM_ID, actual.getLocalId());
       assertEquals(ModificationType.NEW, actual.getModType());
       assertEquals(666L, actual.getTypeUuid());
-      assertEquals(ModificationType.NEW, actual.getLoadedModType());
-      assertEquals(777L, actual.getLoadedTypeUuid());
+      assertEquals(ModificationType.NEW, actual.getBaseModType());
+      assertEquals(777L, actual.getBaseTypeUuid());
 
       assertEquals(88, actual.getArtifactId());
       assertNotSame(dataProxy, actual.getDataProxy());
@@ -434,8 +434,8 @@ public class DataFactoryImplTest {
       assertEquals(555, actual.getLocalId());
       assertEquals(ModificationType.MODIFIED, actual.getModType());
       assertEquals(666L, actual.getTypeUuid());
-      assertEquals(ModificationType.NEW, actual.getLoadedModType());
-      assertEquals(777L, actual.getLoadedTypeUuid());
+      assertEquals(ModificationType.NEW, actual.getBaseModType());
+      assertEquals(777L, actual.getBaseTypeUuid());
       assertEquals("abcdefg", actual.getGuid());
       assertEquals("abc34", actual.getHumanReadableId());
    }
@@ -460,8 +460,8 @@ public class DataFactoryImplTest {
       assertEquals(555, actual.getLocalId());
       assertEquals(ModificationType.MODIFIED, actual.getModType());
       assertEquals(666L, actual.getTypeUuid());
-      assertEquals(ModificationType.NEW, actual.getLoadedModType());
-      assertEquals(777L, actual.getLoadedTypeUuid());
+      assertEquals(ModificationType.NEW, actual.getBaseModType());
+      assertEquals(777L, actual.getBaseTypeUuid());
 
       assertEquals(88, actual.getArtifactId());
       assertNotSame(dataProxy, actual.getDataProxy());
@@ -491,8 +491,8 @@ public class DataFactoryImplTest {
       assertEquals(555, actual.getLocalId());
       assertEquals(ModificationType.MODIFIED, actual.getModType());
       assertEquals(666L, actual.getTypeUuid());
-      assertEquals(ModificationType.NEW, actual.getLoadedModType());
-      assertEquals(777L, actual.getLoadedTypeUuid());
+      assertEquals(ModificationType.NEW, actual.getBaseModType());
+      assertEquals(777L, actual.getBaseTypeUuid());
 
       assertEquals(88, actual.getArtIdA());
       assertEquals(99, actual.getArtIdB());

@@ -180,7 +180,7 @@ public class Artifact extends AttributeManagerImpl implements ArtifactWriteable,
 
    @Override
    public void unDelete() throws OseeCoreException {
-      getOrcsData().setModType(getOrcsData().getLoadedModType());
+      getOrcsData().setModType(getOrcsData().getBaseModType());
       unDeleteAttributesByArtifact();
    }
 }

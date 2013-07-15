@@ -233,7 +233,7 @@ public abstract class Attribute<T> implements HasOrcsData<AttributeData>, Compar
 
    @Override
    public void unDelete() {
-      getOrcsData().setModType(getOrcsData().getLoadedModType());
+      getOrcsData().setModType(getOrcsData().getPreviousModType());
    }
 
    /**

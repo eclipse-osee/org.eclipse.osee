@@ -105,7 +105,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    @Override
    public void visit(ArtifactData data) throws OseeCoreException {
       if (!isNewAndDeleted(data)) {
-         if (!data.getVersion().isInStorage() || data.getLoadedTypeUuid() != data.getTypeUuid() || data.getModType() != data.getLoadedModType() || data.getModType() == ModificationType.REPLACED_WITH_VERSION) {
+         if (!data.getVersion().isInStorage() || data.hasTypeUuidChange() || data.hasModTypeChange() || data.getModType() == ModificationType.REPLACED_WITH_VERSION) {
             boolean isRowAllowed = isGammaCreationAllowed(data);
             updateTxValues(data);
             if (isRowAllowed) {
@@ -180,7 +180,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    }
 
    private boolean isNewAndDeleted(OrcsData data) {
-      return (!data.getVersion().isInStorage() && data.getModType().isDeleted());
+      return !data.getVersion().isInStorage() && data.getModType().isDeleted();
    }
 
    private void updateTxValues(OrcsData orcsData) {
