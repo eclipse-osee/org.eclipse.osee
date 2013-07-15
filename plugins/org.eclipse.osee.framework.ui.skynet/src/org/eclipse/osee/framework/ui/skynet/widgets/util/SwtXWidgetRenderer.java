@@ -199,6 +199,9 @@ public class SwtXWidgetRenderer {
          }
 
          XWidget xWidget = setupXWidget(xWidgetLayoutData, isEditable);
+         if (xWidgetLayoutData.getObject() != null) {
+            xWidget.setObject(xWidgetLayoutData.getObject());
+         }
 
          if (dynamicWidgetLayoutListener != null) {
             dynamicWidgetLayoutListener.widgetCreating(xWidget, toolkit, artifact, this, xModListener, isEditable);
