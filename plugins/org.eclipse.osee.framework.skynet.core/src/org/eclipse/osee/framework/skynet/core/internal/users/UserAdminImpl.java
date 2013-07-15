@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.internal.users;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.framework.core.data.IUserToken;
@@ -122,7 +121,7 @@ public class UserAdminImpl implements UserAdmin {
          user = cache.get(userId);
       } catch (Exception ex) {
          UserDataStoreException userEx = unwrapUserException(ex);
-         if(userEx != null){
+         if (userEx != null) {
             throw userEx;
          } else {
             OseeExceptions.wrapAndThrow(ex);
@@ -210,12 +209,28 @@ public class UserAdminImpl implements UserAdmin {
    public User getUserByName(String name) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(name, "user name");
 
-      for (User tempUser : getUsersAll()) {
+      // check cached users first
+      User toReturn = checkIterableForName(getCache().getAllPresent(), name);
+      if (toReturn == null) {
+         toReturn = checkIterableForName(getUsersAll(), name);
+      }
+
+      if (toReturn == null) {
+         throw new UserNotInDatabase("User requested by name [%s] was not found.", name);
+      }
+
+      return toReturn;
+   }
+
+   private User checkIterableForName(Iterable<User> users, String name) {
+      User toReturn = null;
+      for (User tempUser : users) {
          if (name.equals(tempUser.getName())) {
-            return tempUser;
+            toReturn = tempUser;
+            break;
          }
       }
-      throw new UserNotInDatabase("User requested by name [%s] was not found.", name);
+      return toReturn;
    }
 
    @Override
@@ -251,11 +266,21 @@ public class UserAdminImpl implements UserAdmin {
       if (userArtifactId <= 0) {
          toReturn = getUser(SystemUser.OseeSystem);
       } else {
-         for (User tempUser : getUsersAll()) {
-            if (userArtifactId == tempUser.getArtId()) {
-               toReturn = tempUser;
-               break;
-            }
+         // check cached users first
+         toReturn = checkIterableForId(getCache().getAllPresent(), userArtifactId);
+         if (toReturn == null) {
+            toReturn = checkIterableForId(getUsersAll(), userArtifactId);
+         }
+      }
+      return toReturn;
+   }
+
+   private User checkIterableForId(Iterable<User> users, int id) {
+      User toReturn = null;
+      for (User tempUser : users) {
+         if (id == tempUser.getArtId()) {
+            toReturn = tempUser;
+            break;
          }
       }
       return toReturn;
