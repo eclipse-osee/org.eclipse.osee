@@ -41,6 +41,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 
 /**
@@ -53,6 +54,9 @@ public class OrcsTransactionTest {
 
    @Rule
    public TestRule osgi = integrationRule(this, "osee.demo.hsql");
+
+   @Rule
+   public TestName testName = new TestName();
 
    @OsgiService
    private OrcsApi orcsApi;
@@ -180,7 +184,8 @@ public class OrcsTransactionTest {
    public void testAsWritable() throws OseeCoreException {
       ArtifactReadable guestUser =
          orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
-      OrcsTransaction transaction = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, "testAsWritable");
+      OrcsTransaction transaction =
+         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
       ArtifactWriteable writeable = transaction.asWriteable(guestUser);
       writeable.setName("Test");
 
@@ -203,7 +208,7 @@ public class OrcsTransactionTest {
       ArtifactReadable guestUser =
          orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
       OrcsTransaction transaction =
-         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, "testAsWritableException");
+         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
       ArtifactWriteable writeable = transaction.asWriteable(guestUser);
       writeable.setName("Test2");
       transaction.commit();
@@ -216,11 +221,11 @@ public class OrcsTransactionTest {
    @Test
    public void testDeleteArtifact() throws OseeCoreException {
       OrcsTransaction transaction =
-         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, "testDeleteArtifact");
+         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
       ArtifactWriteable artifact = transaction.createArtifact(CoreArtifactTypes.AccessControlModel, "deleteMe");
       transaction.commit();
 
-      transaction = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, "testDeleteArtifact");
+      transaction = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
       ArtifactReadable toDelete =
          orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andGuidsOrHrids(artifact.getGuid()).getResults().getExactlyOne();
       ArtifactWriteable writeable = transaction.asWriteable(toDelete);
@@ -232,6 +237,31 @@ public class OrcsTransactionTest {
       Assert.assertNotNull(toDelete);
       Assert.assertTrue(toDelete.isDeleted());
 
+   }
+
+   @Test
+   public void testArtifactGetTransaction() throws OseeCoreException {
+      OrcsTransaction transaction =
+         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
+
+      String guid = transaction.createArtifact(CoreArtifactTypes.Component, "A component").getGuid();
+      int startingTx = transaction.commit().getId();
+
+      ArtifactReadable artifact =
+         orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andGuidsOrHrids(guid).getResults().getExactlyOne();
+      Assert.assertEquals(startingTx, artifact.getTransaction());
+
+      OrcsTransaction transaction2 =
+         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
+
+      transaction2.asWriteable(artifact).setName("Modified - component");
+      int lastTx = transaction2.commit().getId();
+
+      Assert.assertTrue(startingTx != lastTx);
+
+      ArtifactReadable currentArtifact =
+         orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andGuidsOrHrids(guid).getResults().getExactlyOne();
+      Assert.assertEquals(lastTx, currentArtifact.getTransaction());
    }
 
    private ArtifactReadable getSystemUser() throws OseeCoreException {
