@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.cache.admin.CacheAdmin;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.LazyObject;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -99,10 +100,15 @@ public class UserAdminImpl implements UserAdmin {
 
    @Override
    public User getCurrentUser() throws OseeCoreException {
-      User currentUser = currentUserProvider.get();
-      if (!currentUser.isActive()) {
-         currentUser.setActive(true);
-         currentUser.persist("Set current user active");
+      User currentUser;
+      if (isDuringCurrentUserCreation()) {
+         currentUser = getUserByUserId(ClientSessionManager.getCurrentUserToken().getUserId());
+      } else {
+         currentUser = currentUserProvider.get();
+         if (!currentUser.isActive()) {
+            currentUser.setActive(true);
+            currentUser.persist("Set current user active");
+         }
       }
       return currentUser;
    }
