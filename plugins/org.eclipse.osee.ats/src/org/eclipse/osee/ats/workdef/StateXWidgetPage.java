@@ -76,7 +76,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    protected final IAtsWorkDefinition workDefinition;
    private AbstractWorkflowArtifact sma;
 
-   private StateXWidgetPage(IAtsWorkDefinition workDefinition, IAtsStateDefinition stateDefinition, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
+   public StateXWidgetPage(IAtsWorkDefinition workDefinition, IAtsStateDefinition stateDefinition, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
       this.workDefinition = workDefinition;
       this.stateDefinition = stateDefinition;
       if (dynamicWidgetLayoutListener == null) {

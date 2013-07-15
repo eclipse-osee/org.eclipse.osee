@@ -169,7 +169,7 @@ public class AtsLogWorkPage extends StateXWidgetPage {
          public StateColor getColor() {
             return null;
          }
-      }, null, null);
+      }, (String) null, null);
    }
 
 }
