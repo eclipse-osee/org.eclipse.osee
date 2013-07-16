@@ -58,7 +58,8 @@ public class LoadDataBuffer {
 
    public void addData(RelationData data) {
       synchronized (relations) {
-         relations.put(data.getParentId(), data);
+         relations.put(data.getArtIdA(), data);
+         relations.put(data.getArtIdB(), data);
       }
    }
 

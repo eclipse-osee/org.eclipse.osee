@@ -20,14 +20,19 @@ import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.excludeDel
 import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.includeDeleted;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.isDirty;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.isNotDirty;
+import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.nodeIdOnSideEquals;
+import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.nodeIdsEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import java.util.Date;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
+import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.data.HasDeleteState;
+import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.data.Modifiable;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,6 +64,11 @@ public class OrcsPredicatesTest {
    @Mock private Attribute attribute4;
    @SuppressWarnings("rawtypes")
    @Mock private Attribute attribute5;
+   
+   @Mock private HasLocalId localId1;
+   @Mock private HasLocalId localId2;
+   
+   @Mock private Relation relation1;
    // @formatter:on
 
    private Date date;
@@ -80,6 +90,12 @@ public class OrcsPredicatesTest {
       when(attribute3.getValue()).thenReturn(date);
       when(attribute4.getValue()).thenReturn("Hello");
       when(attribute5.getValue()).thenReturn(true);
+
+      when(localId1.getLocalId()).thenReturn(11);
+      when(localId2.getLocalId()).thenReturn(22);
+
+      when(relation1.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
+      when(relation1.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(22);
    }
 
    @Test
@@ -179,5 +195,19 @@ public class OrcsPredicatesTest {
       assertTrue(telAttribute.apply(attribute1));
       assertFalse(telAttribute.apply(attribute1));
       assertTrue(telAttribute.apply(attribute1));
+   }
+
+   @Test
+   public void testNodeIdOnSideEquals() {
+      assertTrue(nodeIdOnSideEquals(localId1, RelationSide.SIDE_A).apply(relation1));
+      assertTrue(nodeIdOnSideEquals(localId2, RelationSide.SIDE_B).apply(relation1));
+      assertFalse(nodeIdOnSideEquals(localId2, RelationSide.SIDE_A).apply(relation1));
+      assertFalse(nodeIdOnSideEquals(localId1, RelationSide.SIDE_B).apply(relation1));
+   }
+
+   @Test
+   public void testNodeIdEquals() {
+      assertTrue(nodeIdsEquals(localId1, localId2).apply(relation1));
+      assertFalse(nodeIdsEquals(localId2, localId1).apply(relation1));
    }
 }

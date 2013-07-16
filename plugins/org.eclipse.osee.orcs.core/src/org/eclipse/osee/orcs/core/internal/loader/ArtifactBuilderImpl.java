@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -34,6 +33,7 @@ import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManager;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
+import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -45,6 +45,7 @@ public class ArtifactBuilderImpl extends LoadDataHandlerAdapter implements Artif
    private final ExternalArtifactManager proxyFactory;
    private final ArtifactFactory artifactFactory;
    private final AttributeFactory attributeFactory;
+   private final RelationFactory relationFactory;
    private final OrcsSession session;
 
    private final Set<Artifact> created = new HashSet<Artifact>();
@@ -53,12 +54,13 @@ public class ArtifactBuilderImpl extends LoadDataHandlerAdapter implements Artif
    private final Map<Integer, Artifact> artifacts = new LinkedHashMap<Integer, Artifact>();
    private List<ArtifactReadable> readables;
 
-   public ArtifactBuilderImpl(Log logger, ExternalArtifactManager proxyFactory, ArtifactFactory artifactFactory, AttributeFactory attributeFactory, OrcsSession session) {
+   public ArtifactBuilderImpl(Log logger, ExternalArtifactManager proxyFactory, ArtifactFactory artifactFactory, AttributeFactory attributeFactory, RelationFactory relationFactory, OrcsSession session) {
       super();
       this.logger = logger;
       this.proxyFactory = proxyFactory;
       this.artifactFactory = artifactFactory;
       this.attributeFactory = attributeFactory;
+      this.relationFactory = relationFactory;
       this.session = session;
    }
 
@@ -139,9 +141,15 @@ public class ArtifactBuilderImpl extends LoadDataHandlerAdapter implements Artif
 
    @Override
    public void onData(RelationData data) throws OseeCoreException {
-      RelationContainer container = relations.get(data.getParentId());
-      Conditions.checkNotNull(container, "RelationContainer",
-         "Invalid relation data container not found - data[%s]. . ", data);
+      addRelationFor(data.getArtIdA(), data);
+      addRelationFor(data.getArtIdB(), data);
+   }
+
+   private void addRelationFor(int id, RelationData data) throws OseeCoreException {
+      RelationContainer container = relations.get(id);
+      if (container == null) {
+         container = relationFactory.createRelationContainer(id);
+      }
       container.add(data);
    }
 

@@ -69,7 +69,6 @@ public class IntegrationUtil {
       int index = 0;
       assertEquals(data.getLocalId(), values[index++]);
 
-      assertEquals(data.getParentId(), values[index++]);
       assertEquals(data.getArtIdA(), values[index++]);
       assertEquals(data.getArtIdB(), values[index++]);
       assertEquals(data.getRationale(), values[index++]);

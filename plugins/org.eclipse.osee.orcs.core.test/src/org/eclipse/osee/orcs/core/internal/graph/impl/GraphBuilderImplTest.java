@@ -1,0 +1,173 @@
+/*******************************************************************************
+ * Copyright (c) 2013 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.orcs.core.internal.graph.impl;
+
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.ds.ArtifactData;
+import org.eclipse.osee.orcs.core.ds.AttributeData;
+import org.eclipse.osee.orcs.core.ds.LoadDescription;
+import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
+import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
+import org.eclipse.osee.orcs.core.internal.graph.GraphBuilder;
+import org.eclipse.osee.orcs.core.internal.graph.GraphData;
+import org.eclipse.osee.orcs.core.internal.graph.GraphProvider;
+import org.eclipse.osee.orcs.core.internal.relation.Relation;
+import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
+import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.mockito.Mock;
+
+/**
+ * Test Case for @{link GraphBuilderImpl}
+ * 
+ * @author Megumi Telles
+ */
+public class GraphBuilderImplTest {
+
+   private static final IRelationType TYPE_1 = TokenFactory.createRelationType(123456789L, "TYPE_1");
+   private static final IOseeBranch BRANCH = CoreBranches.COMMON;
+   private static final int TRANSACTION_ID = 231214214;
+
+   @Rule
+   public ExpectedException thrown = ExpectedException.none();
+
+   // @formatter:off
+   @Mock private Log logger;
+   @Mock private ArtifactFactory artifactFactory;
+   @Mock private AttributeFactory attributeFactory;
+   @Mock private RelationFactory relationFactory;
+   
+   @Mock private OrcsSession session;
+   @Mock private GraphProvider graphProvider;
+   @Mock private GraphData graphData;
+   
+   @Mock private LoadDescription description;
+   
+   @Mock private ArtifactData artifactData;
+   @Mock private AttributeData attributeData;
+   @Mock private RelationData relationData;
+   
+   @Mock private Artifact artifact;
+   @Mock private Artifact container;
+   @Mock private Relation relation;   
+   
+   // @formatter:on
+
+   private GraphBuilder builder;
+
+   private final RelationNodeAdjacencies adjacencies = new RelationNodeAdjacencies();
+
+   @Before
+   public void setUp() throws Exception {
+      initMocks(this);
+
+      builder = new GraphBuilderImpl(logger, artifactFactory, attributeFactory, relationFactory, graphProvider);
+
+      when(description.getSession()).thenReturn(session);
+      when(description.getBranch()).thenReturn(BRANCH);
+      when(description.getTransaction()).thenReturn(TRANSACTION_ID);
+      when(graphProvider.getGraph(session, BRANCH, TRANSACTION_ID)).thenReturn(graphData);
+
+      when(relationFactory.createRelationContainer()).thenReturn(adjacencies);
+      when(relationFactory.createRelation(relationData)).thenReturn(relation);
+      when(relation.getRelationType()).thenReturn(TYPE_1);
+
+      when(attributeData.getArtifactId()).thenReturn(60);
+   }
+
+   @Test
+   public void testGraphNull() throws OseeCoreException {
+      thrown.expect(OseeArgumentException.class);
+      thrown.expectMessage("graph cannot be null");
+
+      builder.onLoadStart();
+      builder.onData(artifactData);
+      builder.onData(attributeData);
+      builder.onData(relationData);
+      builder.onLoadEnd();
+   }
+
+   @Test
+   public void testOnLoadDescription() throws OseeCoreException {
+      builder.onLoadStart();
+      builder.onLoadDescription(description);
+      builder.onLoadEnd();
+
+      verify(description).getBranch();
+      verify(description).getTransaction();
+   }
+
+   @Test
+   public void testGetNodeOrAdjanciesNull() throws OseeCoreException {
+      when(graphData.getNode(artifactData)).thenReturn(null);
+      when(artifactFactory.createArtifact(artifactData)).thenReturn(artifact);
+
+      when(graphData.getNode(60)).thenReturn(null);
+      when(graphData.getNode(relationData)).thenReturn(null);
+
+      builder.onLoadStart();
+      builder.onLoadDescription(description);
+
+      builder.onData(artifactData);
+      verify(graphData).addNode(artifact);
+      verify(artifactFactory).createArtifact(artifactData);
+      verify(relationFactory, times(1)).createRelationContainer();
+
+      reset(relationFactory);
+      when(relationFactory.createRelationContainer()).thenReturn(adjacencies);
+      when(relationFactory.createRelation(relationData)).thenReturn(relation);
+
+      builder.onData(attributeData);
+      verify(logger).warn("Orphaned attribute detected - data[%s]", attributeData);
+
+      builder.onData(relationData);
+      verify(relationFactory, times(2)).createRelationContainer();
+
+      builder.onLoadEnd();
+      verify(relationFactory, times(1)).createRelation(relationData);
+   }
+
+   @Test
+   public void testOnData() throws OseeCoreException {
+      when(graphData.getNode(artifactData)).thenReturn(artifact);
+      when(graphData.getNode(60)).thenReturn(container);
+      when(graphData.getAdjacencies(59)).thenReturn(adjacencies);
+
+      builder.onLoadStart();
+      builder.onLoadDescription(description);
+      builder.onData(artifactData);
+      builder.onData(attributeData);
+      builder.onData(relationData);
+      builder.onLoadEnd();
+
+      verify(attributeFactory).createAttribute(container, attributeData);
+      verify(relationFactory).createRelation(relationData);
+
+   }
+
+}

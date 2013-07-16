@@ -25,6 +25,7 @@ import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManagerImpl;
+import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderChange;
 import org.eclipse.osee.orcs.core.internal.util.ValueProvider;
@@ -37,6 +38,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    private EditState objectEditState;
    private ArtifactData artifactData;
+   private GraphData graph;
 
    private final RelationContainer relationContainer;
 
@@ -47,6 +49,16 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
       this.branchProvider = branchProvider;
       this.relationContainer = relationContainer;
       this.objectEditState = EditState.NO_CHANGE;
+   }
+
+   @Override
+   public void setGraph(GraphData graph) {
+      this.graph = graph;
+   }
+
+   @Override
+   public GraphData getGraph() {
+      return graph;
    }
 
    @Override

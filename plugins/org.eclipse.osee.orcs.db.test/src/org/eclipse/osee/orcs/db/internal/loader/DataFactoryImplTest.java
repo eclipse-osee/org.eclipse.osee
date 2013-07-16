@@ -125,7 +125,6 @@ public class DataFactoryImplTest {
       when(relData.getBaseTypeUuid()).thenReturn(777L);
       when(relData.getArtIdA()).thenReturn(88);
       when(relData.getArtIdB()).thenReturn(99);
-      when(relData.getParentId()).thenReturn(1111);
       when(relData.getRationale()).thenReturn("this is the rationale");
 
       when(idFactory.getBranchId(CoreBranches.COMMON)).thenReturn(657);
@@ -281,7 +280,7 @@ public class DataFactoryImplTest {
       when(localId2.getLocalId()).thenReturn(9513);
 
       RelationData actual =
-         dataFactory.createRelationData(relationType, localId1, CoreBranches.COMMON, localId1, localId2, "My rationale");
+         dataFactory.createRelationData(relationType, CoreBranches.COMMON, localId1, localId2, "My rationale");
 
       VersionData actualVer = actual.getVersion();
       assertEquals(657, actualVer.getBranchId());
@@ -299,7 +298,6 @@ public class DataFactoryImplTest {
 
       assertEquals(4562, actual.getArtIdA());
       assertEquals(9513, actual.getArtIdB());
-      assertEquals(4562, actual.getParentId());
       assertEquals("My rationale", actual.getRationale());
    }
 
@@ -497,7 +495,6 @@ public class DataFactoryImplTest {
 
       assertEquals(88, actual.getArtIdA());
       assertEquals(99, actual.getArtIdB());
-      assertEquals(1111, actual.getParentId());
       assertEquals("this is the rationale", actual.getRationale());
    }
 

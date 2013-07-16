@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.ResultSet;
-import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoaderFactory;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
+import org.eclipse.osee.orcs.core.internal.util.ResultSets;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.data.RelationTypes;
@@ -95,7 +95,7 @@ public class RelationGraphImpl implements GraphReadable {
       } else {
          toReturn = loadRelated(art.getBranch(), artIds);
       }
-      return new ResultSetList<ArtifactReadable>(toReturn);
+      return ResultSets.newResultSet(toReturn);
    }
 
    @Override

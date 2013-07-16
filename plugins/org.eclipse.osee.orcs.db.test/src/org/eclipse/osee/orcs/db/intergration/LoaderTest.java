@@ -143,9 +143,9 @@ public class LoaderTest {
       Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
 
       // @formatter:off
-		verifyData(rels.next(), 1, 7, 7, 8, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 53L);
-		verifyData(rels.next(), 2, 7, 1, 7, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 52L);
-		verifyData(rels.next(), 3, 7, 7, 15, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 54L);
+		verifyData(rels.next(), 1, 7, 8, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 53L);
+		verifyData(rels.next(), 2, 1, 7, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 52L);
+		verifyData(rels.next(), 3, 7, 15, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 54L);
 		// @formatter:on
    }
 
@@ -192,9 +192,9 @@ public class LoaderTest {
       Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
 
       // @formatter:off
-		verifyData(rels.next(), 1, 7, 7, 8, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 53L);
-		verifyData(rels.next(), 2, 7, 1, 7, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 52L);
-		verifyData(rels.next(), 3, 7, 7, 15, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 54L);
+		verifyData(rels.next(), 1, 7, 8, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 53L);
+		verifyData(rels.next(), 2, 1, 7, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 52L);
+		verifyData(rels.next(), 3, 7, 15, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 54L);
 		// @formatter:on
    }
 
@@ -240,8 +240,8 @@ public class LoaderTest {
       Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
 
       // @formatter:off
-		verifyData(rels.next(), 2, 7, 1, 7, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 52L);
-		verifyData(rels.next(), 3, 7, 7, 15, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 54L);
+		verifyData(rels.next(), 2, 1, 7, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 52L);
+		verifyData(rels.next(), 3, 7, 15, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 54L);
 		// @formatter:on
    }
 
@@ -291,9 +291,9 @@ public class LoaderTest {
       Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
 
       // @formatter:off
-      verifyData(rels.next(), 1, 7, 7, 8, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 53L);
-      verifyData(rels.next(), 2, 7, 1, 7, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 52L);
-      verifyData(rels.next(), 3, 7, 7, 15, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 54L);
+      verifyData(rels.next(), 1, 7, 8, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 53L);
+      verifyData(rels.next(), 2, 1, 7, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 52L);
+      verifyData(rels.next(), 3, 7, 15, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 54L);
       // @formatter:on
    }
 }

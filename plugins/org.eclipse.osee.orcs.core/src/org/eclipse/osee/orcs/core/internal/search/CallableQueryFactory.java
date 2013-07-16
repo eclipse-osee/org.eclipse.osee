@@ -14,7 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ResultSet;
-import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
@@ -27,6 +26,7 @@ import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.internal.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.internal.ArtifactBuilderFactory;
+import org.eclipse.osee.orcs.core.internal.util.ResultSets;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.HasLocalId;
@@ -76,7 +76,7 @@ public class CallableQueryFactory {
             OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.ATTRIBUTE);
             queryEngine.createArtifactQuery(getSession(), getQueryData(), handler).call();
             setItemsFound(results.size());
-            return new ResultSetList<HasLocalId>(results);
+            return ResultSets.newResultSet(results);
          }
       };
    }
@@ -91,7 +91,7 @@ public class CallableQueryFactory {
             queryEngine.createArtifactQuery(getSession(), getQueryData(), handler).call();
             List<ArtifactReadable> results = handler.getArtifacts();
             setItemsFound(results.size());
-            return new ResultSetList<ArtifactReadable>(results);
+            return ResultSets.newResultSet(results);
          }
       };
    }
@@ -108,7 +108,7 @@ public class CallableQueryFactory {
 
             List<Match<ArtifactReadable, AttributeReadable<?>>> results = handler.getResults();
             setItemsFound(results.size());
-            return new ResultSetList<Match<ArtifactReadable, AttributeReadable<?>>>(results);
+            return ResultSets.newResultSet(results);
          }
       };
    }

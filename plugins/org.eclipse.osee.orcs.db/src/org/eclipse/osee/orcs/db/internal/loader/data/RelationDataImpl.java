@@ -20,7 +20,6 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
  */
 public class RelationDataImpl extends OrcsVersionedObjectImpl implements RelationData {
 
-   private int parentId = RelationalConstants.ART_ID_SENTINEL;
    private int artIdA = RelationalConstants.ART_ID_SENTINEL;
    private int artIdB = RelationalConstants.ART_ID_SENTINEL;
    private String rationale = RelationalConstants.DEFAULT_RATIONALE;
@@ -68,16 +67,6 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl implements Relatio
    }
 
    @Override
-   public void setParentId(int parentId) {
-      this.parentId = parentId;
-   }
-
-   @Override
-   public int getParentId() {
-      return parentId;
-   }
-
-   @Override
    public int getArtIdOn(RelationSide side) {
       return RelationSide.SIDE_A == side ? getArtIdA() : getArtIdB();
    }
@@ -88,7 +77,6 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl implements Relatio
       int result = super.hashCode();
       result = prime * result + artIdA;
       result = prime * result + artIdB;
-      result = prime * result + parentId;
       result = prime * result + ((rationale == null) ? 0 : rationale.hashCode());
       return result;
    }
@@ -111,9 +99,6 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl implements Relatio
       if (artIdB != other.artIdB) {
          return false;
       }
-      if (parentId != other.parentId) {
-         return false;
-      }
       if (rationale == null) {
          if (other.rationale != null) {
             return false;
@@ -126,7 +111,7 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl implements Relatio
 
    @Override
    public String toString() {
-      return "RelationData [parentId=" + parentId + ", artIdA=" + artIdA + ", artIdB=" + artIdB + ", rationale=" + rationale + " " + super.toString() + "]";
+      return "RelationData [artIdA=" + artIdA + ", artIdB=" + artIdB + ", rationale=" + rationale + " " + super.toString() + "]";
    }
 
 }

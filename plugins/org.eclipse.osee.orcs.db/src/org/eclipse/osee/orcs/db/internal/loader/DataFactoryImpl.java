@@ -121,13 +121,13 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public RelationData createRelationData(IRelationType relationType, HasLocalId parent, IOseeBranch branch, HasLocalId aArt, HasLocalId bArt, String rationale) throws OseeCoreException {
+   public RelationData createRelationData(IRelationType relationType, IOseeBranch branch, HasLocalId aArt, HasLocalId bArt, String rationale) throws OseeCoreException {
       VersionData version = objectFactory.createDefaultVersionData();
       version.setBranchId(idFactory.getBranchId(branch));
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       int relationId = RelationalConstants.DEFAULT_ITEM_ID;
-      return objectFactory.createRelationData(version, relationId, relationType, modType, parent.getLocalId(),
-         aArt.getLocalId(), bArt.getLocalId(), rationale);
+      return objectFactory.createRelationData(version, relationId, relationType, modType, aArt.getLocalId(),
+         bArt.getLocalId(), rationale);
    }
 
    @Override

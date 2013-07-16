@@ -15,12 +15,12 @@ import java.lang.reflect.Method;
 import java.util.List;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.ResultSet;
-import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.internal.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.internal.ArtifactBuilderFactory;
+import org.eclipse.osee.orcs.core.internal.util.ResultSets;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -66,7 +66,7 @@ public class ArtifactLoaderInvocationHandler implements InvocationHandler {
 
    private ResultSet<ArtifactReadable> getResults(HasCancellation cancellation) throws OseeCoreException {
       List<ArtifactReadable> data = load(cancellation);
-      return new ResultSetList<ArtifactReadable>(data);
+      return ResultSets.newResultSet(data);
    }
 
    private boolean isLoad(Method method) {

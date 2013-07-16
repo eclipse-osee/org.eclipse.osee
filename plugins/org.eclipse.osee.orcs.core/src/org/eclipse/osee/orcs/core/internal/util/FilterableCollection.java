@@ -135,4 +135,9 @@ public abstract class FilterableCollection<MATCH_DATA, KEY, DATA> {
    }
 
    protected abstract MATCH_DATA asMatcherData(DATA data);
+
+   @Override
+   public String toString() {
+      return "FilterableCollection [map=" + map + "]";
+   }
 }

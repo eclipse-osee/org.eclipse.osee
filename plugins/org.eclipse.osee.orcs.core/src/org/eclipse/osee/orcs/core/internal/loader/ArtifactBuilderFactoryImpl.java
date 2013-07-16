@@ -17,6 +17,7 @@ import org.eclipse.osee.orcs.core.internal.ArtifactBuilderFactory;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
+import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -28,18 +29,20 @@ public class ArtifactBuilderFactoryImpl implements ArtifactBuilderFactory {
 
    private final ArtifactFactory artifactFactory;
    private final AttributeFactory attributeFactory;
+   private final RelationFactory relationFactory;
 
-   public ArtifactBuilderFactoryImpl(Log logger, ExternalArtifactManager proxyFactory, ArtifactFactory artifactFactory, AttributeFactory attributeFactory) {
+   public ArtifactBuilderFactoryImpl(Log logger, ExternalArtifactManager proxyFactory, ArtifactFactory artifactFactory, AttributeFactory attributeFactory, RelationFactory relationFactory) {
       super();
       this.logger = logger;
       this.proxyFactory = proxyFactory;
       this.artifactFactory = artifactFactory;
       this.attributeFactory = attributeFactory;
+      this.relationFactory = relationFactory;
    }
 
    @Override
    public ArtifactBuilder createArtifactBuilder(OrcsSession session) {
-      return new ArtifactBuilderImpl(logger, proxyFactory, artifactFactory, attributeFactory, session);
+      return new ArtifactBuilderImpl(logger, proxyFactory, artifactFactory, attributeFactory, relationFactory, session);
    }
 
 }

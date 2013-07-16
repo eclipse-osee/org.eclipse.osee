@@ -11,21 +11,17 @@
 package org.eclipse.osee.orcs.core.internal.relation;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.Identifiable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.core.internal.graph.GraphNode;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderStore;
-import org.eclipse.osee.orcs.data.CanDelete;
-import org.eclipse.osee.orcs.data.HasLocalId;
+import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;
 
 /**
  * @author Roberto E. Escobar
  * @author Megumi Telles
  */
-
-public interface RelationNode extends Identifiable, CanDelete, HasLocalId, OrderStore {
+public interface RelationNode extends OrcsWriteable, GraphNode, OrderStore {
 
    IArtifactType getArtifactType() throws OseeCoreException;
-
-   String getExceptionString();
 
 }

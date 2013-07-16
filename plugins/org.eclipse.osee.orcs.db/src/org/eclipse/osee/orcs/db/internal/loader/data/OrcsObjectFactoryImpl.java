@@ -126,15 +126,15 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public RelationData createRelationData(VersionData version, int localId, int localTypeID, ModificationType modType, int parentId, int aArtId, int bArtId, String rationale) throws OseeCoreException {
+   public RelationData createRelationData(VersionData version, int localId, int localTypeID, ModificationType modType, int aArtId, int bArtId, String rationale) throws OseeCoreException {
       long typeId = toUuid(localTypeID);
-      return createRelationData(version, localId, typeId, modType, typeId, modType, parentId, aArtId, bArtId, rationale);
+      return createRelationData(version, localId, typeId, modType, typeId, modType, aArtId, bArtId, rationale);
    }
 
    @Override
-   public RelationData createRelationData(VersionData version, int localId, IRelationType type, ModificationType modType, int parentId, int aArtId, int bArtId, String rationale) {
+   public RelationData createRelationData(VersionData version, int localId, IRelationType type, ModificationType modType, int aArtId, int bArtId, String rationale) {
       long typeId = type.getGuid();
-      return createRelationData(version, localId, typeId, modType, typeId, modType, parentId, aArtId, bArtId, rationale);
+      return createRelationData(version, localId, typeId, modType, typeId, modType, aArtId, bArtId, rationale);
    }
 
    private ArtifactData createArtifactFromRow(VersionData version, int localId, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, String guid, String humanReadableId) {
@@ -161,14 +161,13 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       return data;
    }
 
-   private RelationData createRelationData(VersionData version, int localId, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, int parentId, int aArtId, int bArtId, String rationale) {
+   private RelationData createRelationData(VersionData version, int localId, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, int aArtId, int bArtId, String rationale) {
       RelationData data = new RelationDataImpl(version);
       data.setLocalId(localId);
       data.setTypeUuid(localTypeID);
       data.setBaseTypeUuid(baseLocalTypeID);
       data.setModType(modType);
       data.setBaseModType(baseModType);
-      data.setParentId(parentId);
       data.setArtIdA(aArtId);
       data.setArtIdB(bArtId);
       data.setRationale(rationale);
@@ -179,8 +178,8 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    public RelationData createCopy(RelationData source) {
       VersionData newVersion = createCopy(source.getVersion());
       return createRelationData(newVersion, source.getLocalId(), source.getTypeUuid(), source.getModType(),
-         source.getBaseTypeUuid(), source.getBaseModType(), source.getParentId(), source.getArtIdA(),
-         source.getArtIdB(), source.getRationale());
+         source.getBaseTypeUuid(), source.getBaseModType(), source.getArtIdA(), source.getArtIdB(),
+         source.getRationale());
    }
 
 }

@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.data.HasLocalId;
  */
 public interface RelationDataFactory {
 
-   RelationData createRelationData(IRelationType relationType, HasLocalId parent, IOseeBranch branch, HasLocalId aArt, HasLocalId bArt, String rationale) throws OseeCoreException;
+   RelationData createRelationData(IRelationType relationType, IOseeBranch branch, HasLocalId aArt, HasLocalId bArt, String rationale) throws OseeCoreException;
 
    RelationData clone(RelationData source) throws OseeCoreException;
 }

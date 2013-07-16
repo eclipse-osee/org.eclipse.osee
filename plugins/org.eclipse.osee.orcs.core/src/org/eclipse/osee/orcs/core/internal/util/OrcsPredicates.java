@@ -17,8 +17,10 @@ import static com.google.common.base.Predicates.equalTo;
 import static com.google.common.base.Predicates.not;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
+import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.data.HasDeleteState;
 import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.data.Modifiable;
@@ -143,5 +145,30 @@ public final class OrcsPredicates {
          }
          return result;
       }
+   }
+
+   public static Predicate<Relation> nodeIdOnSideEquals(final HasLocalId localId, final RelationSide side) {
+      return new Predicate<Relation>() {
+
+         @Override
+         public boolean apply(Relation relation) {
+            return relation.getLocalIdForSide(side) == localId.getLocalId();
+         }
+      };
+   }
+
+   public static Predicate<Relation> nodeIdsEquals(final HasLocalId aId, final HasLocalId bId) {
+      return nodeIdsEquals(aId.getLocalId(), bId.getLocalId());
+   }
+
+   public static Predicate<Relation> nodeIdsEquals(final int aId, final int bId) {
+      return new Predicate<Relation>() {
+
+         @Override
+         public boolean apply(Relation relation) {
+            return aId == relation.getLocalIdForSide(RelationSide.SIDE_A) && //
+            bId == relation.getLocalIdForSide(RelationSide.SIDE_B);
+         }
+      };
    }
 }

@@ -44,11 +44,10 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
       int typeId = chStmt.getInt("rel_link_type_id");
       ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
 
-      int parentId = chStmt.getInt("art_id");
       int aArtId = chStmt.getInt("a_art_id");
       int bArtId = chStmt.getInt("b_art_id");
       String rationale = chStmt.getString("rationale");
 
-      return factory.createRelationData(version, localId, typeId, modType, parentId, aArtId, bArtId, rationale);
+      return factory.createRelationData(version, localId, typeId, modType, aArtId, bArtId, rationale);
    }
 }

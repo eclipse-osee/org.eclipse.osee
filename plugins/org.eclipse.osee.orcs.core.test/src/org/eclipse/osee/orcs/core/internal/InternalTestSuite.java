@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactTestSuite;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeTestSuite;
 import org.eclipse.osee.orcs.core.internal.branch.BranchTestSuite;
+import org.eclipse.osee.orcs.core.internal.graph.GraphTestSuite;
 import org.eclipse.osee.orcs.core.internal.loader.LoaderTestSuite;
 import org.eclipse.osee.orcs.core.internal.proxy.ProxyTestSuite;
 import org.eclipse.osee.orcs.core.internal.relation.RelationTestSuite;
@@ -31,6 +32,7 @@ import org.junit.runners.Suite;
    ArtifactTestSuite.class,
    AttributeTestSuite.class,
    BranchTestSuite.class,
+   GraphTestSuite.class,
    LoaderTestSuite.class,
    ProxyTestSuite.class,
    RelationTestSuite.class,

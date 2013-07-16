@@ -17,10 +17,6 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
  */
 public interface RelationData extends OrcsData {
 
-   int getParentId();
-
-   void setParentId(int parentId);
-
    int getArtIdA();
 
    void setArtIdA(int artIdA);

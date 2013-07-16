@@ -143,13 +143,14 @@ public class OrcsApiImpl implements OrcsApi {
 
       module = dataStore.createDataModule(orcsTypes.getArtifactTypes(), orcsTypes.getAttributeTypes());
 
-      RelationFactory relationFactory = new RelationFactory(orcsTypes.getRelationTypes());
-
       AttributeClassResolver resolver = new AttributeClassResolver(registry, orcsTypes.getAttributeTypes());
       AttributeFactory attributeFactory =
          new AttributeFactory(resolver, module.getDataFactory(), orcsTypes.getAttributeTypes());
 
       ValueProviderFactory providerFactory = new ValueProviderFactory(cacheService.getBranchCache());
+
+      RelationFactory relationFactory =
+         new RelationFactory(orcsTypes.getRelationTypes(), module.getDataFactory(), providerFactory);
 
       ArtifactFactory artifactFactory =
          new ArtifactFactory(module.getDataFactory(), attributeFactory, relationFactory, orcsTypes.getArtifactTypes(),
@@ -158,7 +159,7 @@ public class OrcsApiImpl implements OrcsApi {
       proxyManager = new ExternalArtifactManagerImpl();
 
       ArtifactBuilderFactory builderFactory =
-         new ArtifactBuilderFactoryImpl(logger, proxyManager, artifactFactory, attributeFactory);
+         new ArtifactBuilderFactoryImpl(logger, proxyManager, artifactFactory, attributeFactory, relationFactory);
 
       loaderFactory = new ArtifactLoaderFactoryImpl(module.getDataLoaderFactory(), builderFactory);
 
