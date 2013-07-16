@@ -22,29 +22,29 @@ package org.eclipse.osee.framework.core.dsl.oseeDsl;
 public interface RemoveEnum extends OverrideOption
 {
   /**
-   * Returns the value of the '<em><b>Enum Entry</b></em>' reference.
-   * <!-- begin-user-doc -->
+    * Returns the value of the '<em><b>Enum Entry</b></em>' reference.
+    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Enum Entry</em>' reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Enum Entry</em>' reference.
-   * @see #setEnumEntry(XOseeEnumEntry)
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getRemoveEnum_EnumEntry()
-   * @model
-   * @generated
-   */
+    * @return the value of the '<em>Enum Entry</em>' reference.
+    * @see #setEnumEntry(XOseeEnumEntry)
+    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getRemoveEnum_EnumEntry()
+    * @model
+    * @generated
+    */
   XOseeEnumEntry getEnumEntry();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveEnum#getEnumEntry <em>Enum Entry</em>}' reference.
-   * <!-- begin-user-doc -->
+    * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveEnum#getEnumEntry <em>Enum Entry</em>}' reference.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Enum Entry</em>' reference.
-   * @see #getEnumEntry()
-   * @generated
-   */
+    * @param value the new value of the '<em>Enum Entry</em>' reference.
+    * @see #getEnumEntry()
+    * @generated
+    */
   void setEnumEntry(XOseeEnumEntry value);
 
 } // RemoveEnum

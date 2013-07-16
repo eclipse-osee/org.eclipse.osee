@@ -29,144 +29,138 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 public class RemoveAttributeImpl extends AttributeOverrideOptionImpl implements RemoveAttribute
 {
   /**
-   * The cached value of the '{@link #getAttribute() <em>Attribute</em>}' reference.
-   * <!-- begin-user-doc -->
+    * The cached value of the '{@link #getAttribute() <em>Attribute</em>}' reference.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getAttribute()
-   * @generated
-   * @ordered
-   */
+    * @see #getAttribute()
+    * @generated
+    * @ordered
+    */
   protected XAttributeType attribute;
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   protected RemoveAttributeImpl()
   {
-    super();
-  }
+      super();
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   protected EClass eStaticClass()
   {
-    return OseeDslPackage.Literals.REMOVE_ATTRIBUTE;
-  }
+      return OseeDslPackage.Literals.REMOVE_ATTRIBUTE;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public XAttributeType getAttribute()
   {
-    if (attribute != null && attribute.eIsProxy())
-    {
-      InternalEObject oldAttribute = (InternalEObject)attribute;
-      attribute = (XAttributeType)eResolveProxy(oldAttribute);
-      if (attribute != oldAttribute)
-      {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeDslPackage.REMOVE_ATTRIBUTE__ATTRIBUTE, oldAttribute, attribute));
+      if (attribute != null && attribute.eIsProxy()) {
+         InternalEObject oldAttribute = (InternalEObject)attribute;
+         attribute = (XAttributeType)eResolveProxy(oldAttribute);
+         if (attribute != oldAttribute) {
+            if (eNotificationRequired())
+               eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeDslPackage.REMOVE_ATTRIBUTE__ATTRIBUTE, oldAttribute, attribute));
+         }
       }
-    }
-    return attribute;
-  }
+      return attribute;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public XAttributeType basicGetAttribute()
   {
-    return attribute;
-  }
+      return attribute;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public void setAttribute(XAttributeType newAttribute)
   {
-    XAttributeType oldAttribute = attribute;
-    attribute = newAttribute;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.REMOVE_ATTRIBUTE__ATTRIBUTE, oldAttribute, attribute));
-  }
+      XAttributeType oldAttribute = attribute;
+      attribute = newAttribute;
+      if (eNotificationRequired())
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.REMOVE_ATTRIBUTE__ATTRIBUTE, oldAttribute, attribute));
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.REMOVE_ATTRIBUTE__ATTRIBUTE:
-        if (resolve) return getAttribute();
-        return basicGetAttribute();
-    }
-    return super.eGet(featureID, resolve, coreType);
-  }
+      switch (featureID) {
+         case OseeDslPackage.REMOVE_ATTRIBUTE__ATTRIBUTE:
+            if (resolve) return getAttribute();
+            return basicGetAttribute();
+      }
+      return super.eGet(featureID, resolve, coreType);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public void eSet(int featureID, Object newValue)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.REMOVE_ATTRIBUTE__ATTRIBUTE:
-        setAttribute((XAttributeType)newValue);
-        return;
-    }
-    super.eSet(featureID, newValue);
-  }
+      switch (featureID) {
+         case OseeDslPackage.REMOVE_ATTRIBUTE__ATTRIBUTE:
+            setAttribute((XAttributeType)newValue);
+            return;
+      }
+      super.eSet(featureID, newValue);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public void eUnset(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.REMOVE_ATTRIBUTE__ATTRIBUTE:
-        setAttribute((XAttributeType)null);
-        return;
-    }
-    super.eUnset(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.REMOVE_ATTRIBUTE__ATTRIBUTE:
+            setAttribute((XAttributeType)null);
+            return;
+      }
+      super.eUnset(featureID);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public boolean eIsSet(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.REMOVE_ATTRIBUTE__ATTRIBUTE:
-        return attribute != null;
-    }
-    return super.eIsSet(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.REMOVE_ATTRIBUTE__ATTRIBUTE:
+            return attribute != null;
+      }
+      return super.eIsSet(featureID);
+   }
 
 } //RemoveAttributeImpl

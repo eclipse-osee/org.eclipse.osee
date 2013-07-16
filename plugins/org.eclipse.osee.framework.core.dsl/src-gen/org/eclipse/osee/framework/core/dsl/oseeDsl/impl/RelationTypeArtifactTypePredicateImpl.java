@@ -29,144 +29,138 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 public class RelationTypeArtifactTypePredicateImpl extends RelationTypePredicateImpl implements RelationTypeArtifactTypePredicate
 {
   /**
-   * The cached value of the '{@link #getArtifactTypeRef() <em>Artifact Type Ref</em>}' reference.
-   * <!-- begin-user-doc -->
+    * The cached value of the '{@link #getArtifactTypeRef() <em>Artifact Type Ref</em>}' reference.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getArtifactTypeRef()
-   * @generated
-   * @ordered
-   */
+    * @see #getArtifactTypeRef()
+    * @generated
+    * @ordered
+    */
   protected XArtifactType artifactTypeRef;
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   protected RelationTypeArtifactTypePredicateImpl()
   {
-    super();
-  }
+      super();
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   protected EClass eStaticClass()
   {
-    return OseeDslPackage.Literals.RELATION_TYPE_ARTIFACT_TYPE_PREDICATE;
-  }
+      return OseeDslPackage.Literals.RELATION_TYPE_ARTIFACT_TYPE_PREDICATE;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public XArtifactType getArtifactTypeRef()
   {
-    if (artifactTypeRef != null && artifactTypeRef.eIsProxy())
-    {
-      InternalEObject oldArtifactTypeRef = (InternalEObject)artifactTypeRef;
-      artifactTypeRef = (XArtifactType)eResolveProxy(oldArtifactTypeRef);
-      if (artifactTypeRef != oldArtifactTypeRef)
-      {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeDslPackage.RELATION_TYPE_ARTIFACT_TYPE_PREDICATE__ARTIFACT_TYPE_REF, oldArtifactTypeRef, artifactTypeRef));
+      if (artifactTypeRef != null && artifactTypeRef.eIsProxy()) {
+         InternalEObject oldArtifactTypeRef = (InternalEObject)artifactTypeRef;
+         artifactTypeRef = (XArtifactType)eResolveProxy(oldArtifactTypeRef);
+         if (artifactTypeRef != oldArtifactTypeRef) {
+            if (eNotificationRequired())
+               eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeDslPackage.RELATION_TYPE_ARTIFACT_TYPE_PREDICATE__ARTIFACT_TYPE_REF, oldArtifactTypeRef, artifactTypeRef));
+         }
       }
-    }
-    return artifactTypeRef;
-  }
+      return artifactTypeRef;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public XArtifactType basicGetArtifactTypeRef()
   {
-    return artifactTypeRef;
-  }
+      return artifactTypeRef;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public void setArtifactTypeRef(XArtifactType newArtifactTypeRef)
   {
-    XArtifactType oldArtifactTypeRef = artifactTypeRef;
-    artifactTypeRef = newArtifactTypeRef;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.RELATION_TYPE_ARTIFACT_TYPE_PREDICATE__ARTIFACT_TYPE_REF, oldArtifactTypeRef, artifactTypeRef));
-  }
+      XArtifactType oldArtifactTypeRef = artifactTypeRef;
+      artifactTypeRef = newArtifactTypeRef;
+      if (eNotificationRequired())
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.RELATION_TYPE_ARTIFACT_TYPE_PREDICATE__ARTIFACT_TYPE_REF, oldArtifactTypeRef, artifactTypeRef));
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.RELATION_TYPE_ARTIFACT_TYPE_PREDICATE__ARTIFACT_TYPE_REF:
-        if (resolve) return getArtifactTypeRef();
-        return basicGetArtifactTypeRef();
-    }
-    return super.eGet(featureID, resolve, coreType);
-  }
+      switch (featureID) {
+         case OseeDslPackage.RELATION_TYPE_ARTIFACT_TYPE_PREDICATE__ARTIFACT_TYPE_REF:
+            if (resolve) return getArtifactTypeRef();
+            return basicGetArtifactTypeRef();
+      }
+      return super.eGet(featureID, resolve, coreType);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public void eSet(int featureID, Object newValue)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.RELATION_TYPE_ARTIFACT_TYPE_PREDICATE__ARTIFACT_TYPE_REF:
-        setArtifactTypeRef((XArtifactType)newValue);
-        return;
-    }
-    super.eSet(featureID, newValue);
-  }
+      switch (featureID) {
+         case OseeDslPackage.RELATION_TYPE_ARTIFACT_TYPE_PREDICATE__ARTIFACT_TYPE_REF:
+            setArtifactTypeRef((XArtifactType)newValue);
+            return;
+      }
+      super.eSet(featureID, newValue);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public void eUnset(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.RELATION_TYPE_ARTIFACT_TYPE_PREDICATE__ARTIFACT_TYPE_REF:
-        setArtifactTypeRef((XArtifactType)null);
-        return;
-    }
-    super.eUnset(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.RELATION_TYPE_ARTIFACT_TYPE_PREDICATE__ARTIFACT_TYPE_REF:
+            setArtifactTypeRef((XArtifactType)null);
+            return;
+      }
+      super.eUnset(featureID);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public boolean eIsSet(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.RELATION_TYPE_ARTIFACT_TYPE_PREDICATE__ARTIFACT_TYPE_REF:
-        return artifactTypeRef != null;
-    }
-    return super.eIsSet(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.RELATION_TYPE_ARTIFACT_TYPE_PREDICATE__ARTIFACT_TYPE_REF:
+            return artifactTypeRef != null;
+      }
+      return super.eIsSet(featureID);
+   }
 
 } //RelationTypeArtifactTypePredicateImpl

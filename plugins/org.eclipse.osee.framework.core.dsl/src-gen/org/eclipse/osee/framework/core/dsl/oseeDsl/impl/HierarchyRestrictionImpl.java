@@ -40,196 +40,188 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 public class HierarchyRestrictionImpl extends MinimalEObjectImpl.Container implements HierarchyRestriction
 {
   /**
-   * The cached value of the '{@link #getArtifactMatcherRef() <em>Artifact Matcher Ref</em>}' reference.
-   * <!-- begin-user-doc -->
+    * The cached value of the '{@link #getArtifactMatcherRef() <em>Artifact Matcher Ref</em>}' reference.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getArtifactMatcherRef()
-   * @generated
-   * @ordered
-   */
+    * @see #getArtifactMatcherRef()
+    * @generated
+    * @ordered
+    */
   protected XArtifactMatcher artifactMatcherRef;
 
   /**
-   * The cached value of the '{@link #getAccessRules() <em>Access Rules</em>}' containment reference list.
-   * <!-- begin-user-doc -->
+    * The cached value of the '{@link #getAccessRules() <em>Access Rules</em>}' containment reference list.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getAccessRules()
-   * @generated
-   * @ordered
-   */
+    * @see #getAccessRules()
+    * @generated
+    * @ordered
+    */
   protected EList<ObjectRestriction> accessRules;
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   protected HierarchyRestrictionImpl()
   {
-    super();
-  }
+      super();
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   protected EClass eStaticClass()
   {
-    return OseeDslPackage.Literals.HIERARCHY_RESTRICTION;
-  }
+      return OseeDslPackage.Literals.HIERARCHY_RESTRICTION;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public XArtifactMatcher getArtifactMatcherRef()
   {
-    if (artifactMatcherRef != null && artifactMatcherRef.eIsProxy())
-    {
-      InternalEObject oldArtifactMatcherRef = (InternalEObject)artifactMatcherRef;
-      artifactMatcherRef = (XArtifactMatcher)eResolveProxy(oldArtifactMatcherRef);
-      if (artifactMatcherRef != oldArtifactMatcherRef)
-      {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF, oldArtifactMatcherRef, artifactMatcherRef));
+      if (artifactMatcherRef != null && artifactMatcherRef.eIsProxy()) {
+         InternalEObject oldArtifactMatcherRef = (InternalEObject)artifactMatcherRef;
+         artifactMatcherRef = (XArtifactMatcher)eResolveProxy(oldArtifactMatcherRef);
+         if (artifactMatcherRef != oldArtifactMatcherRef) {
+            if (eNotificationRequired())
+               eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF, oldArtifactMatcherRef, artifactMatcherRef));
+         }
       }
-    }
-    return artifactMatcherRef;
-  }
+      return artifactMatcherRef;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public XArtifactMatcher basicGetArtifactMatcherRef()
   {
-    return artifactMatcherRef;
-  }
+      return artifactMatcherRef;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public void setArtifactMatcherRef(XArtifactMatcher newArtifactMatcherRef)
   {
-    XArtifactMatcher oldArtifactMatcherRef = artifactMatcherRef;
-    artifactMatcherRef = newArtifactMatcherRef;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF, oldArtifactMatcherRef, artifactMatcherRef));
-  }
+      XArtifactMatcher oldArtifactMatcherRef = artifactMatcherRef;
+      artifactMatcherRef = newArtifactMatcherRef;
+      if (eNotificationRequired())
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF, oldArtifactMatcherRef, artifactMatcherRef));
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public EList<ObjectRestriction> getAccessRules()
   {
-    if (accessRules == null)
-    {
-      accessRules = new EObjectContainmentEList<ObjectRestriction>(ObjectRestriction.class, this, OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES);
-    }
-    return accessRules;
-  }
+      if (accessRules == null) {
+         accessRules = new EObjectContainmentEList<ObjectRestriction>(ObjectRestriction.class, this, OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES);
+      }
+      return accessRules;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES:
-        return ((InternalEList<?>)getAccessRules()).basicRemove(otherEnd, msgs);
-    }
-    return super.eInverseRemove(otherEnd, featureID, msgs);
-  }
+      switch (featureID) {
+         case OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES:
+            return ((InternalEList<?>)getAccessRules()).basicRemove(otherEnd, msgs);
+      }
+      return super.eInverseRemove(otherEnd, featureID, msgs);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF:
-        if (resolve) return getArtifactMatcherRef();
-        return basicGetArtifactMatcherRef();
-      case OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES:
-        return getAccessRules();
-    }
-    return super.eGet(featureID, resolve, coreType);
-  }
+      switch (featureID) {
+         case OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF:
+            if (resolve) return getArtifactMatcherRef();
+            return basicGetArtifactMatcherRef();
+         case OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES:
+            return getAccessRules();
+      }
+      return super.eGet(featureID, resolve, coreType);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF:
-        setArtifactMatcherRef((XArtifactMatcher)newValue);
-        return;
-      case OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES:
-        getAccessRules().clear();
-        getAccessRules().addAll((Collection<? extends ObjectRestriction>)newValue);
-        return;
-    }
-    super.eSet(featureID, newValue);
-  }
+      switch (featureID) {
+         case OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF:
+            setArtifactMatcherRef((XArtifactMatcher)newValue);
+            return;
+         case OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES:
+            getAccessRules().clear();
+            getAccessRules().addAll((Collection<? extends ObjectRestriction>)newValue);
+            return;
+      }
+      super.eSet(featureID, newValue);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public void eUnset(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF:
-        setArtifactMatcherRef((XArtifactMatcher)null);
-        return;
-      case OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES:
-        getAccessRules().clear();
-        return;
-    }
-    super.eUnset(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF:
+            setArtifactMatcherRef((XArtifactMatcher)null);
+            return;
+         case OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES:
+            getAccessRules().clear();
+            return;
+      }
+      super.eUnset(featureID);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public boolean eIsSet(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF:
-        return artifactMatcherRef != null;
-      case OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES:
-        return accessRules != null && !accessRules.isEmpty();
-    }
-    return super.eIsSet(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF:
+            return artifactMatcherRef != null;
+         case OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES:
+            return accessRules != null && !accessRules.isEmpty();
+      }
+      return super.eIsSet(featureID);
+   }
 
 } //HierarchyRestrictionImpl

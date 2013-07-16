@@ -21,24 +21,24 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeElement;
 public class OseeElementImpl extends MinimalEObjectImpl.Container implements OseeElement
 {
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   protected OseeElementImpl()
   {
-    super();
-  }
+      super();
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   protected EClass eStaticClass()
   {
-    return OseeDslPackage.Literals.OSEE_ELEMENT;
-  }
+      return OseeDslPackage.Literals.OSEE_ELEMENT;
+   }
 
 } //OseeElementImpl

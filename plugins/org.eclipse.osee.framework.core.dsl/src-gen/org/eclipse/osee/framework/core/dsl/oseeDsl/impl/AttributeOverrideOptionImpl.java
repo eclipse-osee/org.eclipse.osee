@@ -21,24 +21,24 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
 public class AttributeOverrideOptionImpl extends MinimalEObjectImpl.Container implements AttributeOverrideOption
 {
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   protected AttributeOverrideOptionImpl()
   {
-    super();
-  }
+      super();
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   protected EClass eStaticClass()
   {
-    return OseeDslPackage.Literals.ATTRIBUTE_OVERRIDE_OPTION;
-  }
+      return OseeDslPackage.Literals.ATTRIBUTE_OVERRIDE_OPTION;
+   }
 
 } //AttributeOverrideOptionImpl

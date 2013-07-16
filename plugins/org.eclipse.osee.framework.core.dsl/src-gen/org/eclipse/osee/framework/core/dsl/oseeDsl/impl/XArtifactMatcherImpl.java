@@ -42,239 +42,232 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XLogicOperator;
 public class XArtifactMatcherImpl extends MinimalEObjectImpl.Container implements XArtifactMatcher
 {
   /**
-   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getName()
-   * @generated
-   * @ordered
-   */
+    * @see #getName()
+    * @generated
+    * @ordered
+    */
   protected static final String NAME_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getName()
-   * @generated
-   * @ordered
-   */
+    * @see #getName()
+    * @generated
+    * @ordered
+    */
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The cached value of the '{@link #getConditions() <em>Conditions</em>}' containment reference list.
-   * <!-- begin-user-doc -->
+    * The cached value of the '{@link #getConditions() <em>Conditions</em>}' containment reference list.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getConditions()
-   * @generated
-   * @ordered
-   */
+    * @see #getConditions()
+    * @generated
+    * @ordered
+    */
   protected EList<Condition> conditions;
 
   /**
-   * The cached value of the '{@link #getOperators() <em>Operators</em>}' attribute list.
-   * <!-- begin-user-doc -->
+    * The cached value of the '{@link #getOperators() <em>Operators</em>}' attribute list.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getOperators()
-   * @generated
-   * @ordered
-   */
+    * @see #getOperators()
+    * @generated
+    * @ordered
+    */
   protected EList<XLogicOperator> operators;
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   protected XArtifactMatcherImpl()
   {
-    super();
-  }
+      super();
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   protected EClass eStaticClass()
   {
-    return OseeDslPackage.Literals.XARTIFACT_MATCHER;
-  }
+      return OseeDslPackage.Literals.XARTIFACT_MATCHER;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public String getName()
   {
-    return name;
-  }
+      return name;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public void setName(String newName)
   {
-    String oldName = name;
-    name = newName;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XARTIFACT_MATCHER__NAME, oldName, name));
-  }
+      String oldName = name;
+      name = newName;
+      if (eNotificationRequired())
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XARTIFACT_MATCHER__NAME, oldName, name));
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public EList<Condition> getConditions()
   {
-    if (conditions == null)
-    {
-      conditions = new EObjectContainmentEList<Condition>(Condition.class, this, OseeDslPackage.XARTIFACT_MATCHER__CONDITIONS);
-    }
-    return conditions;
-  }
+      if (conditions == null) {
+         conditions = new EObjectContainmentEList<Condition>(Condition.class, this, OseeDslPackage.XARTIFACT_MATCHER__CONDITIONS);
+      }
+      return conditions;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public EList<XLogicOperator> getOperators()
   {
-    if (operators == null)
-    {
-      operators = new EDataTypeEList<XLogicOperator>(XLogicOperator.class, this, OseeDslPackage.XARTIFACT_MATCHER__OPERATORS);
-    }
-    return operators;
-  }
+      if (operators == null) {
+         operators = new EDataTypeEList<XLogicOperator>(XLogicOperator.class, this, OseeDslPackage.XARTIFACT_MATCHER__OPERATORS);
+      }
+      return operators;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.XARTIFACT_MATCHER__CONDITIONS:
-        return ((InternalEList<?>)getConditions()).basicRemove(otherEnd, msgs);
-    }
-    return super.eInverseRemove(otherEnd, featureID, msgs);
-  }
+      switch (featureID) {
+         case OseeDslPackage.XARTIFACT_MATCHER__CONDITIONS:
+            return ((InternalEList<?>)getConditions()).basicRemove(otherEnd, msgs);
+      }
+      return super.eInverseRemove(otherEnd, featureID, msgs);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.XARTIFACT_MATCHER__NAME:
-        return getName();
-      case OseeDslPackage.XARTIFACT_MATCHER__CONDITIONS:
-        return getConditions();
-      case OseeDslPackage.XARTIFACT_MATCHER__OPERATORS:
-        return getOperators();
-    }
-    return super.eGet(featureID, resolve, coreType);
-  }
+      switch (featureID) {
+         case OseeDslPackage.XARTIFACT_MATCHER__NAME:
+            return getName();
+         case OseeDslPackage.XARTIFACT_MATCHER__CONDITIONS:
+            return getConditions();
+         case OseeDslPackage.XARTIFACT_MATCHER__OPERATORS:
+            return getOperators();
+      }
+      return super.eGet(featureID, resolve, coreType);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.XARTIFACT_MATCHER__NAME:
-        setName((String)newValue);
-        return;
-      case OseeDslPackage.XARTIFACT_MATCHER__CONDITIONS:
-        getConditions().clear();
-        getConditions().addAll((Collection<? extends Condition>)newValue);
-        return;
-      case OseeDslPackage.XARTIFACT_MATCHER__OPERATORS:
-        getOperators().clear();
-        getOperators().addAll((Collection<? extends XLogicOperator>)newValue);
-        return;
-    }
-    super.eSet(featureID, newValue);
-  }
+      switch (featureID) {
+         case OseeDslPackage.XARTIFACT_MATCHER__NAME:
+            setName((String)newValue);
+            return;
+         case OseeDslPackage.XARTIFACT_MATCHER__CONDITIONS:
+            getConditions().clear();
+            getConditions().addAll((Collection<? extends Condition>)newValue);
+            return;
+         case OseeDslPackage.XARTIFACT_MATCHER__OPERATORS:
+            getOperators().clear();
+            getOperators().addAll((Collection<? extends XLogicOperator>)newValue);
+            return;
+      }
+      super.eSet(featureID, newValue);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public void eUnset(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.XARTIFACT_MATCHER__NAME:
-        setName(NAME_EDEFAULT);
-        return;
-      case OseeDslPackage.XARTIFACT_MATCHER__CONDITIONS:
-        getConditions().clear();
-        return;
-      case OseeDslPackage.XARTIFACT_MATCHER__OPERATORS:
-        getOperators().clear();
-        return;
-    }
-    super.eUnset(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.XARTIFACT_MATCHER__NAME:
+            setName(NAME_EDEFAULT);
+            return;
+         case OseeDslPackage.XARTIFACT_MATCHER__CONDITIONS:
+            getConditions().clear();
+            return;
+         case OseeDslPackage.XARTIFACT_MATCHER__OPERATORS:
+            getOperators().clear();
+            return;
+      }
+      super.eUnset(featureID);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public boolean eIsSet(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.XARTIFACT_MATCHER__NAME:
-        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case OseeDslPackage.XARTIFACT_MATCHER__CONDITIONS:
-        return conditions != null && !conditions.isEmpty();
-      case OseeDslPackage.XARTIFACT_MATCHER__OPERATORS:
-        return operators != null && !operators.isEmpty();
-    }
-    return super.eIsSet(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.XARTIFACT_MATCHER__NAME:
+            return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+         case OseeDslPackage.XARTIFACT_MATCHER__CONDITIONS:
+            return conditions != null && !conditions.isEmpty();
+         case OseeDslPackage.XARTIFACT_MATCHER__OPERATORS:
+            return operators != null && !operators.isEmpty();
+      }
+      return super.eIsSet(featureID);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public String toString()
   {
-    if (eIsProxy()) return super.toString();
+      if (eIsProxy()) return super.toString();
 
-    StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (name: ");
-    result.append(name);
-    result.append(", operators: ");
-    result.append(operators);
-    result.append(')');
-    return result.toString();
-  }
+      StringBuffer result = new StringBuffer(super.toString());
+      result.append(" (name: ");
+      result.append(name);
+      result.append(", operators: ");
+      result.append(operators);
+      result.append(')');
+      return result.toString();
+   }
 
 } //XArtifactMatcherImpl

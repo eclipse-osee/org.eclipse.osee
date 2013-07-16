@@ -29,144 +29,138 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry;
 public class RemoveEnumImpl extends OverrideOptionImpl implements RemoveEnum
 {
   /**
-   * The cached value of the '{@link #getEnumEntry() <em>Enum Entry</em>}' reference.
-   * <!-- begin-user-doc -->
+    * The cached value of the '{@link #getEnumEntry() <em>Enum Entry</em>}' reference.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getEnumEntry()
-   * @generated
-   * @ordered
-   */
+    * @see #getEnumEntry()
+    * @generated
+    * @ordered
+    */
   protected XOseeEnumEntry enumEntry;
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   protected RemoveEnumImpl()
   {
-    super();
-  }
+      super();
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   protected EClass eStaticClass()
   {
-    return OseeDslPackage.Literals.REMOVE_ENUM;
-  }
+      return OseeDslPackage.Literals.REMOVE_ENUM;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public XOseeEnumEntry getEnumEntry()
   {
-    if (enumEntry != null && enumEntry.eIsProxy())
-    {
-      InternalEObject oldEnumEntry = (InternalEObject)enumEntry;
-      enumEntry = (XOseeEnumEntry)eResolveProxy(oldEnumEntry);
-      if (enumEntry != oldEnumEntry)
-      {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeDslPackage.REMOVE_ENUM__ENUM_ENTRY, oldEnumEntry, enumEntry));
+      if (enumEntry != null && enumEntry.eIsProxy()) {
+         InternalEObject oldEnumEntry = (InternalEObject)enumEntry;
+         enumEntry = (XOseeEnumEntry)eResolveProxy(oldEnumEntry);
+         if (enumEntry != oldEnumEntry) {
+            if (eNotificationRequired())
+               eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeDslPackage.REMOVE_ENUM__ENUM_ENTRY, oldEnumEntry, enumEntry));
+         }
       }
-    }
-    return enumEntry;
-  }
+      return enumEntry;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public XOseeEnumEntry basicGetEnumEntry()
   {
-    return enumEntry;
-  }
+      return enumEntry;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public void setEnumEntry(XOseeEnumEntry newEnumEntry)
   {
-    XOseeEnumEntry oldEnumEntry = enumEntry;
-    enumEntry = newEnumEntry;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.REMOVE_ENUM__ENUM_ENTRY, oldEnumEntry, enumEntry));
-  }
+      XOseeEnumEntry oldEnumEntry = enumEntry;
+      enumEntry = newEnumEntry;
+      if (eNotificationRequired())
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.REMOVE_ENUM__ENUM_ENTRY, oldEnumEntry, enumEntry));
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.REMOVE_ENUM__ENUM_ENTRY:
-        if (resolve) return getEnumEntry();
-        return basicGetEnumEntry();
-    }
-    return super.eGet(featureID, resolve, coreType);
-  }
+      switch (featureID) {
+         case OseeDslPackage.REMOVE_ENUM__ENUM_ENTRY:
+            if (resolve) return getEnumEntry();
+            return basicGetEnumEntry();
+      }
+      return super.eGet(featureID, resolve, coreType);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public void eSet(int featureID, Object newValue)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.REMOVE_ENUM__ENUM_ENTRY:
-        setEnumEntry((XOseeEnumEntry)newValue);
-        return;
-    }
-    super.eSet(featureID, newValue);
-  }
+      switch (featureID) {
+         case OseeDslPackage.REMOVE_ENUM__ENUM_ENTRY:
+            setEnumEntry((XOseeEnumEntry)newValue);
+            return;
+      }
+      super.eSet(featureID, newValue);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public void eUnset(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.REMOVE_ENUM__ENUM_ENTRY:
-        setEnumEntry((XOseeEnumEntry)null);
-        return;
-    }
-    super.eUnset(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.REMOVE_ENUM__ENUM_ENTRY:
+            setEnumEntry((XOseeEnumEntry)null);
+            return;
+      }
+      super.eUnset(featureID);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public boolean eIsSet(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.REMOVE_ENUM__ENUM_ENTRY:
-        return enumEntry != null;
-    }
-    return super.eIsSet(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.REMOVE_ENUM__ENUM_ENTRY:
+            return enumEntry != null;
+      }
+      return super.eIsSet(featureID);
+   }
 
 } //RemoveEnumImpl

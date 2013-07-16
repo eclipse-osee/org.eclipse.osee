@@ -28,150 +28,146 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.UsersAndGroups;
 public class UsersAndGroupsImpl extends MinimalEObjectImpl.Container implements UsersAndGroups
 {
   /**
-   * The default value of the '{@link #getUserOrGroupGuid() <em>User Or Group Guid</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The default value of the '{@link #getUserOrGroupGuid() <em>User Or Group Guid</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getUserOrGroupGuid()
-   * @generated
-   * @ordered
-   */
+    * @see #getUserOrGroupGuid()
+    * @generated
+    * @ordered
+    */
   protected static final String USER_OR_GROUP_GUID_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getUserOrGroupGuid() <em>User Or Group Guid</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The cached value of the '{@link #getUserOrGroupGuid() <em>User Or Group Guid</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getUserOrGroupGuid()
-   * @generated
-   * @ordered
-   */
+    * @see #getUserOrGroupGuid()
+    * @generated
+    * @ordered
+    */
   protected String userOrGroupGuid = USER_OR_GROUP_GUID_EDEFAULT;
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   protected UsersAndGroupsImpl()
   {
-    super();
-  }
+      super();
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   protected EClass eStaticClass()
   {
-    return OseeDslPackage.Literals.USERS_AND_GROUPS;
-  }
+      return OseeDslPackage.Literals.USERS_AND_GROUPS;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public String getUserOrGroupGuid()
   {
-    return userOrGroupGuid;
-  }
+      return userOrGroupGuid;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public void setUserOrGroupGuid(String newUserOrGroupGuid)
   {
-    String oldUserOrGroupGuid = userOrGroupGuid;
-    userOrGroupGuid = newUserOrGroupGuid;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_GUID, oldUserOrGroupGuid, userOrGroupGuid));
-  }
+      String oldUserOrGroupGuid = userOrGroupGuid;
+      userOrGroupGuid = newUserOrGroupGuid;
+      if (eNotificationRequired())
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_GUID, oldUserOrGroupGuid, userOrGroupGuid));
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_GUID:
-        return getUserOrGroupGuid();
-    }
-    return super.eGet(featureID, resolve, coreType);
-  }
+      switch (featureID) {
+         case OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_GUID:
+            return getUserOrGroupGuid();
+      }
+      return super.eGet(featureID, resolve, coreType);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public void eSet(int featureID, Object newValue)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_GUID:
-        setUserOrGroupGuid((String)newValue);
-        return;
-    }
-    super.eSet(featureID, newValue);
-  }
+      switch (featureID) {
+         case OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_GUID:
+            setUserOrGroupGuid((String)newValue);
+            return;
+      }
+      super.eSet(featureID, newValue);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public void eUnset(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_GUID:
-        setUserOrGroupGuid(USER_OR_GROUP_GUID_EDEFAULT);
-        return;
-    }
-    super.eUnset(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_GUID:
+            setUserOrGroupGuid(USER_OR_GROUP_GUID_EDEFAULT);
+            return;
+      }
+      super.eUnset(featureID);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public boolean eIsSet(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_GUID:
-        return USER_OR_GROUP_GUID_EDEFAULT == null ? userOrGroupGuid != null : !USER_OR_GROUP_GUID_EDEFAULT.equals(userOrGroupGuid);
-    }
-    return super.eIsSet(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.USERS_AND_GROUPS__USER_OR_GROUP_GUID:
+            return USER_OR_GROUP_GUID_EDEFAULT == null ? userOrGroupGuid != null : !USER_OR_GROUP_GUID_EDEFAULT.equals(userOrGroupGuid);
+      }
+      return super.eIsSet(featureID);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public String toString()
   {
-    if (eIsProxy()) return super.toString();
+      if (eIsProxy()) return super.toString();
 
-    StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (userOrGroupGuid: ");
-    result.append(userOrGroupGuid);
-    result.append(')');
-    return result.toString();
-  }
+      StringBuffer result = new StringBuffer(super.toString());
+      result.append(" (userOrGroupGuid: ");
+      result.append(userOrGroupGuid);
+      result.append(')');
+      return result.toString();
+   }
 
 } //UsersAndGroupsImpl

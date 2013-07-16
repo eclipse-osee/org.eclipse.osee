@@ -29,260 +29,256 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType;
 public class OseeTypeImpl extends OseeElementImpl implements OseeType
 {
   /**
-   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getName()
-   * @generated
-   * @ordered
-   */
+    * @see #getName()
+    * @generated
+    * @ordered
+    */
   protected static final String NAME_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getName()
-   * @generated
-   * @ordered
-   */
+    * @see #getName()
+    * @generated
+    * @ordered
+    */
   protected String name = NAME_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getTypeGuid() <em>Type Guid</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The default value of the '{@link #getTypeGuid() <em>Type Guid</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getTypeGuid()
-   * @generated
-   * @ordered
-   */
+    * @see #getTypeGuid()
+    * @generated
+    * @ordered
+    */
   protected static final String TYPE_GUID_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getTypeGuid() <em>Type Guid</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The cached value of the '{@link #getTypeGuid() <em>Type Guid</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getTypeGuid()
-   * @generated
-   * @ordered
-   */
+    * @see #getTypeGuid()
+    * @generated
+    * @ordered
+    */
   protected String typeGuid = TYPE_GUID_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getUuid() <em>Uuid</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The default value of the '{@link #getUuid() <em>Uuid</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getUuid()
-   * @generated
-   * @ordered
-   */
+    * @see #getUuid()
+    * @generated
+    * @ordered
+    */
   protected static final String UUID_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getUuid() <em>Uuid</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The cached value of the '{@link #getUuid() <em>Uuid</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getUuid()
-   * @generated
-   * @ordered
-   */
+    * @see #getUuid()
+    * @generated
+    * @ordered
+    */
   protected String uuid = UUID_EDEFAULT;
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   protected OseeTypeImpl()
   {
-    super();
-  }
+      super();
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   protected EClass eStaticClass()
   {
-    return OseeDslPackage.Literals.OSEE_TYPE;
-  }
+      return OseeDslPackage.Literals.OSEE_TYPE;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public String getName()
   {
-    return name;
-  }
+      return name;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public void setName(String newName)
   {
-    String oldName = name;
-    name = newName;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.OSEE_TYPE__NAME, oldName, name));
-  }
+      String oldName = name;
+      name = newName;
+      if (eNotificationRequired())
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.OSEE_TYPE__NAME, oldName, name));
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public String getTypeGuid()
   {
-    return typeGuid;
-  }
+      return typeGuid;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public void setTypeGuid(String newTypeGuid)
   {
-    String oldTypeGuid = typeGuid;
-    typeGuid = newTypeGuid;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.OSEE_TYPE__TYPE_GUID, oldTypeGuid, typeGuid));
-  }
+      String oldTypeGuid = typeGuid;
+      typeGuid = newTypeGuid;
+      if (eNotificationRequired())
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.OSEE_TYPE__TYPE_GUID, oldTypeGuid, typeGuid));
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public String getUuid()
   {
-    return uuid;
-  }
+      return uuid;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public void setUuid(String newUuid)
   {
-    String oldUuid = uuid;
-    uuid = newUuid;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.OSEE_TYPE__UUID, oldUuid, uuid));
-  }
+      String oldUuid = uuid;
+      uuid = newUuid;
+      if (eNotificationRequired())
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.OSEE_TYPE__UUID, oldUuid, uuid));
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.OSEE_TYPE__NAME:
-        return getName();
-      case OseeDslPackage.OSEE_TYPE__TYPE_GUID:
-        return getTypeGuid();
-      case OseeDslPackage.OSEE_TYPE__UUID:
-        return getUuid();
-    }
-    return super.eGet(featureID, resolve, coreType);
-  }
+      switch (featureID) {
+         case OseeDslPackage.OSEE_TYPE__NAME:
+            return getName();
+         case OseeDslPackage.OSEE_TYPE__TYPE_GUID:
+            return getTypeGuid();
+         case OseeDslPackage.OSEE_TYPE__UUID:
+            return getUuid();
+      }
+      return super.eGet(featureID, resolve, coreType);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public void eSet(int featureID, Object newValue)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.OSEE_TYPE__NAME:
-        setName((String)newValue);
-        return;
-      case OseeDslPackage.OSEE_TYPE__TYPE_GUID:
-        setTypeGuid((String)newValue);
-        return;
-      case OseeDslPackage.OSEE_TYPE__UUID:
-        setUuid((String)newValue);
-        return;
-    }
-    super.eSet(featureID, newValue);
-  }
+      switch (featureID) {
+         case OseeDslPackage.OSEE_TYPE__NAME:
+            setName((String)newValue);
+            return;
+         case OseeDslPackage.OSEE_TYPE__TYPE_GUID:
+            setTypeGuid((String)newValue);
+            return;
+         case OseeDslPackage.OSEE_TYPE__UUID:
+            setUuid((String)newValue);
+            return;
+      }
+      super.eSet(featureID, newValue);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public void eUnset(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.OSEE_TYPE__NAME:
-        setName(NAME_EDEFAULT);
-        return;
-      case OseeDslPackage.OSEE_TYPE__TYPE_GUID:
-        setTypeGuid(TYPE_GUID_EDEFAULT);
-        return;
-      case OseeDslPackage.OSEE_TYPE__UUID:
-        setUuid(UUID_EDEFAULT);
-        return;
-    }
-    super.eUnset(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.OSEE_TYPE__NAME:
+            setName(NAME_EDEFAULT);
+            return;
+         case OseeDslPackage.OSEE_TYPE__TYPE_GUID:
+            setTypeGuid(TYPE_GUID_EDEFAULT);
+            return;
+         case OseeDslPackage.OSEE_TYPE__UUID:
+            setUuid(UUID_EDEFAULT);
+            return;
+      }
+      super.eUnset(featureID);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public boolean eIsSet(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.OSEE_TYPE__NAME:
-        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case OseeDslPackage.OSEE_TYPE__TYPE_GUID:
-        return TYPE_GUID_EDEFAULT == null ? typeGuid != null : !TYPE_GUID_EDEFAULT.equals(typeGuid);
-      case OseeDslPackage.OSEE_TYPE__UUID:
-        return UUID_EDEFAULT == null ? uuid != null : !UUID_EDEFAULT.equals(uuid);
-    }
-    return super.eIsSet(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.OSEE_TYPE__NAME:
+            return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+         case OseeDslPackage.OSEE_TYPE__TYPE_GUID:
+            return TYPE_GUID_EDEFAULT == null ? typeGuid != null : !TYPE_GUID_EDEFAULT.equals(typeGuid);
+         case OseeDslPackage.OSEE_TYPE__UUID:
+            return UUID_EDEFAULT == null ? uuid != null : !UUID_EDEFAULT.equals(uuid);
+      }
+      return super.eIsSet(featureID);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public String toString()
   {
-    if (eIsProxy()) return super.toString();
+      if (eIsProxy()) return super.toString();
 
-    StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (name: ");
-    result.append(name);
-    result.append(", typeGuid: ");
-    result.append(typeGuid);
-    result.append(", uuid: ");
-    result.append(uuid);
-    result.append(')');
-    return result.toString();
-  }
+      StringBuffer result = new StringBuffer(super.toString());
+      result.append(" (name: ");
+      result.append(name);
+      result.append(", typeGuid: ");
+      result.append(typeGuid);
+      result.append(", uuid: ");
+      result.append(uuid);
+      result.append(')');
+      return result.toString();
+   }
 
 } //OseeTypeImpl

@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.util.OseeDslSwitch;
+import org.eclipse.xtext.util.Strings;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ComposedChecks;
 
@@ -51,6 +52,31 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
    public static final String NON_UNIQUE_ARTIFACT_TYPE_RESTRICTION = "non_unique_artifact_type_restriction";
    public static final String NON_UNIQUE_ATTRIBUTE_TYPE_RESTRICTION = "non_unique_attribute_type_restriction";
    public static final String NON_UNIQUE_RELATION_TYPE_RESTRICTION = "non_unique_relation_type_restriction";
+
+   @Check
+   public void checkAttributeValidity(XAttributeType attribute) {
+      String min = attribute.getMin();
+      int minOccurrences = 0;
+      if (!Strings.isEmpty(min)) {
+         minOccurrences = Integer.parseInt(min);
+         if (minOccurrences > 0 && Strings.isEmpty(attribute.getDefaultValue())) {
+            error("Default value cannot be empty if min greater than 0", attribute,
+               OseeDslPackage.Literals.XATTRIBUTE_TYPE__DEFAULT_VALUE);
+         }
+      }
+      if (minOccurrences < 0) {
+         error("min cannot be less than 0", attribute, OseeDslPackage.Literals.XATTRIBUTE_TYPE__MIN);
+      }
+
+      String max = attribute.getMax();
+      int maxOccurrences = 0;
+      if (!Strings.isEmpty(max)) {
+         maxOccurrences = Integer.parseInt(max);
+      }
+      if (minOccurrences > maxOccurrences) {
+         error("min must not be greater than max", attribute, OseeDslPackage.Literals.XATTRIBUTE_TYPE__MAX);
+      }
+   }
 
    @Check
    public void checkUuidValidity(OseeDsl oseeDsl) {

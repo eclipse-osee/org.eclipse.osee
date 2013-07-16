@@ -47,9 +47,9 @@ XAttributeType:
 	'attributeType' name=STRING ('extends' baseAttributeType=AttributeBaseType) ('overrides'
 	override=[XAttributeType|STRING])? '{' ('guid' typeGuid=STRING)? 'uuid' uuid=HEX_INT 'dataProvider'
 	dataProvider=('DefaultAttributeDataProvider' | 'UriAttributeDataProvider' | QUALIFIED_NAME) 'min' min=WHOLE_NUM_STR
-	'max' max=(WHOLE_NUM_STR | 'unlimited') ('taggerId' taggerId=('DefaultAttributeTaggerProvider' | QUALIFIED_NAME))?
-	('enumType' enumType=[XOseeEnumType|STRING])? ('description' description=STRING)? ('defaultValue'
-	defaultValue=STRING)? ('fileExtension' fileExtension=STRING)? ('mediaType' mediaType=STRING)? '}';
+	'max' max=(WHOLE_NUM_STR | 'unlimited') (('taggerId' taggerId=('DefaultAttributeTaggerProvider' | QUALIFIED_NAME))? &
+	('enumType' enumType=[XOseeEnumType|STRING])? & ('description' description=STRING)? & ('defaultValue'
+	defaultValue=STRING)? & ('fileExtension' fileExtension=STRING)? & ('mediaType' mediaType=STRING)?) '}';
 
 AttributeBaseType:
 	'BooleanAttribute' | 'CompressedContentAttribute' | 'DateAttribute' | 'EnumeratedAttribute' |

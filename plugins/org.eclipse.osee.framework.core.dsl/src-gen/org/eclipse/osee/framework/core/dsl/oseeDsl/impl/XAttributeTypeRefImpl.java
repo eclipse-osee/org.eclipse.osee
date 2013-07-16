@@ -31,214 +31,208 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef;
 public class XAttributeTypeRefImpl extends MinimalEObjectImpl.Container implements XAttributeTypeRef
 {
   /**
-   * The cached value of the '{@link #getValidAttributeType() <em>Valid Attribute Type</em>}' reference.
-   * <!-- begin-user-doc -->
+    * The cached value of the '{@link #getValidAttributeType() <em>Valid Attribute Type</em>}' reference.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getValidAttributeType()
-   * @generated
-   * @ordered
-   */
+    * @see #getValidAttributeType()
+    * @generated
+    * @ordered
+    */
   protected XAttributeType validAttributeType;
 
   /**
-   * The default value of the '{@link #getBranchGuid() <em>Branch Guid</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The default value of the '{@link #getBranchGuid() <em>Branch Guid</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getBranchGuid()
-   * @generated
-   * @ordered
-   */
+    * @see #getBranchGuid()
+    * @generated
+    * @ordered
+    */
   protected static final String BRANCH_GUID_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getBranchGuid() <em>Branch Guid</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The cached value of the '{@link #getBranchGuid() <em>Branch Guid</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getBranchGuid()
-   * @generated
-   * @ordered
-   */
+    * @see #getBranchGuid()
+    * @generated
+    * @ordered
+    */
   protected String branchGuid = BRANCH_GUID_EDEFAULT;
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   protected XAttributeTypeRefImpl()
   {
-    super();
-  }
+      super();
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   protected EClass eStaticClass()
   {
-    return OseeDslPackage.Literals.XATTRIBUTE_TYPE_REF;
-  }
+      return OseeDslPackage.Literals.XATTRIBUTE_TYPE_REF;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public XAttributeType getValidAttributeType()
   {
-    if (validAttributeType != null && validAttributeType.eIsProxy())
-    {
-      InternalEObject oldValidAttributeType = (InternalEObject)validAttributeType;
-      validAttributeType = (XAttributeType)eResolveProxy(oldValidAttributeType);
-      if (validAttributeType != oldValidAttributeType)
-      {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeDslPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE, oldValidAttributeType, validAttributeType));
+      if (validAttributeType != null && validAttributeType.eIsProxy()) {
+         InternalEObject oldValidAttributeType = (InternalEObject)validAttributeType;
+         validAttributeType = (XAttributeType)eResolveProxy(oldValidAttributeType);
+         if (validAttributeType != oldValidAttributeType) {
+            if (eNotificationRequired())
+               eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeDslPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE, oldValidAttributeType, validAttributeType));
+         }
       }
-    }
-    return validAttributeType;
-  }
+      return validAttributeType;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public XAttributeType basicGetValidAttributeType()
   {
-    return validAttributeType;
-  }
+      return validAttributeType;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public void setValidAttributeType(XAttributeType newValidAttributeType)
   {
-    XAttributeType oldValidAttributeType = validAttributeType;
-    validAttributeType = newValidAttributeType;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE, oldValidAttributeType, validAttributeType));
-  }
+      XAttributeType oldValidAttributeType = validAttributeType;
+      validAttributeType = newValidAttributeType;
+      if (eNotificationRequired())
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE, oldValidAttributeType, validAttributeType));
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public String getBranchGuid()
   {
-    return branchGuid;
-  }
+      return branchGuid;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public void setBranchGuid(String newBranchGuid)
   {
-    String oldBranchGuid = branchGuid;
-    branchGuid = newBranchGuid;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID, oldBranchGuid, branchGuid));
-  }
+      String oldBranchGuid = branchGuid;
+      branchGuid = newBranchGuid;
+      if (eNotificationRequired())
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID, oldBranchGuid, branchGuid));
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
-        if (resolve) return getValidAttributeType();
-        return basicGetValidAttributeType();
-      case OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID:
-        return getBranchGuid();
-    }
-    return super.eGet(featureID, resolve, coreType);
-  }
+      switch (featureID) {
+         case OseeDslPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
+            if (resolve) return getValidAttributeType();
+            return basicGetValidAttributeType();
+         case OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID:
+            return getBranchGuid();
+      }
+      return super.eGet(featureID, resolve, coreType);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public void eSet(int featureID, Object newValue)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
-        setValidAttributeType((XAttributeType)newValue);
-        return;
-      case OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID:
-        setBranchGuid((String)newValue);
-        return;
-    }
-    super.eSet(featureID, newValue);
-  }
+      switch (featureID) {
+         case OseeDslPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
+            setValidAttributeType((XAttributeType)newValue);
+            return;
+         case OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID:
+            setBranchGuid((String)newValue);
+            return;
+      }
+      super.eSet(featureID, newValue);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public void eUnset(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
-        setValidAttributeType((XAttributeType)null);
-        return;
-      case OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID:
-        setBranchGuid(BRANCH_GUID_EDEFAULT);
-        return;
-    }
-    super.eUnset(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
+            setValidAttributeType((XAttributeType)null);
+            return;
+         case OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID:
+            setBranchGuid(BRANCH_GUID_EDEFAULT);
+            return;
+      }
+      super.eUnset(featureID);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public boolean eIsSet(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
-        return validAttributeType != null;
-      case OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID:
-        return BRANCH_GUID_EDEFAULT == null ? branchGuid != null : !BRANCH_GUID_EDEFAULT.equals(branchGuid);
-    }
-    return super.eIsSet(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
+            return validAttributeType != null;
+         case OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID:
+            return BRANCH_GUID_EDEFAULT == null ? branchGuid != null : !BRANCH_GUID_EDEFAULT.equals(branchGuid);
+      }
+      return super.eIsSet(featureID);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public String toString()
   {
-    if (eIsProxy()) return super.toString();
+      if (eIsProxy()) return super.toString();
 
-    StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (branchGuid: ");
-    result.append(branchGuid);
-    result.append(')');
-    return result.toString();
-  }
+      StringBuffer result = new StringBuffer(super.toString());
+      result.append(" (branchGuid: ");
+      result.append(branchGuid);
+      result.append(')');
+      return result.toString();
+   }
 
 } //XAttributeTypeRefImpl

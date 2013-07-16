@@ -21,24 +21,24 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypePredicate;
 public class RelationTypePredicateImpl extends MinimalEObjectImpl.Container implements RelationTypePredicate
 {
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   protected RelationTypePredicateImpl()
   {
-    super();
-  }
+      super();
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   protected EClass eStaticClass()
   {
-    return OseeDslPackage.Literals.RELATION_TYPE_PREDICATE;
-  }
+      return OseeDslPackage.Literals.RELATION_TYPE_PREDICATE;
+   }
 
 } //RelationTypePredicateImpl

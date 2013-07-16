@@ -31,260 +31,256 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition;
 public class SimpleConditionImpl extends ConditionImpl implements SimpleCondition
 {
   /**
-   * The default value of the '{@link #getField() <em>Field</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The default value of the '{@link #getField() <em>Field</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getField()
-   * @generated
-   * @ordered
-   */
+    * @see #getField()
+    * @generated
+    * @ordered
+    */
   protected static final MatchField FIELD_EDEFAULT = MatchField.ARTIFACT_NAME;
 
   /**
-   * The cached value of the '{@link #getField() <em>Field</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The cached value of the '{@link #getField() <em>Field</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getField()
-   * @generated
-   * @ordered
-   */
+    * @see #getField()
+    * @generated
+    * @ordered
+    */
   protected MatchField field = FIELD_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getOp() <em>Op</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The default value of the '{@link #getOp() <em>Op</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getOp()
-   * @generated
-   * @ordered
-   */
+    * @see #getOp()
+    * @generated
+    * @ordered
+    */
   protected static final CompareOp OP_EDEFAULT = CompareOp.EQ;
 
   /**
-   * The cached value of the '{@link #getOp() <em>Op</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The cached value of the '{@link #getOp() <em>Op</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getOp()
-   * @generated
-   * @ordered
-   */
+    * @see #getOp()
+    * @generated
+    * @ordered
+    */
   protected CompareOp op = OP_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getExpression() <em>Expression</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The default value of the '{@link #getExpression() <em>Expression</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getExpression()
-   * @generated
-   * @ordered
-   */
+    * @see #getExpression()
+    * @generated
+    * @ordered
+    */
   protected static final String EXPRESSION_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getExpression() <em>Expression</em>}' attribute.
-   * <!-- begin-user-doc -->
+    * The cached value of the '{@link #getExpression() <em>Expression</em>}' attribute.
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getExpression()
-   * @generated
-   * @ordered
-   */
+    * @see #getExpression()
+    * @generated
+    * @ordered
+    */
   protected String expression = EXPRESSION_EDEFAULT;
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   protected SimpleConditionImpl()
   {
-    super();
-  }
+      super();
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   protected EClass eStaticClass()
   {
-    return OseeDslPackage.Literals.SIMPLE_CONDITION;
-  }
+      return OseeDslPackage.Literals.SIMPLE_CONDITION;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public MatchField getField()
   {
-    return field;
-  }
+      return field;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public void setField(MatchField newField)
   {
-    MatchField oldField = field;
-    field = newField == null ? FIELD_EDEFAULT : newField;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.SIMPLE_CONDITION__FIELD, oldField, field));
-  }
+      MatchField oldField = field;
+      field = newField == null ? FIELD_EDEFAULT : newField;
+      if (eNotificationRequired())
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.SIMPLE_CONDITION__FIELD, oldField, field));
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public CompareOp getOp()
   {
-    return op;
-  }
+      return op;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public void setOp(CompareOp newOp)
   {
-    CompareOp oldOp = op;
-    op = newOp == null ? OP_EDEFAULT : newOp;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.SIMPLE_CONDITION__OP, oldOp, op));
-  }
+      CompareOp oldOp = op;
+      op = newOp == null ? OP_EDEFAULT : newOp;
+      if (eNotificationRequired())
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.SIMPLE_CONDITION__OP, oldOp, op));
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public String getExpression()
   {
-    return expression;
-  }
+      return expression;
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   public void setExpression(String newExpression)
   {
-    String oldExpression = expression;
-    expression = newExpression;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.SIMPLE_CONDITION__EXPRESSION, oldExpression, expression));
-  }
+      String oldExpression = expression;
+      expression = newExpression;
+      if (eNotificationRequired())
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.SIMPLE_CONDITION__EXPRESSION, oldExpression, expression));
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.SIMPLE_CONDITION__FIELD:
-        return getField();
-      case OseeDslPackage.SIMPLE_CONDITION__OP:
-        return getOp();
-      case OseeDslPackage.SIMPLE_CONDITION__EXPRESSION:
-        return getExpression();
-    }
-    return super.eGet(featureID, resolve, coreType);
-  }
+      switch (featureID) {
+         case OseeDslPackage.SIMPLE_CONDITION__FIELD:
+            return getField();
+         case OseeDslPackage.SIMPLE_CONDITION__OP:
+            return getOp();
+         case OseeDslPackage.SIMPLE_CONDITION__EXPRESSION:
+            return getExpression();
+      }
+      return super.eGet(featureID, resolve, coreType);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public void eSet(int featureID, Object newValue)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.SIMPLE_CONDITION__FIELD:
-        setField((MatchField)newValue);
-        return;
-      case OseeDslPackage.SIMPLE_CONDITION__OP:
-        setOp((CompareOp)newValue);
-        return;
-      case OseeDslPackage.SIMPLE_CONDITION__EXPRESSION:
-        setExpression((String)newValue);
-        return;
-    }
-    super.eSet(featureID, newValue);
-  }
+      switch (featureID) {
+         case OseeDslPackage.SIMPLE_CONDITION__FIELD:
+            setField((MatchField)newValue);
+            return;
+         case OseeDslPackage.SIMPLE_CONDITION__OP:
+            setOp((CompareOp)newValue);
+            return;
+         case OseeDslPackage.SIMPLE_CONDITION__EXPRESSION:
+            setExpression((String)newValue);
+            return;
+      }
+      super.eSet(featureID, newValue);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public void eUnset(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.SIMPLE_CONDITION__FIELD:
-        setField(FIELD_EDEFAULT);
-        return;
-      case OseeDslPackage.SIMPLE_CONDITION__OP:
-        setOp(OP_EDEFAULT);
-        return;
-      case OseeDslPackage.SIMPLE_CONDITION__EXPRESSION:
-        setExpression(EXPRESSION_EDEFAULT);
-        return;
-    }
-    super.eUnset(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.SIMPLE_CONDITION__FIELD:
+            setField(FIELD_EDEFAULT);
+            return;
+         case OseeDslPackage.SIMPLE_CONDITION__OP:
+            setOp(OP_EDEFAULT);
+            return;
+         case OseeDslPackage.SIMPLE_CONDITION__EXPRESSION:
+            setExpression(EXPRESSION_EDEFAULT);
+            return;
+      }
+      super.eUnset(featureID);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public boolean eIsSet(int featureID)
   {
-    switch (featureID)
-    {
-      case OseeDslPackage.SIMPLE_CONDITION__FIELD:
-        return field != FIELD_EDEFAULT;
-      case OseeDslPackage.SIMPLE_CONDITION__OP:
-        return op != OP_EDEFAULT;
-      case OseeDslPackage.SIMPLE_CONDITION__EXPRESSION:
-        return EXPRESSION_EDEFAULT == null ? expression != null : !EXPRESSION_EDEFAULT.equals(expression);
-    }
-    return super.eIsSet(featureID);
-  }
+      switch (featureID) {
+         case OseeDslPackage.SIMPLE_CONDITION__FIELD:
+            return field != FIELD_EDEFAULT;
+         case OseeDslPackage.SIMPLE_CONDITION__OP:
+            return op != OP_EDEFAULT;
+         case OseeDslPackage.SIMPLE_CONDITION__EXPRESSION:
+            return EXPRESSION_EDEFAULT == null ? expression != null : !EXPRESSION_EDEFAULT.equals(expression);
+      }
+      return super.eIsSet(featureID);
+   }
 
   /**
-   * <!-- begin-user-doc -->
+    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @generated
-   */
+    * @generated
+    */
   @Override
   public String toString()
   {
-    if (eIsProxy()) return super.toString();
+      if (eIsProxy()) return super.toString();
 
-    StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (field: ");
-    result.append(field);
-    result.append(", op: ");
-    result.append(op);
-    result.append(", expression: ");
-    result.append(expression);
-    result.append(')');
-    return result.toString();
-  }
+      StringBuffer result = new StringBuffer(super.toString());
+      result.append(" (field: ");
+      result.append(field);
+      result.append(", op: ");
+      result.append(op);
+      result.append(", expression: ");
+      result.append(expression);
+      result.append(')');
+      return result.toString();
+   }
 
 } //SimpleConditionImpl
