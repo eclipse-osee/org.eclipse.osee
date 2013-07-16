@@ -150,7 +150,7 @@ public class AttributeFormPart extends AbstractFormPart {
       }
       //refresh(); <-- This call reverts unsaved changes to all widgets.  Not the behavior we want here.
       decorator.refresh();
-      getManagedForm().getForm().getBody().layout(true);
+      getManagedForm().getForm().getBody().layout(true, true);
    }
 
    @Override
@@ -296,7 +296,7 @@ public class AttributeFormPart extends AbstractFormPart {
       }
       //refresh(); <-- This call reverts unsaved changes to all widgets.  Not the behavior we want here.
       decorator.refresh();
-      getManagedForm().getForm().getBody().layout(true);
+      getManagedForm().getForm().getBody().layout(true, true);
    }
 
    private final class XWidgetValidationListener implements XModifiedListener {
