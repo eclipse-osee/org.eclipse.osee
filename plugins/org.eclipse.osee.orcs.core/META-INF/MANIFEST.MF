@@ -38,5 +38,5 @@ Export-Package: org.eclipse.osee.orcs.core,
  org.eclipse.osee.orcs.core.ds.criteria
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.framework.jdk.core,
- com.google.guava;bundle-version="12.0.0"
+ com.google.guava;bundle-version="[11.0.0,15.0.0)"
 Bundle-ActivationPolicy: lazy
