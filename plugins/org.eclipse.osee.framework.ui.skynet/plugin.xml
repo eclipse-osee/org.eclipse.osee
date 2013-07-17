@@ -1648,6 +1648,14 @@
       </Operation>
    </extension>
    <extension
+         id="AttributeCheckBlam"
+         name="AttributeCheckBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.framework.ui.skynet.blam.operation.AttributeCheckBlam">
+      </Operation>
+   </extension>
+   <extension
          id="KeywordSearchBlam"
          name="KeywordSearchBlam"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
