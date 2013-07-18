@@ -20,4 +20,6 @@ public interface DslGrammar {
    String getGrammarId();
 
    <T> T getObject(Class<? extends T> clazz);
+
+   DslGrammarStorageAdapter getStorageAdapter();
 }

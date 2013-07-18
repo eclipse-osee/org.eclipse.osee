@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.dsl.ui.integration.internal;
 
 import org.eclipse.osee.framework.core.dsl.ui.OseeDslAccess;
 import org.eclipse.osee.framework.ui.skynet.DslGrammar;
+import org.eclipse.osee.framework.ui.skynet.DslGrammarStorageAdapter;
 
 /**
  * @author Roberto E. Escobar
@@ -31,6 +32,11 @@ public class OseeDslGrammar implements DslGrammar {
    @Override
    public <T> T getObject(Class<? extends T> clazz) {
       return OseeDslAccess.getInjector().getProvider(clazz).get();
+   }
+
+   @Override
+   public DslGrammarStorageAdapter getStorageAdapter() {
+      return null;
    }
 
 }

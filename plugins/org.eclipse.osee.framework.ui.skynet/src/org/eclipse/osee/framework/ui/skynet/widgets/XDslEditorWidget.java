@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.DslGrammar;
+import org.eclipse.osee.framework.ui.skynet.DslGrammarStorageAdapter;
 import org.eclipse.osee.framework.ui.skynet.internal.DslGrammarManager;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -208,7 +209,7 @@ public class XDslEditorWidget extends XLabel implements IAttributeWidget {
    }
 
    public String get() {
-      return model != null ? model.getSerializedModel() : "";
+      return model != null ? getStorageAdapter().postProcess(getArtifact(), model.getSerializedModel()) : "";
    }
 
    @Override
@@ -242,8 +243,7 @@ public class XDslEditorWidget extends XLabel implements IAttributeWidget {
                String storedValue;
                try {
                   storedValue = getArtifact().getSoleAttributeValue(getAttributeType(), "");
-                  model.updateModel("", storedValue, "");
-
+                  model.updateModel("", getStorageAdapter().preProcess(getArtifact(), storedValue), "");
                   // Re-enable Listeners
                   validate();
                } catch (OseeCoreException ex) {
@@ -252,6 +252,25 @@ public class XDslEditorWidget extends XLabel implements IAttributeWidget {
             }
          }
       }
+   }
+
+   private DslGrammarStorageAdapter getStorageAdapter() {
+      DslGrammarStorageAdapter storageAdapter = grammar.getStorageAdapter();
+      if (storageAdapter == null) {
+         storageAdapter = new DslGrammarStorageAdapter() {
+
+            @Override
+            public String preProcess(Artifact artifact, String storedValue) {
+               return storedValue;
+            }
+
+            @Override
+            public String postProcess(Artifact artifact, String serializedModel) {
+               return serializedModel;
+            }
+         };
+      }
+      return storageAdapter;
    }
 
    @Override
