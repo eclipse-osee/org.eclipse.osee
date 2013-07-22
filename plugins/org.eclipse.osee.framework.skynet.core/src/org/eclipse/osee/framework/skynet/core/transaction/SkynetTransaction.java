@@ -183,7 +183,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
       return transactionDataItems.values();
    }
 
-   private Collection<Artifact> getArtifactReferences() {
+   public Collection<Artifact> getArtifactReferences() {
       return modifiedArtifacts;
    }
 
@@ -387,4 +387,5 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
    public void execute() throws OseeCoreException {
       Operations.executeWorkAndCheckStatus(this);
    }
+
 }
