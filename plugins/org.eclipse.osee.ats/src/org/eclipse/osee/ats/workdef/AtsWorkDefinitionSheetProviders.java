@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.core.client.config.AtsArtifactToken;
+import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.internal.Activator;
@@ -38,6 +39,7 @@ import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.osgi.framework.Bundle;
@@ -68,6 +70,23 @@ public final class AtsWorkDefinitionSheetProviders {
       createStateNameArtifact(stateNames, folder, transaction);
       importTeamsAndAis(resultData, transaction, folder, sheets);
       transaction.execute();
+   }
+
+   public static void updateStateNameArtifact(Set<String> stateNames, Artifact folder, SkynetTransaction trans) throws OseeCoreException {
+      Artifact stateNameArt =
+         ArtifactQuery.getArtifactFromToken(org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names,
+            AtsUtil.getAtsBranchToken());
+      Collection<? extends String> currentStateNames = StateManager.getAllValidStateNames();
+      Set<String> newStateNames = new HashSet<String>();
+      newStateNames.addAll(currentStateNames);
+      for (String name : stateNames) {
+         if (!currentStateNames.contains(name)) {
+            newStateNames.add(name);
+         }
+      }
+      stateNameArt.setSoleAttributeValue(CoreAttributeTypes.GeneralStringData,
+         org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", stateNames));
+      trans.addArtifact(stateNameArt);
    }
 
    private static Artifact createStateNameArtifact(Set<String> stateNames, Artifact folder, SkynetTransaction transaction) throws OseeCoreException {
