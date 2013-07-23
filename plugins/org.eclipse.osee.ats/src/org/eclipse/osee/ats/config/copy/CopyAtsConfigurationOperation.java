@@ -136,19 +136,18 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       for (Artifact fromTeamDefArt : fromAiArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team,
          Artifact.class)) {
          IAtsConfigObject fromTeamDef =
-            AtsClientService.get().getAtsConfig().getSoleByGuid(fromTeamDefArt.getGuid(),
-               IAtsTeamDefinition.class);
+            AtsClientService.get().getAtsConfig().getSoleByGuid(fromTeamDefArt.getGuid(), IAtsTeamDefinition.class);
          IAtsTeamDefinition newTeamDef = fromTeamDefToNewTeamDefMap.get(fromTeamDef);
-         Artifact newTeamDefArt = AtsClientService.get().getConfigArtifact(newTeamDef);
 
          if (newTeamDef == null) {
             resultData.logWarningWithFormat(
                "No related Team Definition [%s] in scope for AI [%s].  Configure by hand.", fromTeamDefArt, newAiArt);
          } else {
+            Artifact newTeamDefArt = AtsClientService.get().getConfigArtifact(newTeamDef);
             newAiArt.addRelation(AtsRelationTypes.TeamActionableItem_Team, newTeamDefArt);
-         }
-         if (data.isPersistChanges()) {
-            newTeamDefArt.persist(transaction);
+            if (data.isPersistChanges()) {
+               newTeamDefArt.persist(transaction);
+            }
          }
       }
 
@@ -182,8 +181,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       for (Artifact childFromTeamDefArt : fromTeamDefArt.getChildren()) {
          if (childFromTeamDefArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
             IAtsTeamDefinition childFromTeamDef = AtsClientService.get().getConfigObject(childFromTeamDefArt);
-            AtsClientService.get().getAtsConfig().getSoleByGuid(childFromTeamDefArt.getGuid(),
-               IAtsTeamDefinition.class);
+            AtsClientService.get().getAtsConfig().getSoleByGuid(childFromTeamDefArt.getGuid(), IAtsTeamDefinition.class);
             createTeamDefinitions(transaction, childFromTeamDef, newTeamDef);
          }
       }
