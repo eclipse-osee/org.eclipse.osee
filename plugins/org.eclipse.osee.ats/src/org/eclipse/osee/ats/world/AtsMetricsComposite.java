@@ -226,7 +226,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
             0,
             iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().getName()));
          String estimatedReleaseDateStr =
-            iAtsMetricsProvider.getMetricsVersionArtifact().getEstimatedReleaseDate() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().getEstimatedReleaseDate().toString();
+            (iAtsMetricsProvider.getMetricsVersionArtifact() == null || iAtsMetricsProvider.getMetricsVersionArtifact().getEstimatedReleaseDate() == null) ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().getEstimatedReleaseDate().toString();
          lines.add(new XBarGraphLine("Targeted Version - Estimated Release Date", 0,
             iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Not Set" : estimatedReleaseDateStr));
          lines.add(new XBarGraphLine("Metrics Estimated Release Date", 0,
