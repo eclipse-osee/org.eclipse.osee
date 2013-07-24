@@ -48,12 +48,16 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    private final ArtifactEventType reloadEvent;
 
    public ArtifactEvent(IOseeBranch branch) {
-      this(branch, ArtifactEventType.UPDATE_ARTIFACTS);
+      this(branch.getGuid());
    }
 
-   public ArtifactEvent(IOseeBranch branch, ArtifactEventType reloadEvent) {
+   public ArtifactEvent(String branchGuid) {
+      this(branchGuid, ArtifactEventType.UPDATE_ARTIFACTS);
+   }
+
+   public ArtifactEvent(String branchGuid, ArtifactEventType reloadEvent) {
       this.reloadEvent = reloadEvent;
-      branchGuid = branch.getGuid();
+      this.branchGuid = branchGuid;
    }
 
    public boolean isReloadEvent() {

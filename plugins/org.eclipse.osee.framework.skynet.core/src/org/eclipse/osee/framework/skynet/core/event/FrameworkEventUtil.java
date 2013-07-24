@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionChan
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -221,42 +220,37 @@ public final class FrameworkEventUtil {
    }
 
    public static ArtifactEvent getPersistEvent(RemotePersistEvent1 remEvent) {
-      try {
-         ArtifactEvent event = new ArtifactEvent(BranchManager.getBranchByGuid(remEvent.getBranchGuid()));
-         event.setNetworkSender(getNetworkSender(remEvent.getNetworkSender()));
-         event.setTransactionId(remEvent.getTransactionId());
-         for (RemoteBasicGuidArtifact1 remGuidArt : remEvent.getArtifacts()) {
-            EventModType modType = EventModType.getType(remGuidArt.getModTypeGuid());
-            // This can happen if new events are added that old releases don't handle
-            if (modType == null) {
-               OseeLog.logf(Activator.class, Level.WARNING, "Unhandled remote artifact [%s]", remGuidArt);
+      ArtifactEvent event = new ArtifactEvent(remEvent.getBranchGuid());
+      event.setNetworkSender(getNetworkSender(remEvent.getNetworkSender()));
+      event.setTransactionId(remEvent.getTransactionId());
+      for (RemoteBasicGuidArtifact1 remGuidArt : remEvent.getArtifacts()) {
+         EventModType modType = EventModType.getType(remGuidArt.getModTypeGuid());
+         // This can happen if new events are added that old releases don't handle
+         if (modType == null) {
+            OseeLog.logf(Activator.class, Level.WARNING, "Unhandled remote artifact [%s]", remGuidArt);
+         } else {
+            if (modType == EventModType.Modified) {
+               event.getArtifacts().add(getEventModifiedBasicGuidArtifact(modType, remGuidArt));
+            } else if (modType == EventModType.ChangeType) {
+               event.getArtifacts().add(getEventChangeTypeBasicGuidArtifact(modType, remGuidArt));
             } else {
-               if (modType == EventModType.Modified) {
-                  event.getArtifacts().add(getEventModifiedBasicGuidArtifact(modType, remGuidArt));
-               } else if (modType == EventModType.ChangeType) {
-                  event.getArtifacts().add(getEventChangeTypeBasicGuidArtifact(modType, remGuidArt));
-               } else {
-                  event.getArtifacts().add(getEventBasicGuidArtifact(modType, remGuidArt));
-               }
+               event.getArtifacts().add(getEventBasicGuidArtifact(modType, remGuidArt));
             }
          }
-         for (RemoteBasicGuidRelation1 guidRel : remEvent.getRelations()) {
-            EventBasicGuidRelation relEvent = getEventBasicGuidRelation(guidRel);
-            // This can happen if new events are added that old releases don't handle
-            if (relEvent == null) {
-               OseeLog.logf(Activator.class, Level.WARNING, "Unhandled remote relation [%s]", guidRel);
-            } else {
-               event.getRelations().add(relEvent);
-            }
-         }
-         for (RemoteBasicGuidRelationReorder1 guidReorder : remEvent.getRelationReorders()) {
-            event.getRelationOrderRecords().add(getDefaultBasicGuidRelationReorder(guidReorder));
-         }
-         return event;
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, "Can't convert event", ex);
       }
-      return null;
+      for (RemoteBasicGuidRelation1 guidRel : remEvent.getRelations()) {
+         EventBasicGuidRelation relEvent = getEventBasicGuidRelation(guidRel);
+         // This can happen if new events are added that old releases don't handle
+         if (relEvent == null) {
+            OseeLog.logf(Activator.class, Level.WARNING, "Unhandled remote relation [%s]", guidRel);
+         } else {
+            event.getRelations().add(relEvent);
+         }
+      }
+      for (RemoteBasicGuidRelationReorder1 guidReorder : remEvent.getRelationReorders()) {
+         event.getRelationOrderRecords().add(getDefaultBasicGuidRelationReorder(guidReorder));
+      }
+      return event;
    }
 
    public static DefaultBasicGuidRelationReorder getDefaultBasicGuidRelationReorder(RemoteBasicGuidRelationReorder1 guidRelOrder) {

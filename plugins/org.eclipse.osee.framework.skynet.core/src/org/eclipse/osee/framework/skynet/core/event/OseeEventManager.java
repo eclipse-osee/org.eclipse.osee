@@ -140,7 +140,7 @@ public final class OseeEventManager {
          return;
       }
       ArtifactEvent artifactEvent =
-         new ArtifactEvent(artifacts.iterator().next().getBranch(), ArtifactEventType.RELOAD_ARTIFACTS);
+         new ArtifactEvent(artifacts.iterator().next().getBranch().getGuid(), ArtifactEventType.RELOAD_ARTIFACTS);
       artifactEvent.getArtifacts().addAll(EventBasicGuidArtifact.get(EventModType.Reloaded, artifacts));
       getEventService().send(source, artifactEvent);
    }
