@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
+
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.testPoint.CheckPoint;
@@ -72,7 +73,7 @@ public class StringElement extends DiscreteElement<String> {
 
    /**
     * copies this elements chars into the given array. The array must be big enough to contain this elements data or an
-    * ArrayIndexOutOfBoundsException will be thrown
+    * ArrayIndexOutOfBoundsException will be thrown.  Does not exclude or stop on null (\0) characters in the element data.
     * 
     * @param destination the destination array that will receive the char data
     * @return the actual number of characters copied. The destination array will contain undefined data starting at this

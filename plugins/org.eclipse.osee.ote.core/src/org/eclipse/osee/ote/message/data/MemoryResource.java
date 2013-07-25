@@ -214,11 +214,8 @@ public class MemoryResource {
             break;
          }
          char ch = getASCIICharFromOffset(offset + i);
-         if (ch != 0) {// NOTE this was done to be compatible with java
-            // Strings that don't null char termination
-            destination[destIndex] = ch;
-            destIndex++;
-         }
+         destination[destIndex] = ch;
+         destIndex++;
       }
       return destIndex;
    }
