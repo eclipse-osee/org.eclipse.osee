@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
+import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.ConflictHandlingOperation.ConflictOperationEnum;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
@@ -72,34 +71,26 @@ public class MergeCustomMenu extends XViewerCustomMenu {
          isInitialized = true;
          registerCommandHandlers(xViewer);
       } else {
-         addEditArtifactMenuItem(menuManager);
-         addMergeMenuItem(menuManager);
+         addEditArtifactMenuItem(menuManager, null);
+         addMergeMenuItem(menuManager, null);
          menuManager.add(new Separator());
-         addMarkAsResolvedMenuItem(menuManager);
-         addMarkAsUnResolvedMenuItem(menuManager);
+         addMarkAsResolvedMenuItem(menuManager, null);
+         addMarkAsUnResolvedMenuItem(menuManager, null);
          menuManager.add(new Separator());
-         addSourceAsMergeValueMenuItem(menuManager);
-         addDestinationAsMergeValueMenuItem(menuManager);
+         addSourceAsMergeValueMenuItem(menuManager, null);
+         addDestinationAsMergeValueMenuItem(menuManager, null);
          menuManager.add(new Separator());
-         addResetConflictMenuItem(menuManager);
+         addResetConflictMenuItem(menuManager, null);
          menuManager.add(new Separator());
-         addPreviewMenuItem(menuManager);
-         addDiffMenuItem(menuManager);
+         addPreviewMenuItem(menuManager, null);
+         addDiffMenuItem(menuManager, null);
          menuManager.add(new Separator());
-         addSourceResourceHistoryMenuItem(menuManager);
-         addSourceRevealMenuItem(menuManager);
+         addSourceResourceHistoryMenuItem(menuManager, null);
+         addSourceRevealMenuItem(menuManager, null);
          menuManager.add(new Separator());
-         addDestResourceHistoryMenuItem(menuManager);
-         addDestRevealMenuItem(menuManager);
+         addDestResourceHistoryMenuItem(menuManager, null);
+         addDestRevealMenuItem(menuManager, null);
 
-         try {
-            if (AccessControlManager.isOseeAdmin()) {
-               menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-               addRevertUnresolvableConflictsMenuItem(menuManager);
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
       }
       super.setupMenuForTable();
    }
@@ -135,137 +126,151 @@ public class MergeCustomMenu extends XViewerCustomMenu {
       createDestinationRevealMenuItem(menuManager, handlerService);
    }
 
-   private String addPreviewItems(MenuManager subMenuManager, String command) {
+   private String addPreviewItems(MenuManager subMenuManager, String command, IHandler handler) {
       CommandContributionItem previewCommand =
          Commands.getLocalCommandContribution(getSite(), subMenuManager.getId() + command, command, null, null,
             ImageManager.getImageDescriptor(FrameworkImage.PREVIEW_ARTIFACT), null, null, null);
+      setCommandHandler(previewCommand, handler);
       subMenuManager.add(previewCommand);
       return previewCommand.getId();
    }
 
-   private void addPreviewMenuItem(MenuManager menuManager) {
+   private void addPreviewMenuItem(MenuManager menuManager, IHandler handler) {
       MenuManager subMenuManager = new MenuManager("Preview", "previewTransaction");
       menuManager.add(subMenuManager);
-      addPreviewItems(subMenuManager, "Preview Source Artifact");
-      addPreviewItems(subMenuManager, "Preview Destination Artifact");
-      addPreviewItems(subMenuManager, "Preview Merge Artifact");
+      addPreviewItems(subMenuManager, "Preview Source Artifact", handler);
+      addPreviewItems(subMenuManager, "Preview Destination Artifact", handler);
+      addPreviewItems(subMenuManager, "Preview Merge Artifact", handler);
    }
 
-   private void addDiffMenuItem(MenuManager menuManager) {
+   private void addDiffMenuItem(MenuManager menuManager, IHandler handler) {
       MenuManager subMenuManager = new MenuManager("Differences", "diffTransaction");
       menuManager.add(subMenuManager);
-      addDiffItems(subMenuManager, "Show Source Branch Differences");
-      addDiffItems(subMenuManager, "Show Destination Branch Differences");
-      addDiffItems(subMenuManager, "Show Source/Destination Differences");
-      addDiffItems(subMenuManager, "Show Source/Merge Differences");
-      addDiffItems(subMenuManager, "Show Destination/Merge Differences");
+      addDiffItems(subMenuManager, "Show Source Branch Differences", handler);
+      addDiffItems(subMenuManager, "Show Destination Branch Differences", handler);
+      addDiffItems(subMenuManager, "Show Source/Destination Differences", handler);
+      addDiffItems(subMenuManager, "Show Source/Merge Differences", handler);
+      addDiffItems(subMenuManager, "Show Destination/Merge Differences", handler);
    }
 
-   private String addDiffItems(MenuManager subMenuManager, String command) {
+   private String addDiffItems(MenuManager subMenuManager, String command, IHandler handler) {
       CommandContributionItem diffCommand =
          Commands.getLocalCommandContribution(getSite(), subMenuManager.getId() + command, command, null, null, null,
             null, null, null);
+      setCommandHandler(diffCommand, handler);
       subMenuManager.add(diffCommand);
       return diffCommand.getId();
    }
 
-   private String addEditArtifactMenuItem(MenuManager menuManager) {
+   private String addEditArtifactMenuItem(MenuManager menuManager, IHandler handler) {
       CommandContributionItem editArtifactCommand =
          Commands.getLocalCommandContribution(getSite(), "editArtifactCommand", "Edit Merge Artifact", null, null,
             null, "E", null, "edit_Merge_Artifact");
+      setCommandHandler(editArtifactCommand, handler);
       menuManager.add(editArtifactCommand);
       return editArtifactCommand.getId();
    }
 
-   private String addSourceResourceHistoryMenuItem(MenuManager menuManager) {
+   private String addSourceResourceHistoryMenuItem(MenuManager menuManager, IHandler handler) {
       CommandContributionItem sourecResourceCommand =
          Commands.getLocalCommandContribution(getSite(), "sourceResourceHistory",
             "Show Source Artifact Resource History", null, null,
             ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE_EDIT), null, null, "source_Resource_History");
+      setCommandHandler(sourecResourceCommand, handler);
       menuManager.add(sourecResourceCommand);
       return sourecResourceCommand.getId();
    }
 
-   private String addDestResourceHistoryMenuItem(MenuManager menuManager) {
+   private String addDestResourceHistoryMenuItem(MenuManager menuManager, IHandler handler) {
       CommandContributionItem sourecResourceCommand =
          Commands.getLocalCommandContribution(getSite(), "destResourceHistory", "Show Dest Artifact Resource History",
             null, null, ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE_EDIT), null, null,
             "dest_Resource_History");
+      setCommandHandler(sourecResourceCommand, handler);
       menuManager.add(sourecResourceCommand);
       return sourecResourceCommand.getId();
    }
 
-   private String addSourceRevealMenuItem(MenuManager menuManager) {
+   private String addSourceRevealMenuItem(MenuManager menuManager, IHandler handler) {
       CommandContributionItem sourceReveal =
          Commands.getLocalCommandContribution(getSite(), "sourceRevealArtifactExplorer",
             "Reveal Source Artifact in Artifact Explorer", null, null,
             ImageManager.getImageDescriptor(FrameworkImage.MAGNIFY), null, null, "source_Reveal");
+      setCommandHandler(sourceReveal, handler);
       menuManager.add(sourceReveal);
       return sourceReveal.getId();
    }
 
-   private String addDestRevealMenuItem(MenuManager menuManager) {
+   private String addDestRevealMenuItem(MenuManager menuManager, IHandler handler) {
       CommandContributionItem destReveal =
          Commands.getLocalCommandContribution(getSite(), "destRevealArtifactExplorer",
             "Reveal Dest Artifact in Artifact Explorer", null, null,
             ImageManager.getImageDescriptor(FrameworkImage.MAGNIFY), null, null, "dest_Reveal");
+      setCommandHandler(destReveal, handler);
       menuManager.add(destReveal);
       return destReveal.getId();
    }
 
-   private String addRevertUnresolvableConflictsMenuItem(MenuManager menuManager) {
+   private String addRevertUnresolvableConflictsMenuItem(MenuManager menuManager, IHandler handler) {
       CommandContributionItem revertSelected =
          Commands.getLocalCommandContribution(getSite(), "revertSelected",
             "Revert Source Artifacts for Unresolvable Conflicts", null, null, null, null, null, null);
+      setCommandHandler(revertSelected, handler);
       menuManager.add(revertSelected);
       return revertSelected.getId();
    }
 
-   private String addMarkAsResolvedMenuItem(MenuManager menuManager) {
+   private String addMarkAsResolvedMenuItem(MenuManager menuManager, IHandler handler) {
       CommandContributionItem markAsResolvedSelected =
          Commands.getLocalCommandContribution(getSite(), "markAsResolvedSelected", "Mark as Resolved", null, null,
             null, null, null, null);
+      setCommandHandler(markAsResolvedSelected, handler);
       menuManager.add(markAsResolvedSelected);
       return markAsResolvedSelected.getId();
    }
 
-   private String addMarkAsUnResolvedMenuItem(MenuManager menuManager) {
+   private String addMarkAsUnResolvedMenuItem(MenuManager menuManager, IHandler handler) {
       CommandContributionItem markAsUnResolvedSelected =
          Commands.getLocalCommandContribution(getSite(), "markAsUnResolvedSelected", "Mark as Unresolved", null, null,
             null, null, null, null);
+      setCommandHandler(markAsUnResolvedSelected, handler);
       menuManager.add(markAsUnResolvedSelected);
       return markAsUnResolvedSelected.getId();
    }
 
-   private String addSourceAsMergeValueMenuItem(MenuManager menuManager) {
+   private String addSourceAsMergeValueMenuItem(MenuManager menuManager, IHandler handler) {
       CommandContributionItem mergeValueSourcePickerSelected =
          Commands.getLocalCommandContribution(getSite(), "mergeValueSourcePickerSelected",
             "Resolve using Source Value", null, null, null, null, null, null);
+      setCommandHandler(mergeValueSourcePickerSelected, handler);
       menuManager.add(mergeValueSourcePickerSelected);
       return mergeValueSourcePickerSelected.getId();
    }
 
-   private String addDestinationAsMergeValueMenuItem(MenuManager menuManager) {
+   private String addDestinationAsMergeValueMenuItem(MenuManager menuManager, IHandler handler) {
       CommandContributionItem mergeValueDestinationPickerSelected =
          Commands.getLocalCommandContribution(getSite(), "mergeValueDestinationPickerSelected",
             "Resolve using Destination Value", null, null, null, null, null, null);
+      setCommandHandler(mergeValueDestinationPickerSelected, handler);
       menuManager.add(mergeValueDestinationPickerSelected);
       return mergeValueDestinationPickerSelected.getId();
    }
 
-   private String addResetConflictMenuItem(MenuManager menuManager) {
+   private String addResetConflictMenuItem(MenuManager menuManager, IHandler handler) {
       CommandContributionItem resetConflictMenuItem =
          Commands.getLocalCommandContribution(getSite(), "resetConflictMenuItem", "Reset Conflict", null, null, null,
             null, null, null);
+      setCommandHandler(resetConflictMenuItem, handler);
       menuManager.add(resetConflictMenuItem);
       return resetConflictMenuItem.getId();
    }
 
-   private String addMergeMenuItem(MenuManager menuManager) {
+   private String addMergeMenuItem(MenuManager menuManager, IHandler handler) {
       CommandContributionItem mergeArtifactCommand =
          Commands.getLocalCommandContribution(getSite(), "mergeArtifactCommand",
             "Generate Three Way Merge (Developmental)", null, null, null, "E", null,
             "Merge_Source_Destination_Artifact");
+      setCommandHandler(mergeArtifactCommand, handler);
       menuManager.add(mergeArtifactCommand);
       return mergeArtifactCommand.getId();
    }
@@ -293,7 +298,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
    }
 
    private void createDiffItems(MenuManager subMenuManager, IHandlerService handlerService, DiffHandler handler, String command) {
-      handlerService.activateHandler(addDiffItems(subMenuManager, command), handler);
+      handlerService.activateHandler(addDiffItems(subMenuManager, command, handler), handler);
    }
 
    private void createPreviewMenuItem(MenuManager menuManager, IHandlerService handlerService) {
@@ -306,11 +311,11 @@ public class MergeCustomMenu extends XViewerCustomMenu {
    }
 
    private void createPreviewItems(MenuManager subMenuManager, IHandlerService handlerService, PreviewHandler handler, String command) {
-      handlerService.activateHandler(addPreviewItems(subMenuManager, command), handler);
+      handlerService.activateHandler(addPreviewItems(subMenuManager, command, handler), handler);
    }
 
    private void createEditArtifactMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-      MenuSelectionEnabledHandler handler = new MenuSelectionEnabledHandler(menuManager) {
+      IHandler handler = new MenuSelectionEnabledHandler(menuManager) {
          @Override
          public void executeWithException(AttributeConflict attributeConflict) throws OseeCoreException {
 
@@ -323,96 +328,96 @@ public class MergeCustomMenu extends XViewerCustomMenu {
          }
       };
 
-      handlerService.activateHandler(addEditArtifactMenuItem(menuManager), handler);
+      handlerService.activateHandler(addEditArtifactMenuItem(menuManager, handler), handler);
    }
 
    private void createSourceResourceHistoryMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-      MenuSelectionEnabledHandler handler = new MenuSelectionEnabledHandler(menuManager) {
+      IHandler handler = new MenuSelectionEnabledHandler(menuManager) {
          @Override
          public void executeWithException(AttributeConflict attributeConflict) throws OseeCoreException {
             HistoryView.open(attributeConflict.getSourceArtifact());
          }
       };
 
-      handlerService.activateHandler(addSourceResourceHistoryMenuItem(menuManager), handler);
+      handlerService.activateHandler(addSourceResourceHistoryMenuItem(menuManager, handler), handler);
    }
 
    private void createDestinationResourceHistoryMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-      MenuSelectionEnabledHandler handler = new MenuSelectionEnabledHandler(menuManager) {
+      IHandler handler = new MenuSelectionEnabledHandler(menuManager) {
          @Override
          public void executeWithException(AttributeConflict attributeConflict) throws OseeCoreException {
             HistoryView.open(attributeConflict.getDestArtifact());
          }
       };
-      handlerService.activateHandler(addDestResourceHistoryMenuItem(menuManager), handler);
+      handlerService.activateHandler(addDestResourceHistoryMenuItem(menuManager, handler), handler);
    }
 
    private void createSourceRevealMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-      MenuSelectionEnabledHandler handler = new MenuSelectionEnabledHandler(menuManager) {
+      IHandler handler = new MenuSelectionEnabledHandler(menuManager) {
          @Override
          public void executeWithException(AttributeConflict attributeConflict) throws OseeCoreException {
             ArtifactExplorer.revealArtifact(attributeConflict.getSourceArtifact());
          }
       };
-      handlerService.activateHandler(addSourceRevealMenuItem(menuManager), handler);
+      handlerService.activateHandler(addSourceRevealMenuItem(menuManager, handler), handler);
    }
 
    private void createDestinationRevealMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-      MenuSelectionEnabledHandler handler = new MenuSelectionEnabledHandler(menuManager) {
+      IHandler handler = new MenuSelectionEnabledHandler(menuManager) {
          @Override
          public void executeWithException(AttributeConflict attributeConflict) throws OseeCoreException {
             ArtifactExplorer.revealArtifact(attributeConflict.getDestArtifact());
          }
       };
-      handlerService.activateHandler(addDestRevealMenuItem(menuManager), handler);
+      handlerService.activateHandler(addDestRevealMenuItem(menuManager, handler), handler);
    }
 
    private void createMarkResolvedMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-      String commandId = addMarkAsResolvedMenuItem(menuManager);
       IHandler handler =
          new MergeManagerConflictHandler(menuManager,
             "Are you sure you want to Mark the selected [%s] conflict(s) as Resolved?",
             ConflictOperationEnum.MARK_RESOLVED);
+      String commandId = addMarkAsResolvedMenuItem(menuManager, handler);
       handlerService.activateHandler(commandId, handler);
    }
 
    private void createMarkUnResolvedMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-      String commandId = addMarkAsUnResolvedMenuItem(menuManager);
       IHandler handler =
          new MergeManagerConflictHandler(menuManager,
             "Are you sure you want to Mark the selected [%s] conflict(s) as UnResolved?",
             ConflictOperationEnum.MARK_UNRESOLVED);
+      String commandId = addMarkAsUnResolvedMenuItem(menuManager, handler);
       handlerService.activateHandler(commandId, handler);
    }
 
    private void createSourceAsMergeMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-      String commandId = addSourceAsMergeValueMenuItem(menuManager);
       IHandler handler =
          new MergeManagerConflictHandler(menuManager,
             "Are you sure you want to set the Merge value to the Source value for the selected [%s] conflict(s)?",
             ConflictOperationEnum.SET_SRC_AND_RESOLVE);
+      String commandId = addSourceAsMergeValueMenuItem(menuManager, handler);
       handlerService.activateHandler(commandId, handler);
    }
 
    private void createDestinationAsMergeMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-      String commandId = addDestinationAsMergeValueMenuItem(menuManager);
       IHandler handler =
          new MergeManagerConflictHandler(menuManager,
             "Are you sure you want to set the Merge value to the Destination value for the selected [%s] conflict(s)?",
             ConflictOperationEnum.SET_DST_AND_RESOLVE);
+      String commandId = addDestinationAsMergeValueMenuItem(menuManager, handler);
       handlerService.activateHandler(commandId, handler);
    }
 
    private void createResetConflictMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-      String commandId = addResetConflictMenuItem(menuManager);
       IHandler handler =
          new MergeManagerConflictHandler(menuManager, "Are you sure you want to reset %s conflict(s)?",
             ConflictOperationEnum.RESET);
+      String commandId = addResetConflictMenuItem(menuManager, handler);
       handlerService.activateHandler(commandId, handler);
    }
 
    private void createMergeMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-      MenuSelectionEnabledHandler handler = new MenuSelectionEnabledHandler(menuManager) {
+      IHandler handler = new MenuSelectionEnabledHandler(menuManager) {
          @Override
          public void executeWithException(AttributeConflict attributeConflict) {
             MergeUtility.launchMerge(attributeConflict, Displays.getActiveShell().getShell());
@@ -423,7 +428,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
             return super.isEnabledWithException(structuredSelection) && getConflictFromSelection(structuredSelection).isWordAttribute();
          }
       };
-      handlerService.activateHandler(addMergeMenuItem(menuManager), handler);
+      handlerService.activateHandler(addMergeMenuItem(menuManager, handler), handler);
    }
 
    private final class MergeManagerConflictHandler extends AbstractSelectionEnabledHandler {
@@ -515,6 +520,13 @@ public class MergeCustomMenu extends XViewerCustomMenu {
          }
 
          return AccessControlManager.hasPermission(artifacts, PermissionEnum.READ);
+      }
+   }
+
+   private void setCommandHandler(CommandContributionItem CommandItem, IHandler handler) {
+      if (handler != null) {
+         Command cmd = CommandItem.getCommand().getCommand();
+         cmd.setHandler(handler);
       }
    }
 }
