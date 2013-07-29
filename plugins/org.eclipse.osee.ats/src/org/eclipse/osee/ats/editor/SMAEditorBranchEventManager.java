@@ -14,11 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
@@ -97,26 +98,28 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
                case Purged:
                case Committing:
                case Committed:
-                  if (branchEventType != BranchEventType.Purged) {
-                     Branch branch = BranchManager.getBranchByGuid(branchGuid);
-                     if (branch.getAssociatedArtifactId() != awa.getArtId()) {
-                        return;
+                  if (awa instanceof TeamWorkFlowArtifact) {
+                     TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) awa;
+                     Branch assocBranch = AtsBranchManagerCore.getWorkingBranch(teamArt);
+                     if (assocBranch != null && assocBranch.getGuid().equals(branchEventType.getGuid())) {
+                        Displays.ensureInDisplayThread(new Runnable() {
+                           @Override
+                           public void run() {
+                              if (handler.isDisposed()) {
+                                 return;
+                              }
+                              try {
+                                 handler.getSMAEditor().refreshPages();
+                                 handler.getSMAEditor().onDirtied();
+                              } catch (Exception ex) {
+                                 OseeLog.log(Activator.class, Level.SEVERE, ex);
+                              }
+                           }
+                        });
                      }
                   }
-                  Displays.ensureInDisplayThread(new Runnable() {
-                     @Override
-                     public void run() {
-                        if (handler.isDisposed()) {
-                           return;
-                        }
-                        try {
-                           handler.getSMAEditor().refreshPages();
-                           handler.getSMAEditor().onDirtied();
-                        } catch (Exception ex) {
-                           OseeLog.log(Activator.class, Level.SEVERE, ex);
-                        }
-                     }
-                  });
+               default:
+                  break;
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
