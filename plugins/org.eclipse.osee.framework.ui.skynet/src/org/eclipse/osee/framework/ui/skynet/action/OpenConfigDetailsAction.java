@@ -16,8 +16,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.preferences.ConfigurationDetails;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
@@ -41,12 +43,16 @@ public class OpenConfigDetailsAction extends Action {
 
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
-               Shell shell = AWorkbench.getActiveShell();
-               WorkbenchPreferenceDialog dialog =
-                  WorkbenchPreferenceDialog.createDialogOn(shell, ConfigurationDetails.PAGE_ID);
-               isSelectionAllowed.setValue(false);
-               dialog.open();
-               isSelectionAllowed.setValue(true);
+               Shell shell = getDisplay().getActiveShell();
+               if (shell == null) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "shell cannot be null");
+               } else {
+                  WorkbenchPreferenceDialog dialog =
+                     WorkbenchPreferenceDialog.createDialogOn(shell, ConfigurationDetails.PAGE_ID);
+                  isSelectionAllowed.setValue(false);
+                  dialog.open();
+                  isSelectionAllowed.setValue(true);
+               }
                return Status.OK_STATUS;
             }
          };

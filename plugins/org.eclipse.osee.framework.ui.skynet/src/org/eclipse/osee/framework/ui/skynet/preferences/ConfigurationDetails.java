@@ -11,12 +11,14 @@
 package org.eclipse.osee.framework.ui.skynet.preferences;
 
 import java.util.logging.Level;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.IHealthStatus;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -56,7 +58,12 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
 
    @Override
    public void init(IWorkbench workbench) {
-      setPreferenceStore(Activator.getInstance().getPreferenceStore());
+      IPreferenceStore preferenceStore = Activator.getInstance().getPreferenceStore();
+      if (preferenceStore == null) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Preference Store can't be null.");
+      } else {
+         setPreferenceStore(preferenceStore);
+      }
       setDescription("See below for OSEE configuration details.");
    }
 
@@ -81,7 +88,11 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            generatePage();
+            try {
+               generatePage();
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+            }
          }
       });
       return content;
