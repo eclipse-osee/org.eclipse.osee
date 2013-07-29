@@ -143,8 +143,8 @@ public class PeerToPeerReviewManager {
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, SkynetTransaction transaction) throws OseeCoreException {
-      return createNewPeerToPeerReview(teamArt, reviewTitle, againstState, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(),
-         transaction);
+      return createNewPeerToPeerReview(teamArt, reviewTitle, againstState, new Date(),
+         AtsClientService.get().getUserAdmin().getCurrentUser(), transaction);
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, SkynetTransaction transaction) throws OseeCoreException {
@@ -154,14 +154,19 @@ public class PeerToPeerReviewManager {
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
       return createNewPeerToPeerReview(
-         AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForPeerToPeerReviewNotYetCreated(
-            teamArt).getWorkDefinition(), teamArt, reviewTitle, againstState, createdDate, createdBy, transaction);
+         AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForPeerToPeerReviewNotYetCreated(teamArt).getWorkDefinition(),
+         teamArt, reviewTitle, againstState, createdDate, createdBy, transaction);
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
-      return createNewPeerToPeerReview(
-         AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(
-            actionableItem).getWorkDefinition(), null, reviewTitle, againstState, createdDate, createdBy, transaction);
+      PeerToPeerReviewArtifact peerArt =
+         createNewPeerToPeerReview(
+            AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(
+               actionableItem).getWorkDefinition(), null, reviewTitle, againstState, createdDate, createdBy,
+            transaction);
+      peerArt.getActionableItemsDam().addActionableItem(actionableItem);
+      peerArt.persist(transaction);
+      return peerArt;
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
