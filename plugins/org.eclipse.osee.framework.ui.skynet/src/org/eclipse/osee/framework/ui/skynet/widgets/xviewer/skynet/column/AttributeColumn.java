@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 /**
  * @author Donald G. Dunne
  */
-public class AttributeColumn extends XViewerValueColumn {
+public class AttributeColumn extends XViewerValueColumn implements IAttributeColumn {
 
    private IAttributeType attributeType;
 
@@ -41,8 +41,8 @@ public class AttributeColumn extends XViewerValueColumn {
    @Override
    protected void copy(XViewerColumn fromXCol, XViewerColumn toXCol) {
       super.copy(fromXCol, toXCol);
-      if (fromXCol instanceof AttributeColumn && toXCol instanceof AttributeColumn) {
-         ((AttributeColumn) toXCol).setAttributeType(((AttributeColumn) fromXCol).getAttributeType());
+      if (fromXCol instanceof IAttributeColumn && toXCol instanceof IAttributeColumn) {
+         ((IAttributeColumn) toXCol).setAttributeType(((IAttributeColumn) fromXCol).getAttributeType());
       }
    }
 
@@ -72,10 +72,12 @@ public class AttributeColumn extends XViewerValueColumn {
       }
    }
 
+   @Override
    public IAttributeType getAttributeType() {
       return attributeType;
    }
 
+   @Override
    public void setAttributeType(IAttributeType attributeType) {
       this.attributeType = attributeType;
    }

@@ -14,11 +14,12 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IAttributeColumn;
 
 /**
  * @author Donald G. Dunne
  */
-public class XViewerAtsAttributeColumn extends XViewerAtsColumn {
+public class XViewerAtsAttributeColumn extends XViewerAtsColumn implements IAttributeColumn {
 
    private IAttributeType attributeType;
 
@@ -65,10 +66,12 @@ public class XViewerAtsAttributeColumn extends XViewerAtsColumn {
    //         sortDataType, multiColumnEditable, atsAttribute.getDescription());
    //   }
 
+   @Override
    public IAttributeType getAttributeType() {
       return attributeType;
    }
 
+   @Override
    public void setAttributeType(IAttributeType attributeType) {
       this.attributeType = attributeType;
    }

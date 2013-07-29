@@ -79,7 +79,7 @@ import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.AttributeColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IAttributeColumn;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
@@ -243,20 +243,15 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       if (treeColumn.getData() instanceof IMultiColumnEditProvider) {
          return;
       }
-      if (!(treeColumn.getData() instanceof AttributeColumn) && !(treeColumn.getData() instanceof XViewerAtsAttributeColumn)) {
+      if (!(treeColumn.getData() instanceof IAttributeColumn) && !(treeColumn.getData() instanceof XViewerAtsAttributeColumn)) {
          AWorkbench.popup("ERROR", "Column is not attribute and thus not multi-editable " + treeColumn.getText());
          return;
       }
 
       XResultData rData = new XResultData();
       IAttributeType attributeType = null;
-      if (treeColumn.getData() instanceof AttributeColumn) {
-         final AttributeColumn xCol = (AttributeColumn) treeColumn.getData();
-         attributeType = xCol.getAttributeType();
-      }
-      if (treeColumn.getData() instanceof XViewerAtsAttributeColumn) {
-         final XViewerAtsAttributeColumn xCol = (XViewerAtsAttributeColumn) treeColumn.getData();
-         attributeType = xCol.getAttributeType();
+      if (treeColumn.getData() instanceof IAttributeColumn) {
+         attributeType = ((IAttributeColumn) treeColumn.getData()).getAttributeType();
       }
       if (attributeType == null) {
          AWorkbench.popup("ERROR", "Can't retrieve attribute name from attribute column " + treeColumn.getText());
@@ -303,12 +298,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       }
       IAttributeType attributeType = null;
       // Currently don't know how to multi-edit anything but attribute
-      if (treeColumn.getData() instanceof AttributeColumn) {
-         AttributeColumn xCol = (AttributeColumn) treeColumn.getData();
-         attributeType = xCol.getAttributeType();
-      } else if (treeColumn.getData() instanceof XViewerAtsAttributeColumn) {
-         XViewerAtsAttributeColumn xCol = (XViewerAtsAttributeColumn) treeColumn.getData();
-         attributeType = xCol.getAttributeType();
+      if (treeColumn.getData() instanceof IAttributeColumn) {
+         attributeType = ((IAttributeColumn) treeColumn.getData()).getAttributeType();
       } else {
          return false;
       }
