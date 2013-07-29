@@ -57,8 +57,8 @@ public final class WordTemplateFileDiffer {
       renderer.setOption("Use Artifact Names", true);
       renderer.setOption("inPublishMode", true);
       // need to keep original value as well as reseting to false
-      renderer.setOption("Orig Publish As Diff", renderer.getBooleanOption("Publish As Diff"));
-      renderer.setOption("Publish As Diff", false);
+      renderer.setOption("Orig Publish As Diff", renderer.getBooleanOption(WordTemplateProcessor.PUBLISH_AS_DIFF));
+      renderer.setOption(WordTemplateProcessor.PUBLISH_AS_DIFF, false);
       renderer.setOption("RecurseChildren", recurseChildren);
 
       Branch endBranch = renderer.getBranchOption("Branch");
@@ -89,7 +89,7 @@ public final class WordTemplateFileDiffer {
          txDelta = new TransactionDelta(startTransaction, endTransaction);
       }
 
-      boolean recurseOnLoad = renderer.getBooleanOption("Recurse On Load");
+      boolean recurseOnLoad = renderer.getBooleanOption(WordTemplateProcessor.RECURSE_ON_LOAD);
       Collection<Artifact> toProcess =
          (recurseChildren || recurseOnLoad) ? getAllArtifacts(endArtifacts) : endArtifacts;
       List<Change> changes = new LinkedList<Change>();
@@ -111,8 +111,8 @@ public final class WordTemplateFileDiffer {
    private Collection<Artifact> getAllArtifacts(List<Artifact> endArtifacts) throws OseeCoreException {
       Set<Artifact> toReturn = new LinkedHashSet<Artifact>();
       for (Artifact art : endArtifacts) {
-         toReturn.addAll(art.getDescendants());
          toReturn.add(art);
+         toReturn.addAll(art.getDescendants());
       }
       return toReturn;
    }
@@ -145,7 +145,7 @@ public final class WordTemplateFileDiffer {
       }
 
       if (!artifactDeltas.isEmpty()) {
-         RendererManager.diff(artifactDeltas, diffPrefix, renderer.getValues());
+         RendererManager.diffWithRenderer(artifactDeltas, diffPrefix, renderer, renderer.getValues());
       }
    }
 

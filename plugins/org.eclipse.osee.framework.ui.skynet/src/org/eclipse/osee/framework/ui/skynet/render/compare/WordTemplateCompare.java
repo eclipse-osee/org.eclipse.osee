@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.util.IVbaDiffGenerator;
@@ -66,6 +67,7 @@ public class WordTemplateCompare extends AbstractWordCompare {
       addArtifactDeltas(monitor, artifactDeltas, data);
       diffGenerator.generate(monitor, data);
 
+      getRenderer().setOption(IRenderer.RESULT_PATH_RETURN, resultPath);
       collector.onCompare(data);
    }
 

@@ -60,6 +60,6 @@ public class ArtifactDeltaToFileConverter {
       };
       // Set ADD MERGE TAG as an option so resulting document will indicate a merge section
       RendererManager.diff(colletor, artifactDelta, "", IRenderer.NO_DISPLAY, true, TEMPLATE_OPTION,
-         ITemplateRenderer.DIFF_NO_ATTRIBUTES_VALUE, "ADD MERGE TAG", true);
+         ITemplateRenderer.DIFF_NO_ATTRIBUTES_VALUE, ITemplateRenderer.ADD_MERGE_TAG, true);
    }
 }

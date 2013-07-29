@@ -32,6 +32,7 @@ import org.junit.runners.Suite;
    WordEditTest.class,
    WordOutlineAndStyleTest.class,
    WordTemplateProcessorTest.class,
+   WordTemplateRendererTest.class,
    WordTrackedChangesTest.class})
 public class XUiSkynetCoreIntegrationTestSuite {
    // Test Suite

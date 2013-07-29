@@ -15,6 +15,8 @@ package org.eclipse.osee.framework.ui.skynet.render;
  */
 public interface ITemplateRenderer extends IRenderer {
    public static final String TEMPLATE_OPTION = "template";
+   public static final String USE_TEMPLATE_ONCE = "use once";
+   public static final String ADD_MERGE_TAG = "Add Merge Tag";
    public static final String TRANSACTION_OPTION = "skynetTransaction";
    public static final String PREVIEW_WITH_RECURSE_VALUE = "PREVIEW_WITH_RECURSE";
    public static final String PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE = "PREVIEW_WITH_RECURSE_NO_ATTRIBUTES";

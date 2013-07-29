@@ -62,6 +62,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    private static final String OLE_END = "</w:docOleData>";
    private static final QName fo = new QName("ns0", "unused_localname", ARTIFACT_SCHEMA);
    public static final String UPDATE_PARAGRAPH_NUMBER_OPTION = "updateParagraphNumber";
+   public static final String FIRST_TIME = "FirstTime";
+   public static final String SECOND_TIME = "SecondTime";
 
    private final WordTemplateProcessor templateProcessor = new WordTemplateProcessor(this);
 
@@ -221,11 +223,29 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    }
 
    protected String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+      // if USE_TEMPLATE_ONCE then only the first two artifacts will use the whole template (since they are diff'd with each other)
+      // The settings from the template are stored previously and will be used, just not the content of the Word template
+      boolean useTemplateOnce = getBooleanOption(USE_TEMPLATE_ONCE);
+      boolean firstTime = getBooleanOption(FIRST_TIME);
+      boolean secondTime = getBooleanOption(SECOND_TIME);
       Object option = getOption(TEMPLATE_OPTION);
-      if (option instanceof Artifact) {
+
+      if ((option instanceof Artifact) && (!useTemplateOnce || (useTemplateOnce && (firstTime || secondTime)))) {
          Artifact template = (Artifact) option;
+         if (useTemplateOnce) {
+            if (secondTime) {
+               setOption(SECOND_TIME, false);
+            }
+            if (firstTime) {
+               setOption(FIRST_TIME, false);
+               setOption(SECOND_TIME, true);
+            }
+         }
          return template.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
-      } else if (option == null || option instanceof String) {
+      } else if ((option == null || option instanceof String) || (useTemplateOnce && !firstTime)) {
+         if (useTemplateOnce && !firstTime && !secondTime) {
+            option = null;
+         }
          Artifact templateArtifact = TemplateManager.getTemplate(this, artifact, presentationType, (String) option);
          return templateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
       }

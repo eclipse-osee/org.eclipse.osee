@@ -97,6 +97,11 @@ public class WordTemplateProcessor {
       "<((\\w+:)?(HeadingAttribute|RecurseChildren|Number))>(.*?)</\\1>",
       Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private static final Program wordApp = Program.findProgram("doc");
+   public static final String ATTRIBUTE_NAME = "AttributeName";
+   public static final String ALL_ATTRIBUTES = "AllAttributes";
+   public static final String RECURSE_ON_LOAD = "Recurse On Load";
+   public static final String RECURSE_CHILDREN = "RecurseChildren";
+   public static final String PUBLISH_AS_DIFF = "Publish As Diff";
 
    private String slaveTemplate;
    private boolean outlining;
@@ -124,14 +129,32 @@ public class WordTemplateProcessor {
    public void publishWithExtensionTemplates(Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) throws OseeCoreException {
       String masterTemplate = masterTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent, "");
       slaveTemplate = "";
-      isDiff = renderer.getBooleanOption("Publish As Diff");
+      isDiff = renderer.getBooleanOption(PUBLISH_AS_DIFF);
       renderer.setOption(ITemplateRenderer.TEMPLATE_OPTION, masterTemplateArtifact);
 
       if (slaveTemplateArtifact != null) {
          renderer.setOption(ITemplateRenderer.TEMPLATE_OPTION, slaveTemplateArtifact);
          slaveTemplate = slaveTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent, "");
       }
+      // Process the settings from the template at the beginning
+      Matcher matcher = headElementsPattern.matcher(masterTemplate);
+      matcher.find();
+      String artifactElement = matcher.group(4);
+      artifactElement = artifactElement.replaceAll("<(\\w+:)?Artifact/?>", "");
+      artifactElement = artifactElement.replaceAll("<(\\w+:)?Set_Name>.*?</(\\w+:)?Set_Name>", "");
+      extractSkynetAttributeReferences(artifactElement);
 
+      // Need to check if all attributes will be published.  If so set the AllAttributes option.
+      for (AttributeElement attributeElement : attributeElements) {
+         String attributeName = attributeElement.getAttributeName();
+         if (attributeName.equals("*")) {
+            renderer.setOption(ALL_ATTRIBUTES, true);
+            break;
+         } else {
+            renderer.setOption(ALL_ATTRIBUTES, false);
+            renderer.setOption(ATTRIBUTE_NAME, attributeName);
+         }
+      }
       IFile file =
          RenderingUtil.getRenderFile(renderer, COMMON, PREVIEW, "/", masterTemplateArtifact.getSafeName(), ".xml");
       AIFile.writeToFile(file, applyTemplate(artifacts, masterTemplate, file.getParent(), null, null, PREVIEW));
@@ -229,9 +252,12 @@ public class WordTemplateProcessor {
       if (Strings.isValid(outlineNumber)) {
          wordMl.setNextParagraphNumberTo(outlineNumber);
       }
-      extractSkynetAttributeReferences(getArtifactSetXml(artifactElement));
+      // Don't extract the settings from the template if already done.
+      if (attributeElements.isEmpty()) {
+         extractSkynetAttributeReferences(getArtifactSetXml(artifactElement));
+      }
 
-      if (renderer.getBooleanOption("Publish As Diff")) {
+      if (renderer.getBooleanOption(PUBLISH_AS_DIFF)) {
          WordTemplateFileDiffer templateFileDiffer = new WordTemplateFileDiffer(renderer);
          templateFileDiffer.generateFileDifferences(artifacts, "/results/", outlineNumber, outlineType, recurseChildren);
       } else {
@@ -316,8 +342,8 @@ public class WordTemplateProcessor {
 
             if (elementType.equals("HeadingAttribute")) {
                headingAttributeType = AttributeTypeManager.getType(value);
-            } else if (elementType.equals("RecurseChildren")) {
-               recurseChildren = renderer.getBooleanOption("RecurseChildren");
+            } else if (elementType.equals(RECURSE_CHILDREN)) {
+               recurseChildren = renderer.getBooleanOption(RECURSE_CHILDREN);
 
                if (!recurseChildren) {
                   recurseChildren = Boolean.parseBoolean(value);
@@ -348,7 +374,7 @@ public class WordTemplateProcessor {
 
                if (outlining && !templateOnly) {
                   String headingText = artifact.getSoleAttributeValue(headingAttributeType, "");
-                  Boolean mergeTag = (Boolean) renderer.getOption("ADD MERGE TAG");
+                  Boolean mergeTag = (Boolean) renderer.getOption(ITemplateRenderer.ADD_MERGE_TAG);
                   if (mergeTag != null && mergeTag) {
                      headingText = headingText.concat(" [MERGED]");
                   }
@@ -381,7 +407,7 @@ public class WordTemplateProcessor {
                processAttributes(artifact, wordMl, presentationType, multipleArtifacts, publishInline);
             }
             // Check for option that may have been set from Publish with Diff BLAM to recurse
-            if (recurseChildren || (renderer.getBooleanOption("Recurse On Load") && !renderer.getBooleanOption("Orig Publish As Diff"))) {
+            if ((recurseChildren && !renderer.getBooleanOption(RECURSE_ON_LOAD)) || (renderer.getBooleanOption(RECURSE_ON_LOAD) && !renderer.getBooleanOption("Orig Publish As Diff"))) {
                for (Artifact childArtifact : artifact.getChildren()) {
                   processObjectArtifact(childArtifact, wordMl, outlineType, presentationType, multipleArtifacts);
                }
@@ -414,10 +440,12 @@ public class WordTemplateProcessor {
    }
 
    private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean multipleArtifacts, boolean publishInLine) throws OseeCoreException {
+      String attribName = (String) renderer.getOption(ATTRIBUTE_NAME);
+      boolean onlyAttrib = false;
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
 
-         if (attributeName.equals("*")) {
+         if (renderer.getBooleanOption(ALL_ATTRIBUTES) || ((attribName == null) && (attributeName.equals("*")))) {
             for (IAttributeType attributeType : RendererManager.getAttributeTypeOrderList(artifact)) {
                if (!outlining || !attributeType.equals(headingAttributeType)) {
                   processAttribute(artifact, wordMl, attributeElement, attributeType, true, presentationType,
@@ -425,12 +453,19 @@ public class WordTemplateProcessor {
                }
             }
          } else {
+            if (attribName != null) {
+               attributeName = attribName;
+               onlyAttrib = true;
+            }
             AttributeType attributeType = AttributeTypeManager.getType(attributeName);
+
             if (artifact.isAttributeTypeValid(attributeType)) {
                processAttribute(artifact, wordMl, attributeElement, attributeType, false, presentationType,
                   multipleArtifacts, publishInLine);
             }
-
+            if (onlyAttrib) {
+               break;
+            }
          }
       }
       wordMl.setPageLayout(artifact);

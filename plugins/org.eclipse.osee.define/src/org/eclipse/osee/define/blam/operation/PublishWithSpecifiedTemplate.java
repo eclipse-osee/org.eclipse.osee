@@ -49,7 +49,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private XBranchSelectWidget branchWidget;
    private XCombo slaveWidget;
    private final String USE_ARTIFACT_NAMES = "Use Artifact Names";
-   private final String USE_PARAGRAPH_NUMBERS = "Use Paragram Numbers";
+   private final String USE_PARAGRAPH_NUMBERS = "Use Paragraph Numbers";
    private final String UPDATE_PARAGRAPH_NUMBERS = "Update Paragraph Numbers (If authorized)";
    private final String MASTER_TEMPLATE = "Master Template";
    private final String SLAVE_TEMPLATE = "Slave Template";
@@ -108,6 +108,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       WordTemplateRenderer renderer = new WordTemplateRenderer();
       SkynetTransaction transaction =
          TransactionManager.createTransaction(branch, "BLAM: Publish with specified template");
+
       Object[] options =
          new Object[] {
             "Branch",
@@ -131,7 +132,11 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
             "Maintain Order",
             true,
             "Progress Monitor",
-            monitor};
+            monitor,
+            ITemplateRenderer.USE_TEMPLATE_ONCE,
+            true,
+            WordTemplateRenderer.FIRST_TIME,
+            true};
 
       renderer.publish(master, slave, artifacts, options);
 
