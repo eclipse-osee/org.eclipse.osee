@@ -40,8 +40,8 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
@@ -77,7 +77,6 @@ public class BranchManager {
 
    private static final String LAST_DEFAULT_BRANCH = "LastDefaultBranch";
    public static final String COMMIT_COMMENT = "Commit Branch ";
-   private static final String MERGE_RELOAD_KEY = "merge.branch.reload.cache";
 
    private Branch lastBranch;
 
@@ -268,8 +267,9 @@ public class BranchManager {
       for (IOseeBranch branch : branches) {
          ops.add(new DeleteBranchOperation(branch));
       }
-      return Operations.executeAsJob(new CompositeOperation("Deleting multiple branches...", Activator.PLUGIN_ID, ops),
-         true);
+      OperationBuilder builder = Operations.createBuilder("Deleting multiple branches...");
+      builder.addAll(ops);
+      return Operations.executeAsJob(builder.build(), false);
    }
 
    /**
