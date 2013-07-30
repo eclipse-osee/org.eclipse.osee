@@ -43,16 +43,21 @@
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.nebula.widgets.xviewer"/>
       <import plugin="org.eclipse.osee.framework.ui.ws"/>
-      <import plugin="org.eclipse.osee.framework.jini"/>
-      <import plugin="jms.libraries"/>
-      <import plugin="org.eclipse.help"/>
-      <import feature="org.eclipse.osee.core.runtime.feature"/>
-      <import feature="org.eclipse.osee.external.feature"/>
       <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.osee.framework.jini"/>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="jms.libraries"/>
+      <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.jgit"/>
       <import plugin="org.eclipse.team.svn.core"/>
+      <import plugin="org.apache.felix.gogo.runtime"/>
+      <import plugin="com.sun.jersey" version="1.8.0" match="greaterOrEqual"/>
+      <import plugin="com.sun.jersey.client.apache" version="1.8.0" match="greaterOrEqual"/>
+      <import plugin="javax.servlet"/>
+      <import plugin="javax.ws.rs"/>
+      <import plugin="org.apache.commons.lang"/>
+      <import plugin="org.eclipse.core.net"/>
    </requires>
 
    <plugin
