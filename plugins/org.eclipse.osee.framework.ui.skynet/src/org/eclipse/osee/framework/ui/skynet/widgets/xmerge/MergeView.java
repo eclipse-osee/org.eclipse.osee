@@ -236,17 +236,25 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
    @Override
    public void saveState(IMemento memento) {
       super.saveState(memento);
-      memento = memento.createChild(INPUT);
-      if (sourceBranch != null) {
-         memento.putInteger(SOURCE_BRANCH_ID, sourceBranch.getId());
-         memento.putInteger(DEST_BRANCH_ID, destBranch.getId());
-         memento.putInteger(TRANSACTION_NUMBER, transactionId.getId());
-      } else if (commitTrans != null) {
-         memento.putInteger(COMMIT_NUMBER, commitTrans.getId());
-      }
-
-      if (sourceBranch != null || commitTrans != null) {
-         SkynetViews.addDatabaseSourceId(memento);
+      if (commitTrans != null || sourceBranch != null || destBranch != null || transactionId != null) {
+         try {
+            IMemento childMemento = memento.createChild(INPUT);
+            if (commitTrans != null) {
+               childMemento.putInteger(COMMIT_NUMBER, commitTrans.getId());
+            }
+            if (sourceBranch != null) {
+               childMemento.putInteger(SOURCE_BRANCH_ID, sourceBranch.getId());
+            }
+            if (destBranch != null) {
+               childMemento.putInteger(DEST_BRANCH_ID, destBranch.getId());
+            }
+            if (transactionId != null) {
+               childMemento.putInteger(TRANSACTION_NUMBER, transactionId.getId());
+            }
+            SkynetViews.addDatabaseSourceId(childMemento);
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.WARNING, "Merge View save state error", ex);
+         }
       }
    }
 
