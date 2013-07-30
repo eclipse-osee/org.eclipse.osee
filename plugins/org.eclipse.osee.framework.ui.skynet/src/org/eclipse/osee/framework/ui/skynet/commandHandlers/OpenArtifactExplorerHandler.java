@@ -14,6 +14,9 @@ import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 
@@ -22,13 +25,22 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
  */
 public class OpenArtifactExplorerHandler extends CommandHandler {
 
-   private List<? extends IOseeBranch> getSelectedBranches(IStructuredSelection selection) {
+   private List<Branch> getSelectedBranches(IStructuredSelection selection) {
       return Handlers.getBranchesFromStructuredSelection(selection);
    }
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
-      return !getSelectedBranches(structuredSelection).isEmpty();
+      List<Branch> selectedBranches = getSelectedBranches(structuredSelection);
+      boolean isEnabled = !selectedBranches.isEmpty();
+      for (Branch branch : selectedBranches) {
+         if (branch.getBranchType() == BranchType.MERGE || !branch.getBranchState().matches(BranchState.CREATED,
+            BranchState.MODIFIED)) {
+            isEnabled = false;
+            break;
+         }
+      }
+      return isEnabled;
    }
 
    @Override
