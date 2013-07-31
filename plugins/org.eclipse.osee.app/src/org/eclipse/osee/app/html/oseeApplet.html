@@ -1,0 +1,32 @@
+<?include path="4000000000000000 pageDeclaration.html"?>
+<head>
+	<meta name="author" content="<?author?>" />
+	<title><?title?></title>
+	<style>
+		<?include path="405EE00000000005 OseeApplet.css"?>
+	</style>
+</head>
+<body> 
+	<div id="outerContainer">
+		<strong id="title"><?title?></strong>
+		
+		<div id="usageAndDescription">
+			<?usageAndDescription?>
+		</div>
+		<form id="oseeAppForm">
+			<?widgets?>
+			<?dataLists?>
+			<br />
+			<input type="button" id="startToggleId" value="Start" />
+			<strong id="status"> </strong>
+			<br />
+			<dd id="log" />
+		</form>
+	</div>
+	<script type="text/javascript">
+		<?javaScript?>
+		<?include path="4000000000000002 OseeCore.js"?>
+		<?include path="405EE00000000006 OseeApplet.js"?>
+	</script>
+</body>
+</html>

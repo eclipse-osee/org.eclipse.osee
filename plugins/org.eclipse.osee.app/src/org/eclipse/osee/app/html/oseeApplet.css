@@ -1,0 +1,36 @@
+	#outerContainer {
+		width: 900px;
+		margin-left: 1em;
+	}
+	#title {
+		font-size:200%;
+		margin-left: 1em;
+		margin-right: 3em;
+		float:left;
+	}
+	#usageAndDescription {
+		width: 800px;
+		padding: 1em;
+		background-color: #40B3DF;
+		box-shadow: 10px 10px 5px #888888;
+		margin-bottom: 2em;
+	}
+	#oseeAppForm label {
+		color: #008000;
+		font-weight: bold;
+		margin-top: 8px;
+		margin-bottom: 0px;
+		width: 10em;
+		float: left;
+		clear: both;
+	}
+	input[type=text] {
+		width: 500px;
+		margin-bottom: 5px;
+		background-color: #FFFFCC;
+	}
+	input[readonly] {
+		width: 500px;
+		margin-bottom: 5px;
+		background-color: #E3E3E3;
+	}
