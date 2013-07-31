@@ -145,6 +145,11 @@ workDefinition "WorkDef_Review_PeerToPeer" {
       to "Prepare" OverrideAttributeValidation
       layout {
          composite {
+         	numColumns 4
+            attributeWidget "ats.Estimated Hours"
+            attributeWidget "ats.Estimated Completion Date"
+         }
+         composite {
             numColumns 4
             widget "Meeting Length"
             widget "Meeting Location"
