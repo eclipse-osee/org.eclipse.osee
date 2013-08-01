@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.listener;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Locale;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
 import org.eclipse.osee.framework.jdk.core.util.benchmark.Benchmark;
+import org.eclipse.osee.ote.core.CopyOnWriteNoIteratorList;
 import org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
@@ -33,12 +36,19 @@ import org.eclipse.osee.ote.message.interfaces.IOSEEMessageWriterListener;
  * @author Andrew M. Finkbeiner
  */
 public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEMessageWriterListener, ITimeout {
+   
+   
+   private static int debugTimeout = Integer.parseInt(System.getProperty("ote.time.debug.timeout", "250000"));
+   private static boolean debugTime = Boolean.parseBoolean(System.getProperty("ote.time.debug", "false"));
+   
    private volatile boolean isTimedOut = false;
    private int masterMessageCount = 0;
    //	private final Message message;
    private final Message<?, ?, ?> message;
    private static final Benchmark tbm = new Benchmark("Total Message System Listener", 2500);
 
+   
+   
    private int messageCount = 0;
 
    //	public static enum SPEED {
@@ -60,10 +70,8 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
    private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(5, Integer.MAX_VALUE, 60 * 30,
       TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 
-   private final CopyOnWriteArrayList<IOSEEMessageListener> fastListeners =
-      new CopyOnWriteArrayList<IOSEEMessageListener>();
-   private final CopyOnWriteArrayList<IOSEEMessageListener> slowListeners =
-      new CopyOnWriteArrayList<IOSEEMessageListener>();
+   private final CopyOnWriteNoIteratorList<IOSEEMessageListener> fastListeners = new CopyOnWriteNoIteratorList<IOSEEMessageListener>(IOSEEMessageListener.class);
+   private final CopyOnWriteNoIteratorList<IOSEEMessageListener> slowListeners = new CopyOnWriteNoIteratorList<IOSEEMessageListener>(IOSEEMessageListener.class);
 
    /**
     * This class takes in a message in the constructor so that it can tell the message to update when it recieves new
@@ -160,7 +168,7 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
     * @return Returns boolean success indication.
     */
    public boolean addListener(IOSEEMessageListener listener, SPEED listenerSpeed) {
-      Collection<IOSEEMessageListener> c = listenerSpeed == SPEED.FAST ? fastListeners : slowListeners;
+	  CopyOnWriteNoIteratorList c = listenerSpeed == SPEED.FAST ? fastListeners : slowListeners;
       if (!c.contains(listener)) {
          c.add(listener);
       }
@@ -215,22 +223,56 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
          notifyAll();
       }
 
-      for (IOSEEMessageListener listener : fastListeners) {
+      long start = 0, elapsed;
+      IOSEEMessageListener[] ref = fastListeners.get();
+      for (int i = 0; i < ref.length; i++) {
+         IOSEEMessageListener listener = ref[i];
+//      for (IOSEEMessageListener listener : fastListeners) {
+         if(debugTime){
+            start = System.nanoTime();
+         }
          listener.onDataAvailable(data, type);
+         if(debugTime){
+            elapsed = System.nanoTime() - start;
+            if(elapsed > debugTimeout){
+               Locale.setDefault(Locale.US);
+               System.out.printf("%s %s SLOW %,d\n", message.getName(), listener.getClass().getName(), elapsed);
+            }
+         }
       }
-      for (IOSEEMessageListener listener : slowListeners) {
+     
+      ref = slowListeners.get();
+      for (int i = 0; i < ref.length; i++){
+         IOSEEMessageListener listener = ref[i];
+//      for (IOSEEMessageListener listener : slowListeners) {
+         if(debugTime){
+            start = System.nanoTime();
+         }
          threadPool.execute(new SlowListenerNotifier(listener, data, type, false));
+         if(debugTime){
+            elapsed = System.nanoTime() - start;
+            if(elapsed > debugTimeout){
+               Locale.setDefault(Locale.US);
+               System.out.printf("%s %s SLOW TO SUBMIT SLOW %,d\n", message.getName(), listener.getClass().getName(), elapsed);
+            }
+         }
       }
       tbm.endSample();
    }
 
    @Override
    public synchronized void onInitListener() throws MessageSystemException {
-
-      for (IOSEEMessageListener listener : fastListeners) {
+      IOSEEMessageListener[] ref = fastListeners.get();
+      for (int i = 0; i < ref.length; i++) {
+         IOSEEMessageListener listener = ref[i];
+//      for (IOSEEMessageListener listener : fastListeners) {
          listener.onInitListener();
       }
-      for (IOSEEMessageListener listener : slowListeners) {
+      
+      ref = slowListeners.get();
+      for (int i = 0; i < ref.length; i++){
+         IOSEEMessageListener listener = ref[i];
+//      for (IOSEEMessageListener listener : slowListeners) {
          threadPool.execute(new SlowListenerNotifier(listener, null, null, true));
       }
    }
@@ -274,11 +316,11 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
    }
 
    public Collection<IOSEEMessageListener> getRegisteredFastListeners() {
-      return fastListeners;
+      return fastListeners.fillCollection(new ArrayList<IOSEEMessageListener>(fastListeners.length()));
    }
 
    public Collection<IOSEEMessageListener> getRegisteredSlowListeners() {
-      return slowListeners;
+      return slowListeners.fillCollection(new ArrayList<IOSEEMessageListener>(slowListeners.length()));
    }
 
    public void dispose() {

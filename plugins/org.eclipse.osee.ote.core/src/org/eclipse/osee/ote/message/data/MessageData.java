@@ -14,10 +14,11 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Locale;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.ote.core.CopyOnWriteNoIteratorList;
 import org.eclipse.osee.ote.core.GCHelper;
 import org.eclipse.osee.ote.core.log.Env;
 import org.eclipse.osee.ote.message.IMessageDisposeListener;
@@ -55,6 +56,9 @@ import org.eclipse.osee.ote.messaging.dds.status.SubscriptionMatchStatus;
  */
 public abstract class MessageData implements DataReaderListener, DataWriterListener, Data, Key {
 
+   private static int debugTimeout = Integer.parseInt(System.getProperty("ote.time.debug.timeout", "250000"));
+   private static boolean debugTime = Boolean.parseBoolean(System.getProperty("ote.time.debug", "false"));
+   
    private DataWriter writer;
    private DataReader reader;
    private DataSample myDataSample;
@@ -62,8 +66,8 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    private final MemoryResource mem;
    private final String typeName;
    private final String name;
-   private final CopyOnWriteArrayList<Message> messages = new CopyOnWriteArrayList<Message>();
-   private final List<IMessageSendListener> messageSendListeners = new CopyOnWriteArrayList<IMessageSendListener>();
+   private final CopyOnWriteNoIteratorList<Message> messages = new CopyOnWriteNoIteratorList<Message>(Message.class);
+   private final CopyOnWriteNoIteratorList<IMessageSendListener> messageSendListeners = new CopyOnWriteNoIteratorList<IMessageSendListener>(IMessageSendListener.class);
    private final int defaultDataByteSize;
    private final DataType memType;
    private final boolean isEnabled = true;
@@ -156,7 +160,8 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
     * @return a collection of messages
     */
    public Collection<Message> getMessages() {
-      return new ArrayList<Message>(messages);
+      return messages.fillCollection(new ArrayList<Message>());
+//      return new ArrayList<Message>(messages);
    }
 
    /**
@@ -228,7 +233,9 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
     */
    public void notifyListeners() throws MessageSystemException {
       final DataType memType = getType();
-      for (Message message : messages) {
+      Message[] ref = messages.get();
+      for (int i = 0; i < ref.length; i++) {
+         Message message = ref[i];
          try {
             if (!message.isDestroyed()) {
                message.notifyListeners(this, memType);
@@ -456,10 +463,20 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       } else if (shouldSendData()) {
          try {
             notifyPreSendListeners();
-            // this.initializeDefaultHeaderValues();
+            long start = 0, elapsed;
+            if(debugTime){
+               start = System.nanoTime();
+            }
             getMem().setDataHasChanged(false);
             writer.write(null, null, this, null);
             incrementSentCount();
+            if(debugTime){
+               elapsed = System.nanoTime() - start;
+               if(elapsed > debugTimeout){
+                  Locale.setDefault(Locale.US);
+                  System.out.printf("%s SLOW IOSEND %,d\n", getName(), elapsed);
+               }
+            }
             notifyPostSendListeners();
          } catch (Throwable ex) {
             throw new MessageSystemException("Could not send message data " + getName(), Level.SEVERE, ex);
@@ -577,8 +594,21 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
 
    private void notifyPostSendListeners() {
       try {
-         for (IMessageSendListener listener : messageSendListeners) {
+         long start = 0, elapsed;
+         IMessageSendListener[] listeners = messageSendListeners.get();
+         for (int i = 0; i < listeners.length; i++) {
+            IMessageSendListener listener = listeners[i];
+            if(debugTime){
+               start = System.nanoTime();
+            }
             listener.onPostSend(this);
+            if(debugTime){
+               elapsed = System.nanoTime() - start;
+               if(elapsed > debugTimeout){
+                  Locale.setDefault(Locale.US);
+                  System.out.printf("%s %s SLOW POST SEND %,d\n", getName(), listener.getClass().getName(), elapsed);
+               }
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(Message.class, Level.SEVERE, ex);
@@ -587,8 +617,21 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
 
    private void notifyPreSendListeners() {
       try {
-         for (IMessageSendListener listener : messageSendListeners) {
+         long start = 0, elapsed;
+         IMessageSendListener[] listeners = messageSendListeners.get();
+         for (int i = 0; i < listeners.length; i++) {
+            IMessageSendListener listener = listeners[i];
+            if(debugTime){
+               start = System.nanoTime();
+            }
             listener.onPreSend(this);
+            if(debugTime){
+               elapsed = System.nanoTime() - start;
+               if(elapsed > debugTimeout){
+                  Locale.setDefault(Locale.US);
+                  System.out.printf("%s %s SLOW PRE SEND %,d\n", getName(), listener.getClass().getName(), elapsed);
+               }
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(Message.class, Level.SEVERE, ex);
@@ -608,7 +651,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    }
 
    public boolean isMessageCollectionNotEmpty() {
-      return messages.size() > 0;
+      return messages.get().length > 0;
    }
 
    public void zeroize() {
