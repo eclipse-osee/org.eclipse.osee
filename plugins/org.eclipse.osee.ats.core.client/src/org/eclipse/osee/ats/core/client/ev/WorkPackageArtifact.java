@@ -101,11 +101,22 @@ public class WorkPackageArtifact implements IAtsWorkPackage {
    @Override
    public String toString() {
       try {
-         return String.format("%s - %s", getWorkPackageId(), getName());
+         StringBuilder builder = new StringBuilder(getActivityId());
+         addWithHypen(builder, getActivityName());
+         addWithHypen(builder, getWorkPackageId());
+         addWithHypen(builder, getName());
+         return builder.toString();
       } catch (OseeCoreException ex) {
          OseeLog.log(org.eclipse.osee.ats.core.client.internal.Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return String.format("%s - Exception (see log file)", getName());
+   }
+
+   private void addWithHypen(StringBuilder builder, String value) {
+      if (Strings.isValid(value)) {
+         builder.append(" - ");
+         builder.append(value);
+      }
    }
 
    @Override
