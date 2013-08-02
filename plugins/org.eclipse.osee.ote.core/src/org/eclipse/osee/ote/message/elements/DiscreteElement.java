@@ -1199,7 +1199,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       final T actualValue = getValue();
 
       // Check if the value is in the list
-      CheckGroup passFail = inList(accessor, true, actualValue, list, 0);
+      CheckGroup passFail = inList(accessor, wantInList, actualValue, list, 0);
 
       if (checkGroup == null) {
          accessor.getLogger().testpoint(accessor, accessor.getTestScript(), accessor.getTestCase(), passFail);
