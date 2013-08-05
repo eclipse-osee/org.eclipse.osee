@@ -86,7 +86,11 @@ public class CriteriaFactory {
    }
 
    public Criteria<QueryOptions> createArtifactTypeCriteria(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {
-      return new CriteriaArtifactType(artifactTypeCache, artifactTypes);
+      return new CriteriaArtifactType(artifactTypeCache, artifactTypes, false);
+   }
+
+   public Criteria<QueryOptions> createArtifactTypeCriteriaWithInheritance(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {
+      return new CriteriaArtifactType(artifactTypeCache, artifactTypes, true);
    }
 
    public Criteria<QueryOptions> createArtifactIdCriteria(Collection<Integer> artifactIds) throws OseeCoreException {

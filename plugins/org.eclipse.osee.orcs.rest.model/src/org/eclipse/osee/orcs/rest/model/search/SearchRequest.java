@@ -27,7 +27,6 @@ public class SearchRequest implements SearchParameters {
    private String alt;
    private String fields;
    private int fromTx;
-   private boolean includeTypeInh;
    private boolean includeCache;
    private boolean includeDeleted;
 
@@ -38,14 +37,13 @@ public class SearchRequest implements SearchParameters {
       super();
    }
 
-   public SearchRequest(String branchUuid, List<Predicate> predicates, String alt, String fields, int fromTx, boolean includeTypeInheritance, boolean includeCache, boolean includeDeleted) {
+   public SearchRequest(String branchUuid, List<Predicate> predicates, String alt, String fields, int fromTx, boolean includeCache, boolean includeDeleted) {
       super();
       this.branchUuid = branchUuid;
       this.predicates = predicates;
       this.alt = alt;
       this.fields = fields;
       this.fromTx = fromTx;
-      this.includeTypeInh = includeTypeInheritance;
       this.includeCache = includeCache;
       this.includeDeleted = includeDeleted;
    }
@@ -89,11 +87,6 @@ public class SearchRequest implements SearchParameters {
    }
 
    @Override
-   public boolean isIncludeTypeInheritance() {
-      return includeTypeInh;
-   }
-
-   @Override
    public boolean isIncludeCache() {
       return includeCache;
    }
@@ -110,15 +103,6 @@ public class SearchRequest implements SearchParameters {
 
    public void setFromTx(int fromTx) {
       this.fromTx = fromTx;
-   }
-
-   @Override
-   public boolean isIncludeTypeInh() {
-      return includeTypeInh;
-   }
-
-   public void setIncludeTypeInh(boolean includeTypeInh) {
-      this.includeTypeInh = includeTypeInh;
    }
 
    public void setIncludeCache(boolean includeCache) {

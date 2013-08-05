@@ -21,6 +21,7 @@ public enum SearchMethod {
    IDS("ids"),
    GUID_OR_HRIDS("guids"),
    IS_OF_TYPE("isOfType"),
+   TYPE_EQUALS("typeEquals"),
    EXISTS_TYPE("exists"),
    ATTRIBUTE_TYPE("attrType"),
    RELATED_TO("related");

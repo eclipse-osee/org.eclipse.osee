@@ -13,6 +13,8 @@ package org.eclipse.osee.x.server.integration.tests.performance;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralData;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralDocument;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.AccessContextId;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
@@ -21,7 +23,6 @@ import org.databene.contiperf.PerfTest;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.CaseType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -167,7 +168,7 @@ public class OseeClientQueryTest {
    @Test
    public void searchForArtifactType() throws OseeCoreException {
       final int EXPECTED_RESULTS = 7;
-      SearchResult results = createClient.createQueryBuilder(SAW_1).andIsOfType(Folder).getSearchResult();
+      SearchResult results = createClient.createQueryBuilder(SAW_1).andTypeEquals(Folder).getSearchResult();
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
@@ -175,8 +176,7 @@ public class OseeClientQueryTest {
    public void searchForArtifactTypes() throws OseeCoreException {
       final int EXPECTED_RESULTS = 24;
       SearchResult results =
-         createClient.createQueryBuilder(SAW_1).andIsOfType(GeneralData, GeneralDocument,
-            CoreArtifactTypes.SoftwareRequirement).getSearchResult();
+         createClient.createQueryBuilder(SAW_1).andTypeEquals(GeneralData, GeneralDocument, SoftwareRequirement).getSearchResult();
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
@@ -184,7 +184,7 @@ public class OseeClientQueryTest {
    public void searchForArtifactTypesIncludeTypeInheritance() throws OseeCoreException {
       final int EXPECTED_RESULTS = 150;
       SearchResult results =
-         createClient.createQueryBuilder(SAW_1).andIsOfType(GeneralData, GeneralDocument, CoreArtifactTypes.Requirement).includeTypeInheritance().getSearchResult();
+         createClient.createQueryBuilder(SAW_1).andIsOfType(GeneralData, GeneralDocument, Requirement).getSearchResult();
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 

@@ -46,12 +46,6 @@ public class QueryBuilderImpl implements QueryBuilder {
       this.options = options;
       this.predicateFactory = predicateFactory;
       this.executor = executor;
-      reset();
-   }
-
-   private void reset() {
-      options.reset();
-      predicates.clear();
    }
 
    @Override
@@ -87,23 +81,6 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder includeTypeInheritance() {
-      includeTypeInheritance(true);
-      return this;
-   }
-
-   @Override
-   public QueryBuilder includeTypeInheritance(boolean enabled) {
-      options.setIncludeTypeInheritance(enabled);
-      return this;
-   }
-
-   @Override
-   public boolean isTypeInheritanceIncluded() {
-      return options.isTypeInheritanceIncluded();
-   }
-
-   @Override
    public QueryBuilder fromTransaction(int transactionId) {
       options.setFromTransaction(transactionId);
       return this;
@@ -134,18 +111,6 @@ public class QueryBuilderImpl implements QueryBuilder {
    @Override
    public QueryBuilder excludeDeleted() {
       return includeDeleted(false);
-   }
-
-   @Override
-   public QueryBuilder excludeTypeInheritance() {
-      includeTypeInheritance(false);
-      return this;
-   }
-
-   @Override
-   public QueryBuilder resetToDefaults() {
-      reset();
-      return this;
    }
 
    @Override
@@ -192,7 +157,18 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder andIsOfType(Collection<? extends IArtifactType> artifactTypes) {
-      predicates.add(predicateFactory.createTypeSearch(artifactTypes));
+      predicates.add(predicateFactory.createIsOfTypeSearch(artifactTypes));
+      return this;
+   }
+
+   @Override
+   public QueryBuilder andTypeEquals(IArtifactType... artifactType) {
+      return andTypeEquals(Arrays.asList(artifactType));
+   }
+
+   @Override
+   public QueryBuilder andTypeEquals(Collection<? extends IArtifactType> artifactTypes) {
+      predicates.add(predicateFactory.createTypeEqualsSearch(artifactTypes));
       return this;
    }
 

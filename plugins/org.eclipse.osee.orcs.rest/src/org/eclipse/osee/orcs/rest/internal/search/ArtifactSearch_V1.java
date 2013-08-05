@@ -64,8 +64,6 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
     * @param fromTransaction (Optional) Transaction ID for a historical context. Use this parameter if you want the
     * search results to represent a specific point in time in the past. Without this parameter search results will
     * reflect the most current state of the data.
-    * @param includeTypeInheritance (Optional) Boolean parameter that configures the search to use hiearchical type
-    * inheritance if possible.
     * @param includeCache (Optional) Boolean parameter that configures the search to ???
     * @param includeDeleted (Optional) Boolean parameter that configures the search to include deleted artifacts in its
     * result set and analysis.
@@ -76,7 +74,7 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
     * <b>rawQuery Syntax</b><br>
     * The query syntax is composed of one or more predicates - atomic search instructions - that can be appended
     * together as compound AND or OR query statements. Each predicate is surrounded by square brackets '[' and ']' which
-    * makes writing a formal definitoin of the syntax a little confusing since the square bracket traditionally
+    * makes writing a formal definition of the syntax a little confusing since the square bracket traditionally
     * surrounds optional items in a syntax. Because of this please note in the formal definition below literal square
     * brackets - those which belong as actual characters in the syntax - are escaped with a back slash character '\'.<br>
     * <b>Example Request String</b><br>
@@ -99,11 +97,11 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
     */
    @GET
    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-   public SearchResponse getSearchWithQueryParams(@QueryParam("alt") String alt, @QueryParam("fields") String fields, @QueryParam("q") String rawQuery, @QueryParam("fromTx") int fromTransaction, @QueryParam("inherits") boolean includeTypeInheritance, @QueryParam("cached") boolean includeCache, @QueryParam("includeDeleted") boolean includeDeleted) throws OseeCoreException {
+   public SearchResponse getSearchWithQueryParams(@QueryParam("alt") String alt, @QueryParam("fields") String fields, @QueryParam("q") String rawQuery, @QueryParam("fromTx") int fromTransaction, @QueryParam("cached") boolean includeCache, @QueryParam("includeDeleted") boolean includeDeleted) throws OseeCoreException {
       DslTranslator translator = DslFactory.createTranslator();
       SearchRequest params =
-         new SearchRequest(getBranchUuid(), translator.translate(rawQuery), alt, fields, fromTransaction,
-            includeTypeInheritance, includeCache, includeDeleted);
+         new SearchRequest(getBranchUuid(), translator.translate(rawQuery), alt, fields, fromTransaction, includeCache,
+            includeDeleted);
       return search(params);
    }
 
@@ -122,7 +120,6 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
       QueryBuilder builder = searchQueryBuilder.build(qFactory, params);
 
       builder.includeCache(params.isIncludeCache());
-      builder.includeTypeInheritance(params.isIncludeTypeInheritance());
       builder.includeDeleted(params.isIncludeDeleted());
 
       if (params.getFromTx() > 0) {

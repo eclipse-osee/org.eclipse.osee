@@ -113,15 +113,15 @@ public class OrcsQueryTest {
    @Test
    public void testQueryArtifactTypeInheritance() throws OseeCoreException {
       QueryBuilder builder =
-         factory.fromBranch(TestBranches.SAW_Bld_1).andIsOfType(CoreArtifactTypes.AbstractSoftwareRequirement);//
+         factory.fromBranch(TestBranches.SAW_Bld_1).andTypeEquals(CoreArtifactTypes.AbstractSoftwareRequirement);
 
-      builder.excludeTypeInheritance();
       Assert.assertEquals(0, builder.getCount());
 
       ArtifactReadable artifact = builder.getResults().getOneOrNull();
       Assert.assertNull(artifact);
 
-      builder.includeTypeInheritance();
+      builder = factory.fromBranch(TestBranches.SAW_Bld_1).andIsOfType(CoreArtifactTypes.AbstractSoftwareRequirement);
+
       Assert.assertEquals(24, builder.getCount());
 
       List<ArtifactReadable> artifacts = builder.getResults().getList();
@@ -131,10 +131,9 @@ public class OrcsQueryTest {
    }
 
    @Test
-   public void testQueryArtifactTypesNoInheritance() throws OseeCoreException {
+   public void testQueryArtifactTypesMatch() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON);
-      builder.excludeTypeInheritance();
-      builder.andIsOfType(CoreArtifactTypes.OseeTypeDefinition, CoreArtifactTypes.Folder);
+      builder.andTypeEquals(CoreArtifactTypes.OseeTypeDefinition, CoreArtifactTypes.Folder);
 
       Assert.assertEquals(6, builder.getCount());
 
@@ -210,7 +209,7 @@ public class OrcsQueryTest {
       //////////////////////
       QueryBuilder builder1 = factory.fromBranch(TestBranches.SAW_Bld_1);
       builder1.and(CoreAttributeTypes.Name, "Requirements", MatchTokenCountType.IGNORE_TOKEN_COUNT);
-      builder1.andIsOfType(CoreArtifactTypes.SubsystemRequirementMSWord);
+      builder1.andTypeEquals(CoreArtifactTypes.SubsystemRequirementMSWord);
       Assert.assertEquals(1, builder1.getCount());
       List<ArtifactReadable> subSystemReqs = builder1.getResults().getList();
       Assert.assertEquals(1, subSystemReqs.size());
@@ -220,7 +219,6 @@ public class OrcsQueryTest {
       //////////////////////
       QueryBuilder builder2 = factory.fromBranch(TestBranches.SAW_Bld_1);
       builder2.and(CoreAttributeTypes.Name, "Requirements", MatchTokenCountType.IGNORE_TOKEN_COUNT);
-      builder2.includeTypeInheritance();
       builder2.andIsOfType(CoreArtifactTypes.Requirement);
       Assert.assertEquals(3, builder2.getCount());
 

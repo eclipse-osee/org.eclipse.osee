@@ -43,12 +43,6 @@ public interface QueryBuilder {
 
    boolean areDeletedIncluded();
 
-   QueryBuilder includeTypeInheritance();
-
-   QueryBuilder includeTypeInheritance(boolean enabled);
-
-   boolean isTypeInheritanceIncluded();
-
    QueryBuilder fromTransaction(int transactionId);
 
    int getFromTransaction();
@@ -60,13 +54,6 @@ public interface QueryBuilder {
    QueryBuilder excludeCache();
 
    QueryBuilder excludeDeleted();
-
-   QueryBuilder excludeTypeInheritance();
-
-   /**
-    * Resets query builder to default settings. This also clear all criteria added to original query.
-    */
-   QueryBuilder resetToDefaults();
 
    /**
     * Search criteria that finds a given artifact id
@@ -99,14 +86,24 @@ public interface QueryBuilder {
    QueryBuilder andIds(Collection<? extends IArtifactToken> artifactTokens) throws OseeCoreException;
 
    /**
-    * Search criteria that finds a given artifact type
+    * Search criteria that finds a given artifact type using type inheritance
     */
    QueryBuilder andIsOfType(IArtifactType... artifactType) throws OseeCoreException;
 
    /**
-    * Search criteria that finds a given artifact types
+    * Search criteria that finds a given artifact types using type inheritance
     */
    QueryBuilder andIsOfType(Collection<? extends IArtifactType> artifactType) throws OseeCoreException;
+
+   /**
+    * Search criteria that finds a given artifact type by matching type exactly
+    */
+   QueryBuilder andTypeEquals(IArtifactType... artifactType) throws OseeCoreException;
+
+   /**
+    * Search criteria that finds a given artifact types by matching type exactly
+    */
+   QueryBuilder andTypeEquals(Collection<? extends IArtifactType> artifactType) throws OseeCoreException;
 
    /**
     * Search criteria that checks for the existence of an attribute type(s).

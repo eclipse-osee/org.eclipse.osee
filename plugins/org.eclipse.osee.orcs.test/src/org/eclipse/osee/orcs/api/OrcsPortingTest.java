@@ -89,7 +89,7 @@ public class OrcsPortingTest {
       // the attribute for the SecondRequirement should not be named "test changed again" (on the branch after the copy from)
       // we should have a folder named "childBranch folder", but no folder named "folder after transaction"
       ResultSet<ArtifactReadable> artifacts =
-         query.fromBranch(finalTx.getBranch()).andIsOfType(CoreArtifactTypes.Artifact).getResults();
+         query.fromBranch(finalTx.getBranch()).andTypeEquals(CoreArtifactTypes.Artifact).getResults();
       for (ArtifactReadable art : artifacts) {
          if (art.isOfType(CoreArtifactTypes.SoftwareRequirement)) {
             Assert.assertEquals(2, art.getAttributes().size());

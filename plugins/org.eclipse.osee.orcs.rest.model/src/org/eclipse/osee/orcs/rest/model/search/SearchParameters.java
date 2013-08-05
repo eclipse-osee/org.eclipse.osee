@@ -26,14 +26,10 @@ public interface SearchParameters {
 
    String getFields();
 
-   boolean isIncludeTypeInheritance();
-
    boolean isIncludeCache();
 
    boolean isIncludeDeleted();
 
    int getFromTx();
-
-   boolean isIncludeTypeInh();
 
 }

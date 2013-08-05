@@ -91,7 +91,7 @@ public class QuerySqlHandlerFactoryImplTest {
       criteria.add(new CriteriaArtifactGuids(null));
       criteria.add(new CriteriaArtifactHrids(null));
       criteria.add(new CriteriaArtifactIds(null));
-      criteria.add(new CriteriaArtifactType(null, null));
+      criteria.add(new CriteriaArtifactType(null, null, true));
       criteria.add(new CriteriaRelationTypeExists(null));
       criteria.add(new CriteriaAttributeTypeExists(null));
       criteria.add(new CriteriaAttributeOther(null, null, null));

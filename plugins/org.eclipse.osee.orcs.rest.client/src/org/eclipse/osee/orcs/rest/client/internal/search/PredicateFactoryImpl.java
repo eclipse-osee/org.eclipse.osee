@@ -73,9 +73,16 @@ public class PredicateFactoryImpl implements PredicateFactory {
    }
 
    @Override
-   public Predicate createTypeSearch(Collection<? extends IArtifactType> artifactType) {
+   public Predicate createIsOfTypeSearch(Collection<? extends IArtifactType> artifactType) {
       List<String> typeIds = getLongIds(artifactType);
       return new Predicate(SearchMethod.IS_OF_TYPE, emptyStringList, SearchOp.EQUALS, emptySearchFlagList,
+         Strings.EMPTY_STRING, typeIds);
+   }
+
+   @Override
+   public Predicate createTypeEqualsSearch(Collection<? extends IArtifactType> artifactType) {
+      List<String> typeIds = getLongIds(artifactType);
+      return new Predicate(SearchMethod.TYPE_EQUALS, emptyStringList, SearchOp.EQUALS, emptySearchFlagList,
          Strings.EMPTY_STRING, typeIds);
    }
 
@@ -158,5 +165,4 @@ public class PredicateFactoryImpl implements PredicateFactory {
       visitor.accept(options);
       return visitor;
    }
-
 }

@@ -102,23 +102,6 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder includeTypeInheritance() {
-      includeTypeInheritance(true);
-      return this;
-   }
-
-   @Override
-   public QueryBuilder includeTypeInheritance(boolean enabled) {
-      getOptions().setIncludeTypeInheritance(enabled);
-      return this;
-   }
-
-   @Override
-   public boolean isTypeInheritanceIncluded() {
-      return getOptions().isTypeInheritanceIncluded();
-   }
-
-   @Override
    public QueryBuilder fromTransaction(int transactionId) {
       getOptions().setFromTransaction(transactionId);
       return this;
@@ -149,18 +132,6 @@ public class QueryBuilderImpl implements QueryBuilder {
    @Override
    public QueryBuilder excludeDeleted() {
       includeDeleted(false);
-      return this;
-   }
-
-   @Override
-   public QueryBuilder excludeTypeInheritance() {
-      includeTypeInheritance(false);
-      return this;
-   }
-
-   @Override
-   public QueryBuilder resetToDefaults() {
-      getOptions().reset();
       return this;
    }
 
@@ -216,12 +187,22 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder andIsOfType(IArtifactType... artifactType) throws OseeCoreException {
-      Criteria<QueryOptions> criteria = criteriaFactory.createArtifactTypeCriteria(Arrays.asList(artifactType));
-      return addAndCheck(getQueryData(), criteria);
+      return andIsOfType(Arrays.asList(artifactType));
    }
 
    @Override
    public QueryBuilder andIsOfType(Collection<? extends IArtifactType> artifactType) throws OseeCoreException {
+      Criteria<QueryOptions> criteria = criteriaFactory.createArtifactTypeCriteriaWithInheritance(artifactType);
+      return addAndCheck(getQueryData(), criteria);
+   }
+
+   @Override
+   public QueryBuilder andTypeEquals(IArtifactType... artifactType) throws OseeCoreException {
+      return andTypeEquals(Arrays.asList(artifactType));
+   }
+
+   @Override
+   public QueryBuilder andTypeEquals(Collection<? extends IArtifactType> artifactType) throws OseeCoreException {
       Criteria<QueryOptions> criteria = criteriaFactory.createArtifactTypeCriteria(artifactType);
       return addAndCheck(getQueryData(), criteria);
    }

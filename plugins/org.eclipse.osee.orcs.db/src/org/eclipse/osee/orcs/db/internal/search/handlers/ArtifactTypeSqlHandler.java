@@ -45,7 +45,7 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType, Que
 
    @Override
    public void addTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
-      typeIds = getLocalTypeIds(writer.getOptions());
+      typeIds = getLocalTypeIds();
       if (typeIds.size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
@@ -63,8 +63,8 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType, Que
       txsAliases = writer.getAliases(TableEnum.TXS_TABLE);
    }
 
-   private Collection<Integer> getLocalTypeIds(QueryOptions options) throws OseeCoreException {
-      Collection<? extends IArtifactType> types = criteria.getTypes(options);
+   private Collection<Integer> getLocalTypeIds() throws OseeCoreException {
+      Collection<? extends IArtifactType> types = criteria.getTypes();
       Collection<Integer> toReturn = new HashSet<Integer>();
       for (IArtifactType type : types) {
          int localId = getIdentityService().getLocalId(type);

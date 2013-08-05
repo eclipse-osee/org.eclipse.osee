@@ -17,6 +17,7 @@ import org.eclipse.osee.orcs.rest.internal.search.predicate.ExistsTypePredicateH
 import org.eclipse.osee.orcs.rest.internal.search.predicate.GuidOrHridsPredicateHandlerTest;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.IdsPredicateHandlerTest;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.IsOfTypePredicateHandlerTest;
+import org.eclipse.osee.orcs.rest.internal.search.predicate.TypeEqualsPredicateHandlerTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -31,7 +32,8 @@ import org.junit.runners.Suite;
    ExistsTypePredicateHandlerTest.class,
    IdsPredicateHandlerTest.class,
    GuidOrHridsPredicateHandlerTest.class,
-   IsOfTypePredicateHandlerTest.class,})
+   IsOfTypePredicateHandlerTest.class,
+   TypeEqualsPredicateHandlerTest.class})
 public class InternalTestSuite {
    // Test Suite
 }

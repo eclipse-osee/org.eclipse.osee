@@ -18,7 +18,6 @@ import org.eclipse.osee.orcs.rest.client.internal.Options;
 public class QueryOptions extends Options {
 
    private boolean includeCache = true;
-   private boolean includeTypeInheritance = false;
 
    public QueryOptions() {
       super();
@@ -28,23 +27,14 @@ public class QueryOptions extends Options {
    public void reset() {
       super.reset();
       includeCache = true;
-      includeTypeInheritance = false;
    }
 
    public boolean isCacheIncluded() {
       return includeCache;
    }
 
-   public boolean isTypeInheritanceIncluded() {
-      return includeTypeInheritance;
-   }
-
    public void setIncludeCache(boolean enabled) {
       includeCache = enabled;
-   }
-
-   public void setIncludeTypeInheritance(boolean enabled) {
-      includeTypeInheritance = enabled;
    }
 
    @Override
@@ -53,12 +43,11 @@ public class QueryOptions extends Options {
       clone.setIncludeDeleted(this.areDeletedIncluded());
       clone.setFromTransaction(this.getFromTransaction());
       clone.includeCache = this.includeCache;
-      clone.includeTypeInheritance = this.includeTypeInheritance;
       return clone;
    }
 
    @Override
    public String toString() {
-      return "QueryOptions [includeCache=" + includeCache + ", includeTypeInheritance=" + includeTypeInheritance + " [" + super.toString() + "]]";
+      return "QueryOptions [includeCache=" + includeCache + " [" + super.toString() + "]]";
    }
 }

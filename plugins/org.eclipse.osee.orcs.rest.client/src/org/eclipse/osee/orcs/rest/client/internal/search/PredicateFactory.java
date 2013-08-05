@@ -31,7 +31,9 @@ public interface PredicateFactory {
 
    Predicate createIdSearch(Collection<? extends Identity<String>> ids);
 
-   Predicate createTypeSearch(Collection<? extends IArtifactType> artifactType);
+   Predicate createIsOfTypeSearch(Collection<? extends IArtifactType> artifactType);
+
+   Predicate createTypeEqualsSearch(Collection<? extends IArtifactType> artifactType);
 
    Predicate createAttributeTypeSearch(Collection<? extends IAttributeType> attributeTypes, String value, QueryOption... options);
 

@@ -21,9 +21,9 @@ import org.eclipse.osee.orcs.rest.model.ExceptionEntity;
 import org.eclipse.osee.orcs.rest.model.search.OutputFormat;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.RequestType;
-import org.eclipse.osee.orcs.rest.model.search.SearchResult;
 import org.eclipse.osee.orcs.rest.model.search.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.SearchResponse;
+import org.eclipse.osee.orcs.rest.model.search.SearchResult;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
@@ -59,11 +59,6 @@ public class QueryExecutorV1 implements QueryExecutor {
          fromTx = options.getFromTransaction();
       }
 
-      boolean includeTypeInh = false;
-      if (options.isTypeInheritanceIncluded()) {
-         includeTypeInh = true;
-      }
-
       boolean includeCache = false;
       if (options.isCacheIncluded()) {
          includeCache = true;
@@ -76,7 +71,7 @@ public class QueryExecutorV1 implements QueryExecutor {
 
       SearchRequest params =
          new SearchRequest(branch.getGuid(), predicates, outputFormat.name().toLowerCase(),
-            requestType.name().toLowerCase(), fromTx, includeTypeInh, includeCache, includeDeleted);
+            requestType.name().toLowerCase(), fromTx, includeCache, includeDeleted);
 
       URI uri = uriProvider.getEncodedURI(String.format("oseex/branch/%s/artifact/search/v1", branch.getGuid()), null);
 

@@ -227,7 +227,7 @@ public class ArtifactQueryBuilder {
       }
 
       if (Conditions.hasValues(artifactTypes)) {
-         builder.andIsOfType(artifactTypes);
+         builder.andTypeEquals(artifactTypes);
       }
 
       if (guidOrHrid != null) {

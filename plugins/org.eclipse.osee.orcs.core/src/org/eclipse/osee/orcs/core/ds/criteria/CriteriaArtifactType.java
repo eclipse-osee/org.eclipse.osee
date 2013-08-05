@@ -26,11 +26,13 @@ public class CriteriaArtifactType extends Criteria<QueryOptions> {
 
    private final Collection<? extends IArtifactType> artifactTypes;
    private final ArtifactTypes artTypeCache;
+   private final boolean includeTypeInheritance;
 
-   public CriteriaArtifactType(ArtifactTypes artTypeCache, Collection<? extends IArtifactType> artifactTypes) {
+   public CriteriaArtifactType(ArtifactTypes artTypeCache, Collection<? extends IArtifactType> artifactTypes, boolean includeTypeInheritance) {
       super();
       this.artifactTypes = artifactTypes;
       this.artTypeCache = artTypeCache;
+      this.includeTypeInheritance = includeTypeInheritance;
    }
 
    @Override
@@ -39,27 +41,30 @@ public class CriteriaArtifactType extends Criteria<QueryOptions> {
       Conditions.checkNotNullOrEmpty(artifactTypes, "artifact types");
    }
 
-   public Collection<? extends IArtifactType> getTypes() {
+   public Collection<? extends IArtifactType> getOriginalTypes() {
       return artifactTypes;
+   }
+
+   public Collection<? extends IArtifactType> getTypes() throws OseeCoreException {
+      Collection<? extends IArtifactType> toReturn;
+      if (includeTypeInheritance) {
+         Collection<IArtifactType> typesToUse = new LinkedHashSet<IArtifactType>();
+         for (IArtifactType type : getOriginalTypes()) {
+            for (IArtifactType descendant : artTypeCache.getAllDescendantTypes(type)) {
+               typesToUse.add(descendant);
+            }
+            typesToUse.add(type);
+         }
+         toReturn = typesToUse;
+      } else {
+         toReturn = getOriginalTypes();
+      }
+      return toReturn;
    }
 
    @Override
    public String toString() {
-      return "CriteriaArtifactType [artifactTypes=" + artifactTypes + "]";
-   }
-
-   public Collection<? extends IArtifactType> getTypes(QueryOptions options) throws OseeCoreException {
-      Collection<IArtifactType> typesToUse = new LinkedHashSet<IArtifactType>();
-      boolean includeTypeInheritance = options.isTypeInheritanceIncluded();
-      for (IArtifactType type : artifactTypes) {
-         if (includeTypeInheritance) {
-            for (IArtifactType descendant : artTypeCache.getAllDescendantTypes(type)) {
-               typesToUse.add(descendant);
-            }
-         }
-         typesToUse.add(type);
-      }
-      return typesToUse;
+      return "CriteriaArtifactType [artifactTypes=" + artifactTypes + ", includeTypeInheritance=" + includeTypeInheritance + "]";
    }
 
 }

@@ -68,7 +68,8 @@ public class QueryEngineImplTest {
    private static final Criteria<?> GUIDS = new CriteriaArtifactGuids(Arrays.asList(GUID.create(), GUID.create()));
    private static final Criteria<?> IDS = new CriteriaArtifactIds(Arrays.asList(1, 2, 3, 4, 5));
    private static final Criteria<?> HRIDS = new CriteriaArtifactHrids(Arrays.asList("ABCDE", "FGHIJ"));
-   private static final Criteria<?> TYPES = new CriteriaArtifactType(null, Arrays.asList(CoreArtifactTypes.CodeUnit));
+   private static final Criteria<?> TYPES = new CriteriaArtifactType(null, Arrays.asList(CoreArtifactTypes.CodeUnit),
+      false);
    private static final Criteria<?> ATTRIBUTE = new CriteriaAttributeOther(CoreAttributeTypes.Name,
       Arrays.asList("Hello"), Operator.EQUAL);
 
