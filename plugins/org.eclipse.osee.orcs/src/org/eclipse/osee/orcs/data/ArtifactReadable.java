@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface ArtifactReadable extends Identifiable, HasLocalId, HasBranch, HasTransaction, AttributesReadable, HasDeleteState {
+public interface ArtifactReadable extends Identifiable, HasLocalId, HasBranch, HasTransaction, AttributesReadable {
 
    String getHumanReadableId();
 

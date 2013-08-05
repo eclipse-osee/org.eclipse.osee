@@ -10,13 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-
 /**
  * @author Roberto E. Escobar
  */
 public interface Modifiable {
 
-   boolean isDirty() throws OseeCoreException;
+   boolean isDirty();
 
 }

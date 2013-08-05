@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.data;
 
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.Readable;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
@@ -19,7 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface AttributeReadable<T> extends Readable {
+public interface AttributeReadable<T> extends OrcsReadable {
 
    int getId();
 
@@ -34,8 +33,6 @@ public interface AttributeReadable<T> extends Readable {
    T getValue() throws OseeCoreException;
 
    String getDisplayableString() throws OseeCoreException;
-
-   boolean isDeleted();
 
    @Override
    String toString();

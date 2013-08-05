@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.data;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.Readable;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.annotations.ReadAttributes;
@@ -22,7 +21,7 @@ import org.eclipse.osee.orcs.annotations.ReadAttributes;
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface AttributesReadable extends Readable {
+public interface AttributesReadable extends OrcsReadable {
 
    int getAttributeCount(IAttributeType type) throws OseeCoreException;
 

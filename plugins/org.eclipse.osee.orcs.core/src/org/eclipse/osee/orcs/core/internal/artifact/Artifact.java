@@ -172,4 +172,15 @@ public class Artifact extends AttributeManagerImpl implements ArtifactWriteable,
       getOrcsData().setModType(ModificationType.DELETED);
       deleteAttributesByArtifact();
    }
+
+   @Override
+   public boolean isDeleteAllowed() {
+      return !isDeleted();
+   }
+
+   @Override
+   public void unDelete() throws OseeCoreException {
+      getOrcsData().setModType(getOrcsData().getLoadedModType());
+      unDeleteAttributesByArtifact();
+   }
 }

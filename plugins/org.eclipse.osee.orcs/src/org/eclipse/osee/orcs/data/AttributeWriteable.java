@@ -11,14 +11,13 @@
 package org.eclipse.osee.orcs.data;
 
 import java.io.InputStream;
-import org.eclipse.osee.framework.core.data.Writeable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface AttributeWriteable<T> extends Writeable, AttributeReadable<T>, Modifiable {
+public interface AttributeWriteable<T> extends OrcsWriteable, AttributeReadable<T> {
 
    void setValue(T value) throws OseeCoreException;
 
@@ -28,7 +27,4 @@ public interface AttributeWriteable<T> extends Writeable, AttributeReadable<T>, 
 
    void resetToDefaultValue() throws OseeCoreException;
 
-   boolean canDelete() throws OseeCoreException;
-
-   void delete() throws OseeCoreException;
 }

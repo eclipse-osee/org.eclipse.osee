@@ -48,4 +48,6 @@ public interface AttributeManager extends Identifiable, AttributesWriteable, Has
    List<Attribute<Object>> getAttributesDirty() throws OseeCoreException;
 
    void deleteAttributesByArtifact() throws OseeCoreException;
+
+   void unDeleteAttributesByArtifact() throws OseeCoreException;
 }

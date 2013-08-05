@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.Writeable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.annotations.WriteAttributes;
 
@@ -22,7 +21,7 @@ import org.eclipse.osee.orcs.annotations.WriteAttributes;
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface AttributesWriteable extends Writeable, AttributesReadable, Modifiable {
+public interface AttributesWriteable extends OrcsWriteable, AttributesReadable {
 
    @WriteAttributes
    <T> List<AttributeWriteable<T>> getWriteableAttributes() throws OseeCoreException;
