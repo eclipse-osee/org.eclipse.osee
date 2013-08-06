@@ -10,14 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import java.util.List;
-
 /**
  * @author Roberto E. Escobar
  */
-public interface QueryContext extends DataStoreContext<QueryPostProcessor> {
-
-   @Override
-   List<QueryPostProcessor> getPostProcessors();
-
+public interface QueryContext extends DataStoreContext {
+   //
 }

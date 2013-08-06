@@ -196,8 +196,8 @@ public class DataLoaderImpl implements DataLoader {
          startTime = System.currentTimeMillis();
          logger.trace("%s [start] - [%s] [%s]", getClass().getSimpleName(), criteria, options);
       }
-      handler.onLoadStart();
       try {
+         handler.onLoadStart();
          loadExecutor.load(cancellation, handler, criteria, options);
       } finally {
          handler.onLoadEnd();

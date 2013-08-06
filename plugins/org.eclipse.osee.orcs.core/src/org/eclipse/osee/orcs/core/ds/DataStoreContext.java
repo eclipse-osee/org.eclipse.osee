@@ -10,14 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import java.util.List;
 import org.eclipse.osee.orcs.data.HasSession;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface DataStoreContext<P extends DataPostProcessor<?>> extends HasOptions, HasSession {
-
-   List<P> getPostProcessors();
-
+public interface DataStoreContext extends HasOptions, HasSession {
+   //
 }

@@ -156,8 +156,8 @@ public class OrcsApiImpl implements OrcsApi {
       loaderFactory = new ArtifactLoaderFactoryImpl(module.getDataLoaderFactory(), builderFactory);
 
       queryModule =
-         new QueryModule(logger, module.getQueryEngine(), loaderFactory, module.getDataLoaderFactory(),
-            orcsTypes.getArtifactTypes(), orcsTypes.getAttributeTypes());
+         new QueryModule(logger, module.getQueryEngine(), builderFactory, orcsTypes.getArtifactTypes(),
+            orcsTypes.getAttributeTypes());
 
       indexerModule = new IndexerModule(logger, preferences, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start(getSystemSession(), orcsTypes.getAttributeTypes());

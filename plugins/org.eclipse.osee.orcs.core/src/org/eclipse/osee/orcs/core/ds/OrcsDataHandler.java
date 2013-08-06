@@ -11,11 +11,12 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.data.HasLocalId;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface OrcsDataHandler<T extends OrcsData> {
+public interface OrcsDataHandler<T extends HasLocalId> {
 
    void onData(T data) throws OseeCoreException;
 

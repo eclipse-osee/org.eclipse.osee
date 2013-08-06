@@ -15,6 +15,6 @@ package org.eclipse.osee.orcs.core.ds;
  */
 public interface RelationDataHandlerProvider {
 
-   RelationDataHandler getRelationDataHandler();
+   OrcsDataHandler<RelationData> getRelationDataHandler();
 
 }

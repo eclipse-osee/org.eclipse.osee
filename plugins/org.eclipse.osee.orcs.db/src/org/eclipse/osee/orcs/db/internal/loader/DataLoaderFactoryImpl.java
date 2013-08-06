@@ -32,6 +32,7 @@ import org.eclipse.osee.orcs.db.internal.loader.executors.AbstractLoadExecutor;
 import org.eclipse.osee.orcs.db.internal.loader.executors.LoadExecutor;
 import org.eclipse.osee.orcs.db.internal.loader.executors.QueryContextLoadExecutor;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
+import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContext;
 
 /**
  * @author Roberto E. Escobar
@@ -53,7 +54,7 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
 
    @Override
    public int getCount(HasCancellation cancellation, QueryContext queryContext) throws OseeCoreException {
-      QuerySqlContext context = toSqlContext(queryContext);
+      QuerySqlContext context = adapt(QuerySqlContext.class, queryContext);
 
       int count = -1;
       long startTime = 0;
@@ -89,7 +90,7 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
 
    @Override
    public DataLoader fromQueryContext(QueryContext queryContext) throws OseeCoreException {
-      QuerySqlContext sqlQueryContext = toSqlContext(queryContext);
+      ArtifactQuerySqlContext sqlQueryContext = adapt(ArtifactQuerySqlContext.class, queryContext);
       AbstractLoadExecutor executor = new QueryContextLoadExecutor(loader, dbService, sqlQueryContext);
       Options options = OptionsUtil.createOptions();
       return new DataLoaderImpl(logger, executor, options);
@@ -97,10 +98,10 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
 
    @Override
    public DataLoader fromBranchAndArtifactIds(OrcsSession session, IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException {
+      Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNullOrEmpty(artifactIds, "artifactIds");
 
-      int branchId = branchCache.getLocalId(branch);
-      AbstractLoadExecutor executor = new LoadExecutor(loader, dbService, session, branchId, artifactIds);
+      AbstractLoadExecutor executor = new LoadExecutor(loader, dbService, branchCache, session, branch, artifactIds);
       Options options = OptionsUtil.createOptions();
       return new DataLoaderImpl(logger, executor, options);
    }
@@ -110,15 +111,16 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
       return fromBranchAndArtifactIds(session, branch, toCollection(artifactIds));
    }
 
-   private QuerySqlContext toSqlContext(QueryContext queryContext) throws OseeCoreException {
-      QuerySqlContext sqlContext = null;
-      if (queryContext instanceof QuerySqlContext) {
-         sqlContext = (QuerySqlContext) queryContext;
+   @SuppressWarnings("unchecked")
+   private <T> T adapt(Class<T> clazz, QueryContext queryContext) throws OseeCoreException {
+      T toReturn = null;
+      if (clazz.isAssignableFrom(queryContext.getClass())) {
+         toReturn = (T) queryContext;
       } else {
-         throw new OseeCoreException("Invalid query context type [%s] - expected SqlContext",
-            queryContext.getClass().getName());
+         throw new OseeCoreException("Invalid query context type [%s] - expected [%s]",
+            queryContext.getClass().getName(), clazz.getName());
       }
-      return sqlContext;
+      return toReturn;
    }
 
    private Collection<Integer> toCollection(int... ids) {

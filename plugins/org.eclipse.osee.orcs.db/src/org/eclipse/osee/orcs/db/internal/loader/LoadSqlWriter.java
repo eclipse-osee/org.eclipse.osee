@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
@@ -29,7 +28,7 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
  */
 public class LoadSqlWriter extends AbstractSqlWriter {
 
-   public LoadSqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext<DataPostProcessor<?>> context) {
+   public LoadSqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext context) {
       super(logger, dbService, sqlProvider, context);
    }
 

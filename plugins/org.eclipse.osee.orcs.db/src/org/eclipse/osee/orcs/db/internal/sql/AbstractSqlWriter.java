@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.HasOptions;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
@@ -43,9 +42,9 @@ public abstract class AbstractSqlWriter implements HasOptions {
    private final Log logger;
    private final IOseeDatabaseService dbService;
    private final SqlProvider sqlProvider;
-   private final SqlContext<? extends DataPostProcessor<?>> context;
+   private final SqlContext context;
 
-   public AbstractSqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext<? extends DataPostProcessor<?>> context) {
+   public AbstractSqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext context) {
       this.logger = logger;
       this.dbService = dbService;
       this.sqlProvider = sqlProvider;
@@ -60,6 +59,16 @@ public abstract class AbstractSqlWriter implements HasOptions {
       Conditions.checkNotNullOrEmpty(handlers, "SqlHandlers");
       output.delete(0, output.length());
 
+      write(handlers);
+
+      context.setSql(toString());
+
+      if (logger.isTraceEnabled()) {
+         logger.trace("Sql Writer - [%s]", context);
+      }
+   }
+
+   protected void write(List<SqlHandler<?>> handlers) throws OseeCoreException {
       computeTables(handlers);
       computeWithClause(handlers);
 
@@ -70,15 +79,9 @@ public abstract class AbstractSqlWriter implements HasOptions {
       write("\n WHERE \n");
       writePredicates(handlers);
       writeGroupAndOrder();
-
-      context.setSql(toString());
-
-      if (logger.isTraceEnabled()) {
-         logger.trace("Sql Writer - [%s]", context);
-      }
    }
 
-   private void writeWithClause() throws OseeCoreException {
+   protected void writeWithClause() throws OseeCoreException {
       if (Conditions.hasValues(withClauses)) {
          write("WITH ");
          int size = withClauses.size();
@@ -117,7 +120,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return aliasManager;
    }
 
-   public SqlContext<? extends DataPostProcessor<?>> getContext() {
+   public SqlContext getContext() {
       return context;
    }
 
@@ -159,7 +162,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       write(AND_WITH_NEWLINES);
    }
 
-   private void removeDanglingSeparator(String token) {
+   protected void removeDanglingSeparator(String token) {
       int length = output.length();
       int index = output.lastIndexOf(token);
       if (index == length - token.length()) {
@@ -219,12 +222,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
    @Override
    public Options getOptions() {
       return getContext().getOptions();
-   }
-
-   @SuppressWarnings("unchecked")
-   public void addPostProcessor(DataPostProcessor<?> processor) {
-      List<DataPostProcessor<?>> processors = (List<DataPostProcessor<?>>) getContext().getPostProcessors();
-      processors.add(processor);
    }
 
    protected String getSqlHint() throws OseeCoreException {

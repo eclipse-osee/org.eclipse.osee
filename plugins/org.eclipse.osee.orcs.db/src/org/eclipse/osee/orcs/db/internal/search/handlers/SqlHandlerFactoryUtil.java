@@ -15,7 +15,6 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.DataPostProcessorFactory;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
@@ -40,12 +39,9 @@ public final class SqlHandlerFactoryUtil {
       // Static Utility
    }
 
-   public static SqlHandlerFactory createArtifactSqlHandlerFactory(Log logger, IdentityService identityService, TagProcessor tagProcessor, DataPostProcessorFactory<CriteriaAttributeKeywords> postProcessorFactory) {
+   public static SqlHandlerFactory createArtifactSqlHandlerFactory(Log logger, IdentityService identityService, TagProcessor tagProcessor) {
       Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
          new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
-
-      Map<Class<? extends SqlHandler<?>>, DataPostProcessorFactory<?>> factoryMap =
-         new HashMap<Class<? extends SqlHandler<?>>, DataPostProcessorFactory<?>>();
 
       handleMap.put(CriteriaArtifactGuids.class, ArtifactGuidSqlHandler.class);
       handleMap.put(CriteriaArtifactHrids.class, ArtifactHridsSqlHandler.class);
@@ -58,8 +54,6 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaAttributeKeywords.class, AttributeTokenSqlHandler.class);
       handleMap.put(CriteriaAllArtifacts.class, AllArtifactsSqlHandler.class);
 
-      factoryMap.put(AttributeTokenSqlHandler.class, postProcessorFactory);
-
-      return new SqlHandlerFactoryImpl(logger, identityService, tagProcessor, handleMap, factoryMap);
+      return new SqlHandlerFactoryImpl(logger, identityService, tagProcessor, handleMap);
    }
 }

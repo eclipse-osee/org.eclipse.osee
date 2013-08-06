@@ -55,7 +55,7 @@ public class DataModuleFactory {
       OrcsObjectFactory objectFactory = loaderModule.createOrcsObjectFactory(attributeTypes);
       final DataFactory dataFactory = loaderModule.createDataFactory(objectFactory, artifactTypes);
       final DataLoaderFactory dataLoaderFactory = loaderModule.createDataLoaderFactory(objectFactory, branchCache);
-      final QueryEngine queryEngine = queryModule.createQueryEngine(branchCache);
+      final QueryEngine queryEngine = queryModule.createQueryEngine(dataLoaderFactory, branchCache, attributeTypes);
       final BranchDataStore branchDataStore = branchModule.createBranchDataStore(dataLoaderFactory);
       final TxDataStore txDataStore = txModule.createTransactionStore(dataLoaderFactory, indexer, attributeTypes);
       final DataStoreAdmin dataStoreAdmin = adminModule.createDataStoreAdmin(branchDataStore);

@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeDataImpl extends OrcsObjectImpl implements AttributeData {
+public class AttributeDataImpl extends OrcsVersionedObjectImpl implements AttributeData {
 
    private int artifactId = RelationalConstants.ART_ID_SENTINEL;
 

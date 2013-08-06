@@ -36,6 +36,7 @@ import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.HasLocalId;
@@ -369,7 +370,8 @@ public class QueryBuilderImpl implements QueryBuilder {
    private QueryData checkAndCloneQueryData() throws OseeCoreException {
       QueryData queryData = getQueryData().clone();
       CriteriaSet criteriaSet = queryData.getCriteriaSet();
-      if (criteriaSet.getBranch() != null && criteriaSet.getCriterias().isEmpty()) {
+      Collection<Criteria> criterias = criteriaSet.getCriterias();
+      if (criterias.isEmpty() || (criterias.size() == 1 && criteriaSet.hasCriteriaType(CriteriaBranch.class))) {
          addAndCheck(queryData, criteriaFactory.createAllArtifactsCriteria());
       }
       return queryData;

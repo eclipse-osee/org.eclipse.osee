@@ -18,16 +18,13 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
-import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
+import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
 import org.eclipse.osee.orcs.core.ds.RelationData;
-import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 
 /**
@@ -57,7 +54,7 @@ public class ComodificationCheck implements TransactionProcessor {
       }
    }
 
-   private final class OnLoadChecker implements LoadDataHandler, OrcsVisitor {
+   private final class OnLoadChecker extends LoadDataHandlerAdapter implements OrcsVisitor {
 
       private final Map<Integer, ArtifactData> artifacts = new HashMap<Integer, ArtifactData>();
       private final Map<Integer, AttributeData> attributes = new HashMap<Integer, AttributeData>();
@@ -106,51 +103,22 @@ public class ComodificationCheck implements TransactionProcessor {
       }
 
       @Override
-      public ArtifactDataHandler getArtifactDataHandler() {
-         return new ArtifactDataHandler() {
-
-            @Override
-            public void onData(ArtifactData data) throws OseeCoreException {
-               ArtifactData modified = artifacts.get(data.getLocalId());
-               checkCoModified(data, modified);
-            }
-         };
+      public void onData(ArtifactData data) throws OseeCoreException {
+         ArtifactData modified = artifacts.get(data.getLocalId());
+         checkCoModified(data, modified);
       }
 
       @Override
-      public RelationDataHandler getRelationDataHandler() {
-         return new RelationDataHandler() {
-
-            @Override
-            public void onData(RelationData data) throws OseeCoreException {
-               RelationData modified = relations.get(data.getLocalId());
-               checkCoModified(data, modified);
-            }
-         };
+      public void onData(RelationData data) throws OseeCoreException {
+         RelationData modified = relations.get(data.getLocalId());
+         checkCoModified(data, modified);
       }
 
       @Override
-      public AttributeDataHandler getAttributeDataHandler() {
-         return new AttributeDataHandler() {
-
-            @Override
-            public void onData(AttributeData data) throws OseeCoreException {
-               AttributeData modified = attributes.get(data.getLocalId());
-               checkCoModified(data, modified);
-            }
-         };
+      public void onData(AttributeData data) throws OseeCoreException {
+         AttributeData modified = attributes.get(data.getLocalId());
+         checkCoModified(data, modified);
       }
-
-      @Override
-      public void onLoadStart() {
-         // Do Nothing
-      }
-
-      @Override
-      public void onLoadEnd() {
-         // Do Nothing
-      }
-
    }
 
 }

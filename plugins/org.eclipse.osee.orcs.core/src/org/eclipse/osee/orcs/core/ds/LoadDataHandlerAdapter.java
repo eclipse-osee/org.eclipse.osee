@@ -10,52 +10,83 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
+
 /**
  * @author Roberto E. Escobar
  */
-public abstract class LoadDataHandlerAdapter implements LoadDataHandler {
+public class LoadDataHandlerAdapter implements LoadDataHandler {
 
-   private static final ArtifactDataHandler NOOP_ART_HANDLER = new ArtifactDataHandler() {
+   private final OrcsDataHandler<ArtifactData> artifactHandler = new OrcsDataHandler<ArtifactData>() {
 
       @Override
-      public void onData(ArtifactData data) {
-         //
+      public void onData(ArtifactData data) throws OseeCoreException {
+         LoadDataHandlerAdapter.this.onData(data);
       }
    };
 
-   private static final AttributeDataHandler NOOP_ATTR_HANDLER = new AttributeDataHandler() {
+   private final OrcsDataHandler<AttributeData> attributeHandler = new OrcsDataHandler<AttributeData>() {
 
       @Override
-      public void onData(AttributeData data) {
-         //
+      public void onData(AttributeData data) throws OseeCoreException {
+         LoadDataHandlerAdapter.this.onData(data);
       }
    };
 
-   private static final RelationDataHandler NOOP_REL_HANDLER = new RelationDataHandler() {
+   private final OrcsDataHandler<RelationData> relationHandler = new OrcsDataHandler<RelationData>() {
 
       @Override
-      public void onData(RelationData data) {
-         //
+      public void onData(RelationData data) throws OseeCoreException {
+         LoadDataHandlerAdapter.this.onData(data);
       }
    };
 
    @Override
-   public ArtifactDataHandler getArtifactDataHandler() {
-      return NOOP_ART_HANDLER;
+   public final OrcsDataHandler<ArtifactData> getArtifactDataHandler() {
+      return artifactHandler;
    }
 
    @Override
-   public AttributeDataHandler getAttributeDataHandler() {
-      return NOOP_ATTR_HANDLER;
+   public final OrcsDataHandler<AttributeData> getAttributeDataHandler() {
+      return attributeHandler;
    }
 
    @Override
-   public RelationDataHandler getRelationDataHandler() {
-      return NOOP_REL_HANDLER;
+   public final OrcsDataHandler<RelationData> getRelationDataHandler() {
+      return relationHandler;
+   }
+
+   @SuppressWarnings("unused")
+   @Override
+   public void onLoadStart() throws OseeCoreException {
+      //
+   }
+
+   @SuppressWarnings("unused")
+   @Override
+   public void onLoadDescription(LoadDescription data) throws OseeCoreException {
+      //
+   }
+
+   @SuppressWarnings("unused")
+   public void onData(ArtifactData data) throws OseeCoreException {
+      //
+   }
+
+   @SuppressWarnings("unused")
+   public void onData(AttributeData data) throws OseeCoreException {
+      //
+   }
+
+   @SuppressWarnings("unused")
+   public void onData(RelationData data) throws OseeCoreException {
+      //
    }
 
    @Override
-   public void onLoadStart() {
+   @SuppressWarnings("unused")
+   public void onData(AttributeData data, MatchLocation match) throws OseeCoreException {
       //
    }
 
@@ -63,5 +94,4 @@ public abstract class LoadDataHandlerAdapter implements LoadDataHandler {
    public void onLoadEnd() {
       //
    }
-
 }

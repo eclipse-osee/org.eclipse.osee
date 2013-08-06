@@ -48,6 +48,7 @@ Import-Package: org.eclipse.emf.common.notify,
  org.eclipse.osee.orcs.core.ds.criteria,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,
+ org.eclipse.osee.orcs.utility,
  org.osgi.framework
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,

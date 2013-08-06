@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.VersionData;
@@ -23,7 +22,7 @@ import org.eclipse.osee.orcs.db.internal.loader.data.ArtifactObjectFactory;
 /**
  * @author Ryan D. Brooks
  */
-public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactObjectFactory, ArtifactDataHandler> {
+public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactObjectFactory> {
 
    public ArtifactLoadProcessor(ArtifactObjectFactory factory) {
       super(factory);

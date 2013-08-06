@@ -22,9 +22,10 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.db.internal.loader.LoadSqlContext;
+import org.eclipse.osee.orcs.db.internal.loader.LoadUtil;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
-import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
+import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 
@@ -33,9 +34,9 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
  */
 public class QueryContextLoadExecutor extends AbstractLoadExecutor {
 
-   private final QuerySqlContext queryContext;
+   private final ArtifactQuerySqlContext queryContext;
 
-   public QueryContextLoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, QuerySqlContext queryContext) {
+   public QueryContextLoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, ArtifactQuerySqlContext queryContext) {
       super(loader, dbService);
       this.queryContext = queryContext;
    }
@@ -45,16 +46,17 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
       int fetchSize = computeFetchSize(queryContext);
 
       ArtifactJoinQuery join = createArtifactIdJoin(getDatabaseService(), cancellation, fetchSize);
-      LoadSqlContext loadContext = new LoadSqlContext(queryContext.getSession(), options);
+
+      LoadSqlContext loadContext = new LoadSqlContext(queryContext.getSession(), options, queryContext.getBranch());
       loadFromJoin(join, cancellation, handler, criteria, loadContext, fetchSize);
    }
 
-   private int computeFetchSize(SqlContext<?> sqlContext) {
+   private int computeFetchSize(SqlContext sqlContext) {
       int fetchSize = RelationalConstants.MIN_FETCH_SIZE;
       for (AbstractJoinQuery join : sqlContext.getJoins()) {
          fetchSize = Math.max(fetchSize, join.size());
       }
-      return computeFetchSize(fetchSize);
+      return LoadUtil.computeFetchSize(fetchSize);
    }
 
    private ArtifactJoinQuery createArtifactIdJoin(IOseeDatabaseService dbService, HasCancellation cancellation, int fetchSize) throws OseeCoreException {

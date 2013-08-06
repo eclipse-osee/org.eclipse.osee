@@ -22,6 +22,7 @@ import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -44,15 +45,18 @@ public class QueryFactoryImpl implements QueryFactory {
 
    private QueryBuilder createBuilder(IOseeBranch branch) {
       Options options = OptionsUtil.createOptions();
-      CriteriaSet criteriaSet = new CriteriaSet(branch);
+      CriteriaSet criteriaSet = new CriteriaSet();
+      if (branch != null) {
+         criteriaSet.add(new CriteriaBranch(branch));
+      }
       QueryData queryData = new QueryData(criteriaSet, options);
       QueryBuilder builder = new QueryBuilderImpl(queryFctry, criteriaFctry, context, queryData);
       return builder;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public QueryBuilder fromBranch(IOseeBranch branch) throws OseeCoreException {
+      Conditions.checkNotNull(branch, "branch");
       return createBuilder(branch);
    }
 

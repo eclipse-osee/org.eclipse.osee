@@ -28,15 +28,12 @@ import org.eclipse.osee.framework.core.model.change.RelationChangeItem;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
-import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -97,14 +94,8 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       loader.load(cancellation, new LoadDataHandlerAdapter() {
 
          @Override
-         public ArtifactDataHandler getArtifactDataHandler() {
-            return new ArtifactDataHandler() {
-
-               @Override
-               public void onData(ArtifactData data) {
-                  missingArtIds.remove(data.getLocalId());
-               }
-            };
+         public void onData(ArtifactData data) {
+            missingArtIds.remove(data.getLocalId());
          }
       });
       return missingArtIds;
@@ -122,45 +113,26 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       loader.load(cancellation, new LoadDataHandlerAdapter() {
 
          @Override
-         public ArtifactDataHandler getArtifactDataHandler() {
-            return new ArtifactDataHandler() {
-
-               @Override
-               public void onData(ArtifactData data) throws OseeCoreException {
-                  if (!modifiedArtIds.contains(data.getLocalId())) {
-                     toReturn.add(createArtifactChangeItem(data));
-                  }
-               }
-            };
-
+         public void onData(ArtifactData data) throws OseeCoreException {
+            if (!modifiedArtIds.contains(data.getLocalId())) {
+               toReturn.add(createArtifactChangeItem(data));
+            }
          }
 
          @Override
-         public RelationDataHandler getRelationDataHandler() {
-            return new RelationDataHandler() {
-
-               @Override
-               public void onData(RelationData data) {
-                  int localId = data.getLocalId();
-                  if (!modifiedRels.get(data.getArtIdA()).contains(localId) && !modifiedRels.get(data.getArtIdB()).contains(
-                     localId)) {
-                     relations.add(data);
-                  }
-               }
-            };
+         public void onData(RelationData data) {
+            int localId = data.getLocalId();
+            if (!modifiedRels.get(data.getArtIdA()).contains(localId) && !modifiedRels.get(data.getArtIdB()).contains(
+               localId)) {
+               relations.add(data);
+            }
          }
 
          @Override
-         public AttributeDataHandler getAttributeDataHandler() {
-            return new AttributeDataHandler() {
-
-               @Override
-               public void onData(AttributeData data) throws OseeCoreException {
-                  if (!modifiedAttrIds.get(data.getArtifactId()).contains(data.getLocalId())) {
-                     toReturn.add(createAttributeChangeItem(data));
-                  }
-               }
-            };
+         public void onData(AttributeData data) throws OseeCoreException {
+            if (!modifiedAttrIds.get(data.getArtifactId()).contains(data.getLocalId())) {
+               toReturn.add(createAttributeChangeItem(data));
+            }
          }
 
       });
@@ -194,16 +166,10 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       loader.load(cancellation, new LoadDataHandlerAdapter() {
 
          @Override
-         public ArtifactDataHandler getArtifactDataHandler() {
-            return new ArtifactDataHandler() {
-
-               @Override
-               public void onData(ArtifactData data) throws OseeCoreException {
-                  for (RelationData relData : relationChangesToAdd.get(data.getLocalId())) {
-                     toReturn.add(createRelationChangeItem(relData));
-                  }
-               }
-            };
+         public void onData(ArtifactData data) throws OseeCoreException {
+            for (RelationData relData : relationChangesToAdd.get(data.getLocalId())) {
+               toReturn.add(createRelationChangeItem(relData));
+            }
          }
       });
       return toReturn;

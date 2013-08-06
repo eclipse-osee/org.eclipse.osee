@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.VersionData;
@@ -23,7 +22,7 @@ import org.eclipse.osee.orcs.db.internal.loader.data.AttributeObjectFactory;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeLoadProcessor extends LoadProcessor<AttributeData, AttributeObjectFactory, AttributeDataHandler> {
+public class AttributeLoadProcessor extends LoadProcessor<AttributeData, AttributeObjectFactory> {
 
    public AttributeLoadProcessor(AttributeObjectFactory factory) {
       super(factory);

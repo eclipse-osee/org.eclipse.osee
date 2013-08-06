@@ -21,7 +21,7 @@ import org.junit.runners.Suite;
    AttributeDataProxyFactoryTest.class,
    DataFactoryImplTest.class,
    DataLoaderFactoryImplTest.class,
-   LoaderSqlHandlerFactoryImplTest.class})
+   LoaderSqlHandlerFactoryUtilTest.class})
 public class LoaderTestSuite {
    // Test Suite
 }

@@ -27,9 +27,9 @@ public class IndexerCallableFactoryImpl implements IndexerCallableFactory {
    private final Log logger;
    private final IOseeDatabaseService dbService;
    private final TaggingEngine taggingEngine;
-   private final QueueToAttributeLoader loader;
+   private final IndexedResourceLoader loader;
 
-   public IndexerCallableFactoryImpl(Log logger, IOseeDatabaseService dbService, TaggingEngine taggingEngine, QueueToAttributeLoader loader) {
+   public IndexerCallableFactoryImpl(Log logger, IOseeDatabaseService dbService, TaggingEngine taggingEngine, IndexedResourceLoader loader) {
       super();
       this.logger = logger;
       this.dbService = dbService;

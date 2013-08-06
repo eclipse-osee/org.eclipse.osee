@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Collection;
 import java.util.Iterator;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import java.util.Set;
 import com.google.common.collect.HashMultimap;
 
 /**
@@ -21,15 +21,6 @@ import com.google.common.collect.HashMultimap;
 public class CriteriaSet implements Cloneable, Iterable<Criteria> {
 
    private final HashMultimap<Class<? extends Criteria>, Criteria> criterias = HashMultimap.create();
-   private final IOseeBranch branch;
-
-   public CriteriaSet(IOseeBranch branch) {
-      this.branch = branch;
-   }
-
-   public IOseeBranch getBranch() {
-      return branch;
-   }
 
    public void add(Criteria criteria) {
       criterias.put(criteria.getClass(), criteria);
@@ -47,13 +38,19 @@ public class CriteriaSet implements Cloneable, Iterable<Criteria> {
       criterias.clear();
    }
 
+   @SuppressWarnings("unchecked")
+   public <T extends Criteria> Set<T> getCriteriaByType(Class<T> type) {
+      return (Set<T>) criterias.get(type);
+   }
+
    public boolean hasCriteriaType(Class<? extends Criteria> type) {
-      return criterias.containsKey(type);
+      Set<Criteria> set = criterias.get(type);
+      return set != null && !set.isEmpty();
    }
 
    @Override
    public CriteriaSet clone() {
-      CriteriaSet clone = new CriteriaSet(this.branch);
+      CriteriaSet clone = new CriteriaSet();
       clone.criterias.putAll(this.criterias);
       return clone;
    }
@@ -66,9 +63,7 @@ public class CriteriaSet implements Cloneable, Iterable<Criteria> {
    @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
-      builder.append("branch=[");
-      builder.append(branch);
-      builder.append("] criterias=[");
+      builder.append("criterias=[");
       builder.append(criterias.values());
       builder.append("]");
       return builder.toString();

@@ -16,7 +16,7 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
 /**
  * @author Roberto E. Escobar
  */
-public interface VersionObjectFactory {
+public interface VersionObjectFactory extends OrcsDataFactory {
 
    VersionData createDefaultVersionData();
 

@@ -17,7 +17,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactDataImpl extends OrcsObjectImpl implements ArtifactData {
+public class ArtifactDataImpl extends OrcsVersionedObjectImpl implements ArtifactData {
 
    private String guid = RelationalConstants.DEFAULT_GUID;
    private String humanReadableId = RelationalConstants.HUMAN_READABLE_ID;

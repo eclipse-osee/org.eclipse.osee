@@ -20,7 +20,6 @@ import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.db.internal.loader.LoadSqlContext;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
-import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -42,8 +41,8 @@ public abstract class AbstractLoadExecutor {
       return dbService;
    }
 
-   protected void loadFromJoin(ArtifactJoinQuery join, HasCancellation cancellation, LoadDataHandler builder, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
-      loader.loadArtifacts(cancellation, builder, join, criteria, loadContext, fetchSize);
+   protected void loadFromJoin(ArtifactJoinQuery join, HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
+      loader.loadArtifacts(cancellation, handler, join, criteria, loadContext, fetchSize);
    }
 
    protected void checkCancelled(HasCancellation cancellation) throws CancellationException {
@@ -52,19 +51,4 @@ public abstract class AbstractLoadExecutor {
       }
    }
 
-   protected int computeFetchSize(int initialSize) {
-      int fetchSize = initialSize;
-
-      if (fetchSize < 10) {
-         fetchSize = 10;
-      }
-
-      // Account for attribute and relation loading
-      fetchSize *= 20;
-
-      if (fetchSize < 0 || fetchSize > RelationalConstants.MAX_FETCH_SIZE) {
-         fetchSize = RelationalConstants.MAX_FETCH_SIZE;
-      }
-      return fetchSize;
-   }
 }

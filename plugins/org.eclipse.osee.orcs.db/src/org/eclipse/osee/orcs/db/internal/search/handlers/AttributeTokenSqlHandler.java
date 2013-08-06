@@ -19,14 +19,11 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
-import org.eclipse.osee.orcs.core.ds.DataPostProcessorFactory;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.db.internal.search.tagger.HasTagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
-import org.eclipse.osee.orcs.db.internal.sql.HasDataPostProcessorFactory;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import org.eclipse.osee.orcs.db.internal.sql.WithClause;
@@ -35,7 +32,7 @@ import org.eclipse.osee.orcs.db.internal.sql.WithClause.WithAlias;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywords> implements HasTagProcessor, HasDataPostProcessorFactory<CriteriaAttributeKeywords> {
+public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywords> implements HasTagProcessor {
 
    private CriteriaAttributeKeywords criteria;
 
@@ -43,18 +40,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    private String attrAlias;
    private String txsAlias;
 
-   private DataPostProcessorFactory<CriteriaAttributeKeywords> factory;
    private TagProcessor tagProcessor;
-
-   @Override
-   public void setDataPostProcessorFactory(DataPostProcessorFactory<CriteriaAttributeKeywords> factory) {
-      this.factory = factory;
-   }
-
-   @Override
-   public DataPostProcessorFactory<CriteriaAttributeKeywords> getDataPostProcessorFactory() {
-      return factory;
-   }
 
    @Override
    public void setTagProcessor(TagProcessor tagProcessor) {
@@ -158,9 +144,6 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
-      DataPostProcessor<?> processor = getDataPostProcessorFactory().createPostProcessor(criteria, writer.getOptions());
-      writer.addPostProcessor(processor);
-
       if (!Strings.isValid(artAlias)) {
          artAlias = writer.getAliases(TableEnum.ARTIFACT_TABLE).iterator().next();
       }

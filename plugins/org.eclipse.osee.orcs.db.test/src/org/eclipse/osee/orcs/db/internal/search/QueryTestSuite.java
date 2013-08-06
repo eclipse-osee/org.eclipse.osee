@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search;
 
+import org.eclipse.osee.orcs.db.internal.search.engines.EnginesTestSuite;
 import org.eclipse.osee.orcs.db.internal.search.handlers.HandlersTestSuite;
 import org.eclipse.osee.orcs.db.internal.search.language.LanguageTestSuite;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggerTestSuite;
@@ -22,11 +23,11 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   EnginesTestSuite.class,
    HandlersTestSuite.class,
    LanguageTestSuite.class,
    TaggerTestSuite.class,
-   UtilityTestSuite.class,
-   QueryEngineImplTest.class})
+   UtilityTestSuite.class})
 public class QueryTestSuite {
    // Test Suite
 }

@@ -10,12 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface LoadDataHandler extends ArtifactDataHandlerProvider, RelationDataHandlerProvider, AttributeDataHandlerProvider {
+public interface LoadDataHandler extends ArtifactDataHandlerProvider, RelationDataHandlerProvider, AttributeDataHandlerProvider, AttributeDataMatchHandler {
 
-   void onLoadStart();
+   void onLoadStart() throws OseeCoreException;
+
+   void onLoadDescription(LoadDescription data) throws OseeCoreException;
 
    void onLoadEnd();
 

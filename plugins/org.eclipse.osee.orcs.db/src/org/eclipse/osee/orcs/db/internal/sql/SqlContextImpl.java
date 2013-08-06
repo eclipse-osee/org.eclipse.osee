@@ -15,18 +15,16 @@ import java.util.List;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
-public class SqlContextImpl<P extends DataPostProcessor<?>> implements SqlContext<P> {
+public class SqlContextImpl implements SqlContext {
 
    private String sql;
    private final List<Object> parameters = new ArrayList<Object>();
    private final List<AbstractJoinQuery> joinTables = new ArrayList<AbstractJoinQuery>();
-   private final List<P> processors = new ArrayList<P>();
 
    private final OrcsSession session;
    private final Options options;
@@ -67,21 +65,15 @@ public class SqlContextImpl<P extends DataPostProcessor<?>> implements SqlContex
    }
 
    @Override
-   public List<P> getPostProcessors() {
-      return processors;
-   }
-
-   @Override
    public void clear() {
       setSql(null);
       parameters.clear();
       joinTables.clear();
-      processors.clear();
    }
 
    @Override
    public String toString() {
-      return "SqlContextImpl [session=" + session + ", sql=" + (Strings.isValid(sql) ? sql.replaceAll("\n", "") : "") + ", parameters=" + parameters + ", joinTables=" + joinTables + ", processors=" + processors + ", options=" + options + "]";
+      return "SqlContextImpl [session=" + session + ", sql=" + (Strings.isValid(sql) ? sql.replaceAll("\n", "") : "") + ", parameters=" + parameters + ", joinTables=" + joinTables + ", options=" + options + "]";
    }
 
 }

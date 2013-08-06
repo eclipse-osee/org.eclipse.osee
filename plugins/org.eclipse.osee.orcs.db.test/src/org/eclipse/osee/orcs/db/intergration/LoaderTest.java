@@ -20,6 +20,7 @@ import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.integrationRule;
 import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.sort;
 import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.verifyData;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,18 +31,17 @@ import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
+import org.eclipse.osee.orcs.core.ds.LoadDescription;
+import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.ds.RelationData;
-import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
@@ -64,17 +64,18 @@ public class LoaderTest {
    // @formatter:off
 	@OsgiService private IOseeDatabaseService dbService;
 	@OsgiService private OrcsDataStore dataStore;
-        @Mock private LoadDataHandler builder;
-	@Mock private ArtifactDataHandler artifactHandler;
-	@Mock private AttributeDataHandler attributeHandler;
-	@Mock private RelationDataHandler relationHandler;
+   @Mock private LoadDataHandler builder;
+   @Mock private OrcsDataHandler<ArtifactData> artifactHandler;
+   @Mock private OrcsDataHandler<AttributeData> attributeHandler;
+   @Mock private OrcsDataHandler<RelationData> relationHandler;   
+   @Captor private ArgumentCaptor<LoadDescription> descriptorCaptor;
 	@Captor private ArgumentCaptor<ArtifactData> artifactCaptor;
 	@Captor private ArgumentCaptor<AttributeData> attributeCaptor;
 	@Captor private ArgumentCaptor<RelationData> relationCaptor;
-	@Mock OrcsTypes types;
-	@Mock ArtifactTypes artTypes;
-        @Mock private OrcsSession session;
-	@Mock AttributeTypes attrTypes;
+	@Mock private OrcsTypes types;
+	@Mock private ArtifactTypes artTypes;
+   @Mock private OrcsSession session;
+	@Mock private AttributeTypes attrTypes;
 	// @formatter:on
 
    private HasCancellation cancellation;
@@ -112,9 +113,15 @@ public class LoaderTest {
 
       loader.load(cancellation, builder);
 
+      verify(builder).onLoadStart();
+      verify(builder).onLoadDescription(descriptorCaptor.capture());
       verify(builder).getArtifactDataHandler();
       verify(builder).getAttributeDataHandler();
       verify(builder).getRelationDataHandler();
+      verify(builder).onLoadEnd();
+
+      LoadDescription descriptor = descriptorCaptor.getValue();
+      assertEquals(CoreBranches.COMMON, descriptor.getBranch());
 
       verify(artifactHandler, times(3)).onData(artifactCaptor.capture());
       verify(attributeHandler, times(7)).onData(attributeCaptor.capture());
@@ -163,9 +170,15 @@ public class LoaderTest {
 
       loader.load(cancellation, builder);
 
+      verify(builder).onLoadStart();
+      verify(builder).onLoadDescription(descriptorCaptor.capture());
       verify(builder).getArtifactDataHandler();
       verify(builder).getAttributeDataHandler();
       verify(builder).getRelationDataHandler();
+      verify(builder).onLoadEnd();
+
+      LoadDescription descriptor = descriptorCaptor.getValue();
+      assertEquals(CoreBranches.COMMON, descriptor.getBranch());
 
       verify(artifactHandler, times(3)).onData(artifactCaptor.capture());
       verify(attributeHandler, times(3)).onData(attributeCaptor.capture());
@@ -209,9 +222,15 @@ public class LoaderTest {
 
       loader.load(cancellation, builder);
 
+      verify(builder).onLoadStart();
+      verify(builder).onLoadDescription(descriptorCaptor.capture());
       verify(builder).getArtifactDataHandler();
       verify(builder).getAttributeDataHandler();
       verify(builder).getRelationDataHandler();
+      verify(builder).onLoadEnd();
+
+      LoadDescription descriptor = descriptorCaptor.getValue();
+      assertEquals(CoreBranches.COMMON, descriptor.getBranch());
 
       verify(artifactHandler, times(3)).onData(artifactCaptor.capture());
       verify(attributeHandler, times(2)).onData(attributeCaptor.capture());

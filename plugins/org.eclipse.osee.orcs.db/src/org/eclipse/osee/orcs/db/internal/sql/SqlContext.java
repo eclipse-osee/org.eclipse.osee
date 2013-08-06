@@ -12,13 +12,12 @@ package org.eclipse.osee.orcs.db.internal.sql;
 
 import java.util.List;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.DataStoreContext;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface SqlContext<P extends DataPostProcessor<?>> extends DataStoreContext<P> {
+public interface SqlContext extends DataStoreContext {
 
    String getSql();
 

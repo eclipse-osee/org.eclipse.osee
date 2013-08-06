@@ -10,29 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
-import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.orcs.core.ds.OrcsData;
-import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class OrcsObjectImpl implements OrcsData {
+public abstract class OrcsObjectImpl implements HasLocalId {
 
    private int localId = RelationalConstants.DEFAULT_ITEM_ID;
-   private long typeUuid = RelationalConstants.DEFAULT_TYPE_UUID;
-   private long baseTypeUuid = RelationalConstants.DEFAULT_TYPE_UUID;
 
-   private ModificationType baseModType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
-   private ModificationType previousModType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
-   private ModificationType currentModType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
-
-   private final VersionData version;
-
-   protected OrcsObjectImpl(VersionData version) {
+   protected OrcsObjectImpl() {
       super();
-      this.version = version;
    }
 
    @Override
@@ -40,70 +29,8 @@ public abstract class OrcsObjectImpl implements OrcsData {
       return localId;
    }
 
-   @Override
    public void setLocalId(int localId) {
       this.localId = localId;
-   }
-
-   @Override
-   public long getTypeUuid() {
-      return typeUuid;
-   }
-
-   @Override
-   public void setTypeUuid(long typeUuid) {
-      this.typeUuid = typeUuid;
-   }
-
-   @Override
-   public long getBaseTypeUuid() {
-      return baseTypeUuid;
-   }
-
-   @Override
-   public void setBaseTypeUuid(long baseTypeUuid) {
-      this.baseTypeUuid = baseTypeUuid;
-   }
-
-   @Override
-   public void setBaseModType(ModificationType modType) {
-      baseModType = modType;
-   }
-
-   @Override
-   public ModificationType getModType() {
-      return currentModType;
-   }
-
-   @Override
-   public void setModType(ModificationType modType) {
-      previousModType = currentModType;
-      this.currentModType = modType;
-   }
-
-   @Override
-   public ModificationType getPreviousModType() {
-      return previousModType;
-   }
-
-   @Override
-   public ModificationType getBaseModType() {
-      return baseModType;
-   }
-
-   @Override
-   public boolean hasTypeUuidChange() {
-      return getBaseTypeUuid() != getTypeUuid();
-   }
-
-   @Override
-   public boolean hasModTypeChange() {
-      return getBaseModType() != getModType();
-   }
-
-   @Override
-   public VersionData getVersion() {
-      return version;
    }
 
    @Override
@@ -111,9 +38,6 @@ public abstract class OrcsObjectImpl implements OrcsData {
       final int prime = 31;
       int result = 1;
       result = prime * result + localId;
-      result = prime * result + ((baseModType == null) ? 0 : baseModType.hashCode());
-      result = prime * result + (int) (baseTypeUuid ^ (baseTypeUuid >>> 32));
-      result = prime * result + ((version == null) ? 0 : version.hashCode());
       return result;
    }
 
@@ -132,25 +56,11 @@ public abstract class OrcsObjectImpl implements OrcsData {
       if (localId != other.localId) {
          return false;
       }
-      if (baseModType != other.baseModType) {
-         return false;
-      }
-      if (baseTypeUuid != other.baseTypeUuid) {
-         return false;
-      }
-      if (version == null) {
-         if (other.version != null) {
-            return false;
-         }
-      } else if (!version.equals(other.version)) {
-         return false;
-      }
       return true;
    }
 
    @Override
    public String toString() {
-      return "OrcsObject [localId=" + localId + ", typeUuid=" + typeUuid + ", baseTypeUuid=" + baseTypeUuid + ", modType=" + currentModType + ", previousModType=" + previousModType + ", baseModType=" + baseModType + ", version=" + version + "]";
+      return "OrcsObject [localId=" + localId + "]";
    }
-
 }

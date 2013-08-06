@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.ds.QueryCollector;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 
 /**

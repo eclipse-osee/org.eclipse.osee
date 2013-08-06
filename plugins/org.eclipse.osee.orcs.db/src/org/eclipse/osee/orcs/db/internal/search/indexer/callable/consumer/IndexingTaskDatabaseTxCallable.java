@@ -14,20 +14,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.DatabaseJoinAccessor.JoinItem;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.core.ds.IndexedResource;
+import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
-import org.eclipse.osee.orcs.db.internal.search.indexer.QueueToAttributeLoader;
+import org.eclipse.osee.orcs.db.internal.search.indexer.IndexedResourceLoader;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
@@ -43,7 +46,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
 
    private static final String DELETE_SEARCH_TAGS = "delete from osee_search_tags where gamma_id = ?";
 
-   private final QueueToAttributeLoader loader;
+   private final IndexedResourceLoader loader;
    private final TaggingEngine taggingEngine;
    private final IndexerCollector collector;
    private final int tagQueueQueryId;
@@ -55,7 +58,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
    private long startTime;
    private long waitTime;
 
-   public IndexingTaskDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, QueueToAttributeLoader loader, TaggingEngine taggingEngine, IndexerCollector collector, int tagQueueQueryId, boolean isCacheAll, int cacheLimit, AttributeTypes attributeTypes) {
+   public IndexingTaskDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, IndexedResourceLoader loader, TaggingEngine taggingEngine, IndexerCollector collector, int tagQueueQueryId, boolean isCacheAll, int cacheLimit, AttributeTypes attributeTypes) {
       super(logger, session, dbService, "Attribute to Tag Database Transaction");
       waitStartTime = System.currentTimeMillis();
 
@@ -72,18 +75,29 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       return tagQueueQueryId;
    }
 
+   private OrcsDataHandler<IndexedResource> createCollector(final Collection<IndexedResource> sources) {
+      return new OrcsDataHandler<IndexedResource>() {
+
+         @Override
+         public void onData(IndexedResource data) {
+            sources.add(data);
+         }
+      };
+   }
+
    @Override
    protected Long handleTxWork(OseeConnection connection) throws OseeCoreException {
       getLogger().debug("Tagging: [%s]", getTagQueueQueryId());
       long totalTags = -1;
       try {
-         Collection<AttributeReadable<?>> attributes = new HashSet<AttributeReadable<?>>();
-         loader.loadAttributes(connection, getTagQueueQueryId(), attributes);
+         Collection<IndexedResource> sources = new LinkedHashSet<IndexedResource>();
+         OrcsDataHandler<IndexedResource> handler = createCollector(sources);
+         loader.loadSource(handler, getTagQueueQueryId());
 
-         if (!attributes.isEmpty()) {
+         if (!sources.isEmpty()) {
             try {
-               deleteTags(connection, attributes);
-               totalTags = createTags(connection, attributes);
+               deleteTags(connection, sources);
+               totalTags = createTags(connection, sources);
                removeIndexingTaskFromQueue(connection);
             } catch (Exception ex) {
                throw new OseeCoreException(ex, "Unable to store tags - tagQueueQueryId [%d]", getTagQueueQueryId());
@@ -97,23 +111,29 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       return totalTags;
    }
 
-   private long createTags(OseeConnection connection, Collection<AttributeReadable<?>> attributes) throws OseeCoreException {
+   private String getTaggerIdByTypeUuid(long typeUuid) throws OseeCoreException {
+      IAttributeType type = attributeTypes.getByUuid(typeUuid);
+      return attributeTypes.getTaggerId(type);
+   }
+
+   private long createTags(OseeConnection connection, Collection<IndexedResource> sources) throws OseeCoreException {
       SearchTagCollector tagCollector = new SearchTagCollector();
 
       Set<Long> processed = new HashSet<Long>();
 
       Map<Long, Collection<Long>> toStore = new HashMap<Long, Collection<Long>>();
-      for (AttributeReadable<?> attributeData : attributes) {
+      for (IndexedResource source : sources) {
          long startItemTime = System.currentTimeMillis();
-         Long gamma = attributeData.getGammaId();
+         Long gamma = source.getGammaId();
          if (processed.add(gamma)) {
             Set<Long> tags = new HashSet<Long>();
             toStore.put(gamma, tags);
             tagCollector.setCurrentTag(gamma, tags);
             try {
-               String taggerId = attributeTypes.getTaggerId(attributeData.getAttributeType());
+               long typeUuid = source.getTypeUuid();
+               String taggerId = getTaggerIdByTypeUuid(typeUuid);
                Tagger tagger = taggingEngine.getTagger(taggerId);
-               tagger.tagIt(attributeData, tagCollector);
+               tagger.tagIt(source, tagCollector);
                if (isStorageAllowed(toStore)) {
                   if (getLogger().isDebugEnabled()) {
                      getLogger().debug("Stored a - [%s] - connectionId[%s] - [%s]", getTagQueueQueryId(), connection,
@@ -179,12 +199,12 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       return needsStorage;
    }
 
-   public int deleteTags(OseeConnection connection, Collection<AttributeReadable<?>> attributes) throws OseeCoreException {
+   public int deleteTags(OseeConnection connection, Collection<IndexedResource> sources) throws OseeCoreException {
       int numberDeleted = 0;
-      if (!attributes.isEmpty()) {
+      if (!sources.isEmpty()) {
          List<Object[]> datas = new ArrayList<Object[]>();
-         for (AttributeReadable<?> attribute : attributes) {
-            datas.add(new Object[] {attribute.getGammaId()});
+         for (IndexedResource source : sources) {
+            datas.add(new Object[] {source.getGammaId()});
          }
          numberDeleted = getDatabaseService().runBatchUpdate(connection, DELETE_SEARCH_TAGS, datas);
       }

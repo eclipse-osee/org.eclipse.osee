@@ -13,14 +13,14 @@ package org.eclipse.osee.orcs.db.internal.loader.processor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
-import org.eclipse.osee.orcs.db.internal.loader.data.VersionObjectFactory;
+import org.eclipse.osee.orcs.data.HasLocalId;
+import org.eclipse.osee.orcs.db.internal.loader.data.OrcsDataFactory;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class LoadProcessor<D extends OrcsData, F extends VersionObjectFactory, H extends OrcsDataHandler<D>> {
+public abstract class LoadProcessor<D extends HasLocalId, F extends OrcsDataFactory> {
 
    private final F factory;
 
@@ -28,7 +28,7 @@ public abstract class LoadProcessor<D extends OrcsData, F extends VersionObjectF
       this.factory = factory;
    }
 
-   public final int processResultSet(H handler, IOseeStatement chStmt, Options options) throws OseeCoreException {
+   public final int processResultSet(OrcsDataHandler<D> handler, IOseeStatement chStmt, Options options) throws OseeCoreException {
       int rowCount = 0;
       Object conditions = createPreConditions();
       while (chStmt.next()) {

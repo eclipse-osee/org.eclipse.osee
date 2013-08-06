@@ -13,10 +13,8 @@ package org.eclipse.osee.orcs.core.internal.search;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
 import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.core.enums.TokenOrderType;
@@ -45,13 +43,13 @@ public class QueryStatisticsTest {
 
    @BeforeClass
    public static void setup() {
-      searchRequest1 = createQueryData(CoreBranches.COMMON, "[hello]");
-      searchRequest2 = createQueryData(CoreBranches.SYSTEM_ROOT, "short search");
-      searchRequest3 = createQueryData(CoreBranches.SYSTEM_ROOT, "long search");
+      searchRequest1 = createQueryData("[hello]");
+      searchRequest2 = createQueryData("short search");
+      searchRequest3 = createQueryData("long search");
    }
 
-   private static QueryData createQueryData(IOseeBranch branch, String value) {
-      QueryData queryData = new QueryData(new CriteriaSet(branch), OptionsUtil.createOptions());
+   private static QueryData createQueryData(String value) {
+      QueryData queryData = new QueryData(new CriteriaSet(), OptionsUtil.createOptions());
       Collection<? extends IAttributeType> types = Collections.singleton(CoreAttributeTypes.Name);
       queryData.addCriteria(new CriteriaAttributeKeywords(false, types, null, value, TokenDelimiterMatch.ANY,
          TokenOrderType.MATCH_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT, CaseType.MATCH_CASE));

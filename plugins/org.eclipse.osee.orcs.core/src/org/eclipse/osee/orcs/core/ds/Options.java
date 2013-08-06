@@ -18,6 +18,7 @@ import java.util.Map;
  * @author Roberto E. Escobar
  */
 public class Options implements Cloneable {
+
    private static final String EXCEPTION_MESSAGE = "No setting found for key: [%s]";
    private final Map<String, String> data = new HashMap<String, String>();
 

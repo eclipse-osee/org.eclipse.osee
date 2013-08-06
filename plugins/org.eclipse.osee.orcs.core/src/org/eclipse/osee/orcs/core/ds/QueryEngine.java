@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.orcs.OrcsSession;
 
 /**
@@ -18,8 +18,8 @@ import org.eclipse.osee.orcs.OrcsSession;
  */
 public interface QueryEngine {
 
-   QueryContext createCount(OrcsSession session, QueryData queryData) throws OseeCoreException;
+   CancellableCallable<Integer> createArtifactCount(OrcsSession session, QueryData queryData);
 
-   QueryContext create(OrcsSession session, QueryData queryData) throws OseeCoreException;
+   CancellableCallable<Integer> createArtifactQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);
 
 }

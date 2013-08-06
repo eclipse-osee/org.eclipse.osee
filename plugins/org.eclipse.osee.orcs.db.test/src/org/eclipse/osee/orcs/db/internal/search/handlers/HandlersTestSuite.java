@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SqlHandlerFactoryUtilTest.class,})
+@Suite.SuiteClasses({SqlHandlerFactoryUtilTest.class})
 public class HandlersTestSuite {
    // Test Suite
 }

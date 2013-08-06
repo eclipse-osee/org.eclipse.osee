@@ -10,19 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.LoadContext;
 import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.data.HasBranch;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContextImpl;
 
 /**
  * @author Roberto E. Escobar
  */
-public class LoadSqlContext extends SqlContextImpl<DataPostProcessor<?>> implements LoadContext {
+public class LoadSqlContext extends SqlContextImpl implements LoadContext, HasBranch {
 
-   public LoadSqlContext(OrcsSession session, Options options) {
+   private final IOseeBranch branch;
+
+   public LoadSqlContext(OrcsSession session, Options options, IOseeBranch branch) {
       super(session, options);
+      this.branch = branch;
+   }
+
+   @Override
+   public IOseeBranch getBranch() {
+      return branch;
    }
 
 }

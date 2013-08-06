@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({OptionsTest.class, OptionsUtilTest.class})
+@Suite.SuiteClasses({LoadDataHandlerDecoratorTest.class, OptionsTest.class, OptionsUtilTest.class})
 public class DsTestSuite {
    // Test Suite
 }

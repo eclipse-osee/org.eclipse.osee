@@ -16,14 +16,13 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.RelationData;
-import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.db.internal.loader.data.RelationObjectFactory;
 
 /**
  * @author Ryan D. Brooks
  */
-public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationObjectFactory, RelationDataHandler> {
+public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationObjectFactory> {
 
    public RelationLoadProcessor(RelationObjectFactory factory) {
       super(factory);

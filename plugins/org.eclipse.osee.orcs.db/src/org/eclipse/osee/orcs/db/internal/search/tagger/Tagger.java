@@ -10,19 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.tagger;
 
+import java.io.InputStream;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
-import org.eclipse.osee.orcs.data.AttributeReadable;
+import com.google.common.io.InputSupplier;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface Tagger {
 
-   void tagIt(AttributeReadable<?> attribute, TagCollector collector) throws OseeCoreException;
+   void tagIt(InputSupplier<? extends InputStream> provider, TagCollector collector) throws Exception;
 
-   List<MatchLocation> find(AttributeReadable<?> attribute, String toSearch, boolean matchAllLocations, QueryOption... options) throws OseeCoreException;
+   List<MatchLocation> find(InputSupplier<? extends InputStream> provider, String toSearch, boolean matchAllLocations, QueryOption... options) throws Exception;
 
 }

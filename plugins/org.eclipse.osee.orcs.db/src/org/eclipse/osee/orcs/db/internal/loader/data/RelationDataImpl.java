@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationDataImpl extends OrcsObjectImpl implements RelationData {
+public class RelationDataImpl extends OrcsVersionedObjectImpl implements RelationData {
 
    private int parentId = RelationalConstants.ART_ID_SENTINEL;
    private int artIdA = RelationalConstants.ART_ID_SENTINEL;

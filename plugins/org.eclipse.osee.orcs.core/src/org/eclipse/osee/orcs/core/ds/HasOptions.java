@@ -16,5 +16,4 @@ package org.eclipse.osee.orcs.core.ds;
 public interface HasOptions {
 
    Options getOptions();
-
 }
