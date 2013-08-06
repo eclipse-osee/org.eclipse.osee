@@ -33,7 +33,7 @@ import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
-import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
+import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
 /**
  * @author Roberto E. Escobar

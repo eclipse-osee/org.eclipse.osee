@@ -18,9 +18,9 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.loader.LoadSqlContext;
-import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.loader.SqlArtifactLoader;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
+import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
 /**
  * @author Andrew M. Finkbeiner

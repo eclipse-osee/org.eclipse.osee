@@ -36,7 +36,7 @@ import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
-import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
+import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderEnum;
 
 /**

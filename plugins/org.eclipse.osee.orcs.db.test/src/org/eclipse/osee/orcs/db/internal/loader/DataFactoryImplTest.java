@@ -35,6 +35,7 @@ import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
+import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

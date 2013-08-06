@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.loader;
+package org.eclipse.osee.orcs.db.internal.sql;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
 

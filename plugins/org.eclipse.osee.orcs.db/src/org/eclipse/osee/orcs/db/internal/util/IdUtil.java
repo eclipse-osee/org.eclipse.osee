@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.data.CreateBranchData;
-import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
+import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
 /**
  * @author John Misinco

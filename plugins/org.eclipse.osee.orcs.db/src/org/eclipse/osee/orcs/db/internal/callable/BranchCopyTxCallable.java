@@ -36,7 +36,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
-import org.eclipse.osee.orcs.db.internal.loader.RelationalConstants;
+import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.util.IdUtil;
 
 /**
