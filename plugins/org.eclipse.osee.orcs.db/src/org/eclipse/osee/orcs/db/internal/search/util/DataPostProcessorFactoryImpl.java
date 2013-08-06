@@ -14,7 +14,8 @@ import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessorFactory;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
 
@@ -35,11 +36,11 @@ public class DataPostProcessorFactoryImpl implements DataPostProcessorFactory<Cr
    }
 
    @Override
-   public DataPostProcessor<?> createPostProcessor(CriteriaAttributeKeywords criteria, QueryOptions options) {
+   public DataPostProcessor<?> createPostProcessor(CriteriaAttributeKeywords criteria, Options options) {
       DataPostProcessor<?> processor;
       //      if (criteria.getStringOp().isTokenized()) {
       if (criteria.getValues().size() > 1) {
-         processor = new SimpleOrPostProcessor(logger, criteria, options.getIncludeDeleted());
+         processor = new SimpleOrPostProcessor(logger, criteria, OptionsUtil.getIncludeDeleted(options));
       } else {
          processor = new TokenQueryPostProcessor(logger, executorAdmin, taggingEngine, criteria, options);
       }

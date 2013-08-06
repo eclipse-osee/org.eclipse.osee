@@ -13,6 +13,6 @@ package org.eclipse.osee.orcs.core.ds;
 /**
  * @author Roberto E. Escobar
  */
-public interface LoadContext extends DataStoreContext<LoadOptions, DataPostProcessor<?>> {
+public interface LoadContext extends DataStoreContext<DataPostProcessor<?>> {
    //
 }

@@ -14,12 +14,11 @@ import java.util.List;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.DataStoreContext;
-import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface SqlContext<T extends Options, P extends DataPostProcessor<?>> extends DataStoreContext<T, P> {
+public interface SqlContext<P extends DataPostProcessor<?>> extends DataStoreContext<P> {
 
    String getSql();
 

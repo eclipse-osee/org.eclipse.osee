@@ -33,8 +33,9 @@ import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
+import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.HasLocalId;
@@ -63,7 +64,7 @@ public class QueryBuilderImpl implements QueryBuilder {
       return queryData;
    }
 
-   private QueryOptions getOptions() {
+   private Options getOptions() {
       return queryData.getOptions();
    }
 
@@ -75,13 +76,13 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder includeCache(boolean enabled) {
-      getOptions().setIncludeCache(enabled);
+      OptionsUtil.setIncludeCache(getOptions(), enabled);
       return this;
    }
 
    @Override
    public boolean isCacheIncluded() {
-      return getOptions().isCacheIncluded();
+      return OptionsUtil.isCacheIncluded(getOptions());
    }
 
    @Override
@@ -92,35 +93,35 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder includeDeleted(boolean enabled) {
-      getOptions().setIncludeDeleted(enabled);
+      OptionsUtil.setIncludeDeleted(getOptions(), enabled);
       return this;
    }
 
    @Override
    public boolean areDeletedIncluded() {
-      return getOptions().areDeletedIncluded();
+      return OptionsUtil.areDeletedIncluded(getOptions());
    }
 
    @Override
    public QueryBuilder fromTransaction(int transactionId) {
-      getOptions().setFromTransaction(transactionId);
+      OptionsUtil.setFromTransaction(getOptions(), transactionId);
       return this;
    }
 
    @Override
    public int getFromTransaction() {
-      return getOptions().getFromTransaction();
+      return OptionsUtil.getFromTransaction(getOptions());
    }
 
    @Override
    public QueryBuilder headTransaction() {
-      getOptions().setHeadTransaction();
+      OptionsUtil.setHeadTransaction(getOptions());
       return this;
    }
 
    @Override
    public boolean isHeadTransaction() {
-      return getOptions().isHeadTransaction();
+      return OptionsUtil.isHeadTransaction(getOptions());
    }
 
    @Override
@@ -151,7 +152,7 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder andLocalIds(Collection<Integer> artifactIds) throws OseeCoreException {
-      Criteria<QueryOptions> criteria = criteriaFactory.createArtifactIdCriteria(artifactIds);
+      Criteria criteria = criteriaFactory.createArtifactIdCriteria(artifactIds);
       return addAndCheck(getQueryData(), criteria);
    }
 
@@ -174,12 +175,12 @@ public class QueryBuilderImpl implements QueryBuilder {
       }
       Conditions.checkExpressionFailOnTrue(!invalids.isEmpty(), "Invalid guids or hrids detected - %s", invalids);
       if (!guids.isEmpty()) {
-         Criteria<QueryOptions> guidCriteria = criteriaFactory.createArtifactGuidCriteria(guids);
+         Criteria guidCriteria = criteriaFactory.createArtifactGuidCriteria(guids);
          addAndCheck(getQueryData(), guidCriteria);
       }
 
       if (!hrids.isEmpty()) {
-         Criteria<QueryOptions> hridCriteria = criteriaFactory.createArtifactHridCriteria(hrids);
+         Criteria hridCriteria = criteriaFactory.createArtifactHridCriteria(hrids);
          addAndCheck(getQueryData(), hridCriteria);
       }
       return this;
@@ -192,7 +193,7 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder andIsOfType(Collection<? extends IArtifactType> artifactType) throws OseeCoreException {
-      Criteria<QueryOptions> criteria = criteriaFactory.createArtifactTypeCriteriaWithInheritance(artifactType);
+      Criteria criteria = criteriaFactory.createArtifactTypeCriteriaWithInheritance(artifactType);
       return addAndCheck(getQueryData(), criteria);
    }
 
@@ -203,7 +204,7 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder andTypeEquals(Collection<? extends IArtifactType> artifactType) throws OseeCoreException {
-      Criteria<QueryOptions> criteria = criteriaFactory.createArtifactTypeCriteria(artifactType);
+      Criteria criteria = criteriaFactory.createArtifactTypeCriteria(artifactType);
       return addAndCheck(getQueryData(), criteria);
    }
 
@@ -214,32 +215,32 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder andExists(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
-      Criteria<QueryOptions> criteria = criteriaFactory.createExistsCriteria(attributeTypes);
+      Criteria criteria = criteriaFactory.createExistsCriteria(attributeTypes);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
    public QueryBuilder andExists(IRelationType relationType) throws OseeCoreException {
-      Criteria<QueryOptions> criteria = criteriaFactory.createExistsCriteria(relationType);
+      Criteria criteria = criteriaFactory.createExistsCriteria(relationType);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
    public QueryBuilder and(IAttributeType attributeType, Operator operator, String value) throws OseeCoreException {
-      Criteria<QueryOptions> criteria =
+      Criteria criteria =
          criteriaFactory.createAttributeCriteria(attributeType, operator, Collections.singleton(value));
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
    public QueryBuilder and(IAttributeType attributeType, Operator operator, Collection<String> values) throws OseeCoreException {
-      Criteria<QueryOptions> criteria = criteriaFactory.createAttributeCriteria(attributeType, operator, values);
+      Criteria criteria = criteriaFactory.createAttributeCriteria(attributeType, operator, values);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
    public QueryBuilder and(IAttributeType attributeType, String value, QueryOption... options) throws OseeCoreException {
-      Criteria<QueryOptions> criteria =
+      Criteria criteria =
          criteriaFactory.createAttributeCriteria(Collections.singleton(attributeType), Collections.singleton(value),
             options);
       return addAndCheck(getQueryData(), criteria);
@@ -247,12 +248,12 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder and(Collection<? extends IAttributeType> attributeTypes, String value, QueryOption... options) throws OseeCoreException {
-      Criteria<QueryOptions> criteria =
+      Criteria criteria =
          criteriaFactory.createAttributeCriteria(attributeTypes, Collections.singleton(value), options);
       return addAndCheck(getQueryData(), criteria);
    }
 
-   private QueryBuilder addAndCheck(QueryData queryData, Criteria<QueryOptions> criteria) throws OseeCoreException {
+   private QueryBuilder addAndCheck(QueryData queryData, Criteria criteria) throws OseeCoreException {
       criteria.checkValid(getOptions());
       queryData.addCriteria(criteria);
       return this;
@@ -302,7 +303,7 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder andRelatedToLocalIds(IRelationTypeSide relationTypeSide, Collection<Integer> artifactIds) throws OseeCoreException {
-      Criteria<QueryOptions> criteria = criteriaFactory.createRelatedToCriteria(relationTypeSide, artifactIds);
+      Criteria criteria = criteriaFactory.createRelatedToCriteria(relationTypeSide, artifactIds);
       return addAndCheck(getQueryData(), criteria);
    }
 

@@ -16,12 +16,11 @@ import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.jdk.core.type.HasPriority;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class SqlHandler<T extends Criteria<?>, O extends Options> implements HasPriority {
+public abstract class SqlHandler<T extends Criteria> implements HasPriority {
 
    private Log logger;
    private IdentityService idService;
@@ -51,17 +50,17 @@ public abstract class SqlHandler<T extends Criteria<?>, O extends Options> imple
 
    public abstract void setData(T criteria);
 
-   public abstract void addTables(AbstractSqlWriter<O> writer) throws OseeCoreException;
+   public abstract void addTables(AbstractSqlWriter writer) throws OseeCoreException;
 
-   public abstract boolean addPredicates(AbstractSqlWriter<O> writer) throws OseeCoreException;
+   public abstract boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException;
 
    @SuppressWarnings("unused")
-   public void addWithTables(AbstractSqlWriter<O> writer) throws OseeCoreException {
+   public void addWithTables(AbstractSqlWriter writer) throws OseeCoreException {
       // Do Nothing
    }
 
    @SuppressWarnings("unused")
-   public void addSelect(AbstractSqlWriter<O> sqlWriter) throws OseeCoreException {
+   public void addSelect(AbstractSqlWriter sqlWriter) throws OseeCoreException {
       // Do Nothing
    }
 

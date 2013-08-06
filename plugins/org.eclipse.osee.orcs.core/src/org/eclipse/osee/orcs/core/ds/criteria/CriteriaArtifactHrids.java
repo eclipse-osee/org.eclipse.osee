@@ -17,12 +17,12 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaArtifactHrids extends Criteria<QueryOptions> {
+public class CriteriaArtifactHrids extends Criteria {
    private final Collection<String> hrids;
 
    public CriteriaArtifactHrids(Collection<String> hrids) {
@@ -31,7 +31,7 @@ public class CriteriaArtifactHrids extends Criteria<QueryOptions> {
    }
 
    @Override
-   public void checkValid(QueryOptions options) throws OseeCoreException {
+   public void checkValid(Options options) throws OseeCoreException {
       super.checkValid(options);
       Conditions.checkNotNullOrEmpty(hrids, "artifact hrids");
       List<String> invalids = new ArrayList<String>();

@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessorFactory;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.db.internal.search.tagger.HasTagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
@@ -36,7 +35,7 @@ import org.eclipse.osee.orcs.db.internal.sql.WithClause.WithAlias;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywords, QueryOptions> implements HasTagProcessor, HasDataPostProcessorFactory<CriteriaAttributeKeywords> {
+public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywords> implements HasTagProcessor, HasDataPostProcessorFactory<CriteriaAttributeKeywords> {
 
    private CriteriaAttributeKeywords criteria;
 
@@ -73,7 +72,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    }
 
    @Override
-   public void addWithTables(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public void addWithTables(AbstractSqlWriter writer) throws OseeCoreException {
       List<String> values = new ArrayList<String>(criteria.getValues());
       Collection<? extends IAttributeType> types = criteria.getTypes();
 
@@ -145,7 +144,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    }
 
    @Override
-   public void addTables(AbstractSqlWriter<QueryOptions> writer) {
+   public void addTables(AbstractSqlWriter writer) {
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       List<String> txs = writer.getAliases(TableEnum.TXS_TABLE);
 
@@ -158,7 +157,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
       DataPostProcessor<?> processor = getDataPostProcessorFactory().createPostProcessor(criteria, writer.getOptions());
       writer.addPostProcessor(processor);
 

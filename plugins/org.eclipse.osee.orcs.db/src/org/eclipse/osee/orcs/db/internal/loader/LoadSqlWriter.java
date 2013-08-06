@@ -16,7 +16,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
@@ -26,27 +27,27 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 /**
  * @author Roberto E. Escobar
  */
-public class LoadSqlWriter extends AbstractSqlWriter<LoadOptions> {
+public class LoadSqlWriter extends AbstractSqlWriter {
 
-   public LoadSqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext<LoadOptions, DataPostProcessor<?>> context) {
+   public LoadSqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext<DataPostProcessor<?>> context) {
       super(logger, dbService, sqlProvider, context);
    }
 
    @Override
-   public void writeSelect(List<SqlHandler<?, LoadOptions>> handlers) throws OseeCoreException {
+   public void writeSelect(List<SqlHandler<?>> handlers) throws OseeCoreException {
       String txAlias = getAliasManager().getFirstAlias(TableEnum.TXS_TABLE);
       String artJoinAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_JOIN_TABLE);
 
       write("SELECT%s ", getSqlHint());
       write("%s.gamma_id, %s.mod_type, %s.branch_id, %s.transaction_id", txAlias, txAlias, txAlias, txAlias);
-      if (getOptions().isHistorical()) {
+      if (OptionsUtil.isHistorical(getOptions())) {
          write(", %s.transaction_id as stripe_transaction_id", txAlias);
       }
       write(",\n %s.art_id", artJoinAlias);
       int size = handlers.size();
       for (int index = 0; index < size; index++) {
          write(", ");
-         SqlHandler<?, LoadOptions> handler = handlers.get(index);
+         SqlHandler<?> handler = handlers.get(index);
          handler.addSelect(this);
       }
    }
@@ -80,12 +81,12 @@ public class LoadSqlWriter extends AbstractSqlWriter<LoadOptions> {
    }
 
    private void writeTxFilter(String txsAlias, String artJoinAlias, StringBuilder sb) {
-      if (getOptions().isHistorical()) {
+      if (OptionsUtil.isHistorical(getOptions())) {
          sb.append(txsAlias);
          sb.append(".transaction_id <= ");
          sb.append(artJoinAlias);
          sb.append(".transaction_id");
-         if (!getOptions().areDeletedIncluded()) {
+         if (!OptionsUtil.areDeletedIncluded(getOptions())) {
             sb.append(" AND ");
             sb.append(txsAlias);
             sb.append(".tx_current");
@@ -98,7 +99,7 @@ public class LoadSqlWriter extends AbstractSqlWriter<LoadOptions> {
       } else {
          sb.append(txsAlias);
          sb.append(".tx_current");
-         if (getOptions().areDeletedIncluded()) {
+         if (OptionsUtil.areDeletedIncluded(getOptions())) {
             sb.append(" IN (");
             sb.append(String.valueOf(TxChange.CURRENT.getValue()));
             sb.append(", ");
@@ -114,7 +115,7 @@ public class LoadSqlWriter extends AbstractSqlWriter<LoadOptions> {
    }
 
    @Override
-   public LoadOptions getOptions() {
+   public Options getOptions() {
       return getContext().getOptions();
    }
 }

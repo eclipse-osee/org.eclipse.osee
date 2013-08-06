@@ -15,7 +15,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.db.internal.loader.data.AttributeObjectFactory;
 
@@ -29,13 +30,14 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
    }
 
    @Override
-   protected AttributeData createData(Object conditions, AttributeObjectFactory factory, IOseeStatement chStmt, LoadOptions options) throws OseeCoreException {
+   protected AttributeData createData(Object conditions, AttributeObjectFactory factory, IOseeStatement chStmt, Options options) throws OseeCoreException {
       int branchId = chStmt.getInt("branch_id");
       int txId = chStmt.getInt("transaction_id");
       long gamma = chStmt.getInt("gamma_id");
 
-      VersionData version = factory.createVersion(branchId, txId, gamma, options.isHistorical());
-      if (options.isHistorical()) {
+      boolean historical = OptionsUtil.isHistorical(options);
+      VersionData version = factory.createVersion(branchId, txId, gamma, historical);
+      if (historical) {
          version.setStripeId(chStmt.getInt("stripe_transaction_id"));
       }
 

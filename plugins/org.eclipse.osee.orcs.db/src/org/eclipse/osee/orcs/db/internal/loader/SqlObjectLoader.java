@@ -24,7 +24,7 @@ import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
@@ -84,11 +84,10 @@ public class SqlObjectLoader {
       return level != LoadLevel.SHALLOW && level != LoadLevel.ATTRIBUTE;
    }
 
-   @SuppressWarnings("unchecked")
-   private void writeSql(Criteria<LoadOptions> criteria, LoadSqlContext context) throws OseeCoreException {
+   private void writeSql(Criteria criteria, LoadSqlContext context) throws OseeCoreException {
       context.clear();
-      SqlHandler<?, LoadOptions> handler = handlerFactory.createHandler(criteria);
-      AbstractSqlWriter<LoadOptions> writer = new LoadSqlWriter(logger, dbService, sqlProvider, context);
+      SqlHandler<?> handler = handlerFactory.createHandler(criteria);
+      AbstractSqlWriter writer = new LoadSqlWriter(logger, dbService, sqlProvider, context);
       writer.build(handler);
    }
 
@@ -119,14 +118,14 @@ public class SqlObjectLoader {
       loadRelations(builder, criteria.getRelationCriteria(), loadContext, fetchSize);
    }
 
-   protected void loadArtifacts(LoadDataHandler builder, Criteria<LoadOptions> criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
+   protected void loadArtifacts(LoadDataHandler builder, Criteria criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
       ArtifactDataHandler artHandler = builder.getArtifactDataHandler();
       writeSql(criteria, loadContext);
       load(artifactProcessor, artHandler, loadContext, fetchSize);
    }
 
-   protected void loadAttributes(LoadDataHandler builder, Criteria<LoadOptions> criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
-      LoadLevel loadLevel = loadContext.getOptions().getLoadLevel();
+   protected void loadAttributes(LoadDataHandler builder, Criteria criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
+      LoadLevel loadLevel = OptionsUtil.getLoadLevel(loadContext.getOptions());
       if (isAttributeLoadingAllowed(loadLevel)) {
          AttributeDataHandler attrHandler = builder.getAttributeDataHandler();
          writeSql(criteria, loadContext);
@@ -134,15 +133,13 @@ public class SqlObjectLoader {
       }
    }
 
-   protected void loadRelations(LoadDataHandler builder, Criteria<LoadOptions> criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
-      //      if (!loadContext.getOptions().isHistorical()) { // Don't load historical relations
-      LoadLevel loadLevel = loadContext.getOptions().getLoadLevel();
+   protected void loadRelations(LoadDataHandler builder, Criteria criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
+      LoadLevel loadLevel = OptionsUtil.getLoadLevel(loadContext.getOptions());
       if (isRelationLoadingAllowed(loadLevel)) {
          RelationDataHandler relHandler = builder.getRelationDataHandler();
          writeSql(criteria, loadContext);
          load(relationProcessor, relHandler, loadContext, fetchSize);
       }
-      //      }
    }
 
    protected <D extends OrcsData, F extends VersionObjectFactory, H extends OrcsDataHandler<D>> void load(LoadProcessor<D, F, H> processor, H handler, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {

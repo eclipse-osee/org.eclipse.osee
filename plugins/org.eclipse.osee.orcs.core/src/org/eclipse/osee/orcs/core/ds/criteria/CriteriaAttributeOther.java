@@ -17,13 +17,13 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaAttributeOther extends Criteria<QueryOptions> {
+public class CriteriaAttributeOther extends Criteria {
 
    private final IAttributeType attributeType;
    private final Collection<String> values;
@@ -49,7 +49,7 @@ public class CriteriaAttributeOther extends Criteria<QueryOptions> {
    }
 
    @Override
-   public void checkValid(QueryOptions options) throws OseeCoreException {
+   public void checkValid(Options options) throws OseeCoreException {
       super.checkValid(options);
       Conditions.checkNotNull(getAttributeType(), "attributeType");
       Conditions.checkExpressionFailOnTrue(getAttributeType().equals(QueryBuilder.ANY_ATTRIBUTE_TYPE),

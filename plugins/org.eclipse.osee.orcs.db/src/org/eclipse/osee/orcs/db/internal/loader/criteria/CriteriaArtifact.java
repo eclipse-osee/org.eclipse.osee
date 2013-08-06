@@ -11,12 +11,11 @@
 package org.eclipse.osee.orcs.db.internal.loader.criteria;
 
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaArtifact extends Criteria<LoadOptions> {
+public class CriteriaArtifact extends Criteria {
 
    private int id;
 

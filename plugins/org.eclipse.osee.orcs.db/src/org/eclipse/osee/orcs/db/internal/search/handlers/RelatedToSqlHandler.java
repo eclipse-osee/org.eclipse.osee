@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -24,7 +23,7 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 /**
  * @author Roberto E. Escobar
  */
-public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo, QueryOptions> {
+public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
 
    private CriteriaRelatedTo criteria;
 
@@ -38,7 +37,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo, QueryOpti
    }
 
    @Override
-   public void addTables(AbstractSqlWriter<QueryOptions> writer) {
+   public void addTables(AbstractSqlWriter writer) {
       if (criteria.getIds().size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
@@ -52,7 +51,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo, QueryOpti
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
       IRelationTypeSide typeSide = criteria.getType();
       writer.write(relAlias);
       writer.write(".rel_link_type_id = ?");

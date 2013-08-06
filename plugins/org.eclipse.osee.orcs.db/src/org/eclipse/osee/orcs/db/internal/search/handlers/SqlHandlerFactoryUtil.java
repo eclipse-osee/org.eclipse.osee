@@ -41,11 +41,11 @@ public final class SqlHandlerFactoryUtil {
    }
 
    public static SqlHandlerFactory createArtifactSqlHandlerFactory(Log logger, IdentityService identityService, TagProcessor tagProcessor, DataPostProcessorFactory<CriteriaAttributeKeywords> postProcessorFactory) {
-      Map<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>> handleMap =
-         new HashMap<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>>();
+      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
+         new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
 
-      Map<Class<? extends SqlHandler<?, ?>>, DataPostProcessorFactory<?>> factoryMap =
-         new HashMap<Class<? extends SqlHandler<?, ?>>, DataPostProcessorFactory<?>>();
+      Map<Class<? extends SqlHandler<?>>, DataPostProcessorFactory<?>> factoryMap =
+         new HashMap<Class<? extends SqlHandler<?>>, DataPostProcessorFactory<?>>();
 
       handleMap.put(CriteriaArtifactGuids.class, ArtifactGuidSqlHandler.class);
       handleMap.put(CriteriaArtifactHrids.class, ArtifactHridsSqlHandler.class);

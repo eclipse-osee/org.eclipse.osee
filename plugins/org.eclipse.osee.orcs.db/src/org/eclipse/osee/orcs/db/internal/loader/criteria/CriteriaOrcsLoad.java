@@ -11,12 +11,11 @@
 package org.eclipse.osee.orcs.db.internal.loader.criteria;
 
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaOrcsLoad extends Criteria<LoadOptions> {
+public class CriteriaOrcsLoad extends Criteria {
 
    private final CriteriaArtifact artifactCriteria;
    private final CriteriaAttribute attributeCriteria;
@@ -35,15 +34,15 @@ public class CriteriaOrcsLoad extends Criteria<LoadOptions> {
       relationCriteria.setQueryId(id);
    }
 
-   public Criteria<LoadOptions> getArtifactCriteria() {
+   public Criteria getArtifactCriteria() {
       return artifactCriteria;
    }
 
-   public Criteria<LoadOptions> getAttributeCriteria() {
+   public Criteria getAttributeCriteria() {
       return attributeCriteria;
    }
 
-   public Criteria<LoadOptions> getRelationCriteria() {
+   public Criteria getRelationCriteria() {
       return relationCriteria;
    }
 

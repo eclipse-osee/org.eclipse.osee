@@ -19,8 +19,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
+import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -41,15 +42,15 @@ public class QueryFactoryImpl implements QueryFactory {
       this.queryFctry = queryFctry;
    }
 
-   @SuppressWarnings("unused")
-   private QueryBuilder createBuilder(IOseeBranch branch) throws OseeCoreException {
-      QueryOptions options = new QueryOptions();
+   private QueryBuilder createBuilder(IOseeBranch branch) {
+      Options options = OptionsUtil.createOptions();
       CriteriaSet criteriaSet = new CriteriaSet(branch);
       QueryData queryData = new QueryData(criteriaSet, options);
       QueryBuilder builder = new QueryBuilderImpl(queryFctry, criteriaFctry, context, queryData);
       return builder;
    }
 
+   @SuppressWarnings("unused")
    @Override
    public QueryBuilder fromBranch(IOseeBranch branch) throws OseeCoreException {
       return createBuilder(branch);

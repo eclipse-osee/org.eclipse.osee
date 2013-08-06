@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader.processor;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.db.internal.loader.data.VersionObjectFactory;
@@ -28,7 +28,7 @@ public abstract class LoadProcessor<D extends OrcsData, F extends VersionObjectF
       this.factory = factory;
    }
 
-   public final int processResultSet(H handler, IOseeStatement chStmt, LoadOptions options) throws OseeCoreException {
+   public final int processResultSet(H handler, IOseeStatement chStmt, Options options) throws OseeCoreException {
       int rowCount = 0;
       Object conditions = createPreConditions();
       while (chStmt.next()) {
@@ -45,6 +45,6 @@ public abstract class LoadProcessor<D extends OrcsData, F extends VersionObjectF
       return null;
    }
 
-   protected abstract D createData(Object conditions, F factory, IOseeStatement chStmt, LoadOptions options) throws OseeCoreException;
+   protected abstract D createData(Object conditions, F factory, IOseeStatement chStmt, Options options) throws OseeCoreException;
 
 }

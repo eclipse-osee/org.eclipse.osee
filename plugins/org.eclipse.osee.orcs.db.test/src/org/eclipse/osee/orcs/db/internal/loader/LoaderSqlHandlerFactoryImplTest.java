@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
@@ -62,7 +61,7 @@ public class LoaderSqlHandlerFactoryImplTest {
 
    @Test
    public void testQueryModuleFactory() throws Exception {
-      List<Criteria<?>> criteria = new ArrayList<Criteria<?>>();
+      List<Criteria> criteria = new ArrayList<Criteria>();
       criteria.add(new CriteriaArtifact());
       criteria.add(new CriteriaAttribute(null, null));
       criteria.add(new CriteriaRelation(null, null));
@@ -70,22 +69,21 @@ public class LoaderSqlHandlerFactoryImplTest {
       Collections.shuffle(criteria);
 
       CriteriaSet criteriaSet = createCriteria(CoreBranches.COMMON, criteria);
-      List<SqlHandler<?, LoadOptions>> handlers = factory.createHandlers(criteriaSet);
+      List<SqlHandler<?>> handlers = factory.createHandlers(criteriaSet);
 
       Assert.assertEquals(3, handlers.size());
 
-      Iterator<SqlHandler<?, LoadOptions>> iterator = handlers.iterator();
+      Iterator<SqlHandler<?>> iterator = handlers.iterator();
       assertSqlHandler(iterator.next(), ArtifactSqlHandler.class, SqlHandlerPriority.ARTIFACT_LOADER);
       assertSqlHandler(iterator.next(), AttributeSqlHandler.class, SqlHandlerPriority.ATTRIBUTE_LOADER);
       assertSqlHandler(iterator.next(), RelationSqlHandler.class, SqlHandlerPriority.RELATION_LOADER);
    }
 
-   @SuppressWarnings("rawtypes")
-   private void assertSqlHandler(SqlHandler<?, ?> handler, Class<? extends SqlHandler> clazz, SqlHandlerPriority priority) {
+   private void assertSqlHandler(SqlHandler<?> handler, Class<?> clazz, SqlHandlerPriority priority) {
       assertHandler(handler, clazz, priority, logger, identityService);
    }
 
-   private static void assertHandler(SqlHandler<?, ?> actual, Class<?> type, SqlHandlerPriority priority, Log logger, IdentityService idService) {
+   private static void assertHandler(SqlHandler<?> actual, Class<?> type, SqlHandlerPriority priority, Log logger, IdentityService idService) {
       Assert.assertNotNull(actual);
       Assert.assertEquals(type, actual.getClass());
       Assert.assertEquals(logger, actual.getLogger());
@@ -93,10 +91,9 @@ public class LoaderSqlHandlerFactoryImplTest {
       Assert.assertEquals(priority.ordinal(), actual.getPriority());
    }
 
-   @SuppressWarnings("rawtypes")
    private static CriteriaSet createCriteria(IOseeBranch branch, Collection<? extends Criteria> criteria) {
       CriteriaSet set = new CriteriaSet(branch);
-      for (Criteria<?> crit : criteria) {
+      for (Criteria crit : criteria) {
          set.add(crit);
       }
       return set;

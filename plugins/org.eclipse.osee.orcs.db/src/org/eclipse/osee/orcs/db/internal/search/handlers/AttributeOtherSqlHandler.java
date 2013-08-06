@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -25,7 +24,7 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther, QueryOptions> {
+public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther> {
 
    private CriteriaAttributeOther criteria;
 
@@ -46,7 +45,7 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther,
    }
 
    @Override
-   public void addTables(AbstractSqlWriter<QueryOptions> writer) {
+   public void addTables(AbstractSqlWriter writer) {
       Collection<String> values = criteria.getValues();
       if (values.size() == 1) {
          this.value = values.iterator().next();
@@ -71,7 +70,7 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther,
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
       IAttributeType attributeType = criteria.getAttributeType();
       Operator operator = criteria.getOperator();
 

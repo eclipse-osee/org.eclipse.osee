@@ -13,15 +13,15 @@ package org.eclipse.osee.orcs.db.internal.loader;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
 import org.eclipse.osee.orcs.core.ds.LoadContext;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContextImpl;
 
 /**
  * @author Roberto E. Escobar
  */
-public class LoadSqlContext extends SqlContextImpl<LoadOptions, DataPostProcessor<?>> implements LoadContext {
+public class LoadSqlContext extends SqlContextImpl<DataPostProcessor<?>> implements LoadContext {
 
-   public LoadSqlContext(OrcsSession session, LoadOptions options) {
+   public LoadSqlContext(OrcsSession session, Options options) {
       super(session, options);
    }
 

@@ -15,7 +15,6 @@ import java.util.HashSet;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -24,7 +23,7 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 /**
  * @author Roberto E. Escobar
  */
-public class RelationSqlHandler extends SqlHandler<CriteriaRelation, LoadOptions> {
+public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
    private CriteriaRelation criteria;
    private String jIdAlias;
    private String jTypeIdAlias;
@@ -47,13 +46,13 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation, LoadOptions
    }
 
    @Override
-   public void addSelect(AbstractSqlWriter<LoadOptions> writer) throws OseeCoreException {
+   public void addSelect(AbstractSqlWriter writer) throws OseeCoreException {
       writer.write("%s.rel_link_id, %s.rel_link_type_id, %s.a_art_id, %s.b_art_id, %s.rationale", relationAlias,
          relationAlias, relationAlias, relationAlias, relationAlias);
    }
 
    @Override
-   public void addTables(AbstractSqlWriter<LoadOptions> writer) throws OseeCoreException {
+   public void addTables(AbstractSqlWriter writer) throws OseeCoreException {
       jArtAlias = writer.addTable(TableEnum.ARTIFACT_JOIN_TABLE);
 
       if (criteria.getIds().size() > 1) {
@@ -78,7 +77,7 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation, LoadOptions
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter<LoadOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
       writer.write("(%s.a_art_id = %s.art_id OR %s.b_art_id = %s.art_id)", relationAlias, jArtAlias, relationAlias,
          jArtAlias);
       writer.write(" AND ");

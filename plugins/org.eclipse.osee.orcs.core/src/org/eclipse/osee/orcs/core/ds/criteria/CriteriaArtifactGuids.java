@@ -17,12 +17,12 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaArtifactGuids extends Criteria<QueryOptions> {
+public class CriteriaArtifactGuids extends Criteria {
 
    private final Collection<String> artifactGuids;
 
@@ -32,7 +32,7 @@ public class CriteriaArtifactGuids extends Criteria<QueryOptions> {
    }
 
    @Override
-   public void checkValid(QueryOptions options) throws OseeCoreException {
+   public void checkValid(Options options) throws OseeCoreException {
       super.checkValid(options);
       Conditions.checkNotNullOrEmpty(artifactGuids, "artifact guids");
       List<String> invalids = new ArrayList<String>();

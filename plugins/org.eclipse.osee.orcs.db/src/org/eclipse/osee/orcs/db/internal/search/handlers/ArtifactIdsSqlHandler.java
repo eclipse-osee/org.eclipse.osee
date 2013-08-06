@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -22,7 +21,7 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds, QueryOptions> {
+public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
 
    private CriteriaArtifactIds criteria;
 
@@ -36,7 +35,7 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds, Query
    }
 
    @Override
-   public void addTables(AbstractSqlWriter<QueryOptions> writer) {
+   public void addTables(AbstractSqlWriter writer) {
       if (criteria.getIds().size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
@@ -45,7 +44,7 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds, Query
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
       Collection<Integer> ids = criteria.getIds();
       if (ids.size() > 1) {
          AbstractJoinQuery joinQuery = writer.writeIdJoin(ids);

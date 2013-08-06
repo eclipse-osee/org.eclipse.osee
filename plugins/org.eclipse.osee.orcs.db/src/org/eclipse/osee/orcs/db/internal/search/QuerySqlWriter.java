@@ -16,19 +16,19 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 
-public class QuerySqlWriter extends AbstractSqlWriter<QueryOptions> {
+public class QuerySqlWriter extends AbstractSqlWriter {
 
    private final int branchId;
    private final QueryType queryType;
 
-   public QuerySqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext<QueryOptions, ? extends DataPostProcessor<?>> context, QueryType queryType, int branchId) {
+   public QuerySqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext<? extends DataPostProcessor<?>> context, QueryType queryType, int branchId) {
       super(logger, dbService, sqlProvider, context);
       this.queryType = queryType;
       this.branchId = branchId;
@@ -39,7 +39,7 @@ public class QuerySqlWriter extends AbstractSqlWriter<QueryOptions> {
       String artAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_TABLE);
 
       write("SELECT%s ", getSqlHint());
-      if (getOptions().isHistorical()) {
+      if (OptionsUtil.isHistorical(getOptions())) {
          write("max(%s.transaction_id) as transaction_id, %s.art_id, %s.branch_id", txAlias, artAlias, txAlias);
       } else {
          write("%s.art_id, %s.branch_id", artAlias, txAlias);
@@ -47,9 +47,9 @@ public class QuerySqlWriter extends AbstractSqlWriter<QueryOptions> {
    }
 
    @Override
-   public void writeSelect(List<SqlHandler<?, QueryOptions>> handlers) throws OseeCoreException {
+   public void writeSelect(List<SqlHandler<?>> handlers) throws OseeCoreException {
       if (queryType == QueryType.COUNT_ARTIFACTS) {
-         if (getOptions().isHistorical()) {
+         if (OptionsUtil.isHistorical(getOptions())) {
             write("SELECT count(xTable.art_id) FROM (\n ");
             writeSelectHelper();
          } else {
@@ -63,7 +63,7 @@ public class QuerySqlWriter extends AbstractSqlWriter<QueryOptions> {
 
    @Override
    public void writeGroupAndOrder() throws OseeCoreException {
-      if (getOptions().isHistorical()) {
+      if (OptionsUtil.isHistorical(getOptions())) {
          String txAlias = getAliasManager().getFirstAlias(TableEnum.TXS_TABLE);
          String artAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_TABLE);
 
@@ -75,7 +75,7 @@ public class QuerySqlWriter extends AbstractSqlWriter<QueryOptions> {
 
          write("\n ORDER BY %s.art_id, %s.branch_id", artAlias, txAlias);
       } else {
-         if (getOptions().isHistorical()) {
+         if (OptionsUtil.isHistorical(getOptions())) {
             write("\n) xTable");
          }
       }
@@ -95,11 +95,11 @@ public class QuerySqlWriter extends AbstractSqlWriter<QueryOptions> {
    }
 
    private void writeTxFilter(String txsAlias, StringBuilder sb) {
-      if (getOptions().isHistorical()) {
+      if (OptionsUtil.isHistorical(getOptions())) {
          sb.append(txsAlias);
          sb.append(".transaction_id <= ?");
-         addParameter(getOptions().getFromTransaction());
-         if (!getOptions().areDeletedIncluded()) {
+         addParameter(OptionsUtil.getFromTransaction(getOptions()));
+         if (!OptionsUtil.areDeletedIncluded(getOptions())) {
             sb.append(AND_WITH_NEWLINES);
             sb.append(txsAlias);
             sb.append(".tx_current");
@@ -112,7 +112,7 @@ public class QuerySqlWriter extends AbstractSqlWriter<QueryOptions> {
       } else {
          sb.append(txsAlias);
          sb.append(".tx_current");
-         if (getOptions().areDeletedIncluded()) {
+         if (OptionsUtil.areDeletedIncluded(getOptions())) {
             sb.append(" IN (");
             sb.append(String.valueOf(TxChange.CURRENT.getValue()));
             sb.append(", ");

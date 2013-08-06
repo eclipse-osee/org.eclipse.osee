@@ -13,7 +13,8 @@ package org.eclipse.osee.orcs.db.internal.loader.processor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
 import org.eclipse.osee.orcs.core.ds.VersionData;
@@ -29,13 +30,14 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
    }
 
    @Override
-   protected RelationData createData(Object conditions, RelationObjectFactory factory, IOseeStatement chStmt, LoadOptions options) throws OseeCoreException {
+   protected RelationData createData(Object conditions, RelationObjectFactory factory, IOseeStatement chStmt, Options options) throws OseeCoreException {
       int branchId = chStmt.getInt("branch_id");
       int txId = chStmt.getInt("transaction_id");
       long gamma = chStmt.getInt("gamma_id");
 
-      VersionData version = factory.createVersion(branchId, txId, gamma, options.isHistorical());
-      if (options.isHistorical()) {
+      boolean historical = OptionsUtil.isHistorical(options);
+      VersionData version = factory.createVersion(branchId, txId, gamma, historical);
+      if (historical) {
          version.setStripeId(chStmt.getInt("stripe_transaction_id"));
       }
 

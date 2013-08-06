@@ -48,9 +48,8 @@ public class SearchMatchesCallable extends AbstractArtifactSearchCallable<Result
       checkForCancelled();
 
       ArtifactLoader loader = objectLoader.fromQueryContext(session, queryContext);
+      loader.setOptions(queryData.getOptions());
       loader.setLoadLevel(loadLevel);
-      loader.includeDeleted(queryData.getOptions().areDeletedIncluded());
-      loader.fromTransaction(queryData.getOptions().getFromTransaction());
 
       List<ArtifactReadable> artifacts = loader.load(this);
 

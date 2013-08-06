@@ -19,12 +19,14 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.db.internal.loader.LoadSqlContext;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
+import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -39,7 +41,7 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
    }
 
    @Override
-   public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, LoadOptions options) throws OseeCoreException {
+   public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) throws OseeCoreException {
       int fetchSize = computeFetchSize(queryContext);
 
       ArtifactJoinQuery join = createArtifactIdJoin(getDatabaseService(), cancellation, fetchSize);
@@ -47,7 +49,7 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
       loadFromJoin(join, cancellation, handler, criteria, loadContext, fetchSize);
    }
 
-   private int computeFetchSize(QuerySqlContext sqlContext) {
+   private int computeFetchSize(SqlContext<?> sqlContext) {
       int fetchSize = RelationalConstants.MIN_FETCH_SIZE;
       for (AbstractJoinQuery join : sqlContext.getJoins()) {
          fetchSize = Math.max(fetchSize, join.size());
@@ -73,7 +75,7 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
                checkCancelled(cancellation);
                Integer artId = chStmt.getInt("art_id");
                Integer branchId = chStmt.getInt("branch_id");
-               if (queryContext.getOptions().isHistorical()) {
+               if (OptionsUtil.isHistorical(queryContext.getOptions())) {
                   transactionId = chStmt.getInt("transaction_id");
                }
                artifactJoin.add(artId, branchId, transactionId);

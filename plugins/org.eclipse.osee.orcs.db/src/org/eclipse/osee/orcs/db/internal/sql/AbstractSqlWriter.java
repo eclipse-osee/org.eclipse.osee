@@ -24,13 +24,14 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessor;
+import org.eclipse.osee.orcs.core.ds.HasOptions;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractSqlWriter<O extends Options> {
+public abstract class AbstractSqlWriter implements HasOptions {
 
    protected static final String AND_WITH_NEWLINES = "\n AND \n";
 
@@ -42,20 +43,20 @@ public abstract class AbstractSqlWriter<O extends Options> {
    private final Log logger;
    private final IOseeDatabaseService dbService;
    private final SqlProvider sqlProvider;
-   private final SqlContext<O, ? extends DataPostProcessor<?>> context;
+   private final SqlContext<? extends DataPostProcessor<?>> context;
 
-   public AbstractSqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext<O, ? extends DataPostProcessor<?>> context) {
+   public AbstractSqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext<? extends DataPostProcessor<?>> context) {
       this.logger = logger;
       this.dbService = dbService;
       this.sqlProvider = sqlProvider;
       this.context = context;
    }
 
-   public void build(SqlHandler<?, O>... handlers) throws OseeCoreException {
+   public void build(SqlHandler<?>... handlers) throws OseeCoreException {
       build(Arrays.asList(handlers));
    }
 
-   public void build(List<SqlHandler<?, O>> handlers) throws OseeCoreException {
+   public void build(List<SqlHandler<?>> handlers) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(handlers, "SqlHandlers");
       output.delete(0, output.length());
 
@@ -102,8 +103,8 @@ public abstract class AbstractSqlWriter<O extends Options> {
       return alias;
    }
 
-   protected void computeWithClause(List<SqlHandler<?, O>> handlers) throws OseeCoreException {
-      for (SqlHandler<?, O> handler : handlers) {
+   protected void computeWithClause(List<SqlHandler<?>> handlers) throws OseeCoreException {
+      for (SqlHandler<?> handler : handlers) {
          handler.addWithTables(this);
       }
    }
@@ -116,11 +117,11 @@ public abstract class AbstractSqlWriter<O extends Options> {
       return aliasManager;
    }
 
-   public SqlContext<O, ? extends DataPostProcessor<?>> getContext() {
+   public SqlContext<? extends DataPostProcessor<?>> getContext() {
       return context;
    }
 
-   protected abstract void writeSelect(List<SqlHandler<?, O>> handlers) throws OseeCoreException;
+   protected abstract void writeSelect(List<SqlHandler<?>> handlers) throws OseeCoreException;
 
    public abstract String getTxBranchFilter(String txsAlias) throws OseeCoreException;
 
@@ -136,16 +137,16 @@ public abstract class AbstractSqlWriter<O extends Options> {
       }
    }
 
-   protected void computeTables(List<SqlHandler<?, O>> handlers) throws OseeCoreException {
-      for (SqlHandler<?, O> handler : handlers) {
+   protected void computeTables(List<SqlHandler<?>> handlers) throws OseeCoreException {
+      for (SqlHandler<?> handler : handlers) {
          handler.addTables(this);
       }
    }
 
-   protected void writePredicates(List<SqlHandler<?, O>> handlers) throws OseeCoreException {
+   protected void writePredicates(List<SqlHandler<?>> handlers) throws OseeCoreException {
       int size = handlers.size();
       for (int index = 0; index < size; index++) {
-         SqlHandler<?, O> handler = handlers.get(index);
+         SqlHandler<?> handler = handlers.get(index);
          boolean modified = handler.addPredicates(this);
          if (modified && index + 1 < size) {
             writeAndLn();
@@ -215,7 +216,8 @@ public abstract class AbstractSqlWriter<O extends Options> {
       return joinQuery;
    }
 
-   public O getOptions() {
+   @Override
+   public Options getOptions() {
       return getContext().getOptions();
    }
 

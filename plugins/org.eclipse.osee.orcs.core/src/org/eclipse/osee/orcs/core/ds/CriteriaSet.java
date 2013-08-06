@@ -18,7 +18,6 @@ import com.google.common.collect.HashMultimap;
 /**
  * @author Roberto E. Escobar
  */
-@SuppressWarnings("rawtypes")
 public class CriteriaSet implements Cloneable, Iterable<Criteria> {
 
    private final HashMultimap<Class<? extends Criteria>, Criteria> criterias = HashMultimap.create();

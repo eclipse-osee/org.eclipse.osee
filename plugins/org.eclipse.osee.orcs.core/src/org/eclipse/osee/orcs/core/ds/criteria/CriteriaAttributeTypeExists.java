@@ -15,12 +15,12 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaAttributeTypeExists extends Criteria<QueryOptions> {
+public class CriteriaAttributeTypeExists extends Criteria {
 
    private final Collection<? extends IAttributeType> attributeTypes;
 
@@ -34,7 +34,7 @@ public class CriteriaAttributeTypeExists extends Criteria<QueryOptions> {
    }
 
    @Override
-   public void checkValid(QueryOptions options) throws OseeCoreException {
+   public void checkValid(Options options) throws OseeCoreException {
       super.checkValid(options);
       Conditions.checkNotNullOrEmpty(getTypes(), "attribute types");
    }

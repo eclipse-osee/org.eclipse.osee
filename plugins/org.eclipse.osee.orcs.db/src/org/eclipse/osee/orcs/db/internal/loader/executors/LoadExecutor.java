@@ -18,7 +18,8 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.db.internal.loader.LoadSqlContext;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
@@ -40,11 +41,11 @@ public class LoadExecutor extends AbstractLoadExecutor {
    }
 
    @Override
-   public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, LoadOptions options) throws OseeCoreException {
+   public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) throws OseeCoreException {
       checkCancelled(cancellation);
 
       ArtifactJoinQuery join = JoinUtility.createArtifactJoinQuery(getDatabaseService());
-      Integer transactionId = options.getFromTransaction();
+      Integer transactionId = OptionsUtil.getFromTransaction(options);
       for (Integer artId : artifactIds) {
          join.add(artId, branchId, transactionId);
       }

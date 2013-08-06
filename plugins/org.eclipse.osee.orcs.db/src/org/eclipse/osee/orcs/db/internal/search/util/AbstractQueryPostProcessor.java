@@ -27,7 +27,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -41,12 +42,12 @@ import org.eclipse.osee.orcs.search.Match;
  */
 public abstract class AbstractQueryPostProcessor extends QueryPostProcessor implements PartitionFactory<ArtifactReadable, Match<ArtifactReadable, AttributeReadable<?>>> {
 
-   private final QueryOptions options;
+   private final Options options;
    private final CriteriaAttributeKeywords criteria;
    private final ExecutorAdmin executorAdmin;
    private List<Future<Collection<Match<ArtifactReadable, AttributeReadable<?>>>>> futures;
 
-   protected AbstractQueryPostProcessor(Log logger, ExecutorAdmin executorAdmin, CriteriaAttributeKeywords criteria, QueryOptions options) {
+   protected AbstractQueryPostProcessor(Log logger, ExecutorAdmin executorAdmin, CriteriaAttributeKeywords criteria, Options options) {
       super(logger);
       this.executorAdmin = executorAdmin;
       this.criteria = criteria;
@@ -61,7 +62,7 @@ public abstract class AbstractQueryPostProcessor extends QueryPostProcessor impl
       return criteria.getValues().iterator().next();
    }
 
-   protected QueryOptions getOptions() {
+   protected Options getOptions() {
       return options;
    }
 
@@ -114,7 +115,7 @@ public abstract class AbstractQueryPostProcessor extends QueryPostProcessor impl
 
          AttributeTypes attributeTypes = getAttributeTypes();
 
-         DeletionFlag includeDeleted = getOptions().getIncludeDeleted();
+         DeletionFlag includeDeleted = OptionsUtil.getIncludeDeleted(options);
          Map<AttributeReadable<?>, List<MatchLocation>> matchedAttributes = null;
          for (ArtifactReadable artifact : artifacts) {
             checkForCancelled();

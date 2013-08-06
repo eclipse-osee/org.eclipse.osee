@@ -46,7 +46,7 @@ public class LocalIdSearchCallable extends AbstractSearchCallable<ResultSet<HasL
    private final DataLoaderFactory dataLoaderFactory;
 
    public LocalIdSearchCallable(Log logger, QueryEngine queryEngine, QueryCollector collector, ArtifactLoaderFactory objectLoader, DataLoaderFactory dataLoaderFactory, OrcsSession session, QueryData queryData, AttributeTypes types) {
-      super(logger, queryEngine, collector, session, null, queryData, types);
+      super(logger, queryEngine, collector, session, LoadLevel.SHALLOW, queryData, types);
       this.dataLoaderFactory = dataLoaderFactory;
       this.objectLoader = objectLoader;
    }
@@ -68,9 +68,8 @@ public class LocalIdSearchCallable extends AbstractSearchCallable<ResultSet<HasL
       List<HasLocalId> results = new ArrayList<HasLocalId>();
       if (requiresAttributeScan) {
          ArtifactLoader loader = objectLoader.fromQueryContext(getSession(), queryContext);
-         loader.setLoadLevel(loadLevel);
-         loader.includeDeleted(queryData.getOptions().areDeletedIncluded());
-         loader.fromTransaction(queryData.getOptions().getFromTransaction());
+         loader.setOptions(queryData.getOptions());
+         loader.setLoadLevel(LoadLevel.ATTRIBUTE);
          checkForCancelled();
 
          List<ArtifactReadable> artifacts = loader.load(this);
@@ -93,9 +92,8 @@ public class LocalIdSearchCallable extends AbstractSearchCallable<ResultSet<HasL
          }
       } else {
          DataLoader loader = dataLoaderFactory.fromQueryContext(queryContext);
+         loader.setOptions(queryData.getOptions());
          loader.setLoadLevel(LoadLevel.SHALLOW);
-         loader.includeDeleted(queryData.getOptions().areDeletedIncluded());
-         loader.fromTransaction(queryData.getOptions().getFromTransaction());
          loader.load(this, new AdapterBuidler(results));
       }
       checkForCancelled();

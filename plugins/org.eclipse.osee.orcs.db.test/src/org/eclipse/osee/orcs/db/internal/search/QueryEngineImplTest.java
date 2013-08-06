@@ -39,8 +39,9 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.DataPostProcessorFactory;
+import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
@@ -79,25 +80,25 @@ public class QueryEngineImplTest {
    private static final long CODED_WORD_2 = 6106L;
    private static final long CODED_WORD_3 = 981274L;
 
-   private static final Criteria<?> GUIDS = new CriteriaArtifactGuids(asList(GUID.create(), GUID.create()));
-   private static final Criteria<?> IDS = new CriteriaArtifactIds(asList(1, 2, 3, 4, 5));
-   private static final Criteria<?> HRIDS = new CriteriaArtifactHrids(asList("ABCDE", "FGHIJ"));
-   private static final Criteria<?> TYPES = new CriteriaArtifactType(null, asList(CoreArtifactTypes.CodeUnit), false);
-   private static final Criteria<?> ATTRIBUTE = new CriteriaAttributeOther(CoreAttributeTypes.Name, asList("Hello"),
+   private static final Criteria GUIDS = new CriteriaArtifactGuids(asList(GUID.create(), GUID.create()));
+   private static final Criteria IDS = new CriteriaArtifactIds(asList(1, 2, 3, 4, 5));
+   private static final Criteria HRIDS = new CriteriaArtifactHrids(asList("ABCDE", "FGHIJ"));
+   private static final Criteria TYPES = new CriteriaArtifactType(null, asList(CoreArtifactTypes.CodeUnit), false);
+   private static final Criteria ATTRIBUTE = new CriteriaAttributeOther(CoreAttributeTypes.Name, asList("Hello"),
       Operator.EQUAL);
 
-   private static final Criteria<?> ATTR_TYPE_EXITS = new CriteriaAttributeTypeExists(asList(CoreAttributeTypes.Name));
-   private static final Criteria<?> REL_TYPE_EXISTS = new CriteriaRelationTypeExists(
+   private static final Criteria ATTR_TYPE_EXITS = new CriteriaAttributeTypeExists(asList(CoreAttributeTypes.Name));
+   private static final Criteria REL_TYPE_EXISTS = new CriteriaRelationTypeExists(
       CoreRelationTypes.Default_Hierarchical__Child);
 
-   private static final Criteria<?> ATTRIBUTE_KEYWORD = new CriteriaAttributeKeywords(false, asList(
+   private static final Criteria ATTRIBUTE_KEYWORD = new CriteriaAttributeKeywords(false, asList(
       CoreAttributeTypes.Name, CoreAttributeTypes.WordTemplateContent), null, QUICK_SEARCH_VALUE,
       TokenDelimiterMatch.ANY, TokenOrderType.MATCH_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT, CaseType.MATCH_CASE);
 
-   private static final Criteria<?> RELATED_TO = new CriteriaRelatedTo(CoreRelationTypes.Default_Hierarchical__Child,
+   private static final Criteria RELATED_TO = new CriteriaRelatedTo(CoreRelationTypes.Default_Hierarchical__Child,
       asList(45, 61));
 
-   private static final Criteria<?> ALL_ARTIFACTS = new CriteriaAllArtifacts();
+   private static final Criteria ALL_ARTIFACTS = new CriteriaAllArtifacts();
 
    // @formatter:off
    @Mock private Log logger;
@@ -129,7 +130,7 @@ public class QueryEngineImplTest {
       queryEngine = new QueryEngineImpl(logger, dbService, sqlProvider, branchCache, handlerFactory);
 
       CriteriaSet criteriaSet = new CriteriaSet(CoreBranches.COMMON);
-      QueryOptions options = new QueryOptions();
+      Options options = OptionsUtil.createOptions();
       queryData = new QueryData(criteriaSet, options);
 
       when(branchCache.getLocalId(CoreBranches.COMMON)).thenReturn(EXPECTED_BRANCH_ID);
@@ -210,7 +211,7 @@ public class QueryEngineImplTest {
       " GROUP BY art1.art_id, txs1.branch_id\n" + //
       ") xTable";
 
-      queryData.getOptions().setFromTransaction(EXPECTED_TX_ID);
+      OptionsUtil.setFromTransaction(queryData.getOptions(), EXPECTED_TX_ID);
       queryData.addCriteria(TYPES);
 
       QuerySqlContext context = queryEngine.createCount(session, queryData);
@@ -285,7 +286,7 @@ public class QueryEngineImplTest {
          " ORDER BY art1.art_id, txs1.branch_id";
 
       queryData.addCriteria(GUIDS, IDS, HRIDS, TYPES);
-      queryData.getOptions().setIncludeDeleted(true);
+      OptionsUtil.setIncludeDeleted(queryData.getOptions(), true);
 
       QuerySqlContext context = queryEngine.create(session, queryData);
       Assert.assertEquals(expected, context.getSql());
@@ -331,7 +332,7 @@ public class QueryEngineImplTest {
          " ORDER BY art1.art_id, txs1.branch_id";
 
       queryData.addCriteria(GUIDS, IDS, HRIDS, TYPES);
-      queryData.getOptions().setFromTransaction(EXPECTED_TX_ID);
+      OptionsUtil.setFromTransaction(queryData.getOptions(), EXPECTED_TX_ID);
 
       QuerySqlContext context = queryEngine.create(session, queryData);
       Assert.assertEquals(expected, context.getSql());
@@ -746,7 +747,7 @@ public class QueryEngineImplTest {
       " GROUP BY art1.art_id, txs1.branch_id\n" + //
       ") xTable";
 
-      queryData.getOptions().setFromTransaction(EXPECTED_TX_ID);
+      OptionsUtil.setFromTransaction(queryData.getOptions(), EXPECTED_TX_ID);
       queryData.addCriteria(ALL_ARTIFACTS);
 
       QuerySqlContext context = queryEngine.createCount(session, queryData);
@@ -800,7 +801,7 @@ public class QueryEngineImplTest {
          " GROUP BY art1.art_id, txs1.branch_id\n" + //
          " ORDER BY art1.art_id, txs1.branch_id";
 
-      queryData.getOptions().setFromTransaction(EXPECTED_TX_ID);
+      OptionsUtil.setFromTransaction(queryData.getOptions(), EXPECTED_TX_ID);
       queryData.addCriteria(ALL_ARTIFACTS);
 
       QuerySqlContext context = queryEngine.create(session, queryData);

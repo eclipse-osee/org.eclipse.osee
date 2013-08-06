@@ -17,7 +17,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -26,7 +25,7 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeTypeExists, QueryOptions> {
+public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeTypeExists> {
 
    private CriteriaAttributeTypeExists criteria;
 
@@ -42,7 +41,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
    }
 
    @Override
-   public void addTables(AbstractSqlWriter<QueryOptions> writer) {
+   public void addTables(AbstractSqlWriter writer) {
       if (criteria.getTypes().size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
@@ -55,7 +54,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
       Collection<? extends IAttributeType> types = criteria.getTypes();
       if (types.size() > 1) {
          Set<Integer> typeIds = new HashSet<Integer>();

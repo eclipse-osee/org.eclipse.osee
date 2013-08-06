@@ -25,6 +25,8 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
+import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.db.internal.loader.executors.AbstractLoadExecutor;
 import org.eclipse.osee.orcs.db.internal.loader.executors.LoadExecutor;
@@ -89,7 +91,8 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
    public DataLoader fromQueryContext(QueryContext queryContext) throws OseeCoreException {
       QuerySqlContext sqlQueryContext = toSqlContext(queryContext);
       AbstractLoadExecutor executor = new QueryContextLoadExecutor(loader, dbService, sqlQueryContext);
-      return new DataLoaderImpl(logger, executor);
+      Options options = OptionsUtil.createOptions();
+      return new DataLoaderImpl(logger, executor, options);
    }
 
    @Override
@@ -98,7 +101,8 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
 
       int branchId = branchCache.getLocalId(branch);
       AbstractLoadExecutor executor = new LoadExecutor(loader, dbService, session, branchId, artifactIds);
-      return new DataLoaderImpl(logger, executor);
+      Options options = OptionsUtil.createOptions();
+      return new DataLoaderImpl(logger, executor, options);
    }
 
    @Override

@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -21,7 +20,7 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 /**
  * @author Roberto E. Escobar
  */
-public class AllArtifactsSqlHandler extends SqlHandler<CriteriaAllArtifacts, QueryOptions> {
+public class AllArtifactsSqlHandler extends SqlHandler<CriteriaAllArtifacts> {
 
    private String artAlias;
    private String txsAlias;
@@ -32,7 +31,7 @@ public class AllArtifactsSqlHandler extends SqlHandler<CriteriaAllArtifacts, Que
    }
 
    @Override
-   public void addTables(AbstractSqlWriter<QueryOptions> writer) {
+   public void addTables(AbstractSqlWriter writer) {
       List<String> artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       List<String> txsAliases = writer.getAliases(TableEnum.TXS_TABLE);
 
@@ -45,7 +44,7 @@ public class AllArtifactsSqlHandler extends SqlHandler<CriteriaAllArtifacts, Que
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter<QueryOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
       boolean modified = false;
       if (artAlias != null && txsAlias != null) {
          writer.write(artAlias);

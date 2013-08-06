@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
@@ -63,15 +62,15 @@ public class CriteriaFactory {
       return toReturn;
    }
 
-   public Criteria<QueryOptions> createExistsCriteria(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
+   public Criteria createExistsCriteria(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
       return new CriteriaAttributeTypeExists(attributeTypes);
    }
 
-   public Criteria<QueryOptions> createExistsCriteria(IRelationType relationType) throws OseeCoreException {
+   public Criteria createExistsCriteria(IRelationType relationType) throws OseeCoreException {
       return new CriteriaRelationTypeExists(relationType);
    }
 
-   public Criteria<QueryOptions> createAttributeCriteria(IAttributeType attributeType, Operator operator, Collection<String> values) throws OseeCoreException {
+   public Criteria createAttributeCriteria(IAttributeType attributeType, Operator operator, Collection<String> values) throws OseeCoreException {
       if (operator == Operator.EQUAL) {
          return createAttributeCriteria(Collections.singleton(attributeType), values);
       } else {
@@ -79,37 +78,37 @@ public class CriteriaFactory {
       }
    }
 
-   public Criteria<QueryOptions> createAttributeCriteria(Collection<? extends IAttributeType> attributeTypes, Collection<String> values, QueryOption... options) throws OseeCoreException {
+   public Criteria createAttributeCriteria(Collection<? extends IAttributeType> attributeTypes, Collection<String> values, QueryOption... options) throws OseeCoreException {
       Collection<? extends IAttributeType> types = checkForAnyType(attributeTypes);
       boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
       return new CriteriaAttributeKeywords(isIncludeAllTypes, types, attributeTypeCache, values, options);
    }
 
-   public Criteria<QueryOptions> createArtifactTypeCriteria(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {
+   public Criteria createArtifactTypeCriteria(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {
       return new CriteriaArtifactType(artifactTypeCache, artifactTypes, false);
    }
 
-   public Criteria<QueryOptions> createArtifactTypeCriteriaWithInheritance(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {
+   public Criteria createArtifactTypeCriteriaWithInheritance(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {
       return new CriteriaArtifactType(artifactTypeCache, artifactTypes, true);
    }
 
-   public Criteria<QueryOptions> createArtifactIdCriteria(Collection<Integer> artifactIds) throws OseeCoreException {
+   public Criteria createArtifactIdCriteria(Collection<Integer> artifactIds) throws OseeCoreException {
       return new CriteriaArtifactIds(artifactIds);
    }
 
-   public Criteria<QueryOptions> createArtifactGuidCriteria(Set<String> guids) throws OseeCoreException {
+   public Criteria createArtifactGuidCriteria(Set<String> guids) throws OseeCoreException {
       return new CriteriaArtifactGuids(guids);
    }
 
-   public Criteria<QueryOptions> createArtifactHridCriteria(Set<String> hrids) throws OseeCoreException {
+   public Criteria createArtifactHridCriteria(Set<String> hrids) throws OseeCoreException {
       return new CriteriaArtifactHrids(hrids);
    }
 
-   public Criteria<QueryOptions> createRelatedToCriteria(IRelationTypeSide relationType, Collection<Integer> artifactIds) throws OseeCoreException {
+   public Criteria createRelatedToCriteria(IRelationTypeSide relationType, Collection<Integer> artifactIds) throws OseeCoreException {
       return new CriteriaRelatedTo(relationType, artifactIds);
    }
 
-   public Criteria<QueryOptions> createAllArtifactsCriteria() {
+   public Criteria createAllArtifactsCriteria() {
       return new CriteriaAllArtifacts();
    }
 

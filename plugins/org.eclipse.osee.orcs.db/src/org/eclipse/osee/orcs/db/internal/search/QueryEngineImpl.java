@@ -18,9 +18,9 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
+import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -62,18 +62,18 @@ public class QueryEngineImpl implements QueryEngine {
       QuerySqlContext context = createContext(session, queryData.getOptions());
       CriteriaSet criteriaSet = queryData.getCriteriaSet();
 
-      AbstractSqlWriter<QueryOptions> writer = createQueryWriter(context, queryType, criteriaSet.getBranch());
+      AbstractSqlWriter writer = createQueryWriter(context, queryType, criteriaSet.getBranch());
 
-      List<SqlHandler<?, QueryOptions>> handlers = handlerFactory.createHandlers(criteriaSet);
+      List<SqlHandler<?>> handlers = handlerFactory.createHandlers(criteriaSet);
       writer.build(handlers);
       return context;
    }
 
-   private QuerySqlContext createContext(OrcsSession session, QueryOptions options) {
+   private QuerySqlContext createContext(OrcsSession session, Options options) {
       return new QuerySqlContext(session, options);
    }
 
-   private AbstractSqlWriter<QueryOptions> createQueryWriter(SqlContext<QueryOptions, QueryPostProcessor> context, QueryType queryType, IOseeBranch branch) throws OseeCoreException {
+   private AbstractSqlWriter createQueryWriter(SqlContext<QueryPostProcessor> context, QueryType queryType, IOseeBranch branch) throws OseeCoreException {
       int branchId = branchCache.getLocalId(branch);
       return new QuerySqlWriter(logger, dbService, sqlProvider, context, queryType, branchId);
    }

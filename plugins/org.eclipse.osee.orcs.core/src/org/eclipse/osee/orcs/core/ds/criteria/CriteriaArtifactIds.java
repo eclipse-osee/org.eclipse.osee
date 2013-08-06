@@ -14,12 +14,12 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaArtifactIds extends Criteria<QueryOptions> {
+public class CriteriaArtifactIds extends Criteria {
 
    private final Collection<Integer> ids;
 
@@ -29,7 +29,7 @@ public class CriteriaArtifactIds extends Criteria<QueryOptions> {
    }
 
    @Override
-   public void checkValid(QueryOptions options) throws OseeCoreException {
+   public void checkValid(Options options) throws OseeCoreException {
       super.checkValid(options);
       Conditions.checkNotNullOrEmpty(ids, "artifact ids");
    }

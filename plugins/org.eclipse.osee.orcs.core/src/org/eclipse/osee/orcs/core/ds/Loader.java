@@ -21,6 +21,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface Loader {
 
+   Loader setOptions(Options sourceOptions);
+
    Loader includeDeleted();
 
    Loader includeDeleted(boolean enabled);
@@ -48,4 +50,5 @@ public interface Loader {
    Loader loadRelationType(IRelationType... relationType) throws OseeCoreException;
 
    Loader loadRelationTypes(Collection<? extends IRelationType> relationType) throws OseeCoreException;
+
 }

@@ -14,12 +14,12 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaRelationTypeExists extends Criteria<QueryOptions> {
+public class CriteriaRelationTypeExists extends Criteria {
    private final IRelationType relationType;
 
    public CriteriaRelationTypeExists(IRelationType relationType) {
@@ -32,7 +32,7 @@ public class CriteriaRelationTypeExists extends Criteria<QueryOptions> {
    }
 
    @Override
-   public void checkValid(QueryOptions options) throws OseeCoreException {
+   public void checkValid(Options options) throws OseeCoreException {
       super.checkValid(options);
       Conditions.checkNotNull(getType(), "relation type");
    }

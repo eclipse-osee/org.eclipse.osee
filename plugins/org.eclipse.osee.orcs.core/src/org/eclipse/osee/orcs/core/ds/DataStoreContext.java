@@ -16,9 +16,8 @@ import org.eclipse.osee.orcs.data.HasSession;
 /**
  * @author Roberto E. Escobar
  */
-public interface DataStoreContext<T extends Options, P extends DataPostProcessor<?>> extends HasSession {
-
-   T getOptions();
+public interface DataStoreContext<P extends DataPostProcessor<?>> extends HasOptions, HasSession {
 
    List<P> getPostProcessors();
+
 }

@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * @author Roberto E. Escobar
  */
-public interface QueryContext extends DataStoreContext<QueryOptions, QueryPostProcessor> {
+public interface QueryContext extends DataStoreContext<QueryPostProcessor> {
 
    @Override
    List<QueryPostProcessor> getPostProcessors();

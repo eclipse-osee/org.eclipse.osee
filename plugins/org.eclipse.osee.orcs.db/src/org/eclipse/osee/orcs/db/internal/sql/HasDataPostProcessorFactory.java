@@ -16,7 +16,7 @@ import org.eclipse.osee.orcs.core.ds.DataPostProcessorFactory;
 /**
  * @author Roberto E. Escobar
  */
-public interface HasDataPostProcessorFactory<C extends Criteria<?>> {
+public interface HasDataPostProcessorFactory<C extends Criteria> {
 
    void setDataPostProcessorFactory(DataPostProcessorFactory<C> factory);
 

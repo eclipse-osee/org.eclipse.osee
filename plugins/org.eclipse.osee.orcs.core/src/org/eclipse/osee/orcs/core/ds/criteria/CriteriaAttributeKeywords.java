@@ -20,13 +20,13 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaAttributeKeywords extends Criteria<QueryOptions> {
+public class CriteriaAttributeKeywords extends Criteria {
 
    private final AttributeTypes attributeTypeCache;
    private final Collection<? extends IAttributeType> attributeType;
@@ -64,7 +64,7 @@ public class CriteriaAttributeKeywords extends Criteria<QueryOptions> {
    }
 
    @Override
-   public void checkValid(QueryOptions options) throws OseeCoreException {
+   public void checkValid(Options options) throws OseeCoreException {
       super.checkValid(options);
       Conditions.checkNotNullOrEmpty(getValues(), "search value");
       Conditions.checkNotNullOrEmpty(getTypes(), "attribute types");

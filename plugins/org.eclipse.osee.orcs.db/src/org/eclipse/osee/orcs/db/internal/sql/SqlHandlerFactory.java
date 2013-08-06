@@ -14,14 +14,13 @@ import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
-import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface SqlHandlerFactory {
 
-   <O extends Options> List<SqlHandler<?, O>> createHandlers(CriteriaSet criteriaSet) throws OseeCoreException;
+   List<SqlHandler<?>> createHandlers(CriteriaSet criteriaSet) throws OseeCoreException;
 
-   <O extends Options> SqlHandler<?, O> createHandler(Criteria<O> criteria) throws OseeCoreException;
+   SqlHandler<?> createHandler(Criteria criteria) throws OseeCoreException;
 }

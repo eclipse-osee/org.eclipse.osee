@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-public class QueryData implements Cloneable {
+public class QueryData implements HasOptions, Cloneable {
    private final CriteriaSet criteriaSet;
-   private final QueryOptions options;
+   private final Options options;
 
-   public QueryData(CriteriaSet criteriaSet, QueryOptions options) {
+   public QueryData(CriteriaSet criteriaSet, Options options) {
       this.criteriaSet = criteriaSet;
       this.options = options;
    }
@@ -23,17 +23,18 @@ public class QueryData implements Cloneable {
       return criteriaSet;
    }
 
-   public QueryOptions getOptions() {
+   @Override
+   public Options getOptions() {
       return options;
    }
 
-   public void addCriteria(Criteria<?>... criterias) {
-      for (Criteria<?> criteria : criterias) {
+   public void addCriteria(Criteria... criterias) {
+      for (Criteria criteria : criterias) {
          criteriaSet.add(criteria);
       }
    }
 
-   public boolean hasCriteriaType(Class<? extends Criteria<?>> type) {
+   public boolean hasCriteriaType(Class<? extends Criteria> type) {
       return criteriaSet.hasCriteriaType(type);
    }
 

@@ -11,17 +11,17 @@
 package org.eclipse.osee.orcs.db.internal.search;
 
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
 import org.eclipse.osee.orcs.core.ds.QueryPostProcessor;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContextImpl;
 
 /**
  * @author Roberto E. Escobar
  */
-public class QuerySqlContext extends SqlContextImpl<QueryOptions, QueryPostProcessor> implements QueryContext {
+public class QuerySqlContext extends SqlContextImpl<QueryPostProcessor> implements QueryContext {
 
-   public QuerySqlContext(OrcsSession session, QueryOptions options) {
+   public QuerySqlContext(OrcsSession session, Options options) {
       super(session, options);
    }
 

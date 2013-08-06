@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.search.util;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
@@ -25,7 +25,7 @@ public class AttributeQueryPostProcessor extends AbstractQueryPostProcessor {
 
    private final TaggingEngine engine;
 
-   public AttributeQueryPostProcessor(Log logger, ExecutorAdmin executorAdmin, TaggingEngine engine, CriteriaAttributeKeywords criteria, QueryOptions options) {
+   public AttributeQueryPostProcessor(Log logger, ExecutorAdmin executorAdmin, TaggingEngine engine, CriteriaAttributeKeywords criteria, Options options) {
       super(logger, executorAdmin, criteria, options);
       this.engine = engine;
    }

@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.loader.handlers;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -20,7 +19,7 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactSqlHandler extends SqlHandler<CriteriaArtifact, LoadOptions> {
+public class ArtifactSqlHandler extends SqlHandler<CriteriaArtifact> {
 
    private CriteriaArtifact criteria;
    private String jArtAlias;
@@ -38,19 +37,19 @@ public class ArtifactSqlHandler extends SqlHandler<CriteriaArtifact, LoadOptions
    }
 
    @Override
-   public void addSelect(AbstractSqlWriter<LoadOptions> writer) throws OseeCoreException {
+   public void addSelect(AbstractSqlWriter writer) throws OseeCoreException {
       writer.write("%s.art_type_id, %s.guid, %s.human_readable_id", artAlias, artAlias, artAlias);
    }
 
    @Override
-   public void addTables(AbstractSqlWriter<LoadOptions> writer) {
+   public void addTables(AbstractSqlWriter writer) {
       jArtAlias = writer.addTable(TableEnum.ARTIFACT_JOIN_TABLE);
       artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
       txsAlias = writer.addTable(TableEnum.TXS_TABLE);
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter<LoadOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
       writer.write(artAlias);
       writer.write(".art_id = ");
       writer.write(jArtAlias);

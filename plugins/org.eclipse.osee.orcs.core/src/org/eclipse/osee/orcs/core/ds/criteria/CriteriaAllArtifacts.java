@@ -12,19 +12,19 @@ package org.eclipse.osee.orcs.core.ds.criteria;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.QueryOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaAllArtifacts extends Criteria<QueryOptions> {
+public class CriteriaAllArtifacts extends Criteria {
 
    public CriteriaAllArtifacts() {
       super();
    }
 
    @Override
-   public void checkValid(QueryOptions options) throws OseeCoreException {
+   public void checkValid(Options options) throws OseeCoreException {
       super.checkValid(options);
    }
 

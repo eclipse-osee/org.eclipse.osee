@@ -32,8 +32,8 @@ public final class LoaderSqlHandlerFactoryUtil {
    }
 
    public static SqlHandlerFactory createHandlerFactory(Log logger, IdentityService identityService) {
-      Map<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>> handleMap =
-         new HashMap<Class<? extends Criteria<?>>, Class<? extends SqlHandler<?, ?>>>();
+      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
+         new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
 
       // Query
       handleMap.put(CriteriaArtifact.class, ArtifactSqlHandler.class);

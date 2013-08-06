@@ -23,7 +23,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
@@ -31,8 +32,6 @@ import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
 import org.eclipse.osee.orcs.db.internal.loader.executors.AbstractLoadExecutor;
 
 public class DataLoaderImpl implements DataLoader {
-
-   private final LoadOptions loadOptions = new LoadOptions();
 
    private final Collection<Integer> attributeIds = new HashSet<Integer>();
    private final Collection<IAttributeType> attributeTypes = new HashSet<IAttributeType>();
@@ -42,21 +41,33 @@ public class DataLoaderImpl implements DataLoader {
 
    private final Log logger;
    private final AbstractLoadExecutor loadExecutor;
+   private final Options options;
 
-   public DataLoaderImpl(Log logger, AbstractLoadExecutor loadExecutor) {
+   public DataLoaderImpl(Log logger, AbstractLoadExecutor loadExecutor, Options options) {
       this.logger = logger;
       this.loadExecutor = loadExecutor;
+      this.options = options;
    }
 
    @Override
    public DataLoader resetToDefaults() {
-      loadOptions.reset();
+      OptionsUtil.reset(getOptions());
 
       attributeIds.clear();
       attributeTypes.clear();
 
       relationIds.clear();
       relationTypes.clear();
+      return this;
+   }
+
+   private Options getOptions() {
+      return options;
+   }
+
+   @Override
+   public DataLoader setOptions(Options source) {
+      getOptions().setFrom(source);
       return this;
    }
 
@@ -68,45 +79,45 @@ public class DataLoaderImpl implements DataLoader {
 
    @Override
    public DataLoader includeDeleted(boolean enabled) {
-      loadOptions.setIncludeDeleted(enabled);
+      OptionsUtil.setIncludeDeleted(getOptions(), enabled);
       return this;
    }
 
    @Override
    public boolean areDeletedIncluded() {
-      return loadOptions.areDeletedIncluded();
+      return OptionsUtil.areDeletedIncluded(getOptions());
    }
 
    @Override
    public DataLoader fromTransaction(int transactionId) {
-      loadOptions.setFromTransaction(transactionId);
+      OptionsUtil.setFromTransaction(getOptions(), transactionId);
       return this;
    }
 
    @Override
    public int getFromTransaction() {
-      return loadOptions.getFromTransaction();
+      return OptionsUtil.getFromTransaction(getOptions());
    }
 
    @Override
    public DataLoader headTransaction() {
-      loadOptions.setHeadTransaction();
+      OptionsUtil.setHeadTransaction(getOptions());
       return this;
    }
 
    @Override
    public boolean isHeadTransaction() {
-      return !loadOptions.isHistorical();
+      return !OptionsUtil.isHistorical(getOptions());
    }
 
    @Override
    public LoadLevel getLoadLevel() {
-      return loadOptions.getLoadLevel();
+      return OptionsUtil.getLoadLevel(getOptions());
    }
 
    @Override
    public DataLoader setLoadLevel(LoadLevel loadLevel) {
-      loadOptions.setLoadLevel(loadLevel);
+      OptionsUtil.setLoadLevel(getOptions(), loadLevel);
       return this;
    }
 
@@ -179,7 +190,7 @@ public class DataLoaderImpl implements DataLoader {
    public void load(HasCancellation cancellation, LoadDataHandler handler) throws OseeCoreException {
       long startTime = 0;
 
-      final LoadOptions options = loadOptions.clone();
+      final Options options = getOptions().clone();
       final CriteriaOrcsLoad criteria = createCriteria();
       if (logger.isTraceEnabled()) {
          startTime = System.currentTimeMillis();

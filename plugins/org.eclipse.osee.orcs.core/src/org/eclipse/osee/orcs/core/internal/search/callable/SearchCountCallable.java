@@ -48,9 +48,8 @@ public class SearchCountCallable extends AbstractArtifactSearchCallable<Integer>
          checkForCancelled();
 
          ArtifactLoader loader = objectLoader.fromQueryContext(session, queryContext);
+         loader.setOptions(queryData.getOptions());
          loader.setLoadLevel(loadLevel);
-         loader.includeDeleted(queryData.getOptions().areDeletedIncluded());
-         loader.fromTransaction(queryData.getOptions().getFromTransaction());
          checkForCancelled();
 
          List<ArtifactReadable> artifacts = loader.load(this);

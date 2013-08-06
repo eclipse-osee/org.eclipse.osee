@@ -15,7 +15,6 @@ import java.util.HashSet;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -24,7 +23,7 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute, LoadOptions> {
+public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
 
    private CriteriaAttribute criteria;
    private String jIdAlias;
@@ -48,12 +47,12 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute, LoadOptio
    }
 
    @Override
-   public void addSelect(AbstractSqlWriter<LoadOptions> writer) throws OseeCoreException {
+   public void addSelect(AbstractSqlWriter writer) throws OseeCoreException {
       writer.write("%s.attr_id, %s.attr_type_id, %s.value, %s.uri", attrAlias, attrAlias, attrAlias, attrAlias);
    }
 
    @Override
-   public void addTables(AbstractSqlWriter<LoadOptions> writer) throws OseeCoreException {
+   public void addTables(AbstractSqlWriter writer) throws OseeCoreException {
       jArtAlias = writer.addTable(TableEnum.ARTIFACT_JOIN_TABLE);
 
       if (criteria.getIds().size() > 1) {
@@ -78,7 +77,7 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute, LoadOptio
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter<LoadOptions> writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
       writer.write(attrAlias);
       writer.write(".art_id = ");
       writer.write(jArtAlias);

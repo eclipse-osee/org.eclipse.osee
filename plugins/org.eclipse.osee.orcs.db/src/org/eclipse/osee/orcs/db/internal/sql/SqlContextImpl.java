@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class SqlContextImpl<T extends Options, P extends DataPostProcessor<?>> implements SqlContext<T, P> {
+public class SqlContextImpl<P extends DataPostProcessor<?>> implements SqlContext<P> {
 
    private String sql;
    private final List<Object> parameters = new ArrayList<Object>();
@@ -29,15 +29,15 @@ public class SqlContextImpl<T extends Options, P extends DataPostProcessor<?>> i
    private final List<P> processors = new ArrayList<P>();
 
    private final OrcsSession session;
-   private final T options;
+   private final Options options;
 
-   public SqlContextImpl(OrcsSession session, T options) {
+   public SqlContextImpl(OrcsSession session, Options options) {
       this.session = session;
       this.options = options;
    }
 
    @Override
-   public T getOptions() {
+   public Options getOptions() {
       return options;
    }
 

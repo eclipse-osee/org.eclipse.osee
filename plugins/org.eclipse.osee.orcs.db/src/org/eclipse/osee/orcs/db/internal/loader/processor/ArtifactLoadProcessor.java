@@ -15,7 +15,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
-import org.eclipse.osee.orcs.core.ds.LoadOptions;
+import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.db.internal.loader.data.ArtifactObjectFactory;
 
@@ -29,7 +30,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
    }
 
    @Override
-   protected ArtifactData createData(Object conditions, ArtifactObjectFactory factory, IOseeStatement chStmt, LoadOptions options) throws OseeCoreException {
+   protected ArtifactData createData(Object conditions, ArtifactObjectFactory factory, IOseeStatement chStmt, Options options) throws OseeCoreException {
       ArtifactData toReturn = null;
 
       int artifactId = chStmt.getInt("art_id");
@@ -40,13 +41,14 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
 
          ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
          // assumption: SQL is returning unwanted deleted artifacts only in the historical case
-         if (!options.isHistorical() || options.areDeletedIncluded() || modType != ModificationType.DELETED) {
+         boolean historical = OptionsUtil.isHistorical(options);
+         if (!historical || OptionsUtil.areDeletedIncluded(options) || modType != ModificationType.DELETED) {
             long gamma = chStmt.getInt("gamma_id");
             int txId = chStmt.getInt("transaction_id");
 
-            VersionData version = factory.createVersion(branchId, txId, gamma, options.isHistorical());
+            VersionData version = factory.createVersion(branchId, txId, gamma, historical);
 
-            if (options.isHistorical()) {
+            if (historical) {
                version.setStripeId(chStmt.getInt("stripe_transaction_id"));
             }
 
