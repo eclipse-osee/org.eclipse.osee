@@ -48,7 +48,6 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
    private final AtomicBoolean wasLoaded;
    private long lastLoaded;
    private boolean ignoreEnsurePopulateException;
-   private boolean isEnsurePopulateSynchronized;
 
    protected AbstractOseeCache(OseeCacheEnum cacheId, IOseeDataAccessor<K, T> dataAccessor, boolean uniqueName) {
       this.lastLoaded = 0;
@@ -57,16 +56,6 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       this.ignoreEnsurePopulateException = false;
       this.dataAccessor = dataAccessor;
       this.uniqueName = uniqueName;
-      this.isEnsurePopulateSynchronized = true;
-   }
-
-   // Temporary fix to avoid deadlock on server types cache loading 
-   public void setSynchronizedEnsurePopulate(boolean isSynchronized) {
-      this.isEnsurePopulateSynchronized = isSynchronized;
-   }
-
-   public boolean isSynchronizedEnsurePopulate() {
-      return isEnsurePopulateSynchronized;
    }
 
    public void invalidate() {
@@ -274,7 +263,8 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       storeItems(getAllDirty());
    }
 
-   private void populate() throws OseeCoreException {
+   @Override
+   public synchronized void ensurePopulated() throws OseeCoreException {
       if (wasLoaded.compareAndSet(false, true)) {
          try {
             reloadCache();
@@ -283,17 +273,6 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
                throw ex;
             }
          }
-      }
-   }
-
-   @Override
-   public void ensurePopulated() throws OseeCoreException {
-      if (isSynchronizedEnsurePopulate()) {
-         synchronized (this) {
-            populate();
-         }
-      } else {
-         populate();
       }
    }
 
