@@ -225,6 +225,10 @@ public class WordMLProducer extends Producer {
    public void resetListValue() throws OseeCoreException {
       // extra paragraph needed to support WORD's bug to add in a trailing zero when using field codes
       startParagraph();
+
+      append("<w:r>");
+      append("</w:r>");
+
       //The listnum also acts a template delimiter to know when to remove unwanted content.
       addWordMl(LISTNUM_FIELD);
       endParagraph();
