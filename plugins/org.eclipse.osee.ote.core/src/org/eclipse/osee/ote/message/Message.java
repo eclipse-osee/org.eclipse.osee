@@ -268,10 +268,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public void send() throws MessageSystemException {
       checkState();
       if (!isTurnedOff) {
-         Collection<T> dataList = memToDataMap.get(currentMemType);
+         ArrayList<T> dataList = memToDataMap.get(currentMemType);
          if (dataList != null) {
-            for (T data : dataList) {
-               data.send();
+        	int listSize = dataList.size();
+            for (int i = 0; i < listSize; i++) {
+               dataList.get(i).send();
             }
          } else {
             throw new MessageSystemException(

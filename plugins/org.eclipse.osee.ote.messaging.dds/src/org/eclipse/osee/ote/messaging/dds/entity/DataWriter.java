@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.messaging.dds.entity;
 
 import java.util.Collection;
+
 import org.eclipse.osee.ote.messaging.dds.Data;
 import org.eclipse.osee.ote.messaging.dds.DataSample;
 import org.eclipse.osee.ote.messaging.dds.DataStoreItem;
@@ -52,6 +53,12 @@ public class DataWriter extends DomainEntity {
       this.deleted = false;
 
       topic.addDataWriter(this);
+   }
+   
+   public DataWriter(){
+	   super(true, null, null);
+	   topic = null;
+	   publisher = null;
    }
 
    /**

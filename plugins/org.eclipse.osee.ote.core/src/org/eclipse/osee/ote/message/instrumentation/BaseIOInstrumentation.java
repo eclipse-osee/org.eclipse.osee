@@ -17,6 +17,7 @@ import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 
@@ -62,9 +63,10 @@ public class BaseIOInstrumentation implements IOInstrumentation {
 
    public void send(ByteBuffer bytes) {
       bytes.mark();
-      for (InetSocketAddress address : addresses) {
+      int size = addresses.size();
+      for (int i = 0; i < size; i++) {
          try {
-            channel.send(bytes, address);
+            channel.send(bytes, addresses.get(i));
             bytes.reset();
          } catch (Exception ex) {
             OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex.toString(), ex);

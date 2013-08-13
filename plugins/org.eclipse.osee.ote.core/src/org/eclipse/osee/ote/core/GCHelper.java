@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -24,6 +25,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class GCHelper {
 
+   private static boolean enableGcHelper = Boolean.parseBoolean(System.getProperty("ote.gc.helper", "false"));
+	
    private final ConcurrentHashMap<String, WeakReference<Object>> map;
    private static GCHelper singleton;
 
@@ -40,13 +43,18 @@ public class GCHelper {
    }
 
    public void addRefWatch(Object obj) {
-      String key = obj.toString() + " [ " + obj.hashCode() + " ] ";
-      map.put(key, new WeakReference<Object>(obj));
+	  if(enableGcHelper){
+         String key = obj.toString() + " [ " + obj.hashCode() + " ] ";
+         map.put(key, new WeakReference<Object>(obj));
+	  }
    }
 
    public void printLiveReferences() {
 
       StringBuilder builder = new StringBuilder(8000);
+      if(!enableGcHelper){
+    	  builder.append("GCHelper disabled.  Enable with '-Dote.gc.helper=true'\n");
+      }
       writeGCResults(builder);
       OseeLog.log(GCHelper.class, Level.INFO, builder.toString());
    }
