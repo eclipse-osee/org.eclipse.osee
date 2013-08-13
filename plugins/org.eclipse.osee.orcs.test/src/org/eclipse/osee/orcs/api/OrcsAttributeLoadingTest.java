@@ -11,6 +11,9 @@
 package org.eclipse.osee.orcs.api;
 
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -20,15 +23,15 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
-import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TestRule;
 
 /**
@@ -42,52 +45,54 @@ public class OrcsAttributeLoadingTest {
    @OsgiService
    private OrcsApi orcsApi;
 
-   @org.junit.Test
-   public void testAttributeLoading() throws Exception {
-      ApplicationContext context = null; // TODO use real application context
+   private QueryFactory query;
 
-      QueryFactory queryFactory = orcsApi.getQueryFactory(context);
-      QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(6, 7, 8));
+   @Before
+   public void setUp() throws Exception {
+      ApplicationContext context = null; // TODO use real application context
+      query = orcsApi.getQueryFactory(context);
+   }
+
+   @Test
+   public void testAttributeLoading() throws Exception {
+      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(6, 7, 8));
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
       List<ArtifactReadable> moreArts = resultSet.getList();
 
-      Assert.assertEquals(3, moreArts.size());
-      Assert.assertEquals(3, builder.getCount());
+      assertEquals(3, moreArts.size());
+      assertEquals(3, builder.getCount());
 
-      Map<Integer, ArtifactReadable> lookup = creatLookup(moreArts);
+      Map<Integer, ArtifactReadable> lookup = createLookup(moreArts);
       ArtifactReadable art6 = lookup.get(6);
       ArtifactReadable art7 = lookup.get(7);
       ArtifactReadable art8 = lookup.get(8);
 
       //Test loading name attributes
-      Assert.assertEquals(art6.getSoleAttributeAsString(CoreAttributeTypes.Name),
+      assertEquals(art6.getSoleAttributeAsString(CoreAttributeTypes.Name),
          "org.eclipse.osee.coverage.OseeTypes_Coverage");
-      Assert.assertEquals(art7.getSoleAttributeAsString(CoreAttributeTypes.Name), "User Groups");
-      Assert.assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.Name), "Everyone");
+      assertEquals(art7.getSoleAttributeAsString(CoreAttributeTypes.Name), "User Groups");
+      assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.Name), "Everyone");
 
       //Test boolean attributes
-      Assert.assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.DefaultGroup), "true");
-
-      //Load WTC attributes
-      loadWordTemplateContentAttributes(queryFactory, orcsApi.getBranchCache());
+      assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.DefaultGroup), "true");
    }
 
-   private void loadWordTemplateContentAttributes(QueryFactory queryFactory, BranchCache branchCache) throws OseeCoreException {
+   @Test
+   public void testLoadWordTemplateContentAttributes() throws OseeCoreException {
       QueryBuilder builder =
-         queryFactory.fromBranch(branchCache.getByName("SAW_Bld_1").iterator().next()).and(CoreAttributeTypes.Name,
-            Operator.EQUAL, "Haptic Constraints");
+         query.fromBranch(TestBranches.SAW_Bld_1).and(CoreAttributeTypes.Name, Operator.EQUAL, "Haptic Constraints");
 
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
       List<ArtifactReadable> moreArts = resultSet.getList();
 
-      Assert.assertFalse(moreArts.isEmpty());
-      Assert.assertTrue(builder.getCount() > 0);
-
       ArtifactReadable artifact = moreArts.iterator().next();
-      Assert.assertTrue(artifact.getSoleAttributeAsString(CoreAttributeTypes.WordTemplateContent).length() > 2);
+      assertTrue(artifact.getSoleAttributeAsString(CoreAttributeTypes.WordTemplateContent).length() > 2);
+
+      assertFalse(moreArts.isEmpty());
+      assertEquals(moreArts.size(), builder.getCount());
    }
 
-   Map<Integer, ArtifactReadable> creatLookup(List<ArtifactReadable> arts) {
+   private Map<Integer, ArtifactReadable> createLookup(List<ArtifactReadable> arts) {
       Map<Integer, ArtifactReadable> lookup = new HashMap<Integer, ArtifactReadable>();
       for (ArtifactReadable artifact : arts) {
          lookup.put(artifact.getLocalId(), artifact);

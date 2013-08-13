@@ -11,6 +11,9 @@
 package org.eclipse.osee.orcs.api;
 
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -34,7 +37,7 @@ import org.eclipse.osee.orcs.data.ArtifactWriteable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.OrcsTransaction;
-import org.junit.Assert;
+import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -45,29 +48,30 @@ import org.junit.rules.TestRule;
  */
 public class OrcsBranchTest {
 
+   private static final String ARTIFACT_NAME = "Joe Smith";
+
    @Rule
    public TestRule osgi = integrationRule(this, "osee.demo.hsql");
-
-   private OrcsBranch branchInterface = null;
-   private final ApplicationContext context = null; // TODO use real application context
-
-   private final static String ARTIFACT_NAME = "Joe Smith";
 
    @OsgiService
    private OrcsApi orcsApi;
 
+   private OrcsBranch branchInterface;
+   private QueryFactory query;
+   private TransactionFactory txFactory;
+
    @Before
    public void setUp() throws Exception {
+      ApplicationContext context = null;
       branchInterface = orcsApi.getBranchOps(context);
+      query = orcsApi.getQueryFactory(context);
+      txFactory = orcsApi.getTransactionFactory(context);
    }
 
    @Test
    public void testCreateBranch() throws Exception {
       int SOURCE_TX_ID = 7; // Chosen starting transaction on Common Branch
       int CHANGED_TX_ID = 8; // Transaction containing tested change
-
-      // set up the query factory for the test
-      QueryFactory qf = orcsApi.getQueryFactory(context);
 
       // set up the initial branch
       IOseeBranch branch = TokenFactory.createBranch(GUID.create(), "PriorBranch");
@@ -77,20 +81,20 @@ public class OrcsBranchTest {
       ITransaction tx = TokenFactory.createTransaction(SOURCE_TX_ID);
       Callable<ReadableBranch> callable = branchInterface.createCopyTxBranch(branch, author, tx, null);
 
-      Assert.assertNotNull(callable);
+      assertNotNull(callable);
       ReadableBranch priorBranch = callable.call();
 
       // in the database, on the common branch, the users are all created in transaction 8
       // the common branch will have one user named Joe Smith
 
-      int coreResult = qf.fromBranch(CoreBranches.COMMON).andNameEquals(ARTIFACT_NAME).getResults().getList().size();
-      Assert.assertEquals(1, coreResult);
+      int coreResult = query.fromBranch(CoreBranches.COMMON).andNameEquals(ARTIFACT_NAME).getResults().getList().size();
+      assertEquals(1, coreResult);
 
       // we copied the branch at transaction 7, so, on the copied branch there will not be any
       // user Joe Smith
 
-      int priorResult = qf.fromBranch(priorBranch).andNameEquals(ARTIFACT_NAME).getResults().getList().size();
-      Assert.assertEquals(0, priorResult);
+      int priorResult = query.fromBranch(priorBranch).andNameEquals(ARTIFACT_NAME).getResults().getList().size();
+      assertEquals(0, priorResult);
 
       // finally, we copy another branch at transaction id 8, this is the transaction that added the 
       // user Joe Smith, so if the code is correct, and the copy includes the final 
@@ -101,12 +105,11 @@ public class OrcsBranchTest {
       ITransaction tx1 = TokenFactory.createTransaction(CHANGED_TX_ID);
       Callable<ReadableBranch> postCallable = branchInterface.createCopyTxBranch(postbranch, author, tx1, null);
 
-      Assert.assertNotNull(postCallable);
+      assertNotNull(postCallable);
       ReadableBranch postBranch = postCallable.call();
 
-      int postResult = qf.fromBranch(postBranch).andNameEquals(ARTIFACT_NAME).getResults().getList().size();
-      Assert.assertEquals(1, postResult);
-
+      int postResult = query.fromBranch(postBranch).andNameEquals(ARTIFACT_NAME).getResults().getList().size();
+      assertEquals(1, postResult);
    }
 
    @Test
@@ -140,17 +143,15 @@ public class OrcsBranchTest {
 
    @Test
    public void testCommitBranchMissingArtifactsOnDestination() throws Exception {
-
-      QueryFactory qf = orcsApi.getQueryFactory(context);
       ArtifactReadable author =
-         qf.fromBranch(CoreBranches.COMMON).andNameEquals("OSEE System").getResults().getExactlyOne();
+         query.fromBranch(CoreBranches.COMMON).andNameEquals("OSEE System").getResults().getExactlyOne();
       // set up the initial branch
       IOseeBranch branch = TokenFactory.createBranch(GUID.create(), "BaseBranch");
 
       Callable<ReadableBranch> callableBranch = branchInterface.createTopLevelBranch(branch, author);
       ReadableBranch base = callableBranch.call();
       // put some changes on the base branch
-      OrcsTransaction tx = orcsApi.getTransactionFactory(context).createTransaction(base, author, "add some changes");
+      OrcsTransaction tx = txFactory.createTransaction(base, author, "add some changes");
       ArtifactWriteable folder = tx.createArtifact(CoreArtifactTypes.Folder, "BaseFolder");
       tx.commit();
 
@@ -162,10 +163,9 @@ public class OrcsBranchTest {
 
       ReadableBranch childBranch = callableChildBranch.call();
 
-      OrcsTransaction tx2 =
-         orcsApi.getTransactionFactory(context).createTransaction(childBranch, author, "modify and make new arts");
+      OrcsTransaction tx2 = txFactory.createTransaction(childBranch, author, "modify and make new arts");
       ArtifactReadable readableFolder =
-         qf.fromBranch(childBranch).andGuidsOrHrids(folder.getGuid()).getResults().getExactlyOne();
+         query.fromBranch(childBranch).andGuidsOrHrids(folder.getGuid()).getResults().getExactlyOne();
 
       // modifying this artifact should cause it to get introduced
       ArtifactWriteable writeableFolder = tx2.asWriteable(readableFolder);
@@ -202,7 +202,7 @@ public class OrcsBranchTest {
                   break;
                }
             }
-            Assert.assertTrue(contains);
+            assertTrue(contains);
          }
       }
    }
@@ -210,11 +210,11 @@ public class OrcsBranchTest {
    private void compareBranchChanges(List<ChangeItem> priorItems, List<ChangeItem> newItems) {
       Collections.sort(priorItems);
       Collections.sort(newItems);
-      Assert.assertEquals(priorItems, newItems);
+      assertEquals(priorItems, newItems);
    }
 
    private ArtifactReadable getSystemUser() throws OseeCoreException {
-      return orcsApi.getQueryFactory(context).fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      return query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
    }
 
 }

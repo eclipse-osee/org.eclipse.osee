@@ -11,7 +11,9 @@
 package org.eclipse.osee.orcs.api;
 
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -31,7 +33,6 @@ import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.OrcsTransaction;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -50,7 +51,7 @@ public class OrcsPortingTest {
    public TestRule osgi = integrationRule(this, "osee.demo.hsql");
 
    @OsgiService
-   private  OrcsApi orcsApi;
+   private OrcsApi orcsApi;
 
    private OrcsBranch branchApi;
    private QueryFactory query;
@@ -72,7 +73,6 @@ public class OrcsPortingTest {
 
    @Test
    public void testCreateBranch() throws Exception {
-
       String artifactGuid = GUID.create();
 
       String assocArtifactGuid = GUID.create();
@@ -92,43 +92,43 @@ public class OrcsPortingTest {
          query.fromBranch(finalTx.getBranch()).andTypeEquals(CoreArtifactTypes.Artifact).getResults();
       for (ArtifactReadable art : artifacts) {
          if (art.isOfType(CoreArtifactTypes.SoftwareRequirement)) {
-            Assert.assertEquals(2, art.getAttributes().size());
+            assertEquals(2, art.getAttributes().size());
 
-            Assert.assertEquals(artifactGuid, art.getGuid());
-            Assert.assertEquals("SecondRequirement", art.getName());
+            assertEquals(artifactGuid, art.getGuid());
+            assertEquals("SecondRequirement", art.getName());
 
             String actual = art.getSoleAttributeAsString(CoreAttributeTypes.Subsystem);
-            Assert.assertEquals("test changed", actual);
+            assertEquals("test changed", actual);
             // if there is a requirement with an attribute other than "test changed" then the above should fail
          } else if (art.isOfType(CoreArtifactTypes.Folder)) {
-            Assert.assertEquals("childBranch folder", art.getName());
+            assertEquals("childBranch folder", art.getName());
             // if there is any other folder like "folder after transaction" then the above should fail
          } else {
-            Assert.fail("incorrect artifact found on branch");
+            fail("incorrect artifact found on branch");
          }
       }
 
    }
-   
+
    @Test
    public void testForMultiplePortBranches() throws Exception {
-	      String artifactGuid = GUID.create();
-	      String differentGuid = GUID.create();
+      String artifactGuid = GUID.create();
+      String differentGuid = GUID.create();
 
-	      String assocArtifactGuid = GUID.create();
-	      setupAssociatedArtifact(assocArtifactGuid);
+      String assocArtifactGuid = GUID.create();
+      setupAssociatedArtifact(assocArtifactGuid);
 
-	      TransactionRecord mainBranchTx = createBaselineBranchAndArtifacts(artifactGuid);
-	      TransactionRecord differentBranchTx = createBaselineBranchAndArtifacts(differentGuid);
-	      
-	      IOseeBranch copyTxBranch = createCopyFromTransactionBranch(mainBranchTx, assocArtifactGuid);
-	      Assert.assertNotNull(copyTxBranch);
-	      
-	      // There should only be one Port Branch per associated artifact. Expecting an exception
-	      thrown.expect(OseeStateException.class);
-	      thrown.expectMessage(String.format("Existing port branch creation detected for [%s]", branchString));
-	      IOseeBranch failedBranch = createCopyFromTransactionBranch(differentBranchTx, assocArtifactGuid);
-	      Assert.fail(); // should never get here due to thrown exception
+      TransactionRecord mainBranchTx = createBaselineBranchAndArtifacts(artifactGuid);
+      TransactionRecord differentBranchTx = createBaselineBranchAndArtifacts(differentGuid);
+
+      IOseeBranch copyTxBranch = createCopyFromTransactionBranch(mainBranchTx, assocArtifactGuid);
+      assertNotNull(copyTxBranch);
+
+      // There should only be one Port Branch per associated artifact. Expecting an exception
+      thrown.expect(OseeStateException.class);
+      thrown.expectMessage(String.format("Existing port branch creation detected for [%s]", branchString));
+      createCopyFromTransactionBranch(differentBranchTx, assocArtifactGuid);
+      fail(); // should never get here due to thrown exception
    }
 
    private TransactionRecord createBaselineBranchAndArtifacts(String artifactGuid) throws Exception {
@@ -142,16 +142,12 @@ public class OrcsPortingTest {
       ArtifactWriteable baseReq = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "BaseRequirement");
       baseReq.setSoleAttributeFromString(CoreAttributeTypes.Subsystem, "Test");
 
-      
-
       OrcsTransaction tx2 = txFactory.createTransaction(branch, author, "add another requirement");
       ArtifactWriteable nextReq =
          tx2.createArtifact(CoreArtifactTypes.SoftwareRequirement, "SecondRequirement", artifactGuid);
       nextReq.setSoleAttributeFromString(CoreAttributeTypes.Subsystem, "Test2");
 
-      TransactionRecord commitTx = tx2.commit();
-     
-      return commitTx;
+      return tx2.commit();
    }
 
    private void setupAssociatedArtifact(String associatedArtifactGuid) throws Exception {
@@ -207,7 +203,7 @@ public class OrcsPortingTest {
       ArtifactReadable readableReq =
          query.fromBranch(CoreBranches.COMMON).andGuidsOrHrids(assocArtifactGuid).getResults().getExactlyOne();
 
-      Assert.assertNotNull(readableReq);
+      assertNotNull(readableReq);
       // the new branch will contain two transactions -
       return branchApi.createPortBranch(branch, author, transactionToCopy, readableReq).call();
    }

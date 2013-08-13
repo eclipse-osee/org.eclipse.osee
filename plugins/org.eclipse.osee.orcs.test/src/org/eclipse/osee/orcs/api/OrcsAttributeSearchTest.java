@@ -11,6 +11,9 @@
 package org.eclipse.osee.orcs.api;
 
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,15 +26,12 @@ import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -65,7 +65,7 @@ public class OrcsAttributeSearchTest {
       List<ArtifactReadable> moreArts = resultSet.getList();
 
       for (ArtifactReadable artifact : moreArts) {
-         Assert.assertTrue(artifact.getLocalId() != 7);
+         assertTrue(artifact.getLocalId() != 7);
       }
    }
 
@@ -77,31 +77,30 @@ public class OrcsAttributeSearchTest {
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
       List<ArtifactReadable> moreArts = resultSet.getList();
 
-      Assert.assertEquals(1, moreArts.size());
-      Assert.assertEquals(1, builder.getCount());
+      assertEquals(1, moreArts.size());
+      assertEquals(1, builder.getCount());
 
-      Map<Integer, ArtifactReadable> lookup = creatLookup(moreArts);
+      Map<Integer, ArtifactReadable> lookup = createLookup(moreArts);
       ArtifactReadable art7 = lookup.get(7);
 
       //Test loading name attributes
-      Assert.assertEquals(art7.getSoleAttributeAsString(CoreAttributeTypes.Name), "User Groups");
+      assertEquals(art7.getSoleAttributeAsString(CoreAttributeTypes.Name), "User Groups");
    }
 
    @Test
    public void testWTCAttributeEqualSearch() throws OseeCoreException {
-      BranchCache branchCache = orcsApi.getBranchCache();
-      Branch branch = branchCache.getBySoleName("SAW_Bld_1");
       QueryBuilder builder =
-         queryFactory.fromBranch(branch).and(CoreAttributeTypes.WordTemplateContent, "commands",
+         queryFactory.fromBranch(TestBranches.SAW_Bld_1).and(CoreAttributeTypes.WordTemplateContent, "commands",
             TokenDelimiterMatch.ANY, TokenOrderType.MATCH_ORDER, CaseType.IGNORE_CASE,
             MatchTokenCountType.IGNORE_TOKEN_COUNT);
+
+      assertEquals(3, builder.getCount());
 
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
       List<ArtifactReadable> moreArts = resultSet.getList();
 
-      Assert.assertFalse(moreArts.isEmpty());
-      Assert.assertEquals(3, moreArts.size());
-      Assert.assertEquals(3, builder.getCount());
+      assertFalse(moreArts.isEmpty());
+      assertEquals(3, moreArts.size());
    }
 
    @Test
@@ -111,15 +110,15 @@ public class OrcsAttributeSearchTest {
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
       List<ArtifactReadable> moreArts = resultSet.getList();
 
-      Assert.assertEquals(1, moreArts.size());
-      Assert.assertEquals(1, builder.getCount());
+      assertEquals(1, moreArts.size());
+      assertEquals(1, builder.getCount());
 
-      Map<Integer, ArtifactReadable> lookup = creatLookup(moreArts);
+      Map<Integer, ArtifactReadable> lookup = createLookup(moreArts);
       ArtifactReadable art8 = lookup.get(8);
-      Assert.assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.Name), "Everyone");
+      assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.Name), "Everyone");
    }
 
-   private Map<Integer, ArtifactReadable> creatLookup(List<ArtifactReadable> arts) {
+   private Map<Integer, ArtifactReadable> createLookup(List<ArtifactReadable> arts) {
       Map<Integer, ArtifactReadable> lookup = new HashMap<Integer, ArtifactReadable>();
       for (ArtifactReadable artifact : arts) {
          lookup.put(artifact.getLocalId(), artifact);

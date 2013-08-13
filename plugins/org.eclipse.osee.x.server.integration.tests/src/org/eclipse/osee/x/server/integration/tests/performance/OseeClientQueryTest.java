@@ -92,21 +92,21 @@ public class OseeClientQueryTest {
    }
 
    @Test
-   public void SearchForArtifactByGuid() throws OseeCoreException {
+   public void searchForArtifactByGuid() throws OseeCoreException {
       final int EXPECTED_RESULTS = 1;
       SearchResult results = createClient.createQueryBuilder(COMMON).andGuidsOrHrids(GUID1).getSearchResult();
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
-   public void SearchForArtifactByGuids() throws OseeCoreException {
+   public void searchForArtifactByGuids() throws OseeCoreException {
       final int EXPECTED_RESULTS = 2;
       SearchResult results = createClient.createQueryBuilder(COMMON).andGuidsOrHrids(GUID1, GUID2).getSearchResult();
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
-   public void SearchForArtifactByGuidsExcludeCache() throws OseeCoreException {
+   public void searchForArtifactByGuidsExcludeCache() throws OseeCoreException {
       final int EXPECTED_RESULTS = 2;
       SearchResult results =
          createClient.createQueryBuilder(COMMON).andGuidsOrHrids(GUID1, GUID2).excludeCache().getSearchResult();
@@ -114,7 +114,7 @@ public class OseeClientQueryTest {
    }
 
    @Test
-   public void SearchForArtifactByGuidsIncludeCache() throws OseeCoreException {
+   public void searchForArtifactByGuidsIncludeCache() throws OseeCoreException {
       final int EXPECTED_RESULTS = 2;
       SearchResult results =
          createClient.createQueryBuilder(COMMON).andGuidsOrHrids(GUID1, GUID2).includeCache().getSearchResult();
@@ -122,35 +122,35 @@ public class OseeClientQueryTest {
    }
 
    @Test
-   public void SearchForArtifactByHrid() throws OseeCoreException {
+   public void searchForArtifactByHrid() throws OseeCoreException {
       final int EXPECTED_RESULTS = 1;
       SearchResult results = createClient.createQueryBuilder(COMMON).andGuidsOrHrids(HRID1).getSearchResult();
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
-   public void SearchForArtifactByHrids() throws OseeCoreException {
+   public void searchForArtifactByHrids() throws OseeCoreException {
       final int EXPECTED_RESULTS = 2;
       SearchResult results = createClient.createQueryBuilder(COMMON).andGuidsOrHrids(HRID1, HRID2).getSearchResult();
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
-   public void SearchForArtifactByLocalId() throws OseeCoreException {
+   public void searchForArtifactByLocalId() throws OseeCoreException {
       final int EXPECTED_RESULTS = 1;
       SearchResult results = createClient.createQueryBuilder(COMMON).andLocalId(9).getSearchResult();
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
-   public void SearchForArtifactByLocalIds() throws OseeCoreException {
+   public void searchForArtifactByLocalIds() throws OseeCoreException {
       final int EXPECTED_RESULTS = 2;
       SearchResult results = createClient.createQueryBuilder(COMMON).andLocalId(19, 9).getSearchResult();
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
-   public void SearchForArtifactByName() throws OseeCoreException {
+   public void searchForArtifactByName() throws OseeCoreException {
       final int EXPECTED_RESULTS = 1;
       SearchResult results = createClient.createQueryBuilder(COMMON).andNameEquals("Joe Smith").getSearchResult();
       assertEquals(EXPECTED_RESULTS, results.getTotal());
