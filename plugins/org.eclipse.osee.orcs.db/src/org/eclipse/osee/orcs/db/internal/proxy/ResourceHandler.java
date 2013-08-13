@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 import org.eclipse.osee.orcs.db.internal.util.BinaryContentUtils;
 import org.eclipse.osee.orcs.db.internal.util.ByteStreamResource;
 
@@ -43,8 +44,7 @@ public class ResourceHandler implements DataHandler {
       Conditions.checkNotNull(path, "resource path");
 
       IResourceLocator locator = resourceManager.getResourceLocator(path);
-      Conditions.checkNotNull(locator, "resource locator", "Unable to locate resource: [%s]",
-         dataResource.getStorageName());
+      Conditions.checkNotNull(locator, "resource locator", "Unable to locate resource: [%s]", path);
 
       IResource resource = resourceManager.acquire(locator, DEFAULT_OPTIONS);
       String mimeType = BinaryContentUtils.getContentType(resource);
@@ -55,8 +55,7 @@ public class ResourceHandler implements DataHandler {
          inputStream = resource.getContent();
          data = Lib.inputStreamToBytes(inputStream);
       } catch (IOException ex) {
-         throw new OseeCoreException(ex, "Error acquiring resource - name[%s] locator[%s]",
-            dataResource.getStorageName(), dataResource.getLocator());
+         throw new OseeCoreException(ex, "Error acquiring resource - [%s]", dataResource);
       } finally {
          Lib.close(inputStream);
       }
@@ -72,7 +71,10 @@ public class ResourceHandler implements DataHandler {
    @Override
    public void save(long storageId, DataResource dataResource, byte[] rawContent) throws OseeCoreException {
       StringBuilder storageName = new StringBuilder();
-      storageName.append(dataResource.getStorageName());
+
+      ResourceNameResolver resolver = dataResource.getResolver();
+      Conditions.checkNotNull(resolver, "resource name resolver");
+      storageName.append(resolver.getStorageName());
       String extension = dataResource.getExtension();
       if (Strings.isValid(extension)) {
          storageName.append(".");
@@ -98,8 +100,7 @@ public class ResourceHandler implements DataHandler {
       Conditions.checkNotNull(path, "resource path");
 
       IResourceLocator locator = resourceManager.getResourceLocator(path);
-      Conditions.checkNotNull(locator, "resource locator", "Unable to locate resource: [%s]",
-         dataResource.getStorageName());
+      Conditions.checkNotNull(locator, "resource locator", "Unable to locate resource [%s]", dataResource);
 
       int result = resourceManager.delete(locator);
       if (IResourceManager.OK != result) {

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.proxy;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 
@@ -81,9 +79,8 @@ public class DataResource {
       return Strings.isValid(getLocator());
    }
 
-   public String getStorageName() throws OseeCoreException {
-      ResourceNameResolver resolver = getResolver();
-      Conditions.checkNotNull(resolver, "resource name resolver");
-      return resolver.getStorageName();
+   @Override
+   public String toString() {
+      return "DataResource [resolver=" + resolver + ", contentType=" + contentType + ", encoding=" + encoding + ", extension=" + extension + ", locator=" + locator + "]";
    }
 }

@@ -115,14 +115,6 @@ public class DataResourceTest {
       Assert.assertEquals(resolver, actual);
    }
 
-   @Test(expected = OseeCoreException.class)
-   public void testGetStorageNameException() throws OseeCoreException {
-      resource.setResolver(null);
-      Assert.assertNull(resource.getResolver());
-
-      resource.getStorageName();
-   }
-
    @Test
    public void testGetStorageName() throws OseeCoreException {
       resource.setResolver(null);
@@ -131,7 +123,7 @@ public class DataResourceTest {
       ResourceNameResolver resolver = new MockResourceNameResolver("hello", "goodbye");
       resource.setResolver(resolver);
 
-      Assert.assertEquals("hello", resource.getStorageName());
+      Assert.assertEquals("hello", resolver.getStorageName());
    }
 
    @Parameters
