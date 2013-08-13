@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.transaction;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -47,16 +46,16 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
    private final TransactionCache transactionCache;
    private final TransactionData transactionData;
 
-   private final CheckProvider checksProvider;
+   private final TransactionProcessorProvider provider;
    private final TransactionWriter writer;
 
-   public CommitTransactionDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, BranchCache branchCache, TransactionCache transactionCache, TransactionRecordFactory factory, CheckProvider checksProvider, TransactionWriter writer, TransactionData transactionData) {
+   public CommitTransactionDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, BranchCache branchCache, TransactionCache transactionCache, TransactionRecordFactory factory, TransactionProcessorProvider provider, TransactionWriter writer, TransactionData transactionData) {
       super(logger, session, dbService, String.format("Committing Transaction: [%s] for branch [%s]",
          transactionData.getComment(), transactionData.getBranch()));
       this.branchCache = branchCache;
       this.factory = factory;
       this.transactionCache = transactionCache;
-      this.checksProvider = checksProvider;
+      this.provider = provider;
 
       this.writer = writer;
       this.transactionData = transactionData;
@@ -64,6 +63,13 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
 
    private int getNextTransactionId() throws OseeDataStoreException, OseeCoreException {
       return getDatabaseService().getSequence().getNextTransactionId();
+   }
+
+   private void process(TxWritePhaseEnum phase) throws OseeCoreException {
+      Iterable<TransactionProcessor> processors = provider.getProcessor(phase);
+      for (TransactionProcessor processor : processors) {
+         processor.process(this, getSession(), transactionData);
+      }
    }
 
    @Override
@@ -81,10 +87,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       Conditions.checkNotNullOrEmpty(comment, "transaction comment");
       Conditions.checkNotNullOrEmpty(txData, "artifacts modified");
 
-      Collection<TransactionCheck> checks = checksProvider.getTransactionChecks();
-      for (TransactionCheck check : checks) {
-         check.verify(this, getSession(), transactionData);
-      }
+      process(TxWritePhaseEnum.BEFORE_TX_WRITE);
 
       TransactionRecord txRecord = createTransactionRecord(branch, author, comment, getNextTransactionId());
       writer.write(connection, txRecord, txData);
@@ -94,6 +97,9 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
          branchCache.storeItems(branch);
       }
       transactionCache.cache(txRecord);
+
+      process(TxWritePhaseEnum.AFTER_TX_WRITE);
+
       return new TransactionResultImpl(txRecord, txData);
    }
 

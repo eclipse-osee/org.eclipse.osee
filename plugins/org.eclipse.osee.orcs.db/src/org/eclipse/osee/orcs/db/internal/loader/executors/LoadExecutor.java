@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.loader.LoadSqlContext;
-import org.eclipse.osee.orcs.db.internal.loader.SqlArtifactLoader;
+import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 
 /**
@@ -32,7 +32,7 @@ public class LoadExecutor extends AbstractLoadExecutor {
    private final int branchId;
    private final Collection<Integer> artifactIds;
 
-   public LoadExecutor(SqlArtifactLoader loader, IOseeDatabaseService dbService, OrcsSession session, int branchId, Collection<Integer> artifactIds) {
+   public LoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, OrcsSession session, int branchId, Collection<Integer> artifactIds) {
       super(loader, dbService);
       this.session = session;
       this.branchId = branchId;

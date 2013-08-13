@@ -36,7 +36,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 /**
  * @author Ryan D. Brooks
  */
-public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Void> {
+public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Integer> {
 
    private static final String UPDATE_TXS_DETAILS_COMMENT =
       "UPDATE osee_tx_details SET osee_comment = replace(osee_comment, ?, ?) WHERE osee_comment like ?";
@@ -82,12 +82,12 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Void
    }
 
    @Override
-   protected Void handleTxWork(OseeConnection connection) throws OseeCoreException {
+   protected Integer handleTxWork(OseeConnection connection) throws OseeCoreException {
       Conditions.checkNotNull(txIdsToDelete, "transaction ids to delete");
       Conditions.checkExpressionFailOnTrue(txIdsToDelete.isEmpty(), "transaction ids to delete cannot be empty");
 
       List<ITransaction> txIds = sortTxs(txIdsToDelete);
-
+      int purgeCount = 0;
       for (ITransaction tx : txIds) {
          Integer txIdToDelete = tx.getGuid();
          getLogger().info("Purging Transaction: [%s]", txIdToDelete);
@@ -130,10 +130,10 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Void
          computeNewTxCurrents(connection, updateData, "attr_id", "osee_attribute", attrs);
          computeNewTxCurrents(connection, updateData, "rel_link_id", "osee_relation_link", rels);
          getDatabaseService().runBatchUpdate(connection, UPDATE_TX_CURRENT, updateData);
-
+         purgeCount++;
          getLogger().info("Transaction: [%s] - purged", txIdToDelete);
       }
-      return null;
+      return purgeCount;
    }
 
    private void computeNewTxCurrents(OseeConnection connection, Collection<Object[]> updateData, String itemId, String tableName, Map<Integer, IdJoinQuery> affected) throws OseeCoreException {

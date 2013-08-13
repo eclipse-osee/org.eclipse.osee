@@ -10,18 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.transaction;
 
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.BranchDataStore;
+import org.eclipse.osee.orcs.core.ds.TxDataStore;
 import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManagerImpl.TxDataHandlerFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.OrcsTransaction;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class TransactionFactoryImplTest {
    // @formatter:off
    @Mock private Log logger;
    @Mock private OrcsSession session;
-   @Mock private BranchDataStore branchDataStore;
+   @Mock private TxDataStore dataStore;
    @Mock private ArtifactProxyFactory artifactFactory;
    @Mock private TxDataHandlerFactory dataFactory;
    @Mock private ArtifactReadable expectedAuthor;
@@ -54,7 +54,7 @@ public class TransactionFactoryImplTest {
    @Before
    public void init() {
       MockitoAnnotations.initMocks(this);
-      factory = new TransactionFactoryImpl(logger, session, branchDataStore, artifactFactory, dataFactory);
+      factory = new TransactionFactoryImpl(logger, session, dataStore, artifactFactory, dataFactory);
    }
 
    @Test

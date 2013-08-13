@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
-import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
@@ -34,7 +33,7 @@ import org.eclipse.osee.orcs.core.ds.TransactionData;
 /**
  * @author Roberto E. Escobar
  */
-public class ComodificationCheck implements TransactionCheck {
+public class ComodificationCheck implements TransactionProcessor {
 
    private final DataLoaderFactory dataLoader;
 
@@ -43,12 +42,11 @@ public class ComodificationCheck implements TransactionCheck {
    }
 
    @Override
-   public void verify(HasCancellation cancellation, OrcsSession session, TransactionData txData) throws OseeCoreException {
+   public void process(HasCancellation cancellation, OrcsSession session, TransactionData txData) throws OseeCoreException {
       OnLoadChecker checker = new OnLoadChecker();
 
-      for (ArtifactTransactionData data : txData.getTxData()) {
-         data.accept(checker);
-      }
+      cancellation.checkForCancelled();
+      txData.accept(checker);
 
       if (!checker.getArtifactIds().isEmpty()) {
          DataLoader loader = dataLoader.fromBranchAndArtifactIds(session, txData.getBranch(), checker.getArtifactIds());

@@ -16,15 +16,11 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
 /**
  * @author Roberto E. Escobar
  */
-public interface OrcsDataStore extends OrcsTypesDataStore {
+public interface OrcsDataStore {
 
-   BranchDataStore getBranchDataStore();
-
-   DataStoreAdmin getDataStoreAdmin();
+   OrcsTypesDataStore getTypesDataStore();
 
    DataModule createDataModule(ArtifactTypes artifactTypes, AttributeTypes attributeTypes);
-
-   QueryEngine getQueryEngine();
 
    QueryEngineIndexer getQueryEngineIndexer();
 

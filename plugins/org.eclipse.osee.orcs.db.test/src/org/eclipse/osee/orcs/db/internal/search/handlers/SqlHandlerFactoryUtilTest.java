@@ -8,14 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.search;
+package org.eclipse.osee.orcs.db.internal.search.handlers;
 
+import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createArtifactSqlHandlerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.services.IdentityService;
@@ -34,18 +34,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
-import org.eclipse.osee.orcs.db.internal.search.handlers.AllArtifactsSqlHandler;
-import org.eclipse.osee.orcs.db.internal.search.handlers.ArtifactGuidSqlHandler;
-import org.eclipse.osee.orcs.db.internal.search.handlers.ArtifactHridsSqlHandler;
-import org.eclipse.osee.orcs.db.internal.search.handlers.ArtifactIdsSqlHandler;
-import org.eclipse.osee.orcs.db.internal.search.handlers.ArtifactTypeSqlHandler;
-import org.eclipse.osee.orcs.db.internal.search.handlers.AttributeOtherSqlHandler;
-import org.eclipse.osee.orcs.db.internal.search.handlers.AttributeTokenSqlHandler;
-import org.eclipse.osee.orcs.db.internal.search.handlers.AttributeTypeExistsSqlHandler;
-import org.eclipse.osee.orcs.db.internal.search.handlers.RelatedToSqlHandler;
-import org.eclipse.osee.orcs.db.internal.search.handlers.RelationTypeExistsSqlHandler;
-import org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerPriority;
-import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
+import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 import org.eclipse.osee.orcs.db.internal.sql.HasDataPostProcessorFactory;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
@@ -61,13 +50,12 @@ import org.mockito.MockitoAnnotations;
  * 
  * @author Roberto E. Escobar
  */
-public class QuerySqlHandlerFactoryImplTest {
+public class SqlHandlerFactoryUtilTest {
 
    // @formatter:off
    @Mock private Log logger;
    @Mock private IdentityService identityService;
-   @Mock private TaggingEngine taggingEngine;
-   @Mock private ExecutorAdmin executorAdmin;
+   @Mock private TagProcessor tagProcessor;
    // @formatter:on
 
    private SqlHandlerFactory factory;
@@ -77,11 +65,7 @@ public class QuerySqlHandlerFactoryImplTest {
    public void setUp() {
       MockitoAnnotations.initMocks(this);
 
-      QueryModuleFactory queryModule = new QueryModuleFactory(logger, executorAdmin);
-
-      postProcessorFactory = queryModule.createAttributeKeywordPostProcessor(taggingEngine);
-      factory =
-         queryModule.createHandlerFactory(identityService, postProcessorFactory, taggingEngine.getTagProcessor());
+      factory = createArtifactSqlHandlerFactory(logger, identityService, tagProcessor, postProcessorFactory);
    }
 
    @SuppressWarnings("unchecked")
@@ -127,10 +111,10 @@ public class QuerySqlHandlerFactoryImplTest {
 
    @SuppressWarnings("rawtypes")
    private void assertSqlHandler(SqlHandler<?, ?> handler, Class<? extends SqlHandler> clazz, SqlHandlerPriority priority) {
-      assertHandler(handler, clazz, priority, logger, identityService, taggingEngine, executorAdmin);
+      assertHandler(handler, clazz, priority, logger, identityService, tagProcessor);
    }
 
-   private static void assertHandler(SqlHandler<?, ?> actual, Class<?> type, SqlHandlerPriority priority, Log logger, IdentityService idService, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin) {
+   private static void assertHandler(SqlHandler<?, ?> actual, Class<?> type, SqlHandlerPriority priority, Log logger, IdentityService idService, TagProcessor tagProcessor) {
       Assert.assertNotNull(actual);
       Assert.assertEquals(type, actual.getClass());
       Assert.assertEquals(logger, actual.getLogger());

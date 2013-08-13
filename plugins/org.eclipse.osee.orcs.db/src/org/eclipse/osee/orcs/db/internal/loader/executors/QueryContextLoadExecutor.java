@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.loader.LoadSqlContext;
-import org.eclipse.osee.orcs.db.internal.loader.SqlArtifactLoader;
+import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
@@ -33,7 +33,7 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
 
    private final QuerySqlContext queryContext;
 
-   public QueryContextLoadExecutor(SqlArtifactLoader loader, IOseeDatabaseService dbService, QuerySqlContext queryContext) {
+   public QueryContextLoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, QuerySqlContext queryContext) {
       super(loader, dbService);
       this.queryContext = queryContext;
    }

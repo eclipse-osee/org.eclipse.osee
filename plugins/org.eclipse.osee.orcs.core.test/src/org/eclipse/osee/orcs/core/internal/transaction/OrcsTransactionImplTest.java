@@ -38,9 +38,9 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
-import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
+import org.eclipse.osee.orcs.core.ds.TxDataStore;
 import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
@@ -70,7 +70,7 @@ public class OrcsTransactionImplTest {
    // @formatter:off
    @Mock private Log logger;
    @Mock private OrcsSession session;
-   @Mock private BranchDataStore dataStore;
+   @Mock private TxDataStore dataStore;
    @Mock private ArtifactProxyFactory artifactFactory;
    @Mock private TxDataManager txManager;
    @Mock private IOseeBranch branch;

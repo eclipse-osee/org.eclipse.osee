@@ -80,6 +80,7 @@ public class OrcsApiImpl implements OrcsApi {
    private TxDataHandlerFactoryImpl txUpdateFactory;
    private OrcsTypesModule typesModule;
    private OrcsSession systemSession;
+   private DataModule module;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -128,12 +129,12 @@ public class OrcsApiImpl implements OrcsApi {
          }
       };
 
-      typesModule = new OrcsTypesModule(logger, dataStore, hierarchyProvider);
+      typesModule = new OrcsTypesModule(logger, dataStore.getTypesDataStore(), hierarchyProvider);
       typesModule.start(getSystemSession());
 
       OrcsTypes orcsTypes = typesModule.createOrcsTypes(getSystemSession());
 
-      DataModule module = dataStore.createDataModule(orcsTypes.getArtifactTypes(), orcsTypes.getAttributeTypes());
+      module = dataStore.createDataModule(orcsTypes.getArtifactTypes(), orcsTypes.getAttributeTypes());
 
       RelationFactory relationFactory = new RelationFactory(orcsTypes.getRelationTypes());
 
@@ -155,7 +156,7 @@ public class OrcsApiImpl implements OrcsApi {
       loaderFactory = new ArtifactLoaderFactoryImpl(module.getDataLoaderFactory(), builderFactory);
 
       queryModule =
-         new QueryModule(logger, dataStore.getQueryEngine(), loaderFactory, module.getDataLoaderFactory(),
+         new QueryModule(logger, module.getQueryEngine(), loaderFactory, module.getDataLoaderFactory(),
             orcsTypes.getArtifactTypes(), orcsTypes.getAttributeTypes());
 
       indexerModule = new IndexerModule(logger, preferences, executorAdmin, dataStore.getQueryEngineIndexer());
@@ -212,20 +213,20 @@ public class OrcsApiImpl implements OrcsApi {
             return new FutureTask<ArtifactReadable>(callable);
          }
       };
-      return new OrcsBranchImpl(logger, session, dataStore.getBranchDataStore(), cacheService.getBranchCache(),
+      return new OrcsBranchImpl(logger, session, module.getBranchDataStore(), cacheService.getBranchCache(),
          cacheService.getTransactionCache(), systemUser, getOrcsTypes(context));
    }
 
    @Override
    public TransactionFactory getTransactionFactory(ApplicationContext context) {
       OrcsSession session = getSession(context);
-      return new TransactionFactoryImpl(logger, session, dataStore.getBranchDataStore(), proxyFactory, txUpdateFactory);
+      return new TransactionFactoryImpl(logger, session, module.getTxDataStore(), proxyFactory, txUpdateFactory);
    }
 
    @Override
    public OrcsAdmin getAdminOps(ApplicationContext context) {
       OrcsSession session = getSession(context);
-      return new OrcsAdminImpl(logger, session, dataStore.getDataStoreAdmin());
+      return new OrcsAdminImpl(logger, session, module.getDataStoreAdmin());
    }
 
    @Override

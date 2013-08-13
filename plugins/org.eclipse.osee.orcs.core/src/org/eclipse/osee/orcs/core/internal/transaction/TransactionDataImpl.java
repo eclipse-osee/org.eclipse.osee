@@ -12,7 +12,9 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
+import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -54,4 +56,10 @@ public class TransactionDataImpl implements TransactionData {
       return data;
    }
 
+   @Override
+   public void accept(OrcsVisitor visitor) throws OseeCoreException {
+      for (ArtifactTransactionData data : getTxData()) {
+         data.accept(visitor);
+      }
+   }
 }

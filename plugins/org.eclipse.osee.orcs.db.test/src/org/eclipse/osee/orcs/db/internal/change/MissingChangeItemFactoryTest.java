@@ -32,18 +32,15 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.ArtifactDataHandler;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.AttributeDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
+import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.core.ds.RelationData;
-import org.eclipse.osee.orcs.core.ds.RelationDataHandler;
 import org.eclipse.osee.orcs.core.ds.VersionData;
-import org.eclipse.osee.orcs.db.internal.loader.DataModuleFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,7 +67,6 @@ public class MissingChangeItemFactoryTest {
    @Mock private Branch destBranch;
    @Mock private TransactionRecord sourceTx;
    @Mock private TransactionRecord destTx;
-   @Mock private DataModuleFactory dataModuleFactory;
    @Mock private OrcsSession session;
    @Mock private HasCancellation cancellation;
    // @formatter:on
@@ -115,8 +111,7 @@ public class MissingChangeItemFactoryTest {
          destDataLoader);
       when(sourceTx.getBranch()).thenReturn(sourceBranch);
       when(destTx.getBranch()).thenReturn(destBranch);
-      when(dataModuleFactory.getDataLoaderFactory()).thenReturn(dataLoaderFactory);
-      changeItemFactory = new MissingChangeItemFactoryImpl(dataModuleFactory, identityService);
+      changeItemFactory = new MissingChangeItemFactoryImpl(identityService, dataLoaderFactory);
    }
 
    @Test
@@ -127,21 +122,21 @@ public class MissingChangeItemFactoryTest {
          public Object answer(InvocationOnMock invocation) throws Throwable {
             LoadDataHandler handler = (LoadDataHandler) invocation.getArguments()[1];
 
-            AttributeDataHandler attributeDataHandler = handler.getAttributeDataHandler();
-            if (attributeDataHandler != null && attributeData != null) {
-               for (AttributeData data : attributeData) {
-                  attributeDataHandler.onData(data);
-               }
-            }
-
-            ArtifactDataHandler artifactDataHandler = handler.getArtifactDataHandler();
+            OrcsDataHandler<ArtifactData> artifactDataHandler = handler.getArtifactDataHandler();
             if (artifactDataHandler != null && artifactData != null) {
                for (ArtifactData data : artifactData) {
                   artifactDataHandler.onData(data);
                }
             }
 
-            RelationDataHandler relationDataHandler = handler.getRelationDataHandler();
+            OrcsDataHandler<AttributeData> attributeDataHandler = handler.getAttributeDataHandler();
+            if (attributeDataHandler != null && attributeData != null) {
+               for (AttributeData data : attributeData) {
+                  attributeDataHandler.onData(data);
+               }
+            }
+
+            OrcsDataHandler<RelationData> relationDataHandler = handler.getRelationDataHandler();
             if (relationDataHandler != null && relationData != null) {
                for (RelationData data : relationData) {
                   relationDataHandler.onData(data);
@@ -158,7 +153,7 @@ public class MissingChangeItemFactoryTest {
          public Object answer(InvocationOnMock invocation) throws Throwable {
             LoadDataHandler handler = (LoadDataHandler) invocation.getArguments()[1];
 
-            ArtifactDataHandler artifactDataHandler = handler.getArtifactDataHandler();
+            OrcsDataHandler<ArtifactData> artifactDataHandler = handler.getArtifactDataHandler();
             if (artifactDataHandler != null && destArtifactData != null) {
                for (ArtifactData data : destArtifactData) {
                   artifactDataHandler.onData(data);

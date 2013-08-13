@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,24 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.transaction;
+package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface TransactionFactory {
+public interface TxDataStore {
 
-   OrcsTransaction createTransaction(IOseeBranch branch, ArtifactReadable userArtifact, String comment) throws OseeCoreException;
+   Callable<TransactionResult> commitTransaction(OrcsSession session, TransactionData transaction);
 
-   // Temp method
+   Callable<Integer> purgeTransactions(OrcsSession session, Collection<? extends ITransaction> transactions);
+
    Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact);
 
-   Callable<Integer> purgeTransaction(Collection<? extends ITransaction> transactions);
 }

@@ -26,9 +26,9 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
-import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
+import org.eclipse.osee.orcs.core.ds.TxDataStore;
 import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
@@ -42,7 +42,7 @@ public class OrcsTransactionImpl implements OrcsTransaction {
    @SuppressWarnings("unused")
    private final Log logger;
    private final OrcsSession session;
-   private final BranchDataStore dataStore;
+   private final TxDataStore txDataStore;
    private final ArtifactProxyFactory factory;
 
    private final IOseeBranch branch;
@@ -53,11 +53,11 @@ public class OrcsTransactionImpl implements OrcsTransaction {
 
    private volatile boolean isCommitInProgress;
 
-   public OrcsTransactionImpl(Log logger, OrcsSession session, BranchDataStore dataStore, ArtifactProxyFactory factory, TxDataManager manager, IOseeBranch branch) {
+   public OrcsTransactionImpl(Log logger, OrcsSession session, TxDataStore txDataStore, ArtifactProxyFactory factory, TxDataManager manager, IOseeBranch branch) {
       super();
       this.logger = logger;
       this.session = session;
-      this.dataStore = dataStore;
+      this.txDataStore = txDataStore;
       this.factory = factory;
       this.manager = manager;
       this.branch = branch;
@@ -108,7 +108,7 @@ public class OrcsTransactionImpl implements OrcsTransaction {
    private Callable<TransactionResult> createCommit() throws OseeCoreException {
       List<ArtifactTransactionData> changes = manager.getChanges();
       TransactionData data = new TransactionDataImpl(getBranch(), getAuthor(), getComment(), changes);
-      return dataStore.commitTransaction(session, data);
+      return txDataStore.commitTransaction(session, data);
    }
 
    @Override

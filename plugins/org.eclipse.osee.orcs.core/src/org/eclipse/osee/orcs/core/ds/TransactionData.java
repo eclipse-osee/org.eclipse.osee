@@ -14,7 +14,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
-public interface TransactionData {
+public interface TransactionData extends OrcsVisitable {
 
    IOseeBranch getBranch();
 
@@ -23,4 +23,5 @@ public interface TransactionData {
    String getComment();
 
    List<ArtifactTransactionData> getTxData();
+
 }

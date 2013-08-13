@@ -43,7 +43,7 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class SqlArtifactLoader {
+public class SqlObjectLoader {
 
    private final ArtifactLoadProcessor artifactProcessor;
    private final AttributeLoadProcessor attributeProcessor;
@@ -54,7 +54,7 @@ public class SqlArtifactLoader {
    private final SqlProvider sqlProvider;
    private final SqlHandlerFactory handlerFactory;
 
-   public SqlArtifactLoader(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory) {
+   public SqlObjectLoader(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory) {
       super();
       this.logger = logger;
       this.dbService = dbService;

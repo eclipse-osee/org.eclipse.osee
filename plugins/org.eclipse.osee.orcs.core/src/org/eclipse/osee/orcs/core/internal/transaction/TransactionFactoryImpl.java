@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.BranchDataStore;
+import org.eclipse.osee.orcs.core.ds.TxDataStore;
 import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManagerImpl.TxDataHandlerFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -32,14 +32,14 @@ public class TransactionFactoryImpl implements TransactionFactory {
 
    private final Log logger;
    private final OrcsSession session;
-   private final BranchDataStore branchDataStore;
+   private final TxDataStore txDataStore;
    private final ArtifactProxyFactory artifactFactory;
    private final TxDataHandlerFactory handlerF;
 
-   public TransactionFactoryImpl(Log logger, OrcsSession session, BranchDataStore branchDataStore, ArtifactProxyFactory artifactFactory, TxDataHandlerFactory handlerF) {
+   public TransactionFactoryImpl(Log logger, OrcsSession session, TxDataStore txDataStore, ArtifactProxyFactory artifactFactory, TxDataHandlerFactory handlerF) {
       this.logger = logger;
       this.session = session;
-      this.branchDataStore = branchDataStore;
+      this.txDataStore = txDataStore;
       this.artifactFactory = artifactFactory;
       this.handlerF = handlerF;
    }
@@ -52,7 +52,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
 
       TxDataManager manager = new TxDataManagerImpl(artifactFactory, handlerF);
       OrcsTransactionImpl orcsTxn =
-         new OrcsTransactionImpl(logger, session, branchDataStore, artifactFactory, manager, branch);
+         new OrcsTransactionImpl(logger, session, txDataStore, artifactFactory, manager, branch);
       orcsTxn.setComment(comment);
       orcsTxn.setAuthor(author);
       return orcsTxn;
@@ -60,11 +60,11 @@ public class TransactionFactoryImpl implements TransactionFactory {
 
    @Override
    public Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
-      return branchDataStore.createUnsubscribeTx(userArtifact, groupArtifact);
+      return txDataStore.createUnsubscribeTx(userArtifact, groupArtifact);
    }
 
    @Override
-   public Callable<?> purgeTransaction(Collection<? extends ITransaction> transactions) {
-      return branchDataStore.purgeTransactions(session, transactions);
+   public Callable<Integer> purgeTransaction(Collection<? extends ITransaction> transactions) {
+      return txDataStore.purgeTransactions(session, transactions);
    }
 }

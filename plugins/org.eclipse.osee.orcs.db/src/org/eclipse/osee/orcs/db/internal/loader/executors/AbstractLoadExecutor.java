@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadOptions;
 import org.eclipse.osee.orcs.db.internal.loader.LoadSqlContext;
-import org.eclipse.osee.orcs.db.internal.loader.SqlArtifactLoader;
+import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
@@ -27,10 +27,10 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
  */
 public abstract class AbstractLoadExecutor {
 
-   private final SqlArtifactLoader loader;
+   private final SqlObjectLoader loader;
    private final IOseeDatabaseService dbService;
 
-   protected AbstractLoadExecutor(SqlArtifactLoader loader, IOseeDatabaseService dbService) {
+   protected AbstractLoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService) {
       super();
       this.loader = loader;
       this.dbService = dbService;

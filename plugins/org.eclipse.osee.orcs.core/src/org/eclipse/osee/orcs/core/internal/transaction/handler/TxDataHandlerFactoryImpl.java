@@ -15,6 +15,7 @@ import java.util.Map;
 import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
+import org.eclipse.osee.orcs.core.ds.OrcsVisitorAdapter;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactVisitor;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManagerImpl.TxDataHandlerFactory;
 import org.eclipse.osee.orcs.data.ArtifactWriteable;
@@ -39,6 +40,6 @@ public class TxDataHandlerFactoryImpl implements TxDataHandlerFactory {
    @Override
    public OrcsVisitor createOnSuccessHandler(Map<String, ArtifactWriteable> writeableArtifacts) {
       // Do Nothing on success;
-      return new NoOpOrcsVisitor();
+      return new OrcsVisitorAdapter();
    }
 }

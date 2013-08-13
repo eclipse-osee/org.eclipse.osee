@@ -11,17 +11,15 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.net.URI;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 
@@ -46,10 +44,4 @@ public interface BranchDataStore {
 
    Callable<URI> checkBranchExchangeIntegrity(OrcsSession session, URI fileToCheck);
 
-   Callable<TransactionResult> commitTransaction(OrcsSession session, TransactionData transaction);
-
-   Callable<?> purgeTransactions(OrcsSession session, Collection<? extends ITransaction> transactions);
-
-   // Temp
-   Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact);
 }

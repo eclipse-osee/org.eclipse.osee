@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search;
 
+import static java.util.Arrays.asList;
+import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createArtifactSqlHandlerFactory;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -25,7 +29,6 @@ import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -49,7 +52,8 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
-import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
+import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
+import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 import org.junit.Assert;
@@ -57,6 +61,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link QueryEngineImpl}
@@ -65,38 +71,43 @@ import org.mockito.MockitoAnnotations;
  */
 public class QueryEngineImplTest {
 
-   private static final Criteria<?> GUIDS = new CriteriaArtifactGuids(Arrays.asList(GUID.create(), GUID.create()));
-   private static final Criteria<?> IDS = new CriteriaArtifactIds(Arrays.asList(1, 2, 3, 4, 5));
-   private static final Criteria<?> HRIDS = new CriteriaArtifactHrids(Arrays.asList("ABCDE", "FGHIJ"));
-   private static final Criteria<?> TYPES = new CriteriaArtifactType(null, Arrays.asList(CoreArtifactTypes.CodeUnit),
-      false);
-   private static final Criteria<?> ATTRIBUTE = new CriteriaAttributeOther(CoreAttributeTypes.Name,
-      Arrays.asList("Hello"), Operator.EQUAL);
+   private static final String QUICK_SEARCH_VALUE = "hello1_two_three";
+   private static final String WORD_1 = "hello";
+   private static final String WORD_2 = "two";
+   private static final String WORD_3 = "three";
+   private static final long CODED_WORD_1 = 1520625L;
+   private static final long CODED_WORD_2 = 6106L;
+   private static final long CODED_WORD_3 = 981274L;
 
-   private static final Criteria<?> ATTR_TYPE_EXITS = new CriteriaAttributeTypeExists(
-      Arrays.asList(CoreAttributeTypes.Name));
+   private static final Criteria<?> GUIDS = new CriteriaArtifactGuids(asList(GUID.create(), GUID.create()));
+   private static final Criteria<?> IDS = new CriteriaArtifactIds(asList(1, 2, 3, 4, 5));
+   private static final Criteria<?> HRIDS = new CriteriaArtifactHrids(asList("ABCDE", "FGHIJ"));
+   private static final Criteria<?> TYPES = new CriteriaArtifactType(null, asList(CoreArtifactTypes.CodeUnit), false);
+   private static final Criteria<?> ATTRIBUTE = new CriteriaAttributeOther(CoreAttributeTypes.Name, asList("Hello"),
+      Operator.EQUAL);
+
+   private static final Criteria<?> ATTR_TYPE_EXITS = new CriteriaAttributeTypeExists(asList(CoreAttributeTypes.Name));
    private static final Criteria<?> REL_TYPE_EXISTS = new CriteriaRelationTypeExists(
       CoreRelationTypes.Default_Hierarchical__Child);
 
-   private static final Criteria<?> ATTRIBUTE_KEYWORD = new CriteriaAttributeKeywords(false, Arrays.asList(
-      CoreAttributeTypes.Name, CoreAttributeTypes.WordTemplateContent), null, "hello1_two_three",
+   private static final Criteria<?> ATTRIBUTE_KEYWORD = new CriteriaAttributeKeywords(false, asList(
+      CoreAttributeTypes.Name, CoreAttributeTypes.WordTemplateContent), null, QUICK_SEARCH_VALUE,
       TokenDelimiterMatch.ANY, TokenOrderType.MATCH_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT, CaseType.MATCH_CASE);
 
    private static final Criteria<?> RELATED_TO = new CriteriaRelatedTo(CoreRelationTypes.Default_Hierarchical__Child,
-      Arrays.asList(45, 61));
+      asList(45, 61));
 
    private static final Criteria<?> ALL_ARTIFACTS = new CriteriaAllArtifacts();
-   //   private static final Criteria TWO_TYPES = new CriteriaArtifactType(Arrays.asList(CoreArtifactTypes.CodeUnit,
-   //      CoreArtifactTypes.Artifact));
 
    // @formatter:off
    @Mock private Log logger;
    @Mock private IOseeDatabaseService dbService;
    @Mock private SqlProvider sqlProvider;
    @Mock private IdentityService identityService;
-   @Mock private ExecutorAdmin executorAdmin;
+   @Mock private TagProcessor tagProcessor;
+   @Mock private DataPostProcessorFactory<CriteriaAttributeKeywords> postProcessorFactory;
+
    @Mock private BranchCache branchCache;
-   @Mock private AttributeTypeCache attributeTypeCache;
    @Mock private OrcsSession session;
    // @formatter:on
 
@@ -113,15 +124,9 @@ public class QueryEngineImplTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      QueryModuleFactory queryModule = new QueryModuleFactory(logger, executorAdmin);
-
-      TaggingEngine taggingEngine = queryModule.createTaggingEngine();
-
-      DataPostProcessorFactory<CriteriaAttributeKeywords> postProcessorFactory =
-         queryModule.createAttributeKeywordPostProcessor(taggingEngine);
       SqlHandlerFactory handlerFactory =
-         queryModule.createHandlerFactory(identityService, postProcessorFactory, taggingEngine.getTagProcessor());
-      queryEngine = queryModule.createQueryEngine(dbService, handlerFactory, sqlProvider, branchCache);
+         createArtifactSqlHandlerFactory(logger, identityService, tagProcessor, postProcessorFactory);
+      queryEngine = new QueryEngineImpl(logger, dbService, sqlProvider, branchCache, handlerFactory);
 
       CriteriaSet criteriaSet = new CriteriaSet(CoreBranches.COMMON);
       QueryOptions options = new QueryOptions();
@@ -136,6 +141,22 @@ public class QueryEngineImplTest {
          CoreRelationTypes.Default_Hierarchical__Child.getGuid().intValue());
 
       when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");
+
+      doAnswer(new Answer<Void>() {
+
+         @Override
+         public Void answer(InvocationOnMock invocation) throws Throwable {
+            Object[] args = invocation.getArguments();
+            String value = (String) args[0];
+            assertEquals(QUICK_SEARCH_VALUE, value);
+
+            TagCollector collector = (TagCollector) args[1];
+            collector.addTag(WORD_1, CODED_WORD_1);
+            collector.addTag(WORD_2, CODED_WORD_2);
+            collector.addTag(WORD_3, CODED_WORD_3);
+            return null;
+         }
+      }).when(tagProcessor).collectFromString(eq(QUICK_SEARCH_VALUE), any(TagCollector.class));
    }
 
    @Test
@@ -453,9 +474,9 @@ public class QueryEngineImplTest {
       Assert.assertEquals(1, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      Assert.assertEquals(1520625L, iterator.next()); // Coded Hello
-      Assert.assertEquals(6106L, iterator.next()); // Coded two
-      Assert.assertEquals(981274L, iterator.next()); // Coded three
+      Assert.assertEquals(CODED_WORD_1, iterator.next()); // Coded Hello
+      Assert.assertEquals(CODED_WORD_2, iterator.next()); // Coded two
+      Assert.assertEquals(CODED_WORD_3, iterator.next()); // Coded three
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
       Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
@@ -502,9 +523,9 @@ public class QueryEngineImplTest {
       Assert.assertEquals(1, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      Assert.assertEquals(1520625L, iterator.next()); // Coded Hello
-      Assert.assertEquals(6106L, iterator.next()); // Coded two
-      Assert.assertEquals(981274L, iterator.next()); // Coded three
+      Assert.assertEquals(CODED_WORD_1, iterator.next()); // Coded Hello
+      Assert.assertEquals(CODED_WORD_2, iterator.next()); // Coded two
+      Assert.assertEquals(CODED_WORD_3, iterator.next()); // Coded three
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
       Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
       Assert.assertEquals(CoreAttributeTypes.Name.getGuid().intValue(), iterator.next());

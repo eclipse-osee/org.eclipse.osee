@@ -11,8 +11,8 @@
 package org.eclipse.osee.orcs.db.internal.loader;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -45,7 +45,6 @@ import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
-import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -54,32 +53,32 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 /**
- * Test Case for {@link DataLoaderImplTest}
+ * Test Case for {@link DataLoaderFactoryImplTest}
  * 
  * @author Roberto E. Escobar
  */
-public class DataLoaderImplTest {
+public class DataLoaderFactoryImplTest {
 
    //@formatter:off
    @Mock private Log logger;
 
-    @Mock private IOseeDatabaseService dbService;
-    @Mock private IOseeStatement chStmt;
-    
-    @Mock private IdentityService identityService;
-    @Mock private SqlProvider sqlProvider;
+   @Mock private IOseeDatabaseService dbService;
+   @Mock private IOseeStatement chStmt;
    
-    @Mock private LoadDataHandler builder;
-    
-    @Mock private OrcsObjectFactory rowDataFactory;
-    @Mock private BranchCache branchCache;
-    @Mock private HasCancellation cancellation;
-    
-    @Captor ArgumentCaptor<LoadSqlContext> contextCaptor;
-    @Captor ArgumentCaptor<ArtifactJoinQuery> joinCaptor;
-    @Captor ArgumentCaptor<CriteriaOrcsLoad> criteriaCaptor;
-    
-    @Mock private OrcsSession session;
+   @Mock private IdentityService identityService;
+   @Mock private SqlProvider sqlProvider;
+   
+   @Mock private LoadDataHandler builder;
+   
+   @Mock private OrcsObjectFactory rowDataFactory;
+   @Mock private BranchCache branchCache;
+   @Mock private HasCancellation cancellation;
+   
+   @Captor ArgumentCaptor<LoadSqlContext> contextCaptor;
+   @Captor ArgumentCaptor<ArtifactJoinQuery> joinCaptor;
+   @Captor ArgumentCaptor<CriteriaOrcsLoad> criteriaCaptor;
+   
+   @Mock private OrcsSession session;
    //@formatter:on
 
    private final static int EXPECTED_BRANCH_ID = 65;
@@ -87,7 +86,7 @@ public class DataLoaderImplTest {
    private final static IOseeBranch BRANCH = CoreBranches.COMMON;
 
    private DataLoaderFactory factory;
-   private SqlArtifactLoader spyLoader;
+   private SqlObjectLoader spyLoader;
 
    @Before
    public void setUp() throws OseeCoreException {
@@ -96,13 +95,11 @@ public class DataLoaderImplTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      DataModuleFactory module = new DataModuleFactory(logger);
-
-      SqlHandlerFactory handlerFactory = module.createHandlerFactory(identityService);
-      SqlArtifactLoader loader = module.createArtifactLoader(dbService, handlerFactory, sqlProvider, rowDataFactory);
+      LoaderModule module = new LoaderModule(logger, dbService, null, identityService, sqlProvider, null);
+      SqlObjectLoader loader = module.createSqlObjectLoader(rowDataFactory);
 
       spyLoader = spy(loader);
-      factory = module.createDataLoader(dbService, spyLoader, branchCache);
+      factory = module.createDataLoaderFactory(spyLoader, branchCache);
 
       when(branchCache.getLocalId(CoreBranches.COMMON)).thenReturn(EXPECTED_BRANCH_ID);
       when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");

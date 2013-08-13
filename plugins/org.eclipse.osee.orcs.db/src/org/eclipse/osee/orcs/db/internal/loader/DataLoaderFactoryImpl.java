@@ -38,10 +38,10 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
-   private final SqlArtifactLoader loader;
+   private final SqlObjectLoader loader;
    private final BranchCache branchCache;
 
-   public DataLoaderFactoryImpl(Log logger, IOseeDatabaseService dbService, SqlArtifactLoader loader, BranchCache branchCache) {
+   public DataLoaderFactoryImpl(Log logger, IOseeDatabaseService dbService, SqlObjectLoader loader, BranchCache branchCache) {
       super();
       this.logger = logger;
       this.dbService = dbService;

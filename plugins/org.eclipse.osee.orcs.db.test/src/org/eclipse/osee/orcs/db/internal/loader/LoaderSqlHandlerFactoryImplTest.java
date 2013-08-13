@@ -27,6 +27,7 @@ import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
 import org.eclipse.osee.orcs.db.internal.loader.handlers.ArtifactSqlHandler;
 import org.eclipse.osee.orcs.db.internal.loader.handlers.AttributeSqlHandler;
+import org.eclipse.osee.orcs.db.internal.loader.handlers.LoaderSqlHandlerFactoryUtil;
 import org.eclipse.osee.orcs.db.internal.loader.handlers.RelationSqlHandler;
 import org.eclipse.osee.orcs.db.internal.loader.handlers.SqlHandlerPriority;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -56,8 +57,7 @@ public class LoaderSqlHandlerFactoryImplTest {
    public void setUp() {
       MockitoAnnotations.initMocks(this);
 
-      DataModuleFactory module = new DataModuleFactory(logger);
-      factory = module.createHandlerFactory(identityService);
+      factory = LoaderSqlHandlerFactoryUtil.createHandlerFactory(logger, identityService);
    }
 
    @Test
