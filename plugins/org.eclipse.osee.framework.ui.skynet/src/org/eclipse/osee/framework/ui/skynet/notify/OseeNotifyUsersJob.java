@@ -41,10 +41,18 @@ import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail.BodyType;
 public class OseeNotifyUsersJob extends Job {
    private final boolean testing = false; // Email goes to current user
    private final Collection<? extends OseeNotificationEvent> notificationEvents;
+   private final String subject;
+   private final String body;
+
+   public OseeNotifyUsersJob(String subject, String body, Collection<? extends OseeNotificationEvent> notificationEvents) {
+      super("Notifying Users");
+      this.subject = subject;
+      this.body = body;
+      this.notificationEvents = notificationEvents;
+   }
 
    public OseeNotifyUsersJob(Collection<? extends OseeNotificationEvent> notificationEvents) {
-      super("Notifying Users");
-      this.notificationEvents = notificationEvents;
+      this(null, null, notificationEvents);
       if (testing) {
          OseeLog.log(Activator.class, Level.SEVERE,
             "OseeNotifyUsersJob: testing is enabled....turn off for production.");
@@ -109,7 +117,11 @@ public class OseeNotifyUsersJob extends Job {
          // do nothing; can't send email from user with invalid email address
          return;
       }
-      String html = notificationEventsToHtml(notificationEvents);
+      String html = "";
+      if (Strings.isValid(body)) {
+         html += "<pre>" + body + "</pre>";
+      }
+      html += notificationEventsToHtml(notificationEvents);
       String email = user.getEmail();
       if (!Strings.isValid(email)) {
          // do nothing
@@ -123,10 +135,16 @@ public class OseeNotifyUsersJob extends Job {
    }
 
    private String getNotificationEmailSubject(List<OseeNotificationEvent> notificationEvents) {
-      if (notificationEvents.size() == 1) {
-         OseeNotificationEvent event = notificationEvents.iterator().next();
-         return Strings.truncate("OSEE Notification" + " - " + event.getType() + " - " + event.getDescription(), 128);
+      String result = subject;
+      if (!Strings.isValid(result)) {
+         if (notificationEvents.size() == 1) {
+            OseeNotificationEvent event = notificationEvents.iterator().next();
+            result =
+               Strings.truncate("OSEE Notification" + " - " + event.getType() + " - " + event.getDescription(), 128);
+         } else {
+            result = "OSEE Notification";
+         }
       }
-      return "OSEE Notification";
+      return result;
    }
 }

@@ -50,6 +50,16 @@ public class OseeNotificationManager implements INotificationManager {
 
    @Override
    public void sendNotifications() {
+      sendNotifications(null, null);
+   }
+
+   /**
+    * Send notifications
+    * 
+    * @param subject or null will use default
+    * @param body or null will not include additional message
+    */
+   public void sendNotifications(String subject, String body) {
       if (!emailEnabled) {
          OseeLog.log(Activator.class, Level.INFO, "Osee Notification Disabled");
          return;
@@ -57,7 +67,7 @@ public class OseeNotificationManager implements INotificationManager {
       List<OseeNotificationEvent> sendEvents = new ArrayList<OseeNotificationEvent>();
       sendEvents.addAll(notificationEvents);
       notificationEvents.clear();
-      OseeNotifyUsersJob job = new OseeNotifyUsersJob(sendEvents);
+      OseeNotifyUsersJob job = new OseeNotifyUsersJob(subject, body, sendEvents);
       job.setPriority(Job.SHORT);
       job.schedule();
    }
@@ -78,4 +88,5 @@ public class OseeNotificationManager implements INotificationManager {
    public static OseeNotificationManager getInstance() {
       return instance;
    }
+
 }

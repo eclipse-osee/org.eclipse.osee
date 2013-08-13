@@ -13,36 +13,31 @@ package org.eclipse.osee.ats.notify;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.Overview.PreviewStyle;
+import org.eclipse.osee.ats.notify.EmailActionsData.EmailRecipient;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
+import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.SendEmailCall;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail.BodyType;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -52,15 +47,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Donald G. Dunne
  */
 public class EmailActionsBlam extends AbstractBlam {
-   private XText bodyTextBox;
-   private XText subjectTextBox;
-   private ExecutorService emailTheadPool;
-   private final Collection<Future<String>> futures = new ArrayList<Future<String>>(300);
    public final static String TEAM_WORKFLOW = "Team Workflows (drop here)";
 
    @Override
    public String getName() {
-      return "Email Message to Action(s) Assignees";
+      return "Email Message to Action(s) Assignees or Originator";
    }
 
    private EmailActionsData getEmailActionsData(final VariableMap variableMap) {
@@ -70,11 +61,20 @@ public class EmailActionsBlam extends AbstractBlam {
          public void run() {
             try {
                data.getWorkflows().addAll(variableMap.getArtifacts(TEAM_WORKFLOW));
+               String recipientStr = variableMap.getString("Recipient");
+               if (Strings.isValid(recipientStr)) {
+                  try {
+                     EmailRecipient recipient = EmailRecipient.valueOf(recipientStr);
+                     data.setEmailRecipient(recipient);
+                  } catch (IllegalArgumentException ex) {
+                     // do nothing
+                  }
+               }
+               data.setSubject(variableMap.getString("Subject"));
+               data.setBody(variableMap.getString("Body"));
             } catch (OseeArgumentException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
-            data.setSubject(subjectTextBox.get());
-            data.setBody(bodyTextBox.get());
          }
       });
       return data;
@@ -88,32 +88,25 @@ public class EmailActionsBlam extends AbstractBlam {
          AWorkbench.popup(result);
          return;
       }
-      sendEmailViaThreadPool(data);
+      sendEmailNotifications(data);
    }
 
-   private void sendEmailViaThreadPool(EmailActionsData data) throws Exception {
-      emailTheadPool = Executors.newFixedThreadPool(30);
-      futures.clear();
+   private void sendEmailNotifications(EmailActionsData data) throws Exception {
 
+      OseeNotificationManager oseeNotificationManager = OseeNotificationManager.getInstance();
       for (Artifact art : data.getWorkflows()) {
          if (art instanceof AbstractWorkflowArtifact) {
-            sendEmailTo(data, (AbstractWorkflowArtifact) art);
+            addNotification(data, (AbstractWorkflowArtifact) art, oseeNotificationManager);
          }
       }
-      emailTheadPool.shutdown();
-      emailTheadPool.awaitTermination(100, TimeUnit.MINUTES);
-      for (Future<String> future : futures) {
-         logf(future.get());
-      }
-
+      oseeNotificationManager.sendNotifications(data.getSubject(), data.getBody());
    }
 
-   private void sendEmailTo(EmailActionsData data, final AbstractWorkflowArtifact awa) throws OseeCoreException {
-      Set<User> assignees = new HashSet<User>();
-      assignees.addAll(AtsClientService.get().getUserAdmin().getOseeUsers(awa.getStateMgr().getAssignees()));
-      Collection<User> activeEmailUsers = EmailUtil.getActiveEmailUsers(assignees);
-      if (assignees.isEmpty()) {
-         logf("No active assignees for workflow [%s].", awa.toStringWithId());
+   private void addNotification(EmailActionsData data, final AbstractWorkflowArtifact awa, OseeNotificationManager oseeNotificationManager) throws OseeCoreException {
+      Collection<User> recipients = getRecipients(data.getEmailRecipient(), awa);
+      Collection<User> activeEmailUsers = EmailUtil.getActiveEmailUsers(recipients);
+      if (recipients.isEmpty()) {
+         logf("No active " + data.getEmailRecipient() + " for workflow [%s].", awa.toStringWithId());
          return;
       }
 
@@ -135,27 +128,58 @@ public class EmailActionsBlam extends AbstractBlam {
          return;
       }
 
-      final OseeEmail emailMessage =
-         new OseeEmail(emailAddresses, AtsClientService.get().getUserAdmin().getCurrentUser().getEmail(),
-            AtsClientService.get().getUserAdmin().getCurrentUser().getEmail(), data.getSubject(), "", BodyType.Html);
-      emailMessage.setHTMLBody("<p>" + AHTML.textToHtml(data.getBody()) + "</p><p>--------------------------------------------------------</p>");
-      emailMessage.addHTMLBody(getHtmlMessage(data, awa));
-      String description = String.format("%s for %s", awa.toStringWithId(), emailAddresses);
-      futures.add(emailTheadPool.submit(new SendEmailCall(emailMessage, description)));
+      oseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(recipients, getIdString(awa),
+         data.getEmailRecipient().name(), String.format(
+            "You are the %s of [%s] in state [%s] titled [%s] created on [%s]", data.getEmailRecipient().name(),
+            awa.getArtifactTypeName(), awa.getStateMgr().getCurrentStateName(), awa.getName(),
+            DateUtil.get(awa.getCreatedDate(), DateUtil.MMDDYYHHMM))));
+
    }
 
-   private String getHtmlMessage(EmailActionsData data, AbstractWorkflowArtifact awa) throws OseeCoreException {
-      return AtsNotificationManagerUI.getPreviewHtml(awa, PreviewStyle.HYPEROPEN, PreviewStyle.NO_SUBSCRIBE_OR_FAVORITE);
+   private Collection<User> getRecipients(EmailRecipient emailRecipient, AbstractWorkflowArtifact awa) {
+      List<User> recipients = new ArrayList<User>();
+      if (emailRecipient == EmailRecipient.Assignees) {
+         try {
+            recipients.addAll(AtsClientService.get().getUserAdmin().getOseeUsers(awa.getAssignees()));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      } else if (emailRecipient == EmailRecipient.Originator) {
+         try {
+            IAtsUser createdBy = awa.getCreatedBy();
+            if (createdBy.isActive()) {
+               recipients.add(AtsClientService.get().getUserAdmin().getOseeUser(awa.getCreatedBy()));
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+      if (recipients.isEmpty()) {
+         try {
+            recipients.add(AtsClientService.get().getUserAdmin().getCurrentOseeUser());
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+      return recipients;
+   }
+
+   private static String getIdString(AbstractWorkflowArtifact sma) {
+      try {
+         String legacyPcrId = sma.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
+         if (!legacyPcrId.equals("")) {
+            return "HRID: " + sma.getHumanReadableId() + " / LegacyId: " + legacyPcrId;
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return "HRID: " + sma.getHumanReadableId();
    }
 
    @Override
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       super.widgetCreating(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
-      if (xWidget.getLabel().equals("Body")) {
-         bodyTextBox = (XText) xWidget;
-      } else if (xWidget.getLabel().equals("Subject")) {
-         subjectTextBox = (XText) xWidget;
-      } else if (xWidget.getLabel().equals("Preview Message")) {
+      if (xWidget.getLabel().equals("Preview Message")) {
          XButtonPush button = (XButtonPush) xWidget;
          button.setDisplayLabel(false);
       }
@@ -166,7 +190,8 @@ public class EmailActionsBlam extends AbstractBlam {
       // @formatter:off
       return "<xWidgets>" +
             "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />" + 
-      		"<XWidget xwidgetType=\"XText\" displayName=\"Subject\" />" +
+            "<XWidget xwidgetType=\"XText\" displayName=\"Subject\" />" +
+            "<XWidget xwidgetType=\"XCombo("+EmailRecipient.Assignees.toString()+","+EmailRecipient.Originator.toString()+")\" defaultValue=\""+EmailRecipient.Assignees.toString()+"\" displayName=\"Recipient\" />" +
       		"<XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" />" +
       		"</xWidgets>";
       // @formatter:on
@@ -174,7 +199,9 @@ public class EmailActionsBlam extends AbstractBlam {
 
    @Override
    public String getDescriptionUsage() {
-      return "Loop through all dropped Team Workflows and email to assignee(s) with message.  Note: User will get one email per item they are assigned.";
+      return "Loop through all dropped Team Workflows and email to assignee(s) with message.  " //
+         + "Note: User will get one email containing all items they are assigned/originated.  " //
+         + "Note: Body is plain text and will be shown as is.";
    }
 
    @Override

@@ -22,9 +22,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class EmailActionsData {
 
+   public static enum EmailRecipient {
+      Originator,
+      Assignees
+   }
+
    private String subject;
    private String body;
    private final Set<Artifact> workflows = new HashSet<Artifact>(5);
+   private EmailRecipient emailRecipient = null;
 
    public String getSubject() {
       return subject;
@@ -53,6 +59,9 @@ public class EmailActionsData {
       if (!Strings.isValid(getBody())) {
          return new Result("Must enter body");
       }
+      if (getEmailRecipient() == null) {
+         return new Result("Must select Email Recipient");
+      }
       if (workflows.isEmpty()) {
          return new Result("No workflows dropped");
       }
@@ -76,5 +85,13 @@ public class EmailActionsData {
 
    public Set<Artifact> getWorkflows() {
       return workflows;
+   }
+
+   public EmailRecipient getEmailRecipient() {
+      return emailRecipient;
+   }
+
+   public void setEmailRecipient(EmailRecipient emailRecipient) {
+      this.emailRecipient = emailRecipient;
    }
 }
