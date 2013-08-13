@@ -207,8 +207,7 @@
 		<attribute name="resultproperty" default="maven.result" />
 		<element name="args" implicit="true" optional="true" />
 		<sequential>
-			<java taskname="mvn" classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}" resultproperty="@{resultproperty}">
-				<jvmarg value="-Xmx1G" />
+			<java taskname="mvn" newenvironment="false" classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}" resultproperty="@{resultproperty}">
 				<classpath>
 					<fileset dir="${maven.home}/boot">
 						<include name="*.jar" />
@@ -219,6 +218,7 @@
 				</classpath>
 				<sysproperty key="classworlds.conf" value="${maven.home}/bin/m2.conf" />
 				<sysproperty key="maven.home" value="${maven.home}" />
+				<sysproperty key="maven.opts" value="${env.MAVEN_OPTS}" />
 				<arg line="--batch-mode @{options} @{goal}" />
 			</java>
 		</sequential>
