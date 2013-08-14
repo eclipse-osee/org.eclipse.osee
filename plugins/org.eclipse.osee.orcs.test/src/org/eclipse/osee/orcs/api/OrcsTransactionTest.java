@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
@@ -42,12 +43,16 @@ import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.OrcsTransaction;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar
@@ -78,6 +83,40 @@ public class OrcsTransactionTest {
       orcsBranch = orcsApi.getBranchOps(context);
       query = orcsApi.getQueryFactory(context);
       userArtifact = getSystemUser();
+   }
+
+   @Test
+   public void testWritingUriAttribute() throws OseeCoreException {
+      final String requirementText = "The engine torque shall be directly controllable through the engine control unit";
+
+      OrcsTransaction transaction =
+         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, "Create plain text requirement");
+
+      ArtifactWriteable torqueRequirement =
+         transaction.createArtifact(CoreArtifactTypes.SoftwareRequirementPlainText, "Engine Torque Control");
+      torqueRequirement.createAttribute(CoreAttributeTypes.PlainTextContent, requirementText);
+
+      String artifactId = torqueRequirement.getGuid();
+      transaction.commit();
+
+      ResultSet<ArtifactReadable> results =
+         query.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.SoftwareRequirementPlainText).getResults();
+
+      Optional<ArtifactReadable> item = Iterables.tryFind(results, new Predicate<ArtifactReadable>() {
+         @Override
+         public boolean apply(ArtifactReadable artifact) {
+            String data = "";
+            try {
+               data = artifact.getSoleAttributeAsString(CoreAttributeTypes.PlainTextContent, "");
+            } catch (OseeCoreException ex) {
+               Assert.fail(Lib.exceptionToString(ex));
+            }
+            return requirementText.equals(data);
+         }
+      });
+
+      assertTrue(item.isPresent());
+      assertEquals(artifactId, item.get().getGuid());
    }
 
    @Test

@@ -144,6 +144,18 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    }
 
    @Override
+   public void updateAfterBinaryStorePersist() throws OseeCoreException {
+      List<Object[]> insertData = getInsertData(SqlOrderEnum.ATTRIBUTES);
+      for (int index = 0; index < binaryStores.size() && index < insertData.size(); index++) {
+         DaoToSql dao = binaryStores.get(index);
+         Object[] rowData = insertData.get(index);
+         int end = rowData.length;
+         rowData[end - 2] = dao.getValue();
+         rowData[end - 1] = dao.getUri();
+      }
+   }
+
+   @Override
    public void visit(RelationData data) throws OseeCoreException {
       if (!isNewAndDeleted(data)) {
          boolean isRowAllowed = isGammaCreationAllowed(data);

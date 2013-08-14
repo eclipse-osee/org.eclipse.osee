@@ -30,4 +30,5 @@ Require-Bundle: org.junit,
  org.eclipse.osee.event.osgi,
  org.eclipse.osee.logger,
  org.eclipse.osee.framework.database,
- org.eclipse.osee.framework.core.model
+ org.eclipse.osee.framework.core.model,
+ com.google.guava;bundle-version="[11.0.0,15.0.0)"

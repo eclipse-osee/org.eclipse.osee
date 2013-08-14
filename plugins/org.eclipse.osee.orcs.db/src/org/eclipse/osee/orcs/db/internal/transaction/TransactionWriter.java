@@ -123,6 +123,8 @@ public class TransactionWriter {
          for (DaoToSql dao : getBinaryStores()) {
             dao.persist();
          }
+         sqlBuilder.updateAfterBinaryStorePersist();
+
          int branchId = tx.getBranch().getId();
          List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
          for (Entry<SqlOrderEnum, ArtifactJoinQuery> entry : sqlBuilder.getTxNotCurrents()) {

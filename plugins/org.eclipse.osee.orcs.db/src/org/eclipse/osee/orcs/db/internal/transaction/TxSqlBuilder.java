@@ -35,4 +35,6 @@ public interface TxSqlBuilder {
 
    List<DaoToSql> getBinaryStores();
 
+   void updateAfterBinaryStorePersist() throws OseeCoreException;
+
 }

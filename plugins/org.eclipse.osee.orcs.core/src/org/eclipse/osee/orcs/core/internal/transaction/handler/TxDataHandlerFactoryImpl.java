@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.core.internal.transaction.handler;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
-import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitorAdapter;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactVisitor;
@@ -25,16 +24,13 @@ import org.eclipse.osee.orcs.data.ArtifactWriteable;
  */
 public class TxDataHandlerFactoryImpl implements TxDataHandlerFactory {
 
-   private final DataFactory dataFactory;
-
-   public TxDataHandlerFactoryImpl(DataFactory dataFactory) {
+   public TxDataHandlerFactoryImpl() {
       super();
-      this.dataFactory = dataFactory;
    }
 
    @Override
    public ArtifactVisitor createOnDirtyHandler(List<ArtifactTransactionData> data) {
-      return new CollectAndCopyDirtyData(dataFactory, data);
+      return new CollectDirtyData(data);
    }
 
    @Override

@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({CollectAndCopyDirtyDataTest.class})
+@Suite.SuiteClasses({CollectDirtyDataTest.class})
 public class HandlerTestSuite {
    // Test Suite
 }

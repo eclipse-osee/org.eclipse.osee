@@ -313,6 +313,8 @@ public class TxSqlBuilderTest {
    @Test
    public void testAcceptAttributeData() throws OseeCoreException {
       for (ModificationType modType : MODS_ITEMS_ROW) {
+         when(dataProxy.getData()).thenReturn(new Object[] {ATTR_VALUE, ATTR_URI});
+
          builder.accept(tx, txData);
          attrData.setModType(modType);
 
@@ -321,7 +323,7 @@ public class TxSqlBuilderTest {
          verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS, SqlOrderEnum.ATTRIBUTES));
 
          // @formatter:off
-         verifyRow(SqlOrderEnum.ATTRIBUTES, ITEM_ID, TYPE_ID, NEXT_GAMMA_ID, ATTR_ARTIFACT_ID, ATTR_VALUE, ATTR_URI);
+         verifyRow(SqlOrderEnum.ATTRIBUTES, ITEM_ID, TYPE_ID, NEXT_GAMMA_ID, ATTR_ARTIFACT_ID,  ATTR_VALUE, ATTR_URI);
          verifyRow(SqlOrderEnum.TXS, EXPECTED_TX_ID, NEXT_GAMMA_ID, modType.getValue(), TxChange.CURRENT.getValue(), EXPECTED_BRANCH_ID);
          verifyQuery(SqlOrderEnum.ATTRIBUTES);
          // @formatter:on
@@ -332,6 +334,11 @@ public class TxSqlBuilderTest {
          assertEquals(NEXT_GAMMA_ID, dao.getGammaId());
          assertEquals(ATTR_URI, dao.getUri());
          assertEquals(ATTR_VALUE, dao.getValue());
+
+         when(dataProxy.getData()).thenReturn(new Object[] {"aValue", "aURI"});
+
+         builder.updateAfterBinaryStorePersist();
+         verifyRow(SqlOrderEnum.ATTRIBUTES, ITEM_ID, TYPE_ID, NEXT_GAMMA_ID, ATTR_ARTIFACT_ID, "aValue", "aURI");
 
          reset(attrData);
       }
