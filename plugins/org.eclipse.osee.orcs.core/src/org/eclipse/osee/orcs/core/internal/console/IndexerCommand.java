@@ -135,14 +135,14 @@ public class IndexerCommand implements ConsoleCommand {
                indexOnlyMissingitems = true;
             case ALL:
                IndexStatusDisplayCollector collector = new IndexStatusDisplayCollector(console, startTime, false);
-               Callable<?> callable = indexer.indexBranches(collector, branches, indexOnlyMissingitems);
+               Callable<?> callable = indexer.indexBranches(branches, indexOnlyMissingitems, collector);
                callable.call();
                break;
             case ITEM_IDS:
                boolean printTags = params.getBoolean("debug");
                InputStream inputStream = asXmlStream(params.getArray("ids"));
                IndexStatusDisplayCollector collector2 = new IndexStatusDisplayCollector(console, startTime, printTags);
-               Callable<?> callable2 = indexer.indexXmlStream(collector2, inputStream);
+               Callable<?> callable2 = indexer.indexXmlStream(inputStream, collector2);
                callable2.call();
                break;
             case STATS:

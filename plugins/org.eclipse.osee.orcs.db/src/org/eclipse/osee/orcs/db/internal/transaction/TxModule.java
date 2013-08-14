@@ -20,10 +20,12 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
+import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.core.ds.TxDataStore;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeTransactionTxCallable;
 import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
 
@@ -50,9 +52,10 @@ public class TxModule {
       this.idFactory = idFactory;
    }
 
-   public TxDataStore createTransactionStore(final DataLoaderFactory dataLoaderFactory) {
+   public TxDataStore createTransactionStore(DataLoaderFactory dataLoaderFactory, QueryEngineIndexer indexer, AttributeTypes types) {
       final TransactionProcessorProviderImpl processors = new TransactionProcessorProviderImpl();
       processors.add(TxWritePhaseEnum.BEFORE_TX_WRITE, new ComodificationCheck(dataLoaderFactory));
+      processors.add(TxWritePhaseEnum.AFTER_TX_WRITE, new TransactionIndexer(logger, indexer, types));
       return new TxDataStore() {
 
          @Override

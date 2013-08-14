@@ -18,8 +18,8 @@ import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
 /**
@@ -27,16 +27,22 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
  */
 public interface QueryEngineIndexer {
 
+   void addCollector(IndexerCollector collector);
+
+   void removeCollector(IndexerCollector collector);
+
+   CancellableCallable<IndexerData> getIndexerData(OrcsSession session);
+
    CancellableCallable<Integer> deleteIndexByQueryId(OrcsSession session, int queueId);
 
    CancellableCallable<Integer> purgeAllIndexes(OrcsSession session);
 
-   CancellableCallable<?> indexBranches(OrcsSession session, AttributeTypes types, IndexerCollector collector, Collection<? extends IAttributeType> typeToTag, Set<ReadableBranch> branches, boolean indexOnlyMissing);
+   CancellableCallable<Integer> indexBranches(OrcsSession session, AttributeTypes types, Collection<? extends IAttributeType> typeToTag, Set<ReadableBranch> branches, boolean indexOnlyMissing, IndexerCollector... collector);
 
-   CancellableCallable<Integer> indexAllFromQueue(OrcsSession session, AttributeTypes types, IndexerCollector collector);
+   CancellableCallable<Integer> indexAllFromQueue(OrcsSession session, AttributeTypes types, IndexerCollector... collector);
 
-   CancellableCallable<IndexerData> getIndexerData(OrcsSession session);
+   CancellableCallable<List<Future<?>>> indexXmlStream(OrcsSession session, AttributeTypes types, InputStream inputStream, IndexerCollector... collector);
 
-   CancellableCallable<List<Future<?>>> indexXmlStream(OrcsSession session, AttributeTypes types, IndexerCollector collector, InputStream inputStream);
+   CancellableCallable<List<Future<?>>> indexResources(OrcsSession session, AttributeTypes types, Iterable<? extends HasVersion> datas, IndexerCollector... collector);
 
 }

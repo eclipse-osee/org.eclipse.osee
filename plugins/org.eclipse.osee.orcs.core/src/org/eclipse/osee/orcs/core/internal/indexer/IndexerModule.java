@@ -37,7 +37,7 @@ public class IndexerModule implements HasStatistics<IndexerStatistics> {
    private final SystemPreferences preferences;
    private final ExecutorAdmin executorAdmin;
    private final QueryEngineIndexer queryIndexer;
-   private final IndexerCollector collector;
+   private final IndexerCollector systemCollector;
    private Future<Integer> task;
 
    public IndexerModule(Log logger, SystemPreferences preferences, ExecutorAdmin executorAdmin, QueryEngineIndexer queryIndexer) {
@@ -45,13 +45,14 @@ public class IndexerModule implements HasStatistics<IndexerStatistics> {
       this.preferences = preferences;
       this.executorAdmin = executorAdmin;
       this.queryIndexer = queryIndexer;
-      this.collector = new IndexerStatisticsCollectorImpl(statistics);
+      this.systemCollector = new IndexerStatisticsCollectorImpl(statistics);
    }
 
    public void start(OrcsSession systemSession, AttributeTypes attributeTypes) {
+      queryIndexer.addCollector(systemCollector);
       try {
          if (preferences.isBoolean(DataStoreConstants.DATASTORE_INDEX_ON_START_UP)) {
-            task = executorAdmin.schedule(queryIndexer.indexAllFromQueue(systemSession, attributeTypes, collector));
+            task = executorAdmin.schedule(queryIndexer.indexAllFromQueue(systemSession, attributeTypes));
          } else {
             logger.info("Indexer was not executed on Server Startup.");
          }
@@ -61,6 +62,7 @@ public class IndexerModule implements HasStatistics<IndexerStatistics> {
    }
 
    public void stop() {
+      queryIndexer.removeCollector(systemCollector);
       if (task != null) {
          task.cancel(true);
          task = null;
@@ -84,6 +86,6 @@ public class IndexerModule implements HasStatistics<IndexerStatistics> {
    }
 
    public QueryIndexer createQueryIndexer(OrcsSession session, AttributeTypes attributeTypes) {
-      return new QueryIndexerImpl(logger, session, executorAdmin, queryIndexer, collector, attributeTypes);
+      return new QueryIndexerImpl(session, executorAdmin, queryIndexer, attributeTypes);
    }
 }

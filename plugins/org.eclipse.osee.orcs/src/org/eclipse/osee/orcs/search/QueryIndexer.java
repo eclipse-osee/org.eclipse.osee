@@ -22,13 +22,9 @@ import org.eclipse.osee.framework.core.model.ReadableBranch;
  */
 public interface QueryIndexer {
 
-   CancellableCallable<Integer> indexAllFromQueue();
+   CancellableCallable<Integer> indexAllFromQueue(IndexerCollector... collector);
 
-   CancellableCallable<Integer> indexAllFromQueue(IndexerCollector collector);
-
-   CancellableCallable<?> indexBranches(Set<ReadableBranch> branches, boolean indexOnlyMissing);
-
-   CancellableCallable<?> indexBranches(IndexerCollector collector, Set<ReadableBranch> branches, boolean indexOnlyMissing);
+   CancellableCallable<Integer> indexBranches(Set<ReadableBranch> branches, boolean indexOnlyMissing, IndexerCollector... collector);
 
    /**
     * Create tags for attributes specified in xml stream. Notifies listener of tagging events. <b>
@@ -49,16 +45,12 @@ public interface QueryIndexer {
     * @param listener object listening for tag events
     * @param inputStream xml inputStream
     */
-   CancellableCallable<List<Future<?>>> indexXmlStream(InputStream inputStream);
-
-   CancellableCallable<?> indexXmlStream(IndexerCollector collector, InputStream inputStream);
+   CancellableCallable<List<Future<?>>> indexXmlStream(InputStream inputStream, IndexerCollector... collector);
 
    void submitXmlStream(InputStream inputStream) throws Exception;
 
    CancellableCallable<Integer> deleteIndexByQueryId(int queueId);
 
    CancellableCallable<Integer> purgeAllIndexes();
-
-   //   Callable<IndexerData> getIndexerData();
 
 }

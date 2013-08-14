@@ -97,9 +97,6 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
          branchCache.storeItems(branch);
       }
       transactionCache.cache(txRecord);
-
-      process(TxWritePhaseEnum.AFTER_TX_WRITE);
-
       return new TransactionResultImpl(txRecord, txData);
    }
 
@@ -107,6 +104,12 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
    protected void handleTxException(Exception ex) {
       super.handleTxException(ex);
       writer.rollback();
+   }
+
+   @Override
+   protected void handleTxFinally() throws OseeCoreException {
+      super.handleTxFinally();
+      process(TxWritePhaseEnum.AFTER_TX_WRITE);
    }
 
    private TransactionRecord createTransactionRecord(Branch branch, ArtifactReadable author, String comment, int transactionNumber) throws OseeCoreException {

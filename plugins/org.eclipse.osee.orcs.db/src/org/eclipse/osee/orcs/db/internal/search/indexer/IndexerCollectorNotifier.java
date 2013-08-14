@@ -8,10 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.indexer.collector;
+package org.eclipse.osee.orcs.db.internal.search.indexer;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
  */
 public class IndexerCollectorNotifier implements IndexerCollector {
 
-   private final Set<IndexerCollector> listeners = new HashSet<IndexerCollector>();
+   private final Set<IndexerCollector> listeners = new CopyOnWriteArraySet<IndexerCollector>();
 
    private final Log logger;
 

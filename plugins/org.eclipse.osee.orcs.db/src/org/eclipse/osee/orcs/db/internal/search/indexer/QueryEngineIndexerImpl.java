@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.ds.HasVersion;
 import org.eclipse.osee.orcs.core.ds.IndexerData;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.data.AttributeTypes;
@@ -30,6 +31,7 @@ import org.eclipse.osee.orcs.db.internal.search.indexer.callable.IndexerDatabase
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.PurgeAllTagsDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer.IndexAllInQueueCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer.IndexBranchesDatabaseCallable;
+import org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer.IndexerDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer.XmlStreamIndexerDatabaseCallable;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
@@ -43,11 +45,14 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
    private final IdentityService identityService;
    private final IndexingTaskConsumer consumer;
 
+   private final IndexerCollectorNotifier systemCollector;
+
    public QueryEngineIndexerImpl(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IndexingTaskConsumer indexingConsumer) {
       this.logger = logger;
       this.dbService = dbService;
       this.identityService = identityService;
       this.consumer = indexingConsumer;
+      this.systemCollector = new IndexerCollectorNotifier(logger);
    }
 
    @Override
@@ -66,20 +71,48 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
    }
 
    @Override
-   public CancellableCallable<?> indexBranches(OrcsSession session, AttributeTypes types, IndexerCollector collector, Collection<? extends IAttributeType> typeToTag, Set<ReadableBranch> branches, boolean indexOnlyMissing) {
-      return new IndexBranchesDatabaseCallable(logger, session, dbService, identityService, types, consumer, collector,
-         typeToTag, branches, indexOnlyMissing);
+   public CancellableCallable<Integer> indexBranches(OrcsSession session, AttributeTypes types, Collection<? extends IAttributeType> typeToTag, Set<ReadableBranch> branches, boolean indexOnlyMissing, IndexerCollector... collector) {
+      return new IndexBranchesDatabaseCallable(logger, session, dbService, identityService, types, consumer,
+         merge(collector), typeToTag, branches, indexOnlyMissing);
    }
 
    @Override
-   public CancellableCallable<Integer> indexAllFromQueue(OrcsSession session, AttributeTypes types, IndexerCollector collector) {
-      return new IndexAllInQueueCallable(logger, session, dbService, types, consumer, collector);
+   public CancellableCallable<Integer> indexAllFromQueue(OrcsSession session, AttributeTypes types, IndexerCollector... collector) {
+      return new IndexAllInQueueCallable(logger, session, dbService, types, consumer, merge(collector));
    }
 
    @Override
-   public CancellableCallable<List<Future<?>>> indexXmlStream(OrcsSession session, AttributeTypes types, IndexerCollector collector, InputStream inputStream) {
-      return new XmlStreamIndexerDatabaseCallable(logger, session, dbService, types, consumer, collector,
+   public CancellableCallable<List<Future<?>>> indexXmlStream(OrcsSession session, AttributeTypes types, InputStream inputStream, IndexerCollector... collector) {
+      return new XmlStreamIndexerDatabaseCallable(logger, session, dbService, types, consumer, merge(collector),
          IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, inputStream);
+   }
+
+   @Override
+   public CancellableCallable<List<Future<?>>> indexResources(OrcsSession session, AttributeTypes types, Iterable<? extends HasVersion> datas, IndexerCollector... collector) {
+      return new IndexerDatabaseCallable(logger, session, dbService, types, consumer, merge(collector),
+         IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, datas);
+   }
+
+   private IndexerCollector merge(IndexerCollector... collectors) {
+      IndexerCollector toReturn = systemCollector;
+      if (collectors != null && collectors.length > 0) {
+         IndexerCollectorNotifier notifier = new IndexerCollectorNotifier(logger);
+         notifier.addCollector(systemCollector);
+         for (IndexerCollector collector : collectors) {
+            notifier.addCollector(collector);
+         }
+      }
+      return toReturn;
+   }
+
+   @Override
+   public void addCollector(IndexerCollector collector) {
+      systemCollector.addCollector(collector);
+   }
+
+   @Override
+   public void removeCollector(IndexerCollector collector) {
+      systemCollector.removeCollector(collector);
    }
 
 }

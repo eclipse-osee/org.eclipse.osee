@@ -62,4 +62,9 @@ public class TransactionDataImpl implements TransactionData {
          data.accept(visitor);
       }
    }
+
+   @Override
+   public String toString() {
+      return "TransactionDataImpl [branch=" + branch + ", readable=" + readable + ", comment=" + comment + ", data=" + data + "]";
+   }
 }

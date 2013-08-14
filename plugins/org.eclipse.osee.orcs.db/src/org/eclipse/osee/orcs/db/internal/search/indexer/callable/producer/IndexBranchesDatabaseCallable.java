@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.TagQueueJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
 import org.eclipse.osee.orcs.search.IndexerCollector;
@@ -33,7 +33,7 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
 /**
  * @author Roberto E. Escobar
  */
-public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallable<Object> {
+public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallable<Integer> {
    private static final int BATCH_SIZE = 1000;
 
    private static final String FIND_ALL_TAGGABLE_ATTRIBUTES =
@@ -79,7 +79,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
    }
 
    @Override
-   public Object call() throws Exception {
+   public Integer call() throws Exception {
       getLogger().info(getParamInfo());
 
       Set<Integer> branchIds = new HashSet<Integer>();
@@ -115,7 +115,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
          typeJoin.delete();
          branchJoin.delete();
       }
-      return null;
+      return branchIds.size();
    }
 
    public void storeAndAddQueryId(TagQueueJoinQuery joinQuery) throws Exception {

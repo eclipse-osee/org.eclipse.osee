@@ -18,10 +18,8 @@ import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
-import org.eclipse.osee.orcs.core.internal.indexer.collector.IndexerCollectorNotifier;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 import org.eclipse.osee.orcs.search.QueryIndexer;
@@ -31,70 +29,42 @@ import org.eclipse.osee.orcs.search.QueryIndexer;
  */
 public class QueryIndexerImpl implements QueryIndexer {
 
-   private final Log logger;
    private final OrcsSession session;
    private final ExecutorAdmin executorAdmin;
-   private final IndexerCollector systemCollector;
    private final QueryEngineIndexer engineIndexer;
    private final AttributeTypes attributeTypes;
 
-   public QueryIndexerImpl(Log logger, OrcsSession session, ExecutorAdmin executorAdmin, QueryEngineIndexer engineIndexer, IndexerCollector systemCollector, AttributeTypes attributeTypes) {
-      this.logger = logger;
+   public QueryIndexerImpl(OrcsSession session, ExecutorAdmin executorAdmin, QueryEngineIndexer engineIndexer, AttributeTypes attributeTypes) {
       this.session = session;
       this.executorAdmin = executorAdmin;
-      this.systemCollector = systemCollector;
       this.engineIndexer = engineIndexer;
       this.attributeTypes = attributeTypes;
    }
 
-   private IndexerCollector merge(IndexerCollector collector) {
-      IndexerCollectorNotifier notifier = new IndexerCollectorNotifier(logger);
-      notifier.addCollector(systemCollector);
-      if (collector != null) {
-         notifier.addCollector(collector);
-      }
-      return notifier;
+   @Override
+   public CancellableCallable<Integer> indexAllFromQueue(IndexerCollector... collector) {
+      return engineIndexer.indexAllFromQueue(session, attributeTypes, collector);
    }
 
    @Override
-   public CancellableCallable<Integer> indexAllFromQueue() {
-      return indexAllFromQueue(null);
-   }
-
-   @Override
-   public CancellableCallable<Integer> indexAllFromQueue(IndexerCollector collector) {
-      return engineIndexer.indexAllFromQueue(session, attributeTypes, merge(collector));
-   }
-
-   @Override
-   public CancellableCallable<?> indexBranches(Set<ReadableBranch> branches, boolean indexOnlyMissing) {
-      return indexBranches(null, branches, indexOnlyMissing);
-   }
-
-   @Override
-   public CancellableCallable<?> indexBranches(final IndexerCollector collector, final Set<ReadableBranch> branches, final boolean indexOnlyMissing) {
-      return new CancellableCallable<Void>() {
+   public CancellableCallable<Integer> indexBranches(final Set<ReadableBranch> branches, final boolean indexOnlyMissing, final IndexerCollector... collector) {
+      return new CancellableCallable<Integer>() {
          @Override
-         public Void call() throws Exception {
-            engineIndexer.indexBranches(session, attributeTypes, merge(collector), attributeTypes.getAllTaggable(), branches, indexOnlyMissing);
-            return null;
+         public Integer call() throws Exception {
+            return engineIndexer.indexBranches(session, attributeTypes, attributeTypes.getAllTaggable(), branches,
+               indexOnlyMissing, collector).call();
          }
       };
    }
 
    @Override
-   public CancellableCallable<List<Future<?>>> indexXmlStream(InputStream inputStream) {
-      return indexXmlStream(null, inputStream);
-   }
-
-   @Override
-   public CancellableCallable<List<Future<?>>> indexXmlStream(IndexerCollector collector, InputStream inputStream) {
-      return engineIndexer.indexXmlStream(session, attributeTypes, merge(collector), inputStream);
+   public CancellableCallable<List<Future<?>>> indexXmlStream(InputStream inputStream, IndexerCollector... collector) {
+      return engineIndexer.indexXmlStream(session, attributeTypes, inputStream, collector);
    }
 
    @Override
    public void submitXmlStream(InputStream inputStream) throws Exception {
-      Callable<?> callable = indexXmlStream(null, inputStream);
+      Callable<?> callable = indexXmlStream(inputStream);
       executorAdmin.schedule(callable);
    }
 
