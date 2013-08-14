@@ -188,7 +188,7 @@ osee.log.default=INFO
 -Dosee.db.connection.pool.size=@{db.connection.pool.size} \
 -Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=@{session.timeout} \
 @{extraVMArgs} \
--jar plugins/@{launcher} -console -consoleLog -clean
+-jar plugins/@{launcher} -console -consoleLog
 </echo>
 			<if>
 				<equals arg1="@{executable}" arg2="true" />
