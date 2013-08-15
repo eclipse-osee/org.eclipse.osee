@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.core.server.internal;
 import java.io.ByteArrayInputStream;
 import java.lang.Thread.State;
 import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -138,6 +140,13 @@ public class ApplicationServerManager implements IApplicationServerManager {
          //
       }
       int port = OseeServerProperties.getOseeApplicationServerPort();
+      String scheme = OseeServerProperties.getOseeApplicationServerScheme();
+      URI uri = null;
+      try {
+         uri = new URI(scheme, null, serverAddress, port, null, null, null);
+      } catch (URISyntaxException ex) {
+         logger.error(ex, "Error generating application server uri");
+      }
 
       String checkSum = "-1";
       try {
@@ -148,8 +157,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
          logger.error(ex, "Error generating application server id");
       }
       OseeServerInfoMutable toReturn =
-         new OseeServerInfoMutable(checkSum, serverAddress, port, new String[0], GlobalTime.GreenwichMeanTimestamp(),
-            false);
+         new OseeServerInfoMutable(checkSum, uri.toString(), new String[0], GlobalTime.GreenwichMeanTimestamp(), false);
       toReturn.setVersions(defaultVersions);
       return toReturn;
    }
@@ -306,13 +314,8 @@ public class ApplicationServerManager implements IApplicationServerManager {
    }
 
    @Override
-   public String getServerAddress() {
-      return getApplicationServerInfo().getServerAddress();
-   }
-
-   @Override
-   public int getPort() {
-      return getApplicationServerInfo().getPort();
+   public URI getServerUri() {
+      return getApplicationServerInfo().getUri();
    }
 
    @Override
@@ -380,4 +383,5 @@ public class ApplicationServerManager implements IApplicationServerManager {
       }
       return status;
    }
+
 }

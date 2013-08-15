@@ -146,7 +146,7 @@ public class ApplicationServerLookup implements IApplicationServerLookup {
    }
 
    private boolean isServerAlive(OseeServerInfo info) {
-      return HttpProcessor.isAlive(info.getServerAddress(), info.getPort());
+      return HttpProcessor.isAlive(info.getUri());
    }
 
 }

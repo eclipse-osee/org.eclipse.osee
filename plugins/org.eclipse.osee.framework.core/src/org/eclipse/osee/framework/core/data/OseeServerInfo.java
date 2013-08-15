@@ -11,8 +11,10 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.sql.Timestamp;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -20,22 +22,20 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 public class OseeServerInfo extends BaseExchangeData {
    private static final long serialVersionUID = 2696663265012016128L;
    private static final String[] EMPTY_ARRAY = new String[0];
-   private static final String SERVER_ADDRESS = "serverAddress";
-   private static final String PORT = "port";
+   private static final String SERVER_URI = "uri";
    protected static final String VERSION = "version";
    private static final String DATE_CREATED = "creationDate";
    private static final String SERVER_ID = "serverId";
    protected static final String IS_ACCEPTING_REQUESTS = "isAcceptingRequests";
 
-   private OseeServerInfo() {
+   public OseeServerInfo() {
       super();
    }
 
-   public OseeServerInfo(String serverId, String serverAddress, int port, String[] version, Timestamp dateStarted, boolean isAcceptingRequests) {
+   public OseeServerInfo(String serverId, String uri, String[] version, Timestamp dateStarted, boolean isAcceptingRequests) {
       this();
       this.backingData.put(SERVER_ID, serverId);
-      this.backingData.put(SERVER_ADDRESS, serverAddress);
-      this.backingData.put(PORT, port);
+      this.backingData.put(SERVER_URI, uri);
       this.backingData.put(VERSION, version);
       this.backingData.put(DATE_CREATED, dateStarted.getTime());
       this.backingData.put(IS_ACCEPTING_REQUESTS, isAcceptingRequests);
@@ -49,17 +49,21 @@ public class OseeServerInfo extends BaseExchangeData {
    }
 
    /**
-    * @return the serverAddress
+    * @return the server uri
     */
-   public String getServerAddress() {
-      return getString(SERVER_ADDRESS);
-   }
 
-   /**
-    * @return the port
-    */
-   public int getPort() {
-      return backingData.getInt(PORT);
+   // temporary code to remove after release of uri change
+   private static final String SERVER_ADDRESS = "serverAddress";
+   private static final String PORT = "port";
+
+   public URI getUri() {
+      String serverUri = getString(SERVER_URI);
+      if (!Strings.isValid(serverUri)) {
+         String address = getString(SERVER_ADDRESS);
+         String port = getString(PORT);
+         serverUri = String.format("http://%s:%s", address, port);
+      }
+      return URI.create(serverUri);
    }
 
    /**
@@ -94,4 +98,5 @@ public class OseeServerInfo extends BaseExchangeData {
       serverInfo.loadfromXml(inputStream);
       return serverInfo;
    }
+
 }

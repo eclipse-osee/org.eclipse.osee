@@ -14,8 +14,6 @@ package org.eclipse.osee.framework.core.client.internal;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -63,7 +61,9 @@ public class OseeApplicationServer {
          if (Strings.isValid(overrideValue)) {
             arbitrationServer.set(Level.INFO, null, "Arbitration Overridden");
             try {
-               serverInfo = parseServerInfo(overrideValue);
+               serverInfo =
+                  new OseeServerInfo("OVERRIDE", overrideValue, new String[] {"OVERRIDE"}, new Timestamp(
+                     new Date().getTime()), true);
             } catch (Exception ex) {
                OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
                applicationServer.set(Level.SEVERE, ex, "Error parsing arbitration server override [%s]", overrideValue);
@@ -82,21 +82,4 @@ public class OseeApplicationServer {
       applicationServer.report();
    }
 
-   private static OseeServerInfo parseServerInfo(String value) throws Exception {
-      OseeServerInfo toReturn = null;
-      String rawAddress = value;
-      if (rawAddress.startsWith("http")) {
-         rawAddress = value.replace("http://", "");
-      }
-      Pattern pattern = Pattern.compile("(.*):(\\d+)");
-      Matcher matcher = pattern.matcher(rawAddress);
-      if (matcher.find()) {
-         String address = matcher.group(1);
-         int port = Integer.valueOf(matcher.group(2));
-         toReturn =
-            new OseeServerInfo("OVERRIDE", address, port, new String[] {"OVERRIDE"},
-               new Timestamp(new Date().getTime()), true);
-      }
-      return toReturn;
-   }
 }

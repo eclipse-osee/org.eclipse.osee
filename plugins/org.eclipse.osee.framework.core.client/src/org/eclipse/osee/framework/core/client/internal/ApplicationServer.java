@@ -42,14 +42,14 @@ public class ApplicationServer extends OseeServer {
 
    public String getServerAddress() {
       if (serverAddress == null && serverInfo != null) {
-         serverAddress = String.format("http://%s:%s/", serverInfo.getServerAddress(), serverInfo.getPort());
+         serverAddress = serverInfo.getUri().toString();
       }
       return serverAddress;
    }
 
    public void checkAlive() {
       if (isServerInfoValid()) {
-         boolean alive = HttpProcessor.isAlive(serverInfo.getServerAddress(), serverInfo.getPort());
+         boolean alive = HttpProcessor.isAlive(serverInfo.getUri());
          setAlive(alive);
          if (alive) {
             set(Level.INFO, null, "%s %s Running Since: %s", getServerAddress(),

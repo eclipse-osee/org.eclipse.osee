@@ -21,6 +21,7 @@ import org.eclipse.osee.logger.Log;
 public class OseeServerProperties {
    private static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
    private static final String OSGI_PORT_PROPERTY = "org.osgi.service.http.port";
+   private static final String OSGI_SECURE_PORT_PROPERTY = "org.osgi.service.http.port.secure";
    private static final String OSEE_VERSION = "osee.version";
 
    private static final String OSEE_AUTHENTICATION_PROTOCOL = "osee.authentication.protocol";
@@ -83,7 +84,24 @@ public class OseeServerProperties {
     * @return the application server port
     */
    public static int getOseeApplicationServerPort() {
-      return Integer.valueOf(System.getProperty(OSGI_PORT_PROPERTY, "-1"));
+      int toReturn = Integer.valueOf(System.getProperty(OSGI_SECURE_PORT_PROPERTY, "-1"));
+      if (toReturn == -1) {
+         toReturn = Integer.valueOf(System.getProperty(OSGI_PORT_PROPERTY, "-1"));
+      }
+      return toReturn;
+   }
+
+   /**
+    * Retrieve the application server scheme
+    * 
+    * @return the application server scheme
+    */
+   public static String getOseeApplicationServerScheme() {
+      String toReturn = "https";
+      if (Integer.valueOf(System.getProperty(OSGI_SECURE_PORT_PROPERTY, "-1")) == -1) {
+         toReturn = "http";
+      }
+      return toReturn;
    }
 
    /**

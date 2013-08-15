@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.jdk.core.util;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -46,12 +47,13 @@ public final class HttpUrlBuilder {
       return query.toUrl();
    }
 
-   public static String createURL(String address, int port, String context, Map<String, String> parameters) throws UnsupportedEncodingException {
+   public static String createURL(URI uri, String context, Map<String, String> parameters) throws UnsupportedEncodingException {
       StringBuilder sb = new StringBuilder();
-      sb.append("http://");
-      sb.append(address);
+      sb.append(uri.getScheme());
+      sb.append("://");
+      sb.append(uri.getHost());
       sb.append(":");
-      sb.append(port);
+      sb.append(uri.getPort());
       sb.append("/");
       sb.append(context);
       if (parameters != null && !parameters.isEmpty()) {

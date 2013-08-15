@@ -510,13 +510,14 @@
 	<!-- __________________________________________________________ -->
 	
 	<Table name="OSEE_SERVER_LOOKUP" schema="OSEE" tablespace="osee_data">
+		<Column id="SERVER_URI" defaultValue="not null" type="VARCHAR" limits="255" />
 		<Column id="VERSION_ID" defaultValue="not null" type="VARCHAR" limits="100" />
 		<Column id="SERVER_ADDRESS" defaultValue="not null" type="VARCHAR" limits="255"/>
 		<Column id="PORT" defaultValue="not null" type="INTEGER" />
 		<Column id="ACCEPTS_REQUESTS" defaultValue="not null" type="smallint" />
 		<Column id="START_TIME" defaultValue="not null" type="TIMESTAMP" />
 		<Column id="SERVER_ID" defaultValue="not null" type="VARCHAR" limits="40" />
-		<Constraint schema="OSEE" id="OSEE_SERVER_LOOKUP_PK" type="PRIMARY KEY" appliesTo="SERVER_ADDRESS, PORT, VERSION_ID" />
+		<Constraint schema="OSEE" id="OSEE_SERVER_LOOKUP_PK" type="PRIMARY KEY" appliesTo="SERVER_URI, VERSION_ID" />
 	</Table>
 	
 	<TableDescription referenceTable="OSEE_SERVER_LOOKUP">

@@ -127,7 +127,7 @@ public class ServerStatsCommand implements ConsoleCommand {
          console.writeln("                  Server Stats");
          console.writeln("----------------------------------------------");
 
-         console.writeln("Server:[%s:%s]", manager.getServerAddress(), manager.getPort());
+         console.writeln("Server:[%s]", manager.getServerUri());
          console.writeln("Id: [%s]", manager.getId());
          console.writeln("Running Since: [%s]\n",
             DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(manager.getDateStarted()));

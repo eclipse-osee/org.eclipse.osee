@@ -22,8 +22,8 @@ public class OseeServerInfoMutable extends OseeServerInfo {
 
    private static final long serialVersionUID = 4437012224149055646L;
 
-   public OseeServerInfoMutable(String serverId, String serverAddress, int port, String[] version, Timestamp dateStarted, boolean isAcceptingRequests) {
-      super(serverId, serverAddress, port, version, dateStarted, isAcceptingRequests);
+   public OseeServerInfoMutable(String serverId, String uri, String[] version, Timestamp dateStarted, boolean isAcceptingRequests) {
+      super(serverId, uri, version, dateStarted, isAcceptingRequests);
    }
 
    public void setAcceptingRequests(boolean value) {

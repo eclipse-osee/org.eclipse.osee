@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal;
 
+import java.net.URI;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +37,7 @@ public class ApplicationServerDataStore {
       "SELECT count(1) FROM osee_session WHERE managed_by_server_id = ?";
 
    private static final String SELECT_FROM_LOOKUP_TABLE =
-      "SELECT * FROM osee_server_lookup ORDER BY server_address desc, port desc, version_id desc";
+      "SELECT * FROM osee_server_lookup ORDER BY server_uri desc, version_id desc";
 
    private static final String SELECT_FROM_LOOKUP_TABLE_BY_SERVER_ID =
       "SELECT * FROM osee_server_lookup where server_id = ? ORDER BY version_id desc";
@@ -86,12 +87,10 @@ public class ApplicationServerDataStore {
 
             OseeServerInfoMutable info = infos.get(serverId);
             if (info == null) {
-               String serverAddress = chStmt.getString("server_address");
-               int port = chStmt.getInt("port");
+               String uri = chStmt.getString("server_uri");
                Timestamp timestamp = chStmt.getTimestamp("start_time");
                info =
-                  new OseeServerInfoMutable(serverId, serverAddress, port, new String[] {serverVersion}, timestamp,
-                     isAcceptingRequests);
+                  new OseeServerInfoMutable(serverId, uri, new String[] {serverVersion}, timestamp, isAcceptingRequests);
                infos.put(serverId, info);
             } else {
                boolean acceptingRequests = info.isAcceptingRequests() && isAcceptingRequests;
@@ -145,7 +144,7 @@ public class ApplicationServerDataStore {
    private static final class ServerLookupTx implements IDbTransactionWork {
 
       private static final String INSERT_LOOKUP_TABLE =
-         "INSERT INTO osee_server_lookup (server_id, version_id, server_address, port, start_time, accepts_requests) VALUES (?,?,?,?,?,?)";
+         "INSERT INTO osee_server_lookup (server_id, version_id, server_address, port, server_uri, start_time, accepts_requests) VALUES (?,?,?,?,?,?,?)";
 
       private static final String DELETE_FROM_LOOKUP_TABLE_BY_ID = "DELETE FROM osee_server_lookup WHERE server_id = ?";
 
@@ -185,13 +184,15 @@ public class ApplicationServerDataStore {
          List<Object[]> insertData = new ArrayList<Object[]>();
          for (OseeServerInfo data : datas) {
             String serverId = data.getServerId();
-            String address = data.getServerAddress();
-            int port = data.getPort();
+            URI serverUri = data.getUri();
+            String uri = serverUri.toString();
+            String address = serverUri.getHost();
+            int port = serverUri.getPort();
             Timestamp dateStarted = data.getDateStarted();
             int acceptingRequests = data.isAcceptingRequests() ? 1 : 0;
 
             for (String version : data.getVersion()) {
-               insertData.add(new Object[] {serverId, version, address, port, dateStarted, acceptingRequests});
+               insertData.add(new Object[] {serverId, version, address, port, uri, dateStarted, acceptingRequests});
             }
          }
          if (!insertData.isEmpty()) {

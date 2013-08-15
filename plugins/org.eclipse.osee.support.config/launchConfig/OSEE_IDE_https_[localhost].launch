@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
+<setAttribute key="additional_plugins">
+<setEntry value="com.google.guava:12.0.0.v201212092141:default:false"/>
+</setAttribute>
+<booleanAttribute key="append.args" value="true"/>
+<booleanAttribute key="askclear" value="true"/>
+<booleanAttribute key="automaticAdd" value="false"/>
+<booleanAttribute key="automaticValidate" value="true"/>
+<stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="checked" value="[NONE]"/>
+<booleanAttribute key="clearConfig" value="true"/>
+<booleanAttribute key="clearws" value="false"/>
+<booleanAttribute key="clearwslog" value="false"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/OSEE_IDE_https_[localhost]"/>
+<booleanAttribute key="default" value="false"/>
+<stringAttribute key="featureDefaultLocation" value="workspace"/>
+<stringAttribute key="featurePluginResolution" value="workspace"/>
+<booleanAttribute key="includeFragments" value="false"/>
+<booleanAttribute key="includeOptional" value="false"/>
+<stringAttribute key="location" value="${workspace_loc}/runtime-workspace"/>
+<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -debug"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M&#13;&#10;-XX:MaxPermSize=256m&#13;&#10;-Dosee.log.default=INFO&#13;&#10;-Dosee.application.server=https://localhost:8089&#13;&#10;-Dosee.authentication.protocol=demo&#13;&#10;-Djavax.net.ssl.trustStore=${project_loc:org.eclipse.osee.support.config}/launchConfig/demo.keystore"/>
+<stringAttribute key="pde.version" value="3.3"/>
+<stringAttribute key="product" value="org.eclipse.osee.framework.ui.product.osee"/>
+<booleanAttribute key="restart" value="false"/>
+<setAttribute key="selected_features">
+<setEntry value="de.itemis.xtext.antlr.feature:default"/>
+<setEntry value="de.itemis.xtext.antlr.sdk:default"/>
+<setEntry value="de.itemis.xtext.antlr.source.feature:default"/>
+<setEntry value="org.eclipse.cvs.source:default"/>
+<setEntry value="org.eclipse.cvs:default"/>
+<setEntry value="org.eclipse.draw2d:default"/>
+<setEntry value="org.eclipse.emf.codegen.ecore.ui:default"/>
+<setEntry value="org.eclipse.emf.codegen.ecore:default"/>
+<setEntry value="org.eclipse.emf.codegen.ui:default"/>
+<setEntry value="org.eclipse.emf.codegen:default"/>
+<setEntry value="org.eclipse.emf.common.ui:default"/>
+<setEntry value="org.eclipse.emf.common:default"/>
+<setEntry value="org.eclipse.emf.compare:default"/>
+<setEntry value="org.eclipse.emf.converter:default"/>
+<setEntry value="org.eclipse.emf.databinding.edit:default"/>
+<setEntry value="org.eclipse.emf.databinding:default"/>
+<setEntry value="org.eclipse.emf.ecore.edit:default"/>
+<setEntry value="org.eclipse.emf.ecore.editor:default"/>
+<setEntry value="org.eclipse.emf.ecore:default"/>
+<setEntry value="org.eclipse.emf.edit.ui:default"/>
+<setEntry value="org.eclipse.emf.edit:default"/>
+<setEntry value="org.eclipse.emf.mapping.ecore.editor:default"/>
+<setEntry value="org.eclipse.emf.mapping.ecore:default"/>
+<setEntry value="org.eclipse.emf.mapping.ui:default"/>
+<setEntry value="org.eclipse.emf.mapping:default"/>
+<setEntry value="org.eclipse.emf:default"/>
+<setEntry value="org.eclipse.equinox.p2.core.feature.source:default"/>
+<setEntry value="org.eclipse.equinox.p2.core.feature:default"/>
+<setEntry value="org.eclipse.equinox.p2.extras.feature.source:default"/>
+<setEntry value="org.eclipse.equinox.p2.extras.feature:default"/>
+<setEntry value="org.eclipse.equinox.p2.rcp.feature.source:default"/>
+<setEntry value="org.eclipse.equinox.p2.rcp.feature:default"/>
+<setEntry value="org.eclipse.equinox.p2.user.ui.source:default"/>
+<setEntry value="org.eclipse.equinox.p2.user.ui:default"/>
+<setEntry value="org.eclipse.gef:default"/>
+<setEntry value="org.eclipse.help.source:default"/>
+<setEntry value="org.eclipse.help:default"/>
+<setEntry value="org.eclipse.jdt.source:default"/>
+<setEntry value="org.eclipse.nebula.widgets.ganttchart.feature:default"/>
+<setEntry value="org.eclipse.nebula.widgets.xviewer.feature:default"/>
+<setEntry value="org.eclipse.osee.ats.feature:default"/>
+<setEntry value="org.eclipse.osee.client.all.feature:default"/>
+<setEntry value="org.eclipse.osee.client.feature:default"/>
+<setEntry value="org.eclipse.osee.client.ote.feature:default"/>
+<setEntry value="org.eclipse.osee.core.feature:default"/>
+<setEntry value="org.eclipse.osee.core.plugin.feature:default"/>
+<setEntry value="org.eclipse.osee.core.runtime.feature:default"/>
+<setEntry value="org.eclipse.osee.core.ui.feature:default"/>
+<setEntry value="org.eclipse.osee.coverage.feature:default"/>
+<setEntry value="org.eclipse.osee.define.feature:default"/>
+<setEntry value="org.eclipse.osee.external.feature:default"/>
+<setEntry value="org.eclipse.osee.framework.feature:default"/>
+<setEntry value="org.eclipse.osee.framework.ui.feature:default"/>
+<setEntry value="org.eclipse.pde.source:default"/>
+<setEntry value="org.eclipse.pde:default"/>
+<setEntry value="org.eclipse.platform.source:default"/>
+<setEntry value="org.eclipse.platform:default"/>
+<setEntry value="org.eclipse.rcp:default"/>
+<setEntry value="org.eclipse.sdk:default"/>
+<setEntry value="org.eclipse.team.svn:default"/>
+<setEntry value="org.eclipse.xtext.docs:default"/>
+<setEntry value="org.eclipse.xtext.examples.source:default"/>
+<setEntry value="org.eclipse.xtext.examples:default"/>
+<setEntry value="org.eclipse.xtext.runtime.source:default"/>
+<setEntry value="org.eclipse.xtext.runtime:default"/>
+<setEntry value="org.eclipse.xtext.sdk:default"/>
+<setEntry value="org.eclipse.xtext.ui.source:default"/>
+<setEntry value="org.eclipse.xtext.ui:default"/>
+<setEntry value="org.eclipse.xtext.xtext.ui.source:default"/>
+<setEntry value="org.eclipse.xtext.xtext.ui:default"/>
+</setAttribute>
+<booleanAttribute key="show_selected_only" value="false"/>
+<stringAttribute key="templateConfig" value=""/>
+<stringAttribute key="timestamp" value="1349216380893"/>
+<booleanAttribute key="tracing" value="false"/>
+<booleanAttribute key="useCustomFeatures" value="true"/>
+<booleanAttribute key="useDefaultConfig" value="true"/>
+<booleanAttribute key="useDefaultConfigArea" value="true"/>
+<booleanAttribute key="useProduct" value="true"/>
+<booleanAttribute key="usefeatures" value="false"/>
+</launchConfiguration>

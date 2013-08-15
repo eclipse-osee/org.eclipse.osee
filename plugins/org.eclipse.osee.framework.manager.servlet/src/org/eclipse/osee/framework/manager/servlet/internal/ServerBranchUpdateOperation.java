@@ -98,8 +98,7 @@ public class ServerBranchUpdateOperation extends AbstractOperation {
          if (!manager.getId().equals(serverInfo.getServerId()) && serverInfo.isAcceptingRequests()) {
             try {
                String urlString =
-                  HttpUrlBuilder.createURL(serverInfo.getServerAddress(), serverInfo.getPort(),
-                     OseeServerContext.CACHE_CONTEXT, parameters);
+                  HttpUrlBuilder.createURL(serverInfo.getUri(), OseeServerContext.CACHE_CONTEXT, parameters);
 
                BranchCacheStoreRequest message = is_0_9_2_Compatible(serverInfo.getVersion()) ? request : request0_9_1;
 

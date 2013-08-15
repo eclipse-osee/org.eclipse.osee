@@ -183,27 +183,12 @@ public class HttpProcessor {
       return isAlive;
    }
 
-   public static boolean isAlive(String serverAddress, int port) {
+   public static boolean isAlive(URI uri) {
       boolean isAlive = false;
-      String urlString = null;
-      int internalPort = port < -1 ? -1 : port;
       try {
-         if (internalPort > -1) {
-            urlString = String.format("http://%s:%s", serverAddress, String.valueOf(internalPort));
-         } else {
-            urlString = String.format("http://%s", serverAddress);
-         }
-      } catch (Exception ex) {
-         // Do Nothing
-      }
-
-      if (urlString != null) {
-         try {
-            URL url = new URL(urlString);
-            isAlive = isAlive(url);
-         } catch (MalformedURLException ex) {
-            // Do Nothing
-         }
+         isAlive = isAlive(uri.toURL());
+      } catch (MalformedURLException ex) {
+         // do nothing
       }
       return isAlive;
    }
