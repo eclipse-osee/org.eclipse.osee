@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.mappers.OseeCoreExceptionMapper;
+import org.eclipse.osee.orcs.rest.internal.mappers.ThrowableExceptionMapper;
 
 /**
  * Get application.wadl at this context to get rest documentation
@@ -38,6 +39,7 @@ public class OrcsApplication extends Application {
       Set<Class<?>> classes = new HashSet<Class<?>>();
       classes.add(BranchesResource.class);
       classes.add(OseeCoreExceptionMapper.class);
+      classes.add(ThrowableExceptionMapper.class);
       return classes;
    }
 
