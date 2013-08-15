@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -29,12 +30,14 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
 import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
+import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -233,6 +236,17 @@ public class OrcsQueryTest {
       assertEquals("Subsystem Requirements", reqIterator.next().getName());
       checkContainsTypes(subSystemReqs, CoreArtifactTypes.SubsystemRequirementMSWord,
          CoreArtifactTypes.SystemRequirementMSWord);
+   }
+
+   @Test
+   public void testQueryRequirementsAsLocalIds() throws OseeCoreException {
+      QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1);
+      builder.and(CoreAttributeTypes.Name, "REQUIREMENTS", CaseType.IGNORE_CASE, TokenOrderType.MATCH_ORDER,
+         TokenDelimiterMatch.ANY, MatchTokenCountType.IGNORE_TOKEN_COUNT);
+
+      ResultSet<HasLocalId> results = builder.getResultsAsLocalIds();
+      assertEquals(7, results.getList().size());
+      assertEquals(7, builder.getCount());
    }
 
    @Test
