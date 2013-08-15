@@ -13,15 +13,15 @@ package org.eclipse.osee.ats.editor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
+import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
@@ -31,8 +31,6 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -40,8 +38,8 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -99,34 +97,33 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
 
    private void safelyProcessHandler(final ArtifactEvent artifactEvent, final ISMAEditorEventHandler handler) throws OseeCoreException {
       final AbstractWorkflowArtifact awa = handler.getSMAEditor().getAwa();
-      final Collection<Artifact> relModifiedArts = artifactEvent.getRelCacheArtifacts();
-      Artifact actionArt = null;
       boolean refreshed = false;
-      try {
-         actionArt = awa.isOfType(AtsArtifactTypes.TeamWorkflow) ? awa.getParentActionArtifact() : null;
-      } catch (OseeCoreException ex) {
-         // do nothing
-      }
       if (awa.isInTransition()) {
          return;
       }
 
       if (artifactEvent.isDeletedPurged(awa)) {
          handler.getSMAEditor().closeEditor();
-      } else if (artifactEvent.isModifiedReloaded(awa) ||
+      } else if (
       //
-      artifactEvent.isRelAddedChangedDeleted(awa) ||
+      workflowModifiedOrReloaded(artifactEvent, awa) ||
       //
-      (actionArt != null && artifactEvent.isModifiedReloaded(actionArt)) ||
+      workflowRelationIsAddedChangedOrDeleted(artifactEvent, awa) ||
       //
-      (actionArt != null && artifactEvent.isRelAddedChangedDeleted(actionArt)) || (!getVersionRelatedArtifacts(
-         artifactEvent, relModifiedArts).isEmpty())) {
+      workflowActionIsModifedOrReloaded(artifactEvent, awa) ||
+      //
+      workflowActionRelationIsAddedChangedOrDeleted(artifactEvent, awa) ||
+      //
+      teamWorkflowParallelConfigurationChanged(artifactEvent, awa)
+      //
+      ) {
          refreshed = true;
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
                handler.getSMAEditor().refreshPages();
             }
+
          });
       } else if (isReloaded(artifactEvent, awa)) {
          SMAEditor.close(Collections.singleton(awa), false);
@@ -199,29 +196,74 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
 
    }
 
-   private Set<Artifact> getVersionRelatedArtifacts(final ArtifactEvent artifactEvent, final Collection<Artifact> relModifiedArts) {
-      Set<Artifact> validRelArts = new HashSet<Artifact>();
-      if (artifactEvent.isForBranch(CoreBranches.COMMON) && relModifiedArts != null && !relModifiedArts.isEmpty()) {
+   /**
+    * Return true if one of the versions configured for parallel dev had a parallel config relation add, change or
+    * delete. Refreshing in this case is necessary so the commit manager will show the updated parallel configuration
+    * changes.
+    */
+   private boolean teamWorkflowParallelConfigurationChanged(ArtifactEvent artifactEvent, AbstractWorkflowArtifact awa) {
+      boolean changed = false;
+      // Only handle for teamWorkflows
+      if (awa instanceof TeamWorkFlowArtifact) {
+         TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) awa;
          try {
-            validRelArts =
-               RelationManager.getRelatedArtifacts(getValidRelationArtifacts(relModifiedArts, artifactEvent), 1,
-                  DeletionFlag.INCLUDE_DELETED, AtsRelationTypes.ParallelVersion_Child,
-                  AtsRelationTypes.ParallelVersion_Parent);
+            // Retrieve all config to commit items for this team Wf, which will contain all parallel version artifacts
+            Collection<ICommitConfigArtifact> configArtifactsConfiguredToCommitTo =
+               AtsBranchManagerCore.getConfigArtifactsConfiguredToCommitTo(teamWf);
+            for (Object obj : configArtifactsConfiguredToCommitTo) {
+               if (obj instanceof IAtsVersion) {
+                  IAtsVersion version = (IAtsVersion) obj;
+                  for (EventBasicGuidRelation relation : artifactEvent.getRelations()) {
+                     // If relation is parallel config and guid is one of parallel configured versions
+                     if (relation.is(AtsRelationTypes.ParallelVersion_Child) && (relation.getArtA().getGuid().equals(
+                        version.getGuid()) || relation.getArtB().getGuid().equals(version.getGuid()))) {
+                        changed = true;
+                        break;
+                     }
+                  }
+               }
+            }
          } catch (OseeCoreException ex) {
-            //do nothing
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
-      return validRelArts;
+      return changed;
    }
 
-   private Collection<Artifact> getValidRelationArtifacts(Collection<Artifact> artifacts, ArtifactEvent artifactEvent) {
-      Collection<Artifact> validArtifacts = new ArrayList<Artifact>();
-      for (Artifact art : artifacts) {
-         if (artifactEvent.isRelAddedChangedDeleted(art) && art.isOfType(AtsArtifactTypes.Version)) {
-            validArtifacts.add(art);
+   private boolean workflowActionRelationIsAddedChangedOrDeleted(final ArtifactEvent artifactEvent, AbstractWorkflowArtifact awa) {
+      boolean result = false;
+      if (awa instanceof TeamWorkFlowArtifact) {
+         TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) awa;
+         try {
+            Artifact actionArt = teamWf.getParentActionArtifact();
+            result = artifactEvent.isRelAddedChangedDeleted(actionArt);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
-      return validArtifacts;
+      return result;
+   }
+
+   private boolean workflowActionIsModifedOrReloaded(ArtifactEvent artifactEvent, AbstractWorkflowArtifact awa) {
+      boolean result = false;
+      if (awa instanceof TeamWorkFlowArtifact) {
+         TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) awa;
+         try {
+            Artifact actionArt = teamWf.getParentActionArtifact();
+            result = artifactEvent.isModifiedReloaded(actionArt);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+      return result;
+   }
+
+   private boolean workflowRelationIsAddedChangedOrDeleted(final ArtifactEvent artifactEvent, AbstractWorkflowArtifact awa) {
+      return artifactEvent.isRelAddedChangedDeleted(awa);
+   }
+
+   private boolean workflowModifiedOrReloaded(final ArtifactEvent artifactEvent, AbstractWorkflowArtifact awa) {
+      return artifactEvent.isModifiedReloaded(awa);
    }
 
    private boolean isReloaded(ArtifactEvent artifactEvent, AbstractWorkflowArtifact sma) {
