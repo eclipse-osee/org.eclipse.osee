@@ -372,7 +372,7 @@ public abstract class ScriptPage extends TestManagerPage {
          runJob.setUser(true);
          runJob.schedule();
       } else {
-         MessageDialog.openError(Displays.getActiveShell(), "Error", "Test Manager Settings Error");
+         MessageDialog.openError(Displays.getActiveShell(), "Error", runJob.getErrorMessage());
       }
    }
 

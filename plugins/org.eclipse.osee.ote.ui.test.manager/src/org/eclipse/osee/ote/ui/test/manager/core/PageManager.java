@@ -137,9 +137,9 @@ public class PageManager {
                builder.append("\n");
             }
             builder.append(page.getPageName());
-            builder.append(" Page:[");
+            builder.append(" Page:\n");
             builder.append(pageMessage);
-            builder.append("]");
+            builder.append("\n");
          }
       }
       return builder.toString();
