@@ -402,6 +402,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
             }
          }
       }
+      doSave(null);
       lastPageIndex = newPageIndex;
    }
 
@@ -477,9 +478,11 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
       InputStream inputStream = null;
       try {
          File file = OseeData.getFile("testManagerSettings.xml");
-         inputStream = new FileInputStream(file);
-         getPropertyStore().load(inputStream);
-         pageManager.restore();
+         if(file.exists()){
+        	 inputStream = new FileInputStream(file);
+        	 getPropertyStore().load(inputStream);
+        	 pageManager.restore();
+         }
       } catch (Exception ex) {
          TestManagerPlugin.log(Level.WARNING, "Stored settings not available. Using defaults.", ex);
       } finally {
