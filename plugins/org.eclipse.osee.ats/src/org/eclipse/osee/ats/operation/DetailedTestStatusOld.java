@@ -50,6 +50,7 @@ import org.eclipse.osee.ats.util.widgets.XAtsProgramComboWidget;
 import org.eclipse.osee.define.traceability.RequirementTraceabilityData;
 import org.eclipse.osee.define.traceability.ScriptTraceabilityOperation;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
+import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
 import org.eclipse.osee.define.traceability.TraceabilityProviderOperation;
 import org.eclipse.osee.define.traceability.report.RequirementStatus;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -235,16 +236,17 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
       loadTestRunArtifacts(scriptsBranch);
 
-      Collection<String> traceHandlerIds = new LinkedList<String>();
+      Collection<TraceHandler> traceHandlers = new LinkedList<TraceHandler>();
       for (String handler : availableTraceHandlers) {
          if (variableMap.getBoolean(handler)) {
-            traceHandlerIds.add(handler);
+            TraceHandler traceHandler = TraceUnitExtensionManager.getInstance().getTraceHandlerByName(handler);
+            traceHandlers.add(traceHandler);
          }
       }
 
       // Load Requirements Data
       TraceabilityProviderOperation provider =
-         new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, traceHandlerIds);
+         new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, traceHandlers);
       RequirementTraceabilityData traceabilityData = new RequirementTraceabilityData(procedureBranch, provider);
 
       IStatus status = traceabilityData.initialize(monitor);

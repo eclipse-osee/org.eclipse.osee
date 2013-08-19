@@ -66,6 +66,18 @@ public class TraceUnitExtensionManager {
       return contributions.get(id);
    }
 
+   public TraceHandler getTraceHandlerByName(String name) throws OseeCoreException {
+      checkObjectsLoaded();
+      TraceHandler toReturn = null;
+      for (TraceHandler handler : getAllTraceHandlers()) {
+         if (handler.getName().equals(name)) {
+            toReturn = handler;
+            break;
+         }
+      }
+      return toReturn;
+   }
+
    public ITraceParser getTraceParserById(String id) throws OseeCoreException {
       TraceHandler traceUnitHandler = getTraceUnitHandlerById(id);
       if (traceUnitHandler != null) {

@@ -23,6 +23,7 @@ import org.eclipse.osee.define.traceability.BranchTraceabilityOperation;
 import org.eclipse.osee.define.traceability.RequirementTraceabilityData;
 import org.eclipse.osee.define.traceability.ScriptTraceabilityOperation;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
+import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
 import org.eclipse.osee.define.traceability.TraceabilityFactory;
 import org.eclipse.osee.define.traceability.TraceabilityFactory.OutputFormat;
 import org.eclipse.osee.define.traceability.TraceabilityFactory.TraceabilityStyle;
@@ -121,10 +122,11 @@ public class PublishStdStpTraceability extends AbstractBlam {
       File scriptDir = new File(variableMap.getString("Script Root Directory"));
       List<TraceabilityStyle> selectedReports = getStyles(variableMap);
 
-      Collection<String> traceHandlerIds = new LinkedList<String>();
+      Collection<TraceHandler> traceHandlers = new LinkedList<TraceHandler>();
       for (String handler : availableTraceHandlers) {
          if (variableMap.getBoolean(handler)) {
-            traceHandlerIds.add(handler);
+            TraceHandler traceHandler = TraceUnitExtensionManager.getInstance().getTraceHandlerByName(handler);
+            traceHandlers.add(traceHandler);
          }
       }
 
@@ -140,7 +142,7 @@ public class PublishStdStpTraceability extends AbstractBlam {
          } else {
             provider =
                new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, types, searchInherited,
-                  traceHandlerIds);
+                  traceHandlers);
          }
          RequirementTraceabilityData traceabilityData = new RequirementTraceabilityData(testProcedureBranch, provider);
          IStatus status = traceabilityData.initialize(monitor);

@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.traceability.ScriptTraceabilityOperation;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
+import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -96,10 +97,11 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       String scriptDir = variableMap.getString(SCRIPT_ROOT_DIR);
       Boolean checked = variableMap.getBoolean(USE_TRACE_IN_OSEE);
 
-      Collection<String> traceHandlerIds = new LinkedList<String>();
+      Collection<TraceHandler> traceHandlers = new LinkedList<TraceHandler>();
       for (String handler : availableTraceHandlers) {
          if (variableMap.getBoolean(handler)) {
-            traceHandlerIds.add(handler);
+            TraceHandler traceHandler = TraceUnitExtensionManager.getInstance().getTraceHandlerByName(handler);
+            traceHandlers.add(traceHandler);
          }
       }
 
@@ -107,7 +109,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
          File dir = new File(scriptDir);
          if (dir.exists()) {
             ScriptTraceabilityOperation traceOperation =
-               new ScriptTraceabilityOperation(dir.getParentFile(), branch, false, traceHandlerIds);
+               new ScriptTraceabilityOperation(dir.getParentFile(), branch, false, traceHandlers);
             Operations.executeWorkAndCheckStatus(traceOperation, monitor);
             requirementsToCodeUnits = traceOperation.getRequirementToCodeUnitsMap();
          }
@@ -217,8 +219,8 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       sb.append("<XWidget xwidgetType=\"XText\" displayName=\"" + SCRIPT_ROOT_DIR + "\" defaultValue=\"C:/UserData/workspaceScripts\" toolTip=\"Leave blank if test script traceability is not needed.\" />");
       availableTraceHandlers = new LinkedList<String>();
       sb.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select appropriate script parser (if script traceability needed):\" />");
-      Collection<String> traceHandlers = TraceUnitExtensionManager.getInstance().getAllTraceHandlerNames();
-      for (String handler : traceHandlers) {
+      Collection<String> traceHandlerNames = TraceUnitExtensionManager.getInstance().getAllTraceHandlerNames();
+      for (String handler : traceHandlerNames) {
          sb.append(String.format(TRACE_HANDLER_CHECKBOX, handler));
          availableTraceHandlers.add(handler);
       }

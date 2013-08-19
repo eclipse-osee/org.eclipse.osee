@@ -11,10 +11,12 @@
 package org.eclipse.osee.define.traceability;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.define.internal.Activator;
+import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -39,9 +41,11 @@ public class ImportTraceabilityWizard extends Wizard implements IImportWizard {
       try {
          IOseeBranch branch = mainPage.getSelectedBranch();
          File file = mainPage.getImportFile();
-         String[] handerIds = mainPage.getTraceUnitHandlerIds();
-         Operations.executeWorkAndCheckStatus(new ScriptTraceabilityOperation(file, branch, true,
-            Arrays.asList(handerIds)));
+         Collection<TraceHandler> handlers = new LinkedList<TraceHandler>();
+         for (String handlerId : mainPage.getTraceUnitHandlerIds()) {
+            handlers.add(TraceUnitExtensionManager.getInstance().getTraceUnitHandlerById(handlerId));
+         }
+         Operations.executeWorkAndCheckStatus(new ScriptTraceabilityOperation(file, branch, true, handlers));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Traceability Import Error", ex);
       }

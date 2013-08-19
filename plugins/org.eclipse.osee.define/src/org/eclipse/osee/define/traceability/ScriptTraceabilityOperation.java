@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -62,7 +61,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    private static final Matcher stripTrailingReqNameMatcher = Pattern.compile("(\\}|\\])(.*)").matcher("");
    private static final Matcher nonWordMatcher = Pattern.compile("[^A-Z_0-9]").matcher("");
 
-   private final Collection<String> traceHandlerIds;
+   private final Collection<TraceHandler> traceHandlers;
    private final File file;
    private final RequirementData requirementData;
    private final ArrayList<String> noTraceabilityFiles = new ArrayList<String>(200);
@@ -75,27 +74,26 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    private int pathPrefixLength;
    private final boolean writeOutResults;
 
-   private ScriptTraceabilityOperation(RequirementData requirementData, File file, boolean writeOutResults, Collection<String> traceHandlerIds) throws IOException {
+   private ScriptTraceabilityOperation(RequirementData requirementData, File file, boolean writeOutResults, Collection<TraceHandler> traceHandlers) throws IOException {
       super("Importing Traceability", Activator.PLUGIN_ID);
       this.file = file;
       this.requirementData = requirementData;
       this.writeOutResults = writeOutResults;
-      this.traceHandlerIds = traceHandlerIds;
+      this.traceHandlers = traceHandlers;
       charBak = new CharBackedInputStream();
       excelWriter = new ExcelXmlWriter(charBak.getWriter());
    }
 
-   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults, Collection<String> traceHandlerIds) throws IOException {
-      this(new RequirementData(branch), file, writeOutResults, traceHandlerIds);
+   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults, Collection<TraceHandler> traceHandlers) throws IOException {
+      this(new RequirementData(branch), file, writeOutResults, traceHandlers);
    }
 
-   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults, Collection<? extends IArtifactType> types, boolean withInheritance, Collection<String> traceHandlerIds) throws IOException {
-      this(new RequirementData(branch, types, withInheritance), file, writeOutResults, traceHandlerIds);
+   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults, Collection<? extends IArtifactType> types, boolean withInheritance, Collection<TraceHandler> traceHandlers) throws IOException {
+      this(new RequirementData(branch, types, withInheritance), file, writeOutResults, traceHandlers);
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      Collection<TraceHandler> traceHandlers = getTraceHandlers();
       monitor.worked(1);
 
       requirementData.initialize(monitor);
@@ -128,17 +126,6 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
          AIFile.writeToFile(iFile, charBak);
          Program.launch(iFile.getLocation().toOSString());
       }
-   }
-
-   private Collection<TraceHandler> getTraceHandlers() throws OseeCoreException {
-      Conditions.checkNotNullOrEmpty(traceHandlerIds, "traceHandlerIds");
-      Collection<TraceHandler> handlers = new LinkedList<TraceHandler>();
-      for (String id : traceHandlerIds) {
-         TraceHandler handler = TraceUnitExtensionManager.getInstance().getTraceUnitHandlerById(id);
-         Conditions.checkNotNull(handler, "handler");
-         handlers.add(handler);
-      }
-      return handlers;
    }
 
    private void handleDirectory(File directory, Collection<TraceHandler> traceHandlers) throws IOException, OseeCoreException {
