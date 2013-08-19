@@ -963,8 +963,8 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
     * enumerated and value is already present
     */
    private final <T> void setOrAddAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
-      List<Attribute<String>> attributes = getAttributes(attributeType);
-      for (Attribute<String> canidateAttribute : attributes) {
+      List<Attribute<Object>> attributes = getAttributes(attributeType);
+      for (Attribute<?> canidateAttribute : attributes) {
          if (canidateAttribute.getValue().equals(value)) {
             return;
          }

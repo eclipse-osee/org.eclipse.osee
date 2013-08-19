@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -54,7 +55,10 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    private final static String BR_TAG = "<br />";
    private final static String BODY_START_TAG = "<body>";
    private final static String BODY_END_TAG = "</body>";
+   private final static String LIST_ITEM_TAG = "<li>";
+   private final static String LIST_ITEM_END_TAG = "</li>";
    private final static String IMAGE_BASE_NAME = "Image Content_";
+   private final String BLANK_HTML_LINE = "<br />";
    private final static String[] VERIFICATION_KEYWORDS = {
       "Effectivity:",
       "Verf Method:",
@@ -223,7 +227,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                tableFound = true;
             }
          } else if (qName.equalsIgnoreCase("tr")) {
-            // Do nothing here -- no processing needed
+            if (embededTableCount > 0) {
+               cell.append("<tr>");
+            }
          } else if (qName.equalsIgnoreCase("th")) {
             if (embededTableCount > 0) {
                // table within the table
@@ -274,6 +280,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                      throw new SAXException(ex);
                   }
                }
+            } else {
+               cell.append("</tr>");
             }
          } else if (qName.equalsIgnoreCase("th")) {
             if (embededTableCount > 0) {
@@ -415,7 +423,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       /***************************************************************
        * First check the document applicability box, if it is empty this is a header row
        */
-      boolean isHeaderRow = false, foundDataType = false;
+      boolean isHeaderRow = false, foundDataType = false, isList;
       int rowIndex;
       for (rowIndex = 0; rowIndex < row.length; rowIndex++) {
          RowTypeEnum rowType = rowIndexToRowTypeMap.get(rowIndex);
@@ -438,7 +446,12 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          }
       }
       if (!rowIndexToRowTypeMap.isEmpty()) {
+         isList = false;
+         int requirementIndex = -1;
+         String requirementColumn = "";
+         boolean isRequirementColumn = false;
          for (rowIndex = 0; rowIndex < row.length; rowIndex++) {
+            isRequirementColumn = false;
             RowTypeEnum rowType = rowIndexToRowTypeMap.get(rowIndex);
 
             String rowValue = row[rowIndex];
@@ -465,6 +478,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                      }
                      rowValue = "";
                   }
+                  requirementIndex = rowIndex;
+                  isRequirementColumn = true;
+                  requirementColumn = rowValue;
 
                   break;
 
@@ -513,7 +529,6 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
                      case TABLE:
                      case INFORMATION:
-                     case LIST:
                      case FIGURE:
                         isRequirement = lastDataType.equals(DataTypeEnum.REQUIREMENT);
                         break;
@@ -523,6 +538,11 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                         inArtifact = false;
                         theArtifact.clear();
                         return;
+
+                     case LIST:
+                        isRequirement = lastDataType.equals(DataTypeEnum.REQUIREMENT);
+                        isList = true;
+                        break;
 
                      case OTHER:
                         foundDataType = false;
@@ -543,20 +563,414 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                   break;
 
             }
-
-            if (inArtifact) {
-               ListIterator<String> iter = theArtifact.listIterator(rowIndex);
-               String theColumnValue = iter.next();
-               theColumnValue += "\n" + rowValue.trim();
-               iter.set(theColumnValue);
+            if (!isRequirementColumn) {
+               if (inArtifact) {
+                  ListIterator<String> iter = theArtifact.listIterator(rowIndex);
+                  String theColumnValue = iter.next();
+                  theColumnValue += " " + rowValue.trim();
+                  iter.set(theColumnValue);
+               } else {
+                  theArtifact.add(rowValue.trim());
+               }
             } else {
-               theArtifact.add(rowValue.trim());
+               if (!inArtifact) {
+                  theArtifact.add("");
+               }
             }
 
          }
-
+         // process requirement column -- functionally always inArtifact because of the empty add above
+         ListIterator<String> iter = theArtifact.listIterator(requirementIndex);
+         String theColumnValue = iter.next();
+         if (isList) {
+            requirementColumn = processList(requirementColumn);
+         }
+         theColumnValue += " " + requirementColumn.trim();
+         iter.set(theColumnValue);
       }
       inArtifact = true;
+   }
+
+   private String processList(String inputValue) {
+      inputValue = normalizeHtml(inputValue);
+      /**************************************************************************************
+       * The way Doors export works with lists is that there is badly spaced <div> statements -- remove them
+       */
+      inputValue = inputValue.replaceAll("<div>", "");
+      inputValue = inputValue.replaceAll("</div>", "");
+      /*********************************************************************************
+       * Remove extra blank lines too
+       */
+      inputValue = inputValue.replaceAll(BLANK_HTML_LINE + "\\s+" + BLANK_HTML_LINE, BLANK_HTML_LINE);
+      StringBuilder returnString = new StringBuilder(inputValue.trim());
+      //@formatter:off
+      /********************************************************************************
+       * The Doors export outputs a list as pure text (e.g. a. list item). Convert this to an HTML list 
+       * 
+       * Assumptions: 
+       * 1) The format of the list is either a. or 1. 
+       * 2) There is no embedded 1. or a. in the text of the list. 
+       *    That is if 1. shows up in a alpha list it means there is a new list starting or if b.
+       *    shows up after a. then it the next item
+       */
+    //@formatter:on
+      // find first text char 
+      char[] theChars = stringBuilderToChars(returnString);
+      int[] startEnd = findEndOfList(theChars, 0);
+      int iPos = startEnd[0];
+      int endOfList = startEnd[1];
+      int startOfNextList = startEnd[2];
+      boolean isNumeric = Character.isDigit(theChars[iPos]);
+      boolean isLowerCase = Character.isLowerCase(theChars[iPos]);
+      int currentNumber = 0;
+      String currentLetter = "";
+      if (isNumeric) {
+         int startPos = iPos;
+         while ((theChars[iPos] != '.') && theChars[iPos] != ')') {
+            iPos++;
+         }
+         String theNumber = returnString.substring(startPos, iPos);
+         currentNumber = Integer.parseInt(theNumber);
+      } else {
+         int startPos = iPos;
+         while ((theChars[iPos] != '.') && theChars[iPos] != ')') {
+            iPos++;
+         }
+         currentLetter = returnString.substring(startPos, iPos);
+      }
+      int nextItem = 0;
+      returnString.delete(iPos - 1, iPos + 1);
+      endOfList -= 2;
+      startOfNextList -= 2;
+      String insertValue = null;
+      if (isNumeric) {
+         insertValue = "<ol>";
+      } else if (isLowerCase) {
+         insertValue = "<ol type = \"a\">";
+      } else {
+         insertValue = "<ol type = \"A\">";
+      }
+      returnString.insert(iPos - 1, insertValue);
+      if (iPos < endOfList) {
+         endOfList = endOfList + insertValue.length();
+         startOfNextList = startOfNextList + insertValue.length();
+      }
+      iPos += insertValue.length();
+
+      listData theListData = new listData();
+      boolean lastWasSublist = false;
+      while (nextItem != -1) {
+         if (theListData.getNewList()) {
+            lastWasSublist = true;
+         } else {
+            lastWasSublist = false;
+            returnString.insert(iPos - 1, LIST_ITEM_TAG);
+            if (iPos < endOfList) {
+               endOfList = endOfList + LIST_ITEM_TAG.length();
+               startOfNextList = startOfNextList + LIST_ITEM_TAG.length();
+            }
+            iPos += LIST_ITEM_TAG.length() - 1;
+         }
+         theChars = stringBuilderToChars(returnString);
+         nextItem = findNextListItem(theChars, iPos, isNumeric, isLowerCase, currentNumber, currentLetter, theListData);
+         if (nextItem == -1) {
+            break;
+         }
+
+         if (theListData.getNewList()) {
+            int startPoint = (nextItem < startOfNextList) ? nextItem : startOfNextList;
+            String theSublist = returnString.substring(0, startPoint);
+            int end = theListData.getNextItem();
+            if (end >= returnString.length()) {
+               end = returnString.length() - 1;
+            }
+
+            String theRawSublist = new String(theChars, startPoint, end - startPoint + 1);
+            int initialLen = theRawSublist.length();
+            theRawSublist = processList(theRawSublist);
+            theSublist += theRawSublist;
+            theSublist += LIST_ITEM_END_TAG;
+            int delta = (theRawSublist.length() - initialLen) + LIST_ITEM_END_TAG.length();
+            endOfList += delta;
+            startOfNextList += delta;
+            if ((theListData.getNextItem() != -1) && (theListData.getNextItem() < returnString.length())) {
+               theSublist += returnString.substring(theListData.getNextItem() + 1);
+            }
+            returnString.delete(0, returnString.length());
+            returnString.append(theSublist);
+
+         } else {
+            if (isNumeric) {
+               currentNumber =
+                  Integer.valueOf(returnString.substring(nextItem, nextItem + theListData.getItemLength() - 1));
+            } else {
+               currentLetter = returnString.substring(nextItem, nextItem + theListData.getItemLength() - 1);
+            }
+            returnString.delete(nextItem, nextItem + theListData.getItemLength());
+            endOfList -= theListData.getItemLength();
+            startOfNextList -= theListData.getItemLength();
+            /*************************************************************
+             * Since we are converting a line of text, there is a blank line after it. Delete the <BR>
+             * </BR>
+             */
+            if (!lastWasSublist) {
+               int end = nextItem;
+               if (end > returnString.length()) {
+                  end = returnString.length();
+               }
+               String test = returnString.substring(0, end);
+               int lastPoint = test.lastIndexOf(BLANK_HTML_LINE);
+               if (lastPoint != -1) {
+                  returnString.delete(lastPoint, end);
+                  int delta = test.length() - lastPoint;
+                  endOfList -= delta;
+                  nextItem -= delta;
+                  startOfNextList -= delta;
+               }
+            }
+            if (!lastWasSublist) {
+               returnString.insert(nextItem, LIST_ITEM_END_TAG);
+               if (nextItem < endOfList) {
+                  endOfList = endOfList + LIST_ITEM_END_TAG.length();
+                  startOfNextList = startOfNextList + LIST_ITEM_END_TAG.length();
+               }
+               nextItem = nextItem + LIST_ITEM_END_TAG.length();
+            }
+            iPos = nextItem + 1;
+         }
+         theChars = stringBuilderToChars(returnString);
+      }
+      // find the insertion point for list end
+      String tokenToInsert = "</li></ol>";
+      if (theListData.getNewList()) {
+         tokenToInsert = "</ol>";
+      }
+
+      if (endOfList < theChars.length) {
+         returnString.insert(endOfList, tokenToInsert);
+      } else {
+         // verify the list doesn't end with <BR></BR>
+         String test = returnString.toString();
+         int lastPoint = test.lastIndexOf(BLANK_HTML_LINE);
+         if (lastPoint == (test.length() - BLANK_HTML_LINE.length())) {
+            returnString.delete(lastPoint, returnString.length());
+         }
+         returnString.append(tokenToInsert);
+      }
+
+      return returnString.toString();
+   }
+
+   private int[] findEndOfList(char[] theChars, int startPoint) {
+      int iPos = startPoint;
+      int[] iReturn = {0, theChars.length, theChars.length};
+      int tagCount = 0;
+      boolean notFirst = false;
+      boolean foundNonTagItem = false;
+      while (iPos < theChars.length) {
+         while ((iPos < theChars.length) && ((theChars[iPos] == '\t') || (theChars[iPos] == '\n') || (Character.isWhitespace(theChars[iPos])))) {
+            iPos++;
+         }
+         if (iPos >= theChars.length) {
+            iReturn[1] = theChars.length;
+            break;
+         }
+         if (theChars[iPos] == '<') {
+            int startofCloseTag = iPos;
+            iPos++;
+            if (theChars[iPos] == '/') {
+               tagCount--;
+               while ((iPos < theChars.length) && (theChars[iPos] != '>')) {
+                  iPos++;
+               }
+               if (((tagCount == 0) && foundNonTagItem) || (tagCount < 0)) {
+                  iReturn[1] = startofCloseTag;
+                  iReturn[2] = iPos;
+                  while ((iReturn[2] < theChars.length) && (theChars[iReturn[2]] != '<')) {
+                     iReturn[2] = iReturn[2] + 1;
+                  }
+                  break;
+               }
+            } else {
+               tagCount++;
+            }
+            while ((iPos < theChars.length) && (theChars[iPos] != '>')) {
+               iPos++;
+            }
+            iPos++;
+         } else if (notFirst) {
+            if (!foundNonTagItem) {
+               iReturn[0] = iPos;
+               foundNonTagItem = true;
+            }
+            if (tagCount == 0) {
+               break;
+            } else {
+               // find next tag
+               while ((iPos < theChars.length) && (theChars[iPos] != '<')) {
+                  iPos++;
+               }
+               iReturn[1] = iPos - 1;
+               // find the end of the tag 
+               iReturn[2] = iPos;
+               while ((iReturn[2] < theChars.length) && (theChars[iReturn[2]] != '>')) {
+                  iReturn[2] = iReturn[2] + 1;
+               }
+               iReturn[2] = iReturn[2] + 1;
+            }
+         } else {
+            // no opening tags, therefore list not enclosed in tags.
+            iPos = theChars.length;
+         }
+         notFirst = true;
+      }
+      return iReturn;
+   }
+
+   static char[] stringBuilderToChars(StringBuilder sb) {
+      char[] returnArray = new char[sb.length()];
+      sb.getChars(0, sb.length(), returnArray, 0);
+      return returnArray;
+   }
+
+   private class listData {
+      private boolean newList;
+      private int itemLength;
+      private int nextItem;
+
+      public listData() {
+         this.newList = false;
+         this.itemLength = 0;
+      }
+
+      public int getItemLength() {
+         return itemLength;
+      }
+
+      public int getNextItem() {
+         return nextItem;
+      }
+
+      public boolean getNewList() {
+         return newList;
+      }
+
+      public void setNextItem(int nextItem) {
+         this.nextItem = nextItem;
+      }
+
+      public void setItemLength(int itemLength) {
+         this.itemLength = itemLength;
+      }
+
+      public void setNewList(boolean newList) {
+         this.newList = newList;
+      }
+   }
+
+   private int findNextListItem(char[] theChars, int iPos, boolean isNumeric, boolean isLowerCase, int currentNumber, String currentLetter, listData listData) {
+      //@formatter:off
+      /****************************************************************************
+       * Now the tricky part.  We are looking for 
+       * 1) <space><next value>.<space or &nbsp; or &#something> 
+       * 2) <space><next level value>.
+       */
+      //@formatter:on
+
+      iPos++;
+      if (iPos >= theChars.length) {
+         return -1;
+      }
+      StringBuilder asString = new StringBuilder();
+      asString.append(theChars, iPos, theChars.length - iPos);
+      int aListDot = asString.toString().toLowerCase().indexOf("a.");
+      int aListParen = asString.toString().toLowerCase().indexOf("a.");
+      int aList = -1;
+      if (aListDot == -1) {
+         aList = aListParen;
+      } else if (aListParen == -1) {
+         aList = aListDot;
+      } else {
+         aList = (aListDot < aListParen) ? aListDot : aListParen;
+      }
+      int oneListDot = asString.indexOf("1.");
+      int oneListParen = asString.indexOf("1)");
+      int oneList = -1;
+      if (oneListDot == -1) {
+         oneList = oneListParen;
+      } else if (aListParen == -1) {
+         oneList = oneListDot;
+      } else {
+         oneList = (oneListDot < oneListParen) ? oneListDot : oneListParen;
+      }
+
+      int nextListItem = -1;
+      String nextItem = "";
+      if (isNumeric) {
+         nextItem = Integer.toString(currentNumber + 1) + ".";
+      } else {
+         // assume Ascii -- that is, that the letters are contiguous
+         byte[] theLetters = null;
+         try {
+            theLetters = currentLetter.getBytes("UTF-8");
+         } catch (UnsupportedEncodingException e) {
+            theLetters = currentLetter.getBytes();
+         }
+         int theCharToChange = theLetters.length - 1;
+         if (currentLetter.toLowerCase().charAt(theCharToChange) == 'z') {
+            if (theCharToChange > 0) {
+               theLetters[theCharToChange - 1]++;
+               if (isLowerCase) {
+                  theLetters[theCharToChange] = "a".getBytes()[0];
+               } else {
+                  theLetters[theCharToChange] = "A".getBytes()[0];
+               }
+            } else {
+               byte[] newLetterArray = new byte[theLetters.length + 1];
+               for (int i = 0; i < newLetterArray.length; i++) {
+                  if (isLowerCase) {
+                     newLetterArray[i] = "a".getBytes()[0];
+                  } else {
+                     newLetterArray[i] = "A".getBytes()[0];
+                  }
+               }
+               theLetters = newLetterArray;
+            }
+         } else {
+            theLetters[0]++;
+         }
+         nextItem = new String(theLetters) + ".";
+      }
+      nextListItem = asString.indexOf(nextItem);
+      if (nextListItem != -1) {
+         // verify this is not just a char and period
+         char prev = asString.charAt(nextListItem - 1);
+         while (!(Character.isWhitespace(prev) || (prev == ';') || (prev == '>'))) {
+            nextListItem = asString.indexOf(nextItem, nextListItem + 1);
+            if (nextListItem == -1) {
+               break;
+            }
+            prev = asString.charAt(nextListItem - 1);
+         }
+      }
+      if ((aList == -1) && (oneList == -1) && (nextListItem == -1)) {
+         return -1;
+      }
+      aList = (aList != -1) ? aList + iPos : theChars.length + 1;
+      oneList = (oneList != -1) ? oneList + iPos : theChars.length + 1;
+      nextListItem = (nextListItem != -1) ? nextListItem + iPos : theChars.length + 1;
+      int iReturn = (aList < oneList) ? aList : oneList;
+      iReturn = (iReturn < nextListItem) ? iReturn : nextListItem;
+      if (iReturn == nextListItem) {
+         listData.setNewList(false);
+         listData.setItemLength(nextItem.length());
+         listData.setNextItem(nextListItem);
+      } else {
+         listData.setNewList(true);
+         listData.setItemLength(2);
+         listData.setNextItem(nextListItem - 1);
+      }
+      return iReturn;
    }
 
    private void processArtifact() throws OseeCoreException {
@@ -585,7 +999,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             case REQUIREMENTS:
                StringBuffer imageFileList = new StringBuffer("");
                getImageList(rowValue, imageFileList);
-               rowValue = normailizeHtml(rowValue);
+               rowValue = normalizeHtml(rowValue);
                String imageFile = imageFileList.toString();
                if (!imageFile.isEmpty()) {
                   String theImage;
@@ -783,9 +1197,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       return returnValue;
    }
 
-   private String normailizeHtml(String inputHtml) {
+   private String normalizeHtml(String inputHtml) {
 
-      String returnValue = NormalizeHtml.convertToNormalizedHTML(inputHtml);
+      String returnValue = NormalizeHtml.convertToNormalizedHTML(inputHtml, true, true, true);
       int bodyStart = returnValue.indexOf(BODY_START_TAG);
       int bodyEnd = returnValue.indexOf(BODY_END_TAG);
       if (bodyStart != -1) {
@@ -821,10 +1235,10 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
        * tags these are not meaningful
        */
       returnValue = returnValue.trim();
-      int brTag = returnValue.lastIndexOf(BR_TAG);
-      while (brTag == returnValue.length() - BR_TAG.length()) {
+      int brTag = returnValue.toLowerCase().lastIndexOf(BR_TAG);
+      while ((brTag != -1) && (brTag == returnValue.length() - BR_TAG.length())) {
          returnValue = returnValue.substring(0, brTag).trim();
-         brTag = returnValue.lastIndexOf(BR_TAG);
+         brTag = returnValue.toLowerCase().lastIndexOf(BR_TAG);
       }
       return returnValue;
    }

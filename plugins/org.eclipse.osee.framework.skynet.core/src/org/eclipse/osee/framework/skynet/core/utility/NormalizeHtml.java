@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import java.util.ArrayList;
 import java.util.TreeMap;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
@@ -19,7 +20,6 @@ import org.jsoup.nodes.Document.OutputSettings;
 import org.jsoup.nodes.Document.QuirksMode;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Entities.EscapeMode;
-import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
 
@@ -63,11 +63,15 @@ public final class NormalizeHtml {
    private static final String rdquo = String.valueOf('\u201D');
    private static final String lsquo = String.valueOf('\u2018');
    private static final String rsquo = String.valueOf('\u2019');
+   private static final String figureDash = String.valueOf('\u2012');
+   private static final String enDash = String.valueOf('\u2013');
+   private static final String emDash = String.valueOf('\u2014');
    private static final String NON_BREAK_SPACE = String.valueOf('\u00A0');
    private static final String NON_BREAK_FIGURE_SPACE = String.valueOf('\u2007');
    private static final String NON_BREAK_NARROW_SPACE = String.valueOf('\u202F');
    private static final String NON_BREAK_WORD_JOINER = String.valueOf('\u2060');
    private static final String NON_BREAK_ZERO_WIDTH = String.valueOf('\uFEFF');
+   private static ArrayList<String> allowedAttributes = null;
 
    private NormalizeHtml() {
       // Utility Class
@@ -93,7 +97,7 @@ public final class NormalizeHtml {
     * @return Normalized HTML
     */
    public static String convertToNormalizedHTML(String inputHTML) {
-      return convertToNormalizedHTML(inputHTML, false, false);
+      return convertToNormalizedHTML(inputHTML, false, false, false);
    }
 
    /**
@@ -103,10 +107,10 @@ public final class NormalizeHtml {
     * 
     * @param inputHTML HTML source to be normalized
     * @param removeInitialStyle Remove initial style information.
-    * @param removeEmptyStyle Remove any empty (containing no text) style sections
+    * @param removeEmptyTags Remove any empty (containing no text) style sections
     * @return Normalized HTML
     */
-   public static String convertToNormalizedHTML(String inputHTML, boolean removeInitialStyle, boolean removeEmptyStyle) {
+   public static String convertToNormalizedHTML(String inputHTML, boolean removeInitialStyle, boolean removeEmptyTags, boolean removeHeaderFooter) {
       Document doc = Jsoup.parse(inputHTML);
       doc.quirksMode(QuirksMode.noQuirks);
       OutputSettings outputSettings = doc.outputSettings();
@@ -134,76 +138,153 @@ public final class NormalizeHtml {
          e.tagName("span");
          e.attr("style", "text-decoration: line-through;");
       }
+      removeDepreactedTags(doc);
+      processTagsWithAttributes(doc);
+      processHeaderFooter(doc, removeHeaderFooter);
       processFontTags(doc);
       processInitialStyleTags(doc, removeInitialStyle);
-      processEmptyStyleTags(doc, removeEmptyStyle);
+      processEmptyTags(doc, removeEmptyTags);
       return processText(doc);
+   }
+
+   static void removeDepreactedTags(Document doc) {
+      Elements center = doc.select("center");
+      for (Element e : center) {
+         Elements children = e.children();
+         for (Element c : children) {
+            e.before(c);
+         }
+         e.remove();
+      }
+   }
+
+   private static void processTagsWithAttributes(Document doc) {
+      /****************************************************************************
+       * HTML allows the same table to be represented many ways. Normalize the information into a standard format. Note
+       * this will simplify the table as well (that is some formatting may be lost) Remember, the goal is to reduce the
+       * HTML to the point that it is the same regardless of the source editor Also images have similar issues --
+       * normalize to the basic keyword
+       */
+
+      if (allowedAttributes == null) {
+         allowedAttributes = new ArrayList<String>();
+         allowedAttributes.add("border");
+         allowedAttributes.add("frame");
+         allowedAttributes.add("rules");
+         allowedAttributes.add("valign");
+         allowedAttributes.add("src");
+      }
+      Elements tables = doc.select("table");
+      for (Element table : tables) {
+         removeUnsupportedAttributes(table, true);
+         // remove Colgroup
+         Elements colgroup = table.select("colgroup");
+         for (Element c : colgroup) {
+            c.remove();
+         }
+         // no support for header / footer -- just rows
+
+         removeElements(table, "thead");
+         removeElements(table, "tfoot");
+         removeElements(table, "tbody");
+         // remove unsupported attributes on tr and td tags and move the attributes from td to tr
+         Elements rows = table.select("td");
+         for (Element row : rows) {
+            String[] attributeValues = removeUnsupportedAttributes(row, false);
+            Element tr = null;
+            Element parent = row.parent();
+            if (parent.tagName().equals("tr")) {
+               tr = parent;
+            } else {
+               Elements siblings = row.siblingElements();
+               for (Element e : siblings) {
+                  if (e.tagName().equals("tr")) {
+                     tr = e;
+                     break;
+                  }
+               }
+            }
+            if (tr != null) {
+               for (int i = 0; i < attributeValues.length; i++) {
+                  if (attributeValues[i] != null) {
+                     tr.attr(allowedAttributes.get(i), attributeValues[i].toLowerCase());
+                  }
+               }
+            }
+         }
+         rows = table.select("tr");
+         for (Element row : rows) {
+            removeUnsupportedAttributes(row, true);
+         }
+      }
+
+      Elements images = doc.select("img");
+      for (Element image : images) {
+         removeUnsupportedAttributes(image, true);
+      }
    }
 
    static void processInitialStyleTags(Document doc, boolean removeInitialStyle) {
       if (removeInitialStyle) {
-         boolean foundText = false;
          Elements pTags = doc.select("p");
          for (Element p : pTags) {
-            Elements style = p.getElementsByAttribute("style");
-            for (Element e : style) {
-               Element parent = e.parent();
-               if (!parent.tagName().equals("span")) {
-                  if (e.hasText()) {
-                     String text = e.text();
-                     TextNode newNode = new TextNode(text, e.baseUri());
-                     e.remove();
-                     // Insert newline between various text elements
-                     if (foundText) {
-                        Tag tag = Tag.valueOf("br");
-                        Element br = new Element(tag, parent.baseUri());
-                        parent.appendChild(br);
-                        br = new Element(tag, parent.baseUri());
-                        parent.appendChild(br);
-                     }
-                     parent.appendChild(newNode);
-                     foundText = true;
-                     break;
+            if (!p.attr("style").equals("")) {
+               if (p.hasText()) {
+                  if (!p.parent().tagName().equals("li")) {
+                     Element cr = new Element(Tag.valueOf("br"), p.baseUri());
+                     p.after(cr);
                   }
+                  p.unwrap();
                }
             }
          }
          Elements span = doc.select("span");
          for (Element s : span) {
-            Elements style = s.getElementsByAttributeValueMatching("style", "font*|margin*");
-            for (Element e : style) {
-               Element parent = e.parent();
-               if (!parent.tagName().equals("p")) {
-                  if (e.hasText()) {
-                     String text = e.text();
-                     TextNode newNode = new TextNode(text, e.baseUri());
-                     e.remove();
-                     parent.appendChild(newNode);
-                     // Insert newline between various text elements
-                     if (foundText) {
-                        Tag tag = Tag.valueOf("br");
-                        Element br = new Element(tag, parent.baseUri());
-                        parent.appendChild(br);
-                        parent.appendChild(br);
-                     }
-                     foundText = true;
-                     break;
-                  }
-               }
+            if (!s.attr("style").equals("") && !s.hasText()) {
+               s.remove();
             }
          }
       }
    }
 
-   private static void processEmptyStyleTags(Document doc, boolean removeEmptyStyle) {
-      if (removeEmptyStyle) {
+   private static void processEmptyTags(Document doc, boolean removeEmptyTags) {
+      if (removeEmptyTags) {
          Elements pTags = doc.select("p");
          for (Element p : pTags) {
+            // Element cr = new Element(Tag.valueOf("br"), p.baseUri());
+            //p.after(cr);
             deleteEmptyElemens(p);
          }
          Elements span = doc.select("span");
          for (Element s : span) {
             deleteEmptyElemens(s);
+         }
+         Elements div = doc.select("div");
+         for (Element e : div) {
+            if (!e.hasText()) {
+               e.remove();
+            } else {
+               e.unwrap();
+            }
+         }
+         Elements aTags = doc.select("a");
+         for (Element a : aTags) {
+            Attributes attr = a.attributes();
+            if ((attr.size() == 1) && (!attr.get("name").equals(""))) {
+               a.unwrap();
+            }
+         }
+      }
+   }
+
+   static void processHeaderFooter(Document doc, boolean removeHeaderFooter) {
+      if (removeHeaderFooter) {
+         Elements div = doc.select("div");
+         for (Element d : div) {
+            Elements headerFooter = d.getElementsByAttributeValueMatching("type", "HEADER*|FOOTER*");
+            for (Element hf : headerFooter) {
+               hf.remove();
+            }
          }
       }
    }
@@ -215,18 +296,12 @@ public final class NormalizeHtml {
       Elements style = elementToCheck.getElementsByAttributeValueMatching("style", "font*|margin*");
       for (Element e : style) {
          if (e.hasText()) {
-            break;
+            continue;
          } else {
-            Elements images = e.select("img");
-            Element parent = e.parent();
-            e.remove();
-            if (images.size() > 0) {
-               for (Element image : images) {
-                  parent.appendChild(image);
-               }
-            }
+            e.unwrap();
          }
       }
+
    }
 
    private static String processText(Document doc) {
@@ -242,6 +317,14 @@ public final class NormalizeHtml {
       theText = theText.replaceAll(lsquo, "'");
       theText = theText.replaceAll(rsquo, "'");
       theText = theText.replaceAll("&apos;", "'");
+
+      /************************************************************************
+       * Convert &ndash; and Unicode dashes to -. Not all editors handle this correctly
+       */
+      theText = theText.replaceAll("&ndash;", "-");
+      theText = theText.replaceAll(figureDash, "-");
+      theText = theText.replaceAll(enDash, "-");
+      theText = theText.replaceAll(emDash, "-");
 
       //@formatter:off
       /*****************************************************************************
@@ -322,6 +405,41 @@ public final class NormalizeHtml {
          theReturn = FONT_MAP.ceilingEntry(theSize).getValue();
       }
       return theReturn;
+   }
+
+   static void removeElements(Element table, String theElementParent) {
+      Elements parents = table.select(theElementParent);
+      for (Element p : parents) {
+         Elements children = p.children();
+         for (Element c : children) {
+            p.before(c);
+         }
+         p.remove();
+      }
+
+   }
+
+   static String[] removeUnsupportedAttributes(Element e, boolean addBack) {
+      String[] attributeValues = {null, null, null, null, null};
+      // remove "unsupported" attributes
+      Attributes attr = e.attributes();
+      for (Attribute a : attr) {
+         if (allowedAttributes.contains(a.getKey())) {
+            if (!(a.getKey().equals("border") && a.getValue().equals("0"))) {
+               attributeValues[allowedAttributes.indexOf(a.getKey())] = a.getValue();
+            }
+         }
+         e.removeAttr(a.getKey());
+      }
+      if (addBack) {
+         // set specific order for attributes
+         for (int i = 0; i < attributeValues.length; i++) {
+            if (attributeValues[i] != null) {
+               e.attr(allowedAttributes.get(i), attributeValues[i]);
+            }
+         }
+      }
+      return attributeValues;
    }
 
 }

@@ -15,8 +15,8 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import org.junit.Assert;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -34,7 +34,6 @@ public class NormalizeHtmlTest {
       String expected = getResource(CONVERTED_HTML);
 
       input = NormalizeHtml.convertToNormalizedHTML(input);
-
       input = bodyOnly(input);
       expected = bodyOnly(expected);
       input = input.replaceAll("\r", "");
