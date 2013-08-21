@@ -494,19 +494,34 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public void setCreatedBy(IAtsUser user, boolean logChange, Date date) throws OseeCoreException {
       if (logChange) {
-         if (getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null) == null) {
-            atsLog.addLog(LogType.Originated, "", "", date, user);
-         } else {
-            atsLog.addLog(LogType.Originated, "",
-               "Changed by " + AtsClientService.get().getUserAdmin().getCurrentUser().getName(), date, user);
-            atsLog.internalResetOriginator(user);
-         }
+         logCreatedByChange(user, date);
       }
       if (isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
          setSoleAttributeValue(AtsAttributeTypes.CreatedBy, user.getUserId());
       }
       if (isAttributeTypeValid(AtsAttributeTypes.CreatedDate)) {
          setSoleAttributeValue(AtsAttributeTypes.CreatedDate, date);
+      }
+      AtsNotificationManager.notify(this, AtsNotifyType.Originator);
+   }
+
+   private void logCreatedByChange(IAtsUser user, Date date) throws OseeCoreException {
+      if (getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null) == null) {
+         atsLog.addLog(LogType.Originated, "", "", date, user);
+      } else {
+         atsLog.addLog(LogType.Originated, "",
+            "Changed by " + AtsClientService.get().getUserAdmin().getCurrentUser().getName(), date, user);
+         atsLog.internalResetOriginator(user);
+      }
+   }
+
+   public void setCreatedBy(IAtsUser user, boolean logChange) throws OseeCoreException {
+      Date date = new Date();
+      if (logChange) {
+         logCreatedByChange(user, date);
+      }
+      if (isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
+         setSoleAttributeValue(AtsAttributeTypes.CreatedBy, user.getUserId());
       }
       AtsNotificationManager.notify(this, AtsNotifyType.Originator);
    }

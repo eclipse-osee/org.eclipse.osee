@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.column;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
@@ -114,10 +113,8 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
       int result = ld.open();
       if (result == 0) {
          IAtsUser selectedUser = AtsClientService.get().getUserAdmin().getUserFromOseeUser(ld.getSelection());
-         Date createdDate = new Date();
-
          for (AbstractWorkflowArtifact awa : awas) {
-            awa.setCreatedBy(selectedUser, true, createdDate);
+            awa.setCreatedBy(selectedUser, true);
          }
          if (persist) {
             Artifacts.persistInTransaction("ATS Prompt Change Originator", awas);
