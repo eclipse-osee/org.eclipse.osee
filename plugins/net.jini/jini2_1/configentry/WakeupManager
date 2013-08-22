@@ -1,2 +1,0 @@
-# WakeupManager configuration entries
-com.sun.jini.thread.WakeupManager.queueThreadTimeout: long

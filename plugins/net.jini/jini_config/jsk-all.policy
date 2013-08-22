@@ -1,3 +1,0 @@
-grant codebase "file:${osee.jini.install}/lib/*" {
-    permission java.security.AllPermission;
-};
