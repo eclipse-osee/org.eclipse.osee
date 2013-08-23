@@ -265,7 +265,7 @@ public class UserRoleXViewer extends XViewer {
          TransactionManager.createTransaction(xUserRoleViewer.getReviewArt().getArtifact().getBranch(),
             "Modify Review Roles");
       for (UserRole userRole : userRoles) {
-         xUserRoleViewer.getUserRoleMgr().addOrUpdateUserRole(userRole);
+         xUserRoleViewer.getUserRoleMgr().addOrUpdateUserRole(userRole, xUserRoleViewer.getReviewArt());
          update(userRole, null);
       }
       xUserRoleViewer.getUserRoleMgr().saveToArtifact(transaction);

@@ -92,16 +92,6 @@ public class UserRoleManager {
       return roles;
    }
 
-   public List<UserRole> getRoleUsersReviewComplete() throws OseeCoreException {
-      List<UserRole> cRoles = new ArrayList<UserRole>();
-      for (UserRole role : getUserRoles(Role.Reviewer)) {
-         if (role.isCompleted()) {
-            cRoles.add(role);
-         }
-      }
-      return cRoles;
-   }
-
    public List<UserRole> getUserRoles(Role role) throws OseeCoreException {
       List<UserRole> roles = new ArrayList<UserRole>();
       for (UserRole uRole : getUserRoles()) {
@@ -170,7 +160,6 @@ public class UserRoleManager {
             updatedStoredUserRoles)) {
             artifact.addAttributeFromString(ATS_ROLE_STORAGE_TYPE, AXml.addTagData(ROLE_ITEM_TAG, newRole.toXml()));
          }
-         updateAssignees(artifact);
          rollupHoursSpentToReviewState(artifact);
          validateUserRolesCompleted(artifact, storedUserRoles, userRoles);
          artifact.persist(transaction);
@@ -207,7 +196,7 @@ public class UserRoleManager {
       }
    }
 
-   public void addOrUpdateUserRole(UserRole userRole) throws OseeCoreException {
+   public void addOrUpdateUserRole(UserRole userRole, PeerToPeerReviewArtifact peerArt) throws OseeCoreException {
       List<UserRole> roleItems = getUserRoles();
       boolean found = false;
       for (UserRole uRole : roleItems) {
@@ -218,40 +207,10 @@ public class UserRoleManager {
       }
       if (!found) {
          roleItems.add(userRole);
-      }
-   }
-
-   private static void updateAssignees(Artifact artifact) throws OseeCoreException {
-      UserRoleManager roleManager = new UserRoleManager(artifact);
-      // Set assignees based on roles that are not set as completed
-      List<IAtsUser> assignees = new ArrayList<IAtsUser>();
-      for (UserRole uRole : roleManager.getUserRoles()) {
-         if (!uRole.isCompleted() && uRole.getUser() != null && !assignees.contains(uRole.getUser())) {
-            assignees.add(uRole.getUser());
+         if (!peerArt.getAssignees().contains(userRole.getUser())) {
+            peerArt.getStateMgr().addAssignee(userRole.getUser());
          }
       }
-      // If roles are all completed, then still need to select a user to assign to SMA
-      if (assignees.isEmpty()) {
-         if (roleManager.getUserRoles(Role.Author).size() > 0) {
-            for (UserRole role : roleManager.getUserRoles(Role.Author)) {
-               if (!assignees.contains(role.getUser())) {
-                  assignees.add(role.getUser());
-               }
-            }
-         } else if (roleManager.getUserRoles(Role.Moderator).size() > 0) {
-            for (UserRole role : roleManager.getUserRoles(Role.Moderator)) {
-               if (!assignees.contains(role.getUser())) {
-                  assignees.add(role.getUser());
-               }
-            }
-         } else {
-            if (!assignees.contains(AtsClientService.get().getUserAdmin().getCurrentUser())) {
-               assignees.add(AtsClientService.get().getUserAdmin().getCurrentUser());
-            }
-         }
-      }
-      // Set assignees based on roles
-      ((AbstractWorkflowArtifact) artifact).getStateMgr().setAssignees(assignees);
    }
 
    public void removeUserRole(UserRole userRole) throws OseeCoreException {
@@ -293,6 +252,7 @@ public class UserRoleManager {
       }
       AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
       awa.getStateMgr().setMetrics(awa.getStateDefinition(), hoursSpent,
-         awa.getStateMgr().getPercentComplete(awa.getCurrentStateName()), true, AtsClientService.get().getUserAdmin().getCurrentUser(), new Date());
+         awa.getStateMgr().getPercentComplete(awa.getCurrentStateName()), true,
+         AtsClientService.get().getUserAdmin().getCurrentUser(), new Date());
    }
 }

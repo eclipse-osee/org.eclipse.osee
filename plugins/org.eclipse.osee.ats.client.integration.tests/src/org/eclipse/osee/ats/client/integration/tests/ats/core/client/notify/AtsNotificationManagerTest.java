@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
@@ -45,6 +44,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.INotificationManager;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
@@ -563,7 +563,7 @@ public class AtsNotificationManagerTest {
       UserRoleManager roleMgr = new UserRoleManager(peerArt);
       reviewer1.setHoursSpent(1.0);
       reviewer1.setCompleted(true);
-      roleMgr.addOrUpdateUserRole(reviewer1);
+      roleMgr.addOrUpdateUserRole(reviewer1, peerArt);
       roleMgr.saveToArtifact(transaction);
       transaction.execute();
 
@@ -576,7 +576,7 @@ public class AtsNotificationManagerTest {
             getClass().getSimpleName() + " - update reviewer 2");
       reviewer2.setHoursSpent(1.0);
       reviewer2.setCompleted(true);
-      roleMgr.addOrUpdateUserRole(reviewer2);
+      roleMgr.addOrUpdateUserRole(reviewer2, peerArt);
       roleMgr.saveToArtifact(transaction);
       peerArt.persist(transaction);
       transaction.execute();

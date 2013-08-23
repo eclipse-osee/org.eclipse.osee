@@ -25,6 +25,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.window.Window;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
@@ -317,16 +319,37 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
    }
 
    public void handleNewUserRole() {
-      try {
-         SkynetTransaction transaction =
-            TransactionManager.createTransaction(reviewArt.getArtifact().getBranch(), "Add Review Roles");
-         roleMgr.addOrUpdateUserRole(new UserRole());
-         roleMgr.saveToArtifact(transaction);
-         transaction.execute();
+
+      NewRoleDialog dialog = new NewRoleDialog();
+      if (dialog.open() == Window.OK) {
+         if (dialog.getRole() == null) {
+            AWorkbench.popup("Role not selected");
+            return;
+         }
+         try {
+            if (dialog.getUsers().isEmpty()) {
+               AWorkbench.popup("Users not selected");
+               return;
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            return;
+         }
+         try {
+            SkynetTransaction transaction =
+               TransactionManager.createTransaction(reviewArt.getArtifact().getBranch(), "Add Review Roles");
+            for (IAtsUser user : dialog.getUsers()) {
+               UserRole userRole = new UserRole(dialog.getRole(), user);
+               roleMgr.addOrUpdateUserRole(userRole, reviewArt);
+               reviewArt.persist(transaction);
+            }
+            roleMgr.saveToArtifact(transaction);
+            transaction.execute();
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
          notifyXModifiedListeners();
          loadTable();
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

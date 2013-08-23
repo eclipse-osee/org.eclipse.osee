@@ -94,13 +94,14 @@ public class ReviewNavigateItemsToWorldViewTest {
       MassArtifactEditor.closeAll();
       XNavigateItem item =
          NavigateTestUtil.getAtsNavigateItems("Generate Review Participation Report").iterator().next();
-      ((GenerateReviewParticipationReport) item).setSelectedUser(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith));
+      ((GenerateReviewParticipationReport) item).setSelectedUser(AtsClientService.get().getUserAdmin().getUserFromToken(
+         DemoUsers.Joe_Smith));
 
       item.run(TableLoadOption.ForcePend);
 
       MassArtifactEditor editor = getSingleEditorOrFail();
       Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 2);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 3);
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 3);
    }
 

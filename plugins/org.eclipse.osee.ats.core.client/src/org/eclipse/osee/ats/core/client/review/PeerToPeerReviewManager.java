@@ -114,7 +114,7 @@ public class PeerToPeerReviewManager {
       if (roles != null) {
          UserRoleManager roleMgr = new UserRoleManager(reviewArt);
          for (UserRole role : roles) {
-            roleMgr.addOrUpdateUserRole(role);
+            roleMgr.addOrUpdateUserRole(role, reviewArt);
          }
          roleMgr.saveToArtifact(transaction);
       }
@@ -127,7 +127,7 @@ public class PeerToPeerReviewManager {
       if (roles != null) {
          UserRoleManager roleMgr = new UserRoleManager(reviewArt);
          for (UserRole role : roles) {
-            roleMgr.addOrUpdateUserRole(role);
+            roleMgr.addOrUpdateUserRole(role, reviewArt);
          }
          roleMgr.saveToArtifact(transaction);
       }
