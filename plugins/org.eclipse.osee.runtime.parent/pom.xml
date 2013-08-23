@@ -42,8 +42,7 @@
 		<module>../../features/org.eclipse.osee.external.feature</module>
 		<module>../../plugins/jms.activemq.launch</module>
 		<module>../../plugins/jms.libraries</module>
-		<module>../../plugins/net.jini</module>
-
+		
 		<module>../../plugins/org.eclipse.osee.runtime.p2</module>
 	</modules>
 
