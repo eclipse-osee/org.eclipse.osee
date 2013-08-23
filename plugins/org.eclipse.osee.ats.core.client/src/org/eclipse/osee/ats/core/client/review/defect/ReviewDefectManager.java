@@ -87,7 +87,7 @@ public class ReviewDefectManager {
    public int getNumMajor(IAtsUser user) throws OseeCoreException {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
-         if (dItem.getSeverity() == Severity.Major && dItem.getUser() == user) {
+         if (dItem.getSeverity() == Severity.Major && dItem.getUser().equals(user)) {
             x++;
          }
       }
@@ -97,7 +97,7 @@ public class ReviewDefectManager {
    public int getNumMinor(IAtsUser user) throws OseeCoreException {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
-         if (dItem.getSeverity() == Severity.Minor && dItem.getUser() == user) {
+         if (dItem.getSeverity() == Severity.Minor && dItem.getUser().equals(user)) {
             x++;
          }
       }
@@ -107,7 +107,7 @@ public class ReviewDefectManager {
    public int getNumIssues(IAtsUser user) throws OseeCoreException {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
-         if (dItem.getSeverity() == Severity.Issue && dItem.getUser() == user) {
+         if (dItem.getSeverity() == Severity.Issue && dItem.getUser().equals(user)) {
             x++;
          }
       }
