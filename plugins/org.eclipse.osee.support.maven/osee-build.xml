@@ -207,7 +207,14 @@
 		<attribute name="resultproperty" default="maven.result" />
 		<element name="args" implicit="true" optional="true" />
 		<sequential>
+			<echo message="MAVEN HOME: [${maven.home}]" />
+			<!--<echo message="MAVEN OPTS: [${env.MAVEN_OPTS}]" />-->
+			<echo message="POM Directory: [@{basedir}]" />
+
 			<java taskname="mvn" newenvironment="false" classname="org.codehaus.classworlds.Launcher" fork="true" dir="@{basedir}" resultproperty="@{resultproperty}">
+				<syspropertyset>
+					<propertyref prefix="javax.net.ssl" />
+				</syspropertyset>
 				<classpath>
 					<fileset dir="${maven.home}/boot">
 						<include name="*.jar" />
@@ -218,7 +225,6 @@
 				</classpath>
 				<sysproperty key="classworlds.conf" value="${maven.home}/bin/m2.conf" />
 				<sysproperty key="maven.home" value="${maven.home}" />
-				<sysproperty key="maven.opts" value="${env.MAVEN_OPTS}" />
 				<arg line="--batch-mode @{options} @{goal}" />
 			</java>
 		</sequential>
