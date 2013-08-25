@@ -534,6 +534,9 @@ public class RelationManager {
             getOrCreate(artifactA.getArtId(), artifactB.getArtId(), artifactA.getBranch(), relationType, 0, 0,
                rationale, ModificationType.NEW);
          relation.setDirty();
+         if (relation.isDeleted()) {
+            relation.undelete();
+         }
 
          RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationTypeToken, RelationSide.SIDE_B);
          sorter.addItem(sorterId, artifactB);

@@ -92,6 +92,39 @@ public class RelationDeletionTest {
       assertTrue("Child2 is not the first in the list and it should be.", children.get(0) == child2);
    }
 
+   @Test
+   public void testDeleteThenUnDeleteRelation() throws OseeCoreException {
+      Branch branch = BranchManager.getCommonBranch();
+      Artifact parent = createArtifact(CoreArtifactTypes.Folder, branch);
+      Artifact child1 = createArtifact(CoreArtifactTypes.Folder, branch);
+
+      parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child1);
+      parent.persist(getClass().getSimpleName());
+
+      assertTrue("Failed to add child",
+         parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child).size() == 1);
+
+      child1.deleteRelation(CoreRelationTypes.Default_Hierarchical__Parent, parent);
+
+      assertTrue("We removed a relation so it should still be dirty.", child1.isDirty());
+      assertTrue("Parent artifact should be marked as dirty since it's relation has changed.", parent.isDirty());
+
+      child1.persist(getClass().getSimpleName());
+
+      List<Artifact> children = parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child);
+
+      assertTrue("The deleted child was not successfully removed.", children.size() == 0);
+
+      parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child1);
+
+      assertFalse("This previously deleted child still has modification type deleted", child1.isDeleted());
+      parent.persist(getClass().getSimpleName());
+
+      assertTrue("Failed to add child previously deleted child relation",
+         parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child).size() == 1);
+
+   }
+
    private Artifact createArtifact(IArtifactType artifactType, Branch branch) throws OseeCoreException {
       Artifact newArtifact = ArtifactTypeManager.addArtifact(artifactType, branch);
       artifacts.add(newArtifact);
