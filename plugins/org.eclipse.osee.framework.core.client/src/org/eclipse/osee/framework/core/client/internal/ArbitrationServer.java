@@ -29,6 +29,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 
 public class ArbitrationServer extends OseeServer {
 
+   private static final int ONE_SEC_TIMEOUT = 1000;
+
    public ArbitrationServer() {
       super("Arbitration Server");
    }
@@ -46,7 +48,7 @@ public class ArbitrationServer extends OseeServer {
                parameters);
 
          outputStream = new ByteArrayOutputStream();
-         result = HttpProcessor.acquire(new URL(url), outputStream);
+         result = HttpProcessor.acquire(new URL(url), outputStream, ONE_SEC_TIMEOUT);
          setAlive(true);
          set(Level.INFO, null, HttpUrlBuilderClient.getInstance().getArbitrationServerPrefix());
          if (result.getCode() == HttpURLConnection.HTTP_OK) {

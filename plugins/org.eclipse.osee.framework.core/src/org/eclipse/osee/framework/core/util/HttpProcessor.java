@@ -343,6 +343,10 @@ public class HttpProcessor {
    }
 
    public static AcquireResult acquire(URL url, OutputStream outputStream) throws Exception {
+      return acquire(url, outputStream, 0);
+   }
+
+   public static AcquireResult acquire(URL url, OutputStream outputStream, int soTimeout) throws Exception {
       AcquireResult result = new AcquireResult();
       int statusCode = -1;
 
@@ -351,6 +355,7 @@ public class HttpProcessor {
       InputStream inputStream = null;
       try {
          method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+         method.getParams().setSoTimeout(soTimeout);
 
          statusCode = executeMethod(url, method);
          result.setEncoding(method.getResponseCharSet());
