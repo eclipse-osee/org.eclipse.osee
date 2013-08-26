@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.presenter.internal;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -19,6 +20,7 @@ import org.eclipse.osee.ats.ui.api.search.AtsArtifactProvider;
 import org.eclipse.osee.display.presenter.ArtifactProviderImpl;
 import org.eclipse.osee.display.presenter.Utility;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -40,8 +42,8 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
    }
 
    @Override
-   public List<ArtifactReadable> getPrograms() throws OseeCoreException {
-      List<ArtifactReadable> programs = null;
+   public Iterable<ArtifactReadable> getPrograms() throws OseeCoreException {
+      ResultSet<ArtifactReadable> programs = null;
       ArtifactReadable webProgramsArtifact =
          getArtifactByArtifactToken(CoreBranches.COMMON, AtsArtifactToken.WebPrograms);
 
@@ -50,8 +52,7 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
       }
 
       setFilterAllTypesAllowed(areProgramsFilterClean(webProgramsArtifact));
-      Utility.sort(programs);
-      return programs;
+      return Utility.sort(programs);
    }
 
    private boolean areProgramsFilterClean(ArtifactReadable webProgram) throws OseeCoreException {
@@ -65,26 +66,30 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
    }
 
    @Override
-   public List<ArtifactReadable> getBuilds(String programGuid) throws OseeCoreException {
-      List<ArtifactReadable> relatedArtifacts = null;
+   public Iterable<ArtifactReadable> getBuilds(String programGuid) throws OseeCoreException {
       ArtifactReadable teamDef = null;
       ArtifactReadable programArtifact = getArtifactByGuid(CoreBranches.COMMON, programGuid);
       if (programArtifact != null) {
          teamDef = getRelatedArtifact(programArtifact, CoreRelationTypes.SupportingInfo_SupportingInfo);
       }
+
+      Iterable<ArtifactReadable> toReturn;
       if (teamDef != null) {
-         relatedArtifacts = getRelatedArtifacts(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version);
-      }
-      Iterator<ArtifactReadable> iterator = relatedArtifacts.iterator();
-      while (iterator.hasNext()) {
-         ArtifactReadable art = iterator.next();
-         String baselineBranchGuid = art.getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchGuid, null);
-         if (baselineBranchGuid == null) {
-            iterator.remove();
+         ResultSet<ArtifactReadable> relatedArtifacts =
+            getRelatedArtifacts(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version);
+         Iterator<ArtifactReadable> iterator = relatedArtifacts.iterator();
+         while (iterator.hasNext()) {
+            ArtifactReadable art = iterator.next();
+            String baselineBranchGuid = art.getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchGuid, null);
+            if (baselineBranchGuid == null) {
+               iterator.remove();
+            }
          }
+         toReturn = Utility.sort(relatedArtifacts);
+      } else {
+         toReturn = Collections.emptyList();
       }
-      Utility.sort(relatedArtifacts);
-      return relatedArtifacts;
+      return toReturn;
    }
 
    @Override

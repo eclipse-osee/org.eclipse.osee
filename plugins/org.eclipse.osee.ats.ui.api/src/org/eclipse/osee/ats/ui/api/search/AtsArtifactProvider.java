@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ui.api.search;
 
-import java.util.Collection;
 import org.eclipse.osee.display.api.search.ArtifactProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -20,9 +19,9 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public interface AtsArtifactProvider extends ArtifactProvider {
 
-   Collection<ArtifactReadable> getPrograms() throws OseeCoreException;
+   Iterable<ArtifactReadable> getPrograms() throws OseeCoreException;
 
-   Collection<ArtifactReadable> getBuilds(String programGuid) throws OseeCoreException;
+   Iterable<ArtifactReadable> getBuilds(String programGuid) throws OseeCoreException;
 
    String getBaselineBranchGuid(String buildArtGuid) throws OseeCoreException;
 }

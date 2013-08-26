@@ -51,7 +51,7 @@ public class FilteredResultSetCallable extends CancellableCallable<ResultSet<Mat
    public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> call() throws Exception {
       ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> results = innerWorker.call();
 
-      List<Match<ArtifactReadable, AttributeReadable<?>>> artifacts = filter(results.getList());
+      List<Match<ArtifactReadable, AttributeReadable<?>>> artifacts = filter(results);
 
       Collections.sort(artifacts, new MatchComparator(SortOrder.ASCENDING));
       return new ResultSetList<Match<ArtifactReadable, AttributeReadable<?>>>(artifacts);
@@ -79,7 +79,7 @@ public class FilteredResultSetCallable extends CancellableCallable<ResultSet<Mat
       return new FilteredMatchCallable(filter, toProcess);
    }
 
-   private List<Match<ArtifactReadable, AttributeReadable<?>>> filter(Collection<Match<ArtifactReadable, AttributeReadable<?>>> items) throws Exception {
+   private List<Match<ArtifactReadable, AttributeReadable<?>>> filter(Iterable<Match<ArtifactReadable, AttributeReadable<?>>> items) throws Exception {
       List<Future<Collection<Match<ArtifactReadable, AttributeReadable<?>>>>> futures =
          WorkUtility.partitionAndScheduleWork(executorAdmin, FILTER_WORKER_ID, this, items);
       final List<Match<ArtifactReadable, AttributeReadable<?>>> results =

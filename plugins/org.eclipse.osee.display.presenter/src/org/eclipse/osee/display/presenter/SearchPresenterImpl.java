@@ -13,7 +13,6 @@ package org.eclipse.osee.display.presenter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,6 +40,7 @@ import org.eclipse.osee.display.api.search.SearchProgressProvider;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -52,6 +52,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
+import com.google.common.collect.Iterables;
 
 /**
  * @author John R. Misinco
@@ -99,9 +100,9 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       sendSearchInProgress();
    }
 
-   private void processSearchResults(List<Match<ArtifactReadable, AttributeReadable<?>>> searchResults, SearchResultsListComponent searchResultsComp, boolean isVerbose) throws OseeCoreException {
+   private void processSearchResults(Iterable<Match<ArtifactReadable, AttributeReadable<?>>> searchResults, SearchResultsListComponent searchResultsComp, boolean isVerbose) throws OseeCoreException {
       searchResultsComp.clearAll();
-      if (searchResults != null && searchResults.isEmpty()) {
+      if (searchResults != null && Iterables.isEmpty(searchResults)) {
          searchResultsComp.noSearchResultsFound();
       } else {
          for (Match<ArtifactReadable, AttributeReadable<?>> match : searchResults) {
@@ -231,8 +232,8 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       IRelationType type = TokenFactory.createRelationType(Long.parseLong(relGuid), relation.getName());
       IOseeBranch branch = TokenFactory.createBranch(artifact.getBranch().getGuid(), "");
       ArtifactReadable sourceArt;
-      Collection<ArtifactReadable> relatedSideA = Collections.emptyList();
-      Collection<ArtifactReadable> relatedSideB = Collections.emptyList();
+      ResultSet<ArtifactReadable> relatedSideA;
+      ResultSet<ArtifactReadable> relatedSideB;
       try {
          sourceArt = artifactProvider.getArtifactByGuid(branch, artifact.getGuid());
          relatedSideA =
@@ -391,7 +392,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       }
 
       @Override
-      public void onSearchComplete(List<Match<ArtifactReadable, AttributeReadable<?>>> results) {
+      public void onSearchComplete(Iterable<Match<ArtifactReadable, AttributeReadable<?>>> results) {
          try {
             processSearchResults(results, resultsComp, isVerbose);
          } catch (OseeCoreException ex) {

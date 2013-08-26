@@ -15,12 +15,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -49,6 +48,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import com.google.common.collect.Ordering;
 
 /**
  * @author Roberto E. Escobar
@@ -76,7 +76,7 @@ public class OrcsQueryTest {
       QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON);
       assertEquals(26, builder.getCount());
 
-      assertEquals(26, builder.getResults().getList().size());
+      assertEquals(26, builder.getResults().size());
    }
 
    @Test
@@ -94,19 +94,17 @@ public class OrcsQueryTest {
 
       assertEquals(2, builder.getCount());
 
-      List<ArtifactReadable> artifacts = builder.getResults().getList();
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
       assertEquals(2, artifacts.size());
 
       checkContainsTypes(artifacts, CoreArtifactTypes.Folder);
 
-      Collections.sort(artifacts, new NameComparator(SortOrder.ASCENDING));
-
-      Iterator<ArtifactReadable> iterator = artifacts.iterator();
+      Iterator<ArtifactReadable> iterator = sort(artifacts);
       assertEquals("Document Templates", iterator.next().getName());
       assertEquals("User Groups", iterator.next().getName());
 
       if (includeMatchLocationTests) {
-         List<Match<ArtifactReadable, AttributeReadable<?>>> matches = builder.getMatches().getList();
+         ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> matches = builder.getMatches();
          assertEquals(2, matches.size());
 
          Iterator<Match<ArtifactReadable, AttributeReadable<?>>> matchIterator = matches.iterator();
@@ -129,7 +127,7 @@ public class OrcsQueryTest {
 
       assertEquals(24, builder.getCount());
 
-      List<ArtifactReadable> artifacts = builder.getResults().getList();
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
       assertEquals(24, artifacts.size());
 
       checkContainsTypes(artifacts, CoreArtifactTypes.SoftwareRequirement);
@@ -142,14 +140,12 @@ public class OrcsQueryTest {
 
       assertEquals(6, builder.getCount());
 
-      List<ArtifactReadable> artifacts = builder.getResults().getList();
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
       assertEquals(6, artifacts.size());
 
       checkContainsTypes(artifacts, CoreArtifactTypes.OseeTypeDefinition, CoreArtifactTypes.Folder);
 
-      Collections.sort(artifacts, new NameComparator(SortOrder.ASCENDING));
-
-      Iterator<ArtifactReadable> iterator = artifacts.iterator();
+      Iterator<ArtifactReadable> iterator = sort(artifacts);
       assertEquals("Document Templates", iterator.next().getName());
       assertEquals("User Groups", iterator.next().getName());
 
@@ -193,7 +189,7 @@ public class OrcsQueryTest {
       builder.and(CoreAttributeTypes.Name, "Requirements", MatchTokenCountType.IGNORE_TOKEN_COUNT);
 
       assertEquals(7, builder.getCount());
-      List<ArtifactReadable> artifacts = builder.getResults().getList();
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
       assertEquals(7, artifacts.size());
       checkContainsTypes(artifacts, CoreArtifactTypes.Folder, CoreArtifactTypes.SubsystemRequirementMSWord,
          CoreArtifactTypes.SystemRequirementMSWord);
@@ -201,10 +197,9 @@ public class OrcsQueryTest {
       builder.andIsOfType(CoreArtifactTypes.Folder);
       assertEquals(4, builder.getCount());
 
-      List<ArtifactReadable> folders = builder.getResults().getList();
+      ResultSet<ArtifactReadable> folders = builder.getResults();
       assertEquals(4, folders.size());
-      Collections.sort(folders, new NameComparator(SortOrder.ASCENDING));
-      Iterator<ArtifactReadable> folderIterator = folders.iterator();
+      Iterator<ArtifactReadable> folderIterator = sort(folders);
       assertEquals("Hardware Requirements", folderIterator.next().getName());
       assertEquals("Software Requirements", folderIterator.next().getName());
       assertEquals("Subsystem Requirements", folderIterator.next().getName());
@@ -216,9 +211,9 @@ public class OrcsQueryTest {
       builder1.and(CoreAttributeTypes.Name, "Requirements", MatchTokenCountType.IGNORE_TOKEN_COUNT);
       builder1.andTypeEquals(CoreArtifactTypes.SubsystemRequirementMSWord);
       assertEquals(1, builder1.getCount());
-      List<ArtifactReadable> subSystemReqs = builder1.getResults().getList();
+      ResultSet<ArtifactReadable> subSystemReqs = builder1.getResults();
       assertEquals(1, subSystemReqs.size());
-      assertEquals("Subsystem Requirements", subSystemReqs.get(0).getName());
+      assertEquals("Subsystem Requirements", subSystemReqs.iterator().next().getName());
       checkContainsTypes(subSystemReqs, CoreArtifactTypes.SubsystemRequirementMSWord);
 
       //////////////////////
@@ -227,10 +222,9 @@ public class OrcsQueryTest {
       builder2.andIsOfType(CoreArtifactTypes.Requirement);
       assertEquals(3, builder2.getCount());
 
-      List<ArtifactReadable> requirements = builder2.getResults().getList();
+      ResultSet<ArtifactReadable> requirements = builder2.getResults();
       assertEquals(3, requirements.size());
-      Collections.sort(requirements, new NameComparator(SortOrder.ASCENDING));
-      Iterator<ArtifactReadable> reqIterator = requirements.iterator();
+      Iterator<ArtifactReadable> reqIterator = sort(requirements);
       assertEquals("Performance Requirements", reqIterator.next().getName());
       assertEquals("Safety Requirements", reqIterator.next().getName());
       assertEquals("Subsystem Requirements", reqIterator.next().getName());
@@ -245,7 +239,7 @@ public class OrcsQueryTest {
          TokenDelimiterMatch.ANY, MatchTokenCountType.IGNORE_TOKEN_COUNT);
 
       ResultSet<HasLocalId> results = builder.getResultsAsLocalIds();
-      assertEquals(7, results.getList().size());
+      assertEquals(7, results.size());
       assertEquals(7, builder.getCount());
    }
 
@@ -255,12 +249,11 @@ public class OrcsQueryTest {
       builder.and(CoreAttributeTypes.Name, "REQUIREMENTS", TokenDelimiterMatch.ANY);
 
       assertEquals(7, builder.getCount());
-      List<ArtifactReadable> requirements = builder.getResults().getList();
+      ResultSet<ArtifactReadable> requirements = builder.getResults();
       assertEquals(7, requirements.size());
       checkContainsTypes(requirements, CoreArtifactTypes.Folder, CoreArtifactTypes.SubsystemRequirementMSWord,
          CoreArtifactTypes.SystemRequirementMSWord);
-      Collections.sort(requirements, new NameComparator(SortOrder.ASCENDING));
-      Iterator<ArtifactReadable> reqIterator = requirements.iterator();
+      Iterator<ArtifactReadable> reqIterator = sort(requirements);
       assertEquals("Hardware Requirements", reqIterator.next().getName());
       assertEquals("Performance Requirements", reqIterator.next().getName());
       assertEquals("Safety Requirements", reqIterator.next().getName());
@@ -269,14 +262,11 @@ public class OrcsQueryTest {
       assertEquals("Subsystem Requirements", reqIterator.next().getName());
       assertEquals("System Requirements", reqIterator.next().getName());
 
-      //      if (includeMatchLocationTests) {
-      List<Match<ArtifactReadable, AttributeReadable<?>>> matches = builder.getMatches().getList();
+      ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> matches = builder.getMatches();
       assertEquals(7, matches.size());
 
-      Collections.sort(matches, new MatchComparator(SortOrder.ASCENDING));
-
       // @formatter:off
-      Iterator<Match<ArtifactReadable, AttributeReadable<?>>> matchIterator = matches.iterator();
+      Iterator<Match<ArtifactReadable, AttributeReadable<?>>> matchIterator = sortMatch(matches);
       checkMatchSingleAttribute(matchIterator.next(), "Hardware Requirements", CoreAttributeTypes.Name, "Requirements");
       checkMatchSingleAttribute(matchIterator.next(), "Performance Requirements", CoreAttributeTypes.Name, "Requirements");
       checkMatchSingleAttribute(matchIterator.next(), "Safety Requirements", CoreAttributeTypes.Name, "Requirements");
@@ -306,7 +296,7 @@ public class OrcsQueryTest {
       assertEquals("Subsystem Requirements", builder3.getResults().getExactlyOne().getName());
    }
 
-   private static void checkContainsTypes(Collection<ArtifactReadable> arts, IArtifactType... types) throws OseeCoreException {
+   private static void checkContainsTypes(Iterable<ArtifactReadable> arts, IArtifactType... types) throws OseeCoreException {
       List<IArtifactType> expected = Arrays.asList(types);
       for (ArtifactReadable art : arts) {
          assertTrue(String.format("artifact type [%s] not found", art.getArtifactType()),
@@ -337,5 +327,17 @@ public class OrcsQueryTest {
             assertEquals(types[index], iterator.next().getAttributeType());
          }
       }
+   }
+
+   private static Iterator<Match<ArtifactReadable, AttributeReadable<?>>> sortMatch(Iterable<Match<ArtifactReadable, AttributeReadable<?>>> iterable) {
+      Ordering<Match<ArtifactReadable, AttributeReadable<?>>> from =
+         Ordering.from(new MatchComparator(SortOrder.ASCENDING));
+      return from.sortedCopy(iterable).iterator();
+   }
+
+   @SuppressWarnings("unchecked")
+   private static <T extends Named> Iterator<T> sort(Iterable<T> iterable) {
+      Ordering<T> from = (Ordering<T>) Ordering.from(new NameComparator(SortOrder.ASCENDING));
+      return from.sortedCopy(iterable).iterator();
    }
 }

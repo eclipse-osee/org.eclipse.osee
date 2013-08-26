@@ -15,7 +15,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CaseType;
@@ -62,9 +61,8 @@ public class OrcsAttributeSearchTest {
          queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.Name, Operator.NOT_EQUAL, "User Groups");
 
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
-      List<ArtifactReadable> moreArts = resultSet.getList();
 
-      for (ArtifactReadable artifact : moreArts) {
+      for (ArtifactReadable artifact : resultSet) {
          assertTrue(artifact.getLocalId() != 7);
       }
    }
@@ -75,12 +73,11 @@ public class OrcsAttributeSearchTest {
          queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.Name, Operator.EQUAL, "User Groups");
 
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
-      List<ArtifactReadable> moreArts = resultSet.getList();
 
-      assertEquals(1, moreArts.size());
+      assertEquals(1, resultSet.size());
       assertEquals(1, builder.getCount());
 
-      Map<Integer, ArtifactReadable> lookup = createLookup(moreArts);
+      Map<Integer, ArtifactReadable> lookup = createLookup(resultSet);
       ArtifactReadable art7 = lookup.get(7);
 
       //Test loading name attributes
@@ -97,10 +94,9 @@ public class OrcsAttributeSearchTest {
       assertEquals(3, builder.getCount());
 
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
-      List<ArtifactReadable> moreArts = resultSet.getList();
 
-      assertFalse(moreArts.isEmpty());
-      assertEquals(3, moreArts.size());
+      assertFalse(resultSet.isEmpty());
+      assertEquals(3, resultSet.size());
    }
 
    @Test
@@ -108,17 +104,16 @@ public class OrcsAttributeSearchTest {
       QueryBuilder builder =
          queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.DefaultGroup, Operator.EQUAL, "true");
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
-      List<ArtifactReadable> moreArts = resultSet.getList();
 
-      assertEquals(1, moreArts.size());
+      assertEquals(1, resultSet.size());
       assertEquals(1, builder.getCount());
 
-      Map<Integer, ArtifactReadable> lookup = createLookup(moreArts);
+      Map<Integer, ArtifactReadable> lookup = createLookup(resultSet);
       ArtifactReadable art8 = lookup.get(8);
       assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.Name), "Everyone");
    }
 
-   private Map<Integer, ArtifactReadable> createLookup(List<ArtifactReadable> arts) {
+   private Map<Integer, ArtifactReadable> createLookup(Iterable<ArtifactReadable> arts) {
       Map<Integer, ArtifactReadable> lookup = new HashMap<Integer, ArtifactReadable>();
       for (ArtifactReadable artifact : arts) {
          lookup.put(artifact.getLocalId(), artifact);

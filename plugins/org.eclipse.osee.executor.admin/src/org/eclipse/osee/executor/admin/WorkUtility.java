@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.internal.ExecutorAdminImpl;
+import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar
@@ -35,11 +36,11 @@ public final class WorkUtility {
 
    }
 
-   public static <INPUT, OUTPUT> List<Callable<Collection<OUTPUT>>> partitionWork(Collection<INPUT> work, PartitionFactory<INPUT, OUTPUT> factory) throws Exception {
+   public static <INPUT, OUTPUT> List<Callable<Collection<OUTPUT>>> partitionWork(Iterable<INPUT> work, PartitionFactory<INPUT, OUTPUT> factory) throws Exception {
       List<Callable<Collection<OUTPUT>>> callables = new LinkedList<Callable<Collection<OUTPUT>>>();
-
-      if (!work.isEmpty()) {
-         int partitionSize = Math.max(1, work.size() / NUM_PARTITIONS);
+      int size = Iterables.size(work);
+      if (size > 0) {
+         int partitionSize = Math.max(1, size / NUM_PARTITIONS);
 
          List<INPUT> subList = new LinkedList<INPUT>();
 
@@ -65,19 +66,19 @@ public final class WorkUtility {
       return callables;
    }
 
-   public static <INPUT, OUTPUT> List<Future<Collection<OUTPUT>>> partitionAndScheduleWork(ExecutorAdmin executorAdmin, PartitionFactory<INPUT, OUTPUT> factory, Collection<INPUT> items) throws Exception {
+   public static <INPUT, OUTPUT> List<Future<Collection<OUTPUT>>> partitionAndScheduleWork(ExecutorAdmin executorAdmin, PartitionFactory<INPUT, OUTPUT> factory, Iterable<INPUT> items) throws Exception {
       return partitionAndScheduleWork(executorAdmin, ExecutorAdminImpl.DEFAULT_EXECUTOR, factory, items, null);
    }
 
-   public static <INPUT, OUTPUT> List<Future<Collection<OUTPUT>>> partitionAndScheduleWork(ExecutorAdmin executorAdmin, PartitionFactory<INPUT, OUTPUT> factory, Collection<INPUT> items, ExecutionCallback<Collection<OUTPUT>> callback) throws Exception {
+   public static <INPUT, OUTPUT> List<Future<Collection<OUTPUT>>> partitionAndScheduleWork(ExecutorAdmin executorAdmin, PartitionFactory<INPUT, OUTPUT> factory, Iterable<INPUT> items, ExecutionCallback<Collection<OUTPUT>> callback) throws Exception {
       return partitionAndScheduleWork(executorAdmin, ExecutorAdminImpl.DEFAULT_EXECUTOR, factory, items, callback);
    }
 
-   public static <INPUT, OUTPUT> List<Future<Collection<OUTPUT>>> partitionAndScheduleWork(ExecutorAdmin executorAdmin, String executorId, PartitionFactory<INPUT, OUTPUT> factory, Collection<INPUT> items) throws Exception {
+   public static <INPUT, OUTPUT> List<Future<Collection<OUTPUT>>> partitionAndScheduleWork(ExecutorAdmin executorAdmin, String executorId, PartitionFactory<INPUT, OUTPUT> factory, Iterable<INPUT> items) throws Exception {
       return partitionAndScheduleWork(executorAdmin, executorId, factory, items, null);
    }
 
-   public static <INPUT, OUTPUT> List<Future<Collection<OUTPUT>>> partitionAndScheduleWork(ExecutorAdmin executorAdmin, String executorId, PartitionFactory<INPUT, OUTPUT> factory, Collection<INPUT> items, ExecutionCallback<Collection<OUTPUT>> callback) throws Exception {
+   public static <INPUT, OUTPUT> List<Future<Collection<OUTPUT>>> partitionAndScheduleWork(ExecutorAdmin executorAdmin, String executorId, PartitionFactory<INPUT, OUTPUT> factory, Iterable<INPUT> items, ExecutionCallback<Collection<OUTPUT>> callback) throws Exception {
       List<Future<Collection<OUTPUT>>> futures = new LinkedList<Future<Collection<OUTPUT>>>();
       List<Callable<Collection<OUTPUT>>> callables = partitionWork(items, factory);
       if (!callables.isEmpty()) {

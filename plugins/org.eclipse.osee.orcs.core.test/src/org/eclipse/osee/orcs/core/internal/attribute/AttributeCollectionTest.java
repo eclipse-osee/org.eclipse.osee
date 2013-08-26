@@ -17,31 +17,33 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import java.util.Collection;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 /**
  * Test Case for {@link AttributeCollection}
  * 
  * @author Roberto E. Escobar
  */
-@SuppressWarnings("rawtypes")
 public class AttributeCollectionTest {
 
    // @formatter:off
    @Mock private AttributeExceptionFactory exceptionFactory;
-   @Mock Attribute dirtyAttr;
-   @Mock Attribute cleanAttr;
-   @Mock Attribute deletedAttr;
+   @Mock private Attribute<Object> dirtyAttr;
+   @Mock private Attribute<Object> cleanAttr;
+   @Mock private Attribute<Object> deletedAttr;
    // @formatter:on
 
    private AttributeCollection attributeCollection;
@@ -138,17 +140,17 @@ public class AttributeCollectionTest {
    public void testGetSetDeletionFlag() throws OseeCoreException {
       ResultSet<Attribute<Object>> set1 = attributeCollection.getAttributeSet(DeletionFlag.INCLUDE_DELETED);
 
-      assertEquals(3, set1.getList().size());
-      assertTrue(set1.getList().contains(dirtyAttr));
-      assertTrue(set1.getList().contains(cleanAttr));
-      assertTrue(set1.getList().contains(deletedAttr));
+      assertEquals(3, set1.size());
+      checkContains(set1, dirtyAttr, true);
+      checkContains(set1, cleanAttr, true);
+      checkContains(set1, deletedAttr, true);
 
       ResultSet<Attribute<Object>> set2 = attributeCollection.getAttributeSet(DeletionFlag.EXCLUDE_DELETED);
-      assertEquals(2, set2.getList().size());
+      assertEquals(2, set2.size());
 
-      assertTrue(set2.getList().contains(dirtyAttr));
-      assertTrue(set2.getList().contains(cleanAttr));
-      assertFalse(set2.getList().contains(deletedAttr));
+      checkContains(set2, dirtyAttr, true);
+      checkContains(set2, cleanAttr, true);
+      checkContains(set2, deletedAttr, false);
    }
 
    @Test
@@ -168,12 +170,12 @@ public class AttributeCollectionTest {
       ResultSet<Attribute<Object>> set1 =
          attributeCollection.getAttributeSet(CoreAttributeTypes.Annotation, DeletionFlag.INCLUDE_DELETED);
 
-      assertEquals(1, set1.getList().size());
-      assertTrue(set1.getList().contains(deletedAttr));
+      assertEquals(1, set1.size());
+      checkContains(set1, deletedAttr, true);
 
       ResultSet<Attribute<Object>> set2 =
          attributeCollection.getAttributeSet(CoreAttributeTypes.Annotation, DeletionFlag.EXCLUDE_DELETED);
-      assertEquals(0, set2.getList().size());
+      assertEquals(0, set2.size());
    }
 
    @Test
@@ -192,6 +194,16 @@ public class AttributeCollectionTest {
       ResultSet<Attribute<Boolean>> set =
          attributeCollection.getAttributeSetFromValue(CoreAttributeTypes.Active, DeletionFlag.EXCLUDE_DELETED, true);
       Assert.assertEquals(cleanAttr, set.getExactlyOne());
+   }
+
+   private void checkContains(Iterable<Attribute<Object>> items, final Attribute<Object> toFind, boolean findExpected) {
+      Optional<Attribute<Object>> matched = Iterables.tryFind(items, new Predicate<Attribute<Object>>() {
+         @Override
+         public boolean apply(Attribute<Object> entry) {
+            return toFind.equals(entry);
+         }
+      });
+      assertEquals(findExpected, matched.isPresent());
    }
 
 }

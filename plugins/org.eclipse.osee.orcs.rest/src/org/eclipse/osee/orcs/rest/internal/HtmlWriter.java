@@ -36,7 +36,7 @@ public class HtmlWriter {
       this.uriInfo = uriInfo;
    }
 
-   public String toHtml(Collection<? extends Object> objects) throws OseeCoreException {
+   public String toHtml(Iterable<? extends Object> objects) throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       builder.append("<html><body>");
       for (Object object : objects) {

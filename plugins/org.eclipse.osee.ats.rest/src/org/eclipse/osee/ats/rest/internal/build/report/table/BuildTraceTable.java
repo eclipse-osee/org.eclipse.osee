@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.rest.internal.build.report.table;
 
 import java.io.OutputStream;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.rest.internal.build.report.model.AtsElementData;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -111,7 +111,7 @@ public class BuildTraceTable {
       }
    }
 
-   public void addNewTestScriptTraceCells(Table nestedTestScriptTable, List<ArtifactReadable> testScripts) throws OseeCoreException {
+   public void addNewTestScriptTraceCells(Table nestedTestScriptTable, Iterable<ArtifactReadable> testScripts) throws OseeCoreException {
       if (testScripts != null) {
          for (ArtifactReadable script : testScripts) {
             try {
@@ -125,18 +125,19 @@ public class BuildTraceTable {
       }
    }
 
-   public void addRpcrToTable(String rpcr, Map<ArtifactReadable, List<ArtifactReadable>> requirementsToTests, UriInfo uriInfo) throws OseeCoreException {
+   public void addRpcrToTable(String rpcr, Map<ArtifactReadable, Iterable<ArtifactReadable>> requirementsToTests, UriInfo uriInfo) throws OseeCoreException {
 
       try {
          addbuildTraceCells(traceReportTable, rpcr, uriInfo);
          Table nestedRequirementTable = new Table(2);
          nestedRequirementTable.setAutoFillEmptyCells(true);
-         for (ArtifactReadable changedReq : requirementsToTests.keySet()) {
+         for (Entry<ArtifactReadable, Iterable<ArtifactReadable>> entry : requirementsToTests.entrySet()) {
+            ArtifactReadable changedReq = entry.getKey();
             if (Conditions.notNull(changedReq)) {
                addRequirementTraceCells(nestedRequirementTable, changedReq);
                Table nestedTestScriptTable = new Table(1);
                nestedRequirementTable.setAutoFillEmptyCells(true);
-               addNewTestScriptTraceCells(nestedTestScriptTable, requirementsToTests.get(changedReq));
+               addNewTestScriptTraceCells(nestedTestScriptTable, entry.getValue());
                nestedRequirementTable.insertTable(nestedTestScriptTable);
             }
          }

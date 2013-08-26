@@ -16,7 +16,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -57,12 +56,11 @@ public class OrcsAttributeLoadingTest {
    public void testAttributeLoading() throws Exception {
       QueryBuilder builder = query.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(6, 7, 8));
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
-      List<ArtifactReadable> moreArts = resultSet.getList();
 
-      assertEquals(3, moreArts.size());
+      assertEquals(3, resultSet.size());
       assertEquals(3, builder.getCount());
 
-      Map<Integer, ArtifactReadable> lookup = createLookup(moreArts);
+      Map<Integer, ArtifactReadable> lookup = createLookup(resultSet);
       ArtifactReadable art6 = lookup.get(6);
       ArtifactReadable art7 = lookup.get(7);
       ArtifactReadable art8 = lookup.get(8);
@@ -83,16 +81,15 @@ public class OrcsAttributeLoadingTest {
          query.fromBranch(TestBranches.SAW_Bld_1).and(CoreAttributeTypes.Name, Operator.EQUAL, "Haptic Constraints");
 
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
-      List<ArtifactReadable> moreArts = resultSet.getList();
 
-      ArtifactReadable artifact = moreArts.iterator().next();
+      ArtifactReadable artifact = resultSet.iterator().next();
       assertTrue(artifact.getSoleAttributeAsString(CoreAttributeTypes.WordTemplateContent).length() > 2);
 
-      assertFalse(moreArts.isEmpty());
-      assertEquals(moreArts.size(), builder.getCount());
+      assertFalse(resultSet.isEmpty());
+      assertEquals(resultSet.size(), builder.getCount());
    }
 
-   private Map<Integer, ArtifactReadable> createLookup(List<ArtifactReadable> arts) {
+   private Map<Integer, ArtifactReadable> createLookup(Iterable<ArtifactReadable> arts) {
       Map<Integer, ArtifactReadable> lookup = new HashMap<Integer, ArtifactReadable>();
       for (ArtifactReadable artifact : arts) {
          lookup.put(artifact.getLocalId(), artifact);

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
-import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -19,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -59,7 +59,7 @@ public class ArtifactResource {
    public String getAsHtml() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
       QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory(null);
-      List<ArtifactReadable> arts = factory.fromBranch(branch).andGuidsOrHrids(artifactUuid).getResults().getList();
+      ResultSet<ArtifactReadable> arts = factory.fromBranch(branch).andGuidsOrHrids(artifactUuid).getResults();
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(arts);
    }

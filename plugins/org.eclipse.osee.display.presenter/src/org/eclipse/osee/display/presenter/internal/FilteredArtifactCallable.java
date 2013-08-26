@@ -32,9 +32,9 @@ public class FilteredArtifactCallable extends CancellableCallable<List<ArtifactR
 
    private final ExecutorAdmin executorAdmin;
    private final ArtifactFilter filter;
-   private final Collection<ArtifactReadable> artifacts;
+   private final Iterable<ArtifactReadable> artifacts;
 
-   public FilteredArtifactCallable(ExecutorAdmin executorAdmin, ArtifactFilter filter, Collection<ArtifactReadable> artifacts) {
+   public FilteredArtifactCallable(ExecutorAdmin executorAdmin, ArtifactFilter filter, Iterable<ArtifactReadable> artifacts) {
       super();
       this.executorAdmin = executorAdmin;
       this.filter = filter;

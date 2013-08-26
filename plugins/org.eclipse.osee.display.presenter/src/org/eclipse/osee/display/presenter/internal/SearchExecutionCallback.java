@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.display.presenter.internal;
 
-import java.util.concurrent.CancellationException;
 import org.eclipse.osee.display.api.search.AsyncSearchListener;
 import org.eclipse.osee.executor.admin.ExecutionCallback;
 import org.eclipse.osee.framework.core.data.ResultSet;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
@@ -27,10 +24,8 @@ public class SearchExecutionCallback implements ExecutionCallback<ResultSet<Matc
 
    private final AsyncSearchListener callback;
    private final ArtifactProviderCache cache;
-   private final Log logger;
 
-   public SearchExecutionCallback(Log logger, ArtifactProviderCache cache, AsyncSearchListener callback) {
-      this.logger = logger;
+   public SearchExecutionCallback(ArtifactProviderCache cache, AsyncSearchListener callback) {
       this.cache = cache;
       this.callback = callback;
    }
@@ -38,15 +33,7 @@ public class SearchExecutionCallback implements ExecutionCallback<ResultSet<Matc
    @Override
    public void onSuccess(ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> result) {
       cache.cacheResults(result);
-      try {
-         callback.onSearchComplete(result.getList());
-      } catch (OseeWrappedException ex) {
-         if (ex.getCause() instanceof CancellationException) {
-            callback.onSearchCancelled();
-         }
-      } catch (Exception ex) {
-         logger.error(ex, "Error in async search");
-      }
+      callback.onSearchComplete(result);
    }
 
    @Override

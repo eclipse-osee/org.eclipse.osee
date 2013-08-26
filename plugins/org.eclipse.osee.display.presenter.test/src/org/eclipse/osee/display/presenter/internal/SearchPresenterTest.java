@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -274,7 +275,7 @@ public class SearchPresenterTest {
       }
 
       @Override
-      public List<ArtifactReadable> getRelatedArtifacts(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      public ResultSet<ArtifactReadable> getRelatedArtifacts(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
          throw new OseeCoreException("test");
       }
 

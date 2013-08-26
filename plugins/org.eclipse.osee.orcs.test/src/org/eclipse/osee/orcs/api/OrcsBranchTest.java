@@ -87,13 +87,13 @@ public class OrcsBranchTest {
       // in the database, on the common branch, the users are all created in transaction 8
       // the common branch will have one user named Joe Smith
 
-      int coreResult = query.fromBranch(CoreBranches.COMMON).andNameEquals(ARTIFACT_NAME).getResults().getList().size();
+      int coreResult = query.fromBranch(CoreBranches.COMMON).andNameEquals(ARTIFACT_NAME).getResults().size();
       assertEquals(1, coreResult);
 
       // we copied the branch at transaction 7, so, on the copied branch there will not be any
       // user Joe Smith
 
-      int priorResult = query.fromBranch(priorBranch).andNameEquals(ARTIFACT_NAME).getResults().getList().size();
+      int priorResult = query.fromBranch(priorBranch).andNameEquals(ARTIFACT_NAME).getResults().size();
       assertEquals(0, priorResult);
 
       // finally, we copy another branch at transaction id 8, this is the transaction that added the 
@@ -108,7 +108,7 @@ public class OrcsBranchTest {
       assertNotNull(postCallable);
       ReadableBranch postBranch = postCallable.call();
 
-      int postResult = query.fromBranch(postBranch).andNameEquals(ARTIFACT_NAME).getResults().getList().size();
+      int postResult = query.fromBranch(postBranch).andNameEquals(ARTIFACT_NAME).getResults().size();
       assertEquals(1, postResult);
    }
 

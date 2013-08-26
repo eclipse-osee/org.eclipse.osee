@@ -11,11 +11,11 @@
 package org.eclipse.osee.display.api.search;
 
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -28,7 +28,7 @@ public interface ArtifactProvider {
 
    ArtifactReadable getArtifactByGuid(IOseeBranch branch, String guid) throws OseeCoreException;
 
-   List<ArtifactReadable> getRelatedArtifacts(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException;
+   ResultSet<ArtifactReadable> getRelatedArtifacts(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException;
 
    ArtifactReadable getRelatedArtifact(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException;
 

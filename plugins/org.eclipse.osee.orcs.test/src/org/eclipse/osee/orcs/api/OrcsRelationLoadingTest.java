@@ -60,7 +60,7 @@ public class OrcsRelationLoadingTest {
       QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(6, 7, 8));
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 
-      assertEquals(3, resultSet.getList().size());
+      assertEquals(3, resultSet.size());
       assertEquals(3, builder.getCount());
 
       Map<Integer, ArtifactReadable> lookup = createLookup(resultSet);
@@ -76,8 +76,8 @@ public class OrcsRelationLoadingTest {
       //      3  219   7  15    54
       //      2  219   1  7     52
       assertEquals(2, graph.getExistingRelationTypes(art7).size());
-      assertEquals(2, graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, art7).getList().size());
-      assertEquals(1, graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, art7).getList().size());
+      assertEquals(2, graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, art7).size());
+      assertEquals(1, graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, art7).size());
 
       //art8 has 
       //      REL_LINK_ID    REL_LINK_TYPE_ID     A_ART_ID    B_ART_ID    RATIONALE   GAMMA_ID    TX_CURRENT     MOD_TYPE    BRANCH_ID   TRANSACTION_ID    GAMMA_ID
@@ -88,8 +88,8 @@ public class OrcsRelationLoadingTest {
       //      5  233   8  18    78
       //      1  219   7  8     53
       assertEquals(2, graph.getExistingRelationTypes(art8).size());
-      assertEquals(1, graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, art8).getList().size());
-      assertEquals(5, graph.getRelatedArtifacts(CoreRelationTypes.Users_User, art8).getList().size());
+      assertEquals(1, graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, art8).size());
+      assertEquals(5, graph.getRelatedArtifacts(CoreRelationTypes.Users_User, art8).size());
 
    }
 
@@ -99,7 +99,7 @@ public class OrcsRelationLoadingTest {
             "Design Constraints");
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 
-      assertEquals(1, resultSet.getList().size());
+      assertEquals(1, resultSet.size());
 
       ArtifactReadable artifact = resultSet.getAtMostOneOrNull();
       assertNotNull(artifact);
@@ -108,10 +108,8 @@ public class OrcsRelationLoadingTest {
 
       //artifact has 3 children and 1 parent
       assertEquals(2, graph.getExistingRelationTypes(artifact).size());
-      assertEquals(3,
-         graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, artifact).getList().size());
-      assertEquals(1,
-         graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, artifact).getList().size());
+      assertEquals(3, graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, artifact).size());
+      assertEquals(1, graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, artifact).size());
    }
 
    private Map<Integer, ArtifactReadable> createLookup(Iterable<ArtifactReadable> arts) {

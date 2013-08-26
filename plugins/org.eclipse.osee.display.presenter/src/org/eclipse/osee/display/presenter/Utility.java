@@ -11,13 +11,13 @@
 package org.eclipse.osee.display.presenter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.display.api.data.StyledText;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.utility.NameComparator;
 import org.eclipse.osee.orcs.utility.SortOrder;
+import com.google.common.collect.Ordering;
 
 /**
  * @author Roberto E. Escobar
@@ -28,8 +28,8 @@ public final class Utility {
       //
    }
 
-   public static void sort(List<ArtifactReadable> toSort) {
-      Collections.sort(toSort, new NameComparator(SortOrder.ASCENDING));
+   public static List<ArtifactReadable> sort(Iterable<ArtifactReadable> toSort) {
+      return Ordering.from(new NameComparator(SortOrder.ASCENDING)).sortedCopy(toSort);
    }
 
    public static List<StyledText> getMatchedText(String data, List<MatchLocation> matches) {

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
-import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -67,7 +66,7 @@ public class ArtifactsResource {
       ArtifactReadable rootArtifact = results.getExactlyOne();
 
       GraphReadable graph = OrcsApplication.getOrcsApi().getGraph(null);
-      List<ArtifactReadable> arts = graph.getChildren(rootArtifact).getList();
+      ResultSet<ArtifactReadable> arts = graph.getChildren(rootArtifact);
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(arts);
    }

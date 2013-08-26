@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.ResultSet;
+import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -103,7 +104,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
       Callable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> callable =
          createSearchCallable(params, callback);
 
-      SearchExecutionCallback providerCallback = new SearchExecutionCallback(logger, cache, callback);
+      SearchExecutionCallback providerCallback = new SearchExecutionCallback(cache, callback);
 
       Future<?> searchFuture = null;
       try {
@@ -132,19 +133,18 @@ public class ArtifactProviderImpl implements ArtifactProvider {
    }
 
    @Override
-   public List<ArtifactReadable> getRelatedArtifacts(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
-      final List<ArtifactReadable> artifacts = graph.getRelatedArtifacts(relationTypeSide, art).getList();
+   public ResultSet<ArtifactReadable> getRelatedArtifacts(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      final ResultSet<ArtifactReadable> artifacts = graph.getRelatedArtifacts(relationTypeSide, art);
       List<ArtifactReadable> results = Collections.emptyList();
       try {
          FilteredArtifactCallable callable = new FilteredArtifactCallable(executorAdmin, filter, artifacts);
-         Future<List<ArtifactReadable>> future = executorAdmin.schedule(callable);
-         results = future.get();
-         Utility.sort(results);
+         Future<? extends Iterable<ArtifactReadable>> future = executorAdmin.schedule(callable);
+         results = Utility.sort(future.get());
       } catch (Exception ex) {
          logger.error(ex, "Sanitization error");
          OseeExceptions.wrapAndThrow(ex);
       }
-      return results;
+      return new ResultSetList<ArtifactReadable>(results);
    }
 
    @Override

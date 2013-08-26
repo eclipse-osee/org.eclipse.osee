@@ -60,8 +60,15 @@ public class AttributeResultSetTest {
    }
 
    @Test
-   public void testGetList() {
-      assertEquals(list, rSetNoType.getList());
+   public void testGetSize() {
+      assertEquals(list.size(), rSetNoType.size());
+      assertEquals(list.size(), rSetWithType.size());
+   }
+
+   @Test
+   public void testIsEmpty() {
+      assertEquals(list.isEmpty(), rSetNoType.isEmpty());
+      assertEquals(list.isEmpty(), rSetWithType.isEmpty());
    }
 
    @Test
@@ -71,11 +78,6 @@ public class AttributeResultSetTest {
       rSetNoType.iterator();
 
       verify(spy).iterator();
-   }
-
-   @Test
-   public void testGetIterable() {
-      assertEquals(list, rSetNoType.getIterable(-1));
    }
 
    @Test

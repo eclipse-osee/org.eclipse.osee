@@ -58,14 +58,8 @@ public class ResultSetList<T> implements ResultSet<T> {
       return result;
    }
 
-   @Override
-   public List<T> getList() {
+   private List<T> getList() {
       return data;
-   }
-
-   @Override
-   public Iterable<T> getIterable(int fetchSize) {
-      return getList();
    }
 
    @Override
@@ -79,6 +73,16 @@ public class ResultSetList<T> implements ResultSet<T> {
 
    protected OseeCoreException createDoesNotExistException() {
       return new ItemDoesNotExist("No item found");
+   }
+
+   @Override
+   public int size() {
+      return data.size();
+   }
+
+   @Override
+   public boolean isEmpty() {
+      return data.isEmpty();
    }
 
 }

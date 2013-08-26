@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -25,7 +24,8 @@ public interface ResultSet<T> extends Iterable<T> {
 
    T getAtMostOneOrNull() throws OseeCoreException;
 
-   List<T> getList() throws OseeCoreException;
+   int size();
 
-   Iterable<T> getIterable(int fetchSize) throws OseeCoreException;
+   boolean isEmpty();
+
 }

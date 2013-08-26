@@ -115,7 +115,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
 
    protected Collection<ViewId> getPrograms() throws OseeCoreException {
       Collection<ViewId> toReturn = new LinkedList<ViewId>();
-      Collection<ArtifactReadable> programs = atsArtifactProvider.getPrograms();
+      Iterable<ArtifactReadable> programs = atsArtifactProvider.getPrograms();
       if (programs != null) {
          for (ArtifactReadable program : programs) {
             toReturn.add(new ViewId(program.getGuid(), program.getName()));
@@ -125,7 +125,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
    }
 
    protected Collection<ViewId> getBuilds(ViewId program) throws OseeCoreException {
-      Collection<ArtifactReadable> relatedBuilds = atsArtifactProvider.getBuilds(program.getGuid());
+      Iterable<ArtifactReadable> relatedBuilds = atsArtifactProvider.getBuilds(program.getGuid());
       Collection<ViewId> builds = new ArrayList<ViewId>();
       if (relatedBuilds != null) {
          for (ArtifactReadable build : relatedBuilds) {

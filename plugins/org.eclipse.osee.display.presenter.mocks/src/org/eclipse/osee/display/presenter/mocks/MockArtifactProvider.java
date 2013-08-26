@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.ResultSet;
+import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -60,13 +61,13 @@ public class MockArtifactProvider implements ArtifactProvider {
    //   }
 
    @Override
-   public List<ArtifactReadable> getRelatedArtifacts(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
+   public ResultSet<ArtifactReadable> getRelatedArtifacts(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
       if (art instanceof MockArtifact) {
          MockArtifact mArt = (MockArtifact) art;
          ResultSet<ArtifactReadable> result = mArt.getRelatedArtifacts(relationTypeSide);
-         return result.getList();
+         return result;
       } else {
-         return Collections.emptyList();
+         return new ResultSetList<ArtifactReadable>();
       }
    }
 

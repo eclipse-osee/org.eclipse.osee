@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -144,7 +145,8 @@ public class ArtifactLoaderFactoryImplTest {
       ResultSet<ArtifactReadable> result = loader.getResults(cancellation);
 
       verify(dbLoader).load(cancellation, builder);
-      assertEquals(artifacts, result.getList());
+      assertEquals(artifacts.size(), result.size());
+      checkEquals(artifacts, result);
    }
 
    @Test
@@ -160,7 +162,15 @@ public class ArtifactLoaderFactoryImplTest {
       ResultSet<ArtifactReadable> result = loader.getResults(cancellation);
 
       verify(dbLoader).load(cancellation, builder);
-      assertEquals(artifacts, result.getList());
+      assertEquals(artifacts.size(), result.size());
+      checkEquals(artifacts, result);
    }
 
+   private void checkEquals(Iterable<ArtifactReadable> expected, Iterable<ArtifactReadable> actual) {
+      Iterator<ArtifactReadable> actuals = actual.iterator();
+      Iterator<ArtifactReadable> expecteds = expected.iterator();
+      while (expecteds.hasNext() && actuals.hasNext()) {
+         assertEquals(expecteds.next(), actuals.next());
+      }
+   }
 }

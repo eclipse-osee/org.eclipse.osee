@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.rest.internal.build.report.parser.AtsWorkflowDataPar
 import org.eclipse.osee.ats.rest.internal.build.report.table.BuildTraceTable;
 import org.eclipse.osee.ats.rest.internal.build.report.util.InputFilesUtil;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -85,16 +86,16 @@ public class BuildTraceReportResource {
                         String pcrId = data.getWorkflowPcrId();
                         try {
                            Collection<Integer> artIds = ArtIdParser.getArtIds(pcrId);
-                           Map<ArtifactReadable, List<ArtifactReadable>> requirementsToTests =
-                              new LinkedHashMap<ArtifactReadable, List<ArtifactReadable>>();
+                           Map<ArtifactReadable, Iterable<ArtifactReadable>> requirementsToTests =
+                              new LinkedHashMap<ArtifactReadable, Iterable<ArtifactReadable>>();
 
                            if (Conditions.hasValues(artIds)) {
-                              List<ArtifactReadable> requirements =
-                                 queryFactory.fromBranch(branch).andLocalIds(artIds).getResults().getList();
+                              ResultSet<ArtifactReadable> requirements =
+                                 queryFactory.fromBranch(branch).andLocalIds(artIds).getResults();
 
                               for (ArtifactReadable requirement : requirements) {
-                                 List<ArtifactReadable> verifiers =
-                                    graph.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier, requirement).getList();
+                                 ResultSet<ArtifactReadable> verifiers =
+                                    graph.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier, requirement);
                                  requirementsToTests.put(requirement, verifiers);
                               }
 
