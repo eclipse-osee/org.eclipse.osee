@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.listener;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
@@ -44,7 +45,7 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
    private volatile boolean isTimedOut = false;
    private int masterMessageCount = 0;
    //	private final Message message;
-   private final Message<?, ?, ?> message;
+   private final WeakReference<Message<?, ?, ?>> message;
    private static final Benchmark tbm = new Benchmark("Total Message System Listener", 2500);
 
    
@@ -72,6 +73,7 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
 
    private final CopyOnWriteNoIteratorList<IOSEEMessageListener> fastListeners = new CopyOnWriteNoIteratorList<IOSEEMessageListener>(IOSEEMessageListener.class);
    private final CopyOnWriteNoIteratorList<IOSEEMessageListener> slowListeners = new CopyOnWriteNoIteratorList<IOSEEMessageListener>(IOSEEMessageListener.class);
+   private volatile boolean disposed = false;
 
    /**
     * This class takes in a message in the constructor so that it can tell the message to update when it recieves new
@@ -79,7 +81,7 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
     */
    public MessageSystemListener(Message<?, ?, ?> msg) {
       super();
-      this.message = msg;
+      this.message = new WeakReference<Message<?,?,?>>(msg);
    }
 
    /**
@@ -215,9 +217,9 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
 
    @Override
    public synchronized void onDataAvailable(final MessageData data, DataType type) throws MessageSystemException {
-
+      if(disposed) return;
       tbm.startSample();
-      if (message.getMemType() == type) {
+      if (message.get().getMemType() == type) {
          messageCount++;
          masterMessageCount++;
          notifyAll();
@@ -236,7 +238,7 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
             elapsed = System.nanoTime() - start;
             if(elapsed > debugTimeout){
                Locale.setDefault(Locale.US);
-               System.out.printf("%s %s SLOW %,d\n", message.getName(), listener.getClass().getName(), elapsed);
+               System.out.printf("%s %s SLOW %,d\n", message.get().getName(), listener.getClass().getName(), elapsed);
             }
          }
       }
@@ -253,7 +255,7 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
             elapsed = System.nanoTime() - start;
             if(elapsed > debugTimeout){
                Locale.setDefault(Locale.US);
-               System.out.printf("%s %s SLOW TO SUBMIT SLOW %,d\n", message.getName(), listener.getClass().getName(), elapsed);
+               System.out.printf("%s %s SLOW TO SUBMIT SLOW %,d\n", message.get().getName(), listener.getClass().getName(), elapsed);
             }
          }
       }
@@ -262,6 +264,7 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
 
    @Override
    public synchronized void onInitListener() throws MessageSystemException {
+      if(disposed) return;
       IOSEEMessageListener[] ref = fastListeners.get();
       for (int i = 0; i < ref.length; i++) {
          IOSEEMessageListener listener = ref[i];
@@ -324,6 +327,7 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
    }
 
    public void dispose() {
+      this.disposed = true;
       this.clearListeners();
    }
 
