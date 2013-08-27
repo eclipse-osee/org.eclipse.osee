@@ -25,4 +25,5 @@ public abstract class DomainEntity extends Entity {
    public DomainEntity(boolean enabled, Listener listener, EntityFactory parentFactory) {
       super(enabled, listener, parentFactory);
    }
+
 }

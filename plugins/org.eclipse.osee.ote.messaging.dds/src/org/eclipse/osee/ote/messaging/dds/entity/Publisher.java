@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.eclipse.osee.ote.messaging.dds.Data;
 import org.eclipse.osee.ote.messaging.dds.DataSample;
 import org.eclipse.osee.ote.messaging.dds.DataStoreItem;
@@ -157,8 +158,8 @@ public class Publisher extends DomainEntity implements EntityFactory {
          return ReturnCode.ALREADY_DELETED;
       }
 
+      dataWriter.markAsDeleted();
       if (dataWriters.remove(dataWriter)) {
-         dataWriter.markAsDeleted();
          return ReturnCode.OK;
       } else {
          // If the data writer wasn't found, then return PRECONDITION_NOT_MET

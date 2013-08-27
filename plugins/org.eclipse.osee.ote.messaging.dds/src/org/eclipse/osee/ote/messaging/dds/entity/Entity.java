@@ -25,7 +25,7 @@ import org.eclipse.osee.ote.messaging.dds.listener.Listener;
  */
 public abstract class Entity {
 
-   private final EntityFactory parentFactory;
+   private EntityFactory parentFactory;
    private Listener listener;
 
    @SuppressWarnings("unused")
@@ -128,7 +128,7 @@ public abstract class Entity {
    public ReturnCode enable() {
 
       // Check pre-conditions
-      if (!parentFactory.isEnabled()) {
+      if (parentFactory != null && !parentFactory.isEnabled()) {
          return ReturnCode.PRECONDITION_NOT_MET;
       }
 
@@ -139,5 +139,10 @@ public abstract class Entity {
 
       enabled = true;
       return ReturnCode.OK;
+   }
+   
+   protected void dispose() {
+      parentFactory = null;
+      listener = null;
    }
 }

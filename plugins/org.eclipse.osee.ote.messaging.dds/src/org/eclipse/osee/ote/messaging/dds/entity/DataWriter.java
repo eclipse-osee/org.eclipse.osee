@@ -37,8 +37,8 @@ import org.eclipse.osee.ote.messaging.dds.status.PublicationMatchStatus;
  * @author David Diepenbrock
  */
 public class DataWriter extends DomainEntity {
-   private final Topic topic;
-   private final Publisher publisher;
+   private Topic topic;
+   private Publisher publisher;
    private boolean deleted;
    private boolean publishBackToLocalDDSReaders = true;
 
@@ -220,18 +220,8 @@ public class DataWriter extends DomainEntity {
     * implemented or used.
     */
    public ReturnCode dispose(Data data, InstanceHandle handle) {
-
-      // UNSURE This method has not been implemented, but is called out in the spec
-      if (true) {
-         throw new NotImplementedException();
-      }
-
-      // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled()) {
-         return ReturnCode.NOT_ENABLED;
-      }
-
-      return ReturnCode.ERROR;
+      dispose();
+      return ReturnCode.UNSUPPORTED;
    }
 
    /**
@@ -239,18 +229,14 @@ public class DataWriter extends DomainEntity {
     * implemented or used.
     */
    public ReturnCode diposeWithTimestamp(Data data, InstanceHandle handle, Time timestamp) {
-
-      // DONT_NEED This method has not been implemented, but is called out in the spec
-      if (true) {
-         throw new NotImplementedException();
-      }
-
-      // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)
-      if (!isEnabled()) {
-         return ReturnCode.NOT_ENABLED;
-      }
-
-      return ReturnCode.ERROR;
+      dispose();
+      return ReturnCode.UNSUPPORTED;
+   }
+   
+   public void dispose(){
+      topic = null;
+      publisher = null;
+      super.dispose();
    }
 
    /**

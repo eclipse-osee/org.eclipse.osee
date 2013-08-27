@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.messaging.dds.entity;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;
+
 import org.eclipse.osee.ote.messaging.dds.Data;
 import org.eclipse.osee.ote.messaging.dds.DataSample;
 import org.eclipse.osee.ote.messaging.dds.DataStoreItem;
@@ -41,8 +42,8 @@ import org.eclipse.osee.ote.messaging.dds.status.SubscriptionMatchStatus;
  * @author David Diepenbrock
  */
 public class DataReader extends DomainEntity {
-   private final TopicDescription topicDescription;
-   private final Subscriber subscriber;
+   private TopicDescription topicDescription;
+   private Subscriber subscriber;
    private ByteBuffer dataBuffer;
    private boolean deleted;
    private DataStoreItem item;
@@ -588,6 +589,12 @@ public class DataReader extends DomainEntity {
       return ReturnCode.ERROR;
    }
 
+   public void dispose(){
+      topicDescription = null;
+      subscriber = null;
+      super.dispose();
+   }
+   
    /**
     * This is intended to be called whenever new data is "published" to the Service. Calls onDataAvailable on the
     * attached <code>DataReaderListener</code> as appropriate.
