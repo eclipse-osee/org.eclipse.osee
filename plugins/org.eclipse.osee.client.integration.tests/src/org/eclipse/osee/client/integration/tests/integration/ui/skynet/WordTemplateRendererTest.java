@@ -262,9 +262,15 @@ public class WordTemplateRendererTest {
       String contents;
       try {
          contents = getFileAsString(resultPath);
-         Assert.assertTrue(
-            "Merge content not found",
-            contents.contains("<aml:content><w:r><w:t>paragraph describes</w:t></w:r><w:r><w:t>is</w:t></w:r></aml:content>"));
+
+         // either one of these strings could be correct depending on word preferences
+         String mergeContent1 =
+            "<aml:content><w:r><w:t>paragraph describes</w:t></w:r><w:r><w:t>is</w:t></w:r></aml:content>";
+         String mergeContent2 =
+            "<aml:content><w:r><w:t>paragraph </w:t></w:r><w:proofErr w:type=\"spellStart\"/><w:r><w:t>describes</w:t></w:r><w:r><w:t>is</w:t></w:r></aml:content>";
+         Assert.assertTrue("Merge content not found",
+            contents.contains(mergeContent1) || contents.contains(mergeContent2));
+
          Assert.assertTrue("Paragraph Number only Link not found",
             contents.contains("<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>2.1</w:t></w:r>"));
          basicDocumentCheck(contents, "", true);
