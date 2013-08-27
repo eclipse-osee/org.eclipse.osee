@@ -197,14 +197,29 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    public abstract void visit(IMessageDataVisitor visitor);
 
    public void dispose() {
+      
+      try{
+         Message[] msgs = messages.get();
+         for (int i = 0; i < msgs.length; i++){ 
+            Message local = msgs[i];
+            if(local != null){
+               local.removePreMessageDisposeListener(disposeListener);
+            }
+         }
+      } catch (Throwable th){
+         OseeLog.log(getClass(), Level.SEVERE, "failed to remove message dispose listener.", th);
+      }
       messages.clear();
       if (writer != null) {
          writer.getPublisher().deleteDataWriter(writer);
+         writer.dispose(this, null);
          writer = null;
       } else if (reader != null && reader.getSubscriber() != null) {
          reader.getSubscriber().deleteDataReader(reader);
+         reader.dispose();
+         reader = null;
       }
-      reader = null;
+      disposeListener = null;
    }
 
    public void copyData(int destOffset, byte[] data, int srcOffset, int length) {
@@ -549,7 +564,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       }
    }
 
-   private final IMessageDisposeListener disposeListener = new IMessageDisposeListener() {
+   private IMessageDisposeListener disposeListener = new IMessageDisposeListener() {
 
       @Override
       public void onPreDispose(Message message) {
