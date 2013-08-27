@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.elements;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.MessageSystemException;
@@ -25,7 +27,8 @@ import org.eclipse.osee.ote.message.enums.DataType;
  * @author Andrew M. Finkbeiner
  */
 public abstract class Element implements ITimeout {
-   protected final Message<?, ?, ?> msg;
+//   protected final Message<?, ?, ?> msg;
+   private final WeakReference<Message<?, ?, ?>> msg;
    protected String elementName;
    private volatile boolean timedOut;
    private final List<Object> elementPath;
@@ -40,7 +43,7 @@ public abstract class Element implements ITimeout {
    private String elementPathAsString;
 
    public Element(Message<?, ?, ?> msg, String elementName, MessageData messageData, int byteOffset, int msb, int lsb, int originalMsb, int originalLsb) {
-      this.msg = msg;
+      this.msg = new WeakReference<Message<?,?,?>>(msg);
       this.elementName = elementName;
       this.messageData = messageData;
       this.byteOffset = byteOffset;
@@ -111,7 +114,7 @@ public abstract class Element implements ITimeout {
     * @return Returns the msg.
     */
    public Message<?, ?, ?> getMessage() {
-      return msg;
+      return msg.get();
    }
 
    public String getElementName() {
@@ -241,7 +244,7 @@ public abstract class Element implements ITimeout {
 
    protected void throwNoMappingElementException() {
       throw new MessageSystemException(
-         "The element " + msg.getName() + "." + elementName + " does not exist for the message's current MemType!! " + "\nIt shouldn't be used for this environment type!!",
+         "The element " + msg.get().getName() + "." + elementName + " does not exist for the message's current MemType!! " + "\nIt shouldn't be used for this environment type!!",
          Level.SEVERE);
    }
 

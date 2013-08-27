@@ -106,10 +106,10 @@ public class StringElement extends DiscreteElement<String> {
       }
 
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
-         new MethodFormatter().add(value).add(milliseconds), this.msg);
+         new MethodFormatter().add(value).add(milliseconds), getMessage());
       final StringTrimCondition c = new StringTrimCondition(this, value);
 
-      MsgWaitResult result = msg.waitForCondition(accessor, c, false, milliseconds);
+      MsgWaitResult result = getMessage().waitForCondition(accessor, c, false, milliseconds);
       CheckPoint passFail =
          new CheckPoint(getFullName(), toString(value), toString(c.getLastCheckValue()), result.isPassed(),
             result.getElapsedTime());
@@ -151,10 +151,10 @@ public class StringElement extends DiscreteElement<String> {
       }
 
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(), new MethodFormatter().add(milliseconds),
-         this.msg);
+         getMessage());
       final EmptyStringCondition c = new EmptyStringCondition(this);
 
-      MsgWaitResult result = msg.waitForCondition(accessor, c, false, milliseconds);
+      MsgWaitResult result = getMessage().waitForCondition(accessor, c, false, milliseconds);
       CheckPoint passFail =
          new CheckPoint(getFullName(), "Empty", result.isPassed() ? "Empty" : "Not Empty", result.isPassed(),
             result.getElapsedTime());
@@ -171,10 +171,10 @@ public class StringElement extends DiscreteElement<String> {
       }
 
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(), new MethodFormatter().add(milliseconds),
-         this.msg);
+         getMessage());
       final EmptyStringCondition c = new EmptyStringCondition(this);
 
-      MsgWaitResult result = msg.waitForCondition(accessor, c, true, milliseconds);
+      MsgWaitResult result = getMessage().waitForCondition(accessor, c, true, milliseconds);
       CheckPoint passFail =
          new CheckPoint(getFullName(), "Empty", result.isPassed() ? "Empty" : "Not Empty", result.isPassed(),
             result.getElapsedTime());

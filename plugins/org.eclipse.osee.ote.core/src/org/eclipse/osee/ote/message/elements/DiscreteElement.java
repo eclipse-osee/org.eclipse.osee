@@ -64,7 +64,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    public void set(ITestEnvironmentAccessor accessor, T value) {
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
-            this.msg);
+            getMessage());
       }
 
       setValue(value);
@@ -91,7 +91,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
 
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
-            this.msg);
+            getMessage());
       }
 
       T actualValue = getValue();
@@ -113,7 +113,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
 
    public boolean checkNT(ITestAccessor accessor, CheckGroup checkGroup, T value) {
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
-         this.msg);
+         getMessage());
       boolean v = getValue().equals(elementMask(value));
       accessor.getLogger().methodEnded(accessor);
       return v;
@@ -121,7 +121,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
 
    public boolean checkNotNT(ITestAccessor accessor, CheckGroup checkGroup, T value) {
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
-         this.msg);
+         getMessage());
       boolean v = !getValue().equals(elementMask(value));
       accessor.getLogger().methodEnded(accessor);
       return v;
@@ -162,7 +162,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    public boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive) {
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
-         new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive), this.msg);
+         new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive), getMessage());
 
       InRangeCondition<T> c = new InRangeCondition<T>(this, minValue, minInclusive, maxValue, maxInclusive);
 
@@ -183,7 +183,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    public boolean checkRangeNT(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive) {
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
-         new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive), this.msg);
+         new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive), getMessage());
       InRangeCondition<T> c = new InRangeCondition<T>(this, minValue, minInclusive, maxValue, maxInclusive);
       boolean pass = c.check();
       accessor.getLogger().methodEnded(accessor);
@@ -193,9 +193,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    public boolean checkRangeNT(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int millis) throws InterruptedException {
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
-         new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive), this.msg);
+         new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive), getMessage());
       InRangeCondition<T> c = new InRangeCondition<T>(this, minValue, minInclusive, maxValue, maxInclusive);
-      MsgWaitResult result = msg.waitForCondition(accessor, c, false, millis);
+      MsgWaitResult result = getMessage().waitForCondition(accessor, c, false, millis);
       accessor.getLogger().methodEnded(accessor);
       return result.isPassed();
    }
@@ -234,7 +234,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, T value) {
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter().add(value),
-            this.msg);
+            getMessage());
       }
 
       T actualValue = getValue();
@@ -387,10 +387,10 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    public T waitForValue(ITestEnvironmentAccessor accessor, T value, int milliseconds) throws InterruptedException {
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
-            new MethodFormatter().add(value).add(milliseconds), this.msg);
+            new MethodFormatter().add(value).add(milliseconds), getMessage());
       }
       EqualsCondition<T> c = new EqualsCondition<T>(this, value);
-      msg.waitForCondition(accessor, c, false, milliseconds);
+      getMessage().waitForCondition(accessor, c, false, milliseconds);
       if (accessor != null) {
          accessor.getLogger().methodEnded(accessor);
       }
@@ -408,10 +408,10 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    public T waitForNotValue(ITestEnvironmentAccessor accessor, T value, int milliseconds) throws InterruptedException {
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
-            new MethodFormatter().add(value).add(milliseconds), this.msg);
+            new MethodFormatter().add(value).add(milliseconds), getMessage());
       }
       EqualsCondition<T> c = new EqualsCondition<T>(this, true, value);
-      msg.waitForCondition(accessor, c, false, milliseconds);
+      getMessage().waitForCondition(accessor, c, false, milliseconds);
       if (accessor != null) {
          accessor.getLogger().methodEnded(accessor);
       }
@@ -433,10 +433,10 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
             new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
-            this.msg);
+            getMessage());
       }
       InRangeCondition<T> c = new InRangeCondition<T>(this, minValue, minInclusive, maxValue, maxInclusive);
-      msg.waitForCondition(accessor, c, false, milliseconds);
+      getMessage().waitForCondition(accessor, c, false, milliseconds);
       if (accessor != null) {
          accessor.getLogger().methodEnded(accessor);
       }
@@ -472,11 +472,11 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       if (accessor != null) {
          accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
             new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
-            this.msg);
+            getMessage());
       }
 
       NotInRangeCondition<T> c = new NotInRangeCondition<T>(this, minValue, minInclusive, maxValue, maxInclusive);
-      msg.waitForCondition(accessor, c, false, milliseconds);
+      getMessage().waitForCondition(accessor, c, false, milliseconds);
 
       if (accessor != null) {
          accessor.getLogger().methodEnded(accessor);
@@ -525,7 +525,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       checkAccessor(accessor);
 
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
-         new MethodFormatter().add(value).add(milliseconds), msg);
+         new MethodFormatter().add(value).add(milliseconds), getMessage());
 
       EqualsCondition<T> c = new EqualsCondition<T>(this, value);
 
@@ -556,7 +556,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
-         this.msg);
+         getMessage());
 
       InRangeCondition<T> c = new InRangeCondition<T>(this, minValue, minInclusive, maxValue, maxInclusive);
       CheckPoint cp =
@@ -658,7 +658,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, T value, int milliseconds) throws InterruptedException {
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
-         new MethodFormatter().add(value).add(milliseconds), this.msg);
+         new MethodFormatter().add(value).add(milliseconds), getMessage());
       CheckPoint cp =
          waitWithCheckPoint(accessor, checkGroup, "Not " + toString(value), new EqualsCondition<T>(this, true, value),
             false, milliseconds);
@@ -689,7 +689,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    protected CheckPoint waitWithCheckPoint(ITestAccessor accessor, CheckGroup checkGroup, String expected, IDiscreteElementCondition<T> condition, boolean maintain, int milliseconds) throws InterruptedException {
-      MsgWaitResult result = msg.waitForCondition(accessor, condition, maintain, milliseconds);
+      MsgWaitResult result = getMessage().waitForCondition(accessor, condition, maintain, milliseconds);
       CheckPoint passFail =
          new CheckPoint(getFullName(), expected, toString(condition.getLastCheckValue()), result.isPassed(),
             result.getXmitCount(), result.getElapsedTime());
@@ -725,7 +725,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
-         this.msg);
+         getMessage());
       CheckPoint cp =
          waitWithCheckPoint(accessor, checkGroup,
             "Not In " + expectedRangeString(toString(minValue), minInclusive, toString(maxValue), maxInclusive),
@@ -738,9 +738,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
-         this.msg);
+         getMessage());
       MsgWaitResult cp =
-         msg.waitForCondition(accessor,
+         getMessage().waitForCondition(accessor,
             new NotInRangeCondition<T>(this, minValue, minInclusive, maxValue, maxInclusive), false, milliseconds);
       accessor.getLogger().methodEnded(accessor);
       return cp.isPassed();
@@ -840,7 +840,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    public T checkMaintain(ITestAccessor accessor, CheckGroup checkGroup, T value, int milliseconds) throws InterruptedException {
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
-         new MethodFormatter().add(value).add(milliseconds), this.msg);
+         new MethodFormatter().add(value).add(milliseconds), getMessage());
       EqualsCondition<T> c = new EqualsCondition<T>(this, value);
       waitWithCheckPoint(accessor, checkGroup, toString(value), c, true, milliseconds);
       accessor.getLogger().methodEnded(accessor);
@@ -850,9 +850,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    public T checkMaintainNT(ITestAccessor accessor, T value, int milliseconds) throws InterruptedException {
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
-         new MethodFormatter().add(value).add(milliseconds), this.msg);
+         new MethodFormatter().add(value).add(milliseconds), getMessage());
       EqualsCondition<T> c = new EqualsCondition<T>(this, value);
-      msg.waitForCondition(accessor, c, true, milliseconds);
+      getMessage().waitForCondition(accessor, c, true, milliseconds);
       accessor.getLogger().methodEnded(accessor);
       return c.getLastCheckValue();
    }
@@ -860,9 +860,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    public T checkMaintainNotNT(ITestAccessor accessor, T value, int milliseconds) throws InterruptedException {
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
-         new MethodFormatter().add(value).add(milliseconds), this.msg);
+         new MethodFormatter().add(value).add(milliseconds), getMessage());
       EqualsCondition<T> c = new EqualsCondition<T>(this, true, value);
-      msg.waitForCondition(accessor, c, true, milliseconds);
+      getMessage().waitForCondition(accessor, c, true, milliseconds);
       accessor.getLogger().methodEnded(accessor);
       return c.getLastCheckValue();
    }
@@ -893,7 +893,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    public T checkMaintainNot(ITestAccessor accessor, CheckGroup checkGroup, T value, int milliseconds) throws InterruptedException {
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
-         new MethodFormatter().add(value).add(milliseconds), this.msg);
+         new MethodFormatter().add(value).add(milliseconds), getMessage());
 
       EqualsCondition<T> c = new EqualsCondition<T>(this, true, value);
       waitWithCheckPoint(accessor, checkGroup,
@@ -934,7 +934,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
-         this.msg);
+         getMessage());
 
       InRangeCondition<T> c = new InRangeCondition<T>(this, minValue, minInclusive, maxValue, maxInclusive);
       waitWithCheckPoint(accessor, checkGroup,
@@ -948,9 +948,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
-         this.msg);
+         getMessage());
       InRangeCondition<T> c = new InRangeCondition<T>(this, minValue, minInclusive, maxValue, maxInclusive);
-      msg.waitForCondition(accessor, c, true, milliseconds);
+      getMessage().waitForCondition(accessor, c, true, milliseconds);
       accessor.getLogger().methodEnded(accessor);
       return c.getLastCheckValue();
    }
@@ -978,7 +978,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
-         this.msg);
+         getMessage());
 
       NotInRangeCondition<T> c = new NotInRangeCondition<T>(this, minValue, minInclusive, maxValue, maxInclusive);
       waitWithCheckPoint(accessor, checkGroup,
@@ -992,10 +992,10 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       checkAccessor(accessor);
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(minValue).add(minInclusive).add(maxValue).add(maxInclusive).add(milliseconds),
-         this.msg);
+         getMessage());
 
       NotInRangeCondition<T> c = new NotInRangeCondition<T>(this, minValue, minInclusive, maxValue, maxInclusive);
-      msg.waitForCondition(accessor, c, true, milliseconds);
+      getMessage().waitForCondition(accessor, c, true, milliseconds);
       accessor.getLogger().methodEnded(accessor);
       return c.getLastCheckValue();
    }
@@ -1025,10 +1025,10 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       }
 
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
-         new MethodFormatter().add(pulsedValue).add(nonPulsedValue).add(milliseconds), this.msg);
+         new MethodFormatter().add(pulsedValue).add(nonPulsedValue).add(milliseconds), getMessage());
       final PulseCondition<T> c = new PulseCondition<T>(this, pulsedValue, nonPulsedValue);
 
-      MsgWaitResult result = msg.waitForCondition(accessor, c, false, milliseconds);
+      MsgWaitResult result = getMessage().waitForCondition(accessor, c, false, milliseconds);
       CheckPoint passFail =
          new CheckPoint(getFullName(), toString(pulsedValue) + FOR_2_PULSES,
             toString(c.getLastCheckValue()) + " FOR " + c.getPulses() + " PULSES", result.isPassed(),
@@ -1111,9 +1111,9 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
          throw new NullPointerException("The parameter accessor is null");
       }
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
-         new MethodFormatter().add(isInList).add(list).add(milliseconds), this.msg);
+         new MethodFormatter().add(isInList).add(list).add(milliseconds), getMessage());
 
-      MsgWaitResult result = msg.waitForCondition(accessor, c, false, milliseconds);
+      MsgWaitResult result = getMessage().waitForCondition(accessor, c, false, milliseconds);
       CheckGroup passFail = inList(accessor, isInList, c.getLastCheckValue(), list, result.getElapsedTime());
       assert result.isPassed() == passFail.isPass() : "result does not match checkgroup";
       if (checkGroup == null) {
@@ -1319,7 +1319,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
          new MethodFormatter().add(list).add(isInList).add(milliseconds), this.getMessage());
 
       ListCondition<T> c = new ListCondition<T>(this, isInList, list);
-      msg.waitForCondition(accessor, c, false, milliseconds);
+      getMessage().waitForCondition(accessor, c, false, milliseconds);
       accessor.getLogger().methodEnded(accessor);
       return c.getLastCheckValue();
    }
@@ -1330,7 +1330,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
 
       ListCondition<T> c = new ListCondition<T>(this, isInList, list);
 
-      MsgWaitResult result = msg.waitForCondition(accessor, c, true, milliseconds);
+      MsgWaitResult result = getMessage().waitForCondition(accessor, c, true, milliseconds);
 
       T value = c.getLastCheckValue();
 
@@ -1391,7 +1391,7 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     */
    public synchronized void toggle(ITestEnvironmentAccessor accessor, T value1, T value2, int milliseconds) throws InterruptedException {
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
-         new MethodFormatter().add(value1).add(value2).add(milliseconds), this.msg);
+         new MethodFormatter().add(value1).add(value2).add(milliseconds), getMessage());
 
       set(accessor, value1);
       accessor.setTimerFor(this, milliseconds);
