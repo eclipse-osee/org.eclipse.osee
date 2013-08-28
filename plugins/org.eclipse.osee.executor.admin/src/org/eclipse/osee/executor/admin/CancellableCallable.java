@@ -12,13 +12,14 @@ package org.eclipse.osee.executor.admin;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class CancellableCallable<T> implements Callable<T>, HasCancellation {
 
-   private volatile boolean cancelled = false;
+   private final AtomicBoolean cancelled = new AtomicBoolean(false);
 
    protected CancellableCallable() {
       // do nothing
@@ -26,23 +27,18 @@ public abstract class CancellableCallable<T> implements Callable<T>, HasCancella
 
    @Override
    public boolean isCancelled() {
-      cancelled = cancelled || Thread.currentThread().isInterrupted();
-      return cancelled;
+      cancelled.compareAndSet(false, Thread.currentThread().isInterrupted());
+      return cancelled.get();
    }
 
    @Override
    public void setCancel(boolean isCancelled) {
-      if (isCancelled) {
-         cancelled = isCancelled;
-         Thread.currentThread().interrupt();
-      }
+      cancelled.set(isCancelled);
    }
 
    @Override
    public void checkForCancelled() throws CancellationException {
       if (isCancelled()) {
-         // clear interrupted flag before throwing exception
-         Thread.interrupted();
          throw new CancellationException();
       }
    }

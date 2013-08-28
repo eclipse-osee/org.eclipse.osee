@@ -109,15 +109,15 @@ public class ExecutionCallbackTest {
       }
       future.cancel(true);
 
+      thrown.expect(CancellationException.class);
+      future.get();
+
       verify(callback, times(0)).onSuccess(Matchers.anyString());
       verify(callback).onCancelled();
       verify(callback, times(0)).onFailure(Matchers.<Throwable> any());
 
       assertEquals(true, callable.isCancelled());
       assertEquals(true, future.isCancelled());
-
-      thrown.expect(CancellationException.class);
-      future.get();
    }
 
    private class TestCancellableCallable extends CancellableCallable<String> {
@@ -137,7 +137,7 @@ public class ExecutionCallbackTest {
       public String call() throws Exception {
          beenCalled = true;
          while (!isCancelled()) {
-            checkForCancelled();
+            // do nothing
          }
          return results;
       }
