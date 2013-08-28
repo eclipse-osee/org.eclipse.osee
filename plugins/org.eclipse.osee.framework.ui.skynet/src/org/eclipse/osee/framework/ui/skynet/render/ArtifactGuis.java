@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -33,7 +33,7 @@ public final class ArtifactGuis {
    }
 
    private static final String OTHER_EDIT_SQL =
-      "select br.branch_id, att.gamma_id, att.attr_id from osee_attribute att, osee_txs txs, osee_branch br where att.art_id = ? and att.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and txs.transaction_id <> br.baseline_transaction_id and br.branch_id <> ? and br.parent_branch_id = ? and br.archived = ?";
+      "select br.branch_id, att.gamma_id, att.attr_id from osee_attribute att, osee_txs txs, osee_branch br where att.art_id = ? and att.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and txs.transaction_id <> br.baseline_transaction_id and br.branch_id <> ? and br.parent_branch_id = ? and br.branch_type = ?";
 
    private static final String EDIT_MESSAGE =
       "%d of the %d artifacts about to be edited have already been modified on the following branches:%s\n\nDo you still wish to proceed?";
@@ -87,7 +87,7 @@ public final class ArtifactGuis {
          try {
             Branch branch = artifact.getFullBranch();
             chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), branch.getId(),
-               branch.getParentBranch().getId(), BranchArchivedState.UNARCHIVED.getValue());
+               branch.getParentBranch().getId(), BranchType.WORKING.getValue());
 
             while (chStmt.next()) {
                int modifiedAttrId = chStmt.getInt("attr_id");
