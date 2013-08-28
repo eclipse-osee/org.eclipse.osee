@@ -73,10 +73,6 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
    }
 
    public WorldComposite(String id, final IWorldEditor worldEditor, IXViewerFactory xViewerFactory, Composite parent, int style) {
-      this(id, worldEditor, null, parent, style, true);
-   }
-
-   public WorldComposite(String id, final IWorldEditor worldEditor, IXViewerFactory xViewerFactory, Composite parent, int style, boolean createDragAndDrop) {
       super(parent, style);
       this.id = id;
       this.iWorldEditor = worldEditor;
@@ -100,10 +96,6 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
 
       worldXViewer.setContentProvider(new WorldContentProvider(worldXViewer));
       worldXViewer.setLabelProvider(new WorldLabelProvider(worldXViewer));
-
-      if (createDragAndDrop) {
-         new WorldViewDragAndDrop(this, WorldEditor.EDITOR_ID);
-      }
 
       setContent(mainComp);
       setExpandHorizontal(true);
