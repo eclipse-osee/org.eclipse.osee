@@ -11,16 +11,22 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,10 +34,18 @@ import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.NativeDocumentExtractor;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.WholeWordDocumentExtractor;
+import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.Wizards;
+import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
+import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationParameter;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
+import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory;
+import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory.ArtifactCreationStrategy;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -201,9 +215,60 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                wizard.setImportFile(importFile);
                wizard.setDestinationArtifact(parentArtifact);
 
-               Wizards.initAndOpen(wizard, viewPart, new ArtifactStructuredSelection(parentArtifact));
+               String fileName = importFile.getName();
+               if (isSameName(parentArtifact, fileName)) {
+                  String promptMsg =
+                     String.format(
+                        "Artifact [%s] has same base file name as [%s]. \n\nDo you want to update the exisiting file? \nIf 'NO' selected, you'll be taken to the Artifact Import Wizard",
+                        parentArtifact.getName(), FilenameUtils.getName(fileName));
+
+                  if (MessageDialog.openQuestion(viewPart.getViewSite().getShell(), "Confirm Import", promptMsg)) {
+
+                     IArtifactImportResolver resolver =
+                        ArtifactResolverFactory.createResolver(ArtifactCreationStrategy.CREATE_ON_DIFFERENT_ATTRIBUTES,
+                           parentArtifact.getArtifactType(), Arrays.asList(CoreAttributeTypes.Name), true, false);
+                     try {
+                        ArtifactImportOperationParameter parameter = new ArtifactImportOperationParameter();
+                        parameter.setSourceFile(importFile);
+                        parameter.setDestinationArtifact(parentArtifact.getParent());
+                        parameter.setExtractor(getArtifactExtractor(parentArtifact.getArtifactType()));
+                        parameter.setResolver(resolver);
+                        parameter.setStopOnError(true);
+
+                        IOperation operation = ArtifactImportOperationFactory.completeOperation(parameter);
+                        Operations.executeWorkAndCheckStatus(operation);
+                     } catch (OseeCoreException ex) {
+                        OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
+                     }
+
+                  } else {
+                     Wizards.initAndOpen(wizard, viewPart, new ArtifactStructuredSelection(parentArtifact));
+                  }
+               } else {
+                  Wizards.initAndOpen(wizard, viewPart, new ArtifactStructuredSelection(parentArtifact));
+               }
             }
          }
       }
+   }
+
+   private boolean isSameName(Artifact art, String fileName) {
+      boolean isSame = false;
+      if (!art.getArtifactType().equals(CoreArtifactTypes.Folder)) {
+         if (art.getName().equals(FilenameUtils.getBaseName(fileName))) {
+            isSame = true;
+         }
+      }
+      return isSame;
+   }
+
+   private IArtifactExtractor getArtifactExtractor(ArtifactType type) {
+      IArtifactExtractor extractor = null;
+      if (type.inheritsFrom(CoreArtifactTypes.GeneralDocument)) {
+         extractor = new NativeDocumentExtractor();
+      } else {
+         extractor = new WholeWordDocumentExtractor();
+      }
+      return extractor;
    }
 }
