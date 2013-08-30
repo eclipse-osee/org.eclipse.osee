@@ -72,4 +72,9 @@ public class CountingMap<K> {
    public void clear() {
       countingMap.clear();
    }
+
+   @Override
+   public String toString() {
+      return countingMap.toString();
+   }
 }
