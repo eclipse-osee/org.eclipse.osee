@@ -213,8 +213,8 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
                }
             }
          } finally {
-            ArtifactLoader.clearQuery(queryId);
             chStmt.close();
+            ArtifactLoader.clearQuery(queryId);
          }
          if (getMonitor() != null) {
             monitor.worked(12);
