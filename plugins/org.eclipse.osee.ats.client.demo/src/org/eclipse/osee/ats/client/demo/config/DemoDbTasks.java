@@ -53,7 +53,8 @@ public class DemoDbTasks {
                DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith)));
          }
          for (String title : getTaskTitles(firstTaskWorkflow)) {
-            TaskArtifact taskArt = codeArt.createNewTask(demoUsers, title, createdDate, createdBy);
+            TaskArtifact taskArt =
+               codeArt.createNewTask(demoUsers, title, createdDate, createdBy, codeArt.getCurrentStateName());
             taskArt.persist(transaction);
          }
          firstTaskWorkflow = false;

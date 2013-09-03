@@ -49,6 +49,8 @@ import org.eclipse.swt.widgets.TreeItem;
 public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
 
    public static RelatedToStateColumn instance = new RelatedToStateColumn();
+   public static String NONE = "<empty>";
+   public static String RELATED_TO_STATE_SELECTION = "State task must be completed or empty for completed state";
 
    public static RelatedToStateColumn getInstance() {
       return instance;
@@ -85,19 +87,24 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
          return false;
       }
       try {
+         List<String> validStates = new ArrayList<String>();
+         validStates.add(NONE);
+         validStates.addAll(RelatedToStateColumn.getValidInWorkStates(tasks.iterator().next().getParentTeamWorkflow()));
          final StateListDialog dialog =
-            new StateListDialog("Change Related-to-State", "Select new state for task to be worked in.",
-               getValidStates(tasks.iterator().next().getParentTeamWorkflow()));
+            new StateListDialog("Change Related-to-State", RELATED_TO_STATE_SELECTION, validStates);
          if (tasks.size() == 1) {
-            String state = tasks.iterator().next().getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "");
-            if (Strings.isValid(state)) {
-               dialog.setInitialSelections(new Object[] {state});
+            String selectedState = tasks.iterator().next().getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "");
+            if (Strings.isValid(selectedState)) {
+               dialog.setInitialSelections(new Object[] {selectedState});
             }
          }
          if (dialog.open() == 0) {
-            if (dialog.getSelectedState().isEmpty()) {
+            String selectedState = dialog.getSelectedState();
+            if (selectedState.isEmpty()) {
                AWorkbench.popup("No Related-to-State selected");
                return false;
+            } else if (selectedState.equals(NONE)) {
+               selectedState = "";
             }
             SkynetTransaction transaction = null;
             if (persist) {
@@ -106,8 +113,8 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
             }
             for (TaskArtifact task : tasks) {
                String state = task.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "");
-               if (!state.equals(dialog.getSelectedState())) {
-                  task.setSoleAttributeFromString(AtsAttributeTypes.RelatedToState, dialog.getSelectedState());
+               if (!state.equals(selectedState)) {
+                  task.setSoleAttributeFromString(AtsAttributeTypes.RelatedToState, selectedState);
                   if (persist) {
                      task.saveSMA(transaction);
                   }
@@ -124,9 +131,20 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
       }
    }
 
-   private static List<String> getValidStates(TeamWorkFlowArtifact teamArt) {
+   public static List<String> getValidStates(TeamWorkFlowArtifact teamArt) {
       List<String> names = new ArrayList<String>();
       names.addAll(AtsClientService.get().getWorkDefinitionAdmin().getStateNames(teamArt.getWorkDefinition()));
+      Collections.sort(names);
+      return names;
+   }
+
+   public static List<String> getValidInWorkStates(TeamWorkFlowArtifact teamArt) {
+      List<String> names = new ArrayList<String>();
+      for (String state : AtsClientService.get().getWorkDefinitionAdmin().getStateNames(teamArt.getWorkDefinition())) {
+         if (teamArt.getStateDefinitionByName(state).getStateType().isWorkingState()) {
+            names.add(state);
+         }
+      }
       Collections.sort(names);
       return names;
    }

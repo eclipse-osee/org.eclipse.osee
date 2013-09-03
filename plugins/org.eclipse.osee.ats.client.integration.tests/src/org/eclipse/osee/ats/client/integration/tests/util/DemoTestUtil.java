@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
@@ -126,7 +125,8 @@ public class DemoTestUtil {
       Collection<IAtsTeamDefinition> teamDefs = TeamDefinitions.getImpactedTeamDefs(actionableItems);
 
       ActionManager.createTeamWorkflow(actionArt, teamDefs.iterator().next(), actionableItems,
-         Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), transaction, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null);
+         Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), transaction, new Date(),
+         AtsClientService.get().getUserAdmin().getCurrentUser(), null);
 
       TeamWorkFlowArtifact teamArt = null;
       for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
@@ -140,13 +140,13 @@ public class DemoTestUtil {
    /**
     * Create tasks named title + <num>
     */
-   public static Collection<TaskArtifact> createSimpleTasks(TeamWorkFlowArtifact teamArt, String title, int numTasks, SkynetTransaction transaction) throws Exception {
+   public static Collection<TaskArtifact> createSimpleTasks(TeamWorkFlowArtifact teamArt, String title, int numTasks, String relatedToState, SkynetTransaction transaction) throws Exception {
       List<String> names = new ArrayList<String>();
       for (int x = 1; x < numTasks + 1; x++) {
          names.add(title + " " + x);
       }
-      return teamArt.createTasks(names, Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(),
-         transaction);
+      return teamArt.createTasks(names, Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()),
+         new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), relatedToState, transaction);
    }
 
    public static TeamWorkFlowArtifact getToolsTeamWorkflow() throws OseeCoreException {

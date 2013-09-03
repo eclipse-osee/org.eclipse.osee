@@ -151,7 +151,7 @@ public class ExcelAtsTaskArtifactExtractor {
       public void processRow(String[] row) throws OseeCoreException {
          rowNum++;
          monitor.setTaskName("Processing Row " + rowNum);
-         TaskArtifact taskArt = ((AbstractTaskableArtifact) sma).createNewTask("", createdDate, createdBy);
+         TaskArtifact taskArt = ((AbstractTaskableArtifact) sma).createNewTask("", createdDate, createdBy, null);
 
          monitor.subTask("Validating...");
          boolean valid = validateRow(row);
@@ -272,8 +272,8 @@ public class ExcelAtsTaskArtifactExtractor {
             } catch (Exception ex) {
                throw new OseeArgumentException("Invalid Hours Spent \"%s\" for row %d", str, rowNum);
             }
-            sma.getStateMgr().updateMetrics(sma.getStateDefinition(), hours, sma.getStateMgr().getPercentComplete(sma.getCurrentStateName()),
-               true);
+            sma.getStateMgr().updateMetrics(sma.getStateDefinition(), hours,
+               sma.getStateMgr().getPercentComplete(sma.getCurrentStateName()), true);
          }
       }
 

@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
@@ -34,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -50,6 +52,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    public final static String TASK_IMPORT_TITLES = "Task Import Titles";
    public final static String TEAM_WORKFLOW = "Team Workflow (drop here)";
    private AbstractTaskableArtifact taskableStateMachineArtifact;
+   private XCombo stateCombo;
 
    @Override
    public String getName() {
@@ -101,7 +104,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                      TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Simple List");
                   Date createdDate = new Date();
                   IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
-                  teamArt.createTasks(titles, assignees, createdDate, createdBy, transaction);
+                  teamArt.createTasks(titles, assignees, createdDate, createdBy, stateCombo.get(), transaction);
                   teamArt.persist(transaction);
                   transaction.execute();
                } catch (Exception ex) {
@@ -121,8 +124,33 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals(TEAM_WORKFLOW) && taskableStateMachineArtifact != null) {
-         XListDropViewer viewer = (XListDropViewer) xWidget;
+         final XListDropViewer viewer = (XListDropViewer) xWidget;
          viewer.setInput(Arrays.asList(taskableStateMachineArtifact));
+         xWidget.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               List<Artifact> artifacts = viewer.getArtifacts();
+               if (artifacts.isEmpty() || !(artifacts.iterator().next() instanceof AbstractTaskableArtifact)) {
+                  taskableStateMachineArtifact = null;
+               } else {
+                  taskableStateMachineArtifact = (AbstractTaskableArtifact) artifacts.iterator().next();
+               }
+               refreshStateCombo();
+            }
+         });
+      } else if (xWidget.getLabel().equals(RelatedToStateColumn.RELATED_TO_STATE_SELECTION)) {
+         stateCombo = (XCombo) xWidget;
+         refreshStateCombo();
+      }
+
+   }
+
+   private void refreshStateCombo() {
+      if (stateCombo != null) {
+         List<String> names =
+            RelatedToStateColumn.getValidInWorkStates((TeamWorkFlowArtifact) taskableStateMachineArtifact);
+         stateCombo.setDataStrings(names.toArray(new String[names.size()]));
       }
    }
 
@@ -131,6 +159,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
       StringBuffer buffer = new StringBuffer("<xWidgets>");
       buffer.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />");
       buffer.append("<XWidget xwidgetType=\"XText\" fill=\"Vertically\" height=\"80\" displayName=\"" + TASK_IMPORT_TITLES + "\" />");
+      buffer.append("<XWidget xwidgetType=\"XCombo()\" beginComposite=\"2\" labelAfter=\"true\" height=\"80\" displayName=\"" + RelatedToStateColumn.RELATED_TO_STATE_SELECTION + "\" />");
       buffer.append("<XWidget xwidgetType=\"XHyperlabelMemberSelection\" displayName=\"" + ASSIGNEES + "\" />");
       buffer.append("</xWidgets>");
       return buffer.toString();

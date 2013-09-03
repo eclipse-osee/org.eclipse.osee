@@ -83,7 +83,8 @@ public class SMAPromptChangeStatusTest {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       Collection<TaskArtifact> tasks =
-         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_NoRes", 4, transaction);
+         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_NoRes", 4,
+            teamArt.getCurrentStateName(), transaction);
       transaction.execute();
 
       assertTrue(tasks.size() == 4);
@@ -117,7 +118,7 @@ public class SMAPromptChangeStatusTest {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       Collection<TaskArtifact> tasks =
-         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_Cancel", 2, transaction);
+         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_Cancel", 2, null, transaction);
       transaction.execute();
 
       assertTrue(tasks.size() == 2);
@@ -144,7 +145,8 @@ public class SMAPromptChangeStatusTest {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       Collection<TaskArtifact> tasks =
-         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_RelState", 2, transaction);
+         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_RelState", 2,
+            teamArt.getCurrentStateName(), transaction);
       transaction.execute();
 
       assertTrue(tasks.size() == 2);

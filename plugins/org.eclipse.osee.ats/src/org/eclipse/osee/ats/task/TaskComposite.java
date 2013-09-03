@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction.IOpenNewAtsTaskEd
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected.IOpenNewAtsTaskEditorSelectedHandler;
 import org.eclipse.osee.ats.actions.TaskAddAction.ITaskAddActionHandler;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
@@ -56,9 +57,8 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryComboDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -215,19 +215,21 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
 
    public TaskArtifact handleNewTask() {
       TaskArtifact taskArt = null;
-      EntryDialog ed =
-         new EntryDialog(Displays.getActiveShell(), "Create New Task", null, "Enter Task Title/Description",
-            MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
-      if (ed.open() == 0) {
-         try {
+      try {
+         EntryComboDialog ed =
+            new EntryComboDialog("Create New Task", "Enter Task Title", RelatedToStateColumn.RELATED_TO_STATE_SELECTION);
+         List<String> validStates =
+            RelatedToStateColumn.getValidInWorkStates((TeamWorkFlowArtifact) iXTaskViewer.getAwa());
+         ed.setOptions(validStates);
+         if (ed.open() == 0) {
             taskArt =
                ((AbstractTaskableArtifact) iXTaskViewer.getAwa()).createNewTask(ed.getEntry(), new Date(),
-                  AtsClientService.get().getUserAdmin().getCurrentUser());
+                  AtsClientService.get().getUserAdmin().getCurrentUser(), ed.getSelection());
             taskArt.persist("Create New Task");
             AtsTaskCache.decache((AbstractTaskableArtifact) iXTaskViewer.getAwa());
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return taskArt;
    }

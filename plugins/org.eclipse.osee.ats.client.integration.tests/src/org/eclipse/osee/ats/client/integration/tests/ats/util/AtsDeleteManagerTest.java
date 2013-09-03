@@ -215,8 +215,8 @@ public class AtsDeleteManagerTest {
          }
       }
 
-      teamArt.createTasks(Arrays.asList(testName.name() + " Task 1", testName.name() + " Task 2"), null, createdDate,
-         createdBy, transaction);
+      teamArt.createTasks(Arrays.asList(testName.name() + " Task 1", testName.name() + " Task 2"),
+         (List<IAtsUser>) null, createdDate, createdBy, transaction);
 
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReview(teamArt, ReviewBlockType.None, testName.name(),
