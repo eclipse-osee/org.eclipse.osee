@@ -85,4 +85,14 @@ public class TagEncoder {
          collector.addTag(text, tagBits);
       }
    }
+
+   public static final void main(String[] args) {
+      new TagEncoder().encode("1", new TagCollector() {
+
+         @Override
+         public void addTag(String word, Long codedTag) {
+            System.out.printf("%s %s\n", word, codedTag);
+         }
+      });
+   }
 }

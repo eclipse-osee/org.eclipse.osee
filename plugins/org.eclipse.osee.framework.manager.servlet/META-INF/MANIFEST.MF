@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Servlet Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.manager.servlet;singleton:=true
-Bundle-Version: 0.13.0.qualifier
+Bundle-Version: 0.14.0.qualifier
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.event,
  org.eclipse.osee.executor.admin,
