@@ -64,9 +64,9 @@ import org.junit.runners.Parameterized.Parameters;
  * <pre>
  *                   New   |  Deleted  | Modified  |  Moved |  Introduced | RelationOrderAttr
  *                 -------------------------------------------------------------------------
- *     Artifact   |  1           2                                3
- *     Attribute  |  4           5           6
- *     Relation   |  7           8                     9*                        0**
+ *     Artifact   |  0           1            3                  2
+ *     Attribute  |  4           5            6
+ *     Relation   |  7           8                     9*                        **
  *                 -------------------------------------------------------------------------
  *        
  *                 
@@ -163,10 +163,11 @@ public final class ReplaceWithBaselineTest {
       data.add(new Object[] {"Case 0", Arrays.asList(new TestData(Item.ARTIFACT, ChangeItem.NEW, false)), 0});
       data.add(new Object[] {"Case 1", Arrays.asList(new TestData(Item.ARTIFACT, ChangeItem.DELETED, true)), 0});
       data.add(new Object[] {"Case 2", Arrays.asList(new TestData(Item.ARTIFACT, ChangeItem.INTRODUCED, false)), 0});
+      data.add(new Object[] {"Case 3", Arrays.asList(new TestData(Item.ARTIFACT, ChangeItem.MODIFIED, true)), 0});
 
-      data.add(new Object[] {"Case 3", Arrays.asList(new TestData(Item.ATTRBUTE, ChangeItem.NEW, true)), 0});
-      data.add(new Object[] {"Case 4", Arrays.asList(new TestData(Item.ATTRBUTE, ChangeItem.DELETED, true)), 0});
-      data.add(new Object[] {"Case 5", Arrays.asList(new TestData(Item.ATTRBUTE, ChangeItem.MODIFIED, true)), 0});
+      data.add(new Object[] {"Case 4", Arrays.asList(new TestData(Item.ATTRBUTE, ChangeItem.NEW, true)), 0});
+      data.add(new Object[] {"Case 5", Arrays.asList(new TestData(Item.ATTRBUTE, ChangeItem.DELETED, true)), 0});
+      data.add(new Object[] {"Case 6", Arrays.asList(new TestData(Item.ATTRBUTE, ChangeItem.MODIFIED, true)), 0});
 
       List<TestData> combinedCases = new ArrayList<TestData>(data.size());
 
@@ -175,9 +176,9 @@ public final class ReplaceWithBaselineTest {
          List<TestData> caseTestDatas = (List<TestData>) objects[1];
          combinedCases.addAll(caseTestDatas);
       }
-      data.add(new Object[] {"Case 6", combinedCases, 0});
-      Collections.reverse(combinedCases);
       data.add(new Object[] {"Case 7", combinedCases, 0});
+      Collections.reverse(combinedCases);
+      data.add(new Object[] {"Case 8", combinedCases, 0});
 
       return data;
    }
@@ -380,6 +381,11 @@ public final class ReplaceWithBaselineTest {
                      break;
                   case INTRODUCED:
                      artifact = ArtifactQuery.getArtifactFromId(testData.getArtifactId(), workingBranch);
+                     artifact.persist(testName);
+                     break;
+                  case MODIFIED:
+                     artifact = ArtifactQuery.getArtifactFromId(testData.getArtifactId(), workingBranch);
+                     artifact.addAttribute(CoreAttributeTypes.Active, true);
                      artifact.persist(testName);
                      break;
                }

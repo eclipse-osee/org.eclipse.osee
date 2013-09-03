@@ -103,6 +103,9 @@ public class IntroduceArtifactOperation {
    private void introduceAttributes(Artifact sourceArtifact, Artifact destinationArtifact) throws OseeDataStoreException, OseeCoreException {
       List<Attribute<?>> sourceAttributes = sourceArtifact.getAttributes(true);
 
+      removeNewAttributesFromDestination(sourceArtifact, destinationArtifact);
+
+      // introduce the existing attributes
       for (Attribute<?> sourceAttribute : sourceAttributes) {
          // must be valid for the destination branch
          if (destinationArtifact.isAttributeTypeValid(sourceAttribute.getAttributeType())) {
@@ -163,6 +166,19 @@ public class IntroduceArtifactOperation {
             }
          } else {
             destinationRelation.introduce(sourceRelation.getGammaId(), sourceRelation.getModificationType());
+         }
+      }
+   }
+
+   private void removeNewAttributesFromDestination(Artifact sourceArtifact, Artifact destinationArtifact) throws OseeCoreException {
+      List<Attribute<?>> destAttributes = destinationArtifact.getAttributes(true);
+
+      // since introduce is 'replacing' the destination artifact with the source artifact, 
+      // any new attributes from the destination artifact should be removed/deleted.
+      for (Attribute<?> destAttribute : destAttributes) {
+         Attribute<?> attribute = sourceArtifact.getAttributeById(destAttribute.getId(), true);
+         if (attribute == null) {
+            destAttribute.delete();
          }
       }
    }
