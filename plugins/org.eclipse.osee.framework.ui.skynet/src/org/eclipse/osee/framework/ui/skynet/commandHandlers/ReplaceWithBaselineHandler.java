@@ -14,10 +14,12 @@ import java.util.Collection;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -25,7 +27,9 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -37,6 +41,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.operation.ReplaceAttributeWithB
 import org.eclipse.osee.framework.ui.skynet.change.view.ChangeReportEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.replace.ReplaceWithBaselineVersionDialog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -142,17 +147,42 @@ public class ReplaceWithBaselineHandler extends AbstractHandler {
 
          ReplaceWithBaselineVersionDialog dialog = new ReplaceWithBaselineVersionDialog(artEnabled, attrEnabled);
          if (dialog.open() == Window.OK) {
+            OperationBuilder builder = Operations.createBuilder("Replace with Baseline Version");
             IOperation op =
                dialog.isAttributeSelected() ? new ReplaceAttributeWithBaselineOperation(
                   Handlers.getArtifactChangesFromStructuredSelection(structuredSelection)) : new ReplaceArtifactWithBaselineOperation(
                   changes, Handlers.getArtifactsFromStructuredSelection(structuredSelection));
+            builder.addOp(op);
 
-            Operations.executeAsJob(op, true, Job.LONG, adapter);
+            IOperation finishDialog = new ReplaceBaselineFinishDialog();
+            builder.addOp(finishDialog);
+
+            Operations.executeAsJob(builder.build(), true, Job.LONG, adapter);
          }
 
       } catch (Exception ex) {
          throw new ExecutionException(ex.getMessage());
       }
       return null;
+   }
+
+   private static final class ReplaceBaselineFinishDialog extends AbstractOperation {
+
+      public ReplaceBaselineFinishDialog() {
+         super("Replace with Baseline Dialog", Activator.PLUGIN_ID);
+      }
+
+      @Override
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+         Displays.ensureInDisplayThread(new Runnable() {
+
+            @Override
+            public void run() {
+               MessageDialog.openInformation(Displays.getActiveShell(), "Replace with Baseline Version...",
+                  "The operation successfully completed, please refresh any associated change reports.");
+            }
+         });
+      }
+
    }
 }
