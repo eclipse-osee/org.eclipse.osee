@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -21,11 +22,12 @@ import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.ats.util.widgets.dialog.SingleItemSelecitonDialog;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -37,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
@@ -60,36 +61,48 @@ public final class AtsBranchManager {
 
    public static void showMergeManager(TeamWorkFlowArtifact teamArt) {
       try {
-         if (!AtsBranchManagerCore.isWorkingBranchInWork(teamArt) && !AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
-            AWorkbench.popup("ERROR", "No Current Working or Committed Branch");
-            return;
-         }
-         if (AtsBranchManagerCore.isWorkingBranchInWork(teamArt)) {
-            Branch branch = AtsBranchManagerCore.getConfiguredBranchForWorkflow(teamArt);
-            if (branch == null) {
-               AWorkbench.popup("ERROR", "Can't access parent branch");
-               return;
-            }
-            Branch workBranch = AtsBranchManagerCore.getWorkingBranch(teamArt);
-            if (workBranch.getBranchState() == BranchState.REBASELINE_IN_PROGRESS) {
-               Collection<Integer> destBranches =
-                  ConflictManagerInternal.getDestinationBranchesMerged(workBranch.getId());
-               for (Integer destBranchId : destBranches) {
-                  Branch dest = BranchManager.getBranch(destBranchId);
-                  if (!dest.equals(branch)) {
-                     branch = dest;
-                     break;
-                  }
-               }
-            }
-            MergeView.openView(workBranch, branch, workBranch.getBaseTransaction());
+         Branch workingBranch = teamArt.getWorkingBranch();
+         List<Branch> destinationBranches = new ArrayList<Branch>();
 
-         } else if (AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
-            TransactionRecord transactionId = getTransactionIdOrPopupChoose(teamArt, "Show Merge Manager", true);
-            if (transactionId == null) {
-               return;
+         if (workingBranch != null) {
+            List<MergeBranch> mergeBranches = BranchManager.getMergeBranches(workingBranch);
+            Branch selectedBranch = null;
+
+            if (!mergeBranches.isEmpty()) {
+               if (!workingBranch.getBranchState().isRebaselineInProgress()) {
+                  for (MergeBranch mergeBranch : mergeBranches) {
+                     destinationBranches.add(mergeBranch.getDestinationBranch());
+                  }
+                  if (mergeBranches.size() > 1) {
+                     SingleItemSelecitonDialog listDialog =
+                        new SingleItemSelecitonDialog("Select Destination Branch",
+                           "Select The Destination Branch for which you want to open the Merge Manager");
+
+                     listDialog.setInput(destinationBranches);
+                     int result = listDialog.open();
+                     if (result == 0) {
+                        selectedBranch = (Branch) listDialog.getResult()[0];
+                     }
+                  } else {
+                     MergeBranch updateFromParentMergeBranch = BranchManager.getFirstMergeBranch(workingBranch);
+                     selectedBranch = updateFromParentMergeBranch.getDestinationBranch();
+                  }
+               } else {
+                  // the only merge branch is the Update from parent merge branch
+                  MergeBranch updateFromParentMergeBranch = BranchManager.getFirstMergeBranch(workingBranch);
+                  selectedBranch = updateFromParentMergeBranch.getDestinationBranch();
+               }
+
+               if (selectedBranch != null) {
+                  MergeView.openView(workingBranch, selectedBranch, workingBranch.getBaseTransaction());
+               }
+            } else {
+               MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Error",
+                  "There are no Merge Branches to view");
             }
-            MergeView.openView(transactionId);
+         } else {
+            MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Error",
+               "This Artifact does not have a working branch");
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -104,7 +117,6 @@ public final class AtsBranchManager {
          for (TransactionRecord transactionId : AtsBranchManagerCore.getTransactionIds(teamArt, true)) {
             if (transactionId.getBranchId() == destinationBranch.getId()) {
                MergeView.openView(transactionId);
-
             }
          }
       }

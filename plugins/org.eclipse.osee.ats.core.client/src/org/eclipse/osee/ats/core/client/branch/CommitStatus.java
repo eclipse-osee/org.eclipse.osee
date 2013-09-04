@@ -21,7 +21,8 @@ public enum CommitStatus {
    No_Commit_Needed("No Commit Needed"),
    Merge_In_Progress("Merge in Progress"),
    Committed("Committed"),
-   Committed_With_Merge("Committed With Merge");
+   Committed_With_Merge("Committed With Merge"),
+   Rebaseline_In_Progress("Rebaseline In Progress");
 
    private final String displayName;
 

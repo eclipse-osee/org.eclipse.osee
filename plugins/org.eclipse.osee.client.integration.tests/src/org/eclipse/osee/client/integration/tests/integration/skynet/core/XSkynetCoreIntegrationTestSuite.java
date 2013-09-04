@@ -43,6 +43,7 @@ import org.junit.runners.Suite;
    DuplicateHridTest.class,
    FrameworkEventToRemoteEventListenerTest.class,
    LoadDeletedRelationTest.class,
+   MergeManagerTest.class,
    NativeArtifactTest.class,
    OseeEnumerationValidationTest.class,
    PurgeTransactionTest.class,

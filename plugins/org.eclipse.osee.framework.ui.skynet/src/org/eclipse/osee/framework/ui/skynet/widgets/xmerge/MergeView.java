@@ -22,6 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -57,6 +58,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Donald G. Dunne
@@ -71,6 +73,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
    private TransactionRecord transactionId;
    private TransactionRecord commitTrans;
    private boolean showConflicts;
+   private MergeBranch mergeBranch;
 
    public static void openView(final Branch sourceBranch, final Branch destBranch, final TransactionRecord tranId) {
       if (Conditions.allNull(sourceBranch, destBranch, tranId)) {
@@ -160,6 +163,10 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       this.transactionId = transactionId;
       this.commitTrans = commitTrans;
       try {
+         mergeBranch = BranchManager.getMergeBranch(sourceBranch, destBranch);
+         if (mergeBranch == null) {
+            close();
+         }
          mergeXWidget.setInputData(sourceBranch, destBranch, transactionId, this, commitTrans, showConflicts);
          if (sourceBranch != null) {
             setPartName("Merge Manager: " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName());
@@ -271,11 +278,12 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
          destBranch.getGuid());
    }
 
+   protected MergeBranch getMergeBranchForView() {
+      return mergeBranch;
+   }
+
    @Override
    public void handleBranchEvent(final Sender sender, final BranchEvent branchEvent) {
-      if (!isApplicableSourceOrDestEvent(branchEvent.getBranchGuid())) {
-         return;
-      }
 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
@@ -285,12 +293,18 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                case Purging:
                case Committing:
                case Deleted:
+                  break;
                case Purged:
+                  if (mergeBranch.getGuid().equals(branchEvent.getBranchGuid())) {
+                     close();
+                  }
                case Committed:
-                  getSite().getPage().hideView(MergeView.this);
+                  if (isApplicableSourceOrDestEvent(branchEvent.getBranchGuid())) {
+                     getSite().getPage().hideView(MergeView.this);
+                  }
                   break;
                default:
-                  if (mergeXWidget != null && Widgets.isAccessible(mergeXWidget.getXViewer().getTree())) {
+                  if (isApplicableSourceOrDestEvent(branchEvent.getBranchGuid()) && mergeXWidget != null && Widgets.isAccessible(mergeXWidget.getXViewer().getTree())) {
                      mergeXWidget.refresh();
                   }
                   break;
@@ -302,6 +316,12 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
       return null;
+   }
+
+   private void close() {
+      dispose();
+      IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+      page.hideView(this);
    }
 
    private boolean isDisposed() {

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -44,6 +45,7 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
    private TeamWorkFlowArtifact teamArt;
    private boolean workingBranchCreationInProgress = false;
    private boolean workingBranchCommitInProgress = false;
+   private boolean workingBranchCommitWithMergeInProgress = false;
    private boolean workingBranchInWork = false;
    private boolean committedBranchExists = false;
    protected boolean disableAll = false;
@@ -138,6 +140,12 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
       workingBranchCommitInProgress =
          teamArt.isWorkingBranchCommitInProgress() || workingBranch != null && workingBranch.getBranchState() == BranchState.COMMIT_IN_PROGRESS;
       workingBranchInWork = AtsBranchManagerCore.isWorkingBranchInWork(teamArt);
+      if (workingBranch == null) {
+         workingBranchCommitInProgress = false;
+      } else {
+         workingBranchCommitWithMergeInProgress =
+            BranchManager.hasMergeBranches(workingBranch) && !workingBranch.getBranchState().isRebaselineInProgress();
+      }
       committedBranchExists = AtsBranchManagerCore.isCommittedBranchExists(teamArt);
       disableAll = workingBranchCommitInProgress;
    }
@@ -167,6 +175,10 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
 
    public boolean isWorkingBranchCreationInProgress() {
       return workingBranchCreationInProgress;
+   }
+
+   public boolean isWorkingBranchCommitWithMergeInProgress() {
+      return workingBranchCommitWithMergeInProgress;
    }
 
    public boolean isWorkingBranchCommitInProgress() {

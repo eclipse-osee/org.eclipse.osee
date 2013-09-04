@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,30 +8,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit;
+package org.eclipse.osee.ats.util.widgets;
 
-import java.util.List;
-import org.eclipse.core.commands.ExecutionEvent;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
-import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.util.RebaselineInProgressHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -39,68 +40,55 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.UIJob;
 
 /**
- * @author Roberto E. Escobar
+ * @author Angel Avila
  */
-public class UpdateBranchHandler extends CommandHandler {
+public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
 
-   protected boolean isValid(Branch branch) throws OseeCoreException {
-      boolean result = false;
-      if (branch.hasParentBranch()) {
-         result = !branch.getParentBranch().equals(CoreBranches.SYSTEM_ROOT);
-         result &= branch.isEditable() && branch.getBranchType().isOfType(BranchType.WORKING, BranchType.BASELINE);
-         result &= branch.getChildBranches().isEmpty();
-      }
-      return result;
-   }
-
-   private Branch getSelectedBranch(IStructuredSelection selection) {
-      Branch branch = null;
-
-      List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
-      if (branches.size() == 1) {
-         branch = branches.iterator().next();
-      }
-      return branch;
-   }
+   public final static String WIDGET_NAME = "XWorkingBranchUpdate";
 
    @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
-      boolean enabled = false;
-      Branch branch = getSelectedBranch(structuredSelection);
-      if (branch != null) {
-         enabled = isValid(branch);
-      }
-      return enabled;
-   }
-
-   @Override
-   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
-      Branch branchToUpdate = getSelectedBranch(selection);
-
-      if (branchToUpdate != null) {
-         if (BranchManager.isUpdatable(branchToUpdate)) {
-            if (branchToUpdate.getBranchState().isRebaselineInProgress()) {
-               RebaselineInProgressHandler.handleRebaselineInProgress(branchToUpdate);
-            } else {
-               boolean isUserSure =
-                  MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                     "Update Branch",
-                     String.format("Are you sure you want to update [%s] branch", branchToUpdate.getName()));
-               if (isUserSure) {
-                  BranchManager.updateBranch(branchToUpdate, new UserConflictResolver());
+   protected void initButton(final Button button) {
+      button.setToolTipText("Update Working Branch From Parent");
+      button.setImage(ImageManager.getImage(FrameworkImage.BRANCH_SYNCH));
+      button.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event e) {
+            try {
+               Branch branchToUpdate = getWorkingBranch();
+               if (branchToUpdate != null) {
+                  if (BranchManager.isUpdatable(branchToUpdate)) {
+                     if (branchToUpdate.getBranchState().isRebaselineInProgress()) {
+                        RebaselineInProgressHandler.handleRebaselineInProgress(branchToUpdate);
+                     } else {
+                        boolean isUserSure =
+                           MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                              "Update Branch",
+                              String.format("Are you sure you want to update [%s] branch", branchToUpdate.getName()));
+                        if (isUserSure) {
+                           BranchManager.updateBranch(branchToUpdate, new UserConflictResolver());
+                        }
+                     }
+                  } else {
+                     MessageDialog.openWarning(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        "Can't Update Branch",
+                        String.format(
+                           "Couldn't update [%s] because it currently has merge branches from commits.  To perform an update please delete all the merge branches for this branch.",
+                           branchToUpdate.getName()));
+                  }
                }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
-         } else {
-            MessageDialog.openWarning(
-               PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-               "Can't Update Branch",
-               String.format(
-                  "Couldn't update [%s] because it currently has merge branches from commits.  To perform an update please delete all the merge branches for this branch",
-                  branchToUpdate.getName()));
          }
-      }
-      return null;
+      });
    }
+
+   @Override
+   protected void refreshEnablement(Button button) {
+      button.setEnabled(!disableAll && isWorkingBranchInWork() && !isCommittedBranchExists() && !isWorkingBranchCommitWithMergeInProgress());
+   }
+
    private static final class UserConflictResolver extends ConflictResolverOperation {
 
       public UserConflictResolver() {

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.cache;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,6 +49,35 @@ public class BranchCache extends AbstractOseeCache<String, Branch> {
             if (sourceBranch.equals(mergeBranch.getSourceBranch()) && destinationBranch.equals(mergeBranch.getDestinationBranch())) {
                toReturn = mergeBranch;
                break;
+            }
+         }
+      }
+      return toReturn;
+   }
+
+   public MergeBranch findFirstMergeBranch(Branch sourceBranch) throws OseeCoreException {
+      Conditions.checkNotNull(sourceBranch, "source branch");
+      MergeBranch toReturn = null;
+      for (Branch branch : getAll()) {
+         if (branch instanceof MergeBranch) {
+            MergeBranch mergeBranch = (MergeBranch) branch;
+            if (sourceBranch.equals(mergeBranch.getSourceBranch())) {
+               toReturn = mergeBranch;
+               break;
+            }
+         }
+      }
+      return toReturn;
+   }
+
+   public List<MergeBranch> findAllMergeBranches(Branch sourceBranch) throws OseeCoreException {
+      Conditions.checkNotNull(sourceBranch, "source branch");
+      List<MergeBranch> toReturn = new ArrayList<MergeBranch>();
+      for (Branch branch : getAll()) {
+         if (branch instanceof MergeBranch) {
+            MergeBranch mergeBranch = (MergeBranch) branch;
+            if (sourceBranch.equals(mergeBranch.getSourceBranch())) {
+               toReturn.add(mergeBranch);
             }
          }
       }

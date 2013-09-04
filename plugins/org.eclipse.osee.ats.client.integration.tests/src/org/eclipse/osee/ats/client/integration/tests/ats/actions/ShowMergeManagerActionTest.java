@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 
-import org.junit.Assert;
 import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -20,11 +19,14 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
+import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
  */
+@Ignore
 public class ShowMergeManagerActionTest extends AbstractAtsActionRunTest {
 
    private static Branch createdBranch = null;

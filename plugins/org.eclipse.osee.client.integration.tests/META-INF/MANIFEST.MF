@@ -35,6 +35,8 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.messaging.event.res,
  org.eclipse.osee.framework.messaging.event.res.msgs,
  org.eclipse.osee.framework.plugin.core.util,
+ org.eclipse.osee.framework.skynet.core.conflict,
+ org.eclipse.osee.framework.ui.plugin.util,
  org.osgi.framework
 Require-Bundle: org.junit,
  org.mockito;bundle-version="1.9.0",

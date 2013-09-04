@@ -340,7 +340,8 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
                TransactionManager.createTransaction(reviewArt.getArtifact().getBranch(), "Add Review Roles");
             for (IAtsUser user : dialog.getUsers()) {
                UserRole userRole = new UserRole(dialog.getRole(), user);
-               roleMgr.addOrUpdateUserRole(userRole, reviewArt);
+               roleMgr.addOrUpdateUserRole(userRole);
+               reviewArt.getStateMgr().addAssignee(user);
                reviewArt.persist(transaction);
             }
             roleMgr.saveToArtifact(transaction);

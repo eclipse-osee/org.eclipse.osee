@@ -21,12 +21,14 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
-
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
@@ -34,9 +36,13 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
@@ -125,7 +131,8 @@ public class AtsOseeCmService implements IOseeCmService {
       try {
          Artifact artifact = ArtifactQuery.getArtifactFromId(parentPcrGuid, AtsUtil.getAtsBranch());
          if (artifact instanceof AbstractTaskableArtifact) {
-            return ((AbstractTaskableArtifact) artifact).createNewTask(name, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
+            return ((AbstractTaskableArtifact) artifact).createNewTask(name, new Date(),
+               AtsClientService.get().getUserAdmin().getCurrentUser());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -155,6 +162,20 @@ public class AtsOseeCmService implements IOseeCmService {
    }
 
    @Override
+   public boolean isBranchesAllCommittedExcept(Artifact art, Branch branch) {
+      boolean toReturn = false;
+      if (art instanceof TeamWorkFlowArtifact) {
+         try {
+            toReturn = AtsBranchManagerCore.isBranchesAllCommittedExcept((TeamWorkFlowArtifact) art, branch);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
+            toReturn = false;
+         }
+      }
+      return toReturn;
+   }
+
+   @Override
    public KeyedImage getImage(ImageType imageType) {
       if (imageType == ImageType.Pcr) {
          return AtsImage.TEAM_WORKFLOW;
@@ -179,4 +200,35 @@ public class AtsOseeCmService implements IOseeCmService {
       return AtsUtil.getAtsBranchToken();
    }
 
+   @Override
+   public boolean isWorkFlowBranch(Branch branch) {
+      boolean toReturn = false;
+      Artifact art;
+      try {
+         art = BranchManager.getAssociatedArtifact(branch);
+         if (art instanceof TeamWorkFlowArtifact) {
+            toReturn = true;
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
+         toReturn = false;
+      }
+
+      return toReturn;
+   }
+
+   @Override
+   public void commitBranch(Artifact art, Branch branch, boolean isArchiveSource) {
+      if (art instanceof TeamWorkFlowArtifact) {
+         IOperation operation;
+         try {
+            operation =
+               AtsBranchManager.commitWorkingBranch((TeamWorkFlowArtifact) art, false, false, branch, isArchiveSource);
+            Operations.executeAsJob(operation, true);
+
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
+         }
+      }
+   }
 }

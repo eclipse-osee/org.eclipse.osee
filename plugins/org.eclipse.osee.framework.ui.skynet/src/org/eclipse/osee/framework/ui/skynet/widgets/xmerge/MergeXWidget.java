@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
+import org.apache.commons.lang.mutable.MutableBoolean;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -31,14 +32,18 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.operation.FinishUpdateBranchOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
+import org.eclipse.osee.framework.skynet.core.httpRequests.CommitBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -54,6 +59,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -482,12 +488,16 @@ public class MergeXWidget extends GenericXWidget {
    }
 
    private void checkForCompleteCommit() {
-      boolean isVisible = !hasMergeBranchBeenCommitted() && areAllConflictsResolved();
-      if (sourceBranch != null) {
+      boolean isVisible = !hasMergeBranchBeenCommitted() && areAllConflictsResolved() && (getConflicts().length > 0);
+      if (null != sourceBranch) {
          try {
-            isVisible &=
+            boolean isValidUpdate =
                sourceBranch.getBranchState().isRebaselineInProgress() && sourceBranch.getParentBranch().equals(
                   destBranch.getParentBranch());
+            boolean isValidCommit =
+               BranchManager.hasMergeBranches(sourceBranch) && !sourceBranch.getBranchState().isRebaselineInProgress();
+
+            isVisible &= (isValidUpdate || isValidCommit);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             isVisible = false;
@@ -509,6 +519,10 @@ public class MergeXWidget extends GenericXWidget {
       manager.update(true);
    }
 
+   /**
+    * Completes the update branch operation by committing latest parent based branch with branch with changes. Then
+    * swaps branches so we are left with the most current branch containing latest changes.
+    */
    private final class CompleteCommitAction extends Action {
       public CompleteCommitAction() {
          super();
@@ -519,14 +533,53 @@ public class MergeXWidget extends GenericXWidget {
 
       @Override
       public void run() {
-         if (sourceBranch.getBranchState().isRebaselineInProgress()) {
+         if (mergeView.getMergeBranchForView() != null) {
             try {
-               ConflictManagerExternal conflictManager = new ConflictManagerExternal(destBranch, sourceBranch);
-               BranchManager.completeUpdateBranch(conflictManager, true, false);
+               if (sourceBranch.getBranchState().isRebaselineInProgress()) {
+                  ConflictManagerExternal conflictManager = new ConflictManagerExternal(destBranch, sourceBranch);
+                  IOperation operation = new FinishUpdateBranchOperation(conflictManager, true, false);
+                  Operations.executeAsJob(operation, true);
+               } else if ((BranchManager.hasMergeBranches(sourceBranch) && !sourceBranch.getBranchState().isRebaselineInProgress())) {
+                  Artifact art = BranchManager.getAssociatedArtifact(sourceBranch);
+                  IOseeCmService cm = ServiceUtil.getOseeCmService();
+
+                  if (cm.isWorkFlowBranch(sourceBranch)) {
+                     boolean isArchiveSourceBranch = cm.isBranchesAllCommittedExcept(art, destBranch);
+                     cm.commitBranch(art, destBranch, isArchiveSourceBranch);
+                  } else {
+                     handleNonAtsCommit(sourceBranch, destBranch);
+                  }
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
+
+      }
+
+      private void handleNonAtsCommit(final Branch sourceBranch, final Branch destBranch) throws OseeCoreException {
+         final MutableBoolean archiveSourceBranch = new MutableBoolean();
+         if (sourceBranch.getParentBranch().equals(destBranch)) {
+            archiveSourceBranch.setValue(true);
+         } else {
+            Displays.pendInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  CheckBoxDialog dialog =
+                     new CheckBoxDialog("Commit Into", String.format(
+                        "Commit from\n\nSource Branch: [%s]\n\ninto\n\nDestination Branch: [%s]", sourceBranch,
+                        destBranch), "Archive Source Branch");
+                  if (dialog.open() == 0) {
+                     archiveSourceBranch.setValue(dialog.isChecked());
+                  }
+               }
+            });
+         }
+
+         IOperation operation =
+            new CommitBranchHttpRequestOperation(UserManager.getUser(), sourceBranch, destBranch,
+               archiveSourceBranch.booleanValue(), false);
+         Operations.executeWorkAndCheckStatus(operation, null);
       }
    }
 

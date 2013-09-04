@@ -51,7 +51,6 @@ import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.operation.FinishUpdateBranchOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.UpdateBranchOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
@@ -184,6 +183,36 @@ public class BranchManager {
       return mergeBranch;
    }
 
+   /**
+    * returns the first merge branch for this source destination pair from the cache or null if not found
+    */
+   public static MergeBranch getFirstMergeBranch(Branch sourceBranch) throws OseeCoreException {
+      MergeBranch mergeBranch = getCache().findFirstMergeBranch(sourceBranch);
+      return mergeBranch;
+   }
+
+   /**
+    * returns a list tof all the merge branches for this source branch from the cache or null if not found
+    */
+   public static List<MergeBranch> getMergeBranches(Branch sourceBranch) throws OseeCoreException {
+      List<MergeBranch> mergeBranches = getCache().findAllMergeBranches(sourceBranch);
+      return mergeBranches;
+   }
+
+   /**
+    * returns whether a source branch has existing merge branches
+    */
+   public static boolean hasMergeBranches(Branch sourceBranch) throws OseeCoreException {
+      if (getMergeBranches(sourceBranch).isEmpty()) {
+         return false;
+      } else {
+         return true;
+      }
+   }
+
+   /**
+    * returns whether a merge branch exists for a source and dest branch pair
+    */
    public static boolean doesMergeBranchExist(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       return getMergeBranch(sourceBranch, destBranch) != null;
    }
@@ -209,20 +238,20 @@ public class BranchManager {
    }
 
    /**
+    * returns a list tof all the merge branches for this source branch from the cache or null if not found
+    */
+   public static boolean isUpdatable(Branch branchToUpdate) throws OseeCoreException {
+      if (!hasMergeBranches(branchToUpdate) || branchToUpdate.getBranchState().isRebaselineInProgress()) {
+         return true;
+      }
+      return false;
+   }
+
+   /**
     * Update branch
     */
    public static Job updateBranch(final Branch branch, final ConflictResolverOperation resolver) {
       IOperation operation = new UpdateBranchOperation(branch, resolver);
-      return Operations.executeAsJob(operation, true);
-   }
-
-   /**
-    * Completes the update branch operation by committing latest parent based branch with branch with changes. Then
-    * swaps branches so we are left with the most current branch containing latest changes.
-    */
-   public static Job completeUpdateBranch(final ConflictManagerExternal conflictManager, final boolean archiveSourceBranch, final boolean overwriteUnresolvedConflicts) {
-      IOperation operation =
-         new FinishUpdateBranchOperation(conflictManager, archiveSourceBranch, overwriteUnresolvedConflicts);
       return Operations.executeAsJob(operation, true);
    }
 

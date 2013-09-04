@@ -43,8 +43,11 @@ public class UpdateBranchOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      if (originalBranch != null && originalBranch.hasParentBranch()) {
-         performUpdate(monitor, originalBranch);
+      // Only update if there are no other Merge Branches and we haven't committed this branch already
+      if (originalBranch != null && !BranchManager.hasMergeBranches(originalBranch) && !originalBranch.getBranchState().isCommitted()) {
+         if (originalBranch.hasParentBranch()) {
+            performUpdate(monitor, originalBranch);
+         }
       }
    }
 

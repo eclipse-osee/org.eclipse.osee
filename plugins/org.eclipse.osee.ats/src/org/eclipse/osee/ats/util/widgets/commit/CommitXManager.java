@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.util.RebaselineInProgressHandler;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
@@ -101,7 +102,9 @@ public class CommitXManager extends XViewer {
 
          CommitStatus commitStatus =
             AtsBranchManagerCore.getCommitStatus(xCommitManager.getTeamArt(), branch, configArt);
-         if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
+         if (commitStatus == CommitStatus.Rebaseline_In_Progress) {
+            RebaselineInProgressHandler.handleRebaselineInProgress(xCommitManager.getTeamArt().getWorkingBranch());
+         } else if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
             AWorkbench.popup(commitStatus.getDisplayName(), "Need to create a working branch");
          } else if (commitStatus == CommitStatus.No_Commit_Needed) {
             AWorkbench.popup(commitStatus.getDisplayName(),
@@ -120,26 +123,31 @@ public class CommitXManager extends XViewer {
          } else if (commitStatus == CommitStatus.Committed) {
             AtsBranchManager.showChangeReportForBranch(xCommitManager.getTeamArt(), branch);
          } else if (commitStatus == CommitStatus.Committed_With_Merge) {
-            MessageDialog dialog =
-               new MessageDialog(Displays.getActiveShell(), "Select Report", null,
-                  "Both Change Report and Merge Manager exist.\n\nSelect to open.", MessageDialog.QUESTION,
-                  new String[] {"Show Change Report", "Show Merge Manager", "Cancel"}, 0);
-            int result = dialog.open();
-            if (result == 2) {
-               return;
-            }
-            // change report
-            if (result == 0) {
-               AtsBranchManager.showChangeReportForBranch(xCommitManager.getTeamArt(), branch);
-            }
-            // merge manager
-            else {
-               AtsBranchManager.showMergeManager(xCommitManager.getTeamArt(), branch);
-            }
+            handleCommittedWithMerge(branch);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
+   private void handleCommittedWithMerge(Branch branch) throws OseeCoreException {
+      MessageDialog dialog =
+         new MessageDialog(Displays.getActiveShell(), "Select Report", null,
+            "Both Change Report and Merge Manager exist.\n\nSelect to open.", MessageDialog.QUESTION, new String[] {
+               "Show Change Report",
+               "Show Merge Manager",
+               "Cancel"}, 0);
+      int result = dialog.open();
+      if (result == 2) {
+         return;
+      }
+      // change report
+      if (result == 0) {
+         AtsBranchManager.showChangeReportForBranch(xCommitManager.getTeamArt(), branch);
+      }
+      // merge manager
+      else {
+         AtsBranchManager.showMergeManager(xCommitManager.getTeamArt(), branch);
+      }
+   }
 }

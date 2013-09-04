@@ -193,7 +193,9 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    private String handleActionColumn(Branch branch) throws OseeCoreException {
       CommitStatus commitStatus =
          AtsBranchManagerCore.getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), branch);
-      if (commitStatus == CommitStatus.Branch_Not_Configured) {
+      if (commitStatus == CommitStatus.Rebaseline_In_Progress) {
+         return "Finish Update";
+      } else if (commitStatus == CommitStatus.Branch_Not_Configured) {
          return "Configure Branch";
       } else if (commitStatus == CommitStatus.Branch_Commit_Disabled) {
          return "Enable Branch Commit";

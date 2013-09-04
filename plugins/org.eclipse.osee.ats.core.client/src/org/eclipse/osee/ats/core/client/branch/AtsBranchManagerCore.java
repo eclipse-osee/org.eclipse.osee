@@ -182,6 +182,13 @@ public class AtsBranchManagerCore {
    }
 
    public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, Branch destinationBranch, ICommitConfigArtifact configArt) throws OseeCoreException {
+      Branch workingBranch = teamArt.getWorkingBranch();
+      if (workingBranch != null) {
+         if (workingBranch.getBranchState().isRebaselineInProgress()) {
+            return CommitStatus.Rebaseline_In_Progress;
+         }
+      }
+
       if (destinationBranch == null) {
          return CommitStatus.Branch_Not_Configured;
       }
@@ -219,6 +226,7 @@ public class AtsBranchManagerCore {
       if (mergeBranchExists) {
          return CommitStatus.Merge_In_Progress;
       }
+
       return CommitStatus.Commit_Needed;
    }
 
