@@ -65,6 +65,6 @@ public class FixDuplicateEnumeratedAttributes extends AbstractBlam {
 
    @Override
    public Collection<String> getCategories() {
-      return Arrays.asList("Define");
+      return Arrays.asList("Admin");
    }
 }
