@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
+import org.eclipse.osee.framework.skynet.core.importing.RoughAttributeSet;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.DoorsArtifactExtractor;
 import org.junit.Before;
@@ -49,20 +50,28 @@ public class DoorsArtifactExtractorTest {
    private static final String IMAGE_CONTENT = "Image Content";
    private static final String PRIME_ITEM_DIAGRAM = "Prime item diagram.";
    private static final String COMPANY_DOCUMENTS = "Company documents.";
+   private static final String VOICE_STATUS = "Voice status.";
    private static final String[] ARTIFACT_NAMES = {
-      "Door_Requirements",
+      "Example_DOORS_File",
       "SCOPE",
       "APPLICABLE DOCUMENTS",
-      "Non-Government documents.",
-      "Company documents.",
+      "Government documents.",
+      "Specifications.",
+      "Military.",
+      "Standards.",
       "REQUIREMENTS",
       "Prime item definition.",
-      PRIME_ITEM_DIAGRAM};
+      PRIME_ITEM_DIAGRAM,
+      VOICE_STATUS};
    private static final String[] ATTRIBUTE_TYPE_LIST = {
       "Name",
+      "Subsystem",
       "Legacy Id",
+      "Verification Event",
       "HTML Content",
       IMAGE_CONTENT,
+      "Qualification Method",
+      "Verification Level",
       "Paragraph Number"};
 
    private static final RoughArtifactKind[] ARTIFACT_TYPES = {
@@ -72,8 +81,11 @@ public class DoorsArtifactExtractorTest {
       RoughArtifactKind.SECONDARY,
       RoughArtifactKind.SECONDARY,
       RoughArtifactKind.SECONDARY,
+      RoughArtifactKind.SECONDARY,
+      RoughArtifactKind.SECONDARY,
       RoughArtifactKind.PRIMARY,
-      RoughArtifactKind.SECONDARY,};
+      RoughArtifactKind.PRIMARY,
+      RoughArtifactKind.PRIMARY};
 
    private static final String DOCUMENT_APPLICABILITY = "Document 1";
 
@@ -83,6 +95,7 @@ public class DoorsArtifactExtractorTest {
    private DoorsArtifactExtractor extractor = null;
    private RoughArtifactCollector collector;
    private static File doorHtmlExport;
+   private static File expectedList;
 
    @BeforeClass
    public static void setUpResources() throws IOException {
@@ -90,6 +103,8 @@ public class DoorsArtifactExtractorTest {
       copyResource("sample_DOORS_export.htm", doorHtmlExport);
       copyResource(THIS_IS_A_JPEG_IMAGE_JPG, folder.newFile(THIS_IS_A_JPEG_IMAGE_JPG));
       copyResource(THIS_IS_A_PNG_IMAGE_PNG, folder.newFile(THIS_IS_A_PNG_IMAGE_PNG));
+      expectedList = folder.newFile("Expected_list.htm");
+      copyResource("Expected_list.htm", expectedList);
    }
 
    @Before
@@ -123,6 +138,8 @@ public class DoorsArtifactExtractorTest {
           */
          if (PRIME_ITEM_DIAGRAM.equals(actualName)) {
             checkPrimeItemDiagram(artifact);
+         } else if (VOICE_STATUS.equals(actualName)) {
+            checkList(artifact);
          }
       }
    }
@@ -172,7 +189,7 @@ public class DoorsArtifactExtractorTest {
           */
          if (COMPANY_DOCUMENTS.equals(actualName)) {
             String theHtml = artifact.getRoughAttribute(CoreAttributeTypes.HTMLContent.getName());
-            assertEquals("Document Applicability filter failed", theHtml.indexOf("ABC-DEF"), -1);
+            assertEquals("Document Applicability filter failed", theHtml.indexOf("XYZ-ABC"), -1);
          }
       }
    }
@@ -201,5 +218,13 @@ public class DoorsArtifactExtractorTest {
          Lib.close(inputStream);
          Lib.close(outputStream);
       }
+   }
+
+   private void checkList(RoughArtifact artifact) throws Exception {
+      RoughAttributeSet attributes = artifact.getAttributes();
+      String input = attributes.getSoleAttributeValue("HTML Content");
+      String expected = Lib.fileToString(expectedList);
+      assertEquals("Document Applicability filter failed", input, expected);
+
    }
 }

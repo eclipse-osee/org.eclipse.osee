@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
@@ -20,6 +21,8 @@ import org.jsoup.nodes.Document.OutputSettings;
 import org.jsoup.nodes.Document.QuirksMode;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Entities.EscapeMode;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
 
@@ -144,7 +147,64 @@ public final class NormalizeHtml {
       processFontTags(doc);
       processInitialStyleTags(doc, removeInitialStyle);
       processEmptyTags(doc, removeEmptyTags);
+      processSelfFormattingTags(doc);
       return processText(doc);
+   }
+
+   static void processSelfFormattingTags(Document doc) {
+      /**********************************************************
+       * Documents that are converted from MS Word have an extra \n in the list items remove. Also trim the item of
+       * leading/trailing blanks
+       */
+      String[] tagsToCheck = {"li", "tr", "td", "table"};
+      for (String select : tagsToCheck) {
+         Elements theNode = doc.select(select);
+         ArrayList<Node> remove = new ArrayList<Node>();
+         for (Element item : theNode) {
+            List<Node> kids = item.childNodes();
+            for (Node n : kids) {
+               if (n instanceof TextNode) {
+                  TextNode t = (TextNode) n;
+                  String theText = t.text();
+                  theText = theText.replaceAll(NON_BREAK_SPACE, " ");
+                  theText = theText.replaceAll(NON_BREAK_FIGURE_SPACE, " ");
+                  theText = theText.replaceAll(NON_BREAK_NARROW_SPACE, " ");
+                  theText = theText.replaceAll(NON_BREAK_WORD_JOINER, " ");
+                  theText = theText.replaceAll(NON_BREAK_ZERO_WIDTH, " ");
+                  theText = theText.trim().replaceAll("\\s+", "");
+                  if (theText.isEmpty()) {
+                     remove.add(t);
+                  } else {
+                     theText = t.text().trim();
+                     String nbsp = "&nbsp;";
+                     theText = theText.replaceAll(NON_BREAK_SPACE, nbsp);
+                     theText = theText.replaceAll(NON_BREAK_FIGURE_SPACE, nbsp);
+                     theText = theText.replaceAll(NON_BREAK_NARROW_SPACE, nbsp);
+                     theText = theText.replaceAll(NON_BREAK_WORD_JOINER, nbsp);
+                     theText = theText.replaceAll(NON_BREAK_ZERO_WIDTH, nbsp);
+                     while (theText.indexOf(nbsp) == 0) {
+                        theText = theText.substring(nbsp.length()).trim();
+                     }
+                     while ((theText.lastIndexOf(nbsp) != -1) && (theText.lastIndexOf(nbsp) == theText.length() - nbsp.length())) {
+                        theText = theText.substring(0, theText.length() - nbsp.length()).trim();
+                     }
+                     if (theText.isEmpty()) {
+                        remove.add(t);
+                     } else {
+                        t.replaceWith(TextNode.createFromEncoded(theText, t.baseUri()));
+                     }
+                  }
+               } else if (n instanceof Element) {
+                  if (((Element) n).tagName().equals("br")) {
+                     remove.add(n);
+                  }
+               }
+            }
+         }
+         for (Node n : remove) {
+            n.remove();
+         }
+      }
    }
 
    static void removeDepreactedTags(Document doc) {
@@ -342,6 +402,11 @@ public final class NormalizeHtml {
       theText = theText.replaceAll(NON_BREAK_NARROW_SPACE, "&nbsp;");
       theText = theText.replaceAll(NON_BREAK_WORD_JOINER, "&nbsp;");
       theText = theText.replaceAll(NON_BREAK_ZERO_WIDTH, "&nbsp;");
+
+      /***********************************************************************************
+       * Remove spaces after end of tags at end of lines
+       */
+      theText = theText.replaceAll("> {1,}\n", ">\n");
       return theText;
    }
 

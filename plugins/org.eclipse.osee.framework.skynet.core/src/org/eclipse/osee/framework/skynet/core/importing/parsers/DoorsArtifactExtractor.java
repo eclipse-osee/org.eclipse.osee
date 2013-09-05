@@ -429,7 +429,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          RowTypeEnum rowType = rowIndexToRowTypeMap.get(rowIndex);
          if (rowType == RowTypeEnum.DOCUMENT_APPLICABILITY) {
             String rowValue = row[rowIndex].toLowerCase().trim();
-            if (rowValue.equals("") || rowValue.equals("<br></br>") || rowValue.equals("<br>")) {
+            if (rowValue.equals("") || rowValue.equals("<br></br>") || rowValue.equals("<br>") || rowValue.equals("<br />")) {
                if (inArtifact) {
                   processArtifact();
                }
@@ -593,6 +593,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
    private String processList(String inputValue) {
       inputValue = normalizeHtml(inputValue);
+      inputValue = inputValue.replaceAll("\\s+", " ");
       /**************************************************************************************
        * The way Doors export works with lists is that there is badly spaced <div> statements -- remove them
        */
@@ -643,6 +644,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       endOfList -= 2;
       startOfNextList -= 2;
       String insertValue = null;
+
       if (isNumeric) {
          insertValue = "<ol>";
       } else if (isLowerCase) {
@@ -656,7 +658,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          startOfNextList = startOfNextList + insertValue.length();
       }
       iPos += insertValue.length();
-
+      int adjust = removeForcedSpaces(returnString, iPos - 1, false);
+      startOfNextList -= adjust;
+      endOfList -= adjust;
       listData theListData = new listData();
       boolean lastWasSublist = false;
       while (nextItem != -1) {
@@ -671,6 +675,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             }
             iPos += LIST_ITEM_TAG.length() - 1;
          }
+         adjust = removeForcedSpaces(returnString, nextItem + LIST_ITEM_TAG.length(), false);
+         startOfNextList -= adjust;
+         endOfList -= adjust;
          theChars = stringBuilderToChars(returnString);
          nextItem = findNextListItem(theChars, iPos, isNumeric, isLowerCase, currentNumber, currentLetter, theListData);
          if (nextItem == -1) {
@@ -679,26 +686,33 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
          if (theListData.getNewList()) {
             int startPoint = (nextItem < startOfNextList) ? nextItem : startOfNextList;
+            int delta = removeForcedSpaces(returnString, startPoint - 1, true);
+            if (delta > 0) {
+               theChars = stringBuilderToChars(returnString);
+               startPoint -= delta;
+               endOfList -= delta;
+            }
             String theSublist = returnString.substring(0, startPoint);
-            int end = theListData.getNextItem();
+            int end = theListData.getNextItem() - delta;
+            if (theListData.getNextItem() != -1) {
+               theListData.setNextItem(end);
+            }
             if (end >= returnString.length()) {
                end = returnString.length() - 1;
             }
-
             String theRawSublist = new String(theChars, startPoint, end - startPoint + 1);
             int initialLen = theRawSublist.length();
             theRawSublist = processList(theRawSublist);
             theSublist += theRawSublist;
             theSublist += LIST_ITEM_END_TAG;
-            int delta = (theRawSublist.length() - initialLen) + LIST_ITEM_END_TAG.length();
+            delta = (theRawSublist.length() - initialLen) + LIST_ITEM_END_TAG.length();
             endOfList += delta;
             startOfNextList += delta;
-            if ((theListData.getNextItem() != -1) && (theListData.getNextItem() < returnString.length())) {
+            if ((theListData.getNextItem() != -1) && (theListData.getNextItem() < (returnString.length() - 1))) {
                theSublist += returnString.substring(theListData.getNextItem() + 1);
             }
             returnString.delete(0, returnString.length());
             returnString.append(theSublist);
-
          } else {
             if (isNumeric) {
                currentNumber =
@@ -741,12 +755,12 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          theChars = stringBuilderToChars(returnString);
       }
       // find the insertion point for list end
-      String tokenToInsert = "</li></ol>";
+      String tokenToInsert = LIST_ITEM_END_TAG + "</ol>";
       if (theListData.getNewList()) {
          tokenToInsert = "</ol>";
       }
 
-      if (endOfList < theChars.length) {
+      if (endOfList < returnString.length()) {
          returnString.insert(endOfList, tokenToInsert);
       } else {
          // verify the list doesn't end with <BR></BR>
@@ -1199,7 +1213,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
    private String normalizeHtml(String inputHtml) {
 
-      String returnValue = NormalizeHtml.convertToNormalizedHTML(inputHtml, true, true, true);
+      String returnValue = preprocessHTML(inputHtml);
+      returnValue = NormalizeHtml.convertToNormalizedHTML(returnValue, true, true, true);
       int bodyStart = returnValue.indexOf(BODY_START_TAG);
       int bodyEnd = returnValue.indexOf(BODY_END_TAG);
       if (bodyStart != -1) {
@@ -1240,6 +1255,71 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          returnValue = returnValue.substring(0, brTag).trim();
          brTag = returnValue.toLowerCase().lastIndexOf(BR_TAG);
       }
+
+      //@formatter:off 
+      /************************************************************************************
+       * change <br />spacespace 
+       * to <br />space
+       */
+      //@formatter:on
+      returnValue = returnValue.replaceAll("<br />  ", "<br /> ");
       return returnValue;
    }
+
+   private String preprocessHTML(String inputHTML) {
+      String toReturn = inputHTML;
+      toReturn = toReturn.replaceAll("\t", " ");
+      toReturn = toReturn.replaceAll("<BR></BR>", "<BR />");
+      toReturn = toReturn.replaceAll("<br></br>", "<br />");
+      return toReturn;
+   }
+
+   private int removeForcedSpaces(StringBuilder returnString, int iPos, boolean reverse) {
+      /***********************************************************************
+       * remove any &nbsp; or &#9 after the start or end of the list -- the HTML list takes care of spacing
+       */
+      int adjust = 0;
+      String nbsp = "&nbsp;", tab = "&#9;";
+      if (iPos > 0) {
+         if (reverse) {
+            char[] theChars = stringBuilderToChars(returnString);
+            while (Character.isWhitespace(theChars[iPos])) {
+               returnString.delete(iPos, iPos + 1);
+               iPos--;
+               adjust++;
+            }
+            int nbspPos = returnString.lastIndexOf(nbsp, iPos);
+            int tabPos = returnString.lastIndexOf(tab, iPos);
+            while ((nbspPos == (iPos - nbsp.length() + 1)) || (tabPos == (iPos - tab.length() + 1))) {
+               if (nbspPos == (iPos - nbsp.length() + 1)) {
+                  returnString.replace(nbspPos, nbspPos + nbsp.length(), "");
+                  adjust += nbsp.length();
+                  iPos -= nbsp.length();
+               } else {
+                  returnString.replace(tabPos, tabPos + tab.length(), "");
+                  adjust += tab.length();
+                  iPos -= tab.length();
+               }
+               nbspPos = returnString.lastIndexOf(nbsp, iPos);
+               tabPos = returnString.lastIndexOf(tab, iPos);
+            }
+         } else {
+            int nbspPos = returnString.indexOf(nbsp, iPos);
+            int tabPos = returnString.indexOf(tab, iPos);
+            while ((nbspPos == iPos) || (tabPos == iPos)) {
+               if (nbspPos == iPos) {
+                  returnString.replace(nbspPos, nbspPos + nbsp.length(), "");
+                  adjust += nbsp.length();
+               } else {
+                  returnString.replace(tabPos, tabPos + tab.length(), "");
+                  adjust += tab.length();
+               }
+               nbspPos = returnString.indexOf(nbsp, iPos);
+               tabPos = returnString.indexOf(tab, iPos);
+            }
+         }
+      }
+      return adjust;
+   }
+
 }
