@@ -19,7 +19,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.data.OrcsWriteable;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Multimap;
 

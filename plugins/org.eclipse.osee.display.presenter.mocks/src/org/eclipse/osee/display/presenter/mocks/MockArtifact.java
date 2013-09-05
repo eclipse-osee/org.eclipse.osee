@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeId;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
@@ -238,6 +239,11 @@ public class MockArtifact implements ArtifactReadable {
 
    @Override
    public <T> List<AttributeReadable<T>> getAttributes(IAttributeType attributeType, DeletionFlag deletionFlag) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public AttributeReadable<Object> getAttributeById(AttributeId attributeId) throws OseeCoreException {
       return null;
    }
 }

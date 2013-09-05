@@ -12,11 +12,11 @@ package org.eclipse.osee.orcs.search;
 
 import java.util.Collection;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.Identifiable;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.Operator;
@@ -80,14 +80,14 @@ public interface QueryBuilder {
    QueryBuilder andGuidsOrHrids(Collection<String> ids) throws OseeCoreException;
 
    /**
-    * Artifacts matching token id(s)
+    * Artifacts id(s)
     */
-   QueryBuilder andIds(IArtifactToken... artifactToken) throws OseeCoreException;
+   QueryBuilder andIds(Identifiable... ids) throws OseeCoreException;
 
    /**
     * Artifacts matching token id(s)
     */
-   QueryBuilder andIds(Collection<? extends IArtifactToken> artifactTokens) throws OseeCoreException;
+   QueryBuilder andIds(Collection<? extends Identifiable> ids) throws OseeCoreException;
 
    /**
     * Search criteria that finds a given artifact type using type inheritance

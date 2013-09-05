@@ -75,7 +75,7 @@ public class LoadDataHandlerDecorator extends LoadDataHandlerAdapter {
    }
 
    @Override
-   public void onLoadEnd() {
+   public void onLoadEnd() throws OseeCoreException {
       if (handler != null) {
          handler.onLoadEnd();
       }

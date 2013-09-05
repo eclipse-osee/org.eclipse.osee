@@ -10,44 +10,66 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
+import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.Identifiable;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.data.AttributesWriteable;
-import org.eclipse.osee.orcs.data.HasLocalId;
+import org.eclipse.osee.orcs.data.AttributeId;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface AttributeManager extends Identifiable, AttributesWriteable, HasLocalId {
-
-   void add(IAttributeType type, Attribute<? extends Object> attribute);
-
-   void remove(IAttributeType type, Attribute<? extends Object> attribute);
-
-   boolean isLoaded();
-
-   void setLoaded(boolean value) throws OseeCoreException;
-
-   String getExceptionString();
-
-   @Override
-   String toString();
-
-   /////////////////////////////////////////////////////////////////
-
-   boolean areAttributesDirty();
+public interface AttributeManager extends AttributeContainer {
 
    void setAttributesNotDirty();
-
-   int getMaximumAttributeTypeAllowed(IAttributeType attributeType) throws OseeCoreException;
-
-   int getMinimumAttributeTypeAllowed(IAttributeType attributeType) throws OseeCoreException;
-
-   List<Attribute<?>> getAttributesDirty() throws OseeCoreException;
 
    void deleteAttributesByArtifact() throws OseeCoreException;
 
    void unDeleteAttributesByArtifact() throws OseeCoreException;
+
+   <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException;
+
+   String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException;
+
+   String getSoleAttributeAsString(IAttributeType attributeType, String defaultValue) throws OseeCoreException;
+
+   <T> List<T> getAttributeValues(IAttributeType attributeType) throws OseeCoreException;
+
+   <T> void setSoleAttributeValue(IAttributeType attributeType, T value) throws OseeCoreException;
+
+   void setSoleAttributeFromStream(IAttributeType attributeType, InputStream inputStream) throws OseeCoreException;
+
+   void setSoleAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException;
+
+   <T> void setAttributesFromValues(IAttributeType attributeType, T... values) throws OseeCoreException;
+
+   <T> void setAttributesFromValues(IAttributeType attributeType, Collection<T> values) throws OseeCoreException;
+
+   void setAttributesFromStrings(IAttributeType attributeType, String... values) throws OseeCoreException;
+
+   void setAttributesFromStrings(IAttributeType attributeType, Collection<String> values) throws OseeCoreException;
+
+   void deleteSoleAttribute(IAttributeType attributeType) throws OseeCoreException;
+
+   void deleteAttributes(IAttributeType attributeType) throws OseeCoreException;
+
+   void deleteAttributesWithValue(IAttributeType attributeType, Object value) throws OseeCoreException;
+
+   <T> Attribute<T> createAttribute(IAttributeType attributeType) throws OseeCoreException;
+
+   <T> Attribute<T> createAttribute(IAttributeType attributeType, T value) throws OseeCoreException;
+
+   <T> Attribute<T> createAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException;
+
+   List<Attribute<Object>> getAttributes() throws OseeCoreException;
+
+   <T> List<Attribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
+
+   List<Attribute<Object>> getAttributes(DeletionFlag deletionFlag) throws OseeCoreException;
+
+   <T> List<Attribute<T>> getAttributes(IAttributeType attributeType, DeletionFlag deletionFlag) throws OseeCoreException;
+
+   Attribute<Object> getAttributeById(AttributeId attributeId) throws OseeCoreException;
 }

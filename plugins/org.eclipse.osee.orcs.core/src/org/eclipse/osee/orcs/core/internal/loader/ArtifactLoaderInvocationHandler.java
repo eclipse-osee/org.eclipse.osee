@@ -17,6 +17,7 @@ import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.internal.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.internal.ArtifactBuilderFactory;
@@ -26,11 +27,14 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  * @author Andrew M. Finkbeiner
  */
 public class ArtifactLoaderInvocationHandler implements InvocationHandler {
+
+   private final OrcsSession session;
    private final DataLoader proxied;
    private final ArtifactBuilderFactory builderFactory;
 
-   public ArtifactLoaderInvocationHandler(DataLoader proxied, ArtifactBuilderFactory builderFactory) {
+   public ArtifactLoaderInvocationHandler(ArtifactBuilderFactory builderFactory, OrcsSession session, DataLoader proxied) {
       super();
+      this.session = session;
       this.proxied = proxied;
       this.builderFactory = builderFactory;
    }
@@ -74,7 +78,7 @@ public class ArtifactLoaderInvocationHandler implements InvocationHandler {
    }
 
    private List<ArtifactReadable> load(HasCancellation cancellation) throws OseeCoreException {
-      ArtifactBuilder builder = builderFactory.createArtifactBuilder();
+      ArtifactBuilder builder = builderFactory.createArtifactBuilder(session);
       proxied.load(cancellation, builder);
       return builder.getArtifacts();
    }

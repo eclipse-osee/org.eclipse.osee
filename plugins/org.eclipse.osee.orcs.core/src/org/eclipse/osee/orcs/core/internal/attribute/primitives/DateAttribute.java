@@ -17,7 +17,6 @@ import java.util.Date;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
-import org.eclipse.osee.orcs.core.internal.attribute.CharacterBackedAttribute;
 
 /**
  * @author Robert A. Fisher

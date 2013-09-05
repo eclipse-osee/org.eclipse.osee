@@ -46,24 +46,24 @@ public class ArtifactLoaderFactoryImpl implements ArtifactLoaderFactory {
    @Override
    public ArtifactLoader fromQueryContext(OrcsSession session, QueryContext queryContext) throws OseeCoreException {
       DataLoader loader = dataLoaderFactory.fromQueryContext(queryContext);
-      return create(loader);
+      return create(session, loader);
    }
 
    @Override
    public ArtifactLoader fromBranchAndArtifactIds(OrcsSession session, IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException {
       DataLoader loader = dataLoaderFactory.fromBranchAndArtifactIds(session, branch, artifactIds);
-      return create(loader);
+      return create(session, loader);
    }
 
    @Override
    public ArtifactLoader fromBranchAndArtifactIds(OrcsSession session, IOseeBranch branch, int... artifactIds) throws OseeCoreException {
       DataLoader loader = dataLoaderFactory.fromBranchAndArtifactIds(session, branch, artifactIds);
-      return create(loader);
+      return create(session, loader);
    }
 
    @SuppressWarnings("unchecked")
-   private <T> T create(DataLoader loader) {
-      InvocationHandler handler = new ArtifactLoaderInvocationHandler(loader, builderFactory);
+   private <T> T create(OrcsSession session, DataLoader loader) {
+      InvocationHandler handler = new ArtifactLoaderInvocationHandler(builderFactory, session, loader);
       Class<?>[] types = new Class<?>[] {ArtifactLoader.class};
       return (T) Proxy.newProxyInstance(ArtifactLoader.class.getClassLoader(), types, handler);
    }

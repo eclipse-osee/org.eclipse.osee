@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.transaction;
 
 import java.util.Collection;
-import java.util.concurrent.Callable;
+import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -22,10 +22,9 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public interface TransactionFactory {
 
-   OrcsTransaction createTransaction(IOseeBranch branch, ArtifactReadable userArtifact, String comment) throws OseeCoreException;
+   TransactionBuilder createTransaction(IOseeBranch branch, ArtifactReadable userArtifact, String comment) throws OseeCoreException;
 
-   // Temp method
-   Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact);
+   CancellableCallable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact);
 
-   Callable<Integer> purgeTransaction(Collection<? extends ITransaction> transactions);
+   CancellableCallable<Integer> purgeTransaction(Collection<? extends ITransaction> transactions);
 }

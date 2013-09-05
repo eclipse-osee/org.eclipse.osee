@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
@@ -36,7 +37,7 @@ import org.eclipse.osee.orcs.core.internal.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
-import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
+import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
 import org.eclipse.osee.orcs.core.internal.relation.RelationContainerImpl;
 import org.eclipse.osee.orcs.data.RelationTypes;
@@ -58,10 +59,11 @@ public class ArtifactBuilderImplTest {
 
    // @formatter:off
    @Mock private Log logger;
-   @Mock private ArtifactProxyFactory proxyFactory;
+   @Mock private ExternalArtifactManager proxyFactory;
    @Mock private ArtifactFactory artifactFactory;
    @Mock private AttributeFactory attributeFactory;
    
+   @Mock private OrcsSession session;
    @Mock private Artifact artifact;
    @Mock private ArtifactData artifactData;
    @Mock private AttributeData attributeData;
@@ -72,7 +74,8 @@ public class ArtifactBuilderImplTest {
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-      builder = new ArtifactBuilderImpl(logger, proxyFactory, artifactFactory, attributeFactory);
+      builder = new ArtifactBuilderImpl(logger, proxyFactory, artifactFactory, attributeFactory, session);
+
    }
 
    @Test

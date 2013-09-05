@@ -22,6 +22,4 @@ public interface ArtifactVisitor {
 
    void visit(Attribute<?> attribute) throws OseeCoreException;
 
-   //   void visit(RelationData data) throws OseeCoreException;
-
 }

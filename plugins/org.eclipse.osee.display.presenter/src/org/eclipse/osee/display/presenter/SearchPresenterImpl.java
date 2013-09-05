@@ -207,10 +207,8 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
          return;
       }
       for (IAttributeType attrType : attributeTypes) {
-         List<AttributeReadable<Object>> attributesValues = null;
          try {
-            attributesValues = displayArt.getAttributes(attrType);
-            for (AttributeReadable<Object> value : attributesValues) {
+            for (AttributeReadable<Object> value : displayArt.getAttributes(attrType)) {
                attrComp.addAttribute(attrType.getName(), value.getDisplayableString());
             }
          } catch (Exception ex) {

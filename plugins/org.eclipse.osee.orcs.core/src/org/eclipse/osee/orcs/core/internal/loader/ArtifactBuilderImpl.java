@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
@@ -31,7 +32,7 @@ import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManager;
-import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
+import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -40,25 +41,25 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class ArtifactBuilderImpl extends LoadDataHandlerAdapter implements ArtifactBuilder {
 
-   private final Map<Integer, RelationContainer> relations = new HashMap<Integer, RelationContainer>();;
-   private final Map<Integer, AttributeManager> attributes = new HashMap<Integer, AttributeManager>();
-
    private final Log logger;
-   private final ArtifactProxyFactory proxyFactory;
-
+   private final ExternalArtifactManager proxyFactory;
    private final ArtifactFactory artifactFactory;
    private final AttributeFactory attributeFactory;
+   private final OrcsSession session;
 
-   private final Map<Integer, Artifact> artifacts = new LinkedHashMap<Integer, Artifact>();
    private final Set<Artifact> created = new HashSet<Artifact>();
+   private final Map<Integer, RelationContainer> relations = new HashMap<Integer, RelationContainer>();
+   private final Map<Integer, AttributeManager> attributes = new HashMap<Integer, AttributeManager>();
+   private final Map<Integer, Artifact> artifacts = new LinkedHashMap<Integer, Artifact>();
    private List<ArtifactReadable> readables;
 
-   public ArtifactBuilderImpl(Log logger, ArtifactProxyFactory proxyFactory, ArtifactFactory artifactFactory, AttributeFactory attributeFactory) {
+   public ArtifactBuilderImpl(Log logger, ExternalArtifactManager proxyFactory, ArtifactFactory artifactFactory, AttributeFactory attributeFactory, OrcsSession session) {
       super();
       this.logger = logger;
       this.proxyFactory = proxyFactory;
       this.artifactFactory = artifactFactory;
       this.attributeFactory = attributeFactory;
+      this.session = session;
    }
 
    @Override
@@ -74,12 +75,21 @@ public class ArtifactBuilderImpl extends LoadDataHandlerAdapter implements Artif
    @Override
    public void onLoadStart() {
       artifacts.clear();
+      relations.clear();
+      attributes.clear();
       created.clear();
       readables = null;
    }
 
    @Override
-   public void onLoadEnd() {
+   public void onLoadEnd() throws OseeCoreException {
+      super.onLoadEnd();
+      relations.clear();
+      attributes.clear();
+      collectResults();
+   }
+
+   private void collectResults() throws OseeCoreException {
       // Make artifacts available to others
       //      for (Artifact artifact : created) {
       //         cache.cache(artifact);
@@ -88,16 +98,19 @@ public class ArtifactBuilderImpl extends LoadDataHandlerAdapter implements Artif
 
       readables = new ArrayList<ArtifactReadable>(artifacts.size());
       for (Artifact artifact : artifacts.values()) {
-         ArtifactReadable readable = proxyFactory.createReadable(artifact);
+         ArtifactReadable readable = proxyFactory.asExternalArtifact(session, artifact);
          readables.add(readable);
       }
       artifacts.clear();
    }
 
    private Artifact getCachedArtifact(ArtifactData data) {
-      Artifact toReturn = artifacts.get(data.getLocalId());
-      if (toReturn == null) {
-         //         toReturn = cache.get(data);
+      Artifact toReturn = null;
+      if (artifacts != null) {
+         toReturn = artifacts.get(data.getLocalId());
+         if (toReturn == null) {
+            //         toReturn = cache.get(data);
+         }
       }
       return toReturn;
    }

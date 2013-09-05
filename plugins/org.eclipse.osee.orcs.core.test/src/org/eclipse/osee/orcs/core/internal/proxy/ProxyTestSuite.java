@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.proxy;
 
-import org.eclipse.osee.orcs.core.internal.proxy.handler.ProxyInvocationHandlerTestSuite;
+import org.eclipse.osee.orcs.core.internal.proxy.impl.ExternalArtifactManagerTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ProxyInvocationHandlerTestSuite.class, ArtifactProxyFactoryTest.class})
+@Suite.SuiteClasses({ExternalArtifactManagerTest.class})
 public class ProxyTestSuite {
    // Test Suite
 }

@@ -174,7 +174,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
    }
 
    @Override
-   public Collection<? extends IRelationType> getValidRelationTypes(ArtifactReadable art) {
+   public Collection<? extends IRelationType> getValidRelationTypes(ArtifactReadable art) throws OseeCoreException {
       Collection<IRelationTypeSide> existingRelationTypes = graph.getExistingRelationTypes(art);
       Set<IRelationType> toReturn = new HashSet<IRelationType>();
       for (IRelationTypeSide side : existingRelationTypes) {

@@ -30,7 +30,6 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.core.internal.util.ValueProvider;
 import org.eclipse.osee.orcs.core.internal.util.ValueProviderFactory;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 
@@ -59,7 +58,7 @@ public class ArtifactFactory {
       //TODO implement an artifact class resolver for specific artifact types
       RelationContainer relationContainer = relationFactory.createRelationContainer(artifactData.getLocalId());
       ValueProvider<Branch, OrcsData> branchProvider = providerFactory.createBranchProvider(artifactData);
-      return new Artifact(artifactTypeCache, artifactData, attributeFactory, relationContainer, branchProvider);
+      return new ArtifactImpl(artifactTypeCache, artifactData, attributeFactory, relationContainer, branchProvider);
    }
 
    public Artifact createArtifact(IOseeBranch branch, IArtifactType artifactType, String guid) throws OseeCoreException {
@@ -121,7 +120,7 @@ public class ArtifactFactory {
       return ((Attribute<?>) source).getOrcsData();
    }
 
-   private Collection<? extends IAttributeType> getAllowedTypes(ArtifactReadable destination, Collection<? extends IAttributeType> types) throws OseeCoreException {
+   private Collection<? extends IAttributeType> getAllowedTypes(Artifact destination, Collection<? extends IAttributeType> types) throws OseeCoreException {
       Set<IAttributeType> toReturn = new HashSet<IAttributeType>();
       for (IAttributeType type : types) {
          if (!CoreAttributeTypes.RelationOrder.equals(type)) {

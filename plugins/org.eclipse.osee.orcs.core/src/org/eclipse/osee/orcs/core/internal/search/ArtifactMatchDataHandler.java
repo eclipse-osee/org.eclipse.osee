@@ -36,12 +36,19 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
 
    private final ArtifactBuilder handler;
 
-   private final Map<Integer, ArtifactMatch> matches = new HashMap<Integer, ArtifactMatch>();
+   private Map<Integer, ArtifactMatch> matches;
    private List<Match<ArtifactReadable, AttributeReadable<?>>> results;
 
    public ArtifactMatchDataHandler(ArtifactBuilder handler) {
       super(handler);
       this.handler = handler;
+   }
+
+   @Override
+   public void onLoadStart() throws OseeCoreException {
+      super.onLoadStart();
+      matches = new HashMap<Integer, ArtifactMatch>();
+      results = null;
    }
 
    @Override
@@ -59,7 +66,7 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
    }
 
    @Override
-   public void onLoadEnd() {
+   public void onLoadEnd() throws OseeCoreException {
       super.onLoadEnd();
       buildResults();
    }
@@ -79,7 +86,7 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
             results.add(artifactMatch);
          }
       }
-      matches.clear();
+      matches = null;
    }
 
    public List<Match<ArtifactReadable, AttributeReadable<?>>> getResults() {
@@ -126,9 +133,9 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
       @Override
       public Collection<AttributeReadable<?>> getElements() throws OseeCoreException {
          Collection<AttributeReadable<?>> filtered = Lists.newLinkedList();
-         List<AttributeReadable<Object>> attributes = item.getAttributes();
+         List<? extends AttributeReadable<Object>> attributes = item.getAttributes();
          for (AttributeReadable<?> attribute : attributes) {
-            if (matches.containsKey(attribute.getId())) {
+            if (matches.containsKey(attribute.getLocalId())) {
                filtered.add(attribute);
             }
          }
@@ -137,7 +144,7 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
 
       @Override
       public List<MatchLocation> getLocation(AttributeReadable<?> element) {
-         List<MatchLocation> toReturn = matches.get(element.getId());
+         List<MatchLocation> toReturn = matches.get(element.getLocalId());
          return toReturn != null ? toReturn : Collections.<MatchLocation> emptyList();
       }
 

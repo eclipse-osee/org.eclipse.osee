@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.data.HasDeleteState;
+import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.data.Modifiable;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -114,6 +115,16 @@ public final class OrcsPredicates {
          }
 
       });
+   }
+
+   public static Predicate<Attribute<?>> attributeId(final HasLocalId attributeId) {
+      return new Predicate<Attribute<?>>() {
+
+         @Override
+         public boolean apply(Attribute<?> input) {
+            return attributeId.getLocalId() == input.getLocalId();
+         }
+      };
    }
 
    private static class DeletedMatcher<T extends HasDeleteState> implements Predicate<T> {

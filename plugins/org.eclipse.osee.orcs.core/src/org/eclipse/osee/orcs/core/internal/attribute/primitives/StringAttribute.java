@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
 import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
-import org.eclipse.osee.orcs.core.internal.attribute.CharacterBackedAttribute;
 
 /**
  * @author Ryan D. Brooks

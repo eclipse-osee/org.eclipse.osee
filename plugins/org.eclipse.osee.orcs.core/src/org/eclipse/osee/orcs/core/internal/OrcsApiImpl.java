@@ -44,13 +44,17 @@ import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.indexer.IndexerModule;
 import org.eclipse.osee.orcs.core.internal.loader.ArtifactBuilderFactoryImpl;
 import org.eclipse.osee.orcs.core.internal.loader.ArtifactLoaderFactoryImpl;
-import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
+import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
+import org.eclipse.osee.orcs.core.internal.proxy.impl.ExternalArtifactManagerImpl;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationGraphImpl;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.core.internal.session.OrcsSessionImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.TransactionFactoryImpl;
-import org.eclipse.osee.orcs.core.internal.transaction.handler.TxDataHandlerFactoryImpl;
+import org.eclipse.osee.orcs.core.internal.transaction.TxCallableFactory;
+import org.eclipse.osee.orcs.core.internal.transaction.TxDataLoaderImpl;
+import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager;
+import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
 import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesModule;
 import org.eclipse.osee.orcs.core.internal.util.ValueProviderFactory;
@@ -74,14 +78,16 @@ public class OrcsApiImpl implements OrcsApi {
    private ExecutorAdmin executorAdmin;
    private SystemPreferences preferences;
 
-   private ArtifactProxyFactory proxyFactory;
+   private ExternalArtifactManager proxyManager;
    private ArtifactLoaderFactory loaderFactory;
    private QueryModule queryModule;
    private IndexerModule indexerModule;
-   private TxDataHandlerFactoryImpl txUpdateFactory;
    private OrcsTypesModule typesModule;
    private OrcsSession systemSession;
    private DataModule module;
+
+   private TxDataManager txDataManager;
+   private TxCallableFactory txCallableFactory;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -149,14 +155,16 @@ public class OrcsApiImpl implements OrcsApi {
          new ArtifactFactory(module.getDataFactory(), attributeFactory, relationFactory, orcsTypes.getArtifactTypes(),
             providerFactory);
 
-      proxyFactory = new ArtifactProxyFactory(artifactFactory);
-
-      txUpdateFactory = new TxDataHandlerFactoryImpl();
+      proxyManager = new ExternalArtifactManagerImpl();
 
       ArtifactBuilderFactory builderFactory =
-         new ArtifactBuilderFactoryImpl(logger, proxyFactory, artifactFactory, attributeFactory);
+         new ArtifactBuilderFactoryImpl(logger, proxyManager, artifactFactory, attributeFactory);
 
       loaderFactory = new ArtifactLoaderFactoryImpl(module.getDataLoaderFactory(), builderFactory);
+
+      TxDataLoader txDataLoader = new TxDataLoaderImpl();
+      txDataManager = new TxDataManager(proxyManager, artifactFactory, txDataLoader);
+      txCallableFactory = new TxCallableFactory(logger, module.getTxDataStore(), txDataManager);
 
       queryModule =
          new QueryModule(logger, module.getQueryEngine(), builderFactory, orcsTypes.getArtifactTypes(),
@@ -172,8 +180,7 @@ public class OrcsApiImpl implements OrcsApi {
       }
       queryModule = null;
       loaderFactory = null;
-      txUpdateFactory = null;
-      proxyFactory = null;
+      proxyManager = null;
       systemSession = null;
    }
 
@@ -196,7 +203,7 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public GraphReadable getGraph(ApplicationContext context) {
       OrcsSession session = getSession(context);
-      return new RelationGraphImpl(session, loaderFactory, getOrcsTypes(context).getRelationTypes());
+      return new RelationGraphImpl(session, loaderFactory, getOrcsTypes(context).getRelationTypes(), proxyManager);
    }
 
    @Override
@@ -223,7 +230,7 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public TransactionFactory getTransactionFactory(ApplicationContext context) {
       OrcsSession session = getSession(context);
-      return new TransactionFactoryImpl(logger, session, module.getTxDataStore(), proxyFactory, txUpdateFactory);
+      return new TransactionFactoryImpl(session, txDataManager, txCallableFactory);
    }
 
    @Override

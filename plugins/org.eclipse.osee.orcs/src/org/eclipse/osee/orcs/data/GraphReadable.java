@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public interface GraphReadable extends Readable {
 
-   Collection<IRelationTypeSide> getExistingRelationTypes(ArtifactReadable art);
+   Collection<IRelationTypeSide> getExistingRelationTypes(ArtifactReadable art) throws OseeCoreException;
 
    List<IRelationType> getValidRelationTypes(ArtifactReadable art) throws OseeCoreException;
 

@@ -11,18 +11,14 @@
 package org.eclipse.osee.orcs.core.internal.transaction;
 
 import java.util.Collection;
-import java.util.concurrent.Callable;
+import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.TxDataStore;
-import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
-import org.eclipse.osee.orcs.core.internal.transaction.TxDataManagerImpl.TxDataHandlerFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.transaction.OrcsTransaction;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
 /**
@@ -30,41 +26,37 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
  */
 public class TransactionFactoryImpl implements TransactionFactory {
 
-   private final Log logger;
    private final OrcsSession session;
-   private final TxDataStore txDataStore;
-   private final ArtifactProxyFactory artifactFactory;
-   private final TxDataHandlerFactory handlerF;
+   private final TxDataManager txDataManager;
+   private final TxCallableFactory txCallableFactory;
 
-   public TransactionFactoryImpl(Log logger, OrcsSession session, TxDataStore txDataStore, ArtifactProxyFactory artifactFactory, TxDataHandlerFactory handlerF) {
-      this.logger = logger;
+   public TransactionFactoryImpl(OrcsSession session, TxDataManager txDataManager, TxCallableFactory txCallableFactory) {
+      super();
       this.session = session;
-      this.txDataStore = txDataStore;
-      this.artifactFactory = artifactFactory;
-      this.handlerF = handlerF;
+      this.txDataManager = txDataManager;
+      this.txCallableFactory = txCallableFactory;
    }
 
    @Override
-   public OrcsTransaction createTransaction(IOseeBranch branch, ArtifactReadable author, String comment) throws OseeCoreException {
+   public CancellableCallable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
+      return txCallableFactory.createUnsubscribeTx(session, userArtifact, groupArtifact);
+   }
+
+   @Override
+   public CancellableCallable<Integer> purgeTransaction(Collection<? extends ITransaction> transactions) {
+      return txCallableFactory.purgeTransactions(session, transactions);
+   }
+
+   @Override
+   public TransactionBuilder createTransaction(IOseeBranch branch, ArtifactReadable author, String comment) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(author, "author");
       Conditions.checkNotNullOrEmpty(comment, "comment");
 
-      TxDataManager manager = new TxDataManagerImpl(artifactFactory, handlerF);
-      OrcsTransactionImpl orcsTxn =
-         new OrcsTransactionImpl(logger, session, txDataStore, artifactFactory, manager, branch);
+      TxData txData = txDataManager.createTxData(session, branch);
+      TransactionBuilderImpl orcsTxn = new TransactionBuilderImpl(txCallableFactory, txDataManager, txData);
       orcsTxn.setComment(comment);
       orcsTxn.setAuthor(author);
       return orcsTxn;
-   }
-
-   @Override
-   public Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
-      return txDataStore.createUnsubscribeTx(userArtifact, groupArtifact);
-   }
-
-   @Override
-   public Callable<Integer> purgeTransaction(Collection<? extends ITransaction> transactions) {
-      return txDataStore.purgeTransactions(session, transactions);
    }
 }

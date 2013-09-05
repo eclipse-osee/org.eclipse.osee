@@ -123,7 +123,8 @@ public class BuildTraceReportResource {
    private IOseeBranch getBaselineBranch(String buildId, QueryFactory queryFactory) throws OseeCoreException {
       QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON);
       ArtifactReadable buildArt = builder.andGuidsOrHrids(buildId).getResults().getExactlyOne();
-      List<AttributeReadable<String>> branchGuids = buildArt.getAttributes(AtsAttributeTypes.BaselineBranchGuid);
+      List<? extends AttributeReadable<String>> branchGuids =
+         buildArt.getAttributes(AtsAttributeTypes.BaselineBranchGuid);
       Conditions.checkNotNullOrEmpty(branchGuids, "branchGuid");
       String baselineBranchGuid = branchGuids.iterator().next().getValue();
       IOseeBranch branch = TokenFactory.createBranch(baselineBranchGuid, "TraceReport Branch");

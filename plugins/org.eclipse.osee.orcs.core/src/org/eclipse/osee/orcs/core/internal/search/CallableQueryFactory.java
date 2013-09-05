@@ -86,7 +86,7 @@ public class CallableQueryFactory {
 
          @Override
          protected ResultSet<ArtifactReadable> innerCall() throws Exception {
-            ArtifactBuilder handler = builderFactory.createArtifactBuilder();
+            ArtifactBuilder handler = builderFactory.createArtifactBuilder(getSession());
             OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.FULL);
             queryEngine.createArtifactQuery(getSession(), getQueryData(), handler).call();
             List<ArtifactReadable> results = handler.getArtifacts();
@@ -101,7 +101,7 @@ public class CallableQueryFactory {
 
          @Override
          protected ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> innerCall() throws Exception {
-            ArtifactBuilder builder = builderFactory.createArtifactBuilder();
+            ArtifactBuilder builder = builderFactory.createArtifactBuilder(getSession());
             ArtifactMatchDataHandler handler = new ArtifactMatchDataHandler(builder);
             OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.FULL);
             queryEngine.createArtifactQuery(getSession(), getQueryData(), handler).call();

@@ -10,24 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.transaction;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.TxDataStore;
-import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
-import org.eclipse.osee.orcs.core.internal.transaction.TxDataManagerImpl.TxDataHandlerFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.transaction.OrcsTransaction;
-import org.junit.Assert;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link TransactionFactoryImpl}
@@ -42,10 +41,12 @@ public class TransactionFactoryImplTest {
    // @formatter:off
    @Mock private Log logger;
    @Mock private OrcsSession session;
-   @Mock private TxDataStore dataStore;
-   @Mock private ArtifactProxyFactory artifactFactory;
-   @Mock private TxDataHandlerFactory dataFactory;
+   @Mock private TxDataManager txDataManager;
+   @Mock private TxCallableFactory txCallableFactory;
+   
+   
    @Mock private ArtifactReadable expectedAuthor;
+   @Mock private TxData txData;
    // @formatter:on
 
    private final IOseeBranch expectedBranch = CoreBranches.COMMON;
@@ -53,8 +54,9 @@ public class TransactionFactoryImplTest {
 
    @Before
    public void init() {
-      MockitoAnnotations.initMocks(this);
-      factory = new TransactionFactoryImpl(logger, session, dataStore, artifactFactory, dataFactory);
+      initMocks(this);
+      factory = new TransactionFactoryImpl(session, txDataManager, txCallableFactory);
+
    }
 
    @Test
@@ -89,10 +91,15 @@ public class TransactionFactoryImplTest {
    public void testCreateTransaction() throws OseeCoreException {
       String expectedComment = "This is my comment";
 
-      OrcsTransaction tx = factory.createTransaction(expectedBranch, expectedAuthor, expectedComment);
-      Assert.assertNotNull(tx);
-      Assert.assertEquals(expectedBranch, tx.getBranch());
-      Assert.assertEquals(expectedAuthor, tx.getAuthor());
-      Assert.assertEquals(expectedComment, tx.getComment());
+      when(txDataManager.createTxData(session, expectedBranch)).thenReturn(txData);
+      when(txData.getAuthor()).thenReturn(expectedAuthor);
+      when(txData.getBranch()).thenReturn(expectedBranch);
+      when(txData.getComment()).thenReturn(expectedComment);
+
+      TransactionBuilder tx = factory.createTransaction(expectedBranch, expectedAuthor, expectedComment);
+      assertNotNull(tx);
+      assertEquals(expectedBranch, tx.getBranch());
+      assertEquals(expectedAuthor, tx.getAuthor());
+      assertEquals(expectedComment, tx.getComment());
    }
 }

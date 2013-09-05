@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({OrcsPredicatesTest.class})
+@Suite.SuiteClasses({OrcsPredicatesTest.class, ResultSetIterableTest.class})
 public class UtilTestSuite {
    // Test Suite
 }

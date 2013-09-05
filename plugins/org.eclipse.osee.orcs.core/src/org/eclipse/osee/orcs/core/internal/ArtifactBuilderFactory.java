@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal;
 
+import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public interface ArtifactBuilderFactory {
 
-   ArtifactBuilder createArtifactBuilder();
+   ArtifactBuilder createArtifactBuilder(OrcsSession session);
 
 }

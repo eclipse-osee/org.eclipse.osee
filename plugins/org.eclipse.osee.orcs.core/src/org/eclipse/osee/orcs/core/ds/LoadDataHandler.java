@@ -27,6 +27,6 @@ public interface LoadDataHandler extends AttributeDataMatchHandler {
 
    void onData(RelationData data) throws OseeCoreException;
 
-   void onLoadEnd();
+   void onLoadEnd() throws OseeCoreException;
 
 }

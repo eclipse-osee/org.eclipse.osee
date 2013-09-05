@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
@@ -196,15 +197,28 @@ public class DataLoaderImpl implements DataLoader {
          startTime = System.currentTimeMillis();
          logger.trace("%s [start] - [%s] [%s]", getClass().getSimpleName(), criteria, options);
       }
+      Exception saveException = null;
       try {
          handler.onLoadStart();
          loadExecutor.load(cancellation, handler, criteria, options);
+      } catch (Exception ex) {
+         saveException = ex;
       } finally {
-         handler.onLoadEnd();
+         try {
+            handler.onLoadEnd();
+         } catch (OseeCoreException ex) {
+            if (saveException == null) {
+               saveException = ex;
+            }
+         } finally {
+            if (logger.isTraceEnabled()) {
+               logger.trace("%s [%s] - loaded [%s] [%s]", getClass().getSimpleName(), Lib.getElapseString(startTime),
+                  criteria, options);
+            }
+         }
       }
-      if (logger.isTraceEnabled()) {
-         logger.trace("%s [%s] - loaded [%s] [%s]", getClass().getSimpleName(), Lib.getElapseString(startTime),
-            criteria, options);
+      if (saveException != null) {
+         OseeExceptions.wrapAndThrow(saveException);
       }
    }
 

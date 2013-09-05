@@ -27,11 +27,11 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
+import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.ArtifactWriteable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryFactory;
-import org.eclipse.osee.orcs.transaction.OrcsTransaction;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.junit.Before;
 import org.junit.Rule;
@@ -138,20 +138,19 @@ public class OrcsPortingTest {
 
       // baseline branch - set up artifacts on the main branch, and on the child branch
       // first, add some transaction on the main branch, then create the child branch
-      OrcsTransaction tx = txFactory.createTransaction(branch, author, "add base requirement");
-      ArtifactWriteable baseReq = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "BaseRequirement");
-      baseReq.setSoleAttributeFromString(CoreAttributeTypes.Subsystem, "Test");
+      TransactionBuilder tx = txFactory.createTransaction(branch, author, "add base requirement");
+      ArtifactId baseReq = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "BaseRequirement");
+      tx.setSoleAttributeFromString(baseReq, CoreAttributeTypes.Subsystem, "Test");
 
-      OrcsTransaction tx2 = txFactory.createTransaction(branch, author, "add another requirement");
-      ArtifactWriteable nextReq =
-         tx2.createArtifact(CoreArtifactTypes.SoftwareRequirement, "SecondRequirement", artifactGuid);
-      nextReq.setSoleAttributeFromString(CoreAttributeTypes.Subsystem, "Test2");
+      TransactionBuilder tx2 = txFactory.createTransaction(branch, author, "add another requirement");
+      ArtifactId nextReq = tx2.createArtifact(CoreArtifactTypes.SoftwareRequirement, "SecondRequirement", artifactGuid);
+      tx2.setSoleAttributeFromString(nextReq, CoreAttributeTypes.Subsystem, "Test2");
 
       return tx2.commit();
    }
 
    private void setupAssociatedArtifact(String associatedArtifactGuid) throws Exception {
-      OrcsTransaction tx = txFactory.createTransaction(CoreBranches.COMMON, author, "setup associated artifact");
+      TransactionBuilder tx = txFactory.createTransaction(CoreBranches.COMMON, author, "setup associated artifact");
       // normally the associated artifact would be a work flow, 
       // but since that is an ATS construct, we are just using a requirement
       tx.createArtifact(CoreArtifactTypes.Requirement, "AssociatedArtifact", associatedArtifactGuid);
@@ -164,13 +163,12 @@ public class OrcsPortingTest {
       IOseeBranch childBranch = TokenFactory.createBranch(GUID.create(), "childBranch");
       branchApi.createWorkingBranch(childBranch, author, parentBranch, null).call();
 
-      OrcsTransaction tx3 = txFactory.createTransaction(childBranch, author, "update second requirement");
+      TransactionBuilder tx3 = txFactory.createTransaction(childBranch, author, "update second requirement");
       ArtifactReadable readableReq2 =
          query.fromBranch(childBranch).andGuidsOrHrids(artifactToModifyGuid).getResults().getExactlyOne();
 
       // modifying this artifact should cause it to get introduced
-      ArtifactWriteable writeableReq2 = tx3.asWriteable(readableReq2);
-      writeableReq2.setSoleAttributeFromString(CoreAttributeTypes.Subsystem, "test changed");
+      tx3.setSoleAttributeFromString(readableReq2, CoreAttributeTypes.Subsystem, "test changed");
 
       // new artifacts should come across as new
       tx3.createArtifact(CoreArtifactTypes.Folder, "childBranch folder");
@@ -179,13 +177,12 @@ public class OrcsPortingTest {
       TransactionRecord transactionToCopy = tx3.commit();
 
       // make an additional transaction to make sure it doesn't get copied also
-      OrcsTransaction tx4 = txFactory.createTransaction(childBranch, author, "after second requirement");
+      TransactionBuilder tx4 = txFactory.createTransaction(childBranch, author, "after second requirement");
       ArtifactReadable readableReq2verA =
          query.fromBranch(childBranch).andGuidsOrHrids(artifactToModifyGuid).getResults().getExactlyOne();
 
       // modifying this artifact should cause it to get introduced
-      ArtifactWriteable writeableReq2verA = tx4.asWriteable(readableReq2verA);
-      writeableReq2verA.setSoleAttributeFromString(CoreAttributeTypes.Subsystem, "test changed again");
+      tx4.setSoleAttributeFromString(readableReq2verA, CoreAttributeTypes.Subsystem, "test changed again");
 
       // additional artifacts should not come across
       tx4.createArtifact(CoreArtifactTypes.Folder, "folder after transaction");

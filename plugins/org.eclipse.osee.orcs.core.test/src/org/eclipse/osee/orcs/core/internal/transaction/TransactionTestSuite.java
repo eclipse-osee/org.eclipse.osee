@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.transaction;
 
-import org.eclipse.osee.orcs.core.internal.transaction.handler.HandlerTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   HandlerTestSuite.class,
-   OrcsTransactionImplTest.class,
+   CollectDirtyDataTest.class,
+   TransactionBuilderImplTest.class,
    TransactionFactoryImplTest.class,
-   TxDataManagerImplTest.class})
+   TxCallableFactoryTest.class,
+   TxDataManagerTest.class})
 public class TransactionTestSuite {
    // Test Suite
 }

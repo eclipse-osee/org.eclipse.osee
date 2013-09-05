@@ -56,11 +56,11 @@ public class AttributeResource {
       ArtifactReadable exactlyOne =
          factory.fromBranch(branch).andGuidsOrHrids(artifactUuid).getResults().getExactlyOne();
 
-      Optional<AttributeReadable<Object>> item =
+      Optional<? extends AttributeReadable<Object>> item =
          Iterables.tryFind(exactlyOne.getAttributes(), new Predicate<AttributeReadable<Object>>() {
             @Override
             public boolean apply(AttributeReadable<Object> attribute) {
-               return attribute.getId() == attrId;
+               return attribute.getLocalId() == attrId;
             }
          });
 

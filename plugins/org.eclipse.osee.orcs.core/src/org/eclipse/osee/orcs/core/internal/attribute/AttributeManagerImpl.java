@@ -36,8 +36,10 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.HasOrcsData;
 import org.eclipse.osee.orcs.core.internal.util.MultiplicityState;
-import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.AttributeWriteable;
+import org.eclipse.osee.orcs.core.internal.util.OrcsPredicates;
+import org.eclipse.osee.orcs.data.AttributeId;
+import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar
@@ -82,11 +84,6 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
       if (value == true) {
          onLoaded();
       }
-   }
-
-   @Override
-   public List<Attribute<?>> getAttributesDirty() throws OseeCoreException {
-      return attributes.getDirties();
    }
 
    @Override
@@ -142,15 +139,25 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    }
 
    @Override
-   public List<AttributeReadable<Object>> getAttributes() throws OseeCoreException {
-      List<Attribute<?>> items = getAttributesExcludeDeleted();
-      return Collections.castAll(items);
+   public Attribute<Object> getAttributeById(AttributeId attributeId) throws OseeCoreException {
+      Attribute<Object> attribute = null;
+      Optional<Attribute<Object>> tryFind = Iterables.tryFind(getAttributes(), OrcsPredicates.attributeId(attributeId));
+      if (tryFind.isPresent()) {
+         attribute = tryFind.get();
+      } else {
+         throw new AttributeDoesNotExist("Attribute[%s] does not exist for %s", attributeId, getExceptionString());
+      }
+      return attribute;
    }
 
    @Override
-   public <T> List<AttributeReadable<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException {
-      List<Attribute<T>> items = getAttributesExcludeDeleted(attributeType);
-      return Collections.castAll(items);
+   public List<Attribute<Object>> getAttributes() throws OseeCoreException {
+      return getAttributesExcludeDeleted();
+   }
+
+   @Override
+   public <T> List<Attribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException {
+      return getAttributesExcludeDeleted(attributeType);
    }
 
    @Override
@@ -173,27 +180,13 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    }
 
    @Override
-   public List<AttributeReadable<Object>> getAttributes(DeletionFlag includeDeleted) throws OseeCoreException {
-      List<Attribute<?>> items = getAttributesHelper(includeDeleted);
-      return Collections.castAll(items);
+   public List<Attribute<Object>> getAttributes(DeletionFlag includeDeleted) throws OseeCoreException {
+      return getAttributesHelper(includeDeleted);
    }
 
    @Override
-   public <T> List<AttributeReadable<T>> getAttributes(IAttributeType attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
-      List<Attribute<T>> items = getAttributesHelper(attributeType, includeDeleted);
-      return Collections.castAll(items);
-   }
-
-   @Override
-   public List<AttributeWriteable<Object>> getWriteableAttributes() throws OseeCoreException {
-      List<Attribute<?>> items = getAttributesExcludeDeleted();
-      return Collections.castAll(items);
-   }
-
-   @Override
-   public <T> List<AttributeWriteable<T>> getWriteableAttributes(IAttributeType attributeType) throws OseeCoreException {
-      List<Attribute<T>> items = getAttributesExcludeDeleted(attributeType);
-      return Collections.castAll(items);
+   public <T> List<Attribute<T>> getAttributes(IAttributeType attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
+      return getAttributesHelper(attributeType, includeDeleted);
    }
 
    @Override
@@ -324,19 +317,19 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
    }
 
    @Override
-   public <T> AttributeWriteable<T> createAttribute(IAttributeType attributeType) throws OseeCoreException {
+   public <T> Attribute<T> createAttribute(IAttributeType attributeType) throws OseeCoreException {
       return internalCreateAttributeHelper(attributeType);
    }
 
    @Override
-   public <T> AttributeWriteable<T> createAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
+   public <T> Attribute<T> createAttribute(IAttributeType attributeType, T value) throws OseeCoreException {
       Attribute<T> attribute = internalCreateAttributeHelper(attributeType);
       attribute.setValue(value);
       return attribute;
    }
 
    @Override
-   public <T> AttributeWriteable<T> createAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException {
+   public <T> Attribute<T> createAttributeFromString(IAttributeType attributeType, String value) throws OseeCoreException {
       Attribute<T> attribute = internalCreateAttributeHelper(attributeType);
       attribute.setFromString(value);
       return attribute;
@@ -368,11 +361,11 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
 
    //////////////////////////////////////////////////////////////
 
-   private List<Attribute<?>> getAttributesExcludeDeleted() throws OseeCoreException {
+   private List<Attribute<Object>> getAttributesExcludeDeleted() throws OseeCoreException {
       return getAttributesHelper(DeletionFlag.EXCLUDE_DELETED);
    }
 
-   private List<Attribute<?>> getAttributesIncludeDeleted() throws OseeCoreException {
+   private List<Attribute<Object>> getAttributesIncludeDeleted() throws OseeCoreException {
       return getAttributesHelper(DeletionFlag.INCLUDE_DELETED);
    }
 
@@ -384,9 +377,9 @@ public abstract class AttributeManagerImpl extends AbstractIdentity<String> impl
       return getAttributesHelper(attributeType, DeletionFlag.INCLUDE_DELETED);
    }
 
-   private List<Attribute<?>> getAttributesHelper(DeletionFlag includeDeleted) throws OseeCoreException {
+   private List<Attribute<Object>> getAttributesHelper(DeletionFlag includeDeleted) throws OseeCoreException {
       ensureAttributesLoaded();
-      return attributes.getList(includeDeleted);
+      return Collections.castAll(attributes.getList(includeDeleted));
    }
 
    private <T> List<Attribute<T>> getAttributesHelper(IAttributeType attributeType, DeletionFlag includeDeleted) throws OseeCoreException {

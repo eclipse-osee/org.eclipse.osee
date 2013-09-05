@@ -16,7 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
-import java.lang.reflect.Proxy;
+import static org.junit.Assert.fail;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ResultSet;
@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -37,13 +36,13 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
+import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.ArtifactWriteable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
-import org.eclipse.osee.orcs.transaction.OrcsTransaction;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -89,15 +88,13 @@ public class OrcsTransactionTest {
    public void testWritingUriAttribute() throws OseeCoreException {
       final String requirementText = "The engine torque shall be directly controllable through the engine control unit";
 
-      OrcsTransaction transaction =
-         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, "Create plain text requirement");
+      TransactionBuilder tx = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
 
-      ArtifactWriteable torqueRequirement =
-         transaction.createArtifact(CoreArtifactTypes.SoftwareRequirementPlainText, "Engine Torque Control");
-      torqueRequirement.createAttribute(CoreAttributeTypes.PlainTextContent, requirementText);
+      ArtifactId torqueRequirement =
+         tx.createArtifact(CoreArtifactTypes.SoftwareRequirementPlainText, "Engine Torque Control");
+      tx.createAttribute(torqueRequirement, CoreAttributeTypes.PlainTextContent, requirementText);
 
-      String artifactId = torqueRequirement.getGuid();
-      transaction.commit();
+      tx.commit();
 
       ResultSet<ArtifactReadable> results =
          query.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.SoftwareRequirementPlainText).getResults();
@@ -109,14 +106,14 @@ public class OrcsTransactionTest {
             try {
                data = artifact.getSoleAttributeAsString(CoreAttributeTypes.PlainTextContent, "");
             } catch (OseeCoreException ex) {
-               Assert.fail(Lib.exceptionToString(ex));
+               fail(Lib.exceptionToString(ex));
             }
             return requirementText.equals(data);
          }
       });
 
       assertTrue(item.isPresent());
-      assertEquals(artifactId, item.get().getGuid());
+      assertEquals(torqueRequirement.getGuid(), item.get().getGuid());
    }
 
    @Test
@@ -128,17 +125,12 @@ public class OrcsTransactionTest {
       Branch branch = orcsApi.getBranchCache().get(CoreBranches.COMMON);
       TransactionRecord previousTx = orcsApi.getTxsCache().getHeadTransaction(branch);
 
-      OrcsTransaction tx = txFactory.createTransaction(branch, userArtifact, comment);
+      TransactionBuilder tx = txFactory.createTransaction(branch, userArtifact, comment);
 
-      ArtifactWriteable writeable = tx.createArtifact(CoreArtifactTypes.Folder, expectedName);
+      ArtifactId artifactId = tx.createArtifact(CoreArtifactTypes.Folder, expectedName);
 
-      writeable.setAttributesFromStrings(CoreAttributeTypes.Annotation, expectedAnnotation);
-      assertEquals(expectedName, writeable.getName());
-      assertEquals(expectedAnnotation, writeable.getAttributeValues(CoreAttributeTypes.Annotation).iterator().next());
-
-      String id = writeable.getGuid();
-
-      assertTrue(Proxy.isProxyClass(writeable.getClass()));
+      tx.setAttributesFromStrings(artifactId, CoreAttributeTypes.Annotation, expectedAnnotation);
+      assertEquals(expectedName, artifactId.getName());
 
       TransactionRecord newTx = tx.commit();
       assertFalse(tx.isCommitInProgress());
@@ -149,29 +141,28 @@ public class OrcsTransactionTest {
 
       checkTransaction(previousTx, newTx, branch, comment, userArtifact);
 
-      ResultSet<ArtifactReadable> result = query.fromBranch(CoreBranches.COMMON).andGuidsOrHrids(id).getResults();
+      ResultSet<ArtifactReadable> result = query.fromBranch(CoreBranches.COMMON).andIds(artifactId).getResults();
 
       ArtifactReadable artifact = result.getExactlyOne();
 
+      assertEquals(expectedAnnotation, artifact.getAttributeValues(CoreAttributeTypes.Annotation).iterator().next());
       assertEquals(expectedName, artifact.getName());
       assertEquals(expectedAnnotation, artifact.getAttributeValues(CoreAttributeTypes.Annotation).iterator().next());
-      assertEquals(writeable.getLocalId(), artifact.getLocalId());
-
-      assertTrue(Proxy.isProxyClass(artifact.getClass()));
+      assertEquals(artifactId.getGuid(), artifact.getGuid());
    }
 
    @Test
-   public void testDuplicateAritfact() throws Exception {
+   public void testCopyArtifact() throws Exception {
       ArtifactReadable guestUser =
          query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
 
       // duplicate on same branch
-      OrcsTransaction transaction1 =
-         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, "testDuplicateArtifactSameBranch");
-      ArtifactWriteable duplicate = transaction1.duplicateArtifact(guestUser);
+      TransactionBuilder transaction1 =
+         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
+      ArtifactId duplicate = transaction1.copyArtifact(guestUser);
       transaction1.commit();
       ArtifactReadable guestUserDup =
-         query.fromBranch(CoreBranches.COMMON).andGuidsOrHrids(duplicate.getGuid()).getResults().getExactlyOne();
+         query.fromBranch(CoreBranches.COMMON).andIds(duplicate).getResults().getExactlyOne();
 
       assertNotSame(SystemUser.Guest.getGuid(), guestUserDup.getGuid());
       assertEquals(SystemUser.Guest.getName(), guestUserDup.getName());
@@ -182,11 +173,11 @@ public class OrcsTransactionTest {
 
       ReadableBranch topLevelBranch = callableBranch.call();
 
-      OrcsTransaction transaction2 =
-         txFactory.createTransaction(topLevelBranch, userArtifact, "testDuplicateArtifactDifferentBranch");
-      duplicate = transaction2.duplicateArtifact(guestUser);
+      TransactionBuilder transaction2 =
+         txFactory.createTransaction(topLevelBranch, userArtifact, testName.getMethodName());
+      duplicate = transaction2.copyArtifact(guestUser);
       transaction2.commit();
-      guestUserDup = query.fromBranch(topLevelBranch).andGuidsOrHrids(duplicate.getGuid()).getResults().getExactlyOne();
+      guestUserDup = query.fromBranch(topLevelBranch).andIds(duplicate).getResults().getExactlyOne();
 
       assertNotSame(SystemUser.Guest.getGuid(), guestUserDup.getGuid());
       assertEquals(SystemUser.Guest.getName(), guestUserDup.getName());
@@ -198,15 +189,15 @@ public class OrcsTransactionTest {
          query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
 
       IOseeBranch branchToken = TokenFactory.createBranch(GUID.create(), "IntroduceArtifact tests");
-      Callable<ReadableBranch> callableBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact);
+      ReadableBranch topLevelBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact).call();
 
-      ReadableBranch topLevelBranch = callableBranch.call();
-      OrcsTransaction transaction = txFactory.createTransaction(topLevelBranch, userArtifact, "testIntroduceArtifact");
+      TransactionBuilder transaction =
+         txFactory.createTransaction(topLevelBranch, userArtifact, testName.getMethodName());
       transaction.introduceArtifact(guestUser);
       transaction.commit();
 
       ArtifactReadable introduced =
-         query.fromBranch(topLevelBranch).andGuidsOrHrids(SystemUser.Guest.getGuid()).getResults().getExactlyOne();
+         query.fromBranch(topLevelBranch).andIds(SystemUser.Guest).getResults().getExactlyOne();
       assertEquals(guestUser.getLocalId(), introduced.getLocalId());
    }
 
@@ -215,87 +206,59 @@ public class OrcsTransactionTest {
       ArtifactReadable guestUser =
          query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
 
-      OrcsTransaction transaction =
-         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, "testIntroduceOnSameBranch");
+      TransactionBuilder tx = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
 
       thrown.expect(OseeArgumentException.class);
-      transaction.introduceArtifact(guestUser);
+      tx.introduceArtifact(guestUser);
    }
 
    @Test
-   public void testAsWritable() throws OseeCoreException {
-      ArtifactReadable guestUser =
-         query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
-      OrcsTransaction transaction =
-         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
-      ArtifactWriteable writeable = transaction.asWriteable(guestUser);
-      writeable.setName("Test");
+   public void testReadAfterWrite() throws OseeCoreException {
+      QueryBuilder queryBuilder = query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest);
 
-      // make sure readables have not been updated
-      assertEquals("Guest", guestUser.getName());
+      ArtifactReadable originalGuest = queryBuilder.getResults().getExactlyOne();
 
-      transaction.commit();
+      TransactionBuilder tx = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
+      tx.setSoleAttributeFromString(originalGuest, CoreAttributeTypes.Name, "Test");
+      tx.commit();
 
-      // make sure readables have not been updated
-      assertEquals("Guest", guestUser.getName());
+      ArtifactReadable newGuest = queryBuilder.getResults().getExactlyOne();
 
-      guestUser = query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
-
-      assertEquals("Test", guestUser.getName());
-   }
-
-   @Test
-   public void testAsWritableException() throws OseeCoreException {
-      ArtifactReadable guestUser =
-         query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
-      OrcsTransaction transaction =
-         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
-      ArtifactWriteable writeable = transaction.asWriteable(guestUser);
-      writeable.setName("Test2");
-      transaction.commit();
-
-      // calls to sets should exception out after commit
-      thrown.expect(OseeAccessDeniedException.class);
-      writeable.setName("exception");
+      assertEquals("Guest", originalGuest.getName());
+      assertEquals("Test", newGuest.getName());
    }
 
    @Test
    public void testDeleteArtifact() throws OseeCoreException {
-      OrcsTransaction transaction =
-         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
-      ArtifactWriteable artifact = transaction.createArtifact(CoreArtifactTypes.AccessControlModel, "deleteMe");
-      transaction.commit();
+      TransactionBuilder tx = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
+      ArtifactId artifact = tx.createArtifact(CoreArtifactTypes.AccessControlModel, "deleteMe");
+      tx.commit();
 
-      transaction = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
-      ArtifactReadable toDelete =
-         query.fromBranch(CoreBranches.COMMON).andGuidsOrHrids(artifact.getGuid()).getResults().getExactlyOne();
-      ArtifactWriteable writeable = transaction.asWriteable(toDelete);
-      writeable.delete();
-      transaction.commit();
+      ArtifactReadable toDelete = query.fromBranch(CoreBranches.COMMON).andIds(artifact).getResults().getExactlyOne();
 
-      toDelete =
-         query.fromBranch(CoreBranches.COMMON).andGuidsOrHrids(writeable.getGuid()).includeDeleted().getResults().getOneOrNull();
+      tx = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
+      tx.deleteArtifact(toDelete);
+      tx.commit();
+
+      toDelete = query.fromBranch(CoreBranches.COMMON).andIds(artifact).includeDeleted().getResults().getOneOrNull();
       assertNotNull(toDelete);
       assertTrue(toDelete.isDeleted());
    }
 
    @Test
    public void testArtifactGetTransaction() throws OseeCoreException {
-      OrcsTransaction transaction =
-         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
+      TransactionBuilder tx = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
 
-      String guid = transaction.createArtifact(CoreArtifactTypes.Component, "A component").getGuid();
-      int startingTx = transaction.commit().getId();
+      String guid = tx.createArtifact(CoreArtifactTypes.Component, "A component").getGuid();
+      int startingTx = tx.commit().getId();
 
       ArtifactReadable artifact =
          query.fromBranch(CoreBranches.COMMON).andGuidsOrHrids(guid).getResults().getExactlyOne();
       assertEquals(startingTx, artifact.getTransaction());
 
-      OrcsTransaction transaction2 =
-         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
-
-      transaction2.asWriteable(artifact).setName("Modified - component");
-      int lastTx = transaction2.commit().getId();
+      TransactionBuilder tx2 = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
+      tx2.setName(artifact, "Modified - component");
+      int lastTx = tx2.commit().getId();
 
       assertTrue(startingTx != lastTx);
 
@@ -317,4 +280,5 @@ public class OrcsTransactionTest {
       assertEquals(-1, newTx.getCommit());
       assertTrue(previousTx.getTimeStamp().before(newTx.getTimeStamp()));
    }
+
 }

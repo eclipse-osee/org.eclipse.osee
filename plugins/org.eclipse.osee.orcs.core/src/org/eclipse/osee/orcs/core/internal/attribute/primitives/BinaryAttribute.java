@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 
-import org.eclipse.osee.orcs.core.internal.attribute.BinaryBackedAttribute;
+
 
 
 /**

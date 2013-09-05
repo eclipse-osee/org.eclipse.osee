@@ -32,11 +32,11 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
+import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.ArtifactWriteable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryFactory;
-import org.eclipse.osee.orcs.transaction.OrcsTransaction;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.junit.Before;
 import org.junit.Rule;
@@ -151,8 +151,8 @@ public class OrcsBranchTest {
       Callable<ReadableBranch> callableBranch = branchInterface.createTopLevelBranch(branch, author);
       ReadableBranch base = callableBranch.call();
       // put some changes on the base branch
-      OrcsTransaction tx = txFactory.createTransaction(base, author, "add some changes");
-      ArtifactWriteable folder = tx.createArtifact(CoreArtifactTypes.Folder, "BaseFolder");
+      TransactionBuilder tx = txFactory.createTransaction(base, author, "add some changes");
+      ArtifactId folder = tx.createArtifact(CoreArtifactTypes.Folder, "BaseFolder");
       tx.commit();
 
       // create working branch off of base to make some changes
@@ -163,14 +163,11 @@ public class OrcsBranchTest {
 
       ReadableBranch childBranch = callableChildBranch.call();
 
-      OrcsTransaction tx2 = txFactory.createTransaction(childBranch, author, "modify and make new arts");
-      ArtifactReadable readableFolder =
-         query.fromBranch(childBranch).andGuidsOrHrids(folder.getGuid()).getResults().getExactlyOne();
+      TransactionBuilder tx2 = txFactory.createTransaction(childBranch, author, "modify and make new arts");
+      ArtifactReadable readableFolder = query.fromBranch(childBranch).andIds(folder).getResults().getExactlyOne();
 
-      // modifying this artifact should cause it to get introduced
-      ArtifactWriteable writeableFolder = tx2.asWriteable(readableFolder);
-      writeableFolder.setName("New Folder Name");
-      writeableFolder.setSoleAttributeFromString(CoreAttributeTypes.StaticId, "test id");
+      tx2.setName(readableFolder, "New Folder Name");
+      tx2.setSoleAttributeFromString(readableFolder, CoreAttributeTypes.StaticId, "test id");
 
       // new artifacts should come across as new
       tx2.createArtifact(CoreArtifactTypes.Folder, "childBranch folder");

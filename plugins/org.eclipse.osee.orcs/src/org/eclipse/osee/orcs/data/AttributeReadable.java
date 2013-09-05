@@ -18,9 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface AttributeReadable<T> extends OrcsReadable {
-
-   int getId();
+public interface AttributeReadable<T> extends AttributeId, OrcsReadable {
 
    long getGammaId();
 

@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.ArtifactLoaderFactory;
-import org.eclipse.osee.orcs.core.internal.proxy.HasProxiedObject;
+import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.data.RelationTypes;
@@ -40,20 +40,19 @@ public class RelationGraphImpl implements GraphReadable {
    private final OrcsSession session;
    private final ArtifactLoaderFactory loader;
    private final RelationTypes relationTypeCache;
+   private final ExternalArtifactManager proxyManager;
 
-   public RelationGraphImpl(OrcsSession session, ArtifactLoaderFactory loader, RelationTypes relationTypeCache) {
+   public RelationGraphImpl(OrcsSession session, ArtifactLoaderFactory loader, RelationTypes relationTypeCache, ExternalArtifactManager proxyManager) {
       super();
       this.session = session;
       this.loader = loader;
       this.relationTypeCache = relationTypeCache;
+      this.proxyManager = proxyManager;
    }
 
-   private RelationContainer getRelationContainer(ArtifactReadable readable) {
+   private RelationContainer getRelationContainer(ArtifactReadable readable) throws OseeCoreException {
       RelationContainer toReturn = null;
-      Object object = readable;
-      if (object instanceof HasProxiedObject) {
-         object = ((HasProxiedObject<?>) readable).getProxiedObject();
-      }
+      Object object = proxyManager.asInternalArtifact(readable);
       if (object instanceof HasRelationContainer) {
          HasRelationContainer proxy = (HasRelationContainer) object;
          toReturn = proxy.getRelationContainer();
@@ -65,7 +64,7 @@ public class RelationGraphImpl implements GraphReadable {
       return loader.fromBranchAndArtifactIds(session, branch, artifactIds).setLoadLevel(LoadLevel.FULL).load();
    }
 
-   private void loadRelatedArtifactIds(ArtifactReadable art, IRelationTypeSide relationTypeSide, Collection<Integer> results) {
+   private void loadRelatedArtifactIds(ArtifactReadable art, IRelationTypeSide relationTypeSide, Collection<Integer> results) throws OseeCoreException {
       RelationContainer container = getRelationContainer(art);
       container.getArtifactIds(results, relationTypeSide);
    }
@@ -81,7 +80,7 @@ public class RelationGraphImpl implements GraphReadable {
    }
 
    @Override
-   public Collection<IRelationTypeSide> getExistingRelationTypes(ArtifactReadable art) {
+   public Collection<IRelationTypeSide> getExistingRelationTypes(ArtifactReadable art) throws OseeCoreException {
       RelationContainer container = getRelationContainer(art);
       return container.getExistingRelationTypes();
    }

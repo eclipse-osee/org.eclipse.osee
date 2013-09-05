@@ -11,11 +11,12 @@
 package org.eclipse.osee.orcs.core.internal.loader;
 
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.ArtifactBuilder;
 import org.eclipse.osee.orcs.core.internal.ArtifactBuilderFactory;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
-import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
+import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -23,12 +24,12 @@ import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
 public class ArtifactBuilderFactoryImpl implements ArtifactBuilderFactory {
 
    private final Log logger;
-   private final ArtifactProxyFactory proxyFactory;
+   private final ExternalArtifactManager proxyFactory;
 
    private final ArtifactFactory artifactFactory;
    private final AttributeFactory attributeFactory;
 
-   public ArtifactBuilderFactoryImpl(Log logger, ArtifactProxyFactory proxyFactory, ArtifactFactory artifactFactory, AttributeFactory attributeFactory) {
+   public ArtifactBuilderFactoryImpl(Log logger, ExternalArtifactManager proxyFactory, ArtifactFactory artifactFactory, AttributeFactory attributeFactory) {
       super();
       this.logger = logger;
       this.proxyFactory = proxyFactory;
@@ -37,8 +38,8 @@ public class ArtifactBuilderFactoryImpl implements ArtifactBuilderFactory {
    }
 
    @Override
-   public ArtifactBuilder createArtifactBuilder() {
-      return new ArtifactBuilderImpl(logger, proxyFactory, artifactFactory, attributeFactory);
+   public ArtifactBuilder createArtifactBuilder(OrcsSession session) {
+      return new ArtifactBuilderImpl(logger, proxyFactory, artifactFactory, attributeFactory, session);
    }
 
 }

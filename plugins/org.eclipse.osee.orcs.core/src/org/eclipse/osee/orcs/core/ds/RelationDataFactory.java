@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.data.HasLocalId;
@@ -19,7 +20,7 @@ import org.eclipse.osee.orcs.data.HasLocalId;
  */
 public interface RelationDataFactory {
 
-   RelationData createRelationData(IRelationType relationType, ArtifactData parent, HasLocalId aArt, HasLocalId bArt, String rationale) throws OseeCoreException;
+   RelationData createRelationData(IRelationType relationType, HasLocalId parent, IOseeBranch branch, HasLocalId aArt, HasLocalId bArt, String rationale) throws OseeCoreException;
 
    RelationData clone(RelationData source) throws OseeCoreException;
 }

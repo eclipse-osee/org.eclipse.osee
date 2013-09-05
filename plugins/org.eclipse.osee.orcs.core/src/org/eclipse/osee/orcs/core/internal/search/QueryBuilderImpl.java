@@ -16,11 +16,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.Identifiable;
+import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.Operator;
@@ -266,15 +267,15 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andIds(IArtifactToken... artifactToken) throws OseeCoreException {
-      return andIds(Arrays.asList(artifactToken));
+   public QueryBuilder andIds(Identifiable... ids) throws OseeCoreException {
+      return andIds(Arrays.asList(ids));
    }
 
    @Override
-   public QueryBuilder andIds(Collection<? extends IArtifactToken> artifactTokens) throws OseeCoreException {
+   public QueryBuilder andIds(Collection<? extends Identifiable> ids) throws OseeCoreException {
       Set<String> guids = new HashSet<String>();
-      for (IArtifactToken token : artifactTokens) {
-         guids.add(token.getGuid());
+      for (Identity<String> id : ids) {
+         guids.add(id.getGuid());
       }
       return andGuidsOrHrids(guids);
    }

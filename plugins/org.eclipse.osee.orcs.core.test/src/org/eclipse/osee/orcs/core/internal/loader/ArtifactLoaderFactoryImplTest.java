@@ -122,7 +122,7 @@ public class ArtifactLoaderFactoryImplTest {
       ArtifactLoader loader = factory.fromBranchAndArtifactIds(session, branch, ids);
       verify(dataLoaderFactory).fromBranchAndArtifactIds(session, branch, ids);
 
-      when(builderFactory.createArtifactBuilder()).thenReturn(builder);
+      when(builderFactory.createArtifactBuilder(session)).thenReturn(builder);
       when(builder.getArtifacts()).thenReturn(artifacts);
 
       List<ArtifactReadable> actual = loader.load(cancellation);
@@ -139,7 +139,7 @@ public class ArtifactLoaderFactoryImplTest {
       ArtifactLoader loader = factory.fromBranchAndArtifactIds(session, branch, ids);
       verify(dataLoaderFactory).fromBranchAndArtifactIds(session, branch, ids);
 
-      when(builderFactory.createArtifactBuilder()).thenReturn(builder);
+      when(builderFactory.createArtifactBuilder(session)).thenReturn(builder);
       when(builder.getArtifacts()).thenReturn(artifacts);
 
       ResultSet<ArtifactReadable> result = loader.getResults(cancellation);
@@ -156,7 +156,7 @@ public class ArtifactLoaderFactoryImplTest {
       ArtifactLoader loader = factory.fromQueryContext(session, queryContext);
       verify(dataLoaderFactory).fromQueryContext(queryContext);
 
-      when(builderFactory.createArtifactBuilder()).thenReturn(builder);
+      when(builderFactory.createArtifactBuilder(session)).thenReturn(builder);
       when(builder.getArtifacts()).thenReturn(artifacts);
 
       ResultSet<ArtifactReadable> result = loader.getResults(cancellation);

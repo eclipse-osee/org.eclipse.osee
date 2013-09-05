@@ -215,12 +215,13 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       }
 
       @Override
-      public void onLoadEnd() {
+      public void onLoadEnd() throws OseeCoreException {
          try {
             waitForResults();
             forwardArtifacts();
          } catch (Exception ex) {
             logger.error(ex, "Error waiting for query post process results");
+            OseeExceptions.wrapAndThrow(ex);
          } finally {
             getCounter().getAndSet(acceptedArtIds.size());
             reset();

@@ -55,7 +55,8 @@ public class LoadDataHandlerAdapter implements LoadDataHandler {
    }
 
    @Override
-   public void onLoadEnd() {
+   @SuppressWarnings("unused")
+   public void onLoadEnd() throws OseeCoreException {
       //
    }
 }

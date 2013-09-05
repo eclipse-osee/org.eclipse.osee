@@ -280,10 +280,11 @@ public class DataFactoryImplTest {
       when(localId1.getLocalId()).thenReturn(4562);
       when(localId2.getLocalId()).thenReturn(9513);
 
-      RelationData actual = dataFactory.createRelationData(relationType, artData, localId1, localId2, "My rationale");
+      RelationData actual =
+         dataFactory.createRelationData(relationType, localId1, CoreBranches.COMMON, localId1, localId2, "My rationale");
 
       VersionData actualVer = actual.getVersion();
-      assertEquals(11, actualVer.getBranchId());
+      assertEquals(657, actualVer.getBranchId());
       assertEquals(RelationalConstants.GAMMA_SENTINEL, actualVer.getGammaId());
       assertEquals(RelationalConstants.TRANSACTION_SENTINEL, actualVer.getTransactionId());
       assertEquals(RelationalConstants.TRANSACTION_SENTINEL, actualVer.getStripeId());
@@ -298,7 +299,7 @@ public class DataFactoryImplTest {
 
       assertEquals(4562, actual.getArtIdA());
       assertEquals(9513, actual.getArtIdB());
-      assertEquals(555, actual.getParentId());
+      assertEquals(4562, actual.getParentId());
       assertEquals("My rationale", actual.getRationale());
    }
 
@@ -417,7 +418,7 @@ public class DataFactoryImplTest {
    }
 
    @Test
-   public void testCloneArtifactData() {
+   public void testCloneArtifactData() throws OseeCoreException {
       ArtifactData actual = dataFactory.clone(artData);
       VersionData actualVer = actual.getVersion();
 
