@@ -73,8 +73,8 @@ public class RelationOrderRenderer {
    }
 
    public void toWordML(Producer producer, IOseeBranch branch, RelationOrderData relationOrderData) {
+      WordMLProducer writer = (WordMLProducer) producer;
       try {
-         WordMLProducer writer = (WordMLProducer) producer;
          writer.startTable();
          writer.addWordMl("<w:tblPr><w:tblW w:w=\"8200\" w:type=\"dxa\"/><w:jc w:val=\"center\"/></w:tblPr>");
          if (!relationOrderData.hasEntries()) {
@@ -97,9 +97,14 @@ public class RelationOrderRenderer {
                }
             }
          }
-         writer.endTable();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
+      } finally {
+         try {
+            writer.endTable();
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
       }
    }
 }
