@@ -51,4 +51,9 @@ public abstract class AbstractDataProxy implements DataProxy {
       return storage.getResolver();
    }
 
+   @Override
+   public boolean isInMemory() {
+      return storage.isInitialized() && storage.isDataValid();
+   }
+
 }

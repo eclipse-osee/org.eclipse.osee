@@ -33,4 +33,6 @@ public interface DataProxy {
    public void persist(long storageId) throws OseeCoreException;
 
    public void purge() throws OseeCoreException;
+
+   boolean isInMemory();
 }

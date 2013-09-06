@@ -11,12 +11,12 @@
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.executor.admin.HasCancellation;
@@ -35,6 +35,7 @@ import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.db.internal.loader.LoadUtil;
+import org.eclipse.osee.orcs.db.internal.loader.data.AttributeDataImpl;
 import org.eclipse.osee.orcs.db.internal.search.QueryFilterFactory;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.util.ArtifactDataCountHandler;
@@ -81,8 +82,8 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
    private ArtifactDataCountHandler createFilteringHandler(final HasCancellation cancellation, final Set<CriteriaAttributeKeywords> criterias, QuerySqlContext queryContext, final LoadDataHandler handler) throws Exception {
       int initialSize = computeFetchSize(queryContext);
       LoadDataBuffer buffer = new LoadDataBuffer(initialSize);
-      ConsumerFactory factory = new ConsumerFactoryImpl(criterias);
-      return new AttributeDataProducer(logger, cancellation, buffer, handler, factory);
+      Consumer consumer = new ConsumerImpl(cancellation, criterias);
+      return new AttributeDataProducer(buffer, handler, consumer);
    }
 
    private int computeFetchSize(SqlContext sqlContext) {
@@ -93,86 +94,172 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       return LoadUtil.computeFetchSize(fetchSize);
    }
 
-   private interface ConsumerFactory {
-      List<Future<?>> createConsumer(final AttributeData data, final LoadDataHandler handler) throws Exception;
+   private interface Consumer {
+
+      void onLoadStart();
+
+      void onData(final AttributeData data, final LoadDataHandler handler) throws OseeCoreException;
+
+      void onLoadEnd() throws OseeCoreException;
+
    }
 
-   private class ConsumerFactoryImpl implements ConsumerFactory {
+   private static final AttributeData END_OF_QUEUE = new AttributeDataImpl(null);
+
+   private final class ConsumerImpl implements Consumer {
+
+      private final HasCancellation cancellation;
       private final Set<CriteriaAttributeKeywords> criterias;
 
-      public ConsumerFactoryImpl(Set<CriteriaAttributeKeywords> criterias) {
+      private final AtomicBoolean executorStarted = new AtomicBoolean();
+
+      private final LinkedBlockingQueue<AttributeData> dataToProcess = new LinkedBlockingQueue<AttributeData>();
+      private Future<?> future;
+
+      public ConsumerImpl(HasCancellation cancellation, Set<CriteriaAttributeKeywords> criterias) {
          super();
+         this.cancellation = cancellation;
          this.criterias = criterias;
       }
 
       @Override
-      public List<Future<?>> createConsumer(final AttributeData data, final LoadDataHandler handler) throws Exception {
-         List<Future<?>> futures = new LinkedList<Future<?>>();
-         for (CriteriaAttributeKeywords criteria : criterias) {
-            final Collection<String> valuesToMatch = criteria.getValues();
-            final Collection<? extends IAttributeType> typesFilter = criteria.getTypes();
-            final QueryOption[] options = criteria.getOptions();
-
-            Callable<?> consumer = new CancellableCallable<Void>() {
-               @Override
-               public Void call() throws Exception {
-                  checkForCancelled();
-                  matcher.process(this, handler, data, valuesToMatch, typesFilter, options);
-                  return null;
-               }
-            };
-            Future<?> future = executorAdmin.schedule(consumer);
-            futures.add(future);
+      public void onLoadStart() {
+         executorStarted.set(false);
+         dataToProcess.clear();
+         if (future != null) {
+            cancelFutures();
+            future = null;
          }
-         return futures;
       }
+
+      @Override
+      public void onData(AttributeData data, LoadDataHandler handler) throws OseeCoreException {
+         try {
+            if (data.getDataProxy().isInMemory()) {
+               process(cancellation, data, handler);
+            } else {
+               addToQueue(data, handler);
+            }
+         } catch (Exception ex) {
+            OseeExceptions.wrapAndThrow(ex);
+         } finally {
+            if (cancellation.isCancelled()) {
+               cancelFutures();
+            }
+         }
+      }
+
+      private void addToQueue(AttributeData data, LoadDataHandler handler) throws Exception {
+         dataToProcess.offer(data);
+         try {
+            if (executorStarted.compareAndSet(false, true)) {
+               CancellableCallable<Void> consumer = createConsumer(handler);
+               future = executorAdmin.schedule(consumer);
+            }
+         } finally {
+            if (cancellation.isCancelled()) {
+               cancelFutures();
+            }
+         }
+
+      }
+
+      private CancellableCallable<Void> createConsumer(final LoadDataHandler handler) {
+         return new CancellableCallable<Void>() {
+            @Override
+            public Void call() throws Exception {
+               boolean isEndOfQueue = false;
+               while (!isEndOfQueue) {
+                  Set<AttributeData> toProcess = new HashSet<AttributeData>();
+                  AttributeData entry = dataToProcess.take();
+                  dataToProcess.drainTo(toProcess);
+                  toProcess.add(entry);
+                  for (AttributeData item : toProcess) {
+                     if (END_OF_QUEUE != item) {
+                        checkForCancelled();
+                        process(this, item, handler);
+                     } else {
+                        isEndOfQueue = true;
+                     }
+                  }
+               }
+               return null;
+            }
+         };
+      }
+
+      private void process(HasCancellation cancellation, AttributeData data, LoadDataHandler handler) throws Exception {
+         for (CriteriaAttributeKeywords criteria : criterias) {
+            cancellation.checkForCancelled();
+            Collection<String> valuesToMatch = criteria.getValues();
+            Collection<? extends IAttributeType> typesFilter = criteria.getTypes();
+            QueryOption[] options = criteria.getOptions();
+            matcher.process(cancellation, handler, data, valuesToMatch, typesFilter, options);
+         }
+      }
+
+      @Override
+      public void onLoadEnd() throws OseeCoreException {
+         dataToProcess.offer(END_OF_QUEUE);
+         try {
+            waitForResults();
+         } catch (Exception ex) {
+            OseeExceptions.wrapAndThrow(ex);
+         } finally {
+            cancelFutures();
+            executorStarted.set(false);
+            if (future != null) {
+               future = null;
+            }
+         }
+      }
+
+      private void waitForResults() throws Exception {
+         if (future != null) {
+            if (cancellation.isCancelled()) {
+               future.cancel(true);
+            } else {
+               // Wait for execution
+               future.get();
+            }
+         }
+      }
+
+      private void cancelFutures() {
+         if (future != null) {
+            future.cancel(true);
+         }
+      }
+
    }
 
-   private static final class AttributeDataProducer extends BufferedLoadDataHandler {
+   private final class AttributeDataProducer extends BufferedLoadDataHandler {
 
-      private final Log logger;
-      private final HasCancellation cancellation;
-      private final ConsumerFactory consumerFactory;
+      private final Consumer consumer;
 
-      private List<Future<?>> futures;
-      private final Set<Integer> acceptedArtIds = new CopyOnWriteArraySet<Integer>();
+      private final Set<Integer> acceptedArtIds = new ConcurrentSkipListSet<Integer>();
 
-      public AttributeDataProducer(Log logger, HasCancellation cancellation, LoadDataBuffer buffer, LoadDataHandler handler, ConsumerFactory consumerFactory) {
+      public AttributeDataProducer(LoadDataBuffer buffer, LoadDataHandler handler, Consumer consumer) {
          super(handler, buffer);
-         this.logger = logger;
-         this.cancellation = cancellation;
-         this.consumerFactory = consumerFactory;
+         this.consumer = consumer;
       }
 
       private void reset() {
          acceptedArtIds.clear();
          getBuffer().clear();
-         futures = null;
       }
 
       @Override
       public void onLoadStart() throws OseeCoreException {
          reset();
+         consumer.onLoadStart();
          super.onLoadStart();
       }
 
       @Override
       public void onData(AttributeData data) throws OseeCoreException {
          super.onData(data);
-         if (futures == null) {
-            futures = new LinkedList<Future<?>>();
-         }
-         try {
-            futures.addAll(consumerFactory.createConsumer(data, this));
-         } catch (Exception ex) {
-            OseeExceptions.wrapAndThrow(ex);
-         } finally {
-            if (futures != null && cancellation.isCancelled()) {
-               for (Future<?> future : futures) {
-                  future.cancel(true);
-               }
-            }
-         }
+         consumer.onData(data, this);
       }
 
       @Override
@@ -217,7 +304,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       @Override
       public void onLoadEnd() throws OseeCoreException {
          try {
-            waitForResults();
+            consumer.onLoadEnd();
             forwardArtifacts();
          } catch (Exception ex) {
             logger.error(ex, "Error waiting for query post process results");
@@ -228,18 +315,6 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
             super.onLoadEnd();
          }
       }
-
-      private void waitForResults() throws Exception {
-         if (futures != null) {
-            for (Future<?> future : futures) {
-               if (cancellation.isCancelled()) {
-                  future.cancel(true);
-               } else {
-                  // Wait for execution
-                  future.get();
-               }
-            }
-         }
-      }
    }
+
 }

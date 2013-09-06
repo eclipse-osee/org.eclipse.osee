@@ -22,7 +22,7 @@ public class Storage extends DataResource {
 
    private final DataHandler handler;
    private byte[] rawContent;
-   private boolean initialized;
+   private volatile boolean initialized;
 
    public Storage(DataHandler handler) {
       super();
