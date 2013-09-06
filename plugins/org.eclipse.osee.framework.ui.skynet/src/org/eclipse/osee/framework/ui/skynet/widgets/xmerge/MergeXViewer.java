@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.RENDER_AS_HUMAN_READABLE_TEXT;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
@@ -18,8 +19,10 @@ import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -31,8 +34,10 @@ import org.eclipse.osee.framework.ui.skynet.compare.AttributeCompareItem;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.mergeWizard.ConflictResolutionWizard;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -164,18 +169,26 @@ public class MergeXViewer extends XViewer {
    }
 
    private CompareHandler getCompareHandler(AttributeConflict attributeConflict) throws OseeCoreException {
-      AttributeCompareItem leftContributionItem =
-         new AttributeCompareItem(attributeConflict,
-            attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getSourceBranch().getName(),
-            attributeConflict.getAttribute().getDisplayableString(), true,
-            ArtifactImageManager.getImage(attributeConflict.getArtifact()));
-      AttributeCompareItem rightContributionItem =
-         new AttributeCompareItem(attributeConflict,
-            attributeConflict.getArtifactName() + " on Branch: " + attributeConflict.getDestBranch().getName(),
-            attributeConflict.getDestDisplayData(), false,
-            ArtifactImageManager.getImage(attributeConflict.getArtifact()));
 
-      return new CompareHandler(null, leftContributionItem, rightContributionItem, null);
+      Artifact sourceArtifact = attributeConflict.getArtifact();
+      String leftName = sourceArtifact.getName() + " on Branch: " + attributeConflict.getSourceBranch().getName();
+      String leftContents =
+         RendererManager.getBestRenderer(RENDER_AS_HUMAN_READABLE_TEXT, sourceArtifact).renderAttributeAsString(
+            attributeConflict.getAttributeType(), sourceArtifact, RENDER_AS_HUMAN_READABLE_TEXT, Strings.EMPTY_STRING);
+
+      Artifact destArtifact = attributeConflict.getDestArtifact();
+      String rightName = destArtifact.getName() + " on Branch: " + attributeConflict.getDestBranch().getName();
+      String rightContents =
+         RendererManager.getBestRenderer(RENDER_AS_HUMAN_READABLE_TEXT, destArtifact).renderAttributeAsString(
+            attributeConflict.getAttributeType(), destArtifact, RENDER_AS_HUMAN_READABLE_TEXT, Strings.EMPTY_STRING);
+
+      Image image = ArtifactImageManager.getImage(sourceArtifact);
+      AttributeCompareItem leftCompareItem =
+         new AttributeCompareItem(attributeConflict, leftName, leftContents, true, image);
+      AttributeCompareItem rightCompareItem =
+         new AttributeCompareItem(attributeConflict, rightName, rightContents, false, image);
+
+      return new CompareHandler(null, leftCompareItem, rightCompareItem, null);
    }
 
    private static void nativeContentAlert(Shell shell) {

@@ -85,6 +85,8 @@ public interface IRenderer {
 
    public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement) throws OseeCoreException;
 
+   public String renderAttributeAsString(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, String defaultValue) throws OseeCoreException;
+
    public int minimumRanking() throws OseeCoreException;
 
    public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException;

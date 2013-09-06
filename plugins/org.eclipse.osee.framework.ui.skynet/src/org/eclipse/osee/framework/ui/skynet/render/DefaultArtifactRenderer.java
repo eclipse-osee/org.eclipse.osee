@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENER
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.RENDER_AS_HUMAN_READABLE_TEXT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
@@ -113,7 +115,7 @@ public class DefaultArtifactRenderer implements IRenderer {
       if (presentationType.matches(SPECIALIZED_EDIT, DEFAULT_OPEN)) {
          return GENERAL_MATCH;
       }
-      if (presentationType.matches(PREVIEW)) {
+      if (presentationType.matches(PREVIEW, RENDER_AS_HUMAN_READABLE_TEXT)) {
          return BASE_MATCH;
       }
       return NO_MATCH;
@@ -157,6 +159,24 @@ public class DefaultArtifactRenderer implements IRenderer {
          }
          wordMl.endParagraph();
       }
+   }
+
+   @Override
+   public String renderAttributeAsString(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, final String defaultValue) throws OseeCoreException {
+      String returnValue = defaultValue;
+      if (presentationType.matches(RENDER_AS_HUMAN_READABLE_TEXT)) {
+         if (artifact == null) {
+            returnValue = "DELETED";
+         } else {
+            Attribute<Object> soleAttribute = artifact.getSoleAttribute(attributeType);
+            if (soleAttribute == null) {
+               returnValue = "DELETED";
+            } else {
+               returnValue = soleAttribute.getDisplayableString();
+            }
+         }
+      }
+      return returnValue;
    }
 
    private String renderRelationOrder(Artifact artifact) throws OseeCoreException {

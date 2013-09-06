@@ -14,6 +14,9 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
+import org.eclipse.osee.framework.ui.skynet.DslGrammar;
+import org.eclipse.osee.framework.ui.skynet.DslGrammarStorageAdapter;
+import org.eclipse.osee.framework.ui.skynet.internal.DslGrammarManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -31,7 +34,15 @@ public class AttributeCompareItem extends CompareItem {
    @Override
    public void persistContent() {
       try {
-         attributeConflict.setAttributeValue(getStringContent());
+         String stringContent = getStringContent();
+         DslGrammar dslGrammar = DslGrammarManager.getGrammar(attributeConflict.getAttributeType());
+         if (dslGrammar != null) {
+            DslGrammarStorageAdapter dslGrammarStorageAdapter = dslGrammar.getStorageAdapter();
+            if (dslGrammarStorageAdapter != null) {
+               stringContent = dslGrammarStorageAdapter.postProcess(attributeConflict.getArtifact(), stringContent);
+            }
+         }
+         attributeConflict.setAttributeValue(stringContent);
       } catch (OseeCoreException ex) {
          OseeLog.log(AttributeCompareItem.class, Level.SEVERE, ex);
       }
