@@ -33,8 +33,8 @@ import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.ArtifactBuilder;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.proxy.ArtifactProxyFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
@@ -82,8 +82,8 @@ public class ArtifactBuilderImplTest {
 
       when(attributeData.getArtifactId()).thenReturn(45);
 
-      builder.getArtifactDataHandler().onData(artifactData);
-      builder.getAttributeDataHandler().onData(attributeData);
+      builder.onData(artifactData);
+      builder.onData(attributeData);
 
       verify(attributeFactory).createAttribute(artifact, attributeData);
       verify(logger, times(0)).warn("");
@@ -96,7 +96,7 @@ public class ArtifactBuilderImplTest {
 
       when(attributeData.getArtifactId()).thenReturn(45);
 
-      builder.getAttributeDataHandler().onData(attributeData);
+      builder.onData(attributeData);
 
       verify(attributeFactory, times(0)).createAttribute(artifact, attributeData);
       verify(logger).warn("Orphaned attribute detected - [%s]", attributeData);
@@ -110,7 +110,7 @@ public class ArtifactBuilderImplTest {
       doSetup(datas, containers);
 
       for (RelationData data : datas) {
-         builder.getRelationDataHandler().onData(data);
+         builder.onData(data);
       }
 
       checkRelationCount(containers.get(1), RelationSide.SIDE_B, 9);
@@ -149,7 +149,7 @@ public class ArtifactBuilderImplTest {
          RelationContainer container = containers.get(id);
          when(artifact.getRelationContainer()).thenReturn(container);
 
-         builder.getArtifactDataHandler().onData(artData);
+         builder.onData(artData);
       }
    }
 

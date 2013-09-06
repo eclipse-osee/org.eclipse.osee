@@ -39,7 +39,6 @@ import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadDescription;
-import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
@@ -64,10 +63,7 @@ public class LoaderTest {
    // @formatter:off
 	@OsgiService private IOseeDatabaseService dbService;
 	@OsgiService private OrcsDataStore dataStore;
-   @Mock private LoadDataHandler builder;
-   @Mock private OrcsDataHandler<ArtifactData> artifactHandler;
-   @Mock private OrcsDataHandler<AttributeData> attributeHandler;
-   @Mock private OrcsDataHandler<RelationData> relationHandler;   
+   @Mock private LoadDataHandler builder; 
    @Captor private ArgumentCaptor<LoadDescription> descriptorCaptor;
 	@Captor private ArgumentCaptor<ArtifactData> artifactCaptor;
 	@Captor private ArgumentCaptor<AttributeData> attributeCaptor;
@@ -90,10 +86,6 @@ public class LoaderTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      when(builder.getArtifactDataHandler()).thenReturn(artifactHandler);
-      when(builder.getAttributeDataHandler()).thenReturn(attributeHandler);
-      when(builder.getRelationDataHandler()).thenReturn(relationHandler);
-
       when(artTypes.getByUuid(OseeTypeDefinition.getGuid())).thenReturn(OseeTypeDefinition);
       when(artTypes.getByUuid(Folder.getGuid())).thenReturn(Folder);
 
@@ -115,17 +107,14 @@ public class LoaderTest {
 
       verify(builder).onLoadStart();
       verify(builder).onLoadDescription(descriptorCaptor.capture());
-      verify(builder).getArtifactDataHandler();
-      verify(builder).getAttributeDataHandler();
-      verify(builder).getRelationDataHandler();
       verify(builder).onLoadEnd();
 
       LoadDescription descriptor = descriptorCaptor.getValue();
       assertEquals(CoreBranches.COMMON, descriptor.getBranch());
 
-      verify(artifactHandler, times(3)).onData(artifactCaptor.capture());
-      verify(attributeHandler, times(7)).onData(attributeCaptor.capture());
-      verify(relationHandler, times(3)).onData(relationCaptor.capture());
+      verify(builder, times(3)).onData(artifactCaptor.capture());
+      verify(builder, times(7)).onData(attributeCaptor.capture());
+      verify(builder, times(3)).onData(relationCaptor.capture());
 
       sort(artifactCaptor.getAllValues());
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
@@ -172,17 +161,14 @@ public class LoaderTest {
 
       verify(builder).onLoadStart();
       verify(builder).onLoadDescription(descriptorCaptor.capture());
-      verify(builder).getArtifactDataHandler();
-      verify(builder).getAttributeDataHandler();
-      verify(builder).getRelationDataHandler();
       verify(builder).onLoadEnd();
 
       LoadDescription descriptor = descriptorCaptor.getValue();
       assertEquals(CoreBranches.COMMON, descriptor.getBranch());
 
-      verify(artifactHandler, times(3)).onData(artifactCaptor.capture());
-      verify(attributeHandler, times(3)).onData(attributeCaptor.capture());
-      verify(relationHandler, times(3)).onData(relationCaptor.capture());
+      verify(builder, times(3)).onData(artifactCaptor.capture());
+      verify(builder, times(3)).onData(attributeCaptor.capture());
+      verify(builder, times(3)).onData(relationCaptor.capture());
 
       sort(artifactCaptor.getAllValues());
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
@@ -224,17 +210,14 @@ public class LoaderTest {
 
       verify(builder).onLoadStart();
       verify(builder).onLoadDescription(descriptorCaptor.capture());
-      verify(builder).getArtifactDataHandler();
-      verify(builder).getAttributeDataHandler();
-      verify(builder).getRelationDataHandler();
       verify(builder).onLoadEnd();
 
       LoadDescription descriptor = descriptorCaptor.getValue();
       assertEquals(CoreBranches.COMMON, descriptor.getBranch());
 
-      verify(artifactHandler, times(3)).onData(artifactCaptor.capture());
-      verify(attributeHandler, times(2)).onData(attributeCaptor.capture());
-      verify(relationHandler, times(2)).onData(relationCaptor.capture());
+      verify(builder, times(3)).onData(artifactCaptor.capture());
+      verify(builder, times(2)).onData(attributeCaptor.capture());
+      verify(builder, times(2)).onData(relationCaptor.capture());
 
       sort(artifactCaptor.getAllValues());
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();

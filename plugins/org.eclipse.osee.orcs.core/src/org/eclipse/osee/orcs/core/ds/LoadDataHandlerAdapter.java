@@ -18,45 +18,6 @@ import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
  */
 public class LoadDataHandlerAdapter implements LoadDataHandler {
 
-   private final OrcsDataHandler<ArtifactData> artifactHandler = new OrcsDataHandler<ArtifactData>() {
-
-      @Override
-      public void onData(ArtifactData data) throws OseeCoreException {
-         LoadDataHandlerAdapter.this.onData(data);
-      }
-   };
-
-   private final OrcsDataHandler<AttributeData> attributeHandler = new OrcsDataHandler<AttributeData>() {
-
-      @Override
-      public void onData(AttributeData data) throws OseeCoreException {
-         LoadDataHandlerAdapter.this.onData(data);
-      }
-   };
-
-   private final OrcsDataHandler<RelationData> relationHandler = new OrcsDataHandler<RelationData>() {
-
-      @Override
-      public void onData(RelationData data) throws OseeCoreException {
-         LoadDataHandlerAdapter.this.onData(data);
-      }
-   };
-
-   @Override
-   public final OrcsDataHandler<ArtifactData> getArtifactDataHandler() {
-      return artifactHandler;
-   }
-
-   @Override
-   public final OrcsDataHandler<AttributeData> getAttributeDataHandler() {
-      return attributeHandler;
-   }
-
-   @Override
-   public final OrcsDataHandler<RelationData> getRelationDataHandler() {
-      return relationHandler;
-   }
-
    @SuppressWarnings("unused")
    @Override
    public void onLoadStart() throws OseeCoreException {
@@ -69,16 +30,19 @@ public class LoadDataHandlerAdapter implements LoadDataHandler {
       //
    }
 
+   @Override
    @SuppressWarnings("unused")
    public void onData(ArtifactData data) throws OseeCoreException {
       //
    }
 
+   @Override
    @SuppressWarnings("unused")
    public void onData(AttributeData data) throws OseeCoreException {
       //
    }
 
+   @Override
    @SuppressWarnings("unused")
    public void onData(RelationData data) throws OseeCoreException {
       //

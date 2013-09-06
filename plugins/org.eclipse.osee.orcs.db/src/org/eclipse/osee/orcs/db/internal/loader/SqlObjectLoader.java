@@ -145,7 +145,7 @@ public class SqlObjectLoader {
    }
 
    protected void loadArtifacts(LoadDataHandler builder, Criteria criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
-      OrcsDataHandler<ArtifactData> artHandler = builder.getArtifactDataHandler();
+      OrcsDataHandler<ArtifactData> artHandler = asArtifactHandler(builder);
       writeSql(criteria, loadContext);
       load(artifactProcessor, artHandler, loadContext, fetchSize);
    }
@@ -153,7 +153,7 @@ public class SqlObjectLoader {
    protected void loadAttributes(LoadDataHandler builder, Criteria criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
       LoadLevel loadLevel = OptionsUtil.getLoadLevel(loadContext.getOptions());
       if (isAttributeLoadingAllowed(loadLevel)) {
-         OrcsDataHandler<AttributeData> attrHandler = builder.getAttributeDataHandler();
+         OrcsDataHandler<AttributeData> attrHandler = asAttributeHandler(builder);
          writeSql(criteria, loadContext);
          load(attributeProcessor, attrHandler, loadContext, fetchSize);
       }
@@ -162,7 +162,7 @@ public class SqlObjectLoader {
    protected void loadRelations(LoadDataHandler builder, Criteria criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
       LoadLevel loadLevel = OptionsUtil.getLoadLevel(loadContext.getOptions());
       if (isRelationLoadingAllowed(loadLevel)) {
-         OrcsDataHandler<RelationData> relHandler = builder.getRelationDataHandler();
+         OrcsDataHandler<RelationData> relHandler = asRelationHandler(builder);
          writeSql(criteria, loadContext);
          load(relationProcessor, relHandler, loadContext, fetchSize);
       }
@@ -238,6 +238,36 @@ public class SqlObjectLoader {
          @Override
          public boolean isMultiBranch() {
             return getBranch() == null;
+         }
+      };
+   }
+
+   private static OrcsDataHandler<ArtifactData> asArtifactHandler(final LoadDataHandler handler) {
+      return new OrcsDataHandler<ArtifactData>() {
+
+         @Override
+         public void onData(ArtifactData data) throws OseeCoreException {
+            handler.onData(data);
+         }
+      };
+   }
+
+   private static OrcsDataHandler<AttributeData> asAttributeHandler(final LoadDataHandler handler) {
+      return new OrcsDataHandler<AttributeData>() {
+
+         @Override
+         public void onData(AttributeData data) throws OseeCoreException {
+            handler.onData(data);
+         }
+      };
+   }
+
+   private static OrcsDataHandler<RelationData> asRelationHandler(final LoadDataHandler handler) {
+      return new OrcsDataHandler<RelationData>() {
+
+         @Override
+         public void onData(RelationData data) throws OseeCoreException {
+            handler.onData(data);
          }
       };
    }

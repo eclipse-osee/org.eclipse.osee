@@ -31,7 +31,6 @@ import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
-import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
@@ -191,18 +190,16 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
             Iterable<AttributeData> attrs = buffer.removeAttributesByArtId(artifactId);
             Iterable<RelationData> rels = buffer.removeRelationsByArtId(artifactId);
             if (art != null) {
-               handler.getArtifactDataHandler().onData(art);
+               handler.onData(art);
             }
             if (attrs != null) {
-               OrcsDataHandler<AttributeData> attributeDataHandler = handler.getAttributeDataHandler();
                for (AttributeData attr : attrs) {
-                  attributeDataHandler.onData(attr);
+                  handler.onData(attr);
                }
             }
             if (rels != null) {
-               OrcsDataHandler<RelationData> relationDataHandler = handler.getRelationDataHandler();
                for (RelationData rel : rels) {
-                  relationDataHandler.onData(rel);
+                  handler.onData(rel);
                }
             }
          }

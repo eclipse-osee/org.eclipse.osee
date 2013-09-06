@@ -38,7 +38,6 @@ import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
-import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.junit.Assert;
@@ -122,24 +121,21 @@ public class MissingChangeItemFactoryTest {
          public Object answer(InvocationOnMock invocation) throws Throwable {
             LoadDataHandler handler = (LoadDataHandler) invocation.getArguments()[1];
 
-            OrcsDataHandler<ArtifactData> artifactDataHandler = handler.getArtifactDataHandler();
-            if (artifactDataHandler != null && artifactData != null) {
+            if (artifactData != null) {
                for (ArtifactData data : artifactData) {
-                  artifactDataHandler.onData(data);
+                  handler.onData(data);
                }
             }
 
-            OrcsDataHandler<AttributeData> attributeDataHandler = handler.getAttributeDataHandler();
-            if (attributeDataHandler != null && attributeData != null) {
+            if (attributeData != null) {
                for (AttributeData data : attributeData) {
-                  attributeDataHandler.onData(data);
+                  handler.onData(data);
                }
             }
 
-            OrcsDataHandler<RelationData> relationDataHandler = handler.getRelationDataHandler();
-            if (relationDataHandler != null && relationData != null) {
+            if (relationData != null) {
                for (RelationData data : relationData) {
-                  relationDataHandler.onData(data);
+                  handler.onData(data);
                }
             }
 
@@ -153,10 +149,9 @@ public class MissingChangeItemFactoryTest {
          public Object answer(InvocationOnMock invocation) throws Throwable {
             LoadDataHandler handler = (LoadDataHandler) invocation.getArguments()[1];
 
-            OrcsDataHandler<ArtifactData> artifactDataHandler = handler.getArtifactDataHandler();
-            if (artifactDataHandler != null && destArtifactData != null) {
+            if (destArtifactData != null) {
                for (ArtifactData data : destArtifactData) {
-                  artifactDataHandler.onData(data);
+                  handler.onData(data);
                }
             }
 

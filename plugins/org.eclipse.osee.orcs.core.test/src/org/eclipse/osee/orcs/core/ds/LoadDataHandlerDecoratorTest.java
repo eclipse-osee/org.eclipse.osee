@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.junit.Before;
@@ -34,11 +33,7 @@ public class LoadDataHandlerDecoratorTest {
    @Mock private RelationData relData;
    @Mock private LoadDescription description;
    @Mock private MatchLocation match;   
-   
-   
-   @Mock private OrcsDataHandler<ArtifactData> artDataHandler;
-   @Mock private OrcsDataHandler<AttributeData> attrDataHandler;
-   @Mock private OrcsDataHandler<RelationData> relDataHandler;   
+    
    // @formatter:on
 
    private LoadDataHandlerDecorator decorated;
@@ -49,9 +44,6 @@ public class LoadDataHandlerDecoratorTest {
 
       decorated = new LoadDataHandlerDecorator(handler);
 
-      when(handler.getArtifactDataHandler()).thenReturn(artDataHandler);
-      when(handler.getAttributeDataHandler()).thenReturn(attrDataHandler);
-      when(handler.getRelationDataHandler()).thenReturn(relDataHandler);
    }
 
    @Test
@@ -66,13 +58,13 @@ public class LoadDataHandlerDecoratorTest {
       verify(handler).onData(attrData, match);
 
       decorated.onData(artData);
-      verify(artDataHandler).onData(artData);
+      verify(handler).onData(artData);
 
       decorated.onData(attrData);
-      verify(attrDataHandler).onData(attrData);
+      verify(handler).onData(attrData);
 
       decorated.onData(relData);
-      verify(relDataHandler).onData(relData);
+      verify(handler).onData(relData);
 
       decorated.onLoadEnd();
       verify(handler).onLoadEnd();

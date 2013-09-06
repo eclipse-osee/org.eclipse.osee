@@ -56,21 +56,21 @@ public class LoadDataHandlerDecorator extends LoadDataHandlerAdapter {
    @Override
    public void onData(ArtifactData data) throws OseeCoreException {
       if (handler != null) {
-         handler.getArtifactDataHandler().onData(data);
+         handler.onData(data);
       }
    }
 
    @Override
    public void onData(AttributeData data) throws OseeCoreException {
       if (handler != null) {
-         handler.getAttributeDataHandler().onData(data);
+         handler.onData(data);
       }
    }
 
    @Override
    public void onData(RelationData data) throws OseeCoreException {
       if (handler != null) {
-         handler.getRelationDataHandler().onData(data);
+         handler.onData(data);
       }
    }
 
