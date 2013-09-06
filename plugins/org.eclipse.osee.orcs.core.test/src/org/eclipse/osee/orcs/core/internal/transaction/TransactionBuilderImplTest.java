@@ -21,7 +21,10 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.PlainText
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.QualificationMethod;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RelationOrder;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
+import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
+import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.DEFAULT_HIERARCHY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.doThrow;
@@ -33,9 +36,13 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -45,6 +52,8 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
+import org.eclipse.osee.orcs.core.internal.relation.RelationUtil;
+import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.junit.Before;
@@ -61,6 +70,7 @@ import org.mockito.Mockito;
  */
 public class TransactionBuilderImplTest {
 
+   private static final IRelationType TYPE_1 = TokenFactory.createRelationType(123456789L, "TYPE_1");
    @Rule
    public ExpectedException thrown = ExpectedException.none();
 
@@ -278,7 +288,7 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void TestSetAttributeById() throws OseeCoreException {
+   public void testSetAttributeById() throws OseeCoreException {
       InputStream inputStream = Mockito.mock(InputStream.class);
 
       factory.setAttributeById(expectedAuthor, attrId, inputStream);
@@ -356,6 +366,61 @@ public class TransactionBuilderImplTest {
 
       thrown.expect(Exception.class);
       factory.commit();
+   }
+
+   @Test
+   public void testSetRationale() throws OseeCoreException {
+      factory.setRationale(node1, DEFAULT_HIERARCHY, node2, "This is my rationale");
+
+      verify(txDataManager).setRationale(txData, node1, DEFAULT_HIERARCHY, node2, "This is my rationale");
+   }
+
+   @Test
+   public void testAddChildren() throws OseeCoreException {
+      List<ArtifactReadable> list = Arrays.asList(node1, node2);
+
+      factory.addChildren(expectedAuthor, list);
+
+      verify(txDataManager).addChildren(txData, expectedAuthor, list);
+   }
+
+   @SuppressWarnings("unchecked")
+   @Test
+   public void TestAddChildrenAsList() throws OseeCoreException {
+      Iterable<? extends ArtifactId> children = Collections.EMPTY_LIST;
+      factory.addChildren(expectedAuthor, children);
+      verify(txDataManager).addChildren(txData, expectedAuthor, children);
+   }
+
+   @Test
+   public void testRelate() throws OseeCoreException {
+      factory.relate(node1, DEFAULT_HIERARCHY, node2);
+      verify(txDataManager).relate(txData, node1, DEFAULT_HIERARCHY, node2);
+   }
+
+   @Test
+   public void testRelateWithOrder() throws OseeCoreException {
+      factory.relate(node1, DEFAULT_HIERARCHY, node2, LEXICOGRAPHICAL_ASC);
+      verify(txDataManager).relate(txData, node1, DEFAULT_HIERARCHY, node2, LEXICOGRAPHICAL_ASC);
+   }
+
+   @Test
+   public void testUnrelateWithAandB() throws OseeCoreException {
+      factory.unrelate(node1, TYPE_1, node2);
+      verify(txDataManager).unrelate(txData, node1, TYPE_1, node2);
+   }
+
+   @Test
+   public void testUnrelateFromAllWithSide() throws OseeCoreException {
+      IRelationTypeSide asTypeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
+      factory.unrelateFromAll(asTypeSide, expectedAuthor);
+      verify(txDataManager).unrelateFromAll(txData, TYPE_1, expectedAuthor, SIDE_B);
+   }
+
+   @Test
+   public void testUnrelateFromAll() throws OseeCoreException {
+      factory.unrelateFromAll(expectedAuthor);
+      verify(txDataManager).unrelateFromAll(txData, expectedAuthor);
    }
 
 }

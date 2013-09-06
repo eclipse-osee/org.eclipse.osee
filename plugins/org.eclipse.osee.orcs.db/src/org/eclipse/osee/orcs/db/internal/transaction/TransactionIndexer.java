@@ -43,7 +43,7 @@ public class TransactionIndexer implements TransactionProcessor {
    public void process(final HasCancellation cancellation, OrcsSession session, TransactionData txData) {
       try {
          final Set<AttributeData> datas = new LinkedHashSet<AttributeData>();
-         txData.accept(new OrcsVisitorAdapter() {
+         txData.getChangeSet().accept(new OrcsVisitorAdapter() {
             @Override
             public void visit(AttributeData data) {
                datas.add(data);

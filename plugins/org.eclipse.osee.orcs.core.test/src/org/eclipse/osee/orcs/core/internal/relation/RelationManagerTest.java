@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation;
 
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
+import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.DEFAULT_HIERARCHY;
+import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_CHILD;
+import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_PARENT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -28,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.ResultSet;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -56,11 +57,6 @@ import org.mockito.stubbing.Answer;
  * @author Megumi Telles
  */
 public class RelationManagerTest {
-
-   private static final IRelationType DEFAULT_HIERARCHY = TokenFactory.createRelationType(
-      Default_Hierarchical__Parent.getGuid(), Default_Hierarchical__Parent.getName());
-   private static final RelationSide IS_PARENT = RelationSide.SIDE_A;
-   private static final RelationSide IS_CHILD = RelationSide.SIDE_B;
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();

@@ -43,6 +43,7 @@ public class RelationNodeLoaderImpl implements RelationNodeLoader {
       DataLoader loader = dataLoaderFactory.fromBranchAndArtifactIds(session, graph.getBranch(), ids);
       loader.setLoadLevel(level);
       loader.fromTransaction(graph.getTransaction());
+      loader.includeDeleted();
       loader.load(null, builder);
 
       return getResults(builder);

@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.core.internal.relation.impl;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
@@ -22,6 +21,9 @@ import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.UNORD
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.USER_DEFINED;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
+import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.DEFAULT_HIERARCHY;
+import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_CHILD;
+import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_PARENT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -48,7 +50,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -59,6 +60,7 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.relation.RelationResolver;
 import org.eclipse.osee.orcs.core.internal.relation.RelationTypeValidity;
+import org.eclipse.osee.orcs.core.internal.relation.RelationUtil;
 import org.eclipse.osee.orcs.core.internal.relation.RelationVisitor;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManager;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManagerFactory;
@@ -82,10 +84,6 @@ import org.mockito.stubbing.Answer;
 public class RelationManagerImplTest {
 
    private static final IRelationType TYPE_1 = TokenFactory.createRelationType(123456789L, "TYPE_1");
-
-   private static final IRelationType DEFAULT_HIERARCHY = Default_Hierarchical__Parent;
-   private static final RelationSide IS_PARENT = Default_Hierarchical__Parent.getSide();
-   private static final RelationSide IS_CHILD = Default_Hierarchical__Child.getSide();
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();
@@ -476,7 +474,7 @@ public class RelationManagerImplTest {
 
       OseeCoreException myException = new OseeCoreException("Test Type Exception");
 
-      doThrow(myException).when(validity).checkRelationTypeValid(TYPE_1, node1, SIDE_A);
+      doThrow(myException).when(validity).checkRelationTypeValid(TYPE_1, node1, SIDE_B);
 
       thrown.expect(OseeCoreException.class);
       thrown.expectMessage("Test Type Exception");
@@ -497,7 +495,7 @@ public class RelationManagerImplTest {
 
       OseeCoreException myException = new OseeCoreException("Test Type Exception");
 
-      doThrow(myException).when(validity).checkRelationTypeValid(TYPE_1, node2, SIDE_B);
+      doThrow(myException).when(validity).checkRelationTypeValid(TYPE_1, node2, SIDE_A);
 
       thrown.expect(OseeCoreException.class);
       thrown.expectMessage("Test Type Exception");
@@ -514,7 +512,7 @@ public class RelationManagerImplTest {
 
       OseeCoreException myException = new OseeCoreException("Test Multiplicity Exception");
 
-      doThrow(myException).when(validity).checkRelationTypeMultiplicity(TYPE_1, node1, SIDE_A, 1);
+      doThrow(myException).when(validity).checkRelationTypeMultiplicity(TYPE_1, node1, SIDE_B, 1);
 
       thrown.expect(OseeCoreException.class);
       thrown.expectMessage("Test Multiplicity Exception");
@@ -536,7 +534,7 @@ public class RelationManagerImplTest {
 
       OseeCoreException myException = new OseeCoreException("Test Multiplicity Exception");
 
-      doThrow(myException).when(validity).checkRelationTypeMultiplicity(TYPE_1, node2, SIDE_B, 1);
+      doThrow(myException).when(validity).checkRelationTypeMultiplicity(TYPE_1, node2, SIDE_A, 1);
 
       thrown.expect(OseeCoreException.class);
       thrown.expectMessage("Test Multiplicity Exception");
@@ -574,7 +572,7 @@ public class RelationManagerImplTest {
 
       manager.relate(session, graph, node1, TYPE_1, node2, LEXICOGRAPHICAL_ASC);
 
-      IRelationTypeSide typeSide = new RelationTypeSide(TYPE_1, SIDE_B);
+      IRelationTypeSide typeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
 
       verify(container1).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
       verify(container2).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
@@ -596,7 +594,7 @@ public class RelationManagerImplTest {
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
-      IRelationTypeSide typeSide = new RelationTypeSide(TYPE_1, SIDE_B);
+      IRelationTypeSide typeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
       when(orderManager1.getSorterId(typeSide)).thenReturn(UNORDERED);
 
       manager.relate(session, graph, node1, TYPE_1, node2);
@@ -636,7 +634,7 @@ public class RelationManagerImplTest {
 
       verify(resolver).resolve(session, graph, toOrder, SIDE_B);
 
-      IRelationTypeSide typeSide = new RelationTypeSide(TYPE_1, SIDE_B);
+      IRelationTypeSide typeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
       verify(orderManager1).sort(typeSide, nodesToOrder);
       verify(orderManager1).setOrder(eq(typeSide), eq(USER_DEFINED), sortedListCaptor.capture());
 

@@ -23,8 +23,8 @@ public abstract class AbstractIdentity<T> implements Identity<T> {
 
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof AbstractIdentity) {
-         return getGuid().equals(((AbstractIdentity<?>) obj).getGuid());
+      if (obj instanceof Identity) {
+         return getGuid().equals(((Identity<?>) obj).getGuid());
       }
       return false;
    }

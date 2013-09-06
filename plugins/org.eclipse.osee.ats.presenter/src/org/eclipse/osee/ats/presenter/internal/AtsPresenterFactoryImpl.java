@@ -19,7 +19,7 @@ import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.GraphReadable;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -46,9 +46,8 @@ public class AtsPresenterFactoryImpl<T extends AtsSearchHeaderComponent, K exten
    @Override
    public AtsSearchPresenter<AtsSearchHeaderComponent, AtsSearchParameters> createInstance(ApplicationContext context) {
       QueryFactory queryFactory = orcsApi.getQueryFactory(context);
-      GraphReadable graph = orcsApi.getGraph(context);
-
-      AtsArtifactProvider provider = new AtsArtifactProviderImpl(logger, executorAdmin, queryFactory, graph);
+      OrcsTypes orcsTypes = orcsApi.getOrcsTypes(context);
+      AtsArtifactProvider provider = new AtsArtifactProviderImpl(logger, executorAdmin, queryFactory, orcsTypes);
       AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters> instance =
          new AtsSearchPresenterImpl<AtsSearchHeaderComponent, AtsSearchParameters>(provider, logger);
       return instance;

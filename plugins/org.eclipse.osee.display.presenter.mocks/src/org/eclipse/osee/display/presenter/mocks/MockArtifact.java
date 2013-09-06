@@ -23,6 +23,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.data.ResultSet;
@@ -75,6 +76,7 @@ public class MockArtifact implements ArtifactReadable {
       attributes.put(type, value);
    }
 
+   @Override
    public Collection<RelationType> getValidRelationTypes() {
       return validRelationTypes;
    }
@@ -136,7 +138,7 @@ public class MockArtifact implements ArtifactReadable {
 
    @SuppressWarnings({"unchecked", "rawtypes"})
    @Override
-   public <T> List<AttributeReadable<T>> getAttributes(IAttributeType attributeType) {
+   public <T> ResultSet<AttributeReadable<T>> getAttributes(IAttributeType attributeType) {
       Collection<String> values = attributes.getValues(attributeType);
       List<AttributeReadable<T>> toReturn = null;
       if (values != null && !values.isEmpty()) {
@@ -148,7 +150,7 @@ public class MockArtifact implements ArtifactReadable {
       } else {
          toReturn = Collections.emptyList();
       }
-      return toReturn;
+      return new ResultSetList<AttributeReadable<T>>(toReturn);
    }
 
    @Override
@@ -172,14 +174,14 @@ public class MockArtifact implements ArtifactReadable {
    }
 
    @Override
-   public List<AttributeReadable<Object>> getAttributes() {
+   public ResultSet<AttributeReadable<Object>> getAttributes() {
       List<AttributeReadable<Object>> toReturn = new ArrayList<AttributeReadable<Object>>();
       for (Entry<IAttributeType, Collection<String>> entry : attributes.entrySet()) {
          for (String value : entry.getValue()) {
             toReturn.add(new MockAttribute<Object>(entry.getKey(), value));
          }
       }
-      return toReturn;
+      return new ResultSetList<AttributeReadable<Object>>(toReturn);
    }
 
    public void clearRelations() {
@@ -233,12 +235,12 @@ public class MockArtifact implements ArtifactReadable {
    }
 
    @Override
-   public List<AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag) throws OseeCoreException {
+   public ResultSet<AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag) throws OseeCoreException {
       return null;
    }
 
    @Override
-   public <T> List<AttributeReadable<T>> getAttributes(IAttributeType attributeType, DeletionFlag deletionFlag) throws OseeCoreException {
+   public <T> ResultSet<AttributeReadable<T>> getAttributes(IAttributeType attributeType, DeletionFlag deletionFlag) throws OseeCoreException {
       return null;
    }
 
@@ -246,4 +248,45 @@ public class MockArtifact implements ArtifactReadable {
    public AttributeReadable<Object> getAttributeById(AttributeId attributeId) throws OseeCoreException {
       return null;
    }
+
+   @Override
+   public int getMaximumRelationAllowed(IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      return 0;
+   }
+
+   @Override
+   public Collection<? extends IRelationType> getExistingRelationTypes() throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public ArtifactReadable getParent() throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public ResultSet<ArtifactReadable> getChildren() throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public ResultSet<ArtifactReadable> getRelated(IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public boolean areRelated(IRelationTypeSide typeAndSide, ArtifactReadable readable) throws OseeCoreException {
+      return false;
+   }
+
+   @Override
+   public int getRelatedCount(IRelationTypeSide typeAndSide) throws OseeCoreException {
+      return 0;
+   }
+
+   @Override
+   public String getRationale(IRelationTypeSide typeAndSide, ArtifactReadable readable) throws OseeCoreException {
+      return null;
+   }
+
 }

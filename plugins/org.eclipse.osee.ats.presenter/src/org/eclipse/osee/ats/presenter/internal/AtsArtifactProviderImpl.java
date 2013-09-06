@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -37,8 +37,8 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
 
    private static final String FILTER_KEYWORD = "Apply_Filter";
 
-   public AtsArtifactProviderImpl(Log logger, ExecutorAdmin executorAdmin, QueryFactory queryFactory, GraphReadable graph) {
-      super(logger, executorAdmin, queryFactory, graph);
+   public AtsArtifactProviderImpl(Log logger, ExecutorAdmin executorAdmin, QueryFactory queryFactory, OrcsTypes orcsTypes) {
+      super(logger, executorAdmin, queryFactory, orcsTypes);
    }
 
    @Override

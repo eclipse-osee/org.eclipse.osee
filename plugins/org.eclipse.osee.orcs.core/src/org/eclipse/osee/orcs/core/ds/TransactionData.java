@@ -10,18 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
-public interface TransactionData extends OrcsVisitable {
+public interface TransactionData extends HasOrcsChangeSet {
 
    IOseeBranch getBranch();
 
    ArtifactReadable getAuthor();
 
    String getComment();
-
-   List<ArtifactTransactionData> getTxData();
 
 }

@@ -10,77 +10,80 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.transaction;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
-import java.util.ArrayList;
-import java.util.List;
+import static org.mockito.MockitoAnnotations.initMocks;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
+import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
+import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
-import org.junit.Assert;
+import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import com.google.common.collect.Iterables;
 
 /**
- * Test Case for {@link CollectDirtyData}
+ * Test Case for {@link ChangeSetBuilder}
  * 
  * @author Roberto E. Escobar
  */
-public class CollectDirtyDataTest {
+public class ChangeSetBuilderTest {
 
    // @formatter:off
    @Mock private Artifact artifact;
    @Mock private Attribute<?> attribute;
-
+   @Mock private Relation relation;
+   
    @Mock private ArtifactData artifactData;
    @Mock private AttributeData attributeData;
-
+   @Mock private RelationData relationData;
    // @formatter:on
 
-   private List<ArtifactTransactionData> data;
-   private CollectDirtyData handler;
+   private ChangeSetBuilder handler;
 
    @Before
    public void init() {
-      MockitoAnnotations.initMocks(this);
+      initMocks(this);
 
-      data = new ArrayList<ArtifactTransactionData>();
-      handler = new CollectDirtyData(data);
+      handler = new ChangeSetBuilder();
 
       when(artifact.getOrcsData()).thenReturn(artifactData);
       when(attribute.getOrcsData()).thenReturn(attributeData);
+      when(relation.getOrcsData()).thenReturn(relationData);
    }
 
    @Test
-   public void testDontCollectNoneDirtyArtifact() {
+   public void testDontCollectNoneDirtyData() {
       when(artifact.isDirty()).thenReturn(false);
+      when(attribute.isDirty()).thenReturn(false);
+      when(relation.isDirty()).thenReturn(false);
 
       handler.visit(artifact);
-
-      Assert.assertEquals(0, data.size());
-
-      when(attribute.isDirty()).thenReturn(false);
       handler.visit(attribute);
+      handler.visit(relation);
 
-      Assert.assertEquals(0, data.size());
+      assertEquals(true, handler.getChangeSet().isEmpty());
    }
 
    @Test
-   public void testVisitAndCollectDirtyArtifact() {
+   public void testVisitAndCollectDirtyData() {
       when(artifact.isDirty()).thenReturn(true);
       when(attribute.isDirty()).thenReturn(true);
+      when(relation.isDirty()).thenReturn(true);
 
       handler.visit(artifact);
       handler.visit(attribute);
+      handler.visit(relation);
 
-      Assert.assertEquals(1, data.size());
+      assertEquals(3, handler.getChangeSet().size());
 
-      ArtifactTransactionData txData = data.iterator().next();
+      OrcsChangeSet txData = handler.getChangeSet();
 
-      Assert.assertEquals(artifactData, txData.getArtifactData());
-      Assert.assertEquals(attributeData, txData.getAttributeData().get(0));
+      assertEquals(artifactData, Iterables.getOnlyElement(txData.getArtifactData()));
+      assertEquals(attributeData, Iterables.getOnlyElement(txData.getAttributeData()));
+      assertEquals(relationData, Iterables.getOnlyElement(txData.getRelationData()));
    }
 }

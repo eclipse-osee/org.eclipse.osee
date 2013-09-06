@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.rest.internal.build.report.resources;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -45,7 +44,6 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
@@ -66,7 +64,6 @@ public class BuildTraceReportResource {
    @Produces(MediaType.TEXT_HTML)
    public StreamingOutput getBuildReport(@PathParam("programId") String programId, @PathParam("buildId") final String buildId, @DefaultValue("UNKNOWN") @QueryParam("program") final String programName, @DefaultValue("UNKNOWN") @QueryParam("build") final String buildName) throws OseeCoreException {
       OrcsApi orcsApi = AtsApplication.getOrcsApi();
-      final GraphReadable graph = orcsApi.getGraph(null);
       final QueryFactory queryFactory = orcsApi.getQueryFactory(null);
       final IOseeBranch branch = getBaselineBranch(buildId, queryFactory);
 
@@ -95,7 +92,7 @@ public class BuildTraceReportResource {
 
                               for (ArtifactReadable requirement : requirements) {
                                  ResultSet<ArtifactReadable> verifiers =
-                                    graph.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier, requirement);
+                                    requirement.getRelated(CoreRelationTypes.Verification__Verifier);
                                  requirementsToTests.put(requirement, verifiers);
                               }
 
@@ -123,10 +120,10 @@ public class BuildTraceReportResource {
    private IOseeBranch getBaselineBranch(String buildId, QueryFactory queryFactory) throws OseeCoreException {
       QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON);
       ArtifactReadable buildArt = builder.andGuidsOrHrids(buildId).getResults().getExactlyOne();
-      List<? extends AttributeReadable<String>> branchGuids =
+      ResultSet<? extends AttributeReadable<String>> branchGuids =
          buildArt.getAttributes(AtsAttributeTypes.BaselineBranchGuid);
-      Conditions.checkNotNullOrEmpty(branchGuids, "branchGuid");
-      String baselineBranchGuid = branchGuids.iterator().next().getValue();
+      Conditions.checkNotNull(branchGuids, "branchGuid");
+      String baselineBranchGuid = branchGuids.getExactlyOne().getValue();
       IOseeBranch branch = TokenFactory.createBranch(baselineBranchGuid, "TraceReport Branch");
       return branch;
    }

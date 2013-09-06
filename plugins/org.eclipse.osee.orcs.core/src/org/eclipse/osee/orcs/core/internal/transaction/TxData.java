@@ -15,6 +15,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
+import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.HasSession;
@@ -33,7 +34,7 @@ public class TxData implements HasSession {
    }
 
    private final OrcsSession session;
-   private final IOseeBranch branch;
+   private final GraphData graph;
    private final Map<String, Artifact> writeables = new HashMap<String, Artifact>();
    private final Map<String, ArtifactReadable> readables = new HashMap<String, ArtifactReadable>();
 
@@ -43,9 +44,9 @@ public class TxData implements HasSession {
    private volatile boolean isCommitInProgress;
    private volatile TxState txState;
 
-   public TxData(OrcsSession session, IOseeBranch branch) {
+   public TxData(OrcsSession session, GraphData graph) {
       this.session = session;
-      this.branch = branch;
+      this.graph = graph;
       this.txState = TxState.NEW_TX;
    }
 
@@ -61,7 +62,11 @@ public class TxData implements HasSession {
    }
 
    public IOseeBranch getBranch() {
-      return branch;
+      return graph.getBranch();
+   }
+
+   public GraphData getGraph() {
+      return graph;
    }
 
    public ArtifactReadable getAuthor() {
@@ -118,7 +123,7 @@ public class TxData implements HasSession {
 
    @Override
    public String toString() {
-      return "TxData [session=" + session + ", branch=" + branch + ", author=" + author + ", comment=" + comment + "]";
+      return "TxData [session=" + session + ", graph=" + graph + ", author=" + author + ", comment=" + comment + ", isCommitInProgress=" + isCommitInProgress + ", txState=" + txState + "]";
    }
 
 }

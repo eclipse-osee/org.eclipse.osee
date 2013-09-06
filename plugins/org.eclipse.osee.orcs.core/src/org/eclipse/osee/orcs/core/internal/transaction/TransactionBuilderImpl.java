@@ -11,16 +11,21 @@
 package org.eclipse.osee.orcs.core.internal.transaction;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
+import org.eclipse.osee.orcs.core.internal.relation.RelationUtil;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeId;
@@ -216,6 +221,57 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    public void deleteAttributesWithValue(ArtifactId sourceArtifact, IAttributeType attributeType, Object value) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.deleteAttributesWithValue(attributeType, value);
+   }
+
+   @Override
+   public void addChildren(ArtifactId artA, ArtifactId... children) throws OseeCoreException {
+      addChildren(artA, Arrays.asList(children));
+   }
+
+   @Override
+   public void addChildren(ArtifactId artA, Iterable<? extends ArtifactId> children) throws OseeCoreException {
+      txManager.addChildren(txData, artA, children);
+   }
+
+   @Override
+   public void relate(ArtifactId artA, IRelationType relType, ArtifactId artB) throws OseeCoreException {
+      txManager.relate(txData, artA, relType, artB);
+   }
+
+   @Override
+   public void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale) throws OseeCoreException {
+      txManager.relate(txData, artA, relType, artB, rationale);
+   }
+
+   @Override
+   public void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, IRelationSorterId sortType) throws OseeCoreException {
+      txManager.relate(txData, artA, relType, artB, sortType);
+   }
+
+   @Override
+   public void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale, IRelationSorterId sortType) throws OseeCoreException {
+      txManager.relate(txData, artA, relType, artB, rationale, sortType);
+   }
+
+   @Override
+   public void setRationale(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale) throws OseeCoreException {
+      txManager.setRationale(txData, artA, relType, artB, rationale);
+   }
+
+   @Override
+   public void unrelate(ArtifactId artA, IRelationType relType, ArtifactId artB) throws OseeCoreException {
+      txManager.unrelate(txData, artA, relType, artB);
+   }
+
+   @Override
+   public void unrelateFromAll(IRelationTypeSide typeAndSide, ArtifactId art) throws OseeCoreException {
+      IRelationType type = RelationUtil.asRelationType(typeAndSide);
+      txManager.unrelateFromAll(txData, type, art, typeAndSide.getSide());
+   }
+
+   @Override
+   public void unrelateFromAll(ArtifactId artA) throws OseeCoreException {
+      txManager.unrelateFromAll(txData, artA);
    }
 
    @Override

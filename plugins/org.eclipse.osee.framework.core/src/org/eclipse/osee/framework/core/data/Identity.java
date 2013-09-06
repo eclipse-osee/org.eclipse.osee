@@ -15,7 +15,9 @@ package org.eclipse.osee.framework.core.data;
  * @author Ryan D. Brooks
  */
 public interface Identity<T> {
-   public abstract T getGuid();
 
-   public abstract boolean matches(Identity<?>... identities);
+   T getGuid();
+
+   boolean matches(Identity<?>... identities);
+
 }

@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -36,7 +37,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -54,7 +54,7 @@ public class RelationTypeValidityTest {
    public ExpectedException thrown = ExpectedException.none();
 
    // @formatter:off
-   @Mock private RelationTypes cache;
+   @Mock private RelationTypes relTypes;
    @Mock private RelationNode node;
    @Mock private IArtifactType artifactType;   
    @Mock private IArtifactType artifactType2;
@@ -69,15 +69,15 @@ public class RelationTypeValidityTest {
 
    @Before
    public void init() throws OseeCoreException {
-      MockitoAnnotations.initMocks(this);
+      initMocks(this);
 
-      validity = new RelationTypeValidity(cache);
+      validity = new RelationTypeValidity(relTypes);
 
-      when(cache.exists(TYPE_1)).thenReturn(true);
-      when(cache.exists(relationType1)).thenReturn(true);
-      when(cache.exists(relationType2)).thenReturn(true);
-      when(cache.exists(relationType3)).thenReturn(true);
-      when(cache.exists(relationType4)).thenReturn(true);
+      when(relTypes.exists(TYPE_1)).thenReturn(true);
+      when(relTypes.exists(relationType1)).thenReturn(true);
+      when(relTypes.exists(relationType2)).thenReturn(true);
+      when(relTypes.exists(relationType3)).thenReturn(true);
+      when(relTypes.exists(relationType4)).thenReturn(true);
    }
 
    @Test
@@ -103,7 +103,7 @@ public class RelationTypeValidityTest {
 
    @Test
    public void testMaximumRelationAllowedTypeDoesNotExist() throws OseeCoreException {
-      when(cache.exists(TYPE_1)).thenReturn(false);
+      when(relTypes.exists(TYPE_1)).thenReturn(false);
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage(String.format("relationType [%s] does not exist", TYPE_1));
@@ -119,8 +119,8 @@ public class RelationTypeValidityTest {
 
    @Test
    public void testMaximumRelationAllowed1() throws OseeCoreException {
-      when(cache.isArtifactTypeAllowed(TYPE_1, SIDE_B, artifactType)).thenReturn(true);
-      when(cache.getMultiplicity(TYPE_1)).thenReturn(MANY_TO_MANY);
+      when(relTypes.isArtifactTypeAllowed(TYPE_1, SIDE_B, artifactType)).thenReturn(true);
+      when(relTypes.getMultiplicity(TYPE_1)).thenReturn(MANY_TO_MANY);
 
       int actual = validity.getMaximumRelationsAllowed(TYPE_1, artifactType, SIDE_B);
       assertEquals(Integer.MAX_VALUE, actual);
@@ -128,8 +128,8 @@ public class RelationTypeValidityTest {
 
    @Test
    public void testMaximumRelationAllowed2() throws OseeCoreException {
-      when(cache.isArtifactTypeAllowed(TYPE_1, SIDE_B, artifactType)).thenReturn(true);
-      when(cache.getMultiplicity(TYPE_1)).thenReturn(MANY_TO_ONE);
+      when(relTypes.isArtifactTypeAllowed(TYPE_1, SIDE_B, artifactType)).thenReturn(true);
+      when(relTypes.getMultiplicity(TYPE_1)).thenReturn(MANY_TO_ONE);
 
       int actual = validity.getMaximumRelationsAllowed(TYPE_1, artifactType, SIDE_B);
       assertEquals(1, actual);
@@ -137,7 +137,7 @@ public class RelationTypeValidityTest {
 
    @Test
    public void testMaximumRelationAllowed3() throws OseeCoreException {
-      when(cache.isArtifactTypeAllowed(relationType1, SIDE_A, artifactType)).thenReturn(true);
+      when(relTypes.isArtifactTypeAllowed(relationType1, SIDE_A, artifactType)).thenReturn(true);
 
       int actual = validity.getMaximumRelationsAllowed(TYPE_1, artifactType, SIDE_B);
       assertEquals(0, actual);
@@ -147,7 +147,7 @@ public class RelationTypeValidityTest {
    public void testValidRelationTypes() throws OseeCoreException {
       final Collection<? extends IRelationType> types =
          Arrays.asList(relationType1, relationType2, relationType3, relationType4);
-      when(cache.getAll()).thenAnswer(new Answer<Collection<? extends IRelationType>>() {
+      when(relTypes.getAll()).thenAnswer(new Answer<Collection<? extends IRelationType>>() {
 
          @Override
          public Collection<? extends IRelationType> answer(InvocationOnMock invocation) throws Throwable {
@@ -155,17 +155,17 @@ public class RelationTypeValidityTest {
          }
 
       });
-      when(cache.isArtifactTypeAllowed(relationType1, SIDE_B, artifactType)).thenReturn(true);
-      when(cache.getMultiplicity(relationType1)).thenReturn(MANY_TO_MANY);
+      when(relTypes.isArtifactTypeAllowed(relationType1, SIDE_B, artifactType)).thenReturn(true);
+      when(relTypes.getMultiplicity(relationType1)).thenReturn(MANY_TO_MANY);
 
-      when(cache.isArtifactTypeAllowed(relationType2, SIDE_A, artifactType)).thenReturn(false);
-      when(cache.getMultiplicity(relationType2)).thenReturn(MANY_TO_ONE);
+      when(relTypes.isArtifactTypeAllowed(relationType2, SIDE_A, artifactType)).thenReturn(false);
+      when(relTypes.getMultiplicity(relationType2)).thenReturn(MANY_TO_ONE);
 
-      when(cache.isArtifactTypeAllowed(relationType3, SIDE_A, artifactType)).thenReturn(true);
-      when(cache.getMultiplicity(relationType3)).thenReturn(ONE_TO_ONE);
+      when(relTypes.isArtifactTypeAllowed(relationType3, SIDE_A, artifactType)).thenReturn(true);
+      when(relTypes.getMultiplicity(relationType3)).thenReturn(ONE_TO_ONE);
 
-      when(cache.isArtifactTypeAllowed(relationType4, SIDE_A, artifactType)).thenReturn(false);
-      when(cache.getMultiplicity(relationType4)).thenReturn(ONE_TO_MANY);
+      when(relTypes.isArtifactTypeAllowed(relationType4, SIDE_A, artifactType)).thenReturn(false);
+      when(relTypes.getMultiplicity(relationType4)).thenReturn(ONE_TO_MANY);
 
       List<IRelationType> actual = validity.getValidRelationTypes(artifactType);
 
@@ -178,7 +178,7 @@ public class RelationTypeValidityTest {
 
    @Test
    public void testGetRelationMultiplicityState() throws OseeCoreException {
-      when(cache.getMultiplicity(TYPE_1)).thenReturn(ONE_TO_ONE);
+      when(relTypes.getMultiplicity(TYPE_1)).thenReturn(ONE_TO_ONE);
 
       MultiplicityState state = validity.getRelationMultiplicityState(TYPE_1, SIDE_B, 0);
       assertEquals(MultiplicityState.IS_VALID, state);
@@ -192,7 +192,7 @@ public class RelationTypeValidityTest {
 
    @Test
    public void testCheckRelationTypeMultiplicity() throws OseeCoreException {
-      when(cache.getMultiplicity(TYPE_1)).thenReturn(ONE_TO_ONE);
+      when(relTypes.getMultiplicity(TYPE_1)).thenReturn(ONE_TO_ONE);
       when(node.getExceptionString()).thenReturn("node message");
 
       thrown.expect(OseeStateException.class);
@@ -204,7 +204,7 @@ public class RelationTypeValidityTest {
 
    @Test
    public void testCheckRelationTypeMultiplicityNoException() throws OseeCoreException {
-      when(cache.getMultiplicity(TYPE_1)).thenReturn(ONE_TO_ONE);
+      when(relTypes.getMultiplicity(TYPE_1)).thenReturn(ONE_TO_ONE);
       when(node.getExceptionString()).thenReturn("node message");
 
       ExpectedException.none();
@@ -213,13 +213,13 @@ public class RelationTypeValidityTest {
 
    @Test
    public void testIsRelationTypeValid() throws OseeCoreException {
-      when(cache.isArtifactTypeAllowed(TYPE_1, SIDE_A, artifactType)).thenReturn(true);
+      when(relTypes.isArtifactTypeAllowed(TYPE_1, SIDE_A, artifactType)).thenReturn(true);
 
       boolean actual = validity.isRelationTypeValid(TYPE_1, artifactType, SIDE_B);
       assertEquals(false, actual);
 
-      when(cache.isArtifactTypeAllowed(TYPE_1, SIDE_B, artifactType)).thenReturn(true);
-      when(cache.getMultiplicity(TYPE_1)).thenReturn(ONE_TO_ONE);
+      when(relTypes.isArtifactTypeAllowed(TYPE_1, SIDE_B, artifactType)).thenReturn(true);
+      when(relTypes.getMultiplicity(TYPE_1)).thenReturn(ONE_TO_ONE);
 
       actual = validity.isRelationTypeValid(TYPE_1, artifactType, SIDE_B);
       assertEquals(true, actual);
@@ -230,8 +230,8 @@ public class RelationTypeValidityTest {
       when(artifactType.toString()).thenReturn("artType1");
       when(artifactType2.toString()).thenReturn("artType2");
 
-      when(cache.isArtifactTypeAllowed(TYPE_1, SIDE_A, artifactType)).thenReturn(true);
-      when(cache.getArtifactType(TYPE_1, SIDE_B)).thenReturn(artifactType2);
+      when(relTypes.isArtifactTypeAllowed(TYPE_1, SIDE_A, artifactType)).thenReturn(true);
+      when(relTypes.getArtifactType(TYPE_1, SIDE_B)).thenReturn(artifactType2);
 
       when(node.getArtifactType()).thenReturn(artifactType);
       when(node.getExceptionString()).thenReturn("node message");
@@ -244,8 +244,8 @@ public class RelationTypeValidityTest {
    @Test
    public void testCheckRelationTypeValidNoException() throws OseeCoreException {
       when(node.getArtifactType()).thenReturn(artifactType);
-      when(cache.isArtifactTypeAllowed(TYPE_1, SIDE_B, artifactType)).thenReturn(true);
-      when(cache.getMultiplicity(TYPE_1)).thenReturn(ONE_TO_ONE);
+      when(relTypes.isArtifactTypeAllowed(TYPE_1, SIDE_B, artifactType)).thenReturn(true);
+      when(relTypes.getMultiplicity(TYPE_1)).thenReturn(ONE_TO_ONE);
 
       ExpectedException.none();
       validity.checkRelationTypeValid(TYPE_1, node, SIDE_B);

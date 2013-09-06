@@ -26,7 +26,6 @@ import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManagerImpl;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
-import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderChange;
 import org.eclipse.osee.orcs.core.internal.util.ValueProvider;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
@@ -40,14 +39,11 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    private ArtifactData artifactData;
    private GraphData graph;
 
-   private final RelationContainer relationContainer;
-
-   public ArtifactImpl(ArtifactTypes artifactTypeCache, ArtifactData artifactData, AttributeFactory attributeFactory, RelationContainer relationContainer, ValueProvider<? extends IOseeBranch, OrcsData> branchProvider) {
+   public ArtifactImpl(ArtifactTypes artifactTypeCache, ArtifactData artifactData, AttributeFactory attributeFactory, ValueProvider<? extends IOseeBranch, OrcsData> branchProvider) {
       super(attributeFactory);
       this.artifactTypeCache = artifactTypeCache;
       this.artifactData = artifactData;
       this.branchProvider = branchProvider;
-      this.relationContainer = relationContainer;
       this.objectEditState = EditState.NO_CHANGE;
    }
 
@@ -59,11 +55,6 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public GraphData getGraph() {
       return graph;
-   }
-
-   @Override
-   public RelationContainer getRelationContainer() {
-      return relationContainer;
    }
 
    @Override
@@ -175,7 +166,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public String getExceptionString() {
       try {
-         return String.format("artifact type [%s] guid[%s] on branch[%s]", getArtifactType(), getGuid(), getBranch());
+         return String.format("artifact type[%s] guid[%s] on branch[%s]", getArtifactType(), getGuid(), getBranch());
       } catch (OseeCoreException ex) {
          return Lib.exceptionToString(ex);
       }
@@ -222,6 +213,15 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
          setSoleAttributeFromString(CoreAttributeTypes.RelationOrder, data);
       } else {
          deleteSoleAttribute(CoreAttributeTypes.RelationOrder);
+      }
+   }
+
+   @Override
+   public String toString() {
+      try {
+         return String.format("artifact [type=[%s] guid=[%s] branch=[%s]]", getArtifactType(), getGuid(), getBranch());
+      } catch (OseeCoreException ex) {
+         return Lib.exceptionToString(ex);
       }
    }
 

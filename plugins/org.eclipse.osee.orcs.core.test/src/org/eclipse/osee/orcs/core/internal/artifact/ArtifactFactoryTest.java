@@ -36,7 +36,6 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManager;
-import org.eclipse.osee.orcs.core.internal.relation.RelationContainer;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.core.internal.util.ValueProvider;
 import org.eclipse.osee.orcs.core.internal.util.ValueProviderFactory;
@@ -66,7 +65,6 @@ public class ArtifactFactoryTest {
    @Mock private Branch branch;
    @Mock private IArtifactType artifactType;
    @Mock private ArtifactData artifactData;
-   @Mock private RelationContainer relationContainer;
    @Mock private VersionData artifactVersion;
    
    @Mock private ArtifactDataFactory dataFactory;
@@ -91,8 +89,7 @@ public class ArtifactFactoryTest {
    public void init() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
 
-      artifactFactory =
-         new ArtifactFactory(dataFactory, attributeFactory, relationFactory, artifactTypeCache, providerFactory);
+      artifactFactory = new ArtifactFactory(dataFactory, attributeFactory, artifactTypeCache, providerFactory);
 
       guid = GUID.create();
 
@@ -116,8 +113,6 @@ public class ArtifactFactoryTest {
       when(otherArtifactData.getTypeUuid()).thenReturn(65L);
       when(otherArtifactData.getVersion()).thenReturn(artifactVersion);
 
-      when(relationFactory.createRelationContainer(45)).thenReturn(relationContainer);
-
       when(providerFactory.createBranchProvider(artifactData)).thenReturn(branchProvider);
       when(providerFactory.createBranchProvider(otherArtifactData)).thenReturn(branchProvider);
 
@@ -139,8 +134,6 @@ public class ArtifactFactoryTest {
 
    @Test
    public void testCreateArtifactFromArtifactData() throws OseeCoreException {
-      when(relationFactory.createRelationContainer(45)).thenReturn(relationContainer);
-
       Artifact artifact = artifactFactory.createArtifact(artifactData);
 
       assertEquals(artifactType, artifact.getArtifactType());

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.loader;
+package org.eclipse.osee.orcs.core.internal.proxy.impl;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ArtifactBuilderImplTest.class, ArtifactLoaderFactoryImplTest.class})
-public class LoaderTestSuite {
+@Suite.SuiteClasses({ArtifactReadOnlyImplTest.class, AttributeReadOnlyImplTest.class, ExternalArtifactManagerTest.class})
+public class ProxyImplTestSuite {
    // Test Suite
 }

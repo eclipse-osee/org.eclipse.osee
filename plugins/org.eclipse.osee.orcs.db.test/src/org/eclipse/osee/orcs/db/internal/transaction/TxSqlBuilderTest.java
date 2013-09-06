@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -39,9 +38,9 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
+import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
@@ -100,14 +99,13 @@ public class TxSqlBuilderTest {
    @Mock private IdentityService identityService;
    
    @Mock private TransactionRecord tx;
-   @Mock private ArtifactTransactionData data;
+   @Mock private OrcsChangeSet txData;
 
    @Mock private DataProxy dataProxy;
    @Mock private ArtifactJoinQuery join;
    // @formatter:on
 
    private VersionData versionData;
-   private List<ArtifactTransactionData> txData;
    private TxSqlBuilderImpl builder;
 
    private ArtifactData artData;
@@ -130,9 +128,6 @@ public class TxSqlBuilderTest {
          }
 
       };
-
-      txData = new ArrayList<ArtifactTransactionData>();
-      txData.add(data);
 
       artData = new ArtifactDataImpl(versionData);
       artData.setLocalId(ITEM_ID);
@@ -178,7 +173,7 @@ public class TxSqlBuilderTest {
    @Test
    public void testAccept() throws OseeCoreException {
       builder.accept(tx, txData);
-      verify(data).accept(builder);
+      verify(txData).accept(builder);
 
       assertTrue(builder.getBinaryStores().isEmpty());
       assertTrue(builder.getTxNotCurrents().isEmpty());

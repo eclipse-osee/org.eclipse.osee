@@ -24,13 +24,17 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryCollector;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
-import org.eclipse.osee.orcs.core.internal.ArtifactBuilder;
-import org.eclipse.osee.orcs.core.internal.ArtifactBuilderFactory;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
+import org.eclipse.osee.orcs.core.internal.graph.GraphBuilder;
+import org.eclipse.osee.orcs.core.internal.graph.GraphBuilderFactory;
+import org.eclipse.osee.orcs.core.internal.graph.GraphProvider;
+import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.util.ResultSets;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.search.Match;
+import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar
@@ -40,14 +44,18 @@ public class CallableQueryFactory {
    private final Log logger;
    private final QueryEngine queryEngine;
    private final QueryCollector collector;
-   private final ArtifactBuilderFactory builderFactory;
+   private final GraphBuilderFactory builderFactory;
+   private final GraphProvider provider;
+   private final ExternalArtifactManager proxyManager;
 
-   public CallableQueryFactory(Log logger, QueryEngine queryEngine, QueryCollector collector, ArtifactBuilderFactory builderFactory) {
+   public CallableQueryFactory(Log logger, QueryEngine queryEngine, QueryCollector collector, GraphBuilderFactory builderFactory, GraphProvider provider, ExternalArtifactManager proxyManager) {
       super();
       this.logger = logger;
       this.queryEngine = queryEngine;
       this.collector = collector;
       this.builderFactory = builderFactory;
+      this.provider = provider;
+      this.proxyManager = proxyManager;
    }
 
    public CancellableCallable<Integer> createCount(OrcsSession session, QueryData queryData) {
@@ -86,12 +94,12 @@ public class CallableQueryFactory {
 
          @Override
          protected ResultSet<ArtifactReadable> innerCall() throws Exception {
-            ArtifactBuilder handler = builderFactory.createArtifactBuilder(getSession());
+            GraphBuilder handler = builderFactory.createGraphBuilder(provider);
             OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.FULL);
             queryEngine.createArtifactQuery(getSession(), getQueryData(), handler).call();
-            List<ArtifactReadable> results = handler.getArtifacts();
-            setItemsFound(results.size());
-            return ResultSets.newResultSet(results);
+            Iterable<Artifact> results = handler.getArtifacts();
+            setItemsFound(Iterables.size(results));
+            return proxyManager.asExternalArtifacts(getSession(), results);
          }
       };
    }
@@ -101,18 +109,16 @@ public class CallableQueryFactory {
 
          @Override
          protected ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> innerCall() throws Exception {
-            ArtifactBuilder builder = builderFactory.createArtifactBuilder(getSession());
-            ArtifactMatchDataHandler handler = new ArtifactMatchDataHandler(builder);
+            GraphBuilder handler = builderFactory.createGraphBuilder(provider);
+            ArtifactMatchDataHandler matchHandler = new ArtifactMatchDataHandler(getSession(), handler, proxyManager);
             OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.FULL);
-            queryEngine.createArtifactQuery(getSession(), getQueryData(), handler).call();
-
-            List<Match<ArtifactReadable, AttributeReadable<?>>> results = handler.getResults();
-            setItemsFound(results.size());
+            queryEngine.createArtifactQuery(getSession(), getQueryData(), matchHandler).call();
+            List<Match<ArtifactReadable, AttributeReadable<?>>> results = matchHandler.getResults();
+            setItemsFound(Iterables.size(results));
             return ResultSets.newResultSet(results);
          }
       };
    }
-
    private abstract class AbstractSearchCallable<T> extends CancellableCallable<T> {
 
       private final OrcsSession session;

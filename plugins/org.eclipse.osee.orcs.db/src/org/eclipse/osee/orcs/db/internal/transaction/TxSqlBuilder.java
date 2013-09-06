@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.transaction;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
-import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
+import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderEnum;
 
 /**
@@ -27,7 +26,7 @@ public interface TxSqlBuilder {
 
    void clear();
 
-   void accept(TransactionRecord tx, Collection<ArtifactTransactionData> txData) throws OseeCoreException;
+   void accept(TransactionRecord tx, OrcsChangeSet txData) throws OseeCoreException;
 
    Set<Entry<SqlOrderEnum, ArtifactJoinQuery>> getTxNotCurrents();
 

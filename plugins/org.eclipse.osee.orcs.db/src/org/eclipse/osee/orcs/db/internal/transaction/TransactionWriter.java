@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.transaction;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -22,7 +21,7 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
+import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 
 /**
  * @author Roberto E. Escobar
@@ -116,7 +115,7 @@ public class TransactionWriter {
       }
    }
 
-   public void write(OseeConnection connection, TransactionRecord tx, Collection<ArtifactTransactionData> txData) throws OseeCoreException {
+   public void write(OseeConnection connection, TransactionRecord tx, OrcsChangeSet txData) throws OseeCoreException {
       sqlBuilder.accept(tx, txData);
       try {
          binaryStores = sqlBuilder.getBinaryStores();

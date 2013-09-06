@@ -15,7 +15,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -31,7 +30,7 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
+import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderEnum;
 import org.junit.Assert;
 import org.junit.Before;
@@ -69,9 +68,9 @@ public class TransactionWriterTest {
    
    @Mock private IOseeStatement chStmt;
    @Captor private ArgumentCaptor<List<Object[]>> paramCaptor;
+   @Mock  private OrcsChangeSet changeSet;
    //@formatter:on
 
-   private List<ArtifactTransactionData> txData;
    private TransactionWriter writer;
    private List<DaoToSql> stores;
 
@@ -80,8 +79,6 @@ public class TransactionWriterTest {
       MockitoAnnotations.initMocks(this);
 
       writer = new TransactionWriter(logger, dbService, builder);
-
-      txData = new ArrayList<ArtifactTransactionData>();
 
       stores = Arrays.asList(dao1, dao2);
 
@@ -131,9 +128,9 @@ public class TransactionWriterTest {
    public void testWrite() throws OseeCoreException {
       InOrder inOrder = inOrder(builder, tx, join1, join2, dao1, dao2, dbService, chStmt);
 
-      writer.write(connection, tx, txData);
+      writer.write(connection, tx, changeSet);
 
-      inOrder.verify(builder).accept(tx, txData);
+      inOrder.verify(builder).accept(tx, changeSet);
       inOrder.verify(builder).getBinaryStores();
       inOrder.verify(dao1).persist();
       inOrder.verify(dao2).persist();

@@ -13,10 +13,14 @@ package org.eclipse.osee.orcs.core.internal.proxy.impl;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
+import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
+import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.util.ResultSetIterable;
+import org.eclipse.osee.orcs.core.internal.util.ResultSets;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 
@@ -25,8 +29,34 @@ import com.google.common.collect.Iterables;
  */
 public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
 
-   public ExternalArtifactManagerImpl() {
+   private final Function<ArtifactReadable, Artifact> readableToArtifact;
+   private final RelationManager relationManager;
+
+   public ExternalArtifactManagerImpl(RelationManager relationManager) {
       super();
+      this.relationManager = relationManager;
+      this.readableToArtifact = new ReadableToArtifactFunction();
+   }
+
+   @Override
+   public Artifact asInternalArtifact(ArtifactReadable external) {
+      return external == null ? null : ((ArtifactReadOnlyImpl) external).getProxiedObject();
+   }
+
+   @Override
+   public ArtifactReadable asExternalArtifact(OrcsSession session, Artifact artifact) {
+      return artifact == null ? null : new ArtifactReadOnlyImpl(this, relationManager, session, artifact);
+   }
+
+   @Override
+   public <T> AttributeReadable<T> asExternalAttribute(OrcsSession session, Attribute<T> attribute) {
+      return attribute == null ? null : new AttributeReadOnlyImpl<T>(this, session, attribute);
+   }
+
+   @Override
+   public ResultSet<? extends RelationNode> asInternalArtifacts(Iterable<? extends ArtifactReadable> externals) {
+      Iterable<Artifact> transformed = Iterables.transform(externals, readableToArtifact);
+      return ResultSets.newResultSet(transformed);
    }
 
    @Override
@@ -43,25 +73,23 @@ public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
    }
 
    @Override
-   public ResultSet<? extends RelationNode> asInternalArtifacts(Iterable<? extends ArtifactReadable> externals) {
-      Iterable<Artifact> transformed = Iterables.transform(externals, new Function<ArtifactReadable, Artifact>() {
+   public <T> ResultSet<AttributeReadable<T>> asExternalAttributes(final OrcsSession session, Iterable<? extends Attribute<T>> attributes) {
+      Iterable<AttributeReadable<T>> transformed =
+         Iterables.transform(attributes, new Function<Attribute<T>, AttributeReadable<T>>() {
 
-         @Override
-         public Artifact apply(ArtifactReadable external) {
-            return asInternalArtifact(external);
-         }
-      });
-      return new ResultSetIterable<Artifact>(transformed);
+            @Override
+            public AttributeReadable<T> apply(Attribute<T> internal) {
+               return asExternalAttribute(session, internal);
+            }
+         });
+      return ResultSets.newResultSet(transformed);
    }
 
-   @Override
-   public Artifact asInternalArtifact(ArtifactReadable external) {
-      return ((ArtifactReadOnlyImpl) external).getProxiedObject();
-   }
+   private final class ReadableToArtifactFunction implements Function<ArtifactReadable, Artifact> {
 
-   @Override
-   public ArtifactReadable asExternalArtifact(OrcsSession session, Artifact artifact) {
-      return new ArtifactReadOnlyImpl(ExternalArtifactManagerImpl.this, session, artifact);
-   }
-
+      @Override
+      public Artifact apply(ArtifactReadable external) {
+         return asInternalArtifact(external);
+      }
+   };
 }

@@ -14,8 +14,10 @@ import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
+import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author Megumi Telles
@@ -29,5 +31,9 @@ public interface ExternalArtifactManager {
    Artifact asInternalArtifact(ArtifactReadable external) throws OseeCoreException;
 
    ArtifactReadable asExternalArtifact(OrcsSession session, Artifact artifact) throws OseeCoreException;
+
+   <T> AttributeReadable<T> asExternalAttribute(OrcsSession session, Attribute<T> attribute) throws OseeCoreException;
+
+   <T> ResultSet<AttributeReadable<T>> asExternalAttributes(OrcsSession session, Iterable<? extends Attribute<T>> attributes) throws OseeCoreException;
 
 }

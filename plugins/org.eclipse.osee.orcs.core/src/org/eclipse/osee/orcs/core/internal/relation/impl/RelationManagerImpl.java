@@ -10,14 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation.impl;
 
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.framework.core.util.Conditions.checkNotNull;
 import static org.eclipse.osee.framework.jdk.core.util.Strings.emptyString;
+import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.DEFAULT_HIERARCHY;
+import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_CHILD;
+import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_PARENT;
+import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.asTypeSide;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsConditions.checkBranch;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsConditions.checkOnGraph;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsConditions.checkRelateSelf;
@@ -39,7 +41,6 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -60,10 +61,6 @@ import org.eclipse.osee.orcs.core.internal.util.ResultSets;
  * @author Roberto E. Escobar
  */
 public class RelationManagerImpl implements RelationManager {
-
-   private static final IRelationType DEFAULT_HIERARCHY = Default_Hierarchical__Parent;
-   private static final RelationSide IS_PARENT = Default_Hierarchical__Parent.getSide();
-   private static final RelationSide IS_CHILD = Default_Hierarchical__Child.getSide();
 
    private final Log logger;
    private final RelationTypeValidity validity;
@@ -219,8 +216,9 @@ public class RelationManagerImpl implements RelationManager {
       checkBranch(aNode, bNode);
       checkRelateSelf(aNode, bNode);
 
-      checkTypeAndCanAdd(session, graph, type, aNode, SIDE_A);
-      checkTypeAndCanAdd(session, graph, type, bNode, SIDE_B);
+      // Check we can create the type on other side of each node
+      checkTypeAndCanAdd(session, graph, type, aNode, SIDE_B);
+      checkTypeAndCanAdd(session, graph, type, bNode, SIDE_A);
 
       Relation relation = getRelation(session, graph, aNode, type, bNode, INCLUDE_DELETED).getOneOrNull();
       boolean updated = false;
@@ -436,9 +434,5 @@ public class RelationManagerImpl implements RelationManager {
             }
          }
       }
-   }
-
-   private static IRelationTypeSide asTypeSide(IRelationType type, RelationSide side) {
-      return new RelationTypeSide(type, side);
    }
 }

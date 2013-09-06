@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -51,12 +50,11 @@ public class OrcsRelationLoadingTest {
       ApplicationContext context = null; // TODO use real application context
 
       QueryFactory queryFactory = orcsApi.getQueryFactory(context);
-      GraphReadable graph = orcsApi.getGraph(context);
-      checkRelationsForCommonBranch(orcsApi, queryFactory, graph, context);
-      checkRelationsForSawBranch(orcsApi, queryFactory, graph, context);
+      checkRelationsForCommonBranch(orcsApi, queryFactory, context);
+      checkRelationsForSawBranch(orcsApi, queryFactory, context);
    }
 
-   private void checkRelationsForCommonBranch(OrcsApi oseeApi, QueryFactory queryFactory, GraphReadable graph, ApplicationContext context) throws OseeCoreException {
+   private void checkRelationsForCommonBranch(OrcsApi oseeApi, QueryFactory queryFactory, ApplicationContext context) throws OseeCoreException {
       QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(6, 7, 8));
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 
@@ -69,15 +67,15 @@ public class OrcsRelationLoadingTest {
       ArtifactReadable art8 = lookup.get(8);
 
       //art 6 has no relations
-      assertEquals(0, graph.getExistingRelationTypes(art6).size());
+      assertEquals(0, art6.getExistingRelationTypes().size());
       //art 7 has 3 
       //      REL_LINK_ID    REL_LINK_TYPE_ID     A_ART_ID    B_ART_ID    RATIONALE   GAMMA_ID    TX_CURRENT     MOD_TYPE    BRANCH_ID   TRANSACTION_ID    GAMMA_ID  
       //      1  219   7  8     53
       //      3  219   7  15    54
       //      2  219   1  7     52
-      assertEquals(2, graph.getExistingRelationTypes(art7).size());
-      assertEquals(2, graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, art7).size());
-      assertEquals(1, graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, art7).size());
+      assertEquals(1, art7.getExistingRelationTypes().size());
+      assertEquals(2, art7.getRelated(CoreRelationTypes.Default_Hierarchical__Child).size());
+      assertEquals(1, art7.getRelated(CoreRelationTypes.Default_Hierarchical__Parent).size());
 
       //art8 has 
       //      REL_LINK_ID    REL_LINK_TYPE_ID     A_ART_ID    B_ART_ID    RATIONALE   GAMMA_ID    TX_CURRENT     MOD_TYPE    BRANCH_ID   TRANSACTION_ID    GAMMA_ID
@@ -87,13 +85,13 @@ public class OrcsRelationLoadingTest {
       //      6  233   8  19    76
       //      5  233   8  18    78
       //      1  219   7  8     53
-      assertEquals(2, graph.getExistingRelationTypes(art8).size());
-      assertEquals(1, graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, art8).size());
-      assertEquals(5, graph.getRelatedArtifacts(CoreRelationTypes.Users_User, art8).size());
+      assertEquals(2, art8.getExistingRelationTypes().size());
+      assertEquals(1, art8.getRelated(CoreRelationTypes.Default_Hierarchical__Parent).size());
+      assertEquals(5, art8.getRelated(CoreRelationTypes.Users_User).size());
 
    }
 
-   private void checkRelationsForSawBranch(OrcsApi oseeApi, QueryFactory queryFactory, GraphReadable graph, ApplicationContext context) throws OseeCoreException {
+   private void checkRelationsForSawBranch(OrcsApi oseeApi, QueryFactory queryFactory, ApplicationContext context) throws OseeCoreException {
       QueryBuilder builder =
          queryFactory.fromBranch(TestBranches.SAW_Bld_1).and(CoreAttributeTypes.Name, Operator.EQUAL,
             "Design Constraints");
@@ -107,9 +105,9 @@ public class OrcsRelationLoadingTest {
       //art 7 has no relations
 
       //artifact has 3 children and 1 parent
-      assertEquals(2, graph.getExistingRelationTypes(artifact).size());
-      assertEquals(3, graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child, artifact).size());
-      assertEquals(1, graph.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent, artifact).size());
+      assertEquals(1, artifact.getExistingRelationTypes().size());
+      assertEquals(3, artifact.getRelated(CoreRelationTypes.Default_Hierarchical__Child).size());
+      assertEquals(1, artifact.getRelated(CoreRelationTypes.Default_Hierarchical__Parent).size());
    }
 
    private Map<Integer, ArtifactReadable> createLookup(Iterable<ArtifactReadable> arts) {

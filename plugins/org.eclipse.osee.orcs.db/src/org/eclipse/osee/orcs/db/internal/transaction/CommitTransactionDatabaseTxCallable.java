@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.transaction;
 
 import java.util.Date;
-import java.util.List;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -27,7 +26,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
+import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -77,27 +76,27 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       ///// 
       // TODO:
       // 1. Make this whole method a critical region on a per branch basis - can only write to a branch on one thread at time
-      List<ArtifactTransactionData> txData = transactionData.getTxData();
       String comment = transactionData.getComment();
       Branch branch = branchCache.get(transactionData.getBranch());
       ArtifactReadable author = transactionData.getAuthor();
+      OrcsChangeSet changeSet = transactionData.getChangeSet();
 
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(author, "transaction author");
       Conditions.checkNotNullOrEmpty(comment, "transaction comment");
-      Conditions.checkNotNullOrEmpty(txData, "artifacts modified");
+      Conditions.checkExpressionFailOnTrue(changeSet.isEmpty(), "No data was modified");
 
       process(TxWritePhaseEnum.BEFORE_TX_WRITE);
 
       TransactionRecord txRecord = createTransactionRecord(branch, author, comment, getNextTransactionId());
-      writer.write(connection, txRecord, txData);
+      writer.write(connection, txRecord, changeSet);
 
       if (branch.getBranchState() == BranchState.CREATED) {
          branch.setBranchState(BranchState.MODIFIED);
          branchCache.storeItems(branch);
       }
       transactionCache.cache(txRecord);
-      return new TransactionResultImpl(txRecord, txData);
+      return new TransactionResultImpl(txRecord, changeSet);
    }
 
    @Override
@@ -122,12 +121,12 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
          RelationalConstants.ART_ID_SENTINEL, txType, branchCache);
    }
 
-   private final class TransactionResultImpl implements TransactionResult {
+   private static final class TransactionResultImpl implements TransactionResult {
 
       private final TransactionRecord tx;
-      private final List<ArtifactTransactionData> data;
+      private final OrcsChangeSet data;
 
-      public TransactionResultImpl(TransactionRecord tx, List<ArtifactTransactionData> data) {
+      public TransactionResultImpl(TransactionRecord tx, OrcsChangeSet data) {
          super();
          this.tx = tx;
          this.data = data;
@@ -139,7 +138,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       }
 
       @Override
-      public List<ArtifactTransactionData> getData() {
+      public OrcsChangeSet getChangeSet() {
          return data;
       }
 

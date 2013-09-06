@@ -10,13 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Component;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralDocument;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Dependency__Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Dependency__Dependency;
+import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import java.util.Iterator;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ResultSet;
@@ -24,6 +34,7 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -88,7 +99,7 @@ public class OrcsTransactionTest {
    public void testWritingUriAttribute() throws OseeCoreException {
       final String requirementText = "The engine torque shall be directly controllable through the engine control unit";
 
-      TransactionBuilder tx = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
+      TransactionBuilder tx = createTx();
 
       ArtifactId torqueRequirement =
          tx.createArtifact(CoreArtifactTypes.SoftwareRequirementPlainText, "Engine Torque Control");
@@ -157,8 +168,7 @@ public class OrcsTransactionTest {
          query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
 
       // duplicate on same branch
-      TransactionBuilder transaction1 =
-         txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
+      TransactionBuilder transaction1 = createTx();
       ArtifactId duplicate = transaction1.copyArtifact(guestUser);
       transaction1.commit();
       ArtifactReadable guestUserDup =
@@ -206,7 +216,7 @@ public class OrcsTransactionTest {
       ArtifactReadable guestUser =
          query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
 
-      TransactionBuilder tx = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
+      TransactionBuilder tx = createTx();
 
       thrown.expect(OseeArgumentException.class);
       tx.introduceArtifact(guestUser);
@@ -218,7 +228,7 @@ public class OrcsTransactionTest {
 
       ArtifactReadable originalGuest = queryBuilder.getResults().getExactlyOne();
 
-      TransactionBuilder tx = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
+      TransactionBuilder tx = createTx();
       tx.setSoleAttributeFromString(originalGuest, CoreAttributeTypes.Name, "Test");
       tx.commit();
 
@@ -230,7 +240,7 @@ public class OrcsTransactionTest {
 
    @Test
    public void testDeleteArtifact() throws OseeCoreException {
-      TransactionBuilder tx = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
+      TransactionBuilder tx = createTx();
       ArtifactId artifact = tx.createArtifact(CoreArtifactTypes.AccessControlModel, "deleteMe");
       tx.commit();
 
@@ -247,7 +257,7 @@ public class OrcsTransactionTest {
 
    @Test
    public void testArtifactGetTransaction() throws OseeCoreException {
-      TransactionBuilder tx = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
+      TransactionBuilder tx = createTx();
 
       String guid = tx.createArtifact(CoreArtifactTypes.Component, "A component").getGuid();
       int startingTx = tx.commit().getId();
@@ -256,7 +266,7 @@ public class OrcsTransactionTest {
          query.fromBranch(CoreBranches.COMMON).andGuidsOrHrids(guid).getResults().getExactlyOne();
       assertEquals(startingTx, artifact.getTransaction());
 
-      TransactionBuilder tx2 = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
+      TransactionBuilder tx2 = createTx();
       tx2.setName(artifact, "Modified - component");
       int lastTx = tx2.commit().getId();
 
@@ -265,6 +275,251 @@ public class OrcsTransactionTest {
       ArtifactReadable currentArtifact =
          query.fromBranch(CoreBranches.COMMON).andGuidsOrHrids(guid).getResults().getExactlyOne();
       assertEquals(lastTx, currentArtifact.getTransaction());
+   }
+
+   @Test
+   public void testRelate() throws OseeCoreException {
+      TransactionBuilder tx1 = createTx();
+      ArtifactId art1 = tx1.createArtifact(CoreArtifactTypes.Component, "A component");
+      ArtifactId art2 = tx1.createArtifact(CoreArtifactTypes.Component, "B component");
+      tx1.relate(art1, CoreRelationTypes.Default_Hierarchical__Child, art2);
+      tx1.commit();
+
+      ArtifactReadable artifact = query.fromBranch(CoreBranches.COMMON).andIds(art1).getResults().getExactlyOne();
+      assertEquals("A component", artifact.getName());
+
+      ResultSet<ArtifactReadable> children = artifact.getChildren();
+      assertEquals(1, children.size());
+      assertEquals("B component", children.getExactlyOne().getName());
+   }
+
+   @Test
+   public void testRelateWithSortType() throws OseeCoreException {
+      TransactionBuilder tx1 = createTx();
+      ArtifactId art1 = tx1.createArtifact(CoreArtifactTypes.Component, "A component");
+      ArtifactId art2 = tx1.createArtifact(CoreArtifactTypes.Component, "B component");
+      ArtifactId art3 = tx1.createArtifact(CoreArtifactTypes.Component, "C component");
+      tx1.addChildren(art1, art2, art3);
+      int tx1Id = tx1.commit().getId();
+
+      QueryBuilder art1Query = query.fromBranch(CoreBranches.COMMON).andIds(art1);
+
+      ArtifactReadable artifact = art1Query.getResults().getExactlyOne();
+      assertEquals("A component", artifact.getName());
+      assertEquals(tx1Id, artifact.getTransaction());
+
+      ResultSet<ArtifactReadable> children = artifact.getChildren();
+      assertEquals(2, children.size());
+
+      Iterator<ArtifactReadable> iterator = children.iterator();
+      assertEquals("B component", iterator.next().getName());
+      assertEquals("C component", iterator.next().getName());
+
+      TransactionBuilder tx2 = createTx();
+      ArtifactId art4 = tx2.createArtifact(Component, "D component");
+      tx2.relate(art1, Default_Hierarchical__Child, art4, LEXICOGRAPHICAL_DESC);
+      int tx2Id = tx2.commit().getId();
+
+      ArtifactReadable artifact21 = art1Query.getResults().getExactlyOne();
+      assertEquals("A component", artifact21.getName());
+      assertEquals(tx2Id, artifact21.getTransaction());
+
+      ResultSet<ArtifactReadable> children2 = artifact21.getChildren();
+      assertEquals(3, children2.size());
+
+      Iterator<ArtifactReadable> iterator2 = children2.iterator();
+      assertEquals("D component", iterator2.next().getName());
+      assertEquals("C component", iterator2.next().getName());
+      assertEquals("B component", iterator2.next().getName());
+   }
+
+   @Test
+   public void testAddChildren() throws OseeCoreException {
+      TransactionBuilder tx1 = createTx();
+      ArtifactId art1 = tx1.createArtifact(Component, "A component");
+      ArtifactId art2 = tx1.createArtifact(Component, "C component");
+      ArtifactId art3 = tx1.createArtifact(Component, "B component");
+      tx1.commit();
+
+      TransactionBuilder tx2 = createTx();
+      tx2.addChildren(art1, art2, art3);
+      tx2.commit();
+
+      ArtifactReadable artifact1 = query.fromBranch(CoreBranches.COMMON).andIds(art1).getResults().getExactlyOne();
+      assertEquals("A component", artifact1.getName());
+
+      ResultSet<ArtifactReadable> children = artifact1.getChildren();
+      assertEquals(2, children.size());
+
+      Iterator<ArtifactReadable> iterator = children.iterator();
+      ArtifactReadable artifact3 = iterator.next();
+      ArtifactReadable artifact2 = iterator.next();
+
+      assertEquals(art3, artifact3);
+      assertEquals(art2, artifact2);
+
+      assertEquals("B component", artifact3.getName());
+      assertEquals("C component", artifact2.getName());
+
+      assertEquals(artifact1, artifact2.getParent());
+      assertEquals(artifact1, artifact3.getParent());
+   }
+
+   @Test
+   public void testSetRationale() throws OseeCoreException {
+      String rationale = "This is my rationale";
+
+      TransactionBuilder tx1 = createTx();
+      ArtifactId art1 = tx1.createArtifact(Component, "A component");
+      ArtifactId art2 = tx1.createArtifact(Component, "B component");
+
+      tx1.relate(art1, Default_Hierarchical__Child, art2);
+      tx1.setRationale(art1, Default_Hierarchical__Child, art2, rationale);
+
+      tx1.commit();
+
+      ArtifactReadable artifact = query.fromBranch(CoreBranches.COMMON).andIds(art1).getResults().getExactlyOne();
+      assertEquals("A component", artifact.getName());
+
+      ResultSet<ArtifactReadable> children = artifact.getChildren();
+      assertEquals(1, children.size());
+
+      ArtifactReadable otherArtifact = children.getExactlyOne();
+      assertEquals("B component", otherArtifact.getName());
+
+      String actual1 = artifact.getRationale(Default_Hierarchical__Child, otherArtifact);
+      assertEquals(rationale, actual1);
+
+      String actual2 = otherArtifact.getRationale(Default_Hierarchical__Parent, artifact);
+      assertEquals(rationale, actual2);
+   }
+
+   @Test
+   public void testUnrelate() throws OseeCoreException {
+      TransactionBuilder tx1 = createTx();
+      ArtifactId art1 = tx1.createArtifact(Component, "A component");
+      ArtifactId art2 = tx1.createArtifact(Component, "C component");
+      ArtifactId art3 = tx1.createArtifact(Component, "B component");
+      tx1.addChildren(art1, art2, art3);
+      ArtifactId art4 = tx1.createArtifact(GeneralDocument, "Document");
+      tx1.relate(art1, Dependency__Dependency, art4);
+      int txId = tx1.commit().getId();
+
+      ArtifactReadable artifact4 = query.fromBranch(CoreBranches.COMMON).andIds(art4).getResults().getExactlyOne();
+      assertEquals(art4, artifact4);
+
+      ArtifactReadable artifact1 = artifact4.getRelated(CoreRelationTypes.Dependency__Artifact).getExactlyOne();
+      assertEquals(art1, artifact1);
+
+      Iterator<ArtifactReadable> iterator = artifact1.getChildren().iterator();
+      assertEquals(art3, iterator.next());
+      assertEquals(art2, iterator.next());
+
+      // Un-relate a child
+      TransactionBuilder tx2 = createTx();
+      tx2.unrelate(art1, Default_Hierarchical__Child, art2);
+      int txId2 = tx2.commit().getId();
+
+      artifact4 = query.fromBranch(CoreBranches.COMMON).andIds(art4).getResults().getExactlyOne();
+      assertEquals(art4, artifact4);
+
+      artifact1 = artifact4.getRelated(CoreRelationTypes.Dependency__Artifact).getExactlyOne();
+      assertEquals(art1, artifact1);
+
+      assertEquals(art3, artifact1.getChildren().getExactlyOne());
+   }
+
+   @Test
+   public void testUnrelateFromAllByType() throws OseeCoreException {
+      TransactionBuilder tx1 = createTx();
+      ArtifactId art1 = tx1.createArtifact(Component, "A component");
+      ArtifactId art2 = tx1.createArtifact(Component, "C component");
+      ArtifactId art3 = tx1.createArtifact(Component, "B component");
+      tx1.addChildren(art1, art2, art3);
+
+      ArtifactId art4 = tx1.createArtifact(GeneralDocument, "Document");
+      tx1.relate(art1, Dependency__Dependency, art4);
+      tx1.commit();
+
+      ArtifactReadable artifact4 = query.fromBranch(COMMON).andIds(art4).getResults().getExactlyOne();
+      assertEquals(art4, artifact4);
+
+      ArtifactReadable artifact1 = artifact4.getRelated(Dependency__Artifact).getExactlyOne();
+      assertEquals(art1, artifact1);
+
+      Iterator<ArtifactReadable> iterator = artifact1.getChildren().iterator();
+      assertEquals(art3, iterator.next());
+      assertEquals(art2, iterator.next());
+
+      // Unrelate All children
+      TransactionBuilder tx2 = createTx();
+      tx2.unrelateFromAll(Default_Hierarchical__Parent, art1);
+      tx2.commit();
+
+      artifact4 = query.fromBranch(COMMON).andIds(art4).getResults().getExactlyOne();
+      assertEquals(art4, artifact4);
+
+      artifact1 = artifact4.getRelated(Dependency__Artifact).getExactlyOne();
+      assertEquals(art1, artifact1);
+
+      assertEquals(true, artifact1.getChildren().isEmpty());
+   }
+
+   @Test
+   public void testUnrelateFromAll() throws OseeCoreException {
+      ArtifactReadable artifact1;
+      ArtifactReadable artifact2;
+      ArtifactReadable artifact3;
+      ArtifactReadable artifact4;
+
+      TransactionBuilder tx1 = createTx();
+      ArtifactId art1 = tx1.createArtifact(Component, "A component");
+      ArtifactId art2 = tx1.createArtifact(Component, "C component");
+      ArtifactId art3 = tx1.createArtifact(Component, "B component");
+      tx1.addChildren(art1, art2, art3);
+
+      ArtifactId art4 = tx1.createArtifact(GeneralDocument, "Document");
+      tx1.relate(art1, Dependency__Dependency, art4);
+      tx1.commit();
+
+      artifact4 = query.fromBranch(COMMON).andIds(art4).getResults().getExactlyOne();
+      assertEquals(art4, artifact4);
+
+      artifact1 = artifact4.getRelated(Dependency__Artifact).getExactlyOne();
+      assertEquals(art1, artifact1);
+
+      Iterator<ArtifactReadable> iterator = artifact1.getChildren().iterator();
+      assertEquals(art3, iterator.next());
+      assertEquals(art2, iterator.next());
+
+      TransactionBuilder tx2 = createTx();
+      tx2.unrelateFromAll(art1);
+      tx2.commit();
+
+      ResultSet<ArtifactReadable> arts =
+         query.fromBranch(COMMON).andIds(art1, art2, art3, art4).includeDeleted().getResults();
+      Iterator<ArtifactReadable> iterator2 = arts.iterator();
+      artifact1 = iterator2.next();
+      artifact2 = iterator2.next();
+      artifact3 = iterator2.next();
+      artifact4 = iterator2.next();
+
+      assertEquals(art1, artifact1);
+      assertEquals(art2, artifact2);
+      assertEquals(art3, artifact3);
+      assertEquals(art4, artifact4);
+
+      assertEquals(true, artifact1.getChildren().isEmpty());
+      assertEquals(true, artifact1.getRelated(Dependency__Dependency).isEmpty());
+
+      assertNull(artifact2.getParent());
+      assertNull(artifact3.getParent());
+
+      assertEquals(true, artifact4.getRelated(Dependency__Artifact).isEmpty());
+   }
+
+   private TransactionBuilder createTx() throws OseeCoreException {
+      return txFactory.createTransaction(COMMON, userArtifact, testName.getMethodName());
    }
 
    private ArtifactReadable getSystemUser() throws OseeCoreException {

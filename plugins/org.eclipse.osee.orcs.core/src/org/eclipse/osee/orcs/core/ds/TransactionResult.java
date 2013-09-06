@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import java.util.List;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 
-public interface TransactionResult {
+public interface TransactionResult extends HasOrcsChangeSet {
 
    TransactionRecord getTransaction();
 
-   List<ArtifactTransactionData> getData();
 }

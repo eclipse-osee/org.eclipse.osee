@@ -14,8 +14,7 @@ import org.eclipse.osee.orcs.core.internal.artifact.ArtifactTestSuite;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeTestSuite;
 import org.eclipse.osee.orcs.core.internal.branch.BranchTestSuite;
 import org.eclipse.osee.orcs.core.internal.graph.GraphTestSuite;
-import org.eclipse.osee.orcs.core.internal.loader.LoaderTestSuite;
-import org.eclipse.osee.orcs.core.internal.proxy.ProxyTestSuite;
+import org.eclipse.osee.orcs.core.internal.proxy.impl.ProxyImplTestSuite;
 import org.eclipse.osee.orcs.core.internal.relation.RelationTestSuite;
 import org.eclipse.osee.orcs.core.internal.search.QueryTestSuite;
 import org.eclipse.osee.orcs.core.internal.transaction.TransactionTestSuite;
@@ -33,9 +32,8 @@ import org.junit.runners.Suite;
    AttributeTestSuite.class,
    BranchTestSuite.class,
    GraphTestSuite.class,
-   LoaderTestSuite.class,
-   ProxyTestSuite.class,
    RelationTestSuite.class,
+   ProxyImplTestSuite.class,
    QueryTestSuite.class,
    TransactionTestSuite.class,
    TypesTestSuite.class,

@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.HasOrcsData;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManager;
-import org.eclipse.osee.orcs.core.internal.relation.HasRelationContainer;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.HasTransaction;
@@ -23,7 +22,7 @@ import org.eclipse.osee.orcs.data.HasTransaction;
 /**
  * @author Megumi Telles
  */
-public interface Artifact extends HasRelationContainer, ArtifactId, AttributeManager, HasTransaction, ArtifactVisitable, HasOrcsData<ArtifactData>, RelationNode {
+public interface Artifact extends ArtifactId, AttributeManager, HasTransaction, ArtifactVisitable, HasOrcsData<ArtifactData>, RelationNode {
 
    void setArtifactType(IArtifactType artifactType) throws OseeCoreException;
 

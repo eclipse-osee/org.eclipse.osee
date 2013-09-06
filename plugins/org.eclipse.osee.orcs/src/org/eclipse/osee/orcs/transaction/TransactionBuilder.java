@@ -15,6 +15,9 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.Identifiable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -96,5 +99,27 @@ public interface TransactionBuilder {
    void deleteAttributes(ArtifactId art, IAttributeType attributeType) throws OseeCoreException;
 
    void deleteAttributesWithValue(ArtifactId art, IAttributeType attributeType, Object value) throws OseeCoreException;
+
+   /// TX
+
+   void addChildren(ArtifactId artA, Iterable<? extends ArtifactId> children) throws OseeCoreException;
+
+   void addChildren(ArtifactId artA, ArtifactId... children) throws OseeCoreException;
+
+   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB) throws OseeCoreException;
+
+   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale) throws OseeCoreException;
+
+   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, IRelationSorterId sortType) throws OseeCoreException;
+
+   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale, IRelationSorterId sortType) throws OseeCoreException;
+
+   void setRationale(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale) throws OseeCoreException;
+
+   void unrelate(ArtifactId artA, IRelationType relType, ArtifactId artB) throws OseeCoreException;
+
+   void unrelateFromAll(ArtifactId art) throws OseeCoreException;
+
+   void unrelateFromAll(IRelationTypeSide typeSide, ArtifactId art) throws OseeCoreException;
 
 }

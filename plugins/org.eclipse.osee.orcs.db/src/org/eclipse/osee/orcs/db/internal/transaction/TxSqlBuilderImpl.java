@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.transaction;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -28,9 +27,9 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
+import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
 import org.eclipse.osee.orcs.core.ds.RelationData;
@@ -89,7 +88,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    }
 
    @Override
-   public void accept(TransactionRecord tx, Collection<ArtifactTransactionData> artifactTransactionData) throws OseeCoreException {
+   public void accept(TransactionRecord tx, OrcsChangeSet changeSet) throws OseeCoreException {
       txId = tx.getId();
       binaryStores = new ArrayList<DaoToSql>();
       dataItemInserts = new HashCollection<SqlOrderEnum, Object[]>();
@@ -97,9 +96,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
 
       addRow(SqlOrderEnum.TXS_DETAIL, txId, tx.getComment(), tx.getTimeStamp(), tx.getAuthor(), tx.getBranchId(),
          tx.getTxType().getId());
-      for (ArtifactTransactionData txData : artifactTransactionData) {
-         txData.accept(this);
-      }
+      changeSet.accept(this);
    }
 
    @Override

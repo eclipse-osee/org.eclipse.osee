@@ -18,9 +18,12 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandlerDecorator;
-import org.eclipse.osee.orcs.core.internal.ArtifactBuilder;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
+import org.eclipse.osee.orcs.core.internal.graph.GraphBuilder;
+import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
@@ -34,14 +37,21 @@ import com.google.common.collect.Multimaps;
  */
 public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
 
-   private final ArtifactBuilder handler;
+   private final OrcsSession session;
+   private final ExternalArtifactManager proxyManager;
 
    private Map<Integer, ArtifactMatch> matches;
    private List<Match<ArtifactReadable, AttributeReadable<?>>> results;
 
-   public ArtifactMatchDataHandler(ArtifactBuilder handler) {
+   public ArtifactMatchDataHandler(OrcsSession session, GraphBuilder handler, ExternalArtifactManager proxyManager) {
       super(handler);
-      this.handler = handler;
+      this.session = session;
+      this.proxyManager = proxyManager;
+   }
+
+   @Override
+   protected GraphBuilder getHandler() {
+      return (GraphBuilder) super.getHandler();
    }
 
    @Override
@@ -71,26 +81,25 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
       buildResults();
    }
 
-   private void buildResults() {
-      List<ArtifactReadable> loaded = handler.getArtifacts();
+   private void buildResults() throws OseeCoreException {
+      Iterable<Artifact> loaded = getHandler().getArtifacts();
 
-      if (loaded.isEmpty()) {
-         results = Collections.emptyList();
-      } else {
-         results = Lists.newLinkedList();
-         for (ArtifactReadable item : loaded) {
-            ArtifactMatch artifactMatch = matches.get(item.getLocalId());
-            if (artifactMatch != null) {
-               artifactMatch.setArtifactReadable(item);
-            }
-            results.add(artifactMatch);
+      for (Artifact item : loaded) {
+         ArtifactMatch artifactMatch = matches.get(item.getLocalId());
+         if (artifactMatch != null) {
+            ArtifactReadable readable = proxyManager.asExternalArtifact(session, item);
+            artifactMatch.setArtifactReadable(readable);
          }
+         if (results == null) {
+            results = Lists.newLinkedList();
+         }
+         results.add(artifactMatch);
       }
       matches = null;
    }
 
    public List<Match<ArtifactReadable, AttributeReadable<?>>> getResults() {
-      return results;
+      return results != null ? results : Collections.<Match<ArtifactReadable, AttributeReadable<?>>> emptyList();
    }
 
    private static <K, V> ListMultimap<K, V> newLinkedHashListMultimap() {
@@ -133,8 +142,7 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
       @Override
       public Collection<AttributeReadable<?>> getElements() throws OseeCoreException {
          Collection<AttributeReadable<?>> filtered = Lists.newLinkedList();
-         List<? extends AttributeReadable<Object>> attributes = item.getAttributes();
-         for (AttributeReadable<?> attribute : attributes) {
+         for (AttributeReadable<?> attribute : item.getAttributes()) {
             if (matches.containsKey(attribute.getLocalId())) {
                filtered.add(attribute);
             }

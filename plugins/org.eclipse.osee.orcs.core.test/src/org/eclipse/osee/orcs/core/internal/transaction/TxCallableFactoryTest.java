@@ -32,7 +32,9 @@ import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.core.ds.TxDataStore;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
+import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
+import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.junit.Assert;
@@ -61,9 +63,11 @@ public class TxCallableFactoryTest {
    
    @Mock private ExternalArtifactManager proxyManager;
    @Mock private ArtifactFactory artifactFactory;
+   @Mock private RelationManager relationManager;
    @Mock private TxDataLoader loader;
    
    @Mock private IOseeBranch branch;
+   @Mock private GraphData graph;
    @Mock private TxDataStore txDataStore;
    
    @Mock private ArtifactReadable userArtifact;
@@ -80,10 +84,11 @@ public class TxCallableFactoryTest {
    @Before
    public void init() {
       MockitoAnnotations.initMocks(this);
-      txManager = new TxDataManager(proxyManager, artifactFactory, loader);
+      txManager = new TxDataManager(proxyManager, artifactFactory, relationManager, loader);
       txFactory = new TxCallableFactory(logger, txDataStore, txManager);
-      data = new TxData(session, branch);
+      data = new TxData(session, graph);
 
+      when(graph.getBranch()).thenReturn(branch);
    }
 
    @SuppressWarnings("unchecked")

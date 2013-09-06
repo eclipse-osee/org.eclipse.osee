@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.GraphReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -100,8 +99,7 @@ public class HtmlWriter {
       }
 
       int count = 0;
-      GraphReadable graph = OrcsApplication.getOrcsApi().getGraph(null);
-      for (ArtifactReadable art : graph.getChildren(artifact)) {
+      for (ArtifactReadable art : artifact.getChildren()) {
          URI uri1;
          if (isAtEndOfPath(uriInfo.getPath(), "artifact")) {
             uri1 = uriInfo.getAbsolutePathBuilder().path("{uuid}").build(art.getGuid());

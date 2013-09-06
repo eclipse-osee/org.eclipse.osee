@@ -42,9 +42,10 @@ import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.GraphReadable;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -61,13 +62,13 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    private final ArtifactProviderCache cache = new ArtifactProviderCache();
    private final ArtifactFilter filter = new ArtifactFilter(this);
-   private final GraphReadable graph;
+   private final OrcsTypes orcsTypes;
 
-   public ArtifactProviderImpl(Log logger, ExecutorAdmin executorAdmin, QueryFactory queryFactory, GraphReadable graph) {
+   public ArtifactProviderImpl(Log logger, ExecutorAdmin executorAdmin, QueryFactory queryFactory, OrcsTypes orcsTypes) {
       this.logger = logger;
       this.executorAdmin = executorAdmin;
       this.queryFactory = queryFactory;
-      this.graph = graph;
+      this.orcsTypes = orcsTypes;
    }
 
    protected void setFilterAllTypesAllowed(boolean allTypesAllowed) {
@@ -134,7 +135,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    @Override
    public ResultSet<ArtifactReadable> getRelatedArtifacts(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
-      final ResultSet<ArtifactReadable> artifacts = graph.getRelatedArtifacts(relationTypeSide, art);
+      final ResultSet<ArtifactReadable> artifacts = art.getRelated(relationTypeSide);
       List<ArtifactReadable> results = Collections.emptyList();
       try {
          FilteredArtifactCallable callable = new FilteredArtifactCallable(executorAdmin, filter, artifacts);
@@ -149,7 +150,7 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    @Override
    public ArtifactReadable getRelatedArtifact(ArtifactReadable art, IRelationTypeSide relationTypeSide) throws OseeCoreException {
-      ArtifactReadable item = graph.getRelatedArtifacts(relationTypeSide, art).getOneOrNull();
+      ArtifactReadable item = art.getRelated(relationTypeSide).getOneOrNull();
       try {
          if (!filter.accept(item)) {
             item = null;
@@ -175,10 +176,10 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    @Override
    public Collection<? extends IRelationType> getValidRelationTypes(ArtifactReadable art) throws OseeCoreException {
-      Collection<IRelationTypeSide> existingRelationTypes = graph.getExistingRelationTypes(art);
+      Collection<? extends IRelationType> existingRelationTypes = art.getExistingRelationTypes();
       Set<IRelationType> toReturn = new HashSet<IRelationType>();
-      for (IRelationTypeSide side : existingRelationTypes) {
-         toReturn.add(side);
+      for (IRelationType type : existingRelationTypes) {
+         toReturn.add(type);
       }
       List<? extends IRelationType> listToReturn = Lists.newLinkedList(toReturn);
       java.util.Collections.sort(listToReturn);
@@ -187,12 +188,12 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    @Override
    public String getSideAName(IRelationType type) throws OseeCoreException {
-      return graph.getTypes().getSideAName(type);
+      return orcsTypes.getRelationTypes().getSideAName(type);
    }
 
    @Override
    public String getSideBName(IRelationType type) throws OseeCoreException {
-      return graph.getTypes().getSideBName(type);
+      return orcsTypes.getRelationTypes().getSideBName(type);
    }
 
    @Override

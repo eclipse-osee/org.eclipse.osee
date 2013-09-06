@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,14 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
+ * @author Megumi Telles
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
@@ -53,12 +57,31 @@ public interface ArtifactReadable extends ArtifactId, HasLocalId, HasBranch, Has
 
    AttributeReadable<Object> getAttributeById(AttributeId attributeId) throws OseeCoreException;
 
-   List<? extends AttributeReadable<Object>> getAttributes() throws OseeCoreException;
+   ResultSet<? extends AttributeReadable<Object>> getAttributes() throws OseeCoreException;
 
-   <T> List<? extends AttributeReadable<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
+   <T> ResultSet<? extends AttributeReadable<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException;
 
-   List<? extends AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag) throws OseeCoreException;
+   ResultSet<? extends AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag) throws OseeCoreException;
 
-   <T> List<? extends AttributeReadable<T>> getAttributes(IAttributeType attributeType, DeletionFlag deletionFlag) throws OseeCoreException;
+   <T> ResultSet<? extends AttributeReadable<T>> getAttributes(IAttributeType attributeType, DeletionFlag deletionFlag) throws OseeCoreException;
+
+   ////////////////////
+   int getMaximumRelationAllowed(IRelationTypeSide relationTypeSide) throws OseeCoreException;
+
+   Collection<? extends IRelationType> getValidRelationTypes() throws OseeCoreException;
+
+   Collection<? extends IRelationType> getExistingRelationTypes() throws OseeCoreException;
+
+   ArtifactReadable getParent() throws OseeCoreException;
+
+   ResultSet<ArtifactReadable> getChildren() throws OseeCoreException;
+
+   ResultSet<ArtifactReadable> getRelated(IRelationTypeSide relationTypeSide) throws OseeCoreException;
+
+   boolean areRelated(IRelationTypeSide typeAndSide, ArtifactReadable readable) throws OseeCoreException;
+
+   int getRelatedCount(IRelationTypeSide typeAndSide) throws OseeCoreException;
+
+   String getRationale(IRelationTypeSide typeAndSide, ArtifactReadable readable) throws OseeCoreException;
 
 }

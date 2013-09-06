@@ -76,9 +76,10 @@ public class RelationTypeValidity {
       return toReturn;
    }
 
-   public MultiplicityState getRelationMultiplicityState(IRelationType type, RelationSide side, int count) throws OseeCoreException {
+   public MultiplicityState getRelationMultiplicityState(IRelationType type, RelationSide side, int count) throws OseeCoreException {      
       Conditions.checkNotNull(type, "type");
       Conditions.checkNotNull(side, "relationSide");
+      checkTypeExists(type);
 
       RelationTypeMultiplicity multiplicity = relationTypes.getMultiplicity(type);
 
@@ -88,6 +89,13 @@ public class RelationTypeValidity {
          toReturn = MultiplicityState.MAX_VIOLATION;
       }
       return toReturn;
+   }
+
+   public boolean isRelationTypeValid(IRelationType relationType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
+      checkTypeExists(relationType);
+      Conditions.checkNotNull(artifactType, "artifactType");
+      Conditions.checkNotNull(relationSide, "relationSide");
+      return getRelationSideMax(relationType, artifactType, relationSide) > 0;
    }
 
    public List<IRelationType> getValidRelationTypes(IArtifactType artifactType) throws OseeCoreException {
@@ -102,20 +110,8 @@ public class RelationTypeValidity {
       return toReturn;
    }
 
-   public boolean isRelationTypeValid(IRelationType relationType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
-      checkTypeExists(relationType);
-      Conditions.checkNotNull(artifactType, "artifactType");
-      Conditions.checkNotNull(relationSide, "relationSide");
-      return getRelationSideMax(relationType, artifactType, relationSide) > 0;
-   }
-
-   private void checkTypeExists(IRelationType type) throws OseeCoreException {
-      Conditions.checkExpressionFailOnTrue(!relationTypes.exists(type), "relationType [%s] does not exist", type);
-   }
-
    private boolean isTypeAllowed(IArtifactType artifactType, IRelationType relationType) throws OseeCoreException {
       boolean result = false;
-      checkTypeExists(relationType);
       for (RelationSide side : RelationSide.values()) {
          int sideMax = getRelationSideMax(relationType, artifactType, side);
          if (sideMax > 0) {
@@ -124,6 +120,11 @@ public class RelationTypeValidity {
          }
       }
       return result;
+   }
+
+   private void checkTypeExists(IRelationType type) throws OseeCoreException {
+      boolean exists = relationTypes.exists(type);
+      Conditions.checkExpressionFailOnTrue(!exists, "relationType [%s] does not exist", type);
    }
 
    private int getRelationSideMax(IRelationType relationType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {

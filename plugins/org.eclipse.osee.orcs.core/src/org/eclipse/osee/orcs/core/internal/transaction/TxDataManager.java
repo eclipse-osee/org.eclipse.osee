@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.internal.transaction;
 
 import static java.util.Collections.singleton;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -20,22 +19,27 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.ResultSet;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.ArtifactTransactionData;
-import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
+import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactVisitable;
+import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
+import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
+import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.transaction.TxData.TxState;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import com.google.common.collect.Lists;
 
 /**
  * @author Roberto E. Escobar
@@ -45,22 +49,29 @@ public class TxDataManager {
 
    public interface TxDataLoader {
 
+      GraphData createGraph(IOseeBranch branch) throws OseeCoreException;
+
       ResultSet<Artifact> loadArtifacts(OrcsSession session, IOseeBranch branch, Collection<ArtifactId> artifactIds) throws OseeCoreException;
+
+      ResultSet<Artifact> loadArtifacts(OrcsSession session, GraphData graph, Collection<ArtifactId> singleton) throws OseeCoreException;
 
    }
 
    private final ExternalArtifactManager proxyManager;
    private final ArtifactFactory artifactFactory;
+   private final RelationManager relationManager;
    private final TxDataLoader loader;
 
-   public TxDataManager(ExternalArtifactManager proxyManager, ArtifactFactory artifactFactory, TxDataLoader loader) {
+   public TxDataManager(ExternalArtifactManager proxyManager, ArtifactFactory artifactFactory, RelationManager relationManager, TxDataLoader loader) {
       this.proxyManager = proxyManager;
       this.artifactFactory = artifactFactory;
+      this.relationManager = relationManager;
       this.loader = loader;
    }
 
-   public TxData createTxData(OrcsSession session, IOseeBranch branch) {
-      return new TxData(session, branch);
+   public TxData createTxData(OrcsSession session, IOseeBranch branch) throws OseeCoreException {
+      GraphData graphData = loader.createGraph(branch);
+      return new TxData(session, graphData);
    }
 
    public void txCommitSuccess(TxData txData) {
@@ -84,6 +95,10 @@ public class TxDataManager {
       txData.setCommitInProgress(false);
    }
 
+   private GraphData getGraphForWrite(TxData txData) {
+      return txData.getGraph();
+   }
+
    public Iterable<Artifact> getForWrite(TxData txData, Iterable<? extends ArtifactId> ids) throws OseeCoreException {
       checkChangesAllowed(txData);
       Set<ArtifactId> toLoad = new LinkedHashSet<ArtifactId>();
@@ -99,7 +114,7 @@ public class TxDataManager {
          items.put(artifactId.getGuid(), node);
       }
       if (!toLoad.isEmpty()) {
-         Iterable<Artifact> result = loader.loadArtifacts(txData.getSession(), txData.getBranch(), toLoad);
+         Iterable<Artifact> result = loader.loadArtifacts(txData.getSession(), txData.getGraph(), toLoad);
          for (Artifact node : result) {
             items.put(node.getGuid(), node);
             checkAndAdd(txData, node);
@@ -113,7 +128,7 @@ public class TxDataManager {
       Artifact node = findArtifactLocallyForWrite(txData, artifactId);
       if (node == null) {
          ResultSet<Artifact> result =
-            loader.loadArtifacts(txData.getSession(), txData.getBranch(), singleton(artifactId));
+            loader.loadArtifacts(txData.getSession(), txData.getGraph(), singleton(artifactId));
          node = result.getExactlyOne();
       }
       checkAndAdd(txData, node);
@@ -125,18 +140,25 @@ public class TxDataManager {
       if (node == null) {
          if (artifactId instanceof Artifact) {
             Artifact source = (Artifact) artifactId;
-            node = copyArtifactForWrite(txData, source);
+            if (txData.getBranch().equals(source.getBranch())) {
+               node = copyArtifactForWrite(txData, source);
+            }
          } else if (artifactId instanceof ArtifactReadable) {
             ArtifactReadable external = (ArtifactReadable) artifactId;
-            Artifact source = proxyManager.asInternalArtifact(external);
-            node = copyArtifactForWrite(txData, source);
+            if (txData.getBranch().equals(external.getBranch())) {
+               Artifact source = proxyManager.asInternalArtifact(external);
+               node = copyArtifactForWrite(txData, source);
+            }
          }
       }
       return node;
    }
 
    private Artifact copyArtifactForWrite(TxData txData, Artifact source) throws OseeCoreException {
-      return artifactFactory.clone(source);
+      Artifact artifact = artifactFactory.clone(source);
+      txData.getGraph().addNode(artifact);
+      relationManager.cloneRelations(txData.getSession(), source, artifact);
+      return artifact;
    }
 
    private Artifact getSourceArtifact(TxData txData, IOseeBranch fromBranch, ArtifactId artifactId) throws OseeCoreException {
@@ -234,6 +256,8 @@ public class TxDataManager {
       boolean isDifferent = oldArtifact != null && oldArtifact != artifact;
       Conditions.checkExpressionFailOnTrue(isDifferent,
          "Another instance of writeable detected - writeable tracking would be inconsistent");
+
+      txData.getGraph().addNode(artifact);
    }
 
    private void checkAreOnDifferentBranches(TxData txData, IOseeBranch sourceBranch) throws OseeCoreException {
@@ -244,19 +268,85 @@ public class TxDataManager {
 
    public void deleteArtifact(TxData txData, ArtifactId sourceArtifact) throws OseeCoreException {
       Artifact asArtifact = getForWrite(txData, sourceArtifact);
+      GraphData graph = getGraphForWrite(txData);
+      relationManager.unrelateFromAll(txData.getSession(), graph, asArtifact);
       asArtifact.delete();
    }
 
+   public void addChildren(TxData txData, ArtifactId artA, Iterable<? extends ArtifactId> children) throws OseeCoreException {
+      OrcsSession session = txData.getSession();
+      Artifact asArtifact = getForWrite(txData, artA);
+      GraphData graph = getGraphForWrite(txData);
+      Iterable<? extends RelationNode> artifacts = getForWrite(txData, children);
+      List<RelationNode> nodes = Lists.newLinkedList(artifacts);
+      relationManager.addChildren(session, graph, asArtifact, nodes);
+   }
+
+   public void relate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB) throws OseeCoreException {
+      Artifact asArtifactA = getForWrite(txData, artA);
+      Artifact asArtifactB = getForWrite(txData, artB);
+      GraphData graph = getGraphForWrite(txData);
+      relationManager.relate(txData.getSession(), graph, asArtifactA, type, asArtifactB);
+   }
+
+   public void relate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, String rationale) throws OseeCoreException {
+      Artifact asArtifactA = getForWrite(txData, artA);
+      Artifact asArtifactB = getForWrite(txData, artB);
+      GraphData graph = getGraphForWrite(txData);
+      relationManager.relate(txData.getSession(), graph, asArtifactA, type, asArtifactB, rationale);
+   }
+
+   public void relate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, IRelationSorterId sortType) throws OseeCoreException {
+      Artifact asArtifactA = getForWrite(txData, artA);
+      Artifact asArtifactB = getForWrite(txData, artB);
+      GraphData graph = getGraphForWrite(txData);
+      relationManager.relate(txData.getSession(), graph, asArtifactA, type, asArtifactB, sortType);
+   }
+
+   public void relate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, String rationale, IRelationSorterId sortType) throws OseeCoreException {
+      Artifact asArtifactA = getForWrite(txData, artA);
+      Artifact asArtifactB = getForWrite(txData, artB);
+      GraphData graph = getGraphForWrite(txData);
+      relationManager.relate(txData.getSession(), graph, asArtifactA, type, asArtifactB, rationale, sortType);
+   }
+
+   public void setRationale(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, String rationale) throws OseeCoreException {
+      Artifact asArtifactA = getForWrite(txData, artA);
+      Artifact asArtifactB = getForWrite(txData, artB);
+      GraphData graph = getGraphForWrite(txData);
+      relationManager.setRationale(txData.getSession(), graph, asArtifactA, type, asArtifactB, rationale);
+   }
+
+   public void unrelate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB) throws OseeCoreException {
+      Artifact asArtifactA = getForWrite(txData, artA);
+      Artifact asArtifactB = getForWrite(txData, artB);
+      GraphData graph = getGraphForWrite(txData);
+      relationManager.unrelate(txData.getSession(), graph, asArtifactA, type, asArtifactB);
+   }
+
+   public void unrelateFromAll(TxData txData, ArtifactId artA) throws OseeCoreException {
+      Artifact asArtifactA = getForWrite(txData, artA);
+      GraphData graph = getGraphForWrite(txData);
+      relationManager.unrelateFromAll(txData.getSession(), graph, asArtifactA);
+   }
+
+   public void unrelateFromAll(TxData txData, IRelationType type, ArtifactId artA, RelationSide side) throws OseeCoreException {
+      Artifact asArtifactA = getForWrite(txData, artA);
+      GraphData graph = getGraphForWrite(txData);
+      relationManager.unrelateFromAll(txData.getSession(), graph, type, asArtifactA, side);
+   }
+
    public TransactionData createChangeData(TxData txData) throws OseeCoreException {
-      List<ArtifactTransactionData> changes = new ArrayList<ArtifactTransactionData>();
-      CollectDirtyData visitor = new CollectDirtyData(changes);
+      OrcsSession session = txData.getSession();
+      GraphData graph = txData.getGraph();
+
+      ChangeSetBuilder builder = new ChangeSetBuilder();
       for (Artifact artifact : txData.getAllWriteables()) {
-         if (artifact.isDirty()) {
-            ArtifactVisitable visitable = artifact;
-            visitable.accept(visitor);
-         }
+         artifact.accept(builder);
+         relationManager.accept(session, graph, artifact, builder);
       }
-      return new TransactionDataImpl(txData.getBranch(), txData.getAuthor(), txData.getComment(), changes);
+      OrcsChangeSet changeSet = builder.getChangeSet();
+      return new TransactionDataImpl(txData.getBranch(), txData.getAuthor(), txData.getComment(), changeSet);
    }
 
    private static final class TransactionDataImpl implements TransactionData {
@@ -264,14 +354,14 @@ public class TxDataManager {
       private final IOseeBranch branch;
       private final ArtifactReadable author;
       private final String comment;
-      private final List<ArtifactTransactionData> data;
+      private final OrcsChangeSet changeSet;
 
-      public TransactionDataImpl(IOseeBranch branch, ArtifactReadable author, String comment, List<ArtifactTransactionData> data) {
+      public TransactionDataImpl(IOseeBranch branch, ArtifactReadable author, String comment, OrcsChangeSet changeSet) {
          super();
          this.branch = branch;
          this.author = author;
          this.comment = comment;
-         this.data = data;
+         this.changeSet = changeSet;
       }
 
       @Override
@@ -290,21 +380,15 @@ public class TxDataManager {
       }
 
       @Override
-      public List<ArtifactTransactionData> getTxData() {
-         return data;
-      }
-
-      @Override
-      public void accept(OrcsVisitor visitor) throws OseeCoreException {
-         for (ArtifactTransactionData data : getTxData()) {
-            data.accept(visitor);
-         }
+      public OrcsChangeSet getChangeSet() {
+         return changeSet;
       }
 
       @Override
       public String toString() {
-         return "TransactionDataImpl [branch=" + branch + ", readable=" + author + ", comment=" + comment + ", data=" + data + "]";
+         return "TransactionDataImpl [branch=" + branch + ", author=" + author + ", comment=" + comment + ", changeSet=" + changeSet + "]";
       }
+
    }
 
 }

@@ -190,6 +190,7 @@ public final class TokenFactory {
    }
 
    private final static class RelationTypeSideToken extends NamedIdentity<Long> implements IRelationTypeSide {
+
       private final RelationSide relationSide;
       private RelationTypeSideToken opposite;
 
@@ -229,6 +230,11 @@ public final class TokenFactory {
             opposite = new RelationTypeSideToken(getGuid(), getName(), getSide().oppositeSide());
          }
          return opposite;
+      }
+
+      @Override
+      public String toString() {
+         return String.format("RelationTypeSide - uuid=[%s] type=[%s] side=[%s]", getGuid(), getName(), getSide());
       }
    }
 

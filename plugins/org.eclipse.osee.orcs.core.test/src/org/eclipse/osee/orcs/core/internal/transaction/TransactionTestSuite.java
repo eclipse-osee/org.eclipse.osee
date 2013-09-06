@@ -15,7 +15,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   CollectDirtyDataTest.class,
+   ChangeSetBuilderTest.class,
    TransactionBuilderImplTest.class,
    TransactionFactoryImplTest.class,
    TxCallableFactoryTest.class,

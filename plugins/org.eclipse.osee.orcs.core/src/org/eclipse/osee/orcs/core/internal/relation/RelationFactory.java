@@ -39,10 +39,6 @@ public class RelationFactory {
       this.providerFactory = providerFactory;
    }
 
-   public RelationContainer createRelationContainer(int artId) {
-      return new RelationContainerImpl(artId, relationTypes);
-   }
-
    public RelationNodeAdjacencies createRelationContainer() {
       return new RelationNodeAdjacencies();
    }
