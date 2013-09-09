@@ -245,4 +245,55 @@ public class LoaderTest {
 		// @formatter:on
    }
 
+   @org.junit.Test
+   public void testLoadByGuids() throws OseeCoreException {
+      String[] ids = new String[] {"AkA10I4aUSDLuFNIaegA", "AkA10LiAPEZLR4+jdFQA", "AkA2AcT6AXe6ivMFRhAA"};
+      DataLoader loader = loaderFactory.fromBranchAndIds(session, CoreBranches.COMMON, ids);
+      loader.setLoadLevel(LoadLevel.FULL);
+
+      loader.load(cancellation, builder);
+
+      verify(builder).onLoadStart();
+      verify(builder).onLoadDescription(descriptorCaptor.capture());
+      verify(builder).onLoadEnd();
+
+      LoadDescription descriptor = descriptorCaptor.getValue();
+      assertEquals(CoreBranches.COMMON, descriptor.getBranch());
+
+      verify(builder, times(3)).onData(artifactCaptor.capture());
+      verify(builder, times(7)).onData(attributeCaptor.capture());
+      verify(builder, times(3)).onData(relationCaptor.capture());
+
+      sort(artifactCaptor.getAllValues());
+      Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
+
+      // @formatter:off
+      verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA", "3VY6B", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 15L);
+      verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA", "N782Y", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 16L);
+      verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA", "LBVP3", NEW, Folder.getGuid(), 2, 6, -1, 43L);
+      // @formatter:on
+
+      sort(attributeCaptor.getAllValues());
+      Iterator<AttributeData> attrs = attributeCaptor.getAllValues().iterator();
+
+      // @formatter:off
+      verifyData(attrs.next(), 9, 5, NEW, Name.getGuid(), 2, 5, -1, 5L, "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", "");
+      verifyData(attrs.next(), 10, 5, NEW, UriGeneralStringData.getGuid(), 2, 5, -1, 6L, "", "attr://6/AkA10I4aUSDLuFNIaegA.zip");
+      verifyData(attrs.next(), 11, 5, NEW, Active.getGuid(), 2, 5, -1, 7L, "true", "");
+
+      verifyData(attrs.next(), 12, 6, NEW, Name.getGuid(), 2, 5, -1, 8L, "org.eclipse.osee.coverage.OseeTypes_Coverage", "");
+      verifyData(attrs.next(), 13, 6, NEW, UriGeneralStringData.getGuid(), 2, 5, -1, 9L, "", "attr://9/AkA10LiAPEZLR4+jdFQA.zip");
+      verifyData(attrs.next(), 14, 6, NEW, Active.getGuid(), 2, 5, -1, 10L, "true", "");
+      verifyData(attrs.next(), 17, 7, NEW, Name.getGuid(), 2, 6, -1, 33L, "User Groups", "");
+      // @formatter:on
+
+      sort(relationCaptor.getAllValues());
+      Iterator<RelationData> rels = relationCaptor.getAllValues().iterator();
+
+      // @formatter:off
+      verifyData(rels.next(), 1, 7, 7, 8, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 53L);
+      verifyData(rels.next(), 2, 7, 1, 7, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 52L);
+      verifyData(rels.next(), 3, 7, 7, 15, "", NEW, Default_Hierarchical__Parent.getGuid(), 2, 6, -1, 54L);
+      // @formatter:on
+   }
 }

@@ -31,6 +31,7 @@ import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.db.internal.loader.executors.AbstractLoadExecutor;
 import org.eclipse.osee.orcs.db.internal.loader.executors.LoadExecutor;
 import org.eclipse.osee.orcs.db.internal.loader.executors.QueryContextLoadExecutor;
+import org.eclipse.osee.orcs.db.internal.loader.executors.UuidsLoadExecutor;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContext;
 
@@ -111,6 +112,21 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
       return fromBranchAndArtifactIds(session, branch, toCollection(artifactIds));
    }
 
+   @Override
+   public DataLoader fromBranchAndIds(OrcsSession session, IOseeBranch branch, Collection<String> guids) throws OseeCoreException {
+      Conditions.checkNotNull(branch, "branch");
+      Conditions.checkNotNullOrEmpty(guids, "artifactGuids");
+
+      AbstractLoadExecutor executor = new UuidsLoadExecutor(loader, dbService, branchCache, session, branch, guids);
+      Options options = OptionsUtil.createOptions();
+      return new DataLoaderImpl(logger, executor, options);
+   }
+
+   @Override
+   public DataLoader fromBranchAndIds(OrcsSession session, IOseeBranch branch, String... ids) throws OseeCoreException {
+      return fromBranchAndIds(session, branch, toCollection(ids));
+   }
+
    @SuppressWarnings("unchecked")
    private <T> T adapt(Class<T> clazz, QueryContext queryContext) throws OseeCoreException {
       T toReturn = null;
@@ -123,7 +139,15 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
       return toReturn;
    }
 
-   private Collection<Integer> toCollection(int... ids) {
+   private static Collection<String> toCollection(String... ids) {
+      Set<String> toReturn = new HashSet<String>();
+      for (String id : ids) {
+         toReturn.add(id);
+      }
+      return toReturn;
+   }
+
+   private static Collection<Integer> toCollection(int... ids) {
       Set<Integer> toReturn = new HashSet<Integer>();
       for (Integer id : ids) {
          toReturn.add(id);

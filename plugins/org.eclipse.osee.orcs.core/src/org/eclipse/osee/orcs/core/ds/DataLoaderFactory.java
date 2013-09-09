@@ -29,4 +29,8 @@ public interface DataLoaderFactory {
 
    DataLoader fromBranchAndArtifactIds(OrcsSession session, IOseeBranch branch, int... artifactIds) throws OseeCoreException;
 
+   DataLoader fromBranchAndIds(OrcsSession session, IOseeBranch branch, Collection<String> ids) throws OseeCoreException;
+
+   DataLoader fromBranchAndIds(OrcsSession session, IOseeBranch branch, String... ids) throws OseeCoreException;
+
 }
