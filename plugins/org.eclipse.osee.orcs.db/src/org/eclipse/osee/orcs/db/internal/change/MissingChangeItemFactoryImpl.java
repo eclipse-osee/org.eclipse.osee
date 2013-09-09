@@ -152,7 +152,9 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
                relationChangesToAdd.put(data.getArtIdA(), data);
             }
          }
-         toReturn.addAll(createExistingRelations(cancellation, session, destTx, relationChangesToAdd));
+         if (!relationChangesToAdd.isEmpty()) {
+            toReturn.addAll(createExistingRelations(cancellation, session, destTx, relationChangesToAdd));
+         }
       }
       return toReturn;
    }
