@@ -46,15 +46,15 @@ public class MemoryResource {
    }
 
    public final String getUnfilteredASCIIString(int offset, int msb, int lsb) {
-	   offset += _offset;
-	   int size = (lsb - msb + 1) / 8;
+      offset += _offset;
+      int size = (lsb - msb + 1) / 8;
 
-	   StringBuilder str = new StringBuilder(size);
-	   int limit = Math.min(size, byteArray.get().length-offset);
-	   for (int i = 0; i < limit; i++) {
-		   str.append(getASCIICharFromOffset(offset + i));
-	   }
-	   return str.toString();
+      StringBuilder str = new StringBuilder(size);
+      int limit = Math.min(size, byteArray.get().length-offset);
+      for (int i = 0; i < limit; i++) {
+         str.append(getASCIICharFromOffset(offset + i));
+      }
+      return str.toString();
    }
    public void setData(byte data[]) {
       byteArray.set(data);
@@ -115,15 +115,15 @@ public class MemoryResource {
       int endByte = offset + lsb / 8;
       endByte = endByte < length ? endByte : length;
       int v = data[beginByte] & 0xFF >>> msb % 8 & 0xFF;
-      if (endByte != beginByte) {
-         for (int i = beginByte + 1; i <= endByte - 1; i++) {
-            v <<= 8;
-            v |= data[i] & 0xFF;
-         }
-         v <<= 8;
-         v |= data[endByte] & 0xFF;
-      }
-      return (short) (v >>> 7 - lsb % 8);
+            if (endByte != beginByte) {
+               for (int i = beginByte + 1; i <= endByte - 1; i++) {
+                  v <<= 8;
+                  v |= data[i] & 0xFF;
+               }
+               v <<= 8;
+               v |= data[endByte] & 0xFF;
+            }
+            return (short) (v >>> 7 - lsb % 8);
    }
 
    public final int getSignedInt32(int offset, int msb, int lsb) {
@@ -137,15 +137,15 @@ public class MemoryResource {
       int endByte = offset + lsb / 8;
       endByte = endByte < length ? endByte : length;
       int v = data[beginByte] & 0xFF >>> msb % 8 & 0xFF;
-      if (endByte != beginByte) {
-         for (int i = beginByte + 1; i <= endByte - 1; i++) {
-            v <<= 8;
-            v |= data[i] & 0xFF;
-         }
-         v <<= 8;
-         v |= data[endByte] & 0xFF;
-      }
-      return v >>> 7 - lsb % 8;
+                  if (endByte != beginByte) {
+                     for (int i = beginByte + 1; i <= endByte - 1; i++) {
+                        v <<= 8;
+                        v |= data[i] & 0xFF;
+                     }
+                     v <<= 8;
+                     v |= data[endByte] & 0xFF;
+                  }
+                  return v >>> 7 - lsb % 8;
    }
 
    public final long getLong(int offset, int msb, int lsb) {
@@ -157,15 +157,15 @@ public class MemoryResource {
          int endByte = offset + lsb / 8;
          endByte = endByte < length ? endByte : length;
          long v = data[beginByte] & 0xFF >>> msb % 8 & 0xFF;
-         if (endByte != beginByte) {
-            for (int i = beginByte + 1; i <= endByte - 1; i++) {
-               v <<= 8;
-               v |= data[i] & 0xFF;
-            }
+      if (endByte != beginByte) {
+         for (int i = beginByte + 1; i <= endByte - 1; i++) {
             v <<= 8;
-            v |= data[endByte] & 0xFF;
+            v |= data[i] & 0xFF;
          }
-         return v >>> 7 - lsb % 8;
+         v <<= 8;
+         v |= data[endByte] & 0xFF;
+      }
+      return v >>> 7 - lsb % 8;
       } else {
          throw new IllegalArgumentException("gettting long with bits not supported");
       }
@@ -413,11 +413,17 @@ public class MemoryResource {
       if (length + destOffset > byteArray.get().length) {
          throw new MessageSystemException("backing byte[] is too small for copy operation", Level.INFO);
       }
-      src.mark();
-      src.get(byteArray.get(), destOffset, length);
+      if (src.hasArray()) {
+         System.arraycopy(src.array(), src.arrayOffset(), byteArray.get(), destOffset, length);
+      } else {
+         synchronized (src) {
+            src.mark();
+            src.get(byteArray.get(), destOffset, length);
+            src.reset();
+         }
+      }
       Arrays.fill(byteArray.get(), destOffset + length, byteArray.get().length, (byte) 0);
       _dataHasChanged = true;
-      src.reset();
    }
 
    public ByteBuffer getAsBuffer() {
@@ -434,11 +440,11 @@ public class MemoryResource {
    public ByteBuffer getAsBuffer(int offset, int length) {
       if (offset > byteArray.get().length) {
          throw new IllegalArgumentException(
-            "offset of " + offset + " cannot be bigger than data length of " + byteArray.get().length);
+               "offset of " + offset + " cannot be bigger than data length of " + byteArray.get().length);
       }
       if (offset + length > byteArray.get().length) {
          throw new IllegalArgumentException(
-            "offset (" + offset + ") plus length (" + length + ") is greater than data length of " + byteArray.get().length);
+               "offset (" + offset + ") plus length (" + length + ") is greater than data length of " + byteArray.get().length);
       }
       return ByteBuffer.wrap(byteArray.get(), offset, length);
    }
