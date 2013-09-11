@@ -16,10 +16,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.coverage.internal.vcast.operations.VcpSourceFile;
 import org.eclipse.osee.coverage.model.ICoverageUnitFileContentsLoader;
+import org.eclipse.osee.coverage.util.LineData;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -74,13 +74,15 @@ public class VcpSourceLisFile implements ICoverageUnitFileContentsLoader {
    private static final Pattern exceptionPattern = Pattern.compile("^\\s+EXCEPTION\\s*$");
    private static final Pattern endMethodPattern = Pattern.compile("^\\s*END\\s+(.*);\\s*$");
 
-   public Pair<String, Boolean> getExecutionLine(String method, String executionLine) throws OseeCoreException {
+   public LineData getExecutionLine(String method, String executionLine) throws OseeCoreException {
       ensureLoaded();
       String startsWith = method + " " + executionLine + " ";
       boolean exceptionLine = false;
+      int lineNum = 0;
       for (String line : lines) {
+         lineNum++;
          if (line.startsWith(startsWith)) {
-            return new Pair<String, Boolean>(line, exceptionLine);
+            return new LineData(line, exceptionLine, lineNum);
          }
          Matcher m = exceptionPattern.matcher(line);
          if (m.find()) {

@@ -38,6 +38,7 @@ public class CoverageItem extends NamedIdentity<String> implements ICoverage, IW
    String orderNumber;
    String workProductGuid;
    WorkProductTask workProductTask;
+   int fileLineNumber;
 
    private final CoverageUnit coverageUnit;
    private static String PROPERTY_STORE_ID = "coverage.item";
@@ -255,6 +256,14 @@ public class CoverageItem extends NamedIdentity<String> implements ICoverage, IW
     */
    public void setTestUnitProvider(ITestUnitProvider testUnitProvider) {
       this.testUnitProvider = testUnitProvider;
+   }
+
+   public void setLineNumber(int lineNum) {
+      fileLineNumber = lineNum;
+   }
+
+   public String getLineNumber() {
+      return String.valueOf(fileLineNumber);
    }
 
    public static Pair<String, String> getNameGuidFromStore(String string) throws Exception {

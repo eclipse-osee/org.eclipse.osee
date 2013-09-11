@@ -152,6 +152,9 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(CoverageXViewerFactory.Execution_Number)) {
             return coverageItem.getOrderNumber();
          }
+         if (xCol.equals(CoverageXViewerFactory.Line_Number)) {
+            return coverageItem.getLineNumber();
+         }
          if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) {
             return coverageItem.getCoverageMethod().getName();
          }

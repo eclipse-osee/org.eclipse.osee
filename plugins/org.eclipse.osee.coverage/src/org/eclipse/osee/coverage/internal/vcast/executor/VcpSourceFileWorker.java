@@ -27,10 +27,10 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.util.LineData;
 import org.eclipse.osee.coverage.vcast.CoverageImportData;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -131,17 +131,18 @@ public class VcpSourceFileWorker extends AbstractVcpFileWorker<VcpSourceFile> {
             CoverageItem coverageItem =
                new CoverageItem(methodCoverageUnit, CoverageOptionManager.Not_Covered,
                   String.valueOf(lineNumToBranches.getLineNum()));
-            Pair<String, Boolean> lineData =
+            LineData lineData =
                vcpSourceLisFile.getExecutionLine(String.valueOf(methodNum),
                   String.valueOf(lineNumToBranches.getLineNum()));
-            String sourceLine = lineData.getFirst();
+            String sourceLine = lineData.getLineText();
             // Need to get rid of line method num and line num before storing
             sourceLineMatcher.reset(sourceLine);
             if (!sourceLineMatcher.find()) {
                getLogger().logError(String.format("Coverage line doesn't match \"n n <line>\" [%s].  ", sourceLine));
             } else {
+               coverageItem.setLineNumber(lineData.getLineNumber());
                coverageItem.setName(sourceLineMatcher.group(1));
-               if (input.isResolveExceptionHandling() && lineData.getSecond()) {
+               if (input.isResolveExceptionHandling() && lineData.getIsException()) {
                   coverageItem.setCoverageMethod(CoverageOptionManager.Exception_Handling);
                }
                methodCoverageUnit.addCoverageItem(coverageItem);
