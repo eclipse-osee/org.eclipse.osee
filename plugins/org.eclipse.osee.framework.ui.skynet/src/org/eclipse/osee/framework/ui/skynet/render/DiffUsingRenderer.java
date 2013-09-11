@@ -63,6 +63,7 @@ public final class DiffUsingRenderer extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
+
       ArtifactDelta firstDelta = artifactDeltas.iterator().next();
       Artifact sampleArtifact =
          firstDelta.getStartArtifact() != null ? firstDelta.getStartArtifact() : firstDelta.getEndArtifact();
@@ -71,6 +72,7 @@ public final class DiffUsingRenderer extends AbstractOperation {
       if (preferedRenderer == null) {
          renderer = RendererManager.getBestRenderer(DIFF, sampleArtifact, options);
       }
+
       IComparator comparator = renderer.getComparator();
       if (artifactDeltas.size() == 1) {
          comparator.compare(monitor, collector, DIFF, firstDelta, pathPrefix);

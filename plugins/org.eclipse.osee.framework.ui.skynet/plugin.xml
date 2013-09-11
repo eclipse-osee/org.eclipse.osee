@@ -176,6 +176,9 @@
 	<extension id="ascii" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.PlainTextRenderer"/>
 	</extension>
+	<extension id="html" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.HTMLRenderer"/>
+	</extension>
 	<extension id="word" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer"/>
 	</extension>
@@ -332,7 +335,7 @@
              commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReportWasIs.command">
        </command>
        <command
-             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.plainTextDiff.command">
+             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.genericDiff.command">
        </command>
        <separator
              name="xChngSeparator3"
@@ -595,7 +598,7 @@
         </with>
      </enabledWhen>
       </handler>
-      <handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.PlainTextDiffHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.plainTextDiff.command">
+      <handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.GenericDiffHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.genericDiff.command">
      <enabledWhen>
         <with
               variable="selection">
@@ -1367,7 +1370,7 @@
 	<extension name="Commands of ChangeReportView" point="org.eclipse.ui.commands">
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command" name="Replace with Baseline Version...">
          </command>
-      <command id="org.eclipse.osee.framework.ui.skynet.changeReportView.plainTextDiff.command" name="View Plain Text Diff">
+      <command id="org.eclipse.osee.framework.ui.skynet.changeReportView.genericDiff.command" name="View Artifact Diff">
          </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command" name="View Word Change Report - F5">
          </command>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DIFF;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
+/* 
+ * @author Marc Potter
+ */
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,28 +26,20 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.program.Program;
 
-/**
- * Renderer for artifact with ASCII plain text file as its content. This is compared to the more traditional
- * WordRenderer which renders artifacts (e.g.: Software Requirements) content which is Word Documents.
- * 
- * @author Shawn F. Cook
- */
-public class PlainTextRenderer extends FileSystemRenderer {
+public class HTMLRenderer extends FileSystemRenderer {
 
    private final IComparator comparator;
 
-   public PlainTextRenderer() {
-      this.comparator = new PlainTextDiffRenderer();
+   public HTMLRenderer() {
+      this.comparator = new HTMLDiffRenderer();
    }
 
    @Override
@@ -56,11 +47,11 @@ public class PlainTextRenderer extends FileSystemRenderer {
       ArrayList<String> commandIds = new ArrayList<String>(1);
 
       if (commandGroup.isPreview()) {
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.previewplaintexteditor.command");
+         // currently unsupported
       }
 
       if (commandGroup.isEdit()) {
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.plaintexteditor.command");
+         // currently unsupported
       }
 
       return commandIds;
@@ -68,24 +59,23 @@ public class PlainTextRenderer extends FileSystemRenderer {
 
    @Override
    public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
-      return ImageManager.getProgramImageDescriptor("txt");
+      return ImageManager.getProgramImageDescriptor("htm");
    }
 
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
       InputStream stream = null;
       try {
-         if (artifacts.isEmpty()) {
+         if (artifacts.size() == 1) {
             Artifact artifact = artifacts.iterator().next();
-            stream = artifact.getSoleAttributeValue(CoreAttributeTypes.PlainTextContent);
+            stream = artifact.getSoleAttributeValue(CoreAttributeTypes.HTMLContent);
          } else {
-            Artifact artifact = artifacts.iterator().next();
-            String content = artifact.getOrInitializeSoleAttributeValue(CoreAttributeTypes.PlainTextContent);
-            if (presentationType == PresentationType.DIFF && WordUtil.containsWordAnnotations(content)) {
-               throw new OseeStateException(
-                  "Trying to diff the [%s] artifact on the [%s] branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.",
-                  artifact.getName(), artifact.getBranch().getName());
+            String content = "";
+            for (Artifact artifact : artifacts) {
+               content += artifact.getOrInitializeSoleAttributeValue(CoreAttributeTypes.HTMLContent);
+               content += "\n\n";
             }
+
             stream = Streams.convertStringToInputStream(content, "UTF-8");
          }
       } catch (IOException ex) {
@@ -96,9 +86,9 @@ public class PlainTextRenderer extends FileSystemRenderer {
 
    @Override
    public Program getAssociatedProgram(Artifact artifact) throws OseeCoreException {
-      Program program = Program.findProgram("txt");
+      Program program = Program.findProgram("htm");
       if (program == null) {
-         throw new OseeArgumentException("No program associated with the extension *.txt found on your local machine.");
+         throw new OseeArgumentException("No program associated with the extension *.htm found on your local machine.");
       }
       return program;
    }
@@ -106,17 +96,18 @@ public class PlainTextRenderer extends FileSystemRenderer {
    @Override
    public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
       Artifact aArtifact = artifact.getFullArtifact();
-      if (aArtifact.isAttributeTypeValid(CoreAttributeTypes.PlainTextContent)) {
-         if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW, DEFAULT_OPEN, PRODUCE_ATTRIBUTE, DIFF)) {
-            return PRESENTATION_SUBTYPE_MATCH;
+      int toReturn = NO_MATCH;
+      if (aArtifact.isAttributeTypeValid(CoreAttributeTypes.HTMLContent)) {
+         if (presentationType.matches(PresentationType.DIFF)) {
+            toReturn = PRESENTATION_SUBTYPE_MATCH;
          }
       }
-      return NO_MATCH;
+      return toReturn;
    }
 
    @Override
    public String getAssociatedExtension(Artifact artifact) {
-      return "txt";
+      return "htm";
    }
 
    @Override
@@ -126,12 +117,12 @@ public class PlainTextRenderer extends FileSystemRenderer {
 
    @Override
    public String getName() {
-      return "Plain Text Editor";
+      return "HTML Renderer";
    }
 
    @Override
-   public PlainTextRenderer newInstance() {
-      return new PlainTextRenderer();
+   public HTMLRenderer newInstance() {
+      return new HTMLRenderer();
    }
 
    @Override

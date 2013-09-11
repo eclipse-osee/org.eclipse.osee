@@ -24,14 +24,13 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
-import org.eclipse.osee.framework.ui.skynet.render.PlainTextRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 
 /**
  * @author Shawn F. Cook
  */
-public class PlainTextDiffHandler extends CommandHandler {
+public class GenericDiffHandler extends CommandHandler {
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
@@ -55,7 +54,7 @@ public class PlainTextDiffHandler extends CommandHandler {
          Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
 
          String pathPrefix = RenderingUtil.getAssociatedArtifactName(localChanges);
-         RendererManager.diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, new PlainTextRenderer());
+         RendererManager.diffInJob(artifactDeltas, pathPrefix);
       }
       return null;
    }

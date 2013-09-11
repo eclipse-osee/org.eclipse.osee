@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+/* 
+ * @author Marc Potter
+ */
+
 import java.util.Collection;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
@@ -24,45 +28,36 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.swt.widgets.Display;
 
-/**
- * Class to display the differences between two ASCII plain text files in the default Eclipse diff view.
- * 
- * @author Shawn F. Cook
- */
-public class PlainTextDiffRenderer implements IComparator {
+public class HTMLDiffRenderer implements IComparator {
 
    @Override
-   public void compare(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, ArtifactDelta artifactDelta, String pathPrefix) throws MultipleAttributesExist, OseeCoreException {
+   public void compare(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, ArtifactDelta artifactDelta, String pathPrefix) throws OseeCoreException {
+      String was = null, is = null, artifactName = null;
       Artifact startArtifact = artifactDelta.getStartArtifact();
-      Artifact endArtifact = artifactDelta.getEndArtifact();
-
-      String artifactName = "";
-      String startAscii = "";
       if (startArtifact != null) {
-         startAscii = startArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.PlainTextContent, "");
+         was = startArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.HTMLContent, "");
          artifactName = startArtifact.getName();
       }
-      String endAscii = "";
+      Artifact endArtifact = artifactDelta.getEndArtifact();
       if (endArtifact != null) {
-         endAscii = endArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.PlainTextContent, "");
-         artifactName = endArtifact.getName();
+         is = endArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.HTMLContent, "");
       }
-
-      final CompareHandler compareHandler =
-         new CompareHandler(artifactName, new CompareItem("Was", startAscii, System.currentTimeMillis()),
-            new CompareItem("Is", endAscii, System.currentTimeMillis()), null);
-      Display.getDefault().syncExec(new Runnable() {
-         @Override
-         public void run() {
-            compareHandler.compare();
-         }
-      });
-
+      if (Strings.isValid(is) && Strings.isValid(was)) {
+         final CompareHandler compareHandler =
+            new CompareHandler(artifactName, new CompareItem("Was", was, System.currentTimeMillis()), new CompareItem(
+               "Is", is, System.currentTimeMillis()), null);
+         Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+               compareHandler.compare();
+            }
+         });
+      }
    }
 
    @Override
    public void compare(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, String pathPrefix) throws OseeCoreException {
-      throw new OseeCoreException("The Plain Text renderer does not support the compare operation");
+      throw new OseeCoreException("The HTML Content renderer does not support the compare operation");
    }
 
    @Override
