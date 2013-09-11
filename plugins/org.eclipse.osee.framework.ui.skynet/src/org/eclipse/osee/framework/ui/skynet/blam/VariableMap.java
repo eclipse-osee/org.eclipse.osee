@@ -42,12 +42,12 @@ public class VariableMap {
       for (int i = 0; i < optionArgs.length; i += 2) {
          Object object = optionArgs[i];
          if (object instanceof String) {
-            variableMap.put((String) optionArgs[i], optionArgs[i + 1]);
+            variableMap.put((String) object, optionArgs[i + 1]);
          } else if (object == null) {
             throw new OseeArgumentException("The [%d]th option must not be null", i);
          } else {
             throw new OseeArgumentException("The [%d]th option must be of type string but is of type [%s]", i,
-               optionArgs[i].getClass().getName());
+               object.getClass().getName());
          }
       }
    }
