@@ -119,6 +119,7 @@ public class PeerToPeerReviewManager {
          roleMgr.saveToArtifact(transaction);
       }
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.Location, reviewMaterials);
+      reviewArt.setSoleAttributeValue(AtsAttributeTypes.ReviewFormalType, ReviewFormalType.InFormal.name());
       reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
@@ -186,7 +187,6 @@ public class PeerToPeerReviewManager {
          peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, againstState);
       }
       peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
-      peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.ReviewFormalType, ReviewFormalType.InFormal.name());
       if (transaction != null) {
          peerToPeerRev.persist(transaction);
       }
@@ -201,4 +201,5 @@ public class PeerToPeerReviewManager {
       }
       return false;
    }
+
 }
