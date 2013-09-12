@@ -108,21 +108,16 @@ public class Xml {
       return textString;
    }
 
-   public static void writeAsCdata(Appendable appendable, String string) throws IOException {
-      if (string.indexOf('<') == -1 && string.indexOf('&') == -1 && string.indexOf("]]>") == -1) {
+   public static void writeWhileHandlingCdata(Appendable appendable, String string) throws IOException {
+      if (string.indexOf('<') == -1 && string.indexOf('&') == -1) {
          writeData(appendable, string);
       } else {
-         if (string.indexOf(']') == -1) {
-            writeCdata(appendable, string);
+         int cdataEnd = string.indexOf("]]>");
+         if (cdataEnd != -1) {
+            writeCdata(appendable, string.substring(0, cdataEnd));
+            writeWhileHandlingCdata(appendable, string.substring(cdataEnd));
          } else {
-            //  work around bug in excel xml parsing that thinks a single ] closes CDATA
-            String[] tokens = squareBracket.split(string);
-            for (int i = 0; i < tokens.length; i++) {
-               writeCdata(appendable, tokens[i]);
-               if (i != tokens.length - 1) { // the last token would not have been followed by ]
-                  appendable.append(']');
-               }
-            }
+            writeCdata(appendable, string);
          }
       }
    }

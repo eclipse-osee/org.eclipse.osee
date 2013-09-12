@@ -208,30 +208,30 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
                   if (cellDataStr.length() > 32767) {
                      out.write(blobMessage);
                   } else {
-                     Xml.writeAsCdata(out, cellDataStr);
+                     Xml.writeWhileHandlingCdata(out, cellDataStr);
                   }
                }
                out.write("</Data>");
                if (cellDataStr.length() > 32767) {
                   out.write("<EmbeddedClob>");
-                  Xml.writeAsCdata(out, cellDataStr);
+                  Xml.writeWhileHandlingCdata(out, cellDataStr);
                   out.write("</EmbeddedClob>");
                }
             }
          } else if (cellData instanceof Number) {
             Number cellDataNum = (Number) cellData;
             out.write("><Data ss:Type=\"Number\">");
-            Xml.writeAsCdata(out, cellDataNum.toString());
+            Xml.writeWhileHandlingCdata(out, cellDataNum.toString());
             out.write("</Data>");
          } else if (cellData instanceof Date) {
             Date cellDataDate = (Date) cellData;
             out.write("><Data ss:Type=\"DateTime\">");
             String dateString = DateUtil.get(cellDataDate, "yyyy-MM-dd") + "T00:00:00.000";
-            Xml.writeAsCdata(out, dateString);
+            Xml.writeWhileHandlingCdata(out, dateString);
             out.write("</Data>");
          } else {
             out.write("><Data ss:Type=\"String\">");
-            Xml.writeAsCdata(out, cellData.toString());
+            Xml.writeWhileHandlingCdata(out, cellData.toString());
             out.write("</Data>");
          }
          out.write("</Cell>\n");

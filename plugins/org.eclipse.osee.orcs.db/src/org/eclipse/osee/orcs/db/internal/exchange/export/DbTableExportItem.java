@@ -233,7 +233,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
       String stringValue = (String) value;
       if (Strings.isValid(stringValue)) {
          ExportImportXml.openXmlNodeNoNewline(appendable, tag);
-         Xml.writeAsCdata(appendable, stringValue);
+         Xml.writeWhileHandlingCdata(appendable, stringValue);
          ExportImportXml.closeXmlNode(appendable, tag);
       }
    }

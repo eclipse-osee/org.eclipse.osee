@@ -158,7 +158,7 @@ public class CheckBranchExchangeIntegrityCallable extends AbstractDatastoreCalla
          ExportImportXml.endOpenedPartialXmlNode(writer);
          writer.append("\t\t");
          ExportImportXml.openXmlNode(writer, ExportImportXml.UNREFERENCED_PRIMARY_KEY);
-         Xml.writeAsCdata(writer, "\t\t\t" + unreferencedPrimaryKeys.toString());
+         Xml.writeWhileHandlingCdata(writer, "\t\t\t" + unreferencedPrimaryKeys.toString());
          writer.append("\n\t\t");
          ExportImportXml.closeXmlNode(writer, ExportImportXml.UNREFERENCED_PRIMARY_KEY);
 
@@ -167,7 +167,7 @@ public class CheckBranchExchangeIntegrityCallable extends AbstractDatastoreCalla
             ExportImportXml.openPartialXmlNode(writer, "ForeignKey");
             ExportImportXml.addXmlAttribute(writer, ExportImportXml.ID, foreignKey);
             ExportImportXml.endOpenedPartialXmlNode(writer);
-            Xml.writeAsCdata(writer, "\t\t\t" + missingPrimaryKeys.getValues(foreignKey).toString());
+            Xml.writeWhileHandlingCdata(writer, "\t\t\t" + missingPrimaryKeys.getValues(foreignKey).toString());
             writer.append("\n\t\t");
             ExportImportXml.closeXmlNode(writer, "ForeignKey");
          }
