@@ -145,14 +145,12 @@ public class WordTemplateProcessor {
       extractSkynetAttributeReferences(artifactElement);
 
       // Need to check if all attributes will be published.  If so set the AllAttributes option.
-      for (AttributeElement attributeElement : attributeElements) {
-         String attributeName = attributeElement.getAttributeName();
+      // Assumes that all (*) will not be used when other attributes are specified
+      renderer.setOption(ALL_ATTRIBUTES, false);
+      if (attributeElements.size() == 1) {
+         String attributeName = attributeElements.get(0).getAttributeName();
          if (attributeName.equals("*")) {
             renderer.setOption(ALL_ATTRIBUTES, true);
-            break;
-         } else {
-            renderer.setOption(ALL_ATTRIBUTES, false);
-            renderer.setOption(ATTRIBUTE_NAME, attributeName);
          }
       }
       IFile file =
@@ -440,12 +438,10 @@ public class WordTemplateProcessor {
    }
 
    private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean multipleArtifacts, boolean publishInLine) throws OseeCoreException {
-      String attribName = (String) renderer.getOption(ATTRIBUTE_NAME);
-      boolean onlyAttrib = false;
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
 
-         if (renderer.getBooleanOption(ALL_ATTRIBUTES) || ((attribName == null) && (attributeName.equals("*")))) {
+         if (renderer.getBooleanOption(ALL_ATTRIBUTES) || (attributeName.equals("*"))) {
             for (IAttributeType attributeType : RendererManager.getAttributeTypeOrderList(artifact)) {
                if (!outlining || !attributeType.equals(headingAttributeType)) {
                   processAttribute(artifact, wordMl, attributeElement, attributeType, true, presentationType,
@@ -453,18 +449,11 @@ public class WordTemplateProcessor {
                }
             }
          } else {
-            if (attribName != null) {
-               attributeName = attribName;
-               onlyAttrib = true;
-            }
             AttributeType attributeType = AttributeTypeManager.getType(attributeName);
 
             if (artifact.isAttributeTypeValid(attributeType)) {
                processAttribute(artifact, wordMl, attributeElement, attributeType, false, presentationType,
                   multipleArtifacts, publishInLine);
-            }
-            if (onlyAttrib) {
-               break;
             }
          }
       }
