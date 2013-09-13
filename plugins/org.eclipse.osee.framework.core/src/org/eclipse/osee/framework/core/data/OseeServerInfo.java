@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.core.data;
 import java.io.InputStream;
 import java.net.URI;
 import java.sql.Timestamp;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -52,17 +52,10 @@ public class OseeServerInfo extends BaseExchangeData {
     * @return the server uri
     */
 
-   // temporary code to remove after release of uri change
-   private static final String SERVER_ADDRESS = "serverAddress";
-   private static final String PORT = "port";
+
 
    public URI getUri() {
       String serverUri = getString(SERVER_URI);
-      if (!Strings.isValid(serverUri)) {
-         String address = getString(SERVER_ADDRESS);
-         String port = getString(PORT);
-         serverUri = String.format("http://%s:%s", address, port);
-      }
       return URI.create(serverUri);
    }
 

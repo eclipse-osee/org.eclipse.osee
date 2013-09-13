@@ -144,7 +144,7 @@ public class ApplicationServerDataStore {
    private static final class ServerLookupTx implements IDbTransactionWork {
 
       private static final String INSERT_LOOKUP_TABLE =
-         "INSERT INTO osee_server_lookup (server_id, version_id, server_address, port, server_uri, start_time, accepts_requests) VALUES (?,?,?,?,?,?,?)";
+         "INSERT INTO osee_server_lookup (server_id, version_id, server_uri, start_time, accepts_requests) VALUES (?,?,?,?,?)";
 
       private static final String DELETE_FROM_LOOKUP_TABLE_BY_ID = "DELETE FROM osee_server_lookup WHERE server_id = ?";
 
@@ -186,13 +186,11 @@ public class ApplicationServerDataStore {
             String serverId = data.getServerId();
             URI serverUri = data.getUri();
             String uri = serverUri.toString();
-            String address = serverUri.getHost();
-            int port = serverUri.getPort();
             Timestamp dateStarted = data.getDateStarted();
             int acceptingRequests = data.isAcceptingRequests() ? 1 : 0;
 
             for (String version : data.getVersion()) {
-               insertData.add(new Object[] {serverId, version, address, port, uri, dateStarted, acceptingRequests});
+               insertData.add(new Object[] {serverId, version, uri, dateStarted, acceptingRequests});
             }
          }
          if (!insertData.isEmpty()) {
