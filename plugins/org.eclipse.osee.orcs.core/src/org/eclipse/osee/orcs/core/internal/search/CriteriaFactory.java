@@ -18,8 +18,12 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.enums.CaseType;
+import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
 import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
+import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
@@ -72,7 +76,8 @@ public class CriteriaFactory {
 
    public Criteria createAttributeCriteria(IAttributeType attributeType, Operator operator, Collection<String> values) throws OseeCoreException {
       if (operator == Operator.EQUAL) {
-         return createAttributeCriteria(Collections.singleton(attributeType), values);
+         return createAttributeCriteria(Collections.singleton(attributeType), values, CaseType.MATCH_CASE,
+            TokenOrderType.MATCH_ORDER, TokenDelimiterMatch.EXACT, MatchTokenCountType.MATCH_TOKEN_COUNT);
       } else {
          return new CriteriaAttributeOther(attributeType, values, operator);
       }

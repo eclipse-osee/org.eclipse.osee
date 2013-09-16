@@ -19,8 +19,10 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.data.ResultSet;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -28,12 +30,16 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
 import org.eclipse.osee.framework.core.enums.Operator;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.ReadableBranch;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.HasLocalId;
@@ -41,6 +47,8 @@ import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
+import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.eclipse.osee.orcs.utility.MatchComparator;
 import org.eclipse.osee.orcs.utility.NameComparator;
 import org.eclipse.osee.orcs.utility.SortOrder;
@@ -63,12 +71,17 @@ public class OrcsQueryTest {
    @OsgiService
    private OrcsApi orcsApi;
 
+   private OrcsBranch branchApi;
+   private TransactionFactory txFactory;
    private QueryFactory factory;
+   private ArtifactReadable author;
 
    @Before
    public void setup() {
       ApplicationContext context = null; // TODO use real application context
       factory = orcsApi.getQueryFactory(context);
+      branchApi = orcsApi.getBranchOps(context);
+      txFactory = orcsApi.getTransactionFactory(context);
    }
 
    @Test
@@ -294,6 +307,33 @@ public class OrcsQueryTest {
       QueryBuilder builder3 = factory.fromBranch(TestBranches.SAW_Bld_1);
       builder3.andRelatedTo(CoreRelationTypes.Default_Hierarchical__Child, builder2.getResults().getExactlyOne());
       assertEquals("Subsystem Requirements", builder3.getResults().getExactlyOne().getName());
+   }
+
+   @Test
+   public void testAndNameEquals() throws Exception {
+      // This test sets up two folders, the name of the first has the name of the second in it
+      // The goal is to make sure query.AndNameEquals doesn't return a match unless it matches exactly
+      ReadableBranch branch = setupNameEqualsArtifacts();
+      try {
+         QueryBuilder builder = factory.fromBranch(branch);
+         builder.andNameEquals("Folder");
+         ResultSet<ArtifactReadable> artifacts = builder.getResults();
+         assertEquals(1, artifacts.size());
+         assertEquals("Folder", artifacts.getExactlyOne().getName());
+      } finally {
+         branchApi.purgeBranch(branch, true).call();
+      }
+   }
+
+   private ReadableBranch setupNameEqualsArtifacts() throws Exception {
+      author = factory.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      IOseeBranch branchToken = TokenFactory.createBranch(GUID.create(), "TestAndNameEquals");
+      ReadableBranch branch = branchApi.createTopLevelBranch(branchToken, author).call();
+      TransactionBuilder tx = txFactory.createTransaction(branch, author, "add folders");
+      tx.createArtifact(CoreArtifactTypes.Folder, "First Folder");
+      tx.createArtifact(CoreArtifactTypes.Folder, "Folder");
+      tx.commit();
+      return branch;
    }
 
    private static void checkContainsTypes(Iterable<ArtifactReadable> arts, IArtifactType... types) throws OseeCoreException {

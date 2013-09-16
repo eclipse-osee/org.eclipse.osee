@@ -14,8 +14,6 @@ import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import java.util.HashMap;
-import java.util.Map;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -77,8 +75,7 @@ public class OrcsAttributeSearchTest {
       assertEquals(1, resultSet.size());
       assertEquals(1, builder.getCount());
 
-      Map<Integer, ArtifactReadable> lookup = createLookup(resultSet);
-      ArtifactReadable art7 = lookup.get(7);
+      ArtifactReadable art7 = resultSet.getExactlyOne();
 
       //Test loading name attributes
       assertEquals(art7.getSoleAttributeAsString(CoreAttributeTypes.Name), "User Groups");
@@ -108,16 +105,8 @@ public class OrcsAttributeSearchTest {
       assertEquals(1, resultSet.size());
       assertEquals(1, builder.getCount());
 
-      Map<Integer, ArtifactReadable> lookup = createLookup(resultSet);
-      ArtifactReadable art8 = lookup.get(8);
+      ArtifactReadable art8 = resultSet.getExactlyOne();
       assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.Name), "Everyone");
    }
 
-   private Map<Integer, ArtifactReadable> createLookup(Iterable<ArtifactReadable> arts) {
-      Map<Integer, ArtifactReadable> lookup = new HashMap<Integer, ArtifactReadable>();
-      for (ArtifactReadable artifact : arts) {
-         lookup.put(artifact.getLocalId(), artifact);
-      }
-      return lookup;
-   }
 }
