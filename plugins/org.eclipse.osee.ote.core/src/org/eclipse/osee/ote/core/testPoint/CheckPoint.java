@@ -94,7 +94,7 @@ public class CheckPoint implements ITestPoint {
    }
 
    public void setExpected(String expected) {
-      this.expected = expected;
+      this.expected = XmlSupport.convertNonPrintableCharacers(expected);
    }
 
    @Override
@@ -107,7 +107,7 @@ public class CheckPoint implements ITestPoint {
       checkPointElement.appendChild(Jaxp.createElement(doc, "Result", pass ? "PASSED" : "FAILED"));
       checkPointElement.appendChild(Jaxp.createElement(doc, "ElapsedTime", Long.toString(this.elpasedTime)));
       checkPointElement.appendChild(Jaxp.createElement(doc, "NumberOfTransmissions",
-         Integer.toString(this.numTransmissions)));
+            Integer.toString(this.numTransmissions)));
 
       return checkPointElement;
    }
