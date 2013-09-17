@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql;
 
-
 /**
  * @author Roberto E. Escobar
  */
 public enum TableEnum implements AliasEntry {
+   BRANCH_TABLE("osee_branch", "br"),
    TXS_TABLE("osee_txs", "txs"),
    ARTIFACT_TABLE("osee_artifact", "art"),
    ATTRIBUTE_TABLE("osee_attribute", "att"),

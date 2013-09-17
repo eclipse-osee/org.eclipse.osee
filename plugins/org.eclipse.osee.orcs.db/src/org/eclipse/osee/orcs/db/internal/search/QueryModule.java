@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search;
 
-import java.util.HashMap;
-import java.util.Map;
+import static org.eclipse.osee.orcs.db.internal.search.Engines.newArtifactQueryEngine;
+import static org.eclipse.osee.orcs.db.internal.search.Engines.newBranchQueryEngine;
+import static org.eclipse.osee.orcs.db.internal.search.Engines.newIndexingEngine;
+import static org.eclipse.osee.orcs.db.internal.search.Engines.newTaggingEngine;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.services.IdentityService;
@@ -23,30 +25,9 @@ import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
-import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQueryCallableFactory;
-import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContextFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.engines.QueryEngineImpl;
-import org.eclipse.osee.orcs.db.internal.search.engines.QueryFilterFactoryImpl;
-import org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil;
-import org.eclipse.osee.orcs.db.internal.search.indexer.IndexedResourceLoader;
-import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerCallableFactory;
-import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerCallableFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerConstants;
-import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
-import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumerImpl;
-import org.eclipse.osee.orcs.db.internal.search.indexer.QueryEngineIndexerImpl;
-import org.eclipse.osee.orcs.db.internal.search.indexer.data.GammaQueueIndexerDataSourceLoader;
-import org.eclipse.osee.orcs.db.internal.search.language.EnglishLanguage;
-import org.eclipse.osee.orcs.db.internal.search.tagger.StreamMatcher;
-import org.eclipse.osee.orcs.db.internal.search.tagger.TagEncoder;
-import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
-import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
-import org.eclipse.osee.orcs.db.internal.search.tagger.TextStreamTagger;
-import org.eclipse.osee.orcs.db.internal.search.tagger.XmlTagger;
-import org.eclipse.osee.orcs.db.internal.search.util.AttributeDataMatcher;
-import org.eclipse.osee.orcs.db.internal.search.util.MatcherFactory;
-import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -72,9 +53,10 @@ public class QueryModule {
    }
 
    public void startIndexer(IResourceManager resourceManager) throws Exception {
-      taggingEngine = createTaggingEngine();
+      taggingEngine = newTaggingEngine(logger);
+      queryIndexer = newIndexingEngine(logger, dbService, idService, taggingEngine, executorAdmin, resourceManager);
+
       executorAdmin.createFixedPoolExecutor(IndexerConstants.INDEXING_CONSUMER_EXECUTOR_ID, 4);
-      queryIndexer = createQueryEngineIndexer(taggingEngine, resourceManager);
    }
 
    public void stopIndexer() throws Exception {
@@ -88,38 +70,11 @@ public class QueryModule {
    }
 
    public QueryEngine createQueryEngine(DataLoaderFactory objectLoader, BranchCache branchCache, AttributeTypes attrTypes) {
-      ArtifactQueryCallableFactory factory1 = createArtifactQueryEngine(objectLoader, branchCache, attrTypes);
-      return new QueryEngineImpl(factory1);
-   }
-
-   protected ArtifactQueryCallableFactory createArtifactQueryEngine(DataLoaderFactory objectLoader, BranchCache branchCache, AttributeTypes attrTypes) {
-      SqlHandlerFactory handlerFactory =
-         SqlHandlerFactoryUtil.createArtifactSqlHandlerFactory(logger, idService, taggingEngine.getTagProcessor());
-      QuerySqlContextFactory sqlContextFactory =
-         new ArtifactQuerySqlContextFactoryImpl(logger, dbService, sqlProvider, branchCache, handlerFactory);
-      AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine, attrTypes);
-      QueryFilterFactoryImpl filterFactory = new QueryFilterFactoryImpl(logger, executorAdmin, matcher);
-      return new ArtifactQueryCallableFactory(logger, objectLoader, sqlContextFactory, filterFactory);
-   }
-
-   protected TaggingEngine createTaggingEngine() {
-      TagProcessor tagProcessor = new TagProcessor(new EnglishLanguage(logger), new TagEncoder());
-      Map<String, Tagger> taggers = new HashMap<String, Tagger>();
-
-      StreamMatcher matcher = MatcherFactory.createMatcher();
-      taggers.put("DefaultAttributeTaggerProvider", new TextStreamTagger(tagProcessor, matcher));
-      taggers.put("XmlAttributeTaggerProvider", new XmlTagger(tagProcessor, matcher));
-
-      return new TaggingEngine(taggers, tagProcessor);
-   }
-
-   protected QueryEngineIndexer createQueryEngineIndexer(TaggingEngine taggingEngine, IResourceManager resourceManager) {
-      IndexedResourceLoader resourceLoader =
-         new GammaQueueIndexerDataSourceLoader(logger, dbService, idService, resourceManager);
-      IndexerCallableFactory callableFactory =
-         new IndexerCallableFactoryImpl(logger, dbService, taggingEngine, resourceLoader);
-      IndexingTaskConsumer indexConsumer = new IndexingTaskConsumerImpl(executorAdmin, callableFactory);
-      return new QueryEngineIndexerImpl(logger, dbService, idService, indexConsumer);
+      QueryCallableFactory factory1 =
+         newArtifactQueryEngine(logger, dbService, idService, sqlProvider, taggingEngine, executorAdmin, objectLoader,
+            branchCache, attrTypes);
+      QueryCallableFactory factory2 = newBranchQueryEngine(logger, dbService, idService, sqlProvider, objectLoader);
+      return new QueryEngineImpl(factory1, factory2);
    }
 
 }

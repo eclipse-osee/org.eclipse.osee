@@ -21,6 +21,8 @@ public interface LoadDataHandler extends AttributeDataMatchHandler {
 
    void onLoadDescription(LoadDescription data) throws OseeCoreException;
 
+   void onData(BranchData data) throws OseeCoreException;
+
    void onData(ArtifactData data) throws OseeCoreException;
 
    void onData(AttributeData data) throws OseeCoreException;

@@ -56,7 +56,7 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
       ArtifactJoinQuery join = createIdJoin(options);
       LoadSqlContext loadContext = new LoadSqlContext(session, options, branch);
       int fetchSize = LoadUtil.computeFetchSize(artifactIds.size());
-      loadFromJoin(join, cancellation, handler, criteria, loadContext, fetchSize);
+      getLoader().loadArtifacts(cancellation, handler, join, criteria, loadContext, fetchSize);
    }
 
    private ArtifactJoinQuery createIdJoin(Options options) throws OseeCoreException {

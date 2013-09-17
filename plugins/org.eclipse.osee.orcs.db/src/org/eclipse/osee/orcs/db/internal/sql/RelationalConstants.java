@@ -28,6 +28,7 @@ public final class RelationalConstants {
    public static final boolean IS_HISTORICAL_DEFAULT = false;
    public static final int ART_ID_SENTINEL = -1;
    public static final String DEFAULT_RATIONALE = "";
+   public static final String DEFAULT_NAME = "";
 
    public static final int DEFAULT_ITEM_ID = -1;
    public static final long DEFAULT_TYPE_UUID = -1L;

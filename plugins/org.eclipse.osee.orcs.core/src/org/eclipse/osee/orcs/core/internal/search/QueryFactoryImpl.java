@@ -24,6 +24,7 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
@@ -35,12 +36,16 @@ public class QueryFactoryImpl implements QueryFactory {
    private final OrcsSession context;
    private final CriteriaFactory criteriaFctry;
    private final CallableQueryFactory queryFctry;
+   private final BranchCriteriaFactory branchCriteriaFactory;
+   private final BranchCallableQueryFactory branchQueryFactory;
 
-   public QueryFactoryImpl(OrcsSession context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry) {
+   public QueryFactoryImpl(OrcsSession context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry, BranchCriteriaFactory branchCriteriaFactory, BranchCallableQueryFactory branchQueryFactory) {
       super();
       this.context = context;
       this.criteriaFctry = criteriaFctry;
       this.queryFctry = queryFctry;
+      this.branchCriteriaFactory = branchCriteriaFactory;
+      this.branchQueryFactory = branchQueryFactory;
    }
 
    private QueryBuilder createBuilder(IOseeBranch branch) {
@@ -52,6 +57,15 @@ public class QueryFactoryImpl implements QueryFactory {
       QueryData queryData = new QueryData(criteriaSet, options);
       QueryBuilder builder = new QueryBuilderImpl(queryFctry, criteriaFctry, context, queryData);
       return builder;
+   }
+
+   @Override
+   public BranchQuery branchQuery() {
+      Options options = OptionsUtil.createOptions();
+      CriteriaSet criteriaSet = new CriteriaSet();
+      QueryData queryData = new QueryData(criteriaSet, options);
+      BranchQueryImpl query = new BranchQueryImpl(branchQueryFactory, branchCriteriaFactory, context, queryData);
+      return query;
    }
 
    @Override

@@ -26,6 +26,14 @@ public final class OptionsUtil {
    private static final String INCLUDE_CACHE = "include.cache";
    private static final String LOAD_LEVEL = "load.level";
 
+   public static Options createBranchOptions() {
+      Options options = new Options();
+      setIncludeCache(options, false);
+      setIncludeDeleted(options, false);
+      setLoadLevel(options, LoadLevel.SHALLOW);
+      return options;
+   }
+
    public static Options createOptions() {
       Options options = new Options();
       setIncludeCache(options, false);

@@ -14,10 +14,8 @@ import java.util.concurrent.CancellationException;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.db.internal.loader.LoadSqlContext;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 
@@ -41,8 +39,8 @@ public abstract class AbstractLoadExecutor {
       return dbService;
    }
 
-   protected void loadFromJoin(ArtifactJoinQuery join, HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
-      loader.loadArtifacts(cancellation, handler, join, criteria, loadContext, fetchSize);
+   protected SqlObjectLoader getLoader() {
+      return loader;
    }
 
    protected void checkCancelled(HasCancellation cancellation) throws CancellationException {

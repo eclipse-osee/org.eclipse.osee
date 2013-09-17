@@ -30,17 +30,23 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
    private final QueryStatisticsImpl statistics = new QueryStatisticsImpl();
 
    private final CriteriaFactory criteriaFctry;
-   private final CallableQueryFactory callableQueryFactory;
+   private final CallableQueryFactory artQueryFactory;
+
+   private final BranchCallableQueryFactory branchQueryFactory;
+   private final BranchCriteriaFactory branchCriteriaFactory;
 
    public QueryModule(Log logger, QueryEngine queryEngine, GraphBuilderFactory builderFactory, GraphProvider provider, ArtifactTypes artifactTypeCache, AttributeTypes attributeTypeCache, ExternalArtifactManager proxyManager) {
       QueryStatsCollectorImpl queryStatsCollector = new QueryStatsCollectorImpl(statistics);
-      this.criteriaFctry = new CriteriaFactory(artifactTypeCache, attributeTypeCache);
-      this.callableQueryFactory =
+      criteriaFctry = new CriteriaFactory(artifactTypeCache, attributeTypeCache);
+      artQueryFactory =
          new CallableQueryFactory(logger, queryEngine, queryStatsCollector, builderFactory, provider, proxyManager);
+
+      branchCriteriaFactory = new BranchCriteriaFactory();
+      branchQueryFactory = new BranchCallableQueryFactory(logger, queryEngine, queryStatsCollector);
    }
 
    public QueryFactory createQueryFactory(OrcsSession session) {
-      return new QueryFactoryImpl(session, criteriaFctry, callableQueryFactory);
+      return new QueryFactoryImpl(session, criteriaFctry, artQueryFactory, branchCriteriaFactory, branchQueryFactory);
    }
 
    @Override

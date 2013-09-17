@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllBranches;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
@@ -23,6 +24,13 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchArchived;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchIds;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
@@ -55,5 +63,22 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaAllArtifacts.class, AllArtifactsSqlHandler.class);
 
       return new SqlHandlerFactoryImpl(logger, identityService, tagProcessor, handleMap);
+   }
+
+   public static SqlHandlerFactory createBranchSqlHandlerFactory(Log logger, IdentityService identityService) {
+      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
+         new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
+
+      // Query
+      handleMap.put(CriteriaBranchArchived.class, BranchArchivedSqlHandler.class);
+      handleMap.put(CriteriaBranchUuids.class, BranchGuidSqlHandler.class);
+      handleMap.put(CriteriaBranchIds.class, BranchIdsSqlHandler.class);
+      handleMap.put(CriteriaBranchName.class, BranchNameSqlHandler.class);
+      handleMap.put(CriteriaBranchState.class, BranchStateSqlHandler.class);
+      handleMap.put(CriteriaBranchType.class, BranchTypesSqlHandler.class);
+      handleMap.put(CriteriaBranchChildOf.class, BranchChildOfSqlHandler.class);
+      handleMap.put(CriteriaAllBranches.class, AllBranchesSqlHandler.class);
+
+      return new SqlHandlerFactoryImpl(logger, identityService, handleMap);
    }
 }

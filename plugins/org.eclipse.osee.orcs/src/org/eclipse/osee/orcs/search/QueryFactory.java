@@ -28,4 +28,6 @@ public interface QueryFactory {
 
    QueryBuilder fromArtifacts(Collection<? extends ArtifactReadable> artifacts) throws OseeCoreException;
 
+   BranchQuery branchQuery();
+
 }

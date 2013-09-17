@@ -29,6 +29,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.db.internal.loader.executors.AbstractLoadExecutor;
+import org.eclipse.osee.orcs.db.internal.loader.executors.ArtifactQueryContextLoadExecutor;
 import org.eclipse.osee.orcs.db.internal.loader.executors.LoadExecutor;
 import org.eclipse.osee.orcs.db.internal.loader.executors.QueryContextLoadExecutor;
 import org.eclipse.osee.orcs.db.internal.loader.executors.UuidsLoadExecutor;
@@ -91,8 +92,14 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
 
    @Override
    public DataLoader fromQueryContext(QueryContext queryContext) throws OseeCoreException {
-      ArtifactQuerySqlContext sqlQueryContext = adapt(ArtifactQuerySqlContext.class, queryContext);
-      AbstractLoadExecutor executor = new QueryContextLoadExecutor(loader, dbService, sqlQueryContext);
+      AbstractLoadExecutor executor;
+      if (queryContext instanceof ArtifactQuerySqlContext) {
+         ArtifactQuerySqlContext sqlQueryContext = adapt(ArtifactQuerySqlContext.class, queryContext);
+         executor = new ArtifactQueryContextLoadExecutor(loader, dbService, sqlQueryContext);
+      } else {
+         QuerySqlContext sqlQueryContext = adapt(QuerySqlContext.class, queryContext);
+         executor = new QueryContextLoadExecutor(loader, dbService, sqlQueryContext);
+      }
       Options options = OptionsUtil.createOptions();
       return new DataLoaderImpl(logger, executor, options);
    }

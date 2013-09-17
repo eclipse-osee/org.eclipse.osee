@@ -32,6 +32,12 @@ public class LoadDataHandlerAdapter implements LoadDataHandler {
 
    @Override
    @SuppressWarnings("unused")
+   public void onData(BranchData data) throws OseeCoreException {
+      //
+   }
+
+   @Override
+   @SuppressWarnings("unused")
    public void onData(ArtifactData data) throws OseeCoreException {
       //
    }

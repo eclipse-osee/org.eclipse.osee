@@ -13,11 +13,15 @@ package org.eclipse.osee.orcs.db.internal.loader.data;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
+import org.eclipse.osee.orcs.core.ds.BranchData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
@@ -180,6 +184,29 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       return createRelationData(newVersion, source.getLocalId(), source.getTypeUuid(), source.getModType(),
          source.getBaseTypeUuid(), source.getBaseModType(), source.getArtIdA(), source.getArtIdB(),
          source.getRationale());
+   }
+
+   @Override
+   public BranchData createBranchData(int localId, String guid, BranchType branchType, String name, int parentBranch, int baseTransaction, int sourceTransaction, BranchArchivedState archiveState, BranchState branchState, int associatedArtifactId) {
+      BranchData data = new BranchDataImpl();
+      data.setArchiveState(archiveState);
+      data.setAssociatedArtifactId(associatedArtifactId);
+      data.setBaseTransaction(baseTransaction);
+      data.setBranchState(branchState);
+      data.setBranchType(branchType);
+      data.setGuid(guid);
+      data.setLocalId(localId);
+      data.setName(name);
+      data.setParentBranch(parentBranch);
+      data.setSourceTransaction(sourceTransaction);
+      return data;
+   }
+
+   @Override
+   public BranchData createCopy(BranchData source) {
+      return createBranchData(source.getLocalId(), source.getGuid(), source.getBranchType(), source.getName(),
+         source.getParentBranch(), source.getBaseTransaction(), source.getSourceTransaction(),
+         source.getArchiveState(), source.getBranchState(), source.getAssociatedArtifactId());
    }
 
 }

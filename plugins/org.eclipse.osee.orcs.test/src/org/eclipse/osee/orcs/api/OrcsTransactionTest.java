@@ -403,7 +403,7 @@ public class OrcsTransactionTest {
       tx1.addChildren(art1, art2, art3);
       ArtifactId art4 = tx1.createArtifact(GeneralDocument, "Document");
       tx1.relate(art1, Dependency__Dependency, art4);
-      int txId = tx1.commit().getId();
+      tx1.commit();
 
       ArtifactReadable artifact4 = query.fromBranch(CoreBranches.COMMON).andIds(art4).getResults().getExactlyOne();
       assertEquals(art4, artifact4);
@@ -418,7 +418,7 @@ public class OrcsTransactionTest {
       // Un-relate a child
       TransactionBuilder tx2 = createTx();
       tx2.unrelate(art1, Default_Hierarchical__Child, art2);
-      int txId2 = tx2.commit().getId();
+      tx2.commit();
 
       artifact4 = query.fromBranch(CoreBranches.COMMON).andIds(art4).getResults().getExactlyOne();
       assertEquals(art4, artifact4);

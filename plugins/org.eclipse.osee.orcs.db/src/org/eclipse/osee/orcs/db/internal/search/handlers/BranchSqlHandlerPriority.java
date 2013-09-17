@@ -8,16 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.search.engines;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 /**
  * @author Roberto E. Escobar
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ArtifactQuerySqlContextFactoryImplTest.class, BranchQuerySqlContextFactoryImplTest.class})
-public class EnginesTestSuite {
-   // Test Suite
+public enum BranchSqlHandlerPriority {
+   BRANCH_CHILD_OF,
+   BRANCH_ID,
+   BRANCH_GUID,
+   BRANCH_TYPE,
+   BRANCH_STATE,
+   BRANCH_ARCHIVED,
+   BRANCH_NAME,
+   ALL_BRANCHES;
 }

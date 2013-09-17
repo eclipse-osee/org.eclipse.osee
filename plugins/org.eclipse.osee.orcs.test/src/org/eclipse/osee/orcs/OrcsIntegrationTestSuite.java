@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs;
 
 import org.eclipse.osee.orcs.api.OrcsAttributeLoadingTest;
 import org.eclipse.osee.orcs.api.OrcsAttributeSearchTest;
+import org.eclipse.osee.orcs.api.OrcsBranchQueryTest;
 import org.eclipse.osee.orcs.api.OrcsBranchTest;
 import org.eclipse.osee.orcs.api.OrcsPortingTest;
 import org.eclipse.osee.orcs.api.OrcsQueryTest;
@@ -27,6 +28,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    OrcsAttributeLoadingTest.class,
    OrcsAttributeSearchTest.class,
+   OrcsBranchQueryTest.class,
    OrcsBranchTest.class,
    OrcsPortingTest.class,
    OrcsQueryTest.class,
