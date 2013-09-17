@@ -85,6 +85,8 @@ public class StaticSqlProvider implements SqlProvider {
 
                sqlMap.put(oseeSql.toString(), sql);
             }
+            sqlMap.put(SQL_RECURSIVE_WITH_KEY, preferences.getValue(SQL_RECURSIVE_WITH_KEY));
+            sqlMap.put(SQL_REG_EXP_PATTERN_KEY, preferences.getValue(SQL_REG_EXP_PATTERN_KEY));
          }
          wasPopulated = true;
       }

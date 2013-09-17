@@ -113,6 +113,71 @@ public class OseeInfoDataAccessorTest {
    }
 
    @org.junit.Test(expected = OseeStateException.class)
+   public void testSetSQLRecursiveKeyword() throws OseeCoreException {
+      OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
+      accessor.setLogger(new MockLog());
+      accessor.setDatabaseService(dbService);
+
+      accessor.putValue(SqlProvider.SQL_RECURSIVE_WITH_KEY, "dummy");
+   }
+
+   @org.junit.Test
+   public void testGetSQLRecursiveKeyword() throws OseeCoreException {
+      OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
+      accessor.setLogger(new MockLog());
+      accessor.setDatabaseService(dbService);
+
+      String original = accessor.getValue(SqlProvider.SQL_RECURSIVE_WITH_KEY);
+
+      String expected = "";
+      OseeConnection connection = dbService.getConnection();
+      try {
+         DatabaseMetaData metaData = connection.getMetaData();
+         if (!SupportedDatabase.isDatabaseType(metaData, SupportedDatabase.oracle)) {
+            expected = "RECURSIVE";
+         }
+      } finally {
+         connection.close();
+      }
+      Assert.assertEquals(expected, original);
+   }
+
+   @org.junit.Test(expected = OseeStateException.class)
+   public void testSetSQLRegExpPattern() throws OseeCoreException {
+      OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
+      accessor.setLogger(new MockLog());
+      accessor.setDatabaseService(dbService);
+
+      accessor.putValue(SqlProvider.SQL_REG_EXP_PATTERN_KEY, "dummy");
+   }
+
+   @org.junit.Test
+   public void testGetSQLRegExpPattern() throws OseeCoreException {
+      OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
+      accessor.setLogger(new MockLog());
+      accessor.setDatabaseService(dbService);
+
+      String original = accessor.getValue(SqlProvider.SQL_REG_EXP_PATTERN_KEY);
+
+      String expected = "";
+      OseeConnection connection = dbService.getConnection();
+      try {
+         DatabaseMetaData metaData = connection.getMetaData();
+         SupportedDatabase db = SupportedDatabase.getDatabaseType(metaData);
+         if (SupportedDatabase.oracle == db) {
+            expected = "REGEXP_LIKE (%s, %s)";
+         } else if (SupportedDatabase.hsql == db || SupportedDatabase.postgresql == db) {
+            expected = "REGEXP_MATCHES (%s, %s)";
+         } else if (SupportedDatabase.mysql == db) {
+            expected = "(%s REGEXP %s)";
+         }
+      } finally {
+         connection.close();
+      }
+      Assert.assertEquals(expected, original);
+   }
+
+   @org.junit.Test(expected = OseeStateException.class)
    public void testSetCheckTagQueueOnStartupAllowed() throws OseeCoreException {
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());

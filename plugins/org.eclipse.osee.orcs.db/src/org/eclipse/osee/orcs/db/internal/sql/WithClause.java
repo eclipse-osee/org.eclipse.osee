@@ -1,52 +1,28 @@
-/*
- * Created on Apr 24, 2013
+/*******************************************************************************
+ * Copyright (c) 2013 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql;
 
-public class WithClause implements AliasEntry {
-   public enum WithAlias {
-      GAMMA("gamma"),
-      ATTRIBUTE("att");
+/**
+ * @author John R. Misinco
+ */
+public interface WithClause {
 
-      private final String value;
+   String getName();
 
-      private WithAlias(String value) {
-         this.value = value;
-      }
+   String getBody();
 
-      @Override
-      public String toString() {
-         return value;
-      }
-   }
+   String getParameters();
 
-   private final String withList;
-   private final String alias;
-   private String generatedAlias;
+   boolean isRecursive();
 
-   public WithClause(String withList, WithAlias alias) {
-      this.withList = withList;
-      this.alias = alias.toString();
-   }
-
-   @Override
-   public String getAliasPrefix() {
-      return alias;
-   }
-
-   @Override
-   public String getEntry() {
-      return withList;
-   }
-
-   public String getGeneratedAlias() {
-      return generatedAlias;
-   }
-
-   public void setGeneratedAlias(String generatedAlias) {
-      this.generatedAlias = generatedAlias;
-   }
+   boolean hasParameters();
 
 }

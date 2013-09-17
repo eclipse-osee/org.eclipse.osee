@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.database.core;
 
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -88,6 +89,30 @@ public enum SupportedDatabase {
          OseeExceptions.wrapAndThrow(ex);
       }
       return false;
+   }
+
+   public static String getRegularExpMatchSql(DatabaseMetaData metaData) throws OseeCoreException {
+      String pattern = "";
+      SupportedDatabase db = getDatabaseType(metaData);
+      switch (db) {
+         case oracle:
+            pattern = "REGEXP_LIKE (%s, %s)";
+            break;
+         case postgresql:
+         case hsql:
+            pattern = "REGEXP_MATCHES (%s, %s)";
+            break;
+         case mysql:
+            pattern = "(%s REGEXP %s)";
+            break;
+         default:
+            throw new OseeArgumentException("RegExp matching is not supported for db [%s]", db);
+      }
+      return pattern;
+   }
+
+   public static String getRecursiveWithSql(DatabaseMetaData metaData) throws OseeCoreException {
+      return isDatabaseType(metaData, oracle) ? "" : "RECURSIVE";
    }
 
    public static String getComplementSql(DatabaseMetaData metaData) throws OseeCoreException {

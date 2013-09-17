@@ -34,10 +34,19 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
    private static final String DELETE_KEY_SQL = "DELETE FROM osee_info WHERE OSEE_KEY = ?";
    private static final String GET_KEYS_SQL = "SELECT osee_key FROM osee_info";
 
+   private static final String ERROR_MESSAGE = "Unsupported modification - attempt to modify [%s].";
+   private static final String BINARY_DATA_ERROR_MSG =
+      ERROR_MESSAGE + " This can be modified at startup through -D%s=<PATH>.";
+   private static final String DB_KEY_ERROR_MSG =
+      ERROR_MESSAGE + " This is an unmodifiable database specific setting.";
+   private static final String INDEX_STARTUP_ERROR_MSG = ERROR_MESSAGE + " This is an launch time setting.";
+
    private Log logger;
    private IOseeDatabaseService dbService;
    private boolean wasBinaryDataChecked = false;
    private Boolean areHintsSupported;
+   private String recursiveKeyword;
+   private String regExpPattern;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -64,6 +73,10 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
          toReturn = getOseeApplicationServerData();
       } else if (SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY.equals(key)) {
          toReturn = String.valueOf(areHintsSupported());
+      } else if (SqlProvider.SQL_RECURSIVE_WITH_KEY.equals(key)) {
+         toReturn = getSQLRecursiveKeyword();
+      } else if (SqlProvider.SQL_REG_EXP_PATTERN_KEY.equals(key)) {
+         toReturn = getSQLRegExpPattern();
       } else if (DataStoreConstants.DATASTORE_INDEX_ON_START_UP.equals(key)) {
          toReturn = String.valueOf(isCheckTagQueueOnStartupAllowed());
       } else {
@@ -76,17 +89,16 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
    public boolean putValue(String key, String value) throws OseeCoreException {
       boolean wasUpdated = false;
       if (ResourceConstants.BINARY_DATA_PATH.equals(key)) {
-         throw new OseeStateException(
-            "Unsupported modification - attempt to modify binary data path. Sets are startup through -D%s=<PATH>",
+         throw new OseeStateException(BINARY_DATA_ERROR_MSG, ResourceConstants.BINARY_DATA_PATH,
             ResourceConstants.BINARY_DATA_PATH);
       } else if (SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY.equals(key)) {
-         throw new OseeStateException(
-            "Unsupported modification - attempt to modify database hints supported. This is an unmodifiable database specific setting.",
-            SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY);
+         throw new OseeStateException(DB_KEY_ERROR_MSG, SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY);
+      } else if (SqlProvider.SQL_RECURSIVE_WITH_KEY.equals(key)) {
+         throw new OseeStateException(DB_KEY_ERROR_MSG, SqlProvider.SQL_RECURSIVE_WITH_KEY);
+      } else if (SqlProvider.SQL_REG_EXP_PATTERN_KEY.equals(key)) {
+         throw new OseeStateException(DB_KEY_ERROR_MSG, SqlProvider.SQL_REG_EXP_PATTERN_KEY);
       } else if (DataStoreConstants.DATASTORE_INDEX_ON_START_UP.equals(key)) {
-         throw new OseeStateException(
-            "Unsupported modification - attempt to modify index start-up flag. This is an launch time setting.",
-            DataStoreConstants.DATASTORE_INDEX_ON_START_UP);
+         throw new OseeStateException(INDEX_STARTUP_ERROR_MSG, DataStoreConstants.DATASTORE_INDEX_ON_START_UP);
       } else {
          dbService.runPreparedUpdate(DELETE_KEY_SQL, key);
          int updated = dbService.runPreparedUpdate(INSERT_KEY_VALUE_SQL, key, value);
@@ -161,5 +173,31 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
          chStmt.close();
       }
       return keys;
+   }
+
+   private String getSQLRecursiveKeyword() throws OseeCoreException {
+      if (recursiveKeyword == null) {
+         OseeConnection connection = dbService.getConnection();
+         try {
+            DatabaseMetaData metaData = connection.getMetaData();
+            recursiveKeyword = SupportedDatabase.getRecursiveWithSql(metaData);
+         } finally {
+            connection.close();
+         }
+      }
+      return recursiveKeyword;
+   }
+
+   private String getSQLRegExpPattern() throws OseeCoreException {
+      if (regExpPattern == null) {
+         OseeConnection connection = dbService.getConnection();
+         try {
+            DatabaseMetaData metaData = connection.getMetaData();
+            regExpPattern = SupportedDatabase.getRegularExpMatchSql(metaData);
+         } finally {
+            connection.close();
+         }
+      }
+      return regExpPattern;
    }
 }

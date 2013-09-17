@@ -81,15 +81,31 @@ public abstract class AbstractSqlWriter implements HasOptions {
       writeGroupAndOrder();
    }
 
+   private void writeRecursiveWith() throws OseeCoreException {
+      String recursiveWith = sqlProvider.getSql(SqlProvider.SQL_RECURSIVE_WITH_KEY);
+      if (Strings.isValid(recursiveWith)) {
+         write(" ");
+         write(recursiveWith);
+      }
+   }
+
    protected void writeWithClause() throws OseeCoreException {
       if (Conditions.hasValues(withClauses)) {
-         write("WITH ");
+         write("WITH");
          int size = withClauses.size();
          for (int i = 0; i < size; i++) {
             WithClause clause = withClauses.get(i);
-            write(clause.getGeneratedAlias());
-            write(" as (");
-            write(clause.getEntry());
+            if (clause.isRecursive()) {
+               writeRecursiveWith();
+            }
+            write(" ");
+            write(clause.getName());
+            if (clause.hasParameters()) {
+               write(" ");
+               write(clause.getParameters());
+            }
+            write(" AS (");
+            write(clause.getBody());
             write(")");
             if (i + 1 < size) {
                write(", \n");
@@ -99,11 +115,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
       }
    }
 
-   public String addWithClause(WithClause clause) {
-      String alias = getNextAlias(clause);
-      clause.setGeneratedAlias(alias);
+   public void addWithClause(WithClause clause) {
       withClauses.add(clause);
-      return alias;
    }
 
    protected void computeWithClause(List<SqlHandler<?>> handlers) throws OseeCoreException {
@@ -237,4 +250,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return output.toString();
    }
 
+   public void writePatternMatch(String field, String expression) throws OseeCoreException {
+      String pattern = sqlProvider.getSql(SqlProvider.SQL_REG_EXP_PATTERN_KEY);
+      write(pattern, field, expression);
+   }
 }

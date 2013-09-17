@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
+import static org.eclipse.osee.orcs.db.internal.sql.SqlUtil.newSimpleWithClause;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,15 +25,18 @@ import org.eclipse.osee.orcs.db.internal.search.tagger.HasTagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.AliasEntry;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
+import org.eclipse.osee.orcs.db.internal.sql.SqlUtil;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
-import org.eclipse.osee.orcs.db.internal.sql.WithClause;
-import org.eclipse.osee.orcs.db.internal.sql.WithClause.WithAlias;
 
 /**
  * @author Roberto E. Escobar
  */
 public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywords> implements HasTagProcessor {
+
+   private static final AliasEntry GAMMA_WITH = SqlUtil.newAlias("gamma", "gamma");
+   private static final AliasEntry ATTRIBUTE_WITH = SqlUtil.newAlias("attribute", "att");
 
    private CriteriaAttributeKeywords criteria;
 
@@ -59,16 +63,14 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
 
    @Override
    public void addWithTables(AbstractSqlWriter writer) throws OseeCoreException {
-      List<String> values = new ArrayList<String>(criteria.getValues());
-      Collection<? extends IAttributeType> types = criteria.getTypes();
-
-      int valueCount = values.size();
-
+      String gammaAlias = writer.getNextAlias(GAMMA_WITH);
       StringBuilder gammaSb = new StringBuilder();
 
-      for (int valueIdx = 0; valueIdx < valueCount; valueIdx++) {
+      Collection<String> values = criteria.getValues();
+      int valueCount = values.size();
+      int valueIdx = 0;
+      for (String value : values) {
          List<Long> tags = new ArrayList<Long>();
-         String value = values.get(valueIdx);
          tokenize(value, tags);
          int tagsSize = tags.size();
          gammaSb.append("(");
@@ -84,14 +86,15 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          if (valueIdx + 1 < valueCount) {
             gammaSb.append("\n UNION ALL \n");
          }
+         valueIdx++;
       }
+      writer.addWithClause(newSimpleWithClause(gammaAlias, gammaSb.toString()));
 
-      WithClause gammaWith = new WithClause(gammaSb.toString(), WithAlias.GAMMA);
-      String gammaAlias = writer.addWithClause(gammaWith);
-      String jIdAlias = null;
-
+      attrAlias = writer.getNextAlias(ATTRIBUTE_WITH);
+      Collection<? extends IAttributeType> types = criteria.getTypes();
       StringBuilder attrSb = new StringBuilder();
       attrSb.append("SELECT art_id FROM osee_attribute att, osee_txs txs, ");
+      String jIdAlias = null;
       if (!criteria.isIncludeAllTypes() && types.size() > 1) {
          jIdAlias = writer.getNextAlias(TableEnum.ID_JOIN_TABLE);
          attrSb.append("osee_join_id ");
@@ -123,9 +126,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
             writer.addParameter(joinQuery.getQueryId());
          }
       }
-
-      WithClause attrWith = new WithClause(attrSb.toString(), WithAlias.ATTRIBUTE);
-      attrAlias = writer.addWithClause(attrWith);
+      writer.addWithClause(newSimpleWithClause(attrAlias, attrSb.toString()));
       writer.addTable(attrAlias);
    }
 

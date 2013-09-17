@@ -448,12 +448,12 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryAtttributeKeyword() throws OseeCoreException {
-      String expected = "WITH gamma1 as ((SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+      String expected = "WITH gamma1 AS ((SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
       " INTERSECT \n" + //
       "SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
       " INTERSECT \n" + //
       "SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?) ), \n" + //
-      "att1 as (SELECT art_id FROM osee_attribute att, osee_txs txs, osee_join_id jid1, " + //
+      " att1 AS (SELECT art_id FROM osee_attribute att, osee_txs txs, osee_join_id jid1, " + //
       "gamma1 WHERE att.gamma_id = gamma1.gamma_id AND att.gamma_id = txs.gamma_id AND " + //
       "txs.tx_current = 1 AND txs.branch_id = ? AND att.attr_type_id = jid1.id AND jid1.query_id = ?)\n" + //
       "SELECT art1.art_id, txs1.branch_id\n" + //
@@ -489,12 +489,12 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryAtttributeCombined() throws OseeCoreException {
-      String expected = "WITH gamma1 as ((SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+      String expected = "WITH gamma1 AS ((SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
       " INTERSECT \n" + //
       "SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
       " INTERSECT \n" + //
       "SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?) ), \n" + //
-      "att2 as (SELECT art_id FROM osee_attribute att, osee_txs txs, osee_join_id jid1, " + //
+      " att2 AS (SELECT art_id FROM osee_attribute att, osee_txs txs, osee_join_id jid1, " + //
       "gamma1 WHERE att.gamma_id = gamma1.gamma_id AND att.gamma_id = txs.gamma_id AND " + //
       "txs.tx_current = 1 AND txs.branch_id = ? AND att.attr_type_id = jid1.id AND jid1.query_id = ?)\n" + //
       "SELECT art1.art_id, txs1.branch_id\n" + //
