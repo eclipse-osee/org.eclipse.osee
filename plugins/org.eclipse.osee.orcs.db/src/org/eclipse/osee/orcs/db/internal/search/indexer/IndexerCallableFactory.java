@@ -11,8 +11,8 @@
 package org.eclipse.osee.orcs.db.internal.search.indexer;
 
 import java.util.concurrent.Callable;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
 /**

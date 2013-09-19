@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.BranchData;
@@ -28,6 +27,7 @@ import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.ProxyDataFactory;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
@@ -38,9 +38,9 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
 
    private final ProxyDataFactory proxyFactory;
-   private final IdentityService identityService;
+   private final IdentityLocator identityService;
 
-   public OrcsObjectFactoryImpl(ProxyDataFactory proxyFactory, IdentityService identityService) {
+   public OrcsObjectFactoryImpl(ProxyDataFactory proxyFactory, IdentityLocator identityService) {
       super();
       this.proxyFactory = proxyFactory;
       this.identityService = identityService;

@@ -17,7 +17,6 @@ import static org.eclipse.osee.orcs.db.internal.search.Engines.newTaggingEngine;
 import static org.eclipse.osee.orcs.db.internal.search.Engines.newTxQueryEngine;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
@@ -25,6 +24,7 @@ import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.engines.QueryEngineImpl;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerConstants;
@@ -38,13 +38,13 @@ public class QueryModule {
    private final Log logger;
    private final ExecutorAdmin executorAdmin;
    private final IOseeDatabaseService dbService;
-   private final IdentityService idService;
+   private final IdentityLocator idService;
    private final SqlProvider sqlProvider;
 
    private TaggingEngine taggingEngine;
    private QueryEngineIndexer queryIndexer;
 
-   public QueryModule(Log logger, ExecutorAdmin executorAdmin, IOseeDatabaseService dbService, IdentityService idService, SqlProvider sqlProvider) {
+   public QueryModule(Log logger, ExecutorAdmin executorAdmin, IOseeDatabaseService dbService, IdentityLocator idService, SqlProvider sqlProvider) {
       super();
       this.logger = logger;
       this.executorAdmin = executorAdmin;

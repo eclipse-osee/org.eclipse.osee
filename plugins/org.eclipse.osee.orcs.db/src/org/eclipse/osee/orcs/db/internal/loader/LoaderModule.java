@@ -11,13 +11,13 @@
 package org.eclipse.osee.orcs.db.internal.loader;
 
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
@@ -31,24 +31,22 @@ public class LoaderModule {
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
-   private final IdFactory idFactory;
-   private final IdentityService identityService;
+   private final IdentityManager idFactory;
    private final SqlProvider sqlProvider;
    private final DataProxyFactoryProvider proxyProvider;
 
-   public LoaderModule(Log logger, IOseeDatabaseService dbService, IdFactory idFactory, IdentityService identityService, SqlProvider sqlProvider, DataProxyFactoryProvider proxyProvider) {
+   public LoaderModule(Log logger, IOseeDatabaseService dbService, IdentityManager idFactory, SqlProvider sqlProvider, DataProxyFactoryProvider proxyProvider) {
       super();
       this.logger = logger;
       this.dbService = dbService;
       this.idFactory = idFactory;
-      this.identityService = identityService;
       this.sqlProvider = sqlProvider;
       this.proxyProvider = proxyProvider;
    }
 
    public OrcsObjectFactory createOrcsObjectFactory(AttributeTypes attributeTypes) {
       ProxyDataFactory proxyFactory = new AttributeDataProxyFactory(proxyProvider, attributeTypes);
-      return new OrcsObjectFactoryImpl(proxyFactory, identityService);
+      return new OrcsObjectFactoryImpl(proxyFactory, idFactory);
    }
 
    public DataFactory createDataFactory(OrcsObjectFactory factory, ArtifactTypes artifactTypes) {
@@ -65,7 +63,7 @@ public class LoaderModule {
    }
 
    protected SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory) {
-      SqlHandlerFactory handlerFactory = LoaderSqlHandlerFactoryUtil.createHandlerFactory(logger, identityService);
+      SqlHandlerFactory handlerFactory = LoaderSqlHandlerFactoryUtil.createHandlerFactory(logger, idFactory);
       return new SqlObjectLoader(logger, dbService, sqlProvider, handlerFactory, objectFactory);
    }
 

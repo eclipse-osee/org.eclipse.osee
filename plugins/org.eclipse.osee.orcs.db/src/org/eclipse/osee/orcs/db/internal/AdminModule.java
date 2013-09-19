@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.database.schema.SchemaOptions;
 import org.eclipse.osee.database.schema.SchemaResourceProvider;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -34,10 +33,10 @@ public class AdminModule {
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
-   private final IdentityService identityService;
+   private final IdentityManager identityService;
    private final SystemPreferences preferences;
 
-   public AdminModule(Log logger, IOseeDatabaseService dbService, IdentityService identityService, SystemPreferences preferences) {
+   public AdminModule(Log logger, IOseeDatabaseService dbService, IdentityManager identityService, SystemPreferences preferences) {
       super();
       this.logger = logger;
       this.dbService = dbService;

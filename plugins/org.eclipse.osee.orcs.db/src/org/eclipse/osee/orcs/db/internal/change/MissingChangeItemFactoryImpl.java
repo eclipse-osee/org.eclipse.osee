@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.model.change.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.model.change.AttributeChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.RelationChangeItem;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -34,6 +33,7 @@ import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -43,9 +43,9 @@ import com.google.common.collect.Multimap;
 public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
    private final DataLoaderFactory dataLoaderFactory;
-   private final IdentityService identityService;
+   private final IdentityLocator identityService;
 
-   public MissingChangeItemFactoryImpl(IdentityService identityService, DataLoaderFactory dataModuleFactory) {
+   public MissingChangeItemFactoryImpl(IdentityLocator identityService, DataLoaderFactory dataModuleFactory) {
       super();
       this.identityService = identityService;
       this.dataLoaderFactory = dataModuleFactory;

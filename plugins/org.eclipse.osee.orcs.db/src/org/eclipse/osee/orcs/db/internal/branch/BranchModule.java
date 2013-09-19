@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -32,6 +31,7 @@ import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.callable.BranchCopyTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CheckBranchExchangeIntegrityCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CommitBranchDatabaseCallable;
@@ -51,7 +51,7 @@ public class BranchModule {
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
-   private final IdentityService identityService;
+   private final IdentityLocator identityService;
    private final TempCachingService cachingService;
    private final SystemPreferences preferences;
    private final ExecutorAdmin executorAdmin;
@@ -59,7 +59,7 @@ public class BranchModule {
 
    private final IOseeModelFactoryService modelFactory;
 
-   public BranchModule(Log logger, IOseeDatabaseService dbService, IdentityService identityService, TempCachingService cachingService, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager, IOseeModelFactoryService modelFactory) {
+   public BranchModule(Log logger, IOseeDatabaseService dbService, IdentityLocator identityService, TempCachingService cachingService, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager, IOseeModelFactoryService modelFactory) {
       super();
       this.logger = logger;
       this.dbService = dbService;

@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Random;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -26,6 +25,7 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.exchange.export.AbstractExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.DbTableExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.ManifestExportItem;
@@ -70,11 +70,11 @@ public class ExportItemFactory {
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
-   private final IdentityService identityService;
+   private final IdentityLocator identityService;
    private final IResourceManager resourceManager;
    private final OrcsTypes orcsTypes;
 
-   public ExportItemFactory(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IResourceManager resourceManager, OrcsTypes orcsTypes) {
+   public ExportItemFactory(Log logger, IOseeDatabaseService dbService, IdentityLocator identityService, IResourceManager resourceManager, OrcsTypes orcsTypes) {
       this.logger = logger;
       this.dbService = dbService;
       this.identityService = identityService;
@@ -94,7 +94,7 @@ public class ExportItemFactory {
       return resourceManager;
    }
 
-   public IdentityService getIdentityService() {
+   public IdentityLocator getIdentityService() {
       return identityService;
    }
 

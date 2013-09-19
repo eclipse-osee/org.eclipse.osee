@@ -12,10 +12,10 @@ package org.eclipse.osee.orcs.db.internal.sql;
 
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.jdk.core.type.HasPriority;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 
 /**
  * @author Roberto E. Escobar
@@ -23,13 +23,13 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
 public abstract class SqlHandler<T extends Criteria> implements HasPriority {
 
    private Log logger;
-   private IdentityService idService;
+   private IdentityLocator idService;
 
-   public void setIdentityService(IdentityService idService) {
+   public void setIdentityService(IdentityLocator idService) {
       this.idService = idService;
    }
 
-   public IdentityService getIdentityService() {
+   public IdentityLocator getIdentityService() {
       return idService;
    }
 

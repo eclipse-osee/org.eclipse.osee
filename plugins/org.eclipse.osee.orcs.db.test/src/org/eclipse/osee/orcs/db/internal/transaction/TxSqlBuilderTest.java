@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -43,7 +42,7 @@ import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
-import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
+import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.loader.data.ArtifactDataImpl;
 import org.eclipse.osee.orcs.db.internal.loader.data.AttributeDataImpl;
 import org.eclipse.osee.orcs.db.internal.loader.data.RelationDataImpl;
@@ -93,8 +92,7 @@ public class TxSqlBuilderTest {
 
    // @formatter:off
    @Mock private IOseeDatabaseService dbService;
-   @Mock private IdFactory idFactory;
-   @Mock private IdentityService identityService;
+   @Mock private IdentityManager idManager;
    
    @Mock private TransactionRecord tx;
    @Mock private OrcsChangeSet txData;
@@ -118,7 +116,7 @@ public class TxSqlBuilderTest {
       versionData.setBranchId(EXPECTED_BRANCH_ID);
       versionData.setTransactionId(LOADED_TX_ID);
 
-      builder = new TxSqlBuilderImpl(dbService, idFactory, identityService) {
+      builder = new TxSqlBuilderImpl(dbService, idManager) {
 
          @Override
          protected ArtifactJoinQuery createJoin() {
@@ -156,8 +154,8 @@ public class TxSqlBuilderTest {
       when(tx.getTimeStamp()).thenReturn(EXPECTED_TX_TIME);
       when(tx.getTxType()).thenReturn(EXPECTED_TX_TYPE);
 
-      when(identityService.getLocalId(TYPE_UUID)).thenReturn(TYPE_ID);
-      when(idFactory.getNextGammaId()).thenReturn(NEXT_GAMMA_ID);
+      when(idManager.getLocalId(TYPE_UUID)).thenReturn(TYPE_ID);
+      when(idManager.getNextGammaId()).thenReturn(NEXT_GAMMA_ID);
    }
 
    @Test

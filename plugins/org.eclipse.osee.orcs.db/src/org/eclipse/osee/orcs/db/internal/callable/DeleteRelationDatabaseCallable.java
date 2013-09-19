@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -29,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
 
 /**
@@ -45,7 +45,7 @@ public class DeleteRelationDatabaseCallable extends AbstractDatastoreTxCallable<
    private final static String INSERT_INTO_TXS =
       "insert into osee_txs (mod_type, tx_current, transaction_id, gamma_id, branch_id) values (?, ?, ?, ?, ?)";
 
-   private final IdentityService identityService;
+   private final IdentityLocator identityService;
    private final BranchCache branchCache;
    private final IOseeBranch branchToken;
 
@@ -55,7 +55,7 @@ public class DeleteRelationDatabaseCallable extends AbstractDatastoreTxCallable<
    private final int bArtId;
    private final String comment;
 
-   public DeleteRelationDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, IdentityService identityService, BranchCache branchCache, IOseeBranch branchToken, IRelationTypeSide relationType, int aArtId, int bArtId, int artUserId, String comment) {
+   public DeleteRelationDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, IdentityLocator identityService, BranchCache branchCache, IOseeBranch branchToken, IRelationTypeSide relationType, int aArtId, int bArtId, int artUserId, String comment) {
       super(logger, session, databaseService, "Delete Relation");
       this.identityService = identityService;
       this.branchCache = branchCache;

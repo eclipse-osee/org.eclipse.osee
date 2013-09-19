@@ -18,13 +18,13 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.Identity;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
+import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.callable.OrcsTypeLoaderCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeArtifactTypeDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeAttributeTypeDatabaseTxCallable;
@@ -37,10 +37,10 @@ public class TypesModule {
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
-   private final IdentityService identityService;
+   private final IdentityManager identityService;
    private final IResourceManager resourceManager;
 
-   public TypesModule(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IResourceManager resourceManager) {
+   public TypesModule(Log logger, IOseeDatabaseService dbService, IdentityManager identityService, IResourceManager resourceManager) {
       super();
       this.logger = logger;
       this.dbService = dbService;

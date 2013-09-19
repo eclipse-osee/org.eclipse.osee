@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
@@ -30,6 +29,7 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandlerDecorator;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.engines.AbstractSimpleQueryCallableFactory;
 import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQueryCallableFactory;
@@ -65,7 +65,7 @@ public final class Engines {
       //
    }
 
-   public static ArtifactQueryCallableFactory newArtifactQueryEngine(Log logger, IOseeDatabaseService dbService, IdentityService idService, SqlProvider sqlProvider, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader, BranchCache branchCache, AttributeTypes attrTypes) {
+   public static ArtifactQueryCallableFactory newArtifactQueryEngine(Log logger, IOseeDatabaseService dbService, IdentityLocator idService, SqlProvider sqlProvider, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader, BranchCache branchCache, AttributeTypes attrTypes) {
       SqlHandlerFactory handlerFactory =
          createArtifactSqlHandlerFactory(logger, idService, taggingEngine.getTagProcessor());
       QuerySqlContextFactory sqlContextFactory =
@@ -75,7 +75,7 @@ public final class Engines {
       return new ArtifactQueryCallableFactory(logger, objectLoader, sqlContextFactory, filterFactory);
    }
 
-   public static QueryCallableFactory newBranchQueryEngine(Log logger, IOseeDatabaseService dbService, IdentityService idService, SqlProvider sqlProvider, DataLoaderFactory objectLoader) {
+   public static QueryCallableFactory newBranchQueryEngine(Log logger, IOseeDatabaseService dbService, IdentityLocator idService, SqlProvider sqlProvider, DataLoaderFactory objectLoader) {
       QuerySqlContextFactory sqlContextFactory = newBranchSqlContextFactory(logger, dbService, idService, sqlProvider);
       return new AbstractSimpleQueryCallableFactory(logger, objectLoader, sqlContextFactory) {
          @Override
@@ -91,7 +91,7 @@ public final class Engines {
       };
    }
 
-   public static QueryCallableFactory newTxQueryEngine(Log logger, IOseeDatabaseService dbService, IdentityService idService, SqlProvider sqlProvider, DataLoaderFactory objectLoader) {
+   public static QueryCallableFactory newTxQueryEngine(Log logger, IOseeDatabaseService dbService, IdentityLocator idService, SqlProvider sqlProvider, DataLoaderFactory objectLoader) {
       QuerySqlContextFactory sqlContextFactory = newTxSqlContextFactory(logger, dbService, idService, sqlProvider);
       return new AbstractSimpleQueryCallableFactory(logger, objectLoader, sqlContextFactory) {
          @Override
@@ -122,18 +122,18 @@ public final class Engines {
       return new QuerySqlContextFactoryImpl(logger, dbService, sqlProvider, handlerFactory, table, idColumn);
    }
 
-   public static QuerySqlContextFactory newBranchSqlContextFactory(Log logger, IOseeDatabaseService dbService, IdentityService idService, SqlProvider sqlProvider) {
+   public static QuerySqlContextFactory newBranchSqlContextFactory(Log logger, IOseeDatabaseService dbService, IdentityLocator idService, SqlProvider sqlProvider) {
       SqlHandlerFactory handlerFactory = createBranchSqlHandlerFactory(logger, idService);
       return newSqlContextFactory(logger, dbService, sqlProvider, TableEnum.BRANCH_TABLE, "branch_id", handlerFactory);
    }
 
-   public static QuerySqlContextFactory newTxSqlContextFactory(Log logger, IOseeDatabaseService dbService, IdentityService idService, SqlProvider sqlProvider) {
+   public static QuerySqlContextFactory newTxSqlContextFactory(Log logger, IOseeDatabaseService dbService, IdentityLocator idService, SqlProvider sqlProvider) {
       SqlHandlerFactory handlerFactory = createTxSqlHandlerFactory(logger, idService);
       return newSqlContextFactory(logger, dbService, sqlProvider, TableEnum.TX_DETAILS_TABLE, "transaction_id",
          handlerFactory);
    }
 
-   public static QueryEngineIndexer newIndexingEngine(Log logger, IOseeDatabaseService dbService, IdentityService idService, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, IResourceManager resourceManager) {
+   public static QueryEngineIndexer newIndexingEngine(Log logger, IOseeDatabaseService dbService, IdentityLocator idService, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, IResourceManager resourceManager) {
       IndexedResourceLoader resourceLoader =
          new GammaQueueIndexerDataSourceLoader(logger, dbService, idService, resourceManager);
       IndexerCallableFactory callableFactory =

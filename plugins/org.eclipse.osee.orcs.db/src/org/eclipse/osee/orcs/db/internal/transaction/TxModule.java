@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
@@ -26,8 +25,8 @@ import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.core.ds.TxDataStore;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeTransactionTxCallable;
-import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -36,20 +35,18 @@ public class TxModule {
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
-   private final IdentityService identityService;
    private final TempCachingService cachingService;
 
    private final IOseeModelFactoryService modelFactory;
-   private final IdFactory idFactory;
+   private final IdentityManager idManager;
 
-   public TxModule(Log logger, IOseeDatabaseService dbService, IdentityService identityService, TempCachingService cachingService, IOseeModelFactoryService modelFactory, IdFactory idFactory) {
+   public TxModule(Log logger, IOseeDatabaseService dbService, TempCachingService cachingService, IOseeModelFactoryService modelFactory, IdentityManager identityService) {
       super();
       this.logger = logger;
       this.dbService = dbService;
-      this.identityService = identityService;
+      this.idManager = identityService;
       this.cachingService = cachingService;
       this.modelFactory = modelFactory;
-      this.idFactory = idFactory;
    }
 
    public TxDataStore createTransactionStore(DataLoaderFactory dataLoaderFactory, QueryEngineIndexer indexer, AttributeTypes types) {
@@ -60,7 +57,7 @@ public class TxModule {
 
          @Override
          public Callable<TransactionResult> commitTransaction(OrcsSession session, TransactionData data) {
-            TxSqlBuilderImpl builder = new TxSqlBuilderImpl(dbService, idFactory, identityService);
+            TxSqlBuilderImpl builder = new TxSqlBuilderImpl(dbService, idManager);
             TransactionWriter writer = new TransactionWriter(logger, dbService, builder);
             return new CommitTransactionDatabaseTxCallable(logger, session, dbService, cachingService.getBranchCache(),
                cachingService.getTransactionCache(), modelFactory.getTransactionFactory(), processors, writer, data);
@@ -68,7 +65,7 @@ public class TxModule {
 
          @Override
          public Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
-            return new UnsubscribeTransaction(logger, dbService, identityService, userArtifact, groupArtifact);
+            return new UnsubscribeTransaction(logger, dbService, idManager, userArtifact, groupArtifact);
          }
 
          @Override

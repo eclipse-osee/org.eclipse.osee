@@ -19,9 +19,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.framework.core.util.HexUtil;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -29,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeDb;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
 import org.eclipse.osee.orcs.db.internal.exchange.IOseeExchangeDataProvider;
@@ -39,7 +38,7 @@ import org.eclipse.osee.orcs.db.internal.util.ZipBinaryResource;
  */
 public class DbTableSaxHandler extends BaseDbSaxHandler {
 
-   public static DbTableSaxHandler createWithLimitedCache(Log logger, IOseeDatabaseService dbService, IResourceManager resourceManager, IdentityService identityService, IOseeExchangeDataProvider exportDataProvider, int cacheLimit) {
+   public static DbTableSaxHandler createWithLimitedCache(Log logger, IOseeDatabaseService dbService, IResourceManager resourceManager, IdentityLocator identityService, IOseeExchangeDataProvider exportDataProvider, int cacheLimit) {
       return new DbTableSaxHandler(logger, dbService, resourceManager, identityService, exportDataProvider, false,
          cacheLimit);
    }
@@ -49,10 +48,10 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
    private final IOseeExchangeDataProvider exportDataProvider;
 
    private final IResourceManager resourceManager;
-   private final IdentityService identityService;
+   private final IdentityLocator identityService;
    private IExportItem exportItem;
 
-   protected DbTableSaxHandler(Log logger, IOseeDatabaseService dbService, IResourceManager resourceManager, IdentityService identityService, IOseeExchangeDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) {
+   protected DbTableSaxHandler(Log logger, IOseeDatabaseService dbService, IResourceManager resourceManager, IdentityLocator identityService, IOseeExchangeDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) {
       super(logger, dbService, isCacheAll, cacheLimit);
       this.resourceManager = resourceManager;
       this.identityService = identityService;
@@ -65,7 +64,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       return resourceManager;
    }
 
-   private IdentityService getIdentityService() {
+   private IdentityLocator getIdentityService() {
       return identityService;
    }
 
@@ -100,11 +99,10 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   private int getTypeId(IdentityService identityService, Map<String, String> fieldMap) throws OseeCoreException {
+   private int getTypeId(IdentityLocator identityService, Map<String, String> fieldMap) throws OseeCoreException {
       Conditions.checkNotNull(identityService, "identityService");
       String hexString = fieldMap.get(ExchangeDb.TYPE_GUID);
-      Long uuid = HexUtil.toLong(hexString);
-      return identityService.getLocalId(uuid);
+      return identityService.parseToLocalId(hexString);
    }
 
    @Override

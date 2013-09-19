@@ -12,9 +12,9 @@ package org.eclipse.osee.orcs.db.internal.loader.handlers;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
@@ -31,7 +31,7 @@ public final class LoaderSqlHandlerFactoryUtil {
       // Static Utility
    }
 
-   public static SqlHandlerFactory createHandlerFactory(Log logger, IdentityService identityService) {
+   public static SqlHandlerFactory createHandlerFactory(Log logger, IdentityLocator identityService) {
       Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
          new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
 

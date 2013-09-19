@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
@@ -34,7 +33,7 @@ import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
-import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
+import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderEnum;
 
@@ -44,19 +43,17 @@ import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderE
 public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
 
    private final IOseeDatabaseService dbService;
-   private final IdFactory idFactory;
-   private final IdentityService identityService;
+   private final IdentityManager idManager;
 
    private int txId;
    private List<DaoToSql> binaryStores;
    private HashCollection<SqlOrderEnum, Object[]> dataItemInserts;
    private Map<SqlOrderEnum, ArtifactJoinQuery> txNotCurrentsJoin;
 
-   public TxSqlBuilderImpl(IOseeDatabaseService dbService, IdFactory idFactory, IdentityService identityService) {
+   public TxSqlBuilderImpl(IOseeDatabaseService dbService, IdentityManager idManager) {
       super();
       this.dbService = dbService;
-      this.idFactory = idFactory;
-      this.identityService = identityService;
+      this.idManager = idManager;
       clear();
    }
 
@@ -129,7 +126,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
             addBinaryStore(daoToSql);
 
             if (RelationalConstants.DEFAULT_ITEM_ID == data.getLocalId()) {
-               int localId = idFactory.getNextAttributeId();
+               int localId = idManager.getNextAttributeId();
                data.setLocalId(localId);
             }
             int localTypeId = getLocalTypeId(data.getTypeUuid());
@@ -160,7 +157,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
          if (isRowAllowed) {
             updateGamma(data);
             if (RelationalConstants.DEFAULT_ITEM_ID == data.getLocalId()) {
-               int localId = idFactory.getNextRelationId();
+               int localId = idManager.getNextRelationId();
                data.setLocalId(localId);
             }
             int localTypeId = getLocalTypeId(data.getTypeUuid());
@@ -201,7 +198,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       VersionData version = data.getVersion();
       long gammaId = version.getGammaId();
       if (RelationalConstants.GAMMA_SENTINEL == gammaId || isGammaCreationAllowed(data)) {
-         long newGamma = idFactory.getNextGammaId();
+         long newGamma = idManager.getNextGammaId();
          version.setGammaId(newGamma);
       }
    }
@@ -231,7 +228,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    }
 
    private int getLocalTypeId(long typeUuidId) throws OseeCoreException {
-      return identityService.getLocalId(typeUuidId);
+      return idManager.getLocalId(typeUuidId);
    }
 
 }

@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -32,6 +31,8 @@ import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.HasLocalId;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
+import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
@@ -53,9 +54,9 @@ public class DataFactoryImplTest {
    public ExpectedException thrown = ExpectedException.none();
 
    //@formatter:off
-   @Mock private IdFactory idFactory;
+   @Mock private IdentityManager idFactory;
    @Mock private ProxyDataFactory proxyFactory;
-   @Mock private IdentityService identityService;
+   @Mock private IdentityLocator identityService;
    @Mock private ArtifactTypes artifactCache;
    
    @Mock private ArtifactData artData;
@@ -123,7 +124,7 @@ public class DataFactoryImplTest {
       when(relData.getArtIdB()).thenReturn(99);
       when(relData.getRationale()).thenReturn("this is the rationale");
 
-      when(idFactory.getBranchId(CoreBranches.COMMON)).thenReturn(657);
+      when(idFactory.getLocalId(CoreBranches.COMMON)).thenReturn(657);
    }
 
    @Test
@@ -159,7 +160,7 @@ public class DataFactoryImplTest {
       when(idFactory.getNextArtifactId()).thenReturn(987);
 
       ArtifactData actual = dataFactory.create(CoreBranches.COMMON, artifactTypeToken, guid);
-      verify(idFactory).getBranchId(CoreBranches.COMMON);
+      verify(idFactory).getLocalId(CoreBranches.COMMON);
       verify(idFactory).getUniqueGuid(guid);
       verify(idFactory).getNextArtifactId();
 
@@ -189,7 +190,7 @@ public class DataFactoryImplTest {
       when(idFactory.getNextArtifactId()).thenReturn(987);
 
       ArtifactData actual = dataFactory.create(CoreBranches.COMMON, artifactTypeToken, guid);
-      verify(idFactory).getBranchId(CoreBranches.COMMON);
+      verify(idFactory).getLocalId(CoreBranches.COMMON);
       verify(idFactory).getUniqueGuid(guid);
       verify(idFactory).getNextArtifactId();
 
@@ -277,7 +278,7 @@ public class DataFactoryImplTest {
    @Test
    public void testIntroduceArtifactData() throws OseeCoreException {
       ArtifactData actual = dataFactory.introduce(CoreBranches.COMMON, artData);
-      verify(idFactory).getBranchId(CoreBranches.COMMON);
+      verify(idFactory).getLocalId(CoreBranches.COMMON);
 
       VersionData actualVer = actual.getVersion();
       assertNotSame(verData, actualVer);
@@ -299,7 +300,7 @@ public class DataFactoryImplTest {
    @Test
    public void testIntroduceAttributeData() throws OseeCoreException {
       AttributeData actual = dataFactory.introduce(CoreBranches.COMMON, attrData);
-      verify(idFactory).getBranchId(CoreBranches.COMMON);
+      verify(idFactory).getLocalId(CoreBranches.COMMON);
 
       VersionData actualVer = actual.getVersion();
       assertNotSame(verData, actualVer);
@@ -333,7 +334,7 @@ public class DataFactoryImplTest {
       when(idFactory.getUniqueGuid(null)).thenReturn(newGuid);
 
       ArtifactData actual = dataFactory.copy(CoreBranches.COMMON, artData);
-      verify(idFactory).getBranchId(CoreBranches.COMMON);
+      verify(idFactory).getLocalId(CoreBranches.COMMON);
       verify(idFactory).getUniqueGuid(null);
 
       VersionData actualVer = actual.getVersion();
@@ -356,7 +357,7 @@ public class DataFactoryImplTest {
    @Test
    public void testCopyAttributeData() throws OseeCoreException {
       AttributeData actual = dataFactory.copy(CoreBranches.COMMON, attrData);
-      verify(idFactory).getBranchId(CoreBranches.COMMON);
+      verify(idFactory).getLocalId(CoreBranches.COMMON);
 
       VersionData actualVer = actual.getVersion();
       assertNotSame(verData, actualVer);

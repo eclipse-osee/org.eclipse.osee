@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.HexUtil;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -34,6 +33,7 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 
@@ -51,10 +51,10 @@ public class DbTableExportItem extends AbstractXmlExportItem {
    private final Object[] bindData;
 
    private final IOseeDatabaseService dbService;
-   private final IdentityService identityService;
+   private final IdentityLocator identityService;
    private final IResourceManager resourceManager;
 
-   public DbTableExportItem(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IResourceManager resourceManager, ExportItem id, String query, Object[] bindData) {
+   public DbTableExportItem(Log logger, IOseeDatabaseService dbService, IdentityLocator identityService, IResourceManager resourceManager, ExportItem id, String query, Object[] bindData) {
       super(logger, id);
       this.dbService = dbService;
       this.identityService = identityService;

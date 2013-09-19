@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -39,9 +38,10 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ImportOptions;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.SystemPreferences;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.IOseeExchangeDataProvider;
 import org.eclipse.osee.orcs.db.internal.exchange.SavePointManager;
@@ -69,7 +69,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    private final SystemPreferences preferences;
 
    private final IResourceManager resourceManager;
-   private final IdentityService identityService;
+   private final IdentityLocator identityService;
    private final OrcsTypes orcsTypes;
 
    private final SavePointManager savePointManager;
@@ -87,7 +87,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    private ExchangeDataProcessor exchangeDataProcessor;
    private int[] branchesToImport;
 
-   public ImportBranchDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, SystemPreferences preferences, IResourceManager resourceManager, IdentityService identityService, OrcsTypes orcsTypes, URI exchangeFile, List<IOseeBranch> selectedBranches, PropertyStore options) {
+   public ImportBranchDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, SystemPreferences preferences, IResourceManager resourceManager, IdentityLocator identityService, OrcsTypes orcsTypes, URI exchangeFile, List<IOseeBranch> selectedBranches, PropertyStore options) {
       super(logger, session, dbService);
       this.preferences = preferences;
       this.resourceManager = resourceManager;

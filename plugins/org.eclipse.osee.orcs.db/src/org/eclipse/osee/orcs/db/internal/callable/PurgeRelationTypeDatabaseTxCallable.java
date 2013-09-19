@@ -15,12 +15,12 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 
 /**
  * Purges given relation types.<br/>
@@ -45,9 +45,9 @@ public final class PurgeRelationTypeDatabaseTxCallable extends AbstractDatastore
       "DELETE FROM osee_conflict WHERE dest_gamma_id = ?";
 
    private final Collection<? extends IRelationType> typesToPurge;
-   private final IdentityService identityService;
+   private final IdentityLocator identityService;
 
-   public PurgeRelationTypeDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, IdentityService identityService, Collection<? extends IRelationType> typesToPurge) {
+   public PurgeRelationTypeDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, IdentityLocator identityService, Collection<? extends IRelationType> typesToPurge) {
       super(logger, session, databaseService, "Purge Relation Type");
       this.identityService = identityService;
       this.typesToPurge = typesToPurge;

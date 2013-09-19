@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
@@ -47,6 +46,7 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadDescription;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
+import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
@@ -72,7 +72,7 @@ public class DataLoaderFactoryImplTest {
    @Mock private IOseeDatabaseService dbService;
    @Mock private IOseeStatement chStmt;
    
-   @Mock private IdentityService identityService;
+   @Mock private IdentityManager identityService;
    @Mock private SqlProvider sqlProvider;
    
    @Mock private LoadDataHandler builder;
@@ -104,7 +104,7 @@ public class DataLoaderFactoryImplTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      LoaderModule module = new LoaderModule(logger, dbService, null, identityService, sqlProvider, null);
+      LoaderModule module = new LoaderModule(logger, dbService, identityService, sqlProvider, null);
       SqlObjectLoader loader = module.createSqlObjectLoader(rowDataFactory);
 
       spyLoader = spy(loader);

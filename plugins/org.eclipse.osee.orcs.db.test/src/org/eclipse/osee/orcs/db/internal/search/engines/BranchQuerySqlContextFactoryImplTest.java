@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -46,6 +45,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.Engines;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
@@ -77,7 +77,7 @@ public class BranchQuerySqlContextFactoryImplTest {
    @Mock private Log logger;
    @Mock private IOseeDatabaseService dbService;
    @Mock private SqlProvider sqlProvider;
-   @Mock private IdentityService identityService;
+   @Mock private IdentityLocator identityService;
    
    @Mock private OrcsSession session;
    // @formatter:on

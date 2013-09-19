@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -35,6 +34,7 @@ import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
 import org.eclipse.osee.orcs.data.CreateBranchData;
+import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
@@ -49,10 +49,10 @@ public class InitializeDatastoreCallable extends AbstractDatastoreCallable<DataS
    private final SystemPreferences preferences;
    private final SchemaResourceProvider schemaProvider;
    private final SchemaOptions options;
-   private final IdentityService identityService;
+   private final IdentityManager identityService;
    private final BranchDataStore branchStore;
 
-   public InitializeDatastoreCallable(OrcsSession session, Log logger, IOseeDatabaseService dbService, IdentityService identityService, BranchDataStore branchStore, SystemPreferences preferences, SchemaResourceProvider schemaProvider, SchemaOptions options) {
+   public InitializeDatastoreCallable(OrcsSession session, Log logger, IOseeDatabaseService dbService, IdentityManager identityService, BranchDataStore branchStore, SystemPreferences preferences, SchemaResourceProvider schemaProvider, SchemaOptions options) {
       super(logger, session, dbService);
       this.identityService = identityService;
       this.branchStore = branchStore;
@@ -116,8 +116,7 @@ public class InitializeDatastoreCallable extends AbstractDatastoreCallable<DataS
    }
 
    private void clearStateCaches() throws OseeDataStoreException {
-      getDatabaseService().getSequence().clear();
-      identityService.clear();
+      identityService.invalidateIds();
    }
 
    private void addDefaultPermissions() throws OseeCoreException {

@@ -15,7 +15,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
@@ -23,6 +22,7 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 
 /**
  * @author Angel Avila
@@ -48,9 +48,9 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastor
       "DELETE FROM osee_conflict WHERE dest_gamma_id = ?";
 
    private final Collection<? extends IAttributeType> typesToPurge;
-   private final IdentityService identityService;
+   private final IdentityLocator identityService;
 
-   public PurgeAttributeTypeDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, IdentityService identityService, Collection<? extends IAttributeType> typesToPurge) {
+   public PurgeAttributeTypeDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, IdentityLocator identityService, Collection<? extends IAttributeType> typesToPurge) {
       super(logger, session, databaseService, "Purge Attribute Type");
       this.identityService = identityService;
       this.typesToPurge = typesToPurge;

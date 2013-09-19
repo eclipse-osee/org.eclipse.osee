@@ -16,11 +16,11 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.jdk.core.util.PriorityComparator;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.search.tagger.HasTagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 
@@ -34,14 +34,14 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
    private final Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap;
 
    private final Log logger;
-   private final IdentityService idService;
+   private final IdentityLocator idService;
    private final TagProcessor tagProcessor;
 
-   public SqlHandlerFactoryImpl(Log logger, IdentityService idService, Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {
+   public SqlHandlerFactoryImpl(Log logger, IdentityLocator idService, Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {
       this(logger, idService, null, handleMap);
    }
 
-   public SqlHandlerFactoryImpl(Log logger, IdentityService idService, TagProcessor tagProcessor, Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {
+   public SqlHandlerFactoryImpl(Log logger, IdentityLocator idService, TagProcessor tagProcessor, Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {
       this.logger = logger;
       this.idService = idService;
       this.handleMap = handleMap;

@@ -15,10 +15,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
@@ -44,7 +44,7 @@ public class LoaderSqlHandlerFactoryUtilTest {
 
    // @formatter:off
    @Mock private Log logger;
-   @Mock private IdentityService identityService;
+   @Mock private IdentityLocator identityService;
    // @formatter:on
 
    private SqlHandlerFactory factory;
@@ -80,7 +80,7 @@ public class LoaderSqlHandlerFactoryUtilTest {
       assertHandler(handler, clazz, priority, logger, identityService);
    }
 
-   private static void assertHandler(SqlHandler<?> actual, Class<?> type, SqlHandlerPriority priority, Log logger, IdentityService idService) {
+   private static void assertHandler(SqlHandler<?> actual, Class<?> type, SqlHandlerPriority priority, Log logger, IdentityLocator idService) {
       Assert.assertNotNull(actual);
       Assert.assertEquals(type, actual.getClass());
       Assert.assertEquals(logger, actual.getLogger());

@@ -36,14 +36,13 @@ import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.branch.BranchModule;
 import org.eclipse.osee.orcs.db.internal.loader.DataProxyFactoryProvider;
-import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
 import org.eclipse.osee.orcs.db.internal.loader.LoaderModule;
-import org.eclipse.osee.orcs.db.internal.loader.data.IdFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.QueryModule;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 import org.eclipse.osee.orcs.db.internal.transaction.TxModule;
 import org.eclipse.osee.orcs.db.internal.types.TempCachingServiceFactory;
 import org.eclipse.osee.orcs.db.internal.types.TypesModule;
+import org.eclipse.osee.orcs.db.internal.util.IdentityManagerImpl;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -64,7 +63,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
    private OrcsTypesDataStore typesDataStore;
    private DataModuleFactory dataModuleFactory;
    private QueryModule queryModule;
-   private IdFactory idFactory;
+   private IdentityManager idManager;
    private SqlProvider sqlProvider;
 
    private TempCachingService cacheService;
@@ -115,24 +114,23 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
 
       sqlProvider = createSqlProvider();
 
-      idFactory = new IdFactoryImpl(dbService, cacheService.getBranchCache());
+      idManager = new IdentityManagerImpl(dbService, identityService);
 
-      TypesModule typesModule = new TypesModule(logger, dbService, identityService, resourceManager);
+      TypesModule typesModule = new TypesModule(logger, dbService, idManager, resourceManager);
       typesDataStore = typesModule.createTypesDataStore();
 
-      LoaderModule loaderModule =
-         new LoaderModule(logger, dbService, idFactory, identityService, sqlProvider, proxyProvider);
+      LoaderModule loaderModule = new LoaderModule(logger, dbService, idManager, sqlProvider, proxyProvider);
 
-      queryModule = new QueryModule(logger, executorAdmin, dbService, identityService, sqlProvider);
+      queryModule = new QueryModule(logger, executorAdmin, dbService, idManager, sqlProvider);
       queryModule.startIndexer(resourceManager);
 
       BranchModule branchModule =
-         new BranchModule(logger, dbService, identityService, cacheService, preferences, executorAdmin,
-            resourceManager, modelFactory);
+         new BranchModule(logger, dbService, idManager, cacheService, preferences, executorAdmin, resourceManager,
+            modelFactory);
 
-      TxModule txModule = new TxModule(logger, dbService, identityService, cacheService, modelFactory, idFactory);
+      TxModule txModule = new TxModule(logger, dbService, cacheService, modelFactory, idManager);
 
-      AdminModule adminModule = new AdminModule(logger, dbService, identityService, preferences);
+      AdminModule adminModule = new AdminModule(logger, dbService, idManager, preferences);
 
       dataModuleFactory = new DataModuleFactory(logger, loaderModule, queryModule, branchModule, txModule, adminModule);
    }

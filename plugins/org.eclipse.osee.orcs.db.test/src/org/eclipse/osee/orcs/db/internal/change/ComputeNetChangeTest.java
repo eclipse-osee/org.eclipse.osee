@@ -10,7 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.change;
 
-import static org.eclipse.osee.framework.core.enums.ModificationType.*;
+import static org.eclipse.osee.framework.core.enums.ModificationType.ARTIFACT_DELETED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.INTRODUCED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.MERGED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.MODIFIED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;

@@ -26,6 +26,7 @@ import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.HasLocalId;
+import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
@@ -34,11 +35,11 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
  */
 public class DataFactoryImpl implements DataFactory {
 
-   private final IdFactory idFactory;
+   private final IdentityManager idFactory;
    private final OrcsObjectFactory objectFactory;
    private final ArtifactTypes artifactCache;
 
-   public DataFactoryImpl(IdFactory idFactory, OrcsObjectFactory objectFactory, ArtifactTypes artifactTypes) {
+   public DataFactoryImpl(IdentityManager idFactory, OrcsObjectFactory objectFactory, ArtifactTypes artifactTypes) {
       super();
       this.idFactory = idFactory;
       this.objectFactory = objectFactory;
@@ -57,7 +58,7 @@ public class DataFactoryImpl implements DataFactory {
       Conditions.checkExpressionFailOnTrue(!GUID.isValid(guidToSet),
          "Invalid guid [%s] during artifact creation [type: %s]", guidToSet, token);
 
-      int branchId = idFactory.getBranchId(branch);
+      int branchId = idFactory.getLocalId(branch);
 
       VersionData version = objectFactory.createDefaultVersionData();
       version.setBranchId(branchId);
@@ -111,7 +112,7 @@ public class DataFactoryImpl implements DataFactory {
    @Override
    public RelationData createRelationData(IRelationType relationType, IOseeBranch branch, HasLocalId aArt, HasLocalId bArt, String rationale) throws OseeCoreException {
       VersionData version = objectFactory.createDefaultVersionData();
-      version.setBranchId(idFactory.getBranchId(branch));
+      version.setBranchId(idFactory.getLocalId(branch));
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       int relationId = RelationalConstants.DEFAULT_ITEM_ID;
       return objectFactory.createRelationData(version, relationId, relationType, modType, aArt.getLocalId(),
@@ -135,7 +136,7 @@ public class DataFactoryImpl implements DataFactory {
 
    private void updateDataForCopy(IOseeBranch destination, OrcsData data) throws OseeCoreException {
       VersionData version = data.getVersion();
-      version.setBranchId(idFactory.getBranchId(destination));
+      version.setBranchId(idFactory.getLocalId(destination));
       version.setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
       version.setStripeId(RelationalConstants.TRANSACTION_SENTINEL);
       version.setHistorical(false);
@@ -146,7 +147,7 @@ public class DataFactoryImpl implements DataFactory {
 
    private void updateDataForIntroduce(IOseeBranch destination, OrcsData data) throws OseeCoreException {
       VersionData version = data.getVersion();
-      version.setBranchId(idFactory.getBranchId(destination));
+      version.setBranchId(idFactory.getLocalId(destination));
       version.setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
       version.setStripeId(RelationalConstants.TRANSACTION_SENTINEL);
       version.setHistorical(false);

@@ -18,7 +18,6 @@ import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.ReadableBranch;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -26,6 +25,7 @@ import org.eclipse.osee.orcs.core.ds.HasVersion;
 import org.eclipse.osee.orcs.core.ds.IndexerData;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.DeleteTagSetDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.IndexerDatabaseStatisticsCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.PurgeAllTagsDatabaseCallable;
@@ -42,12 +42,12 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
-   private final IdentityService identityService;
+   private final IdentityLocator identityService;
    private final IndexingTaskConsumer consumer;
 
    private final IndexerCollectorNotifier systemCollector;
 
-   public QueryEngineIndexerImpl(Log logger, IOseeDatabaseService dbService, IdentityService identityService, IndexingTaskConsumer indexingConsumer) {
+   public QueryEngineIndexerImpl(Log logger, IOseeDatabaseService dbService, IdentityLocator identityService, IndexingTaskConsumer indexingConsumer) {
       this.logger = logger;
       this.dbService = dbService;
       this.identityService = identityService;

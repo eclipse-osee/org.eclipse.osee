@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,26 +8,27 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.loader;
+package org.eclipse.osee.orcs.db.internal;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IdFactory {
+public interface IdentityLocator {
 
-   int getBranchId(IOseeBranch branch) throws OseeCoreException;
+   int getLocalId(IOseeBranch branch) throws OseeCoreException;
 
-   int getNextArtifactId() throws OseeCoreException;
+   int parseToLocalId(String value) throws OseeCoreException;
 
-   int getNextAttributeId() throws OseeCoreException;
+   Integer getLocalId(Long universalId) throws OseeCoreException;
 
-   int getNextRelationId() throws OseeCoreException;
+   Long getUniversalId(Integer localId) throws OseeCoreException;
 
-   String getUniqueGuid(String guid) throws OseeCoreException;
+   int getLocalId(Identity<Long> identity) throws OseeCoreException;
 
-   long getNextGammaId() throws OseeCoreException;
+   IOseeBranch getBranch(int branchId) throws OseeCoreException;
 
 }

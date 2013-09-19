@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -34,6 +33,7 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 
 /**
  * @author Roberto E. Escobar
@@ -43,10 +43,10 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
    private static final String LOAD_OSEE_TYPE_DEF_URIS =
       "select attr.uri from osee_branch br, osee_txs txs1, osee_artifact art, osee_attribute attr, osee_txs txs2 where br.branch_guid = ? and txs1.branch_id = br.branch_id and txs1.tx_current = ? and txs1.gamma_id = art.gamma_id and txs2.branch_id = br.branch_id and txs2.tx_current = ? and txs2.gamma_id = attr.gamma_id and art.art_type_id = ? and art.art_id = attr.art_id and attr.attr_type_id = ?";
 
-   private final IdentityService identityService;
+   private final IdentityLocator identityService;
    private final IResourceManager resourceManager;
 
-   public OrcsTypeLoaderCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, IdentityService identityService, IResourceManager resourceManager) {
+   public OrcsTypeLoaderCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, IdentityLocator identityService, IResourceManager resourceManager) {
       super(logger, session, dbService);
       this.identityService = identityService;
       this.resourceManager = resourceManager;

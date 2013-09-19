@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
 
 public final class UnsubscribeTransaction extends DatabaseTxCallable<String> {
@@ -40,12 +40,12 @@ public final class UnsubscribeTransaction extends DatabaseTxCallable<String> {
 
    private int relationId;
    private int currentGammaId;
-   private final IdentityService identityService;
+   private final IdentityLocator identityService;
    private final ArtifactReadable groupArtifact;
    private final ArtifactReadable userArtifact;
    private String completionMethod;
 
-   public UnsubscribeTransaction(Log logger, IOseeDatabaseService databaseService, IdentityService identityService, ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
+   public UnsubscribeTransaction(Log logger, IOseeDatabaseService databaseService, IdentityLocator identityService, ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
       super(logger, databaseService, "Delete Relation");
       this.identityService = identityService;
 
