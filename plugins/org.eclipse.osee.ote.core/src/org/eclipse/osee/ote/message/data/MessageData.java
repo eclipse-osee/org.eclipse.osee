@@ -58,7 +58,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
 
    private static int debugTimeout = Integer.parseInt(System.getProperty("ote.time.debug.timeout", "250000"));
    private static boolean debugTime = Boolean.parseBoolean(System.getProperty("ote.time.debug", "false"));
-   
+
    private DataWriter writer;
    private DataReader reader;
    private DataSample myDataSample;
@@ -75,6 +75,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    private long sentCount;
    private int currentLength;
    private boolean isScheduled = false;
+   private long time = 0;
 
    public MessageData(String typeName, String name, int dataByteSize, int offset, DataType memType) {
       mem = new MemoryResource(new byte[dataByteSize], offset, dataByteSize - offset);
@@ -161,7 +162,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
     */
    public Collection<Message> getMessages() {
       return messages.fillCollection(new ArrayList<Message>());
-//      return new ArrayList<Message>(messages);
+      //      return new ArrayList<Message>(messages);
    }
 
    /**
@@ -197,10 +198,10 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    public abstract void visit(IMessageDataVisitor visitor);
 
    public void dispose() {
-      
+
       try{
          Message[] msgs = messages.get();
-         for (int i = 0; i < msgs.length; i++){ 
+         for (int i = 0; i < msgs.length; i++){
             Message local = msgs[i];
             if(local != null){
                local.removePreMessageDisposeListener(disposeListener);
@@ -233,8 +234,8 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
          mem.copyData(destOffset, data, length);
       } catch (MessageSystemException ex) {
          OseeLog.logf(MessageSystemTestEnvironment.class, Level.INFO, ex,
-            "increasing backing store for %s to %d. prev length: %d, recv cnt: %d", getName(), destOffset + length,
-            mem.getData().length, this.activityCount);
+               "increasing backing store for %s to %d. prev length: %d, recv cnt: %d", getName(), destOffset + length,
+               mem.getData().length, this.activityCount);
          setNewBackingBuffer(data, destOffset, length);
       }
    }
@@ -257,8 +258,8 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
             }
          } catch (Throwable t) {
             final String msg =
-               String.format("Problem during listener notification for message %s. Data=%s, MemType=%s",
-                  message.getName(), this.getName(), this.getType());
+                  String.format("Problem during listener notification for message %s. Data=%s, MemType=%s",
+                        message.getName(), this.getName(), this.getType());
             OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, msg, t);
          }
       }
@@ -403,8 +404,8 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       } catch (MessageSystemException ex) {
          OseeLog.logf(MessageSystemTestEnvironment.class, Level.WARNING,
 
-         "Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(),
-            this.mem.getData().length, input.length);
+               "Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(),
+               this.mem.getData().length, input.length);
          setNewBackingBuffer(input);
       }
    }
@@ -415,8 +416,8 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
          copyData(buffer);
       } catch (Exception e) {
          OseeLog.logf(MessageSystemTestEnvironment.class, Level.SEVERE,
-            "Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(),
-            this.mem.getData().length, buffer.limit());
+               "Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(),
+               this.mem.getData().length, buffer.limit());
          setNewBackingBuffer(buffer);
       }
    }
@@ -431,8 +432,8 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
          copyData(0, input, 0, length);
       } catch (MessageSystemException ex) {
          OseeLog.logf(MessageSystemTestEnvironment.class, Level.SEVERE,
-            "Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(),
-            this.mem.getData().length, length);
+               "Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(),
+               this.mem.getData().length, length);
          setNewBackingBuffer(input);
       }
    }
@@ -442,8 +443,8 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
          copyData(destOffset, input, srcOffset, length);
       } catch (MessageSystemException ex) {
          OseeLog.logf(MessageSystemTestEnvironment.class, Level.SEVERE,
-            "Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(),
-            this.mem.getData().length, length);
+               "Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(),
+               this.mem.getData().length, length);
          setNewBackingBuffer(input);
       }
    }
@@ -453,8 +454,8 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
          copyData(0, input, length);
       } catch (MessageSystemException ex) {
          OseeLog.logf(MessageSystemTestEnvironment.class, Level.SEVERE,
-            "Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(),
-            this.mem.getData().length, length);
+               "Copy Failed: setting new backing buffer.  msg[%s], oldSize[%d] newSize[%d]", this.getName(),
+               this.mem.getData().length, length);
          setNewBackingBuffer(input);
       }
    }
@@ -560,7 +561,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
          return false;
       } else {
          throw new MessageSystemException(
-            "This is an illegal message it has neither a reader or a writer [" + this.getName() + "].", Level.SEVERE);
+               "This is an illegal message it has neither a reader or a writer [" + this.getName() + "].", Level.SEVERE);
       }
    }
 
@@ -672,5 +673,17 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    public void zeroize() {
       final byte[] data = toByteArray();
       Arrays.fill(data, getMsgHeader().getHeaderSize(), data.length, (byte) 0);
+   }
+
+   /**
+    * A time value associated with this message.
+    * The time value will have different meanings or may not be used depending on the context and usage.
+    */
+   public long getTime() {
+      return time;
+   }
+
+   public void setTime(long time) {
+      this.time = time;
    }
 }

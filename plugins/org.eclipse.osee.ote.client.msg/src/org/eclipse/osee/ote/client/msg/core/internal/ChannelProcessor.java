@@ -110,11 +110,12 @@ final public class ChannelProcessor {
          int remaining = buffer.remaining();
          if (data.length < remaining) {
             OseeLog.logf(Activator.class, Level.WARNING,
-               "Message [%s] changed it's backing data size from [%d] to [%d].", instance.getMessage().getName(),
-               data.length, remaining);
+                  "Message [%s] changed it's backing data size from [%d] to [%d].", instance.getMessage().getName(),
+                  data.length, remaining);
             data = new byte[remaining];
             buffer.get(data, 0, remaining);
             msgData.setNewBackingBuffer(data);
+            msgData.setTime(time);
             msgData.incrementActivityCount();
             msgData.notifyListeners();
             return;
