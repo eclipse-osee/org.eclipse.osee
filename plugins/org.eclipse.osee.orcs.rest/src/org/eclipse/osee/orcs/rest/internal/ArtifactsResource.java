@@ -60,7 +60,8 @@ public class ArtifactsResource {
    public String getAsHtml() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
       QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory(null);
-      ResultSet<ArtifactReadable> results = factory.fromBranch(branch).andNameEquals(DEFAULT_HIERARCHY_ROOT_NAME).getResults();
+      ResultSet<ArtifactReadable> results =
+         factory.fromBranch(branch).andNameEquals(DEFAULT_HIERARCHY_ROOT_NAME).getResults();
       ArtifactReadable rootArtifact = results.getExactlyOne();
 
       ResultSet<ArtifactReadable> arts = rootArtifact.getChildren();

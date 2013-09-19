@@ -6,14 +6,24 @@ Bundle-Version: 0.15.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/*.xml
 Import-Package: com.sun.jersey.spi.container.servlet,
+ com.sun.jersey.api.core,
+ com.sun.jersey.api.wadl,
+ com.sun.jersey.api.wadl.config,
+ com.sun.jersey.server.wadl,
+ com.sun.jersey.server.wadl.generators,
+ com.sun.jersey.server.wadl.generators.resourcedoc,
+ com.sun.jersey.server.wadl.generators.resourcedoc.model,
+ com.sun.jersey.server.wadl.generators.resourcedoc.xhtml,
  javax.servlet;version="2.5.0",
  javax.servlet.http;version="2.5.0",
+ javax.ws.rs,
  javax.ws.rs.core,
+ javax.ws.rs.ext,
  org.eclipse.osee.event,
+ org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.logger,
  org.osgi.framework,
  org.osgi.service.http
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.rest.admin
-Require-Bundle: javax.servlet;bundle-version="2.5.0",
- com.sun.jersey;bundle-version="1.8.0"
+Require-Bundle: org.eclipse.core.runtime

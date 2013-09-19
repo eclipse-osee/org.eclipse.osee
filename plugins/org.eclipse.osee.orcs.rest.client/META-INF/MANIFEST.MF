@@ -6,7 +6,12 @@ Bundle-Version: 0.15.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
-Import-Package: javax.inject,
+Import-Package: com.sun.jersey.client.apache,
+ com.sun.jersey.client.apache.config,
+ com.sun.jersey.api.client,
+ com.sun.jersey.api.client.config,
+ com.sun.jersey.core.impl.provider.entity,
+ javax.inject,
  javax.ws.rs,
  javax.ws.rs.core,
  org.eclipse.core.net.proxy,
@@ -15,13 +20,12 @@ Import-Package: javax.inject,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.services,
  org.eclipse.osee.framework.jdk.core.type,
- org.eclipse.osee.framework.jdk.core.util
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.orcs.rest.model,
+ org.eclipse.osee.orcs.rest.model.search
 Export-Package: org.eclipse.osee.orcs.rest.client
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
- org.eclipse.osee.orcs.rest.model;visibility:=reexport,
- com.sun.jersey;bundle-version="1.8.0";visibility:=reexport,
- com.sun.jersey.client.apache;bundle-version="1.8.0";visibility:=reexport,
  javax.servlet;visibility:=reexport,
  com.google.inject,
  org.apache.commons.httpclient;visibility:=reexport,

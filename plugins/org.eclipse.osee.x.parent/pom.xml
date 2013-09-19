@@ -21,5 +21,4 @@
 		<module>../../plugins/org.eclipse.osee.orcs.parent</module>
 		<module>../../plugins/org.eclipse.osee.x.server.parent</module>
 	</modules>
-	
 </project>

@@ -11,33 +11,28 @@
 package org.eclipse.osee.rest.admin.internal;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import javax.servlet.http.HttpServlet;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.rest.admin.RestAdminConstants;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
-import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 /**
  * @author Roberto E. Escobar
  */
 public class RestServletManager {
 
-   private final Map<String, ServletContainer> registeredServlets = new ConcurrentHashMap<String, ServletContainer>();
    private final List<ServiceReference<Application>> pending =
       new CopyOnWriteArrayList<ServiceReference<Application>>();
 
    private HttpService httpService;
    private Log logger;
    private EventService eventService;
+
    private Thread thread;
+
+   private volatile RestServletRegistry registry;
 
    public void setHttpService(HttpService httpService) {
       this.httpService = httpService;
@@ -51,28 +46,10 @@ public class RestServletManager {
       this.eventService = eventService;
    }
 
-   private HttpService getHttpService() {
-      return httpService;
-   }
-
-   private Log getLogger() {
-      return logger;
-   }
-
-   private EventService getEventService() {
-      return eventService;
-   }
-
    public void start() throws Exception {
-      thread = new Thread("Register Pending Rest Services") {
-         @Override
-         public void run() {
-            for (ServiceReference<Application> reference : pending) {
-               register(reference);
-            }
-            pending.clear();
-         }
-      };
+      RestComponentFactory factory = new RestComponentFactory();
+      registry = new RestServletRegistry(logger, factory, httpService, eventService);
+      thread = createRegistrationThread(registry);
       thread.start();
    }
 
@@ -80,15 +57,20 @@ public class RestServletManager {
       if (thread != null && thread.isAlive()) {
          thread.interrupt();
       }
+      registry = null;
    }
 
    private boolean isReady() {
-      return httpService != null && logger != null;
+      return registry != null;
    }
 
    public void addApplication(ServiceReference<Application> reference) {
       if (isReady()) {
-         register(reference);
+         try {
+            registry.register(reference);
+         } catch (Exception ex) {
+            throw new RuntimeException(ex);
+         }
       } else {
          pending.add(reference);
       }
@@ -96,61 +78,25 @@ public class RestServletManager {
 
    public void removeApplication(ServiceReference<Application> reference) {
       if (isReady()) {
-         unregister(reference);
+         registry.deregister(reference);
       } else {
          pending.remove(reference);
       }
    }
 
-   private void unregister(ServiceReference<Application> reference) {
-      String componentName = RestServiceUtils.getComponentName(reference);
-      String contextName = RestServiceUtils.getContextName(reference);
-
-      getLogger().debug("De-registering servlet for '%s' with alias '%s'\n", componentName, contextName);
-      HttpServlet servlet = registeredServlets.remove(componentName);
-      if (servlet != null) {
-         getHttpService().unregister(contextName);
-         servlet.destroy();
-      }
-      notifyDeRegistration(componentName, contextName);
+   private Thread createRegistrationThread(final RestServletRegistry registry) {
+      return new Thread("Register Pending Rest Services") {
+         @Override
+         public void run() {
+            for (ServiceReference<Application> reference : pending) {
+               try {
+                  registry.register(reference);
+               } catch (Exception ex) {
+                  throw new RuntimeException(ex);
+               }
+            }
+            pending.clear();
+         }
+      };
    }
-
-   private void register(ServiceReference<Application> reference) {
-      String componentName = RestServiceUtils.getComponentName(reference);
-      String contextName = RestServiceUtils.getContextName(reference);
-
-      try {
-         ServletContainer servlet = createContainer(reference);
-         HttpContext httpContext = createHttpContext(reference);
-         getHttpService().registerServlet(contextName, servlet, null, httpContext);
-         registeredServlets.put(componentName, servlet);
-         notifyRegistration(componentName, contextName);
-         getLogger().debug("Registered servlet for '%s' with alias '%s'\n", componentName, contextName);
-      } catch (Exception ex) {
-         throw new RuntimeException(ex);
-      }
-   }
-
-   private HttpContext createHttpContext(ServiceReference<Application> reference) {
-      Bundle bundle = reference.getBundle();
-      return new BundleHttpContext(bundle);
-   }
-
-   private ServletContainer createContainer(ServiceReference<Application> reference) throws Exception {
-      Bundle bundle = reference.getBundle();
-      Application application = bundle.getBundleContext().getService(reference);
-      RestServiceUtils.checkValid(application);
-      return new ServletContainer(application);
-   }
-
-   private void notifyRegistration(String componentName, String contextName) {
-      Map<String, String> data = RestServiceUtils.toMap(componentName, contextName);
-      getEventService().postEvent(RestAdminConstants.REST_REGISTRATION_EVENT, data);
-   }
-
-   private void notifyDeRegistration(String componentName, String contextName) {
-      Map<String, String> data = RestServiceUtils.toMap(componentName, contextName);
-      getEventService().postEvent(RestAdminConstants.REST_DEREGISTRATION_EVENT, data);
-   }
-
 }

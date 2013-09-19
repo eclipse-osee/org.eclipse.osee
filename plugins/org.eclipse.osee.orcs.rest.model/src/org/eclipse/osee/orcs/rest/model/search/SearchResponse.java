@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author John R. Misinco
  * @author Roberto E. Escobar
  */
-@XmlRootElement
+@XmlRootElement(name = "SearchResponse")
 public class SearchResponse implements SearchResult {
 
    private int total;

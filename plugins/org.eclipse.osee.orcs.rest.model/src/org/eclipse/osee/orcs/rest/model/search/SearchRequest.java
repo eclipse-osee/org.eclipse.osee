@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author John R. Misinco
  * @author Roberto E. Escobar
  */
-@XmlRootElement
+@XmlRootElement(name = "SearchRequest")
 public class SearchRequest implements SearchParameters {
 
    private String branchUuid;

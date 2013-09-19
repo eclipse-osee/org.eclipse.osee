@@ -23,7 +23,7 @@
 
 		<tycho-version>0.18.0</tycho-version>
 		<tycho-extras-version>0.18.0</tycho-extras-version>
-		
+
 		<maven-antrun-version>1.6</maven-antrun-version>
 		<ant-contrib-version>1.0b3</ant-contrib-version>
 		<jsch-version>0.1.42</jsch-version>
@@ -34,9 +34,16 @@
 		<findbugs-version>2.3.2</findbugs-version>
 		<pmd-version>2.5</pmd-version>
 		<checkstyle-version>2.6</checkstyle-version>
-		<javadoc-version>2.8</javadoc-version>
+		<javadoc-version>2.9.1</javadoc-version>
+		<jaxdoclet-version>0.9.0</jaxdoclet-version>
+		<jersey-wadlgen-version>1.8</jersey-wadlgen-version>
+		<jersey-version>1.17.1</jersey-version>
+		<jaxb2-maven-version>1.5</jaxb2-maven-version>
+		<jaxrs-version>1.1.1</jaxrs-version>
 		<build-helper-maven-plugin-version>1.7</build-helper-maven-plugin-version>
 		<maven-resources-version>2.5</maven-resources-version>
+		<maven-clean-version>2.5</maven-clean-version>
+		<xerces-version>2.6.1</xerces-version>
 
 		<platform-version-name>kepler</platform-version-name>
 		<orbit-version>R20130517111416</orbit-version>
@@ -49,6 +56,7 @@
 		<itemis-site>http://download.itemis.com/updates/releases/${xtext-version}</itemis-site>
 
 		<osee-create-help-docs>true</osee-create-help-docs>
+		<rest-output-directory>${project.build.directory}/../REST-INF</rest-output-directory>
 	</properties>
 
 	<licenses>
@@ -237,7 +245,6 @@
 				</executions>
 			</plugin>
 		</plugins>
-		
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -322,24 +329,6 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-surefire</artifactId>
-				<version>${tycho-version}</version>
-				<configuration>
-					<aggregate>true</aggregate>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${javadoc-version}</version>
-			</plugin>
-		</plugins>
-	</reporting>
 
 	<profiles>
 		<profile>
