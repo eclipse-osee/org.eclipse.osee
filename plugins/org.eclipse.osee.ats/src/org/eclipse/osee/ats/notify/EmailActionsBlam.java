@@ -100,6 +100,8 @@ public class EmailActionsBlam extends AbstractBlam {
          }
       }
       oseeNotificationManager.sendNotifications(data.getSubject(), data.getBody());
+      int sent = oseeNotificationManager.getNotificationEvents().size();
+      logf("Sent %s notifications.", sent);
    }
 
    private void addNotification(EmailActionsData data, final AbstractWorkflowArtifact awa, OseeNotificationManager oseeNotificationManager) throws OseeCoreException {
