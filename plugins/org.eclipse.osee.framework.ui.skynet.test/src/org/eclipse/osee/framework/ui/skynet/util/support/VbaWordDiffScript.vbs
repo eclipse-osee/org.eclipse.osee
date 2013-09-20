@@ -7,16 +7,18 @@ Dim authorName
 Dim detectFormatChanges
 Dim ver1
 Dim ver2
+dim wdGranularityWordLevel
 Dim wdCompareTargetSelectedDiff
 Dim wdCompareTargetSelectedMerge
 Dim wdFormattingFromCurrent
 Dim wdFormatXML
 Dim wdDoNotSaveChanges
 Dim mainDoc
+dim newDoc
 
 Public Sub main()
- wdCompareTargetSelectedDiff = 0
-    wdCompareTargetSelectedMerge = 1
+ wdCompareTargetSelectedDiff = 2
+    wdGranularityWordLevel = 1
     wdDoNotSaveChanges = 0
     wdFormattingFromCurrent = 3
     wdFormatXML = 11
@@ -39,10 +41,9 @@ WScript.sleep(250)
     compareDoc.AcceptAllRevisions
     compareDoc.TrackRevisions = false
     compareDoc.Save
-    compareDoc.Close
-
-
-    baseDoc.Compare ver2, authorName, wdCompareTargetSelectedDiff, detectFormatChanges, False, False
+    set newDoc = oWord.CompareDocuments (baseDoc, compareDoc, wdCompareTargetSelectedDiff, wdGranularityWordLevel, true, true, true, true, true, true, true, false, true, true, authorName) 
+    compareDoc.close 
+    newDoc.Activate
     set compareDoc = oWord.ActiveDocument
 
     set mainDoc = compareDoc

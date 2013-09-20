@@ -38,19 +38,17 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
 
    private static final String OSEE_WORD_DIFF_SLEEP_MS = "osee.word.diff.sleep.ms";
 
-   //   private final static String header =
-   //      "Option Explicit\n\nDim oWord\nDim baseDoc\nDim compareDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim wdDoNotSaveChanges\nDim mainDoc\n\nPublic Sub main()\n On error resume next\n    wdCompareTargetSelectedDiff = 0\n    wdCompareTargetSelectedMerge = 1\n    wdDoNotSaveChanges = 0\n    wdFormattingFromCurrent = 3\n    wdFormatXML = 11\n\n    authorName = \"OSEE Doc compare\"\n    set oWord = WScript.CreateObject(\"Word.Application\")\n    oWord.Visible = False\n    detectFormatChanges = ";
-
    private final static String header_begin =
-      "Option Explicit\n\nDim oWord\nDim baseDoc\nDim compareDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim wdDoNotSaveChanges\nDim mainDoc\n\nPublic Sub main()\n ";
+      "Option Explicit\n\nDim oWord\nDim baseDoc\nDim compareDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\ndim wdGranularityWordLevel\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim wdDoNotSaveChanges\nDim mainDoc\ndim newDoc\n\nPublic Sub main()\n ";
 
    private final static String header_end =
-      "wdCompareTargetSelectedDiff = 0\n    wdCompareTargetSelectedMerge = 1\n    wdDoNotSaveChanges = 0\n    wdFormattingFromCurrent = 3\n    wdFormatXML = 11\n\n    authorName = \"OSEE Doc compare\"\n    set oWord = WScript.CreateObject(\"Word.Application\")\n    oWord.Visible = False\n    detectFormatChanges = ";
+      "wdCompareTargetSelectedDiff = 2\n    wdGranularityWordLevel = 1\n    wdDoNotSaveChanges = 0\n    wdFormattingFromCurrent = 3\n    wdFormatXML = 11\n\n    authorName = \"OSEE Doc compare\"\n    set oWord = WScript.CreateObject(\"Word.Application\")\n    oWord.Visible = False\n    detectFormatChanges = ";
 
    private static final String Skip_Errors = "On error resume next\n ";
 
    private final static String comparisonCommand =
-      "    baseDoc.Compare ver2, authorName, wdCompareTargetSelectedDiff, detectFormatChanges, False, False\n    set compareDoc = oWord.ActiveDocument\n\n";
+   // The true/false flags define what to compare: Formats, Case, Whitespace, Tables, Headers, Footers, TextBox, Field values, Comments 
+      "    set newDoc = oWord.CompareDocuments (baseDoc, compareDoc, wdCompareTargetSelectedDiff, wdGranularityWordLevel, true, true, true, true, true, true, true, false, true, true, authorName) \n    compareDoc.close \n    newDoc.Activate\n    set compareDoc = oWord.ActiveDocument\n\n";
    private final static String comparisonCommandFirst =
       "    set mainDoc = compareDoc\n    baseDoc.close\n    set baseDoc = Nothing\n";
 
@@ -61,10 +59,10 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       "    mainDoc.Range(mainDoc.Range.End-1, mainDoc.Range.End-1).FormattedText =  compareDoc.Range.FormattedText\n\n    baseDoc.close wdDoNotSaveChanges\n    set baseDoc = Nothing\n\n    set compareDoc = Nothing\n\n";
 
    private final static String mergeCommand =
-      "    baseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n    oWord.ActiveDocument.SaveAs %s, wdFormatXML, , , False\n\n";
+      "    compareDoc.close \n    baseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n    oWord.ActiveDocument.SaveAs %s, wdFormatXML, , , False\n\n";
 
    private final static String altMergeCommand =
-      "    baseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n    set compareDoc = oWord.ActiveDocument\n\n";
+      "    compareDoc.close \n    baseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n    set compareDoc = oWord.ActiveDocument\n\n";
 
    private final boolean merge;
    private final boolean show;
@@ -156,7 +154,6 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          appendable.append("    compareDoc.AcceptAllRevisions\n");
          appendable.append("    compareDoc.TrackRevisions = false\n");
          appendable.append("    compareDoc.Save\n");
-         appendable.append("    compareDoc.Close\n\n\n");
 
          boolean mergeFromCompare = compareData.isMerge(entry.getKey());
          if (merge || mergeFromCompare) {
