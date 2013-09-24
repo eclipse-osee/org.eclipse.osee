@@ -908,6 +908,18 @@
       </enabledWhen>
    </handler>
    <handler
+         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.HtmlPreviewEditorHandler"
+         commandId="org.eclipse.osee.framework.ui.skynet.htmlprevieweditor.command">
+      <enabledWhen>
+         <with
+               variable="selection">
+            <count
+                  value="+">
+            </count>
+         </with>
+      </enabledWhen>
+   </handler>
+   <handler
          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PlainTextPreviewEditorHandler"
          commandId="org.eclipse.osee.framework.ui.skynet.previewplaintexteditor.command">
       <enabledWhen>
@@ -1218,6 +1230,10 @@
    <command
          id="org.eclipse.osee.framework.ui.skynet.previewplaintexteditor.command"
          name="Preview Plain Text Editor">
+   </command>
+   <command
+         id="org.eclipse.osee.framework.ui.skynet.htmlprevieweditor.command"
+         name="HTML Preview">
    </command>
    <command
          id="org.eclipse.osee.framework.ui.skynet.nativeprevieweditor.command"

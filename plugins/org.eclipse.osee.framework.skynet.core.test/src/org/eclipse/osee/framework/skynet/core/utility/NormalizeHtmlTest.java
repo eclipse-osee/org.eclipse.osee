@@ -30,15 +30,22 @@ public class NormalizeHtmlTest {
 
    @Test
    public void test() throws Exception {
-      String input = getResource(TEST_DOC);
+      String rawInput = getResource(TEST_DOC);
       String expected = getResource(CONVERTED_HTML);
 
-      input = NormalizeHtml.convertToNormalizedHTML(input);
+      String input = NormalizeHtml.convertToNormalizedHTML(rawInput);
       input = bodyOnly(input);
       expected = bodyOnly(expected);
       input = input.replaceAll("\r", "");
       expected = expected.replaceAll("\r", "");
       Assert.assertEquals("Converted HTML does not equal expected", expected, input);
+
+      input = rawInput.replaceAll("BODY", "body");
+      input = bodyOnly(input);
+      input = NormalizeHtml.wrapAndNormalizeHTML(input, false, false, false);
+      input = bodyOnly(input);
+      input = input.replaceAll("\r", "");
+      Assert.assertEquals("Converted body only HTML does not equal expected", expected, input);
    }
 
    private String getResource(String resource) throws IOException {

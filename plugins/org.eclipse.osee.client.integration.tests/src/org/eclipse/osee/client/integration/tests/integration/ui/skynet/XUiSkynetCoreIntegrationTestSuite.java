@@ -35,7 +35,8 @@ import org.junit.runners.Suite;
    WordTemplateRendererTest.class,
    WordTrackedChangesTest.class,
    FrameworkImageTest.class,
-   OseeEmailTest.class})
+   OseeEmailTest.class,
+   HtmlRendererTest.class})
 public class XUiSkynetCoreIntegrationTestSuite {
    // Test Suite
 }

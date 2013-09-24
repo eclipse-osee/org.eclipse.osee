@@ -75,6 +75,9 @@ public final class NormalizeHtml {
    private static final String NON_BREAK_WORD_JOINER = String.valueOf('\u2060');
    private static final String NON_BREAK_ZERO_WIDTH = String.valueOf('\uFEFF');
    private static ArrayList<String> allowedAttributes = null;
+   private static final String HTMLHEAD =
+      "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"><html><body>";
+   private static final String HTMLTAIL = "</body></html>";
 
    private NormalizeHtml() {
       // Utility Class
@@ -90,6 +93,18 @@ public final class NormalizeHtml {
       map.put(new Integer(28), "xx-large;");
       map.put(new Integer(Integer.MAX_VALUE), "300%;");
       return map;
+   }
+
+   /**
+    * Takes a string containing only the HTML body (without the body tags) and wraps it with correct HTML tags and
+    * normalizes it
+    * 
+    * @parm inputHTML bosy of HTML without <body> </body> tags
+    * @return wraped and normalized HTML
+    */
+   public static String wrapAndNormalizeHTML(String htmlBody, boolean removeInitialStyle, boolean removeEmptyTags, boolean removeHeaderFooter) {
+      htmlBody = HTMLHEAD + htmlBody + HTMLTAIL;
+      return convertToNormalizedHTML(htmlBody, removeInitialStyle, removeEmptyTags, removeHeaderFooter);
    }
 
    /**
