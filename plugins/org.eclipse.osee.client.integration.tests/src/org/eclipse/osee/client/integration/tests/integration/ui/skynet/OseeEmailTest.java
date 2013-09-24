@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.test.production;
+package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.junit.Assert.assertFalse;
 import java.util.Date;

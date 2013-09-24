@@ -8,18 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet;
+package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
-import org.eclipse.osee.framework.ui.skynet.test.production.FrameworkImageTest;
-import org.eclipse.osee.framework.ui.skynet.test.production.OseeEmailTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({FrameworkImageTest.class, OseeEmailTest.class})
 /**
  * @author Donald G. Dunne
  */
-public class FrameworkUi_Production_Suite {
-   // test provided above
+public class FrameworkImageTest extends ImageManagerTest {
+
+   public FrameworkImageTest() {
+      super("FrameworkImage", FrameworkImage.values());
+   }
+
 }

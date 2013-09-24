@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.test.production;
+package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCacheQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -45,6 +44,7 @@ public abstract class ImageManagerTest {
    private final KeyedImage[] oseeImages;
    private final String imageClassName;
    private static SevereLoggingMonitor monitorLog;
+   private final static String PLUGIN_ID = "org.eclipse.osee.client.integration.tests";
 
    public ImageManagerTest(String imageClassName, KeyedImage[] oseeImages) {
       this.imageClassName = imageClassName;
@@ -113,7 +113,7 @@ public abstract class ImageManagerTest {
    }
 
    public static ByteArrayInputStream getByteArrayInputStream(String imageFilename) throws Exception {
-      URL imageFile = Platform.getBundle(Activator.PLUGIN_ID).getResource("images/" + imageFilename);
+      URL imageFile = Platform.getBundle(PLUGIN_ID).getResource("images/" + imageFilename);
       if (imageFile == null) {
          throw new OseeArgumentException("Invalid image filename.");
       }
@@ -131,12 +131,12 @@ public abstract class ImageManagerTest {
 
       @Override
       public ImageDescriptor createImageDescriptor() {
-         return ImageManager.createImageDescriptor(Activator.PLUGIN_ID, "images", fileName);
+         return ImageManager.createImageDescriptor(PLUGIN_ID, "images", fileName);
       }
 
       @Override
       public String getImageKey() {
-         return Activator.PLUGIN_ID + "." + fileName;
+         return PLUGIN_ID + "." + fileName;
       }
    }
 
