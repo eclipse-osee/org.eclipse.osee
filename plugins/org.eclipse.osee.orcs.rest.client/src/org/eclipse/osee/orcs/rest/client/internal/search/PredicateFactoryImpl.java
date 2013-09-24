@@ -21,8 +21,12 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.core.enums.CaseType;
+import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
 import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
+import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.SearchFlag;
@@ -99,9 +103,18 @@ public class PredicateFactoryImpl implements PredicateFactory {
    public Predicate createAttributeTypeSearch(Collection<? extends IAttributeType> attributeTypes, Operator operator, Collection<String> values) {
       List<String> typeIds = getLongIds(attributeTypes);
       List<String> valuesList = new LinkedList<String>(values);
-      SearchOp op = convertToSearchOp(operator);
-      return new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeIds, op, emptySearchFlagList, Strings.EMPTY_STRING,
-         valuesList);
+      if (operator == Operator.EQUAL) {
+         RestSearchOptions option =
+            convertToSearchFlags(CaseType.MATCH_CASE, TokenOrderType.MATCH_ORDER,
+               MatchTokenCountType.MATCH_TOKEN_COUNT, TokenDelimiterMatch.EXACT);
+         return new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeIds, SearchOp.EQUALS, option.getFlags(),
+            option.getDelimiter(), valuesList);
+      } else {
+         SearchOp op = convertToSearchOp(operator);
+         return new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeIds, op, emptySearchFlagList, Strings.EMPTY_STRING,
+            valuesList);
+      }
+
    }
 
    @Override
@@ -160,7 +173,7 @@ public class PredicateFactoryImpl implements PredicateFactory {
       return toReturn;
    }
 
-   private RestSearchOptions convertToSearchFlags(QueryOption[] options) {
+   private RestSearchOptions convertToSearchFlags(QueryOption... options) {
       OptionConverter visitor = new OptionConverter();
       visitor.accept(options);
       return visitor;
