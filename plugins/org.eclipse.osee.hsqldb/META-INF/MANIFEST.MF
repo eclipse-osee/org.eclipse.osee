@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hsqldb Db Connector Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.hsqldb
-Bundle-Version: 0.14.0.qualifier
+Bundle-Version: 0.15.0.qualifier
 Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,

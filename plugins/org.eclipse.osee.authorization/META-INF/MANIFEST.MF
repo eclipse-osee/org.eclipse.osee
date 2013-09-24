@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Authorization
 Bundle-SymbolicName: org.eclipse.osee.authorization
-Bundle-Version: 0.14.0.qualifier
+Bundle-Version: 0.15.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.osgi.framework;version="1.3.0"
