@@ -82,36 +82,4 @@ public class Pair<T, K> implements Serializable {
       }
       return result;
    }
-
-   /**
-    * @use getFirst()
-    */
-   @Deprecated
-   public T getKey() {
-      return first;
-   }
-
-   /**
-    * @use getSecond()
-    */
-   @Deprecated
-   public K getValue() {
-      return second;
-   }
-
-   /**
-    * @use setFirst(T key)
-    */
-   @Deprecated
-   public void setKey(T key) {
-      this.first = key;
-   }
-
-   /**
-    * @use setSecond(T key)
-    */
-   @Deprecated
-   public void setValue(K value) {
-      this.second = value;
-   }
 }
