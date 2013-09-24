@@ -161,6 +161,20 @@ public class SMAPromptChangeStatusTest {
       assertTrue(result.getText().contains("Task work must be done in"));
    }
 
+   @Test
+   public void test05ChangeStatusPassesIfTaskNotUsingRelatedToState() throws Exception {
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
+      Collection<TaskArtifact> tasks =
+         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_RelState", 2, "", transaction);
+      transaction.execute();
+
+      assertTrue(tasks.size() == 2);
+
+      Result result = SMAPromptChangeStatus.isValidToChangeStatus(tasks);
+      assertTrue(result.isTrue());
+   }
+
    private static void validateSMAs(Collection<? extends AbstractWorkflowArtifact> awas, String stateName, int totalPercent, double hoursSpent) throws Exception {
       for (AbstractWorkflowArtifact awa : awas) {
          assertEquals("Current State wrong for " + awa.getHumanReadableId(), awa.getStateMgr().getCurrentStateName(),

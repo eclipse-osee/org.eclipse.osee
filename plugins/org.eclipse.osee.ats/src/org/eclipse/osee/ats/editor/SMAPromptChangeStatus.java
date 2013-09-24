@@ -59,7 +59,7 @@ public class SMAPromptChangeStatus {
          // If task status is being changed, make sure tasks belong to current state
          if (awa.isOfType(AtsArtifactTypes.Task)) {
             TaskArtifact taskArt = (TaskArtifact) awa;
-            if (!taskArt.isRelatedToParentWorkflowCurrentState()) {
+            if (taskArt.isRelatedToUsed() && !taskArt.isRelatedToParentWorkflowCurrentState()) {
                return new Result(
                   String.format(
                      "Task work must be done in \"Related to State\" of parent workflow for Task titled: \"%s\".\n\n" +

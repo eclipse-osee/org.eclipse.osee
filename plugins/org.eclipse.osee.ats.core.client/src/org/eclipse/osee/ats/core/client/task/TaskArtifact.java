@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -51,6 +52,10 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
    public boolean isRelatedToParentWorkflowCurrentState() throws OseeCoreException {
       return getSoleAttributeValueAsString(AtsAttributeTypes.RelatedToState, "").equals(
          getParentAWA().getStateMgr().getCurrentStateName());
+   }
+
+   public boolean isRelatedToUsed() throws OseeCoreException {
+      return Strings.isValid(getSoleAttributeValueAsString(AtsAttributeTypes.RelatedToState, ""));
    }
 
    @Override
@@ -73,7 +78,9 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
             return new Result("Transition Error %s", results.toString());
          }
       } else if (fromState.getName().equals(TeamState.Cancelled.getName()) && isCancelled()) {
-         Result result = TaskManager.transitionToInWork(this, AtsClientService.get().getUserAdmin().getCurrentUser(), 99, 0, transaction);
+         Result result =
+            TaskManager.transitionToInWork(this, AtsClientService.get().getUserAdmin().getCurrentUser(), 99, 0,
+               transaction);
          return result;
       }
       return Result.TrueResult;
