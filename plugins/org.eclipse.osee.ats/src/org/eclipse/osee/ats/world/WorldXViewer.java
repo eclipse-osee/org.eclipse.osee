@@ -75,7 +75,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -126,13 +125,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          if (e.keyCode == SWT.F5) {
             try {
                List<Artifact> artifacts = getSelectedArtifacts();
-               for (IRenderer renderer : RendererManager.getCommonRenderers(artifacts, PresentationType.F5_DIFF)) {
-                  for (Artifact art : artifacts) {
-                     if (renderer.getApplicabilityRating(PresentationType.F5_DIFF, art) == IRenderer.SPECIALIZED_KEY_MATCH) {
-                        RendererManager.open(art, PresentationType.F5_DIFF);
-                     }
-                  }
-               }
+               RendererManager.open(artifacts, PresentationType.F5_DIFF);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
