@@ -9,6 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 package org.eclipse.osee.ote.help.ui.util;
+
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URL;
@@ -22,7 +23,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-
 
 /**
  * @author Angel Avila

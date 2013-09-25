@@ -6,6 +6,5 @@ Bundle-Version: 0.14.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.help
-Import-Package: org.eclipse.osee.framework.ui.plugin.util
+Import-Package: org.eclipse.osee.framework.core.data
 Export-Package: org.eclipse.osee.coverage.help.ui

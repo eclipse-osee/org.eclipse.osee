@@ -41,13 +41,11 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.FilteredTree;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
  * @author Donald G. Dunne
  */
 public class XNavigateComposite extends Composite {
-   private static PatternFilter patternFilter;
 
    public static enum TableLoadOption {
       None,
@@ -72,13 +70,6 @@ public class XNavigateComposite extends Composite {
 
       setLayout(new GridLayout());
       createControl();
-   }
-
-   private PatternFilter getPatternFilter() {
-      if (patternFilter == null) {
-         patternFilter = new XNavigateViewFilter();
-      }
-      return patternFilter;
    }
 
    private void createControl() {

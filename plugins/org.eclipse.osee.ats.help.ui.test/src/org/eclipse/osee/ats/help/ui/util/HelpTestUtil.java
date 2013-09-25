@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.help.ui.util;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.net.URL;

@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.help.ui;
 
-import org.eclipse.osee.framework.ui.plugin.util.HelpContext;
-import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
+import static org.eclipse.osee.framework.core.data.HelpContextRegistry.asContext;
+import org.eclipse.osee.framework.core.data.HelpContext;
 
 /**
  * @author Roberto E. Escobar
@@ -38,6 +38,6 @@ public class OteHelpContext {
    public static final HelpContext MUX_VIEW = toContext("mux_view");
 
    private static HelpContext toContext(String id) {
-      return HelpUtil.asContext(PLUGIN_ID, id);
+      return asContext(PLUGIN_ID, id);
    }
 }

@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.plugin.util;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import static org.eclipse.osee.framework.core.data.HelpContextRegistry.asContext;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.osee.framework.core.data.HelpContext;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -20,8 +20,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.help.IWorkbenchHelpSystem;
 
 public class HelpUtil {
-
-   private static final Map<String, HelpContext> contexts = new ConcurrentHashMap<String, HelpContext>();
 
    public static void setHelp(Control control, HelpContext context) {
       getHelpSystem().setHelp(control, context.asReference());
@@ -77,13 +75,4 @@ public class HelpUtil {
       return PlatformUI.getWorkbench().getHelpSystem();
    }
 
-   public static HelpContext asContext(String pluginId, String name) {
-      String key = HelpContext.asReference(pluginId, name);
-      HelpContext context = contexts.get(key);
-      if (context == null) {
-         context = new HelpContext(pluginId, name);
-         contexts.put(context.asReference(), context);
-      }
-      return context;
-   }
 }

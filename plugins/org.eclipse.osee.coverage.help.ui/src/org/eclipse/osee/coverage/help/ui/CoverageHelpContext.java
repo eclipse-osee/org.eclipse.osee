@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.help.ui;
 
-import org.eclipse.osee.framework.ui.plugin.util.HelpContext;
-import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
+import static org.eclipse.osee.framework.core.data.HelpContextRegistry.asContext;
+import org.eclipse.osee.framework.core.data.HelpContext;
 
 /**
  * @author Roberto E. Escobar
@@ -35,6 +35,6 @@ public class CoverageHelpContext {
    public static final HelpContext EDITOR__WORK_PRODUCT_TAB = toContext("coverage_editor_work_product_tab");
 
    private static HelpContext toContext(String id) {
-      return HelpUtil.asContext(PLUGIN_ID, id);
+      return asContext(PLUGIN_ID, id);
    }
 }

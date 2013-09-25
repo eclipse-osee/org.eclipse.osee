@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.help.ui;
 
-import org.eclipse.osee.framework.ui.plugin.util.HelpContext;
-import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
+import static org.eclipse.osee.framework.core.data.HelpContextRegistry.asContext;
+import org.eclipse.osee.framework.core.data.HelpContext;
 
 /**
  * @author Roberto E. Escobar
@@ -55,6 +55,6 @@ public final class OseeHelpContext {
    public static final HelpContext RESULTS_VIEW = toContext("xviewer_xresult_view");
 
    private static HelpContext toContext(String id) {
-      return HelpUtil.asContext(PLUGIN_ID, id);
+      return asContext(PLUGIN_ID, id);
    }
 }
