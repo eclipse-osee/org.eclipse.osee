@@ -165,13 +165,14 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    }
 
    private void writeTraceCountsSheet() throws IOException, OseeCoreException {
-      excelWriter.startSheet("trace counts", 3);
-      excelWriter.writeRow("SRS Requirement from Database", "Trace Count", "Partitions");
-      excelWriter.writeRow("% requirement coverage", null, "=1-COUNTIF(C2,&quot;0&quot;)/COUNTA(C2)");
+      excelWriter.startSheet("trace counts", 4);
+      excelWriter.writeRow("SRS Requirement from Database", "Trace Count", "Partitions", "Artifact Type");
+      excelWriter.writeRow("% requirement coverage", null, "=1-COUNTIF(C2,&quot;0&quot;)/COUNTA(C2)", null);
 
       for (Artifact artifact : requirementData.getDirectRequirements()) {
          excelWriter.writeRow(artifact.getName(), String.valueOf(reqsTraceCounts.get(artifact)),
-            Collections.toString(",", artifact.getAttributesToStringList(CoreAttributeTypes.Partition)));
+            Collections.toString(",", artifact.getAttributesToStringList(CoreAttributeTypes.Partition)),
+            artifact.getArtifactType());
       }
 
       excelWriter.endSheet();
