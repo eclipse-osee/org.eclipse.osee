@@ -36,7 +36,7 @@
 		<property name="osee.app.server.connectionFile" value="${xserver-data}/test.osee.performance.db.connection.xml" />
 		<property name="osee.app.server.connectionId" value="hsql" />
 		<property name="osee.application.server.data" value="${xserver-project}/target/server/demo/binary_data" />
-		
+
 		<echo message="Server Connection File: [${osee.app.server.connectionFile}]" />
 		<echo message="Server Data Directory:  [${osee.application.server.data}]" />
 
@@ -63,10 +63,10 @@
 
 		<mkdir dir="${xserver-data}" />
 
-		<forget>
+		<forget daemon="false">
 			<echo message="Launching Osee Application Server..." />
 			<!-- Test Should Complete in 30 mins (timeout vale) - currently, they only take ~13 mins -->
-			<java taskname="int-test-server" failonerror="true" maxmemory="1024m" timeout="1800000" jar="${launcherJarPath}" fork="true">
+			<java taskname="int-test-server" failonerror="true" maxmemory="1024m" timeout="1800000" jar="${launcherJarPath}" fork="yes">
 				<classpath>
 					<fileset dir="${xserver-home}/plugins" includes="org.eclipse.equinox.launcher_*.jar" />
 					<pathelement location="${xserver-home}/plugins" />
@@ -98,7 +98,7 @@
 		<echo message="Osee Application Server Telnet Port: [${xserver-telnet-port}]" />
 		<telnet server="localhost" port="${xserver-telnet-port}" initialCR="yes" timeout="1000">
 			<read>osgi&gt;</read>
-			<write>close</write>
+			<write>shutdown</write>
 		</telnet>
 		<sleep milliseconds="500" />
 

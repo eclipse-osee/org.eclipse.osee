@@ -59,7 +59,7 @@
 
 		<mkdir dir="${xserver-data}" />
 
-		<forget>
+		<forget daemon="false">
 			<echo message="Launching Osee Application Server..." />
 			<!-- Test Should Complete in 30 mins (timeout vale) - currently, they only take ~13 mins -->
 			<java taskname="int-test-server" failonerror="true" maxmemory="1024m" timeout="1800000" jar="${launcherJarPath}" fork="true">
@@ -95,7 +95,7 @@
 		<echo message="Osee Application Server Telnet Port: [${xserver-telnet-port}]" />
 		<telnet server="localhost" port="${xserver-telnet-port}" initialCR="yes" timeout="1000">
 			<read>osgi&gt;</read>
-			<write>close</write>
+			<write>shutdown</write>
 		</telnet>
 		<sleep milliseconds="500" />
 
