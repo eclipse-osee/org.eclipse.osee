@@ -9,7 +9,7 @@
 		<version>0.14.0-SNAPSHOT</version>
 		<relativePath>../../plugins/org.eclipse.osee.ide.parent</relativePath>
 	</parent>
-	
+
 	<groupId>org.eclipse.osee</groupId>
 	<artifactId>org.eclipse.osee.ote.parent</artifactId>
 	<packaging>pom</packaging>
@@ -27,9 +27,9 @@
 		<module>../../plugins/org.eclipse.osee.ote.master.rest.model</module>
 		<module>../../features/org.eclipse.osee.ote.server.external.feature</module>
 		<module>../../features/org.eclipse.osee.ote.master.feature</module>
-		
+
 		<module>../../plugins/org.eclipse.osee.ote.master.product</module>
-		
+
 		<module>../../plugins/org.eclipse.osee.ote.test</module>
 		<module>../../plugins/org.eclipse.osee.ote.rest</module>
 		<module>../../plugins/org.eclipse.osee.ote.rest.client</module>
@@ -52,8 +52,7 @@
 		<module>../../plugins/org.eclipse.osee.ote.server</module>
 
 		<module>../../plugins/org.eclipse.osee.ote.help.ui</module>
-		<module>../../plugins/org.eclipse.osee.ote.help.ui.test</module>
-		
+
 		<module>../../plugins/org.eclipse.osee.ote.ui</module>
 		<!-- <module>../../plugins/org.eclipse.osee.ote.ui.host.cmd</module> -->
 		<module>../../plugins/org.eclipse.osee.ote.ui.markers</module>
@@ -72,4 +71,17 @@
 		<module>../../plugins/org.eclipse.osee.ote.p2</module>
 	</modules>
 
+	<profiles>
+		<profile>
+			<id>ote-help-test</id>
+			<activation>
+				<property>
+					<name>!skip-help-tests</name>
+				</property>
+			</activation>
+			<modules>
+				<module>../../plugins/org.eclipse.osee.ote.help.ui.test</module>
+			</modules>
+		</profile>
+	</profiles>
 </project>

@@ -35,10 +35,8 @@
 		<module>../../plugins/org.eclipse.osee.framework.messaging.event.res.test</module>
 
 		<module>../../plugins/org.eclipse.osee.framework.dev.help.ui</module>
-		<module>../../plugins/org.eclipse.osee.framework.dev.help.ui.test</module>
-				
+
 		<module>../../plugins/org.eclipse.osee.framework.help.ui</module>
-		<module>../../plugins/org.eclipse.osee.framework.help.ui.test</module>
 
 		<module>../../plugins/org.eclipse.osee.framework.skynet.core</module>
 		<module>../../plugins/org.eclipse.osee.framework.skynet.core.test</module>
@@ -85,4 +83,18 @@
 
 	</modules>
 
+	<profiles>
+		<profile>
+			<id>osee-client-help-test</id>
+			<activation>
+				<property>
+					<name>!skip-help-tests</name>
+				</property>
+			</activation>
+			<modules>
+				<module>../../plugins/org.eclipse.osee.framework.dev.help.ui.test</module>
+				<module>../../plugins/org.eclipse.osee.framework.help.ui.test</module>
+			</modules>
+		</profile>
+	</profiles>
 </project>

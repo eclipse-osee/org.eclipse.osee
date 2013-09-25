@@ -17,11 +17,10 @@
 	<version>0.14.0-SNAPSHOT</version>
 
 	<modules>
-	   <module>../../plugins/org.eclipse.osee.support.test.util</module>
-	
+		<module>../../plugins/org.eclipse.osee.support.test.util</module>
+
 		<module>../../plugins/org.eclipse.osee.ats.mocks</module>
 		<module>../../plugins/org.eclipse.osee.ats.help.ui</module>
-		<module>../../plugins/org.eclipse.osee.ats.help.ui.test</module>
 		<module>../../plugins/org.eclipse.osee.ats</module>
 		<module>../../plugins/org.eclipse.osee.ats.test</module>
 		<module>../../plugins/org.eclipse.osee.ats.core</module>
@@ -49,4 +48,17 @@
 		<module>../../plugins/org.eclipse.osee.ats.p2</module>
 	</modules>
 
+	<profiles>
+		<profile>
+			<id>ats-client-help-test</id>
+			<activation>
+				<property>
+					<name>!skip-help-tests</name>
+				</property>
+			</activation>
+			<modules>
+				<module>../../plugins/org.eclipse.osee.ats.help.ui.test</module>
+			</modules>
+		</profile>
+	</profiles>
 </project>

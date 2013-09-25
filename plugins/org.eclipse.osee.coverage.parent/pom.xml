@@ -21,7 +21,6 @@
 		<module>../../plugins/org.eclipse.osee.coverage.test</module>
 
 		<module>../../plugins/org.eclipse.osee.coverage.help.ui</module>
-		<module>../../plugins/org.eclipse.osee.coverage.help.ui.test</module>
 
 		<module>../../features/org.eclipse.osee.coverage.feature</module>
 
@@ -34,4 +33,17 @@
 		<module>../../plugins/org.eclipse.osee.coverage.p2</module>
 	</modules>
 
+	<profiles>
+		<profile>
+			<id>coverage-help-test</id>
+			<activation>
+				<property>
+					<name>!skip-help-tests</name>
+				</property>
+			</activation>
+			<modules>
+				<module>../../plugins/org.eclipse.osee.coverage.help.ui.test</module>
+			</modules>
+		</profile>
+	</profiles>
 </project>
