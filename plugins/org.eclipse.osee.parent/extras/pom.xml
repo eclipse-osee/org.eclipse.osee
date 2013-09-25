@@ -1,0 +1,129 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.eclipse.osee</groupId>
+	<artifactId>org.eclipse.osee.extras</artifactId>
+	<packaging>pom</packaging>
+	<name>OSEE EXTRAS</name>
+	<version>0.15.0-SNAPSHOT</version>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<workspace-root-path>${project.build.directory}/../../../../..</workspace-root-path>
+
+		<maven-antrun-version>1.6</maven-antrun-version>
+		<ant-contrib-version>1.0b3</ant-contrib-version>
+		<jsch-version>0.1.42</jsch-version>
+		<ant-jsch-version>1.8.2</ant-jsch-version>
+		<ant-commons-net-version>1.7.0</ant-commons-net-version>
+		<commons-net-version>1.4.1</commons-net-version>
+
+		<eclipse-ip-site-version>1.0.0.v201308231617-DEV</eclipse-ip-site-version>
+		<external-eclipse-ip-site>http://osee-external.googlecode.com/files/org.eclipse.ip.p2-${eclipse-ip-site-version}.zip</external-eclipse-ip-site>
+		<skip-download-if-exists>true</skip-download-if-exists>
+	</properties>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>${maven-antrun-version}</version>
+				<executions>
+					<execution>
+						<id>build-osee-server</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<property name="plugin_classpath" refid="maven.plugin.classpath" />
+								<taskdef resource="net/sf/antcontrib/antlib.xml">
+									<classpath>
+										<pathelement path="${classpath}" />
+										<pathelement path="${plugin_classpath}" />
+									</classpath>
+								</taskdef>
+								<property environment="env" />
+								<if>
+									<isset property="http.proxyHost" />
+									<then>
+										<echo message="Set Proxy: [${http.proxyHost}:${http.proxyPort}]" />
+										<echo message="Exclude ProxyHosts: [${http.nonProxyHosts}]" />
+										<setproxy nonproxyhosts="${http.nonProxyHosts}"
+											proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+									</then>
+								</if>
+
+								<property name="ip-site-base-repo-path"
+									value="${workspace-root-path}/org.eclipse.ip/org.eclipse.ip.p2/target" />
+								<property name="ip-site-repo-path" value="${ip-site-base-repo-path}/repository" />
+								<property name="ip-site-zip-path"
+									value="${ip-site-base-repo-path}/org.eclipse.ip.p2-${eclipse-ip-site-version}.zip" />
+
+								<echo
+									message="Setting up Eclipse IP Repo from: [${external-eclipse-ip-site}]" />
+								<echo
+									message="                            to: [${ip-site-base-repo-path}]" />
+
+								<delete dir="${ip-site-repo-path}" />
+								<mkdir dir="${ip-site-repo-path}" />
+								<get src="${external-eclipse-ip-site}" dest="${ip-site-zip-path}"
+									skipexisting="${skip-download-if-exists}" />
+								<unzip src="${ip-site-zip-path}" dest="${ip-site-repo-path}"
+									overwrite="true" />
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>${maven-antrun-version}</version>
+					<dependencies>
+						<dependency>
+							<groupId>ant-contrib</groupId>
+							<artifactId>ant-contrib</artifactId>
+							<version>${ant-contrib-version}</version>
+							<exclusions>
+								<exclusion>
+									<groupId>ant</groupId>
+									<artifactId>ant</artifactId>
+								</exclusion>
+							</exclusions>
+						</dependency>
+						<dependency>
+							<groupId>com.jcraft</groupId>
+							<artifactId>jsch</artifactId>
+							<version>${jsch-version}</version>
+						</dependency>
+						<dependency>
+							<groupId>org.apache.ant</groupId>
+							<artifactId>ant-jsch</artifactId>
+							<version>${ant-jsch-version}</version>
+						</dependency>
+						<dependency>
+							<groupId>commons-net</groupId>
+							<artifactId>commons-net</artifactId>
+							<version>${commons-net-version}</version>
+						</dependency>
+						<dependency>
+							<groupId>org.apache.ant</groupId>
+							<artifactId>ant-commons-net</artifactId>
+							<version>${ant-commons-net-version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>
