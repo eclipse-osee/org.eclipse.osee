@@ -48,11 +48,21 @@ public final class ImageManager {
    }
 
    public synchronized static Image getProgramImage(String extension) {
+      if (isInTest()) {
+         return getImage(MISSING);
+      }
       return getImage(new ProgramImage(extension));
    }
 
    public synchronized static ImageDescriptor getProgramImageDescriptor(String extension) {
+      if (isInTest()) {
+         return getImageDescriptor(MISSING);
+      }
       return getImageDescriptor(new ProgramImage(extension));
+   }
+
+   private static boolean isInTest() {
+      return Boolean.valueOf(System.getProperty("osee.isInTest"));
    }
 
    public synchronized static Image getImage(KeyedImage imageEnum) {
