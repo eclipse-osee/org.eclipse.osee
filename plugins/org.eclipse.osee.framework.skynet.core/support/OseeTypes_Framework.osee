@@ -906,7 +906,7 @@ oseeEnumType "enum.req.subsystem" {
 	entryGuid "AHjfd+vzwB5D1DjSPWgA"
 	entry "Robot_Systems_Management"
 	entryGuid "AHjfd+zuqmUAQPB6MbwA"
-	entry "Chasis"
+	entry "Chassis"
 	entryGuid "AHjfd+3D_2WDdzxL9hwA"
 	entry "Cognitive_Decision_Aiding"
 	entryGuid "AHjfd+7AwSFsRzmC84QA"

@@ -20,7 +20,7 @@ public enum DemoSubsystems {
    Robot_API,
    Robot_Survivability_Equipment,
    Robot_Systems_Management,
-   Chasis,
+   Chassis,
    Cognitive_Decision_Aiding,
    Communications,
    Data_Management,
