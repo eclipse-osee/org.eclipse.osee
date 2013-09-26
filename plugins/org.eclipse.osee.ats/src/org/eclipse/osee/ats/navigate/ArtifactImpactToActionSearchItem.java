@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -129,7 +130,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             monitor.subTask(str);
             int y = 1;
             rd.addRaw(AHTML.beginMultiColumnTable(95, 1));
-            rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Status", "HRID", "Title"}));
+            rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Status", "ID", "Title"}));
 
             // Check for changes on working branches
             boolean workingBranchesFound = false;
@@ -165,11 +166,12 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                      Artifact assocArt =
                         ArtifactQuery.getArtifactFromId(transactionId.getCommit(), BranchManager.getCommonBranch());
                      if (assocArt.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+                        TeamWorkFlowArtifact twf = (TeamWorkFlowArtifact) assocArt;
                         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
                            assocArt.getArtifactTypeName(),
                            "Committed",
-                           assocArt.getHumanReadableId(),
-                           assocArt.getName()}));
+                           twf.getAtsId(),
+                           twf.getName()}));
                         committedChanges = true;
                      }
                   }

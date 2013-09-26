@@ -20,14 +20,12 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactProvider;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G. Dunne
@@ -39,9 +37,7 @@ public class AtsWorkItemArtifactProviderImpl implements IAtsWorkItemArtifactProv
       if (atsObject instanceof Artifact) {
          return (Artifact) atsObject;
       }
-      Artifact artifact =
-         ArtifactQuery.getArtifactFromId(atsObject.getGuid(), AtsUtilCore.getAtsBranchToken(),
-            DeletionFlag.EXCLUDE_DELETED);
+      Artifact artifact = AtsArtifactQuery.getArtifactFromId(atsObject.getGuid());
       return artifact;
    }
 

@@ -40,7 +40,6 @@ import org.junit.runners.Suite;
    CrossBranchRelationLinkTest.class,
    CsvArtifactTest.class,
    DoorsArtifactExtractorTest.class,
-   DuplicateHridTest.class,
    FrameworkEventToRemoteEventListenerTest.class,
    LoadDeletedRelationTest.class,
    MergeManagerTest.class,

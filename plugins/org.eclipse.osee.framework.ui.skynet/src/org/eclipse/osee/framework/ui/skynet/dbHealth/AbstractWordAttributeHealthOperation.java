@@ -67,10 +67,10 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
       setItemsToFix(attributesWithErrors.size());
 
       appendToDetails(AHTML.beginMultiColumnTable(100, 1));
-      appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "GAMMA ID", "URI"}));
+      appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"GUID", "GAMMA ID", "URI"}));
       for (AttrData attrData : attributesWithErrors) {
          appendToDetails(AHTML.addRowMultiColumnTable(new String[] {
-            attrData.getHrid(),
+            attrData.getGuid(),
             attrData.getGammaId(),
             attrData.getUri()}));
       }
@@ -104,7 +104,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
 
    private final class FindAllWordAttributesNeedingFix extends AbstractOperation {
       private static final String GET_ATTRS =
-         "SELECT DISTINCT(art.human_readable_id), attr.gamma_id, attr.uri FROM osee_attribute attr, osee_artifact art WHERE attr.attr_type_id = ? AND attr.art_id = art.art_id AND attr.uri is not null AND attr.uri != '' order by attr.gamma_id asc"; // and t1.attr_id = 1155574";
+         "SELECT DISTINCT(art.guid), attr.gamma_id, attr.uri FROM osee_attribute attr, osee_artifact art WHERE attr.attr_type_id = ? AND attr.art_id = art.art_id AND attr.uri is not null AND attr.uri != '' order by attr.gamma_id asc"; // and t1.attr_id = 1155574";
 
       private final List<AttrData> attributesWithErrors;
 
@@ -130,7 +130,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
             for (int index = 0; index < attrDatas.size(); index++) {
                checkForCancelledStatus(monitor);
                AttrData attrData = attrDatas.get(index);
-               monitor.setTaskName(String.format("[%s of %s] - hrid[%s]", index, totalAttrs, attrData.getHrid()));
+               monitor.setTaskName(String.format("[%s of %s] - guids[%s]", index, totalAttrs, attrData.getGuid()));
                checkAttributeData(attrData);
                int size = attributesWithErrors.size();
                if (size > 0 && size % 3000 == 0) {
@@ -161,7 +161,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
                checkForCancelledStatus(monitor);
                String uri = chStmt.getString("uri");
                if (Strings.isValid(uri)) {
-                  attrData.add(new AttrData(chStmt.getString("gamma_Id"), chStmt.getString("human_readable_id"), uri));
+                  attrData.add(new AttrData(chStmt.getString("gamma_Id"), chStmt.getString("guid"), uri));
                }
             }
          } finally {
@@ -297,14 +297,14 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
 
    protected final static class AttrData {
       private final String gammaId;
-      private final String hrid;
+      private final String guid;
       private final String uri;
       private Resource resource;
 
-      public AttrData(String gammaId, String hrid, String uri) {
+      public AttrData(String gammaId, String guid, String uri) {
          super();
          this.gammaId = gammaId;
-         this.hrid = hrid;
+         this.guid = guid;
          this.uri = uri;
       }
 
@@ -320,8 +320,8 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
          return gammaId;
       }
 
-      public String getHrid() {
-         return hrid;
+      public String getGuid() {
+         return guid;
       }
 
       public String getUri() {

@@ -4,6 +4,6 @@
       xwidgetType="XAttributeTypeMultiChoiceSelect" />
     <XWidget displayName="Branch"
       xwidgetType="XBranchSelectWidget" />
-   <XWidget displayName="List of Artifact HRIDS (comma separated)"
+   <XWidget displayName="List of Artifact GUIDs (comma separated)"
       xwidgetType="XTextDam" fill="Vertically" />
 </xWidgets>

@@ -142,7 +142,7 @@ public class ExtendedStatusReportJob extends Job {
       for (Columns col : Columns.values()) {
          // System.out.println("col *" + col + "*");
          if (col == Columns.ActionId) {
-            values.add(sma.getParentActionArtifact().getHumanReadableId());
+            values.add(sma.getParentActionArtifact().getAtsId());
          } else if (col == Columns.TeamId) {
             handleTeamIdColumn(sma, values);
          } else if (col == Columns.TaskId) {
@@ -186,7 +186,7 @@ public class ExtendedStatusReportJob extends Job {
 
    private static void handleTaskIdColumn(AbstractWorkflowArtifact awa, List<String> values) {
       if (awa.isOfType(AtsArtifactTypes.Task)) {
-         values.add(((TaskArtifact) awa).getHumanReadableId());
+         values.add(((TaskArtifact) awa).getAtsId());
       } else {
          values.add(".");
       }
@@ -194,7 +194,7 @@ public class ExtendedStatusReportJob extends Job {
 
    private static void handleTeamIdColumn(AbstractWorkflowArtifact sma, List<String> values) {
       if (sma.isTeamWorkflow()) {
-         values.add(sma.getHumanReadableId());
+         values.add(sma.getAtsId());
       } else {
          values.add(".");
       }
@@ -202,7 +202,7 @@ public class ExtendedStatusReportJob extends Job {
 
    private static void handleOriginatorColumn(AbstractWorkflowArtifact sma, List<String> values) throws OseeCoreException {
       if (sma.getCreatedBy() == null) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't retrieve orig for " + sma.getHumanReadableId());
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't retrieve orig for " + sma.getAtsId());
          values.add(".");
       } else {
          values.add(sma.getCreatedBy().getName());

@@ -21,11 +21,10 @@ import org.junit.Test;
 public class AtsObjectTest {
 
    @Test
-   public void testGetNameGuidHrid() {
-      AtsObject obj = new AtsObject("hello", "GUID", "HRID");
+   public void testGetNameGuidId() {
+      AtsObject obj = new AtsObject("hello", "GUID");
       Assert.assertEquals("hello", obj.getName());
       Assert.assertEquals("GUID", obj.getGuid());
-      Assert.assertEquals("HRID", obj.getHumanReadableId());
 
       obj = new AtsObject("hello");
       Assert.assertEquals("hello", obj.getName());
@@ -42,16 +41,16 @@ public class AtsObjectTest {
 
    @Test
    public void testEqualsObject() {
-      AtsObject obj = new AtsObject("hello", "GUID", "HRID");
+      AtsObject obj = new AtsObject("hello", "GUID");
       Assert.assertTrue(obj.equals(obj));
 
-      AtsObject obj2 = new AtsObject("hello", "GUID", "HRID");
+      AtsObject obj2 = new AtsObject("hello", "GUID");
 
       Assert.assertTrue(obj.equals(obj2));
       Assert.assertFalse(obj.equals(null));
       Assert.assertFalse(obj.equals("str"));
 
-      AtsObject obj3 = new AtsObject("hello", "", "HRID");
+      AtsObject obj3 = new AtsObject("hello", "");
       Assert.assertFalse(obj.equals(obj3));
       Assert.assertFalse(obj3.equals(obj));
 
@@ -59,10 +58,10 @@ public class AtsObjectTest {
 
    @Test
    public void testHashCode() {
-      AtsObject obj = new AtsObject("hello", "GUID", "HRID");
+      AtsObject obj = new AtsObject("hello", "GUID");
       Assert.assertEquals(2199208, obj.hashCode());
 
-      obj = new AtsObject("hello", "", "HRID");
+      obj = new AtsObject("hello", "");
       Assert.assertEquals(31, obj.hashCode());
    }
 

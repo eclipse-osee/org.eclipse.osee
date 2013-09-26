@@ -25,7 +25,9 @@ import org.eclipse.osee.ats.actions.ModifyActionableItemAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
+import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
+import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.StateManager;
@@ -167,10 +169,10 @@ public final class AtsUtil {
       new ModifyActionableItemAction(teamArt).run();
    }
 
-   public static void openArtifact(String guidOrHrid, Integer branchId, OseeCmEditor view) {
+   public static void openArtifact(String guid, Integer branchId, OseeCmEditor view) {
       try {
          Branch branch = BranchManager.getBranch(branchId);
-         Artifact artifact = ArtifactQuery.getArtifactFromId(guidOrHrid, branch);
+         Artifact artifact = ArtifactQuery.getArtifactFromId(guid, branch);
          openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -183,7 +185,7 @@ public final class AtsUtil {
    public static void openArtifact(String guid, OseeCmEditor editor) {
       Artifact artifact = null;
       try {
-         artifact = ArtifactQuery.getArtifactFromId(guid, getAtsBranch());
+         artifact = AtsArtifactQuery.getArtifactFromId(guid);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return;
@@ -222,13 +224,14 @@ public final class AtsUtil {
    public static void openATSAction(final Artifact art, final AtsOpenOption atsOpenOption) {
       try {
          if (art.isOfType(AtsArtifactTypes.Action)) {
+            ActionArtifact action = (ActionArtifact) art;
             Collection<TeamWorkFlowArtifact> teams = ActionManager.getTeams(art);
             if (atsOpenOption == AtsOpenOption.OpenAll) {
                for (TeamWorkFlowArtifact team : teams) {
                   SMAEditor.editArtifact(team);
                }
             } else if (atsOpenOption == AtsOpenOption.AtsWorld) {
-               WorldEditor.open(new WorldEditorSimpleProvider("Action " + art.getHumanReadableId(), Arrays.asList(art)));
+               WorldEditor.open(new WorldEditorSimpleProvider("Action " + action.getAtsId(), Arrays.asList(art)));
             } else if (atsOpenOption == AtsOpenOption.OpenOneOrPopupSelect) {
                if (teams.size() == 1) {
                   SMAEditor.editArtifact(teams.iterator().next());

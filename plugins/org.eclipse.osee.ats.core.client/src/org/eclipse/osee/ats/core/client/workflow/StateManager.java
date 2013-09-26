@@ -183,7 +183,7 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
    public static void logMetrics(AbstractWorkflowArtifact sma, String percent, String hours, IStateToken state, IAtsUser user, Date date) throws OseeCoreException {
       IAtsLogItem logItem =
          AtsCore.getLogFactory().newLogItem(LogType.Metrics, date, user, state.getName(),
-            String.format("Percent %s Hours %s", percent, hours), sma.getHumanReadableId());
+            String.format("Percent %s Hours %s", percent, hours), sma.getAtsId());
       sma.getLog().addLogItem(logItem);
    }
 
@@ -709,7 +709,7 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
 
    @Override
    public String getId() {
-      return awa.getHumanReadableId();
+      return awa.getAtsId();
    }
 
 }

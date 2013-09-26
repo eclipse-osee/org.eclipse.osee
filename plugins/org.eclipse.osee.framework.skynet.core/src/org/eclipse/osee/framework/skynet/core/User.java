@@ -36,8 +36,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 public class User extends Artifact {
    private PropertyStore userSettings;
 
-   public User(String guid, String humanReadableId, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
-      super(guid, humanReadableId, branch, artifactType);
+   public User(String guid, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
+      super(guid, branch, artifactType);
    }
 
    public void setFieldsBasedon(User u) throws Exception {

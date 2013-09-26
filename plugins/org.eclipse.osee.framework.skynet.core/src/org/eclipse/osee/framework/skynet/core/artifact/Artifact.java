@@ -101,7 +101,6 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    private final Set<DefaultBasicGuidRelationReorder> relationOrderRecords =
       new HashSet<DefaultBasicGuidRelationReorder>();
    private final IOseeBranch branch;
-   private final String humanReadableId;
    private ArtifactType artifactType;
    private int transactionId = TRANSACTION_SENTINEL;
    private int artId;
@@ -113,12 +112,11 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    private EditState objectEditState;
    private boolean useBackingData;
 
-   public Artifact(String guid, String humanReadableId, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
+   public Artifact(String guid, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
       super(GUID.checkOrCreate(guid), "");
       objectEditState = EditState.NO_CHANGE;
       internalSetModType(ModificationType.NEW, false);
 
-      this.humanReadableId = humanReadableId;
       this.branch = branch;
       this.artifactType = ArtifactTypeManager.getType(artifactType);
    }
@@ -259,10 +257,10 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    }
 
    /*
-    * Provide easy way to display/report [hrid][name]
+    * Provide easy way to display/report [guid][name]
     */
    public final String toStringWithId() {
-      return String.format("[%s][%s]", getHumanReadableId(), getName());
+      return String.format("[%s][%s]", getGuid(), getName());
    }
 
    // TODO should not return null but currently application code expects it to
@@ -277,7 +275,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       if (parentCount == 1) {
          toReturn = artifacts.iterator().next();
       } else if (parentCount > 1) {
-         throw new MultipleArtifactsExist("artifact [%s] has %d parents", humanReadableId, parentCount);
+         throw new MultipleArtifactsExist("artifact [%s] has %d parents", getGuid(), parentCount);
       }
       return toReturn;
    }
@@ -321,7 +319,7 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    public final boolean hasParent() throws OseeCoreException {
       int parentCount = getRelatedArtifactsUnSorted(CoreRelationTypes.Default_Hierarchical__Parent).size();
       if (parentCount > 1) {
-         throw new MultipleArtifactsExist("artifact [%s] has %d parents", humanReadableId, parentCount);
+         throw new MultipleArtifactsExist("artifact [%s] has %d parents", getGuid(), parentCount);
       }
       return parentCount == 1;
    }
@@ -1189,28 +1187,6 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
    }
 
    /**
-    * Returns all of the descendants through the primary decomposition tree that have a particular human readable id.
-    * This will not return the called upon node if the name matches since it can not be a descendant of itself.
-    * 
-    * @param humanReadableId The human readable id text to match against.
-    * @param caseSensitive Whether to use case sensitive matching.
-    * @return <code>Collection</code> of <code>Artifact</code>'s that match.
-    */
-   public final Collection<Artifact> getDescendants(String humanReadableId, boolean caseSensitive) throws OseeCoreException {
-      Collection<Artifact> descendants = new LinkedList<Artifact>();
-
-      for (Artifact child : getChildren()) {
-         if (caseSensitive && child.getName().equals(humanReadableId) || !caseSensitive && child.getName().equalsIgnoreCase(
-            humanReadableId)) {
-            descendants.add(child);
-         }
-         descendants.addAll(child.getDescendants(humanReadableId, caseSensitive));
-      }
-
-      return descendants;
-   }
-
-   /**
     * Starting from this artifact, walks down the child hierarchy based on the list of child names provided and returns
     * the child of the last name provided. ArtifactDoesNotExist exception is thrown ff any child along the path does not
     * exist.
@@ -1372,10 +1348,6 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       return linksLoaded;
    }
 
-   public final String getHumanReadableId() {
-      return humanReadableId;
-   }
-
    /**
     * @return Returns the descriptor.
     */
@@ -1478,8 +1450,8 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
 
    Artifact introduceShallowArtifact(IOseeBranch destinationBranch) throws OseeCoreException {
       Artifact shallowArt =
-         ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(artId, getGuid(), humanReadableId,
-            artifactType, gammaId, destinationBranch, modType);
+         ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(artId, getGuid(), artifactType, gammaId,
+            destinationBranch, modType);
       return shallowArt;
    }
 

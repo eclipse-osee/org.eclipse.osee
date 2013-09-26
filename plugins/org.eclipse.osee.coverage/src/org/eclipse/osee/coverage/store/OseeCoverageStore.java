@@ -53,7 +53,7 @@ public abstract class OseeCoverageStore extends CoverageStore {
             // do nothing
          }
          if (artifact == null && create) {
-            artifact = ArtifactTypeManager.addArtifact(artifactType, branch, coverage.getGuid(), null);
+            artifact = ArtifactTypeManager.addArtifact(artifactType, branch, null, coverage.getGuid());
          }
       }
       return artifact;

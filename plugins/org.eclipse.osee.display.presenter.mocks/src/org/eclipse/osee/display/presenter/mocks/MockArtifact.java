@@ -117,11 +117,6 @@ public class MockArtifact implements ArtifactReadable {
    }
 
    @Override
-   public String getHumanReadableId() {
-      return null;
-   }
-
-   @Override
    public int getTransaction() {
       return 0;
    }

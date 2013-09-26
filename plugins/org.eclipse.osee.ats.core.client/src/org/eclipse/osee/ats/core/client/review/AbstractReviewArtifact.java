@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
@@ -44,8 +45,8 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    private ActionableItemManager actionableItemsDam;
    private Boolean standAlone = null;
 
-   public AbstractReviewArtifact(String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      super(guid, humanReadableId, branch, artifactType);
+   public AbstractReviewArtifact(String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+      super(guid, branch, artifactType);
       actionableItemsDam = new ActionableItemManager(this);
    }
 
@@ -112,7 +113,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    }
 
    @Override
-   public Artifact getParentActionArtifact() throws OseeCoreException {
+   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
       if (isStandAloneReview()) {
          return null;
       }
@@ -138,7 +139,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
          getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
       if (teams.size() > 1) {
          OseeLog.log(Activator.class, Level.SEVERE,
-            getArtifactTypeName() + " " + getHumanReadableId() + " has multiple parent workflows");
+            getArtifactTypeName() + " " + getAtsId() + " has multiple parent workflows");
       } else if (!isStandAloneReview() && teams.isEmpty()) {
          try {
             Thread.sleep(2000);
@@ -147,7 +148,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
          }
          if (!isDeleted()) {
             OseeLog.log(Activator.class, Level.SEVERE,
-               getArtifactTypeName() + " " + getHumanReadableId() + " has no parent workflow");
+               getArtifactTypeName() + " " + getAtsId() + " has no parent workflow");
          }
       }
       if (!teams.isEmpty()) {

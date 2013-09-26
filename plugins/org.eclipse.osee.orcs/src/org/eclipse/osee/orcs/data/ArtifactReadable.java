@@ -27,8 +27,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface ArtifactReadable extends ArtifactId, HasLocalId, HasBranch, HasTransaction, OrcsReadable {
 
-   String getHumanReadableId();
-
    IArtifactType getArtifactType() throws OseeCoreException;
 
    boolean isOfType(IArtifactType... otherTypes) throws OseeCoreException;

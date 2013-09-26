@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
  */
 public class DeleteInvalidAttributeTypesFromBranch extends AbstractBlam {
 
-   private static final String ARTIFACT_IDS_WIDGET_NAME = "List of Artifact HRIDS (comma separated)";
+   private static final String ARTIFACT_IDS_WIDGET_NAME = "List of Artifact GUIDs (comma separated)";
    private static final String DESCRIPTION =
-      "Provide list of artifact HRIDs that contain an invalid attribute type to delete from the selected branch";
+      "Provide list of artifact GUIDs that contain an invalid attribute type to delete from the selected branch";
 
    public DeleteInvalidAttributeTypesFromBranch() {
       super(null, DESCRIPTION, BlamUiSource.FILE);
@@ -51,8 +51,8 @@ public class DeleteInvalidAttributeTypesFromBranch extends AbstractBlam {
       List<AttributeType> attributeTypes = variableMap.getAttributeTypes("Attribute Type");
       String input = variableMap.getString(ARTIFACT_IDS_WIDGET_NAME);
       Conditions.checkNotNullOrEmpty(input, ARTIFACT_IDS_WIDGET_NAME);
-      List<String> inputArtIds = Arrays.asList(input.split("[,\\s]+"));
-      List<Artifact> arts = ArtifactQuery.getArtifactListFromIds(inputArtIds, branch);
+      List<String> inputGuids = Arrays.asList(input.split("[,\\s]+"));
+      List<Artifact> arts = ArtifactQuery.getArtifactListFromIds(inputGuids, branch);
       if (arts != null && !arts.isEmpty()) {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(branch, "BLAM: Delete invalid attribute type");

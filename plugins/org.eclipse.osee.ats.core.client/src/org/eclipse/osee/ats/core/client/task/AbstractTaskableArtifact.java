@@ -46,8 +46,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact {
 
-   public AbstractTaskableArtifact(String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      super(guid, humanReadableId, branch, artifactType);
+   public AbstractTaskableArtifact(String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+      super(guid, branch, artifactType);
    }
 
    @Override

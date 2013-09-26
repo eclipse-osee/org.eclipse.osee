@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
@@ -43,7 +44,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
@@ -76,9 +76,9 @@ public class AtsOseeCmService implements IOseeCmService {
    }
 
    @Override
-   public void openArtifactsById(String name, List<String> guidOrHrids, OseeCmEditor oseeCmEditor) {
+   public void openArtifactsByGuid(String name, List<String> guidOrAtsIds, OseeCmEditor oseeCmEditor) {
       try {
-         List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(guidOrHrids, AtsUtil.getAtsBranch());
+         List<Artifact> artifacts = AtsArtifactQuery.getArtifactListFromIds(guidOrAtsIds);
          openArtifacts(name, artifacts, oseeCmEditor);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error opening ATS artifacts by Id", ex);
@@ -129,7 +129,7 @@ public class AtsOseeCmService implements IOseeCmService {
    @Override
    public Artifact createWorkTask(String name, String parentPcrGuid) {
       try {
-         Artifact artifact = ArtifactQuery.getArtifactFromId(parentPcrGuid, AtsUtil.getAtsBranch());
+         Artifact artifact = AtsArtifactQuery.getArtifactFromId(parentPcrGuid);
          if (artifact instanceof AbstractTaskableArtifact) {
             return ((AbstractTaskableArtifact) artifact).createNewTask(name, new Date(),
                AtsClientService.get().getUserAdmin().getCurrentUser());

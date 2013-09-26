@@ -28,8 +28,6 @@ public interface IdFactory {
 
    String getUniqueGuid(String guid) throws OseeCoreException;
 
-   String getUniqueHumanReadableId(String humanReadableId) throws OseeCoreException;
-
    long getNextGammaId() throws OseeCoreException;
 
 }

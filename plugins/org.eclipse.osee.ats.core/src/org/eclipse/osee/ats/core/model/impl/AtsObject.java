@@ -12,23 +12,20 @@ package org.eclipse.osee.ats.core.model.impl;
 
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsObject extends NamedIdentity<String> implements IAtsObject {
 
-   private String humanReadableId;
    private String desc;
 
-   public AtsObject(String name, String guid, String hrid) {
+   public AtsObject(String name, String guid) {
       super(guid, name);
-      this.humanReadableId = hrid;
    }
 
    public AtsObject(String name) {
-      this(name, org.eclipse.osee.framework.jdk.core.util.GUID.create(), HumanReadableId.generate());
+      this(name, org.eclipse.osee.framework.jdk.core.util.GUID.create());
    }
 
    @Override
@@ -36,17 +33,8 @@ public class AtsObject extends NamedIdentity<String> implements IAtsObject {
       return desc;
    }
 
-   @Override
-   public String getHumanReadableId() {
-      return humanReadableId;
-   }
-
    public void setDescription(String desc) {
       this.desc = desc;
-   }
-
-   public void setHumanReadableId(String hrid) {
-      this.humanReadableId = hrid;
    }
 
    @Override
@@ -54,8 +42,9 @@ public class AtsObject extends NamedIdentity<String> implements IAtsObject {
       return getName();
    }
 
+   @Override
    public final String toStringWithId() {
-      return String.format("[%s][%s]", getHumanReadableId(), getName());
+      return String.format("[%s][%s]", getGuid(), getName());
    }
 
    @Override

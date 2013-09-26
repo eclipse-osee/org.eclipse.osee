@@ -170,12 +170,6 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testGetHumanReadableId() {
-      artifact.getHumanReadableId();
-      verify(artifactData).getHumanReadableId();
-   }
-
-   @Test
    public void testGetTransactionId() {
       artifact.getTransaction();
       verify(version).getTransactionId();

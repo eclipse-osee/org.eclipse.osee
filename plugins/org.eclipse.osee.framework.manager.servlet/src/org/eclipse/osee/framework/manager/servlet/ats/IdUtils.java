@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.manager.servlet.ats;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 
 /**
  * @author Roberto E. Escobar
@@ -24,10 +23,6 @@ public final class IdUtils {
    private static final Matcher legacyIDMatcher = legacyIDPattern.matcher("");
 
    private IdUtils() {
-   }
-
-   public static boolean isValidHRID(String hrid) {
-      return HumanReadableId.isValid(hrid);
    }
 
    public static boolean isValidGUID(String guid) {

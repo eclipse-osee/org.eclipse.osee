@@ -16,15 +16,14 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -35,11 +34,11 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  */
 public class CreateWorkingBranchFromTxBlam extends AbstractBlam {
 
-   private static final String HRID_TX_WIDGET_NAME = "USAGE: Team Workflow HRID, TransactionId (pair on each line)";
+   private static final String ATS_ID_TX_WIDGET_NAME = "USAGE: Team Workflow ATS ID, TransactionId (pair on each line)";
    private static final int PAIR_SIZE = 2;
 
    private static final String description =
-      "'Copy and paste' or 'type' in Team Workflow HRID,Transaction Id from which to create working branch";
+      "'Copy and paste' or 'type' in Team Workflow ATS ID,Transaction Id from which to create working branch";
 
    public CreateWorkingBranchFromTxBlam() {
       super(null, description, BlamUiSource.FILE);
@@ -47,15 +46,15 @@ public class CreateWorkingBranchFromTxBlam extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      String input = variableMap.getString(HRID_TX_WIDGET_NAME);
-      ArrayList<String> hridTxs = new ArrayList<String>(Arrays.asList(input.split("\\r?\\n")));
-      for (String hridTx : hridTxs) {
-         String[] pairs = hridTx.split("[,\\s]+");
+      String input = variableMap.getString(ATS_ID_TX_WIDGET_NAME);
+      ArrayList<String> idTxs = new ArrayList<String>(Arrays.asList(input.split("\\r?\\n")));
+      for (String idTx : idTxs) {
+         String[] pairs = idTx.split("[,\\s]+");
          if (pairs.length == PAIR_SIZE) {
-            String hridNumber = pairs[0];
+            String idNumber = pairs[0];
             TransactionRecord parentTransactionId = TransactionManager.getTransactionId(Integer.valueOf(pairs[1]));
             try {
-               Artifact art = ArtifactQuery.getArtifactFromId(hridNumber, AtsUtil.getAtsBranch());
+               Artifact art = AtsArtifactQuery.getArtifactFromId(idNumber);
                if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                   TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
                   if (AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
@@ -64,14 +63,14 @@ public class CreateWorkingBranchFromTxBlam extends AbstractBlam {
                   }
                   AtsBranchManagerCore.createWorkingBranch(teamArt, parentTransactionId, true);
                } else {
-                  AWorkbench.popup("ERROR", "Must enter a Team Workflow HRID");
+                  AWorkbench.popup("ERROR", "Must enter a Team Workflow ID");
                   return;
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          } else {
-            log(String.format("Skipping Input [%s] - Not in usage format <Team Workflow HRID, TransactionId> \n",
+            log(String.format("Skipping Input [%s] - Not in usage format <Team Workflow ID, TransactionId> \n",
                Arrays.toString(pairs)));
          }
       }

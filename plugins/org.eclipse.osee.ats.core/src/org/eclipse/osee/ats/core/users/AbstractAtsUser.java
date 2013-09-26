@@ -115,7 +115,7 @@ public abstract class AbstractAtsUser implements IAtsUser {
 
    @Override
    public String toStringWithId() {
-      return String.format("[%s][%s]", getName(), getHumanReadableId());
+      return String.format("[%s][%s]", getName(), getGuid());
    }
 
 }

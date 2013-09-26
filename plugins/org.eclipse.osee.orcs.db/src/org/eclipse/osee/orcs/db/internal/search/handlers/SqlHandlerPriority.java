@@ -16,7 +16,6 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 public enum SqlHandlerPriority {
    ARTIFACT_ID,
    ARTIFACT_GUID,
-   ARTIFACT_HRID,
    ATTRIBUTE_VALUE,
    ATTRIBUTE_TOKENIZED_VALUE,
    ARTIFACT_TYPE,

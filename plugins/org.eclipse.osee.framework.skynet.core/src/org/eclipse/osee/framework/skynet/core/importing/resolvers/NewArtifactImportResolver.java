@@ -47,9 +47,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       OseeLog.logf(NewArtifactImportResolver.class, Level.INFO, "New artifact: [%s]. Attributes: [%s]", roughArtifact,
          roughArtifact.getAttributes());
 
-      Artifact realArtifact =
-         ArtifactTypeManager.addArtifact(artifactType, branch, roughArtifact.getGuid(),
-            roughArtifact.getHumanReadableId());
+      Artifact realArtifact = ArtifactTypeManager.addArtifact(artifactType, branch, null, roughArtifact.getGuid());
       translator.translate(roughArtifact, realArtifact);
       return realArtifact;
    }

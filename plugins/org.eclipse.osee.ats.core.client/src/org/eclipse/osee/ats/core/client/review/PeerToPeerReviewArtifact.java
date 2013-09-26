@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
  */
 public class PeerToPeerReviewArtifact extends AbstractReviewArtifact implements IATSStateMachineArtifact, IAtsPeerToPeerReview {
 
-   public PeerToPeerReviewArtifact(String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      super(guid, humanReadableId, branch, artifactType);
+   public PeerToPeerReviewArtifact(String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+      super(guid, branch, artifactType);
    }
 
 }

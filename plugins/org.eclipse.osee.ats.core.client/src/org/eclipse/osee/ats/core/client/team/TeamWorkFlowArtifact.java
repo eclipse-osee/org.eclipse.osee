@@ -58,8 +58,8 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    private boolean creatingWorkingBranch = false;
    private boolean committingWorkingBranch = false;
 
-   public TeamWorkFlowArtifact(String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      super(guid, humanReadableId, branch, artifactType);
+   public TeamWorkFlowArtifact(String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+      super(guid, branch, artifactType);
       actionableItemsDam = new ActionableItemManager(this);
    }
 
@@ -131,7 +131,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
       String guid = this.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, "");
       if (!Strings.isValid(guid)) {
-         throw new OseeArgumentException("TeamWorkflow [%s] has no Team Definition associated.", getHumanReadableId());
+         throw new OseeArgumentException("TeamWorkflow [%s] has no Team Definition associated.", getAtsId());
       }
       IAtsTeamDefinition teamDef = AtsClientService.get().getAtsConfig().getSoleByGuid(guid, IAtsTeamDefinition.class);
       Conditions.checkNotNull(teamDef, String.format("TeamDef null for Team WF %s", toStringWithId()));
@@ -257,9 +257,9 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
       }
       String typeName = TeamWorkFlowManager.getArtifactTypeShortName(this);
       if (Strings.isValid(typeName)) {
-         return String.format("%s - %s - %s", getHumanReadableId(), typeName, smaTitle);
+         return String.format("%s - %s - %s", getAtsId(), typeName, smaTitle);
       } else {
-         return String.format("%s - %s", getHumanReadableId(), smaTitle);
+         return String.format("%s - %s", getAtsId(), smaTitle);
       }
    }
 

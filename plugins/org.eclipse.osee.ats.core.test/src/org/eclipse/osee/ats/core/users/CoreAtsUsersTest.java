@@ -11,11 +11,11 @@
 package org.eclipse.osee.ats.core.users;
 
 import java.util.HashMap;
-import org.junit.Assert;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -55,13 +55,6 @@ public class CoreAtsUsersTest {
       Assert.assertEquals("AAABDBYPet4AGJyrc9dY1w", AtsCoreUsers.SYSTEM_USER.getGuid());
       Assert.assertEquals("AAABDi35uzwAxJLISLBZdA", AtsCoreUsers.GUEST_USER.getGuid());
       Assert.assertEquals("AAABDi1tMx8Al92YWMjeRw", AtsCoreUsers.UNASSIGNED_USER.getGuid());
-   }
-
-   @Test
-   public void testGetHumanReadableId() {
-      Assert.assertEquals("FTNT9", AtsCoreUsers.SYSTEM_USER.getHumanReadableId());
-      Assert.assertEquals("TBRQV", AtsCoreUsers.GUEST_USER.getHumanReadableId());
-      Assert.assertEquals("7G020", AtsCoreUsers.UNASSIGNED_USER.getHumanReadableId());
    }
 
    @Test
@@ -188,11 +181,6 @@ public class CoreAtsUsersTest {
       }
 
       @Override
-      public String getHumanReadableId() {
-         return "ASDF";
-      }
-
-      @Override
       public String getGuid() {
          return "ASE434dfgsdfgs";
       }
@@ -208,11 +196,6 @@ public class CoreAtsUsersTest {
       @Override
       public String getName() {
          return "Exception User";
-      }
-
-      @Override
-      public String getHumanReadableId() {
-         return "ASDF";
       }
 
       @Override
@@ -247,7 +230,7 @@ public class CoreAtsUsersTest {
 
       @Override
       public String toStringWithId() {
-         return String.format("[%s][%s]", getName(), getHumanReadableId());
+         return String.format("[%s][%s]", getName(), getGuid());
       }
    };
 }

@@ -124,7 +124,7 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
          // Display results in OSEE and results dir
          data.log("Complete\n\nResults at " + resultsDir);
          String html =
-            XResultDataUI.report(data, "Merge Dispositions", Manipulations.HRID_CMD_HYPER, Manipulations.ERROR_RED,
+            XResultDataUI.report(data, "Merge Dispositions", Manipulations.GUID_CMD_HYPER, Manipulations.ERROR_RED,
                Manipulations.CONVERT_NEWLINES, Manipulations.WARNING_YELLOW, Manipulations.ERROR_WARNING_HEADER);
          Lib.writeStringToFile(html, new File(resultsDir + File.separator + "results.html"));
 

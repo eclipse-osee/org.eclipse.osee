@@ -14,6 +14,7 @@ import java.rmi.activation.Activator;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -22,7 +23,6 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -48,7 +48,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
          return;
       }
 
-      List<String> hrids =
+      List<String> ids =
          Arrays.asList("ZW43T", "LQ4GH", "F090B", "1BN39", "FF7LC", "JXJ7G", "SP4TF", "37SWW", "Y3TRT", "UF9Z8",
             "XQ0GL", "H9MKB", "SML1L", "J27TH", "S192U", "UZSGK", "RMLXB", "KPY74", "2BQZM", "2LXD8", "SH9P9", "D25LM",
             "KS57V", "R4Z07", "VHKFM", "7SK10", "AKF8Y", "W37FQ", "AR47S", "8S42M", "V588M", "59TJZ", "NPFH7", "DVT59",
@@ -64,11 +64,10 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
             "UTN8A", "QP3RQ", "8QPCY", "BZ0LK", "5RT4C", "LYFPD", "88KQV", "ACGJV", "U0M9B");
 
       try {
-         List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(hrids, AtsUtil.getAtsBranchToken());
+         List<Artifact> artifacts = AtsArtifactQuery.getArtifactListFromIds(ids);
 
-         if (hrids.size() != artifacts.size()) {
-            System.err.println(String.format("Hrid size %d doesn't match artifact size %d", hrids.size(),
-               artifacts.size()));
+         if (ids.size() != artifacts.size()) {
+            System.err.println(String.format("Id size %d doesn't match artifact size %d", ids.size(), artifacts.size()));
          }
          HashCollection<String, String> testNameToResultsMap = null;
          testNameToResultsMap = new HashCollection<String, String>();

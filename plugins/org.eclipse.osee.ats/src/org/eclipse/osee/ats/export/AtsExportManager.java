@@ -133,19 +133,19 @@ public class AtsExportManager extends Action {
                StringBuffer singleSb = new StringBuffer();
                for (Artifact artifact : artifacts) {
                   if (artifact instanceof AbstractWorkflowArtifact) {
-                     SMAPrint smaPrint = new SMAPrint(((AbstractWorkflowArtifact) artifact));
+                     AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+                     SMAPrint smaPrint = new SMAPrint(awa);
                      smaPrint.setIncludeTaskList(includeTaskList);
                      String html = XResultDataUI.getReport(smaPrint.getResultData(), "").getManipulatedHtml();
                      if (multipleFile) {
                         try {
                            if (asHtmlToFile) {
                               File file =
-                                 new File(
-                                    exportWizard.getFileLocation() + "\\" + artifact.getHumanReadableId() + ".html");
+                                 new File(exportWizard.getFileLocation() + "\\" + awa.getAtsId() + ".html");
                               Lib.writeStringToFile(html, file);
                            }
                            if (asHtmlToResultEditor) {
-                              ResultsEditor.open("Output", "Export " + artifact.getHumanReadableId(), html);
+                              ResultsEditor.open("Output", "Export " + awa.getAtsId(), html);
                            }
                         } catch (IOException ex) {
                            throw new OseeCoreException("Error writing to html file", ex);

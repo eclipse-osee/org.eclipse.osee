@@ -19,8 +19,4 @@ public interface ArtifactData extends OrcsData {
 
    void setGuid(String guid);
 
-   String getHumanReadableId();
-
-   void setHumanReadableId(String humanReadableId);
-
 }

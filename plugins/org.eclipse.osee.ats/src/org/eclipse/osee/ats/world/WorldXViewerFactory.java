@@ -46,6 +46,7 @@ import org.eclipse.osee.ats.column.HoursSpentStateReviewColumn;
 import org.eclipse.osee.ats.column.HoursSpentStateTasksColumn;
 import org.eclipse.osee.ats.column.HoursSpentStateTotalColumn;
 import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
+import org.eclipse.osee.ats.column.AtsIdColumn;
 import org.eclipse.osee.ats.column.ImplementorColumnUI;
 import org.eclipse.osee.ats.column.LastStatusedColumn;
 import org.eclipse.osee.ats.column.LegacyPcrIdColumn;
@@ -63,7 +64,7 @@ import org.eclipse.osee.ats.column.OriginatingWorkFlowColumn;
 import org.eclipse.osee.ats.column.OriginatorColumn;
 import org.eclipse.osee.ats.column.PagesChangedColumn;
 import org.eclipse.osee.ats.column.PagesReviewedColumn;
-import org.eclipse.osee.ats.column.ParentHridColumn;
+import org.eclipse.osee.ats.column.ParentAtsIdColumn;
 import org.eclipse.osee.ats.column.ParentIdColumn;
 import org.eclipse.osee.ats.column.ParentStateColumn;
 import org.eclipse.osee.ats.column.ParentTopTeamColumnUI;
@@ -116,7 +117,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.HridColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedByColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedDateColumn;
 
@@ -139,7 +139,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       TitleColumn.getInstance(),
       ActionableItemsColumnUI.getInstance(),
       UserCommunityColumn.getInstance(),
-      HridColumn.getInstance(),
+      AtsIdColumn.getInstance(),
       CreatedDateColumn.getInstance(),
       TargetedVersionColumn.getInstance(),
       TeamColumn.getInstance(),
@@ -215,7 +215,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       ArtifactTypeColumn.getInstance(),
       OriginatingWorkFlowColumn.getInstance(),
       ParentIdColumn.getInstance(),
-      ParentHridColumn.getInstance(),
+      ParentAtsIdColumn.getInstance(),
       DaysInCurrentStateColumn.getInstance(),
       ParentStateColumn.getInstance(),
       ParentWorkDefColumn.getInstance(),
@@ -228,7 +228,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       PagesReviewedColumn.getInstance(),
       new GuidColumn(false),
       ParentTopTeamColumnUI.getInstance(),
-      ActionableItemOwner.getInstance()};
+      ActionableItemOwner.getInstance(),
+      AtsIdColumn.getInstance()};
    private final static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 
    public WorldXViewerFactory() {

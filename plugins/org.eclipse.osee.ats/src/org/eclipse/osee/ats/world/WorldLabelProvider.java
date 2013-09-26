@@ -74,7 +74,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) {
       try {
-         // NOTE: HRID, Type, Title are handled by XViewerValueColumn values
+         // NOTE: ID, Type, Title are handled by XViewerValueColumn values
          if (!AtsUtil.isAtsArtifact(element)) {
             return "";
          }

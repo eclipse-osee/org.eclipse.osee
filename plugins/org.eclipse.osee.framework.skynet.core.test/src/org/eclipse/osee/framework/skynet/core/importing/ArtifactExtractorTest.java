@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
@@ -286,7 +285,6 @@ public class ArtifactExtractorTest {
    public static void checkRoughArtifact(RoughArtifact expected, RoughArtifact actual) {
       // Randomly generated - just check the format
       Assert.assertTrue(GUID.isValid(actual.getGuid()));
-      Assert.assertTrue(HumanReadableId.isValid(actual.getHumanReadableId()));
       Assert.assertEquals(expected.getName(), actual.getName());
       Assert.assertEquals(expected.getPrimaryArtifactType(), actual.getPrimaryArtifactType());
       Assert.assertEquals(expected.getRoughArtifactKind(), actual.getRoughArtifactKind());

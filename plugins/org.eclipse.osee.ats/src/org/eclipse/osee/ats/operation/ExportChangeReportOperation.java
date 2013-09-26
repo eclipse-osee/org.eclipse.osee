@@ -91,12 +91,12 @@ public final class ExportChangeReportOperation extends AbstractOperation {
          }
       };
 
-      for (Artifact workflow : workflows) {
+      for (TeamWorkFlowArtifact workflow : workflows) {
          Set<Integer> artIds = new HashSet<Integer>();
          Collection<Change> changes = computeChanges(workflow, monitor, artIds);
          if (!changes.isEmpty() && changes.size() < 4000) {
             String id =
-               workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, workflow.getHumanReadableId());
+               workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, workflow.getAtsId());
             String prefix = "/" + id;
             if (writeChangeReports) {
 

@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.log.ILogStorageProvider;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -63,7 +64,7 @@ public class ArtifactLog implements ILogStorageProvider {
    @Override
    public String getLogTitle() {
       try {
-         return "History for \"" + getArtifact().getArtifactTypeName() + "\" - " + getArtifact().getHumanReadableId() + " - titled \"" + getArtifact().getName() + "\"";
+         return "History for \"" + getArtifact().getArtifactTypeName() + "\" - " + getLogId() + " - titled \"" + getArtifact().getName() + "\"";
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "getLogTitle exception " + ex.getLocalizedMessage();
@@ -73,7 +74,7 @@ public class ArtifactLog implements ILogStorageProvider {
    @Override
    public String getLogId() {
       try {
-         return getArtifact().getHumanReadableId();
+         return AtsUtilCore.getAtsId(getArtifact());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

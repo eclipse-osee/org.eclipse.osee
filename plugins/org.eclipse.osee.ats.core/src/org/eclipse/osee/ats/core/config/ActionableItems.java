@@ -110,7 +110,7 @@ public class ActionableItems {
    }
 
    public static String getNotActionableItemError(IAtsConfigObject configObject) {
-      return "Action can not be written against " + configObject.getName() + " \"" + configObject + "\" (" + configObject.getHumanReadableId() + ").\n\nChoose another item.";
+      return "Action can not be written against " + configObject.getName() + " \"" + configObject + "\" (" + configObject.getGuid() + ").\n\nChoose another item.";
    }
 
    public static IAtsActionableItem getTopActionableItem() throws OseeCoreException {

@@ -161,11 +161,11 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
             dupArt.setName(title);
          }
          dupArt.addRelation(AtsRelationTypes.ActionToWorkflow_Action, teamArt.getParentActionArtifact());
-         dupArt.getLog().addLog(LogType.Note, null, "Workflow duplicated from " + teamArt.getHumanReadableId());
+         dupArt.getLog().addLog(LogType.Note, null, "Workflow duplicated from " + teamArt.getAtsId());
          if (duplicateTasks) {
             for (TaskArtifact taskArt : teamArt.getTaskArtifacts()) {
                TaskArtifact dupTaskArt = (TaskArtifact) taskArt.duplicate(AtsUtil.getAtsBranch());
-               dupTaskArt.getLog().addLog(LogType.Note, null, "Task duplicated from " + taskArt.getHumanReadableId());
+               dupTaskArt.getLog().addLog(LogType.Note, null, "Task duplicated from " + taskArt.getAtsId());
                dupArt.addRelation(AtsRelationTypes.TeamWfToTask_Task, dupTaskArt);
                dupArt.persist(transaction);
             }

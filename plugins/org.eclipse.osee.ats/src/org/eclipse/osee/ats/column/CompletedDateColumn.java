@@ -77,7 +77,7 @@ public class CompletedDateColumn extends XViewerAtsColumn implements IXViewerVal
          if (((AbstractWorkflowArtifact) object).isCompleted()) {
             Date date = ((AbstractWorkflowArtifact) object).getCompletedDate();
             if (date == null) {
-               OseeLog.log(Activator.class, Level.SEVERE, "Completed with no date => " + awa.getHumanReadableId());
+               OseeLog.log(Activator.class, Level.SEVERE, "Completed with no date => " + awa.getAtsId());
             }
             return date;
          }

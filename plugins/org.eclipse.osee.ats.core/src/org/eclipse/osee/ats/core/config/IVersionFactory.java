@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface IVersionFactory {
 
-   IAtsVersion createVersion(String title, String create, String generate) throws OseeCoreException;
+   IAtsVersion createVersion(String title, String guid) throws OseeCoreException;
 
    IAtsVersion createVersion(String name) throws OseeCoreException;
 

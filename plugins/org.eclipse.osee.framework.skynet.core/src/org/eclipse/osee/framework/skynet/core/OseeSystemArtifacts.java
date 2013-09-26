@@ -70,7 +70,7 @@ public final class OseeSystemArtifacts {
          artifact = ArtifactQuery.checkArtifactFromTypeAndName(artifactType, artifactName, branch);
          if (artifact == null && create) {
             if (Strings.isValid(guid)) {
-               artifact = ArtifactTypeManager.addArtifact(artifactType, branch, guid, (String) null);
+               artifact = ArtifactTypeManager.addArtifact(artifactType, branch, artifactName, guid);
                artifact.setName(artifactName);
             } else {
                artifact = ArtifactTypeManager.addArtifact(artifactType, branch, artifactName);

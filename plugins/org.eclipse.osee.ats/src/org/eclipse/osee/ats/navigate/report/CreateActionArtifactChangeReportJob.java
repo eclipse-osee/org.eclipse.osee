@@ -105,7 +105,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
       int x = 1;
       rd.addRaw(AHTML.beginMultiColumnTable(95));
       rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {
-         "HRID",
+         "ID",
          "Bulld",
          "UI",
          attributeType.getName(),
@@ -141,7 +141,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          }
          for (String attrStr : attrStrs) {
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
-               teamArt.getHumanReadableId(),
+               teamArt.getAtsId(),
                buildId,
                modArt.getName(),
                attrStr,
@@ -156,7 +156,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          }
          for (String attrStr : attrStrs) {
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
-               teamArt.getHumanReadableId(),
+               teamArt.getAtsId(),
                buildId,
                artChg.getName(),
                attrStr,
@@ -172,7 +172,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          }
          for (String attrStr : attrStrs) {
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
-               teamArt.getHumanReadableId(),
+               teamArt.getAtsId(),
                buildId,
                artChg.getName(),
                attrStr,

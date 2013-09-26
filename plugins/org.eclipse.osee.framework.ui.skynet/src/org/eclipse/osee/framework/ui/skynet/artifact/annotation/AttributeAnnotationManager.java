@@ -32,14 +32,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
  */
 public class AttributeAnnotationManager {
    private final Artifact artifact;
-   private static Map<String, AttributeAnnotationManager> hridToManager =
+   private static Map<String, AttributeAnnotationManager> guidToManager =
       new HashMap<String, AttributeAnnotationManager>(50);
 
    public static AttributeAnnotationManager get(Artifact artifact) {
-      if (!hridToManager.containsKey(artifact.getHumanReadableId())) {
-         hridToManager.put(artifact.getHumanReadableId(), new AttributeAnnotationManager(artifact));
+      if (!guidToManager.containsKey(artifact.getGuid())) {
+         guidToManager.put(artifact.getGuid(), new AttributeAnnotationManager(artifact));
       }
-      return hridToManager.get(artifact.getHumanReadableId());
+      return guidToManager.get(artifact.getGuid());
    }
 
    private AttributeAnnotationManager(Artifact artifact) {
@@ -51,7 +51,7 @@ public class AttributeAnnotationManager {
    }
 
    public static final Set<ArtifactAnnotation> getAnnotations(Artifact artifact) throws OseeCoreException {
-      if (!hridToManager.containsKey(artifact) && artifact.getAttributeCount(CoreAttributeTypes.Annotation) == 0) {
+      if (!guidToManager.containsKey(artifact) && artifact.getAttributeCount(CoreAttributeTypes.Annotation) == 0) {
          return Collections.emptySet();
       }
       ensureLoaded();

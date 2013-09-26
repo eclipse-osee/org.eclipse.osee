@@ -101,8 +101,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    private boolean fixAssignees = true;
    private boolean fixAttributeValues = true;
-   private final Set<String> hrids = new HashSet<String>();
-   private final Map<String, String> legacyPcrIdToParentHrid = new HashMap<String, String>(50000);
+   private final Set<String> atsIds = new HashSet<String>();
+   private final Map<String, String> legacyPcrIdToParentId = new HashMap<String, String>(50000);
    private final CountingMap<String> testNameToTimeSpentMap = new CountingMap<String>();
    private HashCollection<String, String> testNameToResultsMap = null;
    private String emailOnComplete = null;
@@ -190,8 +190,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       try {
 
          testNameToResultsMap = new HashCollection<String, String>();
-         hrids.clear();
-         legacyPcrIdToParentHrid.clear();
+         atsIds.clear();
+         legacyPcrIdToParentId.clear();
 
          //         int artSetNum = 1;
          for (Collection<Integer> artIdList : artIdLists) {
@@ -204,7 +204,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             logTestTimeSpent(date, "ArtifactQuery.getArtifactListFromIds", testNameToTimeSpentMap);
             //            elapsedTime.end();
 
-            // NOTE: Use DoesNotWorkItemAts to process list of HRIDs
+            // NOTE: Use DoesNotWorkItemAts to process list of IDs
 
             // remove all deleted/purged artifacts first
             List<Artifact> artifacts = new ArrayList<Artifact>(allArtifacts.size());
@@ -457,7 +457,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   // If != null, this stateName has already been found
                   if (Strings.isValid(storedStateStr)) {
                      String errorStr =
-                        "Error: " + artifact.getArtifactTypeName() + " - " + artifact.getHumanReadableId() + " duplicate state: " + stateName;
+                        "Error: " + artifact.getArtifactTypeName() + " - " + awa.getAtsId() + " duplicate state: " + stateName;
                      // delete if state attr is same as current state
                      if (currentStateName.equals(stateName)) {
                         errorStr +=
@@ -596,28 +596,23 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             if (artifact.isDeleted()) {
                continue;
             }
-            // Check that HRIDs not duplicated on Common branch
-            if (hrids.contains(artifact.getHumanReadableId())) {
-               testNameToResultsMap.put("testArtifactIds",
-                  "Error: Duplicate HRIDs: " + XResultDataUI.getHyperlink(artifact));
-            }
             // Check that duplicate Legacy PCR IDs team arts do not exist with different parent actions
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) artifact;
                String legacyPcrId = artifact.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, null);
                if (legacyPcrId != null) {
-                  String parentActionHrid = teamWf.getParentActionArtifact().getHumanReadableId();
-                  String storedParentActionHrid = legacyPcrIdToParentHrid.get(legacyPcrId);
-                  if (storedParentActionHrid != null) {
-                     if (!storedParentActionHrid.equals(parentActionHrid)) {
+                  String parentActionId = teamWf.getParentActionArtifact().getAtsId();
+                  String storedParentActionId = legacyPcrIdToParentId.get(legacyPcrId);
+                  if (storedParentActionId != null) {
+                     if (!storedParentActionId.equals(parentActionId)) {
                         String errorStr =
                            String.format(
-                              "Error: Duplicate Legacy PCR Ids in Different Actions: teamWf %s parentActionHrid[%s] != storedActionHrid [%s] ",
-                              teamWf.toStringWithId(), parentActionHrid, storedParentActionHrid);
+                              "Error: Duplicate Legacy PCR Ids in Different Actions: teamWf %s parentActionId[%s] != storedActionId [%s] ",
+                              teamWf.toStringWithId(), parentActionId, storedParentActionId);
                         testNameToResultsMap.put("testArtifactIds", errorStr);
                      }
                   } else {
-                     legacyPcrIdToParentHrid.put(legacyPcrId, parentActionHrid);
+                     legacyPcrIdToParentId.put(legacyPcrId, parentActionId);
                   }
                }
             }
@@ -796,19 +791,18 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (branch.getArchiveState().isArchived()) {
             testNameToResultsMap.put("validateBranchGuid", String.format(
                "Error: [%s][%s][%s] has Parent Branch Id attribute set to Archived Branch [%s] named [%s]",
-               name.getName(), name.getHumanReadableId(), name, parentBranchGuid, branch));
+               name.getName(), name.getGuid(), name, parentBranchGuid, branch));
          } else if (!branch.getBranchType().isBaselineBranch()) {
             testNameToResultsMap.put(
                "validateBranchGuid",
                String.format(
                   "Error: [%s][%s][%s] has Parent Branch Id attribute [%s][%s] that is a [%s] branch; should be a BASLINE branch",
-                  name.getName(), name.getHumanReadableId(), name, branch.getBranchType().name(), parentBranchGuid,
-                  branch));
+                  name.getName(), name.getGuid(), name, branch.getBranchType().name(), parentBranchGuid, branch));
          }
       } catch (BranchDoesNotExist ex) {
          testNameToResultsMap.put("validateBranchGuid", String.format(
             "Error: [%s][%s][%s] has Parent Branch Id attribute [%s] that references a non-existant", name.getName(),
-            name.getHumanReadableId(), name, parentBranchGuid));
+            name.getGuid(), name, parentBranchGuid));
       } catch (Exception ex) {
          testNameToResultsMap.put("validateBranchGuid",
             "Error: " + name.getName() + " [" + name.toStringWithId() + "] exception: " + ex.getLocalizedMessage());
@@ -1233,7 +1227,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (assignees.contains(oseeSystemUser)) {
                   testNameToResultsMap.put(
                      "testStateMachineAssignees",
-                     "Error: " + art.getHumanReadableId() + " is assigned to OseeSystem; invalid assignment - MANUAL FIX REQUIRED");
+                     "Error: " + awa.getAtsId() + " is assigned to OseeSystem; invalid assignment - MANUAL FIX REQUIRED");
                }
                if (!awa.isCompleted() && !awa.isCancelled() && assignees.isEmpty()) {
                   testNameToResultsMap.put(

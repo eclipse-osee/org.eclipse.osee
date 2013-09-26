@@ -94,7 +94,7 @@ public class OrcsQueryTest {
 
    @Test
    public void testQueryByIds() throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON).andGuidsOrHrids("AkA2AmNuEDDL4VolM9AA");
+      QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON).andGuid("AkA2AmNuEDDL4VolM9AA");
       assertEquals(1, builder.getCount());
 
       ArtifactReadable artifact = builder.getResults().getExactlyOne();

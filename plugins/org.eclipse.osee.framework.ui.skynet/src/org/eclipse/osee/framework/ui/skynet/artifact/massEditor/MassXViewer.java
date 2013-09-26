@@ -55,7 +55,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
    private String title;
    private final Set<Artifact> artifacts = new HashSet<Artifact>(50);
    private final IDirtiableEditor editor;
-   private final List<String> EXTRA_COLUMNS = Arrays.asList(new String[] {"GUID", "HRID", "Artifact Type"});
+   private final List<String> EXTRA_COLUMNS = Arrays.asList(new String[] {"GUID", "Artifact Type"});
    private final Composite parent;
 
    public MassXViewer(Composite parent, int style, MassArtifactEditor editor) {

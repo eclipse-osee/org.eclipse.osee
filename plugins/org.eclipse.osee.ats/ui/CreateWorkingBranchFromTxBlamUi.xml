@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xWidgets>
-	<XWidget displayName="USAGE: Team Workflow HRID, TransactionId (pair on each line)" 
+	<XWidget displayName="USAGE: Team Workflow ATS ID, TransactionId (pair on each line)" 
 		xwidgetType="XTextDam" fill="Vertically" />	
 </xWidgets>

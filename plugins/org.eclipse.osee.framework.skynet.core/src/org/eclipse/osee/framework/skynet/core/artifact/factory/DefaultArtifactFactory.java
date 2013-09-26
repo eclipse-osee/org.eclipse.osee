@@ -29,8 +29,8 @@ public final class DefaultArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      return new Artifact(guid, humandReadableId, branch, artifactType);
+   public Artifact getArtifactInstance(String guid, Branch branch, IArtifactType artifactType, boolean inDataStore) throws OseeCoreException {
+      return new Artifact(guid, branch, artifactType);
    }
 
 }

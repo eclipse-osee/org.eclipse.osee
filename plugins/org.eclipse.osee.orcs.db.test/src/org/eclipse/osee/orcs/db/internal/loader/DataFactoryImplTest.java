@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
@@ -72,14 +71,12 @@ public class DataFactoryImplTest {
    private DataFactory dataFactory;
    private Object[] expectedProxyData;
    private String guid;
-   private String hrid;
 
    @Before
    public void setUp() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
 
       guid = GUID.create();
-      hrid = HumanReadableId.generate();
 
       OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory, identityService);
       dataFactory = new DataFactoryImpl(idFactory, objectFactory, artifactCache);
@@ -99,7 +96,6 @@ public class DataFactoryImplTest {
       when(artData.getBaseModType()).thenReturn(ModificationType.NEW);
       when(artData.getBaseTypeUuid()).thenReturn(777L);
       when(artData.getGuid()).thenReturn("abcdefg");
-      when(artData.getHumanReadableId()).thenReturn("abc34");
 
       // ATTRIBUTE
       when(attrData.getVersion()).thenReturn(verData);
@@ -138,7 +134,7 @@ public class DataFactoryImplTest {
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Cannot create an instance of abstract type [artifactTypeToken]");
-      dataFactory.create(CoreBranches.COMMON, artifactTypeToken, guid, hrid);
+      dataFactory.create(CoreBranches.COMMON, artifactTypeToken, guid);
    }
 
    @Test
@@ -152,22 +148,7 @@ public class DataFactoryImplTest {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Invalid guid [123] during artifact creation [type: artifactTypeToken]");
 
-      dataFactory.create(CoreBranches.COMMON, artifactTypeToken, guid, hrid);
-   }
-
-   @Test
-   public void testCreateArtifactDataInvalidHrid() throws OseeCoreException {
-      when(artifactCache.getByUuid(artifactTypeToken.getGuid())).thenReturn(artifactTypeToken);
-      when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(false);
-      when(artifactTypeToken.toString()).thenReturn("artifactTypeToken");
-
-      when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
-      when(idFactory.getUniqueHumanReadableId(hrid)).thenReturn("123");
-
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("Invalid human readable id [123] during artifact creation [type: artifactTypeToken, guid: " + guid + "]");
-
-      dataFactory.create(CoreBranches.COMMON, artifactTypeToken, guid, hrid);
+      dataFactory.create(CoreBranches.COMMON, artifactTypeToken, guid);
    }
 
    @Test
@@ -175,48 +156,41 @@ public class DataFactoryImplTest {
       when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(false);
       when(artifactTypeToken.getGuid()).thenReturn(4536L);
       when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
-      when(idFactory.getUniqueHumanReadableId(hrid)).thenReturn(hrid);
-      when(idFactory.getNextArtifactId()).thenReturn(987);
-
-      ArtifactData actual = dataFactory.create(CoreBranches.COMMON, artifactTypeToken, guid, hrid);
-      verify(idFactory).getBranchId(CoreBranches.COMMON);
-      verify(idFactory).getUniqueGuid(guid);
-      verify(idFactory).getUniqueHumanReadableId(hrid);
-      verify(idFactory).getNextArtifactId();
-
-      VersionData actualVer = actual.getVersion();
-
-      assertEquals(657, actualVer.getBranchId());
-      assertEquals(RelationalConstants.GAMMA_SENTINEL, actualVer.getGammaId());
-      assertEquals(RelationalConstants.TRANSACTION_SENTINEL, actualVer.getTransactionId());
-      assertEquals(RelationalConstants.TRANSACTION_SENTINEL, actualVer.getStripeId());
-      assertEquals(false, actualVer.isHistorical());
-      assertEquals(false, actualVer.isInStorage());
-
-      assertEquals(987, actual.getLocalId());
-      assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
-      assertEquals(4536L, actual.getTypeUuid());
-      assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
-      assertEquals(4536L, actual.getBaseTypeUuid());
-      assertEquals(guid, actual.getGuid());
-      assertEquals(hrid, actual.getHumanReadableId());
-   }
-
-   @Test
-   public void testCreateArtifactDataGenerateHrid() throws OseeCoreException {
-      String newHrid = HumanReadableId.generate();
-
-      when(artifactCache.getByUuid(artifactTypeToken.getGuid())).thenReturn(artifactTypeToken);
-      when(artifactTypeToken.getGuid()).thenReturn(4536L);
-      when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(false);
-      when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
-      when(idFactory.getUniqueHumanReadableId(null)).thenReturn(newHrid);
       when(idFactory.getNextArtifactId()).thenReturn(987);
 
       ArtifactData actual = dataFactory.create(CoreBranches.COMMON, artifactTypeToken, guid);
       verify(idFactory).getBranchId(CoreBranches.COMMON);
       verify(idFactory).getUniqueGuid(guid);
-      verify(idFactory).getUniqueHumanReadableId(null);
+      verify(idFactory).getNextArtifactId();
+
+      VersionData actualVer = actual.getVersion();
+
+      assertEquals(657, actualVer.getBranchId());
+      assertEquals(RelationalConstants.GAMMA_SENTINEL, actualVer.getGammaId());
+      assertEquals(RelationalConstants.TRANSACTION_SENTINEL, actualVer.getTransactionId());
+      assertEquals(RelationalConstants.TRANSACTION_SENTINEL, actualVer.getStripeId());
+      assertEquals(false, actualVer.isHistorical());
+      assertEquals(false, actualVer.isInStorage());
+
+      assertEquals(987, actual.getLocalId());
+      assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
+      assertEquals(4536L, actual.getTypeUuid());
+      assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
+      assertEquals(4536L, actual.getBaseTypeUuid());
+      assertEquals(guid, actual.getGuid());
+   }
+
+   @Test
+   public void testCreateArtifactDataGenerateGuid() throws OseeCoreException {
+      when(artifactCache.getByUuid(artifactTypeToken.getGuid())).thenReturn(artifactTypeToken);
+      when(artifactTypeToken.getGuid()).thenReturn(4536L);
+      when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(false);
+      when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
+      when(idFactory.getNextArtifactId()).thenReturn(987);
+
+      ArtifactData actual = dataFactory.create(CoreBranches.COMMON, artifactTypeToken, guid);
+      verify(idFactory).getBranchId(CoreBranches.COMMON);
+      verify(idFactory).getUniqueGuid(guid);
       verify(idFactory).getNextArtifactId();
 
       VersionData actualVer = actual.getVersion();
@@ -233,7 +207,6 @@ public class DataFactoryImplTest {
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
       assertEquals(4536L, actual.getBaseTypeUuid());
       assertEquals(guid, actual.getGuid());
-      assertEquals(newHrid, actual.getHumanReadableId());
    }
 
    @Test
@@ -321,7 +294,6 @@ public class DataFactoryImplTest {
       assertEquals(ModificationType.NEW, actual.getBaseModType());
       assertEquals(777L, actual.getBaseTypeUuid());
       assertEquals("abcdefg", actual.getGuid());
-      assertEquals("abc34", actual.getHumanReadableId());
    }
 
    @Test
@@ -357,15 +329,12 @@ public class DataFactoryImplTest {
    @Test
    public void testCopyArtifactData() throws OseeCoreException {
       String newGuid = GUID.create();
-      String newHrid = HumanReadableId.generate();
       when(idFactory.getNextArtifactId()).thenReturn(987);
       when(idFactory.getUniqueGuid(null)).thenReturn(newGuid);
-      when(idFactory.getUniqueHumanReadableId(null)).thenReturn(newHrid);
 
       ArtifactData actual = dataFactory.copy(CoreBranches.COMMON, artData);
       verify(idFactory).getBranchId(CoreBranches.COMMON);
       verify(idFactory).getUniqueGuid(null);
-      verify(idFactory).getUniqueHumanReadableId(null);
 
       VersionData actualVer = actual.getVersion();
       assertNotSame(verData, actualVer);
@@ -382,7 +351,6 @@ public class DataFactoryImplTest {
       assertEquals(ModificationType.NEW, actual.getBaseModType());
       assertEquals(777L, actual.getBaseTypeUuid());
       assertEquals(newGuid, actual.getGuid());
-      assertEquals(newHrid, actual.getHumanReadableId());
    }
 
    @Test
@@ -436,7 +404,6 @@ public class DataFactoryImplTest {
       assertEquals(ModificationType.NEW, actual.getBaseModType());
       assertEquals(777L, actual.getBaseTypeUuid());
       assertEquals("abcdefg", actual.getGuid());
-      assertEquals("abc34", actual.getHumanReadableId());
    }
 
    @Test

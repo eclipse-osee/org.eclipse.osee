@@ -134,7 +134,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
          public void run() {
             String html =
                XResultDataUI.getReport(rd, coveragePackageBase.getName()).getManipulatedHtml(
-                  Arrays.asList(Manipulations.ERROR_WARNING_HEADER, Manipulations.HRID_CMD_HYPER,
+                  Arrays.asList(Manipulations.ERROR_WARNING_HEADER, Manipulations.GUID_CMD_HYPER,
                      Manipulations.ERROR_RED, Manipulations.CONVERT_NEWLINES, Manipulations.WARNING_YELLOW));
             xResultsComp.setHtmlText(html, coveragePackageBase.getName());
          }

@@ -176,9 +176,9 @@ public class ArtifactQueryTest {
    public void testGetOrCreate() throws Exception {
       String guid = GUID.create();
       Branch branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
-      Artifact artifact1 = ArtifactQuery.getOrCreate(guid, null, CoreArtifactTypes.GeneralData, branch);
+      Artifact artifact1 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
       Assert.assertNotNull(artifact1);
-      Artifact artifact2 = ArtifactQuery.getOrCreate(guid, null, CoreArtifactTypes.GeneralData, branch);
+      Artifact artifact2 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
       Assert.assertEquals(artifact1, artifact2);
       Job job = BranchManager.deleteBranch(branch);
       job.join();
@@ -188,7 +188,7 @@ public class ArtifactQueryTest {
    public void testLargeAttributeIndexing() throws Exception {
       String guid = GUID.create();
       Branch branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
-      Artifact artifact1 = ArtifactQuery.getOrCreate(guid, null, CoreArtifactTypes.GeneralData, branch);
+      Artifact artifact1 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
       artifact1.setSoleAttributeFromString(CoreAttributeTypes.Name, longStr());
       artifact1.persist(testInfo.getTestName());
       Thread.sleep(1000);

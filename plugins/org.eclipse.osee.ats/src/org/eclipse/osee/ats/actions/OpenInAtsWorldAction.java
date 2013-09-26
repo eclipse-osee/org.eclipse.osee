@@ -13,13 +13,13 @@ package org.eclipse.osee.ats.actions;
 import java.util.Arrays;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -38,18 +38,18 @@ public class OpenInAtsWorldAction extends AbstractAtsAction {
    @Override
    public void runWithException() throws OseeCoreException {
       if (sma.isTeamWorkflow()) {
-         Artifact actionArt = ((TeamWorkFlowArtifact) sma).getParentActionArtifact();
+         ActionArtifact actionArt = ((TeamWorkFlowArtifact) sma).getParentActionArtifact();
          if (actionArt != null) {
-            WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getHumanReadableId(),
+            WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getAtsId(),
                Arrays.asList(actionArt)));
          } else {
-            WorldEditor.open(new WorldEditorSimpleProvider(sma.getArtifactTypeName() + " " + sma.getHumanReadableId(),
+            WorldEditor.open(new WorldEditorSimpleProvider(sma.getArtifactTypeName() + " " + sma.getAtsId(),
                Arrays.asList(sma)));
             throw new OseeStateException("No Parent Action; Opening Team Workflow");
          }
          return;
       } else {
-         WorldEditor.open(new WorldEditorSimpleProvider(sma.getArtifactTypeName() + ": " + sma.getHumanReadableId(),
+         WorldEditor.open(new WorldEditorSimpleProvider(sma.getArtifactTypeName() + ": " + sma.getAtsId(),
             Arrays.asList(sma)));
          return;
       }

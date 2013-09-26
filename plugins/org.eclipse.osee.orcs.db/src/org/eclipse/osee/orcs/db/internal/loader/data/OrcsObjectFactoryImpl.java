@@ -87,22 +87,22 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public ArtifactData createArtifactData(VersionData version, int localId, int localTypeID, ModificationType modType, String guid, String humanReadableId) throws OseeCoreException {
+   public ArtifactData createArtifactData(VersionData version, int localId, int localTypeID, ModificationType modType, String guid) throws OseeCoreException {
       long typeUuid = toUuid(localTypeID);
-      return createArtifactFromRow(version, localId, typeUuid, modType, typeUuid, modType, guid, humanReadableId);
+      return createArtifactFromRow(version, localId, typeUuid, modType, typeUuid, modType, guid);
    }
 
    @Override
-   public ArtifactData createArtifactData(VersionData version, int localId, IArtifactType type, ModificationType modType, String guid, String humanReadableId) {
+   public ArtifactData createArtifactData(VersionData version, int localId, IArtifactType type, ModificationType modType, String guid) {
       long typeUuid = type.getGuid();
-      return createArtifactFromRow(version, localId, typeUuid, modType, typeUuid, modType, guid, humanReadableId);
+      return createArtifactFromRow(version, localId, typeUuid, modType, typeUuid, modType, guid);
    }
 
    @Override
    public ArtifactData createCopy(ArtifactData source) {
       VersionData newVersion = createCopy(source.getVersion());
       return createArtifactFromRow(newVersion, source.getLocalId(), source.getTypeUuid(), source.getModType(),
-         source.getBaseTypeUuid(), source.getBaseModType(), source.getGuid(), source.getHumanReadableId());
+         source.getBaseTypeUuid(), source.getBaseModType(), source.getGuid());
    }
 
    @Override
@@ -141,7 +141,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       return createRelationData(version, localId, typeId, modType, typeId, modType, aArtId, bArtId, rationale);
    }
 
-   private ArtifactData createArtifactFromRow(VersionData version, int localId, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, String guid, String humanReadableId) {
+   private ArtifactData createArtifactFromRow(VersionData version, int localId, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, String guid) {
       ArtifactData data = new ArtifactDataImpl(version);
       data.setLocalId(localId);
       data.setTypeUuid(localTypeID);
@@ -149,7 +149,6 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       data.setModType(modType);
       data.setBaseModType(baseModType);
       data.setGuid(guid);
-      data.setHumanReadableId(humanReadableId);
       return data;
    }
 

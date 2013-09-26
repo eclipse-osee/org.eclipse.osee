@@ -42,11 +42,6 @@ public class AtsUser implements IAtsUser {
    }
 
    @Override
-   public String getHumanReadableId() {
-      return user.getHumanReadableId();
-   }
-
-   @Override
    public int compareTo(Object other) {
       int result = other != null ? -1 : 1;
       if (other instanceof IAtsUser) {
@@ -146,7 +141,7 @@ public class AtsUser implements IAtsUser {
 
    @Override
    public String toStringWithId() {
-      return String.format("[%s][%s]", getName(), getHumanReadableId());
+      return String.format("[%s][%s]", getName(), getGuid());
    }
 
 }

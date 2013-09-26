@@ -42,7 +42,6 @@ public class ActionableItemArtifactReader extends AbstractAtsArtifactReader<IAts
    @Override
    public IAtsActionableItem load(AtsArtifactConfigCache cache, Artifact aiArt) throws OseeCoreException {
       IAtsActionableItem aia = getOrCreateActionableItem(cache, aiArt);
-      aia.setHumanReadableId(aiArt.getHumanReadableId());
       aia.setName(aiArt.getName());
       aia.setActive(aiArt.getSoleAttributeValue(AtsAttributeTypes.Active, false));
       aia.setActionable(aiArt.getSoleAttributeValue(AtsAttributeTypes.Actionable, false));

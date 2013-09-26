@@ -87,11 +87,6 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public String getHumanReadableId() {
-      return getProxiedObject().getHumanReadableId();
-   }
-
-   @Override
    public IArtifactType getArtifactType() throws OseeCoreException {
       return getProxiedObject().getArtifactType();
    }

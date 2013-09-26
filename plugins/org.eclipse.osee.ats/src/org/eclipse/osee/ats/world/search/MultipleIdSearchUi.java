@@ -25,11 +25,11 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 /**
  * @author Donald G. Dunne
  */
-public class MultipleHridSearchUi {
+public class MultipleIdSearchUi {
 
-   private final MultipleHridSearchData data;
+   private final MultipleIdSearchData data;
 
-   public MultipleHridSearchUi(MultipleHridSearchData data) {
+   public MultipleIdSearchUi(MultipleIdSearchData data) {
       this.data = data;
    }
 
@@ -51,13 +51,12 @@ public class MultipleHridSearchUi {
          EntryDialog ed = null;
          if (AtsUtilCore.isAtsAdmin()) {
             ed =
-               new EntryCheckDialog(data.getName(), "Enter Legacy ID, Guid or HRID (comma separated)", "Include ArtIds");
+               new EntryCheckDialog(data.getName(), "Enter Legacy ID, Guid or ID (comma separated)", "Include ArtIds");
          } else {
             ed =
                new EntryDialog(Displays.getActiveShell(), data.getName(), null,
-                  "Enter Legacy ID, Guid or HRID (comma separated)", MessageDialog.QUESTION, new String[] {
-                     "OK",
-                     "Cancel"}, 0);
+                  "Enter Legacy ID, Guid or ID (comma separated)", MessageDialog.QUESTION,
+                  new String[] {"OK", "Cancel"}, 0);
          }
          int response = ed.open();
          if (response == 0) {

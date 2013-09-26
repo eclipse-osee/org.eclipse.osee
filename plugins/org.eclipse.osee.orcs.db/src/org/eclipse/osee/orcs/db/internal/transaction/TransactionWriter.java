@@ -32,7 +32,7 @@ public class TransactionWriter {
       "UPDATE osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE branch_id = ? AND transaction_id = ? AND gamma_id = ?";
 
    private static final String INSERT_ARTIFACT =
-      "INSERT INTO osee_artifact (art_id, art_type_id, gamma_id, guid, human_readable_id) VALUES (?,?,?,?,?)";
+      "INSERT INTO osee_artifact (art_id, art_type_id, gamma_id, guid) VALUES (?,?,?,?)";
 
    private static final String INSERT_ATTRIBUTE =
       "INSERT INTO osee_attribute (attr_id, attr_type_id, gamma_id, art_id, value, uri) VALUES (?, ?, ?, ?, ?, ?)";

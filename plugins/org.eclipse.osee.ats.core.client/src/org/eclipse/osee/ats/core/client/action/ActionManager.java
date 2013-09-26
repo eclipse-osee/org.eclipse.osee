@@ -67,7 +67,7 @@ public class ActionManager {
       if (teamDefs.isEmpty()) {
          StringBuffer sb = new StringBuffer("No teams returned for Action's selected Actionable Items\n");
          for (IAtsActionableItem aia : actionableItems) {
-            sb.append("Selected AI \"" + aia + "\" " + aia.getHumanReadableId() + "\n");
+            sb.append("Selected AI \"" + aia + "\" " + aia.getGuid() + "\n");
          }
          throw new OseeStateException(sb.toString());
       }
@@ -97,7 +97,7 @@ public class ActionManager {
 
       // NOTE: The persist of the workflow will auto-email the assignees
       TeamWorkFlowArtifact teamArt =
-         createTeamWorkflow(actionArt, teamDef, actionableItems, assignees, createdDate, createdBy, null, null,
+         createTeamWorkflow(actionArt, teamDef, actionableItems, assignees, createdDate, createdBy, null,
             teamWorkflowArtifactType, newActionListener, transaction, createTeamOption);
       // Notify extension that workflow was created
       if (teamExt != null) {
@@ -106,14 +106,14 @@ public class ActionManager {
       return teamArt;
    }
 
-   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String guid, String hrid, IArtifactType artifactType, INewActionListener newActionListener, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
+   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String guid, IArtifactType artifactType, INewActionListener newActionListener, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
 
       if (!Collections.getAggregate(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
          // Make sure team doesn't already exist
          for (TeamWorkFlowArtifact teamArt : ActionManager.getTeams(actionArt)) {
             if (teamArt.getTeamDefinition().equals(teamDef)) {
                throw new OseeArgumentException("Team [%s] already exists for Action [%s]", teamDef,
-                  actionArt.getHumanReadableId());
+                  AtsUtilCore.getAtsId(actionArt));
             }
          }
       }
@@ -123,7 +123,7 @@ public class ActionManager {
          teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch());
       } else {
          teamArt =
-            (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), guid, hrid);
+            (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), null, guid);
       }
 
       setArtifactIdentifyData(actionArt, teamArt);

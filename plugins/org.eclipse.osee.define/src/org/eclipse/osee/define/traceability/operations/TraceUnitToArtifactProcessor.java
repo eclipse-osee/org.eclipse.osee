@@ -180,7 +180,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       }
       if (traceUnitArtifact == null) {
          traceUnitArtifact =
-            ArtifactTypeManager.addArtifact(traceUnit.getTraceUnitType(), transaction.getBranch(), guid, null);
+            ArtifactTypeManager.addArtifact(traceUnit.getTraceUnitType(), transaction.getBranch(), null, guid);
          traceUnitArtifact.setName(traceUnit.getName());
          artifactWasCreated = true;
       }

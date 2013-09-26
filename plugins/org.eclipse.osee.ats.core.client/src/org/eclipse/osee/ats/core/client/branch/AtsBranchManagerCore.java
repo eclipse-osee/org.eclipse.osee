@@ -70,8 +70,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public class AtsBranchManagerCore {
 
-   private static Map<String, Branch> hridToWorkingBranchCache = new HashMap<String, Branch>();
-   private static Map<String, Long> hridToWorkingBranchCacheUpdated = new HashMap<String, Long>(50);
+   private static Map<String, Branch> idToWorkingBranchCache = new HashMap<String, Branch>();
+   private static Map<String, Long> idToWorkingBranchCacheUpdated = new HashMap<String, Long>(50);
    public static Set<Branch> branchesInCommit = new HashSet<Branch>();
 
    /**
@@ -90,16 +90,16 @@ public class AtsBranchManagerCore {
     */
    public static Branch getWorkingBranch(TeamWorkFlowArtifact teamArt, boolean force) throws OseeCoreException {
       long now = new Date().getTime();
-      boolean notSet = hridToWorkingBranchCacheUpdated.get(teamArt.getHumanReadableId()) == null;
-      if (notSet || force || (now - hridToWorkingBranchCacheUpdated.get(teamArt.getHumanReadableId()) > 1000)) {
-         hridToWorkingBranchCache.put(
-            teamArt.getHumanReadableId(),
+      boolean notSet = idToWorkingBranchCacheUpdated.get(teamArt.getAtsId()) == null;
+      if (notSet || force || (now - idToWorkingBranchCacheUpdated.get(teamArt.getAtsId()) > 1000)) {
+         idToWorkingBranchCache.put(
+            teamArt.getAtsId(),
             getWorkingBranchExcludeStates(teamArt, BranchState.REBASELINED, BranchState.DELETED, BranchState.PURGED,
                BranchState.COMMIT_IN_PROGRESS, BranchState.CREATION_IN_PROGRESS, BranchState.DELETE_IN_PROGRESS,
                BranchState.PURGE_IN_PROGRESS));
-         hridToWorkingBranchCacheUpdated.put(teamArt.getHumanReadableId(), now);
+         idToWorkingBranchCacheUpdated.put(teamArt.getAtsId(), now);
       }
-      return hridToWorkingBranchCache.get(teamArt.getHumanReadableId());
+      return idToWorkingBranchCache.get(teamArt.getAtsId());
    }
 
    /**
@@ -118,8 +118,7 @@ public class AtsBranchManagerCore {
          return null;
       } else if (branches.size() > 1) {
          throw new MultipleBranchesExist(
-            "Unexpected multiple associated un-deleted working branches found for workflow [%s]",
-            teamArt.getHumanReadableId());
+            "Unexpected multiple associated un-deleted working branches found for workflow [%s]", teamArt.getAtsId());
       } else {
          return branches.get(0);
       }

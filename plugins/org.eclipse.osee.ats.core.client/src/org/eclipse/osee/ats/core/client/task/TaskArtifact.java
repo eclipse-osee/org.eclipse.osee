@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -36,7 +37,6 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -45,8 +45,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, IATSStateMachineArtifact {
 
-   public TaskArtifact(String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      super(guid, humanReadableId, branch, artifactType);
+   public TaskArtifact(String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+      super(guid, branch, artifactType);
    }
 
    public boolean isRelatedToParentWorkflowCurrentState() throws OseeCoreException {
@@ -99,14 +99,14 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
       Collection<AbstractWorkflowArtifact> awas =
          getRelatedArtifacts(AtsRelationTypes.TeamWfToTask_TeamWf, AbstractWorkflowArtifact.class);
       if (awas.isEmpty()) {
-         throw new OseeStateException("Task has no parent [%s]", getHumanReadableId());
+         throw new OseeStateException("Task has no parent [%s]", getAtsId());
       }
       parentAwa = awas.iterator().next();
       return parentAwa;
    }
 
    @Override
-   public Artifact getParentActionArtifact() throws OseeCoreException {
+   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
       if (parentAction != null) {
          return parentAction;
       }

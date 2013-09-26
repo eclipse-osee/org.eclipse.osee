@@ -53,8 +53,7 @@ public class AttributeResource {
    public String getAsText() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
       QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory(null);
-      ArtifactReadable exactlyOne =
-         factory.fromBranch(branch).andGuidsOrHrids(artifactUuid).getResults().getExactlyOne();
+      ArtifactReadable exactlyOne = factory.fromBranch(branch).andGuid(artifactUuid).getResults().getExactlyOne();
 
       Optional<? extends AttributeReadable<Object>> item =
          Iterables.tryFind(exactlyOne.getAttributes(), new Predicate<AttributeReadable<Object>>() {

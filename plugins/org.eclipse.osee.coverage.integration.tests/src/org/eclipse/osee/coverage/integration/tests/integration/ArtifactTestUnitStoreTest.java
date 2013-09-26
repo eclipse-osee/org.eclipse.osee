@@ -72,8 +72,7 @@ public class ArtifactTestUnitStoreTest {
       testTopBranch = BranchManager.createTopLevelBranch("Test Top Level Branch");
       testWorkingBranch = BranchManager.createWorkingBranch(CoverageTestUtil.getTestBranch(), "Test Working Branch");
       readOnlyTestUnitNames =
-         ArtifactQuery.getOrCreate(ArtifactTestUnitStore.READ_ONLY_GUID, null, CoreArtifactTypes.GeneralData,
-            testTopBranch);
+         ArtifactQuery.getOrCreate(ArtifactTestUnitStore.READ_ONLY_GUID, CoreArtifactTypes.GeneralData, testTopBranch);
       readOnlyTestUnitNames.setSoleAttributeFromString(CoreAttributeTypes.GeneralStringData, testInputDataReadOnlyList);
    }
 
@@ -106,7 +105,7 @@ public class ArtifactTestUnitStoreTest {
    public void testStore() throws OseeCoreException {
 
       Artifact testArtifact =
-         ArtifactQuery.getOrCreate(coverageTestGuid, null, CoverageArtifactTypes.CoveragePackage, testWorkingBranch);
+         ArtifactQuery.getOrCreate(coverageTestGuid, CoverageArtifactTypes.CoveragePackage, testWorkingBranch);
       testArtifact.setSoleAttributeFromString(CoverageAttributeTypes.UnitTestTable, testInputDataCoverageArtifact);
 
       ArtifactTestUnitStore store = new ArtifactTestUnitStore(testArtifact, readOnlyTestUnitNames);
@@ -129,7 +128,7 @@ public class ArtifactTestUnitStoreTest {
    public void testCoveragePackageEmptyTestUnitTableAttr() throws OseeCoreException {
       // Test when CoveragePackageArtifact has an empty UnitTestTable the ArtifactStore gets testUnits from the readOnly Artifact
       Artifact testCoverageArtifact =
-         ArtifactQuery.getOrCreate(coverageTestGuid, null, CoverageArtifactTypes.CoveragePackage, testWorkingBranch);
+         ArtifactQuery.getOrCreate(coverageTestGuid, CoverageArtifactTypes.CoveragePackage, testWorkingBranch);
       testCoverageArtifact.setSoleAttributeFromString(CoverageAttributeTypes.UnitTestTable, "");
 
       ArtifactTestUnitStore store = new ArtifactTestUnitStore(testCoverageArtifact, readOnlyTestUnitNames);
@@ -159,7 +158,7 @@ public class ArtifactTestUnitStoreTest {
    public void testCoveragePackageTestUnitTableAttr() throws OseeCoreException {
 
       Artifact testCoverageArtifact =
-         ArtifactQuery.getOrCreate(coverageTestGuid, null, CoverageArtifactTypes.CoveragePackage, testWorkingBranch);
+         ArtifactQuery.getOrCreate(coverageTestGuid, CoverageArtifactTypes.CoveragePackage, testWorkingBranch);
       testCoverageArtifact.setSoleAttributeFromString(CoverageAttributeTypes.UnitTestTable,
          testInputDataCoverageArtifact);
 

@@ -35,8 +35,6 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
 
    void setDescription(String description);
 
-   void setHumanReadableId(String hrid);
-
    @Override
    String getDescription();
 

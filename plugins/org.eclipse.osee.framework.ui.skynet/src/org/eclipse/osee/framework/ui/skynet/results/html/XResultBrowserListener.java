@@ -65,9 +65,9 @@ public class XResultBrowserListener implements LocationListener {
                try {
                   java.util.regex.Matcher m = Pattern.compile("^(.*?)\\((.*?)\\)$").matcher(value);
                   if (m.find()) {
-                     String hrid = m.group(1);
+                     String guid = m.group(1);
                      Integer branchId = Integer.parseInt(m.group(2));
-                     Artifact artifact = ArtifactQuery.getArtifactFromId(hrid, BranchManager.getBranch(branchId));
+                     Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranch(branchId));
                      RendererManager.openInJob(artifact, PresentationType.DEFAULT_OPEN);
                   }
                } catch (Exception ex) {

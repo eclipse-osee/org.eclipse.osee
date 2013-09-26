@@ -35,11 +35,6 @@ public final class SystemUser extends AbstractAtsUser {
    }
 
    @Override
-   public String getHumanReadableId() {
-      return "FTNT9";
-   }
-
-   @Override
    public boolean isActive() {
       return true;
    }

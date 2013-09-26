@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -40,7 +39,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -114,7 +112,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
             }
             newTeam =
                ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition, AtsUtil.getAtsBranch(), dslTeamName,
-                  guid, HumanReadableId.generate());
+                  guid);
          }
          if (parentArtifact != null && !parentArtifact.equals(newTeam)) {
             parentArtifact.addChild(newTeam);
@@ -176,8 +174,6 @@ public class ImportAIsAndTeamDefinitionsToDb {
 
    private void importVersionDefinitions(EList<VersionDef> versionDefs, Artifact teamDef) throws OseeCoreException {
 
-      IAtsConfigObject configObject = AtsClientService.get().getConfigObject(teamDef);
-
       Map<String, Artifact> nameToVerArt = new HashMap<String, Artifact>();
       for (VersionDef dslVersionDef : versionDefs) {
          String dslVerName = Strings.unquote(dslVersionDef.getName());
@@ -189,12 +185,9 @@ public class ImportAIsAndTeamDefinitionsToDb {
                dslVersionDef);
          }
          Artifact newVer =
-            ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), dslVerName, guid,
-               HumanReadableId.generate());
+            ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), dslVerName, guid);
 
-         Artifact teamDefArt = AtsClientService.get().getConfigArtifact(configObject);
-
-         teamDefArt.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, newVer);
+         teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, newVer);
          nameToVerArt.put(newVer.getName(), newVer);
          newVersions.put(newVer.getName(), newVer);
          newVer.setSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch,
@@ -238,8 +231,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
                   guid, dslAIDef);
             }
             newAi =
-               ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem, AtsUtil.getAtsBranch(), dslAIName,
-                  guid, HumanReadableId.generate());
+               ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem, AtsUtil.getAtsBranch(), dslAIName, guid);
          }
          if (parentArtifact != null && !parentArtifact.equals(newAi)) {
             parentArtifact.addChild(newAi);

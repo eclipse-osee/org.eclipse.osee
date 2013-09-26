@@ -354,7 +354,7 @@ public class QuickSearchOptionComposite extends Composite {
 
    private enum SearchOption {
       Attribute_Type_Filter(OseeHelpContext.QUICK_SEARCH_TYPE_FILTER, "When selected, searches only through the artifact's containing the selected attribute types.", true, new AttributeTypeFilterConfigHandler()),
-      By_Id(OseeHelpContext.QUICK_SEARCH_BY_ID, "When selected, searches by GUID(s) or HRID(s). Accepts comma or space separated ids.", true),
+      By_Id(OseeHelpContext.QUICK_SEARCH_BY_ID, "When selected, searches by GUID(s). Accepts comma or space separated ids.", true),
       Include_Deleted(OseeHelpContext.QUICK_SEARCH_INCLUDE_DELETED, "When selected, does not filter out deleted artifacts from search results.", false),
       Match_Word_Order(OseeHelpContext.QUICK_SEARCH_WORD_ORDER, "When selected, search will match query word order.", false),
       All_Match_Locations(OseeHelpContext.QUICK_SEARCH_MATCH_ALL, "When selected, returns all match locations. NOTE: If the search matches many artifacts, performance may be slow.", false),

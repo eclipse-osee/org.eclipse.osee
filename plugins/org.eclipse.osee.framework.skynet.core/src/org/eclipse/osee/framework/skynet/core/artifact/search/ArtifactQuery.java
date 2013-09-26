@@ -130,53 +130,53 @@ public class ArtifactQuery {
    }
 
    /**
-    * Checks for existence of an artifact by one its guid or human readable id - otherwise throw an exception
+    * Checks for existence of an artifact by one its guid - otherwise throw an exception
     * 
-    * @param guidOrHrid either the guid or human readable id of the desired artifact
+    * @param guid either the guid of the desired artifact
     * @param allowDeleted whether to return the artifact even if it has been deleted
     * @return one artifact by one its id if it exists, otherwise null
     */
-   public static Artifact checkArtifactFromId(String guidOrHrid, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
-      return getOrCheckArtifactFromId(guidOrHrid, branch, allowDeleted, QueryType.CHECK);
+   public static Artifact checkArtifactFromId(String guid, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
+      return getOrCheckArtifactFromId(guid, branch, allowDeleted, QueryType.CHECK);
    }
 
    /**
     * Checks for existence of an artifact by one its guid or human readable id - otherwise throw an exception
     * 
-    * @param guidOrHrid either the guid or human readable id of the desired artifact
-    * @return one artifact by one its guid or human readable id if it exists, otherwise null
+    * @param guid of the desired artifact
+    * @return one artifact by its guid if it exists, otherwise null
     */
-   public static Artifact checkArtifactFromId(String guidOrHrid, IOseeBranch branch) throws OseeCoreException {
-      return getOrCheckArtifactFromId(guidOrHrid, branch, EXCLUDE_DELETED, QueryType.CHECK);
+   public static Artifact checkArtifactFromId(String guid, IOseeBranch branch) throws OseeCoreException {
+      return getOrCheckArtifactFromId(guid, branch, EXCLUDE_DELETED, QueryType.CHECK);
    }
 
    /**
-    * search for exactly one artifact by one its guid or human readable id - otherwise throw an exception
+    * search for exactly one artifact by one its guid - otherwise throw an exception
     * 
-    * @param guidOrHrid either the guid or human readable id of the desired artifact
-    * @return exactly one artifact by one its guid or human readable id - otherwise throw an exception
+    * @param guid of the desired artifact
+    * @return exactly one artifact by one its guid - otherwise throw an exception
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
-   public static Artifact getArtifactFromId(String guidOrHrid, IOseeBranch branch) throws OseeCoreException {
-      return getOrCheckArtifactFromId(guidOrHrid, branch, EXCLUDE_DELETED, QueryType.GET);
+   public static Artifact getArtifactFromId(String guid, IOseeBranch branch) throws OseeCoreException {
+      return getOrCheckArtifactFromId(guid, branch, EXCLUDE_DELETED, QueryType.GET);
    }
 
    /**
     * search for exactly one artifact by one its guid or human readable id - otherwise throw an exception
     * 
-    * @param guidOrHrid either the guid or human readable id of the desired artifact
+    * @param the guid of the desired artifact
     * @param allowDeleted whether to return the artifact even if it has been deleted
     * @return exactly one artifact by one its guid or human readable id - otherwise throw an exception
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
-   public static Artifact getArtifactFromId(String guidOrHrid, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
-      return getOrCheckArtifactFromId(guidOrHrid, branch, allowDeleted, QueryType.GET);
+   public static Artifact getArtifactFromId(String guid, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
+      return getOrCheckArtifactFromId(guid, branch, allowDeleted, QueryType.GET);
    }
 
-   private static Artifact getOrCheckArtifactFromId(String guidOrHrid, IOseeBranch branch, DeletionFlag allowDeleted, QueryType queryType) throws OseeCoreException {
-      Artifact artifact = ArtifactCache.getActive(guidOrHrid, branch);
+   private static Artifact getOrCheckArtifactFromId(String guid, IOseeBranch branch, DeletionFlag allowDeleted, QueryType queryType) throws OseeCoreException {
+      Artifact artifact = ArtifactCache.getActive(guid, branch);
       if (artifact != null) {
          if (artifact.isDeleted() && allowDeleted == EXCLUDE_DELETED) {
             if (queryType == QueryType.CHECK) {
@@ -187,7 +187,7 @@ public class ArtifactQuery {
          }
          return artifact;
       }
-      return new ArtifactQueryBuilder(guidOrHrid, branch, allowDeleted, FULL).getOrCheckArtifact(queryType);
+      return new ArtifactQueryBuilder(guid, branch, allowDeleted, FULL).getOrCheckArtifact(queryType);
    }
 
    /**
@@ -257,20 +257,20 @@ public class ArtifactQuery {
    }
 
    /**
-    * search for artifacts with any of the given artifact hrids or guids
+    * search for artifacts with any of the given artifact guids
     * 
     * @return a collection of the artifacts found or an empty collection if none are found
     */
-   public static List<Artifact> getArtifactListFromIds(List<String> guidOrHrids, IOseeBranch branch) throws OseeCoreException {
-      return new ArtifactQueryBuilder(guidOrHrids, branch, FULL).getArtifacts(30, null);
+   public static List<Artifact> getArtifactListFromIds(List<String> guids, IOseeBranch branch) throws OseeCoreException {
+      return new ArtifactQueryBuilder(guids, branch, FULL).getArtifacts(30, null);
    }
 
-   public static List<Artifact> getArtifactListFromIds(List<String> guidOrHrids, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
-      return new ArtifactQueryBuilder(guidOrHrids, branch, allowDeleted, FULL).getArtifacts(30, null);
+   public static List<Artifact> getArtifactListFromIds(List<String> guids, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
+      return new ArtifactQueryBuilder(guids, branch, allowDeleted, FULL).getArtifacts(30, null);
    }
 
-   public static List<Artifact> getHistoricalArtifactListFromIds(List<String> guidOrHrids, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
-      return new ArtifactQueryBuilder(guidOrHrids, transactionId, allowDeleted, FULL).getArtifacts(30, null);
+   public static List<Artifact> getHistoricalArtifactListFromIds(List<String> guids, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
+      return new ArtifactQueryBuilder(guids, transactionId, allowDeleted, FULL).getArtifacts(30, null);
    }
 
    public static List<Artifact> getHistoricalArtifactListFromIds(Collection<Integer> artifactIds, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
@@ -281,16 +281,16 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(artifactId, transactionId, allowDeleted, FULL).getOrCheckArtifact(QueryType.GET);
    }
 
-   public static Artifact getHistoricalArtifactFromId(String guidOrHrid, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
-      return new ArtifactQueryBuilder(Arrays.asList(guidOrHrid), transactionId, allowDeleted, FULL).getOrCheckArtifact(QueryType.GET);
+   public static Artifact getHistoricalArtifactFromId(String guid, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
+      return new ArtifactQueryBuilder(Arrays.asList(guid), transactionId, allowDeleted, FULL).getOrCheckArtifact(QueryType.GET);
    }
 
    public static Artifact checkHistoricalArtifactFromId(int artifactId, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifactId, transactionId, allowDeleted, FULL).getOrCheckArtifact(QueryType.CHECK);
    }
 
-   public static Artifact checkHistoricalArtifactFromId(String guidOrHrid, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
-      return new ArtifactQueryBuilder(Arrays.asList(guidOrHrid), transactionId, allowDeleted, FULL).getOrCheckArtifact(QueryType.CHECK);
+   public static Artifact checkHistoricalArtifactFromId(String guid, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
+      return new ArtifactQueryBuilder(Arrays.asList(guid), transactionId, allowDeleted, FULL).getOrCheckArtifact(QueryType.CHECK);
    }
 
    public static List<Artifact> getArtifactListFromName(String artifactName, IOseeBranch branch, DeletionFlag allowDeleted, QueryOption... options) throws OseeCoreException {
@@ -573,7 +573,7 @@ public class ArtifactQuery {
       return reloadedArts;
    }
 
-   public static Artifact getOrCreate(String guid, String hrid, IArtifactType type, IOseeBranch branch) throws OseeCoreException {
+   public static Artifact getOrCreate(String guid, IArtifactType type, IOseeBranch branch) throws OseeCoreException {
       Artifact artifact = null;
       try {
          artifact = ArtifactQuery.getArtifactFromId(guid, branch);
@@ -582,7 +582,7 @@ public class ArtifactQuery {
       }
       if (artifact == null) {
          Branch fullBranch = BranchManager.getBranch(branch);
-         artifact = ArtifactTypeManager.addArtifact(type, fullBranch, guid, hrid);
+         artifact = ArtifactTypeManager.addArtifact(type, fullBranch, null, guid);
       }
       if (artifact == null) {
          throw new ArtifactDoesNotExist("Artifact of type [%s] does not exist on branch [%s]", type, branch);

@@ -234,7 +234,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
             html.append(AHTML.addRowMultiColumnTable(new String[] {
                art.getArtifactTypeName(),
                art.getName(),
-               art.getHumanReadableId()}));
+               art.getAtsId()}));
          }
          html.append(AHTML.endBorderTable());
       } catch (Exception ex) {

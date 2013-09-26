@@ -45,7 +45,7 @@ public class Versions {
             if (version != null) {
                if (!teamWf.getWorkData().isCompletedOrCancelled() && AtsVersionService.get().isReleased(teamWf)) {
                   String errStr =
-                     "Workflow " + teamWf.getHumanReadableId() + " targeted for released version, but not completed: " + version;
+                     "Workflow " + teamWf.getAtsId() + " targeted for released version, but not completed: " + version;
                   // only log error once
                   if (!targetErrorLoggedForId.contains(teamWf.getGuid())) {
                      OseeLog.log(Activator.class, Level.SEVERE, errStr, null);

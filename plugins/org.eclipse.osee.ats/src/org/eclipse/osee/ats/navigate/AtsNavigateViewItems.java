@@ -62,8 +62,8 @@ import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeWithInheritenceSearchItem;
 import org.eclipse.osee.ats.world.search.GoalSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
-import org.eclipse.osee.ats.world.search.MultipleHridSearchData;
-import org.eclipse.osee.ats.world.search.MultipleHridSearchOperation;
+import org.eclipse.osee.ats.world.search.MultipleIdSearchData;
+import org.eclipse.osee.ats.world.search.MultipleIdSearchOperation;
 import org.eclipse.osee.ats.world.search.MyFavoritesGoalsSearchItem;
 import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
 import org.eclipse.osee.ats.world.search.MyGoalWorkflowItem;
@@ -166,11 +166,11 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
 
          // Search Items
          items.add(new XNavigateItemOperation(item, FrameworkImage.BRANCH_CHANGE, "Open Change Report(s) by ID(s)",
-            new MultipleHridSearchOperationFactory("Open Change Report(s) by ID(s)", AtsEditor.ChangeReport)));
+            new MultipleIdSearchOperationFactory("Open Change Report(s) by ID(s)", AtsEditor.ChangeReport)));
          items.add(new XNavigateItemOperation(item, AtsImage.OPEN_BY_ID, "Search by ID(s) - Open World Editor",
-            new MultipleHridSearchOperationFactory("Search by ID(s) - Open World Editor", AtsEditor.WorldEditor)));
+            new MultipleIdSearchOperationFactory("Search by ID(s) - Open World Editor", AtsEditor.WorldEditor)));
          items.add(new XNavigateItemOperation(item, AtsImage.WORKFLOW_CONFIG, "Search by ID(s) - Open Workflow Editor",
-            new MultipleHridSearchOperationFactory("Search by ID(s) - Open Workflow Editor", AtsEditor.WorkflowEditor)));
+            new MultipleIdSearchOperationFactory("Search by ID(s) - Open Workflow Editor", AtsEditor.WorkflowEditor)));
          items.add(new XNavigateItemOperation(item, AtsImage.GLOBE, "Quick Search",
             new AtsQuickSearchOperationFactory()));
 
@@ -344,19 +344,19 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
       items.addAll(nameToNavItem.values());
    }
 
-   private static final class MultipleHridSearchOperationFactory implements IOperationFactory {
+   private static final class MultipleIdSearchOperationFactory implements IOperationFactory {
 
       private final AtsEditor atsEditor;
       private final String operationName;
 
-      public MultipleHridSearchOperationFactory(String operationName, AtsEditor atsEditor) {
+      public MultipleIdSearchOperationFactory(String operationName, AtsEditor atsEditor) {
          this.operationName = operationName;
          this.atsEditor = atsEditor;
       }
 
       @Override
       public IOperation createOperation() {
-         return new MultipleHridSearchOperation(new MultipleHridSearchData(operationName, atsEditor));
+         return new MultipleIdSearchOperation(new MultipleIdSearchData(operationName, atsEditor));
       }
    }
 

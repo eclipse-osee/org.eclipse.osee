@@ -33,11 +33,11 @@ public class LogItem implements IAtsLogItem {
    private LogType type = LogType.None;
    private final String userId;
 
-   public LogItem(LogType type, Date date, IAtsUser user, String state, String msg, String hrid, IAtsUserService userService) throws OseeCoreException {
-      this(type.name(), String.valueOf(date.getTime()), user.getUserId(), state, msg, hrid, userService);
+   public LogItem(LogType type, Date date, IAtsUser user, String state, String msg, String atsId, IAtsUserService userService) throws OseeCoreException {
+      this(type.name(), String.valueOf(date.getTime()), user.getUserId(), state, msg, atsId, userService);
    }
 
-   public LogItem(LogType type, String date, String userId, String state, String msg, String hrid, IAtsUserService userService) throws OseeCoreException {
+   public LogItem(LogType type, String date, String userId, String state, String msg, String atsId, IAtsUserService userService) throws OseeCoreException {
       Long dateLong = Long.valueOf(date);
       this.date = new Date(dateLong.longValue());
       this.msg = msg;
@@ -47,8 +47,8 @@ public class LogItem implements IAtsLogItem {
       this.type = type;
    }
 
-   public LogItem(String type, String date, String userId, String state, String msg, String hrid, IAtsUserService userService) throws OseeCoreException {
-      this(LogType.getType(type), date, userId, state, msg, hrid, userService);
+   public LogItem(String type, String date, String userId, String state, String msg, String atsId, IAtsUserService userService) throws OseeCoreException {
+      this(LogType.getType(type), date, userId, state, msg, atsId, userService);
    }
 
    @Override

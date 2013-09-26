@@ -41,7 +41,7 @@ public class ExportArtifacts extends AbstractBlam {
    private ISheetWriter excelWriter;
    private IAttributeType[] attributeColumns;
    private AttributeType nameAttributeType;
-   private static final int NUM_FIXED_COLUMNS = 4;
+   private static final int NUM_FIXED_COLUMNS = 3;
 
    @Override
    public String getName() {
@@ -70,7 +70,6 @@ public class ExportArtifacts extends AbstractBlam {
       String[] row = new String[attributeColumns.length + NUM_FIXED_COLUMNS];
       excelWriter.startSheet("Artifacts", row.length);
       excelWriter.writeCell("GUID");
-      excelWriter.writeCell("HRID");
       excelWriter.writeCell("Artifact Type");
       excelWriter.writeCell("Name");
       for (IAttributeType attributeType : attributeColumns) {
@@ -81,9 +80,8 @@ public class ExportArtifacts extends AbstractBlam {
       for (Artifact artifact : artifacts) {
          Arrays.fill(row, null);
          row[0] = artifact.getGuid();
-         row[1] = artifact.getHumanReadableId();
-         row[2] = artifact.getArtifactTypeName();
-         row[3] = artifact.getName();
+         row[1] = artifact.getArtifactTypeName();
+         row[2] = artifact.getName();
          for (IAttributeType attributeType : artifact.getAttributeTypes()) {
             if (!attributeType.equals(nameAttributeType)) {
                String value = artifact.getAttributesToString(attributeType);

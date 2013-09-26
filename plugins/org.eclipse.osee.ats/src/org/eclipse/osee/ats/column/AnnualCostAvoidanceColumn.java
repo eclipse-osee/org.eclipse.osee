@@ -126,10 +126,10 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
                return new Result("Weekly Benefit Hours not set.");
             }
          } catch (NumberFormatException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "HRID " + artifact.getHumanReadableId(), ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "ID " + artifact.getAtsId(), ex);
             return new Result("Weekly Benefit value is invalid double \"" + value + "\"");
          } catch (Exception ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "HRID " + artifact.getHumanReadableId(), ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "ID " + artifact.getAtsId(), ex);
             return new Result("Exception calculating cost avoidance.  See log for details.");
          }
          return Result.TrueResult;

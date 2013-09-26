@@ -106,7 +106,7 @@ public class NoteItem {
       this.user = user;
    }
 
-   public static List<NoteItem> fromXml(String xml, String hrid) {
+   public static List<NoteItem> fromXml(String xml, String atsId) {
       List<NoteItem> logItems = new ArrayList<NoteItem>();
       try {
          if (Strings.isValid(xml)) {
@@ -119,7 +119,7 @@ public class NoteItem {
                      element.getAttribute("date"), user, element.getAttribute("msg"));
                   logItems.add(item);
                } catch (UserNotInDatabase ex) {
-                  OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error parsing notes for [%s]", hrid);
+                  OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error parsing notes for [%s]", atsId);
                   NoteItem item =
                      new NoteItem(element.getAttribute("type"),
                         element.getAttribute("state"), // NOPMD by b0727536 on 9/29/10 8:52 AM

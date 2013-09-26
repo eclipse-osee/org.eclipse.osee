@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -65,7 +64,7 @@ public class UserDataWriter {
          String guid = GUID.isValid(userToken.getGuid()) ? userToken.getGuid() : GUID.create();
          user =
             (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, BranchManager.getCommonBranch(),
-               userToken.getName(), guid, HumanReadableId.generate());
+               userToken.getName(), guid);
          user.setActive(userToken.isActive());
          user.setUserID(userToken.getUserId());
          user.setEmail(userToken.getEmail());

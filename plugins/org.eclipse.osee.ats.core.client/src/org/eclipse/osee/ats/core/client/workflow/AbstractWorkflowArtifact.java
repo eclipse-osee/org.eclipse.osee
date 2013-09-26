@@ -92,8 +92,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    private boolean inTransition = false;
    private IAtsWorkData atsWorkData;
 
-   public AbstractWorkflowArtifact(String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      super(guid, humanReadableId, branch, artifactType);
+   public AbstractWorkflowArtifact(String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+      super(guid, branch, artifactType);
       stateMgr = new StateManager(this);
       atsLog = AtsCore.getLogFactory().getLog(new ArtifactLog(this), AtsCore.getUserService());
       atsNote = new AtsNote(new ArtifactNote(this));
@@ -171,7 +171,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @SuppressWarnings("unused")
-   public Artifact getParentActionArtifact() throws OseeCoreException {
+   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
       return parentAction;
    }
 
@@ -332,12 +332,12 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
                if (rString == null) {
                   rString = RelationManager.reportHasDirtyLinks(artifact);
                }
-               return new Result(true, String.format("Artifact [%s][%s] is dirty\n\n%s", artifact.getHumanReadableId(),
-                  artifact, rString));
+               return new Result(true, String.format("Artifact [%s][%s] is dirty\n\n%s", artifact, artifact.getGuid(),
+                  rString));
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't save artifact " + getHumanReadableId(), ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't save artifact " + getAtsId(), ex);
       }
       return Result.FalseResult;
    }
@@ -353,7 +353,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
             artifact.persist(transaction);
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't save artifact " + getHumanReadableId(), ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't save artifact " + getAtsId(), ex);
       }
    }
 
@@ -368,7 +368,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't revert artifact " + getHumanReadableId(), ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't revert artifact " + getAtsId(), ex);
       }
    }
 
@@ -761,4 +761,21 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       }
       return atsWorkData;
    }
+
+   @Override
+   public String getAtsId() {
+      String toReturn = getGuid();
+      try {
+         toReturn = getSoleAttributeValueAsString(AtsAttributeTypes.AtsId, toReturn);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.WARNING, ex);
+      }
+      return toReturn;
+   }
+
+   @Override
+   public void setAtsId(String atsId) throws OseeCoreException {
+      setSoleAttributeFromString(AtsAttributeTypes.AtsId, atsId);
+   }
+
 }

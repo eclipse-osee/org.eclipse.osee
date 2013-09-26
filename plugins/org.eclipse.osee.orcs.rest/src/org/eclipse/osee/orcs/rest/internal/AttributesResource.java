@@ -57,7 +57,7 @@ public class AttributesResource {
    public String getAllAttributes() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
       QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory(null);
-      ArtifactReadable artifact = factory.fromBranch(branch).andGuidsOrHrids(artifactUuid).getResults().getExactlyOne();
+      ArtifactReadable artifact = factory.fromBranch(branch).andGuid(artifactUuid).getResults().getExactlyOne();
 
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(artifact.getAttributes());

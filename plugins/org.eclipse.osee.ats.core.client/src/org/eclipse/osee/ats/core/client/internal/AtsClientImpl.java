@@ -51,9 +51,9 @@ import org.eclipse.osee.ats.core.client.internal.user.AtsUserAdminImpl;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCache;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCacheProvider;
+import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
@@ -64,7 +64,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
@@ -251,8 +250,8 @@ public class AtsClientImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsVersion createVersion(String title, String create, String generate) throws OseeCoreException {
-      IAtsVersion item = versionFactory.createVersion(title, create, generate);
+   public IAtsVersion createVersion(String title, String guid) throws OseeCoreException {
+      IAtsVersion item = versionFactory.createVersion(title, guid);
       AtsArtifactConfigCache cache = getConfigCache();
       cache.cache(item);
       return item;
@@ -344,7 +343,7 @@ public class AtsClientImpl implements IAtsClient {
          results = (Artifact) atsObject;
       } else {
          try {
-            results = ArtifactQuery.getArtifactFromId(atsObject.getGuid(), AtsUtilCore.getAtsBranchToken());
+            results = AtsArtifactQuery.getArtifactFromId(atsObject.getGuid());
          } catch (ArtifactDoesNotExist ex) {
             // do nothing
          }

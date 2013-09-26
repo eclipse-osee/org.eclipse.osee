@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.logging.Level;
-
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IResource;
@@ -132,7 +131,7 @@ public class TraceResourceDropOperation extends AbstractOperation {
       }
 
       if (testUnitArtifact == null) {
-         testUnitArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestCase, branch, tag, null);
+         testUnitArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestCase, branch, null, tag);
          testUnitArtifact.setName(name);
          HierarchyHandler.addArtifact(transaction, testUnitArtifact);
          if (tagSource) {

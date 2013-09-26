@@ -47,7 +47,6 @@ public class TeamDefinitionArtifactReader extends AbstractAtsArtifactReader<IAts
    public IAtsTeamDefinition load(AtsArtifactConfigCache cache, Artifact teamDefArt) throws OseeCoreException {
       IAtsTeamDefinition teamDef = getOrCreateTeamDefinition(cache, teamDefArt);
 
-      teamDef.setHumanReadableId(teamDefArt.getHumanReadableId());
       teamDef.setName(teamDefArt.getName());
       teamDef.setActive(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Active, false));
       teamDef.setActionable(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Actionable, false));

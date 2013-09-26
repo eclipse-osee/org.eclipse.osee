@@ -122,8 +122,7 @@ public final class WordOutlineAndStyleTest {
    public void setUp() throws Exception {
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(DemoBranches.SAW_Bld_1);
       String name = WordOutlineAndStyleTest.class.getSimpleName() + "_Folder";
-      folder =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoBranches.SAW_Bld_1, name, GUID.create(), "12345");
+      folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoBranches.SAW_Bld_1, name, GUID.create());
       root.addChild(folder);
       root.persist(name);
    }

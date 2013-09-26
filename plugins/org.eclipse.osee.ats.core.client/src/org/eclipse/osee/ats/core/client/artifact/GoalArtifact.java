@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.client.artifact;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
+import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.GoalArtifactMembersCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -27,12 +28,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class GoalArtifact extends AbstractWorkflowArtifact implements IAtsGoal {
 
-   public GoalArtifact(String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      super(guid, humanReadableId, branch, artifactType);
+   public GoalArtifact(String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+      super(guid, branch, artifactType);
    }
 
    @Override
-   public Artifact getParentActionArtifact() {
+   public ActionArtifact getParentActionArtifact() {
       return null;
    }
 

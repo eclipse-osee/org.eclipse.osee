@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
@@ -47,25 +46,16 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public ArtifactData create(IOseeBranch branch, IArtifactType artifactType, String guid) throws OseeCoreException {
-      return create(branch, artifactType, guid, null);
-   }
-
-   @Override
-   public ArtifactData create(IOseeBranch branch, IArtifactType token, String guid, String hrid) throws OseeCoreException {
+   public ArtifactData create(IOseeBranch branch, IArtifactType token, String guid) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
 
       Conditions.checkExpressionFailOnTrue(artifactCache.isAbstract(token),
          "Cannot create an instance of abstract type [%s]", token);
 
       String guidToSet = idFactory.getUniqueGuid(guid);
-      String humanReadableId = idFactory.getUniqueHumanReadableId(hrid);
 
       Conditions.checkExpressionFailOnTrue(!GUID.isValid(guidToSet),
          "Invalid guid [%s] during artifact creation [type: %s]", guidToSet, token);
-
-      Conditions.checkExpressionFailOnTrue(!HumanReadableId.isValid(humanReadableId),
-         "Invalid human readable id [%s] during artifact creation [type: %s, guid: %s]", humanReadableId, token, guid);
 
       int branchId = idFactory.getBranchId(branch);
 
@@ -74,8 +64,7 @@ public class DataFactoryImpl implements DataFactory {
 
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       int artifactId = idFactory.getNextArtifactId();
-      ArtifactData artifactData =
-         objectFactory.createArtifactData(version, artifactId, token, modType, guidToSet, humanReadableId);
+      ArtifactData artifactData = objectFactory.createArtifactData(version, artifactId, token, modType, guidToSet);
       return artifactData;
    }
 
@@ -84,7 +73,6 @@ public class DataFactoryImpl implements DataFactory {
       ArtifactData copy = objectFactory.createCopy(source);
       updateDataForCopy(destination, copy);
       copy.setGuid(idFactory.getUniqueGuid(null));
-      copy.setHumanReadableId(idFactory.getUniqueHumanReadableId(null));
       copy.setLocalId(idFactory.getNextArtifactId());
       return copy;
    }

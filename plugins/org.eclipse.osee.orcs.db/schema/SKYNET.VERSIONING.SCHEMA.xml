@@ -32,7 +32,6 @@
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ART_TYPE_ID" defaultValue="not null" type="smallint" />
 		<Column id="GUID" defaultValue="not null" limits="22" type="VARCHAR" />
-		<Column id="HUMAN_READABLE_ID" defaultValue="not null" limits="5" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_ART__G_A_PK" type="PRIMARY KEY" appliesTo="ART_ID, GAMMA_ID" />
 	 	<Constraint schema="OSEE" id="OSEE_ART__ART_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ART_TYPE_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_TYPE_ID_MAP" column="LOCAL_ID" />
@@ -55,7 +54,6 @@
 		<Column id="ART_ID" description="unique identifier of this artifact" />
 		<Column id="ART_TYPE_ID" description="this artifact&apos;s type - foreign key to osee_artifact_type.art_type_id " />
 		<Column id="GUID" description="Global Unique IDentifier of this artifact" />
-		<Column id="HUMAN_READABLE_ID" description="a human understandble unique identifier of this artifact" />
 	</TableDescription>
 
 	<Table name="OSEE_ATTRIBUTE" schema="OSEE" tablespace="osee_data">

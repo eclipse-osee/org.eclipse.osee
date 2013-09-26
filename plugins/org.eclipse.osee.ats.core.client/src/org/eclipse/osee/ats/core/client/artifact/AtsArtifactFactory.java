@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
@@ -22,6 +23,7 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.util.AtsIdProvider;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -49,22 +51,28 @@ public class AtsArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+   public Artifact getArtifactInstance(String guid, Branch branch, IArtifactType artifactType, boolean inDataStore) throws OseeCoreException {
+      Artifact toReturn;
       if (artifactType.equals(AtsArtifactTypes.Task)) {
-         return new TaskArtifact(guid, humandReadableId, branch, artifactType);
+         toReturn = new TaskArtifact(guid, branch, artifactType);
       } else if (ArtifactTypeManager.inheritsFrom(artifactType, AtsArtifactTypes.TeamWorkflow)) {
-         return new TeamWorkFlowArtifact(guid, humandReadableId, branch, artifactType);
+         toReturn = new TeamWorkFlowArtifact(guid, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.DecisionReview)) {
-         return new DecisionReviewArtifact(guid, humandReadableId, branch, artifactType);
+         toReturn = new DecisionReviewArtifact(guid, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.PeerToPeerReview)) {
-         return new PeerToPeerReviewArtifact(guid, humandReadableId, branch, artifactType);
+         toReturn = new PeerToPeerReviewArtifact(guid, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.Goal)) {
-         return new GoalArtifact(guid, humandReadableId, branch, artifactType);
+         toReturn = new GoalArtifact(guid, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.Action)) {
-         return new ActionArtifact(guid, humandReadableId, branch, artifactType);
+         toReturn = new ActionArtifact(guid, branch, artifactType);
       } else {
          throw new OseeArgumentException("AtsArtifactFactory did not recognize the artifact type [%s]", artifactType);
       }
+      if (!inDataStore) {
+         String id = AtsIdProvider.get().getNextId();
+         toReturn.setSoleAttributeFromString(AtsAttributeTypes.AtsId, id);
+      }
+      return toReturn;
    }
 
    @Override

@@ -74,7 +74,7 @@ public class OpenMultipleWorkProductsAction extends Action {
             for (WorkProductAction action : provider.getWorkProductRelatedActions()) {
                guids.add(action.getGuid());
             }
-            service.openArtifactsById(coverageEditor.getTitle() + " - Work Products", guids,
+            service.openArtifactsByGuid(coverageEditor.getTitle() + " - Work Products", guids,
                OseeCmEditor.CmMultiPcrEditor);
             return Status.OK_STATUS;
          }

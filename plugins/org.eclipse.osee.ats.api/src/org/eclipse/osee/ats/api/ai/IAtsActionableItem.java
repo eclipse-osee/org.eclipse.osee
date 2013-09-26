@@ -24,8 +24,6 @@ public interface IAtsActionableItem extends IAtsConfigObject {
    /*****************************
     * Name, Full Name, Description
     ******************************/
-   void setHumanReadableId(String humanReadableId);
-
    void setName(String name) throws OseeCoreException;
 
    void setDescription(String description);

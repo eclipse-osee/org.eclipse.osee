@@ -62,7 +62,7 @@ public class AtsBranchCommitOperation extends AbstractOperation {
          AtsBranchManagerCore.branchesInCommit.add(workflowWorkingBranch);
          if (workflowWorkingBranch == null) {
             throw new OseeStateException("Commit Branch Failed: Can not locate branch for workflow [%s]",
-               teamArt.getHumanReadableId());
+               teamArt.getAtsId());
          }
 
          // Confirm that all blocking reviews are completed

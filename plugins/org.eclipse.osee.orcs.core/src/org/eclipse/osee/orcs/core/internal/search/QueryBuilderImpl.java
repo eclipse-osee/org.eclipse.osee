@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
@@ -148,43 +147,34 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andGuidsOrHrids(String... ids) throws OseeCoreException {
-      return andGuidsOrHrids(Arrays.asList(ids));
-   }
-
-   @Override
    public QueryBuilder andLocalIds(Collection<Integer> artifactIds) throws OseeCoreException {
       Criteria criteria = criteriaFactory.createArtifactIdCriteria(artifactIds);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public QueryBuilder andGuidsOrHrids(Collection<String> ids) throws OseeCoreException {
+   public QueryBuilder andGuid(String id) throws OseeCoreException {
+      return andGuids(Collections.singleton(id));
+   }
+
+   @Override
+   public QueryBuilder andGuids(Collection<String> ids) throws OseeCoreException {
       Set<String> guids = new HashSet<String>();
-      Set<String> hrids = new HashSet<String>();
       Set<String> invalids = new HashSet<String>();
       for (String id : ids) {
          if (GUID.isValid(id)) {
             guids.add(id);
          } else {
-            String hrid = id.toUpperCase();
-            if (HumanReadableId.isValid(hrid)) {
-               hrids.add(hrid);
-            } else {
-               invalids.add(id);
-            }
+            invalids.add(id);
          }
       }
-      Conditions.checkExpressionFailOnTrue(!invalids.isEmpty(), "Invalid guids or hrids detected - %s", invalids);
+
+      Conditions.checkExpressionFailOnTrue(!invalids.isEmpty(), "Invalid guids detected - %s", invalids);
       if (!guids.isEmpty()) {
          Criteria guidCriteria = criteriaFactory.createArtifactGuidCriteria(guids);
          addAndCheck(getQueryData(), guidCriteria);
       }
 
-      if (!hrids.isEmpty()) {
-         Criteria hridCriteria = criteriaFactory.createArtifactHridCriteria(hrids);
-         addAndCheck(getQueryData(), hridCriteria);
-      }
       return this;
    }
 
@@ -277,7 +267,7 @@ public class QueryBuilderImpl implements QueryBuilder {
       for (Identity<String> id : ids) {
          guids.add(id.getGuid());
       }
-      return andGuidsOrHrids(guids);
+      return andGuids(guids);
    }
 
    @Override

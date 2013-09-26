@@ -20,8 +20,6 @@ import org.eclipse.osee.framework.core.data.Identifiable;
  */
 public interface IAtsObject extends Identifiable, HasDescription {
 
-   String getHumanReadableId();
-
    String toStringWithId();
 
 }

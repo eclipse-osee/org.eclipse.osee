@@ -157,7 +157,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
                if (parentArtifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                   artifact = ((TeamWorkFlowArtifact) parentArtifact).getParentActionArtifact();
                } else {
-                  OseeLog.log(Activator.class, Level.SEVERE, "Unknown parent " + art.getHumanReadableId());
+                  OseeLog.log(Activator.class, Level.SEVERE, "Unknown parent " + AtsUtilCore.getAtsId(art));
                }
             }
          }
@@ -182,7 +182,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
    private void setTooltips() {
       try {
          if (!GoalManager.isGoalArtifact(activeAwa) && !PeerToPeerReviewManager.isStandAlongReview(activeAwa)) {
-            ActionArtifact actionArt = (ActionArtifact) activeAwa.getParentActionArtifact();
+            ActionArtifact actionArt = activeAwa.getParentActionArtifact();
             if (actionArt != null) {
                for (TeamWorkFlowArtifact teamArt : actionArt.getTeams()) {
                   GraphItem item = viewer.findGraphItem(teamArt);

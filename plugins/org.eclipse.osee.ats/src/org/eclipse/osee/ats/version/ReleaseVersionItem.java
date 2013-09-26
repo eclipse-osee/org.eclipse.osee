@@ -83,7 +83,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                verArt)) {
                if (!team.isCancelled() && !team.isCompleted()) {
                   errorStr =
-                     "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getHumanReadableId() + " - is in the\"" + team.getStateMgr().getCurrentStateName() + "\" state.";
+                     "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getAtsId() + " - is in the\"" + team.getStateMgr().getCurrentStateName() + "\" state.";
                }
             }
             if (errorStr != null) {

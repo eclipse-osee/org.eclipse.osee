@@ -73,7 +73,7 @@ public class OseeDslRoleContextProviderTest {
       Assert.assertEquals(1, contextIds.size());
       Assert.assertEquals(contextGuid1, contextIds.iterator().next().getGuid());
 
-      Artifact role2User = ArtifactQuery.getOrCreate(role2Guid, null, CoreArtifactTypes.Artifact, CoreBranches.COMMON);
+      Artifact role2User = ArtifactQuery.getOrCreate(role2Guid, CoreArtifactTypes.Artifact, CoreBranches.COMMON);
       role2User.persist("Test User");
       contextIds = contextProvider.getContextId(role2User);
 

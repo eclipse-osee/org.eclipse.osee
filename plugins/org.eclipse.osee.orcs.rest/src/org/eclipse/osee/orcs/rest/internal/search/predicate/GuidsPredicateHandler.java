@@ -23,19 +23,19 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
  * @author John R. Misinco
  * @author Roberto E. Escobar
  */
-public class GuidOrHridsPredicateHandler implements PredicateHandler {
+public class GuidsPredicateHandler implements PredicateHandler {
 
    @Override
    public QueryBuilder handle(QueryBuilder builder, Predicate predicate) throws OseeCoreException {
-      if (predicate.getType() != SearchMethod.GUID_OR_HRIDS) {
-         throw new OseeArgumentException("This predicate handler only supports [%s]", SearchMethod.GUID_OR_HRIDS);
+      if (predicate.getType() != SearchMethod.GUIDS) {
+         throw new OseeArgumentException("This predicate handler only supports [%s]", SearchMethod.GUIDS);
       }
       Collection<String> values = predicate.getValues();
 
       Conditions.checkNotNull(values, "values");
 
       if (!values.isEmpty()) {
-         builder.andGuidsOrHrids(values);
+         builder.andGuids(values);
       }
 
       return builder;

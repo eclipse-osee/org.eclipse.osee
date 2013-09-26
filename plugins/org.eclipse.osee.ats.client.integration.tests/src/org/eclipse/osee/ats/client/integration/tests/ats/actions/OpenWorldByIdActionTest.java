@@ -22,7 +22,7 @@ public class OpenWorldByIdActionTest extends AbstractAtsActionRunTest {
    @Override
    public OpenWorldByIdAction createAction() throws OseeCoreException {
       OpenWorldByIdAction action = new OpenWorldByIdAction();
-      action.setOverrideIdString(AtsTestUtil.getTeamWf().getHumanReadableId());
+      action.setOverrideIdString(AtsTestUtil.getTeamWf().getAtsId());
       action.setPend(true);
       return action;
    }

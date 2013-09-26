@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
@@ -79,7 +78,6 @@ public class TxSqlBuilderTest {
 
    private static final int ITEM_ID = 789;
    private static final String EXP_GUID = GUID.create();
-   private static final String HRID = HumanReadableId.generate();
    private static final long TYPE_UUID = 72132144189L;
    private static final int TYPE_ID = 567;
 
@@ -133,7 +131,6 @@ public class TxSqlBuilderTest {
       artData.setLocalId(ITEM_ID);
       artData.setTypeUuid(TYPE_UUID);
       artData.setGuid(EXP_GUID);
-      artData.setHumanReadableId(HRID);
 
       attrData = new AttributeDataImpl(versionData);
       attrData.setLocalId(ITEM_ID);
@@ -204,7 +201,7 @@ public class TxSqlBuilderTest {
          verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS, SqlOrderEnum.ARTIFACTS));
 
          // @formatter:off
-         verifyRow(SqlOrderEnum.ARTIFACTS, ITEM_ID, TYPE_ID, NEXT_GAMMA_ID, EXP_GUID, HRID);
+         verifyRow(SqlOrderEnum.ARTIFACTS, ITEM_ID, TYPE_ID, NEXT_GAMMA_ID, EXP_GUID);
          verifyRow(SqlOrderEnum.TXS, EXPECTED_TX_ID, NEXT_GAMMA_ID, modType.getValue(), TxChange.CURRENT.getValue(), EXPECTED_BRANCH_ID);
          verifyQuery(SqlOrderEnum.ARTIFACTS);
          // @formatter:on

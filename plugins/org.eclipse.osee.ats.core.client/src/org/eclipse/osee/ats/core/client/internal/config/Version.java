@@ -53,8 +53,8 @@ public class Version extends AtsObject implements IAtsVersion {
 
    private final IAtsVersionService versionService;
 
-   public Version(IAtsVersionService versionService, String name, String guid, String humanReadableId) {
-      super(name, guid, humanReadableId);
+   public Version(IAtsVersionService versionService, String name, String guid) {
+      super(name, guid);
       this.versionService = versionService;
    }
 
@@ -256,11 +256,6 @@ public class Version extends AtsObject implements IAtsVersion {
       } catch (OseeCoreException ex) {
          throw new IllegalArgumentException("error setting name", ex);
       }
-   }
-
-   @Override
-   public void setHumanReadableId(String humanReadableId) {
-      super.setHumanReadableId(humanReadableId);
    }
 
    public boolean isActive() {

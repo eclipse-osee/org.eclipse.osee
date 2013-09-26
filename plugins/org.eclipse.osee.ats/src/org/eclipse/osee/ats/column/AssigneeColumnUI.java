@@ -113,11 +113,11 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
       for (AbstractWorkflowArtifact awa : awas) {
          if (awa.isCompleted()) {
             AWorkbench.popup("ERROR",
-               "Can't assign completed " + awa.getArtifactTypeName() + " (" + awa.getHumanReadableId() + ")");
+               "Can't assign completed " + awa.getArtifactTypeName() + " (" + awa.getAtsId() + ")");
             return false;
          } else if (awa.isCancelled()) {
             AWorkbench.popup("ERROR",
-               "Can't assign cancelled " + awa.getArtifactTypeName() + " (" + awa.getHumanReadableId() + ")");
+               "Can't assign cancelled " + awa.getArtifactTypeName() + " (" + awa.getAtsId() + ")");
             return false;
          }
       }

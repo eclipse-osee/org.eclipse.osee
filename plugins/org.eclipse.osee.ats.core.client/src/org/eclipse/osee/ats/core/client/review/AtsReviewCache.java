@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class AtsReviewCache {
 
-   // HRID to Reivew Artifacts
+   // GUID to Reivew Artifacts
    private static Map<String, Collection<AbstractReviewArtifact>> teamReviewCache =
       new ConcurrentHashMap<String, Collection<AbstractReviewArtifact>>();
 
@@ -36,24 +36,24 @@ public class AtsReviewCache {
 
    public static void decache(Artifact sma) {
       if (sma != null) {
-         teamReviewCache.remove(sma.getHumanReadableId());
+         teamReviewCache.remove(sma.getGuid());
       }
    }
 
    public static void decache(AbstractTaskableArtifact sma) {
       if (sma != null) {
-         teamReviewCache.remove(sma.getHumanReadableId());
+         teamReviewCache.remove(sma.getGuid());
       }
    }
 
    public static Collection<AbstractReviewArtifact> getReviewArtifacts(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Collection<AbstractReviewArtifact> reviews = teamReviewCache.get(teamArt.getHumanReadableId());
+      Collection<AbstractReviewArtifact> reviews = teamReviewCache.get(teamArt.getGuid());
       if (reviews == null || containsDeleted(reviews)) {
          //         System.out.println("caching reviews for " + teamArt.toStringWithId());
          // Get and cache tasks
          reviews =
             teamArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_Review, AbstractReviewArtifact.class);
-         teamReviewCache.put(teamArt.getHumanReadableId(), reviews);
+         teamReviewCache.put(teamArt.getGuid(), reviews);
       }
       return reviews;
    }

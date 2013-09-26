@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.column.AtsIdColumn;
 import org.eclipse.osee.ats.column.LegacyPcrIdColumn;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.column.StateColumn;
@@ -44,7 +45,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactNameColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.HridColumn;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -135,7 +135,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       public ReviewParticipationXViewerFactory(IAtsUser user) {
          super(MASS_XVIEWER_CUSTOMIZE_NAMESPACE);
          registerColumns(ArtifactTypeColumn.getInstance());
-         registerColumns(new HridColumn());
+         registerColumns(new AtsIdColumn());
          registerColumns(LegacyPcrIdColumn.getInstance());
          registerColumns(StateColumn.getInstance());
          registerColumns(new XViewerSmaCompletedDateColumn("Completed"));

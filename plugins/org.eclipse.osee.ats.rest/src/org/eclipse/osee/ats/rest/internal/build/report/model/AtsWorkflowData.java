@@ -23,7 +23,7 @@ public class AtsWorkflowData {
    private String workflowBuildId;
    private String State;
    private String workflowType;
-   private String workflowHrid;
+   private String workflowAtsId;
    private String workflowPcrId;
    private String workflowDescription;
    private String workflowChangeType;
@@ -99,12 +99,12 @@ public class AtsWorkflowData {
       this.workflowType = workflowType;
    }
 
-   public String getWorkflowHrid() {
-      return workflowHrid;
+   public String getWorkflowAtsId() {
+      return workflowAtsId;
    }
 
-   public void setWorkflowHrid(String workflowHrid) {
-      this.workflowHrid = workflowHrid;
+   public void setWorkflowAtsId(String workflowAtsId) {
+      this.workflowAtsId = workflowAtsId;
    }
 
    public String getWorkflowPcrId() {

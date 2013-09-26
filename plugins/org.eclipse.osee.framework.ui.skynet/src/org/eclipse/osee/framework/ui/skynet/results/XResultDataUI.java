@@ -30,11 +30,11 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulatio
 public class XResultDataUI {
 
    /*
-    * Creates hyperlink using name. Default editor will open hrid for branchId given
+    * Creates hyperlink using name. Default editor will open guid for branchId given
     */
-   public static String getHyperlink(String name, String hrid, int branchId) {
+   public static String getHyperlink(String name, String guid, int branchId) {
       return AHTML.getHyperlink(
-         XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactBranch, hrid + "(" + branchId + ")"),
+         XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactBranch, guid + "(" + branchId + ")"),
          name);
    }
 
@@ -48,17 +48,17 @@ public class XResultDataUI {
          name);
    }
 
-   public static String getHyperlinkForArtifactEditor(String name, String hrid) {
-      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactEditor, hrid),
+   public static String getHyperlinkForArtifactEditor(String name, String guid) {
+      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactEditor, guid),
          name);
    }
 
-   public static String getHyperlinkForAction(String name, String hrid) {
-      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, hrid), name);
+   public static String getHyperlinkForAction(String name, String guid) {
+      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, guid), name);
    }
 
    public static String getHyperlinkForAction(Artifact artifact) {
-      return getHyperlinkForAction(artifact.getHumanReadableId(), artifact);
+      return getHyperlinkForAction(artifact.getGuid(), artifact);
    }
 
    public static String getHyperlinkForAction(String name, Artifact art) {
@@ -67,21 +67,21 @@ public class XResultDataUI {
    }
 
    /*
-    * Creates hyperlink using hrid as name. Default editor will open.
+    * Creates hyperlink using guid as name. Default editor will open.
     */
    public static String getHyperlink(Artifact art) throws OseeCoreException {
-      return getHyperlink(art.getHumanReadableId(), art.getHumanReadableId(), art.getFullBranch().getId());
+      return getHyperlink(art.getGuid(), art.getGuid(), art.getFullBranch().getId());
    }
 
    public static String getHyperlinkWithName(Artifact art) throws OseeCoreException {
-      return getHyperlink(art.toStringWithId(), art.getHumanReadableId(), art.getFullBranch().getId());
+      return getHyperlink(art.toStringWithId(), art.getGuid(), art.getFullBranch().getId());
    }
 
    /*
     * Creates hyperlink using name. Default editor will open.
     */
    public static String getHyperlink(String name, Artifact art) throws OseeCoreException {
-      return getHyperlink(name, art.getHumanReadableId(), art.getFullBranch().getId());
+      return getHyperlink(name, art.getGuid(), art.getFullBranch().getId());
    }
 
    public static String report(XResultData resultData, final String title) {
@@ -134,14 +134,13 @@ public class XResultDataUI {
          rd.logWarning("This is a warning");
          rd.logError("This is an error");
 
-         rd.log("\n\nExample of hyperlinked hrid: " + getHyperlink(UserManager.getUser()));
+         rd.log("\n\nExample of hyperlinked guid: " + getHyperlink(UserManager.getUser()));
 
          rd.log("Example of hyperlinked artifact different hyperlink string: " + getHyperlink("Different string",
             UserManager.getUser()));
 
-         rd.log("Example of hyperlinked hrid on another branch: " + getHyperlink(
-            UserManager.getUser().getHumanReadableId(), UserManager.getUser().getHumanReadableId(),
-            BranchManager.getCommonBranch().getId()));
+         rd.log("Example of hyperlinked guid on another branch: " + getHyperlink(UserManager.getUser().getGuid(),
+            UserManager.getUser().getGuid(), BranchManager.getCommonBranch().getId()));
          rd.addRaw(AHTML.newline());
          rd.addRaw("Example of hyperlink that opens external browser " + getHyperlinkUrlExternal("Google",
             "http://www.google.com") + AHTML.newline());

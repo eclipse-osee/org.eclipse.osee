@@ -109,7 +109,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
                updateGamma(data);
                int localTypeId = getLocalTypeId(data.getTypeUuid());
                addRow(SqlOrderEnum.ARTIFACTS, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
-                  data.getGuid(), data.getHumanReadableId());
+                  data.getGuid());
             }
             addTxs(SqlOrderEnum.ARTIFACTS, data);
          }

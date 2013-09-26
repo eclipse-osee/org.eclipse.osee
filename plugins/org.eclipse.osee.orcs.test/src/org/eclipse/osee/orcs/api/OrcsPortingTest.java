@@ -165,7 +165,7 @@ public class OrcsPortingTest {
 
       TransactionBuilder tx3 = txFactory.createTransaction(childBranch, author, "update second requirement");
       ArtifactReadable readableReq2 =
-         query.fromBranch(childBranch).andGuidsOrHrids(artifactToModifyGuid).getResults().getExactlyOne();
+         query.fromBranch(childBranch).andGuid(artifactToModifyGuid).getResults().getExactlyOne();
 
       // modifying this artifact should cause it to get introduced
       tx3.setSoleAttributeFromString(readableReq2, CoreAttributeTypes.Subsystem, "test changed");
@@ -179,7 +179,7 @@ public class OrcsPortingTest {
       // make an additional transaction to make sure it doesn't get copied also
       TransactionBuilder tx4 = txFactory.createTransaction(childBranch, author, "after second requirement");
       ArtifactReadable readableReq2verA =
-         query.fromBranch(childBranch).andGuidsOrHrids(artifactToModifyGuid).getResults().getExactlyOne();
+         query.fromBranch(childBranch).andGuid(artifactToModifyGuid).getResults().getExactlyOne();
 
       // modifying this artifact should cause it to get introduced
       tx4.setSoleAttributeFromString(readableReq2verA, CoreAttributeTypes.Subsystem, "test changed again");
@@ -198,7 +198,7 @@ public class OrcsPortingTest {
       // get the setup associated artifact - this is for a later test to make sure the branch is not duplicated
       // there should only be one port branch per associated artifact
       ArtifactReadable readableReq =
-         query.fromBranch(CoreBranches.COMMON).andGuidsOrHrids(assocArtifactGuid).getResults().getExactlyOne();
+         query.fromBranch(CoreBranches.COMMON).andGuid(assocArtifactGuid).getResults().getExactlyOne();
 
       assertNotNull(readableReq);
       // the new branch will contain two transactions -

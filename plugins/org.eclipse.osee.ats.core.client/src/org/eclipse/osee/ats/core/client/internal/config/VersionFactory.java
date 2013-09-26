@@ -14,7 +14,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.core.config.IVersionFactory;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 
 /**
  * @author Donald G. Dunne
@@ -30,12 +29,12 @@ public class VersionFactory implements IVersionFactory {
 
    @Override
    public IAtsVersion createVersion(String title) {
-      return createVersion(title, GUID.create(), HumanReadableId.generate());
+      return createVersion(title, GUID.create());
    }
 
    @Override
-   public IAtsVersion createVersion(String title, String guid, String humanReadableId) {
-      return new Version(versionService, title, guid, humanReadableId);
+   public IAtsVersion createVersion(String title, String guid) {
+      return new Version(versionService, title, guid);
    }
 
 }

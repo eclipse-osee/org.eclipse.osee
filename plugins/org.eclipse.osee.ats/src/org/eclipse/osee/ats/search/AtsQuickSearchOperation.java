@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -23,7 +24,6 @@ import org.eclipse.osee.ats.world.WorldEditorOperationProvider;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -54,15 +54,13 @@ class AtsQuickSearchOperation extends AbstractOperation implements IWorldEditorC
          return;
       }
       for (String str : data.getSearchStr().split(", ")) {
-         if (HumanReadableId.isValid(str)) {
-            try {
-               Artifact art = ArtifactQuery.getArtifactFromId(str, AtsUtil.getAtsBranch());
-               if (art != null) {
-                  allArtifacts.add(art);
-               }
-            } catch (ArtifactDoesNotExist ex) {
-               // do nothing
+         try {
+            Artifact art = AtsArtifactQuery.getArtifactFromId(str);
+            if (art != null) {
+               allArtifacts.add(art);
             }
+         } catch (ArtifactDoesNotExist ex) {
+            // do nothing
          }
       }
       for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(),

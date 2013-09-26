@@ -22,14 +22,13 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G. Dunne
@@ -65,7 +64,7 @@ public class SearchWorkPackageOperation extends AbstractOperation {
       addAllTeamDefGuids(monitor, teamDefs, includeChildrenTeamDefs, guids);
       addAllAisGuids(monitor, ais, includeChildrenAis, guids);
 
-      for (Artifact teamOrAiArt : ArtifactQuery.getArtifactListFromIds(guids, AtsUtilCore.getAtsBranch())) {
+      for (Artifact teamOrAiArt : AtsArtifactQuery.getArtifactListFromIds(guids)) {
          for (Artifact workPkgArt : teamOrAiArt.getRelatedArtifacts(AtsRelationTypes.WorkPackage_WorkPackage)) {
             boolean active = workPkgArt.getSoleAttributeValue(AtsAttributeTypes.Active, true);
             if (activeWorkPkgs == Active.Both || ((active && activeWorkPkgs == Active.Active) || (!active && activeWorkPkgs == Active.InActive))) {

@@ -154,7 +154,7 @@ public class DataLoaderFactoryImplTest {
    public void testLoadArtifactIds() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.SHALLOW;
       String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
-      " jart1.art_id, art1.art_type_id, art1.guid, art1.human_readable_id\n" + //
+      " jart1.art_id, art1.art_type_id, art1.guid\n" + //
       " FROM \n" + //
       "osee_join_artifact jart1, osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
@@ -176,7 +176,7 @@ public class DataLoaderFactoryImplTest {
    public void testLoadArtifactIncludeDeleted() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.SHALLOW;
       String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
-      " jart1.art_id, art1.art_type_id, art1.guid, art1.human_readable_id\n" + //
+      " jart1.art_id, art1.art_type_id, art1.guid\n" + //
       " FROM \n" + //
       "osee_join_artifact jart1, osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
@@ -200,7 +200,7 @@ public class DataLoaderFactoryImplTest {
       LoadLevel expectedLoadLevel = LoadLevel.SHALLOW;
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.transaction_id as stripe_transaction_id,\n" + //
-         " jart1.art_id, art1.art_type_id, art1.guid, art1.human_readable_id\n" + //
+         " jart1.art_id, art1.art_type_id, art1.guid\n" + //
          " FROM \n" + //
          "osee_join_artifact jart1, osee_artifact art1, osee_txs txs1\n" + //
          " WHERE \n" + //
@@ -224,7 +224,7 @@ public class DataLoaderFactoryImplTest {
       LoadLevel expectedLoadLevel = LoadLevel.SHALLOW;
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.transaction_id as stripe_transaction_id,\n" + //
-         " jart1.art_id, art1.art_type_id, art1.guid, art1.human_readable_id\n" + //
+         " jart1.art_id, art1.art_type_id, art1.guid\n" + //
          " FROM \n" + //
          "osee_join_artifact jart1, osee_artifact art1, osee_txs txs1\n" + //
          " WHERE \n" + //

@@ -21,6 +21,10 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface IAtsWorkItem extends IAtsObject, HasWorkData, HasAssignees, HasStateProvider {
 
+   String getAtsId();
+
+   void setAtsId(String atsId) throws OseeCoreException;
+
    IAtsTeamWorkflow getParentTeamWorkflow() throws OseeCoreException;
 
 }

@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 public class MockWorkItem implements IAtsWorkItem {
 
    private final String name;
-   private final String id;
+   private String atsId;
    private IAtsWorkData atsWorkData;
    private WorkStateProvider workStateProvider;
    private final AtsUserGroup implementers = new AtsUserGroup();
@@ -46,7 +46,7 @@ public class MockWorkItem implements IAtsWorkItem {
 
    public MockWorkItem(String name, IAtsWorkData atsWorkData, WorkStateProvider workStateProvider) {
       this.name = name;
-      id = name;
+      atsId = name;
       this.atsWorkData = atsWorkData;
       this.workStateProvider = workStateProvider;
    }
@@ -58,7 +58,7 @@ public class MockWorkItem implements IAtsWorkItem {
 
    @Override
    public String getGuid() {
-      return id;
+      return atsId;
    }
 
    @Override
@@ -67,8 +67,8 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public String getHumanReadableId() {
-      return id;
+   public String getAtsId() {
+      return atsId;
    }
 
    @Override
@@ -125,6 +125,11 @@ public class MockWorkItem implements IAtsWorkItem {
    @Override
    public String toStringWithId() {
       return toString();
+   }
+
+   @Override
+   public void setAtsId(String atsId) throws OseeCoreException {
+      this.atsId = atsId;
    }
 
 }

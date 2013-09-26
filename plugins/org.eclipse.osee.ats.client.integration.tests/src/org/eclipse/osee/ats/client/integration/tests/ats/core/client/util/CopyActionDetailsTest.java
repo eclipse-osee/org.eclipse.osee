@@ -41,7 +41,7 @@ public class CopyActionDetailsTest {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       String str = new CopyActionDetails(AtsTestUtil.getTeamWf()).getDetailsString();
       assertEquals(
-         "\"Team Workflow\" - " + AtsTestUtil.getTeamWf().getHumanReadableId() + " - \"AtsTestUtil - Team WF [CopyActionDetailsTest]\"",
+         "\"Team Workflow\" - " + AtsTestUtil.getTeamWf().getAtsId() + " - \"AtsTestUtil - Team WF [CopyActionDetailsTest]\"",
          str);
    }
 
@@ -49,7 +49,7 @@ public class CopyActionDetailsTest {
    public void test02GetDetailsStringForTask() throws OseeCoreException {
       String str = new CopyActionDetails(AtsTestUtil.getOrCreateTaskOffTeamWf1()).getDetailsString();
       assertEquals(
-         "\"Task\" - " + AtsTestUtil.getOrCreateTaskOffTeamWf1().getHumanReadableId() + " - \"AtsTestUtil - Task [CopyActionDetailsTest]\"",
+         "\"Task\" - " + AtsTestUtil.getOrCreateTaskOffTeamWf1().getAtsId() + " - \"AtsTestUtil - Task [CopyActionDetailsTest]\"",
          str);
    }
 
@@ -58,7 +58,7 @@ public class CopyActionDetailsTest {
       DecisionReviewArtifact review =
          AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze);
       String str = new CopyActionDetails(review).getDetailsString();
-      assertEquals("\"Decision Review\" - " + review.getHumanReadableId() + " - \"AtsTestUtil Test Decision Review\"",
+      assertEquals("\"Decision Review\" - " + review.getAtsId() + " - \"AtsTestUtil Test Decision Review\"",
          str);
       review.persist(getClass().getSimpleName());
    }
@@ -68,7 +68,7 @@ public class CopyActionDetailsTest {
       PeerToPeerReviewArtifact review =
          AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None, AtsTestUtilState.Analyze, null);
       String str = new CopyActionDetails(review).getDetailsString();
-      assertEquals("\"PeerToPeer Review\" - " + review.getHumanReadableId() + " - \"AtsTestUtil Test Peer Review\"",
+      assertEquals("\"PeerToPeer Review\" - " + review.getAtsId() + " - \"AtsTestUtil Test Peer Review\"",
          str);
       review.persist(getClass().getSimpleName());
    }

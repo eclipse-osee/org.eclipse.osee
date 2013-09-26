@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -165,15 +166,21 @@ public class ArtifactSelectWizardPage extends WizardPage {
          if (arg0 instanceof Artifact) {
             Artifact art = (Artifact) arg0;
             if (showArtData) {
-               return String.format("%s - (%s  %s  %s)", art.getName(), art.getArtId(), art.getHumanReadableId(),
-                  art.getGuid());
+               return String.format("%s - (%s  %s)", art.getName(), art.getArtId(), art.getGuid());
             } else {
                return art.getName();
+            }
+         } else if (arg0 instanceof IAtsWorkItem) {
+            IAtsWorkItem workItem = (IAtsWorkItem) arg0;
+            if (showArtData) {
+               return String.format("%s - (%s  %s)", workItem.getName(), workItem.getAtsId(), workItem.getGuid());
+            } else {
+               return workItem.getName();
             }
          } else if (arg0 instanceof IAtsObject) {
             IAtsObject art = (IAtsObject) arg0;
             if (showArtData) {
-               return String.format("%s - (%s  %s)", art.getName(), art.getHumanReadableId(), art.getGuid());
+               return String.format("%s - (%s)", art.getName(), art.getGuid());
             } else {
                return art.getName();
             }

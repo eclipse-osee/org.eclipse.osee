@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -86,7 +85,8 @@ public class ArtifactProviderImpl implements ArtifactProvider {
 
    @Override
    public ArtifactReadable getArtifactByGuid(IOseeBranch branch, String guid) throws OseeCoreException {
-      ArtifactReadable item = getFactory().fromBranch(branch).andGuidsOrHrids(guid).getResults().getOneOrNull();
+      ArtifactReadable item =
+         getFactory().fromBranch(branch).andGuids(Collections.singleton(guid)).getResults().getOneOrNull();
       try {
          if (!filter.accept(item)) {
             item = null;

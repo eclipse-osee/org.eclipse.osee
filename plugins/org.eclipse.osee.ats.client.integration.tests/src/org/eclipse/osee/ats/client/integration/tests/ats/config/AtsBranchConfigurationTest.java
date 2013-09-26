@@ -133,13 +133,13 @@ public class AtsBranchConfigurationTest {
       }
       IAtsTeamDefinition teamDef = operation.getTeamDefinition();
       IAtsVersion versionToTarget = null;
-      String version1Hrid = "", version2Hrid = "";
+      String version1Guid = "", version2Guid = "";
       for (IAtsVersion vArt : teamDef.getVersions()) {
          if (vArt.getName().contains("Ver1")) {
             versionToTarget = vArt;
-            version1Hrid = vArt.getHumanReadableId();
+            version1Guid = vArt.getGuid();
          } else {
-            version2Hrid = vArt.getHumanReadableId();
+            version2Guid = vArt.getGuid();
          }
       }
       versionToTarget.setBaselineBranchGuid(viaTeamDefBranch.getGuid());
@@ -180,8 +180,7 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Transitioning to Implement state");
       }
 
-      dtwm.transitionTo(TeamState.Implement, AtsClientService.get().getUserAdmin().getCurrentUser(), false,
-         transaction);
+      dtwm.transitionTo(TeamState.Implement, AtsClientService.get().getUserAdmin().getCurrentUser(), false, transaction);
       teamWf.persist("Branch Configuration Test");
 
       SMAEditor.editArtifact(teamWf);
@@ -216,8 +215,8 @@ public class AtsBranchConfigurationTest {
       assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
 
       TestUtil.severeLoggingEnd(monitor, Arrays.asList(
-         "Version [[" + version1Hrid + "][BranchViaVersions - Ver1]] has no related team defininition",
-         "Version [[" + version2Hrid + "][BranchViaVersions - Ver2]] has no related team defininition"));
+         "Version [[" + version1Guid + "][BranchViaVersions - Ver1]] has no related team defininition",
+         "Version [[" + version2Guid + "][BranchViaVersions - Ver2]] has no related team defininition"));
    }
 
    @org.junit.Test
@@ -293,8 +292,7 @@ public class AtsBranchConfigurationTest {
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Transitioning to Implement state");
       }
-      dtwm.transitionTo(TeamState.Implement, AtsClientService.get().getUserAdmin().getCurrentUser(), false,
-         transaction);
+      dtwm.transitionTo(TeamState.Implement, AtsClientService.get().getUserAdmin().getCurrentUser(), false, transaction);
       teamWf.persist("Test branch via team definition: Transition to desired state");
 
       // create branch

@@ -27,8 +27,6 @@ public interface IAtsVersion extends ICommitConfigArtifact, IAtsConfigObject {
     * Name, Full Name, Description
     ******************************/
 
-   void setHumanReadableId(String humanReadableId);
-
    void setName(String name);
 
    String getFullName();

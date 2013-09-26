@@ -37,7 +37,7 @@ public final class WordUiUtil {
                rd.logWarning("\nYou chose to preview/edit artifacts that could not be handled: ");
                rd.log(warningString + "\n");
                rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
-               rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID"}));
+               rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "GUID"}));
                for (Artifact artifact : artifacts) {
                   try {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {

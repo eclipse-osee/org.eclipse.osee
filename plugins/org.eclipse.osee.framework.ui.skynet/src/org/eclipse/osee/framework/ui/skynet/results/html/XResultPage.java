@@ -34,9 +34,9 @@ public class XResultPage {
 
    public static enum Manipulations {
       NONE, // 
-      HRID_CMD_HYPER,
-      // Replace all HRID strings with hyperlinks; ATS=<hrid> opens Action editor
-      // ART=<hrid> opens Artifact editor, BOTH=<hrid> allows either
+      GUID_CMD_HYPER,
+      // Replace all GUID strings with hyperlinks; ATS=<guid> opens Action editor
+      // ART=<guid> opens Artifact editor, BOTH=<guid> allows either
       ERROR_RED, // Make all "Error" strings red
       WARNING_YELLOW, // Make all "Warning" strings yellow
       CONVERT_NEWLINES, // Convert all \n to <br>
@@ -60,8 +60,8 @@ public class XResultPage {
    private int numWarnings = Integer.MAX_VALUE;
    private int numErrors = Integer.MAX_VALUE;
 
-   private final Pattern ATS_WPN_PAGE_HSRID_REGEX = Pattern.compile("([A-Z]{3,4})=(.*?):([A-Z0-9]{5})");
-   private final Pattern ATS_HSRID_REGEX = Pattern.compile("([A-Z]{3,4})=([A-Z0-9]{5})");
+   private final Pattern ATS_NAME_AND_GUID_REGEX = Pattern.compile("([A-Z]{3,4})=(.*?):(.*)");
+   private final Pattern ATS_GUID_REGEX = Pattern.compile("([A-Z]{3,4})=(.*)");
 
    /**
     * Create and display result page with all Manipulations available
@@ -85,13 +85,13 @@ public class XResultPage {
       for (Manipulations man : manipulations) {
          switch (man) {
             case ALL:
-               this.manipulations.add(Manipulations.HRID_CMD_HYPER);
+               this.manipulations.add(Manipulations.GUID_CMD_HYPER);
                this.manipulations.add(Manipulations.ERROR_RED);
                this.manipulations.add(Manipulations.CONVERT_NEWLINES);
                this.manipulations.add(Manipulations.WARNING_YELLOW);
                break;
             case HTML_MANIPULATIONS:
-               this.manipulations.add(Manipulations.HRID_CMD_HYPER);
+               this.manipulations.add(Manipulations.GUID_CMD_HYPER);
                this.manipulations.add(Manipulations.ERROR_RED);
                this.manipulations.add(Manipulations.WARNING_YELLOW);
                break;
@@ -122,19 +122,6 @@ public class XResultPage {
       } else {
          return numErrors;
       }
-   }
-
-   public static String getCmdValue(HyperType type, String hrid) {
-      return String.format("%s=%s", type.name(), hrid);
-   }
-
-   /**
-    * @param name that will show hyperlinked
-    * @param hrid value that will be returned upon selection of hyperlink
-    * @return cmd value to put in HTML for processing by result page
-    */
-   public static String getCmdValue(HyperType type, String name, String hrid) {
-      return String.format("%s=%s:%s", type.name(), name, hrid);
    }
 
    public String getId() {
@@ -179,52 +166,52 @@ public class XResultPage {
             if (manipulations.contains(Manipulations.CONVERT_NEWLINES)) {
                str = str.replaceAll("\n", AHTML.newline());
             }
-            if (manipulations.contains(Manipulations.HRID_CMD_HYPER)) {
+            if (manipulations.contains(Manipulations.GUID_CMD_HYPER)) {
                // System.err.println("match " + line);
                // Match getText so it doesn't mess up replace
                // Retireve all ATS=WPN_PAGE:HSRID matches
-               Matcher m = ATS_WPN_PAGE_HSRID_REGEX.matcher(str);
-               Set<String> cmdNameHrids = new HashSet<String>();
+               Matcher m = ATS_NAME_AND_GUID_REGEX.matcher(str);
+               Set<String> cmdNameGuids = new HashSet<String>();
                while (m.find()) {
-                  cmdNameHrids.add(m.group());
+                  cmdNameGuids.add(m.group());
                }
                // Retrieve all ATS=Name:HRSID matches and replace with hyperlinking
-               for (String cmdNameHrid : cmdNameHrids) {
-                  String value = cmdNameHrid;
+               for (String cmdNameGuid : cmdNameGuids) {
+                  String value = cmdNameGuid;
                   value = value.replaceAll("^.*?=", "");
                   String name = value;
                   name = name.replaceAll(":.*$", "");
-                  String hrid = value;
-                  hrid = hrid.replaceAll("^.*:", "");
-                  if (cmdNameHrid.startsWith(HyperType.BOTH.name())) {
-                     String replaceStr = hrid + " (" + XResultDataUI.getHyperlinkForAction("ATS-" + name, hrid);
-                     replaceStr += "  " + XResultDataUI.getHyperlinkForArtifactEditor("AE-" + name, hrid);
+                  String guid = value;
+                  guid = guid.replaceAll("^.*:", "");
+                  if (cmdNameGuid.startsWith(HyperType.BOTH.name())) {
+                     String replaceStr = guid + " (" + XResultDataUI.getHyperlinkForAction("ATS-" + name, guid);
+                     replaceStr += "  " + XResultDataUI.getHyperlinkForArtifactEditor("AE-" + name, guid);
                      replaceStr += ")";
-                     str = str.replaceAll(cmdNameHrid, replaceStr);
-                  } else if (cmdNameHrid.startsWith(HyperType.ATS.name())) {
-                     str = str.replaceAll(cmdNameHrid, XResultDataUI.getHyperlinkForAction(name, hrid));
-                  } else if (cmdNameHrid.startsWith(HyperType.ART.name())) {
-                     str = str.replaceAll(cmdNameHrid, XResultDataUI.getHyperlinkForArtifactEditor(name, hrid));
+                     str = str.replaceAll(cmdNameGuid, replaceStr);
+                  } else if (cmdNameGuid.startsWith(HyperType.ATS.name())) {
+                     str = str.replaceAll(cmdNameGuid, XResultDataUI.getHyperlinkForAction(name, guid));
+                  } else if (cmdNameGuid.startsWith(HyperType.ART.name())) {
+                     str = str.replaceAll(cmdNameGuid, XResultDataUI.getHyperlinkForArtifactEditor(name, guid));
                   }
                }
-               // Retrieve all ATS=HRSID matches and replace with hyperlinking
-               m = ATS_HSRID_REGEX.matcher(str);
-               Set<String> cmdHrids = new HashSet<String>();
+               // Retrieve all ATS=GUID matches and replace with hyperlinking
+               m = ATS_GUID_REGEX.matcher(str);
+               Set<String> cmdGuids = new HashSet<String>();
                while (m.find()) {
-                  cmdHrids.add(m.group());
+                  cmdGuids.add(m.group());
                }
-               for (String cmdHrid : cmdHrids) {
-                  String hrid = cmdHrid;
-                  hrid = hrid.replaceAll("^.*?=", "");
-                  if (cmdHrid.startsWith(HyperType.BOTH.name())) {
-                     String replaceStr = hrid + " (" + XResultDataUI.getHyperlinkForAction("ATS", hrid);
-                     replaceStr += "  " + XResultDataUI.getHyperlinkForArtifactEditor("AE", hrid);
+               for (String cmdGuid : cmdGuids) {
+                  String guid = cmdGuid;
+                  guid = guid.replaceAll("^.*?=", "");
+                  if (cmdGuid.startsWith(HyperType.BOTH.name())) {
+                     String replaceStr = guid + " (" + XResultDataUI.getHyperlinkForAction("ATS", guid);
+                     replaceStr += "  " + XResultDataUI.getHyperlinkForArtifactEditor("AE", guid);
                      replaceStr += ")";
-                     str = str.replaceAll(cmdHrid, replaceStr);
-                  } else if (cmdHrid.startsWith(HyperType.ATS.name())) {
-                     str = str.replaceAll(cmdHrid, XResultDataUI.getHyperlinkForAction(hrid, hrid));
-                  } else if (cmdHrid.startsWith(HyperType.ART.name())) {
-                     str = str.replaceAll(cmdHrid, XResultDataUI.getHyperlinkForArtifactEditor(hrid, hrid));
+                     str = str.replaceAll(cmdGuid, replaceStr);
+                  } else if (cmdGuid.startsWith(HyperType.ATS.name())) {
+                     str = str.replaceAll(cmdGuid, XResultDataUI.getHyperlinkForAction(guid, guid));
+                  } else if (cmdGuid.startsWith(HyperType.ART.name())) {
+                     str = str.replaceAll(cmdGuid, XResultDataUI.getHyperlinkForArtifactEditor(guid, guid));
                   }
                }
             }

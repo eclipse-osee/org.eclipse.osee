@@ -318,7 +318,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
 
    @Override
    public String toString() {
-      return "SMAEditor - " + awa.getHumanReadableId() + " - " + awa.getArtifactTypeName() + " named \"" + awa.getName() + "\"";
+      return "SMAEditor - " + awa.getAtsId() + " - " + awa.getArtifactTypeName() + " named \"" + awa.getName() + "\"";
    }
 
    @Override
@@ -385,7 +385,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
       new ToolItem(toolBar, SWT.SEPARATOR);
       Text artifactInfoLabel = new Text(toolBar.getParent(), SWT.END);
       artifactInfoLabel.setEditable(false);
-      artifactInfoLabel.setText("Type: \"" + awa.getArtifactTypeName() + "\"   HRID: " + awa.getHumanReadableId());
+      artifactInfoLabel.setText("Type: \"" + awa.getArtifactTypeName() + "\"   ATS: " + awa.getAtsId());
       artifactInfoLabel.setToolTipText("The human readable id and database id for this artifact");
 
       return toolBar;

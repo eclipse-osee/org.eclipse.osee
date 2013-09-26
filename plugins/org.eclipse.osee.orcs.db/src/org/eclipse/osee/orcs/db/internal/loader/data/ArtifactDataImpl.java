@@ -20,7 +20,6 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 public class ArtifactDataImpl extends OrcsVersionedObjectImpl implements ArtifactData {
 
    private String guid = RelationalConstants.DEFAULT_GUID;
-   private String humanReadableId = RelationalConstants.HUMAN_READABLE_ID;
 
    public ArtifactDataImpl(VersionData version) {
       super(version);
@@ -37,21 +36,10 @@ public class ArtifactDataImpl extends OrcsVersionedObjectImpl implements Artifac
    }
 
    @Override
-   public String getHumanReadableId() {
-      return humanReadableId;
-   }
-
-   @Override
-   public void setHumanReadableId(String humanReadableId) {
-      this.humanReadableId = humanReadableId;
-   }
-
-   @Override
    public int hashCode() {
       final int prime = 31;
       int result = super.hashCode();
       result = prime * result + ((guid == null) ? 0 : guid.hashCode());
-      result = prime * result + ((humanReadableId == null) ? 0 : humanReadableId.hashCode());
       return result;
    }
 
@@ -74,19 +62,12 @@ public class ArtifactDataImpl extends OrcsVersionedObjectImpl implements Artifac
       } else if (!guid.equals(other.guid)) {
          return false;
       }
-      if (humanReadableId == null) {
-         if (other.humanReadableId != null) {
-            return false;
-         }
-      } else if (!humanReadableId.equals(other.humanReadableId)) {
-         return false;
-      }
       return true;
    }
 
    @Override
    public String toString() {
-      return "ArtifactData [guid=" + guid + ", humanReadableId=" + humanReadableId + " " + super.toString() + "]";
+      return "ArtifactData [guid=" + guid + ", " + super.toString() + "]";
    }
 
 }

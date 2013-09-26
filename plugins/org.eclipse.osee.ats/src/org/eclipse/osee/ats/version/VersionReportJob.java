@@ -149,7 +149,7 @@ public class VersionReportJob extends Job {
    public static String getTeamWorkflowReport(Collection<TeamWorkFlowArtifact> teamArts, Integer backgroundColor, IProgressMonitor monitor) throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(100, 1, backgroundColor));
-      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Team", "Priority", "Change", "Title", "HRID"}));
+      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Team", "Priority", "Change", "Title", "ID"}));
       int x = 1;
       Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
       for (TeamWorkFlowArtifact team : teamArts) {
@@ -169,11 +169,11 @@ public class VersionReportJob extends Job {
                      PriorityUtil.getPriorityStr(team),
                      ChangeTypeUtil.getChangeTypeStr(team),
                      team.getName(),
-                     team.getHumanReadableId()}, null, (x % 2 == 0 ? null : "#cccccc")));
+                     team.getAtsId()}, null, (x % 2 == 0 ? null : "#cccccc")));
 
                for (TaskArtifact taskArt : team.getTaskArtifacts()) {
                   sb.append(AHTML.addRowMultiColumnTable(
-                     new String[] {"Task", "", "", "", taskArt.getName(), taskArt.getHumanReadableId()}, null,
+                     new String[] {"Task", "", "", "", taskArt.getName(), taskArt.getAtsId()}, null,
                      (x % 2 == 0 ? null : "#cccccc")));
                }
             }

@@ -28,8 +28,6 @@ public interface Artifact extends ArtifactId, AttributeManager, HasTransaction, 
 
    void setName(String name) throws OseeCoreException;
 
-   String getHumanReadableId();
-
    boolean isOfType(IArtifactType... otherTypes) throws OseeCoreException;
 
    void setNotDirty();

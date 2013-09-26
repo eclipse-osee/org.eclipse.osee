@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.init.internal.OseeTypesSetup;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.GlobalXViewerSettings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -76,7 +75,7 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          for (Entry<String, URL> entry : typeMap.entrySet()) {
             Artifact artifact =
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.OseeTypeDefinition, BranchManager.getCommonBranch(),
-                  entry.getKey(), GUID.create(), HumanReadableId.generate());
+                  entry.getKey(), GUID.create());
             artifact.setSoleAttributeValue(CoreAttributeTypes.Active, true);
             InputStream inputStream = null;
             try {
@@ -115,7 +114,7 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
 
          // Need to set some Test Unit Table data
          Artifact art =
-            ArtifactQuery.getOrCreate("Bs+PvSVQf3R5EHSTcyQA", null, CoreArtifactTypes.Artifact, CoreBranches.COMMON);
+            ArtifactQuery.getOrCreate("Bs+PvSVQf3R5EHSTcyQA", CoreArtifactTypes.Artifact, CoreBranches.COMMON);
          art.persist(transaction);
 
          transaction.execute();

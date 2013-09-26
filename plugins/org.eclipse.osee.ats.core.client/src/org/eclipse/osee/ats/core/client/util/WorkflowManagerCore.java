@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
+import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -66,9 +67,10 @@ public class WorkflowManagerCore {
     */
    public static AbstractWorkflowArtifact getParentAWA(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Task)) {
+         TaskArtifact ta = (TaskArtifact) artifact;
          Collection<Artifact> awas = artifact.getRelatedArtifacts(AtsRelationTypes.TeamWfToTask_TeamWf);
          if (awas.isEmpty()) {
-            throw new OseeStateException("Task has no parent [%s]", artifact.getHumanReadableId());
+            throw new OseeStateException("Task has no parent [%s]", ta.getAtsId());
          }
          return (AbstractWorkflowArtifact) awas.iterator().next();
       } else if (artifact.isOfType(AtsArtifactTypes.ReviewArtifact)) {

@@ -99,7 +99,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
    private XBranchSelectWidget branchSelect;
 
-   private SearchFilter HRID_VALUE_FILTER;
    private SearchFilter ATTRIBUTE_VALUE_FILTER;
    private static int lastSearchTypeListSelected = 2; // Attribute
    private static int lastAttributeTypeListSelected = 0; // Name
@@ -255,31 +254,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       addToSearchTypeList(new InRelationFilter(relationControls, relationTypeList, relationSideList));
    }
 
-   private void createHridSearchControls(Composite optionsComposite) {
-      Composite hridControls = new Composite(optionsComposite, SWT.NONE);
-      hridControls.setLayout(new GridLayout(2, false));
-
-      Label typeLabel = new Label(hridControls, SWT.HORIZONTAL);
-      typeLabel.setText("Human Readable ID:");
-      Text hridValue = new Text(hridControls, SWT.BORDER);
-      hridValue.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-
-      hridValue.addModifyListener(new ModifyListener() {
-         @Override
-         public void modifyText(ModifyEvent e) {
-            addButton.setEnabled(HRID_VALUE_FILTER.isValid());
-         }
-      });
-
-      new Label(hridControls, SWT.NONE);
-
-      Label wildLabel = new Label(hridControls, SWT.NONE);
-      wildLabel.setText("(* = any string, \\* = literal *)");
-
-      HRID_VALUE_FILTER = new HridValueFilter(hridControls, hridValue);
-      addToSearchTypeList(HRID_VALUE_FILTER);
-   }
-
    private void createAttributeSearchControls(Composite optionsComposite) {
       Composite attributeControls = new Composite(optionsComposite, SWT.NONE);
       attributeControls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -363,7 +337,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       createArtifactTypeSearchControls(optionsComposite);
       createOrphanSearchControls(optionsComposite);
       createRelationSearchControls(optionsComposite);
-      createHridSearchControls(optionsComposite);
 
       searchTypeList.getCombo().setVisibleItemCount(7);
       searchTypeList.getCombo().select(lastSearchTypeListSelected);

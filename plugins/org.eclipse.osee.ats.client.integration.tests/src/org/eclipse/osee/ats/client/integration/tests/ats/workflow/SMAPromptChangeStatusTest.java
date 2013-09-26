@@ -177,23 +177,23 @@ public class SMAPromptChangeStatusTest {
 
    private static void validateSMAs(Collection<? extends AbstractWorkflowArtifact> awas, String stateName, int totalPercent, double hoursSpent) throws Exception {
       for (AbstractWorkflowArtifact awa : awas) {
-         assertEquals("Current State wrong for " + awa.getHumanReadableId(), awa.getStateMgr().getCurrentStateName(),
+         assertEquals("Current State wrong for " + awa.getAtsId(), awa.getStateMgr().getCurrentStateName(),
             stateName);
          if (awa.isCompletedOrCancelled()) {
-            assertEquals("ats.CurrentState wrong " + awa.getHumanReadableId(),
+            assertEquals("ats.CurrentState wrong " + awa.getAtsId(),
                awa.getStateMgr().getCurrentStateName() + ";;;",
                awa.getSoleAttributeValue(AtsAttributeTypes.CurrentState));
          }
-         assertEquals("Percent wrong for " + awa.getHumanReadableId(),
+         assertEquals("Percent wrong for " + awa.getAtsId(),
             PercentCompleteTotalUtil.getPercentCompleteTotal(awa), totalPercent);
-         assertEquals("Hours Spent wrong for " + awa.getHumanReadableId(), HoursSpentUtil.getHoursSpentTotal(awa),
+         assertEquals("Hours Spent wrong for " + awa.getAtsId(), HoursSpentUtil.getHoursSpentTotal(awa),
             hoursSpent, 0.0);
 
          for (String xml : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
             WorkStateImpl state = AtsWorkStateFactory.getFromXml(xml);
             boolean isCompletedCancelledState = isCompletedCancelledState(awa, state.getName());
             if (isCompletedCancelledState) {
-               assertTrue("completed/cancelled ats.State [" + xml + "] wrong " + awa.getHumanReadableId(),
+               assertTrue("completed/cancelled ats.State [" + xml + "] wrong " + awa.getAtsId(),
                   xml.endsWith(";;;"));
             }
          }

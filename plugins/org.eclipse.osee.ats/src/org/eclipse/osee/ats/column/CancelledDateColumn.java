@@ -77,7 +77,7 @@ public class CancelledDateColumn extends XViewerAtsColumn implements IXViewerVal
          if (((AbstractWorkflowArtifact) object).isCancelled()) {
             Date date = ((AbstractWorkflowArtifact) object).internalGetCancelledDate();
             if (date == null) {
-               OseeLog.log(Activator.class, Level.SEVERE, "Cancelled with no date => " + awa.getHumanReadableId());
+               OseeLog.log(Activator.class, Level.SEVERE, "Cancelled with no date => " + awa.getAtsId());
             }
             return date;
          }

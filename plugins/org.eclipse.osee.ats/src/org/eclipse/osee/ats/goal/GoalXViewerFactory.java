@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
 import org.eclipse.osee.ats.column.GoalOrderColumn;
 import org.eclipse.osee.ats.column.GoalOrderVoteColumn;
+import org.eclipse.osee.ats.column.AtsIdColumn;
 import org.eclipse.osee.ats.column.NotesColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
 import org.eclipse.osee.ats.column.StateColumn;
@@ -36,7 +37,6 @@ import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.HridColumn;
 
 /**
  * @author Donald G. Dunne
@@ -48,7 +48,7 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
    public static final List<? extends XViewerColumn> GoalViewerVisibleColumns = Arrays.asList(
       GoalOrderColumn.getInstance(), GoalOrderVoteColumn.getInstance(), TitleColumn.getInstance(),
       TypeColumn.getInstance(), StateColumn.getInstance(), PriorityColumn.getInstance(),
-      ChangeTypeColumn.getInstance(), AssigneeColumnUI.getInstance(), new HridColumn(true),
+      ChangeTypeColumn.getInstance(), AssigneeColumnUI.getInstance(), new AtsIdColumn(true),
       CreatedDateColumn.getInstance(), TargetedVersionColumn.getInstance(), NotesColumn.getInstance());
    public static Integer[] widths = new Integer[] {
       GoalOrderColumn.getInstance().getWidth(),

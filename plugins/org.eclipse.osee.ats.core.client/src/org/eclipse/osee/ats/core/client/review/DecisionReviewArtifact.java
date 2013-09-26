@@ -23,8 +23,8 @@ public class DecisionReviewArtifact extends AbstractReviewArtifact implements IA
 
    public XDecisionOptions decisionOptions;
 
-   public DecisionReviewArtifact(String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      super(guid, humanReadableId, branch, artifactType);
+   public DecisionReviewArtifact(String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+      super(guid, branch, artifactType);
       decisionOptions = new XDecisionOptions(this);
    }
 

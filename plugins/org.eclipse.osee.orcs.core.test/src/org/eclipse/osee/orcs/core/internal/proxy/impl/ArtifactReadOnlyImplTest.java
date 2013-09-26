@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
@@ -124,17 +123,6 @@ public class ArtifactReadOnlyImplTest {
 
       assertEquals(guid, actual);
       verify(proxiedObject).getGuid();
-   }
-
-   @Test
-   public void testGetHumanReadableId() {
-      String hrid = HumanReadableId.generate();
-      when(proxiedObject.getHumanReadableId()).thenReturn(hrid);
-
-      String actual = readOnly.getHumanReadableId();
-
-      assertEquals(hrid, actual);
-      verify(proxiedObject).getHumanReadableId();
    }
 
    @Test

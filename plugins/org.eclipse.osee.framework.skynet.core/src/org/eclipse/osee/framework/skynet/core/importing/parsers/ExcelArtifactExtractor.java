@@ -88,7 +88,6 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
          PARAGRAPH_NO(CoreAttributeTypes.ParagraphNumber.getName()),
          ARTIFACT_NAME(CoreAttributeTypes.Name.getName()),
          GUID("GUID"),
-         HRID("Human Readable Id"),
          OTHER("");
 
          private final static Map<String, RowTypeEnum> rawStringToRowType = new HashMap<String, RowTypeEnum>();
@@ -205,9 +204,6 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
                            break;
                         case GUID:
                            roughArtifact.setGuid(rowValue);
-                           break;
-                        case HRID:
-                           roughArtifact.setHumandReadableId(rowValue);
                            break;
                         case OTHER:
                            roughArtifact.addAttribute(headerRow[rowIndex], rowValue);

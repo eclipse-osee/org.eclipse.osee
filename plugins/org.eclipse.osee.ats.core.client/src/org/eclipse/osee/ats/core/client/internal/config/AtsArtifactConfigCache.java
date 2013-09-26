@@ -15,13 +15,12 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G. Dunne
@@ -33,7 +32,7 @@ public class AtsArtifactConfigCache extends AtsConfigCache {
       for (IAtsObject atsObject : atsObjects) {
          guids.add(atsObject.getGuid());
       }
-      return ArtifactQuery.getArtifactListFromIds(guids, AtsUtilCore.getAtsBranchToken());
+      return AtsArtifactQuery.getArtifactListFromIds(guids);
    }
 
    public <A extends IAtsConfigObject> Collection<A> getConfigObjects(Collection<? extends Artifact> artifacts, Class<A> clazz) {
@@ -45,14 +44,14 @@ public class AtsArtifactConfigCache extends AtsConfigCache {
    }
 
    public Artifact getSoleArtifact(IAtsObject artifact) throws OseeCoreException {
-      return ArtifactQuery.getArtifactFromId(artifact.getGuid(), AtsUtilCore.getAtsBranchToken());
+      return AtsArtifactQuery.getArtifactFromId(artifact.getGuid());
    }
 
    public Artifact getArtifact(IAtsConfigObject atsConfigObject) throws OseeCoreException {
       Conditions.checkNotNull(atsConfigObject, "atsConfigObject");
       Artifact artifact = null;
       try {
-         artifact = ArtifactQuery.getArtifactFromId(atsConfigObject.getGuid(), AtsUtilCore.getAtsBranchToken());
+         artifact = AtsArtifactQuery.getArtifactFromId(atsConfigObject.getGuid());
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }

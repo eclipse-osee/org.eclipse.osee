@@ -66,7 +66,6 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -330,9 +329,7 @@ public class AtsTestUtil {
       testAi3.setTeamDefinition(teamDef);
       testAi4.setTeamDefinition(teamDef);
 
-      verArt1 =
-         AtsClientService.get().createVersion(getTitle("ver 1.0", postFixName), GUID.create(),
-            HumanReadableId.generate());
+      verArt1 = AtsClientService.get().createVersion(getTitle("ver 1.0", postFixName), GUID.create());
       teamDef.getVersions().add(verArt1);
 
       verArt2 = AtsClientService.get().createVersion(getTitle("ver 2.0", postFixName));

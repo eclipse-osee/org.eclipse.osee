@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
@@ -60,7 +61,7 @@ public class AtsDeleteManager {
          if (art instanceof AbstractAtsArtifact) {
             delArts.add(art);
             if (selectedArts.size() < 30) {
-               artBuilder.append(String.format("Name: %s  Type: %s\n", art.getHumanReadableId(),
+               artBuilder.append(String.format("Name: %s  Type: %s\n", ((AbstractAtsArtifact) art).getName(),
                   art.getArtifactTypeName()));
             }
          }
@@ -139,7 +140,7 @@ public class AtsDeleteManager {
          allDeleteArts.add(deleteArt);
          final Set<Artifact> relatedArts = new HashSet<Artifact>(30);
          delBuilder.append(String.format("\n<b>Selected</b>:[%s][%s][%s]", deleteArt.getArtifactTypeName(),
-            deleteArt.getHumanReadableId(), deleteArt.getName()) + "\n");
+            AtsUtilCore.getAtsId(deleteArt), deleteArt.getName()) + "\n");
          if (deleteArt.isOfType(AtsArtifactTypes.Action)) {
             for (TeamWorkFlowArtifact art : ActionManager.getTeams(deleteArt)) {
                art.atsDelete(relatedArts, ignoredArts);
@@ -150,7 +151,7 @@ public class AtsDeleteManager {
             for (Artifact loopArt : relatedArts) {
                if (!loopArt.equals(deleteArt)) {
                   delBuilder.append(String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]",
-                     loopArt.getArtifactTypeName(), loopArt.getHumanReadableId(), loopArt.getName()) + "\n");
+                     loopArt.getArtifactTypeName(), AtsUtilCore.getAtsId(loopArt), loopArt.getName()) + "\n");
                }
             }
          }
@@ -161,7 +162,7 @@ public class AtsDeleteManager {
                if (actionArt != null && !allDeleteArts.contains(actionArt) && allDeleteArts.containsAll(ActionManager.getTeams(actionArt))) {
                   relatedArts.add(actionArt);
                   delBuilder.append(String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]",
-                     actionArt.getArtifactTypeName(), actionArt.getHumanReadableId(), actionArt.getName()) + "\n");
+                     actionArt.getArtifactTypeName(), AtsUtilCore.getAtsId(actionArt), actionArt.getName()) + "\n");
                }
             }
          }

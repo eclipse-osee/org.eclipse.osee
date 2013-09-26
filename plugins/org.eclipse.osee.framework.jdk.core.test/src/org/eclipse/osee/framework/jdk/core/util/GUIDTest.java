@@ -20,7 +20,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util;
 
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 
 /**
@@ -30,7 +29,7 @@ public class GUIDTest {
 
    @org.junit.Test
    public void testInvalidGuids() {
-      final String[] invalidHrids =
+      final String[] invalidGuids =
          {
             "short",
             "AAABDBYPet4AGJyrc_LONG_",
@@ -38,8 +37,8 @@ public class GUIDTest {
             "AAABGumk_InvalidChar#",
             "AAABGumk_InvalidChar@",
             "AAABGumk_InvalidChar^"};
-      for (String invalid : invalidHrids) {
-         Assert.assertFalse("Invalid HRID " + invalid + " passes validity test", GUID.isValid(invalid));
+      for (String invalid : invalidGuids) {
+         Assert.assertFalse("Invalid GUID " + invalid + " passes validity test", GUID.isValid(invalid));
       }
    }
 

@@ -67,7 +67,7 @@ public abstract class AbstractAtsArtifactReader<T extends IAtsConfigObject> impl
       String guid = artifact.getGuid();
       IAtsVersion item = cache.getSoleByGuid(guid, IAtsVersion.class);
       if (item == null) {
-         item = versionFactory.createVersion(artifact.getName(), guid, artifact.getHumanReadableId());
+         item = versionFactory.createVersion(artifact.getName(), guid);
          cache.cache(item);
       }
       return item;

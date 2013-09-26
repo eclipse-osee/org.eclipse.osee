@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public abstract class AbstractAtsArtifact extends Artifact implements IAtsObject {
 
-   public AbstractAtsArtifact(String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      super(guid, humanReadableId, branch, artifactType);
+   public AbstractAtsArtifact(String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+      super(guid, branch, artifactType);
    }
 
    @SuppressWarnings("unused")

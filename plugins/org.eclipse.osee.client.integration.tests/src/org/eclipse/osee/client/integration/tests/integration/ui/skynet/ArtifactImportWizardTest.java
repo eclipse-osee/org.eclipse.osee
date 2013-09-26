@@ -90,23 +90,22 @@ public final class ArtifactImportWizardTest {
    public void setUp() throws Exception {
       myRootArtifact =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BRANCH, "ArtifactImportWizardTest_Root",
-            "ArtifatImpWizaTestGUID", "12345");
+            "ArtifatImpWizaTestGUID");
 
       OseeSystemArtifacts.getDefaultHierarchyRootArtifact(BRANCH).addChild(myRootArtifact);
 
       Artifact artifactA =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, "A", "AAAAAAAAAAAAAAAAAAAAAA",
-            "A2345");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, "A", "AAAAAAAAAAAAAAAAAAAAAA");
       myRootArtifact.addChild(artifactA);
 
       artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, "C",
-         "CCCCCCCCCCCCCCCCCCCCCC", "C2345"));
+         "CCCCCCCCCCCCCCCCCCCCCC"));
 
       artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, BRANCH, "D",
-         "DDDDDDDDDDDDDDDDDDDDDD", "D2345"));
+         "DDDDDDDDDDDDDDDDDDDDDD"));
 
       myRootArtifact.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, "B",
-         "BBBBBBBBBBBBBBBBBBBBBB", "B2345"));
+         "BBBBBBBBBBBBBBBBBBBBBB"));
 
       myRootArtifact.persist("ArtifactImportWizardTest");
    }

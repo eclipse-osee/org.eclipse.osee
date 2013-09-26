@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactHrids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
@@ -103,10 +102,6 @@ public class CriteriaFactory {
 
    public Criteria createArtifactGuidCriteria(Set<String> guids) throws OseeCoreException {
       return new CriteriaArtifactGuids(guids);
-   }
-
-   public Criteria createArtifactHridCriteria(Set<String> hrids) throws OseeCoreException {
-      return new CriteriaArtifactHrids(hrids);
    }
 
    public Criteria createRelatedToCriteria(IRelationTypeSide relationType, Collection<Integer> artifactIds) throws OseeCoreException {

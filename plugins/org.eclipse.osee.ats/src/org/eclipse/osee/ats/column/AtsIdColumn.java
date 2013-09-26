@@ -8,32 +8,32 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
+package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
  */
-public class HridColumn extends XViewerValueColumn {
+public class AtsIdColumn extends XViewerValueColumn {
 
-   public static HridColumn instance = new HridColumn();
+   public static AtsIdColumn instance = new AtsIdColumn();
 
-   public static HridColumn getInstance() {
+   public static AtsIdColumn getInstance() {
       return instance;
    }
 
-   public HridColumn() {
+   public AtsIdColumn() {
       this(false);
    }
 
-   public HridColumn(boolean show) {
-      super("framework.hrid", "HRID", 75, SWT.LEFT, show, SortDataType.String, false, "Human Readable ID");
+   public AtsIdColumn(boolean show) {
+      super("ats.id", "ATS ID", 75, SWT.LEFT, show, SortDataType.String, false, "ATS ID");
    }
 
    /**
@@ -41,24 +41,25 @@ public class HridColumn extends XViewerValueColumn {
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public HridColumn copy() {
-      HridColumn newXCol = new HridColumn(isShow());
+   public AtsIdColumn copy() {
+      AtsIdColumn newXCol = new AtsIdColumn(isShow());
       super.copy(this, newXCol);
       return newXCol;
    }
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
+      String result = "";
       try {
-         if (element instanceof Artifact) {
-            return ((Artifact) element).getHumanReadableId();
-         } else if (element instanceof Change) {
-            return ((Change) element).getChangeArtifact().getHumanReadableId();
+         if (element instanceof IAtsWorkItem) {
+            result = ((IAtsWorkItem) element).getAtsId();
+         } else if (element instanceof IAtsObject) {
+            result = ((IAtsObject) element).getGuid();
          }
       } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
+         result = XViewerCells.getCellExceptionString(ex);
       }
-      return "";
+      return result;
    }
 
 }

@@ -12,10 +12,16 @@ package org.eclipse.osee.ats.api.workflow;
 
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.team.IAtsTeamWorkflowProvider;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsAction extends IAtsObject, IAtsTeamWorkflowProvider {
    // do nothing
+
+   public String getAtsId();
+
+   void setAtsId(String atsId) throws OseeCoreException;
+
 }

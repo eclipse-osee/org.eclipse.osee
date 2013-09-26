@@ -15,7 +15,7 @@ import java.util.Map;
 import org.eclipse.osee.orcs.rest.internal.search.PredicateHandler;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.AttributeTypePredicateHandler;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.ExistsTypePredicateHandler;
-import org.eclipse.osee.orcs.rest.internal.search.predicate.GuidOrHridsPredicateHandler;
+import org.eclipse.osee.orcs.rest.internal.search.predicate.GuidsPredicateHandler;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.IdsPredicateHandler;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.IsOfTypePredicateHandler;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.TypeEqualsPredicateHandler;
@@ -44,7 +44,7 @@ public class DslFactory {
    public static Map<SearchMethod, PredicateHandler> getHandlers() {
       Map<SearchMethod, PredicateHandler> handlers = new HashMap<SearchMethod, PredicateHandler>();
       handlers.put(SearchMethod.IDS, new IdsPredicateHandler());
-      handlers.put(SearchMethod.GUID_OR_HRIDS, new GuidOrHridsPredicateHandler());
+      handlers.put(SearchMethod.GUIDS, new GuidsPredicateHandler());
       handlers.put(SearchMethod.IS_OF_TYPE, new IsOfTypePredicateHandler());
       handlers.put(SearchMethod.TYPE_EQUALS, new TypeEqualsPredicateHandler());
       handlers.put(SearchMethod.EXISTS_TYPE, new ExistsTypePredicateHandler());

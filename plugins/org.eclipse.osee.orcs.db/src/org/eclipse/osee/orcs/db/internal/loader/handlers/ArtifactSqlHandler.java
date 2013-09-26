@@ -38,7 +38,7 @@ public class ArtifactSqlHandler extends SqlHandler<CriteriaArtifact> {
 
    @Override
    public void addSelect(AbstractSqlWriter writer) throws OseeCoreException {
-      writer.write("%s.art_type_id, %s.guid, %s.human_readable_id", artAlias, artAlias, artAlias);
+      writer.write("%s.art_type_id, %s.guid", artAlias, artAlias);
    }
 
    @Override

@@ -108,9 +108,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
 
                TreeColumn treeCol = xViewer.getTree().getColumns()[index];
                String colName = treeCol.getText();
-               if (colName.equals("HRID")) {
-                  toReturn = artifact.getHumanReadableId();
-               } else if (colName.equals("GUID")) {
+               if (colName.equals("GUID")) {
                   toReturn = artifact.getGuid();
                } else if (colName.equals("Artifact_Type")) {
                   toReturn = artifact.getArtifactTypeName();

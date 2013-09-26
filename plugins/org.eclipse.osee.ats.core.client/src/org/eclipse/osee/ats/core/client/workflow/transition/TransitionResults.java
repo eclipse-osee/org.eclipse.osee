@@ -100,7 +100,7 @@ public class TransitionResults {
          sb.append("\n");
          sb.append(awa.getArtifactTypeName());
          sb.append(" [");
-         sb.append(awa.getHumanReadableId());
+         sb.append(awa.getAtsId());
          sb.append("] Titled [");
          sb.append(awa.getName());
          sb.append("]\n\n");

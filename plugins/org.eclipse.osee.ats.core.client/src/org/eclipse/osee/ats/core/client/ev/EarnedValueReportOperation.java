@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.util.ColumnAdapter;
@@ -91,8 +93,10 @@ public class EarnedValueReportOperation extends AbstractOperation {
 
    private String getActionId(Artifact art) throws OseeCoreException {
       String pcrId = art.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, null);
-      if (pcrId == null) {
-         pcrId = art.getHumanReadableId();
+      if (pcrId == null && art instanceof IAtsWorkItem) {
+         pcrId = ((IAtsWorkItem) art).getAtsId();
+      } else if (pcrId == null && art instanceof IAtsObject) {
+         pcrId = ((IAtsObject) art).getGuid();
       }
       return pcrId;
    }

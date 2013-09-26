@@ -53,8 +53,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
 
             int typeId = chStmt.getInt("art_type_id");
             String guid = chStmt.getString("guid");
-            String hrid = chStmt.getString("human_readable_id");
-            toReturn = factory.createArtifactData(version, artifactId, typeId, modType, guid, hrid);
+            toReturn = factory.createArtifactData(version, artifactId, typeId, modType, guid);
          }
          onCreate.saveConditions(branchId, artifactId);
       }

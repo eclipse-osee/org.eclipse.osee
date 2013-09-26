@@ -24,7 +24,7 @@ public class OpenWorkflowByIdActionTest extends AbstractAtsActionRunTest {
    public Action createAction() throws OseeCoreException {
       OpenWorkflowByIdAction action = new OpenWorkflowByIdAction();
       action.setPend(true);
-      action.setOverrideId(AtsTestUtil.getTeamWf().getHumanReadableId());
+      action.setOverrideId(AtsTestUtil.getTeamWf().getAtsId());
       return action;
    }
 

@@ -111,7 +111,7 @@ public class BuildTraceReportResource {
 
    private IOseeBranch getBaselineBranch(String buildId, QueryFactory queryFactory) throws OseeCoreException {
       QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON);
-      ArtifactReadable buildArt = builder.andGuidsOrHrids(buildId).getResults().getExactlyOne();
+      ArtifactReadable buildArt = builder.andGuid(buildId).getResults().getExactlyOne();
       ResultSet<? extends AttributeReadable<String>> branchGuids =
          buildArt.getAttributes(AtsAttributeTypes.BaselineBranchGuid);
       Conditions.checkNotNull(branchGuids, "branchGuid");

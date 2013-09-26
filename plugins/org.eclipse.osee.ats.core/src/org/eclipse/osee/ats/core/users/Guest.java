@@ -30,11 +30,6 @@ public final class Guest extends AbstractAtsUser {
    }
 
    @Override
-   public String getHumanReadableId() {
-      return "TBRQV";
-   }
-
-   @Override
    public boolean isActive() {
       return true;
    }

@@ -39,11 +39,9 @@ import org.junit.rules.MethodRule;
 @PerfTest(threads = 2, invocations = 100)
 public class OseeClientQueryTest {
 
-   // Randomly selected guids/hrids
+   // Randomly selected guids
    private static final String GUID1 = "ABNRvbZxXHICYklfslwA";
    private static final String GUID2 = "D2hZ1_MwKRsqTILDKawA";
-   private static final String HRID1 = "6G642";
-   private static final String HRID2 = "1ZDBN";
 
    private static final IOseeBranch SAW_1 = new IOseeBranch() {
 
@@ -94,14 +92,14 @@ public class OseeClientQueryTest {
    @Test
    public void searchForArtifactByGuid() throws OseeCoreException {
       final int EXPECTED_RESULTS = 1;
-      SearchResult results = createClient.createQueryBuilder(COMMON).andGuidsOrHrids(GUID1).getSearchResult();
+      SearchResult results = createClient.createQueryBuilder(COMMON).andGuids(GUID1).getSearchResult();
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
    public void searchForArtifactByGuids() throws OseeCoreException {
       final int EXPECTED_RESULTS = 2;
-      SearchResult results = createClient.createQueryBuilder(COMMON).andGuidsOrHrids(GUID1, GUID2).getSearchResult();
+      SearchResult results = createClient.createQueryBuilder(COMMON).andGuids(GUID1, GUID2).getSearchResult();
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
@@ -109,7 +107,7 @@ public class OseeClientQueryTest {
    public void searchForArtifactByGuidsExcludeCache() throws OseeCoreException {
       final int EXPECTED_RESULTS = 2;
       SearchResult results =
-         createClient.createQueryBuilder(COMMON).andGuidsOrHrids(GUID1, GUID2).excludeCache().getSearchResult();
+         createClient.createQueryBuilder(COMMON).andGuids(GUID1, GUID2).excludeCache().getSearchResult();
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
@@ -117,21 +115,7 @@ public class OseeClientQueryTest {
    public void searchForArtifactByGuidsIncludeCache() throws OseeCoreException {
       final int EXPECTED_RESULTS = 2;
       SearchResult results =
-         createClient.createQueryBuilder(COMMON).andGuidsOrHrids(GUID1, GUID2).includeCache().getSearchResult();
-      assertEquals(EXPECTED_RESULTS, results.getTotal());
-   }
-
-   @Test
-   public void searchForArtifactByHrid() throws OseeCoreException {
-      final int EXPECTED_RESULTS = 1;
-      SearchResult results = createClient.createQueryBuilder(COMMON).andGuidsOrHrids(HRID1).getSearchResult();
-      assertEquals(EXPECTED_RESULTS, results.getTotal());
-   }
-
-   @Test
-   public void searchForArtifactByHrids() throws OseeCoreException {
-      final int EXPECTED_RESULTS = 2;
-      SearchResult results = createClient.createQueryBuilder(COMMON).andGuidsOrHrids(HRID1, HRID2).getSearchResult();
+         createClient.createQueryBuilder(COMMON).andGuids(GUID1, GUID2).includeCache().getSearchResult();
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 

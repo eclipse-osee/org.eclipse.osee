@@ -33,7 +33,6 @@ public class RoughArtifact {
    private RoughArtifact roughParent;
    private ReqNumbering number;
    private String guid;
-   private String humandReadableId;
    private RoughArtifactKind roughArtifactKind;
    private final RoughAttributeSet attributes;
    private final Collection<RoughArtifact> children;
@@ -57,7 +56,6 @@ public class RoughArtifact {
    public void clear() {
       this.attributes.clear();
       this.children.clear();
-      humandReadableId = null;
       guid = null;
       number = null;
       roughParent = null;
@@ -189,14 +187,6 @@ public class RoughArtifact {
 
    public String getGuid() {
       return guid;
-   }
-
-   public void setHumandReadableId(String humandReadableId) {
-      this.humandReadableId = humandReadableId;
-   }
-
-   public String getHumanReadableId() {
-      return humandReadableId;
    }
 
    public RoughArtifactKind getRoughArtifactKind() {

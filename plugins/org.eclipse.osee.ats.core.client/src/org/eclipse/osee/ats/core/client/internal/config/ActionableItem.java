@@ -33,8 +33,8 @@ public class ActionableItem extends AtsObject implements IAtsActionableItem {
    private final Set<IAtsUser> subscribed = new HashSet<IAtsUser>();
    private final Set<IAtsActionableItem> childrenActionableItems = new HashSet<IAtsActionableItem>();
 
-   public ActionableItem(String name, String guid, String humanReadableId) {
-      super(name, guid, humanReadableId);
+   public ActionableItem(String name, String guid) {
+      super(name, guid);
    }
 
    @Override

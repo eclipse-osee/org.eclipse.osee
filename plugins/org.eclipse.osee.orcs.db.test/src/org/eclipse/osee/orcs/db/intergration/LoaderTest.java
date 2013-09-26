@@ -120,9 +120,9 @@ public class LoaderTest {
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
 
       // @formatter:off
-		verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA", "3VY6B", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 15L);
-		verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA", "N782Y", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 16L);
-		verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA", "LBVP3", NEW, Folder.getGuid(), 2, 6, -1, 43L);
+		verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 15L);
+		verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA",  NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 16L);
+		verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA",  NEW, Folder.getGuid(), 2, 6, -1, 43L);
 		// @formatter:on
 
       sort(attributeCaptor.getAllValues());
@@ -174,9 +174,9 @@ public class LoaderTest {
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
 
       // @formatter:off
-		verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA", "3VY6B", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 15L);
-		verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA", "N782Y", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 16L);
-		verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA", "LBVP3", NEW, Folder.getGuid(), 2, 6, -1, 43L); 
+		verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA",  NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 15L);
+		verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA",  NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 16L);
+		verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA",  NEW, Folder.getGuid(), 2, 6, -1, 43L); 
 		// @formatter:on
 
       sort(attributeCaptor.getAllValues());
@@ -223,9 +223,9 @@ public class LoaderTest {
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
 
       // @formatter:off
-		verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA", "3VY6B", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 15L);
-		verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA", "N782Y", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 16L);
-		verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA", "LBVP3", NEW, Folder.getGuid(), 2, 6, -1, 43L);
+		verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 15L);
+		verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA",  NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 16L);
+		verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA",  NEW, Folder.getGuid(), 2, 6, -1, 43L);
 		// @formatter:on
 
       sort(attributeCaptor.getAllValues());
@@ -268,9 +268,9 @@ public class LoaderTest {
       Iterator<ArtifactData> arts = artifactCaptor.getAllValues().iterator();
 
       // @formatter:off
-      verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA", "3VY6B", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 15L);
-      verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA", "N782Y", NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 16L);
-      verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA", "LBVP3", NEW, Folder.getGuid(), 2, 6, -1, 43L);
+      verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA",  NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 15L);
+      verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA",  NEW, OseeTypeDefinition.getGuid(), 2, 5, -1, 16L);
+      verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA",  NEW, Folder.getGuid(), 2, 6, -1, 43L);
       // @formatter:on
 
       sort(attributeCaptor.getAllValues());

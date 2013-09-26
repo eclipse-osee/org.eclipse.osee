@@ -76,7 +76,7 @@ public class CoverageItemPersistTest {
          Assert.assertEquals(0, CoverageTestUtil.getAllCoverageArtifacts().size());
 
          readOnlyTestUnitNames =
-            ArtifactQuery.getOrCreate(ArtifactTestUnitStore.READ_ONLY_GUID, null, CoreArtifactTypes.GeneralData,
+            ArtifactQuery.getOrCreate(ArtifactTestUnitStore.READ_ONLY_GUID, CoreArtifactTypes.GeneralData,
                CoverageTestUtil.getTestBranch());
          readOnlyTestUnitNames.setSoleAttributeFromString(CoreAttributeTypes.GeneralStringData, "");
          parentCu = CoverageUnitFactory.createCoverageUnit(null, "Top", "C:/UserData/", null);

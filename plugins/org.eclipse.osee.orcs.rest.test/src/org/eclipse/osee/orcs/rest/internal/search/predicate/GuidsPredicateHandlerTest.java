@@ -14,12 +14,12 @@ import static org.mockito.Mockito.verify;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -30,7 +30,7 @@ import org.mockito.MockitoAnnotations;
 /**
  * @author John R. Misinco
  */
-public class GuidOrHridsPredicateHandlerTest {
+public class GuidsPredicateHandlerTest {
 
    @Mock
    private QueryBuilder builder;
@@ -44,44 +44,29 @@ public class GuidOrHridsPredicateHandlerTest {
    }
 
    @Test
-   public void testHandleHrid() throws OseeCoreException {
-      GuidOrHridsPredicateHandler handler = new GuidOrHridsPredicateHandler();
-      //no type params, op, or flags for ids - any passed are ignored
-
-      //all digits get treated as artId
-      String id1 = "12345";
-      List<String> values = Collections.singletonList(id1);
-      Predicate testPredicate = new Predicate(SearchMethod.GUID_OR_HRIDS, null, null, null, null, values);
-      handler.handle(builder, testPredicate);
-      verify(builder).andGuidsOrHrids(guidsCaptor.capture());
-      Assert.assertEquals(1, guidsCaptor.getValue().size());
-      Assert.assertTrue(guidsCaptor.getValue().contains(id1));
-   }
-
-   @Test
    public void testHandleGuids() throws OseeCoreException {
-      GuidOrHridsPredicateHandler handler = new GuidOrHridsPredicateHandler();
+      GuidsPredicateHandler handler = new GuidsPredicateHandler();
       // no type params, op, or flags for ids - any passed are ignored
       // if not all digits, treated as guid
       String id2 = "AGUID234";
       List<String> values = Collections.singletonList(id2);
-      Predicate testPredicate = new Predicate(SearchMethod.GUID_OR_HRIDS, null, null, null, null, values);
+      Predicate testPredicate = new Predicate(SearchMethod.GUIDS, null, null, null, null, values);
       handler.handle(builder, testPredicate);
-      verify(builder).andGuidsOrHrids(guidsCaptor.capture());
+      verify(builder).andGuids(guidsCaptor.capture());
       Assert.assertEquals(1, guidsCaptor.getValue().size());
       Assert.assertTrue(guidsCaptor.getValue().contains(id2));
    }
 
    @Test(expected = OseeArgumentException.class)
    public void testHandleBadValues() throws OseeCoreException {
-      GuidOrHridsPredicateHandler handler = new GuidOrHridsPredicateHandler();
-      Predicate testPredicate = new Predicate(SearchMethod.GUID_OR_HRIDS, null, null, null, null, null);
+      GuidsPredicateHandler handler = new GuidsPredicateHandler();
+      Predicate testPredicate = new Predicate(SearchMethod.GUIDS, null, null, null, null, null);
       handler.handle(builder, testPredicate);
    }
 
    @Test(expected = OseeArgumentException.class)
    public void testBadSearchMethod() throws OseeCoreException {
-      GuidOrHridsPredicateHandler handler = new GuidOrHridsPredicateHandler();
+      GuidsPredicateHandler handler = new GuidsPredicateHandler();
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
       Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, null, null, null, null, values);

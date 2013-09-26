@@ -55,7 +55,7 @@ public class AtsXmlSearch {
       return toReturn;
    }
 
-   public String multiIdsToXPath(String idsWithCommas) throws OseeCoreException {
+   public String multiIdsToXPath(String idsWithCommas) {
       List<String> predicates = new ArrayList<String>();
       if (Strings.isValid(idsWithCommas)) {
          String[] ids = idsWithCommas.split("[\\s,]+");
@@ -66,16 +66,14 @@ public class AtsXmlSearch {
       return Collections.toString(" or ", predicates);
    }
 
-   public String idToXPath(String id) throws OseeCoreException {
+   public String idToXPath(String id) {
       StringBuilder builder = new StringBuilder();
       if (IdUtils.isValidLegacyId(id)) {
          builder.append("workflowPcrId=");
       } else if (IdUtils.isValidGUID(id)) {
          builder.append("workflowId=");
-      } else if (IdUtils.isValidHRID(id)) {
-         builder.append("workflowHrid=");
       } else {
-         throw new OseeCoreException("Invalid id [%s]", id);
+         builder.append("workflowAtsId=");
       }
       if (builder.length() > 0) {
          builder.append("\"" + id + "\"");

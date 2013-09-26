@@ -45,15 +45,14 @@ public class CopyActionDetails {
             String formatStr = getFormatStr(teamDef);
             if (Strings.isValid(formatStr)) {
                detailsStr = formatStr;
-               detailsStr = detailsStr.replaceAll("<hrid>", awa.getHumanReadableId());
+               detailsStr = detailsStr.replaceAll("<atsid>", awa.getAtsId());
                detailsStr = detailsStr.replaceAll("<name>", awa.getName());
                detailsStr = detailsStr.replaceAll("<artType>", awa.getArtifactTypeName());
                detailsStr = detailsStr.replaceAll("<changeType>", getChangeTypeOrObjectType(awa));
             }
          }
          if (!Strings.isValid(detailsStr)) {
-            detailsStr =
-               "\"" + awa.getArtifactTypeName() + "\" - " + awa.getHumanReadableId() + " - \"" + awa.getName() + "\"";
+            detailsStr = "\"" + awa.getArtifactTypeName() + "\" - " + awa.getAtsId() + " - \"" + awa.getName() + "\"";
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

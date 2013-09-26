@@ -44,7 +44,6 @@ public class IntegrationUtil {
       int index = 0;
       assertEquals(data.getLocalId(), values[index++]);
       assertEquals(data.getGuid(), values[index++]);
-      assertEquals(data.getHumanReadableId(), values[index++]);
       assertEquals(data.getModType(), values[index++]);
       assertEquals(data.getTypeUuid(), values[index++]);
 

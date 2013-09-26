@@ -16,14 +16,12 @@ import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.world.IWorldEditorConsumer;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
  */
-public class MultipleHridSearchData implements IWorldEditorConsumer {
+public class MultipleIdSearchData implements IWorldEditorConsumer {
    private String enteredIds = "";
    private List<String> ids = new ArrayList<String>();
    private boolean includeArtIds;
@@ -32,7 +30,7 @@ public class MultipleHridSearchData implements IWorldEditorConsumer {
    private WorldEditor worldEditor;
    private AtsEditor atsEditor;
 
-   public MultipleHridSearchData(String name, AtsEditor atsEditor) {
+   public MultipleIdSearchData(String name, AtsEditor atsEditor) {
       this.name = name;
       this.atsEditor = atsEditor;
    }
@@ -56,21 +54,11 @@ public class MultipleHridSearchData implements IWorldEditorConsumer {
          if (!str.equals("")) {
             ids.add(str);
          }
-         // allow for lower case hrids
+         // allow for lower case ats ids
          if (str.length() == 5 && !ids.contains(str.toUpperCase())) {
             ids.add(str.toUpperCase());
          }
       }
-   }
-
-   public List<String> getValidGuidsAndHrids() {
-      List<String> results = new ArrayList<String>();
-      for (String id : getIds()) {
-         if (GUID.isValid(id) || HumanReadableId.isValid(id)) {
-            results.add(id);
-         }
-      }
-      return results;
    }
 
    public List<String> getIds() {

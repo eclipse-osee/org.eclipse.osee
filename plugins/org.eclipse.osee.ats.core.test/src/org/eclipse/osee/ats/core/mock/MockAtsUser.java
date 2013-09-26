@@ -47,11 +47,6 @@ public class MockAtsUser implements IAtsUser {
    }
 
    @Override
-   public String getHumanReadableId() {
-      return name;
-   }
-
-   @Override
    public String getEmail() {
       return email;
    }

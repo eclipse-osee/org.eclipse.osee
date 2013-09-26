@@ -84,11 +84,6 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public String getHumanReadableId() {
-      return getOrcsData().getHumanReadableId();
-   }
-
-   @Override
    public int getTransaction() {
       int maxTransactionId = getOrcsData().getVersion().getTransactionId();
       for (Attribute<?> attribute : getAllAttributes()) {

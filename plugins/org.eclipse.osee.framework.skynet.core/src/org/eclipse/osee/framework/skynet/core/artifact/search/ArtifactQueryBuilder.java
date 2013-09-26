@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
@@ -52,8 +51,7 @@ import org.eclipse.osee.orcs.rest.model.search.SearchResult;
  */
 public class ArtifactQueryBuilder {
    private List<String> guids;
-   private List<String> hrids;
-   private String guidOrHrid;
+   private String guid;
    private final ArtifactSearchCriteria[] criteria;
    private final IOseeBranch branch;
    private int artifactId;
@@ -82,19 +80,19 @@ public class ArtifactQueryBuilder {
       emptyCriteria = artifactIds.isEmpty();
    }
 
-   public ArtifactQueryBuilder(List<String> guidOrHrids, IOseeBranch branch, LoadLevel loadLevel) {
-      this(null, 0, guidOrHrids, null, null, branch, null, EXCLUDE_DELETED, loadLevel);
-      emptyCriteria = guidOrHrids.isEmpty();
+   public ArtifactQueryBuilder(List<String> guids, IOseeBranch branch, LoadLevel loadLevel) {
+      this(null, 0, guids, null, null, branch, null, EXCLUDE_DELETED, loadLevel);
+      emptyCriteria = guids.isEmpty();
    }
 
-   public ArtifactQueryBuilder(List<String> guidOrHrids, IOseeBranch branch, DeletionFlag allowDeleted, LoadLevel loadLevel) {
-      this(null, 0, guidOrHrids, null, null, branch, null, allowDeleted, loadLevel);
-      emptyCriteria = guidOrHrids.isEmpty();
+   public ArtifactQueryBuilder(List<String> guids, IOseeBranch branch, DeletionFlag allowDeleted, LoadLevel loadLevel) {
+      this(null, 0, guids, null, null, branch, null, allowDeleted, loadLevel);
+      emptyCriteria = guids.isEmpty();
    }
 
-   public ArtifactQueryBuilder(List<String> guidOrHrids, TransactionRecord transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
-      this(null, 0, guidOrHrids, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel);
-      emptyCriteria = guidOrHrids.isEmpty();
+   public ArtifactQueryBuilder(List<String> guids, TransactionRecord transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
+      this(null, 0, guids, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel);
+      emptyCriteria = guids.isEmpty();
    }
 
    public ArtifactQueryBuilder(Collection<Integer> artifactIds, TransactionRecord transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
@@ -106,8 +104,8 @@ public class ArtifactQueryBuilder {
       this(null, artifactId, null, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel);
    }
 
-   public ArtifactQueryBuilder(String guidOrHrid, IOseeBranch branch, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
-      this(null, 0, null, ensureValid(guidOrHrid), null, branch, null, allowDeleted, loadLevel);
+   public ArtifactQueryBuilder(String guid, IOseeBranch branch, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
+      this(null, 0, null, ensureValid(guid), null, branch, null, allowDeleted, loadLevel);
    }
 
    public ArtifactQueryBuilder(IArtifactType artifactType, IOseeBranch branch, LoadLevel loadLevel, DeletionFlag allowDeleted) {
@@ -144,13 +142,13 @@ public class ArtifactQueryBuilder {
       emptyCriteria = criteria.isEmpty();
    }
 
-   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, Collection<? extends IArtifactType> artifactTypes, IOseeBranch branch, TransactionRecord transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel, ArtifactSearchCriteria... criteria) {
+   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guids, String guid, Collection<? extends IArtifactType> artifactTypes, IOseeBranch branch, TransactionRecord transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel, ArtifactSearchCriteria... criteria) {
       this.artifactTypes = artifactTypes;
       this.branch = branch;
       this.criteria = criteria;
       this.loadLevel = loadLevel;
       this.allowDeleted = allowDeleted;
-      this.guidOrHrid = guidOrHrid;
+      this.guid = guid;
       this.artifactId = artifactId;
       this.transactionId = transactionId;
       if (artifactIds != null && !artifactIds.isEmpty()) {
@@ -161,17 +159,14 @@ public class ArtifactQueryBuilder {
          }
       }
 
-      if (guidOrHrids != null && !guidOrHrids.isEmpty()) {
-         if (guidOrHrids.size() == 1) {
-            this.guidOrHrid = guidOrHrids.get(0);
+      if (Conditions.hasValues(guids)) {
+         if (guids.size() == 1) {
+            this.guid = guids.get(0);
          } else {
-            hrids = new ArrayList<String>();
-            guids = new ArrayList<String>();
-            for (String id : guidOrHrids) {
+            this.guids = new ArrayList<String>();
+            for (String id : guids) {
                if (GUID.isValid(id)) {
-                  guids.add(id);
-               } else {
-                  hrids.add(id);
+                  this.guids.add(id);
                }
             }
          }
@@ -185,15 +180,14 @@ public class ArtifactQueryBuilder {
 
    private static String ensureValid(String id) throws OseeCoreException {
       boolean guidCheck = GUID.isValid(id);
-      boolean hridCheck = HumanReadableId.isValid(id);
-      if (!guidCheck && !hridCheck) {
-         throw new OseeArgumentException("Invalid hrid/guid detected [%s]", id);
+      if (!guidCheck) {
+         throw new OseeArgumentException("Invalid guid detected [%s]", id);
       }
       return id;
    }
 
    private boolean useServerSearch() {
-      return (Conditions.hasValues(artifactTypes) || guidOrHrid != null || Conditions.hasValues(guids) || Conditions.hasValues(hrids) || criteria.length > 0 || (artifactId == 0 && !Conditions.hasValues(artifactIds)));
+      return (Conditions.hasValues(artifactTypes) || guid != null || Conditions.hasValues(guids) || criteria.length > 0 || (artifactId == 0 && !Conditions.hasValues(artifactIds)));
    }
 
    private QueryBuilder getQueryBuilder() throws OseeCoreException {
@@ -230,16 +224,12 @@ public class ArtifactQueryBuilder {
          builder.andTypeEquals(artifactTypes);
       }
 
-      if (guidOrHrid != null) {
-         builder.andGuidsOrHrids(guidOrHrid);
+      if (guid != null) {
+         builder.andGuids(guid);
       }
 
       if (Conditions.hasValues(guids)) {
-         builder.andGuidsOrHrids(guids);
-      }
-
-      if (Conditions.hasValues(hrids)) {
-         builder.andGuidsOrHrids(hrids);
+         builder.andGuids(guids);
       }
 
       if (criteria.length > 0) {
@@ -342,9 +332,9 @@ public class ArtifactQueryBuilder {
          message.append(artifactId);
          message.append("\"");
       }
-      if (guidOrHrid != null) {
+      if (guid != null) {
          message.append(" with id \"");
-         message.append(guidOrHrid);
+         message.append(guid);
          message.append("\"");
       }
       if (criteria.length > 0) {

@@ -95,11 +95,6 @@ public final class PortPairsOperation extends AbstractOperation {
          AtsAttributeTypes.LegacyPcrId, workflowId, CoreBranches.COMMON);
    }
 
-   private TeamWorkFlowArtifact getWorkflowFromHRID(String HRID) throws OseeCoreException {
-
-      return (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromId(HRID, CoreBranches.COMMON);
-   }
-
    private void doPortWork(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow) throws OseeCoreException {
       if (destinationWorkflow.getWorkingBranchForceCacheUpdate() == null) {
          AtsBranchManagerCore.createWorkingBranch_Create(destinationWorkflow, true);
@@ -132,7 +127,7 @@ public final class PortPairsOperation extends AbstractOperation {
       }
 
       Collection<Branch> branches =
-         BranchManager.getBranchesByName(String.format("Porting [%s] branch", sourceWorkflow.getHumanReadableId()));
+         BranchManager.getBranchesByName(String.format("Porting [%s] branch", sourceWorkflow.getAtsId()));
 
       if (branches.isEmpty()) {
          TransactionRecord transRecord = AtsBranchManagerCore.getEarliestTransactionId(sourceWorkflow);
@@ -140,7 +135,7 @@ public final class PortPairsOperation extends AbstractOperation {
             return null;
          } else {
             return BranchManager.createWorkingBranchFromTx(transRecord,
-               String.format("Porting [%s] branch", sourceWorkflow.getHumanReadableId()), null);
+               String.format("Porting [%s] branch", sourceWorkflow.getAtsId()), null);
          }
       } else {
          return branches.iterator().next();

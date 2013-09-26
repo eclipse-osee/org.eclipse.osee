@@ -15,8 +15,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsEditor;
-import org.eclipse.osee.ats.world.search.MultipleHridSearchData;
-import org.eclipse.osee.ats.world.search.MultipleHridSearchOperation;
+import org.eclipse.osee.ats.world.search.MultipleIdSearchData;
+import org.eclipse.osee.ats.world.search.MultipleIdSearchOperation;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -47,11 +47,11 @@ public class OpenWorkflowByIdAction extends Action {
 
    @Override
    public void run() {
-      MultipleHridSearchData data = new MultipleHridSearchData(getText(), AtsEditor.WorkflowEditor);
+      MultipleIdSearchData data = new MultipleIdSearchData(getText(), AtsEditor.WorkflowEditor);
       if (Strings.isValid(overrideId)) {
          data.setEnteredIds(overrideId);
       }
-      MultipleHridSearchOperation operation = new MultipleHridSearchOperation(data);
+      MultipleIdSearchOperation operation = new MultipleIdSearchOperation(data);
       if (pend) {
          try {
             Operations.executeWorkAndCheckStatus(operation);

@@ -262,8 +262,7 @@ public class OrcsTransactionTest {
       String guid = tx.createArtifact(CoreArtifactTypes.Component, "A component").getGuid();
       int startingTx = tx.commit().getId();
 
-      ArtifactReadable artifact =
-         query.fromBranch(CoreBranches.COMMON).andGuidsOrHrids(guid).getResults().getExactlyOne();
+      ArtifactReadable artifact = query.fromBranch(CoreBranches.COMMON).andGuid(guid).getResults().getExactlyOne();
       assertEquals(startingTx, artifact.getTransaction());
 
       TransactionBuilder tx2 = createTx();
@@ -273,7 +272,7 @@ public class OrcsTransactionTest {
       assertTrue(startingTx != lastTx);
 
       ArtifactReadable currentArtifact =
-         query.fromBranch(CoreBranches.COMMON).andGuidsOrHrids(guid).getResults().getExactlyOne();
+         query.fromBranch(CoreBranches.COMMON).andGuid(guid).getResults().getExactlyOne();
       assertEquals(lastTx, currentArtifact.getTransaction());
    }
 

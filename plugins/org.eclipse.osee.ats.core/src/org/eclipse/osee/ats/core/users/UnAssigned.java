@@ -30,11 +30,6 @@ public final class UnAssigned extends AbstractAtsUser {
    }
 
    @Override
-   public String getHumanReadableId() {
-      return "7G020";
-   }
-
-   @Override
    public boolean isActive() {
       return true;
    }

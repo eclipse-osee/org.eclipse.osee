@@ -53,7 +53,7 @@ public abstract class AbstractAtsArtifactWriter<T extends IAtsConfigObject> impl
       if (artifact == null) {
          artifact =
             ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranchToken(), atsObject.getName(),
-               atsObject.getGuid(), atsObject.getHumanReadableId());
+               atsObject.getGuid());
          artifact.persist(transaction);
       }
       return artifact;

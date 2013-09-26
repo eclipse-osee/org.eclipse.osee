@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultBrowserHyperCmd;
 
 /**
@@ -129,7 +128,7 @@ public class Overview {
       this.html.append(AHTML.multiColumnTable(new String[] {
          AHTML.getLabelStr(labelFont, "State: ") + awa.getStateMgr().getCurrentStateName(),
          AHTML.getLabelStr(labelFont, "Type: ") + awa.getArtifactTypeName(),
-         AHTML.getLabelStr(labelFont, "Id: ") + awa.getHumanReadableId()}));
+         AHTML.getLabelStr(labelFont, "Id: ") + awa.getAtsId()}));
       addTable(getLabelValue("Originator", awa.getCreatedBy().getName()),
          getLabelValue("Creation Date", DateUtil.getMMDDYYHHMM(awa.getCreatedDate())));
       if (awa.isTeamWorkflow()) {
@@ -243,19 +242,6 @@ public class Overview {
 
    public static String getOpenHyperlinkHtml(Artifact art) {
       return getOpenHyperlinkHtml(art.getName(), art);
-   }
-
-   public static String getOpenHyperlinkHtml(String name, String hrid) {
-      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, hrid), name);
-   }
-
-   public static String getOpenArtEditHyperlinkHtml(String name, String hrid) {
-      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactEditor, hrid),
-         name);
-   }
-
-   public static String getOpenHyperlinkHtml(String name, String guidOrHrid, int branchId) {
-      return XResultDataUI.getHyperlink(name, guidOrHrid, branchId);
    }
 
    public static String getOpenHyperlinkHtml(String name, Artifact art) {

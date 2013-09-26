@@ -170,12 +170,12 @@ public class EmailActionsBlam extends AbstractBlam {
       try {
          String legacyPcrId = sma.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
          if (!legacyPcrId.equals("")) {
-            return "HRID: " + sma.getHumanReadableId() + " / LegacyId: " + legacyPcrId;
+            return "ID: " + sma.getAtsId() + " / LegacyId: " + legacyPcrId;
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      return "HRID: " + sma.getHumanReadableId();
+      return "ID: " + sma.getAtsId();
    }
 
    @Override

@@ -375,9 +375,9 @@ public final class ArtifactLoader {
          ArtifactFactory factory = ArtifactTypeManager.getFactory(artifactType);
 
          artifact =
-            factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), chStmt.getString("human_readable_id"),
-               artifactType, chStmt.getInt("gamma_id"), branch, transactionId,
-               ModificationType.getMod(chStmt.getInt("mod_type")), historical);
+            factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), artifactType,
+               chStmt.getInt("gamma_id"), branch, transactionId, ModificationType.getMod(chStmt.getInt("mod_type")),
+               historical);
       }
 
       if (reload == LoadType.RELOAD_CACHE) {

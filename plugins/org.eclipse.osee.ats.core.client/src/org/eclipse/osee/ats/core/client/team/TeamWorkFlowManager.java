@@ -263,7 +263,7 @@ public class TeamWorkFlowManager {
                }
             }
          }
-         return teamArt.getTeamName() + " " + awa.getHumanReadableId();
+         return teamArt.getTeamName() + " " + awa.getAtsId();
       }
       return "";
    }

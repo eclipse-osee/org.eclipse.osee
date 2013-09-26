@@ -79,7 +79,7 @@ public class ReviewNavigateViewItems implements XNavigateViewItems, IXNavigateCo
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       items.add(new SearchNavigateItem(item, new ReviewSearchWorkflowSearchItem()));
-      items.add(new XNavigateItemAction(item, new OpenWorkflowByIdAction("Open Review by HRID"), AtsImage.REVIEW));
+      items.add(new XNavigateItemAction(item, new OpenWorkflowByIdAction("Open Review by ID"), AtsImage.REVIEW));
       items.add(new SearchNavigateItem(item, new ShowOpenWorkflowsByArtifactType(
          "Show Open " + AtsArtifactTypes.DecisionReview.getName() + "s", AtsArtifactTypes.DecisionReview, false, false,
          AtsImage.DECISION_REVIEW)));

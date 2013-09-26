@@ -169,7 +169,6 @@ public final class Artifacts {
       Map<String, String> details = new HashMap<String, String>();
       if (artifact != null) {
          details.put("GUID", String.valueOf(Xml.escape(artifact.getGuid())));
-         details.put("HRID", String.valueOf(Xml.escape(artifact.getHumanReadableId())));
          details.put("Branch", String.valueOf(Xml.escape(artifact.getBranch().toString())));
          details.put("Branch Id", String.valueOf(artifact.getFullBranch().getId()));
          details.put("Artifact Id", String.valueOf(artifact.getArtId()));

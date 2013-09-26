@@ -129,12 +129,12 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andGuidsOrHrids(String... ids) {
-      return andGuidsOrHrids(Arrays.asList(ids));
+   public QueryBuilder andGuids(String... ids) {
+      return andGuids(Arrays.asList(ids));
    }
 
    @Override
-   public QueryBuilder andGuidsOrHrids(Collection<String> ids) {
+   public QueryBuilder andGuids(Collection<String> ids) {
       predicates.add(predicateFactory.createUuidSearch(ids));
       return this;
    }

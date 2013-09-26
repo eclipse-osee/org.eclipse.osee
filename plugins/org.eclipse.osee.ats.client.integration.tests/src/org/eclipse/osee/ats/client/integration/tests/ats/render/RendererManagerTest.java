@@ -81,7 +81,7 @@ public class RendererManagerTest {
 
    @Test
    public void testGetBestRenderer() throws OseeCoreException {
-      Artifact artifact = new Artifact(GUID.create(), null, BranchManager.getCommonBranch(), artifactType);
+      Artifact artifact = new Artifact(GUID.create(), BranchManager.getCommonBranch(), artifactType);
 
       if (defaultOption == Both) {
          testGetBestRendererWithOption(artifact, On);

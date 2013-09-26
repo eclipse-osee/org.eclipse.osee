@@ -29,7 +29,6 @@ import org.junit.runners.Suite;
    CompareTest.class,
    GUIDTest.class,
    HashCollectionTest.class,
-   HumanReadableIdTest.class,
    ReservedCharactersTest.class,
    StringsTest.class,
    UrlQueryTest.class})

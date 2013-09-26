@@ -622,7 +622,7 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       FormsUtil.createLabelText(toolkit, topLineComp, awa.getArtifactSuperTypeName() + " Id: ",
-         awa.getHumanReadableId());
+         awa.getAtsId());
 
       try {
          String pcrId = TeamWorkFlowManager.getPcrId(awa);

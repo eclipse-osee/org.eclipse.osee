@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -113,14 +113,14 @@ public class SMADetailsSection extends SectionPart {
 
    private void addSMADetails(AbstractWorkflowArtifact workflow, Map<String, String> details) throws OseeCoreException {
       details.put("Workflow Definition", workflow.getWorkDefinition().getName());
-      Artifact parentAction = workflow.getParentActionArtifact();
+      ActionArtifact parentAction = workflow.getParentActionArtifact();
       if (parentAction == null) {
          details.put("Action Id", "No Parent Action");
       } else {
-         details.put("Action Id", parentAction.getHumanReadableId());
+         details.put("Action Id", parentAction.getAtsId());
       }
       if (!(workflow.isOfType(AtsArtifactTypes.TeamWorkflow)) && workflow.getParentTeamWorkflow() != null) {
-         details.put("Parent Team Workflow Id", workflow.getParentTeamWorkflow().getHumanReadableId());
+         details.put("Parent Team Workflow Id", workflow.getParentTeamWorkflow().getAtsId());
       }
       if (workflow.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          details.put("Working Branch Access Context Id", getAccessContextId((TeamWorkFlowArtifact) workflow));
@@ -151,7 +151,10 @@ public class SMADetailsSection extends SectionPart {
             }
          } else {
             try {
-               ids = accessControl.getContextId(AtsClientService.get().getUserAdmin().getOseeUser(AtsClientService.get().getUserAdmin().getCurrentUser()), workingBranch);
+               ids =
+                  accessControl.getContextId(
+                     AtsClientService.get().getUserAdmin().getOseeUser(
+                        AtsClientService.get().getUserAdmin().getCurrentUser()), workingBranch);
                message = ids.toString();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

@@ -148,7 +148,7 @@ public class ArtifactTypeManager {
     * Get a new instance of type artifactTypeName
     */
    public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
-      return getFactory(artifactType).makeNewArtifact(branch, artifactType, null, null, null);
+      return getFactory(artifactType).makeNewArtifact(branch, artifactType, null, null);
    }
 
    /**
@@ -160,23 +160,13 @@ public class ArtifactTypeManager {
       return artifact;
    }
 
-   /**
-    * Get a new instance of the type of artifact. This is just a convenience method that calls makeNewArtifact on the
-    * known factory with this descriptor for the descriptor parameter, and the supplied branch.
-    * 
-    * @see ArtifactFactory#makeNewArtifact(Branch, IArtifactType, String, String, ArtifactProcessor)
-    */
-   public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch, String guid, String humandReadableId) throws OseeCoreException {
-      return getFactory(artifactType).makeNewArtifact(branch, artifactType, guid, humandReadableId);
-   }
-
-   public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch, String name, String guid, String humandReadableId) throws OseeCoreException {
-      return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid, humandReadableId);
+   public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch, String name, String guid) throws OseeCoreException {
+      return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid);
    }
 
    public static Artifact addArtifact(IArtifactToken artifactToken, IOseeBranch branch) throws OseeCoreException {
       return getFactory(artifactToken.getArtifactType()).makeNewArtifact(branch, artifactToken.getArtifactType(),
-         artifactToken.getName(), artifactToken.getGuid(), null);
+         artifactToken.getName(), artifactToken.getGuid());
    }
 
    private static final String COUNT_ARTIFACT_OCCURRENCE =

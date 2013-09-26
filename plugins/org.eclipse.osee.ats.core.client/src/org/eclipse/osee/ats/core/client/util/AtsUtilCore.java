@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
  * @author Donald G. Dunne
  */
 public class AtsUtilCore {
+   private static final String DEFAULT_ATS_ID_VALUE = "0";
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
    private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter = new ArtifactTypeEventFilter(
       AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action, AtsArtifactTypes.Task, AtsArtifactTypes.Goal,
@@ -124,6 +125,14 @@ public class AtsUtilCore {
 
    public static IOseeBranch getAtsBranchToken() {
       return CoreBranches.COMMON;
+   }
+
+   public static String getAtsId(Artifact art) throws OseeCoreException {
+      String toReturn = art.getSoleAttributeValueAsString(AtsAttributeTypes.AtsId, DEFAULT_ATS_ID_VALUE);
+      if (DEFAULT_ATS_ID_VALUE.equals(toReturn)) {
+         toReturn = art.getGuid();
+      }
+      return toReturn;
    }
 
    public static Artifact getFromToken(IArtifactToken token) {

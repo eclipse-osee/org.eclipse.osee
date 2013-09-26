@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -40,14 +39,14 @@ public abstract class ArtifactFactory {
       }
    }
 
-   public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String guid, String humandReadableId) throws OseeCoreException {
-      return makeNewArtifact(branch, artifactTypeToken, null, guid, humandReadableId);
+   public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String guid) throws OseeCoreException {
+      return makeNewArtifact(branch, artifactTypeToken, null, guid);
    }
 
    /**
     * Used to create a new artifact (one that has never been saved into the datastore)
     */
-   public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String artifactName, String guid, String humanReadableId) throws OseeCoreException {
+   public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String artifactName, String guid) throws OseeCoreException {
       ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeToken);
 
       Conditions.checkExpressionFailOnTrue(artifactType.isAbstract(),
@@ -60,16 +59,7 @@ public abstract class ArtifactFactory {
             "Invalid guid [%s] during artifact creation [name: %s]", guid, artifactName);
       }
 
-      if (humanReadableId == null) {
-         String hrid = HumanReadableId.generate();
-         humanReadableId = ArtifactFactory.isUniqueHRID(hrid) ? hrid : HumanReadableId.generate();
-      } else {
-         Conditions.checkExpressionFailOnTrue(!HumanReadableId.isValid(humanReadableId),
-            "Invalid human readable id [%s] during artifact creation [name: %s, guid: %s]", humanReadableId,
-            artifactName, guid);
-      }
-
-      Artifact artifact = getArtifactInstance(guid, humanReadableId, BranchManager.getBranch(branch), artifactType);
+      Artifact artifact = getArtifactInstance(guid, BranchManager.getBranch(branch), artifactType, false);
 
       artifact.setArtId(ConnectionHandler.getSequence().getNextArtifactId());
       artifact.meetMinimumAttributeCounts(true);
@@ -83,16 +73,10 @@ public abstract class ArtifactFactory {
       return artifact;
    }
 
-   public static boolean isUniqueHRID(String id) throws OseeCoreException {
-      String DUPLICATE_HRID_SEARCH =
-         "select count(1) from (select DISTINCT(art_id) from osee_artifact where human_readable_id = ?) t1";
-      return ConnectionHandler.runPreparedQueryFetchLong(0L, DUPLICATE_HRID_SEARCH, id) <= 0;
-   }
-
-   public synchronized Artifact reflectExisitingArtifact(int artId, String guid, String humandReadableId, IArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modificationType) throws OseeCoreException {
+   public synchronized Artifact reflectExisitingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modificationType) throws OseeCoreException {
       Artifact toReturn =
-         internalExistingArtifact(artId, guid, humandReadableId, artifactType, gammaId, branch, modificationType,
-            false, Artifact.TRANSACTION_SENTINEL, true);
+         internalExistingArtifact(artId, guid, artifactType, gammaId, branch, modificationType, false,
+            Artifact.TRANSACTION_SENTINEL, true);
       ArtifactCache.cache(toReturn);
       return toReturn;
    }
@@ -100,8 +84,8 @@ public abstract class ArtifactFactory {
    /**
     * This method does not cache the artifact, ArtifactLoader will cache existing artifacts
     */
-   private Artifact internalExistingArtifact(int artId, String guid, String humandReadableId, IArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modType, boolean historical, int transactionId, boolean useBackingData) throws OseeCoreException {
-      Artifact artifact = getArtifactInstance(guid, humandReadableId, BranchManager.getBranch(branch), artifactType);
+   private Artifact internalExistingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modType, boolean historical, int transactionId, boolean useBackingData) throws OseeCoreException {
+      Artifact artifact = getArtifactInstance(guid, BranchManager.getBranch(branch), artifactType, true);
 
       artifact.setArtId(artId);
       artifact.internalSetPersistenceData(gammaId, transactionId, modType, historical, useBackingData);
@@ -112,9 +96,9 @@ public abstract class ArtifactFactory {
    /**
     * This method does not cache the artifact, ArtifactLoader will cache existing artifacts
     */
-   public synchronized Artifact loadExisitingArtifact(int artId, String guid, String humandReadableId, IArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical) throws OseeCoreException {
-      return internalExistingArtifact(artId, guid, humandReadableId, artifactType, gammaId, branch, modType,
-         historical, transactionId, false);
+   public synchronized Artifact loadExisitingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical) throws OseeCoreException {
+      return internalExistingArtifact(artId, guid, artifactType, gammaId, branch, modType, historical, transactionId,
+         false);
    }
 
    /**
@@ -125,7 +109,7 @@ public abstract class ArtifactFactory {
     * 
     * @param branch branch on which this instance of this artifact will be associated
     */
-   protected abstract Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException;
+   protected abstract Artifact getArtifactInstance(String guid, Branch branch, IArtifactType artifactType, boolean inDataStore) throws OseeCoreException;
 
    @Override
    public String toString() {

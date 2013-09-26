@@ -31,6 +31,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType AllowCommitBranch = createType(0x10000000000000BAL, "Allow Commit Branch");
    public static final IAttributeType AllowCreateBranch = createType(0x10000000000000B9L, "Allow Create Branch");
    public static final IAttributeType ArtifactReference = createType(0x1000BA00000000F9L, "Artifact Reference");
+   public static final IAttributeType AtsId = createType(0x1000000000000385L, "ATS Id", "ATS Generated Id");
    public static final IAttributeType TaskToChangedArtifactReference = createType(0x1000BA00000000FAL, "Task To Changed Artifact Reference");
    public static final IAttributeType BaselineBranchGuid = createType(0x10000000000000A9L, "Baseline Branch Guid", "Basline branch associated with ATS object.");
 

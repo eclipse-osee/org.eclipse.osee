@@ -26,17 +26,17 @@ import org.eclipse.swt.SWT;
 /**
  * @author Donald G. Dunne
  */
-public class ParentHridColumn extends XViewerAtsColumn implements IXViewerValueColumn {
+public class ParentAtsIdColumn extends XViewerAtsColumn implements IXViewerValueColumn {
 
-   public static ParentHridColumn instance = new ParentHridColumn();
+   public static ParentAtsIdColumn instance = new ParentAtsIdColumn();
 
-   public static ParentHridColumn getInstance() {
+   public static ParentAtsIdColumn getInstance() {
       return instance;
    }
 
-   private ParentHridColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".parenthrid", "Parent HRID", 75, SWT.LEFT, false,
-         SortDataType.String, false, "Human Readable ID of Parent Action or Team Workflow");
+   private ParentAtsIdColumn() {
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".parentatsid", "Parent ATS ID", 75, SWT.LEFT, false,
+         SortDataType.String, false, "ATS ID of Parent Action or Team Workflow");
    }
 
    /**
@@ -44,8 +44,8 @@ public class ParentHridColumn extends XViewerAtsColumn implements IXViewerValueC
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public ParentHridColumn copy() {
-      ParentHridColumn newXCol = new ParentHridColumn();
+   public ParentAtsIdColumn copy() {
+      ParentAtsIdColumn newXCol = new ParentAtsIdColumn();
       super.copy(this, newXCol);
       return newXCol;
    }
@@ -56,10 +56,10 @@ public class ParentHridColumn extends XViewerAtsColumn implements IXViewerValueC
          if (Artifacts.isOfType(element, AtsArtifactTypes.TeamWorkflow)) {
             ActionArtifact parentAction = ((TeamWorkFlowArtifact) element).getParentActionArtifact();
             if (parentAction != null) {
-               return parentAction.getHumanReadableId();
+               return parentAction.getAtsId();
             }
          } else if (element instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) element).getParentAWA() != null) {
-            return ((AbstractWorkflowArtifact) element).getParentAWA().getHumanReadableId();
+            return ((AbstractWorkflowArtifact) element).getParentAWA().getAtsId();
          }
 
       } catch (OseeCoreException ex) {

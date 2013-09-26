@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.orcs.db.internal.loader.IdFactory;
 
 /**
@@ -70,22 +69,6 @@ public class IdFactoryImpl implements IdFactory {
          toReturn = GUID.create();
       }
       return toReturn;
-   }
-
-   @Override
-   public String getUniqueHumanReadableId(String humanReadableId) throws OseeCoreException {
-      String toReturn = humanReadableId;
-      if (toReturn == null) {
-         String hrid = HumanReadableId.generate();
-         toReturn = isUniqueHRID(hrid) ? hrid : HumanReadableId.generate();
-      }
-      return toReturn;
-   }
-
-   private boolean isUniqueHRID(String id) throws OseeCoreException {
-      String DUPLICATE_HRID_SEARCH =
-         "select count(1) from (select DISTINCT(art_id) from osee_artifact where human_readable_id = ?) t1";
-      return dbService.runPreparedQueryFetchObject(0L, DUPLICATE_HRID_SEARCH, id) <= 0;
    }
 
 }

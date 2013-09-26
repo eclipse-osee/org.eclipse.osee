@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.artifact.SmaWorkflowLabelProvider;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
@@ -58,13 +59,13 @@ import org.eclipse.ui.dialogs.ListDialog;
 /**
  * @author Donald G. Dunne
  */
-public class MultipleHridSearchOperation extends AbstractOperation implements IWorldEditorConsumer {
+public class MultipleIdSearchOperation extends AbstractOperation implements IWorldEditorConsumer {
    private final Set<Artifact> resultAtsArts = new HashSet<Artifact>();
    private final Set<Artifact> resultNonAtsArts = new HashSet<Artifact>();
    private final Set<Artifact> artifacts = new HashSet<Artifact>();
-   private final MultipleHridSearchData data;
+   private final MultipleIdSearchData data;
 
-   public MultipleHridSearchOperation(MultipleHridSearchData data) {
+   public MultipleIdSearchOperation(MultipleIdSearchData data) {
       super(data.getName(), Activator.PLUGIN_ID);
       this.data = data;
    }
@@ -72,7 +73,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       if (!data.hasValidInput()) {
-         MultipleHridSearchUi ui = new MultipleHridSearchUi(data);
+         MultipleIdSearchUi ui = new MultipleIdSearchUi(data);
          if (!ui.getInput()) {
             return;
          }
@@ -83,7 +84,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
       }
       searchAndSplitResults();
       if (resultAtsArts.isEmpty() && resultNonAtsArts.isEmpty()) {
-         AWorkbench.popup("Invalid HRID/Guid/Legacy PCR Id(s): " + Collections.toString(", ", data.getIds()));
+         AWorkbench.popup("Invalid ID/Guid/Legacy PCR Id(s): " + Collections.toString(", ", data.getIds()));
          return;
       }
       if (resultNonAtsArts.size() > 0) {
@@ -213,10 +214,10 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
          }
       }
 
-      // This does hrid/guid search
-      List<String> validGuidsAndHrids = data.getValidGuidsAndHrids();
-      if (!validGuidsAndHrids.isEmpty()) {
-         for (Artifact art : ArtifactQuery.getArtifactListFromIds(validGuidsAndHrids, AtsUtil.getAtsBranch())) {
+      // This does id/guid search
+      List<String> validGuidsAndIds = data.getIds();
+      if (!validGuidsAndIds.isEmpty()) {
+         for (Artifact art : AtsArtifactQuery.getArtifactListFromIds(validGuidsAndIds)) {
             artifacts.add(art);
          }
       }

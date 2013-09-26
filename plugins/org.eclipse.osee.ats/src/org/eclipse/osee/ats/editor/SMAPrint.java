@@ -101,7 +101,7 @@ public class SMAPrint extends Action {
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Workflow: ", sma.getArtifactTypeName()),
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "HRID: ", sma.getHumanReadableId()),
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "ID: ", sma.getAtsId()),
          (pcrId == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Id: ", pcrId))}));
       resultData.addRaw(AHTML.endMultiColumnTable());
       for (NoteItem note : sma.getNotes().getNoteItems()) {
@@ -148,7 +148,7 @@ public class SMAPrint extends Action {
                PercentCompleteTotalUtil.getPercentCompleteTotal(art) + "",
                HoursSpentUtil.getHoursSpentTotal(art) + "",
                art.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""),
-               art.getHumanReadableId()}));
+               art.getAtsId()}));
          }
          rd.addRaw(AHTML.endBorderTable());
       } catch (Exception ex) {
