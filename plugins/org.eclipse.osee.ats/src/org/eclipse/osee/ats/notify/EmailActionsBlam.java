@@ -47,7 +47,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Donald G. Dunne
  */
 public class EmailActionsBlam extends AbstractBlam {
-   public final static String TEAM_WORKFLOW = "Team Workflows (drop here)";
+   public final static String ATS_WORKFLOWS = "ATS Workflows (drop here)";
 
    @Override
    public String getName() {
@@ -60,7 +60,7 @@ public class EmailActionsBlam extends AbstractBlam {
          @Override
          public void run() {
             try {
-               data.getWorkflows().addAll(variableMap.getArtifacts(TEAM_WORKFLOW));
+               data.getWorkflows().addAll(variableMap.getArtifacts(ATS_WORKFLOWS));
                String recipientStr = variableMap.getString("Recipient");
                if (Strings.isValid(recipientStr)) {
                   try {
@@ -99,8 +99,8 @@ public class EmailActionsBlam extends AbstractBlam {
             addNotification(data, (AbstractWorkflowArtifact) art, oseeNotificationManager);
          }
       }
-      oseeNotificationManager.sendNotifications(data.getSubject(), data.getBody());
       int sent = oseeNotificationManager.getNotificationEvents().size();
+      oseeNotificationManager.sendNotifications(data.getSubject(), data.getBody());
       logf("Sent %s notifications.", sent);
    }
 
@@ -191,7 +191,7 @@ public class EmailActionsBlam extends AbstractBlam {
    public String getXWidgetsXml() {
       // @formatter:off
       return "<xWidgets>" +
-            "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />" + 
+            "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + ATS_WORKFLOWS + "\" />" + 
             "<XWidget xwidgetType=\"XText\" displayName=\"Subject\" />" +
             "<XWidget xwidgetType=\"XCombo("+EmailRecipient.Assignees.toString()+","+EmailRecipient.Originator.toString()+")\" defaultValue=\""+EmailRecipient.Assignees.toString()+"\" displayName=\"Recipient\" />" +
       		"<XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" />" +
@@ -201,7 +201,7 @@ public class EmailActionsBlam extends AbstractBlam {
 
    @Override
    public String getDescriptionUsage() {
-      return "Loop through all dropped Team Workflows and email to assignee(s) with message.  " //
+      return "Loop through all dropped ATS Workflows and email to assignee(s) with message.  " //
          + "Note: User will get one email containing all items they are assigned/originated.  " //
          + "Note: Body is plain text and will be shown as is.";
    }
