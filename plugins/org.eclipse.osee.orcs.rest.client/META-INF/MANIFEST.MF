@@ -9,7 +9,6 @@ Service-Component: OSGI-INF/*.xml
 Import-Package: javax.inject,
  javax.ws.rs,
  javax.ws.rs.core,
- org.apache.commons.lang.time,
  org.eclipse.core.net.proxy,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
