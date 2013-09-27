@@ -29,8 +29,6 @@ public interface IAtsWorkDefinitionService {
 
    List<IAtsStateDefinition> getStatesOrderedByOrdinal(IAtsWorkDefinition workDef);
 
-   List<IAtsStateDefinition> getStatesOrderedByDefaultToState(IAtsWorkDefinition workDef);
-
    void getStatesOrderedByDefaultToState(IAtsWorkDefinition workDef, IAtsStateDefinition stateDefinition, List<IAtsStateDefinition> pages);
 
    /**

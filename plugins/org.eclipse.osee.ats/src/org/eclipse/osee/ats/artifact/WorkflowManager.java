@@ -307,7 +307,7 @@ public class WorkflowManager {
    }
 
    public static StateXWidgetPage getCurrentAtsWorkPage(AbstractWorkflowArtifact awa) {
-      for (StateXWidgetPage statePage : getStatePagesOrderedByDefaultToState(awa)) {
+      for (StateXWidgetPage statePage : getStatePagesOrderedByOrdinal(awa)) {
          if (awa.getStateMgr().getCurrentStateName().equals(statePage.getName())) {
             return statePage;
          }
@@ -332,19 +332,4 @@ public class WorkflowManager {
 
    }
 
-   public static List<StateXWidgetPage> getStatePagesOrderedByDefaultToState(AbstractWorkflowArtifact awa) {
-      List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
-      for (IAtsStateDefinition stateDefinition : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByDefaultToState(
-         awa.getWorkDefinition())) {
-         try {
-            StateXWidgetPage statePage =
-               new StateXWidgetPage(awa.getWorkDefinition(), stateDefinition, null,
-                  ATSXWidgetOptionResolver.getInstance());
-            statePages.add(statePage);
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
-      return statePages;
-   }
 }

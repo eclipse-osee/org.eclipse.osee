@@ -76,8 +76,6 @@ public interface IAtsWorkDefinitionAdmin {
 
    List<IAtsStateDefinition> getStatesOrderedByOrdinal(IAtsWorkDefinition workDef);
 
-   List<IAtsStateDefinition> getStatesOrderedByDefaultToState(IAtsWorkDefinition workDef);
-
    /**
     * Recursively decend StateItems and grab all widgetDefs.<br>
     * <br>

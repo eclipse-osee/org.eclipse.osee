@@ -224,7 +224,7 @@ public class AtsWorkDefConfigEditor extends GraphicalEditorWithFlyoutPalette {
             }
             // Create states
             List<IAtsStateDefinition> stateDefs =
-               AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByDefaultToState(workflowDef);
+               AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(workflowDef);
             for (IAtsStateDefinition stateDef : workflowDef.getStates()) {
                if (!stateDefs.contains(stateDef)) {
                   stateDefs.add(stateDef);
@@ -243,7 +243,7 @@ public class AtsWorkDefConfigEditor extends GraphicalEditorWithFlyoutPalette {
             }
 
             // Create transitions
-            for (IAtsStateDefinition stateDef : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByDefaultToState(
+            for (IAtsStateDefinition stateDef : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
                workflowDef)) {
                StateDefShape pageShape = getStateDefShape(stateDef);
                // Handle to pages

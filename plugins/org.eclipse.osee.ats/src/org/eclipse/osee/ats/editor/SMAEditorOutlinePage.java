@@ -292,7 +292,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromWrappedPercentDefinition(WrappedPercentWeight weightDef, List<Object> items) {
-         for (IAtsStateDefinition stateDef : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByDefaultToState(
+         for (IAtsStateDefinition stateDef : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
             weightDef.getWorkDef())) {
             items.add(String.format("State [%s]: %d", stateDef.getName(), stateDef.getStateWeight()));
          }

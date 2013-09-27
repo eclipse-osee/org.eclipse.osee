@@ -436,11 +436,6 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
    }
 
    @Override
-   public List<IAtsStateDefinition> getStatesOrderedByDefaultToState(IAtsWorkDefinition workDef) {
-      return workDefinitionService.getStatesOrderedByDefaultToState(workDef);
-   }
-
-   @Override
    public Collection<String> getStateNames(IAtsWorkDefinition workDef) {
       return workDefinitionService.getStateNames(workDef);
    }

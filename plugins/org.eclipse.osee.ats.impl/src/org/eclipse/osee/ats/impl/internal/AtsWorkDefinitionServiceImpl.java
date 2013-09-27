@@ -166,30 +166,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public List<IAtsStateDefinition> getStatesOrderedByDefaultToState(IAtsWorkDefinition workDef) {
-      if (workDef.getStartState() == null) {
-         throw new IllegalArgumentException("Can't locate Start State for workflow " + workDef.getName());
-      }
-
-      // Get ordered pages starting with start page
-      List<IAtsStateDefinition> orderedPages = new ArrayList<IAtsStateDefinition>();
-      getStatesOrderedByDefaultToState(workDef, workDef.getStartState(), orderedPages);
-
-      // Move completed to the end if it exists
-      IAtsStateDefinition completedPage = null;
-      for (IAtsStateDefinition stateDefinition : orderedPages) {
-         if (stateDefinition.getStateType().isCompletedState()) {
-            completedPage = stateDefinition;
-         }
-      }
-      if (completedPage != null) {
-         orderedPages.remove(completedPage);
-         orderedPages.add(completedPage);
-      }
-      return orderedPages;
-   }
-
-   @Override
    public void getStatesOrderedByDefaultToState(IAtsWorkDefinition workDef, IAtsStateDefinition stateDefinition, List<IAtsStateDefinition> pages) {
       if (pages.contains(stateDefinition)) {
          return;

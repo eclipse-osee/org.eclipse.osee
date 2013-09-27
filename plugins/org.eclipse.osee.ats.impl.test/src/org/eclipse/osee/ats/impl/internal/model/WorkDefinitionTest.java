@@ -13,11 +13,11 @@ package org.eclipse.osee.ats.impl.internal.model;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.impl.internal.AtsWorkDefinitionServiceImpl;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -61,49 +61,6 @@ public class WorkDefinitionTest {
       Assert.assertEquals(analyze, states.get(1));
       Assert.assertEquals(implement, states.get(2));
       Assert.assertEquals(completed, states.get(3));
-   }
-
-   @Test(expected = IllegalArgumentException.class)
-   public void testGetStatesOrderedByDefaultToState_exception() {
-      WorkDefinition def = new WorkDefinition("this");
-      new AtsWorkDefinitionServiceImpl().getStatesOrderedByDefaultToState(def);
-      def.setStartState(null);
-   }
-
-   @Test
-   public void testGetStatesOrderedByDefaultToState() {
-      StateDefinition endorse = new StateDefinition("endorse");
-      endorse.setStateType(StateType.Working);
-      StateDefinition analyze = new StateDefinition("analyze");
-      analyze.setStateType(StateType.Working);
-      StateDefinition completed = new StateDefinition("completed");
-      completed.setStateType(StateType.Completed);
-
-      WorkDefinition def = new WorkDefinition("this");
-      def.addState(completed);
-      def.addState(analyze);
-      def.addState(endorse);
-      endorse.setOrdinal(1);
-      analyze.setOrdinal(2);
-      def.setStartState(endorse);
-
-      endorse.setDefaultToState(analyze);
-      endorse.getToStates().add(analyze);
-      endorse.getToStates().add(completed);
-
-      // handle case where one state is completed
-      List<IAtsStateDefinition> states = new AtsWorkDefinitionServiceImpl().getStatesOrderedByDefaultToState(def);
-      Assert.assertEquals(endorse, states.get(0));
-      Assert.assertEquals(analyze, states.get(1));
-      Assert.assertEquals(completed, states.get(2));
-
-      // handle case where all states are working
-      completed.setStateType(StateType.Working);
-      states = new AtsWorkDefinitionServiceImpl().getStatesOrderedByDefaultToState(def);
-      Assert.assertEquals(endorse, states.get(0));
-      Assert.assertEquals(analyze, states.get(1));
-      Assert.assertEquals(completed, states.get(2));
-
    }
 
    @Test
