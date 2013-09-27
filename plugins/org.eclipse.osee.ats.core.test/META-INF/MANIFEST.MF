@@ -13,4 +13,8 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.ats.core
 Import-Package: org.eclipse.emf.ecore.util,
  org.eclipse.osee.ats.core,
- org.eclipse.osee.ats.mocks
+ org.eclipse.osee.ats.mocks,
+ org.mockito;bundle-version="1.9.0",
+ org.hamcrest.core,
+ org.objenesis
+ 

@@ -11,11 +11,9 @@
 package org.eclipse.osee.ats.actions;
 
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -33,11 +31,7 @@ public class EditActionableItemsAction extends AbstractAtsAction {
 
    @Override
    public void runWithException() throws OseeCoreException {
-      ActionArtifact parentAction = teamWf.getParentActionArtifact();
-      if (parentAction == null) {
-         throw new OseeStateException("No Parent Action; Aborting");
-      }
-      AtsUtil.editActionableItems(parentAction);
+      AtsUtil.editActionableItems(teamWf);
    }
 
 }

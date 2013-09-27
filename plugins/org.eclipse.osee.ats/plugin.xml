@@ -381,6 +381,14 @@
       </Operation>
    </extension>
    <extension
+         id="ModifyActionableItemsBlam"
+         name="ModifyActionableItemsBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.operation.ModifyActionableItemsBlam">
+      </Operation>
+   </extension>
+   <extension
          point="org.eclipse.osee.ats.AtsWorldEditorItem">
       <AtsWorldEditorItem
             classname="org.eclipse.osee.ats.world.AtsWorldEditorItem">

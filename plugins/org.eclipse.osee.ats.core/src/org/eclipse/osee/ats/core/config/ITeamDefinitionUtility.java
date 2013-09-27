@@ -8,8 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.team;
+package org.eclipse.osee.ats.core.config;
 
-public enum CreateTeamOption {
-   Duplicate_If_Exists; // If option exists, then duplication of workflow of same team definition is allowed
-};
+import java.util.Collection;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
+/**
+ * @author Donald G Dunne
+ */
+public interface ITeamDefinitionUtility {
+
+   public Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> aias) throws OseeCoreException;
+
+}

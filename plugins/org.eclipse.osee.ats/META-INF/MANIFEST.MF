@@ -26,7 +26,8 @@ Require-Bundle: org.eclipse.gef,
  org.eclipse.birt.chart.engine,
  org.eclipse.search,
  org.eclipse.osee.ats.help.ui,
- org.eclipse.osee.ats.core
+ org.eclipse.osee.ats.core,
+ org.eclipse.core.jobs
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.ats,
  org.eclipse.osee.ats.access,
@@ -102,6 +103,7 @@ Import-Package: com.google.inject,
  org.eclipse.osee.ats.core.client.workflow.note,
  org.eclipse.osee.ats.core.client.workflow.stateitem,
  org.eclipse.osee.ats.core.client.workflow.transition,
+ org.eclipse.osee.ats.core.ai,
  org.eclipse.osee.ats.core.column,
  org.eclipse.osee.ats.core.workdef,
  org.eclipse.osee.ats.core.workdef.provider,

@@ -44,6 +44,7 @@ Import-Package: com.google.inject,
  org.osgi.framework
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.ats.core,
+ org.eclipse.osee.ats.core.ai,
  org.eclipse.osee.ats.core.column,
  org.eclipse.osee.ats.core.config,
  org.eclipse.osee.ats.core.model,

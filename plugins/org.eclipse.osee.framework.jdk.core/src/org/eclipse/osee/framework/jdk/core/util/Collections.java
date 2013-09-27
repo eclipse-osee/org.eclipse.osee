@@ -349,4 +349,13 @@ public class Collections {
          }
       }
    }
+
+   public static <T> Set<T> hashSet(T... items) {
+      Set<T> result = new HashSet<T>();
+      for (T item : items) {
+         result.add(item);
+      }
+      return result;
+   }
+
 }

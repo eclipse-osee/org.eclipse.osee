@@ -10,39 +10,36 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.operation.DuplicateWorkflowBlam;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.ats.operation.ModifyActionableItemsBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
  */
-public class DuplicateWorkflowAction extends Action {
+public class ModifyActionableItemAction extends Action {
 
-   private final Collection<TeamWorkFlowArtifact> teams;
+   private final TeamWorkFlowArtifact team;
 
-   public DuplicateWorkflowAction(Collection<TeamWorkFlowArtifact> teams) {
-      super("Duplicate Workflows");
-      this.teams = teams;
+   public ModifyActionableItemAction(TeamWorkFlowArtifact team) {
+      super("Modify Actionable Item(s)");
+      this.team = team;
    }
 
    @Override
    public void run() {
-      DuplicateWorkflowBlam blamOperation = new DuplicateWorkflowBlam();
-      if (teams != null && !teams.isEmpty()) {
-         blamOperation.setDefaultTeamWorkflows(teams);
-      }
+      ModifyActionableItemsBlam blamOperation = new ModifyActionableItemsBlam();
+      blamOperation.setDefaultTeamWorkflow(team);
       BlamEditor.edit(blamOperation);
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.DUPLICATE);
+      return ImageManager.getImageDescriptor(AtsImage.ACTIONABLE_ITEM);
    }
 
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core;
 
+import org.eclipse.osee.ats.core.ai.AtsCore_AI_Suite;
 import org.eclipse.osee.ats.core.column.AtsCore_Column_JT_Suite;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsCore_InternalColumnEv_JT_Suite;
 import org.eclipse.osee.ats.core.model.impl.AtsCore_ModelImpl_JT_Suite;
@@ -24,6 +25,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   AtsCore_AI_Suite.class,
    AtsCore_Column_JT_Suite.class,
    AtsCore_InternalColumnEv_JT_Suite.class,
    AtsCore_ModelImpl_JT_Suite.class,

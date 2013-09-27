@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.actions.DuplicateWorkflowAction;
 import org.eclipse.osee.ats.actions.EditActionableItemsAction;
 import org.eclipse.osee.ats.actions.EmailActionAction;
 import org.eclipse.osee.ats.actions.FavoriteAction;
+import org.eclipse.osee.ats.actions.ModifyActionableItemAction;
 import org.eclipse.osee.ats.actions.OpenInArtifactEditorAction;
 import org.eclipse.osee.ats.actions.OpenInAtsWorldAction;
 import org.eclipse.osee.ats.actions.OpenInSkyWalkerAction;
@@ -143,6 +144,8 @@ public class SMAOperationsSection extends SectionPart {
             sectionBody, 2);
          new XButtonViaAction(
             new DuplicateWorkflowAction(Collections.singleton((TeamWorkFlowArtifact) editor.getAwa()))).createWidgets(
+            sectionBody, 2);
+         new XButtonViaAction(new ModifyActionableItemAction((TeamWorkFlowArtifact) editor.getAwa())).createWidgets(
             sectionBody, 2);
          new XButtonViaAction(new AccessControlAction(editor.getAwa())).createWidgets(sectionBody, 2);
       }

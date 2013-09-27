@@ -21,11 +21,10 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsOpenOption;
+import org.eclipse.osee.ats.actions.ModifyActionableItemAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.artifact.EditActionableItems;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
-import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -44,7 +43,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -165,24 +163,8 @@ public final class AtsUtil {
       return toolBar;
    }
 
-   public static void editActionableItems(ActionArtifact actionArt) throws OseeCoreException {
-      Result result = EditActionableItems.editActionableItems(actionArt);
-      if (result.isFalse() && result.getText().equals("")) {
-         return;
-      }
-      if (result.isFalse()) {
-         AWorkbench.popup(result);
-      }
-   }
-
-   public static void editActionableItems(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Result result = EditActionableItems.editActionableItems(teamArt);
-      if (result.isFalse() && result.getText().equals("")) {
-         return;
-      }
-      if (result.isFalse() && !result.getText().equals("")) {
-         AWorkbench.popup(result);
-      }
+   public static void editActionableItems(TeamWorkFlowArtifact teamArt) {
+      new ModifyActionableItemAction(teamArt).run();
    }
 
    public static void openArtifact(String guidOrHrid, Integer branchId, OseeCmEditor view) {

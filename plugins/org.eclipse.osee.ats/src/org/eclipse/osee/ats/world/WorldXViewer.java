@@ -192,11 +192,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          @Override
          public void run() {
             try {
-               if (getSelectedActionArtifacts().size() == 1) {
-                  ActionArtifact actionArt = getSelectedActionArtifacts().iterator().next();
-                  AtsUtil.editActionableItems(actionArt);
-                  refresh(getSelectedArtifactItems().iterator().next());
-               } else {
+               if (getSelectedTeamWorkflowArtifacts().size() == 1) {
                   TeamWorkFlowArtifact teamArt = getSelectedTeamWorkflowArtifacts().iterator().next();
                   AtsUtil.editActionableItems(teamArt);
                   refresh(getSelectedArtifactItems().toArray()[0]);
@@ -381,7 +377,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       editAssigneeAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
 
       mm.insertBefore(MENU_GROUP_PRE, editActionableItemsAction);
-      editActionableItemsAction.setEnabled(getSelectedActionArtifacts().size() == 1 || getSelectedTeamWorkflowArtifacts().size() == 1);
+      editActionableItemsAction.setEnabled(getSelectedTeamWorkflowArtifacts().size() == 1);
 
       mm.insertBefore(MENU_GROUP_PRE, convertActionableItemsAction);
       convertActionableItemsAction.updateEnablement();

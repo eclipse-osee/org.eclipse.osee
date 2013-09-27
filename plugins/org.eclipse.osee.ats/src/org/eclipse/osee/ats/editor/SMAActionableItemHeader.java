@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -73,13 +72,7 @@ public class SMAActionableItemHeader extends Composite {
                   if (editor.isDirty()) {
                      editor.doSave(null);
                   }
-
-                  ActionArtifact parentAction = teamWf.getParentActionArtifact();
-                  if (parentAction == null) {
-                     AWorkbench.popup("No Parent Action; Aborting");
-                     return;
-                  }
-                  AtsUtil.editActionableItems(parentAction);
+                  AtsUtil.editActionableItems(teamWf);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
