@@ -414,7 +414,7 @@ public class MemoryResource {
          throw new MessageSystemException("backing byte[] is too small for copy operation", Level.INFO);
       }
       if (src.hasArray()) {
-         System.arraycopy(src.array(), src.arrayOffset(), byteArray.get(), destOffset, length);
+         System.arraycopy(src.array(), src.arrayOffset() + src.position(), byteArray.get(), destOffset, length);
       } else {
          synchronized (src) {
             src.mark();
