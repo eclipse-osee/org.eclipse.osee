@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.exchange.export;
 
+import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -97,7 +98,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
    protected void doWork(Appendable appendable) throws Exception {
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
-         chStmt.runPreparedQuery(10000, query, bindData);
+         chStmt.runPreparedQuery(MAX_FETCH, query, bindData);
          while (chStmt.next()) {
             processData(appendable, chStmt);
          }

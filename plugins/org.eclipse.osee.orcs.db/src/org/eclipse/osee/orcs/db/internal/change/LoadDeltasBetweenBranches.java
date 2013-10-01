@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.change;
 
+import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -100,7 +101,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
    private void loadSourceBranchChanges(TransactionJoinQuery txJoin) throws OseeCoreException {
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
-         chStmt.runPreparedQuery(10000, SELECT_SOURCE_BRANCH_CHANGES, getSourceBranchId(),
+         chStmt.runPreparedQuery(MAX_FETCH, SELECT_SOURCE_BRANCH_CHANGES, getSourceBranchId(),
             TxChange.NOT_CURRENT.getValue(), getSourceBaselineTransactionId());
          while (chStmt.next()) {
             checkForCancelled();
@@ -149,7 +150,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
             + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
             " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
 
-         chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
+         chStmt.runPreparedQuery(MAX_FETCH, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
             transactionLimit.getBranchId(), transactionLimit.getId());
 
          while (chStmt.next()) {
@@ -183,7 +184,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
                + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + idColumnName + //
                " and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? order by idj.id, txs.transaction_id asc";
 
-         chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
+         chStmt.runPreparedQuery(MAX_FETCH, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
             getSourceBranchId());
 
          int baselineTransactionId = getSourceBaselineTransactionId();

@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
+import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -280,7 +280,7 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    private void populateAddressingToCopy(OseeConnection connection, List<Object[]> data, int baseTxId, HashSet<Integer> gammas, String query, Object... parameters) throws OseeCoreException {
       IOseeStatement chStmt = getDatabaseService().getStatement(connection);
       try {
-         chStmt.runPreparedQuery(10000, query, parameters);
+         chStmt.runPreparedQuery(MAX_FETCH, query, parameters);
          while (chStmt.next()) {
             checkForCancelled();
             Integer gamma = chStmt.getInt("gamma_id");

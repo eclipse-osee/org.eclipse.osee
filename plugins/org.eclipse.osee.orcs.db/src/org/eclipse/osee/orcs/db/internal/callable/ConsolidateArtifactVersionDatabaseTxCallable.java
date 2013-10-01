@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.core.enums.ModificationType.INTRODUCED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.MERGED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.MODIFIED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
+import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.console.admin.Console;
@@ -114,7 +115,7 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
       ArtifactJoinQuery artifactJoinQuery = populateJoinTableWithArtifacts();
       List<Address> mods = new ArrayList<Address>();
       try {
-         chStmt.runPreparedQuery(10000, FIND_ARTIFACT_MODS, artifactJoinQuery.getQueryId());
+         chStmt.runPreparedQuery(MAX_FETCH, FIND_ARTIFACT_MODS, artifactJoinQuery.getQueryId());
          while (chStmt.next()) {
             int artifactId = chStmt.getInt("art_id");
             int branchId = chStmt.getInt("branch_id");
@@ -236,7 +237,7 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
 
    private void findObsoleteGammas() throws OseeCoreException {
       try {
-         chStmt.runPreparedQuery(10000, SELECT_ARTIFACT_VERSIONS);
+         chStmt.runPreparedQuery(MAX_FETCH, SELECT_ARTIFACT_VERSIONS);
          while (chStmt.next()) {
             int artifactId = chStmt.getInt("art_id");
 
@@ -265,7 +266,7 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
    private void determineAffectedAddressingAndFix(boolean archived) throws OseeCoreException {
       try {
          console.writeln("query id: %d", gammaJoin.getQueryId());
-         chStmt.runPreparedQuery(10000, String.format(SELECT_ADDRESSING, archived ? "_archived" : ""),
+         chStmt.runPreparedQuery(MAX_FETCH, String.format(SELECT_ADDRESSING, archived ? "_archived" : ""),
             gammaJoin.getQueryId());
 
          while (chStmt.next()) {

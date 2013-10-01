@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.change;
 
+import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.HashMap;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -59,7 +60,7 @@ public class ChangeItemLoader {
    public void loadItemIdsBasedOnGammas(ChangeItemFactory factory, int queryId, HashMap<Integer, ChangeItem> changesByItemId, IdJoinQuery idJoin) throws OseeCoreException {
       IOseeStatement chStmt = dbService.getStatement();
       try {
-         chStmt.runPreparedQuery(10000, factory.getLoadByGammaQuery(), queryId);
+         chStmt.runPreparedQuery(MAX_FETCH, factory.getLoadByGammaQuery(), queryId);
          while (chStmt.next()) {
             ChangeItem item = factory.createItem(chStmt);
             Integer itemId = item.getItemId();

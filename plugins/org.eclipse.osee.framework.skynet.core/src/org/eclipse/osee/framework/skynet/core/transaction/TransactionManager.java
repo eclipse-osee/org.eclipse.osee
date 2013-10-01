@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
+import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ public final class TransactionManager {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
 
       try {
-         chStmt.runPreparedQuery(10000, SELECT_TRANSACTIONS, branch.getId());
+         chStmt.runPreparedQuery(MAX_FETCH, SELECT_TRANSACTIONS, branch.getId());
 
          while (chStmt.next()) {
             transactions.add(getTransactionId(chStmt.getInt("transaction_id"), chStmt));

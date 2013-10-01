@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.console;
 
+import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleParameters;
@@ -100,7 +101,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
 
          IOseeStatement chStmt = getDatabaseService().getStatement(connection);
          try {
-            chStmt.runPreparedQuery(10000, SELECT_ATTRIBUTES, typeJoin.getQueryId());
+            chStmt.runPreparedQuery(MAX_FETCH, SELECT_ATTRIBUTES, typeJoin.getQueryId());
             while (chStmt.next()) {
                gammaJoin.add(chStmt.getLong("gamma1"), chStmt.getLong("gamma2"));
             }

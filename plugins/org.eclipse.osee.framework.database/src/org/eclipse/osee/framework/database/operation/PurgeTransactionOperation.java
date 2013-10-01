@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.database.operation;
 
+import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -168,7 +169,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
 
          IOseeStatement statement = ConnectionHandler.getStatement(connection);
          try {
-            statement.runPreparedQuery(10000, query, joinQuery.getQueryId(), branchId);
+            statement.runPreparedQuery(MAX_FETCH, query, joinQuery.getQueryId(), branchId);
             int previousItem = -1;
             while (statement.next()) {
                int currentItem = statement.getInt("item_id");
@@ -199,7 +200,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
          for (Object[] bindData : bindDataList) {
             Integer branchId = (Integer) bindData[0];
             String query = String.format(SELECT_AFFECTED_ITEMS, itemId, itemTable);
-            statement.runPreparedQuery(10000, query, bindData);
+            statement.runPreparedQuery(MAX_FETCH, query, bindData);
             IdJoinQuery joinId = JoinUtility.createIdJoinQuery();
             items.put(branchId, joinId);
 

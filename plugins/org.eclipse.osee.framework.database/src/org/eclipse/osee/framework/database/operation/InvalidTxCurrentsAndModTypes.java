@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.operation;
 
+import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -179,7 +180,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       IOseeStatement chStmt = getDatabaseService().getStatement();
       String sql = String.format(SELECT_ADDRESSES, columnName, tableName, txsTableName, columnName);
       try {
-         chStmt.runPreparedQuery(10000, sql);
+         chStmt.runPreparedQuery(MAX_FETCH, sql);
          monitor.worked(calculateWork(0.40));
 
          Address previousAddress = null;

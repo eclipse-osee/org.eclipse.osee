@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.change;
 
+import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -93,7 +94,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
    private void loadChangesAtEndTx(TransactionJoinQuery txJoin) throws OseeCoreException {
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
-         chStmt.runPreparedQuery(10000, SELECT_CHANGES_BETWEEN_TRANSACTIONS, getBranchId(), getStartTx().getId(),
+         chStmt.runPreparedQuery(MAX_FETCH, SELECT_CHANGES_BETWEEN_TRANSACTIONS, getBranchId(), getStartTx().getId(),
             getEndTx().getId());
          while (chStmt.next()) {
             checkForCancelled();
@@ -133,7 +134,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
             + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
             " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?";
 
-         chStmt.runPreparedQuery(10000, query, queryId, transactionLimit.getBranchId(), transactionLimit.getId());
+         chStmt.runPreparedQuery(MAX_FETCH, query, queryId, transactionLimit.getBranchId(), transactionLimit.getId());
 
          while (chStmt.next()) {
             checkForCancelled();

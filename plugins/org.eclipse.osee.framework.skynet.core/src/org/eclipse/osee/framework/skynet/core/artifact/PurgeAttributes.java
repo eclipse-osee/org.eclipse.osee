@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -81,7 +82,7 @@ public class PurgeAttributes extends AbstractDbTxOperation {
          IOseeStatement chStmt = ConnectionHandler.getStatement();
 
          try {
-            chStmt.runPreparedQuery(10000, SELECT_ATTR_GAMMAS, attributeJoin.getQueryId());
+            chStmt.runPreparedQuery(MAX_FETCH, SELECT_ATTR_GAMMAS, attributeJoin.getQueryId());
             while (chStmt.next()) {
                txsJoin.add(chStmt.getInt("gamma_id"));
             }

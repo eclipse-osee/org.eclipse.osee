@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
+import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.console.admin.Console;
@@ -114,7 +115,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
 
    private void findObsoleteRelations() throws OseeCoreException {
       try {
-         chStmt.runPreparedQuery(10000, SELECT_RELATIONS);
+         chStmt.runPreparedQuery(MAX_FETCH, SELECT_RELATIONS);
          while (chStmt.next()) {
             int relationTypeId = chStmt.getInt("rel_link_type_id");
             int artifactAId = chStmt.getInt("a_art_id");
@@ -154,7 +155,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       try {
          console.writeln("counter: [%s]", counter);
          console.writeln("query id: [%s]", gammaJoin.getQueryId());
-         chStmt.runPreparedQuery(10000, SELECT_RELATION_ADDRESSING, gammaJoin.getQueryId());
+         chStmt.runPreparedQuery(MAX_FETCH, SELECT_RELATION_ADDRESSING, gammaJoin.getQueryId());
 
          while (chStmt.next()) {
             long obsoleteGammaId = chStmt.getLong("gamma_id");

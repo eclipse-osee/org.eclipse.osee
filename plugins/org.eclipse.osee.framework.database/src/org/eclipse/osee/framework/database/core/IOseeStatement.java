@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Ryan D. Brooks
  */
 public interface IOseeStatement extends Closeable {
+   int MAX_FETCH = 10000;
 
    void runPreparedQuery(String query, Object... data) throws OseeCoreException;
 

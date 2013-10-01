@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.accessor;
 
+import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -94,7 +95,7 @@ public class UpdatePreviousTxCurrent {
       List<Object[]> updateData = new ArrayList<Object[]>();
       IOseeStatement chStmt = dbService.getStatement(connection);
       try {
-         chStmt.runPreparedQuery(10000, query, queryId, branchId, TxChange.NOT_CURRENT.getValue());
+         chStmt.runPreparedQuery(MAX_FETCH, query, queryId, branchId, TxChange.NOT_CURRENT.getValue());
          while (chStmt.next()) {
             updateData.add(new Object[] {branchId, chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id")});
          }
@@ -109,7 +110,7 @@ public class UpdatePreviousTxCurrent {
       List<Object[]> updateData = new ArrayList<Object[]>();
       IOseeStatement chStmt = dbService.getStatement(connection);
       try {
-         chStmt.runPreparedQuery(10000, SELECT_TXS_AND_GAMMAS_FROM_TXS, branchId, transaction_id, branchId,
+         chStmt.runPreparedQuery(MAX_FETCH, SELECT_TXS_AND_GAMMAS_FROM_TXS, branchId, transaction_id, branchId,
             transaction_id, TxChange.NOT_CURRENT.getValue());
          while (chStmt.next()) {
             updateData.add(new Object[] {branchId, chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id")});
