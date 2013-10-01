@@ -82,6 +82,18 @@
 				<var name="build-options" value="${build-options} -Declipse-ip-site=&quot;${input-org-eclipse-ip-site-path}&quot;" />
 			</then>
 		</if>
+		
+		<!--	SKIP HELP BUILD -->
+		<input message="${tab}[input] Build OSEE Help?" validargs="y,n" defaultvalue="${default-build-osee-help}" addproperty="input-build-osee-help">
+			<handler classname="org.apache.tools.ant.input.DefaultInputHandler" />
+		</input>
+		<echo message="${tab}${tab}Selected: [${input-build-osee-help}]" />
+		<if>
+			<equals arg1="${input-build-osee-help}" arg2="n" />
+			<then>
+				<var name="build-options" value="${build-options} -Dosee-create-help-docs=false -Dskip-help-tests=true" />
+			</then>
+		</if>
 
 		<!--	SKIP PRODUCT BUILD -->
 		<input message="${tab}[input] Build OSEE RCP Product (slows down build)?" validargs="y,n" defaultvalue="${default-build-rcp-ide-product}" addproperty="input-build-rcp-ide-product">
@@ -171,6 +183,7 @@
 			<entry key="default-osee-build-stage" value="${input-osee-build-stage}" />
 			<entry key="default-build-with-remote-org-eclipse-ip" value="${input-build-with-remote-org-eclipse-ip}" />
 			<entry key="default-org-eclipse-ip-site-path" value="${input-org-eclipse-ip-site-path}" />
+			<entry key="default-build-osee-help" value="${input-build-osee-help}" />
 			<entry key="default-build-rcp-ide-product" value="${input-build-rcp-ide-product}" />
 			<entry key="default-static-analysis" value="${input-static-analysis}" />
 			<entry key="default-coverage-analysis" value="${input-coverage-analysis}" />
