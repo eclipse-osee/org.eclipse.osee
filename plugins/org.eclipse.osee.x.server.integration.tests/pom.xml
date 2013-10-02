@@ -60,7 +60,7 @@
 				</plugins>
 			</build>
 		</profile>
-	 	<profile>
+		<profile>
 			<id>osee-server-int-test-remote-server</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
@@ -125,7 +125,8 @@
 											value="${project.build.directory}/server-data" />
 										<property name="xserver-log-config" value="${project.basedir}/logback-test.xml" />
 
-										<property name="xserver-db-home" value="file:${xserver-project}/target/server/demo/hsql/osee.hsql.db" />
+										<property name="xserver-db-home"
+											value="file:${xserver-project}/target/server/demo/hsql/osee.hsql.db" />
 										<property name="xserver-db-name" value="osee-test-db" />
 										<property name="xserver-db-username" value="public" />
 										<property name="xserver-db-password" value="" />
@@ -136,7 +137,7 @@
 										<property name="additionalJvmArgs" value=" " />
 
 										<property name="xserver-log-output" value="${xserver-data}/server-output.log" />
-										
+
 										<mkdir dir="${xserver-data}" />
 										<ant antfile="osee-application-server.xml" target="run"
 											inheritRefs="true" output="${xserver-log-output}" />
@@ -167,6 +168,21 @@
 								</configuration>
 								<goals>
 									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<configuration>
+							<descriptor>${project.basedir}/assembly/benchmark-assembly.xml</descriptor>
+							<finalName>${project.artifactId}.benchmarks</finalName>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>single</goal>
 								</goals>
 							</execution>
 						</executions>
