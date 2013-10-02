@@ -65,8 +65,8 @@
 			<customizeConfigIni configpath="${productConfigPath}" pluginspath="${productPluginPath}" configarch="@{arch}" />
 -->
 			<!-- Extra Launches 
-			<generateExecutable os="@{os}" productDir="${productPath}" execName="oseeDebug" eclipseArgs="-console${line.separator}-consoleLog" extravmargs="-Xmx1G${line.separator}-Xdebug${line.separator}-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9009" additionalVmArgs="-Dosee.default.broker.uri=tcp://sun817.msc.az.boeing.com:61616${line.separator}${additionalExecIniArgs}" />
-			<generateExecutable os="@{os}" productDir="${productPath}" execName="oseeBigMemory" eclipseArgs="-console${line.separator}-consoleLog" extravmargs="-Xmx2G${line.separator}" additionalVmArgs="-Dosee.default.broker.uri=tcp://sun817.msc.az.boeing.com:61616${line.separator}${additionalExecIniArgs}" />
+			<generateExecutable os="@{os}" productDir="${productPath}" execName="oseeDebug" eclipseArgs="-console${line.separator}-consoleLog" extravmargs="-Xmx1G${line.separator}-Xdebug${line.separator}-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9009" additionalVmArgs="-Dosee.default.broker.uri=tcp://osee-installs.msc.az.boeing.com:61616${line.separator}${additionalExecIniArgs}" />
+			<generateExecutable os="@{os}" productDir="${productPath}" execName="oseeBigMemory" eclipseArgs="-console${line.separator}-consoleLog" extravmargs="-Xmx2G${line.separator}" additionalVmArgs="-Dosee.default.broker.uri=tcp://osee-installs.msc.az.boeing.com:61616${line.separator}${additionalExecIniArgs}" />
 -->
 			<!-- Copy Icon if Win32 
 			<if>
