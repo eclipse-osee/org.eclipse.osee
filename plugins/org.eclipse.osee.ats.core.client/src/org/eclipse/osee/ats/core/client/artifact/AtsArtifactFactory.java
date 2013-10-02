@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -68,10 +69,17 @@ public class AtsArtifactFactory extends ArtifactFactory {
       } else {
          throw new OseeArgumentException("AtsArtifactFactory did not recognize the artifact type [%s]", artifactType);
       }
+
       if (!inDataStore) {
-         String id = AtsIdProvider.get().getNextId();
-         toReturn.setSoleAttributeFromString(AtsAttributeTypes.AtsId, id);
+         String atsId = HumanReadableId.generate();
+         if (OseeInfo.isBooleanUsingCache("new.ats.ids")) {
+            atsId = AtsIdProvider.get().getNextId();
+         } else {
+            toReturn.setHrid(atsId);
+         }
+         toReturn.setSoleAttributeFromString(AtsAttributeTypes.AtsId, atsId);
       }
+
       return toReturn;
    }
 

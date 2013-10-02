@@ -121,6 +121,19 @@ public class Artifact extends NamedIdentity<String> implements IArtifact, IAdapt
       this.artifactType = ArtifactTypeManager.getType(artifactType);
    }
 
+   // begin temp code
+   private String hrid = "";
+
+   public String getHrid() {
+      return hrid;
+   }
+
+   public void setHrid(String hrid) {
+      this.hrid = hrid;
+   }
+
+   // end temp code
+
    public final boolean isInDb() {
       return transactionId != TRANSACTION_SENTINEL;
    }

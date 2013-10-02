@@ -108,6 +108,7 @@ public abstract class ArtifactFactory {
     * come up with it on its own.
     * 
     * @param branch branch on which this instance of this artifact will be associated
+    * @param hrid
     */
    protected abstract Artifact getArtifactInstance(String guid, Branch branch, IArtifactType artifactType, boolean inDataStore) throws OseeCoreException;
 
@@ -136,4 +137,5 @@ public abstract class ArtifactFactory {
    public Collection<IArtifactType> getEternalArtifactTypes() {
       return Collections.emptyList();
    }
+
 }
