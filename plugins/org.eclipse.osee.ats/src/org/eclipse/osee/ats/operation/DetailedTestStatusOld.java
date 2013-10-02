@@ -118,6 +118,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
    private IOseeBranch selectedBranch;
    private IAtsProgram selectedProgram;
+   private static final int MAX_EXCEL_COLUMNS = 256;
 
    private enum Index {
       Category,
@@ -469,7 +470,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
       testPocs.clear();
       requirementPocs.clear();
       sumFormula.delete(0, 99999);
-      String[] statusLine = new String[100];
+      String[] statusLine = new String[MAX_EXCEL_COLUMNS];
 
       processRpcrStatuses(requirement, statusLine);
 
