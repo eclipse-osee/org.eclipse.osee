@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Template Engine  (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.template.engine
+Bundle-Version: 0.14.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.core.runtime,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.model,
+ org.eclipse.osee.framework.core.services,
+ org.eclipse.osee.framework.core.util
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Export-Package: org.eclipse.osee.template.engine

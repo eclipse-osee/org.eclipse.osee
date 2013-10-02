@@ -46,6 +46,9 @@
 		<module>../../plugins/org.eclipse.osee.mail</module>
 		<module>../../plugins/org.eclipse.osee.mail.test</module>
 
+		<module>../../plugins/org.eclipse.osee.template.engine</module>
+		<module>../../plugins/org.eclipse.osee.template.engine.test</module>
+
 		<module>../../plugins/org.eclipse.osee.vaadin</module>
 		<module>../../plugins/org.eclipse.osee.vaadin.widgets</module>
 		<module>../../plugins/org.eclipse.osee.vaadin.themes</module>
