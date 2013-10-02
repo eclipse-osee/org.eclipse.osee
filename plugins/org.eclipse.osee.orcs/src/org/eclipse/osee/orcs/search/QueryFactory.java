@@ -30,4 +30,6 @@ public interface QueryFactory {
 
    BranchQuery branchQuery();
 
+   TransactionQuery transactionQuery();
+
 }

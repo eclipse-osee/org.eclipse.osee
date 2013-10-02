@@ -22,33 +22,45 @@ import org.eclipse.osee.orcs.db.internal.search.QueryCallableFactory;
  */
 public class QueryEngineImpl implements QueryEngine {
 
-   private final QueryCallableFactory factory1;
-   private final QueryCallableFactory factory2;
+   private final QueryCallableFactory artifactQueryEngineFactory;
+   private final QueryCallableFactory branchQueryEngineFactory;
+   private final QueryCallableFactory txQueryEngineFactory;
 
-   public QueryEngineImpl(QueryCallableFactory factory1, QueryCallableFactory factory2) {
+   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QueryCallableFactory branchQueryEngineFactory, QueryCallableFactory txQueryEngineFactory) {
       super();
-      this.factory1 = factory1;
-      this.factory2 = factory2;
+      this.artifactQueryEngineFactory = artifactQueryEngineFactory;
+      this.branchQueryEngineFactory = branchQueryEngineFactory;
+      this.txQueryEngineFactory = txQueryEngineFactory;
    }
 
    @Override
    public CancellableCallable<Integer> createArtifactCount(OrcsSession session, QueryData queryData) {
-      return factory1.createCount(session, queryData);
+      return artifactQueryEngineFactory.createCount(session, queryData);
    }
 
    @Override
    public CancellableCallable<Integer> createArtifactQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler) {
-      return factory1.createQuery(session, queryData, handler);
+      return artifactQueryEngineFactory.createQuery(session, queryData, handler);
    }
 
    @Override
    public CancellableCallable<Integer> createBranchCount(OrcsSession session, QueryData queryData) {
-      return factory2.createCount(session, queryData);
+      return branchQueryEngineFactory.createCount(session, queryData);
    }
 
    @Override
    public CancellableCallable<Integer> createBranchQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler) {
-      return factory2.createQuery(session, queryData, handler);
+      return branchQueryEngineFactory.createQuery(session, queryData, handler);
+   }
+
+   @Override
+   public CancellableCallable<Integer> createTxCount(OrcsSession session, QueryData queryData) {
+      return txQueryEngineFactory.createCount(session, queryData);
+   }
+
+   @Override
+   public CancellableCallable<Integer> createTxQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler) {
+      return txQueryEngineFactory.createQuery(session, queryData, handler);
    }
 
 }

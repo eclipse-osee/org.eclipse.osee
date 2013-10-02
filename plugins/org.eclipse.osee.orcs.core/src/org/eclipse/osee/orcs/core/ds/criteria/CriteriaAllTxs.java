@@ -8,19 +8,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.search.engines;
+package org.eclipse.osee.orcs.core.ds.criteria;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.orcs.core.ds.Criteria;
+import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-   ArtifactQuerySqlContextFactoryImplTest.class,
-   BranchQuerySqlContextFactoryImplTest.class,
-   TxQuerySqlContextFactoryImplTest.class})
-public class EnginesTestSuite {
-   // Test Suite
+public class CriteriaAllTxs extends Criteria {
+
+   public CriteriaAllTxs() {
+      super();
+   }
+
+   @Override
+   public void checkValid(Options options) throws OseeCoreException {
+      super.checkValid(options);
+   }
+
+   @Override
+   public String toString() {
+      return "CriteriaAllTxs";
+   }
 }

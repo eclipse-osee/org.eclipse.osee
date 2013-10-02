@@ -8,19 +8,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.search.engines;
+package org.eclipse.osee.orcs.data;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.Date;
+import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 
 /**
  * @author Roberto E. Escobar
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-   ArtifactQuerySqlContextFactoryImplTest.class,
-   BranchQuerySqlContextFactoryImplTest.class,
-   TxQuerySqlContextFactoryImplTest.class})
-public class EnginesTestSuite {
-   // Test Suite
+public interface TransactionReadable extends HasLocalId {
+
+   TransactionDetailsType getTxType();
+
+   Date getDate();
+
+   String getComment();
+
+   int getAuthorId();
+
+   int getBranchId();
+
+   int getCommit();
+
 }

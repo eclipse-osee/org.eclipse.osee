@@ -27,6 +27,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.search.TransactionQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -38,14 +39,18 @@ public class QueryFactoryImpl implements QueryFactory {
    private final CallableQueryFactory queryFctry;
    private final BranchCriteriaFactory branchCriteriaFactory;
    private final BranchCallableQueryFactory branchQueryFactory;
+   private final TransactionCallableQueryFactory txQueryFactory;
+   private final TransactionCriteriaFactory txCriteriaFactory;
 
-   public QueryFactoryImpl(OrcsSession context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry, BranchCriteriaFactory branchCriteriaFactory, BranchCallableQueryFactory branchQueryFactory) {
+   public QueryFactoryImpl(OrcsSession context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry, BranchCriteriaFactory branchCriteriaFactory, BranchCallableQueryFactory branchQueryFactory, TransactionCallableQueryFactory txQueryFactory, TransactionCriteriaFactory txCriteriaFactory) {
       super();
       this.context = context;
       this.criteriaFctry = criteriaFctry;
       this.queryFctry = queryFctry;
       this.branchCriteriaFactory = branchCriteriaFactory;
       this.branchQueryFactory = branchQueryFactory;
+      this.txQueryFactory = txQueryFactory;
+      this.txCriteriaFactory = txCriteriaFactory;
    }
 
    private QueryBuilder createBuilder(IOseeBranch branch) {
@@ -91,5 +96,14 @@ public class QueryFactoryImpl implements QueryFactory {
       QueryBuilder builder = createBuilder(null);
       builder.andIsOfType(artifactType);
       return builder;
+   }
+
+   @Override
+   public TransactionQuery transactionQuery() {
+      Options options = OptionsUtil.createOptions();
+      CriteriaSet criteriaSet = new CriteriaSet();
+      QueryData queryData = new QueryData(criteriaSet, options);
+      TransactionQueryImpl query = new TransactionQueryImpl(txQueryFactory, txCriteriaFactory, context, queryData);
+      return query;
    }
 }

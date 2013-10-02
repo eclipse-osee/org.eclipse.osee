@@ -14,6 +14,7 @@ import static org.eclipse.osee.orcs.db.internal.search.Engines.newArtifactQueryE
 import static org.eclipse.osee.orcs.db.internal.search.Engines.newBranchQueryEngine;
 import static org.eclipse.osee.orcs.db.internal.search.Engines.newIndexingEngine;
 import static org.eclipse.osee.orcs.db.internal.search.Engines.newTaggingEngine;
+import static org.eclipse.osee.orcs.db.internal.search.Engines.newTxQueryEngine;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.services.IdentityService;
@@ -74,7 +75,8 @@ public class QueryModule {
          newArtifactQueryEngine(logger, dbService, idService, sqlProvider, taggingEngine, executorAdmin, objectLoader,
             branchCache, attrTypes);
       QueryCallableFactory factory2 = newBranchQueryEngine(logger, dbService, idService, sqlProvider, objectLoader);
-      return new QueryEngineImpl(factory1, factory2);
+      QueryCallableFactory factory3 = newTxQueryEngine(logger, dbService, idService, sqlProvider, objectLoader);
+      return new QueryEngineImpl(factory1, factory2, factory3);
    }
 
 }

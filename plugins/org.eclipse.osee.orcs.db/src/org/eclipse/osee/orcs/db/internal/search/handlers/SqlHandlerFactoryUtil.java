@@ -17,12 +17,14 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllBranches;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllTxs;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAuthorIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchArchived;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchIds;
@@ -30,8 +32,20 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaCommitIds;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateRange;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaGetHead;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxArtifactGuids;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxBranchIds;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxBranchUuids;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxComment;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIdWithOperator;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIdWithTwoOperators;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIds;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxType;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
@@ -67,7 +81,6 @@ public final class SqlHandlerFactoryUtil {
       Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
          new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
 
-      // Query
       handleMap.put(CriteriaBranchArchived.class, BranchArchivedSqlHandler.class);
       handleMap.put(CriteriaBranchUuids.class, BranchGuidSqlHandler.class);
       handleMap.put(CriteriaBranchIds.class, BranchIdsSqlHandler.class);
@@ -76,6 +89,28 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaBranchType.class, BranchTypesSqlHandler.class);
       handleMap.put(CriteriaBranchChildOf.class, BranchChildOfSqlHandler.class);
       handleMap.put(CriteriaAllBranches.class, AllBranchesSqlHandler.class);
+
+      return new SqlHandlerFactoryImpl(logger, identityService, handleMap);
+   }
+
+   public static SqlHandlerFactory createTxSqlHandlerFactory(Log logger, IdentityService identityService) {
+      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
+         new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
+
+      handleMap.put(CriteriaTxIds.class, TxIdsSqlHandler.class);
+      handleMap.put(CriteriaTxBranchIds.class, TxBranchIdsSqlHandler.class);
+      handleMap.put(CriteriaTxBranchUuids.class, TxBranchUuidsSqlHandler.class);
+      handleMap.put(CriteriaTxType.class, TxTypesSqlHandler.class);
+      handleMap.put(CriteriaTxComment.class, TxCommentSqlHandler.class);
+      handleMap.put(CriteriaAllTxs.class, AllTxsSqlHandler.class);
+      handleMap.put(CriteriaTxIdWithOperator.class, TxIdWithOperatorSqlHandler.class);
+      handleMap.put(CriteriaTxIdWithTwoOperators.class, TxIdWithTwoOperatorsSqlHandler.class);
+      handleMap.put(CriteriaDateWithOperator.class, TxDateWithOperatorSqlHandler.class);
+      handleMap.put(CriteriaDateRange.class, TxDateRangeSqlHandler.class);
+      handleMap.put(CriteriaAuthorIds.class, TxAuthorIdsSqlHandler.class);
+      handleMap.put(CriteriaTxArtifactGuids.class, TxArtifactGuidSqlHandler.class);
+      handleMap.put(CriteriaCommitIds.class, TxCommitArtIdSqlHandler.class);
+      handleMap.put(CriteriaGetHead.class, TxGetHeadSqlHandler.class);
 
       return new SqlHandlerFactoryImpl(logger, identityService, handleMap);
    }

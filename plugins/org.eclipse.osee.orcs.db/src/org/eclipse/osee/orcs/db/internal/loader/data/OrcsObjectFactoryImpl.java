@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
+import java.util.Date;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -17,6 +18,7 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -24,6 +26,7 @@ import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.BranchData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.ProxyDataFactory;
@@ -206,6 +209,25 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       return createBranchData(source.getLocalId(), source.getGuid(), source.getBranchType(), source.getName(),
          source.getParentBranch(), source.getBaseTransaction(), source.getSourceTransaction(),
          source.getArchiveState(), source.getBranchState(), source.getAssociatedArtifactId());
+   }
+
+   @Override
+   public TxOrcsData createTxData(int localId, TransactionDetailsType type, Date date, String comment, int branchId, int authorId, int commitId) {
+      TxOrcsData data = new TransactionDataImpl();
+      data.setLocalId(localId);
+      data.setTxType(type);
+      data.setDate(date);
+      data.setComment(comment);
+      data.setBranchId(branchId);
+      data.setAuthorId(authorId);
+      data.setCommit(commitId);
+      return data;
+   }
+
+   @Override
+   public TxOrcsData createCopy(TxOrcsData source) {
+      return createTxData(source.getLocalId(), source.getTxType(), source.getDate(), source.getComment(),
+         source.getBranchId(), source.getAuthorId(), source.getCommit());
    }
 
 }

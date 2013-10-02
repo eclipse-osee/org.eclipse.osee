@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search;
 
+import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createArtifactSqlHandlerFactory;
+import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createBranchSqlHandlerFactory;
+import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createTxSqlHandlerFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,6 +28,7 @@ import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandlerDecorator;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
+import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.engines.AbstractSimpleQueryCallableFactory;
@@ -32,7 +36,6 @@ import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQueryCallableFac
 import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContextFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.engines.QueryFilterFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.engines.QuerySqlContextFactoryImpl;
-import org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexedResourceLoader;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerCallableFactory;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerCallableFactoryImpl;
@@ -64,7 +67,7 @@ public final class Engines {
 
    public static ArtifactQueryCallableFactory newArtifactQueryEngine(Log logger, IOseeDatabaseService dbService, IdentityService idService, SqlProvider sqlProvider, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader, BranchCache branchCache, AttributeTypes attrTypes) {
       SqlHandlerFactory handlerFactory =
-         SqlHandlerFactoryUtil.createArtifactSqlHandlerFactory(logger, idService, taggingEngine.getTagProcessor());
+         createArtifactSqlHandlerFactory(logger, idService, taggingEngine.getTagProcessor());
       QuerySqlContextFactory sqlContextFactory =
          new ArtifactQuerySqlContextFactoryImpl(logger, dbService, sqlProvider, branchCache, handlerFactory);
       AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine, attrTypes);
@@ -80,6 +83,22 @@ public final class Engines {
             return new LoadDataHandlerDecorator(handler) {
                @Override
                public void onData(BranchData data) throws OseeCoreException {
+                  counter.getAndIncrement();
+                  super.onData(data);
+               }
+            };
+         }
+      };
+   }
+
+   public static QueryCallableFactory newTxQueryEngine(Log logger, IOseeDatabaseService dbService, IdentityService idService, SqlProvider sqlProvider, DataLoaderFactory objectLoader) {
+      QuerySqlContextFactory sqlContextFactory = newTxSqlContextFactory(logger, dbService, idService, sqlProvider);
+      return new AbstractSimpleQueryCallableFactory(logger, objectLoader, sqlContextFactory) {
+         @Override
+         protected LoadDataHandler createCountingHandler(final AtomicInteger counter, LoadDataHandler handler) {
+            return new LoadDataHandlerDecorator(handler) {
+               @Override
+               public void onData(TxOrcsData data) throws OseeCoreException {
                   counter.getAndIncrement();
                   super.onData(data);
                }
@@ -104,8 +123,14 @@ public final class Engines {
    }
 
    public static QuerySqlContextFactory newBranchSqlContextFactory(Log logger, IOseeDatabaseService dbService, IdentityService idService, SqlProvider sqlProvider) {
-      SqlHandlerFactory handlerFactory = SqlHandlerFactoryUtil.createBranchSqlHandlerFactory(logger, idService);
+      SqlHandlerFactory handlerFactory = createBranchSqlHandlerFactory(logger, idService);
       return newSqlContextFactory(logger, dbService, sqlProvider, TableEnum.BRANCH_TABLE, "branch_id", handlerFactory);
+   }
+
+   public static QuerySqlContextFactory newTxSqlContextFactory(Log logger, IOseeDatabaseService dbService, IdentityService idService, SqlProvider sqlProvider) {
+      SqlHandlerFactory handlerFactory = createTxSqlHandlerFactory(logger, idService);
+      return newSqlContextFactory(logger, dbService, sqlProvider, TableEnum.TX_DETAILS_TABLE, "transaction_id",
+         handlerFactory);
    }
 
    public static QueryEngineIndexer newIndexingEngine(Log logger, IOseeDatabaseService dbService, IdentityService idService, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, IResourceManager resourceManager) {

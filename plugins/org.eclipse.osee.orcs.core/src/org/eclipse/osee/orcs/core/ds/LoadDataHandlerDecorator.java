@@ -55,6 +55,13 @@ public class LoadDataHandlerDecorator extends LoadDataHandlerAdapter {
 
    @Override
    public void onData(BranchData data) throws OseeCoreException {
+         if (handler != null) {
+         handler.onData(data);
+      }
+   }
+
+   @Override
+   public void onData(TxOrcsData data) throws OseeCoreException {
       if (handler != null) {
          handler.onData(data);
       }

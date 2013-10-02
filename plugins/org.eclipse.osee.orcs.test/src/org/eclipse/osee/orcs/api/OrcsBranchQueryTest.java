@@ -70,12 +70,6 @@ public class OrcsBranchQueryTest {
       factory = orcsApi.getQueryFactory(context);
    }
 
-   // 'System Root Branch',4,1,'AyH_fDnM2RFEhyybolQA', -1,0,1,1,-1, 1)
-   // 'Common',            2,4,'AyH_fDpMERA+zDfML4gA', -1,0,2,1, 1, 3)
-   // 'SAW_Bld_1',         2,15,'AyH_f2sSKy3l07fIvAAA',-1,0,3,1, 1, 3)
-   // 'CIS_Bld_1',         2,17,'AyH_f2sSKy3l07fIvDDD',-1,0,4,1, 1, 3)
-   // 'SAW_Bld_2',         2,23,'AyH_f2sSKy3l07fIvBBB', 9,0,5,0, 3,22)
-
    @Test
    public void testGetAll() throws OseeCoreException {
       BranchQuery query = factory.branchQuery();

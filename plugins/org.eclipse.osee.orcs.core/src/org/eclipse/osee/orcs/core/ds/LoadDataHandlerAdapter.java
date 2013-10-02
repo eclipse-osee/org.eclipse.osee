@@ -35,6 +35,12 @@ public class LoadDataHandlerAdapter implements LoadDataHandler {
    public void onData(BranchData data) throws OseeCoreException {
       //
    }
+   
+   @Override
+   @SuppressWarnings("unused")
+   public void onData(TxOrcsData data) throws OseeCoreException {
+      //
+   }
 
    @Override
    @SuppressWarnings("unused")
@@ -65,4 +71,5 @@ public class LoadDataHandlerAdapter implements LoadDataHandler {
    public void onLoadEnd() throws OseeCoreException {
       //
    }
+
 }

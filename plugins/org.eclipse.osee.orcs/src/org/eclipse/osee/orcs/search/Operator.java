@@ -17,7 +17,9 @@ public enum Operator {
    EQUAL("="), // Exact Match as in Strings.equals
    NOT_EQUAL("<>"), // inverse of exact match - !Strings.equals
    LESS_THAN("<"),
-   GREATER_THAN(">");
+   LESS_THAN_EQ("<="),
+   GREATER_THAN(">"),
+   GREATER_THAN_EQ(">=");
 
    private String expression;
 
@@ -33,8 +35,20 @@ public enum Operator {
       return NOT_EQUAL == this;
    }
 
-   public boolean isGreaterThanOrLessThan() {
-      return GREATER_THAN == this || LESS_THAN == this;
+   public boolean isGreaterThan() {
+      return GREATER_THAN == this;
+   }
+
+   public boolean isLessThan() {
+      return LESS_THAN == this;
+   }
+
+   public boolean isGreaterThanEq() {
+      return GREATER_THAN_EQ == this;
+   }
+
+   public boolean isLessThanEq() {
+      return LESS_THAN_EQ == this;
    }
 
    @Override

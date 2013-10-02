@@ -32,6 +32,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
@@ -42,6 +43,7 @@ import org.eclipse.osee.orcs.db.internal.loader.processor.AttributeLoadProcessor
 import org.eclipse.osee.orcs.db.internal.loader.processor.BranchLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.LoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.RelationLoadProcessor;
+import org.eclipse.osee.orcs.db.internal.loader.processor.TransactionLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
@@ -56,6 +58,7 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 public class SqlObjectLoader {
 
    private final BranchLoadProcessor branchProcessor;
+   private final TransactionLoadProcessor txProcessor;
    private final ArtifactLoadProcessor artifactProcessor;
    private final AttributeLoadProcessor attributeProcessor;
    private final RelationLoadProcessor relationProcessor;
@@ -76,6 +79,7 @@ public class SqlObjectLoader {
       attributeProcessor = new AttributeLoadProcessor(objectFactory);
       relationProcessor = new RelationLoadProcessor(objectFactory);
       branchProcessor = new BranchLoadProcessor(objectFactory);
+      txProcessor = new TransactionLoadProcessor(objectFactory);
    }
 
    private IOseeDatabaseService getDatabaseService() {
@@ -129,6 +133,17 @@ public class SqlObjectLoader {
 
       OrcsDataHandler<BranchData> branchHandler = asBranchHandler(handler);
       load(branchProcessor, branchHandler, context, fetchSize);
+   }
+
+   public void loadTransactions(HasCancellation cancellation, LoadDataHandler handler, QuerySqlContext context, int fetchSize) throws OseeCoreException {
+      logger.trace("Sql Transaction Load - loadContext[%s] fetchSize[%s]", context, fetchSize);
+      checkCancelled(cancellation);
+
+      LoadDescription description = createDescription(context.getSession(), context.getOptions());
+      handler.onLoadDescription(description);
+
+      OrcsDataHandler<TxOrcsData> txHandler = asTransactionHandler(handler);
+      load(txProcessor, txHandler, context, fetchSize);
    }
 
    private void loadArtifacts(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
@@ -302,4 +317,15 @@ public class SqlObjectLoader {
          }
       };
    }
+
+   private static OrcsDataHandler<TxOrcsData> asTransactionHandler(final LoadDataHandler handler) {
+      return new OrcsDataHandler<TxOrcsData>() {
+
+         @Override
+         public void onData(TxOrcsData data) throws OseeCoreException {
+            handler.onData(data);
+         }
+      };
+   }
+
 }

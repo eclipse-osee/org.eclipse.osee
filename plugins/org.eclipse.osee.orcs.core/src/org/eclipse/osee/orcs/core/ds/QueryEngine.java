@@ -23,7 +23,10 @@ public interface QueryEngine {
    CancellableCallable<Integer> createArtifactQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);
 
    CancellableCallable<Integer> createBranchCount(OrcsSession session, QueryData queryData);
-
    CancellableCallable<Integer> createBranchQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);
+   
+   CancellableCallable<Integer> createTxCount(OrcsSession session, QueryData queryData);
+
+   CancellableCallable<Integer> createTxQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);
 
 }
