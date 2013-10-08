@@ -8,9 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.client.integration.tests.ats.artifact.log;
+package org.eclipse.osee.ats.core.internal.log;
 
-import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -22,17 +21,16 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({AtsLogTest.class, LogItemTest.class})
-public class AtsTest_Log_Suite {
+public class AtsTest_Internal_Log_Suite {
 
    @BeforeClass
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
-      System.out.println("\n\nBegin " + AtsTest_Log_Suite.class.getSimpleName());
-      DemoTestUtil.setUpTest();
+      System.out.println("\n\nBegin " + AtsTest_Internal_Log_Suite.class.getSimpleName());
    }
 
    @AfterClass
    public static void tearDown() throws Exception {
-      System.out.println("End " + AtsTest_Log_Suite.class.getSimpleName());
+      System.out.println("End " + AtsTest_Internal_Log_Suite.class.getSimpleName());
    }
 }

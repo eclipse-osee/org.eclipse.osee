@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.editor.log.column;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
-import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.swt.SWT;
 
 /**
@@ -42,8 +42,8 @@ public class LogAuthorColumn extends XViewerValueColumn {
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      if (element instanceof LogItem) {
-         return ((LogItem) element).getUser().getName();
+      if (element instanceof IAtsLogItem) {
+         return ((IAtsLogItem) element).getUser().getName();
       }
       return "";
    }

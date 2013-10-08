@@ -18,7 +18,8 @@ Export-Package: org.eclipse.osee.ats.api,
  org.eclipse.osee.ats.api.util,
  org.eclipse.osee.ats.api.version,
  org.eclipse.osee.ats.api.workdef,
- org.eclipse.osee.ats.api.workflow
+ org.eclipse.osee.ats.api.workflow,
+ org.eclipse.osee.ats.api.workflow.log
 Require-Bundle: org.eclipse.core.runtime
 Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,

@@ -53,7 +53,7 @@ public class LastStatusedColumn extends XViewerAtsColumn implements IXViewerValu
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof AbstractWorkflowArtifact) {
-            return DateUtil.getMMDDYYHHMM(((AbstractWorkflowArtifact) element).getLog().getLastStatusedDate());
+            return DateUtil.getMMDDYYHHMM(((AbstractWorkflowArtifact) element).getLog().getLastStatusDate());
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             return "(see children)";
          }

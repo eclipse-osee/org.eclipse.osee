@@ -16,11 +16,11 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
@@ -358,7 +358,7 @@ public class SMAWorkFlowSection extends SectionPart {
             }
             sb.append(" - ");
             sb.append(DateUtil.getMMDDYYHHMM(sma.getCompletedDate()));
-            LogItem item = sma.getStateStartedData(statePageName);
+            IAtsLogItem item = sma.getStateStartedData(statePageName);
             if (item != null) {
                sb.append(" by ");
                sb.append(item.getUser().getName());
@@ -369,7 +369,7 @@ public class SMAWorkFlowSection extends SectionPart {
             }
             sb.append(" - ");
             sb.append(DateUtil.getMMDDYYHHMM(sma.internalGetCancelledDate()));
-            LogItem item = sma.getStateStartedData(statePageName);
+            IAtsLogItem item = sma.getStateStartedData(statePageName);
             if (item != null) {
                sb.append(" by ");
                sb.append(item.getUser().getName());
@@ -380,7 +380,7 @@ public class SMAWorkFlowSection extends SectionPart {
             sb.append(sma.getStateMgr().getAssigneesStr(80));
          }
       } else {
-         LogItem item = null;
+         IAtsLogItem item = null;
          if (sma.isCancelled() && sma.getCancelledFromState().equals(statePageName)) {
             item = sma.getStateCancelledData(statePageName);
             sb.append(" - State Cancelled ");

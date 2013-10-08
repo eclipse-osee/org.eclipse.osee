@@ -19,13 +19,13 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
+import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
-import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
-import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
@@ -140,11 +140,11 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
       return "";
    }
 
-   public LogItem getLogItemWithTypeAsOfDate(LogType logType, Date date) throws OseeCoreException {
-      LogItem retLogItem = null;
-      AtsLog atsLog = getLog();
-      List<LogItem> logItems = atsLog.getLogItems();
-      for (LogItem logItem : logItems) {
+   public IAtsLogItem getLogItemWithTypeAsOfDate(LogType logType, Date date) throws OseeCoreException {
+      IAtsLogItem retLogItem = null;
+      IAtsLog atsLog = getLog();
+      List<IAtsLogItem> logItems = atsLog.getLogItems();
+      for (IAtsLogItem logItem : logItems) {
          if (logItem.getType().equals(logType)) {
             Date logItemDate = logItem.getDate();
             if (logItemDate.after(date)) {

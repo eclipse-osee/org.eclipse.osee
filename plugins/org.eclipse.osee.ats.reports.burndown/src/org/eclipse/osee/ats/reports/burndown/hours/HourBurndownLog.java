@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
+import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
-import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
-import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -187,9 +187,9 @@ public class HourBurndownLog {
       double work = 0;
       for (AbstractWorkflowArtifact artifact : this.artifacts) {
          double previousWork = 0;
-         AtsLog log = artifact.getLog();
-         List<LogItem> logItems = log.getLogItems();
-         for (LogItem item : logItems) {
+         IAtsLog log = artifact.getLog();
+         List<IAtsLogItem> logItems = log.getLogItems();
+         for (IAtsLogItem item : logItems) {
             if (item.getType() == LogType.Metrics) {
                double itemWork = ReportUtil.getWork(item);
                Date itemDate = item.getDate();

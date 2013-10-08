@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -55,8 +55,8 @@ public class LogEventColumn extends XViewerValueColumn {
          if (element instanceof String) {
             return (String) element;
          }
-         if (element instanceof LogItem) {
-            return ((LogItem) element).getType().name();
+         if (element instanceof IAtsLogItem) {
+            return ((IAtsLogItem) element).getType().name();
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

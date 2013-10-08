@@ -8,36 +8,58 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.client.integration.tests.ats.artifact.log;
+package org.eclipse.osee.ats.core.internal.log;
 
+import static org.mockito.Mockito.when;
 import java.util.Date;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
-import org.eclipse.osee.ats.core.client.workflow.log.ILogStorageProvider;
-import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
+import org.eclipse.osee.ats.api.workflow.log.ILogStorageProvider;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsLogTest {
 
+   // @formatter:off
+   @Mock IAtsUserService userService; 
+   @Mock IAtsUser user;
+   // @formatter:on
+
+   @Before
+   public void setup() throws OseeCoreException {
+      MockitoAnnotations.initMocks(this);
+
+      when(user.getName()).thenReturn("joe");
+      when(user.getUserId()).thenReturn("joe");
+
+      when(userService.getUserById("joe")).thenReturn(user);
+   }
+
    @Test
    public void testToAndFromStore() throws OseeCoreException {
       Date date = new Date();
       SimpleLogStore store = new SimpleLogStore();
-      AtsLog log = new AtsLog(store);
-      LogItem item = LogItemTest.getTestLogItem(date);
+      IAtsLog log = AtsCore.getLogFactory().getLog(store, userService);
+      IAtsLogItem item = LogItemTest.getTestLogItem(date, user, userService);
       log.addLogItem(item);
 
-      AtsLog log2 = new AtsLog(store);
+      IAtsLog log2 = AtsCore.getLogFactory().getLog(store, userService);
       Assert.assertEquals(1, log2.getLogItems().size());
-      LogItem loadItem = log2.getLogItems().iterator().next();
-      LogItemTest.validateItem(loadItem, date);
+      IAtsLogItem loadItem = log2.getLogItems().iterator().next();
+      LogItemTest.validateItem(user, loadItem, date);
    }
 
    public class SimpleLogStore implements ILogStorageProvider {

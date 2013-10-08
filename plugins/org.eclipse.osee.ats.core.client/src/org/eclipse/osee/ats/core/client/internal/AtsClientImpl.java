@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
@@ -60,6 +61,7 @@ import org.eclipse.osee.ats.core.config.IVersionFactory;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -99,7 +101,10 @@ public class AtsClientImpl implements IAtsClient {
       this.workItemArtifactProvider = workItemArtifactProvider;
    }
 
-   public void start() {
+   public void start() throws OseeCoreException {
+      Conditions.checkNotNull(workDefService, "IAtsWorkDefinitionService");
+      Conditions.checkNotNull(workItemArtifactProvider, "IAtsWorkItemArtifactProvider");
+      Conditions.checkNotNull(workItemService, "workItemService");
       Map<Class<? extends IAtsConfigObject>, IAtsArtifactWriter<? extends IAtsConfigObject>> writers =
          new HashMap<Class<? extends IAtsConfigObject>, IAtsArtifactWriter<? extends IAtsConfigObject>>();
 
@@ -355,6 +360,16 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public IAtsEarnedValueService getEarnedValueService() {
       return earnedValueService;
+   }
+
+   @Override
+   public IAtsUser getCurrentUser() throws OseeCoreException {
+      return getUserAdmin().getCurrentUser();
+   }
+
+   @Override
+   public IAtsUser getUserById(String userId) throws OseeCoreException {
+      return getUserAdmin().getUserById(userId);
    }
 
 }

@@ -39,6 +39,9 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
+import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.AtsReviewCache;
@@ -49,9 +52,6 @@ import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
-import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
-import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
@@ -375,7 +375,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    }
 
    private static void fixCancelledByAttributes(SkynetTransaction transaction, AbstractWorkflowArtifact awa, HashCollection<String, String> testNameToResultsMap) throws OseeCoreException {
-      LogItem cancelledItem = getCancelledLogItem(awa);
+      IAtsLogItem cancelledItem = getCancelledLogItem(awa);
       if (cancelledItem != null) {
          testNameToResultsMap.put("testCompletedCancelledStateAttributesSet", String.format(
             "   FIXED to By [%s] From State [%s] Date [%s] Reason [%s]", cancelledItem.getUserId(),
@@ -391,7 +391,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    }
 
    private static void fixCompletedByAttributes(SkynetTransaction transaction, AbstractWorkflowArtifact awa, HashCollection<String, String> testNameToResultsMap) throws OseeCoreException {
-      LogItem completedItem = getPreviousStateLogItem(awa);
+      IAtsLogItem completedItem = getPreviousStateLogItem(awa);
       if (completedItem != null) {
          testNameToResultsMap.put(
             "testCompletedCancelledStateAttributesSet",
@@ -404,10 +404,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private static LogItem getCancelledLogItem(AbstractWorkflowArtifact awa) throws OseeCoreException {
+   private static IAtsLogItem getCancelledLogItem(AbstractWorkflowArtifact awa) throws OseeCoreException {
       String currentStateName = awa.getCurrentStateName();
-      LogItem fromItem = null;
-      for (LogItem item : awa.getLog().getLogItemsReversed()) {
+      IAtsLogItem fromItem = null;
+      for (IAtsLogItem item : awa.getLog().getLogItemsReversed()) {
          if (item.getType() == LogType.StateCancelled && Strings.isValid(item.getState()) && !currentStateName.equals(item.getState())) {
             fromItem = item;
             break;
@@ -419,10 +419,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       return fromItem;
    }
 
-   private static LogItem getPreviousStateLogItem(AbstractWorkflowArtifact awa) throws OseeCoreException {
+   private static IAtsLogItem getPreviousStateLogItem(AbstractWorkflowArtifact awa) throws OseeCoreException {
       String currentStateName = awa.getCurrentStateName();
-      LogItem fromItem = null;
-      for (LogItem item : awa.getLog().getLogItemsReversed()) {
+      IAtsLogItem fromItem = null;
+      for (IAtsLogItem item : awa.getLog().getLogItemsReversed()) {
          if (item.getType() == LogType.StateComplete && Strings.isValid(item.getState()) && !currentStateName.equals(item.getState())) {
             fromItem = item;
             break;
@@ -1127,7 +1127,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             if (art instanceof AbstractWorkflowArtifact) {
                AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
                try {
-                  AtsLog log = awa.getLog();
+                  IAtsLog log = awa.getLog();
                   if (awa.getCreatedBy() == null) {
                      try {
                         testNameToResultsMap.put(
@@ -1141,7 +1141,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   }
                   for (IStateToken state : Arrays.asList(TeamState.Completed, TeamState.Cancelled)) {
                      if (awa.isInState(state)) {
-                        LogItem logItem = awa.getStateStartedData(state);
+                        IAtsLogItem logItem = awa.getStateStartedData(state);
                         if (logItem == null) {
                            try {
                               testNameToResultsMap.put(
@@ -1170,7 +1170,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   // Generate html log which will exercise all the conversions
                   log.getHtml();
                   // Verify that all users are resolved
-                  for (LogItem logItem : awa.getLog().getLogItems()) {
+                  for (IAtsLogItem logItem : awa.getLog().getLogItems()) {
                      if (logItem.getUser() == null) {
                         testNameToResultsMap.put(
                            "testAtsLogs",

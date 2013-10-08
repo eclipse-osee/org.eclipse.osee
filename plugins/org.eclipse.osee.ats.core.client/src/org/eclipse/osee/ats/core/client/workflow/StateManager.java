@@ -30,6 +30,9 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.api.workflow.WorkStateProvider;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
+import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
@@ -37,8 +40,6 @@ import org.eclipse.osee.ats.core.client.notify.AtsNotifyType;
 import org.eclipse.osee.ats.core.client.team.SimpleTeamState;
 import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
-import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.model.WorkStateFactory;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.model.impl.WorkStateProviderImpl;
@@ -180,8 +181,8 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
    }
 
    public static void logMetrics(AbstractWorkflowArtifact sma, String percent, String hours, IStateToken state, IAtsUser user, Date date) throws OseeCoreException {
-      LogItem logItem =
-         new LogItem(LogType.Metrics, date, user, state.getName(),
+      IAtsLogItem logItem =
+         AtsCore.getLogFactory().newLogItem(LogType.Metrics, date, user, state.getName(),
             String.format("Percent %s Hours %s", percent, hours), sma.getHumanReadableId());
       sma.getLog().addLogItem(logItem);
    }
@@ -313,7 +314,7 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
       if (state == null) {
          return 0;
       }
-      LogItem logItem = awa.getStateStartedData(state);
+      IAtsLogItem logItem = awa.getStateStartedData(state);
       if (logItem == null) {
          return 0;
       }
@@ -417,7 +418,7 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
    }
 
    public static String getCompletedDateByState(AbstractWorkflowArtifact awa, IAtsStateDefinition state) throws OseeCoreException {
-      LogItem stateEvent = awa.getLog().getStateEvent(LogType.StateComplete, state.getName());
+      IAtsLogItem stateEvent = awa.getLog().getStateEvent(LogType.StateComplete, state.getName());
       if (stateEvent != null && stateEvent.getDate() != null) {
          return DateUtil.getMMDDYYHHMM(stateEvent.getDate());
       }

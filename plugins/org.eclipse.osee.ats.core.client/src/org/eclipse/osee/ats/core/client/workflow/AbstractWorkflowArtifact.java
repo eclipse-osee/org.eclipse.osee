@@ -31,6 +31,10 @@ import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.WorkStateProvider;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
+import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
@@ -43,9 +47,6 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.log.ArtifactLog;
-import org.eclipse.osee.ats.core.client.workflow.log.AtsLog;
-import org.eclipse.osee.ats.core.client.workflow.log.LogItem;
-import org.eclipse.osee.ats.core.client.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.workflow.note.ArtifactNote;
 import org.eclipse.osee.ats.core.client.workflow.note.AtsNote;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
@@ -86,7 +87,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    protected TeamWorkFlowArtifact parentTeamArt;
    protected ActionArtifact parentAction;
    private final StateManager stateMgr;
-   private final AtsLog atsLog;
+   private final IAtsLog atsLog;
    private final AtsNote atsNote;
    private boolean inTransition = false;
    private IAtsWorkData atsWorkData;
@@ -94,7 +95,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public AbstractWorkflowArtifact(String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(guid, humanReadableId, branch, artifactType);
       stateMgr = new StateManager(this);
-      atsLog = new AtsLog(new ArtifactLog(this));
+      atsLog = AtsCore.getLogFactory().getLog(new ArtifactLog(this), AtsCore.getUserService());
       atsNote = new AtsNote(new ArtifactNote(this));
    }
 
@@ -414,7 +415,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return String.format("[%s] %s", getStateMgr().getCurrentStateName(), getName());
    }
 
-   public AtsLog getLog() {
+   public IAtsLog getLog() {
       return atsLog;
    }
 
@@ -596,27 +597,27 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return null;
    }
 
-   public LogItem getStateCompletedData(IStateToken state) throws OseeCoreException {
+   public IAtsLogItem getStateCompletedData(IStateToken state) throws OseeCoreException {
       return getStateCompletedData(state.getName());
    }
 
-   public LogItem getStateCompletedData(String stateName) throws OseeCoreException {
+   public IAtsLogItem getStateCompletedData(String stateName) throws OseeCoreException {
       return getLog().getStateEvent(LogType.StateComplete, stateName);
    }
 
-   public LogItem getStateCancelledData(IStateToken state) throws OseeCoreException {
+   public IAtsLogItem getStateCancelledData(IStateToken state) throws OseeCoreException {
       return getStateCancelledData(state.getName());
    }
 
-   public LogItem getStateCancelledData(String stateName) throws OseeCoreException {
+   public IAtsLogItem getStateCancelledData(String stateName) throws OseeCoreException {
       return getLog().getStateEvent(LogType.StateCancelled, stateName);
    }
 
-   public LogItem getStateStartedData(IStateToken state) throws OseeCoreException {
+   public IAtsLogItem getStateStartedData(IStateToken state) throws OseeCoreException {
       return getStateStartedData(state.getName());
    }
 
-   public LogItem getStateStartedData(String stateName) throws OseeCoreException {
+   public IAtsLogItem getStateStartedData(String stateName) throws OseeCoreException {
       return getLog().getStateEvent(LogType.StateEntered, stateName);
    }
 
