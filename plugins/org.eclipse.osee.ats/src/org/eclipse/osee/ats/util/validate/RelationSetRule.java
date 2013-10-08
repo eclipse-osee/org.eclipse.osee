@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.util.validate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -26,11 +27,14 @@ public final class RelationSetRule extends AbstractValidationRule {
    private final IArtifactType artifactType;
    private final Integer minimumRelations;
    private final IRelationTypeSide relationEnum;
+   private final Collection<IArtifactType> ignoreArtifactTypes;
 
-   public RelationSetRule(IArtifactType artifactType, IRelationTypeSide relationEnum, Integer minimumRelations) {
+   public RelationSetRule(IArtifactType artifactType, IRelationTypeSide relationEnum, Integer minimumRelations, IArtifactType... ignoreArtifactTypes) {
       this.artifactType = artifactType;
       this.relationEnum = relationEnum;
       this.minimumRelations = minimumRelations;
+      this.ignoreArtifactTypes =
+         (ignoreArtifactTypes.length == 0 ? new ArrayList<IArtifactType>() : Arrays.asList(ignoreArtifactTypes));
    }
 
    public Integer getMinimumRelations() {
@@ -49,8 +53,9 @@ public final class RelationSetRule extends AbstractValidationRule {
    protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) throws OseeCoreException {
       Collection<String> errorMessages = new ArrayList<String>();
       boolean validationPassed = true;
-      if (hasArtifactType(artToValidate.getArtifactType())) {
-         // validate that artifact has one "Requirement Trace" relation to a Subsystem Requirement
+      ArtifactType type = artToValidate.getArtifactType();
+
+      if (!isIgnoreType(type) && hasArtifactType(type)) {
          Collection<Artifact> arts = artToValidate.getRelatedArtifacts(relationEnum);
          if (arts.size() < minimumRelations) {
             errorMessages.add(ValidationReportOperation.getRequirementHyperlink(artToValidate) + " (" + artToValidate.getGammaId() + ") has less than minimum " + minimumRelations + " relation for type \"" + relationEnum + "\"");
@@ -68,5 +73,13 @@ public final class RelationSetRule extends AbstractValidationRule {
    @Override
    public String getRuleTitle() {
       return "Relations Check:";
+   }
+
+   private Collection<IArtifactType> getIgnoreArtifactTypes() {
+      return ignoreArtifactTypes;
+   }
+
+   private boolean isIgnoreType(IArtifactType type) {
+      return getIgnoreArtifactTypes().contains(type);
    }
 }
