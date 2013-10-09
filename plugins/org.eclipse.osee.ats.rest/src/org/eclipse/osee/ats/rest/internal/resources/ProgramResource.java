@@ -18,11 +18,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.StreamingOutput;
-import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.rest.internal.AtsApplication;
 import org.eclipse.osee.ats.rest.internal.build.report.model.AtsBuildData;
 import org.eclipse.osee.ats.rest.internal.build.report.parser.AtsAbstractSAXParser.AtsDataHandler;
@@ -37,12 +34,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 @Path("program")
 public class ProgramResource {
 
-   private static final String TRACE_URI_TEMPLATE = "%sbuildTraceReport/%s/%s?program=%s&build=%s";
-
-   @Context
-   UriInfo uriInfo;
-   @Context
-   Request request;
+   private static final String TRACE_URI_TEMPLATE = "../buildTraceReport/%s/%s?program=%s&build=%s";
 
    @GET
    @Path("{programId}")
@@ -62,8 +54,8 @@ public class ProgramResource {
                   public void handleData(AtsBuildData data) {
                      if (data.getBuildProgramId().equals(programId)) {
                         String uri =
-                           String.format(TRACE_URI_TEMPLATE, uriInfo.getBaseUri(), programId, data.getBuildId(),
-                              programName, data.getBuildName());
+                           String.format(TRACE_URI_TEMPLATE, programId, data.getBuildId(), programName,
+                              data.getBuildName());
                         try {
                            table.addUrl(data.getBuildName(), uri);
                         } catch (OseeCoreException ex) {

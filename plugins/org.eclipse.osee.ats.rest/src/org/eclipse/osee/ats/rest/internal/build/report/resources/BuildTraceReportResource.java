@@ -21,11 +21,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.StreamingOutput;
-import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.rest.internal.AtsApplication;
 import org.eclipse.osee.ats.rest.internal.build.report.model.AtsWorkflowData;
@@ -53,11 +50,6 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  */
 @Path("buildTraceReport")
 public class BuildTraceReportResource {
-
-   @Context
-   UriInfo uriInfo;
-   @Context
-   Request request;
 
    @GET
    @Path("{programId}/{buildId}")
@@ -97,7 +89,7 @@ public class BuildTraceReportResource {
                               }
 
                            }
-                           buildTraceTable.addRpcrToTable(pcrId, requirementsToTests, uriInfo);
+                           buildTraceTable.addRpcrToTable(pcrId, requirementsToTests);
 
                         } catch (OseeCoreException ex) {
                            AtsApplication.getLogger().error(ex, "Error handling AtsWorkflowData");

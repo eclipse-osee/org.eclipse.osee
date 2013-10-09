@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.rest.internal.build.report.table;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.rest.internal.build.report.model.AtsElementData;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -92,8 +91,8 @@ public class BuildTraceTable {
       return anchor;
    }
 
-   public void addbuildTraceCells(Table buildTraceTable, String element, UriInfo uriInfo) throws OseeCoreException {
-      String url = String.format(AtsElementData.CHANGE_REPORT_URL_TEMPLATE, uriInfo.getBaseUri(), element);
+   public void addbuildTraceCells(Table buildTraceTable, String element) throws OseeCoreException {
+      String url = String.format(AtsElementData.CHANGE_REPORT_URL_TEMPLATE, element);
       try {
          buildTraceTable.addCell(setHyperlink(element.toString(), url));
       } catch (BadElementException ex) {
@@ -125,10 +124,10 @@ public class BuildTraceTable {
       }
    }
 
-   public void addRpcrToTable(String rpcr, Map<ArtifactReadable, Iterable<ArtifactReadable>> requirementsToTests, UriInfo uriInfo) throws OseeCoreException {
+   public void addRpcrToTable(String rpcr, Map<ArtifactReadable, Iterable<ArtifactReadable>> requirementsToTests) throws OseeCoreException {
 
       try {
-         addbuildTraceCells(traceReportTable, rpcr, uriInfo);
+         addbuildTraceCells(traceReportTable, rpcr);
          Table nestedRequirementTable = new Table(2);
          nestedRequirementTable.setAutoFillEmptyCells(true);
          for (Entry<ArtifactReadable, Iterable<ArtifactReadable>> entry : requirementsToTests.entrySet()) {

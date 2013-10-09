@@ -37,7 +37,7 @@ public final class AtsElementData {
    public static final String ATS_PROGRAM_DATA_XML = "ats.program.data.xml";
    public static final String ATS_BUILD_DATA_XML = "ats.build.data.xml";
 
-   public static final String CHANGE_REPORT_URL_TEMPLATE = "%s../osee/ats/changeReports/%s.xml";
+   public static final String CHANGE_REPORT_URL_TEMPLATE = "../../../osee/ats/changeReports/%s.xml";
 
    private AtsElementData() {
       //Constants

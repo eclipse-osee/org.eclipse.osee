@@ -15,11 +15,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.StreamingOutput;
-import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.rest.internal.AtsApplication;
 import org.eclipse.osee.ats.rest.internal.build.report.model.AtsProgramData;
 import org.eclipse.osee.ats.rest.internal.build.report.parser.AtsAbstractSAXParser.AtsDataHandler;
@@ -34,12 +31,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 @Path("programs")
 public class ProgramsResource {
 
-   private static final String PROGRAM_URI_TEMPLATE = "%sprogram/%s?program=%s";
-
-   @Context
-   UriInfo uriInfo;
-   @Context
-   Request request;
+   private static final String PROGRAM_URI_TEMPLATE = "program/%s?program=%s";
 
    @GET
    @Produces(MediaType.TEXT_HTML)
@@ -55,9 +47,7 @@ public class ProgramsResource {
 
                   @Override
                   public void handleData(AtsProgramData data) {
-                     String uri =
-                        String.format(PROGRAM_URI_TEMPLATE, uriInfo.getBaseUri(), data.getProgramId(),
-                           data.getProgramName());
+                     String uri = String.format(PROGRAM_URI_TEMPLATE, data.getProgramId(), data.getProgramName());
                      try {
                         table.addUrl(data.getProgramName(), uri);
                      } catch (OseeCoreException ex) {
