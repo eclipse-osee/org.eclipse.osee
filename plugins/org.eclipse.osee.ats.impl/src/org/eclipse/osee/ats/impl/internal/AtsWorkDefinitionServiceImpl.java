@@ -16,6 +16,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
@@ -25,6 +28,8 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStore;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.dsl.ModelUtil;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.impl.internal.convert.ConvertAtsDslToWorkDefinition;
@@ -35,6 +40,7 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * Provides new and stored Work Definitions
@@ -237,5 +243,29 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    @Override
    public void clearCaches() {
       workDefIdToWorkDef = null;
+   }
+
+   @Override
+   public boolean teamDefHasRule(IAtsWorkItem workItem, RuleDefinitionOption option) {
+      boolean hasRule = false;
+      IAtsTeamWorkflow teamWf = null;
+      try {
+         if (workItem instanceof IAtsTeamWorkflow) {
+            teamWf = (IAtsTeamWorkflow) workItem;
+         } else if (this instanceof IAtsAbstractReview) {
+            teamWf = ((IAtsAbstractReview) this).getParentTeamWorkflow();
+         }
+         if (teamWf != null) {
+            hasRule = teamWf.getTeamDefinition().hasRule(option.name());
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsWorkDefinitionServiceImpl.class, Level.SEVERE, ex);
+      }
+      return hasRule;
+   }
+
+   @Override
+   public boolean isInState(IAtsWorkItem workItem, IAtsStateDefinition stateDef) {
+      return workItem.getStateMgr().getCurrentStateName().equals(stateDef.getName());
    }
 }

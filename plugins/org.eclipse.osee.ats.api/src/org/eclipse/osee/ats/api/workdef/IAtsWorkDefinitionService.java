@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.workdef;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.util.XResultData;
 
 /**
@@ -45,5 +46,9 @@ public interface IAtsWorkDefinitionService {
    String getStorageString(IAtsWorkDefinition workDef, XResultData resultData) throws Exception;
 
    void clearCaches();
+
+   boolean teamDefHasRule(IAtsWorkItem workItem, RuleDefinitionOption rule);
+
+   boolean isInState(IAtsWorkItem workItem, IAtsStateDefinition stateDef);
 
 }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.user;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -33,5 +34,9 @@ public interface IAtsUserService {
    IAtsUser getUserByName(String name) throws OseeCoreException;
 
    Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds) throws OseeCoreException;
+
+   boolean isAssigneeMe(IAtsWorkItem workItem) throws OseeCoreException;
+
+   boolean isAtsAdmin();
 
 }

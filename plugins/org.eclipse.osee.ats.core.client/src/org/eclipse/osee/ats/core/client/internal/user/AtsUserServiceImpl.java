@@ -13,8 +13,11 @@ package org.eclipse.osee.ats.core.client.internal.user;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
+import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -88,6 +91,16 @@ public class AtsUserServiceImpl implements IAtsUserService {
          userId = userByName.getUserId();
       }
       return userId;
+   }
+
+   @Override
+   public boolean isAtsAdmin() {
+      return AtsUtilCore.isAtsAdmin();
+   }
+
+   @Override
+   public boolean isAssigneeMe(IAtsWorkItem workItem) throws OseeCoreException {
+      return workItem.getStateMgr().getAssignees().contains(AtsClientService.get().getUserAdmin().getCurrentUser());
    }
 
 }

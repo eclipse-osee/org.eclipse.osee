@@ -144,17 +144,17 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public IAtsWorkDefinition getWorkDefinition() {
-      return null;
-   }
-
-   @Override
    public IAtsStateDefinition getStateDefinition() {
       return null;
    }
 
    @Override
    public IAtsLogItem getStateStartedData(IStateToken state) {
+      return null;
+   }
+
+   @Override
+   public IAtsWorkDefinition getWorkDefinition() {
       return null;
    }
 

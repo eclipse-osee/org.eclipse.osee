@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.core.client.workflow;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -47,7 +47,7 @@ public class PercentCompleteSMAStateUtil {
          return 0;
       }
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return getPercentCompleteSMAState(artifact, WorkflowManagerCore.getStateManager(artifact).getCurrentState());
+         return getPercentCompleteSMAState(artifact, getStateManager(artifact).getCurrentState());
       }
       return 0;
    }
@@ -57,9 +57,21 @@ public class PercentCompleteSMAStateUtil {
     */
    public static int getPercentCompleteSMAState(Artifact artifact, IStateToken state) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return WorkflowManagerCore.getStateManager(artifact).getPercentComplete(state.getName());
+         return getStateManager(artifact).getPercentComplete(state.getName());
       }
       return 0;
+   }
+
+   private static IAtsStateManager getStateManager(Artifact artifact) {
+      return cast(artifact).getStateMgr();
+   }
+
+   private static AbstractWorkflowArtifact cast(Artifact artifact) {
+      AbstractWorkflowArtifact art = null;
+      if (artifact instanceof AbstractWorkflowArtifact) {
+         art = (AbstractWorkflowArtifact) artifact;
+      }
+      return art;
    }
 
 }

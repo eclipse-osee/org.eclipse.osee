@@ -50,4 +50,8 @@ public interface IAtsWorkItemService {
 
    IAtsTeamWorkflow getFirstTeam(IAtsAction action) throws OseeCoreException;
 
+   boolean isReadOnly(IAtsWorkItem workItem);
+
+   boolean isAccessControlWrite(IAtsWorkItem workItem);
+
 }

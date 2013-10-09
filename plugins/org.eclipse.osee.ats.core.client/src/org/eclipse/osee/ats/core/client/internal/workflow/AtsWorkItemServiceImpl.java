@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.client.internal.workflow;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
@@ -20,17 +21,22 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactService;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AtsWorkData;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 
@@ -154,6 +160,30 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    public IAtsWorkItemArtifactService getWorkItemArtifactProvider() {
       return workItemArtifactProvider;
+   }
+
+   @Override
+   public boolean isReadOnly(IAtsWorkItem workItem) {
+      boolean readOnly = true;
+      try {
+         Artifact artifact = AtsClientService.get().getArtifact(workItem);
+         readOnly = artifact.isReadOnly();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return readOnly;
+   }
+
+   @Override
+   public boolean isAccessControlWrite(IAtsWorkItem workItem) {
+      boolean isWrite = false;
+      try {
+         Artifact artifact = AtsClientService.get().getArtifact(workItem);
+         isWrite = AccessControlManager.hasPermission(artifact, PermissionEnum.WRITE);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return isWrite;
    }
 
 }

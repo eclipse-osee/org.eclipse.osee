@@ -54,6 +54,7 @@ import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCacheP
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkItemArtifactProviderImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsWorkItemServiceImpl;
+import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
