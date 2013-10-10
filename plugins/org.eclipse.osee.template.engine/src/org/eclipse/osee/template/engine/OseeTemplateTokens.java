@@ -13,9 +13,9 @@ package org.eclipse.osee.template.engine;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.model.ClassBasedResourceToken;
-import org.eclipse.osee.framework.core.model.ResourceToken;
-import org.eclipse.osee.framework.core.services.IResourceRegistry;
+import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
+import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
+import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
 
 /**
  * @author Ryan D. Brooks

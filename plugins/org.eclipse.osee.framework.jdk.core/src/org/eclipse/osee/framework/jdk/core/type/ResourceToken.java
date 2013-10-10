@@ -8,23 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.services;
 
-import java.io.InputStream;
-import org.eclipse.osee.framework.core.model.ResourceToken;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+package org.eclipse.osee.framework.jdk.core.type;
+
+import java.net.URL;
 
 /**
  * @author Ryan D. Brooks
  */
-public interface IResourceRegistry {
+public abstract class ResourceToken extends NamedIdentity<Long> {
 
-   ResourceToken registerResource(Long universalId, ResourceToken token) throws OseeCoreException;
+   public ResourceToken(Long uuid, String name) {
+      super(uuid, name);
+   }
 
-   ResourceToken getResourceToken(Long universalId) throws OseeCoreException;
-
-   InputStream getResource(Long universalId) throws Exception;
-
-   void registerAll(Iterable<ResourceToken> tokens);
-
+   public abstract URL getUrl();
 }

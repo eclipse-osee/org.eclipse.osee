@@ -11,8 +11,8 @@
 
 package org.eclipse.osee.template.engine;
 
-import org.eclipse.osee.framework.core.model.ResourceToken;
-import org.eclipse.osee.framework.core.services.IResourceRegistry;
+import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
+import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
 
 /**
  * Factory containing convenience methods for both creating HtmlPageCreator objects and directly realizing a page in a

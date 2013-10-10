@@ -15,9 +15,9 @@ import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.RealizePag
 import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.TestMainPage_WithIncludeFileHtml;
 import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.TestValues_IncludeHtml;
 import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.TestValues_KeyValueHtml;
-import org.eclipse.osee.framework.core.model.ResourceRegistry;
-import org.eclipse.osee.framework.core.model.ResourceToken;
-import org.eclipse.osee.framework.core.services.IResourceRegistry;
+import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
+import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
+import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.junit.Assert;
 import org.junit.BeforeClass;

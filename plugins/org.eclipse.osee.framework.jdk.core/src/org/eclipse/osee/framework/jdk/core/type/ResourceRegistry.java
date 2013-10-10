@@ -8,12 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.model;
+package org.eclipse.osee.framework.jdk.core.type;
 
 import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
-import org.eclipse.osee.framework.core.services.IResourceRegistry;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * @author Ryan D. Brooks
@@ -34,7 +32,7 @@ public class ResourceRegistry implements IResourceRegistry {
    }
 
    @Override
-   public ResourceToken getResourceToken(Long universalId) throws OseeArgumentException {
+   public ResourceToken getResourceToken(Long universalId) {
       ResourceToken token = registry.get(universalId);
       if (token == null) {
          throw new OseeArgumentException("Resource with universal ID [%X] not found.", universalId);

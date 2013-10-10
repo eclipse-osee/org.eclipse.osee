@@ -8,21 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+package org.eclipse.osee.framework.jdk.core.type;
 
-package org.eclipse.osee.framework.core.model;
-
-import java.net.URL;
-import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
+import java.io.InputStream;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks
  */
-public abstract class ResourceToken extends NamedIdentity<Long> {
+public interface IResourceRegistry {
 
-   public ResourceToken(Long uuid, String name) {
-      super(uuid, name);
-   }
+   ResourceToken registerResource(Long universalId, ResourceToken token);
 
-   public abstract URL getUrl() throws OseeCoreException;
+   ResourceToken getResourceToken(Long universalId) throws IllegalArgumentException;
+
+   InputStream getResource(Long universalId) throws Exception;
+
+   void registerAll(Iterable<ResourceToken> tokens);
+
 }

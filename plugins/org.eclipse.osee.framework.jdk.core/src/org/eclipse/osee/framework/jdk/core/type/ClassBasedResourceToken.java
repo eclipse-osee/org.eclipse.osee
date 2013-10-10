@@ -9,11 +9,9 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.core.model;
+package org.eclipse.osee.framework.jdk.core.type;
 
 import java.net.URL;
-import org.eclipse.osee.framework.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks
@@ -34,11 +32,13 @@ public final class ClassBasedResourceToken extends ResourceToken {
    }
 
    @Override
-   public URL getUrl() throws OseeCoreException {
+   public URL getUrl() {
       if (url == null) {
          url = clazz.getResource(path + getName());
-         Conditions.checkNotNull(url, "url", "Unable to resolve url for class [%s] with path [%s] and token [%s]",
-            clazz, path, this);
+         if (url == null) {
+            throw new OseeArgumentException("Unable to resolve url for class [%s] with path [%s] and token [%s]",
+               clazz, path, this);
+         }
       }
       return url;
    }
