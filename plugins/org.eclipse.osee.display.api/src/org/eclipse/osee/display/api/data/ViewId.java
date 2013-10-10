@@ -12,12 +12,12 @@ package org.eclipse.osee.display.api.data;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 
 /**
  * @author John R. Misinco
  */
-public class ViewId extends FullyNamedIdentity<String> {
+public class ViewId extends NamedIdentity<String> {
 
    Map<String, String> attributes = new HashMap<String, String>();
 

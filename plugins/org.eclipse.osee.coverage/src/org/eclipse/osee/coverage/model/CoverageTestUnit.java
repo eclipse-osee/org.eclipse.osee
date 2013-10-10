@@ -12,7 +12,7 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.Collection;
 import org.eclipse.osee.coverage.util.CoverageImage;
-import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
+import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  * 
  * @author Donald G. Dunne
  */
-public class CoverageTestUnit extends FullyNamedIdentity<String> implements ICoverage {
+public class CoverageTestUnit extends NamedIdentity<String> implements ICoverage {
    public CoverageTestUnit(String name) {
       super(null, name);
    }

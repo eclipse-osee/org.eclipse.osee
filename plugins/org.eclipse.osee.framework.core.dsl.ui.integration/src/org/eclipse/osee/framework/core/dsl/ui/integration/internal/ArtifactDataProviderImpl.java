@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.Identity;
-import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -109,16 +108,6 @@ public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
       @Override
       public boolean matches(Identity<?>... identities) {
          return self.matches(identities);
-      }
-
-      @Override
-      public String getUnqualifiedName() {
-         return self.getUnqualifiedName();
-      }
-
-      @Override
-      public int compareTo(Named other) {
-         return self.compareTo(other);
       }
 
       @Override

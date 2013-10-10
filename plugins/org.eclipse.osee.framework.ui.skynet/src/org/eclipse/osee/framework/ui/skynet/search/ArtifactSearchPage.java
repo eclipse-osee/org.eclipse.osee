@@ -31,7 +31,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
+import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -547,13 +547,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
       @Override
       public String getText(Object obj) {
-         try {
-            FullyNamedIdentity<Long> identity = (FullyNamedIdentity<Long>) obj;
-            return identity.getName();
-         } catch (Exception ex) {
-            ;
-            return "";
-         }
+         return ((Named) obj).getName();
       }
 
       @Override

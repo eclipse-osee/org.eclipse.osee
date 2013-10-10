@@ -15,7 +15,6 @@ import java.util.Iterator;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.Identity;
-import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
@@ -257,16 +256,6 @@ public class ArtifactMatchInterpreterTest {
 
    private static ArtifactProxy createProxy(final String artGuid, final String artifactName, final String branchGuid, final String branchName) {
       return new ArtifactProxy() {
-
-         @Override
-         public String getUnqualifiedName() {
-            return null;
-         }
-
-         @Override
-         public int compareTo(Named o) {
-            return 0;
-         }
 
          @Override
          public IOseeBranch getBranch() {

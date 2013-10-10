@@ -15,7 +15,6 @@ import java.util.Collections;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.Identity;
-import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -92,15 +91,5 @@ public class MockArtifactProxy implements ArtifactProxy {
    @Override
    public boolean matches(Identity... identities) {
       return artifactObject.matches(identities);
-   }
-
-   @Override
-   public String getUnqualifiedName() {
-      return artifactObject.getUnqualifiedName();
-   }
-
-   @Override
-   public int compareTo(Named o) {
-      return artifactObject.compareTo(o);
    }
 }
