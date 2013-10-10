@@ -59,7 +59,7 @@ public final class TokenFactory {
       return new SorterIdToken(guid, name);
    }
 
-   private final static class SorterIdToken extends NamedIdentity<String> implements IRelationSorterId {
+   private final static class SorterIdToken extends FullyNamedIdentity<String> implements IRelationSorterId {
 
       public SorterIdToken(String guid, String name) {
          super(guid, name);
@@ -71,7 +71,7 @@ public final class TokenFactory {
       }
    }
 
-   private final static class ArtifactTypeToken extends NamedIdentity<Long> implements IArtifactType {
+   private final static class ArtifactTypeToken extends FullyNamedIdentity<Long> implements IArtifactType {
       public ArtifactTypeToken(Long guid, String name) {
          super(guid, name);
       }
@@ -87,13 +87,13 @@ public final class TokenFactory {
       }
    }
 
-   private static final class BranchToken extends NamedIdentity<String> implements IOseeBranch {
+   private static final class BranchToken extends FullyNamedIdentity<String> implements IOseeBranch {
       public BranchToken(String guid, String name) {
          super(guid, name);
       }
    }
 
-   private final static class AttributeTypeToken extends NamedIdentity<Long> implements IAttributeType {
+   private final static class AttributeTypeToken extends FullyNamedIdentity<Long> implements IAttributeType {
       public AttributeTypeToken(Long guid, String name) {
          super(guid, name);
       }
@@ -103,13 +103,13 @@ public final class TokenFactory {
       }
    }
 
-   private final static class RelationTypeToken extends NamedIdentity<Long> implements IRelationType {
+   private final static class RelationTypeToken extends FullyNamedIdentity<Long> implements IRelationType {
       public RelationTypeToken(Long guid, String name) {
          super(guid, name);
       }
    }
 
-   private static class ArtifactToken extends NamedIdentity<String> implements IArtifactToken {
+   private static class ArtifactToken extends FullyNamedIdentity<String> implements IArtifactToken {
       private final IArtifactType artifactType;
 
       public ArtifactToken(String guid, String name, IArtifactType artifactType) {
@@ -123,7 +123,7 @@ public final class TokenFactory {
       }
    }
 
-   private static class UserToken extends NamedIdentity<String> implements IUserToken {
+   private static class UserToken extends FullyNamedIdentity<String> implements IUserToken {
 
       private final String userId;
       private final boolean active;
@@ -178,7 +178,7 @@ public final class TokenFactory {
 
    }
 
-   private final static class AccessContextIdToken extends NamedIdentity<String> implements IAccessContextId {
+   private final static class AccessContextIdToken extends FullyNamedIdentity<String> implements IAccessContextId {
       public AccessContextIdToken(String guid, String name) {
          super(guid, name);
       }
@@ -189,7 +189,7 @@ public final class TokenFactory {
       }
    }
 
-   private final static class RelationTypeSideToken extends NamedIdentity<Long> implements IRelationTypeSide {
+   private final static class RelationTypeSideToken extends FullyNamedIdentity<Long> implements IRelationTypeSide {
 
       private final RelationSide relationSide;
       private RelationTypeSideToken opposite;

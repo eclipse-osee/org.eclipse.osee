@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.model.mocks;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 /**
  * @author Jeff C. Phillips
  */
-public class MockArtifact extends NamedIdentity<String> implements IBasicArtifact<Object> {
+public class MockArtifact extends FullyNamedIdentity<String> implements IBasicArtifact<Object> {
 
    private final Branch branch;
    private final ArtifactType artifactType;

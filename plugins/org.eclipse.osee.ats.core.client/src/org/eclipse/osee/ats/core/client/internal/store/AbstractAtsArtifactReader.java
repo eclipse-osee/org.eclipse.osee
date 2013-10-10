@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.IVersionFactory;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -40,7 +40,7 @@ public abstract class AbstractAtsArtifactReader<T extends IAtsConfigObject> impl
       this.versionFactory = versionFactory;
    }
 
-   protected IAtsActionableItem getOrCreateActionableItem(AtsArtifactConfigCache cache, NamedIdentity<String> artifact) throws OseeCoreException {
+   protected IAtsActionableItem getOrCreateActionableItem(AtsArtifactConfigCache cache, FullyNamedIdentity<String> artifact) throws OseeCoreException {
       Conditions.checkNotNull(artifact, "artifact");
       String guid = artifact.getGuid();
       IAtsActionableItem item = cache.getSoleByGuid(guid, IAtsActionableItem.class);
@@ -51,7 +51,7 @@ public abstract class AbstractAtsArtifactReader<T extends IAtsConfigObject> impl
       return item;
    }
 
-   protected IAtsTeamDefinition getOrCreateTeamDefinition(AtsArtifactConfigCache cache, NamedIdentity<String> artifact) throws OseeCoreException {
+   protected IAtsTeamDefinition getOrCreateTeamDefinition(AtsArtifactConfigCache cache, FullyNamedIdentity<String> artifact) throws OseeCoreException {
       Conditions.checkNotNull(artifact, "artifact");
       String guid = artifact.getGuid();
       IAtsTeamDefinition item = cache.getSoleByGuid(guid, IAtsTeamDefinition.class);

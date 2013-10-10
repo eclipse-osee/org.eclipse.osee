@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.EnumEntry;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class EnumEntryImpl extends NamedIdentity<String> implements EnumEntry {
+public final class EnumEntryImpl extends FullyNamedIdentity<String> implements EnumEntry {
 
    private final int ordinal;
 

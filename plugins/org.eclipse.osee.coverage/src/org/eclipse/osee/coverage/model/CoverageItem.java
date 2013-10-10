@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageItem extends NamedIdentity<String> implements ICoverage, IWorkProductRelatable {
+public class CoverageItem extends FullyNamedIdentity<String> implements ICoverage, IWorkProductRelatable {
 
    CoverageOption coverageMethod = CoverageOptionManager.Not_Covered;
    String rationale;

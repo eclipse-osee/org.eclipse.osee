@@ -14,14 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.internal.fields.UniqueIdField;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 
-public abstract class AbstractOseeType<KEY> extends NamedIdentity<KEY> implements IOseeStorable {
+public abstract class AbstractOseeType<KEY> extends FullyNamedIdentity<KEY> implements IOseeStorable {
 
    public static final String NAME_FIELD_KEY = "osee.name.field";
    public static final String UNIQUE_ID_FIELD_KEY = "osee.unique.id.field";

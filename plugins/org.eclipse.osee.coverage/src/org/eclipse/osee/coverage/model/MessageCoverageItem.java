@@ -12,7 +12,7 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.Collection;
 import java.util.Collections;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 /**
  * @author Donald G. Dunne
  */
-public class MessageCoverageItem extends NamedIdentity<String> implements ICoverage {
+public class MessageCoverageItem extends FullyNamedIdentity<String> implements ICoverage {
 
    public MessageCoverageItem(String message) {
       super(GUID.create(), message);

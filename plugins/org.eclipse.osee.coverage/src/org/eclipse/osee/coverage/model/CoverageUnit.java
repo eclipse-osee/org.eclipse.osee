@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.Result;
@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  * 
  * @author Donald G. Dunne
  */
-public class CoverageUnit extends NamedIdentity<String> implements IWorkProductRelatable, ICoverage, ICoverageUnitProvider, ICoverageItemProvider {
+public class CoverageUnit extends FullyNamedIdentity<String> implements IWorkProductRelatable, ICoverage, ICoverageUnitProvider, ICoverageItemProvider {
 
    String namespace;
    boolean folder;

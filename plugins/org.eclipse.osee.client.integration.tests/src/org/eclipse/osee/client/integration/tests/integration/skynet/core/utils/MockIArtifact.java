@@ -12,7 +12,7 @@ package org.eclipse.osee.client.integration.tests.integration.skynet.core.utils;
 
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 /**
  * @author Roberto E. Escobar
  */
-public class MockIArtifact extends NamedIdentity<String> implements IArtifact {
+public class MockIArtifact extends FullyNamedIdentity<String> implements IArtifact {
 
    private boolean wasGetFullArtifactCalled;
    private final int uniqueId;

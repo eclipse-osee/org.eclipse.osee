@@ -11,12 +11,12 @@
 package org.eclipse.osee.ats.core.model.impl;
 
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsObject extends NamedIdentity<String> implements IAtsObject {
+public class AtsObject extends FullyNamedIdentity<String> implements IAtsObject {
 
    private String desc;
 

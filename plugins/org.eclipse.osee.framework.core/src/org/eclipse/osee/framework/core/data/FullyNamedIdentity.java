@@ -16,15 +16,15 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 /**
  * @author Ryan D. Brooks
  */
-public class NamedIdentity<T> extends AbstractNamedIdentity<T> {
+public class FullyNamedIdentity<T> extends AbstractNamedIdentity<T> {
    private String name;
    private final String description;
 
-   public NamedIdentity(T guid, String name) {
+   public FullyNamedIdentity(T guid, String name) {
       this(guid, name, "");
    }
 
-   public NamedIdentity(T guid, String name, String description) {
+   public FullyNamedIdentity(T guid, String name, String description) {
       super(guid);
       this.name = name;
       this.description = description;

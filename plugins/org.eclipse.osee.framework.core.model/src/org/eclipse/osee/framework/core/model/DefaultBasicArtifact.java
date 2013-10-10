@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model;
 
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class DefaultBasicArtifact extends NamedIdentity<String> implements IBasicArtifact<Object> {
+public final class DefaultBasicArtifact extends FullyNamedIdentity<String> implements IBasicArtifact<Object> {
 
    private static final long serialVersionUID = -4997763989583925345L;
    private final int artId;

@@ -12,13 +12,13 @@
 package org.eclipse.osee.framework.core.model;
 
 import java.net.URL;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks
  */
-public abstract class ResourceToken extends NamedIdentity<Long> {
+public abstract class ResourceToken extends FullyNamedIdentity<Long> {
 
    public ResourceToken(Long uuid, String name) {
       super(uuid, name);

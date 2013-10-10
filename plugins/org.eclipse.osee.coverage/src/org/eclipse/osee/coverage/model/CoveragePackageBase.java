@@ -21,7 +21,7 @@ import java.util.logging.Level;
 
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.util.CoverageUtil;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 /**
  * @author Donald G. Dunne
  */
-public abstract class CoveragePackageBase extends NamedIdentity<String> implements ICoverage, ICoverageUnitProvider {
+public abstract class CoveragePackageBase extends FullyNamedIdentity<String> implements ICoverage, ICoverageUnitProvider {
    protected final List<CoverageUnit> coverageUnits = new CopyOnWriteArrayList<CoverageUnit>();
    private final XResultDataFile logResultData = new XResultDataFile(false);
    boolean editable = true;
