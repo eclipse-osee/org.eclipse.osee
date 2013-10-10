@@ -14,6 +14,7 @@ Import-Package: com.vaadin,
  org.eclipse.osee.display.api.data,
  org.eclipse.osee.display.api.search,
  org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.vaadin,
  org.eclipse.osee.vaadin.widgets,
  org.osgi.framework;version="1.6.0"

@@ -10,4 +10,5 @@ Require-Bundle: org.junit,
  org.mockito;bundle-version="1.9.0",
  org.hamcrest.core,
  org.objenesis
-Import-Package: org.eclipse.osee.executor.admin
+Import-Package: org.eclipse.osee.executor.admin,
+ org.eclipse.osee.framework.jdk.core.type

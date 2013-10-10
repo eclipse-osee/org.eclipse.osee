@@ -14,11 +14,12 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 
 /**
  * @author Roberto E. Escobar

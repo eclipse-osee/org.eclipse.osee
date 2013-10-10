@@ -12,8 +12,8 @@
 package org.eclipse.osee.framework.core.model;
 
 import java.net.URL;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 
 /**
  * @author Ryan D. Brooks

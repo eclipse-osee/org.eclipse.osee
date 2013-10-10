@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
-import org.eclipse.osee.framework.core.data.FullyNamed;
-import org.eclipse.osee.framework.core.data.HasDescription;
-import org.eclipse.osee.framework.core.data.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
+import org.eclipse.osee.framework.jdk.core.type.HasDescription;
+import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**
  * @author Roberto E. Escobar

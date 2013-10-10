@@ -12,8 +12,8 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.Collection;
 import org.eclipse.osee.coverage.util.CoverageImage;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**

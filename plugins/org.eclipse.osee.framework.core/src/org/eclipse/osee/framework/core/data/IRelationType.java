@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
+import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+
 /**
  * @author Ryan D. Brooks
  */

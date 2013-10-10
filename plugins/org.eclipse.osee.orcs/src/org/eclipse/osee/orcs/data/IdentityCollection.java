@@ -11,8 +11,8 @@
 package org.eclipse.osee.orcs.data;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
 
 /**
  * @author Roberto E. Escobar

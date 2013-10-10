@@ -9,6 +9,7 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.services,
- org.eclipse.osee.framework.core.util
+ org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.jdk.core.type
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.template.engine

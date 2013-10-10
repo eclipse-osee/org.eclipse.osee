@@ -11,8 +11,8 @@ package org.eclipse.osee.ats.api.version;
 
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
 
 /**
  * @author Donald G. Dunne

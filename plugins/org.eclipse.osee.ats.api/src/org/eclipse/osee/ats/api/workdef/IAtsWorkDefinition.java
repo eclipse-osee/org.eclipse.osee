@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.api.workdef;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.HasDescription;
-import org.eclipse.osee.framework.core.data.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.HasDescription;
+import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**
  * @author Donald G. Dunne

@@ -12,9 +12,6 @@ package org.eclipse.osee.framework.core.data;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.junit.Assert;
 import org.junit.Test;

@@ -13,8 +13,8 @@ package org.eclipse.osee.orcs.core.internal.relation.sorter;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
-import org.eclipse.osee.framework.core.data.Identifiable;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**
  * @author Andrew M. Finkbeiner

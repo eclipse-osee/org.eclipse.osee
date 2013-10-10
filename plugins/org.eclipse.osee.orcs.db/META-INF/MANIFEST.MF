@@ -6,7 +6,8 @@ Bundle-Version: 0.15.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/*.xml
-Import-Package: org.eclipse.emf.common.notify,
+Import-Package: org.eclipse.core.runtime,
+ org.eclipse.emf.common.notify,
  org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,
  org.eclipse.emf.ecore.util,
@@ -51,5 +52,4 @@ Import-Package: org.eclipse.emf.common.notify,
  org.eclipse.osee.orcs.utility,
  org.osgi.framework
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.core.runtime,
- com.google.guava;bundle-version="[11.0.0,15.0.0)"
+Require-Bundle: com.google.guava;bundle-version="[11.0.0,15.0.0)"

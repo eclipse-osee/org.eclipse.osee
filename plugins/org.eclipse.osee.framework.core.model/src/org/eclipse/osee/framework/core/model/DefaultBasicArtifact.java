@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model;
 
-import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 
 /**
  * @author Roberto E. Escobar

@@ -9,9 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.core.data;
-
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+package org.eclipse.osee.framework.jdk.core.type;
 
 /**
  * @author Ryan D. Brooks
@@ -29,8 +27,7 @@ public class NamedIdentity<T> extends BaseIdentity<T> implements Identifiable<T>
       return name;
    }
 
-   @SuppressWarnings("unused")
-   public void setName(String name) throws OseeCoreException {
+   public void setName(String name) {
       this.name = name;
    }
 

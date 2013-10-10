@@ -11,9 +11,9 @@
 package org.eclipse.osee.orcs.data;
 
 import org.eclipse.osee.framework.core.data.ITransaction;
-import org.eclipse.osee.framework.core.data.Identifiable;
-import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
 
 /**
  * @author Roberto E. Escobar

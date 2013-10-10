@@ -11,4 +11,5 @@ Require-Bundle: org.junit;bundle-version="4.11.0",
  org.databene.contiperf
 Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
- org.eclipse.osee.framework.core.exception
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.jdk.core.type

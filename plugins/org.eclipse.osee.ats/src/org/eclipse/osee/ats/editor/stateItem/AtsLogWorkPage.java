@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
-import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
 
 /**
  * @author Donald G. Dunne

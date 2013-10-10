@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
-import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
+import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.EnumEntry;
 

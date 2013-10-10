@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.event;
 
-import org.eclipse.osee.framework.core.data.BaseIdentity;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 
 /**
  * @author Donald G. Dunne

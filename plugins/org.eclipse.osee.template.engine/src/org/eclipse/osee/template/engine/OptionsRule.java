@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.template.engine;
 
-import org.eclipse.osee.framework.core.data.Identity;
-import org.eclipse.osee.framework.core.data.Named;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 
 /**
  * @author Ryan D. Brooks

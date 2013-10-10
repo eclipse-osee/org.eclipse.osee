@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
 
 /**
  * @author Donald G. Dunne

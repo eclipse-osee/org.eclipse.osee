@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
-import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.orcs.core.ds.BranchData;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;

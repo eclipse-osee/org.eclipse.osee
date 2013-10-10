@@ -12,6 +12,9 @@ package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
+import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 
 public final class TokenFactory {
 

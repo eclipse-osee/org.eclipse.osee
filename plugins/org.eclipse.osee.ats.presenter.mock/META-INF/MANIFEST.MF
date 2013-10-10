@@ -16,4 +16,5 @@ Import-Package: org.eclipse.osee.ats.ui.api.data,
  org.eclipse.osee.display.presenter.mocks,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.orcs

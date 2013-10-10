@@ -12,9 +12,9 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.io.InputStream;
 import java.lang.ref.Reference;
-import org.eclipse.osee.framework.core.data.Identifiable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.HasOrcsData;
 import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;

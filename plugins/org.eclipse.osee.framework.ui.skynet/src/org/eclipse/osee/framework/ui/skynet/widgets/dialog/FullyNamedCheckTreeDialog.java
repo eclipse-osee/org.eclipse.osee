@@ -15,7 +15,7 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.core.data.FullyNamed;
+import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.ui.skynet.util.NamedLabelProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;

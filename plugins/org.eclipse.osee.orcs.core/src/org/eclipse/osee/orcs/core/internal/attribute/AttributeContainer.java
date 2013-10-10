@@ -12,9 +12,9 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.Identifiable;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.orcs.data.HasLocalId;
 
 /**

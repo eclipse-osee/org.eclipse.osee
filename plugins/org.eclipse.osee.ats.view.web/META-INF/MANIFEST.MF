@@ -15,6 +15,6 @@ Require-Bundle: com.vaadin,
 Import-Package: org.eclipse.osee.ats.ui.api.data,
  org.eclipse.osee.ats.ui.api.search,
  org.eclipse.osee.ats.ui.api.view,
- org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.orcs,
  org.osgi.framework

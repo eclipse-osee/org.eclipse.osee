@@ -21,10 +21,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.Identifiable;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.orcs.core.internal.relation.sorter.Sorter;
 import org.eclipse.osee.orcs.core.internal.relation.sorter.SorterProvider;
 

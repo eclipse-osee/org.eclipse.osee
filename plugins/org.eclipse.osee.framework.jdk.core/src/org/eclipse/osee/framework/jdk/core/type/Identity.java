@@ -9,11 +9,15 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.core.data;
+package org.eclipse.osee.framework.jdk.core.type;
 
 /**
- * @author Andrew M. Finkbeiner
+ * @author Ryan D. Brooks
  */
-public interface Named {
-   String getName();
+public interface Identity<T> {
+
+   T getGuid();
+
+   boolean matches(Identity<?>... identities);
+
 }

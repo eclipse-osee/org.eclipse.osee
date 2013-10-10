@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.graph;
 
-import org.eclipse.osee.framework.core.data.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.orcs.data.HasBranch;
 import org.eclipse.osee.orcs.data.HasLocalId;
 

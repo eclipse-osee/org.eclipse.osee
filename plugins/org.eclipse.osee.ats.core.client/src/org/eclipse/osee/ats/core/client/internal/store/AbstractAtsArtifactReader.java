@@ -19,9 +19,9 @@ import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.IVersionFactory;
-import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**

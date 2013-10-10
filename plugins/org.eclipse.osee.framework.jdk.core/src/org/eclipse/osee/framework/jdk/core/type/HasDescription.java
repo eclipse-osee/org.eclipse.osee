@@ -8,11 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.data;
+package org.eclipse.osee.framework.jdk.core.type;
 
 /**
  * @author Ryan D. Brooks
  */
-public interface FullyNamed extends Named, Comparable<Named> {
-   public abstract String getUnqualifiedName();
+public interface HasDescription {
+   public abstract String getDescription();
 }

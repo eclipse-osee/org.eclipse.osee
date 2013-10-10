@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.core.model;
 
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 
 /**
  * @author Andrew M. Finkbeiner

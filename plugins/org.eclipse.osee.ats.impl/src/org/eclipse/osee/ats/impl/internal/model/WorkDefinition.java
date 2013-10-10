@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
 
 /**
  * @author Donald G. Dunne

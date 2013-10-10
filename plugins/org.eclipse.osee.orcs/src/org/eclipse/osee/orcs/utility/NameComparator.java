@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.utility;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.data.Named;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 
 public class NameComparator implements Comparator<Named> {
    private static final int NUMBER_STRING_LIMIT = 19;

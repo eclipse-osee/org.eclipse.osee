@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2009 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,11 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.data;
+
+package org.eclipse.osee.framework.jdk.core.type;
 
 /**
- * @author Roberto E. Escobar
+ * @author Andrew M. Finkbeiner
  */
-public interface Identifiable<T> extends Identity<T>, Named {
-   // 
+public interface Named {
+   String getName();
 }

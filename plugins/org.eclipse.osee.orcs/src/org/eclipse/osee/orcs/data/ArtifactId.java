@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
-import org.eclipse.osee.framework.core.data.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**
  * @author Megumi Telles

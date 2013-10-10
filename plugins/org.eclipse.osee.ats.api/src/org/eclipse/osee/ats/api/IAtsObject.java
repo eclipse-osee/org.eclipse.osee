@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api;
 
-import org.eclipse.osee.framework.core.data.HasDescription;
-import org.eclipse.osee.framework.core.data.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.HasDescription;
+import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**
  * Base class to build all ats config and action objects on

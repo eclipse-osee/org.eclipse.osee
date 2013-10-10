@@ -16,7 +16,6 @@ import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.Identity;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
@@ -34,6 +33,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.HexUtil;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -11,8 +11,8 @@
 package org.eclipse.osee.orcs.db.internal.console;
 
 import org.eclipse.osee.console.admin.ConsoleCommand;
-import org.eclipse.osee.framework.core.data.BaseIdentity;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;

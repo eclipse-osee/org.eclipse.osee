@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.session;
 
-import org.eclipse.osee.framework.core.data.BaseIdentity;
+import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.orcs.OrcsSession;
 
 /**

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging;
 
-import org.eclipse.osee.framework.core.data.Named;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 
 /**
  * @author Andrew M. Finkbeiner

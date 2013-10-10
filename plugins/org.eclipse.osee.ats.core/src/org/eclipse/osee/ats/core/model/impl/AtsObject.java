@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.model.impl;
 
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.framework.core.data.FullyNamedIdentity;
+import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 
 /**
  * @author Donald G. Dunne

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.operation;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.SubMonitor;
-import org.eclipse.osee.framework.core.data.Named;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 
 /**
  * @author Roberto E. Escobar

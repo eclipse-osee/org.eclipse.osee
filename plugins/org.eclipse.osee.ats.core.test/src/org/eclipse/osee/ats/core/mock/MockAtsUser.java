@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.mock;
 
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
 
 /**
  * @author Donald G. Dunne

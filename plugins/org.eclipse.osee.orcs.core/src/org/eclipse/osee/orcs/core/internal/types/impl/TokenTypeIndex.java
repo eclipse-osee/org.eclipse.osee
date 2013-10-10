@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 
 import java.util.Collection;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
