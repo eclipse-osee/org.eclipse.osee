@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.data;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.Identifiable;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -19,7 +18,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 /**
  * @author Roberto E. Escobar
  */
-public interface BranchReadable extends Identifiable<String>, HasLocalId, IOseeBranch {
+public interface BranchReadable extends HasLocalId, IOseeBranch {
 
    BranchArchivedState getArchiveState();
 

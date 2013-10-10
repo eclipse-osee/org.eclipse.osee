@@ -12,13 +12,13 @@ package org.eclipse.osee.orcs.data;
 
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.FullyNamed;
-import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.core.data.Identifiable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface EnumType extends Identity<Long>, FullyNamed {
+public interface EnumType extends Identifiable<Long>, FullyNamed {
 
    EnumEntry[] values();
 

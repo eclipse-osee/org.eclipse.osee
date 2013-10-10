@@ -13,6 +13,6 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Roberto E. Escobar
  */
-public interface IAccessContextId extends Identity<String>, Named {
+public interface IAccessContextId extends Identifiable<String> {
    //
 }

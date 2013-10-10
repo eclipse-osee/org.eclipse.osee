@@ -11,8 +11,7 @@
 package org.eclipse.osee.coverage.model;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.Identity;
-import org.eclipse.osee.framework.core.data.Named;
+import org.eclipse.osee.framework.core.data.Identifiable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -20,7 +19,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 /**
  * @author Donald G. Dunne
  */
-public interface ICoverage extends Named, Identity<String> {
+public interface ICoverage extends Identifiable<String> {
 
    public String getNotes();
 

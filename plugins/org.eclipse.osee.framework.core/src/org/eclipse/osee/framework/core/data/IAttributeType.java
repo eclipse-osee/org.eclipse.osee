@@ -13,6 +13,6 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Ryan D. Brooks
  */
-public interface IAttributeType extends Identity<Long>, FullyNamed, HasDescription {
+public interface IAttributeType extends Identifiable<Long>, FullyNamed, HasDescription {
    // composition interface requires no additional methods,fields
 }

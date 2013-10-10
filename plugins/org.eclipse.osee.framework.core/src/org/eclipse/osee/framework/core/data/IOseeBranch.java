@@ -13,6 +13,6 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Ryan D. Brooks
  */
-public interface IOseeBranch extends Identity<String>, Named {
+public interface IOseeBranch extends Identifiable<String> {
    // composition interface requires no additional methods,fields
 }
