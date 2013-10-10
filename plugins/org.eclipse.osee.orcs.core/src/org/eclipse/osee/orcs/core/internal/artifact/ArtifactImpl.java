@@ -40,7 +40,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    private GraphData graph;
 
    public ArtifactImpl(ArtifactTypes artifactTypeCache, ArtifactData artifactData, AttributeFactory attributeFactory, ValueProvider<? extends IOseeBranch, OrcsData> branchProvider) {
-      super(attributeFactory);
+      super(artifactData.getGuid(), attributeFactory);
       this.artifactTypeCache = artifactTypeCache;
       this.artifactData = artifactData;
       this.branchProvider = branchProvider;
@@ -76,11 +76,6 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public int getLocalId() {
       return getOrcsData().getLocalId();
-   }
-
-   @Override
-   public String getGuid() {
-      return getOrcsData().getGuid();
    }
 
    @Override

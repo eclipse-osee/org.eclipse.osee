@@ -10,22 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.event;
 
-import org.eclipse.osee.framework.core.data.AbstractIdentity;
+import org.eclipse.osee.framework.core.data.BaseIdentity;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 
 /**
  * @author Donald G. Dunne
  */
-public class DefaultBasicGuidArtifact extends AbstractIdentity<String> implements IBasicGuidArtifact {
+public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IBasicGuidArtifact {
    private static final long serialVersionUID = -4997763989583925345L;
    private final String branchGuid;
    private Long artTypeGuid;
-   private final String artGuid;
 
-   public DefaultBasicGuidArtifact(String branchGuid, Long artTypeGuid, String guid) {
+   public DefaultBasicGuidArtifact(String branchGuid, Long artTypeGuid, String artGuid) {
+      super(artGuid);
       this.branchGuid = branchGuid;
       this.artTypeGuid = artTypeGuid;
-      this.artGuid = guid;
    }
 
    @Override
@@ -40,7 +39,7 @@ public class DefaultBasicGuidArtifact extends AbstractIdentity<String> implement
 
    @Override
    public String toString() {
-      return String.format("[%s]", artGuid);
+      return String.format("[%s]", getGuid());
    }
 
    @Override
@@ -71,18 +70,13 @@ public class DefaultBasicGuidArtifact extends AbstractIdentity<String> implement
             equals = branchGuid.equals(other.getBranchGuid());
          }
 
-         if (equals && artGuid == null || other.getGuid() == null) {
+         if (equals && getGuid() == null || other.getGuid() == null) {
             equals = false;
          } else if (equals) {
-            equals = artGuid.equals(other.getGuid());
+            equals = getGuid().equals(other.getGuid());
          }
       }
       return equals;
-   }
-
-   @Override
-   public String getGuid() {
-      return artGuid;
    }
 
    public void setArtTypeGuid(Long artTypeGuid) {

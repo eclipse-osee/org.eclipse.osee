@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.AbstractIdentity;
+import org.eclipse.osee.framework.core.data.BaseIdentity;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.Identifiable;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -154,26 +154,17 @@ public class SorterTest {
       return new TestItem(GUID.create(), name);
    }
 
-   private static final class TestItem extends AbstractIdentity<String> implements Identifiable<String> {
-
-      private final String guid;
+   private static final class TestItem extends BaseIdentity<String> implements Identifiable<String> {
       private final String name;
 
       public TestItem(String guid, String name) {
-         super();
-         this.guid = guid;
+         super(guid);
          this.name = name;
-      }
-
-      @Override
-      public String getGuid() {
-         return guid;
       }
 
       @Override
       public String getName() {
          return name;
       }
-
    }
 }

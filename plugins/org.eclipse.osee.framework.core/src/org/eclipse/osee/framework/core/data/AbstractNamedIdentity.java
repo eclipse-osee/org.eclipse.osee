@@ -16,7 +16,11 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Ryan D. Brooks
  */
-public abstract class AbstractNamedIdentity<T> extends AbstractIdentity<T> implements FullyNamed, HasDescription {
+public abstract class AbstractNamedIdentity<T> extends BaseIdentity<T> implements FullyNamed, HasDescription {
+
+   public AbstractNamedIdentity(T uid) {
+      super(uid);
+   }
 
    @Override
    public String getUnqualifiedName() {

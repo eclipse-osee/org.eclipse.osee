@@ -10,24 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.session;
 
-import org.eclipse.osee.framework.core.data.AbstractIdentity;
+import org.eclipse.osee.framework.core.data.BaseIdentity;
 import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OrcsSessionImpl extends AbstractIdentity<String> implements OrcsSession {
-
-   private final String sessionId;
-
+public class OrcsSessionImpl extends BaseIdentity<String> implements OrcsSession {
    public OrcsSessionImpl(String sessionId) {
-      super();
-      this.sessionId = sessionId;
+      super(sessionId);
    }
-
-   @Override
-   public String getGuid() {
-      return sessionId;
-   }
-
 }

@@ -19,7 +19,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.AbstractIdentity;
+import org.eclipse.osee.framework.core.data.BaseIdentity;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -44,15 +44,15 @@ import com.google.common.collect.Iterables;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AttributeManagerImpl extends AbstractIdentity<String> implements HasOrcsData<ArtifactData>, AttributeManager, AttributeExceptionFactory {
+public abstract class AttributeManagerImpl extends BaseIdentity<String> implements HasOrcsData<ArtifactData>, AttributeManager, AttributeExceptionFactory {
 
    private final AttributeCollection attributes;
    private boolean isLoaded;
 
    private final AttributeFactory attributeFactory;
 
-   protected AttributeManagerImpl(AttributeFactory attributeFactory) {
-      super();
+   protected AttributeManagerImpl(String guid, AttributeFactory attributeFactory) {
+      super(guid);
       this.attributeFactory = attributeFactory;
       this.attributes = new AttributeCollection(this);
    }

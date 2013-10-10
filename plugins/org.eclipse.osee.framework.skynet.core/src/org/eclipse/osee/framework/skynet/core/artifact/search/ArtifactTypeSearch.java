@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BaseIdentity;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.Identity;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
@@ -67,8 +67,7 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
          throw new IllegalStateException("Value for " + ArtifactTypeSearch.class.getSimpleName() + " not parsable");
       }
 
-      NamedIdentity<Long> identity = new NamedIdentity<Long>(Long.valueOf(values[0]), "");
-
+      Identity<Long> identity = new BaseIdentity<Long>(Long.valueOf(values[0]));
       return new ArtifactTypeSearch(identity, DeprecatedOperator.valueOf(values[1]));
    }
 

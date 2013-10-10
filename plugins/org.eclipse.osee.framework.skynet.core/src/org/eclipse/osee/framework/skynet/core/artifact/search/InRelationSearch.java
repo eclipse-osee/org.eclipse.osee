@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BaseIdentity;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.Identity;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IdentityService;
@@ -69,7 +69,7 @@ public class InRelationSearch implements ISearchPrimitive {
          throw new IllegalStateException("Value for " + InRelationSearch.class.getSimpleName() + " not parsable");
       }
 
-      NamedIdentity<Long> identity = new NamedIdentity<Long>(Long.valueOf(values[1]), "");
+      Identity<Long> identity = new BaseIdentity<Long>(Long.valueOf(values[1]));
       return new InRelationSearch(identity, Boolean.parseBoolean(values[0]));
    }
 }

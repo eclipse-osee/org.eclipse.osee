@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal;
 import java.util.Collection;
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.framework.core.data.AbstractIdentity;
+import org.eclipse.osee.framework.core.data.BaseIdentity;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -196,20 +196,9 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
       getProxied().clearAll();
    }
 
-   private static final class DatastoreSession extends AbstractIdentity<String> implements OrcsSession {
-
-      private final String id;
-
+   private static final class DatastoreSession extends BaseIdentity<String> implements OrcsSession {
       public DatastoreSession(String id) {
-         super();
-         this.id = id;
+         super(id);
       }
-
-      @Override
-      public String getGuid() {
-         return id;
-      }
-
    }
-
 }

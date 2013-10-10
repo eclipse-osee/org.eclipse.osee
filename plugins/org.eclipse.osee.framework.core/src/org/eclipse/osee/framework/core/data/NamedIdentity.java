@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public class NamedIdentity<T> extends AbstractNamedIdentity<T> {
    private String name;
-   private final T guid;
    private final String description;
 
    public NamedIdentity(T guid, String name) {
@@ -26,17 +25,9 @@ public class NamedIdentity<T> extends AbstractNamedIdentity<T> {
    }
 
    public NamedIdentity(T guid, String name, String description) {
-      if (guid == null) {
-         throw new IllegalArgumentException("uuid cannot be null");
-      }
-      this.guid = guid;
+      super(guid);
       this.name = name;
       this.description = description;
-   }
-
-   @Override
-   public T getGuid() {
-      return guid;
    }
 
    @Override
