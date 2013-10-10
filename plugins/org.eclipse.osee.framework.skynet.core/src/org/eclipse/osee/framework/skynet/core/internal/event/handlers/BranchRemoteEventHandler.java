@@ -42,33 +42,36 @@ public class BranchRemoteEventHandler implements EventHandlerRemote<RemoteBranch
 
    private void updateBranches(Sender sender, BranchEvent branchEvent) {
       BranchEventType eventType = branchEvent.getEventType();
+      String branchGuid = branchEvent.getBranchGuid();
       try {
-         if (eventType == Committed) {
-            Branch branch = BranchManager.getBranchByGuid(branchEvent.getBranchGuid());
-            Artifact artifact = BranchManager.getAssociatedArtifact(branch);
-            TransactionManager.clearCommitArtifactCacheForAssociatedArtifact(artifact);
-         } else if (eventType == Purged) {
-            handleBranchRemoval(BranchState.PURGED, branchEvent.getBranchGuid());
-         } else if (eventType == Deleted) {
-            handleBranchRemoval(BranchState.DELETED, branchEvent.getBranchGuid());
+         if (BranchManager.branchExists(branchGuid)) {
+            Branch branch = BranchManager.getBranchByGuid(branchGuid);
+            if (eventType == Committed) {
+               Artifact artifact = BranchManager.getAssociatedArtifact(branch);
+               TransactionManager.clearCommitArtifactCacheForAssociatedArtifact(artifact);
+               updateBranchState(BranchState.COMMITTED, branch);
+            } else if (eventType == Purged) {
+               updateBranchState(BranchState.PURGED, branch);
+            } else if (eventType == Deleted) {
+               updateBranchState(BranchState.DELETED, branch);
+            }
          }
 
          if (eventType.justifiesCacheRefresh()) {
-            BranchManager.invalidateBranches();
+            BranchManager.refreshBranches();
          }
       } catch (Exception ex) {
          EventUtil.eventLog("REM: updateBranches", ex);
       }
    }
 
-   private void handleBranchRemoval(BranchState state, String guid) throws OseeCoreException {
-      if (BranchManager.branchExists(guid)) {
-         Branch branch = BranchManager.getBranchByGuid(guid);
-         branch.setBranchState(state);
+   private void updateBranchState(BranchState state, Branch branch) throws OseeCoreException {
+      if (state.matches(BranchState.PURGED, BranchState.DELETED)) {
          branch.setArchived(true);
-         branch.clearDirty();
          BranchManager.decache(branch);
       }
+      branch.setBranchState(state);
+      branch.clearDirty();
    }
 
 }

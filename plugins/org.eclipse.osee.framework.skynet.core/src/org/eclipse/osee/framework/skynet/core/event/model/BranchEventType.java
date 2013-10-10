@@ -17,14 +17,14 @@ public enum BranchEventType {
 
    // Local and Remote events
    Purging(EventType.LocalAndRemote, "ATPHeMoAFyL543vrAyQA", false),
-   Purged(EventType.LocalAndRemote, "AAn_QG7jRGZAqPE0UewA", true),
+   Purged(EventType.LocalAndRemote, "AAn_QG7jRGZAqPE0UewA", false),
    Deleting(EventType.LocalAndRemote, "ATPHeNujxAkPZEkWUtQA", false),
-   Deleted(EventType.LocalAndRemote, "AAn_QHBDvwtT5jjKaHgA", true),
+   Deleted(EventType.LocalAndRemote, "AAn_QHBDvwtT5jjKaHgA", false),
    Added(EventType.LocalAndRemote, "AAn_QHDohywDoSTxwcQA", true),
    Renamed(EventType.LocalAndRemote, "AAn_QHGLIUsH2BdX2gwA", true),
    Committing(EventType.LocalAndRemote, "ATPHeN1du2GAbS3SQsAA", false),
    CommitFailed(EventType.LocalAndRemote, "ATPHeN3RaBnDmpoYXkQA", false),
-   Committed(EventType.LocalAndRemote, "AAn_QHIu0mGZytQ11QwA", true),
+   Committed(EventType.LocalAndRemote, "AAn_QHIu0mGZytQ11QwA", false),
    TypeUpdated(EventType.LocalAndRemote, "AAn_QHLW4DKKbUkEZggA", true),
    StateUpdated(EventType.LocalAndRemote, "AAn_QHQdKhxNLtWPchAA", true),
    ArchiveStateUpdated(EventType.LocalAndRemote, "AAn_QHS7Zhr6OLhKl3gA", true),
@@ -64,6 +64,15 @@ public enum BranchEventType {
 
    public boolean justifiesCacheRefresh() {
       return justifiesCacheRefresh;
+   }
+
+   public boolean matches(BranchEventType... branchEventTypes) {
+      for (BranchEventType branchEventType : branchEventTypes) {
+         if (this == branchEventType) {
+            return true;
+         }
+      }
+      return false;
    }
 
 }

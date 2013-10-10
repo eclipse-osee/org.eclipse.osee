@@ -57,31 +57,34 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
       transport.send(sender, transEvent);
    }
 
-   private void updateArtifacts(Sender sender, Collection<EventBasicGuidArtifact> artifacts, int transactionId) {
+   private void updateArtifacts(Sender sender, Collection<EventBasicGuidArtifact> artifacts, int transactionId) throws OseeCoreException {
       // Don't crash on any one artifact update problem (no update method throughs exceptions)
       for (EventBasicGuidArtifact guidArt : artifacts) {
          EventUtil.eventLog(String.format("REM: updateArtifact -> [%s]", guidArt));
          EventModType eventModType = guidArt.getModType();
-         switch (eventModType) {
-            case Added:
-               // Handle Added Artifacts
-               // Nothing to do for added cause they're not in cache yet.  Apps will load if they need them.
-               // do nothing cause not in cache
-               break;
-            case Modified:
-               updateModifiedArtifact((EventModifiedBasicGuidArtifact) guidArt, transactionId);
-               break;
-            case ChangeType:
-               ChangeArtifactType.handleRemoteChangeType((EventChangeTypeBasicGuidArtifact) guidArt);
-               break;
-            case Deleted:
-            case Purged:
-               updateDeletedArtifact(guidArt);
-               break;
-            default:
-               // Unknown mod type
-               EventUtil.eventLog(String.format("REM: updateArtifacts - Unhandled mod type [%s]", guidArt.getModType()));
-               break;
+         if (BranchManager.branchExists(guidArt.getBranchGuid())) {
+            switch (eventModType) {
+               case Added:
+                  // Handle Added Artifacts
+                  // Nothing to do for added cause they're not in cache yet.  Apps will load if they need them.
+                  // do nothing cause not in cache
+                  break;
+               case Modified:
+                  updateModifiedArtifact((EventModifiedBasicGuidArtifact) guidArt, transactionId);
+                  break;
+               case ChangeType:
+                  ChangeArtifactType.handleRemoteChangeType((EventChangeTypeBasicGuidArtifact) guidArt);
+                  break;
+               case Deleted:
+               case Purged:
+                  updateDeletedArtifact(guidArt);
+                  break;
+               default:
+                  // Unknown mod type
+                  EventUtil.eventLog(String.format("REM: updateArtifacts - Unhandled mod type [%s]",
+                     guidArt.getModType()));
+                  break;
+            }
          }
       }
    }

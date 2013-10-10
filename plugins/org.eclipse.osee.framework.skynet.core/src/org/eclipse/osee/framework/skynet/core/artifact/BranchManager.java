@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -119,7 +120,18 @@ public class BranchManager {
    }
 
    public static void refreshBranches() throws OseeCoreException {
-      getCache().reloadCache();
+      String refreshWindow = OseeInfo.getCachedValue("cache.reload.throttle.millis");
+      boolean reload = true;
+      if (Strings.isNumeric(refreshWindow)) {
+         long timeInMillis = Long.parseLong(refreshWindow);
+         long diff = System.currentTimeMillis() - getCache().getLastLoaded();
+         if (diff < timeInMillis) {
+            reload = false;
+         }
+      }
+      if (reload) {
+         getCache().reloadCache();
+      }
    }
 
    public static Branch getBranch(DefaultBasicGuidArtifact guidArt) throws OseeCoreException {
@@ -153,14 +165,24 @@ public class BranchManager {
       }
    }
 
-   public static Branch getBranchByGuid(String guid) throws OseeCoreException {
-      BranchCache cache = getCache();
-      Branch branch = cache.getByGuid(guid);
-      if (branch == null) {
-         if (cache.reloadCache()) {
-            branch = cache.getByGuid(guid);
-         }
+   /**
+    * Do not call this method unless absolutely neccessary due to performance impacts.
+    */
+   public static synchronized void checkAndReload(String guid) throws OseeCoreException {
+      if (!branchExists(guid)) {
+         refreshBranches();
       }
+   }
+
+   public static synchronized void checkAndReload(int id) throws OseeCoreException {
+      if (!branchExists(id)) {
+         refreshBranches();
+      }
+   }
+
+   public static Branch getBranchByGuid(String guid) throws OseeCoreException {
+      //      checkAndReload(guid);
+      Branch branch = getCache().getByGuid(guid);
       if (branch == null) {
          throw new BranchDoesNotExist("Branch with guid [%s] does not exist", guid);
       }
@@ -173,6 +195,10 @@ public class BranchManager {
 
    public static boolean branchExists(String branchGuid) throws OseeCoreException {
       return getCache().getByGuid(branchGuid) != null;
+   }
+
+   public static boolean branchExists(int id) throws OseeCoreException {
+      return getCache().getById(id) != null;
    }
 
    /**
@@ -222,15 +248,8 @@ public class BranchManager {
          throw new BranchDoesNotExist("Branch Id is null");
       }
 
-      BranchCache cache = getCache();
-      // If someone else made a branch on another machine, we may not know about it
-      // so refresh the cache.
-      Branch branch = cache.getById(branchId);
-      if (branch == null) {
-         if (cache.reloadCache()) {
-            branch = cache.getById(branchId);
-         }
-      }
+      checkAndReload(branchId);
+      Branch branch = getCache().getById(branchId);
       if (branch == null) {
          throw new BranchDoesNotExist("Branch could not be acquired for branch id %d", branchId);
       }

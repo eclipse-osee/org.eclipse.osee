@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.skynet.core.internal.event.handlers;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
@@ -35,6 +37,13 @@ public class BranchEventHandler implements EventHandlerLocal<IBranchEventListene
             if (!eventFilter.isMatch(event.getBranchGuid()) && !eventFilter.isMatch(event.getDestinationBranchGuid())) {
                return;
             }
+         }
+      }
+      if (event.getEventType() == BranchEventType.Added) {
+         try {
+            BranchManager.checkAndReload(event.getBranchGuid());
+         } catch (OseeCoreException ex) {
+            EventUtil.eventLog("IEM: updateBranches", ex);
          }
       }
       // Call listener if we matched all of the filters
