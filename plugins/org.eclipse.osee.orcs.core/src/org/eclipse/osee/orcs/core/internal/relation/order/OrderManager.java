@@ -122,7 +122,7 @@ public class OrderManager implements HasOrderData {
       return sorterProvider.getDefaultSorterId(type);
    }
 
-   public void sort(IRelationTypeSide typeAndSide, List<? extends Identifiable> listToOrder) throws OseeCoreException {
+   public void sort(IRelationTypeSide typeAndSide, List<? extends Identifiable<String>> listToOrder) throws OseeCoreException {
       if (listToOrder.size() > 1) {
          IRelationSorterId sorterId = getSorterId(typeAndSide);
          List<String> relativeOrder = getOrderIds(typeAndSide);
@@ -132,16 +132,16 @@ public class OrderManager implements HasOrderData {
       }
    }
 
-   public void setOrder(IRelationTypeSide typeAndSide, List<? extends Identifiable> relativeSequence) throws OseeCoreException {
+   public void setOrder(IRelationTypeSide typeAndSide, List<? extends Identifiable<String>> relativeSequence) throws OseeCoreException {
       IRelationSorterId sorterId = getSorterId(typeAndSide);
       setOrder(typeAndSide, sorterId, relativeSequence);
    }
 
-   public void setOrder(IRelationTypeSide typeAndSide, IRelationSorterId sorterId, List<? extends Identifiable> relativeSequence) throws OseeCoreException {
+   public void setOrder(IRelationTypeSide typeAndSide, IRelationSorterId sorterId, List<? extends Identifiable<String>> relativeSequence) throws OseeCoreException {
       List<String> sequence;
       if (!relativeSequence.isEmpty()) {
          sequence = new ArrayList<String>();
-         for (Identifiable item : relativeSequence) {
+         for (Identifiable<String> item : relativeSequence) {
             sequence.add(item.getGuid());
          }
       } else {

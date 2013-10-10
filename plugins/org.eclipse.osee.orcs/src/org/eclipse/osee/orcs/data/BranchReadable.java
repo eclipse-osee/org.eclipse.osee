@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 /**
  * @author Roberto E. Escobar
  */
-public interface BranchReadable extends Identifiable, HasLocalId, IOseeBranch {
+public interface BranchReadable extends Identifiable<String>, HasLocalId, IOseeBranch {
 
    BranchArchivedState getArchiveState();
 

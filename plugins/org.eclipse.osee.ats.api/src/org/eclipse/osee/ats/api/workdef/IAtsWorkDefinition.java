@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.data.Identifiable;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsWorkDefinition extends Identifiable, HasDescription {
+public interface IAtsWorkDefinition extends Identifiable<String>, HasDescription {
 
    /**
     * Identification

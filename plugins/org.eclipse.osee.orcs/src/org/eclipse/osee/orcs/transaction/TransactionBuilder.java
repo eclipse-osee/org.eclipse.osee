@@ -32,7 +32,7 @@ public interface TransactionBuilder {
 
    IOseeBranch getBranch();
 
-   Identifiable getAuthor();
+   Identifiable<String> getAuthor();
 
    String getComment();
 

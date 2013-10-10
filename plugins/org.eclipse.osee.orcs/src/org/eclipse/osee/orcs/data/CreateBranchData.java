@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 /**
  * @author Roberto E. Escobar
  */
-public class CreateBranchData implements Identifiable {
+public class CreateBranchData implements Identifiable<String> {
 
    private static final int NULL_ARTIFACT_ID = -1;
    private final int MERGE_DESTINATION_BRANCH_ID = -1; // only used on merge branches

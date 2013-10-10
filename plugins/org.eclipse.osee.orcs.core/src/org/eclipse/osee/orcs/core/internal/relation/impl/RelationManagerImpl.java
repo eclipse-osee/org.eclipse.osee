@@ -403,10 +403,10 @@ public class RelationManagerImpl implements RelationManager {
       if (sorterIdToUse == RelationOrderBaseTypes.PREEXISTING) {
          sorterIdToUse = orderManager.getSorterId(key);
       }
-      List<Identifiable> relatives = Collections.emptyList();
+      List<Identifiable<String>> relatives = Collections.emptyList();
       if (RelationOrderBaseTypes.USER_DEFINED == sorterIdToUse) {
          ResultSet<RelationNode> arts = getRelated(session, graph, type, node1, side);
-         relatives = new LinkedList<Identifiable>();
+         relatives = new LinkedList<Identifiable<String>>();
          for (RelationNode art : arts) {
             relatives.add(art);
          }

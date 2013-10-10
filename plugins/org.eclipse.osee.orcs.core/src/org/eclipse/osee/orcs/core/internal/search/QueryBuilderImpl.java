@@ -234,12 +234,12 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andIds(Identifiable... ids) throws OseeCoreException {
+   public QueryBuilder andIds(Identifiable<String>... ids) throws OseeCoreException {
       return andIds(Arrays.asList(ids));
    }
 
    @Override
-   public QueryBuilder andIds(Collection<? extends Identifiable> ids) throws OseeCoreException {
+   public QueryBuilder andIds(Collection<? extends Identifiable<String>> ids) throws OseeCoreException {
       Set<String> guids = new HashSet<String>();
       for (Identity<String> id : ids) {
          guids.add(id.getGuid());

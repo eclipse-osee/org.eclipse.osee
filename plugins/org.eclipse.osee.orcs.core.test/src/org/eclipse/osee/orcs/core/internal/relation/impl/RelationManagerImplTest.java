@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -126,10 +127,12 @@ public class RelationManagerImplTest {
    @Mock private ResultSet<Relation> rSet2;
    
    @Mock private OrderManager orderManager1;
-   @Captor private ArgumentCaptor<List<? extends Identifiable>> sortedListCaptor;
+   @Captor private ArgumentCaptor<List<? extends Identifiable<String>>> sortedListCaptor;
    // @formatter:on
 
    private RelationManager manager;
+   private static final Identifiable<String> id = new DefaultBasicArtifact(0, "", "");
+   private static final Class<Identifiable<String>> identifiableClass = (Class<Identifiable<String>>) id.getClass();
 
    @Before
    public void setUp() {
@@ -577,7 +580,7 @@ public class RelationManagerImplTest {
       verify(container1).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
       verify(container2).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
       verify(relationFactory).createRelation(node1, TYPE_1, node2);
-      verify(orderManager1).setOrder(eq(typeSide), eq(LEXICOGRAPHICAL_ASC), anyListOf(Identifiable.class));
+      verify(orderManager1).setOrder(eq(typeSide), eq(LEXICOGRAPHICAL_ASC), anyListOf(identifiableClass));
       verify(container1).add(TYPE_1.getGuid(), relation1);
       verify(container2).add(TYPE_1.getGuid(), relation1);
    }
@@ -603,7 +606,7 @@ public class RelationManagerImplTest {
       verify(container2).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
       verify(relationFactory).createRelation(node1, TYPE_1, node2);
       verify(orderManager1).getSorterId(typeSide);
-      verify(orderManager1).setOrder(eq(typeSide), eq(UNORDERED), anyListOf(Identifiable.class));
+      verify(orderManager1).setOrder(eq(typeSide), eq(UNORDERED), anyListOf(identifiableClass));
       verify(container1).add(TYPE_1.getGuid(), relation1);
       verify(container2).add(TYPE_1.getGuid(), relation1);
    }
@@ -638,7 +641,7 @@ public class RelationManagerImplTest {
       verify(orderManager1).sort(typeSide, nodesToOrder);
       verify(orderManager1).setOrder(eq(typeSide), eq(USER_DEFINED), sortedListCaptor.capture());
 
-      Iterator<? extends Identifiable> iterator = sortedListCaptor.getValue().iterator();
+      Iterator<? extends Identifiable<String>> iterator = sortedListCaptor.getValue().iterator();
       assertEquals(node3, iterator.next());
       assertEquals(node4, iterator.next());
       assertEquals(node5, iterator.next());
@@ -665,7 +668,7 @@ public class RelationManagerImplTest {
       verify(container1).getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED);
       verify(container2).getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED);
       verify(orderManager1).getSorterId(Default_Hierarchical__Child);
-      verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(UNORDERED), anyListOf(Identifiable.class));
+      verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(UNORDERED), anyListOf(identifiableClass));
       verify(container1).add(DEFAULT_HIERARCHY.getGuid(), relation1);
       verify(container2).add(DEFAULT_HIERARCHY.getGuid(), relation1);
    }
@@ -689,7 +692,7 @@ public class RelationManagerImplTest {
       verify(container2).getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED);
 
       verify(orderManager1).getSorterId(Default_Hierarchical__Child);
-      verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(UNORDERED), anyListOf(Identifiable.class));
+      verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(UNORDERED), anyListOf(identifiableClass));
       verify(container1).add(DEFAULT_HIERARCHY.getGuid(), relation1);
       verify(container2).add(DEFAULT_HIERARCHY.getGuid(), relation1);
    }
@@ -710,7 +713,7 @@ public class RelationManagerImplTest {
       manager.addChild(session, graph, node1, node2);
 
       verify(orderManager1).getSorterId(Default_Hierarchical__Child);
-      verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(UNORDERED), anyListOf(Identifiable.class));
+      verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(UNORDERED), anyListOf(identifiableClass));
       verify(container1, times(1)).add(DEFAULT_HIERARCHY.getGuid(), relation1);
       verify(container2, times(0)).add(DEFAULT_HIERARCHY.getGuid(), relation1);
 
@@ -743,7 +746,7 @@ public class RelationManagerImplTest {
       verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(USER_DEFINED), sortedListCaptor.capture());
 
       assertEquals(3, sortedListCaptor.getValue().size());
-      Iterator<? extends Identifiable> iterator = sortedListCaptor.getValue().iterator();
+      Iterator<? extends Identifiable<String>> iterator = sortedListCaptor.getValue().iterator();
       assertEquals(node3, iterator.next());
       assertEquals(node5, iterator.next());
       assertEquals(node6, iterator.next());

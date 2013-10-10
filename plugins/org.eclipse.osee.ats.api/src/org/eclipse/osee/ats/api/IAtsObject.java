@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.data.Identifiable;
  * 
  * @author Donald G. Dunne
  */
-public interface IAtsObject extends Identifiable, HasDescription {
+public interface IAtsObject extends Identifiable<String>, HasDescription {
 
    String toStringWithId();
 

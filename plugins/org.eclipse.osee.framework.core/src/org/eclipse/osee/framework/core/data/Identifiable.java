@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-
 /**
  * @author Roberto E. Escobar
  */
-public interface Identifiable extends Identity<String>, Named {
+public interface Identifiable<T> extends Identity<T>, Named {
    // 
 }

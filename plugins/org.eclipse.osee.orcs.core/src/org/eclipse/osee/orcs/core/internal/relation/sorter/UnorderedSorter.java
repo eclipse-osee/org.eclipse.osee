@@ -26,7 +26,7 @@ public class UnorderedSorter implements Sorter {
    }
 
    @Override
-   public void sort(List<? extends Identifiable> relatives, List<String> relativeSequence) {
+   public void sort(List<? extends Identifiable<String>> relatives, List<String> relativeSequence) {
       // do nothing
    }
 }

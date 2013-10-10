@@ -38,11 +38,11 @@ public class SorterTest {
    private final String message;
    private final Sorter sorter;
    private final IRelationSorterId expectedOrderId;
-   private final List<Identifiable> expectedOrder;
+   private final List<Identifiable<String>> expectedOrder;
    private final List<String> currentItems;
-   private final List<Identifiable> itemsToOrder;
+   private final List<Identifiable<String>> itemsToOrder;
 
-   public SorterTest(String message, Sorter sorter, IRelationSorterId expectedOrderId, List<String> currentItems, List<Identifiable> itemsToOrder, List<Identifiable> expectedOrder) {
+   public SorterTest(String message, Sorter sorter, IRelationSorterId expectedOrderId, List<String> currentItems, List<Identifiable<String>> itemsToOrder, List<Identifiable<String>> expectedOrder) {
       this.sorter = sorter;
       this.message = message;
       this.expectedOrderId = expectedOrderId;
@@ -60,7 +60,7 @@ public class SorterTest {
 
    @Test
    public void testSort() {
-      List<Identifiable> actualToOrder = new ArrayList<Identifiable>();
+      List<Identifiable<String>> actualToOrder = new ArrayList<Identifiable<String>>();
       actualToOrder.addAll(itemsToOrder);
       sorter.sort(actualToOrder, currentItems);
 
@@ -89,12 +89,12 @@ public class SorterTest {
    }
 
    private static Object[] createUnorderedSortTest(String... names) {
-      Identifiable art1 = createItem(names[0]);
-      Identifiable art2 = createItem(names[1]);
-      Identifiable art3 = createItem(names[2]);
-      Identifiable art4 = createItem(names[3]);
+      Identifiable<String> art1 = createItem(names[0]);
+      Identifiable<String> art2 = createItem(names[1]);
+      Identifiable<String> art3 = createItem(names[2]);
+      Identifiable<String> art4 = createItem(names[3]);
 
-      List<Identifiable> artifacts = Arrays.asList(art1, art2, art3, art4);
+      List<Identifiable<String>> artifacts = Arrays.asList(art1, art2, art3, art4);
       return new Object[] {
          "Unordered Test",
          new UnorderedSorter(),
@@ -105,10 +105,10 @@ public class SorterTest {
    }
 
    private static Object[] createLexicographicalTest(SortOrder mode, String... names) {
-      Identifiable art1 = createItem(names[0]);
-      Identifiable art2 = createItem(names[1]);
-      Identifiable art3 = createItem(names[2]);
-      Identifiable art4 = createItem(names[3]);
+      Identifiable<String> art1 = createItem(names[0]);
+      Identifiable<String> art2 = createItem(names[1]);
+      Identifiable<String> art3 = createItem(names[2]);
+      Identifiable<String> art4 = createItem(names[3]);
 
       IRelationSorterId orderId;
       if (mode.isAscending()) {
@@ -117,8 +117,8 @@ public class SorterTest {
          orderId = RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
       }
 
-      List<Identifiable> itemsToOrder = Arrays.asList(art3, art1, art4, art2);
-      List<Identifiable> expectedOrder = Arrays.asList(art1, art2, art3, art4);
+      List<Identifiable<String>> itemsToOrder = Arrays.asList(art3, art1, art4, art2);
+      List<Identifiable<String>> expectedOrder = Arrays.asList(art1, art2, art3, art4);
       return new Object[] {
          "Lex Test " + mode.name(),
          new LexicographicalSorter(mode),
@@ -129,16 +129,16 @@ public class SorterTest {
    }
 
    private static Object[] createUserDefinedTest(String... names) {
-      Identifiable art1 = createItem(names[0]);
-      Identifiable art2 = createItem(names[1]);
-      Identifiable art3 = createItem(names[2]);
-      Identifiable art4 = createItem(names[3]);
+      Identifiable<String> art1 = createItem(names[0]);
+      Identifiable<String> art2 = createItem(names[1]);
+      Identifiable<String> art3 = createItem(names[2]);
+      Identifiable<String> art4 = createItem(names[3]);
 
-      List<Identifiable> itemsToOrder = Arrays.asList(art2, art1, art3, art4);
-      List<Identifiable> expectedOrder = Arrays.asList(art1, art2, art3, art4);
+      List<Identifiable<String>> itemsToOrder = Arrays.asList(art2, art1, art3, art4);
+      List<Identifiable<String>> expectedOrder = Arrays.asList(art1, art2, art3, art4);
 
       List<String> relatives = new ArrayList<String>();
-      for (Identifiable item : Arrays.asList(art1, art2, art3, art4)) {
+      for (Identifiable<String> item : Arrays.asList(art1, art2, art3, art4)) {
          relatives.add(item.getGuid());
       }
       return new Object[] {
@@ -150,11 +150,11 @@ public class SorterTest {
          expectedOrder};
    }
 
-   private static Identifiable createItem(String name) {
+   private static Identifiable<String> createItem(String name) {
       return new TestItem(GUID.create(), name);
    }
 
-   private static final class TestItem extends AbstractIdentity<String> implements Identifiable {
+   private static final class TestItem extends AbstractIdentity<String> implements Identifiable<String> {
 
       private final String guid;
       private final String name;

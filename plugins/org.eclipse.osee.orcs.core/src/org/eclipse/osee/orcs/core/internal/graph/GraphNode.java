@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.data.HasLocalId;
  * @author Roberto E. Escobar
  * @author Megumi Telles
  */
-public interface GraphNode extends Identifiable, HasLocalId, HasBranch {
+public interface GraphNode extends Identifiable<String>, HasLocalId, HasBranch {
 
    void setGraph(GraphData graph);
 

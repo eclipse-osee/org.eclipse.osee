@@ -64,13 +64,13 @@ public class OrderManagerTest {
    @Mock private OrderData orderData2;
    @Mock private OrderData orderData3;
    
-   @Mock private Identifiable mock1;
-   @Mock private Identifiable mock2;
-   @Mock private Identifiable mock3;
+   @Mock private Identifiable<String> mock1;
+   @Mock private Identifiable<String> mock2;
+   @Mock private Identifiable<String> mock3;
    // @formatter:on
 
    private OrderManager orderManager;
-   private List<Identifiable> items;
+   private List<Identifiable<String>> items;
 
    @Before
    public void setUp() throws OseeCoreException {
@@ -78,7 +78,7 @@ public class OrderManagerTest {
 
       orderManager = new OrderManager(new SorterProvider(relationTypeCache), accessor);
 
-      items = new ArrayList<Identifiable>();
+      items = new ArrayList<Identifiable<String>>();
       items.add(mock1);
       items.add(mock2);
       items.add(mock3);
@@ -314,7 +314,7 @@ public class OrderManagerTest {
       verify(accessor).store(orderManager, OrderChange.NoChange);
 
       orderManager.setOrder(typeSide1, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC,
-         Collections.<Identifiable> emptyList());
+         Collections.<Identifiable<String>> emptyList());
       verify(accessor).store(orderManager, OrderChange.OrderRequest);
       verify(orderData1).setSorterId(RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
       verify(orderData1).setOrderIds(Collections.<String> emptyList());
@@ -326,10 +326,10 @@ public class OrderManagerTest {
       assertEquals(0, orderManager.size());
    }
 
-   private void assertOrdered(List<Identifiable> items, Identifiable... expecteds) {
+   private void assertOrdered(List<Identifiable<String>> items, Identifiable<String>... expecteds) {
       int index = 0;
       assertEquals(expecteds.length, items.size());
-      for (Identifiable identifiable : expecteds) {
+      for (Identifiable<String> identifiable : expecteds) {
          assertEquals(identifiable, items.get(index++));
       }
    }

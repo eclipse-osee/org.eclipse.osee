@@ -14,6 +14,6 @@ package org.eclipse.osee.framework.core.data;
  * @author Ryan D. Brooks
  * @author Donald G. Dunne
  */
-public interface IArtifactToken extends Identifiable, FullyNamed, HasArtifactType {
+public interface IArtifactToken extends Identifiable<String>, FullyNamed, HasArtifactType {
    // composition interface requires no additional methods,fields
 }

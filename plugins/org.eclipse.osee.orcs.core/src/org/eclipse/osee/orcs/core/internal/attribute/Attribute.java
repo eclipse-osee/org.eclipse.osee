@@ -43,6 +43,6 @@ public interface Attribute<T> extends OrcsWriteable, AttributeReadable<T>, HasOr
 
    void internalInitialize(AttributeTypes attributeTypeCache, Reference<AttributeContainer> containerReference, AttributeData attributeData, boolean isDirty, boolean setDefaultValue) throws OseeCoreException;
 
-   Identifiable getContainer() throws OseeStateException;
+   Identifiable<String> getContainer() throws OseeStateException;
 
 }

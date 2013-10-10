@@ -21,5 +21,5 @@ public interface Sorter {
 
    IRelationSorterId getId();
 
-   void sort(List<? extends Identifiable> relatives, List<String> relativeSequence);
+   void sort(List<? extends Identifiable<String>> relatives, List<String> relativeSequence);
 }

@@ -74,12 +74,12 @@ public interface QueryBuilder {
    /**
     * Artifacts id(s)
     */
-   QueryBuilder andIds(Identifiable... ids) throws OseeCoreException;
+   QueryBuilder andIds(Identifiable<String>... ids) throws OseeCoreException;
 
    /**
     * Artifacts matching token id(s)
     */
-   QueryBuilder andIds(Collection<? extends Identifiable> ids) throws OseeCoreException;
+   QueryBuilder andIds(Collection<? extends Identifiable<String>> ids) throws OseeCoreException;
 
    /**
     * Search criteria that finds a given artifact type using type inheritance

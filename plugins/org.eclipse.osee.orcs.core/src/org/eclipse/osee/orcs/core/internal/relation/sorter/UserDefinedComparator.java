@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.Identifiable;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class UserDefinedComparator implements Comparator<Identifiable> {
+public class UserDefinedComparator implements Comparator<Identifiable<String>> {
 
    private final Map<String, Integer> value;
 
@@ -31,7 +31,7 @@ public class UserDefinedComparator implements Comparator<Identifiable> {
    }
 
    @Override
-   public int compare(Identifiable object1, Identifiable object2) {
+   public int compare(Identifiable<String> object1, Identifiable<String> object2) {
       Integer val1 = getIndex(object1);
       Integer val2 = getIndex(object2);
       if (val1 == null) {
@@ -43,7 +43,7 @@ public class UserDefinedComparator implements Comparator<Identifiable> {
       return val1 - val2;
    }
 
-   private Integer getIndex(Identifiable object) {
+   private Integer getIndex(Identifiable<String> object) {
       Integer toReturn = null;
       if (object != null) {
          toReturn = value.get(object.getGuid());

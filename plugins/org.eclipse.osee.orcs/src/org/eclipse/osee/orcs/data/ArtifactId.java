@@ -15,6 +15,6 @@ import org.eclipse.osee.framework.core.data.Identifiable;
 /**
  * @author Megumi Telles
  */
-public interface ArtifactId extends Identifiable {
+public interface ArtifactId extends Identifiable<String> {
    //
 }
