@@ -11,30 +11,27 @@
 
 package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks
  */
-public abstract class AbstractNamedIdentity<T> extends BaseIdentity<T> implements FullyNamed, HasDescription {
+public class NamedIdentity<T> extends BaseIdentity<T> implements Identifiable<T>, Comparable<Named> {
+   private String name;
 
-   public AbstractNamedIdentity(T uid) {
+   public NamedIdentity(T uid, String name) {
       super(uid);
+      this.name = name;
    }
 
    @Override
-   public String getUnqualifiedName() {
-      String name = getName();
-      if (Strings.isValid(name)) {
-         int index = name.lastIndexOf('.');
-         name = name.substring(index + 1);
-      }
+   public String getName() {
       return name;
    }
 
-   @Override
-   public String toString() {
-      return getName();
+   @SuppressWarnings("unused")
+   public void setName(String name) throws OseeCoreException {
+      this.name = name;
    }
 
    @Override
@@ -43,5 +40,10 @@ public abstract class AbstractNamedIdentity<T> extends BaseIdentity<T> implement
          return getName().compareTo(other.getName());
       }
       return -1;
+   }
+
+   @Override
+   public String toString() {
+      return getName();
    }
 }
