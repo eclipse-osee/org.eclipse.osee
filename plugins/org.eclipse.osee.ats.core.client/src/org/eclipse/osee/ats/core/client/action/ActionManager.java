@@ -78,7 +78,7 @@ public class ActionManager {
          TeamWorkFlowArtifact teamWf =
             createTeamWorkflow(actionArt, teamDef, actionableItems, leads, transaction, createdDate, createdBy,
                newActionListener);
-         teamWf.getStateMgr().writeToArtifact();
+         teamWf.getStateMgr().writeToStore();
       }
 
       // Notify listener of action creation

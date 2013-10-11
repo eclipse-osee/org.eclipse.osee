@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.internal.user;
+package org.eclipse.osee.ats.core.users;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,11 +17,10 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 
 /**
  * @author Donald G. Dunne
@@ -47,10 +46,10 @@ public class UsersByIds {
             throw new IllegalArgumentException("Blank userId specified.");
          }
          try {
-            User u = UserManager.getUserByUserId(m.group(1));
-            users.add(new AtsUser(u));
+            IAtsUser u = AtsCore.getUserService().getUserById(m.group(1));
+            users.add(u);
          } catch (Exception ex) {
-            OseeLog.log(org.eclipse.osee.ats.core.client.internal.Activator.class, Level.SEVERE, ex);
+            OseeLog.log(AtsCore.class, Level.SEVERE, ex);
          }
       }
       return users;

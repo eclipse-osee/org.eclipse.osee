@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,25 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.team;
+package org.eclipse.osee.ats.api.workflow;
 
-import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 
 /**
  * @author Donald G. Dunne
  */
-public class SimpleTeamState extends StateTypeAdapter {
-   private final String name;
+public interface IAtsWorkItemServiceProvider {
 
-   public SimpleTeamState(String name, StateType StateType) {
-      super(SimpleTeamState.class, name, StateType);
-      this.name = name;
-   }
-
-   @Override
-   public String getName() {
-      return name;
-   }
+   IAtsWorkItemService getWorkItemService() throws OseeStateException;
 
 }

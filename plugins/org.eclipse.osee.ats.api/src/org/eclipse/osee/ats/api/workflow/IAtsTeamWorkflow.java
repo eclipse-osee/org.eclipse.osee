@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface IAtsTeamWorkflow extends IAtsWorkItem, IAtsActionableItemProvider {
 
+   @Override
    String toStringWithId();
 
    IAtsTeamDefinition getTeamDefinition() throws OseeCoreException;

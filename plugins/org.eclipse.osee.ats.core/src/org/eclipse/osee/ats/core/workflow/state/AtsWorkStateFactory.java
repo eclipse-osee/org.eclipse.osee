@@ -8,12 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.workflow;
+package org.eclipse.osee.ats.core.workflow.state;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.core.client.internal.user.UsersByIds;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
+import org.eclipse.osee.ats.core.users.UsersByIds;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -25,10 +26,10 @@ public class AtsWorkStateFactory {
 
    public static Pattern storagePattern = Pattern.compile("^(.*?);(.*?);(.*?);(.*?)$");
 
-   public static String toXml(StateManager stateMgr, String stateName) throws OseeCoreException {
+   public static String toXml(IAtsStateManager stateMgr, String stateName) throws OseeCoreException {
       StringBuffer sb = new StringBuffer(stateName);
       sb.append(";");
-      sb.append(org.eclipse.osee.ats.core.client.internal.user.UsersByIds.getStorageString(stateMgr.getAssignees(stateName)));
+      sb.append(UsersByIds.getStorageString(stateMgr.getAssignees(stateName)));
       sb.append(";");
       double hoursSpent = stateMgr.getHoursSpent(stateName);
       if (hoursSpent > 0) {

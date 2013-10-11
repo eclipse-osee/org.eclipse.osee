@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.ats.impl.internal.workflow.AtsWorkItemServiceImpl">
-   <implementation class="org.eclipse.osee.ats.impl.internal.workflow.AtsWorkItemServiceImpl"/>
-   <service>
-      <provide interface="org.eclipse.osee.ats.api.workflow.IAtsWorkItemService"/>
-   </service>
-   <reference bind="setAtsWorkItemStore" cardinality="1..1" interface="org.eclipse.osee.ats.api.workflow.IAtsWorkItemStore" name="IAtsWorkItemStore" policy="static"/>
-</scr:component>

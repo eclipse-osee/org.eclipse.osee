@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.review.ValidateReviewManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
@@ -43,6 +42,7 @@ import org.eclipse.osee.ats.core.client.validator.AtsXWidgetValidateManagerClien
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionResult;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;

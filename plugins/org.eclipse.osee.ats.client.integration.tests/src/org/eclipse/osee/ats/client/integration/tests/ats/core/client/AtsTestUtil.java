@@ -53,7 +53,7 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
-import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
+import org.eclipse.osee.ats.core.workflow.state.StateTypeAdapter;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.mocks.MockStateDefinition;
 import org.eclipse.osee.ats.mocks.MockWidgetDefinition;

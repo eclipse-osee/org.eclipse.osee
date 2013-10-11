@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
-import org.eclipse.osee.ats.core.util.AtsUtilCoreCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -223,7 +222,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
          if (manDayHours == 0 && teamDef.getParentTeamDef() != null) {
             return getHoursPerWorkDayFromItemAndChildren(teamDef.getParentTeamDef());
          }
-         return AtsUtilCoreCore.DEFAULT_HOURS_PER_WORK_DAY;
+         return AtsUtilCore.DEFAULT_HOURS_PER_WORK_DAY;
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

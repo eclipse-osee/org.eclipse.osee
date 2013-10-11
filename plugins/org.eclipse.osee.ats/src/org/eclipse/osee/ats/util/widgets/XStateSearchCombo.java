@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.util.widgets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.ats.core.client.workflow.StateManager;
+import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -39,7 +39,7 @@ public class XStateSearchCombo extends XComboViewer {
    protected synchronized void ensurePopulated() {
       if (validStates.isEmpty()) {
          validStates.add("--select--");
-         validStates.addAll(StateManager.getAllValidStateNames());
+         validStates.addAll(AtsWorkDefinitionSheetProviders.getAllValidStateNames());
          Collections.sort(validStates);
       }
    }

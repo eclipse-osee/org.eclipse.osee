@@ -23,6 +23,8 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
+ * Artifact-based user service. This brings the User artifact dependency with it.
+ * 
  * @author Donald G. Dunne
  */
 public class AtsUserAdminImpl implements IAtsUserAdmin {

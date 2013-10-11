@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,15 +23,18 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.config.AtsArtifactToken;
-import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.config.ImportAIsAndTeamDefinitionsToDb;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionImporter;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -51,6 +55,7 @@ public final class AtsWorkDefinitionSheetProviders {
 
    private static Set<IAtsWorkDefinitionSheetProvider> teamWorkflowExtensionItems;
    public static String WORK_DEF_TEAM_DEFAULT = "WorkDef_Team_Default";
+   private static List<String> allValidStateNames = null;
 
    private AtsWorkDefinitionSheetProviders() {
       // private constructor
@@ -72,11 +77,54 @@ public final class AtsWorkDefinitionSheetProviders {
       transaction.execute();
    }
 
+   /**
+    * Returns all valid state names for all work definitions in the system
+    */
+   public synchronized static Collection<? extends String> getAllValidStateNames() {
+      if (allValidStateNames == null) {
+         allValidStateNames = new ArrayList<String>();
+         try {
+            Artifact artifact = null;
+            try {
+               artifact =
+                  ArtifactQuery.getArtifactFromToken(
+                     org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names, AtsUtil.getAtsBranchToken());
+            } catch (ArtifactDoesNotExist ex) {
+               // do nothing
+            }
+            if (artifact != null) {
+               for (String value : artifact.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData, "").split(",")) {
+                  allValidStateNames.add(value);
+               }
+            } else {
+               OseeLog.logf(AtsCore.class, Level.INFO,
+                  "ATS Valid State Names: Missing [%s] Artifact; Falling back to loadAddDefinitions",
+                  org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names.getName());
+               try {
+                  for (IAtsWorkDefinition workDef : AtsClientService.get().getWorkDefinitionAdmin().loadAllDefinitions()) {
+                     for (String stateName : AtsClientService.get().getWorkDefinitionAdmin().getStateNames(workDef)) {
+                        if (!allValidStateNames.contains(stateName)) {
+                           allValidStateNames.add(stateName);
+                        }
+                     }
+                  }
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(AtsCore.class, Level.SEVERE, ex);
+               }
+            }
+            Collections.sort(allValidStateNames);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsCore.class, Level.SEVERE, ex);
+         }
+      }
+      return allValidStateNames;
+   }
+
    public static void updateStateNameArtifact(Set<String> stateNames, Artifact folder, SkynetTransaction trans) throws OseeCoreException {
       Artifact stateNameArt =
          ArtifactQuery.getArtifactFromToken(org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names,
             AtsUtil.getAtsBranchToken());
-      Collection<? extends String> currentStateNames = StateManager.getAllValidStateNames();
+      Collection<? extends String> currentStateNames = getAllValidStateNames();
       Set<String> newStateNames = new HashSet<String>();
       newStateNames.addAll(currentStateNames);
       for (String name : stateNames) {

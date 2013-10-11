@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.version;
 
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsVersionServiceProvider {
 
-   IAtsVersionService getAtsVersionService();
+   IAtsVersionService getAtsVersionService() throws OseeStateException;
 
 }

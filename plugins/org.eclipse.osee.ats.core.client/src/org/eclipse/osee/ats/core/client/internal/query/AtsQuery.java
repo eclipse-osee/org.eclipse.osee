@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
-import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactProvider;
+import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -34,9 +34,9 @@ public class AtsQuery implements IAtsQuery {
 
    private final Collection<? extends IAtsWorkItem> items;
    private final IAtsWorkItemService workItemService;
-   private final IAtsWorkItemArtifactProvider workItemArtifactProvider;
+   private final IAtsWorkItemArtifactService workItemArtifactProvider;
 
-   public AtsQuery(Collection<? extends IAtsWorkItem> workItems, IAtsWorkItemService workItemService, IAtsWorkItemArtifactProvider teamDefService) {
+   public AtsQuery(Collection<? extends IAtsWorkItem> workItems, IAtsWorkItemService workItemService, IAtsWorkItemArtifactService teamDefService) {
       this.items = workItems;
       this.workItemService = workItemService;
       this.workItemArtifactProvider = teamDefService;

@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
- * Provider to validate XWidget/IAttributeWidget entry against Artifact store model without use of XWidget UI
+ * Provider to validate XWidget/IAttributeWidget entry against workitem store model without use of XWidget UI
  * 
  * @author Donald G. Dunne
  */

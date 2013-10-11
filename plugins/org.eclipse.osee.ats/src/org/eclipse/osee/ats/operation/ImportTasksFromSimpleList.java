@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -26,6 +27,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -136,7 +138,11 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                } else {
                   taskableStateMachineArtifact = (AbstractTaskableArtifact) artifacts.iterator().next();
                }
-               refreshStateCombo();
+               try {
+                  refreshStateCombo();
+               } catch (OseeStateException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
             }
          });
       } else if (xWidget.getLabel().equals(RelatedToStateColumn.RELATED_TO_STATE_SELECTION)) {
@@ -146,7 +152,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
 
    }
 
-   private void refreshStateCombo() {
+   private void refreshStateCombo() throws OseeStateException {
       if (stateCombo != null) {
          List<String> names =
             RelatedToStateColumn.getValidInWorkStates((TeamWorkFlowArtifact) taskableStateMachineArtifact);

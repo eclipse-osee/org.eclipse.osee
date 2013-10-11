@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.ats.impl.internal.AtsWorkDefinitionServiceImpl">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" name="org.eclipse.osee.ats.impl.internal.AtsWorkDefinitionServiceImpl">
    <implementation class="org.eclipse.osee.ats.impl.internal.AtsWorkDefinitionServiceImpl"/>
    <service>
       <provide interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService"/>
    </service>
    <reference bind="setAtsWorkDefinitionStore" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStore" name="IAtsWorkDefinitionStore" policy="static"/>
    <reference bind="setAttributeResolver" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAttributeResolver" name="IAttributeResolver" policy="static"/>
-   <reference bind="setUserResolver" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IUserResolver" name="IUserResolver" policy="static"/>
+   <reference bind="setAtsUserService" cardinality="1..1" interface="org.eclipse.osee.ats.api.user.IAtsUserService" name="IAtsUserService" policy="static"/>
 </scr:component>

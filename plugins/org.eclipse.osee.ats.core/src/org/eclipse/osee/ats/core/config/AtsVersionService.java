@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.config;
 
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 
 /**
  * @author Donald G. Dunne
@@ -20,7 +21,7 @@ public class AtsVersionService {
 
    private static IAtsVersionServiceProvider service;
 
-   public static IAtsVersionService get() {
+   public static IAtsVersionService get() throws OseeStateException {
       if (AtsVersionService.service == null) {
          throw new IllegalStateException("ATS Version Service has not been activated");
       }

@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.column.CancelledDateColumn;
 import org.eclipse.osee.ats.column.CompletedDateColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
@@ -30,10 +31,9 @@ import org.eclipse.osee.ats.core.client.util.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
-import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
 import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
-import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
+import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -295,7 +296,7 @@ public class WorkflowManager {
       return Collections.castMatching(AbstractWorkflowArtifact.class, artifacts);
    }
 
-   public static StateManager getStateManager(Artifact artifact) {
+   public static IAtsStateManager getStateManager(Artifact artifact) {
       return cast(artifact).getStateMgr();
    }
 
@@ -306,7 +307,7 @@ public class WorkflowManager {
       return null;
    }
 
-   public static StateXWidgetPage getCurrentAtsWorkPage(AbstractWorkflowArtifact awa) {
+   public static StateXWidgetPage getCurrentAtsWorkPage(AbstractWorkflowArtifact awa) throws OseeStateException {
       for (StateXWidgetPage statePage : getStatePagesOrderedByOrdinal(awa)) {
          if (awa.getStateMgr().getCurrentStateName().equals(statePage.getName())) {
             return statePage;
@@ -315,7 +316,7 @@ public class WorkflowManager {
       return null;
    }
 
-   public static List<StateXWidgetPage> getStatePagesOrderedByOrdinal(AbstractWorkflowArtifact awa) {
+   public static List<StateXWidgetPage> getStatePagesOrderedByOrdinal(AbstractWorkflowArtifact awa) throws OseeStateException {
       List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
       for (IAtsStateDefinition stateDefinition : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
          awa.getWorkDefinition())) {

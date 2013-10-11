@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.StateManager;
+import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;

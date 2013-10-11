@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef;
 
+import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workflow.IAttribute;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -24,5 +28,21 @@ public interface IAttributeResolver {
    void setXWidgetNameBasedOnAttributeName(String attributeName, IAtsWidgetDefinition widgetDef);
 
    String getDescription(String attributeName);
+
+   <T> T getSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, T defaultReturnValue) throws OseeCoreException;
+
+   Collection<String> getAttributesToStringList(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException;
+
+   boolean isAttributeTypeValid(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException;
+
+   String getSoleAttributeValueAsString(IAtsWorkItem workItem, IAttributeType attributeType, String defaultReturnValue) throws OseeCoreException;
+
+   void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException;
+
+   int getAttributeCount(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException;
+
+   void addAttribute(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException;
+
+   <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException;
 
 }

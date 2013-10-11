@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.core.client.team.TeamState;
+import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.UserCommunity;
 

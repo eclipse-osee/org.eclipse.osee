@@ -109,8 +109,8 @@ import org.eclipse.osee.ats.column.ev.WorkPackageNameColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageProgramColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageTypeColumnUI;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
-import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -260,10 +260,10 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    }
 
    public static void registerStateColumns(XViewerFactory factory) {
-      for (String stateName : StateManager.getAllValidStateNames()) {
+      for (String stateName : AtsWorkDefinitionSheetProviders.getAllValidStateNames()) {
          factory.registerColumns(new StateAssigneesColumn(stateName));
       }
-      for (String stateName : StateManager.getAllValidStateNames()) {
+      for (String stateName : AtsWorkDefinitionSheetProviders.getAllValidStateNames()) {
          factory.registerColumns(new StateCompletedColumn(stateName));
       }
    }

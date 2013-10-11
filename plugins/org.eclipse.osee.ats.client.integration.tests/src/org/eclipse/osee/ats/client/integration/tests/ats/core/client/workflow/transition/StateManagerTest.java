@@ -11,14 +11,14 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.transition;
 
 import java.util.Collections;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
-import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -41,7 +41,7 @@ public class StateManagerTest {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
 
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
-      StateManager stateMgr = teamWf.getStateMgr();
+      IAtsStateManager stateMgr = teamWf.getStateMgr();
 
       stateMgr.updateMetrics(AtsTestUtil.getAnalyzeStateDef(), 1.1, 1, false);
 

@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.user;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
+ * Non-artifact based user service
+ * 
  * @author Donald G. Dunne
  */
 public interface IAtsUserService {
@@ -20,4 +23,15 @@ public interface IAtsUserService {
    IAtsUser getCurrentUser() throws OseeCoreException;
 
    IAtsUser getUserById(String userId) throws OseeCoreException;
+
+   boolean isUserIdValid(String userId) throws OseeCoreException;
+
+   boolean isUserNameValid(String name) throws OseeCoreException;
+
+   String getUserIdByName(String name) throws OseeCoreException;
+
+   IAtsUser getUserByName(String name) throws OseeCoreException;
+
+   Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds) throws OseeCoreException;
+
 }

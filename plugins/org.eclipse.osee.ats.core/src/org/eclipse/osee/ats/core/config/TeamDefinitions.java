@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.internal.AtsConfigUtility;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
@@ -38,8 +39,8 @@ public class TeamDefinitions {
 
    public static List<String> toGuids(Collection<? extends IAtsTeamDefinition> teamDefs) {
       List<String> guids = new ArrayList<String>(teamDefs.size());
-      for (IAtsTeamDefinition artifact : teamDefs) {
-         guids.add(artifact.getGuid());
+      for (IAtsTeamDefinition teamDef : teamDefs) {
+         guids.add(teamDef.getGuid());
       }
       return guids;
    }
@@ -81,7 +82,7 @@ public class TeamDefinitions {
       return children;
    }
 
-   private static IAtsConfig getAtsConfig() {
+   private static IAtsConfig getAtsConfig() throws OseeStateException {
       return AtsConfigUtility.getAtsConfigProvider().getAtsConfig();
    }
 
@@ -111,10 +112,10 @@ public class TeamDefinitions {
       return teamDefs;
    }
 
-   public static Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsActionableItem aia) throws OseeCoreException {
-      Set<IAtsTeamDefinition> aiaTeams = new HashSet<IAtsTeamDefinition>();
-      getTeamFromItemAndChildren(aia, aiaTeams);
-      return aiaTeams;
+   public static Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsActionableItem ai) throws OseeCoreException {
+      Set<IAtsTeamDefinition> aiTeams = new HashSet<IAtsTeamDefinition>();
+      getTeamFromItemAndChildren(ai, aiTeams);
+      return aiTeams;
    }
 
    public static Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsTeamDefinition teamDef) throws OseeCoreException {
@@ -126,11 +127,11 @@ public class TeamDefinitions {
       return teamDefs;
    }
 
-   private static void getTeamFromItemAndChildren(IAtsActionableItem aia, Set<IAtsTeamDefinition> aiaTeams) throws OseeCoreException {
-      aiaTeams.add(aia.getTeamDefinition());
+   private static void getTeamFromItemAndChildren(IAtsActionableItem ai, Set<IAtsTeamDefinition> aiTeams) throws OseeCoreException {
+      aiTeams.add(ai.getTeamDefinition());
 
-      for (IAtsActionableItem childArt : aia.getChildrenActionableItems()) {
-         getTeamFromItemAndChildren(childArt, aiaTeams);
+      for (IAtsActionableItem childArt : ai.getChildrenActionableItems()) {
+         getTeamFromItemAndChildren(childArt, aiTeams);
       }
    }
 
@@ -154,32 +155,32 @@ public class TeamDefinitions {
       return teamDefs;
    }
 
-   public static Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> aias) throws OseeCoreException {
+   public static Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> ais) throws OseeCoreException {
       Set<IAtsTeamDefinition> resultTeams = new HashSet<IAtsTeamDefinition>();
-      for (IAtsActionableItem aia : aias) {
-         resultTeams.addAll(getImpactedTeamDefInherited(aia));
+      for (IAtsActionableItem ai : ais) {
+         resultTeams.addAll(getImpactedTeamDefInherited(ai));
       }
       return resultTeams;
    }
 
-   public static IAtsTeamDefinition getImpactedTeamDef(IAtsActionableItem aia) {
-      if (aia.getTeamDefinition() != null) {
-         return aia.getTeamDefinition();
+   public static IAtsTeamDefinition getImpactedTeamDef(IAtsActionableItem ai) {
+      if (ai.getTeamDefinition() != null) {
+         return ai.getTeamDefinition();
       }
-      if (aia.getParentActionableItem() != null) {
-         return getImpactedTeamDef(aia.getParentActionableItem());
+      if (ai.getParentActionableItem() != null) {
+         return getImpactedTeamDef(ai.getParentActionableItem());
       }
       return null;
    }
 
-   private static Collection<IAtsTeamDefinition> getImpactedTeamDefInherited(IAtsActionableItem aia) throws OseeCoreException {
-      if (aia == null) {
+   private static Collection<IAtsTeamDefinition> getImpactedTeamDefInherited(IAtsActionableItem ai) throws OseeCoreException {
+      if (ai == null) {
          return java.util.Collections.emptyList();
       }
-      if (aia.getTeamDefinition() != null) {
-         return java.util.Collections.singleton(aia.getTeamDefinition());
+      if (ai.getTeamDefinition() != null) {
+         return java.util.Collections.singleton(ai.getTeamDefinition());
       }
-      IAtsActionableItem parentArt = aia.getParentActionableItem();
+      IAtsActionableItem parentArt = ai.getParentActionableItem();
       return getImpactedTeamDefInherited(parentArt);
    }
 

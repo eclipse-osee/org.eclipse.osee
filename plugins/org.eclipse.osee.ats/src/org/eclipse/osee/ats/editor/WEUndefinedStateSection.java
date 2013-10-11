@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.core.client.team.SimpleTeamState;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -109,12 +107,11 @@ public class WEUndefinedStateSection extends SectionPart {
 
       toolkit.createLabel(composite, "This state is no-longer defined by the current Work Definition.", SWT.NONE);
 
-      SimpleTeamState state = new SimpleTeamState(stateName, StateType.Working);
       String infoStr = "";
       try {
          infoStr =
-            String.format("Name: [%s] Assignees: [%s] Hours Spent: [%s]", state.getName(),
-               awa.getStateMgr().getAssigneesStr(state, 100), awa.getStateMgr().getHoursSpent(state.getName()));
+            String.format("Name: [%s] Assignees: [%s] Hours Spent: [%s]", stateName,
+               awa.getStateMgr().getAssigneesStr(stateName, 100), awa.getStateMgr().getHoursSpent(stateName));
       } catch (OseeCoreException ex) {
          infoStr = "Exception processing state data (see log for details) " + ex.getLocalizedMessage();
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

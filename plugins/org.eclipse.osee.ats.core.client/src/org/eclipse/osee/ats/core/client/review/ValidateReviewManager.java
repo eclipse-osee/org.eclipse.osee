@@ -21,12 +21,12 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -106,7 +106,7 @@ public class ValidateReviewManager {
 
    public static String getValidateReviewFollowupUsersStr(TeamWorkFlowArtifact teamArt) {
       try {
-         return org.eclipse.osee.ats.core.client.internal.user.UsersByIds.getStorageString(getValidateReviewFollowupUsers(teamArt));
+         return org.eclipse.osee.ats.core.users.UsersByIds.getStorageString(getValidateReviewFollowupUsers(teamArt));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();

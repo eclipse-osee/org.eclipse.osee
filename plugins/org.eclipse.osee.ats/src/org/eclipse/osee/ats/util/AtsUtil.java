@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.ModifyActionableItemAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
@@ -30,7 +31,6 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -52,6 +52,7 @@ import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -330,8 +331,11 @@ public final class AtsUtil {
       return item;
    }
 
+   /**
+    * return currently assigned state machine artifacts
+    */
    public static Set<Artifact> getAssigned(IAtsUser user) throws OseeCoreException {
-      return StateManager.getAssigned(user);
+      return getAssigned(user, null);
    }
 
    /**
@@ -340,7 +344,7 @@ public final class AtsUtil {
     * @param clazz to match or all if null
     */
    public static Set<Artifact> getAssigned(IAtsUser user, Class<?> clazz) throws OseeCoreException {
-      return StateManager.getAssigned(user, clazz);
+      return getAssigned(user.getUserId(), clazz);
    }
 
    /**
@@ -349,7 +353,15 @@ public final class AtsUtil {
     * @param clazz to match or all if null
     */
    public static Set<Artifact> getAssigned(String userId, Class<?> clazz) throws OseeCoreException {
-      return StateManager.getAssigned(userId, clazz);
+      Set<Artifact> assigned = new HashSet<Artifact>();
+      for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.CurrentState,
+         "<" + userId + ">", AtsUtil.getAtsBranchToken(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
+         if (clazz == null || clazz.isInstance(artifact)) {
+            assigned.add(artifact);
+         }
+      }
+      return assigned;
+
    }
 
    /**

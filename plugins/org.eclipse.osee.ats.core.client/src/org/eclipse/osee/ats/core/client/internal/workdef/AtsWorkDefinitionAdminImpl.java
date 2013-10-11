@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.client.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.CacheProvider;
-import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactProvider;
+import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactService;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -58,12 +58,12 @@ import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
 
    private final CacheProvider<AtsWorkDefinitionCache> cacheProvider;
-   private final IAtsWorkItemArtifactProvider workItemArtifactProvider;
+   private final IAtsWorkItemArtifactService workItemArtifactProvider;
    private final IAtsWorkItemService workItemService;
    private final IAtsWorkDefinitionService workDefinitionService;
    private final ITeamWorkflowProviders teamWorkflowProviders;
 
-   public AtsWorkDefinitionAdminImpl(CacheProvider<AtsWorkDefinitionCache> workDefCacheProvider, IAtsWorkItemArtifactProvider workItemArtifactProvider, IAtsWorkItemService workItemService, IAtsWorkDefinitionService workDefinitionService, ITeamWorkflowProviders teamWorkflowProviders) {
+   public AtsWorkDefinitionAdminImpl(CacheProvider<AtsWorkDefinitionCache> workDefCacheProvider, IAtsWorkItemArtifactService workItemArtifactProvider, IAtsWorkItemService workItemService, IAtsWorkDefinitionService workDefinitionService, ITeamWorkflowProviders teamWorkflowProviders) {
       this.cacheProvider = workDefCacheProvider;
       this.workItemArtifactProvider = workItemArtifactProvider;
       this.workItemService = workItemService;

@@ -20,6 +20,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface ITeamDefinitionUtility {
 
-   public Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> aias) throws OseeCoreException;
+   public Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> ais) throws OseeCoreException;
 
 }

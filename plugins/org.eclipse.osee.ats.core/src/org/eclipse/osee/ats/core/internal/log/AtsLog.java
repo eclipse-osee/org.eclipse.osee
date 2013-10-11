@@ -191,7 +191,7 @@ public class AtsLog implements IAtsLog {
    }
 
    /**
-    * This method is replaced by AbstractWorkflowArtifact.getCompletedFromState. Kept for backward compatibility.
+    * This method is replaced by workItem.getCompletedFromState. Kept for backward compatibility.
     */
    @Override
    public String internalGetCompletedFromState() throws OseeCoreException {

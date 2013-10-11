@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.internal.Activator;

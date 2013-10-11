@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.ev;
 
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsEarnedValueServiceProvider {
 
-   public IAtsEarnedValueService getEarnedValueService();
+   public IAtsEarnedValueService getEarnedValueService() throws OseeStateException;
 }

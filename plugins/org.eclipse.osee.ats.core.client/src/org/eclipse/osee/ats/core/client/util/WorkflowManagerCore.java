@@ -16,9 +16,9 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class WorkflowManagerCore {
 
-   public static StateManager getStateManager(Artifact artifact) {
+   public static IAtsStateManager getStateManager(Artifact artifact) {
       return cast(artifact).getStateMgr();
    }
 

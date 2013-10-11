@@ -12,11 +12,11 @@ package org.eclipse.osee.ats.client.integration.tests.ats.core.client;
 
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
+import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;

@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
+import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.reports.efficiency.internal.Activator;
 import org.eclipse.osee.ats.reports.efficiency.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

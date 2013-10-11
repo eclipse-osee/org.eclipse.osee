@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.mock;
 import java.util.List;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkState;
-import org.eclipse.osee.ats.core.model.WorkStateFactory;
+import org.eclipse.osee.ats.api.workflow.state.WorkStateFactory;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 
 /**

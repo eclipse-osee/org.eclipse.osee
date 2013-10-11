@@ -36,10 +36,10 @@ import org.eclipse.osee.ats.client.integration.tests.ats.config.AtsBranchConfigu
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.NavigateTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.WorldEditorUtil;
-import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.navigate.TeamWorkflowSearchWorkflowSearchItem;

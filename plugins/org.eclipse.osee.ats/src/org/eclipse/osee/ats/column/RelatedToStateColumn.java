@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.StateListDialog;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -131,14 +132,14 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
       }
    }
 
-   public static List<String> getValidStates(TeamWorkFlowArtifact teamArt) {
+   public static List<String> getValidStates(TeamWorkFlowArtifact teamArt) throws OseeStateException {
       List<String> names = new ArrayList<String>();
       names.addAll(AtsClientService.get().getWorkDefinitionAdmin().getStateNames(teamArt.getWorkDefinition()));
       Collections.sort(names);
       return names;
    }
 
-   public static List<String> getValidInWorkStates(TeamWorkFlowArtifact teamArt) {
+   public static List<String> getValidInWorkStates(TeamWorkFlowArtifact teamArt) throws OseeStateException {
       List<String> names = new ArrayList<String>();
       for (String state : AtsClientService.get().getWorkDefinitionAdmin().getStateNames(teamArt.getWorkDefinition())) {
          if (teamArt.getStateDefinitionByName(state).getStateType().isWorkingState()) {

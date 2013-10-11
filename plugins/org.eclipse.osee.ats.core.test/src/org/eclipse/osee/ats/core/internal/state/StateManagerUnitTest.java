@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.workflow;
+package org.eclipse.osee.ats.core.internal.state;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -17,6 +17,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workflow.WorkStateProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -32,7 +33,7 @@ public class StateManagerUnitTest {
 
    @Test
    public void testIsHoursEqual() {
-      AbstractWorkflowArtifact awa = Mockito.mock(AbstractWorkflowArtifact.class);
+      IAtsWorkItem awa = Mockito.mock(IAtsWorkItem.class);
       StateManager mgr = new StateManager(awa);
 
       assertTrue(mgr.isHoursEqual(1.0, 1.0));
@@ -48,7 +49,7 @@ public class StateManagerUnitTest {
 
    @Test
    public void testSetMetrics() throws OseeCoreException {
-      AbstractWorkflowArtifact awa = mock(AbstractWorkflowArtifact.class);
+      IAtsWorkItem awa = mock(IAtsWorkItem.class);
       StateManager mgr = spy(new StateManager(awa));
 
       doNothing().when(mgr).load();

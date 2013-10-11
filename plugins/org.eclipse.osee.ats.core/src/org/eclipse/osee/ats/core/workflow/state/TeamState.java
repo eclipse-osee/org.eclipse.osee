@@ -8,11 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.team;
+package org.eclipse.osee.ats.core.workflow.state;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.core.workflow.StateTypeAdapter;
 
 /**
  * @author Donald G. Dunne

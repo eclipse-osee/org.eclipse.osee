@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
@@ -52,6 +52,8 @@ import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionAdminI
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCache;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
+import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkItemArtifactProviderImpl;
+import org.eclipse.osee.ats.core.client.internal.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.client.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
@@ -61,6 +63,7 @@ import org.eclipse.osee.ats.core.config.IVersionFactory;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -72,11 +75,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 public class AtsClientImpl implements IAtsClient {
 
    private IAtsWorkDefinitionService workDefService;
-   private IAtsWorkItemService workItemService;
-   private IAtsWorkItemArtifactProvider workItemArtifactProvider;
-
+   private IAtsWorkItemArtifactService workItemArtifactProvider;
    private final AtsConfigProxy configProxy = new AtsConfigProxy();
-
    private IAtsVersionAdmin versionService;
    private IAtsArtifactStore artifactStore;
    private CacheProvider<AtsArtifactConfigCache> configCacheProvider;
@@ -87,23 +87,21 @@ public class AtsClientImpl implements IAtsClient {
    private CacheProvider<AtsWorkDefinitionCache> workDefCacheProvider;
    private IAtsUserAdmin atsUserAdmin;
    private IAtsEarnedValueService earnedValueService;
+   private IAtsUserService userService;
+   private IAtsWorkItemService workItemService;
+   private static Boolean started = null;
 
    public void setAtsWorkDefinitionService(IAtsWorkDefinitionService workDefService) {
       this.workDefService = workDefService;
    }
 
-   public void setAtsWorkItemService(IAtsWorkItemService workItemService) {
-      this.workItemService = workItemService;
-   }
-
-   public void setAtsWorkItemArtifactProvider(IAtsWorkItemArtifactProvider workItemArtifactProvider) {
-      this.workItemArtifactProvider = workItemArtifactProvider;
+   public void setAtsUserService(IAtsUserService atsUserService) {
+      this.userService = atsUserService;
    }
 
    public void start() throws OseeCoreException {
       Conditions.checkNotNull(workDefService, "IAtsWorkDefinitionService");
-      Conditions.checkNotNull(workItemArtifactProvider, "IAtsWorkItemArtifactProvider");
-      Conditions.checkNotNull(workItemService, "workItemService");
+      Conditions.checkNotNull(userService, "IAtsUserService");
       Map<Class<? extends IAtsConfigObject>, IAtsArtifactWriter<? extends IAtsConfigObject>> writers =
          new HashMap<Class<? extends IAtsConfigObject>, IAtsArtifactWriter<? extends IAtsConfigObject>>();
 
@@ -137,9 +135,12 @@ public class AtsClientImpl implements IAtsClient {
       ITeamWorkflowProviders atsTeamWorkflowProviders = TeamWorkFlowManager.getTeamWorkflowProviders();
 
       workDefCacheProvider = new AtsWorkDefinitionCacheProvider(workDefService);
+      workItemArtifactProvider = new AtsWorkItemArtifactProviderImpl();
+      workItemService = new AtsWorkItemServiceImpl(workItemArtifactProvider);
       workDefAdmin =
          new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemArtifactProvider, workItemService,
             workDefService, atsTeamWorkflowProviders);
+      started = true;
    }
 
    public void stop() {
@@ -164,6 +165,12 @@ public class AtsClientImpl implements IAtsClient {
       versionFactory = null;
 
       atsUserAdmin = null;
+   }
+
+   private static void checkStarted() throws OseeStateException {
+      if (started == null) {
+         throw new OseeStateException("AtsCore did not start");
+      }
    }
 
    @Override
@@ -266,22 +273,26 @@ public class AtsClientImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsWorkDefinitionAdmin getWorkDefinitionAdmin() {
+   public IAtsWorkDefinitionAdmin getWorkDefinitionAdmin() throws OseeStateException {
+      checkStarted();
       return workDefAdmin;
    }
 
    @Override
-   public IAtsConfig getAtsConfig() {
+   public IAtsConfig getAtsConfig() throws OseeStateException {
+      checkStarted();
       return configProxy;
    }
 
    @Override
-   public IAtsVersionAdmin getAtsVersionService() {
+   public IAtsVersionAdmin getAtsVersionService() throws OseeStateException {
+      checkStarted();
       return versionService;
    }
 
    @Override
-   public IAtsUserAdmin getUserAdmin() {
+   public IAtsUserAdmin getUserAdmin() throws OseeStateException {
+      checkStarted();
       return atsUserAdmin;
    }
 
@@ -291,6 +302,7 @@ public class AtsClientImpl implements IAtsClient {
    }
 
    private AtsArtifactConfigCache getConfigCache() throws OseeCoreException {
+      checkStarted();
       return configCacheProvider.get();
    }
 
@@ -352,23 +364,26 @@ public class AtsClientImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsWorkItemService getWorkItemService() {
+   public IAtsWorkItemService getWorkItemService() throws OseeStateException {
+      checkStarted();
       return workItemService;
    }
 
    @Override
-   public IAtsEarnedValueService getEarnedValueService() {
+   public IAtsEarnedValueService getEarnedValueService() throws OseeStateException {
+      checkStarted();
       return earnedValueService;
    }
 
-   @Override
-   public IAtsUser getCurrentUser() throws OseeCoreException {
-      return getUserAdmin().getCurrentUser();
+   public IAtsUserService getUserService() throws OseeStateException {
+      checkStarted();
+      return userService;
    }
 
    @Override
-   public IAtsUser getUserById(String userId) throws OseeCoreException {
-      return getUserAdmin().getUserById(userId);
+   public IAtsWorkItemArtifactService getWorkItemArtifactService() throws OseeStateException {
+      checkStarted();
+      return workItemArtifactProvider;
    }
 
 }

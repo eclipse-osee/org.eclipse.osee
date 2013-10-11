@@ -11,8 +11,11 @@
 
 package org.eclipse.osee.ats.navigate;
 
-
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -30,7 +33,11 @@ public class ClearAtsWorkDefinitionCache extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      AtsClientService.get().getWorkDefinitionAdmin().clearCaches();
+      try {
+         AtsClientService.get().getWorkDefinitionAdmin().clearCaches();
+      } catch (OseeStateException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
       AWorkbench.popup("Completed");
    }
 }

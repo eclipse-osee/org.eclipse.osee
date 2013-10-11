@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsWorkItemArtifactProvider {
+public interface IAtsWorkItemArtifactService {
 
    public abstract Artifact get(IAtsObject atsObject) throws OseeCoreException;
 

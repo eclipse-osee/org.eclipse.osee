@@ -13,10 +13,16 @@ package org.eclipse.osee.ats.core.mock;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.WorkStateProvider;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.model.impl.WorkStateProviderImpl;
 import org.eclipse.osee.ats.core.util.AtsUserGroup;
@@ -128,7 +134,32 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public void setAtsId(String atsId) throws OseeCoreException {
+   public IAtsStateManager getStateMgr() {
+      return null;
+   }
+
+   @Override
+   public IAtsLog getLog() {
+      return null;
+   }
+
+   @Override
+   public IAtsWorkDefinition getWorkDefinition() {
+      return null;
+   }
+
+   @Override
+   public IAtsStateDefinition getStateDefinition() {
+      return null;
+   }
+
+   @Override
+   public IAtsLogItem getStateStartedData(IStateToken state) {
+      return null;
+   }
+
+   @Override
+   public void setAtsId(String atsId) {
       this.atsId = atsId;
    }
 

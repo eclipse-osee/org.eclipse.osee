@@ -25,7 +25,7 @@ public interface IAtsVersionService {
 
    IAtsVersion getTargetedVersion(Object object) throws OseeCoreException;
 
-   Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion verArt) throws OseeCoreException;
+   Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion version) throws OseeCoreException;
 
    IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException;
 

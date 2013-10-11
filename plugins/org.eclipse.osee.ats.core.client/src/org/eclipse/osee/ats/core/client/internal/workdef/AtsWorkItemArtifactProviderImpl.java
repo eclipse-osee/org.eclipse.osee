@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactProvider;
+import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactService;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public class AtsWorkItemArtifactProviderImpl implements IAtsWorkItemArtifactProvider {
+public class AtsWorkItemArtifactProviderImpl implements IAtsWorkItemArtifactService {
 
    @Override
    public Artifact get(IAtsObject atsObject) throws OseeCoreException {

@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.client.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.core.client.internal.CacheProvider;
-import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactProvider;
+import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactService;
 import org.eclipse.osee.ats.core.client.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -57,7 +57,7 @@ public class AtsWorkDefinitionAdminImplTest {
    @Mock IAtsWorkItemService workItemService;
    @Mock IAtsWorkDefinitionService workDefinitionService;
    @Mock IAtsWorkDefinitionStore workDefinitionStore;
-   @Mock IAtsWorkItemArtifactProvider teamDefService;
+   @Mock IAtsWorkItemArtifactService teamDefService;
    @Mock IAtsActionableItem actionableItem;
    @Mock IAtsPeerToPeerReview peerReview;
    @Mock XResultData resultData;

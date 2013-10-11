@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.task;
 
 import java.util.Arrays;
-import org.junit.Assert;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -22,13 +21,14 @@ import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
+import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**

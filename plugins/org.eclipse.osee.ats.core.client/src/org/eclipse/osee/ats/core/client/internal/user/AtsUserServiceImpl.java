@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal.user;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -40,6 +43,51 @@ public class AtsUserServiceImpl implements IAtsUserService {
          }
       }
       return atsUser;
+   }
+
+   @Override
+   public Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds) throws OseeCoreException {
+      List<IAtsUser> users = new LinkedList<IAtsUser>();
+      for (String userId : userIds) {
+         IAtsUser user = getUserById(userId);
+         if (user != null) {
+            users.add(user);
+         }
+      }
+      return users;
+   }
+
+   private IAtsUser getUserFromOseeUser(User user) throws OseeCoreException {
+      IAtsUser atsUser = null;
+      if (user != null) {
+         atsUser = getUserById(user.getUserId());
+      }
+      return atsUser;
+   }
+
+   @Override
+   public IAtsUser getUserByName(String name) throws OseeCoreException {
+      return getUserFromOseeUser(UserManager.getUserByName(name));
+   }
+
+   @Override
+   public boolean isUserIdValid(String userId) throws OseeCoreException {
+      return getUserById(userId) != null;
+   }
+
+   @Override
+   public boolean isUserNameValid(String name) throws OseeCoreException {
+      return getUserByName(name) != null;
+   }
+
+   @Override
+   public String getUserIdByName(String name) throws OseeCoreException {
+      String userId = null;
+      IAtsUser userByName = getUserByName(name);
+      if (userByName != null) {
+         userId = userByName.getUserId();
+      }
+      return userId;
    }
 
 }

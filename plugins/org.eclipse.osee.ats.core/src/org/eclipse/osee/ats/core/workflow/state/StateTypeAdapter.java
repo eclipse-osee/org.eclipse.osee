@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.workflow;
+package org.eclipse.osee.ats.core.workflow.state;
 
 import java.util.ArrayList;
 import java.util.HashMap;

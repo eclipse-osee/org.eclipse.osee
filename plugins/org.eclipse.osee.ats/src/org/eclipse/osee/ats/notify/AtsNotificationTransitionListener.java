@@ -11,10 +11,10 @@
 package org.eclipse.osee.ats.notify;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
-import org.eclipse.osee.ats.core.client.notify.AtsNotifyType;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;

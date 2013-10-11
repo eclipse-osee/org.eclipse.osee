@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.review;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
@@ -29,7 +31,6 @@ import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.StateManager;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -53,9 +54,9 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    @Override
    public List<IAtsUser> getImplementers() throws OseeCoreException {
       if (this.isOfType(AtsArtifactTypes.DecisionReview)) {
-         return StateManager.getImplementersByState(this, DecisionReviewState.Decision);
+         return getImplementersByState(this, DecisionReviewState.Decision);
       } else {
-         List<IAtsUser> users = StateManager.getImplementersByState(this, PeerToPeerReviewState.Review);
+         List<IAtsUser> users = getImplementersByState(this, PeerToPeerReviewState.Review);
          for (UserRole role : UserRoleManager.getUserRoles(this)) {
             if (!users.contains(role.getUser())) {
                users.add(role.getUser());
@@ -63,6 +64,26 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
          }
          return users;
       }
+   }
+
+   public static List<IAtsUser> getImplementersByState(AbstractWorkflowArtifact workflow, IStateToken state) throws OseeCoreException {
+      List<IAtsUser> users = new ArrayList<IAtsUser>();
+      if (workflow.isCancelled()) {
+         users.add(workflow.getCancelledBy());
+      } else {
+         for (IAtsUser user : workflow.getStateMgr().getAssignees(state.getName())) {
+            if (!users.contains(user)) {
+               users.add(user);
+            }
+         }
+         if (workflow.isCompleted()) {
+            IAtsUser user = workflow.getCompletedBy();
+            if (user != null && !users.contains(user)) {
+               users.add(user);
+            }
+         }
+      }
+      return users;
    }
 
    @Override

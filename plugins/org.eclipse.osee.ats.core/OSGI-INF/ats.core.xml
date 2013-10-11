@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" name="org.eclipse.osee.ats.core.AtsCore">
+   <implementation class="org.eclipse.osee.ats.core.AtsCore"/>
+   <reference bind="setAtsAttributeResolver" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAttributeResolver" name="IAttributeResolver" policy="static"/>
+   <reference bind="setAtsWorkDefService" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService" name="IAtsWorkDefinitionService" policy="static"/>
+   <reference bind="setAtsUserService" cardinality="1..1" interface="org.eclipse.osee.ats.api.user.IAtsUserService" name="IAtsUserService" policy="static"/>
+   <reference bind="setAtsNotificationService" cardinality="1..1" interface="org.eclipse.osee.ats.api.notify.IAtsNotificationService" name="IAtsNotificationService" policy="static"/>
+   <reference bind="setAtsWorkItemServiceProvider" cardinality="1..1" interface="org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider" name="IAtsWorkItemServiceProvider" policy="static"/>
+</scr:component>

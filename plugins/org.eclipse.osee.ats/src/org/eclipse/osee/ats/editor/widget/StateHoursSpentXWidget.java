@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.HoursSpentUtil;
+import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.Activator;

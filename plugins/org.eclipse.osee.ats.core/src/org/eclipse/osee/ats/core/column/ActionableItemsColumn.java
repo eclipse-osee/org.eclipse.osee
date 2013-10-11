@@ -51,9 +51,9 @@ public class ActionableItemsColumn {
 
       // Children work items inherit the actionable items of their parent team workflow
       if (object instanceof IAtsWorkItem) {
-         IAtsTeamWorkflow teamArt = ((IAtsWorkItem) object).getParentTeamWorkflow();
-         if (teamArt != null && !teamArt.equals(object)) {
-            ais.addAll(getActionableItems(teamArt));
+         IAtsTeamWorkflow teamWf = ((IAtsWorkItem) object).getParentTeamWorkflow();
+         if (teamWf != null && !teamWf.equals(object)) {
+            ais.addAll(getActionableItems(teamWf));
          }
       }
       return ais;

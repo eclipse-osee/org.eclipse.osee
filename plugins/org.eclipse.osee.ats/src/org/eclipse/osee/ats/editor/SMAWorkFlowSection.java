@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.XCancellationReasonTextWidget;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -264,9 +265,13 @@ public class SMAWorkFlowSection extends SectionPart {
          layout.marginLeft = 2;
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         if (AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(sma.getWorkDefinition())) {
-            allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), statePage, sma, comp, 2, xModListener,
-               isCurrentState, editor));
+         try {
+            if (AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(sma.getWorkDefinition())) {
+               allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), statePage, sma, comp, 2, xModListener,
+                  isCurrentState, editor));
+            }
+         } catch (OseeStateException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          allXWidgets.add(new StateHoursSpentXWidget(getManagedForm(), statePage, sma, comp, 2, xModListener,
             isCurrentState, editor));

@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.core.validator.AtsCoreXWidgetValidatorProvider;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidatorProvider;
 import org.eclipse.osee.ats.core.validator.IAtsXWidgetValidator;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 
 /**
@@ -67,7 +68,7 @@ public class AtsXWidgetValidateManagerClient implements AtsXWidgetValidatorProvi
       }
    }
 
-   public Collection<WidgetResult> validateTransition(AbstractWorkflowArtifact awa, IAtsStateDefinition toStateDef) {
+   public Collection<WidgetResult> validateTransition(AbstractWorkflowArtifact awa, IAtsStateDefinition toStateDef) throws OseeStateException {
       ensureLoaded();
       List<WidgetResult> results = new ArrayList<WidgetResult>();
       for (IAtsWidgetDefinition widgetDef : AtsClientService.get().getWorkDefinitionAdmin().getWidgetsFromLayoutItems(

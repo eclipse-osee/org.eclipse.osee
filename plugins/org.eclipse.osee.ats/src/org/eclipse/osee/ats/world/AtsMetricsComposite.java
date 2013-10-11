@@ -17,12 +17,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
+import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.WorkflowMetrics;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -277,7 +278,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
             if (sMet.getUserToAssignedSmas().getValues(user) != null) {
                for (Artifact awa : sMet.getUserToAssignedSmas().getValues(user)) {
                   if (!processedArts.contains(awa) && !sMet.getUserToCompletedSmas().containsValue(awa)) {
-                     cummulativePercentComplete += PercentCompleteTotalUtil.getPercentCompleteTotal(awa);
+                     cummulativePercentComplete += PercentCompleteTotalUtil.getPercentCompleteTotal((IAtsWorkItem) awa);
                      processedArts.add(awa);
                   }
                }

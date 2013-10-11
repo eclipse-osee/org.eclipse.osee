@@ -30,28 +30,28 @@ public class ActionableItems {
 
    private static String TopActionableItemGuid = "AAABER+37QEA8O7WSQaqJQ";
 
-   public static Collection<String> getNames(Collection<? extends IAtsActionableItem> aias) {
+   public static Collection<String> getNames(Collection<? extends IAtsActionableItem> ais) {
       ArrayList<String> names = new ArrayList<String>();
-      for (IAtsActionableItem named : aias) {
-         names.add(named.getName());
+      for (IAtsActionableItem ai : ais) {
+         names.add(ai.getName());
       }
       return names;
    }
 
-   public static List<String> toGuids(Collection<? extends IAtsActionableItem> aias) {
-      List<String> guids = new ArrayList<String>(aias.size());
-      for (IAtsActionableItem artifact : aias) {
-         guids.add(artifact.getGuid());
+   public static List<String> toGuids(Collection<? extends IAtsActionableItem> ais) {
+      List<String> guids = new ArrayList<String>(ais.size());
+      for (IAtsActionableItem ai : ais) {
+         guids.add(ai.getGuid());
       }
       return guids;
    }
 
    /**
-    * Recurses default hierarchy and collections children of parentArtifact that are of type class
+    * Recurses default hierarchy and collections children of parentAI that are of type class
     */
    @SuppressWarnings("unchecked")
-   public static <A extends IAtsActionableItem> void getChildrenOfType(IAtsActionableItem parentArtifact, Collection<A> children, Class<A> clazz, boolean recurse) throws OseeCoreException {
-      for (IAtsActionableItem child : parentArtifact.getChildrenActionableItems()) {
+   public static <A extends IAtsActionableItem> void getChildrenOfType(IAtsActionableItem parentAi, Collection<A> children, Class<A> clazz, boolean recurse) throws OseeCoreException {
+      for (IAtsActionableItem child : parentAi.getChildrenActionableItems()) {
          if (clazz.isInstance(child)) {
             children.add((A) child);
             if (recurse) {
@@ -61,48 +61,48 @@ public class ActionableItems {
       }
    }
 
-   public static Set<IAtsActionableItem> getAIsFromItemAndChildren(IAtsActionableItem aia) throws OseeCoreException {
-      Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
-      aias.add(aia);
-      for (IAtsActionableItem art : aia.getChildrenActionableItems()) {
-         aias.addAll(getAIsFromItemAndChildren(art));
+   public static Set<IAtsActionableItem> getAIsFromItemAndChildren(IAtsActionableItem ai) throws OseeCoreException {
+      Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
+      ais.add(ai);
+      for (IAtsActionableItem art : ai.getChildrenActionableItems()) {
+         ais.addAll(getAIsFromItemAndChildren(art));
       }
-      return aias;
+      return ais;
    }
 
-   public static Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsActionableItem aia) throws OseeCoreException {
-      return TeamDefinitions.getTeamsFromItemAndChildren(aia);
+   public static Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsActionableItem ai) throws OseeCoreException {
+      return TeamDefinitions.getTeamsFromItemAndChildren(ai);
    }
 
-   public static Set<IAtsActionableItem> getActionableItemsFromItemAndChildren(IAtsActionableItem aia) throws OseeCoreException {
-      Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
-      getActionableItemsFromItemAndChildren(aia, aias);
-      return aias;
+   public static Set<IAtsActionableItem> getActionableItemsFromItemAndChildren(IAtsActionableItem ai) throws OseeCoreException {
+      Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
+      getActionableItemsFromItemAndChildren(ai, ais);
+      return ais;
    }
 
-   public static void getActionableItemsFromItemAndChildren(IAtsActionableItem aia, Set<IAtsActionableItem> aiaTeams) throws OseeCoreException {
-      for (IAtsActionableItem art : aia.getChildrenActionableItems()) {
-         aiaTeams.add(art);
-         for (IAtsActionableItem childArt : aia.getChildrenActionableItems()) {
-            getActionableItemsFromItemAndChildren(childArt, aiaTeams);
+   public static void getActionableItemsFromItemAndChildren(IAtsActionableItem ai, Set<IAtsActionableItem> aiTeams) throws OseeCoreException {
+      for (IAtsActionableItem art : ai.getChildrenActionableItems()) {
+         aiTeams.add(art);
+         for (IAtsActionableItem childArt : ai.getChildrenActionableItems()) {
+            getActionableItemsFromItemAndChildren(childArt, aiTeams);
          }
       }
    }
 
    public static Set<IAtsActionableItem> getActionableItems(Collection<String> actionableItemNames) throws OseeCoreException {
-      Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
       for (String actionableItemName : actionableItemNames) {
-         for (IAtsActionableItem aia : AtsCore.getAtsConfig().get(IAtsActionableItem.class)) {
-            if (aia.getName().equals(actionableItemName)) {
-               aias.add(aia);
+         for (IAtsActionableItem ai : AtsCore.getAtsConfig().get(IAtsActionableItem.class)) {
+            if (ai.getName().equals(actionableItemName)) {
+               ais.add(ai);
             }
          }
       }
-      return aias;
+      return ais;
    }
 
-   public static Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> aias) throws OseeCoreException {
-      return TeamDefinitions.getImpactedTeamDefs(aias);
+   public static Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> ais) throws OseeCoreException {
+      return TeamDefinitions.getImpactedTeamDefs(ais);
    }
 
    public static List<IAtsActionableItem> getActionableItems(Active active) throws OseeCoreException {

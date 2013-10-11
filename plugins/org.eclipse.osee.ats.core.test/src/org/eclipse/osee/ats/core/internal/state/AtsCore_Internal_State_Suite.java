@@ -8,17 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.workdef;
+package org.eclipse.osee.ats.core.internal.state;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses({StateManagerUnitTest.class})
 /**
  * @author Donald G. Dunne
  */
-public interface IUserResolver {
-
-   boolean isUserIdValid(String userId);
-
-   boolean isUserNameValid(String name);
-
-   String getUserIdByName(String name);
-
+public class AtsCore_Internal_State_Suite {
+   // TestSuite
 }

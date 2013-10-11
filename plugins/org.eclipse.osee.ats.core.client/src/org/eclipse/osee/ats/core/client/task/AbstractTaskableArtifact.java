@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
+import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;

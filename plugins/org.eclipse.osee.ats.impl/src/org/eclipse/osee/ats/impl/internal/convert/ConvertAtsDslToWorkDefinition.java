@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
@@ -28,7 +29,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.ats.api.workdef.IUserResolver;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
@@ -66,6 +66,7 @@ import org.eclipse.osee.ats.impl.internal.model.WidgetDefinitionFloatMinMaxConst
 import org.eclipse.osee.ats.impl.internal.model.WidgetDefinitionIntMinMaxConstraint;
 import org.eclipse.osee.ats.impl.internal.model.WidgetDefinitionListMinMaxSelectedConstraint;
 import org.eclipse.osee.ats.impl.internal.model.WorkDefinition;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -75,14 +76,14 @@ public class ConvertAtsDslToWorkDefinition {
    private final AtsDsl atsDsl;
    private final XResultData resultData;
    private final IAttributeResolver attrResolver;
-   private final IUserResolver userResolver;
+   private final IAtsUserService userService;
 
-   public ConvertAtsDslToWorkDefinition(String name, AtsDsl atsDsl, XResultData resultData, IAttributeResolver attrResolver, IUserResolver userResolver) {
+   public ConvertAtsDslToWorkDefinition(String name, AtsDsl atsDsl, XResultData resultData, IAttributeResolver attrResolver, IAtsUserService userService) {
       this.name = name;
       this.atsDsl = atsDsl;
       this.resultData = resultData;
       this.attrResolver = attrResolver;
-      this.userResolver = userResolver;
+      this.userService = userService;
    }
 
    public IAtsWorkDefinition convert() {
@@ -327,10 +328,14 @@ public class ConvertAtsDslToWorkDefinition {
                resultData.logWarningWithFormat("Unhandled UserByName name [%s]", name);
                continue;
             }
-            if (userResolver.isUserNameValid(name)) {
-               userIds.add(userResolver.getUserIdByName(name));
-            } else {
-               resultData.logWarningWithFormat("No user by name [%s]", name);
+            try {
+               if (userService.isUserNameValid(name)) {
+                  userIds.add(userService.getUserIdByName(name));
+               } else {
+                  resultData.logWarningWithFormat("No user by name [%s]", name);
+               }
+            } catch (OseeCoreException ex) {
+               resultData.logErrorWithFormat("Exception user by name [%s]", name);
             }
          } else if (UserRef instanceof UserByUserId) {
             UserByUserId byUserId = (UserByUserId) UserRef;
@@ -339,10 +344,14 @@ public class ConvertAtsDslToWorkDefinition {
                resultData.logWarningWithFormat("Unhandled UserByUserId id [%s]", userId);
                continue;
             }
-            if (userResolver.isUserIdValid(userId)) {
-               userIds.add(userId);
-            } else {
-               resultData.logWarningWithFormat("No user by id [%s]", userId);
+            try {
+               if (userService.isUserIdValid(userId)) {
+                  userIds.add(userId);
+               } else {
+                  resultData.logWarningWithFormat("No user by id [%s]", userId);
+               }
+            } catch (OseeCoreException ex) {
+               resultData.logErrorWithFormat("Exception user by id [%s]", name);
             }
          } else {
             resultData.logWarningWithFormat("Unhandled UserRef type [%s]", UserRef);

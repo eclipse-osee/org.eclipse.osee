@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;

@@ -14,7 +14,7 @@ import java.text.NumberFormat;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.PercentCompleteTotalUtil;
+import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;

@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;

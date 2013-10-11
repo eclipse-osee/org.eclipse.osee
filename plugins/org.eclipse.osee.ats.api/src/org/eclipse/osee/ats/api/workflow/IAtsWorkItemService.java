@@ -13,6 +13,8 @@ package org.eclipse.osee.ats.api.workflow;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -31,5 +33,21 @@ public interface IAtsWorkItemService {
    boolean isOfType(IAtsWorkItem item, IArtifactType matchType) throws OseeCoreException;
 
    IAtsWorkItem getParentTeamWorkflow(IAtsWorkItem workItem) throws OseeCoreException;
+
+   int getTransactionNumber(IAtsWorkItem workItem) throws OseeCoreException;
+
+   Collection<IAtsTeamWorkflow> getTeams(IAtsAction action) throws OseeCoreException;
+
+   IStateToken getCurrentState(IAtsWorkItem workItem) throws OseeCoreException;
+
+   Collection<IAtsTask> getTasks(IAtsTeamWorkflow atsObject, IStateToken relatedToState) throws OseeCoreException;
+
+   Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow atsObject) throws OseeCoreException;
+
+   Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow atsObject, IStateToken state) throws OseeCoreException;
+
+   Collection<IAtsTask> getTasks(IAtsTeamWorkflow iAtsTeamWorkflow) throws OseeCoreException;
+
+   IAtsTeamWorkflow getFirstTeam(IAtsAction action) throws OseeCoreException;
 
 }

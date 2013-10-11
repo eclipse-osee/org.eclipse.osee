@@ -8,16 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.workflow;
+package org.eclipse.osee.ats.api.workflow;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({StateManagerUnitTest.class})
-/**
- * @author Donald G. Dunne
- */
-public class WorkflowSuite {
-   // TestSuite
+public interface IAttribute<T> {
+
+   public T getValue() throws OseeCoreException;
+
+   public Object getData();
+
+   public void delete() throws OseeCoreException;
+
+   public void setValue(T value) throws OseeCoreException;
 }

@@ -24,9 +24,9 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
-import org.eclipse.osee.ats.core.client.team.TeamState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.mocks.MockDecisionReviewOption;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

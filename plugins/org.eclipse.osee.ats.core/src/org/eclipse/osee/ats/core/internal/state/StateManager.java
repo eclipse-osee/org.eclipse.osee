@@ -9,88 +9,80 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.ats.core.client.workflow;
+package org.eclipse.osee.ats.core.internal.state;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.api.workflow.WorkStateProvider;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.AtsCore;
-import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
-import org.eclipse.osee.ats.core.client.notify.AtsNotifyType;
-import org.eclipse.osee.ats.core.client.team.SimpleTeamState;
-import org.eclipse.osee.ats.core.client.team.TeamState;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.model.WorkStateFactory;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.model.impl.WorkStateProviderImpl;
 import org.eclipse.osee.ats.core.notify.IAtsNotificationListener;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.util.HoursSpentUtil;
+import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
+import org.eclipse.osee.ats.core.workflow.state.AtsWorkStateFactory;
+import org.eclipse.osee.ats.core.workflow.state.SimpleTeamState;
+import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 
 /**
  * @author Donald G. Dunne
  */
-public class StateManager implements IAtsNotificationListener, WorkStateProvider, WorkStateFactory {
+public class StateManager implements IAtsNotificationListener, IAtsStateManager {
 
-   private final AbstractWorkflowArtifact awa;
-
-   private static List<String> allValidStateNames = null;
+   private final IAtsWorkItem workItem;
    private WorkStateProvider stateProvider = null;
    private int loadTransactionNumber;
 
-   public StateManager(AbstractWorkflowArtifact awa) {
-      this.awa = awa;
+   public StateManager(IAtsWorkItem workItem) {
+      this.workItem = workItem;
    }
 
+   @Override
    public synchronized WorkStateProvider getStateProvider() throws OseeCoreException {
-      // Refresh the StateProvider on first load or when artifact transaction number changes
-      if (stateProvider == null || awa.getTransactionNumber() != loadTransactionNumber) {
+      // Refresh the StateProvider on first load or when workItem transaction number changes
+      if (stateProvider == null || AtsCore.getWorkItemService().getTransactionNumber(workItem) != loadTransactionNumber) {
          load();
       }
       return stateProvider;
    }
 
+   @Override
    public void reload() throws OseeCoreException {
       load();
    }
 
+   @Override
    public synchronized void load() throws OseeCoreException {
-      String currentStateXml = awa.getSoleAttributeValue(AtsAttributeTypes.CurrentState, "");
+      String currentStateXml =
+         AtsCore.getAttrResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "");
       if (Strings.isValid(currentStateXml)) {
          WorkStateImpl currentState = AtsWorkStateFactory.getFromXml(currentStateXml);
          stateProvider = new WorkStateProviderImpl(this, currentState);
-         for (String stateXml : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
+         for (String stateXml : AtsCore.getAttrResolver().getAttributesToStringList(workItem, AtsAttributeTypes.State)) {
             WorkStateImpl state = AtsWorkStateFactory.getFromXml(stateXml);
             if (!state.getName().equals(currentState.getName())) {
                if (!state.getName().equals(currentState.getName())) {
@@ -102,7 +94,7 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
          stateProvider = new WorkStateProviderImpl(this);
       }
       ((WorkStateProviderImpl) stateProvider).setNotificationListener(this);
-      loadTransactionNumber = awa.getTransactionNumber();
+      loadTransactionNumber = AtsCore.getWorkItemService().getTransactionNumber(workItem);
    }
 
    @Override
@@ -110,20 +102,23 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
       try {
          return getStateProvider().getCurrentStateName();
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(AtsCore.class, Level.SEVERE, ex);
       }
       return "";
    }
 
+   @Override
    public IStateToken getCurrentState() {
       return new SimpleTeamState(getCurrentStateName(), getCurrentStateType());
    }
 
+   @Override
    public StateType getCurrentStateType() {
       try {
-         if (awa.isAttributeTypeValid(AtsAttributeTypes.CurrentStateType)) {
+         if (AtsCore.getAttrResolver().isAttributeTypeValid(workItem, AtsAttributeTypes.CurrentStateType)) {
             // backward compatibility
-            if (awa.getSoleAttributeValueAsString(AtsAttributeTypes.CurrentStateType, null) == null) {
+            if (AtsCore.getAttrResolver().getSoleAttributeValueAsString(workItem, AtsAttributeTypes.CurrentStateType,
+               null) == null) {
                if (getCurrentStateName().equals(TeamState.Completed.getName())) {
                   return StateType.Completed;
                } else if (getCurrentStateName().equals(TeamState.Cancelled.getName())) {
@@ -132,15 +127,17 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
                   return StateType.Working;
                }
             } else {
-               return StateType.valueOf(awa.getSoleAttributeValueAsString(AtsAttributeTypes.CurrentStateType, null));
+               return StateType.valueOf(AtsCore.getAttrResolver().getSoleAttributeValueAsString(workItem,
+                  AtsAttributeTypes.CurrentStateType, null));
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(AtsCore.class, Level.SEVERE, ex);
       }
       return null;
    }
 
+   @Override
    public void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {
       WorkStateProvider provider = getStateProvider();
 
@@ -163,30 +160,31 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
          provider.setHoursSpent(state.getName(), remaining);
       }
 
-      if (AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(awa.getWorkDefinition())) {
+      if (AtsCore.getWorkDefService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
          provider.setPercentComplete(state.getName(), percentComplete);
       } else {
-         awa.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
+         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.PercentComplete, percentComplete);
       }
       if (logMetrics) {
-         logMetrics(awa.getStateMgr().getCurrentState(), AtsClientService.get().getUserAdmin().getCurrentUser(),
-            new Date());
+         logMetrics(workItem.getStateMgr().getCurrentState(), AtsCore.getUserService().getCurrentUser(), new Date());
       }
-      writeToArtifact();
+      writeToStore();
    }
 
    protected void logMetrics(IStateToken state, IAtsUser user, Date date) throws OseeCoreException {
-      String hoursSpent = AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal(awa));
-      logMetrics(awa, PercentCompleteTotalUtil.getPercentCompleteTotal(awa) + "", hoursSpent, state, user, date);
+      String hoursSpent = AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal(workItem));
+      logMetrics(workItem, PercentCompleteTotalUtil.getPercentCompleteTotal(workItem) + "", hoursSpent, state, user,
+         date);
    }
 
-   public static void logMetrics(AbstractWorkflowArtifact sma, String percent, String hours, IStateToken state, IAtsUser user, Date date) throws OseeCoreException {
+   public static void logMetrics(IAtsWorkItem workItem, String percent, String hours, IStateToken state, IAtsUser user, Date date) throws OseeCoreException {
       IAtsLogItem logItem =
          AtsCore.getLogFactory().newLogItem(LogType.Metrics, date, user, state.getName(),
-            String.format("Percent %s Hours %s", percent, hours), sma.getAtsId());
-      sma.getLog().addLogItem(logItem);
+            String.format("Percent %s Hours %s", percent, hours), workItem.getAtsId());
+      workItem.getLog().addLogItem(logItem);
    }
 
+   @Override
    public void setMetrics(double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date) throws OseeCoreException {
       setMetrics(getCurrentState(), hours, percentComplete, logMetrics, user, date);
    }
@@ -201,14 +199,15 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
    /**
     * Set metrics and log if changed
     */
+
+   @Override
    public void setMetrics(IStateToken state, double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date) throws OseeCoreException {
       boolean changed = setMetricsIfChanged(state, hours, percentComplete);
       if (changed) {
          if (logMetrics) {
-            logMetrics(awa.getStateMgr().getCurrentState(), AtsClientService.get().getUserAdmin().getCurrentUser(),
-               new Date());
+            logMetrics(workItem.getStateMgr().getCurrentState(), AtsCore.getUserService().getCurrentUser(), new Date());
          }
-         writeToArtifact();
+         writeToStore();
       }
    }
 
@@ -225,8 +224,9 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
       return changed;
    }
 
-   public StateType getStateType() {
-      return awa.getStateDefinition().getStateType();
+   @Override
+   public StateType getStateType() throws OseeCoreException {
+      return workItem.getStateDefinition().getStateType();
    }
 
    @Override
@@ -237,9 +237,10 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
          throw new OseeStateException("Can't assign completed/cancelled states.");
       }
       getStateProvider().addAssignees(stateName, assignees);
-      writeToArtifact();
+      writeToStore();
    }
 
+   @Override
    public String getHoursSpentStr(String stateName) throws OseeCoreException {
       return AtsUtilCore.doubleToI18nString(getHoursSpent(stateName), true);
    }
@@ -249,44 +250,51 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
       setAssignees(Arrays.asList(assignee));
    }
 
+   @Override
    public void setAssignees(Collection<? extends IAtsUser> assignees) throws OseeCoreException {
       setAssignees(getCurrentStateName(), new LinkedList<IAtsUser>(assignees));
    }
 
    /**
-    * Sets the assignees as attributes and relations AND writes to artifact. Does not persist.
+    * Sets the assignees as attributes and relations AND writes to store. Does not persist.
     */
+
    @Override
    public void setAssignees(String stateName, List<? extends IAtsUser> assignees) throws OseeCoreException {
       if (assignees == null || assignees.isEmpty()) {
          return;
       } else {
-         IAtsStateDefinition stateDef = awa.getStateDefinitionByName(stateName);
+         IAtsStateDefinition stateDef = workItem.getWorkDefinition().getStateByName(stateName);
          StateType stateType = stateDef.getStateType();
          if (stateType.isCompletedOrCancelledState()) {
             throw new OseeStateException("Can't assign completed/cancelled states.");
          }
       }
       getStateProvider().setAssignees(stateName, new LinkedList<IAtsUser>(assignees));
-      writeToArtifact();
+      writeToStore();
    }
 
+   @Override
    public void transitionHelper(List<? extends IAtsUser> toAssignees, IStateToken fromStateName, IStateToken toStateName, String cancelReason) throws OseeCoreException {
       transitionHelper(toAssignees, fromStateName.getName(), toStateName.getName(), cancelReason);
-      awa.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, toStateName.getStateType().name());
-      writeToArtifact();
+      AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType,
+         toStateName.getStateType().name());
+      writeToStore();
    }
 
+   @Override
    public void transitionHelper(List<? extends IAtsUser> toAssignees, String fromStateName, String toStateName, String cancelReason) throws OseeCoreException {
       createState(toStateName);
       setAssignees(toStateName, toAssignees);
       setCurrentStateName(toStateName);
-      writeToArtifact();
+      writeToStore();
    }
 
    /**
     * Initializes state machine and sets the current state to stateName
     */
+
+   @Override
    public void initializeStateMachine(IStateToken workPage, List<? extends IAtsUser> assignees, IAtsUser currentUser) throws OseeCoreException {
       getStateProvider().createState(workPage.getName());
       getStateProvider().setCurrentStateName(workPage.getName());
@@ -300,125 +308,32 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
             setAssignees(assignees);
          }
       }
-      if (awa.isAttributeTypeValid(AtsAttributeTypes.CurrentStateType)) {
-         awa.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, workPage.getStateType().name());
+      if (AtsCore.getAttrResolver().isAttributeTypeValid(workItem, AtsAttributeTypes.CurrentStateType)) {
+         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType,
+            workPage.getStateType().name());
       }
-      writeToArtifact();
+      writeToStore();
    }
 
+   @Override
    public long getTimeInState() throws OseeCoreException {
       return getTimeInState(getCurrentState());
    }
 
+   @Override
    public long getTimeInState(IStateToken state) throws OseeCoreException {
       if (state == null) {
          return 0;
       }
-      IAtsLogItem logItem = awa.getStateStartedData(state);
+      IAtsLogItem logItem = workItem.getStateStartedData(state);
       if (logItem == null) {
          return 0;
       }
       return new Date().getTime() - logItem.getDate().getTime();
    }
 
-   /**
-    * return currently assigned state machine artifacts
-    */
-   public static Set<Artifact> getAssigned(IAtsUser user) throws OseeCoreException {
-      return getAssigned(user, null);
-   }
-
-   /**
-    * return currently assigned state machine artifacts that match clazz
-    * 
-    * @param clazz to match or all if null
-    */
-   public static Set<Artifact> getAssigned(IAtsUser user, Class<?> clazz) throws OseeCoreException {
-      return getAssigned(user.getUserId(), clazz);
-   }
-
-   /**
-    * return currently assigned state machine artifacts that match clazz
-    * 
-    * @param clazz to match or all if null
-    */
-   public static Set<Artifact> getAssigned(String userId, Class<?> clazz) throws OseeCoreException {
-      Set<Artifact> assigned = new HashSet<Artifact>();
-      for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.CurrentState,
-         "<" + userId + ">", AtsUtilCore.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
-         if (clazz == null || clazz.isInstance(artifact)) {
-            assigned.add(artifact);
-         }
-      }
-      return assigned;
-
-   }
-
-   public static List<IAtsUser> getImplementersByState(AbstractWorkflowArtifact workflow, IStateToken state) throws OseeCoreException {
-      List<IAtsUser> users = new ArrayList<IAtsUser>();
-      if (workflow.isCancelled()) {
-         users.add(workflow.getCancelledBy());
-      } else {
-         for (IAtsUser user : workflow.getStateMgr().getAssignees(state.getName())) {
-            if (!users.contains(user)) {
-               users.add(user);
-            }
-         }
-         if (workflow.isCompleted()) {
-            IAtsUser user = workflow.getCompletedBy();
-            if (user != null && !users.contains(user)) {
-               users.add(user);
-            }
-         }
-      }
-      return users;
-   }
-
-   /**
-    * Returns all valid state names for all work definitions in the system
-    */
-   public synchronized static Collection<? extends String> getAllValidStateNames() {
-      if (allValidStateNames == null) {
-         allValidStateNames = new ArrayList<String>();
-         try {
-            Artifact artifact = null;
-            try {
-               artifact =
-                  ArtifactQuery.getArtifactFromToken(AtsArtifactToken.WorkDef_State_Names,
-                     AtsUtilCore.getAtsBranchToken());
-            } catch (ArtifactDoesNotExist ex) {
-               // do nothing
-            }
-            if (artifact != null) {
-               for (String value : artifact.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData, "").split(",")) {
-                  allValidStateNames.add(value);
-               }
-            } else {
-               OseeLog.logf(Activator.class, Level.INFO,
-                  "ATS Valid State Names: Missing [%s] Artifact; Falling back to loadAddDefinitions",
-                  AtsArtifactToken.WorkDef_State_Names.getName());
-               try {
-                  for (IAtsWorkDefinition workDef : AtsClientService.get().getWorkDefinitionAdmin().loadAllDefinitions()) {
-                     for (String stateName : AtsClientService.get().getWorkDefinitionAdmin().getStateNames(workDef)) {
-                        if (!allValidStateNames.contains(stateName)) {
-                           allValidStateNames.add(stateName);
-                        }
-                     }
-                  }
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               }
-            }
-            Collections.sort(allValidStateNames);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
-      return allValidStateNames;
-   }
-
-   public static String getCompletedDateByState(AbstractWorkflowArtifact awa, IAtsStateDefinition state) throws OseeCoreException {
-      IAtsLogItem stateEvent = awa.getLog().getStateEvent(LogType.StateComplete, state.getName());
+   public static String getCompletedDateByState(IAtsWorkItem workItem, IAtsStateDefinition state) throws OseeCoreException {
+      IAtsLogItem stateEvent = workItem.getLog().getStateEvent(LogType.StateComplete, state.getName());
       if (stateEvent != null && stateEvent.getDate() != null) {
          return DateUtil.getMMDDYYHHMM(stateEvent.getDate());
       }
@@ -433,34 +348,37 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
    @Override
    public void addState(String stateName, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete) throws OseeCoreException {
       getStateProvider().addState(stateName, assignees, hoursSpent, percentComplete);
-      writeToArtifact();
+      writeToStore();
    }
 
+   @Override
    public boolean isDirty() throws OseeCoreException {
       return isDirtyResult().isTrue();
    }
 
+   @Override
    public Result isDirtyResult() throws OseeCoreException {
-      if (awa.getAttributeCount(AtsAttributeTypes.CurrentState) == 0) {
+      if (AtsCore.getAttrResolver().getAttributeCount(workItem, AtsAttributeTypes.CurrentState) == 0) {
          return new Result(true, "StateManager: Current State new");
       }
       if (!AtsWorkStateFactory.toXml(this, getCurrentStateName()).equals(
-         awa.getSoleAttributeValue(AtsAttributeTypes.CurrentState, null))) {
+         AtsCore.getAttrResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, null))) {
          return new Result(true, "StateManager: Current State modified");
       }
       for (String stateName : getStateProvider().getVisitedStateNames()) {
          if (!stateName.equals(getCurrentStateName())) {
             boolean found = false;
             // Update attribute if it already exists
-            Collection<Attribute<String>> attrs = awa.getAttributes(AtsAttributeTypes.State);
-            for (Attribute<String> attr : attrs) {
+            Collection<IAttribute<String>> attrs =
+               AtsCore.getAttrResolver().getAttributes(workItem, AtsAttributeTypes.State);
+            for (IAttribute<String> attr : attrs) {
                String attrValue = attr.getValue();
                WorkStateImpl storedState = AtsWorkStateFactory.getFromXml(attrValue);
                if (stateName.equals(storedState.getName())) {
                   found = true;
-                  if (!awa.getStateMgr().getStateProvider().isSame(storedState)) {
+                  if (!workItem.getStateMgr().getStateProvider().isSame(storedState)) {
                      return new Result(true, String.format("StateManager: State [%s] modified was [%s] is [%s]",
-                        stateName, attrValue, AtsWorkStateFactory.toXml(awa.getStateMgr(), stateName)));
+                        stateName, attrValue, AtsWorkStateFactory.toXml(workItem.getStateMgr(), stateName)));
                   }
                }
             }
@@ -473,27 +391,30 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
       return Result.FalseResult;
    }
 
-   public void writeToArtifact() throws OseeCoreException {
-      awa.setSoleAttributeValue(AtsAttributeTypes.CurrentState, AtsWorkStateFactory.toXml(this, getCurrentStateName()));
+   @Override
+   public void writeToStore() throws OseeCoreException {
+      AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState,
+         AtsWorkStateFactory.toXml(this, getCurrentStateName()));
       removeCurrentStateAttributeIfExists(getCurrentStateName());
-      writeStatesToArtifact();
+      writeStatesToStore();
    }
 
-   private void writeStatesToArtifact() throws OseeCoreException {
+   private void writeStatesToStore() throws OseeCoreException {
       for (String stateName : getStateProvider().getVisitedStateNames()) {
          if (!stateName.equals(getCurrentStateName())) {
             boolean updated = updateStateAttributeIfExsists(stateName);
             // Else, doesn't exist yet, create
             if (!updated) {
-               awa.addAttribute(AtsAttributeTypes.State, AtsWorkStateFactory.toXml(awa.getStateMgr(), stateName));
+               AtsCore.getAttrResolver().addAttribute(workItem, AtsAttributeTypes.State,
+                  AtsWorkStateFactory.toXml(workItem.getStateMgr(), stateName));
             }
          }
       }
    }
 
    private void removeCurrentStateAttributeIfExists(String stateName) throws OseeCoreException {
-      Collection<Attribute<String>> attrs = awa.getAttributes(AtsAttributeTypes.State);
-      for (Attribute<String> attr : attrs) {
+      Collection<IAttribute<String>> attrs = AtsCore.getAttrResolver().getAttributes(workItem, AtsAttributeTypes.State);
+      for (IAttribute<String> attr : attrs) {
          WorkStateImpl storedState = AtsWorkStateFactory.getFromXml(attr.getValue());
          if (stateName.equals(storedState.getName())) {
             attr.delete();
@@ -503,11 +424,11 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
 
    private boolean updateStateAttributeIfExsists(String stateName) throws OseeCoreException {
       // Update attribute if it already exists
-      Collection<Attribute<String>> attrs = awa.getAttributes(AtsAttributeTypes.State);
-      for (Attribute<String> attr : attrs) {
+      Collection<IAttribute<String>> attrs = AtsCore.getAttrResolver().getAttributes(workItem, AtsAttributeTypes.State);
+      for (IAttribute<String> attr : attrs) {
          WorkStateImpl storedState = AtsWorkStateFactory.getFromXml(attr.getValue());
          if (stateName.equals(storedState.getName())) {
-            attr.setValue(AtsWorkStateFactory.toXml(awa.getStateMgr(), stateName));
+            attr.setValue(AtsWorkStateFactory.toXml(workItem.getStateMgr(), stateName));
             return true;
          }
       }
@@ -516,7 +437,7 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
 
    @Override
    public void notifyAssigned(List<IAtsUser> notifyAssignees) throws OseeCoreException {
-      AtsNotificationManager.notify(awa, notifyAssignees, AtsNotifyType.Assigned);
+      AtsCore.getNotifyService().notify(workItem, notifyAssignees, AtsNotifyType.Assigned);
    }
 
    @Override
@@ -537,7 +458,7 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
    @Override
    public void setCurrentStateName(String currentStateName) throws OseeCoreException {
       getStateProvider().setCurrentStateName(currentStateName);
-      writeToArtifact();
+      writeToStore();
    }
 
    @Override
@@ -548,7 +469,7 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
    @Override
    public void addState(String stateName, List<? extends IAtsUser> assignees) throws OseeCoreException {
       getStateProvider().addState(stateName, assignees);
-      writeToArtifact();
+      writeToStore();
    }
 
    @Override
@@ -559,19 +480,19 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
    @Override
    public void createState(String stateName) throws OseeCoreException {
       getStateProvider().createState(stateName);
-      writeToArtifact();
+      writeToStore();
    }
 
    @Override
    public void setPercentComplete(String stateName, int percentComplete) throws OseeCoreException {
       getStateProvider().setPercentComplete(stateName, percentComplete);
-      writeToArtifact();
+      writeToStore();
    }
 
    @Override
    public void setHoursSpent(String stateName, double hoursSpent) throws OseeCoreException {
       getStateProvider().setHoursSpent(stateName, hoursSpent);
-      writeToArtifact();
+      writeToStore();
    }
 
    @Override
@@ -592,17 +513,19 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
    @Override
    public void removeAssignee(String stateName, IAtsUser assignee) throws OseeCoreException {
       getStateProvider().removeAssignee(stateName, assignee);
-      writeToArtifact();
+      writeToStore();
    }
 
+   @Override
    public void setAssignee(IStateToken state, IAtsUser assignee) throws OseeCoreException {
       getStateProvider().setAssignee(state.getName(), assignee);
-      writeToArtifact();
+      writeToStore();
    }
 
+   @Override
    public void createState(IStateToken state) throws OseeCoreException {
       getStateProvider().createState(state.getName());
-      writeToArtifact();
+      writeToStore();
    }
 
    @Override
@@ -618,7 +541,7 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
    @Override
    public void removeAssignee(IAtsUser assignee) throws OseeCoreException {
       getStateProvider().removeAssignee(assignee);
-      writeToArtifact();
+      writeToStore();
    }
 
    @Override
@@ -629,21 +552,20 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
    @Override
    public void clearAssignees() throws OseeCoreException {
       getStateProvider().clearAssignees();
-      writeToArtifact();
+      writeToStore();
    }
 
+   @Override
    public Collection<? extends IAtsUser> getAssignees(IStateToken state) throws OseeCoreException {
       return getStateProvider().getAssignees(state.getName());
    }
 
-   public String getAssigneesStr(SimpleTeamState state, int length) throws OseeCoreException {
-      return getStateProvider().getAssigneesStr(state.getName(), length);
-   }
-
+   @Override
    public boolean isStateVisited(IStateToken state) throws OseeCoreException {
       return getStateProvider().isStateVisited(state.getName());
    }
 
+   @Override
    public String getAssigneesStr(int length) throws OseeCoreException {
       return getStateProvider().getAssigneesStr(getCurrentStateName(), length);
    }
@@ -691,9 +613,10 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
    @Override
    public void addState(WorkState workState) throws OseeCoreException {
       getStateProvider().addState(workState);
-      writeToArtifact();
+      writeToStore();
    }
 
+   @Override
    public void validateNoBootstrapUser() throws OseeCoreException {
       for (IAtsUser user : getAssignees()) {
          if (SystemUser.BootStrap.getUserId().equals(user.getUserId())) {
@@ -709,7 +632,7 @@ public class StateManager implements IAtsNotificationListener, WorkStateProvider
 
    @Override
    public String getId() {
-      return awa.getAtsId();
+      return workItem.getAtsId();
    }
 
 }

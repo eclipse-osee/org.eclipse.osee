@@ -45,7 +45,7 @@ public interface IAtsLog {
    public abstract String internalGetCancelledReason() throws OseeCoreException;
 
    /**
-    * This method is replaced by AbstractWorkflowArtifact.getCompletedFromState. Kept for backward compatibility.
+    * This method is replaced by workItem.getCompletedFromState. Kept for backward compatibility.
     */
    public abstract String internalGetCompletedFromState() throws OseeCoreException;
 

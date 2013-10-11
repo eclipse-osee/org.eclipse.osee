@@ -57,6 +57,7 @@ import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerEventManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -257,7 +258,7 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       showBusy(set);
    }
 
-   private void createAtsBody() {
+   private void createAtsBody() throws OseeStateException {
       if (Widgets.isAccessible(atsBody)) {
          if (getManagedForm() != null && getManagedForm().getMessageManager() != null) {
             getManagedForm().getMessageManager().removeAllMessages();

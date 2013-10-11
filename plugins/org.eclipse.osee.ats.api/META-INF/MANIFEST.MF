@@ -10,6 +10,7 @@ Export-Package: org.eclipse.osee.ats.api,
  org.eclipse.osee.ats.api.commit,
  org.eclipse.osee.ats.api.data,
  org.eclipse.osee.ats.api.ev,
+ org.eclipse.osee.ats.api.notify,
  org.eclipse.osee.ats.api.query,
  org.eclipse.osee.ats.api.review,
  org.eclipse.osee.ats.api.rule,
@@ -19,7 +20,8 @@ Export-Package: org.eclipse.osee.ats.api,
  org.eclipse.osee.ats.api.version,
  org.eclipse.osee.ats.api.workdef,
  org.eclipse.osee.ats.api.workflow,
- org.eclipse.osee.ats.api.workflow.log
+ org.eclipse.osee.ats.api.workflow.log,
+ org.eclipse.osee.ats.api.workflow.state
 Require-Bundle: org.eclipse.core.runtime
 Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,

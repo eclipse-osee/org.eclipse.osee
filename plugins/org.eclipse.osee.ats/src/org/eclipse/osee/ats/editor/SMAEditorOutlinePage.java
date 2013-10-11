@@ -43,7 +43,9 @@ import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -92,12 +94,16 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          if (getTreeViewer() != null) {
             if (editor != null && getTreeViewer() != null && Widgets.isAccessible(getTreeViewer().getTree())) {
                getTreeViewer().setInput(editor);
-               IAtsStateDefinition stateDef =
-                  WorkflowManager.getCurrentAtsWorkPage((editor).getAwa()).getStateDefinition();
-               StructuredSelection newSelection = new StructuredSelection(Arrays.asList(stateDef));
-               getTreeViewer().expandToLevel((editor).getAwa(), 2);
-               getTreeViewer().expandToLevel(stateDef, 1);
-               getTreeViewer().setSelection(newSelection);
+               IAtsStateDefinition stateDef;
+               try {
+                  stateDef = WorkflowManager.getCurrentAtsWorkPage((editor).getAwa()).getStateDefinition();
+                  StructuredSelection newSelection = new StructuredSelection(Arrays.asList(stateDef));
+                  getTreeViewer().expandToLevel((editor).getAwa(), 2);
+                  getTreeViewer().expandToLevel(stateDef, 1);
+                  getTreeViewer().setSelection(newSelection);
+               } catch (OseeStateException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
             }
          }
       }
@@ -269,8 +275,13 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          } else if (element instanceof WrappedTransitions) {
             return true;
          } else if (element instanceof WrappedPercentWeight) {
-            return AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(
-               ((WrappedPercentWeight) element).getWorkDef());
+            try {
+               return AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(
+                  ((WrappedPercentWeight) element).getWorkDef());
+            } catch (OseeStateException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+            return false;
          } else if (element instanceof WrappedLayout) {
             return !((WrappedLayout) element).stateItems.isEmpty();
          } else if (element instanceof WrappedDecisionReviews) {
@@ -292,9 +303,13 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromWrappedPercentDefinition(WrappedPercentWeight weightDef, List<Object> items) {
-         for (IAtsStateDefinition stateDef : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
-            weightDef.getWorkDef())) {
-            items.add(String.format("State [%s]: %d", stateDef.getName(), stateDef.getStateWeight()));
+         try {
+            for (IAtsStateDefinition stateDef : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
+               weightDef.getWorkDef())) {
+               items.add(String.format("State [%s]: %d", stateDef.getName(), stateDef.getStateWeight()));
+            }
+         } catch (OseeStateException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
 
@@ -382,8 +397,12 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
       private void getChildrenFromWorkDefinitionMatch(Object element, List<Object> items) {
-         items.addAll(AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
-            ((WorkDefinitionMatch) element).getWorkDefinition()));
+         try {
+            items.addAll(AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
+               ((WorkDefinitionMatch) element).getWorkDefinition()));
+         } catch (OseeStateException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
          items.add(new WrappedPercentWeight(((WorkDefinitionMatch) element).getWorkDefinition()));
          items.add(new WrappedTrace(((WorkDefinitionMatch) element).getTrace()));
       }
@@ -500,11 +519,16 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
       @Override
       public String toString() {
-         if (AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(workDef)) {
-            return "Total Percent Weighting";
-         } else {
-            return "Total Percent Weighting: Single Percent";
+         try {
+            if (AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(workDef)) {
+               return "Total Percent Weighting";
+            } else {
+               return "Total Percent Weighting: Single Percent";
+            }
+         } catch (OseeStateException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
+         return "Total Percent Weighting: exception (see error log)";
       }
 
       public IAtsWorkDefinition getWorkDef() {
