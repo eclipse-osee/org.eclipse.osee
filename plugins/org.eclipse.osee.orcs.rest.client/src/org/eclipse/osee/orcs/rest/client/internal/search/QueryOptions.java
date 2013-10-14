@@ -17,8 +17,6 @@ import org.eclipse.osee.orcs.rest.client.internal.Options;
  */
 public class QueryOptions extends Options {
 
-   private boolean includeCache = true;
-
    public QueryOptions() {
       super();
    }
@@ -26,15 +24,6 @@ public class QueryOptions extends Options {
    @Override
    public void reset() {
       super.reset();
-      includeCache = true;
-   }
-
-   public boolean isCacheIncluded() {
-      return includeCache;
-   }
-
-   public void setIncludeCache(boolean enabled) {
-      includeCache = enabled;
    }
 
    @Override
@@ -42,12 +31,11 @@ public class QueryOptions extends Options {
       QueryOptions clone = new QueryOptions();
       clone.setIncludeDeleted(this.areDeletedIncluded());
       clone.setFromTransaction(this.getFromTransaction());
-      clone.includeCache = this.includeCache;
       return clone;
    }
 
    @Override
    public String toString() {
-      return "QueryOptions [includeCache=" + includeCache + " [" + super.toString() + "]]";
+      return "QueryOptions [" + super.toString() + "]";
    }
 }

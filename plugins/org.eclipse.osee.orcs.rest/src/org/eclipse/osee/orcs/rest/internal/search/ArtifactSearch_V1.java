@@ -97,10 +97,10 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
     */
    @GET
    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-   public SearchResponse getSearchWithQueryParams(@QueryParam("alt") String alt, @QueryParam("fields") String fields, @QueryParam("q") String rawQuery, @QueryParam("fromTx") int fromTransaction, @QueryParam("cached") boolean includeCache, @QueryParam("includeDeleted") boolean includeDeleted) throws OseeCoreException {
+   public SearchResponse getSearchWithQueryParams(@QueryParam("alt") String alt, @QueryParam("fields") String fields, @QueryParam("q") String rawQuery, @QueryParam("fromTx") int fromTransaction, @QueryParam("includeDeleted") boolean includeDeleted) throws OseeCoreException {
       DslTranslator translator = DslFactory.createTranslator();
       SearchRequest params =
-         new SearchRequest(getBranchUuid(), translator.translate(rawQuery), alt, fields, fromTransaction, includeCache,
+         new SearchRequest(getBranchUuid(), translator.translate(rawQuery), alt, fields, fromTransaction,
             includeDeleted);
       return search(params);
    }
@@ -119,7 +119,6 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
 
       QueryBuilder builder = searchQueryBuilder.build(qFactory, params);
 
-      builder.includeCache(params.isIncludeCache());
       builder.includeDeleted(params.isIncludeDeleted());
 
       if (params.getFromTx() > 0) {

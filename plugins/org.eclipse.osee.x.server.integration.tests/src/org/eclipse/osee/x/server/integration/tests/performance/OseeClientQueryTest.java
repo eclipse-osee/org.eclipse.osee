@@ -104,22 +104,6 @@ public class OseeClientQueryTest {
    }
 
    @Test
-   public void searchForArtifactByGuidsExcludeCache() throws OseeCoreException {
-      final int EXPECTED_RESULTS = 2;
-      SearchResult results =
-         createClient.createQueryBuilder(COMMON).andGuids(GUID1, GUID2).excludeCache().getSearchResult();
-      assertEquals(EXPECTED_RESULTS, results.getTotal());
-   }
-
-   @Test
-   public void searchForArtifactByGuidsIncludeCache() throws OseeCoreException {
-      final int EXPECTED_RESULTS = 2;
-      SearchResult results =
-         createClient.createQueryBuilder(COMMON).andGuids(GUID1, GUID2).includeCache().getSearchResult();
-      assertEquals(EXPECTED_RESULTS, results.getTotal());
-   }
-
-   @Test
    public void searchForArtifactByLocalId() throws OseeCoreException {
       final int EXPECTED_RESULTS = 1;
       SearchResult results = createClient.createQueryBuilder(COMMON).andLocalId(9).getSearchResult();

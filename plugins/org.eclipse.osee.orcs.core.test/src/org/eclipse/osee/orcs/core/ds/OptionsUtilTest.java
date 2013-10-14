@@ -39,7 +39,6 @@ public class OptionsUtilTest {
       assertEquals(LoadLevel.SHALLOW, OptionsUtil.getLoadLevel(defaults));
       assertEquals(false, OptionsUtil.areDeletedIncluded(defaults));
 
-      assertEquals(false, OptionsUtil.isCacheIncluded(defaults));
       assertEquals(true, OptionsUtil.isHeadTransaction(defaults));
       assertEquals(false, OptionsUtil.isHistorical(defaults));
    }
@@ -84,26 +83,15 @@ public class OptionsUtilTest {
    }
 
    @Test
-   public void testSetGetIncludeCache() {
-      assertEquals(false, OptionsUtil.isCacheIncluded(options));
-
-      OptionsUtil.setIncludeCache(options, true);
-
-      assertEquals(true, OptionsUtil.isCacheIncluded(options));
-   }
-
-   @Test
    public void testReset() {
       OptionsUtil.setFromTransaction(options, 1231);
       OptionsUtil.setLoadLevel(options, LoadLevel.ATTRIBUTE);
       OptionsUtil.setIncludeDeleted(options, true);
-      OptionsUtil.setIncludeCache(options, true);
 
       assertEquals(1231, OptionsUtil.getFromTransaction(options));
       assertEquals(DeletionFlag.INCLUDE_DELETED, OptionsUtil.getIncludeDeleted(options));
       assertEquals(LoadLevel.ATTRIBUTE, OptionsUtil.getLoadLevel(options));
       assertEquals(true, OptionsUtil.areDeletedIncluded(options));
-      assertEquals(true, OptionsUtil.isCacheIncluded(options));
       assertEquals(false, OptionsUtil.isHeadTransaction(options));
       assertEquals(true, OptionsUtil.isHistorical(options));
 
@@ -113,7 +101,6 @@ public class OptionsUtilTest {
       assertEquals(DeletionFlag.EXCLUDE_DELETED, OptionsUtil.getIncludeDeleted(options));
       assertEquals(LoadLevel.SHALLOW, OptionsUtil.getLoadLevel(options));
       assertEquals(false, OptionsUtil.areDeletedIncluded(options));
-      assertEquals(false, OptionsUtil.isCacheIncluded(options));
       assertEquals(true, OptionsUtil.isHeadTransaction(options));
       assertEquals(false, OptionsUtil.isHistorical(options));
    }

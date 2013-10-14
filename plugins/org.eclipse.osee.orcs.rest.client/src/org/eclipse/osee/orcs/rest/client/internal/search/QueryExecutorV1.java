@@ -59,11 +59,6 @@ public class QueryExecutorV1 implements QueryExecutor {
          fromTx = options.getFromTransaction();
       }
 
-      boolean includeCache = false;
-      if (options.isCacheIncluded()) {
-         includeCache = true;
-      }
-
       boolean includeDeleted = false;
       if (options.areDeletedIncluded()) {
          includeDeleted = true;
@@ -71,7 +66,7 @@ public class QueryExecutorV1 implements QueryExecutor {
 
       SearchRequest params =
          new SearchRequest(branch.getGuid(), predicates, outputFormat.name().toLowerCase(),
-            requestType.name().toLowerCase(), fromTx, includeCache, includeDeleted);
+            requestType.name().toLowerCase(), fromTx, includeDeleted);
 
       URI uri = uriProvider.getEncodedURI(String.format("oseex/branch/%s/artifact/search/v1", branch.getGuid()), null);
 

@@ -69,7 +69,7 @@ public class SearchDslTest {
             Strings.EMPTY_STRING, Arrays.asList("AtsAdmin"));
       SearchRequest params =
          new SearchRequest(BRANCH.getGuid(), Arrays.asList(predicate), Strings.EMPTY_STRING, Strings.EMPTY_STRING, 0,
-            false, false);
+            false);
 
       dsl.build(queryFactory, params);
 

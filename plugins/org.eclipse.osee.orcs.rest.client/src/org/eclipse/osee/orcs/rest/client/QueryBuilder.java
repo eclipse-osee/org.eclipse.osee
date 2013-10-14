@@ -31,12 +31,6 @@ public interface QueryBuilder {
    public static IAttributeType ANY_ATTRIBUTE_TYPE = TokenFactory.createAttributeType(Long.MIN_VALUE,
       "Any Attribute Type");
 
-   QueryBuilder includeCache();
-
-   QueryBuilder includeCache(boolean enabled);
-
-   boolean isCacheIncluded();
-
    QueryBuilder includeDeleted();
 
    QueryBuilder includeDeleted(boolean enabled);
@@ -50,8 +44,6 @@ public interface QueryBuilder {
    QueryBuilder headTransaction();
 
    boolean isHeadTransaction();
-
-   QueryBuilder excludeCache();
 
    QueryBuilder excludeDeleted();
 

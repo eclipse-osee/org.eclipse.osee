@@ -49,22 +49,6 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder includeCache() {
-      return includeCache(true);
-   }
-
-   @Override
-   public QueryBuilder includeCache(boolean enabled) {
-      options.setIncludeDeleted(enabled);
-      return this;
-   }
-
-   @Override
-   public boolean isCacheIncluded() {
-      return options.isCacheIncluded();
-   }
-
-   @Override
    public QueryBuilder includeDeleted() {
       return includeDeleted(true);
    }
@@ -100,12 +84,6 @@ public class QueryBuilderImpl implements QueryBuilder {
    @Override
    public boolean isHeadTransaction() {
       return options.isHeadTransaction();
-   }
-
-   @Override
-   public QueryBuilder excludeCache() {
-      options.setIncludeCache(false);
-      return this;
    }
 
    @Override

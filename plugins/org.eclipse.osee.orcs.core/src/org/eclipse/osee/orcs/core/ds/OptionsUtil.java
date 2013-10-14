@@ -23,12 +23,10 @@ public final class OptionsUtil {
 
    private static final String FROM_TRANSACTION = "from.transaction";
    private static final String INCLUDE_DELETED = "include.deleted";
-   private static final String INCLUDE_CACHE = "include.cache";
    private static final String LOAD_LEVEL = "load.level";
 
    public static Options createBranchOptions() {
       Options options = new Options();
-      setIncludeCache(options, false);
       setIncludeDeleted(options, false);
       setLoadLevel(options, LoadLevel.SHALLOW);
       return options;
@@ -36,7 +34,6 @@ public final class OptionsUtil {
 
    public static Options createOptions() {
       Options options = new Options();
-      setIncludeCache(options, false);
       setIncludeDeleted(options, false);
       setHeadTransaction(options);
       setLoadLevel(options, LoadLevel.SHALLOW);
@@ -44,18 +41,9 @@ public final class OptionsUtil {
    }
 
    public static void reset(Options options) {
-      setIncludeCache(options, false);
       setIncludeDeleted(options, false);
       setHeadTransaction(options);
       setLoadLevel(options, LoadLevel.SHALLOW);
-   }
-
-   public static boolean isCacheIncluded(Options options) {
-      return options.getBoolean(INCLUDE_CACHE);
-   }
-
-   public static void setIncludeCache(Options options, boolean enabled) {
-      options.put(INCLUDE_CACHE, enabled);
    }
 
    public static boolean areDeletedIncluded(Options options) {

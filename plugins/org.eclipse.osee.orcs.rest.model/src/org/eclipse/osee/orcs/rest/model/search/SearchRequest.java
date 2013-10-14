@@ -27,7 +27,6 @@ public class SearchRequest implements SearchParameters {
    private String alt;
    private String fields;
    private int fromTx;
-   private boolean includeCache;
    private boolean includeDeleted;
 
    @XmlTransient
@@ -37,14 +36,13 @@ public class SearchRequest implements SearchParameters {
       super();
    }
 
-   public SearchRequest(String branchUuid, List<Predicate> predicates, String alt, String fields, int fromTx, boolean includeCache, boolean includeDeleted) {
+   public SearchRequest(String branchUuid, List<Predicate> predicates, String alt, String fields, int fromTx, boolean includeDeleted) {
       super();
       this.branchUuid = branchUuid;
       this.predicates = predicates;
       this.alt = alt;
       this.fields = fields;
       this.fromTx = fromTx;
-      this.includeCache = includeCache;
       this.includeDeleted = includeDeleted;
    }
 
@@ -87,11 +85,6 @@ public class SearchRequest implements SearchParameters {
    }
 
    @Override
-   public boolean isIncludeCache() {
-      return includeCache;
-   }
-
-   @Override
    public boolean isIncludeDeleted() {
       return includeDeleted;
    }
@@ -103,10 +96,6 @@ public class SearchRequest implements SearchParameters {
 
    public void setFromTx(int fromTx) {
       this.fromTx = fromTx;
-   }
-
-   public void setIncludeCache(boolean includeCache) {
-      this.includeCache = includeCache;
    }
 
    public void setIncludeDeleted(boolean includeDeleted) {

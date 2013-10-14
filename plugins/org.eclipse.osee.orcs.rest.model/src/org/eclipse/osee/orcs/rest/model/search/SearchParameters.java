@@ -26,8 +26,6 @@ public interface SearchParameters {
 
    String getFields();
 
-   boolean isIncludeCache();
-
    boolean isIncludeDeleted();
 
    int getFromTx();
