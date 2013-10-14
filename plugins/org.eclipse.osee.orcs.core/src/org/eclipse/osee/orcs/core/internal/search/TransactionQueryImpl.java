@@ -251,6 +251,13 @@ public class TransactionQueryImpl implements TransactionQuery {
    }
 
    @Override
+   public TransactionQuery andIsHead(IOseeBranch branch) throws OseeCoreException {
+      Criteria criteria = criteriaFactory.newGetHead(branch);
+      addAndCheck(queryData, criteria);
+      return this;
+   }
+
+   @Override
    public TransactionQuery andIsHead(int branchId) throws OseeCoreException {
       Criteria criteria = criteriaFactory.newGetHead(branchId);
       addAndCheck(queryData, criteria);

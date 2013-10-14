@@ -10,25 +10,44 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaGetHead extends Criteria {
+public class CriteriaTxGetHead extends Criteria {
 
-   int branchId;
+   private final IOseeBranch branch;
+   private final int branchId;
 
-   public CriteriaGetHead(int branchId) {
+   public CriteriaTxGetHead(IOseeBranch branch) {
+      super();
+      this.branch = branch;
+      this.branchId = -1;
+   }
+
+   public CriteriaTxGetHead(int branchId) {
       super();
       this.branchId = branchId;
+      this.branch = null;
    }
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
       super.checkValid(options);
+      Conditions.checkExpressionFailOnTrue(branch == null && branchId < 0, "Missing valid branch");
+   }
+
+   public boolean hasBranchToken() {
+      return branch != null;
+   }
+
+   public IOseeBranch getBranch() {
+      return branch;
    }
 
    public int getBranchid() {

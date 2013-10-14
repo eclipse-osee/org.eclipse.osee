@@ -80,6 +80,8 @@ public interface TransactionQuery {
 
    TransactionQuery andIsHead(int branchId) throws OseeCoreException;
 
+   TransactionQuery andIsHead(IOseeBranch branch) throws OseeCoreException;
+
    ResultSet<TransactionReadable> getResults() throws OseeCoreException;
 
    ResultSet<Integer> getResultsAsIds() throws OseeCoreException;

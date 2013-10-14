@@ -32,13 +32,10 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAuthorIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaCommitIds;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaGetHead;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxBranchIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxComment;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIdWithOperator;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIdWithTwoOperators;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxType;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
@@ -66,15 +63,10 @@ public class TxQuerySqlContextFactoryImplTest {
       TransactionDetailsType.NonBaselined));
    private static final Criteria BRANCHIDS = branchIds(1, 2, 3, 4, 5);
    private static final Criteria IDS_WITH_OPERATOR = idWithOperator(Operator.LESS_THAN, 1);
-   private static final Criteria IDS_WITH_2_OPERATOR = idWithTwoOperator(Operator.GREATER_THAN, 1, Operator.LESS_THAN,
-      10);
    private static final Criteria DATE_WITH_OPERATOR = dateWithOperator(Operator.LESS_THAN,
-      Timestamp.valueOf("2013-05-06 12:34:56"));
-   private static final Criteria DATE_RANGE = dateRange(Timestamp.valueOf("2013-01-02 12:34:56"),
       Timestamp.valueOf("2013-05-06 12:34:56"));
    private static final Criteria AUTHORS = byAuthorId(Arrays.asList(new Integer(1), new Integer(2)));
    private static final Criteria COMMITS = byCommitId(Arrays.asList(new Integer(1), new Integer(2)));
-   private static final Criteria HEAD = getHead(1);
 
    // @formatter:off
    @Mock private Log logger;
@@ -295,16 +287,8 @@ public class TxQuerySqlContextFactoryImplTest {
       return new CriteriaTxIdWithOperator(op, id);
    }
 
-   private static Criteria idWithTwoOperator(Operator op1, int id1, Operator op2, int id2) {
-      return new CriteriaTxIdWithTwoOperators(op1, id1, op2, id2);
-   }
-
    private static Criteria dateWithOperator(Operator op, Timestamp t) {
       return new CriteriaDateWithOperator(op, t);
-   }
-
-   private static Criteria dateRange(Timestamp t1, Timestamp t2) {
-      return new CriteriaDateRange(t1, t2);
    }
 
    private static Criteria byAuthorId(Collection<Integer> ids) {
@@ -315,7 +299,4 @@ public class TxQuerySqlContextFactoryImplTest {
       return new CriteriaCommitIds(ids);
    }
 
-   private static Criteria getHead(int branchId) {
-      return new CriteriaGetHead(branchId);
-   }
 }

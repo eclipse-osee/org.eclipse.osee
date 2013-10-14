@@ -51,7 +51,6 @@ public class TxDateWithOperatorSqlHandler extends SqlHandler<CriteriaDateWithOpe
       writer.write(".time ");
       writer.write(op.toString());
       writer.write(" ?");
-      String timeString = time.toString();
       writer.addParameter(time);
       return true;
    }

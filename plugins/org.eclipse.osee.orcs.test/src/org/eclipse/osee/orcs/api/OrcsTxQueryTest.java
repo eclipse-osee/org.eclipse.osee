@@ -564,6 +564,21 @@ public class OrcsTxQueryTest {
    }
 
    @Test
+   public void testGetHead2() throws Exception {
+      TransactionQuery query = factory.transactionQuery();
+      query.andIsHead(CoreBranches.COMMON);
+
+      ResultSet<TransactionReadable> results = query.getResults();
+      assertEquals(1, query.getCount());
+      assertEquals(1, results.size());
+
+      Iterator<TransactionReadable> it = results.iterator();
+      //@formatter:off
+      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 2, 17, 0);
+      //@formatter:on
+   }
+
+   @Test
    public void testAuthorLocal() throws Exception {
       QueryFactory branchFactory = orcsApi.getQueryFactory(null);
       QueryBuilder branchQuery = branchFactory.fromBranch(CoreBranches.COMMON);

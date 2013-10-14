@@ -34,7 +34,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaCommitIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaGetHead;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxGetHead;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxArtifactGuids;
@@ -110,7 +110,7 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaAuthorIds.class, TxAuthorIdsSqlHandler.class);
       handleMap.put(CriteriaTxArtifactGuids.class, TxArtifactGuidSqlHandler.class);
       handleMap.put(CriteriaCommitIds.class, TxCommitArtIdSqlHandler.class);
-      handleMap.put(CriteriaGetHead.class, TxGetHeadSqlHandler.class);
+      handleMap.put(CriteriaTxGetHead.class, TxGetHeadSqlHandler.class);
 
       return new SqlHandlerFactoryImpl(logger, identityService, handleMap);
    }

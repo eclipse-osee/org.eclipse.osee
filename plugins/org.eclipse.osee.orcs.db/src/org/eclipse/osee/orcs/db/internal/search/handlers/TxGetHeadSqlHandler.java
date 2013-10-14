@@ -11,8 +11,9 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaGetHead;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxGetHead;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
@@ -20,15 +21,14 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 /**
  * @author Roberto E. Escobar
  */
-public class TxGetHeadSqlHandler extends SqlHandler<CriteriaGetHead> {
+public class TxGetHeadSqlHandler extends SqlHandler<CriteriaTxGetHead> {
 
-   private CriteriaGetHead criteria;
+   private CriteriaTxGetHead criteria;
 
    private String txdAlias;
-   private String jIdAlias;
 
    @Override
-   public void setData(CriteriaGetHead criteria) {
+   public void setData(CriteriaTxGetHead criteria) {
       this.criteria = criteria;
    }
 
@@ -44,14 +44,26 @@ public class TxGetHeadSqlHandler extends SqlHandler<CriteriaGetHead> {
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
-      int branch = criteria.getBranchid();
       writer.write(txdAlias);
-      writer.write(".transaction_id = (select max(transaction_id) from ");
-      writer.write(TableEnum.TX_DETAILS_TABLE.getName());
-      writer.write(" where ");
-      writer.write(TableEnum.TX_DETAILS_TABLE.getName());
-      writer.write(".branch_id = ?)");
-      writer.addParameter(branch);
+      writer.write(".transaction_id = ");
+      if (criteria.hasBranchToken()) {
+         IOseeBranch branch = criteria.getBranch();
+         writer.write("(SELECT max(txdi.transaction_id) FROM ");
+         writer.write(TableEnum.BRANCH_TABLE.getName());
+         writer.write(" obi, ");
+         writer.write(TableEnum.TX_DETAILS_TABLE.getName());
+         writer.write(" txdi WHERE ");
+         writer.write("obi.branch_id = txdi.branch_id AND ");
+         writer.write("obi.branch_guid = ?)");
+         writer.addParameter(branch.getGuid());
+      } else {
+         int branch = criteria.getBranchid();
+         writer.write("(SELECT max(transaction_id) FROM ");
+         writer.write(TableEnum.TX_DETAILS_TABLE.getName());
+         writer.write(" WHERE ");
+         writer.write("branch_id = ?)");
+         writer.addParameter(branch);
+      }
       return true;
    }
 
