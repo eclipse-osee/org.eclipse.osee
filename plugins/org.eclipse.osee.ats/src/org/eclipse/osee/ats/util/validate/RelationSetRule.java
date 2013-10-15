@@ -58,7 +58,7 @@ public final class RelationSetRule extends AbstractValidationRule {
       if (!isIgnoreType(type) && hasArtifactType(type)) {
          Collection<Artifact> arts = artToValidate.getRelatedArtifacts(relationEnum);
          if (arts.size() < minimumRelations) {
-            errorMessages.add(ValidationReportOperation.getRequirementHyperlink(artToValidate) + " (" + artToValidate.getGammaId() + ") has less than minimum " + minimumRelations + " relation for type \"" + relationEnum + "\"");
+            errorMessages.add(ValidationReportOperation.getRequirementHyperlink(artToValidate) + " (" + artToValidate.getGammaId() + ") has less than minimum " + minimumRelations + " relation for type \"" + relationEnum.getName() + "\"");
             validationPassed = false;
          }
       }
