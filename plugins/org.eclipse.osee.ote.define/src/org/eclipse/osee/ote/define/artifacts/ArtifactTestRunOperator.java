@@ -56,14 +56,9 @@ public class ArtifactTestRunOperator implements TestRunOperator {
    }
 
    private void checkForType(Artifact artifact) throws OseeArgumentException {
-      try {
-         if (!artifact.isOfType(CoreArtifactTypes.TestRun)) {
-            throw new OseeArgumentException("Unable to operate on type [%s]. Only [%s] allowed.",
-               artifact.getArtifactTypeName(), CoreArtifactTypes.TestRun);
-         }
-      } catch (OseeCoreException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+      if (!artifact.isOfType(CoreArtifactTypes.TestRun)) {
+         throw new OseeArgumentException("Unable to operate on type [%s]. Only [%s] allowed.",
+            artifact.getArtifactTypeName(), CoreArtifactTypes.TestRun);
       }
    }
 
@@ -254,6 +249,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
       return date;
    }
 
+   @Override
    public boolean wasAborted() {
       boolean toReturn = true;
       try {
