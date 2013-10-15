@@ -16,9 +16,8 @@ import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.TestMainPa
 import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.TestValues_IncludeHtml;
 import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.TestValues_KeyValueHtml;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
-import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
-import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -51,12 +50,6 @@ public class HtmlPageCreatorTest {
       HtmlPageCreator page = new HtmlPageCreator(registry);
       page.addSubstitution(rule);
       Assert.assertEquals("value", page.getValue("key"));
-   }
-
-   @Test(expected = OseeArgumentException.class)
-   public void readSubstitution_nullCheck() throws Exception {
-      HtmlPageCreator page = new HtmlPageCreator(registry);
-      page.readKeyValuePairs((ResourceToken) null);
    }
 
    @Test

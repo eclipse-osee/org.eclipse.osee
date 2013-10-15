@@ -17,7 +17,6 @@ import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
@@ -74,7 +73,6 @@ public final class HtmlPageCreator {
    }
 
    public void readKeyValuePairs(ResourceToken valuesResource) throws Exception {
-      Conditions.checkNotNull(valuesResource, "valuesResource");
       InputStream keyValueStream = registry.getResource(valuesResource.getGuid());
       readKeyValuePairs(keyValueStream);
    }
@@ -160,7 +158,9 @@ public final class HtmlPageCreator {
             page.append("?>");
          } else {
             AppendableRule rule = substitutions.get(token);
-            Conditions.checkNotNull(rule, "rule", "no substitution was found for token %s", token);
+            if (rule == null) {
+               throw new OseeArgumentException("no substitution was found for token %s", token);
+            }
             rule.applyTo(page);
          }
       } else {
