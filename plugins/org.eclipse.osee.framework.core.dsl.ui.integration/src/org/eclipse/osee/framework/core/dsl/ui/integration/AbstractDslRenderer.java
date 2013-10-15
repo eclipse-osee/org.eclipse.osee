@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.dsl.ui.integration.internal.DslUiIntegrationConstants;
@@ -126,7 +125,7 @@ public abstract class AbstractDslRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public final void open(final List<Artifact> artifacts, final PresentationType presentationType) throws OseeCoreException {
+   public final void open(final List<Artifact> artifacts, final PresentationType presentationType) {
 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
@@ -140,7 +139,7 @@ public abstract class AbstractDslRenderer extends FileSystemRenderer {
                      IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
                      IDE.openEditor(page, file);
                   }
-               } catch (CoreException ex) {
+               } catch (Exception ex) {
                   OseeLog.log(DslUiIntegrationConstants.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }

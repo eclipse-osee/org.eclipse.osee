@@ -10,43 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * @author Ryan D. Brooks
  */
-public class OseeCoreException extends CoreException {
+public class OseeCoreException extends RuntimeException {
    private static final long serialVersionUID = 1L;
 
    public OseeCoreException(String message, Object... args) {
-      super(createSafeStatus(formatMessage(message, args), null));
+      super(formatMessage(message, args));
    }
 
    public OseeCoreException(String message, Throwable cause) {
-      super(createSafeStatus(message, cause));
+      super(getMessage(message, cause), cause);
    }
 
    public OseeCoreException(Throwable cause, String message, Object... args) {
-      super(createSafeStatus(formatMessage(message, args), cause));
+      super(formatMessage(message, args), cause);
    }
 
    public OseeCoreException(Throwable cause) {
-      super(createSafeStatus(null, cause));
-   }
-
-   public OseeCoreException(IStatus status) {
-      super(safeStatus(status));
-   }
-
-   private static IStatus safeStatus(IStatus status) {
-      IStatus toReturn = status;
-      if (toReturn == null) {
-         toReturn = createSafeStatus("Exception message unavaliable - status was null", null);
-      }
-      return toReturn;
+      super(cause);
    }
 
    private static String formatMessage(String message, Object... args) {
@@ -59,18 +44,14 @@ public class OseeCoreException extends CoreException {
       }
    }
 
-   private static IStatus createSafeStatus(String message, Throwable cause) {
-      IStatus status = null;
-      if (message != null && cause != null) {
-         status = new Status(IStatus.ERROR, "OSEE", message, cause);
-      } else if (cause != null) {
-         status = new Status(IStatus.ERROR, "OSEE", cause.getMessage(), cause);
-      } else if (message != null) {
-         status = new Status(IStatus.ERROR, "OSEE", message);
-      } else {
-         status =
-            new Status(IStatus.ERROR, "OSEE", "Exception message unavaliable - both exception and message were null");
+   private static final String getMessage(String message, Throwable cause) {
+      if (message == null) {
+         if (cause == null) {
+            message = "Exception message unavaliable - both exception and message were null";
+         } else {
+            message = cause.getLocalizedMessage();
+         }
       }
-      return status;
+      return message;
    }
 }

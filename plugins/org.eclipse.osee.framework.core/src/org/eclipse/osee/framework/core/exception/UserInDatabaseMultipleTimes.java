@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Ryan D. Brooks
@@ -20,10 +19,6 @@ import org.eclipse.core.runtime.IStatus;
 public class UserInDatabaseMultipleTimes extends UserDataStoreException {
 
    private static final long serialVersionUID = 5497730793552605424L;
-
-   public UserInDatabaseMultipleTimes(IStatus status) {
-      super(status);
-   }
 
    public UserInDatabaseMultipleTimes(String message, Throwable cause) {
       super(message, cause);

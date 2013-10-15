@@ -10,16 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Donald G. Dunne
  */
 public class OseeStateException extends OseeCoreException {
-
-   public OseeStateException(IStatus status) {
-      super(status);
-   }
 
    public OseeStateException(String message, Throwable cause) {
       super(message, cause);

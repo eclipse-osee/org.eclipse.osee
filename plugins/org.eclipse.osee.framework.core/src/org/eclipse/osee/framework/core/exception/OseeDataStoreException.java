@@ -10,15 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Ryan D. Brooks
  */
 public class OseeDataStoreException extends OseeCoreException {
-   public OseeDataStoreException(IStatus status) {
-      super(status);
-   }
 
    public OseeDataStoreException(String message, Throwable cause) {
       super(message, cause);

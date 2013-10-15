@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Donald G. Dunne
@@ -22,10 +21,6 @@ public class AttributeDoesNotExist extends OseeCoreException {
 
    public AttributeDoesNotExist(String message, Object... args) {
       super(message, args);
-   }
-
-   public AttributeDoesNotExist(IStatus status) {
-      super(status);
    }
 
    public AttributeDoesNotExist(String message, Throwable cause) {

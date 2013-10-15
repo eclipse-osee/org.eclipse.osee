@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Ryan D. Brooks
@@ -20,10 +19,6 @@ import org.eclipse.core.runtime.IStatus;
 public class UserNotInDatabase extends UserDataStoreException {
 
    private static final long serialVersionUID = -676895641120036141L;
-
-   public UserNotInDatabase(IStatus status) {
-      super(status);
-   }
 
    public UserNotInDatabase(String message, Throwable cause) {
       super(message, cause);

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Ryan D. Brooks
@@ -24,10 +23,6 @@ public class OseeWrappedException extends OseeCoreException {
 
    public OseeWrappedException(Throwable cause) {
       super(cause);
-   }
-
-   public OseeWrappedException(IStatus status) {
-      super(status);
    }
 
    public OseeWrappedException(String message, Object... args) {

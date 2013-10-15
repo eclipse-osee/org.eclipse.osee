@@ -184,7 +184,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    }
 
    @SuppressWarnings("unused")
-   public List<XWidgetRendererItem> getLayoutDatas() throws IllegalArgumentException, ParserConfigurationException, SAXException, IOException, CoreException {
+   public List<XWidgetRendererItem> getLayoutDatas() throws IllegalArgumentException, ParserConfigurationException, SAXException, IOException, CoreException, OseeCoreException {
       return XWidgetParser.extractWorkAttributes(new SwtXWidgetRenderer(), getXWidgetsXml());
    }
 

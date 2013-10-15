@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Roberto E. Escobar
@@ -21,10 +20,6 @@ public class MultipleItemsExist extends OseeCoreException {
 
    public MultipleItemsExist(String message, Object... args) {
       super(message, args);
-   }
-
-   public MultipleItemsExist(IStatus status) {
-      super(status);
    }
 
    public MultipleItemsExist(String message, Throwable cause) {

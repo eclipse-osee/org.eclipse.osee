@@ -14,7 +14,6 @@ import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENER
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.commands.Command;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -95,7 +94,7 @@ public class AtsWorkDefConfigRenderer extends DefaultArtifactRenderer {
                   } else {
                      AWorkbench.popup("No Work Definition matches artifact " + artifact.toStringWithId());
                   }
-               } catch (CoreException ex) {
+               } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }

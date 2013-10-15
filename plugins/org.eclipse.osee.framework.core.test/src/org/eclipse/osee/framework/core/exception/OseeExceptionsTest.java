@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.junit.Assert;
-import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -40,7 +37,6 @@ public class OseeExceptionsTest {
          resultMessage = ex.getMessage();
       }
       Assert.assertNotNull(resultMessage);
-      Assert.assertTrue(resultMessage.contains(OseeCodeVersion.getVersion()));
       Assert.assertTrue(resultMessage.contains(test.getMethodName()));
    }
 
@@ -55,7 +51,6 @@ public class OseeExceptionsTest {
          resultMessage = ex.getMessage();
       }
       Assert.assertNotNull(resultMessage);
-      Assert.assertTrue(resultMessage.contains(OseeCodeVersion.getVersion()));
       Assert.assertTrue(resultMessage.contains(test.getMethodName()));
    }
 
@@ -70,7 +65,6 @@ public class OseeExceptionsTest {
          resultMessage = ex.getMessage();
       }
       Assert.assertNotNull(resultMessage);
-      Assert.assertTrue(resultMessage.contains(OseeCodeVersion.getVersion()));
       Assert.assertTrue(resultMessage.contains(test.getMethodName()));
    }
 }

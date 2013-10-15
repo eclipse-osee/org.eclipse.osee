@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
@@ -110,7 +109,7 @@ public final class AtsWorkDefinitionDslRenderer extends FileSystemRenderer {
                      IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
                      IDE.openEditor(page, file);
                   }
-               } catch (CoreException ex) {
+               } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }

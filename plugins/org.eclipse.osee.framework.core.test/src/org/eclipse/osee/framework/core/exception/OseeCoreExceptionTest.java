@@ -11,8 +11,6 @@
 package org.eclipse.osee.framework.core.exception;
 
 import org.junit.Assert;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.Test;
 
 /**
@@ -47,12 +45,6 @@ public class OseeCoreExceptionTest {
       Exception internalException = new Exception("My error message");
       Exception ex = new OseeCoreException(null, internalException);
       Assert.assertEquals(internalException.getMessage(), ex.getMessage());
-   }
-
-   @Test
-   public void testNullStatus() {
-      Exception ex = new OseeCoreException((IStatus) null);
-      Assert.assertEquals("Exception message unavaliable - status was null", ex.getMessage());
    }
 
    @Test

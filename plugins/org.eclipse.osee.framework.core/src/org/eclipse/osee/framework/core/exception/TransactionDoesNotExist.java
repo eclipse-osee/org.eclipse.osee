@@ -10,16 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Ryan D. Brooks
  */
 public class TransactionDoesNotExist extends OseeCoreException {
-   public TransactionDoesNotExist(IStatus status) {
-      super(status);
-   }
-
    public TransactionDoesNotExist(String message, Throwable cause) {
       super(message, cause);
    }

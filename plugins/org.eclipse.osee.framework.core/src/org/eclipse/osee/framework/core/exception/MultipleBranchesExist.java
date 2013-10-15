@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Donald G. Dunne
@@ -21,10 +20,6 @@ public class MultipleBranchesExist extends OseeCoreException {
 
    public MultipleBranchesExist(String message, Object... args) {
       super(message, args);
-   }
-
-   public MultipleBranchesExist(IStatus status) {
-      super(status);
    }
 
    public MultipleBranchesExist(String message, Throwable cause) {

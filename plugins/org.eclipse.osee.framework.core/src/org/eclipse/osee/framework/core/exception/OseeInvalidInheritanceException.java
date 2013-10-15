@@ -10,13 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 public class OseeInvalidInheritanceException extends OseeCoreException {
-
-   public OseeInvalidInheritanceException(IStatus status) {
-      super(status);
-   }
 
    public OseeInvalidInheritanceException(String message, Throwable cause) {
       super(message, cause);

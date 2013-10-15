@@ -10,16 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Ryan D. Brooks
  */
 public class OseeNotFoundException extends OseeCoreException {
-
-   public OseeNotFoundException(IStatus status) {
-      super(status);
-   }
 
    public OseeNotFoundException(String message, Throwable cause) {
       super(message, cause);

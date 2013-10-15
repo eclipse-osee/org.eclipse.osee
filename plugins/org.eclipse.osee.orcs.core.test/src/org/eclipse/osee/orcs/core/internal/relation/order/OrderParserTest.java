@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.data.RelationTypes;
 import org.junit.Before;
@@ -136,7 +135,7 @@ public class OrderParserTest {
 
    @Test
    public void testInvalidXml() throws OseeCoreException {
-      thrown.expect(OseeWrappedException.class);
+      thrown.expect(OseeCoreException.class);
       parser.loadFromXml(hasOrderData, "<OrderList");
       verify(hasOrderData, never()).add(typeSideCaptor.capture(), orderDataCaptor.capture());
    }

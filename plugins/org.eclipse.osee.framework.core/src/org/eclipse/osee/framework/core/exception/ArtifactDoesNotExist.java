@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Donald G. Dunne
@@ -21,10 +20,6 @@ public class ArtifactDoesNotExist extends OseeCoreException {
 
    public ArtifactDoesNotExist(String message, Object... args) {
       super(message, args);
-   }
-
-   public ArtifactDoesNotExist(IStatus status) {
-      super(status);
    }
 
    public ArtifactDoesNotExist(String message, Throwable cause) {

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Ryan D. Brooks
@@ -20,10 +19,6 @@ public class BranchDoesNotExist extends OseeCoreException {
 
    public BranchDoesNotExist(String message, Object... args) {
       super(message, args);
-   }
-
-   public BranchDoesNotExist(IStatus status) {
-      super(status);
    }
 
    public BranchDoesNotExist(String message, Throwable cause) {

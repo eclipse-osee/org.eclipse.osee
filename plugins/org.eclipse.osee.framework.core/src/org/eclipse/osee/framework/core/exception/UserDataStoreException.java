@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Roberto E. Escobar
@@ -19,10 +18,6 @@ import org.eclipse.core.runtime.IStatus;
 public class UserDataStoreException extends OseeCoreException {
 
    private static final long serialVersionUID = 6332029869706688372L;
-
-   public UserDataStoreException(IStatus status) {
-      super(status);
-   }
 
    public UserDataStoreException(String message, Throwable cause) {
       super(message, cause);

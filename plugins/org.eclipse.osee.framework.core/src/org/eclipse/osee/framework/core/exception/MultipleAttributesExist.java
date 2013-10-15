@@ -11,16 +11,11 @@
 
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Donald G. Dunne
  */
 public class MultipleAttributesExist extends OseeCoreException {
-
-   public MultipleAttributesExist(IStatus status) {
-      super(status);
-   }
 
    public MultipleAttributesExist(String message, Throwable cause) {
       super(message, cause);

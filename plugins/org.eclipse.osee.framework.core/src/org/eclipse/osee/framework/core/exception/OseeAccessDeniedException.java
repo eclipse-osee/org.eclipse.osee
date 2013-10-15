@@ -10,16 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeAccessDeniedException extends OseeCoreException {
-
-   public OseeAccessDeniedException(IStatus status) {
-      super(status);
-   }
 
    public OseeAccessDeniedException(String message, Throwable cause) {
       super(message, cause);

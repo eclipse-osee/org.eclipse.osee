@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Donald G. Dunne
@@ -21,10 +20,6 @@ public class MultipleArtifactsExist extends OseeCoreException {
 
    public MultipleArtifactsExist(String message, Object... args) {
       super(message, args);
-   }
-
-   public MultipleArtifactsExist(IStatus status) {
-      super(status);
    }
 
    public MultipleArtifactsExist(String message, Throwable cause) {

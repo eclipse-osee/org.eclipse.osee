@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * @author Roberto E. Escobar
@@ -21,10 +20,6 @@ public class ItemDoesNotExist extends OseeCoreException {
 
    public ItemDoesNotExist(String message, Object... args) {
       super(message, args);
-   }
-
-   public ItemDoesNotExist(IStatus status) {
-      super(status);
    }
 
    public ItemDoesNotExist(String message, Throwable cause) {

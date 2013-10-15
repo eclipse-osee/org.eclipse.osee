@@ -13,7 +13,6 @@ package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
@@ -151,7 +150,7 @@ public abstract class AbstractEditTest {
       Assert.assertTrue(listener.wasUpdateReceived());
    }
 
-   private String getRenderedStoredContent(FileSystemRenderer renderer, Artifact artifact) throws CoreException, IOException {
+   private String getRenderedStoredContent(FileSystemRenderer renderer, Artifact artifact) throws Exception {
       Assert.assertNotNull(renderer);
       Assert.assertNotNull(artifact);
 
