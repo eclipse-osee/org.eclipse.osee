@@ -55,8 +55,8 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
          Class<? extends IAttributeDataProvider> providerClass =
             AttributeTypeManager.getAttributeProviderClass(this.attributeType);
          Constructor<? extends IAttributeDataProvider> providerConstructor =
-            providerClass.getConstructor(new Class[] {Attribute.class});
-         attributeDataProvider = providerConstructor.newInstance(new Object[] {this});
+            providerClass.getConstructor(Attribute.class);
+         attributeDataProvider = providerConstructor.newInstance(this);
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
