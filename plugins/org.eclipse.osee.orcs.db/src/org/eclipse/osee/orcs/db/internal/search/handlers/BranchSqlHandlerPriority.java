@@ -14,6 +14,7 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
  * @author Roberto E. Escobar
  */
 public enum BranchSqlHandlerPriority {
+   BRANCH_ANCESTOR_OF,
    BRANCH_CHILD_OF,
    BRANCH_ID,
    BRANCH_GUID,

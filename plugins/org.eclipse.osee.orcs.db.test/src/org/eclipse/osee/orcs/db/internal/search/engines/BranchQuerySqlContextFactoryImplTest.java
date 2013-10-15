@@ -38,6 +38,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllBranches;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchAncestorOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchArchived;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchIds;
@@ -351,6 +352,36 @@ public class BranchQuerySqlContextFactoryImplTest {
    }
 
    @Test
+   public void testQueryAncestorOf() throws OseeCoreException {
+      String expected =
+         "WITH anstrof1 (parent_id, branch_level) AS ( SELECT anch_br1.parent_branch_id, 0 as branch_level FROM osee_branch anch_br1\n" + //
+         "   WHERE anch_br1.branch_guid = ?\n" + //
+         "  UNION ALL \n" + //
+         "  SELECT parent_branch_id, branch_level - 1 FROM anstrof1 recurse, osee_branch br WHERE br.branch_id = recurse.parent_id\n" + //
+         ")\n" + //
+         "SELECT br1.*\n" + //
+         " FROM \n" + //
+         "osee_branch br1, anstrof1\n" + //
+         " WHERE \n" + //
+         "br1.branch_id = anstrof1.parent_id\n" + //
+         " ORDER BY br1.branch_id";
+
+      queryData.addCriteria(ancestorOf(COMMON));
+
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+
+      assertEquals(expected, context.getSql());
+
+      List<Object> parameters = context.getParameters();
+      assertEquals(1, parameters.size());
+      List<AbstractJoinQuery> joins = context.getJoins();
+      assertEquals(0, joins.size());
+
+      Iterator<Object> iterator = parameters.iterator();
+      assertEquals(COMMON.getGuid(), iterator.next());
+   }
+
+   @Test
    public void testMultiples() throws OseeCoreException {
       String expected =
          "WITH chof1 (child_id, branch_level) AS ( SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n" + //
@@ -394,6 +425,10 @@ public class BranchQuerySqlContextFactoryImplTest {
       assertEquals(joins.get(0).getQueryId(), iterator.next());
       assertEquals(ARCHIVED.getValue(), iterator.next());
       assertEquals("Hello.*", iterator.next());
+   }
+
+   private static Criteria ancestorOf(IOseeBranch child) {
+      return new CriteriaBranchAncestorOf(child);
    }
 
    private static Criteria childOf(IOseeBranch parent) {

@@ -217,6 +217,35 @@ public class OrcsBranchQueryTest {
    }
 
    @Test
+   public void testGetByAncestorOf() throws OseeCoreException {
+      BranchQuery query = factory.branchQuery();
+      query.andIsAncestorOf(SAW_Bld_2);
+
+      ResultSet<BranchReadable> results = query.getResults();
+      assertEquals(2, results.size());
+      assertEquals(2, query.getCount());
+
+      Iterator<BranchReadable> iterator = results.iterator();
+      BranchReadable branch1 = iterator.next();
+      BranchReadable branch2 = iterator.next();
+
+      assertEquals(SYS_ROOT, branch1);
+      assertEquals(SAW_Bld_1, branch2);
+
+      query = factory.branchQuery();
+      query.andIsAncestorOf(COMMON);
+
+      results = query.getResults();
+      assertEquals(1, results.size());
+      assertEquals(1, query.getCount());
+
+      iterator = results.iterator();
+      branch1 = iterator.next();
+
+      assertEquals(SYS_ROOT, branch1);
+   }
+
+   @Test
    public void testGetIncludeArchived() throws Exception {
       IOseeBranch child = TokenFactory.createBranch(GUID.create(), testName.getMethodName());
 

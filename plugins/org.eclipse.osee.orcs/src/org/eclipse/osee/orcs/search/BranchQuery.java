@@ -63,6 +63,8 @@ public interface BranchQuery {
 
    BranchQuery andIsChildOf(IOseeBranch branch) throws OseeCoreException;
 
+   BranchQuery andIsAncestorOf(IOseeBranch branch) throws OseeCoreException;
+
    ResultSet<BranchReadable> getResults() throws OseeCoreException;
 
    ResultSet<IOseeBranch> getResultsAsId() throws OseeCoreException;

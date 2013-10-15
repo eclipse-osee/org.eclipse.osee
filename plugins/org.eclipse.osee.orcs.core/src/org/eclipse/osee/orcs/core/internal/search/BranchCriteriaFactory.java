@@ -7,6 +7,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllBranches;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchAncestorOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchArchived;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchIds;
@@ -46,6 +47,10 @@ public class BranchCriteriaFactory {
 
    public Criteria createBranchChildOfCriteria(IOseeBranch parent) {
       return new CriteriaBranchChildOf(parent);
+   }
+
+   public Criteria createBranchAncestorOfCriteria(IOseeBranch child) {
+      return new CriteriaBranchAncestorOf(child);
    }
 
    public Criteria createBranchArchivedCriteria(Collection<BranchArchivedState> states) {

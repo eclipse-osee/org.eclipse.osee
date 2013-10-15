@@ -181,6 +181,12 @@ public class BranchQueryImpl implements BranchQuery {
    }
 
    @Override
+   public BranchQuery andIsAncestorOf(IOseeBranch child) throws OseeCoreException {
+      Criteria criteria = criteriaFactory.createBranchAncestorOfCriteria(child);
+      return addAndCheck(getQueryData(), criteria);
+   }
+
+   @Override
    public ResultSet<BranchReadable> getResults() throws OseeCoreException {
       ResultSet<BranchReadable> result = null;
       try {
