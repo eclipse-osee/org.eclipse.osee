@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.type;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,9 +27,13 @@ public class ResourceRegistry implements IResourceRegistry {
    }
 
    @Override
-   public InputStream getResource(Long universalId) throws Exception {
+   public InputStream getResource(Long universalId) {
       ResourceToken token = getResourceToken(universalId);
-      return token.getUrl().openStream();
+      try {
+         return token.getUrl().openStream();
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 
    @Override

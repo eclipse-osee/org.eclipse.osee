@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.template.engine;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public final class CompositeRule extends AppendableRule {
    }
 
    @Override
-   public void applyTo(Appendable appendable) throws Exception {
+   public void applyTo(Appendable appendable) throws IOException {
       for (AppendableRule rule : rules) {
          rule.applyTo(appendable);
       }

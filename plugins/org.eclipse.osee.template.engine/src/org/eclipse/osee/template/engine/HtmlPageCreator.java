@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.template.engine;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -19,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
 
 /**
@@ -72,12 +74,12 @@ public final class HtmlPageCreator {
       return substitutions.get(ruleName).toString();
    }
 
-   public void readKeyValuePairs(ResourceToken valuesResource) throws Exception {
+   public void readKeyValuePairs(ResourceToken valuesResource) {
       InputStream keyValueStream = registry.getResource(valuesResource.getGuid());
       readKeyValuePairs(keyValueStream);
    }
 
-   public void readKeyValuePairs(InputStream keyValueStream) throws Exception {
+   public void readKeyValuePairs(InputStream keyValueStream) {
       Scanner scanner = new Scanner(keyValueStream, "UTF-8");
       scanner.useDelimiter(xmlProcessingInstructionStartOrEnd);
 
@@ -111,11 +113,11 @@ public final class HtmlPageCreator {
       }
    }
 
-   public String realizePage(ResourceToken templateResource) throws Exception {
+   public String realizePage(ResourceToken templateResource) {
       return realizePage(registry.getResource(templateResource.getGuid())).toString();
    }
 
-   private StringBuilder realizePage(InputStream template) throws Exception {
+   private StringBuilder realizePage(InputStream template) {
       StringBuilder page = new StringBuilder(NumOfCharsInTypicalSmallPage);
       Scanner scanner = new Scanner(template, "UTF-8");
       try {
@@ -132,7 +134,7 @@ public final class HtmlPageCreator {
       return page;
    }
 
-   private Long toUniversalId(String token) throws Exception {
+   private Long toUniversalId(String token) {
       Matcher pathMatcher = processingInstructionPath.matcher(token);
       if (pathMatcher.find()) {
          return Long.parseLong(pathMatcher.group(1), 16);
@@ -140,7 +142,7 @@ public final class HtmlPageCreator {
       throw new OseeArgumentException("include path from token[%s] is in of the expected format", token);
    }
 
-   private String getProcessingInstructionId(String token) throws Exception {
+   private String getProcessingInstructionId(String token) {
       Matcher idMatcher = processingInstructionId.matcher(token);
       if (idMatcher.find()) {
          return idMatcher.group(1);
@@ -148,7 +150,7 @@ public final class HtmlPageCreator {
       throw new OseeArgumentException("include id from token [%s] is in of the expected format", token);
    }
 
-   private void processToken(StringBuilder page, String token, boolean isProcessingInstruction) throws Exception {
+   private void processToken(StringBuilder page, String token, boolean isProcessingInstruction) {
       if (isProcessingInstruction) {
          if (token.startsWith("include")) {
             appendInclude(page, token);
@@ -161,7 +163,11 @@ public final class HtmlPageCreator {
             if (rule == null) {
                throw new OseeArgumentException("no substitution was found for token %s", token);
             }
-            rule.applyTo(page);
+            try {
+               rule.applyTo(page);
+            } catch (IOException ex) {
+               throw new OseeCoreException(ex);
+            }
          }
       } else {
          page.append(token);
@@ -178,7 +184,7 @@ public final class HtmlPageCreator {
       return beginIndex > endIndex ? "" : token.substring(beginIndex, endIndex);
    }
 
-   private void appendInclude(Appendable page, String tokenStr) throws Exception {
+   private void appendInclude(StringBuilder page, String tokenStr) {
       Long universalId = toUniversalId(tokenStr);
       ResourceToken token = registry.getResourceToken(universalId);
       String name = token.getName();

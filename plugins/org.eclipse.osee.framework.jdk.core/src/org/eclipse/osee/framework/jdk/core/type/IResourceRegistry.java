@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.jdk.core.type;
 
 import java.io.InputStream;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks
@@ -20,9 +19,9 @@ public interface IResourceRegistry {
 
    ResourceToken registerResource(Long universalId, ResourceToken token);
 
-   ResourceToken getResourceToken(Long universalId) throws IllegalArgumentException;
+   ResourceToken getResourceToken(Long universalId);
 
-   InputStream getResource(Long universalId) throws Exception;
+   InputStream getResource(Long universalId);
 
    void registerAll(Iterable<ResourceToken> tokens);
 

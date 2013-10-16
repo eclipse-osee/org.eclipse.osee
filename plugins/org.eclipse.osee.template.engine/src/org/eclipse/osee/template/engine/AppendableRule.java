@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.template.engine;
 
+import java.io.IOException;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 
 /**
@@ -27,5 +28,5 @@ public abstract class AppendableRule implements Named {
       return ruleName;
    }
 
-   public abstract void applyTo(Appendable appendable) throws Exception;
+   public abstract void applyTo(Appendable appendable) throws IOException;
 }

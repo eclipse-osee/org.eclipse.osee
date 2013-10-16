@@ -28,7 +28,7 @@ public final class PageFactory {
       return page;
    }
 
-   public static HtmlPageCreator newHtmlPageCreator(IResourceRegistry registry, ResourceToken valuesResource, String... keyValues) throws Exception {
+   public static HtmlPageCreator newHtmlPageCreator(IResourceRegistry registry, ResourceToken valuesResource, String... keyValues) {
       HtmlPageCreator page = newHtmlPageCreator(registry, keyValues);
       page.readKeyValuePairs(valuesResource);
       return page;
@@ -40,28 +40,28 @@ public final class PageFactory {
       return page;
    }
 
-   public static HtmlPageCreator newHtmlPageCreator(IResourceRegistry registry, ResourceToken valuesResource, Iterable<String> keyValues) throws Exception {
+   public static HtmlPageCreator newHtmlPageCreator(IResourceRegistry registry, ResourceToken valuesResource, Iterable<String> keyValues) {
       HtmlPageCreator page = newHtmlPageCreator(registry, keyValues);
       page.readKeyValuePairs(valuesResource);
       return page;
    }
 
-   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource, String... keyValues) throws Exception {
+   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource, String... keyValues) {
       HtmlPageCreator page = newHtmlPageCreator(registry, keyValues);
       return page.realizePage(templateResource);
    }
 
-   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource, ResourceToken valuesResource, String... keyValues) throws Exception {
+   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource, ResourceToken valuesResource, String... keyValues) {
       HtmlPageCreator page = newHtmlPageCreator(registry, valuesResource, keyValues);
       return page.realizePage(templateResource);
    }
 
-   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource, Iterable<String> keyValues) throws Exception {
+   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource, Iterable<String> keyValues) {
       HtmlPageCreator page = newHtmlPageCreator(registry, keyValues);
       return page.realizePage(templateResource);
    }
 
-   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource, ResourceToken valuesResource, Iterable<String> keyValues) throws Exception {
+   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource, ResourceToken valuesResource, Iterable<String> keyValues) {
       HtmlPageCreator page = newHtmlPageCreator(registry, valuesResource, keyValues);
       return page.realizePage(templateResource);
    }

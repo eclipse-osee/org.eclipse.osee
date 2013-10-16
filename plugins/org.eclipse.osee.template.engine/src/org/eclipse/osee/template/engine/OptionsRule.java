@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.template.engine;
 
+import java.io.IOException;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 
@@ -33,7 +34,7 @@ public abstract class OptionsRule<T extends Identity<String> & Named> extends Ap
    }
 
    @Override
-   public void applyTo(Appendable appendable) throws Exception {
+   public void applyTo(Appendable appendable) throws IOException {
       if (listId == null) {
          appendOptions(appendable);
       } else {
@@ -54,9 +55,9 @@ public abstract class OptionsRule<T extends Identity<String> & Named> extends Ap
     * @return an Iterable that iterators over the list of options that each have a guid and a name
     * @throws Exception
     */
-   public abstract Iterable<T> getOptions() throws Exception;
+   public abstract Iterable<T> getOptions();
 
-   private void appendOptions(Appendable appendable) throws Exception {
+   private void appendOptions(Appendable appendable) throws IOException {
       for (T option : getOptions()) {
          appendable.append("<option value=\"");
          appendable.append(option.getName());

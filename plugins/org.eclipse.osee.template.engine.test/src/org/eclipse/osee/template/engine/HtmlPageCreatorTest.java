@@ -53,7 +53,7 @@ public class HtmlPageCreatorTest {
    }
 
    @Test
-   public void readSubstitutions_keyValue() throws Exception {
+   public void readSubstitutions_keyValue() {
       HtmlPageCreator page = new HtmlPageCreator(registry);
       page.readKeyValuePairs(TestValues_KeyValueHtml);
 
@@ -62,14 +62,14 @@ public class HtmlPageCreatorTest {
    }
 
    @Test
-   public void readSubstitutions_include() throws Exception {
+   public void readSubstitutions_include() {
       HtmlPageCreator page = new HtmlPageCreator(registry);
       page.readKeyValuePairs(TestValues_IncludeHtml);
       Assert.assertEquals("<!-- testHeaderPage.html -->\n\n<b>header</b>\n", page.getValue("header"));
    }
 
    @Test
-   public void realizePage() throws Exception {
+   public void realizePage() {
       HtmlPageCreator page = new HtmlPageCreator(registry);
       page.readKeyValuePairs(RealizePage_ValuesHtml);
 
@@ -86,7 +86,7 @@ public class HtmlPageCreatorTest {
    }
 
    @Test
-   public void realizePage_WithIncludes() throws Exception {
+   public void realizePage_WithIncludes() {
       String results = PageFactory.realizePage(registry, TestMainPage_WithIncludeFileHtml);
       Assert.assertTrue(results.contains("my header"));
       Assert.assertTrue(results.contains("header_NoTokenOnFirstLine.html -->"));
@@ -96,18 +96,18 @@ public class HtmlPageCreatorTest {
    }
 
    @Test
-   public void realizePage_NoTokenFirstLine() throws Exception {
+   public void realizePage_NoTokenFirstLine() {
       String results = PageFactory.realizePage(registry, TestMainPage_WithIncludeFileHtml);
       Assert.assertTrue(results.contains("my header"));
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void realizePage_noSubstitution() throws Exception {
+   public void realizePage_noSubstitution() {
       PageFactory.realizePage(registry, RealizePage_MainPageHtml);
    }
 
    @Test
-   public void realizePage__KeyValues() throws Exception {
+   public void realizePage__KeyValues() {
       String expected = "headerA\n\nvalue1\n\nvalue2\n";
       String results =
          PageFactory.realizePage(registry, RealizePage_MainPageHtml, "header", "headerA", "key1", "value1", "key2",
@@ -116,7 +116,7 @@ public class HtmlPageCreatorTest {
    }
 
    @Test
-   public void testToString() throws Exception {
+   public void testToString() {
       HtmlPageCreator page = new HtmlPageCreator(registry);
       page.readKeyValuePairs(TestValues_KeyValueHtml);
       Assert.assertEquals("{key2=   <h2>value2</h2>, key=   <h1>value</h1>}", page.toString());
