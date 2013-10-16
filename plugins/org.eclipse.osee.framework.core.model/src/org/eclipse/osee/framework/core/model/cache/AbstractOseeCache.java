@@ -47,13 +47,11 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
    private final boolean uniqueName;
    private final AtomicBoolean wasLoaded;
    private long lastLoaded;
-   private boolean ignoreEnsurePopulateException;
 
    protected AbstractOseeCache(OseeCacheEnum cacheId, IOseeDataAccessor<K, T> dataAccessor, boolean uniqueName) {
       this.lastLoaded = 0;
       this.cacheId = cacheId;
       this.wasLoaded = new AtomicBoolean(false);
-      this.ignoreEnsurePopulateException = false;
       this.dataAccessor = dataAccessor;
       this.uniqueName = uniqueName;
    }
@@ -73,14 +71,6 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
 
    protected void clearAdditionalData() {
       // for subclass overriding
-   }
-
-   public void setIgnoreEnsurePopulateException(boolean isIgnored) {
-      this.ignoreEnsurePopulateException = isIgnored;
-   }
-
-   public boolean isEnsurePopulateExceptionIgnored() {
-      return ignoreEnsurePopulateException;
    }
 
    @Override
@@ -269,9 +259,8 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
          try {
             reloadCache();
          } catch (OseeCoreException ex) {
-            if (!isEnsurePopulateExceptionIgnored()) {
-               throw ex;
-            }
+            wasLoaded.set(false);
+            throw ex;
          }
       }
    }
