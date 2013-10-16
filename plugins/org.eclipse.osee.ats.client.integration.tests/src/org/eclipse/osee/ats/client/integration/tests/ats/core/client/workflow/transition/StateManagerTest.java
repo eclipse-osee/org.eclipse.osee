@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.core.client.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;

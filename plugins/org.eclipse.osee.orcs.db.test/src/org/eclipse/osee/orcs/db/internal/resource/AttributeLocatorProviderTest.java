@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.db.internal.resource;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 import org.junit.Assert;

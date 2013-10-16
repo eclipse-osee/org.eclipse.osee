@@ -14,7 +14,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.internal.CacheProvider;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * This uses the config cache to cache the relation between the team workflow and version.<br/>

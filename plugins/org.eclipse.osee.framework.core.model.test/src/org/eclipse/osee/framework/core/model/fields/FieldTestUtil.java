@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.core.model.fields;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.internal.fields.CollectionField;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**

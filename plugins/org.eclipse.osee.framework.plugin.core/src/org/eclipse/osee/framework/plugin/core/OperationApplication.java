@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.plugin.core;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.osgi.framework.Bundle;
 
 public class OperationApplication implements IApplication {

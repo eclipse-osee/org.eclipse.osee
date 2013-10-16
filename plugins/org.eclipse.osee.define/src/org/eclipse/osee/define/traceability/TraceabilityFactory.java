@@ -17,7 +17,7 @@ import org.eclipse.osee.define.traceability.report.StdCsciToTestTable;
 import org.eclipse.osee.define.traceability.report.StdTestToCsciTable;
 import org.eclipse.osee.define.traceability.report.StpCsciToTestTable;
 import org.eclipse.osee.define.traceability.report.StpTestToCsciTable;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 

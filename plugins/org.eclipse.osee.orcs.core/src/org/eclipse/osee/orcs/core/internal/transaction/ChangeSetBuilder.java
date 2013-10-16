@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.transaction;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.HasOrcsChangeSet;

@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.internal.util;
 
 import static org.eclipse.osee.framework.core.util.Conditions.checkExpressionFailOnTrue;
 import static org.eclipse.osee.framework.core.util.Conditions.checkNotNull;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 

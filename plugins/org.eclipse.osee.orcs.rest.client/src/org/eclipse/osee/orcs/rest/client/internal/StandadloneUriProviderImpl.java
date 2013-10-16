@@ -13,9 +13,9 @@ package org.eclipse.osee.orcs.rest.client.internal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.services.URIProvider;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.HttpUrlBuilder;
 import com.google.inject.Inject;
 

@@ -11,7 +11,7 @@
 package org.eclipse.osee.coverage.model;
 
 import org.eclipse.osee.coverage.model.CoverageOptionManager.EnabledOption;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 import java.util.Collections;
 import org.eclipse.osee.ats.actions.DuplicateWorkflowAction;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne

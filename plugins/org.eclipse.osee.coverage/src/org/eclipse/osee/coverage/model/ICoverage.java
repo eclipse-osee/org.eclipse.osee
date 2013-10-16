@@ -11,9 +11,9 @@
 package org.eclipse.osee.coverage.model;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**

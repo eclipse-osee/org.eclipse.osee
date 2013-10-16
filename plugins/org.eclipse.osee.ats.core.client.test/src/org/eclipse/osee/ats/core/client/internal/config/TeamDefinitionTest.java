@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.client.internal.config;
 
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

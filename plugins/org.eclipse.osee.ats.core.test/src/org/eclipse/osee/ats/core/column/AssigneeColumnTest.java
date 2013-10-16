@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.core.mock.MockActionGroup;
 import org.eclipse.osee.ats.core.mock.MockAtsUser;
 import org.eclipse.osee.ats.core.mock.MockWorkData;
 import org.eclipse.osee.ats.core.mock.MockWorkItem;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @tests AssigneeColumn

@@ -21,9 +21,9 @@ import java.util.concurrent.FutureTask;
 import javax.sql.DataSource;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.data.LazyObject;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public class PooledConnectionProvider implements ConnectionProvider {
 

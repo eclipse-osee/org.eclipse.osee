@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.internal.util;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import org.eclipse.osee.framework.core.data.LazyObject;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.HasOrcsData;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 

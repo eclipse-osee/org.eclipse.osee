@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo.config;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.init.AddCommonBranch;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**

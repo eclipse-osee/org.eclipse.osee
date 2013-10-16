@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.rest.internal.build.report.parser.AtsAbstractSAXPars
 import org.eclipse.osee.ats.rest.internal.build.report.parser.AtsBuildDataParser;
 import org.eclipse.osee.ats.rest.internal.build.report.table.UrlListTable;
 import org.eclipse.osee.ats.rest.internal.build.report.util.InputFilesUtil;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author John Misinco

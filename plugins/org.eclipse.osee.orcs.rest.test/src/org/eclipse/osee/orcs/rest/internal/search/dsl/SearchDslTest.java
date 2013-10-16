@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.internal.search.PredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;

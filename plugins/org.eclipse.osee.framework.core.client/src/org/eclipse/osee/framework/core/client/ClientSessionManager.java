@@ -15,10 +15,10 @@ import org.eclipse.osee.framework.core.client.internal.InternalClientSessionMana
 import org.eclipse.osee.framework.core.client.internal.OseeApplicationServer;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.OseeSql;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

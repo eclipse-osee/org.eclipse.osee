@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.AttributeClassProvider;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.BooleanAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.CompressedContentAttribute;

@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.resource.management.test.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.internal.CompressedResourceBridge;

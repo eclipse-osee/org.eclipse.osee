@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.core.model.type;
 
 import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.mocks.ModelAsserts;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 import org.junit.Test;

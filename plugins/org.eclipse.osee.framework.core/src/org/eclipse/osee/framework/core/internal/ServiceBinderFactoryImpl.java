@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.core.internal;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.eclipse.osee.framework.core.util.ServiceBindType;
 import org.eclipse.osee.framework.core.util.ServiceBinderFactory;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 

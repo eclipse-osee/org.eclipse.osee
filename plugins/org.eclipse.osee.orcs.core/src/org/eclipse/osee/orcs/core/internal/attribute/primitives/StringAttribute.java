@@ -11,8 +11,8 @@
 package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 
 import java.io.InputStream;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
 import org.eclipse.osee.orcs.core.annotations.OseeAttribute;

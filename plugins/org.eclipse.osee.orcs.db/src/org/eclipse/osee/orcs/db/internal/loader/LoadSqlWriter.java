@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;

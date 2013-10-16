@@ -12,12 +12,12 @@ package org.eclipse.osee.framework.access.internal.cm;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.services.CmAccessControlProvider;
 import org.eclipse.osee.framework.core.services.HasCmAccessControl;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
 /**
  * @author Roberto E. Escobar

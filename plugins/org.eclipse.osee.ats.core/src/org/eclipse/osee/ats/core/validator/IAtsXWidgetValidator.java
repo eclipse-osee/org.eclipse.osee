@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.validator;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * Provider to validate XWidget/IAttributeWidget entry against workitem store model without use of XWidget UI

@@ -17,8 +17,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
 import org.eclipse.osee.ats.rest.internal.build.report.util.InputFilesUtil;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author John Misinco

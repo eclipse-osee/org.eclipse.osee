@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.access.IAccessProvider;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
@@ -24,6 +23,7 @@ import org.eclipse.osee.framework.core.model.access.HasAccessModel;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.services.CmAccessControlProvider;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

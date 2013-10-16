@@ -15,7 +15,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.ContentUr
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 

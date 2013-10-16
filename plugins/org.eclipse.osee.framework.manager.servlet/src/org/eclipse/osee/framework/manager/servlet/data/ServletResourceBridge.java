@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import javax.servlet.http.HttpServletRequest;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 

@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.manager.servlet.data;
 
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.OseeInfo;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 

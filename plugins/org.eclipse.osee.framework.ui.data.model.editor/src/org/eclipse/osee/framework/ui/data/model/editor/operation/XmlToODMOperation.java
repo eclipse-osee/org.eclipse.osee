@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.data.model.editor.operation;
 
 import java.io.File;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

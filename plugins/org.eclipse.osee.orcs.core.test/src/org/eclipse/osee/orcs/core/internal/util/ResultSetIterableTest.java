@@ -20,7 +20,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.exception.ItemDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleItemsExist;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;

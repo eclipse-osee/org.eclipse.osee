@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.internal;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.internal.ServiceBinderFactoryImpl;
 import org.eclipse.osee.framework.core.mocks.MockBundleContext;
 import org.eclipse.osee.framework.core.mocks.MockServiceReference;
 import org.eclipse.osee.framework.core.mocks.MockTrackingHandler;
 import org.eclipse.osee.framework.core.util.ServiceBindType;
 import org.eclipse.osee.framework.core.util.ServiceBinderFactory;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;

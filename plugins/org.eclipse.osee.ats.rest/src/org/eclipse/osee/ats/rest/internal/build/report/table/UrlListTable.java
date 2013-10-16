@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.rest.internal.build.report.table;
 
 import java.io.OutputStream;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import com.lowagie.text.Anchor;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Cell;

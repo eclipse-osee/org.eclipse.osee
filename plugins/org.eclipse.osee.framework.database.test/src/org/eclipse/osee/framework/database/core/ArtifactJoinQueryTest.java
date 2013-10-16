@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.database.core;
 
 import java.sql.Timestamp;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.test.mocks.MockJoinAccessor;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Test;
 

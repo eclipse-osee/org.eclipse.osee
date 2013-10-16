@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.mocks;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.db.internal.proxy.DataHandler;
 import org.eclipse.osee.orcs.db.internal.proxy.DataResource;
 

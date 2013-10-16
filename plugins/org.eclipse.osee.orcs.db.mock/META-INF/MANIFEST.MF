@@ -9,13 +9,16 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.database.core,
+ org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.annotation,
  org.eclipse.osee.framework.jdk.core.util.network,
  org.eclipse.osee.hsqldb,
+ org.junit,
+ org.junit.rules,
+ org.junit.runner,
+ org.junit.runners.model,
  org.osgi.framework,
  org.osgi.util.tracker
 Export-Package: org.eclipse.osee.orcs.db.mock
-Require-Bundle: org.eclipse.core.runtime,
- org.junit;bundle-version="4.11.0"
 Bundle-ActivationPolicy: lazy

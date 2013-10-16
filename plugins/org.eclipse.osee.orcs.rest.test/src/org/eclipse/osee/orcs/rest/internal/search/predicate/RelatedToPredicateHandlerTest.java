@@ -18,7 +18,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.SearchFlag;

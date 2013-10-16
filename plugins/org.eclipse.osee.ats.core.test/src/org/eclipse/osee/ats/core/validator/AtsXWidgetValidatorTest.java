@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.core.workdef.SimpleWidgetDefinitionIntMinMaxConstrai
 import org.eclipse.osee.ats.core.workdef.SimpleWidgetDefinitionListMinMaxSelectedConstraint;
 import org.eclipse.osee.ats.mocks.MockStateDefinition;
 import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.junit.Assert;
 

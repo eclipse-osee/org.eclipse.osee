@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.data.model.editor.command;
 
 import java.util.logging.Level;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.data.model.editor.internal.Activator;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;

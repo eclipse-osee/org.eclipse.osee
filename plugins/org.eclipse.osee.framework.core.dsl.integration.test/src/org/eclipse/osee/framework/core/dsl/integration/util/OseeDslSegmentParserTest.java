@@ -19,11 +19,11 @@ import org.eclipse.osee.framework.core.dsl.integration.util.OseeDslSegmentParser
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeDslSegmentParser.TagLocation;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 import org.junit.BeforeClass;

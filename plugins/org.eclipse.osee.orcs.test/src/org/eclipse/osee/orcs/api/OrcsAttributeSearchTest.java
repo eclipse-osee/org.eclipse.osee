@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
 import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.core.enums.TokenOrderType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;

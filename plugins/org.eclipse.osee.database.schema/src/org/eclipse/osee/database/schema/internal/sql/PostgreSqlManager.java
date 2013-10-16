@@ -24,9 +24,9 @@ import org.eclipse.osee.database.schema.internal.data.TableElement;
 import org.eclipse.osee.database.schema.internal.data.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.database.schema.internal.data.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.database.schema.internal.data.TableElement.ColumnFields;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 

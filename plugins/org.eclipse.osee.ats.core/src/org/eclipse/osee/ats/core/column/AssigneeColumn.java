@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.workflow.HasActions;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
 import org.eclipse.osee.ats.api.workflow.HasWorkData;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**

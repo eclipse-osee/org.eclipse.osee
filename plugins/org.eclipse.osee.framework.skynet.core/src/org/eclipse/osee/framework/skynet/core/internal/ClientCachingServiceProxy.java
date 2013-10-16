@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.internal;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.OseeCachingService;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
@@ -25,6 +24,7 @@ import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IdentityService;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientArtifactTypeAccessor;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientAttributeTypeAccessor;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientBranchAccessor;

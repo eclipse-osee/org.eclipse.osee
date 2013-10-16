@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.resource;
 
 import java.io.File;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 
 /**

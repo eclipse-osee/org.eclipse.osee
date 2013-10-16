@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.database.schema.internal.data.SchemaData;
 import org.eclipse.osee.database.schema.internal.data.TableElement;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public class SchemaSqlUtil {
    private final SqlManager sqlManager;

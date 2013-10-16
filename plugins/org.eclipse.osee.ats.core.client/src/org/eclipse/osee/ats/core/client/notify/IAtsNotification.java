@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.client.notify;
 
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
 
 /**

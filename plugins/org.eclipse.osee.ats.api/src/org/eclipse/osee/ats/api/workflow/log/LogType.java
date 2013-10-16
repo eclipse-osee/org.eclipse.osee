@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow.log;
 
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 public enum LogType {
    None,

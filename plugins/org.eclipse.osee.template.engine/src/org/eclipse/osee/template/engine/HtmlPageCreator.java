@@ -17,10 +17,10 @@ import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.model.ResourceToken;
 import org.eclipse.osee.framework.core.services.IResourceRegistry;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * Generates xhtml pages using both static and dynamic substitutions. Designed to be thread safe; however, this means

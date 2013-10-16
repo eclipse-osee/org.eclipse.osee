@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.database.operation;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -21,6 +20,7 @@ import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.internal.ServiceUtil;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * Purge artifact, attribute, and relation versions that are not addressed or nonexistent and purge empty transactions

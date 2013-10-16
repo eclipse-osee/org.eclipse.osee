@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.commit.actions;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Theron Virgin

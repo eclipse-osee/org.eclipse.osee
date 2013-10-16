@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model.search;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author John R. Misinco

@@ -27,7 +27,7 @@ import org.eclipse.osee.database.schema.internal.data.TableElement.ColumnFields;
 import org.eclipse.osee.database.schema.internal.data.TableElement.TableDescriptionFields;
 import org.eclipse.osee.database.schema.internal.data.TableElement.TableTags;
 import org.eclipse.osee.database.schema.internal.sql.SqlManager;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.w3c.dom.Document;

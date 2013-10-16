@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal;
 
-import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
 public interface IAtsWorkItemArtifactServiceProvider {
 

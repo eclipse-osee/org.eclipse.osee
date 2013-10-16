@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TxMonitorImpl.MonitoredTx;
 import org.eclipse.osee.framework.skynet.core.transaction.TxMonitorImpl.TxState;

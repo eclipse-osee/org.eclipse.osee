@@ -26,8 +26,8 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserByName;
 import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
 import org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslFactoryImpl;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 

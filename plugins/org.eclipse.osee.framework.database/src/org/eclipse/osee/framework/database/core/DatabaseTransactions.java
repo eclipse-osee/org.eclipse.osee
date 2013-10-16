@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.database.core;
 
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 public final class DatabaseTransactions {

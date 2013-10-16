@@ -15,10 +15,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.internal.ServiceUtil;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * Handles connection recovery in the event of database connection being lost

@@ -66,8 +66,8 @@ import org.eclipse.osee.ats.impl.internal.model.WidgetDefinitionFloatMinMaxConst
 import org.eclipse.osee.ats.impl.internal.model.WidgetDefinitionIntMinMaxConstraint;
 import org.eclipse.osee.ats.impl.internal.model.WidgetDefinitionListMinMaxSelectedConstraint;
 import org.eclipse.osee.ats.impl.internal.model.WorkDefinition;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public class ConvertAtsDslToWorkDefinition {

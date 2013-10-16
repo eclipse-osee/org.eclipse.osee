@@ -28,10 +28,10 @@ import org.eclipse.osee.database.schema.internal.data.SchemaData;
 import org.eclipse.osee.database.schema.internal.data.SchemaXmlParser;
 import org.eclipse.osee.database.schema.internal.data.TableElement;
 import org.eclipse.osee.database.schema.internal.data.TableElement.TableDescriptionFields;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 

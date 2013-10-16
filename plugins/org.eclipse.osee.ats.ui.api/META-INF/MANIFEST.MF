@@ -14,7 +14,7 @@ Import-Package: org.eclipse.osee.display.api.components,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data
-Require-Bundle: org.eclipse.core.runtime

@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.core.model;
 
 import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.services.IResourceRegistry;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * @author Ryan D. Brooks

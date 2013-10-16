@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.client.workflow.note;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * @author Donald G. Dunne

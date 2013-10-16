@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;

@@ -11,9 +11,9 @@ Import-Package: org.eclipse.osee.executor.admin,
  org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.persistence,
+ org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.time,
  org.eclipse.osee.framework.jdk.core.util.xml,
  org.eclipse.osee.logger
 Export-Package: org.eclipse.osee.database.schema
-Require-Bundle: org.eclipse.core.runtime

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.api.team;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public interface IAtsTeamDefinitionService {
 

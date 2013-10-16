@@ -11,8 +11,8 @@
 package org.eclipse.osee.database.schema.internal.sql;
 
 import org.eclipse.osee.database.schema.internal.data.TableElement;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 
 /**

@@ -14,7 +14,7 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.task.TaskXViewer;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 

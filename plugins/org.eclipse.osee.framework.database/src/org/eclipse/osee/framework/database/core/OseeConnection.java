@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.database.core;
 
 import java.sql.DatabaseMetaData;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public abstract class OseeConnection {
 

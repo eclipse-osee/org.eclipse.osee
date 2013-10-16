@@ -20,7 +20,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.rest.internal.OrcsApplication;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.DslFactory;

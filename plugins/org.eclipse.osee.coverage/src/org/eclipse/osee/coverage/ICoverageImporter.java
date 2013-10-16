@@ -12,7 +12,7 @@ package org.eclipse.osee.coverage;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.coverage.model.CoverageImport;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne

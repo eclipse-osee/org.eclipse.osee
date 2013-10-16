@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.results;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne

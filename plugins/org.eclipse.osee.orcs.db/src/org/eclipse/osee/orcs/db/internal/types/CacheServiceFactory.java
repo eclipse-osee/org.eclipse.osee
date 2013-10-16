@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.types;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.TempCachingService;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
 
 /**

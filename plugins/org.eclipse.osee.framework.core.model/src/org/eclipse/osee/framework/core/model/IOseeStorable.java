@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.model;
 
 import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

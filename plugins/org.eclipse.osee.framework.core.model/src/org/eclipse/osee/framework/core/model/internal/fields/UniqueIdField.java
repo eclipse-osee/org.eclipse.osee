@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.internal.fields;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.AbstractOseeField;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 
 /**

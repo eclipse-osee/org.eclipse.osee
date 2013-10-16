@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import java.util.Date;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 
 /**

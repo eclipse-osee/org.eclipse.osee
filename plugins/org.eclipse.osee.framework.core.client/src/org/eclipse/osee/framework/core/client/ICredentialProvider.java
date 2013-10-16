@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.client;
 
 import org.eclipse.osee.framework.core.data.OseeCredential;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

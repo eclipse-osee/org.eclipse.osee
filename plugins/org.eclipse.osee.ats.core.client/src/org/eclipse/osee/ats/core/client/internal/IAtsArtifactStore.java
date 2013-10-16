@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.client.internal;
 
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 

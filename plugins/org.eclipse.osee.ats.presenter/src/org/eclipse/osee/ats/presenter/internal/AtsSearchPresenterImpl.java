@@ -26,7 +26,7 @@ import org.eclipse.osee.display.api.components.SearchResultsListComponent;
 import org.eclipse.osee.display.api.data.ViewId;
 import org.eclipse.osee.display.api.search.SearchNavigator;
 import org.eclipse.osee.display.presenter.SearchPresenterImpl;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.UrlQuery;
 import org.eclipse.osee.logger.Log;

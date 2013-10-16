@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.transition;
 
 import org.eclipse.osee.ats.core.workflow.transition.TransitionResult;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.junit.Assert;
 import org.junit.Test;
 

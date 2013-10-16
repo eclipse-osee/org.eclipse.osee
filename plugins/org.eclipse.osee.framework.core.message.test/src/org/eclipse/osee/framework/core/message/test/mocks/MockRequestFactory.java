@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.message.BranchCreationRequest;
 import org.eclipse.osee.framework.core.message.BranchCreationResponse;
 import org.eclipse.osee.framework.core.message.CacheUpdateRequest;
@@ -29,6 +28,7 @@ import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
 import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
 import org.eclipse.osee.framework.core.model.type.RelationTypeFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 public final class MockRequestFactory {

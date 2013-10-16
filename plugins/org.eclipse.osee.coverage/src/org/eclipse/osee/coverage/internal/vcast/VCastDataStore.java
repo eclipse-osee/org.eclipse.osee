@@ -30,7 +30,7 @@ import org.eclipse.osee.coverage.internal.vcast.model.VCastStatementCoverage;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastStatementData;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastVersion;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastWritable;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Shawn F. Cook

@@ -11,8 +11,8 @@
 package org.eclipse.osee.orcs.core.internal.graph;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
 import com.google.common.base.Objects;
 

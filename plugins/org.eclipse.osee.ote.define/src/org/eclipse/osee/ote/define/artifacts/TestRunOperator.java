@@ -11,7 +11,7 @@
 package org.eclipse.osee.ote.define.artifacts;
 
 import java.util.Date;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author John R. Misinco

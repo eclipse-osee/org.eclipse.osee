@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.reports.efficiency.internal.Activator;
 import org.eclipse.osee.ats.reports.efficiency.internal.AtsClientService;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * Class to collect the list of artifacts and compute work done

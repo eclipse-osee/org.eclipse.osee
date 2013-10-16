@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;

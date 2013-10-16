@@ -17,8 +17,8 @@ import java.util.Set;
 import org.eclipse.osee.database.schema.internal.data.ColumnMetadata;
 import org.eclipse.osee.database.schema.internal.data.TableElement;
 import org.eclipse.osee.database.schema.internal.data.TableElement.ColumnFields;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 
 /**

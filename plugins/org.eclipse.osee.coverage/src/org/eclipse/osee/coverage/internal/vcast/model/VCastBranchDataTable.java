@@ -12,7 +12,7 @@ package org.eclipse.osee.coverage.internal.vcast.model;
 
 import java.util.Collection;
 import org.eclipse.osee.coverage.internal.vcast.VCastDataStore;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public class VCastBranchDataTable implements VCastTableData<VCastBranchData> {
 

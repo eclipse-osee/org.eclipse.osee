@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.core.enums;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * @author Ryan D. Brooks

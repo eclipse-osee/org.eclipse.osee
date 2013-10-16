@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.util.widgets.defect.XDefectViewer;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectMultiChoiceSelect;
 import org.eclipse.osee.ats.util.widgets.role.XUserRoleViewer;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;

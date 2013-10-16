@@ -14,7 +14,7 @@ import java.util.List;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Jeff C. Phillips

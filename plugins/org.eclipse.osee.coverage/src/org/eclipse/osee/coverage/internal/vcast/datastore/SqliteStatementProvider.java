@@ -12,10 +12,10 @@ package org.eclipse.osee.coverage.internal.vcast.datastore;
 
 import org.eclipse.osee.coverage.internal.vcast.datastore.VCastDataStoreImpl.StatementProvider;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

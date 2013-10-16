@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.version;
 
-import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
 /**
  * @author Donald G. Dunne

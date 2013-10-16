@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message.test.translation;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.translation.ITranslator;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.junit.Test;
 

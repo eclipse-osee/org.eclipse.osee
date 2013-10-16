@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.merge;
 
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * @author Donald G. Dunne

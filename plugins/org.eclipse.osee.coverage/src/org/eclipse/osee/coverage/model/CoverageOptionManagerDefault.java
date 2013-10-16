@@ -12,7 +12,7 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * @author Donald G. Dunne

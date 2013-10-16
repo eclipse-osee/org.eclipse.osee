@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.column;
 import java.util.Collection;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne

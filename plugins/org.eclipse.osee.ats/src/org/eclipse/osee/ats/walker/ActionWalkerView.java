@@ -36,7 +36,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.walker.action.ActionWalkerLayoutAction;
 import org.eclipse.osee.ats.walker.action.ActionWalkerRefreshAction;
 import org.eclipse.osee.ats.walker.action.ActionWalkerShowAllAction;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;

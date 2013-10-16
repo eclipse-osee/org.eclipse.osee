@@ -16,7 +16,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ResultSet;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import com.google.common.base.Predicate;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;

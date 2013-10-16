@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.model;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 import org.junit.Before;

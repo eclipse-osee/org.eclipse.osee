@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.ui.api.search;
 
 import org.eclipse.osee.display.api.search.ArtifactProvider;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**

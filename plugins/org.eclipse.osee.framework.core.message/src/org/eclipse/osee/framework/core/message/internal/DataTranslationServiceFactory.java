@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.message.internal;
 
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.internal.translation.ArtifactTypeCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.AttributeTypeCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.BranchCacheStoreRequestTranslator;
@@ -42,6 +41,7 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
 import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

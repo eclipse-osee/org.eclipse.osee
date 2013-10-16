@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.core.validator.AtsCoreXWidgetValidatorProvider;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidatorProvider;
 import org.eclipse.osee.ats.core.validator.IAtsXWidgetValidator;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 
 /**

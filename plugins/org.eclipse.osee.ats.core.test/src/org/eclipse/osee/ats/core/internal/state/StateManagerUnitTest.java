@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workflow.WorkStateProvider;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Test;
 import org.mockito.Mockito;
 

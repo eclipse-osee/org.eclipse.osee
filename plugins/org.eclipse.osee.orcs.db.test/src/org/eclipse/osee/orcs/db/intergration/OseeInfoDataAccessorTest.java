@@ -12,11 +12,11 @@ package org.eclipse.osee.orcs.db.intergration;
 
 import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.integrationRule;
 import java.sql.DatabaseMetaData;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.accessor.OseeInfoDataAccessor;

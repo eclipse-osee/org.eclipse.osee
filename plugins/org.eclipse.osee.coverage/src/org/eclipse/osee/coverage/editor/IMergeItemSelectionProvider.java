@@ -12,7 +12,7 @@ package org.eclipse.osee.coverage.editor;
 
 import java.util.Collection;
 import org.eclipse.osee.coverage.merge.IMergeItem;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public interface IMergeItemSelectionProvider {
 

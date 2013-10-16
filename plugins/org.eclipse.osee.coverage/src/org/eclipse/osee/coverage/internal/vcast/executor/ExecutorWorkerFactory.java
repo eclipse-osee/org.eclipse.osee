@@ -22,10 +22,10 @@ import org.eclipse.osee.coverage.internal.vcast.operations.VcpSourceFile;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.vcast.CoverageImportData;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.threading.ThreadedWorkerExecutor;
 import org.eclipse.osee.framework.core.threading.ThreadedWorkerFactory;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne

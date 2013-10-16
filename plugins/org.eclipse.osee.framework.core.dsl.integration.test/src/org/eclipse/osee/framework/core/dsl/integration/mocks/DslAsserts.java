@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.Scope;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 
 /**

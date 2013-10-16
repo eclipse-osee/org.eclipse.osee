@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.util;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 

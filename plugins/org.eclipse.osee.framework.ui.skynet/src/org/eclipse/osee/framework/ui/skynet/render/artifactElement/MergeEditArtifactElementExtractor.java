@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.render.artifactElement;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

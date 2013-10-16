@@ -14,12 +14,12 @@ import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks

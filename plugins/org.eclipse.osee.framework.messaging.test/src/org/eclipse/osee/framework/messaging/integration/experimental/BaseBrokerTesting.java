@@ -21,7 +21,7 @@ import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import org.apache.activemq.broker.BrokerService;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionNode;

@@ -16,8 +16,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import org.eclipse.osee.database.schema.SchemaResource;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 

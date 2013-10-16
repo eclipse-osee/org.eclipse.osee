@@ -9,6 +9,7 @@ Service-Component: OSGI-INF/*.xml
 Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.database.core,
+ org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.logger
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.framework.database

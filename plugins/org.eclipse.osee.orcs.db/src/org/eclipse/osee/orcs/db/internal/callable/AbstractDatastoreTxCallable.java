@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.DatabaseTransactions;
 import org.eclipse.osee.framework.database.core.IDbTransactionWork;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 

@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.config;
 
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
 /**
  * @author Donald G. Dunne

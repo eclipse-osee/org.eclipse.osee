@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.core.client.workflow.note.AtsNote;
 import org.eclipse.osee.ats.core.client.workflow.note.INoteStorageProvider;
 import org.eclipse.osee.ats.core.client.workflow.note.NoteItem;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 import org.junit.Test;

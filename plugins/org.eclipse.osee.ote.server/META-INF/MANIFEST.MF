@@ -12,6 +12,7 @@ Import-Package: org.apache.felix.service.command;status=provisional;version="0.8
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.reportdata,
+ org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.io.streams,
  org.eclipse.osee.framework.jdk.core.util.network,

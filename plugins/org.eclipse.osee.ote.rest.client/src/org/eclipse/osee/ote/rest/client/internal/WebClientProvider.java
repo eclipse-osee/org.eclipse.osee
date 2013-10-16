@@ -11,7 +11,7 @@
 package org.eclipse.osee.ote.rest.client.internal;
 
 import java.net.URI;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import com.sun.jersey.api.client.AsyncWebResource;
 import com.sun.jersey.api.client.WebResource;
 

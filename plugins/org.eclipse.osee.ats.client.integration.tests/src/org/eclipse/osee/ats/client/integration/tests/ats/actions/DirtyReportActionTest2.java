@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 import org.eclipse.osee.ats.actions.DirtyReportAction;
 import org.eclipse.osee.ats.actions.IDirtyReportable;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.junit.Test;
 
 /**

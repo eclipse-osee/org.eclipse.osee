@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.rest.internal.search.dsl;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 
 /**

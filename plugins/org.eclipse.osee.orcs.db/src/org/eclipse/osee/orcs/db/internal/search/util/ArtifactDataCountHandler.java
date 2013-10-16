@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.search.util;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandlerDecorator;

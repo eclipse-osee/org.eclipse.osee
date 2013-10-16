@@ -11,15 +11,13 @@
 package org.eclipse.osee.ote.rest.internal;
 
 import java.util.concurrent.ExecutionException;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
-
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.ote.rest.model.OteJobStatus;
 
 /**

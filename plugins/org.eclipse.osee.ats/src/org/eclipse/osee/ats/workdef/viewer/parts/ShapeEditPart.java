@@ -37,8 +37,8 @@ import org.eclipse.osee.ats.workdef.viewer.model.RectangleShape;
 import org.eclipse.osee.ats.workdef.viewer.model.Shape;
 import org.eclipse.osee.ats.workdef.viewer.model.commands.ConnectionCreateCommand;
 import org.eclipse.osee.ats.workdef.viewer.model.commands.ConnectionReconnectCommand;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**

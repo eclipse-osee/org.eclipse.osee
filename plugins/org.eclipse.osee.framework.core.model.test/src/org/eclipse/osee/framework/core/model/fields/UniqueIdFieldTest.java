@@ -12,10 +12,9 @@ package org.eclipse.osee.framework.core.model.fields;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.internal.fields.UniqueIdField;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.junit.FixMethodOrder;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;

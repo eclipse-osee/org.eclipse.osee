@@ -13,9 +13,6 @@ package org.eclipse.osee.framework.core.message.internal.translation;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.ChangeItemType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.message.ChangeReportResponse;
 import org.eclipse.osee.framework.core.message.TranslationUtil;
 import org.eclipse.osee.framework.core.model.change.ArtifactChangeItem;
@@ -24,6 +21,9 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
 import org.eclipse.osee.framework.core.model.change.RelationChangeItem;
 import org.eclipse.osee.framework.core.translation.ITranslator;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**

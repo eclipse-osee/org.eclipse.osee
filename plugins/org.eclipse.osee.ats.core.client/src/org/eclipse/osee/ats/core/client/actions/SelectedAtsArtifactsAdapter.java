@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**

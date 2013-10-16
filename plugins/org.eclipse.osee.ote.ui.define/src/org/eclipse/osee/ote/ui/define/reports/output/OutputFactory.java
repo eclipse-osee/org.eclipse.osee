@@ -11,7 +11,7 @@
 package org.eclipse.osee.ote.ui.define.reports.output;
 
 import java.util.Date;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * @author Roberto E. Escobar

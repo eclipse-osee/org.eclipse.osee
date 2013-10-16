@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.server;
 
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 
 /**

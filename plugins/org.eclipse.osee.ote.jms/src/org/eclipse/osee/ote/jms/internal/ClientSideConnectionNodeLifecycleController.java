@@ -13,9 +13,8 @@ package org.eclipse.osee.ote.jms.internal;
 import java.io.Serializable;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionNode;

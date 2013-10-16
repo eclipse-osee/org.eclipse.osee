@@ -15,7 +15,7 @@ import static org.eclipse.osee.framework.messaging.data.TestMessages.JMS_TOPIC;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.Map;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
 import org.eclipse.osee.framework.messaging.data.TestMessage;

@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.StateDef;
 import org.eclipse.osee.ats.dsl.atsDsl.ToState;
 import org.eclipse.osee.ats.dsl.atsDsl.WidgetDef;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.xtext.validation.Check;

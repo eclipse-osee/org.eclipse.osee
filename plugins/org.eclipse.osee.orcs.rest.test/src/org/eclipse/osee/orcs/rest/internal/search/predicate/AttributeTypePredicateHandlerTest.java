@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
 import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.core.enums.TokenOrderType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.SearchFlag;
 import org.eclipse.osee.orcs.rest.model.search.SearchMethod;

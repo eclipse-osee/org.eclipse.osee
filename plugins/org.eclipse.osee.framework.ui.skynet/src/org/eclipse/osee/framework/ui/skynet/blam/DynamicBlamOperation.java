@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * @author Ryan D. Brooks

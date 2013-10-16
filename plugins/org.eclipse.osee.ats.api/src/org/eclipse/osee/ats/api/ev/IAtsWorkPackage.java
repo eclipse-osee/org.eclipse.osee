@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.api.ev;
 
 import java.util.Date;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne

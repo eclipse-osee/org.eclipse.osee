@@ -11,13 +11,11 @@
 package org.eclipse.osee.framework.core.server.internal.session;
 
 import java.util.Collection;
-
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.cache.admin.CacheConfiguration;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
@@ -27,6 +25,7 @@ import org.eclipse.osee.framework.core.server.internal.BuildTypeDataProvider;
 import org.eclipse.osee.framework.core.server.internal.BuildTypeIdentifier;
 import org.eclipse.osee.framework.database.DatabaseInfoRegistry;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 
 /**

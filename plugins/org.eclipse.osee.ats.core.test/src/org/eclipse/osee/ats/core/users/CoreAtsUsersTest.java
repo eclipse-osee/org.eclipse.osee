@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.core.users;
 
 import java.util.HashMap;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.junit.Assert;
 import org.junit.Test;
 

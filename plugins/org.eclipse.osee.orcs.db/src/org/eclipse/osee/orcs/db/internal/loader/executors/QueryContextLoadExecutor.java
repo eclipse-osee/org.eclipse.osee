@@ -12,9 +12,9 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 
 import static org.eclipse.osee.orcs.db.internal.sql.RelationalConstants.MIN_FETCH_SIZE;
 import org.eclipse.osee.executor.admin.HasCancellation;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;

@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.exchange.transform;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.osgi.framework.Version;
 
 /**

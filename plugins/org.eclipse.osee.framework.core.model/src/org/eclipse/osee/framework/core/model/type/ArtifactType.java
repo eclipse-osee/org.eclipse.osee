@@ -19,13 +19,13 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IOseeField;
 import org.eclipse.osee.framework.core.model.OseeField;
 import org.eclipse.osee.framework.core.model.internal.fields.ArtifactSuperTypeField;
 import org.eclipse.osee.framework.core.model.internal.fields.ArtifactTypeAttributesField;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Robert A. Fisher

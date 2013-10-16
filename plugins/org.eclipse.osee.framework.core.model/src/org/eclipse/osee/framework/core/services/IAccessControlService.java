@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.core.services;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public interface IAccessControlService {
 

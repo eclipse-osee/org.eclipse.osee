@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.manager.servlet;
 
 import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.ArtifactTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.message.ArtifactTypeCacheUpdateResponse.ArtifactTypeRow;
 import org.eclipse.osee.framework.core.message.AttributeTypeCacheUpdateResponse;
@@ -23,6 +22,7 @@ import org.eclipse.osee.framework.core.message.RelationTypeCacheUpdateResponse.R
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public final class ModCompatible {

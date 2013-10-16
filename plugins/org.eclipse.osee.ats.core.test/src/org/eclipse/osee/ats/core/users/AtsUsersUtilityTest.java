@@ -11,7 +11,7 @@ import java.util.Set;
 import org.junit.Assert;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.mock.MockAtsUser;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Test;
 
 public class AtsUsersUtilityTest {

@@ -11,8 +11,8 @@
 package org.eclipse.osee.coverage.store;
 
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne

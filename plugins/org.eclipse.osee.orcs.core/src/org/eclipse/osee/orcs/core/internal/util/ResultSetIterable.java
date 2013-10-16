@@ -14,7 +14,7 @@ import java.util.Iterator;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.exception.ItemDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleItemsExist;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import com.google.common.collect.Iterables;
 
 /**

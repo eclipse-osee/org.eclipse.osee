@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.model;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * Allow for late loading of large amounts of data that isn't needed often.

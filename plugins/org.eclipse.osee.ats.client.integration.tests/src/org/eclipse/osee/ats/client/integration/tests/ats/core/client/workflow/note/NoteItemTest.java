@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.workflow.note.NoteItem;
 import org.eclipse.osee.ats.core.client.workflow.note.NoteType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.junit.Assert;
 import org.junit.Test;

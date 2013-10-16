@@ -8,30 +8,29 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.exception;
+package org.eclipse.osee.framework.jdk.core.type;
 
 
 /**
  * @author Donald G. Dunne
  */
-public class OseeArgumentException extends OseeCoreException {
+public class OseeStateException extends OseeCoreException {
 
-   private static final long serialVersionUID = 1L;
-
-   public OseeArgumentException(String message, Object... args) {
-      super(message, args);
-   }
-
-   public OseeArgumentException(String message, Throwable cause) {
+   public OseeStateException(String message, Throwable cause) {
       super(message, cause);
    }
 
-   public OseeArgumentException(Throwable cause, String message, Object... args) {
+   public OseeStateException(Throwable cause, String message, Object... args) {
       super(cause, message, args);
    }
 
-   public OseeArgumentException(Throwable cause) {
+   public OseeStateException(Throwable cause) {
       super(cause);
    }
 
+   private static final long serialVersionUID = 1L;
+
+   public OseeStateException(String message, Object... args) {
+      super(message, args);
+   }
 }

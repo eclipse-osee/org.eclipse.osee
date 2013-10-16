@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.message.test.data;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
 import org.eclipse.osee.framework.core.message.test.mocks.MockOseeDataAccessor;
@@ -21,6 +20,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.junit.Assert;
 import org.junit.Test;

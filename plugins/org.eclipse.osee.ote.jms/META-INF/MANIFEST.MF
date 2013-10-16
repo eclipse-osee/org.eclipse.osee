@@ -7,6 +7,7 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.connection.service,
  org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util;resolution:=optional,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.messaging,
