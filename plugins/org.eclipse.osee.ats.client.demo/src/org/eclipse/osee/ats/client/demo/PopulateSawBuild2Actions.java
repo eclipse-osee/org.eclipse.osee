@@ -16,8 +16,10 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.client.demo.config.DemoDbAIs;
 import org.eclipse.osee.ats.client.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.client.demo.config.DemoDbUtil.SoftwareRequirementStrs;
@@ -30,12 +32,11 @@ import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.util.AtsBranchManager;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -50,8 +51,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Donald G. Dunne
@@ -68,22 +67,21 @@ public class PopulateSawBuild2Actions {
       Conditions.checkNotNull(version, "SAW_Bld_2");
 
       // Create SAW_Bld_2 Actions
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - PopulateSawBuild2Actions");
+      AtsChangeSet changes = new AtsChangeSet("Populate Demo DB - PopulateSawBuild2Actions");
 
       // SawBuild2Action1
-      ActionArtifact committedAction = sawBuild2Action1_createCommittedAction(transaction);
+      ActionArtifact committedAction = sawBuild2Action1_createCommittedAction(changes);
 
       // SawBuild2Action2
-      ActionArtifact unCommittedAction = sawBuild2Action2_createUnCommittedAction(transaction);
+      ActionArtifact unCommittedAction = sawBuild2Action2_createUnCommittedAction(changes);
 
       // SawBuild2Action3
-      sawBuild2Action3_createNoBranchAction(transaction);
+      sawBuild2Action3_createNoBranchAction(changes);
 
       // SawBuild2Action4
-      ActionArtifact conflictedAction = sawBuild2Action4_createUnCommittedConflictedAction(transaction);
+      ActionArtifact conflictedAction = sawBuild2Action4_createUnCommittedConflictedAction(changes);
 
-      transaction.execute();
+      changes.execute();
 
       // Sleep to wait for the persist of the actions
       DemoDbUtil.sleep(3000);
@@ -99,7 +97,7 @@ public class PopulateSawBuild2Actions {
 
    }
 
-   private static ActionArtifact sawBuild2Action4_createUnCommittedConflictedAction(SkynetTransaction transaction) throws OseeCoreException {
+   private static ActionArtifact sawBuild2Action4_createUnCommittedConflictedAction(IAtsChangeSet changes) throws OseeCoreException {
       String title = "SAW (uncommitted-conflicted) More Requirement Changes for Diagram View";
       Collection<IAtsActionableItem> aias =
          DemoDbUtil.getActionableItems(new String[] {DemoDbAIs.SAW_Requirements.getAIName()});
@@ -109,7 +107,7 @@ public class PopulateSawBuild2Actions {
 
       ActionArtifact actionArt =
          ActionManager.createAction(null, title, "Problem with the Diagram View", ChangeType.Problem, priority, false,
-            null, aias, createdDate, createdBy, null, transaction);
+            null, aias, createdDate, createdBy, null, changes);
       for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {
 
          TeamWorkFlowManager dtwm =
@@ -117,7 +115,7 @@ public class PopulateSawBuild2Actions {
                TransitionOption.OverrideTransitionValidityCheck);
 
          // Transition to desired state
-         Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, transaction);
+         Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, changes);
          if (result.isFalse()) {
             throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
                toState.getName(), result.getText());
@@ -128,15 +126,13 @@ public class PopulateSawBuild2Actions {
             teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
          }
 
-         teamWf.persist(transaction);
-
          AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
-         teamWf.persist(transaction);
+         changes.add(teamWf);
       }
       return actionArt;
    }
 
-   private static ActionArtifact sawBuild2Action3_createNoBranchAction(SkynetTransaction transaction) throws OseeCoreException {
+   private static ActionArtifact sawBuild2Action3_createNoBranchAction(IAtsChangeSet changes) throws OseeCoreException {
       String title = "SAW (no-branch) Even More Requirement Changes for Diagram View";
       Collection<IAtsActionableItem> aias =
          DemoDbUtil.getActionableItems(new String[] {
@@ -150,7 +146,7 @@ public class PopulateSawBuild2Actions {
 
       ActionArtifact actionArt =
          ActionManager.createAction(null, title, "Problem with the Diagram View", ChangeType.Problem, priority, false,
-            null, aias, createdDate, createdBy, null, transaction);
+            null, aias, createdDate, createdBy, null, changes);
       for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {
 
          boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
@@ -160,7 +156,7 @@ public class PopulateSawBuild2Actions {
          if (isSwDesign) {
             // transition to analyze
             Result result =
-               dtwm.transitionTo(TeamState.Analyze, teamWf.getAssignees().iterator().next(), false, transaction);
+               dtwm.transitionTo(TeamState.Analyze, teamWf.getAssignees().iterator().next(), false, changes);
             if (result.isFalse()) {
                throw new OseeCoreException("Error transitioning [%s] to Analyze state: [%s]", teamWf.toStringWithId(),
                   toState.getName(), result.getText());
@@ -175,8 +171,7 @@ public class PopulateSawBuild2Actions {
             }
 
             // transition to authorize
-            result =
-               dtwm.transitionTo(TeamState.Authorize, teamWf.getAssignees().iterator().next(), false, transaction);
+            result = dtwm.transitionTo(TeamState.Authorize, teamWf.getAssignees().iterator().next(), false, changes);
             if (result.isFalse()) {
                throw new OseeCoreException("Error transitioning [%s] to Authorize state: [%s]",
                   teamWf.toStringWithId(), toState.getName(), result.getText());
@@ -192,7 +187,7 @@ public class PopulateSawBuild2Actions {
             }
          }
          // Transition to final state
-         Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, transaction);
+         Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, changes);
          if (result.isFalse()) {
             throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
                toState.getName(), result.getText());
@@ -203,15 +198,13 @@ public class PopulateSawBuild2Actions {
             teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
          }
 
-         teamWf.persist(transaction);
-
          AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
-         teamWf.persist(transaction);
+         changes.add(teamWf);
       }
       return actionArt;
    }
 
-   private static ActionArtifact sawBuild2Action2_createUnCommittedAction(SkynetTransaction transaction) throws OseeCoreException {
+   private static ActionArtifact sawBuild2Action2_createUnCommittedAction(IAtsChangeSet changes) throws OseeCoreException {
       String title = "SAW (uncommitted) More Reqt Changes for Diagram View";
       Collection<IAtsActionableItem> aias =
          DemoDbUtil.getActionableItems(new String[] {
@@ -225,7 +218,7 @@ public class PopulateSawBuild2Actions {
 
       ActionArtifact actionArt =
          ActionManager.createAction(null, title, "Problem with the Diagram View", ChangeType.Problem, priority, false,
-            null, aias, createdDate, createdBy, null, transaction);
+            null, aias, createdDate, createdBy, null, changes);
       for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {
 
          boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
@@ -236,7 +229,7 @@ public class PopulateSawBuild2Actions {
          if (isSwDesign) {
             // transition to analyze
             Result result =
-               dtwm.transitionTo(TeamState.Analyze, teamWf.getAssignees().iterator().next(), false, transaction);
+               dtwm.transitionTo(TeamState.Analyze, teamWf.getAssignees().iterator().next(), false, changes);
             if (result.isFalse()) {
                throw new OseeCoreException("Error transitioning [%s] to Analyze state [%s] error [%s]",
                   teamWf.toStringWithId(), toState.getName(), result.getText());
@@ -251,8 +244,7 @@ public class PopulateSawBuild2Actions {
             }
 
             // transition to authorize
-            result =
-               dtwm.transitionTo(TeamState.Authorize, teamWf.getAssignees().iterator().next(), false, transaction);
+            result = dtwm.transitionTo(TeamState.Authorize, teamWf.getAssignees().iterator().next(), false, changes);
             if (result.isFalse()) {
                throw new OseeCoreException("Error transitioning [%s] to Authorize state: [%s]",
                   teamWf.toStringWithId(), toState.getName(), result.getText());
@@ -269,7 +261,7 @@ public class PopulateSawBuild2Actions {
          }
 
          // Transition to final state
-         Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, transaction);
+         Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, changes);
          if (result.isFalse()) {
             throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
                toState.getName(), result.getText());
@@ -280,15 +272,13 @@ public class PopulateSawBuild2Actions {
             teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
          }
 
-         teamWf.persist(transaction);
-
          AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
-         teamWf.persist(transaction);
+         changes.add(teamWf);
       }
       return actionArt;
    }
 
-   private static ActionArtifact sawBuild2Action1_createCommittedAction(SkynetTransaction transaction) throws OseeCoreException {
+   private static ActionArtifact sawBuild2Action1_createCommittedAction(IAtsChangeSet changes) throws OseeCoreException {
       String title = "SAW (committed) Reqt Changes for Diagram View";
       Collection<IAtsActionableItem> aias =
          DemoDbUtil.getActionableItems(new String[] {
@@ -301,7 +291,7 @@ public class PopulateSawBuild2Actions {
 
       ActionArtifact actionArt =
          ActionManager.createAction(null, title, "Problem with the Diagram View", ChangeType.Problem, priority, false,
-            null, aias, createdDate, createdBy, null, transaction);
+            null, aias, createdDate, createdBy, null, changes);
       for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {
 
          if (teamWf.getTeamDefinition().getName().contains("Req") && !teamWf.getWorkDefinition().getName().equals(
@@ -327,7 +317,7 @@ public class PopulateSawBuild2Actions {
                TransitionOption.OverrideTransitionValidityCheck);
 
          // Transition to desired state
-         Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, transaction);
+         Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, changes);
          if (result.isFalse()) {
             throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
                toState.getName(), result.getText());
@@ -338,9 +328,8 @@ public class PopulateSawBuild2Actions {
             teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
          }
 
-         teamWf.persist(transaction);
+         changes.add(teamWf);
          AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
-         teamWf.persist(transaction);
       }
       return actionArt;
    }

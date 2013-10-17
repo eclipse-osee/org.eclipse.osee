@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.action;
 
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -28,7 +28,7 @@ public interface INewActionListener {
    /**
     * Called after team workflow and initialized and before persist of Action
     */
-   public void teamCreated(ActionArtifact actionArt, TeamWorkFlowArtifact teamArt, SkynetTransaction transaction) throws OseeCoreException;
+   public void teamCreated(ActionArtifact actionArt, TeamWorkFlowArtifact teamArt, IAtsChangeSet changes) throws OseeCoreException;
 
    /**
     * @return workflow id to use instead of default configured id

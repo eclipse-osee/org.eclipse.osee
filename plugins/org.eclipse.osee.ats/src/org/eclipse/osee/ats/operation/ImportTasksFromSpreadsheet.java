@@ -19,16 +19,14 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Import.ExcelAtsTaskArtifactExtractor;
 import org.eclipse.osee.ats.util.Import.TaskImportJob;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -121,13 +119,12 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                }
                File file = new File(filename);
                try {
-                  SkynetTransaction transaction =
-                     TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Spreadsheet");
+                  AtsChangeSet changes = new AtsChangeSet("Import Tasks from Spreadsheet");
                   Job job =
                      Jobs.startJob(new TaskImportJob(file, new ExcelAtsTaskArtifactExtractor(
-                        (TeamWorkFlowArtifact) artifact, emailPocs, transaction)));
+                        (TeamWorkFlowArtifact) artifact, emailPocs, changes)));
                   job.join();
-                  transaction.execute();
+                  changes.execute();
                } catch (Exception ex) {
                   log(ex);
                   return;

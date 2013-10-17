@@ -20,8 +20,10 @@ import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.client.demo.config.DemoDbActionData;
 import org.eclipse.osee.ats.client.demo.config.DemoDbActionData.CreateReview;
 import org.eclipse.osee.ats.client.demo.config.DemoDbGroups;
@@ -38,10 +40,10 @@ import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -229,21 +231,19 @@ public class PopulateDemoActions extends XNavigateItemAction {
    }
 
    private void createNonReqChangeDemoActions() throws Exception {
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Actions");
+      AtsChangeSet changes = new AtsChangeSet("Populate Demo DB - Create Actions");
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_3");
       }
       Set<ActionArtifact> actions =
-         createActions(DemoDbActionData.getNonReqSawActionData(), DemoArtifactToken.SAW_Bld_3, null, transaction);
-      appendBuildNameToTitles(actions, DemoSawBuilds.SAW_Bld_3.getName(), transaction);
+         createActions(DemoDbActionData.getNonReqSawActionData(), DemoArtifactToken.SAW_Bld_3, null, changes);
+      appendBuildNameToTitles(actions, DemoSawBuilds.SAW_Bld_3.getName(), changes);
 
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_2");
       }
-      actions =
-         createActions(DemoDbActionData.getNonReqSawActionData(), DemoArtifactToken.SAW_Bld_2, null, transaction);
-      appendBuildNameToTitles(actions, DemoSawBuilds.SAW_Bld_2.getName(), transaction);
+      actions = createActions(DemoDbActionData.getNonReqSawActionData(), DemoArtifactToken.SAW_Bld_2, null, changes);
+      appendBuildNameToTitles(actions, DemoSawBuilds.SAW_Bld_2.getName(), changes);
 
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_1");
@@ -251,34 +251,34 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       actions =
          createActions(DemoDbActionData.getNonReqSawActionData(), DemoArtifactToken.SAW_Bld_1, TeamState.Completed,
-            transaction);
-      appendBuildNameToTitles(actions, DemoSawBuilds.SAW_Bld_1.toString(), transaction);
+            changes);
+      appendBuildNameToTitles(actions, DemoSawBuilds.SAW_Bld_1.toString(), changes);
 
-      transaction.execute();
+      changes.execute();
    }
 
    private void createGenericDemoActions() throws Exception {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "createNonReqChangeDemoActions - getGenericActionData");
       }
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Generic Actions");
-      createActions(DemoDbActionData.getGenericActionData(), null, null, transaction);
-      transaction.execute();
+      AtsChangeSet changes = new AtsChangeSet("Populate Demo DB - Create Generic Actions");
+      createActions(DemoDbActionData.getGenericActionData(), null, null, changes);
+      changes.execute();
    }
 
-   private void appendBuildNameToTitles(Set<ActionArtifact> actions, String buildName, SkynetTransaction transaction) throws OseeCoreException {
+   private void appendBuildNameToTitles(Set<ActionArtifact> actions, String buildName, IAtsChangeSet changes) throws OseeCoreException {
       for (ActionArtifact action : actions) {
          for (TeamWorkFlowArtifact team : action.getTeams()) {
             team.setName(team.getName() + " for " + buildName);
-            team.persist(transaction);
+            changes.add(team);
          }
-         ActionArtifactRollup rollup = new ActionArtifactRollup(action, transaction);
+         ActionArtifactRollup rollup = new ActionArtifactRollup(action);
          rollup.resetAttributesOffChildren();
+         changes.add(action);
       }
    }
 
-   private Set<ActionArtifact> createActions(List<DemoDbActionData> actionDatas, IArtifactToken versionToken, TeamState toStateOverride, SkynetTransaction transaction) throws Exception {
+   private Set<ActionArtifact> createActions(List<DemoDbActionData> actionDatas, IArtifactToken versionToken, TeamState toStateOverride, IAtsChangeSet changes) throws Exception {
       Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
       int currNum = 1;
       for (DemoDbActionData aData : actionDatas) {
@@ -293,7 +293,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             ActionArtifact actionArt =
                ActionManager.createAction(null, prefixTitle + " " + aData.postFixTitle,
                   TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x], aData.priority, false, null,
-                  aData.getActionableItems(), createdDate, createdBy, null, transaction);
+                  aData.getActionableItems(), createdDate, createdBy, null, changes);
             actionArts.add(actionArt);
             for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {
                TeamWorkFlowManager dtwm =
@@ -318,7 +318,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                // Transition to desired state
                Result result =
                   dtwm.transitionTo((toStateOverride != null ? toStateOverride : aData.toState),
-                     teamWf.getAssignees().iterator().next(), false, transaction);
+                     teamWf.getAssignees().iterator().next(), false, changes);
                if (result.isFalse()) {
                   throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
                      aData.toState.getName(), result.getText());
@@ -327,12 +327,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
                   // Reset assignees that may have been overwritten during transition 
                   teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
                }
-
-               teamWf.persist(transaction);
                if (versionToken != null) {
                   IAtsVersion version = AtsVersionService.get().getById(versionToken);
                   AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
-                  teamWf.persist(transaction);
                }
             }
          }

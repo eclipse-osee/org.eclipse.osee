@@ -24,17 +24,18 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -48,8 +49,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -193,16 +192,16 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    }
 
    private void makeChanges7(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
+      AtsChangeSet changes = new AtsChangeSet("Remote Event Test");
       TransitionHelper helper =
          new TransitionHelper("Remote Event Test", Arrays.asList(teamArt), TeamState.Analyze.getName(),
-            Collections.singleton(AtsClientService.get().getUserAdmin().getCurrentUser()), null, TransitionOption.None);
-      TransitionManager transitionMgr = new TransitionManager(helper, transaction);
+            Collections.singleton(AtsClientService.get().getUserAdmin().getCurrentUser()), null, changes, TransitionOption.None);
+      TransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       if (!results.isEmpty()) {
          throw new OseeStateException(results.toString());
       }
-      transaction.execute();
+      changes.execute();
    }
 
    private void makeChanges6(TeamWorkFlowArtifact teamArt) throws OseeCoreException {

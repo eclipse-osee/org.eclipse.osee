@@ -15,22 +15,21 @@ import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValueBase;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -127,17 +126,17 @@ public class TaskInfoXWidget extends XLabelValueBase {
                         return;
                      }
                      try {
-                        SkynetTransaction transaction =
-                           TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "ATS Auto Complete Tasks");
+                        AtsChangeSet changes = new AtsChangeSet("ATS Auto Complete Tasks");
                         for (TaskArtifact taskArt : taskableArt.getTaskArtifacts(forState)) {
                            if (!taskArt.isCompletedOrCancelled()) {
                               if (taskArt.getStateMgr().isUnAssigned()) {
-                                 taskArt.getStateMgr().setAssignee(AtsClientService.get().getUserAdmin().getCurrentUser());
+                                 taskArt.getStateMgr().setAssignee(
+                                    AtsClientService.get().getUserAdmin().getCurrentUser());
                               }
                               TransitionHelper helper =
                                  new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),
                                     TaskStates.Completed.getName(), null, null,
-                                    TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
+                                    changes, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
                               TransitionManager transitionMgr = new TransitionManager(helper);
                               TransitionResults results = transitionMgr.handleAll();
                               if (!results.isEmpty()) {
@@ -146,7 +145,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
                               }
                            }
                         }
-                        transaction.execute();
+                        changes.execute();
                      } catch (OseeCoreException ex) {
                         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                      }

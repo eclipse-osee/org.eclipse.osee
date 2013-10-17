@@ -22,23 +22,30 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
+import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.transition.ITransitionHelper;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelperAdapter;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench.MessageType;
@@ -55,12 +62,12 @@ public class TransitionToMenu {
    public static MenuManager createTransitionToMenuManager(final XViewer xViewer, String name, final Collection<TreeItem> selectedTreeItems) {
       MenuManager editMenuManager =
          new MenuManager(name, ImageManager.getImageDescriptor(AtsImage.TRANSITION), "transition-to");
-      final Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
+      final Set<IAtsWorkItem> workItems = new HashSet<IAtsWorkItem>();
       Set<IAtsStateDefinition> toStateDefs = new HashSet<IAtsStateDefinition>();
       for (TreeItem treeItem : selectedTreeItems) {
          if (treeItem.getData() instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) treeItem.getData();
-            awas.add(awa);
+            workItems.add(awa);
             try {
                toStateDefs.addAll(awa.getToStatesWithCompleteCancelReturnStates());
             } catch (OseeCoreException ex) {
@@ -93,7 +100,7 @@ public class TransitionToMenu {
 
                      @Override
                      public void run() {
-                        handleTransitionToSelected(stateDef.getName(), awas);
+                        handleTransitionToSelected(stateDef.getName(), workItems);
                      }
 
                   });
@@ -120,7 +127,7 @@ public class TransitionToMenu {
          TeamState.Cancelled.getName()) ? "" : " (" + stateDef.getStateType().name() + ")";
    }
 
-   private static void handleTransitionToSelected(final String toStateName, final Set<AbstractWorkflowArtifact> awas) {
+   private static void handleTransitionToSelected(final String toStateName, final Set<IAtsWorkItem> workItems) {
       final ITransitionHelper helper = new TransitionHelperAdapter() {
 
          @Override
@@ -130,45 +137,52 @@ public class TransitionToMenu {
 
                @Override
                public void run() {
-                  IAtsStateDefinition toStateDef =
-                     awas.iterator().next().getWorkDefinition().getStateByName(toStateName);
-                  IAtsStateDefinition fromStateDefinition = awas.iterator().next().getStateDefinition();
-                  if (isRequireStateHoursSpentPrompt(fromStateDefinition) && !toStateDef.getStateType().isCancelledState()) {
+                  try {
+                     IAtsStateDefinition toStateDef =
+                        AtsClientService.get().getWorkDefinitionAdmin().getStateDefinitionByName(
+                           workItems.iterator().next(), toStateName);
 
-                     boolean showPercentCompleted = !toStateDef.getStateType().isCompletedOrCancelledState();
-                     TransitionStatusData data = new TransitionStatusData(getAwas(), showPercentCompleted);
-                     if (toStateDef.getRecommendedPercentComplete() != null) {
-                        data.setDefaultPercent(toStateDef.getRecommendedPercentComplete());
-                        data.setPercent(100);
-                     } else if (toStateDef.getStateType().isCompletedOrCancelledState()) {
-                        data.setDefaultPercent(100);
-                        data.setPercent(100);
-                     }
-                     String title = null;
-                     String message = null;
-                     if (data.isPercentRequired()) {
-                        title = "Enter Percent and Hours Spent";
-                        message = "Enter percent complete and additional hours spent in current state(s)";
-                     } else {
-                        title = "Enter Hours Spent";
-                        message = "Enter additional hours spent in current state(s)";
-                     }
-                     TransitionStatusDialog dialog = new TransitionStatusDialog(title, message, data);
+                     IAtsStateDefinition fromStateDefinition = workItems.iterator().next().getStateDefinition();
+                     if (isRequireStateHoursSpentPrompt(fromStateDefinition) && !toStateDef.getStateType().isCancelledState()) {
 
-                     int dialogResult = dialog.open();
-                     if (dialogResult == 0) {
-                        try {
-                           SMAPromptChangeStatus.performChangeStatus(awas, null, data.getAdditionalHours(),
-                              data.getPercent(), data.isSplitHoursBetweenItems(), true);
-                        } catch (OseeCoreException ex) {
-                           OseeLog.log(Activator.class, Level.SEVERE, ex);
-                           result.set(false);
-                           result.setTextWithFormat(
-                              "Exception handling extra hours spent for transition to [%s] (see log)", getToStateName());
+                        boolean showPercentCompleted = !toStateDef.getStateType().isCompletedOrCancelledState();
+                        TransitionStatusData data = new TransitionStatusData(getWorkItems(), showPercentCompleted);
+                        if (toStateDef.getRecommendedPercentComplete() != null) {
+                           data.setDefaultPercent(toStateDef.getRecommendedPercentComplete());
+                           data.setPercent(100);
+                        } else if (toStateDef.getStateType().isCompletedOrCancelledState()) {
+                           data.setDefaultPercent(100);
+                           data.setPercent(100);
                         }
-                     } else {
-                        result.setCancelled(true);
+                        String title = null;
+                        String message = null;
+                        if (data.isPercentRequired()) {
+                           title = "Enter Percent and Hours Spent";
+                           message = "Enter percent complete and additional hours spent in current state(s)";
+                        } else {
+                           title = "Enter Hours Spent";
+                           message = "Enter additional hours spent in current state(s)";
+                        }
+                        TransitionStatusDialog dialog = new TransitionStatusDialog(title, message, data);
+
+                        int dialogResult = dialog.open();
+                        if (dialogResult == 0) {
+                           try {
+                              SMAPromptChangeStatus.performChangeStatus(workItems, null, data.getAdditionalHours(),
+                                 data.getPercent(), data.isSplitHoursBetweenItems(), true);
+                           } catch (OseeCoreException ex) {
+                              OseeLog.log(Activator.class, Level.SEVERE, ex);
+                              result.set(false);
+                              result.setTextWithFormat(
+                                 "Exception handling extra hours spent for transition to [%s] (see log)",
+                                 getToStateName());
+                           }
+                        } else {
+                           result.setCancelled(true);
+                        }
                      }
+                  } catch (OseeCoreException ex1) {
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex1);
                   }
                }
             }, true);
@@ -181,8 +195,8 @@ public class TransitionToMenu {
          }
 
          @Override
-         public Collection<? extends IAtsUser> getToAssignees(AbstractWorkflowArtifact awa) throws OseeCoreException {
-            return awa.getAssignees();
+         public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) throws OseeCoreException {
+            return workItem.getAssignees();
          }
 
          @Override
@@ -197,9 +211,16 @@ public class TransitionToMenu {
 
                @Override
                public void run() {
-                  AbstractWorkflowArtifact awa = getAwas().iterator().next();
-                  IAtsStateDefinition stateDef = awa.getStateDefinitionByName(getToStateName());
-                  if (stateDef.getStateType().isCancelledState()) {
+                  IAtsWorkItem workItem = getWorkItems().iterator().next();
+                  IAtsStateDefinition stateDef = null;
+                  try {
+                     stateDef =
+                        AtsClientService.get().getWorkDefinitionAdmin().getStateDefinitionByName(workItem,
+                           getToStateName());
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+                  }
+                  if (stateDef != null && stateDef.getStateType().isCancelledState()) {
                      EntryDialog dialog = new EntryDialog("Enter Cancellation Reason", "Enter Cancellation Reason");
                      if (dialog.open() != 0) {
                         result.setCancelled(true);
@@ -215,9 +236,30 @@ public class TransitionToMenu {
          }
 
          @Override
-         public Collection<AbstractWorkflowArtifact> getAwas() {
-            return awas;
+         public Collection<IAtsWorkItem> getWorkItems() {
+            return workItems;
          }
+
+         @Override
+         public void setInTransition(IAtsWorkItem workItem, boolean inTransition) throws OseeCoreException {
+            AtsClientService.get().getWorkflowArtifact(workItem).setInTransition(inTransition);
+         }
+
+         @Override
+         public IAtsChangeSet getChangeSet() {
+            return new AtsChangeSet(getName());
+         }
+
+         @Override
+         public Collection<ITransitionListener> getTransitionListeners() {
+            try {
+               return AtsCore.getWorkItemService().getTransitionListeners();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+            return java.util.Collections.emptyList();
+         }
+
       };
       final TransitionToOperation operation = new TransitionToOperation(helper);
       Operations.executeAsJob(operation, true, Job.SHORT, new JobChangeAdapter() {
@@ -227,7 +269,7 @@ public class TransitionToMenu {
             TransitionResults results = operation.getResults();
             if (!results.isEmpty()) {
                results.logExceptions();
-               if (helper.getAwas().size() == 1) {
+               if (helper.getWorkItems().size() == 1) {
                   String resultStr = results.getResultString();
                   AWorkbench.popup(MessageType.Error, "Transition Failed", resultStr);
                } else {

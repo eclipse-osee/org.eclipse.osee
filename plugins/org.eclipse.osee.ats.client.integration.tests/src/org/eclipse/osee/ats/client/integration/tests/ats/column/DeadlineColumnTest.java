@@ -17,11 +17,9 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.column.DeadlineColumn;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -43,11 +41,10 @@ public class DeadlineColumnTest {
    public void testGetColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), CancelledDateColumnTest.class.getSimpleName());
+      AtsChangeSet changes = new AtsChangeSet(CancelledDateColumnTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt =
-         DemoTestUtil.createSimpleAction(CancelledDateColumnTest.class.getSimpleName(), transaction);
-      transaction.execute();
+         DemoTestUtil.createSimpleAction(CancelledDateColumnTest.class.getSimpleName(), changes);
+      changes.execute();
 
       Assert.assertNull(DeadlineColumn.getDate(teamArt));
 

@@ -75,6 +75,11 @@ public class AtsLogWorkPage extends StateXWidgetPage {
       public boolean matches(Identity<?>... identities) {
          return false;
       }
+
+      @Override
+      public IAtsStateDefinition getStateDefinitionByName(String name) {
+         return null;
+      }
    }
 
    public AtsLogWorkPage(String title) {

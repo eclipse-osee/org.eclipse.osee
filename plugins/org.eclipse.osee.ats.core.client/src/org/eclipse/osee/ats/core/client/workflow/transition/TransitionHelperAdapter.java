@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.workflow.transition;
 
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
-import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -38,23 +38,23 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    }
 
    @Override
-   public boolean isWorkingBranchInWork(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      return AtsBranchManagerCore.isWorkingBranchInWork(teamArt);
+   public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+      return AtsCore.getBranchService().isWorkingBranchInWork(teamWf);
    }
 
    @Override
-   public boolean isBranchInCommit(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      return AtsBranchManagerCore.isBranchInCommit(teamArt);
+   public boolean isBranchInCommit(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+      return AtsCore.getBranchService().isBranchInCommit(teamWf);
    }
 
    @Override
    public boolean isSystemUser() throws OseeCoreException {
-      return AtsCoreUsers.isAtsCoreUser(AtsClientService.get().getUserAdmin().getCurrentUser());
+      return AtsCoreUsers.isAtsCoreUser(AtsCore.getUserService().getCurrentUser());
    }
 
    @Override
-   public boolean isSystemUserAssingee(AbstractWorkflowArtifact awa) throws OseeCoreException {
-      return awa.getStateMgr().getAssignees().contains(AtsCoreUsers.GUEST_USER) || awa.getStateMgr().getAssignees().contains(
+   public boolean isSystemUserAssingee(IAtsWorkItem workItem) throws OseeCoreException {
+      return workItem.getStateMgr().getAssignees().contains(AtsCoreUsers.GUEST_USER) || workItem.getStateMgr().getAssignees().contains(
          AtsCoreUsers.SYSTEM_USER);
    }
 }

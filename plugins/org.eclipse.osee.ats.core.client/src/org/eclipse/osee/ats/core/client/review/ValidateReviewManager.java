@@ -16,21 +16,22 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * Convenience methods used to create a validation decision review if so selected on the new action wizard
@@ -56,15 +57,15 @@ public class ValidateReviewManager {
     * 
     * @param force will force the creation of the review without checking that a review should be created
     */
-   public static DecisionReviewArtifact createValidateReview(TeamWorkFlowArtifact teamArt, boolean force, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
+   public static DecisionReviewArtifact createValidateReview(TeamWorkFlowArtifact teamArt, boolean force, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
       // If not validate page, don't do anything
       if (!force && !isValidatePage(teamArt.getStateDefinition())) {
          return null;
       }
       // If validate review already created for this state, return
       if (!force && ReviewManager.getReviewsFromCurrentState(teamArt).size() > 0) {
-         for (AbstractReviewArtifact rev : ReviewManager.getReviewsFromCurrentState(teamArt)) {
-            if (rev.getName().equals(VALIDATE_REVIEW_TITLE)) {
+         for (IAtsAbstractReview review : ReviewManager.getReviewsFromCurrentState(teamArt)) {
+            if (review.getName().equals(VALIDATE_REVIEW_TITLE)) {
                return null;
             }
          }
@@ -83,9 +84,9 @@ public class ValidateReviewManager {
 
          TransitionHelper helper =
             new TransitionHelper("Transition to Decision", Arrays.asList(decRev),
-               DecisionReviewState.Decision.getName(), Arrays.asList(teamArt.getCreatedBy()), null,
+               DecisionReviewState.Decision.getName(), Arrays.asList(teamArt.getCreatedBy()), null, changes,
                TransitionOption.None);
-         TransitionManager transitionMgr = new TransitionManager(helper, transaction);
+         TransitionManager transitionMgr = new TransitionManager(helper);
          TransitionResults results = transitionMgr.handleAll();
          if (!results.isEmpty()) {
             OseeLog.logf(Activator.class, OseeLevel.SEVERE_POPUP,

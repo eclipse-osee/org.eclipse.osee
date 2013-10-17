@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
@@ -146,10 +147,9 @@ public class AtsBranchConfigurationTest {
       versionToTarget.setAllowCommitBranch(true);
       versionToTarget.setAllowCreateBranch(true);
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), getClass().getSimpleName());
-      AtsClientService.get().storeConfigObject(versionToTarget, transaction);
-      transaction.execute();
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      AtsClientService.get().storeConfigObject(versionToTarget, changes);
+      changes.execute();
 
       TestUtil.sleep(2000);
 
@@ -163,15 +163,14 @@ public class AtsBranchConfigurationTest {
          ActionableItems.getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"));
       assertFalse(selectedActionableItems.isEmpty());
 
-      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+      changes.clear();
       Artifact actionArt =
          ActionManager.createAction(null, BRANCH_VIA_VERSIONS.getName() + " Req Changes", "description",
             ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(),
-            AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
+            AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
       TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
       AtsVersionService.get().setTargetedVersionAndStore(teamWf, versionToTarget);
-      teamWf.persist(transaction);
-      transaction.execute();
+      changes.execute();
 
       TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf);
 
@@ -180,7 +179,7 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Transitioning to Implement state");
       }
 
-      dtwm.transitionTo(TeamState.Implement, AtsClientService.get().getUserAdmin().getCurrentUser(), false, transaction);
+      dtwm.transitionTo(TeamState.Implement, AtsClientService.get().getUserAdmin().getCurrentUser(), false, changes);
       teamWf.persist("Branch Configuration Test");
 
       SMAEditor.editArtifact(teamWf);
@@ -261,10 +260,9 @@ public class AtsBranchConfigurationTest {
       // setup team def to allow create/commit of branch
       teamDef.setAllowCommitBranch(true);
       teamDef.setAllowCreateBranch(true);
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), getClass().getSimpleName());
-      AtsClientService.get().storeConfigObject(teamDef, transaction);
-      transaction.execute();
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      AtsClientService.get().storeConfigObject(teamDef, changes);
+      changes.execute();
 
       TestUtil.sleep(2000);
 
@@ -276,13 +274,14 @@ public class AtsBranchConfigurationTest {
          ActionableItems.getActionableItems(appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"));
       assertFalse(selectedActionableItems.isEmpty());
 
-      transaction =
+      SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Test branch via team definition: create action");
       String actionTitle = BRANCH_VIA_TEAM_DEFINITION.getName() + " Req Changes";
+      changes.clear();
       Artifact actionArt =
          ActionManager.createAction(null, actionTitle, "description", ChangeType.Problem, "1", false, null,
-            selectedActionableItems, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null,
-            transaction);
+            selectedActionableItems, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
+      changes.addTo(transaction);
       transaction.execute();
 
       final TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
@@ -292,8 +291,8 @@ public class AtsBranchConfigurationTest {
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Transitioning to Implement state");
       }
-      dtwm.transitionTo(TeamState.Implement, AtsClientService.get().getUserAdmin().getCurrentUser(), false, transaction);
-      teamWf.persist("Test branch via team definition: Transition to desired state");
+      dtwm.transitionTo(TeamState.Implement, AtsClientService.get().getUserAdmin().getCurrentUser(), false, changes);
+      teamWf.persist("Test branch via team definition: create action");
 
       // create branch
       createBranch(namespace, teamWf);

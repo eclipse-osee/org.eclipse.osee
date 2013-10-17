@@ -8,17 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.workflow.transition;
+package org.eclipse.osee.ats.api.workflow.transition;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.ITransitionResult;
-import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionResult;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -32,21 +30,21 @@ public class TransitionResults {
 
    private final List<ITransitionResult> results = new ArrayList<ITransitionResult>();
 
-   private final Map<AbstractWorkflowArtifact, List<ITransitionResult>> awaToResults =
-      new HashMap<AbstractWorkflowArtifact, List<ITransitionResult>>();
+   private final Map<IAtsWorkItem, List<ITransitionResult>> workItemToResults =
+      new HashMap<IAtsWorkItem, List<ITransitionResult>>();
 
-   public void addResult(AbstractWorkflowArtifact awa, ITransitionResult result) {
-      List<ITransitionResult> results = awaToResults.get(awa);
+   public void addResult(IAtsWorkItem workItem, ITransitionResult result) {
+      List<ITransitionResult> results = workItemToResults.get(workItem);
       if (results == null) {
          results = new ArrayList<ITransitionResult>();
-         awaToResults.put(awa, results);
+         workItemToResults.put(workItem, results);
       }
       results.add(result);
    }
 
    public void clear() {
       results.clear();
-      awaToResults.clear();
+      workItemToResults.clear();
    }
 
    public void addResult(ITransitionResult result) {
@@ -54,7 +52,7 @@ public class TransitionResults {
    }
 
    public boolean isEmpty() {
-      return results.isEmpty() && awaToResults.isEmpty();
+      return results.isEmpty() && workItemToResults.isEmpty();
    }
 
    public boolean isCancelled() {
@@ -73,38 +71,38 @@ public class TransitionResults {
       return results.contains(transitionResult);
    }
 
-   public boolean isEmpty(AbstractWorkflowArtifact awa) {
-      List<ITransitionResult> awaResults = awaToResults.get(awa);
-      if (awaResults == null || awaResults.isEmpty()) {
+   public boolean isEmpty(IAtsWorkItem workItem) {
+      List<ITransitionResult> workItemResults = workItemToResults.get(workItem);
+      if (workItemResults == null || workItemResults.isEmpty()) {
          return true;
       }
       return false;
    }
 
-   public boolean contains(AbstractWorkflowArtifact awa, TransitionResult transitionResult) {
-      List<ITransitionResult> awaResults = awaToResults.get(awa);
-      if (awaResults == null) {
+   public boolean contains(IAtsWorkItem workItem, TransitionResult transitionResult) {
+      List<ITransitionResult> workItemResults = workItemToResults.get(workItem);
+      if (workItemResults == null) {
          return false;
       }
-      return awaResults.contains(transitionResult);
+      return workItemResults.contains(transitionResult);
    }
 
    public String getResultString() {
-      if (results.isEmpty() && awaToResults.isEmpty()) {
+      if (results.isEmpty() && workItemToResults.isEmpty()) {
          return "<Empty>";
       }
       StringBuffer sb = new StringBuffer();
       sb.append("Reason(s):\n");
       appendResultsString(sb, results);
-      for (AbstractWorkflowArtifact awa : awaToResults.keySet()) {
+      for (IAtsWorkItem workItem : workItemToResults.keySet()) {
          sb.append("\n");
-         sb.append(awa.getArtifactTypeName());
+         sb.append(workItem.getTypeName());
          sb.append(" [");
-         sb.append(awa.getAtsId());
+         sb.append(workItem.getAtsId());
          sb.append("] Titled [");
-         sb.append(awa.getName());
+         sb.append(workItem.getName());
          sb.append("]\n\n");
-         appendResultsString(sb, awaToResults.get(awa));
+         appendResultsString(sb, workItemToResults.get(workItem));
       }
 
       return sb.toString();
@@ -117,16 +115,16 @@ public class TransitionResults {
       for (ITransitionResult result : results) {
          Exception ex = result.getException();
          if (ex != null) {
-            OseeLog.log(Activator.class, Level.SEVERE, result.getDetails(), ex);
+            OseeLog.log(TransitionResults.class, Level.SEVERE, result.getDetails(), ex);
          }
       }
-      for (AbstractWorkflowArtifact awa : awaToResults.keySet()) {
-         List<ITransitionResult> results = awaToResults.get(awa);
+      for (IAtsWorkItem workItem : workItemToResults.keySet()) {
+         List<ITransitionResult> results = workItemToResults.get(workItem);
          for (ITransitionResult result : results) {
             Exception ex = result.getException();
             if (ex != null) {
-               String message = awa.toStringWithId() + " - " + result.getDetails();
-               OseeLog.log(Activator.class, Level.SEVERE, message, ex);
+               String message = workItem.toStringWithId() + " - " + result.getDetails();
+               OseeLog.log(TransitionResults.class, Level.SEVERE, message, ex);
             }
          }
       }

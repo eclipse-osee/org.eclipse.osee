@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.action.INewActionListener;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -29,8 +30,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 
 /**
@@ -69,22 +68,23 @@ public class NewActionJob extends Job {
          if (actionableItems.isEmpty()) {
             throw new OseeArgumentException("Actionable Items can not be empty for New Action");
          }
-         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create New Action");
          if ("tt".equals(title)) {
             title += " " + AtsUtil.getAtsDeveloperIncrementingNum();
          }
+         AtsChangeSet changes = new AtsChangeSet("Create New Action");
          actionArt =
             ActionManager.createAction(monitor, title, desc, changeType, priority, validationRequired, needByDate,
-               actionableItems, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), newActionListener, transaction);
+               actionableItems, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), newActionListener,
+               changes);
 
          if (wizard != null) {
-            wizard.notifyAtsWizardItemExtensions(actionArt, transaction);
+            wizard.notifyAtsWizardItemExtensions(actionArt, changes);
          }
 
          if (monitor != null) {
             monitor.subTask("Persisting");
          }
-         transaction.execute();
+         changes.execute();
 
          // Because this is a job, it will automatically kill any popups that are created during.
          // Thus, if multiple teams were selected to create, don't popup on openAction or dialog

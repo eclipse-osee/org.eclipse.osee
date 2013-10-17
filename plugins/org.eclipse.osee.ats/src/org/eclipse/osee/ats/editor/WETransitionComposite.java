@@ -21,18 +21,23 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
+import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.transition.ITransitionHelper;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelperAdapter;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionToOperation;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
@@ -183,7 +188,7 @@ public class WETransitionComposite extends Composite {
 
    private void handleTransitionButtonSelection(final SMAEditor editor, final boolean isEditable) {
       editor.doSave(null);
-      final List<AbstractWorkflowArtifact> awas = Arrays.asList(awa);
+      final List<IAtsWorkItem> workItems = Arrays.asList((IAtsWorkItem) awa);
       final IAtsStateDefinition toStateDef = (IAtsStateDefinition) transitionToStateCombo.getSelected();
       final IAtsStateDefinition fromStateDef = awa.getStateDefinition();
       ITransitionHelper helper = new TransitionHelperAdapter() {
@@ -199,7 +204,8 @@ public class WETransitionComposite extends Composite {
          }
 
          @Override
-         public Collection<? extends IAtsUser> getToAssignees(AbstractWorkflowArtifact awa) throws OseeCoreException {
+         public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) throws OseeCoreException {
+            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) AtsClientService.get().getArtifact(workItem);
             return awa.getTransitionAssignees();
          }
 
@@ -222,7 +228,7 @@ public class WETransitionComposite extends Composite {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                      result.set(false);
                      result.setText(String.format("Error processing extra hours spent for [%s]",
-                        awas.iterator().next().toStringWithId()));
+                        workItems.iterator().next().toStringWithId()));
                   }
                   if (!resultBool) {
                      result.setCancelled(true);
@@ -240,25 +246,49 @@ public class WETransitionComposite extends Composite {
 
                @Override
                public void run() {
-                  IAtsStateDefinition toStateDef =
-                     getAwas().iterator().next().getStateDefinitionByName(getToStateName());
-                  if (toStateDef.getStateType().isCancelledState()) {
-                     EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
-                     if (cancelDialog.open() != 0) {
-                        result.setCancelled(true);
+                  IAtsStateDefinition toStateDef;
+                  try {
+                     toStateDef =
+                        AtsClientService.get().getWorkDefinitionAdmin().getStateDefinitionByName(awa, getToStateName());
+                     if (toStateDef.getStateType().isCancelledState()) {
+                        EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
+                        if (cancelDialog.open() != 0) {
+                           result.setCancelled(true);
+                        }
+                        result.set(true);
+                        result.setText(cancelDialog.getEntry());
                      }
-                     result.set(true);
-                     result.setText(cancelDialog.getEntry());
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
-
                }
             }, true);
             return result;
          }
 
          @Override
-         public Collection<AbstractWorkflowArtifact> getAwas() {
-            return awas;
+         public Collection<IAtsWorkItem> getWorkItems() {
+            return workItems;
+         }
+
+         @Override
+         public void setInTransition(IAtsWorkItem workItem, boolean inTransition) throws OseeCoreException {
+            AtsClientService.get().getWorkflowArtifact(workItem).setInTransition(inTransition);
+         }
+
+         @Override
+         public IAtsChangeSet getChangeSet() {
+            return new AtsChangeSet(getName());
+         }
+
+         @Override
+         public Collection<ITransitionListener> getTransitionListeners() {
+            try {
+               return AtsCore.getWorkItemService().getTransitionListeners();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+            return java.util.Collections.emptyList();
          }
 
       };
@@ -396,7 +426,8 @@ public class WETransitionComposite extends Composite {
       uld.setMessage("Select users to transition to.");
       uld.setInitialSelections(AtsClientService.get().getUserAdmin().getOseeUsers(aba.getTransitionAssignees()));
       if (awa.getParentTeamWorkflow() != null) {
-         uld.setTeamMembers(AtsClientService.get().getUserAdmin().getOseeUsers(awa.getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));
+         uld.setTeamMembers(AtsClientService.get().getUserAdmin().getOseeUsers(
+            awa.getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));
       }
       if (uld.open() != 0) {
          return;

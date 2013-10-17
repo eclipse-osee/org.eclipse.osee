@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -59,7 +60,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.xml.sax.InputSource;
@@ -169,7 +169,7 @@ public class ExcelAtsActionArtifactExtractor {
       return rd;
    }
 
-   public void createArtifactsAndNotify(SkynetTransaction transaction) {
+   public void createArtifactsAndNotify(IAtsChangeSet changes) {
       AtsUtilCore.setEmailEnabled(false);
       Set<TeamWorkFlowArtifact> teamWfs = new HashSet<TeamWorkFlowArtifact>();
       Date createdDate = new Date();
@@ -182,9 +182,9 @@ public class ExcelAtsActionArtifactExtractor {
                actionArt =
                   ActionManager.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
                      aData.priorityStr, false, null, ActionableItems.getActionableItems(aData.actionableItems),
-                     createdDate, createdBy, null, transaction);
+                     createdDate, createdBy, null, changes);
                newTeamArts = ActionManager.getTeams(actionArt);
-               addToGoal(newTeamArts, transaction);
+               addToGoal(newTeamArts, changes);
                actionNameToAction.put(aData.title, actionArt);
                actionArts.add(actionArt);
             } else {
@@ -194,14 +194,14 @@ public class ExcelAtsActionArtifactExtractor {
 
                   TeamWorkFlowArtifact teamWorkflow =
                      ActionManager.createTeamWorkflow(actionArt, entry.getKey(), entry.getValue(), aData.assignees,
-                        transaction, createdDate, createdBy, null, CreateTeamOption.Duplicate_If_Exists);
+                        changes, createdDate, createdBy, null, CreateTeamOption.Duplicate_If_Exists);
                   teamWorkflow.setSoleAttributeValue(AtsAttributeTypes.Description, aData.desc);
                   if (Strings.isValid(aData.priorityStr) && !aData.priorityStr.equals("<Select>")) {
                      teamWorkflow.setSoleAttributeValue(AtsAttributeTypes.PriorityType, aData.priorityStr);
                   }
                   teamWorkflow.setSoleAttributeValue(AtsAttributeTypes.ChangeType, aData.changeType);
                   newTeamArts.add(teamWorkflow);
-                  addToGoal(Collections.singleton(teamWorkflow), transaction);
+                  addToGoal(Collections.singleton(teamWorkflow), changes);
                }
             }
             if (!aData.version.equals("")) {
@@ -226,7 +226,7 @@ public class ExcelAtsActionArtifactExtractor {
                }
             }
             for (TeamWorkFlowArtifact team : newTeamArts) {
-               team.persist(transaction);
+               changes.add(team);
             }
             teamWfs.addAll(newTeamArts);
          }
@@ -243,7 +243,7 @@ public class ExcelAtsActionArtifactExtractor {
       }
    }
 
-   private void addToGoal(Collection<TeamWorkFlowArtifact> newTeamArts, SkynetTransaction transaction) throws OseeCoreException {
+   private void addToGoal(Collection<TeamWorkFlowArtifact> newTeamArts, IAtsChangeSet changes) throws OseeCoreException {
       if (toGoal != null) {
          GoalArtifact goal = (GoalArtifact) AtsClientService.get().getArtifact(toGoal);
          if (goal == null) {
@@ -252,7 +252,7 @@ public class ExcelAtsActionArtifactExtractor {
          for (Artifact art : newTeamArts) {
             goal.addMember(art);
          }
-         goal.persist(transaction);
+         changes.add(goal);
       }
    }
 

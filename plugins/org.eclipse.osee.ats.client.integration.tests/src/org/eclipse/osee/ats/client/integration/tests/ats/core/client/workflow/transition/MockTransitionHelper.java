@@ -11,11 +11,13 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.transition;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -31,24 +33,24 @@ public class MockTransitionHelper extends TransitionHelper {
    public Boolean systemUserAssigned = null;
    public Boolean overrideTransitionValidityCheck = null;
 
-   public MockTransitionHelper(String name, Collection<? extends AbstractWorkflowArtifact> awas, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, TransitionOption... transitionOption) {
-      super(name, awas, toStateName, toAssignees, cancellationReason, transitionOption);
+   public MockTransitionHelper(String name, Collection<? extends AbstractWorkflowArtifact> awas, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, TransitionOption... transitionOption) {
+      super(name, awas, toStateName, toAssignees, cancellationReason, changes, transitionOption);
    }
 
    @Override
-   public boolean isWorkingBranchInWork(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       if (workingBranchInWork != null) {
          return workingBranchInWork;
       }
-      return super.isWorkingBranchInWork(teamArt);
+      return super.isWorkingBranchInWork(teamWf);
    }
 
    @Override
-   public boolean isBranchInCommit(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   public boolean isBranchInCommit(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       if (branchInCommit != null) {
          return branchInCommit;
       }
-      return super.isBranchInCommit(teamArt);
+      return super.isBranchInCommit(teamWf);
    }
 
    public Boolean getWorkingBranchInWork() {
@@ -80,11 +82,11 @@ public class MockTransitionHelper extends TransitionHelper {
    }
 
    @Override
-   public boolean isSystemUserAssingee(AbstractWorkflowArtifact awa) throws OseeCoreException {
+   public boolean isSystemUserAssingee(IAtsWorkItem workItem) throws OseeCoreException {
       if (systemUserAssigned != null) {
          return systemUserAssigned;
       }
-      return super.isSystemUserAssingee(awa);
+      return super.isSystemUserAssingee(workItem);
    }
 
    public void setSystemUserAssigned(Boolean systemUserAssigned) {

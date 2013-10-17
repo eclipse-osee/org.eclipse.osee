@@ -12,13 +12,14 @@ package org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.t
 
 import java.util.Collections;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
+import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.transition.ITransitionHelper;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -44,24 +45,25 @@ public class StateManagerTest {
       IAtsStateManager stateMgr = teamWf.getStateMgr();
 
       stateMgr.updateMetrics(AtsTestUtil.getAnalyzeStateDef(), 1.1, 1, false);
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
 
       ITransitionHelper helper =
          new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
             AtsTestUtil.getImplementStateDef().getName(),
-            Collections.singleton(AtsClientService.get().getUserAdmin().getCurrentUser()), null);
+            Collections.singleton(AtsClientService.get().getUserAdmin().getCurrentUser()), null, changes);
       TransitionManager manager = new TransitionManager(helper);
       TransitionResults results = manager.handleAll();
-      manager.getTransaction().execute();
+      changes.execute();
       Assert.assertTrue(results.isEmpty());
 
       stateMgr.updateMetrics(AtsTestUtil.getImplementStateDef(), 2.2, 1, false);
       helper =
          new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
             AtsTestUtil.getCompletedStateDef().getName(),
-            Collections.singleton(AtsClientService.get().getUserAdmin().getCurrentUser()), null);
+            Collections.singleton(AtsClientService.get().getUserAdmin().getCurrentUser()), null, changes);
       manager = new TransitionManager(helper);
       results = manager.handleAll();
-      manager.getTransaction().execute();
+      changes.execute();
 
       Assert.assertTrue(results.toString(), results.isEmpty());
 

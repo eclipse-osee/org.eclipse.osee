@@ -17,16 +17,17 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -46,7 +47,7 @@ public class TaskManager {
       return null;
    }
 
-   public static Result transitionToCompleted(TaskArtifact taskArt, double estimatedHours, double additionalHours, SkynetTransaction transaction) {
+   public static Result transitionToCompleted(TaskArtifact taskArt, double estimatedHours, double additionalHours, IAtsChangeSet changes) {
       if (taskArt.isInState(TeamState.Completed)) {
          return Result.TrueResult;
       }
@@ -61,9 +62,10 @@ public class TaskManager {
          }
          TransitionHelper helper =
             new TransitionHelper("Transition to Completed", Arrays.asList(taskArt), TaskStates.Completed.getName(),
-               null, null);
-         TransitionManager transitionMgr = new TransitionManager(helper, transaction);
+               null, null, changes);
+         TransitionManager transitionMgr = new TransitionManager(helper);
          TransitionResults results = transitionMgr.handleAll();
+
          if (results.isEmpty()) {
             return Result.TrueResult;
          }
@@ -75,14 +77,14 @@ public class TaskManager {
       }
    }
 
-   public static Result transitionToInWork(TaskArtifact taskArt, IAtsUser toUser, int percentComplete, double additionalHours, SkynetTransaction transaction) throws OseeCoreException {
+   public static Result transitionToInWork(TaskArtifact taskArt, IAtsUser toUser, int percentComplete, double additionalHours, IAtsChangeSet changes) throws OseeCoreException {
       if (taskArt.isInState(TaskStates.InWork)) {
          return Result.TrueResult;
       }
       TransitionHelper helper =
          new TransitionHelper("Transition to InWork", Arrays.asList(taskArt), TaskStates.InWork.getName(),
-            Arrays.asList(toUser), null, TransitionOption.OverrideAssigneeCheck);
-      TransitionManager transitionMgr = new TransitionManager(helper, transaction);
+            Arrays.asList(toUser), null, changes, TransitionOption.OverrideAssigneeCheck);
+      TransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       if (!results.isEmpty()) {
          return new Result("Transition Error %s", results.toString());
@@ -90,8 +92,8 @@ public class TaskManager {
       if (taskArt.getStateMgr().getPercentComplete(taskArt.getCurrentStateName()) != percentComplete || additionalHours > 0) {
          taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, percentComplete, true);
       }
-      if (transaction != null) {
-         taskArt.saveSMA(transaction);
+      if (changes != null) {
+         taskArt.saveSMA(changes);
       }
       return Result.TrueResult;
    }

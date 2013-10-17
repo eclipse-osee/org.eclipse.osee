@@ -11,13 +11,20 @@
 package org.eclipse.osee.ats.api.workflow;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.WidgetResult;
+import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
 /**
  * @author Donald G. Dunne
@@ -53,5 +60,19 @@ public interface IAtsWorkItemService {
    boolean isReadOnly(IAtsWorkItem workItem);
 
    boolean isAccessControlWrite(IAtsWorkItem workItem);
+
+   String getCurrentStateName(IAtsWorkItem workItem);
+
+   void clearImplementersCache(IAtsWorkItem workItem);
+
+   Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef) throws OseeStateException;
+
+   Collection<IAtsTask> getTaskArtifacts(IAtsWorkItem workItem) throws OseeCoreException;
+
+   void transitioned(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, List<? extends IAtsUser> updatedAssigees, IAtsChangeSet changes) throws OseeCoreException;
+
+   void setInTransition(IAtsWorkItem workItem, boolean inTransition);
+
+   Collection<ITransitionListener> getTransitionListeners();
 
 }

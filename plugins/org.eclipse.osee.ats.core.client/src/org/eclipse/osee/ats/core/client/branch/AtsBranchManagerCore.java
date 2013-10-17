@@ -26,18 +26,21 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewDefinitionManager;
 import org.eclipse.osee.ats.core.client.review.PeerReviewDefinitionManager;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.stateitem.AtsStateItemCoreManager;
 import org.eclipse.osee.ats.core.client.workflow.stateitem.IAtsStateItemCore;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
@@ -62,7 +65,6 @@ import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -127,6 +129,12 @@ public class AtsBranchManagerCore {
    /**
     * @return whether there is a working branch that is not committed
     */
+   public static boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(teamWf);
+      Branch branch = getWorkingBranch(teamArt);
+      return branch != null && !branch.getBranchState().isCommitted();
+   }
+
    public static boolean isWorkingBranchInWork(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       Branch branch = getWorkingBranch(teamArt);
       return branch != null && !branch.getBranchState().isCommitted();
@@ -667,11 +675,13 @@ public class AtsBranchManagerCore {
 
    private static void performPostBranchCreationTasks(final TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       // Create reviews as necessary
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Create Reviews upon Transition");
-      createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamArt, new Date(), AtsCoreUsers.SYSTEM_USER,
-         transaction);
-      transaction.execute();
+      AtsChangeSet changes = new AtsChangeSet("Create Reviews upon Transition");
+      boolean created =
+         createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamArt, new Date(), AtsCoreUsers.SYSTEM_USER,
+            changes);
+      if (created) {
+         changes.execute();
+      }
 
       // Notify extensions of branch creation 
       for (IAtsStateItemCore item : AtsStateItemCoreManager.getStateItems()) {
@@ -679,7 +689,11 @@ public class AtsBranchManagerCore {
       }
    }
 
-   public static void createNecessaryBranchEventReviews(StateEventType stateEventType, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
+   /**
+    * @return true if one or more reviews were created
+    */
+   public static boolean createNecessaryBranchEventReviews(StateEventType stateEventType, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
+      boolean created = false;
       if (stateEventType != StateEventType.CommitBranch && stateEventType != StateEventType.CreateBranch) {
          throw new OseeStateException("Invalid stateEventType [%s]", stateEventType);
       }
@@ -687,23 +701,26 @@ public class AtsBranchManagerCore {
       for (IAtsDecisionReviewDefinition decRevDef : teamArt.getStateDefinition().getDecisionReviews()) {
          if (decRevDef.getStateEventType() != null && decRevDef.getStateEventType().equals(stateEventType)) {
             DecisionReviewArtifact decArt =
-               DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, transaction, teamArt, createdDate,
+               DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, changes, teamArt, createdDate,
                   createdBy);
             if (decArt != null) {
-               decArt.persist(transaction);
+               created = true;
+               changes.add(decArt);
             }
          }
       }
       for (IAtsPeerReviewDefinition peerRevDef : teamArt.getStateDefinition().getPeerReviews()) {
          if (peerRevDef.getStateEventType() != null && peerRevDef.getStateEventType().equals(stateEventType)) {
             PeerToPeerReviewArtifact peerArt =
-               PeerReviewDefinitionManager.createNewPeerToPeerReview(peerRevDef, transaction, teamArt, createdDate,
+               PeerReviewDefinitionManager.createNewPeerToPeerReview(peerRevDef, changes, teamArt, createdDate,
                   createdBy);
             if (peerArt != null) {
-               peerArt.persist(transaction);
+               created = true;
+               changes.add(peerArt);
             }
          }
       }
+      return created;
    }
 
    public static Result deleteWorkingBranch(TeamWorkFlowArtifact teamArt, boolean pend) throws OseeCoreException {

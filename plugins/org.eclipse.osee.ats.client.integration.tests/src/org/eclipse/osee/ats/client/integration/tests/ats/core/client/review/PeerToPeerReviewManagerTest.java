@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -62,15 +63,14 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
       // create and transition peer review
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamArt.getName();
 
       PeerToPeerReviewArtifact peerArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, reviewTitle,
             AtsTestUtil.getAnalyzeStateDef().getName(), new Date(),
-            AtsClientService.get().getUserAdmin().getCurrentUser(), transaction);
-      transaction.execute();
+            AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+      changes.execute();
 
       Assert.assertNotNull(peerArt);
       Assert.assertFalse(
@@ -90,14 +90,13 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
       // create and transition peer review
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamArt.getName();
 
       PeerToPeerReviewArtifact peerArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, reviewTitle,
-            AtsTestUtil.getAnalyzeStateDef().getName(), transaction);
-      transaction.execute();
+            AtsTestUtil.getAnalyzeStateDef().getName(), changes);
+      changes.execute();
 
       Assert.assertNotNull(peerArt);
       Assert.assertFalse(
@@ -116,14 +115,13 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
       IAtsActionableItem testAi = AtsTestUtil.getTestAi();
 
       // create and transition peer review
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + testAi;
 
       PeerToPeerReviewArtifact peerArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(testAi, reviewTitle, null, new Date(),
-            AtsClientService.get().getUserAdmin().getCurrentUser(), transaction);
-      transaction.execute();
+            AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+      changes.execute();
 
       Assert.assertNotNull(peerArt);
       Assert.assertFalse(
@@ -133,5 +131,4 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
       Assert.assertEquals("Joe Smith", peerArt.getStateMgr().getAssigneesStr());
       Assert.assertEquals(peerArt.getSoleAttributeValue(AtsAttributeTypes.ActionableItem), testAi.getGuid());
    }
-
 }

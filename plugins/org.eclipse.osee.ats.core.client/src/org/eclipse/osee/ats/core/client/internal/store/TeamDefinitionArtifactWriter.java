@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
@@ -35,14 +35,14 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 public class TeamDefinitionArtifactWriter extends AbstractAtsArtifactWriter<IAtsTeamDefinition> {
 
    @Override
-   public Artifact store(IAtsTeamDefinition teamDef, AtsArtifactConfigCache cache, SkynetTransaction transaction) throws OseeCoreException {
-      Artifact artifact = getArtifactOrCreate(cache, AtsArtifactTypes.TeamDefinition, teamDef, transaction);
-      store(teamDef, artifact, cache, transaction);
+   public Artifact store(IAtsTeamDefinition teamDef, AtsArtifactConfigCache cache, IAtsChangeSet changes) throws OseeCoreException {
+      Artifact artifact = getArtifactOrCreate(cache, AtsArtifactTypes.TeamDefinition, teamDef, changes);
+      store(teamDef, artifact, cache, changes);
       return artifact;
    }
 
    @Override
-   public Artifact store(IAtsTeamDefinition teamDef, Artifact artifact, AtsArtifactConfigCache cache, SkynetTransaction transaction) throws OseeCoreException {
+   public Artifact store(IAtsTeamDefinition teamDef, Artifact artifact, AtsArtifactConfigCache cache, IAtsChangeSet changes) throws OseeCoreException {
       artifact.setName(teamDef.getName());
       artifact.setSoleAttributeValue(AtsAttributeTypes.Active, teamDef.isActive());
       boolean actionable = artifact.getSoleAttributeValue(AtsAttributeTypes.Actionable, false);
@@ -132,7 +132,7 @@ public class TeamDefinitionArtifactWriter extends AbstractAtsArtifactWriter<IAts
          // if parent is null, add to top team definition
          Artifact topTeamDefArt = cache.getSoleArtifact(TeamDefinitions.getTopTeamDefinition());
          topTeamDefArt.addChild(artifact);
-         topTeamDefArt.persist(transaction);
+         changes.add(topTeamDefArt);
       } else {
          // else reset parent if necessary
          Artifact parentTeamDefArt = artifact.getParent();
@@ -141,13 +141,14 @@ public class TeamDefinitionArtifactWriter extends AbstractAtsArtifactWriter<IAts
                if (!parentTeamDefArt.getGuid().equals(teamDef.getParentTeamDef().getGuid())) {
                   Artifact newParentTeamDefArt = cache.getSoleArtifact(teamDef);
                   newParentTeamDefArt.addChild(artifact);
-                  newParentTeamDefArt.persist(transaction);
-                  parentTeamDefArt.persist(transaction);
+                  changes.add(newParentTeamDefArt);
+                  changes.add(parentTeamDefArt);
                }
             }
          }
       }
-      artifact.persist(transaction);
+      changes.add(artifact);
+
       cache.cache(teamDef);
       return artifact;
    }

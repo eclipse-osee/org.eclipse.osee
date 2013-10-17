@@ -20,12 +20,10 @@ import org.eclipse.osee.ats.column.NumberOfTasksRemainingColumn;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
 
@@ -48,21 +46,18 @@ public class NumberOfTasksAndInWorkTasksColumnsTest {
       TaskArtifact taskArt = codeArt.getTaskArtifacts().iterator().next();
       Collection<IAtsUser> taskAssignees = new HashSet<IAtsUser>();
       taskAssignees.addAll(codeArt.getStateMgr().getAssignees());
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
-      Result result = TaskManager.transitionToCompleted(taskArt, 0.0, 2, transaction);
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      Result result = TaskManager.transitionToCompleted(taskArt, 0.0, 2, changes);
       Assert.assertEquals(true, result.isTrue());
-      taskArt.persist(transaction);
-      transaction.execute();
+      changes.execute();
 
       Assert.assertEquals("6", NumberOfTasksColumn.getInstance().getColumnText(codeArt, null, 0));
       Assert.assertEquals("5", NumberOfTasksRemainingColumn.getInstance().getColumnText(codeArt, null, 0));
 
-      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
-      result = TaskManager.transitionToInWork(taskArt, taskAssignees.iterator().next(), 0, -2, transaction);
+      changes.clear();
+      result = TaskManager.transitionToInWork(taskArt, taskAssignees.iterator().next(), 0, -2, changes);
       Assert.assertEquals(true, result.isTrue());
-      taskArt.persist(transaction);
-      transaction.execute();
+      changes.execute();
 
       Assert.assertEquals("6", NumberOfTasksColumn.getInstance().getColumnText(codeArt, null, 0));
       Assert.assertEquals("6", NumberOfTasksRemainingColumn.getInstance().getColumnText(codeArt, null, 0));

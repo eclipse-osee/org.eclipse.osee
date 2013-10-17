@@ -20,24 +20,24 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * Methods in support of Decision Reviews
@@ -56,7 +56,7 @@ public class DecisionReviewManager {
     * 
     * @param user User to transition to OR null if should use user of current state
     */
-   public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewState toState, IAtsUser user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
+   public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewState toState, IAtsUser user, boolean popup, IAtsChangeSet changes) throws OseeCoreException {
       Result result = Result.TrueResult;
       // If in Prepare state, set data and transition to Decision
       if (reviewArt.isInState(DecisionReviewState.Prepare)) {
@@ -65,7 +65,8 @@ public class DecisionReviewManager {
             return result;
          }
          result =
-            transitionToState(toState.getStateType(), popup, DecisionReviewState.Decision, reviewArt, user, transaction);
+            transitionToState(toState.getStateType(), popup, DecisionReviewState.Decision, reviewArt, user,
+               changes);
          if (result.isFalse()) {
             return result;
          }
@@ -82,7 +83,7 @@ public class DecisionReviewManager {
          return result;
       }
 
-      result = transitionToState(toState.getStateType(), popup, toState, reviewArt, user, transaction);
+      result = transitionToState(toState.getStateType(), popup, toState, reviewArt, user, changes);
       if (result.isFalse()) {
          return result;
       }
@@ -101,12 +102,12 @@ public class DecisionReviewManager {
       return Result.TrueResult;
    }
 
-   public static Result transitionToState(StateType StateType, boolean popup, IStateToken toState, DecisionReviewArtifact reviewArt, IAtsUser user, SkynetTransaction transaction) throws OseeCoreException {
+   public static Result transitionToState(StateType StateType, boolean popup, IStateToken toState, DecisionReviewArtifact reviewArt, IAtsUser user, IAtsChangeSet changes) throws OseeCoreException {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(reviewArt), toState.getName(),
             Arrays.asList((user == null ? reviewArt.getStateMgr().getAssignees().iterator().next() : user)), null,
-            TransitionOption.None);
-      TransitionManager transitionMgr = new TransitionManager(helper, transaction);
+            changes, TransitionOption.None);
+      TransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {
          return Result.TrueResult;
@@ -127,17 +128,17 @@ public class DecisionReviewManager {
       return Result.TrueResult;
    }
 
-   public static DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
       DecisionReviewArtifact decRev =
          createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState, description, options, assignees,
             createdDate, createdBy);
-      decRev.persist(transaction);
+      changes.add(decRev);
 
       // transition to decision
       TransitionHelper helper =
          new TransitionHelper("Transition to Decision", Arrays.asList(decRev), DecisionReviewState.Decision.getName(),
-            assignees, null, TransitionOption.OverrideAssigneeCheck);
-      TransitionManager transitionMgr = new TransitionManager(helper, transaction);
+            assignees, null, changes, TransitionOption.OverrideAssigneeCheck);
+      TransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
 
       if (!results.isEmpty()) {
@@ -146,7 +147,7 @@ public class DecisionReviewManager {
       }
       // ensure assignees are as requested
       decRev.getStateMgr().setAssignees(assignees);
-      decRev.persist(transaction);
+      changes.add(decRev);
       return decRev;
    }
 
@@ -159,7 +160,8 @@ public class DecisionReviewManager {
 
    public static List<IAtsDecisionReviewOption> getDefaultDecisionReviewOptions() throws OseeCoreException {
       List<IAtsDecisionReviewOption> options = new ArrayList<IAtsDecisionReviewOption>();
-      options.add(new SimpleDecisionReviewOption("Yes", true, Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser().getUserId())));
+      options.add(new SimpleDecisionReviewOption("Yes", true,
+         Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser().getUserId())));
       options.add(new SimpleDecisionReviewOption("No", false, null));
       return options;
    }

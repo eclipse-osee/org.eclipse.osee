@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.workflow.transition;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewDefinitionManager;
 import org.eclipse.osee.ats.core.client.review.PeerReviewDefinitionManager;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -33,11 +34,11 @@ public final class TransitionListeners {
     * org.eclipse.osee.ats.core.AtsTransitionListener extension point. <br/>
     * Public method available in TransitionManager
     */
-   protected static void addListener(ITransitionListener listener) {
+   public static void addListener(ITransitionListener listener) {
       listeners.add(listener);
    }
 
-   protected static void removeListener(ITransitionListener listener) {
+   public static void removeListener(ITransitionListener listener) {
       listeners.remove(listener);
    }
 

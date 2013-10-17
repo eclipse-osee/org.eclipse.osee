@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -29,7 +30,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
@@ -59,11 +59,11 @@ public class NewActionPage3 extends WizardPage {
       getWizardXWidgetExtensions();
    }
 
-   public void notifyAtsWizardItemExtensions(Artifact action, SkynetTransaction transaction) {
+   public void notifyAtsWizardItemExtensions(Artifact action, IAtsChangeSet changes) {
       for (IAtsWizardItem item : wizardExtensionItems) {
          try {
             if (item.hasWizardXWidgetExtensions(wizard.getSelectedIAtsActionableItems())) {
-               item.wizardCompleted(action, wizard, transaction);
+               item.wizardCompleted(action, wizard, changes);
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

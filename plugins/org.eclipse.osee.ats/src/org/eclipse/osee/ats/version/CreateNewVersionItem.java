@@ -18,12 +18,13 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -31,9 +32,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -83,10 +81,9 @@ public class CreateNewVersionItem extends XNavigateItemAction {
             newVersionNames.add(str);
          }
          XResultData resultData = new XResultData(false);
-         SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create New Version(s)");
+         AtsChangeSet changes = new AtsChangeSet("Create New Version(s)");
          Collection<IAtsVersion> newVersions =
-            createVersions(resultData, transaction, teamDefHoldingVersions, newVersionNames);
+            createVersions(resultData, changes, teamDefHoldingVersions, newVersionNames);
          if (resultData.isErrors()) {
             resultData.log(String.format(
                "\nErrors found while creating version(s) for [%s].\nPlease resolve and try again.",
@@ -94,7 +91,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
             XResultDataUI.report(resultData, "Create New Version Error");
             return;
          }
-         transaction.execute();
+         changes.execute();
          if (newVersions.size() == 1) {
             RendererManager.open(AtsClientService.get().getConfigArtifact(newVersions.iterator().next()),
                PresentationType.DEFAULT_OPEN);
@@ -106,7 +103,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       }
    }
 
-   public static Collection<IAtsVersion> createVersions(XResultData resultData, SkynetTransaction transaction, IAtsTeamDefinition teamDefHoldingVersions, Collection<String> newVersionNames) {
+   public static Collection<IAtsVersion> createVersions(XResultData resultData, IAtsChangeSet changes, IAtsTeamDefinition teamDefHoldingVersions, Collection<String> newVersionNames) {
       List<IAtsVersion> versions = new ArrayList<IAtsVersion>();
       for (String newVer : newVersionNames) {
          if (!Strings.isValid(newVer)) {
@@ -123,9 +120,8 @@ public class CreateNewVersionItem extends XNavigateItemAction {
             for (String newVer : newVersionNames) {
                IAtsVersion version = AtsClientService.get().createVersion(newVer);
                versions.add(version);
-               Artifact verArt = AtsClientService.get().storeConfigObject(version, transaction);
                AtsVersionService.get().setTeamDefinition(version, teamDefHoldingVersions);
-               verArt.persist(transaction);
+               changes.add(version);
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.workflow.transition;
+package org.eclipse.osee.ats.api.workflow.transition;
 
 import org.eclipse.osee.ats.api.workdef.ITransitionResult;
 

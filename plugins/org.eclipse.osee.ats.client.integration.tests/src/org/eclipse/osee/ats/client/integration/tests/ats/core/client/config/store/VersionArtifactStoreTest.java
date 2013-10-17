@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -31,6 +32,9 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class VersionArtifactStoreTest {
 
    @BeforeClass
@@ -122,11 +126,9 @@ public class VersionArtifactStoreTest {
       version.setDescription("description");
       version.setFullName("full name");
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranchToken(),
-            VersionArtifactStoreTest.class.getSimpleName() + " - testSaveToArtifact");
-      AtsClientService.get().storeConfigObject(version, transaction);
-      transaction.execute();
+      AtsChangeSet changes = new AtsChangeSet(VersionArtifactStoreTest.class.getSimpleName() + " - testSaveToArtifact");
+      AtsClientService.get().storeConfigObject(version, changes);
+      changes.execute();
 
       Artifact saveArt = AtsClientService.get().getConfigArtifact(version);
       Assert.assertEquals("VersionArtifactStoreTest - version 3", version.getName());

@@ -23,6 +23,7 @@ import java.util.Set;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.goal.GoalLabelProvider;
@@ -172,12 +173,14 @@ public final class GoalManager {
       }
    }
 
-   public static GoalArtifact createGoal(String title) throws OseeCoreException {
+   public static GoalArtifact createGoal(String title, IAtsChangeSet changes) throws OseeCoreException {
       GoalArtifact goalArt =
          (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal, AtsUtil.getAtsBranch(), title);
 
       // Initialize state machine
-      goalArt.initializeNewStateMachine(Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
+      goalArt.initializeNewStateMachine(Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()),
+         new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
+      changes.add(goalArt);
       return goalArt;
    }
 

@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.client.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
@@ -34,14 +35,13 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.client.review.role.Role;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Donald G. Dunne
@@ -49,11 +49,10 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 public class DemoDbReviews {
 
    public static void createReviews(boolean DEBUG) throws Exception {
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Reviews");
-      createPeerToPeerReviews(DEBUG, transaction);
-      createDecisionReviews(DEBUG, transaction);
-      transaction.execute();
+      AtsChangeSet changes = new AtsChangeSet("Populate Demo DB - Create Reviews");
+      createPeerToPeerReviews(DEBUG, changes);
+      createDecisionReviews(DEBUG, changes);
+      changes.execute();
    }
 
    /**
@@ -63,7 +62,7 @@ public class DemoDbReviews {
     * 3) Decision in Complete state w Joe Smith assignee and completed<br>
     * <br>
     */
-   public static void createDecisionReviews(boolean DEBUG, SkynetTransaction transaction) throws Exception {
+   public static void createDecisionReviews(boolean DEBUG, IAtsChangeSet changes) throws Exception {
 
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
@@ -76,21 +75,21 @@ public class DemoDbReviews {
 
       // Create a Decision review and transition to ReWork
       DecisionReviewArtifact reviewArt =
-         ValidateReviewManager.createValidateReview(firstTestArt, true, createdDate, createdBy, transaction);
+         ValidateReviewManager.createValidateReview(firstTestArt, true, createdDate, createdBy, changes);
       Result result =
-         DecisionReviewManager.transitionTo(reviewArt, DecisionReviewState.Followup, createdBy, false, transaction);
+         DecisionReviewManager.transitionTo(reviewArt, DecisionReviewState.Followup, createdBy, false, changes);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Followup: " + result.getText());
       }
-      reviewArt.persist(transaction);
+      changes.add(reviewArt);
 
       // Create a Decision review and transition to Completed
-      reviewArt = ValidateReviewManager.createValidateReview(secondTestArt, true, createdDate, createdBy, transaction);
-      DecisionReviewManager.transitionTo(reviewArt, DecisionReviewState.Completed, createdBy, false, transaction);
+      reviewArt = ValidateReviewManager.createValidateReview(secondTestArt, true, createdDate, createdBy, changes);
+      DecisionReviewManager.transitionTo(reviewArt, DecisionReviewState.Completed, createdBy, false, changes);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Completed: " + result.getText());
       }
-      reviewArt.persist(transaction);
+      changes.add(reviewArt);
 
    }
 
@@ -118,7 +117,7 @@ public class DemoDbReviews {
     * 3) PeerToPeer in Prepare state w Joe Smith assignee and completed<br>
     * <br>
     */
-   public static void createPeerToPeerReviews(boolean DEBUG, SkynetTransaction transaction) throws Exception {
+   public static void createPeerToPeerReviews(boolean DEBUG, IAtsChangeSet changes) throws Exception {
 
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Create Peer To Peer reviews");
@@ -129,41 +128,38 @@ public class DemoDbReviews {
       // Create a PeerToPeer review and leave in Prepare state
       PeerToPeerReviewArtifact reviewArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review first set of code changes",
-            firstCodeArt.getStateMgr().getCurrentStateName(), transaction);
-      reviewArt.persist(transaction);
+            firstCodeArt.getStateMgr().getCurrentStateName(), changes);
 
       // Create a PeerToPeer review and transition to Review state
       reviewArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review algorithm used in code",
-            firstCodeArt.getStateMgr().getCurrentStateName(), transaction);
+            firstCodeArt.getStateMgr().getCurrentStateName(), changes);
       List<UserRole> roles = new ArrayList<UserRole>();
-      roles.add(new UserRole(Role.Author,
-         AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith)));
-      roles.add(new UserRole(Role.Reviewer, AtsClientService.get().getUserAdmin().getUserFromToken(
-         DemoUsers.Kay_Jones)));
-      roles.add(new UserRole(Role.Reviewer, AtsClientService.get().getUserAdmin().getUserFromToken(
-         DemoUsers.Alex_Kay), 2.0, true));
+      roles.add(new UserRole(Role.Author, AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith)));
+      roles.add(new UserRole(Role.Reviewer, AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Kay_Jones)));
+      roles.add(new UserRole(Role.Reviewer, AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay),
+         2.0, true));
       Result result =
          PeerToPeerReviewManager.transitionTo(reviewArt, PeerToPeerReviewState.Review, roles, null,
-            AtsClientService.get().getUserAdmin().getCurrentUser(), false, transaction);
+            AtsClientService.get().getUserAdmin().getCurrentUser(), false, changes);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Review: " + result.getText());
       }
-      reviewArt.persist(transaction);
+      changes.add(reviewArt);
 
       // Create a PeerToPeer review and transition to Completed
       reviewArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(secondCodeArt, "Review new logic",
             secondCodeArt.getStateMgr().getCurrentStateName(), new Date(),
             AtsClientService.get().getUserAdmin().getUserFromOseeUser(DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)),
-            transaction);
+            changes);
       roles = new ArrayList<UserRole>();
-      roles.add(new UserRole(Role.Author,
-         AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Kay_Jones), 2.3, true));
-      roles.add(new UserRole(Role.Reviewer, AtsClientService.get().getUserAdmin().getUserFromToken(
-         DemoUsers.Joe_Smith), 4.5, true));
-      roles.add(new UserRole(Role.Reviewer, AtsClientService.get().getUserAdmin().getUserFromToken(
-         DemoUsers.Alex_Kay), 2.0, true));
+      roles.add(new UserRole(Role.Author, AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Kay_Jones),
+         2.3, true));
+      roles.add(new UserRole(Role.Reviewer,
+         AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith), 4.5, true));
+      roles.add(new UserRole(Role.Reviewer, AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay),
+         2.0, true));
 
       List<ReviewDefectItem> defects = new ArrayList<ReviewDefectItem>();
       defects.add(new ReviewDefectItem(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay),
@@ -186,9 +182,9 @@ public class DemoDbReviews {
       }
       result =
          PeerToPeerReviewManager.transitionTo(reviewArt, PeerToPeerReviewState.Completed, roles, defects,
-            AtsClientService.get().getUserAdmin().getCurrentUser(), false, transaction);
+            AtsClientService.get().getUserAdmin().getCurrentUser(), false, changes);
       if (result.isTrue()) {
-         reviewArt.persist(transaction);
+         changes.add(reviewArt);
       }
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Completed: " + result.getText());

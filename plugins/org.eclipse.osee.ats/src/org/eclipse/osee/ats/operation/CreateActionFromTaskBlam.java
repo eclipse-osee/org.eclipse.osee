@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.editor.SMAEditor;
@@ -40,8 +41,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -123,8 +122,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
 
    private void handleCreateActions(Collection<TaskArtifact> tasks, String title, Collection<IAtsActionableItem> aias, ChangeType changeType, String priority, IProgressMonitor monitor) throws OseeCoreException {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create Actions from Tasks");
+      AtsChangeSet changes = new AtsChangeSet("Create Actions from Tasks");
       for (TaskArtifact task : tasks) {
          String useTitle = title;
          if (!Strings.isValid(useTitle)) {
@@ -132,15 +130,15 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
          }
          ActionArtifact action =
             ActionManager.createAction(monitor, useTitle, getDescription(task), changeType, priority, false, null,
-               aias, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
+               aias, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
 
          for (TeamWorkFlowArtifact teamArt : action.getTeams()) {
             newTeamArts.add(teamArt);
             teamArt.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, task);
-            teamArt.persist(transaction);
+            changes.add(teamArt);
          }
       }
-      transaction.execute();
+      changes.execute();
       if (newTeamArts.size() == 1) {
          SMAEditor.editArtifact(newTeamArts.iterator().next());
       } else {

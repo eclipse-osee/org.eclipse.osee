@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.client.demo.DemoActionableItems;
 import org.eclipse.osee.ats.client.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
@@ -51,7 +52,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -97,11 +97,11 @@ public class DemoTestUtil {
    /**
     * Creates an action with the name title and demo code workflow
     */
-   public static TeamWorkFlowArtifact createSimpleAction(String title, SkynetTransaction transaction) throws OseeCoreException {
+   public static TeamWorkFlowArtifact createSimpleAction(String title, IAtsChangeSet changes) throws OseeCoreException {
       Artifact actionArt =
          ActionManager.createAction(null, title, "Description", ChangeType.Improvement, "2", false, null,
             ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())), new Date(),
-            AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
+            AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
 
       TeamWorkFlowArtifact teamArt = null;
       for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
@@ -120,12 +120,12 @@ public class DemoTestUtil {
       return getActionableItems(demoActionableItems).iterator().next();
    }
 
-   public static TeamWorkFlowArtifact addTeamWorkflow(Artifact actionArt, String title, SkynetTransaction transaction) throws OseeCoreException {
+   public static TeamWorkFlowArtifact addTeamWorkflow(Artifact actionArt, String title, IAtsChangeSet changes) throws OseeCoreException {
       Set<IAtsActionableItem> actionableItems = getActionableItems(DemoActionableItems.SAW_Test);
       Collection<IAtsTeamDefinition> teamDefs = TeamDefinitions.getImpactedTeamDefs(actionableItems);
 
       ActionManager.createTeamWorkflow(actionArt, teamDefs.iterator().next(), actionableItems,
-         Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), transaction, new Date(),
+         Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), changes, new Date(),
          AtsClientService.get().getUserAdmin().getCurrentUser(), null);
 
       TeamWorkFlowArtifact teamArt = null;
@@ -140,13 +140,13 @@ public class DemoTestUtil {
    /**
     * Create tasks named title + <num>
     */
-   public static Collection<TaskArtifact> createSimpleTasks(TeamWorkFlowArtifact teamArt, String title, int numTasks, String relatedToState, SkynetTransaction transaction) throws Exception {
+   public static Collection<TaskArtifact> createSimpleTasks(TeamWorkFlowArtifact teamArt, String title, int numTasks, String relatedToState, IAtsChangeSet changes) throws Exception {
       List<String> names = new ArrayList<String>();
       for (int x = 1; x < numTasks + 1; x++) {
          names.add(title + " " + x);
       }
       return teamArt.createTasks(names, Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()),
-         new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), relatedToState, transaction);
+         new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), relatedToState, changes);
    }
 
    public static TeamWorkFlowArtifact getToolsTeamWorkflow() throws OseeCoreException {

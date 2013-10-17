@@ -8,16 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.workflow.transition;
+package org.eclipse.osee.ats.core.workflow.transition;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.util.Result;
 
 /**
  * Input data object that provides data fields for Edit Status and Transitioning and error checking based on certain
  * criteria.
- *
+ * 
  * @author Donald G. Dunne
  */
 public class TransitionStatusData {
@@ -25,10 +25,10 @@ public class TransitionStatusData {
    private Integer percent, defaultPercent;
    private Double additionalHours;
    private boolean applyHoursToEachItem = false, splitHoursBetweenItems = true, showPercent;
-   private Collection<? extends AbstractWorkflowArtifact> awas;
+   private Collection<? extends IAtsWorkItem> workItems;
 
-   public TransitionStatusData(Collection<? extends AbstractWorkflowArtifact> awas, boolean showPercent) {
-      this.awas = awas;
+   public TransitionStatusData(Collection<? extends IAtsWorkItem> workItems, boolean showPercent) {
+      this.workItems = workItems;
       this.showPercent = showPercent;
    }
 
@@ -45,7 +45,7 @@ public class TransitionStatusData {
       if (!isHoursSet()) {
          return new Result("Hours must be entered.");
       }
-      if (awas.size() > 1) {
+      if (workItems.size() > 1) {
          if (!splitHoursBetweenItems && !applyHoursToEachItem) {
             return new Result("Either \"Split Hours Spent\" or \"Apply Hours Spent\" must be selected");
          }
@@ -88,12 +88,12 @@ public class TransitionStatusData {
       this.splitHoursBetweenItems = splitHoursBetweenItems;
    }
 
-   public Collection<? extends AbstractWorkflowArtifact> getAwas() {
-      return awas;
+   public Collection<? extends IAtsWorkItem> getWorkItems() {
+      return workItems;
    }
 
-   public void setAwas(Collection<? extends AbstractWorkflowArtifact> awas) {
-      this.awas = awas;
+   public void setAwas(Collection<? extends IAtsWorkItem> workItems) {
+      this.workItems = workItems;
    }
 
    public boolean isPercentRequired() {

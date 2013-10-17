@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -40,14 +41,13 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
  */
 public class ActionManager {
 
-   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, SkynetTransaction transaction) throws OseeCoreException {
+   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, IAtsChangeSet changes) throws OseeCoreException {
       Conditions.checkNotNullOrEmptyOrContainNull(actionableItems, "actionableItems");
       // if "tt" is title, this is an action created for development. To
       // make it easier, all fields are automatically filled in for ATS developer
@@ -76,7 +76,7 @@ public class ActionManager {
       for (IAtsTeamDefinition teamDef : teamDefs) {
          List<IAtsUser> leads = new LinkedList<IAtsUser>(teamDef.getLeads(actionableItems));
          TeamWorkFlowArtifact teamWf =
-            createTeamWorkflow(actionArt, teamDef, actionableItems, leads, transaction, createdDate, createdBy,
+            createTeamWorkflow(actionArt, teamDef, actionableItems, leads, changes, createdDate, createdBy,
                newActionListener);
          teamWf.getStateMgr().writeToStore();
       }
@@ -86,11 +86,11 @@ public class ActionManager {
          newActionListener.actionCreated(actionArt);
       }
 
-      actionArt.persist(transaction);
+      changes.add(actionArt);
       return actionArt;
    }
 
-   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, SkynetTransaction transaction, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) throws OseeCoreException {
+   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, IAtsChangeSet changes, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) throws OseeCoreException {
       ITeamWorkflowProvider teamExt = TeamWorkFlowManager.getTeamWorkflowProvider(teamDef, actionableItems);
       IArtifactType teamWorkflowArtifactType =
          TeamWorkFlowManager.getTeamWorkflowArtifactType(teamDef, actionableItems);
@@ -98,7 +98,7 @@ public class ActionManager {
       // NOTE: The persist of the workflow will auto-email the assignees
       TeamWorkFlowArtifact teamArt =
          createTeamWorkflow(actionArt, teamDef, actionableItems, assignees, createdDate, createdBy, null,
-            teamWorkflowArtifactType, newActionListener, transaction, createTeamOption);
+            teamWorkflowArtifactType, newActionListener, changes, createTeamOption);
       // Notify extension that workflow was created
       if (teamExt != null) {
          teamExt.teamWorkflowCreated(teamArt);
@@ -106,7 +106,7 @@ public class ActionManager {
       return teamArt;
    }
 
-   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String guid, IArtifactType artifactType, INewActionListener newActionListener, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
+   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String guid, IArtifactType artifactType, INewActionListener newActionListener, IAtsChangeSet changes, CreateTeamOption... createTeamOption) throws OseeCoreException {
 
       if (!Collections.getAggregate(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
          // Make sure team doesn't already exist
@@ -153,16 +153,16 @@ public class ActionManager {
 
       // Notify listener of team creation
       if (newActionListener != null) {
-         newActionListener.teamCreated((ActionArtifact) actionArt, teamArt, transaction);
+         newActionListener.teamCreated((ActionArtifact) actionArt, teamArt, changes);
       }
 
       // Relate Action to WorkFlow
       actionArt.addRelation(AtsRelationTypes.ActionToWorkflow_WorkFlow, teamArt);
 
       // Auto-add actions to configured goals
-      addActionToConfiguredGoal(teamDef, teamArt, actionableItems, transaction);
+      addActionToConfiguredGoal(teamDef, teamArt, actionableItems, changes);
 
-      teamArt.persist(transaction);
+      changes.add(teamArt);
       AtsNotificationManager.notifySubscribedByTeamOrActionableItem(teamArt);
 
       return teamArt;
@@ -171,14 +171,14 @@ public class ActionManager {
    /**
     * Auto-add actions to a goal configured with relations to the given ActionableItem or Team Definition
     */
-   private static void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, TeamWorkFlowArtifact teamArt, Collection<IAtsActionableItem> actionableItems, SkynetTransaction transaction) throws OseeCoreException {
+   private static void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, TeamWorkFlowArtifact teamArt, Collection<IAtsActionableItem> actionableItems, IAtsChangeSet changes) throws OseeCoreException {
       // Auto-add this team artifact to configured goals
       Artifact teamDefArt = AtsClientService.get().getConfigArtifact(teamDef);
       if (teamDefArt != null) {
          for (Artifact goalArt : teamDefArt.getRelatedArtifacts(AtsRelationTypes.AutoAddActionToGoal_Goal)) {
             if (!goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member).contains(teamArt)) {
                goalArt.addRelation(AtsRelationTypes.Goal_Member, teamArt);
-               goalArt.persist(transaction);
+               changes.add(goalArt);
             }
          }
       }
@@ -190,7 +190,7 @@ public class ActionManager {
             for (Artifact goalArt : aiDefArt.getRelatedArtifacts(AtsRelationTypes.AutoAddActionToGoal_Goal)) {
                if (!goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member).contains(teamArt)) {
                   goalArt.addRelation(AtsRelationTypes.Goal_Member, teamArt);
-                  goalArt.persist(transaction);
+                  changes.add(goalArt);
                }
             }
          }

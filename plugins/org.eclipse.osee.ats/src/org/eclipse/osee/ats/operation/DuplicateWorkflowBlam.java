@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.editor.SMAEditor;
@@ -126,8 +127,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
 
    private void handleCreateNewWorkflow(Collection<TeamWorkFlowArtifact> teamArts, String title) throws OseeCoreException {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Duplicate Workflow");
+      AtsChangeSet changes = new AtsChangeSet("Duplicate Workflow");
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
       for (TeamWorkFlowArtifact teamArt : teamArts) {
@@ -138,15 +138,15 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          }
          TeamWorkFlowArtifact newTeamArt =
             ActionManager.createTeamWorkflow(teamArt.getParentActionArtifact(), teamArt.getTeamDefinition(),
-               teamArt.getActionableItemsDam().getActionableItems(), assignees, transaction, createdDate, createdBy,
-               null, CreateTeamOption.Duplicate_If_Exists);
+               teamArt.getActionableItemsDam().getActionableItems(), assignees, changes, createdDate, createdBy, null,
+               CreateTeamOption.Duplicate_If_Exists);
          if (Strings.isValid(title)) {
             newTeamArt.setName(title);
          }
-         newTeamArt.persist(transaction);
+         changes.add(newTeamArt);
          newTeamArts.add(newTeamArt);
       }
-      transaction.execute();
+      changes.execute();
       for (TeamWorkFlowArtifact newTeamArt : newTeamArts) {
          SMAEditor.editArtifact(newTeamArt);
       }

@@ -8,16 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.workflow.transition;
+package org.eclipse.osee.ats.core.workflow.transition;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -25,18 +32,21 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class TransitionHelper extends TransitionHelperAdapter {
 
    private final String cancellationReason;
-   private final Collection<? extends AbstractWorkflowArtifact> awas;
+   private final Collection<? extends IAtsWorkItem> workItems;
    private final String name;
    private TransitionOption[] transitionOption;
    private final Collection<? extends IAtsUser> toAssignees;
    private String toStateName;
+   private final IAtsChangeSet changes;
+   private boolean executeChanges;
 
-   public TransitionHelper(String name, Collection<? extends AbstractWorkflowArtifact> awas, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, TransitionOption... transitionOption) {
+   public TransitionHelper(String name, Collection<? extends IAtsWorkItem> awas, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, TransitionOption... transitionOption) {
       this.name = name;
-      this.awas = awas;
+      this.workItems = awas;
       this.toStateName = toStateName;
       this.toAssignees = toAssignees;
       this.cancellationReason = cancellationReason;
+      this.changes = changes;
       this.transitionOption = transitionOption;
    }
 
@@ -56,8 +66,8 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    @Override
-   public Collection<? extends AbstractWorkflowArtifact> getAwas() {
-      return awas;
+   public Collection<? extends IAtsWorkItem> getWorkItems() {
+      return workItems;
    }
 
    @Override
@@ -75,7 +85,7 @@ public class TransitionHelper extends TransitionHelperAdapter {
 
    @SuppressWarnings("unused")
    @Override
-   public Collection<? extends IAtsUser> getToAssignees(AbstractWorkflowArtifact awa) throws OseeCoreException {
+   public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) throws OseeCoreException {
       return toAssignees;
    }
 
@@ -109,4 +119,32 @@ public class TransitionHelper extends TransitionHelperAdapter {
       this.toStateName = toStateName;
    }
 
+   @Override
+   public IAtsChangeSet getChangeSet() {
+      return changes;
+   }
+
+   @Override
+   public void setInTransition(IAtsWorkItem workItem, boolean inTransition) throws OseeCoreException {
+      AtsCore.getWorkItemService().setInTransition(workItem, inTransition);
+   }
+
+   @Override
+   public boolean isExecuteChanges() {
+      return executeChanges;
+   }
+
+   public void setExecuteChanges(boolean executeChanges) {
+      this.executeChanges = executeChanges;
+   }
+
+   @Override
+   public Collection<ITransitionListener> getTransitionListeners() {
+      try {
+         return AtsCore.getWorkItemService().getTransitionListeners();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return java.util.Collections.emptyList();
+   }
 }

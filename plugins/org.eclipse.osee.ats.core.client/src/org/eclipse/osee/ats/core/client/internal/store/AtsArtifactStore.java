@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.internal.store;
 
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.internal.IAtsArtifactReader;
 import org.eclipse.osee.ats.core.client.internal.IAtsArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.IAtsArtifactWriter;
@@ -20,7 +21,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -36,15 +36,15 @@ public class AtsArtifactStore implements IAtsArtifactStore {
    }
 
    @Override
-   public <T extends IAtsConfigObject> Artifact store(AtsArtifactConfigCache cache, T configObject, SkynetTransaction transaction) throws OseeCoreException {
+   public <T extends IAtsConfigObject> Artifact store(AtsArtifactConfigCache cache, T configObject, IAtsChangeSet changes) throws OseeCoreException {
       Conditions.checkNotNull(cache, "cache");
       Conditions.checkNotNull(configObject, "configObject");
-      Conditions.checkNotNull(transaction, "transaction");
+      Conditions.checkNotNull(changes, "transaction");
 
       IAtsArtifactWriter<T> writer = getWriter(configObject.getClass());
       Conditions.checkNotNull(writer, "writer");
 
-      return writer.store(configObject, cache, transaction);
+      return writer.store(configObject, cache, changes);
    }
 
    @Override

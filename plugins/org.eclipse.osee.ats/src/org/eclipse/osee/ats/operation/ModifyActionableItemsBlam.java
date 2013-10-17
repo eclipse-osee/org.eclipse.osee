@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.ai.ModifyActionableItems;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitionUtility;
 import org.eclipse.osee.ats.internal.Activator;
@@ -54,8 +55,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -342,28 +341,25 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), getName());
+         AtsChangeSet changes = new AtsChangeSet(getName());
          Date createdDate = new Date();
          for (CreateTeamData data : job.getTeamDatas()) {
             TeamWorkFlowArtifact teamArt =
                ActionManager.createTeamWorkflow(teamWf.getParentActionArtifact(), data.getTeamDef(),
-                  data.getActionableItems(), new LinkedList<IAtsUser>(data.getAssignees()), transaction, createdDate,
+                  data.getActionableItems(), new LinkedList<IAtsUser>(data.getAssignees()), changes, createdDate,
                   data.getCreatedBy(), null, data.getCreateTeamOption());
-            teamArt.persist(transaction);
             newTeamWfs.add(teamArt);
          }
 
          for (IAtsActionableItem checkedAi : job.getAddAis()) {
             results.logWithFormat("Actionable Item [%s] will be added to this workflow\n", checkedAi);
             teamWf.getActionableItemsDam().addActionableItem(checkedAi);
-            teamWf.persist(transaction);
          }
          for (IAtsActionableItem currAi : job.getRemoveAis()) {
             results.logWithFormat("Actionable Item [%s] will be removed from this workflow\n", currAi);
             teamWf.getActionableItemsDam().removeActionableItem(currAi);
-            teamWf.persist(transaction);
          }
-         transaction.execute();
+         changes.execute();
       }
 
       public List<TeamWorkFlowArtifact> getNewTeamWfs() {

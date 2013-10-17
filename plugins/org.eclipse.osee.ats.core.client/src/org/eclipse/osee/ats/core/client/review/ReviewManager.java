@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -23,6 +24,7 @@ import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -76,8 +78,8 @@ public class ReviewManager {
       return AtsReviewCache.getReviewArtifacts(teamArt);
    }
 
-   public static Collection<AbstractReviewArtifact> getReviewsFromCurrentState(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      return getReviews(teamArt, teamArt.getStateMgr().getCurrentState());
+   public static Collection<IAtsAbstractReview> getReviewsFromCurrentState(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      return Collections.castAll(getReviews(teamArt, teamArt.getStateMgr().getCurrentState()));
    }
 
    public static Collection<AbstractReviewArtifact> getReviews(TeamWorkFlowArtifact teamArt, IStateToken state) throws OseeCoreException {

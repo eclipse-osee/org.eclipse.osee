@@ -17,26 +17,25 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.state.AtsWorkStateFactory;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -70,22 +69,19 @@ public class SMAPromptChangeStatusTest {
 
    @Test
    public void test01Initialize() throws Exception {
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
-      teamArt = DemoTestUtil.createSimpleAction(getClass().getSimpleName(), transaction);
-      transaction.execute();
+      AtsChangeSet changes = new AtsChangeSet("Prompt Change Status Test");
+      teamArt = DemoTestUtil.createSimpleAction(getClass().getSimpleName(), changes);
+      changes.execute();
       assertNotNull(teamArt);
    }
 
    @Test
    public void test02ChangeTaskStatusNoResolution() throws Exception {
-
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       Collection<TaskArtifact> tasks =
          DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_NoRes", 4,
-            teamArt.getCurrentStateName(), transaction);
-      transaction.execute();
+            teamArt.getCurrentStateName(), changes);
+      changes.execute();
 
       assertTrue(tasks.size() == 4);
 
@@ -115,23 +111,22 @@ public class SMAPromptChangeStatusTest {
 
    @Test
    public void test03ChangeStatusFailsIfTaskCancelled() throws Exception {
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       Collection<TaskArtifact> tasks =
-         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_Cancel", 2, null, transaction);
-      transaction.execute();
+         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_Cancel", 2, null, changes);
+      changes.execute();
 
       assertTrue(tasks.size() == 2);
       TaskArtifact cancelTask = tasks.iterator().next();
 
       // test that if one task is cancelled, can't change status
-      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
+      changes.clear();
       TransitionHelper helper =
          new TransitionHelper("Transition to Cancelled", Arrays.asList(cancelTask), TaskStates.Cancelled.getName(),
-            null, null, TransitionOption.None);
-      TransitionManager transitionMgr = new TransitionManager(helper, transaction);
+            null, null, changes, TransitionOption.None);
+      TransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
-      transitionMgr.getTransaction().execute();
+      changes.execute();
       assertEquals("Transition should have no errors", true, results.isEmpty());
 
       Result result = SMAPromptChangeStatus.isValidToChangeStatus(tasks);
@@ -142,20 +137,18 @@ public class SMAPromptChangeStatusTest {
 
    @Test
    public void test04ChangeStatusFailsIfTaskWrongRelatedToState() throws Exception {
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       Collection<TaskArtifact> tasks =
          DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_RelState", 2,
-            teamArt.getCurrentStateName(), transaction);
-      transaction.execute();
+            teamArt.getCurrentStateName(), changes);
+      changes.execute();
 
       assertTrue(tasks.size() == 2);
       TaskArtifact taskArt = tasks.iterator().next();
 
       // test that if task not in related-to state of workflows's current status, can't change status
-      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, TeamState.Analyze.getName());
-      transaction.execute();
+      taskArt.persist(getClass().getSimpleName());
       Result result = SMAPromptChangeStatus.isValidToChangeStatus(tasks);
       assertTrue(result.isFalse());
       assertTrue(result.getText().contains("Task work must be done in"));
@@ -163,11 +156,10 @@ public class SMAPromptChangeStatusTest {
 
    @Test
    public void test05ChangeStatusPassesIfTaskNotUsingRelatedToState() throws Exception {
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       Collection<TaskArtifact> tasks =
-         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_RelState", 2, "", transaction);
-      transaction.execute();
+         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_RelState", 2, "", changes);
+      changes.execute();
 
       assertTrue(tasks.size() == 2);
 
@@ -177,24 +169,21 @@ public class SMAPromptChangeStatusTest {
 
    private static void validateSMAs(Collection<? extends AbstractWorkflowArtifact> awas, String stateName, int totalPercent, double hoursSpent) throws Exception {
       for (AbstractWorkflowArtifact awa : awas) {
-         assertEquals("Current State wrong for " + awa.getAtsId(), awa.getStateMgr().getCurrentStateName(),
-            stateName);
+         assertEquals("Current State wrong for " + awa.getAtsId(), awa.getStateMgr().getCurrentStateName(), stateName);
          if (awa.isCompletedOrCancelled()) {
-            assertEquals("ats.CurrentState wrong " + awa.getAtsId(),
-               awa.getStateMgr().getCurrentStateName() + ";;;",
+            assertEquals("ats.CurrentState wrong " + awa.getAtsId(), awa.getStateMgr().getCurrentStateName() + ";;;",
                awa.getSoleAttributeValue(AtsAttributeTypes.CurrentState));
          }
-         assertEquals("Percent wrong for " + awa.getAtsId(),
-            PercentCompleteTotalUtil.getPercentCompleteTotal(awa), totalPercent);
-         assertEquals("Hours Spent wrong for " + awa.getAtsId(), HoursSpentUtil.getHoursSpentTotal(awa),
-            hoursSpent, 0.0);
+         assertEquals("Percent wrong for " + awa.getAtsId(), PercentCompleteTotalUtil.getPercentCompleteTotal(awa),
+            totalPercent);
+         assertEquals("Hours Spent wrong for " + awa.getAtsId(), HoursSpentUtil.getHoursSpentTotal(awa), hoursSpent,
+            0.0);
 
          for (String xml : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
             WorkStateImpl state = AtsWorkStateFactory.getFromXml(xml);
             boolean isCompletedCancelledState = isCompletedCancelledState(awa, state.getName());
             if (isCompletedCancelledState) {
-               assertTrue("completed/cancelled ats.State [" + xml + "] wrong " + awa.getAtsId(),
-                  xml.endsWith(";;;"));
+               assertTrue("completed/cancelled ats.State [" + xml + "] wrong " + awa.getAtsId(), xml.endsWith(";;;"));
             }
          }
       }

@@ -18,20 +18,18 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -98,10 +96,9 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             verArt.setReleased(true);
             verArt.setReleaseDate(new Date());
             verArt.setNextVersion(false);
-            SkynetTransaction transaction =
-               TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), getClass().getSimpleName());
-            AtsClientService.get().storeConfigObject(verArt, transaction);
-            transaction.execute();
+            AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+            AtsClientService.get().storeConfigObject(verArt, changes);
+            changes.execute();
 
             if (MessageDialog.openQuestion(Displays.getActiveShell(), "Select NEW Next Release Version",
                "Release Complete.\n\nSelect NEW Next Release Version?")) {
@@ -112,10 +109,9 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                if (result == 0) {
                   verArt = (IAtsVersion) ld.getResult()[0];
                   verArt.setNextVersion(true);
-                  transaction =
-                     TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), getClass().getSimpleName());
-                  AtsClientService.get().storeConfigObject(verArt, transaction);
-                  transaction.execute();
+                  changes.clear();
+                  AtsClientService.get().storeConfigObject(verArt, changes);
+                  changes.execute();
                }
             }
          }

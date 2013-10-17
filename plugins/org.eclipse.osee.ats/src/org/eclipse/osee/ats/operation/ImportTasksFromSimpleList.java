@@ -22,18 +22,16 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -102,13 +100,12 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                }
                try {
                   final TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-                  SkynetTransaction transaction =
-                     TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Simple List");
+                  AtsChangeSet changes = new AtsChangeSet("Import Tasks from Simple List");
                   Date createdDate = new Date();
                   IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
-                  teamArt.createTasks(titles, assignees, createdDate, createdBy, stateCombo.get(), transaction);
-                  teamArt.persist(transaction);
-                  transaction.execute();
+                  teamArt.createTasks(titles, assignees, createdDate, createdBy, stateCombo.get(), changes);
+                  changes.add(teamArt);
+                  changes.execute();
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   return;

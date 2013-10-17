@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.action.INewActionListener;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.internal.Activator;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
@@ -127,9 +127,9 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return ((XDate) page2.getXWidget("Deadline")).getDate();
    }
 
-   public void notifyAtsWizardItemExtensions(Artifact action, SkynetTransaction transaction) {
+   public void notifyAtsWizardItemExtensions(Artifact action, IAtsChangeSet changes) {
       if (page3 != null) {
-         page3.notifyAtsWizardItemExtensions(action, transaction);
+         page3.notifyAtsWizardItemExtensions(action, changes);
       }
    }
 

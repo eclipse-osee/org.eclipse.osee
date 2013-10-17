@@ -22,11 +22,10 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.client.review.role.Role;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewReviewStateItem;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -49,15 +48,14 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
 
       if (peerRevArt == null) {
          // setup fake review artifact with decision options set
-         SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
+         AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
          peerRevArt =
             PeerToPeerReviewManager.createNewPeerToPeerReview(
                AtsClientService.get().getWorkDefinitionAdmin().getDefaultPeerToPeerWorkflowDefinitionMatch().getWorkDefinition(),
-               null, getClass().getName(), "", transaction);
+               null, getClass().getName(), "", changes);
          peerRevArt.setName(getClass().getSimpleName());
-         peerRevArt.persist(transaction);
-         transaction.execute();
+         changes.add(peerRevArt);
+         changes.execute();
       }
    }
 
@@ -81,10 +79,10 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
       UserRoleManager roleMgr = new UserRoleManager(peerRevArt);
       roleMgr.addOrUpdateUserRole(userRole, peerRevArt);
       userRole = new UserRole(Role.Reviewer, AtsClientService.get().getUserAdmin().getUserByName("Alex Kay"));
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "test transition");
+      AtsChangeSet changes = new AtsChangeSet("test transition");
       roleMgr.addOrUpdateUserRole(userRole, peerRevArt);
-      roleMgr.saveToArtifact(transaction);
-      transaction.execute();
+      roleMgr.saveToArtifact(changes);
+      changes.execute();
 
       // assignee should be user roles
       Assert.assertEquals(2, peerRevArt.getStateMgr().getAssignees().size());
@@ -101,10 +99,10 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
 
       // make call to state item that should set options based on artifact's attribute value
       AtsPeerToPeerReviewReviewStateItem stateItem = new AtsPeerToPeerReviewReviewStateItem();
-      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "test transition");
+      changes.reset("test transition");
       stateItem.transitioned(peerRevArt, fromState, toState,
-         Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), transaction);
-      transaction.execute();
+         Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), changes);
+      changes.execute();
 
       // Joe and Alex should have been added to assignees
       Assert.assertEquals(2, peerRevArt.getStateMgr().getAssignees().size());

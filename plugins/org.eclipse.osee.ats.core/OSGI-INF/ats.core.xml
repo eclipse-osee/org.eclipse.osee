@@ -6,4 +6,6 @@
    <reference bind="setAtsUserService" cardinality="1..1" interface="org.eclipse.osee.ats.api.user.IAtsUserService" name="IAtsUserService" policy="static"/>
    <reference bind="setAtsNotificationService" cardinality="1..1" interface="org.eclipse.osee.ats.api.notify.IAtsNotificationService" name="IAtsNotificationService" policy="static"/>
    <reference bind="setAtsWorkItemServiceProvider" cardinality="1..1" interface="org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider" name="IAtsWorkItemServiceProvider" policy="static"/>
+   <reference bind="setAtsReviewServiceProvider" cardinality="1..1" interface="org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider" name="IAtsReviewServiceProvider" policy="static"/>
+   <reference bind="setAtsBranchServiceProvider" cardinality="1..1" interface="org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider" name="IAtsBranchServiceProvider" policy="static"/>
 </scr:component>

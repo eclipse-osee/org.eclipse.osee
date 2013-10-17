@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.client.demo.DemoActionableItems;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
@@ -25,15 +27,14 @@ import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager.ConfigurationProvider;
 import org.eclipse.osee.ats.core.client.notify.AtsNotifyUsers;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.util.SubscribeManager;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -78,13 +79,13 @@ public class AtsNotifyUsersTest {
    }
 
    private static void cleanUpAction() throws OseeCoreException {
-      SkynetTransaction transaction =
+      SkynetTransaction changes =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsNotifyUsersTest.class.getSimpleName());
       for (Artifact art : ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.Name,
          AtsNotifyUsersTest.class.getSimpleName(), AtsUtilCore.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
-         art.deleteAndPersist(transaction);
+         art.deleteAndPersist(changes);
       }
-      transaction.execute();
+      changes.execute();
    }
 
    @org.junit.Test
@@ -105,8 +106,7 @@ public class AtsNotifyUsersTest {
       AtsNotificationManager.setConfigurationProvider(configProvider);
       AtsNotificationManager.setInTest(false);
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       teamArt.setName(AtsNotifyUsersTest.class.getSimpleName() + "-testNotify");
       teamArt.internalSetCreatedBy(AtsClientService.get().getUserAdmin().getUserFromOseeUser(kay_ValidEmail));
@@ -114,8 +114,8 @@ public class AtsNotifyUsersTest {
       assignees.addAll(Arrays.asList(inactiveSteve, alex_NoValidEmail, jason_ValidEmail, kay_ValidEmail,
          joeSmith_CurrentUser));
       teamArt.getStateMgr().setAssignees(AtsClientService.get().getUserAdmin().getAtsUsers(assignees));
-      teamArt.persist(transaction);
-      transaction.execute();
+      changes.add(teamArt);
+      changes.execute();
 
       notifyManager.clear();
       AtsNotificationManager.notify(teamArt, AtsNotifyType.Originator);
@@ -168,11 +168,10 @@ public class AtsNotifyUsersTest {
 
       notifyManager.clear();
       SubscribeManager.toggleSubscribe(teamArt);
-      transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "AtsNotifyUsersTests.toggle.subscribed");
-      SubscribeManager.addSubscribed(teamArt,
-         AtsClientService.get().getUserAdmin().getUserFromOseeUser(inactiveSteve), transaction);
-      transaction.execute();
+      changes.clear();
+      SubscribeManager.addSubscribed(teamArt, AtsClientService.get().getUserAdmin().getUserFromOseeUser(inactiveSteve),
+         changes);
+      changes.execute();
       AtsNotificationManager.notify(teamArt, AtsNotifyType.Subscribed);
       Assert.assertEquals(1, notifyManager.getNotificationEvents().size());
       event = notifyManager.getNotificationEvents().get(0);
@@ -212,11 +211,11 @@ public class AtsNotifyUsersTest {
          AtsClientService.get().getUserAdmin().getCurrentUser());
       TransitionHelper helper =
          new TransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), TeamState.Cancelled.getName(), null,
-            "this is the reason", TransitionOption.OverrideTransitionValidityCheck);
-      transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
-      TransitionManager transitionMgr = new TransitionManager(helper, transaction);
+            "this is the reason", changes, TransitionOption.OverrideTransitionValidityCheck);
+      changes.clear();
+      TransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
-      transaction.execute();
+      changes.execute();
       Assert.assertTrue("Transition should have no errors", results.isEmpty());
 
       Assert.assertEquals(1, notifyManager.getNotificationEvents().size());
@@ -240,13 +239,12 @@ public class AtsNotifyUsersTest {
       AtsNotificationManager.setConfigurationProvider(configProvider);
       AtsNotificationManager.setInTest(false);
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       ActionManager.createAction(null, getClass().getSimpleName() + "-OnNewAction", "Description",
          ChangeType.Improvement, "2", false, null,
          ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_SW_Design.getName())), new Date(),
-         AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
-      transaction.execute();
+         AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
+      changes.execute();
 
       Assert.assertEquals(1, notifyManager.getNotificationEvents().size());
       OseeNotificationEvent event = notifyManager.getNotificationEvents().get(0);

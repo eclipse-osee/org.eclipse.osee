@@ -27,12 +27,14 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleError;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleValidator;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.util.Result;
@@ -47,8 +49,6 @@ import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -298,20 +298,19 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             "Are You Sure You Wish to Delete the Roles(s):\n\n" + builder.toString());
       if (delete) {
          try {
-            SkynetTransaction transaction =
-               TransactionManager.createTransaction(reviewArt.getBranch(), "Delete Review Roles");
-            removeUserRoleHelper(items, transaction);
-            transaction.execute();
+            AtsChangeSet changes = new AtsChangeSet("Delete Review Roles");
+            removeUserRoleHelper(items, changes);
+            changes.execute();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
    }
 
-   private void removeUserRoleHelper(List<UserRole> items, SkynetTransaction transaction) throws OseeCoreException {
+   private void removeUserRoleHelper(List<UserRole> items, IAtsChangeSet changes) throws OseeCoreException {
       for (UserRole userRole : items) {
          roleMgr.removeUserRole(userRole);
-         roleMgr.saveToArtifact(transaction);
+         roleMgr.saveToArtifact(changes);
          xViewer.remove(userRole);
       }
       loadTable();
@@ -336,15 +335,13 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             return;
          }
          try {
-            SkynetTransaction transaction =
-               TransactionManager.createTransaction(reviewArt.getArtifact().getBranch(), "Add Review Roles");
+            AtsChangeSet changes = new AtsChangeSet("Add Review Roles");
             for (IAtsUser user : dialog.getUsers()) {
                UserRole userRole = new UserRole(dialog.getRole(), user);
                roleMgr.addOrUpdateUserRole(userRole, reviewArt);
-               reviewArt.persist(transaction);
+               changes.add(reviewArt);
             }
-            roleMgr.saveToArtifact(transaction);
-            transaction.execute();
+            changes.execute();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }

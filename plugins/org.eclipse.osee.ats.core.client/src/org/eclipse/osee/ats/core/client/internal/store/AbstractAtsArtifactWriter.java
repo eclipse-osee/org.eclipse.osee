@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.internal.IAtsArtifactWriter;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
@@ -24,7 +25,6 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -48,13 +48,13 @@ public abstract class AbstractAtsArtifactWriter<T extends IAtsConfigObject> impl
       return newArts;
    }
 
-   protected Artifact getArtifactOrCreate(AtsArtifactConfigCache cache, IArtifactType artifactType, IAtsConfigObject atsObject, SkynetTransaction transaction) throws OseeCoreException {
+   protected Artifact getArtifactOrCreate(AtsArtifactConfigCache cache, IArtifactType artifactType, IAtsConfigObject atsObject, IAtsChangeSet changes) throws OseeCoreException {
       Artifact artifact = cache.getArtifact(atsObject);
       if (artifact == null) {
          artifact =
             ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranchToken(), atsObject.getName(),
                atsObject.getGuid());
-         artifact.persist(transaction);
+         changes.add(artifact);
       }
       return artifact;
    }

@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.core.client.task.createtasks;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Shawn F. Cook
@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 public abstract class AbstractTaskOp implements ITaskOperation {
 
    @Override
-   public abstract IStatus execute(TaskMetadata metadata, SkynetTransaction transaction) throws OseeCoreException;
+   public abstract IStatus execute(TaskMetadata metadata, IAtsChangeSet changes) throws OseeCoreException;
 
    protected Status generateGenericOkStatus(TaskEnum taskEnum, String task, String parentTeamWf, String changedArt) {
 

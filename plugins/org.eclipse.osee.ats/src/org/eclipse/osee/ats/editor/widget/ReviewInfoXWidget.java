@@ -18,19 +18,21 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.internal.Activator;
@@ -302,7 +304,9 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                   }
                   try {
                      List<AbstractWorkflowArtifact> awas = new ArrayList<AbstractWorkflowArtifact>();
-                     for (AbstractReviewArtifact revArt : ReviewManager.getReviewsFromCurrentState(teamArt)) {
+                     for (IAtsAbstractReview review : ReviewManager.getReviewsFromCurrentState(teamArt)) {
+                        AbstractReviewArtifact revArt =
+                           (AbstractReviewArtifact) AtsClientService.get().getArtifact(review);
                         if (!revArt.isCompletedOrCancelled()) {
                            if (revArt.getStateMgr().isUnAssigned()) {
                               revArt.getStateMgr().setAssignee(AtsClientService.get().getUserAdmin().getCurrentUser());
@@ -310,15 +314,16 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                            awas.add(revArt);
                         }
                      }
+                     AtsChangeSet changes = new AtsChangeSet("Admin Auto-Complete Reviews");
                      TransitionHelper helper =
                         new TransitionHelper("ATS Auto Complete Reviews", awas, TeamState.Completed.getName(), null,
-                           null, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
+                           null, changes, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
                      TransitionManager transitionMgr = new TransitionManager(helper);
                      TransitionResults results = transitionMgr.handleAll();
                      if (!results.isEmpty()) {
                         AWorkbench.popup(String.format("Transition Error %s", results.toString()));
                      }
-                     transitionMgr.getTransaction().execute();
+                     changes.execute();
                      smaWorkflowSection.getEditor().refreshPages();
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

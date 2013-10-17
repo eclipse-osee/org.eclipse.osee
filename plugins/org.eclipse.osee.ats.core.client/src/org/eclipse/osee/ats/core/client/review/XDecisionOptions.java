@@ -14,11 +14,13 @@ import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionResult;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -32,6 +34,10 @@ public class XDecisionOptions {
 
    private final WeakReference<AbstractWorkflowArtifact> smaRef;
    private final IAttributeType attributeType;
+
+   public XDecisionOptions(IAtsWorkItem workItem) throws OseeCoreException {
+      this((AbstractWorkflowArtifact) AtsClientService.get().getArtifact(workItem));
+   }
 
    public XDecisionOptions(AbstractWorkflowArtifact sma) {
       this.smaRef = new WeakReference<AbstractWorkflowArtifact>(sma);

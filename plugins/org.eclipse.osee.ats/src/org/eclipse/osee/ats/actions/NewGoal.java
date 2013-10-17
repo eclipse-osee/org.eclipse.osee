@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.actions;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -42,8 +43,9 @@ public class NewGoal extends AbstractAtsAction {
          }
       }
       if (Strings.isValid(title)) {
-         GoalArtifact goalArt = GoalManager.createGoal(title);
-         goalArt.persist(getClass().getSimpleName());
+         AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+         GoalArtifact goalArt = GoalManager.createGoal(title, changes);
+         changes.execute();
          SMAEditor.editArtifact(goalArt);
       }
    }

@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
@@ -31,9 +32,9 @@ import org.eclipse.osee.ats.core.client.review.role.Role;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
@@ -300,14 +301,13 @@ public class AtsNotificationManagerTest {
 
       // verify no notification events yet
       Assert.assertEquals(0, mgr.getNotificationEvents().size());
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       Result result =
          AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsClientService.get().getUserAdmin().getCurrentUser(),
-            transaction, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
+            changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Completed.getName());
-      transaction.execute();
+      changes.execute();
 
       // verify notification to originator
       Assert.assertEquals(1, mgr.getNotificationEvents().size());
@@ -343,14 +343,13 @@ public class AtsNotificationManagerTest {
 
       // verify no notification events yet
       Assert.assertEquals(0, mgr.getNotificationEvents().size());
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       Result result =
          AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled, AtsClientService.get().getUserAdmin().getCurrentUser(),
-            transaction, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
+            changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Cancelled.getName());
-      transaction.execute();
+      changes.execute();
 
       // verify notification to originator
       Assert.assertEquals(1, mgr.getNotificationEvents().size());
@@ -383,19 +382,17 @@ public class AtsNotificationManagerTest {
       mgr.clear();
 
       // create another action
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       ActionArtifact actionArt =
          ActionManager.createAction(null, getClass().getSimpleName() + " - testSubscribedTeam", "description",
             ChangeType.Improvement, "1", false, null, Arrays.asList(AtsTestUtil.getTestAi()), new Date(),
-            AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
+            AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
 
       // verify notification to subscriber
       Assert.assertEquals(1, mgr.getNotificationEvents().size());
       Assert.assertTrue(mgr.getNotificationEvents().iterator().next().getDescription().startsWith(
          "You have subscribed for email notification for Team "));
-
-      transaction.execute();
+      changes.execute();
 
       SkynetTransaction transaction2 =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
@@ -436,32 +433,30 @@ public class AtsNotificationManagerTest {
       mgr.clear();
 
       // create another action
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       ActionArtifact actionArt =
          ActionManager.createAction(null, getClass().getSimpleName() + " - testSubscribedAI", "description",
             ChangeType.Improvement, "1", false, null, Arrays.asList(AtsTestUtil.getTestAi()), new Date(),
-            AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
+            AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
 
       // verify notification to subscriber
       Assert.assertEquals(1, mgr.getNotificationEvents().size());
       Assert.assertTrue(mgr.getNotificationEvents().iterator().next().getDescription().startsWith(
          "You have subscribed for email notification for Actionable Item "));
+      changes.execute();
 
-      transaction.execute();
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranchToken(), getClass().getSimpleName());
 
-      SkynetTransaction transaction2 =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
-
-      actionArt.getTeams().iterator().next().deleteAndPersist(transaction2);
-      actionArt.deleteAndPersist(transaction2);
+      actionArt.getTeams().iterator().next().deleteAndPersist(transaction);
+      actionArt.deleteAndPersist(transaction);
 
       User user = UserManager.getUser(DemoUsers.Alex_Kay);
       user.setSoleAttributeValue(CoreAttributeTypes.Email, "");
       user.deleteRelations(AtsRelationTypes.SubscribedUser_Artifact);
-      user.persist(transaction2);
+      user.persist(transaction);
 
-      transaction2.execute();
+      transaction.execute();
 
       AtsTestUtil.cleanup();
    }
@@ -491,13 +486,12 @@ public class AtsNotificationManagerTest {
 
       mgr.clear();
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       Result result =
          AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsClientService.get().getUserAdmin().getCurrentUser(),
-            transaction, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
+            changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
-      transaction.execute();
+      changes.execute();
 
       // verify notification to workflow subscriber
       Assert.assertEquals(1, mgr.getNotificationEvents().size());
@@ -531,10 +525,10 @@ public class AtsNotificationManagerTest {
       kay.setSoleAttributeValue(CoreAttributeTypes.Email, "kay.jones@boeing.com");
       kay.persist(getClass().getSimpleName() + "- set kay email address");
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+
       PeerToPeerReviewArtifact peerArt =
-         AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None, AtsTestUtilState.Analyze, transaction);
+         AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None, AtsTestUtilState.Analyze, changes);
       List<UserRole> roles = new ArrayList<UserRole>();
       UserRole author = new UserRole(Role.Author, AtsClientService.get().getUserAdmin().getUserFromOseeUser(alex));
       roles.add(author);
@@ -548,38 +542,32 @@ public class AtsNotificationManagerTest {
 
       Result result =
          PeerToPeerReviewManager.transitionTo(peerArt, PeerToPeerReviewState.Review, roles, null,
-            AtsClientService.get().getUserAdmin().getCurrentUser(), false, transaction);
+            AtsClientService.get().getUserAdmin().getCurrentUser(), false, changes);
       Assert.assertEquals(Result.TrueResult, result);
-      peerArt.persist(transaction);
-      transaction.execute();
+      changes.execute();
       mgr.clear();
 
       peerArt.getCurrentStateName();
 
       // complete reviewer1 role
-      transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
-            getClass().getSimpleName() + " - update reviewer 1");
+      changes.reset(getClass().getSimpleName() + " - update reviewer 1");
       UserRoleManager roleMgr = new UserRoleManager(peerArt);
       reviewer1.setHoursSpent(1.0);
       reviewer1.setCompleted(true);
       roleMgr.addOrUpdateUserRole(reviewer1, peerArt);
-      roleMgr.saveToArtifact(transaction);
-      transaction.execute();
+      roleMgr.saveToArtifact(changes);
+      changes.execute();
 
       // no notifications sent
       Assert.assertEquals(0, mgr.getNotificationEvents().size());
 
       // complete reviewer2 role
-      transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
-            getClass().getSimpleName() + " - update reviewer 2");
+      changes.reset(getClass().getSimpleName() + " - update reviewer 2");
       reviewer2.setHoursSpent(1.0);
       reviewer2.setCompleted(true);
       roleMgr.addOrUpdateUserRole(reviewer2, peerArt);
-      roleMgr.saveToArtifact(transaction);
-      peerArt.persist(transaction);
-      transaction.execute();
+      roleMgr.saveToArtifact(changes);
+      changes.execute();
 
       // notification sent to author/moderator
       Assert.assertEquals(1, mgr.getNotificationEvents().size());

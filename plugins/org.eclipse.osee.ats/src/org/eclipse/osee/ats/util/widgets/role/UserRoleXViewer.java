@@ -23,6 +23,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.EnumStringSingleSelectionDialog;
 import org.eclipse.osee.ats.core.client.review.role.Role;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -30,8 +31,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -261,15 +260,13 @@ public class UserRoleXViewer extends XViewer {
    }
 
    public boolean executeTransaction(Collection<UserRole> userRoles) throws OseeCoreException {
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(xUserRoleViewer.getReviewArt().getArtifact().getBranch(),
-            "Modify Review Roles");
+      AtsChangeSet changes = new AtsChangeSet("Modify Review Roles");
       for (UserRole userRole : userRoles) {
          xUserRoleViewer.getUserRoleMgr().addOrUpdateUserRole(userRole, xUserRoleViewer.getReviewArt());
          update(userRole, null);
       }
-      xUserRoleViewer.getUserRoleMgr().saveToArtifact(transaction);
-      transaction.execute();
+      xUserRoleViewer.getUserRoleMgr().saveToArtifact(changes);
+      changes.execute();
       xUserRoleViewer.refresh();
       xUserRoleViewer.notifyXModifiedListeners();
       return true;

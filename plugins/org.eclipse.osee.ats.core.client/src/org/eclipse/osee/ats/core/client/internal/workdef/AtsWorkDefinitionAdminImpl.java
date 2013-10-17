@@ -469,4 +469,9 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
    public List<Artifact> get(Collection<? extends IAtsWorkItem> workItems, Class<Artifact> clazz) throws OseeCoreException {
       return workItemArtifactProvider.get(workItems, clazz);
    }
+
+   @Override
+   public IAtsStateDefinition getStateDefinitionByName(IAtsWorkItem workItem, String stateName) throws OseeCoreException {
+      return getWorkDefinition(workItem).getWorkDefinition().getStateByName(stateName);
+   }
 }

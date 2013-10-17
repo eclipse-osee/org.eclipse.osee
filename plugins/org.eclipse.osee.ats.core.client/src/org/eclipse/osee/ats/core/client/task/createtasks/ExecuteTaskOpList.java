@@ -14,19 +14,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Shawn F. Cook
  */
 public class ExecuteTaskOpList {
-   public Map<TaskMetadata, IStatus> execute(List<TaskMetadata> metadatas, Map<TaskEnum, ITaskOperation> ops, SkynetTransaction transaction) throws OseeCoreException {
+   public Map<TaskMetadata, IStatus> execute(List<TaskMetadata> metadatas, Map<TaskEnum, ITaskOperation> ops, IAtsChangeSet changes) throws OseeCoreException {
       Map<TaskMetadata, IStatus> statusMap = new HashMap<TaskMetadata, IStatus>();
 
       for (TaskMetadata metadata : metadatas) {
          ITaskOperation operation = ops.get(metadata.getTaskEnum());
-         IStatus status = operation.execute(metadata, transaction);
+         IStatus status = operation.execute(metadata, changes);
          statusMap.put(metadata, status);
       }
 

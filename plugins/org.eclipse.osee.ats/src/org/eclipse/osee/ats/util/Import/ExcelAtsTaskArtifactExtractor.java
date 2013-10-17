@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
@@ -40,7 +41,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -53,13 +53,13 @@ public class ExcelAtsTaskArtifactExtractor {
 
    private final AbstractWorkflowArtifact sma;
    private final boolean emailPOCs;
-   private final SkynetTransaction transaction;
+   private final IAtsChangeSet changes;
 
    private IProgressMonitor monitor;
 
-   public ExcelAtsTaskArtifactExtractor(TeamWorkFlowArtifact artifact, boolean emailPOCs, SkynetTransaction transaction) {
+   public ExcelAtsTaskArtifactExtractor(TeamWorkFlowArtifact artifact, boolean emailPOCs, IAtsChangeSet changes) {
       this.emailPOCs = emailPOCs;
-      this.transaction = transaction;
+      this.changes = changes;
       this.sma = artifact;
    }
 
@@ -70,8 +70,8 @@ public class ExcelAtsTaskArtifactExtractor {
          if (monitor == null) {
             monitor = new NullProgressMonitor();
          }
-         xmlReader.setContentHandler(new ExcelSaxHandler(
-            new InternalRowProcessor(monitor, transaction, sma, emailPOCs), true));
+         xmlReader.setContentHandler(new ExcelSaxHandler(new InternalRowProcessor(monitor, changes, sma, emailPOCs),
+            true));
          xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
@@ -103,14 +103,14 @@ public class ExcelAtsTaskArtifactExtractor {
       private int rowNum;
       private final IProgressMonitor monitor;
       private final AbstractWorkflowArtifact sma;
-      private final SkynetTransaction transaction;
+      private final IAtsChangeSet changes;
       private final boolean emailPOCs;
       private final Date createdDate;
       private final IAtsUser createdBy;
 
-      protected InternalRowProcessor(IProgressMonitor monitor, SkynetTransaction transaction, AbstractWorkflowArtifact sma, boolean emailPOCs) throws OseeCoreException {
+      protected InternalRowProcessor(IProgressMonitor monitor, IAtsChangeSet changes, AbstractWorkflowArtifact sma, boolean emailPOCs) throws OseeCoreException {
          this.monitor = monitor;
-         this.transaction = transaction;
+         this.changes = changes;
          this.emailPOCs = emailPOCs;
          this.sma = sma;
          createdDate = new Date();
@@ -188,13 +188,13 @@ public class ExcelAtsTaskArtifactExtractor {
          }
          AtsUtilCore.setEmailEnabled(true);
          if (taskArt.isCompleted()) {
-            Result result = TaskManager.transitionToCompleted(taskArt, 0.0, 0, transaction);
+            Result result = TaskManager.transitionToCompleted(taskArt, 0.0, 0, changes);
             if (result.isFalse()) {
                AWorkbench.popup(result);
             }
          }
          // always persist
-         taskArt.persist(transaction);
+         changes.add(taskArt);
          if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {
             AtsNotificationManager.notify(sma, AtsNotifyType.Assigned);
          }

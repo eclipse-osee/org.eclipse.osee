@@ -43,4 +43,10 @@ public interface IAtsWorkItem extends IAtsObject, HasWorkData, HasAssignees, Has
 
    IAtsLogItem getStateStartedData(IStateToken state) throws OseeCoreException;
 
+   boolean isTask();
+
+   boolean isTeamWorkflow();
+
+   String getTypeName();
+
 }

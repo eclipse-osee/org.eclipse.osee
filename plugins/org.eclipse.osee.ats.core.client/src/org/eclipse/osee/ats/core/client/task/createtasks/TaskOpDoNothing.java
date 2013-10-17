@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.client.task.createtasks;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 
 /**
  * @author Shawn F. Cook
@@ -25,7 +25,7 @@ public class TaskOpDoNothing extends AbstractTaskOp {
    }
 
    @Override
-   public IStatus execute(TaskMetadata metadata, SkynetTransaction transaction) {
+   public IStatus execute(TaskMetadata metadata, IAtsChangeSet changes) {
       String taskTitle = taskTitleProvider.getTaskTitle(metadata);
       String changedArt = "[no changed artifact]";
       return generateGenericOkStatus(metadata.getTaskEnum(), taskTitle, metadata.getParentTeamWf().toStringWithId(),

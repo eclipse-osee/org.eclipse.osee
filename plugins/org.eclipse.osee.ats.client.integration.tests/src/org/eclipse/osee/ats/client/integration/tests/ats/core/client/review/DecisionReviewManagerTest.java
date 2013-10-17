@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
@@ -25,15 +24,14 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.mocks.MockDecisionReviewOption;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
@@ -66,14 +64,14 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
          Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser().getUserId())));
 
       // create and transition decision review
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamWf.getName();
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReviewAndTransitionToDecision(teamWf, reviewTitle, "my description",
             AtsTestUtil.getAnalyzeStateDef().getName(), ReviewBlockType.Transition, options,
-            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), transaction);
-      transaction.execute();
+            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), new Date(),
+            AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+      changes.execute();
 
       Assert.assertNotNull(decRev);
       Assert.assertFalse(
@@ -95,15 +93,14 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
          Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser().getUserId())));
 
       // create and transition decision review
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamWf.getName();
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReviewAndTransitionToDecision(teamWf, reviewTitle, "my description",
             AtsTestUtil.getAnalyzeStateDef().getName(), ReviewBlockType.Transition, options,
             Arrays.asList(AtsClientService.get().getUserAdmin().getUserFromToken(SystemUser.UnAssigned)), new Date(),
-            AtsClientService.get().getUserAdmin().getCurrentUser(), transaction);
-      transaction.execute();
+            AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+      changes.execute();
 
       Assert.assertNotNull(decRev);
       Assert.assertEquals(reviewTitle, decRev.getName());
@@ -124,7 +121,8 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReview(teamWf, ReviewBlockType.Commit, reviewTitle,
             TeamState.Implement.getName(), "description", DecisionReviewManager.getDefaultDecisionReviewOptions(),
-            Arrays.asList(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay)), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
+            Arrays.asList(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay)), new Date(),
+            AtsClientService.get().getUserAdmin().getCurrentUser());
 
       Assert.assertNotNull(decRev);
       Assert.assertEquals(reviewTitle, decRev.getName());
@@ -143,7 +141,8 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReview(teamWf, ReviewBlockType.Commit, reviewTitle,
             TeamState.Implement.getName(), "description", DecisionReviewManager.getDefaultDecisionReviewOptions(),
-            Arrays.asList(AtsClientService.get().getUserAdmin().getUserFromToken(SystemUser.UnAssigned)), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
+            Arrays.asList(AtsClientService.get().getUserAdmin().getUserFromToken(SystemUser.UnAssigned)), new Date(),
+            AtsClientService.get().getUserAdmin().getCurrentUser());
 
       Assert.assertNotNull(decRev);
       Assert.assertEquals(reviewTitle, decRev.getName());

@@ -20,7 +20,7 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({TransitionManagerTest.class, StateManagerTest.class})
+@Suite.SuiteClasses({TransitionManagerTest.class, StateManagerTest.class, TransitionListenersTest.class})
 public class AtsCoreClient_Transition_Suite {
    @BeforeClass
    public static void setUp() throws Exception {

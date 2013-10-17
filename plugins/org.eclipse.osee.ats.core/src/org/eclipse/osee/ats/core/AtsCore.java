@@ -11,9 +11,13 @@
 package org.eclipse.osee.ats.core;
 
 import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
+import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
+import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
@@ -43,6 +47,8 @@ public class AtsCore {
    private static IAtsUserService userService;
    private static Boolean started = null;
    private static IAtsWorkItemServiceProvider workItemServiceProvider;
+   private static IAtsBranchServiceProvider branchServiceProvider;
+   private static IAtsReviewServiceProvider reviewServiceProvider;
 
    public void setAtsUserService(IAtsUserService userService) {
       AtsCore.userService = userService;
@@ -64,12 +70,22 @@ public class AtsCore {
       AtsCore.attrResolver = attrResolver;
    }
 
+   public static void setAtsBranchServiceProvider(IAtsBranchServiceProvider branchServiceProvider) {
+      AtsCore.branchServiceProvider = branchServiceProvider;
+   }
+
+   public static void setAtsReviewServiceProvider(IAtsReviewServiceProvider reviewServiceProvider) {
+      AtsCore.reviewServiceProvider = reviewServiceProvider;
+   }
+
    public void start() throws OseeCoreException {
       Conditions.checkNotNull(userService, "IAtsUserService");
       Conditions.checkNotNull(workDefService, "IAtsWorkDefinitionService");
       Conditions.checkNotNull(workItemServiceProvider, "IAtsWorkItemServiceProvider");
       Conditions.checkNotNull(attrResolver, "IAttributeResolver");
       Conditions.checkNotNull(notifyService, "IAtsNotificationService");
+      Conditions.checkNotNull(branchServiceProvider, "IAtsBranchServiceProvider");
+      Conditions.checkNotNull(reviewServiceProvider, "IAtsReviewServiceProvider");
       started = true;
    }
 
@@ -127,6 +143,14 @@ public class AtsCore {
 
    public static IAtsConfig getAtsConfig() throws OseeStateException {
       return AtsConfigUtility.getAtsConfigProvider().getAtsConfig();
+   }
+
+   public static IAtsBranchService getBranchService() throws OseeCoreException {
+      return branchServiceProvider.getBranchService();
+   }
+
+   public static IAtsReviewService getReviewService() throws OseeCoreException {
+      return reviewServiceProvider.getReviewService();
    }
 
 }

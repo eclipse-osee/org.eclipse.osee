@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.ActionableItems;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
@@ -34,14 +34,14 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 public class ActionableItemArtifactWriter extends AbstractAtsArtifactWriter<IAtsActionableItem> {
 
    @Override
-   public Artifact store(IAtsActionableItem ai, AtsArtifactConfigCache cache, SkynetTransaction transaction) throws OseeCoreException {
-      Artifact artifact = getArtifactOrCreate(cache, AtsArtifactTypes.ActionableItem, ai, transaction);
-      store(ai, artifact, cache, transaction);
+   public Artifact store(IAtsActionableItem ai, AtsArtifactConfigCache cache, IAtsChangeSet changes) throws OseeCoreException {
+      Artifact artifact = getArtifactOrCreate(cache, AtsArtifactTypes.ActionableItem, ai, changes);
+      store(ai, artifact, cache, changes);
       return artifact;
    }
 
    @Override
-   public Artifact store(IAtsActionableItem ai, Artifact artifact, AtsArtifactConfigCache cache, SkynetTransaction transaction) throws OseeCoreException {
+   public Artifact store(IAtsActionableItem ai, Artifact artifact, AtsArtifactConfigCache cache, IAtsChangeSet changes) throws OseeCoreException {
       artifact.setName(ai.getName());
       artifact.setSoleAttributeValue(AtsAttributeTypes.Active, ai.isActive());
       boolean actionable = artifact.getSoleAttributeValue(AtsAttributeTypes.Actionable, false);
@@ -59,7 +59,7 @@ public class ActionableItemArtifactWriter extends AbstractAtsArtifactWriter<IAts
             artifact)) {
             artifact.deleteRelations(AtsRelationTypes.TeamActionableItem_Team);
             artifact.addRelation(AtsRelationTypes.TeamActionableItem_Team, teamDefArt);
-            teamDefArt.persist(transaction);
+            changes.add(teamDefArt);
          }
       }
 
@@ -104,7 +104,7 @@ public class ActionableItemArtifactWriter extends AbstractAtsArtifactWriter<IAts
          // if parent is null, add to top team definition
          Artifact topAIArt = cache.getSoleArtifact(ActionableItems.getTopActionableItem());
          topAIArt.addChild(artifact);
-         topAIArt.persist(transaction);
+         changes.add(topAIArt);
       } else {
          // else reset parent if necessary
          Artifact parentAiArt = artifact.getParent();
@@ -113,13 +113,13 @@ public class ActionableItemArtifactWriter extends AbstractAtsArtifactWriter<IAts
                if (!parentAiArt.getGuid().equals(ai.getParentActionableItem().getGuid())) {
                   Artifact newParentAIArt = cache.getSoleArtifact(ai);
                   newParentAIArt.addChild(artifact);
-                  newParentAIArt.persist(transaction);
-                  parentAiArt.persist(transaction);
+                  changes.add(newParentAIArt);
+                  changes.add(parentAiArt);
                }
             }
          }
       }
-      artifact.persist(transaction);
+      changes.add(artifact);
       cache.cache(ai);
       return artifact;
    }

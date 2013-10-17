@@ -20,13 +20,11 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -143,12 +141,10 @@ public class TaskManagerTest extends TaskManager {
       AtsTestUtil.validateArtifactCache();
 
       // transition to Completed
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
-            getClass().getSimpleName() + " testTransitionToCompletedThenInWork() 1");
-      Result result = TaskManager.transitionToCompleted(taskArt, 0.0, 3, transaction);
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName() + " testTransitionToCompletedThenInWork() 1");
+      Result result = TaskManager.transitionToCompleted(taskArt, 0.0, 3, changes);
       Assert.assertEquals(Result.TrueResult, result);
-      transaction.execute();
+      changes.execute();
 
       Assert.assertEquals(TaskStates.Completed.getName(), taskArt.getCurrentStateName());
       Assert.assertEquals(3.0, HoursSpentUtil.getHoursSpentTotal(taskArt), 0.0);
@@ -158,14 +154,12 @@ public class TaskManagerTest extends TaskManager {
       AtsTestUtil.validateArtifactCache();
 
       // transition back to InWork
-      transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
-            getClass().getSimpleName() + " testTransitionToCompletedThenInWork() 2");
+      changes = new AtsChangeSet(getClass().getSimpleName() + " testTransitionToCompletedThenInWork() 2");
       result =
          TaskManager.transitionToInWork(taskArt, AtsClientService.get().getUserAdmin().getCurrentUser(), 45, .5,
-            transaction);
+            changes);
       Assert.assertEquals(Result.TrueResult, result);
-      transaction.execute();
+      changes.execute();
       Assert.assertEquals(TaskStates.InWork.getName(), taskArt.getCurrentStateName());
       Assert.assertEquals(3.5, HoursSpentUtil.getHoursSpentTotal(taskArt), 0.0);
       Assert.assertEquals("Joe Smith", taskArt.getStateMgr().getAssigneesStr());

@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.client.integration.tests.ats.access;
 
 import static java.lang.Thread.sleep;
 import java.util.Arrays;
-import org.junit.Assert;
 import org.eclipse.osee.ats.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.client.demo.DemoActionableItems;
@@ -34,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
@@ -117,9 +117,6 @@ public class AtsBranchAccessManagerTest {
     * {@link org.eclipse.osee.ats.access.AtsBranchAccessManager#getContextId(org.eclipse.osee.framework.skynet.core.artifact.Artifact)}
     * {@link org.eclipse.osee.ats.access.AtsBranchAccessManager#getEventFilters()}.
     * {@link org.eclipse.osee.ats.access.AtsBranchAccessManager#handleArtifactEvent(org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent, org.eclipse.osee.framework.skynet.core.event.model.Sender)}
-    * 
-    * @throws OseeCoreException
-    * @throws InterruptedException
     */
    @Test
    public void testGetContextIdBranch() throws Exception {

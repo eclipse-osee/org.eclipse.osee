@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.core.client.task.createtasks;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Shawn F. Cook
@@ -20,5 +20,5 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 public interface ITaskOperation {
    public final static String AUTO_GENERATED_STATIC_ID = "taskAutoGen";
 
-   IStatus execute(TaskMetadata metadata, SkynetTransaction transaction) throws OseeCoreException;
+   IStatus execute(TaskMetadata metadata, IAtsChangeSet changes) throws OseeCoreException;
 }

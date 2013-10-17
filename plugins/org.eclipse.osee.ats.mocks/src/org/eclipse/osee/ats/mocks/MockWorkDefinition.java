@@ -134,4 +134,9 @@ public class MockWorkDefinition implements IAtsWorkDefinition {
       return null;
    }
 
+   @Override
+   public IAtsStateDefinition getStateDefinitionByName(String stateName) {
+      return getStateByName(stateName);
+   }
+
 }

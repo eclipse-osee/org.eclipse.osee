@@ -12,12 +12,13 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.Arrays;
 import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
@@ -96,22 +97,22 @@ public class SMAPromptChangeStatus {
       return Result.FalseResult;
    }
 
-   public static void performChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas, String selectedOption, double hours, int percent, boolean splitHours, boolean persist) throws OseeCoreException {
+   public static void performChangeStatus(Collection<? extends IAtsWorkItem> workItems, String selectedOption, double hours, int percent, boolean splitHours, boolean persist) throws OseeCoreException {
       if (splitHours) {
-         hours = hours / awas.size();
+         hours = hours / workItems.size();
       }
       SkynetTransaction transaction = null;
       if (persist) {
          transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Status");
       }
-      for (AbstractWorkflowArtifact awa : awas) {
-         if (awa.getStateMgr().isUnAssigned()) {
-            awa.getStateMgr().removeAssignee(AtsCoreUsers.UNASSIGNED_USER);
-            awa.getStateMgr().addAssignee(AtsClientService.get().getUserAdmin().getCurrentUser());
+      for (IAtsWorkItem workItem : workItems) {
+         if (workItem.getStateMgr().isUnAssigned()) {
+            workItem.getStateMgr().removeAssignee(AtsCoreUsers.UNASSIGNED_USER);
+            workItem.getStateMgr().addAssignee(AtsClientService.get().getUserAdmin().getCurrentUser());
          }
-         awa.getStateMgr().updateMetrics(awa.getStateDefinition(), hours, percent, true);
+         workItem.getStateMgr().updateMetrics(workItem.getStateDefinition(), hours, percent, true);
          if (persist) {
-            awa.persist(transaction);
+            AtsClientService.get().getArtifact(workItem).persist(transaction);
          }
       }
       if (persist) {

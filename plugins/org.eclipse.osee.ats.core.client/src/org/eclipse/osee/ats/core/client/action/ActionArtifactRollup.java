@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -31,11 +30,9 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 public class ActionArtifactRollup {
 
    private final ActionArtifact action;
-   private final SkynetTransaction transaction;
 
-   public ActionArtifactRollup(ActionArtifact action, SkynetTransaction transaction) throws OseeArgumentException {
+   public ActionArtifactRollup(ActionArtifact action) throws OseeArgumentException {
       this.action = action;
-      this.transaction = transaction;
       if (!action.isOfType(AtsArtifactTypes.Action)) {
          throw new OseeArgumentException("Artifact must be an Action instead of [%s]", action.getArtifactTypeName());
       }
@@ -48,7 +45,6 @@ public class ActionArtifactRollup {
       resetTitleOffChildren();
       resetValidationOffChildren();
       resetDescriptionOffChildren();
-      action.persist(transaction);
    }
 
    public static void resetChangeTypeOffChildren(Artifact actionArt) throws OseeCoreException {

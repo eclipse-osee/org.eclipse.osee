@@ -115,4 +115,9 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
       }
       return attrs;
    }
+
+   @Override
+   public void deleteSoleAttribute(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
+      AtsClientService.get().getArtifact(workItem).deleteSoleAttribute(attributeType);
+   }
 }

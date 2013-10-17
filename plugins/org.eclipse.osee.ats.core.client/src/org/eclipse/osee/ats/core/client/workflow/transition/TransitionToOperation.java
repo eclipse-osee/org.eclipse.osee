@@ -12,15 +12,17 @@ package org.eclipse.osee.ats.core.client.workflow.transition;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionResult;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Donald G. Dunne
@@ -38,22 +40,22 @@ public class TransitionToOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       try {
-         SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), helper.getName() + ".preSave");
-         for (AbstractWorkflowArtifact awa : helper.getAwas()) {
+         AtsChangeSet changes = new AtsChangeSet(helper.getName() + ".preSave");
+         for (IAtsWorkItem workItem : helper.getWorkItems()) {
+            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) workItem;
             if (awa.isDirty()) {
-               awa.persist(transaction);
+               changes.add(awa);
             }
          }
-         transaction.execute();
+         changes.execute();
 
-         transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), helper.getName());
-         TransitionManager transitionMgr = new TransitionManager(helper, transaction);
+         changes.reset(helper.getName());
+         TransitionManager transitionMgr = new TransitionManager(helper);
          results = transitionMgr.handleAll();
          if (results.isCancelled()) {
             return;
          } else if (results.isEmpty()) {
-            transaction.execute();
+            changes.execute();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

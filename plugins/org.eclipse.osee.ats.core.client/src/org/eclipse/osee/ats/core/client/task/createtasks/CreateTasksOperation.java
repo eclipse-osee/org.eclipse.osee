@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
@@ -42,7 +43,6 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Shawn F. Cook
@@ -54,10 +54,10 @@ public class CreateTasksOperation extends AbstractOperation {
    private final TeamWorkFlowArtifact reqTeamWf;
    private final boolean reportOnly;
    private final XResultData resultData;
-   private final SkynetTransaction transaction;
    private final ITaskTitleProvider taskTitleProvider;
+   private final IAtsChangeSet changes;
 
-   public CreateTasksOperation(IAtsVersion destinationVersion, IAtsActionableItem actionableItemArt, ChangeData changeData, TeamWorkFlowArtifact reqTeamWf, boolean reportOnly, XResultData resultData, SkynetTransaction transaction, OperationLogger logger, ITaskTitleProvider taskTitleProvider) {
+   public CreateTasksOperation(IAtsVersion destinationVersion, IAtsActionableItem actionableItemArt, ChangeData changeData, TeamWorkFlowArtifact reqTeamWf, boolean reportOnly, XResultData resultData, IAtsChangeSet changes, OperationLogger logger, ITaskTitleProvider taskTitleProvider) {
       super("Create Tasks Operation for [" + reqTeamWf.getName() + "]", Activator.PLUGIN_ID, logger);
       this.destVersion = destinationVersion;
       this.actionableItemArt = actionableItemArt;
@@ -65,7 +65,7 @@ public class CreateTasksOperation extends AbstractOperation {
       this.reqTeamWf = reqTeamWf;
       this.reportOnly = reportOnly;
       this.resultData = resultData;
-      this.transaction = transaction;
+      this.changes = changes;
       this.taskTitleProvider = taskTitleProvider;
    }
 
@@ -105,7 +105,7 @@ public class CreateTasksOperation extends AbstractOperation {
 
       // Ensure the destination workflow exists. - destTeamWf is only necessary if NOT reportOnly
       TeamWorkFlowArtifact destTeamWf =
-         ensureDestTeamWfExists(reqTeamWf, actionableItemArt, destVersion, transaction, reportOnly);
+         ensureDestTeamWfExists(reqTeamWf, actionableItemArt, destVersion, changes, reportOnly);
       if (destTeamWf == null) {
          String msg = "CreateTasksOperation: Failed to create new team workflow for [" + reqTeamWf.getName() + "]";
          OseeLog.log(Activator.class, Level.SEVERE, msg);
@@ -117,7 +117,7 @@ public class CreateTasksOperation extends AbstractOperation {
 
       // Execute taskOps
       ExecuteTaskOpList executeTaskOpList = new ExecuteTaskOpList();
-      Map<TaskMetadata, IStatus> statusMap = executeTaskOpList.execute(metadatas, ops, transaction);
+      Map<TaskMetadata, IStatus> statusMap = executeTaskOpList.execute(metadatas, ops, changes);
 
       // Populate status report
       resultData.addRaw("Status report for creating tasks for workflow:" + reqTeamWf.toStringWithId());
@@ -176,10 +176,8 @@ public class CreateTasksOperation extends AbstractOperation {
    /**
     * Get the team workflow related to the teamWf parameter via the 'derived from' relationship that is also targeted
     * for the version parameter. If such a workflow does not exist then return null.
-    * 
-    * @throws OseeCoreException
     */
-   private TeamWorkFlowArtifact ensureDestTeamWfExists(TeamWorkFlowArtifact reqTeamWf, IAtsActionableItem actionableItemArt, IAtsVersion destVersion, SkynetTransaction transaction, boolean reportOnly) throws OseeCoreException {
+   private TeamWorkFlowArtifact ensureDestTeamWfExists(TeamWorkFlowArtifact reqTeamWf, IAtsActionableItem actionableItemArt, IAtsVersion destVersion, IAtsChangeSet changes, boolean reportOnly) throws OseeCoreException {
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
 
@@ -192,8 +190,8 @@ public class CreateTasksOperation extends AbstractOperation {
 
          destTeamWf =
             ActionManager.createTeamWorkflow(actionArt, teamDef, Collections.singleton(actionableItemArt),
-               Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), transaction, createdDate, createdBy, null,
-               CreateTeamOption.Duplicate_If_Exists);
+               Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), changes, createdDate, createdBy,
+               null, CreateTeamOption.Duplicate_If_Exists);
          if (destTeamWf != null) {
             AtsVersionService.get().setTargetedVersionAndStore(destTeamWf, destVersion);
          }

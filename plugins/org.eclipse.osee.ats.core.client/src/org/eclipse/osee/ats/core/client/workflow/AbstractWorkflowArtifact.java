@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -50,11 +51,11 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.log.ArtifactLog;
 import org.eclipse.osee.ats.core.client.workflow.note.ArtifactNote;
 import org.eclipse.osee.ats.core.client.workflow.note.AtsNote;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -347,6 +348,21 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return Result.FalseResult;
    }
 
+   public void saveSMA(IAtsChangeSet changes) {
+      try {
+         Set<Artifact> artifacts = new HashSet<Artifact>();
+         getSmaArtifactsOneLevel(this, artifacts);
+         for (Artifact artifact : artifacts) {
+            if (artifact instanceof AbstractWorkflowArtifact) {
+               ((AbstractWorkflowArtifact) artifact).getStateMgr().writeToStore();
+            }
+            changes.add(artifact);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't save artifact " + getAtsId(), ex);
+      }
+   }
+
    public void saveSMA(SkynetTransaction transaction) {
       try {
          Set<Artifact> artifacts = new HashSet<Artifact>();
@@ -387,7 +403,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * to transition.
     */
    @SuppressWarnings("unused")
-   public void transitioned(IAtsStateDefinition fromState, IAtsStateDefinition toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(IAtsStateDefinition fromState, IAtsStateDefinition toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
       // provided for subclass implementation
    }
 
@@ -701,10 +717,12 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return stateMgr;
    }
 
+   @Override
    public boolean isTeamWorkflow() {
       return this.isOfType(AtsArtifactTypes.TeamWorkflow);
    }
 
+   @Override
    public boolean isTask() {
       return this.isOfType(AtsArtifactTypes.Task);
    }
@@ -786,6 +804,11 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public void setAtsId(String atsId) throws OseeCoreException {
       setSoleAttributeFromString(AtsAttributeTypes.AtsId, atsId);
+   }
+
+   @Override
+   public String getTypeName() {
+      return getArtifactTypeName();
    }
 
 }

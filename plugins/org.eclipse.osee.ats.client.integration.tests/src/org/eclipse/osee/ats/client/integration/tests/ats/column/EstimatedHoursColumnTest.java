@@ -19,12 +19,10 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.EstimatedHoursUtil;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -46,25 +44,26 @@ public class EstimatedHoursColumnTest {
    public void testGetDateAndStrAndColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), EstimatedHoursColumnTest.class.getSimpleName());
+      AtsChangeSet changes = new AtsChangeSet(EstimatedHoursColumnTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt1 =
-         DemoTestUtil.createSimpleAction(EstimatedHoursColumnTest.class.getSimpleName(), transaction);
+         DemoTestUtil.createSimpleAction(EstimatedHoursColumnTest.class.getSimpleName(), changes);
 
       Artifact actionArt = teamArt1.getParentActionArtifact();
       TeamWorkFlowArtifact teamArt2 =
-         DemoTestUtil.addTeamWorkflow(actionArt, EstimatedHoursColumnTest.class.getSimpleName(), transaction);
+         DemoTestUtil.addTeamWorkflow(actionArt, EstimatedHoursColumnTest.class.getSimpleName(), changes);
       TaskArtifact taskArt1 =
-         teamArt1.createNewTask(EstimatedHoursColumnTest.class.getSimpleName(), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
-      taskArt1.persist(transaction);
+         teamArt1.createNewTask(EstimatedHoursColumnTest.class.getSimpleName(), new Date(),
+            AtsClientService.get().getUserAdmin().getCurrentUser());
+      changes.add(taskArt1);
       TaskArtifact taskArt2 =
-         teamArt1.createNewTask(EstimatedHoursColumnTest.class.getSimpleName(), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
-      taskArt2.persist(transaction);
+         teamArt1.createNewTask(EstimatedHoursColumnTest.class.getSimpleName(), new Date(),
+            AtsClientService.get().getUserAdmin().getCurrentUser());
+      changes.add(taskArt2);
       PeerToPeerReviewArtifact peerArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt1, getClass().getSimpleName(),
-            teamArt1.getStateMgr().getCurrentStateName(), transaction);
-      peerArt.persist(transaction);
-      transaction.execute();
+            teamArt1.getStateMgr().getCurrentStateName(), changes);
+      changes.add(peerArt);
+      changes.execute();
 
       Assert.assertEquals(0.0, EstimatedHoursUtil.getEstimatedHours(actionArt), 0);
       Assert.assertEquals(0.0, EstimatedHoursUtil.getEstimatedHours(teamArt1), 0);

@@ -12,10 +12,10 @@ package org.eclipse.osee.ats.core.client.task.createtasks;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Shawn F. Cook
@@ -24,7 +24,7 @@ public class TaskOpModify extends AbstractTaskOp {
    public static final String NO_MATCHING_CHANGE_REPORT_ARTIFACT = "No Match to Change Report Artifact; ";
 
    @Override
-   public IStatus execute(TaskMetadata metadata, SkynetTransaction transaction) throws OseeCoreException {
+   public IStatus execute(TaskMetadata metadata, IAtsChangeSet changes) throws OseeCoreException {
       TaskArtifact taskArt = metadata.getTaskArtifact();
       String currentNoteValue = taskArt.getSoleAttributeValueAsString(AtsAttributeTypes.SmaNote, "");
       if (!currentNoteValue.contains(NO_MATCHING_CHANGE_REPORT_ARTIFACT)) {
@@ -37,7 +37,7 @@ public class TaskOpModify extends AbstractTaskOp {
          }
       }
 
-      taskArt.persist(transaction);
+      changes.add(taskArt);
 
       return generateGenericOkStatus(metadata.getTaskEnum(), taskArt.toStringWithId(),
          metadata.getParentTeamWf().toStringWithId(), "[no changed artifact]");

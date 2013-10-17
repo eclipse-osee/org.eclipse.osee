@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
@@ -29,6 +30,8 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
@@ -45,15 +48,14 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.state.StateTypeAdapter;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.mocks.MockStateDefinition;
 import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
@@ -248,8 +250,7 @@ public class AtsTestUtil {
    private static void reset(String postFixName) throws OseeCoreException {
       AtsBulkLoad.reloadConfig(true);
       AtsTestUtil.postFixName = postFixName;
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
+      AtsChangeSet changes = new AtsChangeSet(AtsTestUtil.class.getSimpleName());
       workDef = new MockWorkDefinition(WORK_DEF_NAME);
 
       analyze = new MockStateDefinition("Analyze");
@@ -344,13 +345,11 @@ public class AtsTestUtil {
       actionArt =
          ActionManager.createAction(null, getTitle("Team WF", postFixName), "description", ChangeType.Improvement, "1",
             false, null, Arrays.asList(testAi), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(),
-            null, transaction);
+            null, changes);
 
       teamArt = actionArt.getFirstTeam();
 
-      teamArt.persist(transaction);
-      actionArt.persist(transaction);
-      transaction.execute();
+      changes.execute();
    }
 
    public static TaskArtifact getOrCreateTaskOffTeamWf1() throws OseeCoreException {
@@ -517,20 +516,20 @@ public class AtsTestUtil {
       TestUtil.sleep(4000);
    }
 
-   public static Result transitionTo(AtsTestUtilState atsTestUtilState, IAtsUser user, SkynetTransaction transaction, TransitionOption... transitionOptions) {
+   public static Result transitionTo(AtsTestUtilState atsTestUtilState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) throws OseeCoreException {
       if (atsTestUtilState == AtsTestUtilState.Analyze && teamArt.isInState(AtsTestUtilState.Analyze)) {
          return Result.TrueResult;
       }
 
       if (atsTestUtilState == AtsTestUtilState.Cancelled) {
-         Result result = transitionToState(teamArt, AtsTestUtilState.Cancelled, user, transaction, transitionOptions);
+         Result result = transitionToState(teamArt, AtsTestUtilState.Cancelled, user, changes, transitionOptions);
          if (result.isFalse()) {
             return result;
          }
          return Result.TrueResult;
       }
 
-      Result result = transitionToState(teamArt, AtsTestUtilState.Implement, user, transaction, transitionOptions);
+      Result result = transitionToState(teamArt, AtsTestUtilState.Implement, user, changes, transitionOptions);
       if (result.isFalse()) {
          return result;
       }
@@ -540,7 +539,7 @@ public class AtsTestUtil {
       }
 
       if (atsTestUtilState == AtsTestUtilState.Completed) {
-         result = transitionToState(teamArt, AtsTestUtilState.Completed, user, transaction, transitionOptions);
+         result = transitionToState(teamArt, AtsTestUtilState.Completed, user, changes, transitionOptions);
          if (result.isFalse()) {
             return result;
          }
@@ -550,11 +549,11 @@ public class AtsTestUtil {
 
    }
 
-   private static Result transitionToState(TeamWorkFlowArtifact teamArt, IStateToken toState, IAtsUser user, SkynetTransaction transaction, TransitionOption... transitionOptions) {
+   private static Result transitionToState(TeamWorkFlowArtifact teamArt, IStateToken toState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) throws OseeCoreException {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamArt), toState.getName(),
-            Arrays.asList(user), null, transitionOptions);
-      TransitionManager transitionMgr = new TransitionManager(helper, transaction);
+            Arrays.asList(user), null, changes, transitionOptions);
+      TransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {
          return Result.TrueResult;
@@ -581,15 +580,14 @@ public class AtsTestUtil {
       }
    }
 
-   public static PeerToPeerReviewArtifact getOrCreatePeerReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState, SkynetTransaction transaction) throws OseeCoreException {
+   public static PeerToPeerReviewArtifact getOrCreatePeerReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState, IAtsChangeSet changes) throws OseeCoreException {
       ensureLoaded();
       try {
          if (peerRevArt == null) {
             peerRevArt =
                PeerToPeerReviewManager.createNewPeerToPeerReview(
                   AtsClientService.get().getWorkDefinitionAdmin().getDefaultPeerToPeerWorkflowDefinitionMatch().getWorkDefinition(),
-                  teamArt, AtsTestUtil.class.getSimpleName() + " Test Peer Review", relatedToState.getName(),
-                  transaction);
+                  teamArt, AtsTestUtil.class.getSimpleName() + " Test Peer Review", relatedToState.getName(), changes);
          }
       } catch (OseeCoreException ex) {
          throw new OseeWrappedException(ex);
@@ -600,15 +598,13 @@ public class AtsTestUtil {
    public static TeamWorkFlowArtifact getTeamWf2() throws OseeCoreException {
       ensureLoaded();
       if (teamArt2 == null) {
-         SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
+         AtsChangeSet changes = new AtsChangeSet(AtsTestUtil.class.getSimpleName());
          actionArt2 =
             ActionManager.createAction(null, getTitle("Team WF2", postFixName), "description", ChangeType.Improvement,
                "1", false, null, Arrays.asList(testAi2), new Date(),
-               AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
-
+               AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
          teamArt2 = actionArt2.getFirstTeam();
-         transaction.execute();
+         changes.execute();
       }
       return teamArt2;
    }
@@ -621,15 +617,13 @@ public class AtsTestUtil {
    public static TeamWorkFlowArtifact getTeamWf3() throws OseeCoreException {
       ensureLoaded();
       if (teamArt3 == null) {
-         SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
+         AtsChangeSet changes = new AtsChangeSet(AtsTestUtil.class.getSimpleName());
          actionArt3 =
             ActionManager.createAction(null, getTitle("Team WF3", postFixName), "description", ChangeType.Improvement,
                "1", false, null, Arrays.asList(testAi3), new Date(),
-               AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
-
+               AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
          teamArt3 = actionArt3.getFirstTeam();
-         transaction.execute();
+         changes.execute();
       }
       return teamArt3;
    }
@@ -642,16 +636,15 @@ public class AtsTestUtil {
    public static TeamWorkFlowArtifact getTeamWf4() throws OseeCoreException {
       ensureLoaded();
       if (teamArt4 == null) {
-         SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsTestUtil.class.getSimpleName());
+         AtsChangeSet changes = new AtsChangeSet(AtsTestUtil.class.getSimpleName());
          actionArt4 =
             ActionManager.createAction(null, getTitle("Team WF4", postFixName), "description", ChangeType.Improvement,
                "1", false, null, Arrays.asList(testAi4), new Date(),
-               AtsClientService.get().getUserAdmin().getCurrentUser(), null, transaction);
+               AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
 
          teamArt4 = actionArt4.getFirstTeam();
          AtsVersionService.get().setTargetedVersion(teamArt4, verArt4);
-         transaction.execute();
+         changes.execute();
       }
       return teamArt4;
    }

@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
@@ -40,7 +41,6 @@ import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
@@ -58,19 +58,17 @@ public class AtsWorkDefinitionImporter {
       return provider;
    }
 
-   public void importAIsAndTeamsToDb(WorkDefinitionSheet sheet, SkynetTransaction transaction) throws OseeCoreException {
+   public void importAIsAndTeamsToDb(WorkDefinitionSheet sheet, IAtsChangeSet changes) throws OseeCoreException {
       String modelName = sheet.getFile().getName();
       AtsDsl atsDsl = AtsDslUtil.getFromSheet(modelName, sheet);
-      ImportAIsAndTeamDefinitionsToDb importer = new ImportAIsAndTeamDefinitionsToDb(modelName, atsDsl, transaction);
+      ImportAIsAndTeamDefinitionsToDb importer = new ImportAIsAndTeamDefinitionsToDb(modelName, atsDsl, changes);
       importer.execute();
    }
 
    /**
     * If sheet has WorkDef defined, create artifact and import string. Return artifact, else return null.
-    * 
-    * @param stateNames
     */
-   public Artifact importWorkDefinitionSheetToDb(WorkDefinitionSheet sheet, XResultData resultData, Set<String> stateNames, SkynetTransaction transaction) throws OseeCoreException {
+   public Artifact importWorkDefinitionSheetToDb(WorkDefinitionSheet sheet, XResultData resultData, Set<String> stateNames, IAtsChangeSet changes) throws OseeCoreException {
       String modelName = sheet.getFile().getName();
       // Prove that can convert to atsDsl
       AtsDsl atsDsl = AtsDslUtil.getFromSheet(modelName, sheet);
@@ -78,7 +76,7 @@ public class AtsWorkDefinitionImporter {
          // Use original xml to store in artifact so no conversion happens
          String workDefXml = AtsDslUtil.getString(sheet);
          Artifact artifact =
-            importWorkDefinitionToDb(workDefXml, sheet.getName(), sheet.getName(), resultData, transaction);
+            importWorkDefinitionToDb(workDefXml, sheet.getName(), sheet.getName(), resultData, changes);
          if (resultData.getNumErrors() > 0) {
             throw new OseeStateException("Error importing WorkDefinitionSheet [%s] into database [%s]",
                sheet.getName(), resultData.toString());
@@ -91,7 +89,7 @@ public class AtsWorkDefinitionImporter {
       return null;
    }
 
-   public Artifact importWorkDefinitionToDb(String workDefXml, String workDefName, String sheetName, XResultData resultData, SkynetTransaction transaction) throws OseeCoreException {
+   public Artifact importWorkDefinitionToDb(String workDefXml, String workDefName, String sheetName, XResultData resultData, IAtsChangeSet changes) throws OseeCoreException {
       Artifact artifact = null;
       try {
          artifact =
@@ -116,8 +114,7 @@ public class AtsWorkDefinitionImporter {
             ArtifactTypeManager.addArtifact(AtsArtifactTypes.WorkDefinition, AtsUtilCore.getAtsBranch(), sheetName);
       }
       artifact.setSoleAttributeValue(AtsAttributeTypes.DslSheet, workDefXml);
-      artifact.persist(transaction);
-
+      changes.add(artifact);
       return artifact;
    }
 

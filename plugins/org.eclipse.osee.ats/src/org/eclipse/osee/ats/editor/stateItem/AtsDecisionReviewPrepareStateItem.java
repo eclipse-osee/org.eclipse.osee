@@ -11,16 +11,16 @@
 package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.client.review.XDecisionOptions;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.transition.ITransitionListener;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -37,17 +37,16 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem implements I
    }
 
    @Override
-   public void transitioning(TransitionResults results, AbstractWorkflowArtifact sma, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) throws OseeCoreException {
-      if (sma.isOfType(AtsArtifactTypes.DecisionReview) && fromState.getName().equals(
-         DecisionReviewState.Prepare.getName()) && toState.getName().equals(
+   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) throws OseeCoreException {
+      if ((workItem instanceof IAtsDecisionReview) && fromState.getName().equals(DecisionReviewState.Prepare.getName()) && toState.getName().equals(
          DecisionReviewState.Decision.getName())) {
-         XDecisionOptions decOptions = new XDecisionOptions(sma);
+         XDecisionOptions decOptions = new XDecisionOptions(workItem);
          decOptions.validateDecisionOptions(results);
       }
    }
 
    @Override
-   public void transitioned(AbstractWorkflowArtifact sma, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) {
       // do nothing
    }
 

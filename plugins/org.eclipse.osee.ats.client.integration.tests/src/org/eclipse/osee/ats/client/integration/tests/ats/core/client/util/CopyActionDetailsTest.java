@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.CopyActionDetails;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.AfterClass;
@@ -58,18 +59,17 @@ public class CopyActionDetailsTest {
       DecisionReviewArtifact review =
          AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze);
       String str = new CopyActionDetails(review).getDetailsString();
-      assertEquals("\"Decision Review\" - " + review.getAtsId() + " - \"AtsTestUtil Test Decision Review\"",
-         str);
+      assertEquals("\"Decision Review\" - " + review.getAtsId() + " - \"AtsTestUtil Test Decision Review\"", str);
       review.persist(getClass().getSimpleName());
    }
 
    @Test
    public void test04GetDetailsStringForPeerReview() throws OseeCoreException {
       PeerToPeerReviewArtifact review =
-         AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None, AtsTestUtilState.Analyze, null);
+         AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None, AtsTestUtilState.Analyze, new AtsChangeSet(
+            "test04GetDetailsStringForPeerReview"));
       String str = new CopyActionDetails(review).getDetailsString();
-      assertEquals("\"PeerToPeer Review\" - " + review.getAtsId() + " - \"AtsTestUtil Test Peer Review\"",
-         str);
+      assertEquals("\"PeerToPeer Review\" - " + review.getAtsId() + " - \"AtsTestUtil Test Peer Review\"", str);
       review.persist(getClass().getSimpleName());
    }
 }

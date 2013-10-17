@@ -91,4 +91,6 @@ public interface IAtsWorkDefinitionAdmin {
 
    WorkDefinitionMatch getWorkDefinitionForPeerToPeerReview(IAtsPeerToPeerReview review) throws OseeCoreException;
 
+   IAtsStateDefinition getStateDefinitionByName(IAtsWorkItem workItem, String stateName) throws OseeCoreException;
+
 }

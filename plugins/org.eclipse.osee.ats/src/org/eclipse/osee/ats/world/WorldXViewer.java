@@ -210,8 +210,9 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             try {
                transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Reset Action off Children");
                for (ActionArtifact actionArt : getSelectedActionArtifacts()) {
-                  ActionArtifactRollup rollup = new ActionArtifactRollup(actionArt, transaction);
+                  ActionArtifactRollup rollup = new ActionArtifactRollup(actionArt);
                   rollup.resetAttributesOffChildren();
+                  actionArt.persist(transaction);
                }
                transaction.execute();
             } catch (OseeCoreException ex) {

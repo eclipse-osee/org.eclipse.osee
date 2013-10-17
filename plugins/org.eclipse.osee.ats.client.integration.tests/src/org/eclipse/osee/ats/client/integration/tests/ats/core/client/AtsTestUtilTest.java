@@ -11,18 +11,16 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client;
 
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.Assert;
 
 /**
@@ -129,7 +127,8 @@ public class AtsTestUtilTest extends AtsTestUtil {
       AtsTestUtil.cleanupAndReset("AtsTestUtilTest.testGetPeerReview");
       AtsTestUtil.validateArtifactCache();
 
-      Assert.assertNotNull(AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze, null));
+      Assert.assertNotNull(AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze,
+         new AtsChangeSet("testGetPeerReview")));
 
       AtsTestUtil.cleanup();
 
@@ -144,23 +143,23 @@ public class AtsTestUtilTest extends AtsTestUtil {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Analyze.getName());
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "test");
+      AtsChangeSet changes = new AtsChangeSet("test");
 
       Result result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsClientService.get().getUserAdmin().getCurrentUser(), transaction,
-            TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
+         AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsClientService.get().getUserAdmin().getCurrentUser(),
+            changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Implement.getName());
 
       result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsClientService.get().getUserAdmin().getCurrentUser(), transaction,
-            TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
+         AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsClientService.get().getUserAdmin().getCurrentUser(),
+            changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Completed.getName());
 
       teamArt.reloadAttributesAndRelations();
 
-      transaction.execute();
+      changes.execute();
 
       AtsTestUtil.cleanup();
    }
@@ -173,17 +172,17 @@ public class AtsTestUtilTest extends AtsTestUtil {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Analyze.getName());
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "test");
+      AtsChangeSet changes = new AtsChangeSet("test");
 
       Result result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled, AtsClientService.get().getUserAdmin().getCurrentUser(), transaction,
-            TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
+         AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled, AtsClientService.get().getUserAdmin().getCurrentUser(),
+            changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Cancelled.getName());
 
       teamArt.reloadAttributesAndRelations();
 
-      transaction.execute();
+      changes.execute();
 
       AtsTestUtil.cleanup();
    }

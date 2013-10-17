@@ -23,20 +23,22 @@ public interface IAtsWorkDefinition extends Identifiable<String>, HasDescription
     * Identification
     */
    @Override
-   public abstract String getName();
+   String getName();
 
-   public abstract String getId();
+   String getId();
 
    @Override
-   public abstract String getDescription();
+   String getDescription();
 
    /**
     * States
     */
-   public abstract List<IAtsStateDefinition> getStates();
+   List<IAtsStateDefinition> getStates();
 
-   public abstract IAtsStateDefinition getStateByName(String name);
+   IAtsStateDefinition getStateByName(String name);
 
-   public abstract IAtsStateDefinition getStartState();
+   IAtsStateDefinition getStateDefinitionByName(String name);
+
+   IAtsStateDefinition getStartState();
 
 }

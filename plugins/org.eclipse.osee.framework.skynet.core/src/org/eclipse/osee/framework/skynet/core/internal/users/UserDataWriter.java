@@ -81,7 +81,9 @@ public class UserDataWriter {
          }
       }
 
-      user.persist(transaction);
+      if (transaction != null) {
+         user.persist(transaction);
+      }
 
       return user;
    }

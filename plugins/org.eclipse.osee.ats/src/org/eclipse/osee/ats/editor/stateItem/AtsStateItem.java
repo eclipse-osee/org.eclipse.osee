@@ -13,8 +13,11 @@ package org.eclipse.osee.ats.editor.stateItem;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.framework.core.util.Result;
@@ -108,5 +111,9 @@ public abstract class AtsStateItem implements IAtsStateItem {
    @Override
    public String toString() {
       return getName();
+   }
+
+   @SuppressWarnings("unused")
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
    }
 }

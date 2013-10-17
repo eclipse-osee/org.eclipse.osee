@@ -11,17 +11,17 @@
 package org.eclipse.osee.ats.core.client.internal;
 
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsArtifactStore {
 
-   <T extends IAtsConfigObject> Artifact store(AtsArtifactConfigCache cache, T configObject, SkynetTransaction transaction) throws OseeCoreException;
+   <T extends IAtsConfigObject> Artifact store(AtsArtifactConfigCache cache, T configObject, IAtsChangeSet changes) throws OseeCoreException;
 
    <T extends IAtsConfigObject> T load(AtsArtifactConfigCache cache, Artifact artifact) throws OseeCoreException;
 

@@ -11,23 +11,31 @@
 package org.eclipse.osee.ats.core.client.internal.workflow;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactService;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.validator.AtsXWidgetValidateManagerClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AtsWorkData;
+import org.eclipse.osee.ats.core.client.workflow.transition.TransitionListeners;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -35,6 +43,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -184,6 +193,45 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return isWrite;
+   }
+
+   @Override
+   public String getCurrentStateName(IAtsWorkItem workItem) {
+      return ((AbstractWorkflowArtifact) workItem).getCurrentStateName();
+   }
+
+   @Override
+   public void clearImplementersCache(IAtsWorkItem workItem) {
+      ((AbstractWorkflowArtifact) workItem).clearImplementersCache();
+   }
+
+   @Override
+   public Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef) throws OseeStateException {
+      return AtsXWidgetValidateManagerClient.instance.validateTransition((AbstractWorkflowArtifact) workItem,
+         toStateDef);
+   }
+
+   @Override
+   public Collection<IAtsTask> getTaskArtifacts(IAtsWorkItem workItem) throws OseeCoreException {
+      if (workItem.isTeamWorkflow()) {
+         return Collections.castAll(((TeamWorkFlowArtifact) workItem).getTaskArtifacts());
+      }
+      return java.util.Collections.emptyList();
+   }
+
+   @Override
+   public void transitioned(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, List<? extends IAtsUser> updatedAssigees, IAtsChangeSet changes) throws OseeCoreException {
+      ((AbstractWorkflowArtifact) workItem).transitioned(fromState, toState, updatedAssigees, changes);
+   }
+
+   @Override
+   public void setInTransition(IAtsWorkItem workItem, boolean inTransition) {
+      ((AbstractWorkflowArtifact) workItem).setInTransition(inTransition);
+   }
+
+   @Override
+   public Collection<ITransitionListener> getTransitionListeners() {
+      return TransitionListeners.getListeners();
    }
 
 }

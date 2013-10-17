@@ -16,14 +16,13 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.config.AtsArtifactToken;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -51,14 +50,14 @@ public class ImportWorkDefinitionsItem extends XNavigateItemAction {
       dialog.setMessage("Select Work Definition Sheet(s) to import");
       if (dialog.open() == 0) {
          XResultData resultData = new XResultData(false);
-         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getName());
+         AtsChangeSet changes = new AtsChangeSet(getName());
          Artifact folder =
             OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.WorkDefinitionsFolder, AtsUtil.getAtsBranch());
          Set<String> stateNames = new HashSet<String>();
-         AtsWorkDefinitionSheetProviders.importWorkDefinitionSheets(resultData, transaction, folder,
-            dialog.getSelection(), stateNames);
+         AtsWorkDefinitionSheetProviders.importWorkDefinitionSheets(resultData, changes, folder, dialog.getSelection(),
+            stateNames);
          if (!resultData.isErrors()) {
-            transaction.execute();
+            changes.execute();
          }
          XResultDataUI.report(resultData, getName());
       }

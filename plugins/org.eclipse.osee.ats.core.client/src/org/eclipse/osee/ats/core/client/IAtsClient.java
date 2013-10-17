@@ -17,10 +17,16 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
+import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
+import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
+import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
 import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactServiceProvider;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
@@ -28,14 +34,13 @@ import org.eclipse.osee.ats.core.config.IVersionFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsClient extends IAtsWorkItemArtifactServiceProvider, IAtsWorkItemServiceProvider, IAtsConfigProvider, ITeamDefinitionFactory, IActionableItemFactory, IVersionFactory, IAtsQueryService, IAtsVersionServiceProvider, IAtsEarnedValueServiceProvider {
+public interface IAtsClient extends IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemArtifactServiceProvider, IAtsWorkItemServiceProvider, IAtsConfigProvider, ITeamDefinitionFactory, IActionableItemFactory, IVersionFactory, IAtsQueryService, IAtsVersionServiceProvider, IAtsEarnedValueServiceProvider {
 
-   <T extends IAtsConfigObject> Artifact storeConfigObject(T configObject, SkynetTransaction transaction) throws OseeCoreException;
+   <T extends IAtsConfigObject> Artifact storeConfigObject(T configObject, IAtsChangeSet changes) throws OseeCoreException;
 
    <T extends IAtsConfigObject> T getConfigObject(Artifact artifact) throws OseeCoreException;
 
@@ -45,6 +50,8 @@ public interface IAtsClient extends IAtsWorkItemArtifactServiceProvider, IAtsWor
     * @return corresponding Artifact or null if not found
     */
    Artifact getArtifact(IAtsObject atsObject) throws OseeCoreException;
+
+   AbstractWorkflowArtifact getWorkflowArtifact(IAtsObject atsObject) throws OseeCoreException;
 
    List<Artifact> getConfigArtifacts(Collection<? extends IAtsObject> atsObjects) throws OseeCoreException;
 
@@ -75,4 +82,9 @@ public interface IAtsClient extends IAtsWorkItemArtifactServiceProvider, IAtsWor
    @Override
    IAtsEarnedValueService getEarnedValueService() throws OseeStateException;
 
+   @Override
+   IAtsBranchService getBranchService() throws OseeCoreException;
+
+   @Override
+   IAtsReviewService getReviewService() throws OseeCoreException;
 }

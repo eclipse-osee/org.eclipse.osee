@@ -22,10 +22,13 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
+import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
+import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.IAtsUserAdmin;
@@ -38,6 +41,7 @@ import org.eclipse.osee.ats.core.client.internal.config.TeamDefinitionFactory;
 import org.eclipse.osee.ats.core.client.internal.config.VersionFactory;
 import org.eclipse.osee.ats.core.client.internal.ev.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.core.client.internal.query.AtsQuery;
+import org.eclipse.osee.ats.core.client.internal.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.store.ActionableItemArtifactReader;
 import org.eclipse.osee.ats.core.client.internal.store.ActionableItemArtifactWriter;
 import org.eclipse.osee.ats.core.client.internal.store.AtsArtifactStore;
@@ -51,12 +55,13 @@ import org.eclipse.osee.ats.core.client.internal.user.AtsUserAdminImpl;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCache;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCacheProvider;
-import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkItemArtifactProviderImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
@@ -68,7 +73,6 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -90,6 +94,8 @@ public class AtsClientImpl implements IAtsClient {
    private IAtsEarnedValueService earnedValueService;
    private IAtsUserService userService;
    private IAtsWorkItemService workItemService;
+   private IAtsBranchService branchService;
+   private IAtsReviewService reviewService;
    private static Boolean started = null;
 
    public void setAtsWorkDefinitionService(IAtsWorkDefinitionService workDefService) {
@@ -141,6 +147,8 @@ public class AtsClientImpl implements IAtsClient {
       workDefAdmin =
          new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemArtifactProvider, workItemService,
             workDefService, atsTeamWorkflowProviders);
+      branchService = new AtsBranchServiceImpl();
+      reviewService = new AtsReviewServiceImpl();
       started = true;
    }
 
@@ -175,9 +183,9 @@ public class AtsClientImpl implements IAtsClient {
    }
 
    @Override
-   public <T extends IAtsConfigObject> Artifact storeConfigObject(T configObject, SkynetTransaction transaction) throws OseeCoreException {
+   public <T extends IAtsConfigObject> Artifact storeConfigObject(T configObject, IAtsChangeSet changes) throws OseeCoreException {
       AtsArtifactConfigCache atsConfigCache = getConfigCache();
-      return artifactStore.store(atsConfigCache, configObject, transaction);
+      return artifactStore.store(atsConfigCache, configObject, changes);
    }
 
    @Override
@@ -385,6 +393,23 @@ public class AtsClientImpl implements IAtsClient {
    public IAtsWorkItemArtifactService getWorkItemArtifactService() throws OseeStateException {
       checkStarted();
       return workItemArtifactProvider;
+   }
+
+   @Override
+   public IAtsBranchService getBranchService() throws OseeCoreException {
+      checkStarted();
+      return branchService;
+   }
+
+   @Override
+   public AbstractWorkflowArtifact getWorkflowArtifact(IAtsObject atsObject) throws OseeCoreException {
+      return (AbstractWorkflowArtifact) getArtifact(atsObject);
+   }
+
+   @Override
+   public IAtsReviewService getReviewService() throws OseeCoreException {
+      checkStarted();
+      return reviewService;
    }
 
 }

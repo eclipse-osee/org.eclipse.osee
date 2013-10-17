@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -24,8 +25,6 @@ import org.eclipse.osee.ats.util.widgets.dialog.ActionableItemListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -56,13 +55,13 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
                   AWorkbench.popup("Must select at least one Actionable Item");
                   return;
                }
-               SkynetTransaction transaction =
-                  TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "New Stand-alone Peer To Peer Review");
+
+               AtsChangeSet changes = new AtsChangeSet("New Stand-alone Peer To Peer Review");
                PeerToPeerReviewArtifact peerArt =
                   PeerToPeerReviewManager.createNewPeerToPeerReview(ld.getSelected().iterator().next(), ed.getEntry(),
-                     null, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), transaction);
-               peerArt.persist(transaction);
-               transaction.execute();
+                     null, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+               changes.execute();
+
                AtsUtil.openATSAction(peerArt, AtsOpenOption.OpenAll);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

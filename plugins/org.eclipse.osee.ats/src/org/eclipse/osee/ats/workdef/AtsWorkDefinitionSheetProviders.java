@@ -23,9 +23,11 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.config.AtsArtifactToken;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.internal.Activator;
@@ -45,7 +47,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.osgi.framework.Bundle;
 
 /**
@@ -62,19 +63,18 @@ public final class AtsWorkDefinitionSheetProviders {
    }
 
    public static void initializeDatabase(XResultData resultData) throws OseeCoreException {
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Import ATS Work Definitions, Teams and AIs");
+      AtsChangeSet changes = new AtsChangeSet("Import ATS Work Definitions, Teams and AIs");
       Artifact folder =
          OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.WorkDefinitionsFolder, AtsUtil.getAtsBranch());
       if (folder.isDirty()) {
-         folder.persist(transaction);
+         changes.add(folder);
       }
       List<WorkDefinitionSheet> sheets = getWorkDefinitionSheets();
       Set<String> stateNames = new HashSet<String>();
-      importWorkDefinitionSheets(resultData, transaction, folder, sheets, stateNames);
-      createStateNameArtifact(stateNames, folder, transaction);
-      importTeamsAndAis(resultData, transaction, folder, sheets);
-      transaction.execute();
+      importWorkDefinitionSheets(resultData, changes, folder, sheets, stateNames);
+      createStateNameArtifact(stateNames, folder, changes);
+      importTeamsAndAis(resultData, changes, folder, sheets);
+      changes.execute();
    }
 
    /**
@@ -137,51 +137,51 @@ public final class AtsWorkDefinitionSheetProviders {
       trans.addArtifact(stateNameArt);
    }
 
-   private static Artifact createStateNameArtifact(Set<String> stateNames, Artifact folder, SkynetTransaction transaction) throws OseeCoreException {
+   private static Artifact createStateNameArtifact(Set<String> stateNames, Artifact folder, IAtsChangeSet changes) throws OseeCoreException {
       Artifact stateNameArt =
          ArtifactTypeManager.addArtifact(org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names,
             AtsUtil.getAtsBranchToken());
       stateNameArt.addAttribute(CoreAttributeTypes.GeneralStringData,
          org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", stateNames));
-      stateNameArt.persist(transaction);
+      changes.add(stateNameArt);
       folder.addChild(stateNameArt);
-      folder.persist(transaction);
+      changes.add(folder);
       return stateNameArt;
    }
 
-   public static void importWorkDefinitionSheets(XResultData resultData, SkynetTransaction transaction, Artifact folder, Collection<WorkDefinitionSheet> sheets, Set<String> stateNames) throws OseeCoreException {
+   public static void importWorkDefinitionSheets(XResultData resultData, IAtsChangeSet changes, Artifact folder, Collection<WorkDefinitionSheet> sheets, Set<String> stateNames) throws OseeCoreException {
       for (WorkDefinitionSheet sheet : sheets) {
          OseeLog.logf(Activator.class, Level.INFO, "Importing ATS Work Definitions [%s]", sheet.getName());
          Artifact artifact =
-            AtsWorkDefinitionImporter.get().importWorkDefinitionSheetToDb(sheet, resultData, stateNames, transaction);
+            AtsWorkDefinitionImporter.get().importWorkDefinitionSheetToDb(sheet, resultData, stateNames, changes);
          if (artifact != null) {
             folder.addChild(artifact);
-            artifact.persist(transaction);
+            changes.add(artifact);
          }
       }
    }
 
-   public static void importTeamsAndAis(XResultData resultData, SkynetTransaction transaction, Artifact folder, Collection<WorkDefinitionSheet> sheets) throws OseeCoreException {
+   public static void importTeamsAndAis(XResultData resultData, IAtsChangeSet changes, Artifact folder, Collection<WorkDefinitionSheet> sheets) throws OseeCoreException {
       for (WorkDefinitionSheet sheet : sheets) {
          OseeLog.logf(Activator.class, Level.INFO, "Importing ATS Teams and AIs [%s]", sheet.getName());
-         importAIsAndTeamsToDb(sheet, transaction);
+         importAIsAndTeamsToDb(sheet, changes);
       }
    }
 
    public static void importAIsAndTeamsToDatabase() throws OseeCoreException {
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Import ATS AIs and Team Definitions");
+
+      AtsChangeSet changes = new AtsChangeSet("Import ATS AIs and Team Definitions");
       for (WorkDefinitionSheet sheet : getWorkDefinitionSheets()) {
          OseeLog.logf(Activator.class, Level.INFO, "Importing ATS AIs and Teams sheet [%s]", sheet.getName());
-         importAIsAndTeamsToDb(sheet, transaction);
+         importAIsAndTeamsToDb(sheet, changes);
       }
-      transaction.execute();
+      changes.execute();
    }
 
-   public static void importAIsAndTeamsToDb(WorkDefinitionSheet sheet, SkynetTransaction transaction) throws OseeCoreException {
+   public static void importAIsAndTeamsToDb(WorkDefinitionSheet sheet, IAtsChangeSet changes) throws OseeCoreException {
       String modelName = sheet.getFile().getName();
       AtsDsl atsDsl = AtsDslUtil.getFromSheet(modelName, sheet);
-      ImportAIsAndTeamDefinitionsToDb importer = new ImportAIsAndTeamDefinitionsToDb(modelName, atsDsl, transaction);
+      ImportAIsAndTeamDefinitionsToDb importer = new ImportAIsAndTeamDefinitionsToDb(modelName, atsDsl, changes);
       importer.execute();
    }
 

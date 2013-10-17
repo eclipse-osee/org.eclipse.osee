@@ -16,9 +16,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
@@ -37,7 +39,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -122,16 +123,16 @@ public class UserRoleManager {
       return storedUserRoles;
    }
 
-   public void saveToArtifact(SkynetTransaction transaction) throws OseeCoreException {
+   public void saveToArtifact(IAtsChangeSet changes) throws OseeCoreException {
       if (valueProvider instanceof ArtifactValueProvider) {
-         saveToArtifact(((ArtifactValueProvider) valueProvider).getArtifact(), transaction);
+         saveToArtifact(((ArtifactValueProvider) valueProvider).getArtifact(), changes);
       } else {
          throw new OseeArgumentException(
             "Can't saveToArtifact unless provider is ArtifactValueProvider, use saveToArtifact(Artifact artifact, SkynetTransaction transaction)");
       }
    }
 
-   public void saveToArtifact(Artifact artifact, SkynetTransaction transaction) {
+   public void saveToArtifact(Artifact artifact, IAtsChangeSet changes) {
       try {
          List<UserRole> storedUserRoles = getStoredUserRoles(artifact);
 
@@ -162,7 +163,7 @@ public class UserRoleManager {
          }
          rollupHoursSpentToReviewState(artifact);
          validateUserRolesCompleted(artifact, storedUserRoles, userRoles);
-         artifact.persist(transaction);
+         changes.add((IAtsObject) artifact);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't create ats review role document", ex);
       }

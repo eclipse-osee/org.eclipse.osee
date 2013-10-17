@@ -34,10 +34,8 @@ import org.eclipse.osee.ats.core.client.review.role.Role;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -58,16 +56,15 @@ public class PeerToPeerReviewColumnsTest {
    @org.junit.Test
    public void testGetColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
+      AtsChangeSet changes = new AtsChangeSet(PeerToPeerReviewColumnsTest.class.getSimpleName());
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), PeerToPeerReviewColumnsTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt =
-         DemoTestUtil.createSimpleAction(PeerToPeerReviewColumnsTest.class.getSimpleName(), transaction);
+         DemoTestUtil.createSimpleAction(PeerToPeerReviewColumnsTest.class.getSimpleName(), changes);
       PeerToPeerReviewArtifact peerArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, getClass().getSimpleName(),
-            teamArt.getStateMgr().getCurrentStateName(), transaction);
-      peerArt.persist(transaction);
-      transaction.execute();
+            teamArt.getStateMgr().getCurrentStateName(), changes);
+      changes.add(peerArt);
+      changes.execute();
 
       Assert.assertEquals("0", ReviewNumIssuesColumn.getInstance().getColumnText(peerArt, null, 0));
       Assert.assertEquals("0", ReviewNumMajorDefectsColumn.getInstance().getColumnText(peerArt, null, 0));
@@ -76,8 +73,7 @@ public class PeerToPeerReviewColumnsTest {
       Assert.assertEquals("", ReviewModeratorColumn.getInstance().getColumnText(peerArt, null, 0));
       Assert.assertEquals("", ReviewReviewerColumn.getInstance().getColumnText(peerArt, null, 0));
 
-      transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), PeerToPeerReviewColumnsTest.class.getSimpleName());
+      changes.clear();
       ReviewDefectItem item =
          new ReviewDefectItem(AtsClientService.get().getUserAdmin().getCurrentUser(), Severity.Issue, Disposition.None,
             InjectionActivity.Code, "description", "resolution", "location", new Date());
@@ -126,9 +122,9 @@ public class PeerToPeerReviewColumnsTest {
       roleMgr.addOrUpdateUserRole(role, peerArt);
       role = new UserRole(Role.Reviewer, AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Kay_Jones));
       roleMgr.addOrUpdateUserRole(role, peerArt);
-      roleMgr.saveToArtifact(transaction);
-      peerArt.persist(transaction);
-      transaction.execute();
+      roleMgr.saveToArtifact(changes);
+      changes.add(peerArt);
+      changes.execute();
 
       Assert.assertEquals("4", ReviewNumIssuesColumn.getInstance().getColumnText(peerArt, null, 0));
       Assert.assertEquals("1", ReviewNumMajorDefectsColumn.getInstance().getColumnText(peerArt, null, 0));

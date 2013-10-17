@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionStatusData;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.util.Result;
@@ -69,7 +69,7 @@ public class TransitionStatusDialog extends MessageDialog {
       statusLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
       updateStatusLabel();
 
-      if (data.getAwas().size() > 1) {
+      if (data.getWorkItems().size() > 1) {
          Label label = new Label(parent, SWT.NONE);
          label.setText("Mulitple objects being statused.  All objects will be set to percent\ncomplete and hours spent will be split or added into each item.");
       }
@@ -87,9 +87,10 @@ public class TransitionStatusDialog extends MessageDialog {
                data.setPercent(defaultPercent);
                percent.set(defaultPercent);
                percentSet = true;
-            } else if (data.getAwas().size() == 1) {
+            } else if (data.getWorkItems().size() == 1) {
                int currentPercent = 0;
-               AbstractWorkflowArtifact awa = data.getAwas().iterator().next();
+               AbstractWorkflowArtifact awa =
+                  (AbstractWorkflowArtifact) AtsClientService.get().getArtifact(data.getWorkItems().iterator().next());
                if (!AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(awa.getWorkDefinition())) {
                   currentPercent = awa.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
                } else {
@@ -146,7 +147,7 @@ public class TransitionStatusDialog extends MessageDialog {
          };
       });
 
-      if (data.getAwas().size() > 1) {
+      if (data.getWorkItems().size() > 1) {
          Composite comp = new Composite(parent, SWT.NONE);
          comp.setLayout(new GridLayout(2, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));

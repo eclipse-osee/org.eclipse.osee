@@ -182,8 +182,9 @@ public class ConvertActionableItemsAction extends Action {
             teamArt.setTeamDefinition(teamDef);
          }
          SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Convert Actionable Item");
-         ActionArtifactRollup rollup = new ActionArtifactRollup(teamArt.getParentActionArtifact(), transaction);
+         ActionArtifactRollup rollup = new ActionArtifactRollup(teamArt.getParentActionArtifact());
          rollup.resetAttributesOffChildren();
+         teamArt.getParentActionArtifact().persist(transaction);
          teamArt.persist(transaction);
          transaction.execute();
       }

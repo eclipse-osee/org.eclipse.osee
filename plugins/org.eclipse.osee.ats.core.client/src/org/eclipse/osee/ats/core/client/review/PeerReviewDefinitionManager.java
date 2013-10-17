@@ -12,26 +12,27 @@ package org.eclipse.osee.ats.core.client.review;
 
 import java.util.Collection;
 import java.util.Date;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionAdapter;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionAdapter;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
  * Create PeerToPeer Review from transition if defined by StateDefinition.
- *
+ * 
  * @author Donald G. Dunne
  */
 public class PeerReviewDefinitionManager extends TransitionAdapter {
@@ -39,7 +40,7 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
    /**
     * Creates PeerToPeer review if one of same name doesn't already exist
     */
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsPeerReviewDefinition peerRevDef, SkynetTransaction transaction, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
+   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsPeerReviewDefinition peerRevDef, IAtsChangeSet changes, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
       String title = peerRevDef.getReviewTitle();
       if (!Strings.isValid(title)) {
          title = String.format("Review [%s]", teamArt.getName());
@@ -50,7 +51,7 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
       }
       PeerToPeerReviewArtifact peerArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, title, peerRevDef.getRelatedToState(), createdDate,
-            createdBy, transaction);
+            createdBy, changes);
       if (Strings.isValid(peerRevDef.getDescription())) {
          peerArt.setSoleAttributeFromString(AtsAttributeTypes.Description, peerRevDef.getDescription());
       }
@@ -61,7 +62,8 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
       if (Strings.isValid(peerRevDef.getLocation())) {
          peerArt.setSoleAttributeFromString(AtsAttributeTypes.Location, peerRevDef.getLocation());
       }
-      Collection<IAtsUser> assignees = AtsClientService.get().getUserAdmin().getUsersByUserIds(peerRevDef.getAssignees());
+      Collection<IAtsUser> assignees =
+         AtsClientService.get().getUserAdmin().getUsersByUserIds(peerRevDef.getAssignees());
       if (assignees.size() > 0) {
          peerArt.getStateMgr().setAssignees(assignees);
       }
@@ -73,7 +75,8 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
    }
 
    @Override
-   public void transitioned(AbstractWorkflowArtifact sma, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
+      AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) workItem;
       // Create any decision or peerToPeer reviews for transitionTo and transitionFrom
       if (!sma.isTeamWorkflow()) {
          return;
@@ -86,9 +89,9 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
          if (peerRevDef.getStateEventType() != null && peerRevDef.getStateEventType().equals(
             StateEventType.TransitionTo)) {
             PeerToPeerReviewArtifact decArt =
-               createNewPeerToPeerReview(peerRevDef, transaction, teamArt, createdDate, createdBy);
+               createNewPeerToPeerReview(peerRevDef, changes, teamArt, createdDate, createdBy);
             if (decArt != null) {
-               decArt.persist(transaction);
+               changes.add(decArt);
             }
          }
       }

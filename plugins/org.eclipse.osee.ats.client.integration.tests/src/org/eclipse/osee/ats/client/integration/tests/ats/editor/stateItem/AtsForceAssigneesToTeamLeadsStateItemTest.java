@@ -19,12 +19,11 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.editor.stateItem.AtsForceAssigneesToTeamLeadsStateItem;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -49,10 +48,9 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
       assertFalse("Test should not be run in production db", AtsUtil.isProductionDb());
 
       if (teamArt == null) {
-         SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
-         teamArt = DemoTestUtil.createSimpleAction(getClass().getSimpleName(), transaction);
-         transaction.execute();
+         AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+         teamArt = DemoTestUtil.createSimpleAction(getClass().getSimpleName(), changes);
+         changes.execute();
       }
    }
 
@@ -92,10 +90,10 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
 
       // make call to state item that should set options based on artifact's attribute value
       AtsForceAssigneesToTeamLeadsStateItem stateItem = new AtsForceAssigneesToTeamLeadsStateItem();
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
-      stateItem.transitioned(teamArt, fromState, toState, Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), transaction);
-      transaction.execute();
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      stateItem.transitioned(teamArt, fromState, toState,
+         Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), changes);
+      changes.execute();
 
       // assignee should be Joe Smith
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());

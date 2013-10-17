@@ -21,17 +21,16 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsWorldEditorRenderer;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -52,18 +51,15 @@ public class WorkflowPortingBlam extends AbstractBlam {
          getActionableItems((IAtsActionableItem) variableMap.getValue(ACTIONABLE_ITEM));
       Conditions.checkNotNullOrEmpty(actionableItems, ACTIONABLE_ITEM);
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create Porting Workflow(s)");
-
-      List<Artifact> destinationWorkflows = createDestinationWorkflows(transaction, actionableItems);
-
-      transaction.execute();
+      AtsChangeSet changes = new AtsChangeSet("Create Porting Workflow(s)");
+      List<Artifact> destinationWorkflows = createDestinationWorkflows(changes, actionableItems);
+      changes.execute();
 
       AtsWorldEditorRenderer renderer = new AtsWorldEditorRenderer();
       renderer.open(destinationWorkflows, PresentationType.SPECIALIZED_EDIT);
    }
 
-   private List<Artifact> createDestinationWorkflows(SkynetTransaction transaction, List<IAtsActionableItem> actionableItems) throws OseeCoreException {
+   private List<Artifact> createDestinationWorkflows(IAtsChangeSet changes, List<IAtsActionableItem> actionableItems) throws OseeCoreException {
       IAtsTeamDefinition teamDefinition = actionableItems.get(0).getTeamDefinition();
       List<Artifact> destinationWorkflows = new ArrayList<Artifact>();
       IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
@@ -76,14 +72,14 @@ public class WorkflowPortingBlam extends AbstractBlam {
 
             destinationWorkflow =
                ActionManager.createTeamWorkflow(sourceWorkflow.getParentActionArtifact(), teamDefinition,
-                  actionableItems, assignees, transaction, createdDate, createdBy, null,
+                  actionableItems, assignees, changes, createdDate, createdBy, null,
                   CreateTeamOption.Duplicate_If_Exists);
 
             destinationWorkflow.setName(sourceWorkflow.getName());
-            destinationWorkflow.persist(transaction);
+            changes.add(destinationWorkflow);
 
             sourceWorkflow.addRelation(AtsRelationTypes.Port_To, destinationWorkflow);
-            sourceWorkflow.persist(transaction);
+            changes.add(sourceWorkflow);
          } else {
             destinationWorkflow = sourceWorkflow.getRelatedArtifact(AtsRelationTypes.Port_To);
             log("Reusing destination workflow " + destinationWorkflow);

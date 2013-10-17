@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.client.task.createtasks;
 import java.util.Date;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -20,7 +21,6 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Shawn F. Cook
@@ -34,22 +34,21 @@ public class TaskOpCreate extends AbstractTaskOp {
    }
 
    @Override
-   public IStatus execute(TaskMetadata metadata, SkynetTransaction transaction) throws OseeCoreException {
+   public IStatus execute(TaskMetadata metadata, IAtsChangeSet changes) throws OseeCoreException {
       TeamWorkFlowArtifact parentTeamWf = metadata.getParentTeamWf();
       Artifact changedArtifact = metadata.getChangedArtifact();
       String taskTitle = taskTitleProvider.getTaskTitle(metadata);
       Date creationDate = new Date();
 
-      TaskArtifact taskArt =
-         parentTeamWf.createNewTask(taskTitle, creationDate, AtsCoreUsers.SYSTEM_USER);
+      TaskArtifact taskArt = parentTeamWf.createNewTask(taskTitle, creationDate, AtsCoreUsers.SYSTEM_USER);
 
       // create for Implement state regardless of which state workflow is in
       taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, TeamState.Implement.getName());
       taskArt.setSingletonAttributeValue(CoreAttributeTypes.StaticId, AUTO_GENERATED_STATIC_ID);
       taskArt.setSoleAttributeFromString(AtsAttributeTypes.TaskToChangedArtifactReference, changedArtifact.getGuid());
 
-      taskArt.persist(transaction);
-      parentTeamWf.persist(transaction);
+      changes.add(taskArt);
+      changes.add(parentTeamWf);
 
       return generateGenericOkStatus(metadata.getTaskEnum(), taskArt.toStringWithId(),
          metadata.getParentTeamWf().toStringWithId(), changedArtifact.toStringWithId());

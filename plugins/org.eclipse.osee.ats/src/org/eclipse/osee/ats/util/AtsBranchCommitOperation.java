@@ -13,17 +13,20 @@ package org.eclipse.osee.ats.util;
 import java.util.Date;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.Result;
@@ -31,8 +34,6 @@ import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.CommitHandler;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -68,7 +69,8 @@ public class AtsBranchCommitOperation extends AbstractOperation {
          // Confirm that all blocking reviews are completed
          // Loop through this state's blocking reviews to confirm complete
          if (teamArt.isTeamWorkflow()) {
-            for (AbstractReviewArtifact reviewArt : ReviewManager.getReviewsFromCurrentState(teamArt)) {
+            for (IAtsAbstractReview review : ReviewManager.getReviewsFromCurrentState(teamArt)) {
+               AbstractReviewArtifact reviewArt = (AbstractReviewArtifact) AtsClientService.get().getArtifact(review);
                if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.isCompletedOrCancelled()) {
                   throw new OseeStateException("Blocking Review must be completed before commit.");
                }
@@ -114,11 +116,13 @@ public class AtsBranchCommitOperation extends AbstractOperation {
          }
          if (branchCommitted) {
             // Create reviews as necessary
-            SkynetTransaction transaction =
-               TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Commit");
-            AtsBranchManagerCore.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt, new Date(),
-               AtsCoreUsers.SYSTEM_USER, transaction);
-            transaction.execute();
+            AtsChangeSet changes = new AtsChangeSet("Create Reviews upon Commit");
+            boolean added =
+               AtsBranchManagerCore.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt, new Date(),
+                  AtsCoreUsers.SYSTEM_USER, changes);
+            if (added) {
+               changes.execute();
+            }
          }
       } finally {
          if (workflowWorkingBranch != null) {

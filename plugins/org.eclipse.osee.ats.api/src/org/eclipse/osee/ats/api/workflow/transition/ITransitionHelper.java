@@ -8,14 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.workflow.transition;
+package org.eclipse.osee.ats.api.workflow.transition;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+
 
 /**
  * @author Donald G. Dunne
@@ -28,7 +30,7 @@ public interface ITransitionHelper {
 
    public boolean isOverrideTransitionValidityCheck();
 
-   public Collection<? extends AbstractWorkflowArtifact> getAwas();
+   public Collection<? extends IAtsWorkItem> getWorkItems();
 
    /**
     * @return Result.isTrue with text if reason provided
@@ -44,18 +46,26 @@ public interface ITransitionHelper {
     */
    public Result handleExtraHoursSpent();
 
-   public Collection<? extends IAtsUser> getToAssignees(AbstractWorkflowArtifact awa) throws OseeCoreException;
+   public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) throws OseeCoreException;
 
    public String getToStateName();
 
    boolean isOverrideAssigneeCheck();
 
-   boolean isWorkingBranchInWork(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
+   boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
-   boolean isBranchInCommit(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
+   boolean isBranchInCommit(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
    public boolean isSystemUser() throws OseeCoreException;
 
-   public boolean isSystemUserAssingee(AbstractWorkflowArtifact awa) throws OseeCoreException;
+   public boolean isSystemUserAssingee(IAtsWorkItem workItem) throws OseeCoreException;
+
+   public void setInTransition(IAtsWorkItem workItem, boolean inTransition) throws OseeCoreException;
+
+   public IAtsChangeSet getChangeSet();
+
+   public boolean isExecuteChanges();
+
+   public Collection<ITransitionListener> getTransitionListeners();
 
 }

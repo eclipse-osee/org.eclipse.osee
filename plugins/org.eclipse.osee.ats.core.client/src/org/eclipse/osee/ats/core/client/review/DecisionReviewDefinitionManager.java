@@ -14,20 +14,21 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionAdapter;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionAdapter;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
@@ -40,7 +41,7 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
    /**
     * Creates decision review if one of same name doesn't already exist
     */
-   public static DecisionReviewArtifact createNewDecisionReview(IAtsDecisionReviewDefinition revDef, SkynetTransaction transaction, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReview(IAtsDecisionReviewDefinition revDef, IAtsChangeSet changes, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
       if (Artifacts.getNames(ReviewManager.getReviews(teamArt)).contains(revDef.getReviewTitle())) {
          // Already created this review
          return null;
@@ -60,7 +61,7 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
          decArt =
             DecisionReviewManager.createNewDecisionReviewAndTransitionToDecision(teamArt, revDef.getReviewTitle(),
                revDef.getDescription(), revDef.getRelatedToState(), revDef.getBlockingType(), revDef.getOptions(),
-               users, createdDate, createdBy, transaction);
+               users, createdDate, createdBy, changes);
       } else {
          decArt =
             DecisionReviewManager.createNewDecisionReview(teamArt, revDef.getBlockingType(), revDef.getReviewTitle(),
@@ -70,29 +71,30 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
       for (IReviewProvider provider : ReviewProviders.getAtsReviewProviders()) {
          provider.reviewCreated(decArt);
       }
-      decArt.persist(transaction);
+      changes.add(decArt);
       return decArt;
    }
 
    @Override
-   public void transitioned(AbstractWorkflowArtifact sma, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
       // Create any decision or peerToPeer reviews for transitionTo and transitionFrom
-      if (!sma.isTeamWorkflow()) {
+      if (!(workItem instanceof IAtsTeamWorkflow)) {
          return;
       }
       Date createdDate = new Date();
       IAtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
-      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) sma;
+      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) workItem;
 
       for (IAtsDecisionReviewDefinition decRevDef : teamArt.getStateDefinition().getDecisionReviews()) {
          if (decRevDef.getStateEventType() != null && decRevDef.getStateEventType().equals(StateEventType.TransitionTo)) {
             DecisionReviewArtifact decArt =
-               DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, transaction, teamArt, createdDate,
-                  createdBy);
+               DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, changes, teamArt,
+                  createdDate, createdBy);
             if (decArt != null) {
-               decArt.persist(transaction);
+               changes.add(decArt);
             }
          }
       }
    }
+
 }

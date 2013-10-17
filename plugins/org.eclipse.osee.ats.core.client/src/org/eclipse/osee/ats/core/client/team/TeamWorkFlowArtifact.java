@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
@@ -82,10 +83,22 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
       super.saveSMA(transaction);
       try {
          ActionArtifact parentAction = getParentActionArtifact();
-         if (parentAction != null) {
-            ActionArtifactRollup rollup = new ActionArtifactRollup(parentAction, transaction);
-            rollup.resetAttributesOffChildren();
-         }
+         ActionArtifactRollup rollup = new ActionArtifactRollup(parentAction);
+         rollup.resetAttributesOffChildren();
+         parentAction.persist(transaction);
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't reset Action parent of children", ex);
+      }
+   }
+
+   @Override
+   public void saveSMA(IAtsChangeSet changes) {
+      super.saveSMA(changes);
+      try {
+         ActionArtifact parentAction = getParentActionArtifact();
+         ActionArtifactRollup rollup = new ActionArtifactRollup(parentAction);
+         rollup.resetAttributesOffChildren();
+         changes.add(parentAction);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't reset Action parent of children", ex);
       }

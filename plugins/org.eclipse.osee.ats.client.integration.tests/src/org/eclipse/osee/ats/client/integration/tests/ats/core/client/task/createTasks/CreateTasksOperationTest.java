@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.core.client.task.createtasks.TaskEnum;
 import org.eclipse.osee.ats.core.client.task.createtasks.TaskMetadata;
 import org.eclipse.osee.ats.core.client.task.createtasks.TaskOpModify;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -119,9 +120,7 @@ public class CreateTasksOperationTest {
    private void runCreateTasksOperation(IAtsVersion destinationVersion, IAtsActionableItem actionableItemArt, ChangeData changeData) throws OseeCoreException {
       OperationLogger stringLogger = NullOperationLogger.getSingleton();
       MockTaskTitleProvider taskTitleProvider = new MockTaskTitleProvider();
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
-            artifactNamePrefix + " - testCreateTasksOperation");
+      AtsChangeSet changes = new AtsChangeSet(artifactNamePrefix + " - testCreateTasksOperation");
       XResultData resultData = new XResultData();
       resultData.clear();
 
@@ -129,11 +128,11 @@ public class CreateTasksOperationTest {
       // Kind of more complicated testing environment than I would prefer, but that's how it goes.
       CreateTasksOperation createTasksOp =
          new CreateTasksOperation(destinationVersion, actionableItemArt, changeData, reqTeamWf, false, resultData,
-            transaction, stringLogger, taskTitleProvider);
+            changes, stringLogger, taskTitleProvider);
       Operations.executeWorkAndCheckStatus(createTasksOp);
-
-      transaction.execute();
-
+      if (!changes.isEmpty()) {
+         changes.execute();
+      }
    }
 
    @org.junit.Test

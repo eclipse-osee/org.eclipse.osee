@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.client.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.core.client.config.AtsArtifactToken;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -44,19 +45,18 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
          ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopTeamDefinition, AtsUtil.getAtsBranchToken());
       IAtsTeamDefinition teamDef = AtsClientService.get().getConfigObject(topTeamDefArt);
       teamDef.setWorkflowDefinition(IAtsWorkDefinitionAdmin.TeamWorkflowDefaultDefinitionId);
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), "Set Top Team Work Definition");
-      AtsClientService.get().storeConfigObject(teamDef, transaction);
-      transaction.execute();
+      AtsChangeSet changes = new AtsChangeSet("Set Top Team Work Definition");
+      AtsClientService.get().storeConfigObject(teamDef, changes);
+      changes.execute();
 
       // load top ai into cache
       Artifact topAiArt =
          ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopActionableItem, AtsUtil.getAtsBranchToken());
       IAtsActionableItem aia = AtsClientService.get().getConfigObject(topAiArt);
       aia.setActionable(false);
-      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), "Set Top AI to Non Actionable");
-      AtsClientService.get().storeConfigObject(aia, transaction);
-      transaction.execute();
+      changes.reset("Set Top AI to Non Actionable");
+      AtsClientService.get().storeConfigObject(aia, changes);
+      changes.execute();
 
       AtsWorkDefinitionSheetProviders.initializeDatabase(new XResultData(false));
 

@@ -18,7 +18,9 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.IAtsUserAdmin;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.dsl.BooleanDefUtil;
@@ -44,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -52,16 +53,16 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 public class ImportAIsAndTeamDefinitionsToDb {
 
    private final AtsDsl atsDsl;
-   private final SkynetTransaction transaction;
+   private final IAtsChangeSet changes;
    private final Map<String, Artifact> newTeams = new HashMap<String, Artifact>();
    private final Map<String, Artifact> newAIs = new HashMap<String, Artifact>();
    private final Map<String, Artifact> newVersions = new HashMap<String, Artifact>();
    private final String modelName;
 
-   public ImportAIsAndTeamDefinitionsToDb(String modelName, AtsDsl atsDsl, SkynetTransaction transaction) {
+   public ImportAIsAndTeamDefinitionsToDb(String modelName, AtsDsl atsDsl, IAtsChangeSet changes) {
       this.modelName = modelName;
       this.atsDsl = atsDsl;
-      this.transaction = transaction;
+      this.changes = changes;
    }
 
    public void execute() throws OseeCoreException {
@@ -77,7 +78,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
          String dslUserName = Strings.unquote(dslUserDef.getName());
          Artifact userArt = null;
          if (dslUserDef.getUserDefOption().contains("GetOrCreate")) {
-            userArt = UserManager.createUser(getOseeUser(dslUserDef), transaction);
+            userArt = UserManager.createUser(getOseeUser(dslUserDef), null);
+            changes.add(userArt);
          }
          if (userArt == null) {
             userArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, AtsUtil.getAtsBranch(), dslUserName);
@@ -145,7 +147,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          importVersionDefinitions(dslTeamDef.getVersion(), newTeam);
          // process children
          importTeamDefinitions(dslTeamDef.getChildren(), newTeam);
-         newTeam.persist(transaction);
+         changes.add(newTeam);
       }
 
    }
@@ -259,19 +261,22 @@ public class ImportAIsAndTeamDefinitionsToDb {
          }
          importAccessContextIds(newAi, dslAIDef.getAccessContextId());
          importActionableItems(dslAIDef.getChildren(), newAi);
-         newAi.persist(transaction);
+         changes.add(newAi);
       }
    }
 
    private Artifact getOrCreate(String artifactName, boolean isTeamDef, Artifact parentArtifact) throws OseeCoreException {
       Artifact parent = parentArtifact;
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       if (parent == null) {
          if (isTeamDef) {
-            parent = AtsClientService.get().storeConfigObject(TeamDefinitions.getTopTeamDefinition(), transaction);
+            parent = AtsClientService.get().storeConfigObject(TeamDefinitions.getTopTeamDefinition(), changes);
          } else {
-            parent = AtsClientService.get().storeConfigObject(ActionableItems.getTopActionableItem(), transaction);
+            parent = AtsClientService.get().storeConfigObject(ActionableItems.getTopActionableItem(), changes);
          }
+         changes.execute();
       }
+
       if (parent.getName().equals(artifactName)) {
          return parent;
       }

@@ -15,13 +15,13 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -29,14 +29,14 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 public class VersionArtifactWriter extends AbstractAtsArtifactWriter<IAtsVersion> {
 
    @Override
-   public Artifact store(IAtsVersion ai, AtsArtifactConfigCache cache, SkynetTransaction transaction) throws OseeCoreException {
-      Artifact artifact = getArtifactOrCreate(cache, AtsArtifactTypes.Version, ai, transaction);
-      store(ai, artifact, cache, transaction);
+   public Artifact store(IAtsVersion ai, AtsArtifactConfigCache cache, IAtsChangeSet changes) throws OseeCoreException {
+      Artifact artifact = getArtifactOrCreate(cache, AtsArtifactTypes.Version, ai, changes);
+      store(ai, artifact, cache, changes);
       return artifact;
    }
 
    @Override
-   public Artifact store(IAtsVersion version, Artifact artifact, AtsArtifactConfigCache cache, SkynetTransaction transaction) throws OseeCoreException {
+   public Artifact store(IAtsVersion version, Artifact artifact, AtsArtifactConfigCache cache, IAtsChangeSet changes) throws OseeCoreException {
       artifact.setName(version.getName());
       boolean allowCommitBranch = artifact.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);
       if (allowCommitBranch != version.isAllowCommitBranch()) {
@@ -79,11 +79,11 @@ public class VersionArtifactWriter extends AbstractAtsArtifactWriter<IAtsVersion
          if (teamDefArt != null) {
             if (!teamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version).contains(artifact)) {
                teamDefArt.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, artifact);
-               teamDefArt.persist(transaction);
+               changes.add(teamDefArt);
             }
          }
       }
-      artifact.persist(transaction);
+      changes.add(artifact);
       cache.cache(version);
       return artifact;
    }

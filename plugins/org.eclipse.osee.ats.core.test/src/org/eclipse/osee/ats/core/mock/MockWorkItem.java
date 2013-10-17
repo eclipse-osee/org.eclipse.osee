@@ -163,4 +163,19 @@ public class MockWorkItem implements IAtsWorkItem {
       this.atsId = atsId;
    }
 
+   @Override
+   public boolean isTask() {
+      return false;
+   }
+
+   @Override
+   public boolean isTeamWorkflow() {
+      return false;
+   }
+
+   @Override
+   public String getTypeName() {
+      return null;
+   }
+
 }

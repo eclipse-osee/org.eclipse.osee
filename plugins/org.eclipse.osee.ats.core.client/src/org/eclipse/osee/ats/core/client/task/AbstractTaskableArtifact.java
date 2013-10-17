@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.client.internal.Activator;
@@ -39,7 +40,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -65,10 +65,10 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    }
 
    @Override
-   public void transitioned(IAtsStateDefinition fromState, IAtsStateDefinition toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
-      super.transitioned(fromState, toState, toAssignees, transaction);
+   public void transitioned(IAtsStateDefinition fromState, IAtsStateDefinition toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
+      super.transitioned(fromState, toState, toAssignees, changes);
       for (TaskArtifact taskArt : getTaskArtifacts()) {
-         taskArt.parentWorkFlowTransitioned(fromState, toState, toAssignees, transaction);
+         taskArt.parentWorkFlowTransitioned(fromState, toState, toAssignees, changes);
       }
    }
 
@@ -243,14 +243,14 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       return spent / taskArts.size();
    }
 
-   public Collection<TaskArtifact> createTasks(List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, SkynetTransaction transaction) throws OseeCoreException {
-      return createTasks(titles, assignees, createdDate, createdBy, null, transaction);
+   public Collection<TaskArtifact> createTasks(List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
+      return createTasks(titles, assignees, createdDate, createdBy, null, changes);
    }
 
    /**
     * @param relatedToState State name Tasks must be completed in or null
     */
-   public Collection<TaskArtifact> createTasks(List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, SkynetTransaction transaction) throws OseeCoreException {
+   public Collection<TaskArtifact> createTasks(List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, IAtsChangeSet changes) throws OseeCoreException {
       List<TaskArtifact> tasks = new ArrayList<TaskArtifact>();
       for (String title : titles) {
          TaskArtifact taskArt = createNewTask(title, createdDate, createdBy, relatedToState);
@@ -262,7 +262,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
             taskArt.getStateMgr().setAssignees(users);
          }
          tasks.add(taskArt);
-         taskArt.persist(transaction);
+         changes.add(taskArt);
       }
       return tasks;
    }

@@ -17,20 +17,21 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.core.client.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -67,20 +67,20 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
       }
    }
 
-   public Result parentWorkFlowTransitioned(IAtsStateDefinition fromState, IAtsStateDefinition toState, Collection<? extends IAtsUser> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public Result parentWorkFlowTransitioned(IAtsStateDefinition fromState, IAtsStateDefinition toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
       if (toState.getName().equals(TeamState.Cancelled.getName()) && isInWork()) {
          TransitionHelper helper =
             new TransitionHelper("Transition to Cancelled", Arrays.asList(this), TaskStates.Cancelled.getName(), null,
-               "Parent Cancelled", TransitionOption.None);
-         TransitionManager transitionMgr = new TransitionManager(helper, transaction);
+               "Parent Cancelled", changes, TransitionOption.None);
+         TransitionManager transitionMgr = new TransitionManager(helper);
          TransitionResults results = transitionMgr.handleAll();
+
          if (!results.isEmpty()) {
             return new Result("Transition Error %s", results.toString());
          }
       } else if (fromState.getName().equals(TeamState.Cancelled.getName()) && isCancelled()) {
          Result result =
-            TaskManager.transitionToInWork(this, AtsClientService.get().getUserAdmin().getCurrentUser(), 99, 0,
-               transaction);
+            TaskManager.transitionToInWork(this, AtsClientService.get().getUserAdmin().getCurrentUser(), 99, 0, changes);
          return result;
       }
       return Result.TrueResult;
