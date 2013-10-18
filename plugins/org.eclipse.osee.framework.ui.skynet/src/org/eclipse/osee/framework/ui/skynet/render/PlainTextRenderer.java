@@ -52,6 +52,11 @@ public class PlainTextRenderer extends FileSystemRenderer {
    }
 
    @Override
+   public boolean supportsCompare() {
+      return true;
+   }
+
+   @Override
    public List<String> getCommandIds(CommandGroup commandGroup) {
       ArrayList<String> commandIds = new ArrayList<String>(1);
 
