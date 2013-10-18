@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.internal;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.LazyObject;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -74,7 +75,6 @@ public final class DslGrammarManager {
    public static boolean isDslAttributeType(IAttributeType attributeType) {
       boolean result = false;
       try {
-         // TODO use MediaTypeManager
          AttributeType type = AttributeTypeManager.getType(attributeType);
          String mediaType = type.getMediaType();
          result = Strings.isValid(mediaType) && mediaType.toLowerCase().endsWith("dsl");
@@ -84,11 +84,11 @@ public final class DslGrammarManager {
       return result;
    }
 
+   @Nullable
    public static DslGrammar getGrammar(IAttributeType attributeType) throws OseeCoreException {
       Conditions.checkNotNull(attributeType, "attributeType");
 
       DslGrammar toReturn = null;
-      // TODO use MediaTypeManager
       AttributeType type = AttributeTypeManager.getType(attributeType);
       String mediaType = type.getMediaType();
       if (Strings.isValid(mediaType)) {
@@ -97,7 +97,6 @@ public final class DslGrammarManager {
          mediaType = mediaType.replaceAll("\\+dsl", "");
          toReturn = getDslByExtension(mediaType);
       }
-      Conditions.checkNotNull(toReturn, "dslGrammar", "Unable to find grammar for [%s]", attributeType);
       return toReturn;
    }
 

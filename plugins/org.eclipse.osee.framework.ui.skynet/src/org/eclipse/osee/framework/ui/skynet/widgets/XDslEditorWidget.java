@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.net.URLEncoder;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
@@ -217,7 +219,11 @@ public class XDslEditorWidget extends XLabel implements IAttributeWidget {
       this.artifact = artifact;
       this.attributeType = attributeType;
       this.grammar = DslGrammarManager.getGrammar(attributeType);
-      this.uri = createURI(artifact, grammar.getExtension());
+      if (grammar == null) {
+         OseeLog.log(getClass(), Level.SEVERE, "Could not find a grammar for attribute type " + attributeType);
+      } else {
+         this.uri = createURI(artifact, grammar.getExtension());
+      }
 
       updateTextWidget();
    }
