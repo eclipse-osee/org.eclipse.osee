@@ -102,7 +102,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
          sb.append(txsAlias);
          sb.append(".transaction_id <= ?");
          addParameter(OptionsUtil.getFromTransaction(getOptions()));
-         if (!OptionsUtil.areDeletedIncluded(getOptions())) {
+         if (!OptionsUtil.areDeletedArtifactsIncluded(getOptions())) {
             sb.append(AND_WITH_NEWLINES);
             sb.append(txsAlias);
             sb.append(".tx_current");
@@ -115,7 +115,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
       } else {
          sb.append(txsAlias);
          sb.append(".tx_current");
-         if (OptionsUtil.areDeletedIncluded(getOptions())) {
+         if (OptionsUtil.areDeletedArtifactsIncluded(getOptions())) {
             sb.append(" IN (");
             sb.append(String.valueOf(TxChange.CURRENT.getValue()));
             sb.append(", ");

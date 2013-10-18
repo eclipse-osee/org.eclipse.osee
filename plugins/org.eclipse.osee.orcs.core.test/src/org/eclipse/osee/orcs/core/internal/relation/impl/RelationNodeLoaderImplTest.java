@@ -74,16 +74,16 @@ public class RelationNodeLoaderImplTest {
    public void testLoadNodes() throws OseeCoreException {
       Iterable<Artifact> artifacts = Arrays.asList(artifact);
 
-      when(dataLoaderFactory.fromBranchAndArtifactIds(session, BRANCH, ids)).thenReturn(loader);
+      when(dataLoaderFactory.newDataLoaderFromIds(session, BRANCH, ids)).thenReturn(loader);
       when(graphBuilderFactory.createBuilderForGraph(graph)).thenReturn(builder);
       when(builder.getArtifacts()).thenReturn(artifacts);
 
-      Iterable<RelationNode> actual = relationNode.loadNodes(session, graph, ids, LoadLevel.FULL);
+      Iterable<RelationNode> actual = relationNode.loadNodes(session, graph, ids, LoadLevel.ALL);
 
-      verify(dataLoaderFactory).fromBranchAndArtifactIds(session, BRANCH, ids);
+      verify(dataLoaderFactory).newDataLoaderFromIds(session, BRANCH, ids);
       verify(graphBuilderFactory).createBuilderForGraph(graph);
 
-      verify(loader).setLoadLevel(LoadLevel.FULL);
+      verify(loader).withLoadLevel(LoadLevel.ALL);
       verify(loader).fromTransaction(TRANSACTION_ID);
       verify(loader).load(null, builder);
       verify(builder).getArtifacts();

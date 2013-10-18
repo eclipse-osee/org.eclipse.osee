@@ -15,9 +15,11 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -104,9 +106,9 @@ public class MissingChangeItemFactoryTest {
 
       String sessionGuid = GUID.create();
       when(session.getGuid()).thenReturn(sessionGuid);
-      when(dataLoaderFactory.fromBranchAndArtifactIds(any(OrcsSession.class), eq(sourceBranch), any(Collection.class))).thenReturn(
+      when(dataLoaderFactory.newDataLoaderFromIds(any(OrcsSession.class), eq(sourceBranch), any(Collection.class))).thenReturn(
          sourceDataLoader);
-      when(dataLoaderFactory.fromBranchAndArtifactIds(any(OrcsSession.class), eq(destBranch), any(Collection.class))).thenReturn(
+      when(dataLoaderFactory.newDataLoaderFromIds(any(OrcsSession.class), eq(destBranch), any(Collection.class))).thenReturn(
          destDataLoader);
       when(sourceTx.getBranch()).thenReturn(sourceBranch);
       when(destTx.getBranch()).thenReturn(destBranch);

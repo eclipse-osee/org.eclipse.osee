@@ -41,7 +41,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
          ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
          // assumption: SQL is returning unwanted deleted artifacts only in the historical case
          boolean historical = OptionsUtil.isHistorical(options);
-         if (!historical || OptionsUtil.areDeletedIncluded(options) || modType != ModificationType.DELETED) {
+         if (!historical || OptionsUtil.areDeletedArtifactsIncluded(options) || modType != ModificationType.DELETED) {
             long gamma = chStmt.getInt("gamma_id");
             int txId = chStmt.getInt("transaction_id");
 

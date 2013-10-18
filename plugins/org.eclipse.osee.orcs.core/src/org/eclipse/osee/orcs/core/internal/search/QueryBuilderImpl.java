@@ -77,13 +77,13 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder includeDeleted(boolean enabled) {
-      OptionsUtil.setIncludeDeleted(getOptions(), enabled);
+      OptionsUtil.setIncludeDeletedArtifacts(getOptions(), enabled);
       return this;
    }
 
    @Override
    public boolean areDeletedIncluded() {
-      return OptionsUtil.areDeletedIncluded(getOptions());
+      return OptionsUtil.areDeletedArtifactsIncluded(getOptions());
    }
 
    @Override

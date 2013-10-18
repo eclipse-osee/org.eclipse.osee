@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -23,32 +20,8 @@ public interface Loader {
 
    Loader setOptions(Options sourceOptions);
 
-   Loader includeDeleted();
+   void load(HasCancellation cancellation, LoadDataHandler handler) throws OseeCoreException;
 
-   Loader includeDeleted(boolean enabled);
-
-   boolean areDeletedIncluded();
-
-   Loader fromTransaction(int transactionId);
-
-   int getFromTransaction();
-
-   Loader headTransaction();
-
-   boolean isHeadTransaction();
-
-   LoadLevel getLoadLevel();
-
-   Loader setLoadLevel(LoadLevel loadLevel);
-
-   Loader resetToDefaults();
-
-   Loader loadAttributeType(IAttributeType... attributeType) throws OseeCoreException;
-
-   Loader loadAttributeTypes(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException;
-
-   Loader loadRelationType(IRelationType... relationType) throws OseeCoreException;
-
-   Loader loadRelationTypes(Collection<? extends IRelationType> relationType) throws OseeCoreException;
+   void load(LoadDataHandler handler) throws OseeCoreException;
 
 }

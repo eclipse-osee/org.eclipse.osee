@@ -99,7 +99,7 @@ public class RelationResolverTest {
       when(relation4.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
       when(relation4.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(66);
 
-      when(loader.loadNodes(eq(session), eq(graphData), anyCollectionOf(Integer.class), eq(LoadLevel.FULL))).thenReturn(
+      when(loader.loadNodes(eq(session), eq(graphData), anyCollectionOf(Integer.class), eq(LoadLevel.ALL))).thenReturn(
          resultSet);
    }
 
@@ -111,7 +111,7 @@ public class RelationResolverTest {
 
       List<RelationNode> arts = resolver.resolve(session, graphData, links, RelationSide.SIDE_A, RelationSide.SIDE_B);
 
-      verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.FULL));
+      verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.ALL));
       assertCollection(captor.getValue(), 11, 22, 33, 44, 55, 66);
       assertCollection(arts, node1, node2, node3, node4, node5, node6);
    }
@@ -124,7 +124,7 @@ public class RelationResolverTest {
 
       List<RelationNode> arts = resolver.resolve(session, graphData, links, RelationSide.SIDE_A);
 
-      verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.FULL));
+      verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.ALL));
 
       assertCollection(captor.getValue(), 11, 33, 55);
       assertCollection(arts, node1, node3, node5);
@@ -138,7 +138,7 @@ public class RelationResolverTest {
 
       List<RelationNode> arts = resolver.resolve(session, graphData, links, RelationSide.SIDE_B);
 
-      verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.FULL));
+      verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.ALL));
 
       assertCollection(captor.getValue(), 22, 44, 66);
       assertCollection(arts, node2, node4, node6);
@@ -160,7 +160,7 @@ public class RelationResolverTest {
       verify(graphData).getNode(33);
       verify(graphData).getNode(55);
 
-      verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.FULL));
+      verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.ALL));
 
       assertCollection(captor.getValue(), 22, 44, 66);
       assertCollection(arts, node1, node2, node3, node4, node5, node6);

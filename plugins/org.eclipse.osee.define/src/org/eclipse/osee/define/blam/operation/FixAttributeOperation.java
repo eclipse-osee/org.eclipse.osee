@@ -130,7 +130,7 @@ public class FixAttributeOperation extends AbstractOperation {
          new HashCollection<Artifact, IAttributeType>(false, HashSet.class);
 
       List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromBranch(branch, LoadLevel.FULL, DeletionFlag.EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromBranch(branch, LoadLevel.ALL, DeletionFlag.EXCLUDE_DELETED);
       checkForCancelledStatus(monitor);
       monitor.subTask("Mapping Enumerated Attributes");
 

@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -80,34 +82,79 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    }
 
    private void writeTxFilter(String txsAlias, String artJoinAlias, StringBuilder sb) {
+      //@formatter:off 
+      /*********************************************************************
+       * The clause handling the inclusion of deleted items changes based on case 
+       *   note this applies to the 3 tables ARTIFACT_TABLE, ATTRIBUTE_TABLE, RELATION_TABLE
+       * case 1: No items allow deleted 
+       * case 2: One table in query  
+       * case 3: All tables that are in the query allow deleted
+       * case 4: More than one table with differing deletion flags
+       */
+      //@formatter:on
+      boolean hasTable[] =
+         {
+            getAliasManager().hasAlias(TableEnum.ARTIFACT_TABLE),
+            getAliasManager().hasAlias(TableEnum.ATTRIBUTE_TABLE),
+            getAliasManager().hasAlias(TableEnum.RELATION_TABLE)};
+
+      /**********************************************************************
+       * Allow deleted artifacts applies even if the artifact table is not in the query. The other two only make sense
+       * when the table is also used
+       */
+      boolean allowDeletedAtrifacts = OptionsUtil.areDeletedArtifactsIncluded(getOptions());
+      boolean allowDeletedAttributes = OptionsUtil.areDeletedAttributesIncluded(getOptions());
+      boolean allowDeletedRelations = OptionsUtil.areDeletedRelationsIncluded(getOptions());
+      boolean areDeletedIncluded = allowDeletedAtrifacts || allowDeletedAttributes || allowDeletedRelations;
+      boolean areDeletedSame = true;
+      if (areDeletedIncluded) {
+         /********************************
+          * there must be at least 2 table in the query for a difference
+          */
+         int count = 0;
+         for (boolean add : hasTable) {
+            if (add) {
+               count++;
+            }
+         }
+         if (count > 1) {
+            areDeletedSame =
+               !((hasTable[0] && !allowDeletedAtrifacts) || (hasTable[1] && !allowDeletedAttributes) || (hasTable[2] && !allowDeletedRelations));
+         }
+      }
       if (OptionsUtil.isHistorical(getOptions())) {
          sb.append(txsAlias);
          sb.append(".transaction_id <= ");
          sb.append(artJoinAlias);
          sb.append(".transaction_id");
-         if (!OptionsUtil.areDeletedIncluded(getOptions())) {
+         if (!areDeletedIncluded) {
             sb.append(" AND ");
             sb.append(txsAlias);
-            sb.append(".tx_current");
-            sb.append(" IN (");
-            sb.append(String.valueOf(TxChange.CURRENT.getValue()));
-            sb.append(", ");
-            sb.append(String.valueOf(TxChange.NOT_CURRENT.getValue()));
-            sb.append(")");
+            sb.append(".mod_type");
+            sb.append(" != ");
+            sb.append(String.valueOf(ModificationType.DELETED.getValue()));
+         } else if (!areDeletedSame) {
+            sb.append(" AND ");
+            buildDeletedClause(sb, txsAlias);
          }
       } else {
-         sb.append(txsAlias);
-         sb.append(".tx_current");
-         if (OptionsUtil.areDeletedIncluded(getOptions())) {
-            sb.append(" IN (");
-            sb.append(String.valueOf(TxChange.CURRENT.getValue()));
-            sb.append(", ");
-            sb.append(String.valueOf(TxChange.DELETED.getValue()));
-            sb.append(", ");
-            sb.append(String.valueOf(TxChange.ARTIFACT_DELETED.getValue()));
-            sb.append(")");
+         if (areDeletedIncluded) {
+            if (areDeletedSame) {
+               sb.append(txsAlias);
+               sb.append(".tx_current");
+               sb.append(" IN (");
+               sb.append(String.valueOf(TxChange.CURRENT.getValue()));
+               sb.append(", ");
+               sb.append(String.valueOf(TxChange.DELETED.getValue()));
+               sb.append(", ");
+               sb.append(String.valueOf(TxChange.ARTIFACT_DELETED.getValue()));
+               sb.append(")");
+            } else {
+               buildDeletedClause(sb, txsAlias);
+            }
          } else {
-            sb.append(" = ");
+            sb.append(txsAlias);
+            sb.append(".tx_current = ");
             sb.append(String.valueOf(TxChange.CURRENT.getValue()));
          }
       }
@@ -117,4 +164,96 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    public Options getOptions() {
       return getContext().getOptions();
    }
+
+   private void buildDeletedClause(StringBuilder sb, String txsAlias) {
+      /*****************************************************************
+       * It is assumed this is called only if at least one type of deleted is allowed and they differ. These checks are
+       * not made
+       */
+      int count = 0;
+      if (getAliasManager().hasAlias(TableEnum.ARTIFACT_TABLE)) {
+         List<String> artTables = getAliasManager().getAliases(TableEnum.ARTIFACT_TABLE);
+         if (OptionsUtil.areDeletedArtifactsIncluded(getOptions())) {
+            sb.append("(");
+            buildTableGamma(sb, artTables, txsAlias);
+            sb.append(" AND ");
+            buildTxClause(sb, txsAlias);
+            sb.append(")");
+            count++;
+         }
+      }
+      if (getAliasManager().hasAlias(TableEnum.ATTRIBUTE_TABLE)) {
+         List<String> attrTables = getAliasManager().getAliases(TableEnum.ATTRIBUTE_TABLE);
+         if (OptionsUtil.areDeletedAttributesIncluded(getOptions())) {
+            if (count > 1) {
+               sb.append(" AND ");
+            }
+            sb.append("(");
+            buildTableGamma(sb, attrTables, txsAlias);
+            sb.append(" AND ");
+            buildTxClause(sb, txsAlias);
+            sb.append(")");
+            count++;
+         }
+      }
+      if (getAliasManager().hasAlias(TableEnum.RELATION_TABLE)) {
+         List<String> relationTables = getAliasManager().getAliases(TableEnum.RELATION_TABLE);
+         if (OptionsUtil.areDeletedAttributesIncluded(getOptions())) {
+            if (count > 1) {
+               sb.append(" AND ");
+            }
+            sb.append("(");
+            buildTableGamma(sb, relationTables, txsAlias);
+            sb.append(" AND ");
+            buildTxClause(sb, txsAlias);
+            sb.append(")");
+            count++;
+         }
+      }
+   }
+
+   private void buildTableGamma(StringBuilder sb, List<String> tableAliases, String txsAlias) {
+      if (tableAliases.size() == 1) {
+         sb.append(tableAliases.get(0));
+         sb.append(".gamma_id = ");
+         sb.append(txsAlias);
+         sb.append(".gamma_id");
+      } else {
+         Iterator<String> iter = tableAliases.iterator();
+         iter.next();
+         sb.append("(");
+         sb.append(iter);
+         sb.append(".gamma_id = ");
+         sb.append(txsAlias);
+         sb.append(".gamma_id");
+         while (iter.hasNext()) {
+            iter.next();
+            sb.append(" OR ");
+            sb.append(iter);
+            sb.append(".gamma_id = ");
+            sb.append(txsAlias);
+            sb.append(".gamma_id");
+         }
+         sb.append(")");
+      }
+   }
+
+   private void buildTxClause(StringBuilder sb, String txsAlias) {
+
+      sb.append(txsAlias);
+      sb.append(".tx_current");
+      if (OptionsUtil.isHistorical(getOptions())) {
+         sb.append(" IN (");
+         sb.append(String.valueOf(TxChange.CURRENT.getValue()));
+         sb.append(", ");
+         sb.append(String.valueOf(TxChange.DELETED.getValue()));
+         sb.append(", ");
+         sb.append(String.valueOf(TxChange.ARTIFACT_DELETED.getValue()));
+         sb.append(")");
+      } else {
+         sb.append(" = ");
+         sb.append(String.valueOf(TxChange.CURRENT.getValue()));
+      }
+   }
+
 }

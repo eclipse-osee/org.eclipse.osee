@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Collection;
-import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -22,44 +21,59 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface DataLoader extends Loader {
 
+   ////////// OPTIONS
    @Override
-   DataLoader includeDeleted();
+   DataLoader setOptions(Options sourceOptions);
 
-   @Override
-   DataLoader includeDeleted(boolean enabled);
-
-   @Override
    DataLoader fromTransaction(int transactionId);
 
-   @Override
-   DataLoader headTransaction();
+   DataLoader fromHeadTransaction();
 
-   @Override
-   DataLoader setLoadLevel(LoadLevel loadLevel);
+   DataLoader withLoadLevel(LoadLevel loadLevel);
 
-   @Override
-   DataLoader resetToDefaults();
+   LoadLevel getLoadLevel();
 
-   @Override
-   DataLoader loadAttributeType(IAttributeType... attributeType) throws OseeCoreException;
+   int getFromTransaction();
 
-   @Override
-   DataLoader loadAttributeTypes(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException;
+   boolean isHeadTransaction();
 
-   @Override
-   DataLoader loadRelationType(IRelationType... relationType) throws OseeCoreException;
+   //////////////// Deletion Options
+   DataLoader includeDeletedArtifacts();
 
-   @Override
-   DataLoader loadRelationTypes(Collection<? extends IRelationType> relationType) throws OseeCoreException;
+   DataLoader includeDeletedAttributes();
 
-   DataLoader loadAttributeLocalId(int... attributeIds) throws OseeCoreException;
+   DataLoader includeDeletedRelations();
 
-   DataLoader loadAttributeLocalIds(Collection<Integer> attributeIds) throws OseeCoreException;
+   DataLoader includeDeletedArtifacts(boolean enabled);
 
-   DataLoader loadRelationLocalId(int... relationIds) throws OseeCoreException;
+   DataLoader includeDeletedAttributes(boolean enabled);
 
-   DataLoader loadRelationLocalIds(Collection<Integer> relationIds) throws OseeCoreException;
+   DataLoader includeDeletedRelations(boolean enabled);
 
-   void load(HasCancellation cancellation, LoadDataHandler handler) throws OseeCoreException;
+   boolean areDeletedArtifactsIncluded();
+
+   boolean areDeletedAttributesIncluded();
+
+   boolean areDeletedRelationsIncluded();
+
+   //////////// IDS
+
+   DataLoader withAttributeIds(int... attributeIds) throws OseeCoreException;
+
+   DataLoader withAttributeIds(Collection<Integer> attributeIds) throws OseeCoreException;
+
+   DataLoader withRelationIds(int... relationIds) throws OseeCoreException;
+
+   DataLoader withRelationIds(Collection<Integer> relationIds) throws OseeCoreException;
+
+   ///////// TYPES
+
+   DataLoader withAttributeTypes(IAttributeType... attributeType) throws OseeCoreException;
+
+   DataLoader withAttributeTypes(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException;
+
+   DataLoader withRelationTypes(IRelationType... relationType) throws OseeCoreException;
+
+   DataLoader withRelationTypes(Collection<? extends IRelationType> relationType) throws OseeCoreException;
 
 }

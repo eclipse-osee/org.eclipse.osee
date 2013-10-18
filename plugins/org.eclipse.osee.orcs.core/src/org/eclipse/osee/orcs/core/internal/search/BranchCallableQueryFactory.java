@@ -72,7 +72,7 @@ public class BranchCallableQueryFactory {
                   return (BranchReadable) data;
                }
             };
-            OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.FULL);
+            OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.ALL);
             queryEngine.createBranchQuery(getSession(), getQueryData(), handler).call();
             List<BranchReadable> results = handler.getBranches();
             setItemsFound(results.size());
@@ -94,7 +94,7 @@ public class BranchCallableQueryFactory {
                }
 
             };
-            OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.FULL);
+            OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.ALL);
             queryEngine.createBranchQuery(getSession(), getQueryData(), handler).call();
             List<IOseeBranch> results = handler.getBranches();
             setItemsFound(results.size());

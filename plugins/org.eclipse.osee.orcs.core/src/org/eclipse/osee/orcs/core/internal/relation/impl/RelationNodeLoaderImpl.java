@@ -40,10 +40,10 @@ public class RelationNodeLoaderImpl implements RelationNodeLoader {
    public <T extends RelationNode> Iterable<T> loadNodes(OrcsSession session, final GraphData graph, Collection<Integer> ids, LoadLevel level) throws OseeCoreException {
       GraphBuilder builder = graphBuilderFactory.createBuilderForGraph(graph);
 
-      DataLoader loader = dataLoaderFactory.fromBranchAndArtifactIds(session, graph.getBranch(), ids);
-      loader.setLoadLevel(level);
+      DataLoader loader = dataLoaderFactory.newDataLoaderFromIds(session, graph.getBranch(), ids);
+      loader.withLoadLevel(level);
       loader.fromTransaction(graph.getTransaction());
-      loader.includeDeleted();
+      loader.includeDeletedArtifacts();
       loader.load(null, builder);
 
       return getResults(builder);

@@ -202,7 +202,7 @@ public class ArtifactLoaderTest {
             List<Artifact> artifacts;
             try {
                artifacts =
-                  ArtifactLoader.loadArtifacts(artIds, CoreBranches.COMMON, LoadLevel.FULL, LoadType.RELOAD_CACHE,
+                  ArtifactLoader.loadArtifacts(artIds, CoreBranches.COMMON, LoadLevel.ALL, LoadType.RELOAD_CACHE,
                      DeletionFlag.EXCLUDE_DELETED);
                Assert.assertTrue(artifacts.isEmpty());
             } catch (OseeCoreException ex) {
@@ -230,7 +230,7 @@ public class ArtifactLoaderTest {
             List<Artifact> artifacts;
             try {
                artifacts =
-                  ArtifactLoader.loadArtifacts(artIds, CoreBranches.COMMON, LoadLevel.FULL, LoadType.RELOAD_CACHE,
+                  ArtifactLoader.loadArtifacts(artIds, CoreBranches.COMMON, LoadLevel.ALL, LoadType.RELOAD_CACHE,
                      DeletionFlag.EXCLUDE_DELETED);
                Assert.assertTrue(artifacts.isEmpty());
             } catch (OseeCoreException ex) {

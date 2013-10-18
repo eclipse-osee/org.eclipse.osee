@@ -61,7 +61,7 @@ public abstract class AbstractSimpleQueryCallableFactory implements QueryCallabl
             QuerySqlContext queryContext = queryContextFactory.createQueryContext(getSession(), getQueryData());
             checkForCancelled();
 
-            DataLoader loader = objectLoader.fromQueryContext(queryContext);
+            DataLoader loader = objectLoader.newDataLoader(queryContext);
             loader.setOptions(getQueryData().getOptions());
 
             final AtomicInteger counter = new AtomicInteger();

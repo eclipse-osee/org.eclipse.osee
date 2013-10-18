@@ -22,46 +22,92 @@ public final class OptionsUtil {
    private static final int TRANSACTION_SENTINEL = -1;
 
    private static final String FROM_TRANSACTION = "from.transaction";
-   private static final String INCLUDE_DELETED = "include.deleted";
+   private static final String INCLUDE_DELETED_ARTIFACTS = "include.deleted.artifacts";
+   private static final String INCLUDE_DELETED_ATTRIBUTES = "include.deleted.attributes";
+   private static final String INCLUDE_DELETED_RELATIONS = "include.deleted.relations";
+   private static final String INCLUDE_CACHE = "include.cache";
    private static final String LOAD_LEVEL = "load.level";
 
    public static Options createBranchOptions() {
       Options options = new Options();
-      setIncludeDeleted(options, false);
-      setLoadLevel(options, LoadLevel.SHALLOW);
+      setIncludeCache(options, false);
+      setIncludeDeletedArtifacts(options, false);
+      setIncludeDeletedAttributes(options, false);
+      setIncludeDeletedRelations(options, false);
+      setLoadLevel(options, LoadLevel.ARTIFACT_DATA);
       return options;
    }
 
    public static Options createOptions() {
       Options options = new Options();
-      setIncludeDeleted(options, false);
+      setIncludeCache(options, false);
+      setIncludeDeletedArtifacts(options, false);
+      setIncludeDeletedAttributes(options, false);
+      setIncludeDeletedRelations(options, false);
       setHeadTransaction(options);
-      setLoadLevel(options, LoadLevel.SHALLOW);
+      setLoadLevel(options, LoadLevel.ALL);
       return options;
    }
 
    public static void reset(Options options) {
-      setIncludeDeleted(options, false);
+      setIncludeCache(options, false);
+      setIncludeDeletedArtifacts(options, false);
+      setIncludeDeletedAttributes(options, false);
+      setIncludeDeletedRelations(options, false);
       setHeadTransaction(options);
-      setLoadLevel(options, LoadLevel.SHALLOW);
+      setLoadLevel(options, LoadLevel.ALL);
    }
 
-   public static boolean areDeletedIncluded(Options options) {
-      return options.getBoolean(INCLUDE_DELETED);
+   public static boolean isCacheIncluded(Options options) {
+      return options.getBoolean(INCLUDE_CACHE);
    }
 
-   public static void setIncludeDeleted(Options options, boolean enabled) {
-      options.put(INCLUDE_DELETED, enabled);
+   public static void setIncludeCache(Options options, boolean enabled) {
+      options.put(INCLUDE_CACHE, enabled);
    }
 
-   public static DeletionFlag getIncludeDeleted(Options options) {
-      boolean includeDeleted = areDeletedIncluded(options);
+   public static boolean areDeletedArtifactsIncluded(Options options) {
+      return options.getBoolean(INCLUDE_DELETED_ARTIFACTS);
+   }
+
+   public static void setIncludeDeletedArtifacts(Options options, boolean enabled) {
+      options.put(INCLUDE_DELETED_ARTIFACTS, enabled);
+   }
+
+   public static DeletionFlag getIncludeDeletedArtifacts(Options options) {
+      boolean includeDeleted = areDeletedArtifactsIncluded(options);
+      return DeletionFlag.allowDeleted(includeDeleted);
+   }
+
+   public static boolean areDeletedAttributesIncluded(Options options) {
+      return options.getBoolean(INCLUDE_DELETED_ATTRIBUTES);
+   }
+
+   public static void setIncludeDeletedAttributes(Options options, boolean enabled) {
+      options.put(INCLUDE_DELETED_ATTRIBUTES, enabled);
+   }
+
+   public static DeletionFlag getIncludeDeletedAttributes(Options options) {
+      boolean includeDeleted = areDeletedAttributesIncluded(options);
+      return DeletionFlag.allowDeleted(includeDeleted);
+   }
+
+   public static boolean areDeletedRelationsIncluded(Options options) {
+      return options.getBoolean(INCLUDE_DELETED_RELATIONS);
+   }
+
+   public static void setIncludeDeletedRelations(Options options, boolean enabled) {
+      options.put(INCLUDE_DELETED_RELATIONS, enabled);
+   }
+
+   public static DeletionFlag getIncludeDeletedRelations(Options options) {
+      boolean includeDeleted = areDeletedRelationsIncluded(options);
       return DeletionFlag.allowDeleted(includeDeleted);
    }
 
    public static LoadLevel getLoadLevel(Options options) {
       String level = options.get(LOAD_LEVEL);
-      LoadLevel loadLevel = LoadLevel.SHALLOW;
+      LoadLevel loadLevel = LoadLevel.ARTIFACT_DATA;
       if (Strings.isValid(level)) {
          loadLevel = LoadLevel.valueOf(level);
       }

@@ -23,14 +23,14 @@ public interface DataLoaderFactory {
 
    int getCount(HasCancellation cancellation, QueryContext queryContext) throws OseeCoreException;
 
-   DataLoader fromQueryContext(QueryContext queryContext) throws OseeCoreException;
+   DataLoader newDataLoader(QueryContext queryContext) throws OseeCoreException;
 
-   DataLoader fromBranchAndArtifactIds(OrcsSession session, IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException;
+   DataLoader newDataLoaderFromIds(OrcsSession session, IOseeBranch branch, Integer... artifactIds) throws OseeCoreException;
 
-   DataLoader fromBranchAndArtifactIds(OrcsSession session, IOseeBranch branch, int... artifactIds) throws OseeCoreException;
+   DataLoader newDataLoaderFromIds(OrcsSession session, IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException;
 
-   DataLoader fromBranchAndIds(OrcsSession session, IOseeBranch branch, Collection<String> ids) throws OseeCoreException;
+   DataLoader newDataLoaderFromGuids(OrcsSession session, IOseeBranch branch, String... artifactGuids) throws OseeCoreException;
 
-   DataLoader fromBranchAndIds(OrcsSession session, IOseeBranch branch, String... ids) throws OseeCoreException;
+   DataLoader newDataLoaderFromGuids(OrcsSession session, IOseeBranch branch, Collection<String> artifactGuids) throws OseeCoreException;
 
 }

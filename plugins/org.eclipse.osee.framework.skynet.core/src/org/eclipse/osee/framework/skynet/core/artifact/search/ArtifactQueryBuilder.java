@@ -417,7 +417,7 @@ public class ArtifactQueryBuilder {
             tx = TransactionManager.getTransactionId(txId);
          }
          List<Artifact> results =
-            ArtifactLoader.loadArtifacts(localIds, branch, LoadLevel.SHALLOW, LoadType.INCLUDE_CACHE, allowDeleted, tx);
+            ArtifactLoader.loadArtifacts(localIds, branch, LoadLevel.ARTIFACT_DATA, LoadType.INCLUDE_CACHE, allowDeleted, tx);
          return results.size();
       }
 

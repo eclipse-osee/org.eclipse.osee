@@ -17,25 +17,20 @@ package org.eclipse.osee.framework.core.enums;
  * @author Ryan D. Brooks
  */
 public enum LoadLevel {
-   SHALLOW,
-   FULL,
-   RELATION,
-   ATTRIBUTE,
-   ALL_CURRENT;
+   ARTIFACT_DATA,
+   ALL,
+   RELATION_DATA,
+   ARTIFACT_AND_ATTRIBUTE_DATA;
 
    public boolean isShallow() {
-      return this == SHALLOW;
+      return this == ARTIFACT_DATA;
    }
 
    public boolean isRelationsOnly() {
-      return this == RELATION;
-   }
-
-   public boolean isHead() {
-      return this == ALL_CURRENT;
+      return this == RELATION_DATA;
    }
 
    public boolean isAttributesOnly() {
-      return this == ATTRIBUTE;
+      return this == ARTIFACT_AND_ATTRIBUTE_DATA;
    }
 }

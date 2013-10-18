@@ -132,10 +132,10 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadFull() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.FULL;
+      LoadLevel expectedLoadLevel = LoadLevel.ALL;
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX_ID);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
@@ -152,7 +152,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadArtifactIds() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.SHALLOW;
+      LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
       " jart1.art_id, art1.art_type_id, art1.guid\n" + //
       " FROM \n" + //
@@ -162,8 +162,8 @@ public class DataLoaderFactoryImplTest {
       " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
       " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -174,7 +174,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadArtifactIncludeDeleted() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.SHALLOW;
+      LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
       " jart1.art_id, art1.art_type_id, art1.guid\n" + //
       " FROM \n" + //
@@ -184,9 +184,9 @@ public class DataLoaderFactoryImplTest {
       " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
       " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
-      dataLoader.includeDeleted();
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
+      dataLoader.includeDeletedArtifacts();
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -197,7 +197,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadArtifactHistorical() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.SHALLOW;
+      LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.transaction_id as stripe_transaction_id,\n" + //
          " jart1.art_id, art1.art_type_id, art1.guid\n" + //
@@ -205,11 +205,11 @@ public class DataLoaderFactoryImplTest {
          "osee_join_artifact jart1, osee_artifact art1, osee_txs txs1\n" + //
          " WHERE \n" + //
          "art1.art_id = jart1.art_id AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.transaction_id <= jart1.transaction_id AND txs1.tx_current IN (1, 0) AND txs1.branch_id = jart1.branch_id\n" + //
+         " AND txs1.transaction_id <= jart1.transaction_id AND txs1.mod_type != 3 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX_ID);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
@@ -221,7 +221,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadArtifactHistoricalIncludeDeleted() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.SHALLOW;
+      LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.transaction_id as stripe_transaction_id,\n" + //
          " jart1.art_id, art1.art_type_id, art1.guid\n" + //
@@ -232,10 +232,10 @@ public class DataLoaderFactoryImplTest {
          " AND txs1.transaction_id <= jart1.transaction_id AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX_ID);
-      dataLoader.includeDeleted();
+      dataLoader.includeDeletedArtifacts();
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -247,7 +247,7 @@ public class DataLoaderFactoryImplTest {
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    @Test
    public void testLoadAttributes() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.ATTRIBUTE;
+      LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
       " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
@@ -258,8 +258,8 @@ public class DataLoaderFactoryImplTest {
       " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
       " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -270,7 +270,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadAttributesWithType() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.ATTRIBUTE;
+      LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
@@ -282,9 +282,9 @@ public class DataLoaderFactoryImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
-      dataLoader.loadAttributeType(CoreAttributeTypes.Annotation);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
+      dataLoader.withAttributeTypes(CoreAttributeTypes.Annotation);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -296,7 +296,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadAttributesWithTypes() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.ATTRIBUTE;
+      LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
@@ -308,9 +308,9 @@ public class DataLoaderFactoryImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
-      dataLoader.loadAttributeType(CoreAttributeTypes.Annotation, CoreAttributeTypes.Category);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
+      dataLoader.withAttributeTypes(CoreAttributeTypes.Annotation, CoreAttributeTypes.Category);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -327,7 +327,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadAttributesWithId() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.ATTRIBUTE;
+      LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
       " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
@@ -338,9 +338,9 @@ public class DataLoaderFactoryImplTest {
       " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
       " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
-      dataLoader.loadAttributeLocalId(45);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
+      dataLoader.withAttributeIds(45);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -351,7 +351,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadAttributesWithIds() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.ATTRIBUTE;
+      LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
@@ -363,9 +363,9 @@ public class DataLoaderFactoryImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
-      dataLoader.loadAttributeLocalId(45, 55);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
+      dataLoader.withAttributeIds(45, 55);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -376,7 +376,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadAttributesWithIdsAndTypes() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.ATTRIBUTE;
+      LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
@@ -388,10 +388,10 @@ public class DataLoaderFactoryImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
-      dataLoader.loadAttributeLocalId(45, 55);
-      dataLoader.loadAttributeType(CoreAttributeTypes.Annotation, CoreAttributeTypes.Category);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
+      dataLoader.withAttributeIds(45, 55);
+      dataLoader.withAttributeTypes(CoreAttributeTypes.Annotation, CoreAttributeTypes.Category);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -409,7 +409,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadAttributesWithIdAndType() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.ATTRIBUTE;
+      LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
@@ -421,10 +421,10 @@ public class DataLoaderFactoryImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
-      dataLoader.loadAttributeLocalId(45);
-      dataLoader.loadAttributeType(CoreAttributeTypes.Annotation);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
+      dataLoader.withAttributeIds(45);
+      dataLoader.withAttributeTypes(CoreAttributeTypes.Annotation);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -436,7 +436,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadAttributesIncludeDeleted() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.ATTRIBUTE;
+      LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
       " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
@@ -447,9 +447,9 @@ public class DataLoaderFactoryImplTest {
       " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
       " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
-      dataLoader.includeDeleted();
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
+      dataLoader.includeDeletedArtifacts();
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -460,7 +460,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadAttributesHistorical() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.ATTRIBUTE;
+      LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.transaction_id as stripe_transaction_id,\n" + //
@@ -469,11 +469,11 @@ public class DataLoaderFactoryImplTest {
          "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
          " WHERE \n" + //
          "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.transaction_id <= jart1.transaction_id AND txs1.tx_current IN (1, 0) AND txs1.branch_id = jart1.branch_id\n" + //
+         " AND txs1.transaction_id <= jart1.transaction_id AND txs1.mod_type != 3 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX_ID);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
@@ -485,7 +485,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadAttributesHistoricalIncludeDeleted() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.ATTRIBUTE;
+      LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.transaction_id as stripe_transaction_id,\n" + //
@@ -497,10 +497,10 @@ public class DataLoaderFactoryImplTest {
          " AND txs1.transaction_id <= jart1.transaction_id AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX_ID);
-      dataLoader.includeDeleted();
+      dataLoader.includeDeletedArtifacts();
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -513,7 +513,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadRelations() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.RELATION;
+      LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
@@ -525,8 +525,8 @@ public class DataLoaderFactoryImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -537,7 +537,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadRelationsIncludeDeleted() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.RELATION;
+      LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
@@ -549,9 +549,9 @@ public class DataLoaderFactoryImplTest {
          " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
-      dataLoader.includeDeleted();
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
+      dataLoader.includeDeletedArtifacts();
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -562,7 +562,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadRelationsWithType() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.RELATION;
+      LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
@@ -574,9 +574,9 @@ public class DataLoaderFactoryImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
-      dataLoader.loadRelationType(CoreRelationTypes.Default_Hierarchical__Child);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
+      dataLoader.withRelationTypes(CoreRelationTypes.Default_Hierarchical__Child);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -588,7 +588,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadRelationsWithTypes() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.RELATION;
+      LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
@@ -600,9 +600,10 @@ public class DataLoaderFactoryImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
-      dataLoader.loadRelationType(CoreRelationTypes.Default_Hierarchical__Child, CoreRelationTypes.Dependency__Artifact);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
+      dataLoader.withRelationTypes(CoreRelationTypes.Default_Hierarchical__Child,
+         CoreRelationTypes.Dependency__Artifact);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -620,7 +621,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadRelationsWithId() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.RELATION;
+      LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
@@ -632,9 +633,9 @@ public class DataLoaderFactoryImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
-      dataLoader.loadRelationLocalId(45);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
+      dataLoader.withRelationIds(45);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -645,7 +646,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadRelationsWithIds() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.RELATION;
+      LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
@@ -657,9 +658,9 @@ public class DataLoaderFactoryImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
-      dataLoader.loadRelationLocalId(45, 55);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
+      dataLoader.withRelationIds(45, 55);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -670,7 +671,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadRelationsWithIdsAndTypes() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.RELATION;
+      LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
@@ -682,10 +683,11 @@ public class DataLoaderFactoryImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
-      dataLoader.loadRelationLocalId(45, 55);
-      dataLoader.loadRelationType(CoreRelationTypes.Default_Hierarchical__Child, CoreRelationTypes.Dependency__Artifact);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
+      dataLoader.withRelationIds(45, 55);
+      dataLoader.withRelationTypes(CoreRelationTypes.Default_Hierarchical__Child,
+         CoreRelationTypes.Dependency__Artifact);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -705,7 +707,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadRelationsWithIdAndType() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.RELATION;
+      LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
@@ -717,10 +719,10 @@ public class DataLoaderFactoryImplTest {
          " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
-      dataLoader.loadRelationLocalId(45);
-      dataLoader.loadRelationType(CoreRelationTypes.Default_Hierarchical__Child);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
+      dataLoader.withRelationIds(45);
+      dataLoader.withRelationTypes(CoreRelationTypes.Default_Hierarchical__Child);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
@@ -732,7 +734,7 @@ public class DataLoaderFactoryImplTest {
 
    @Test
    public void testLoadRelationsHistorical() throws OseeCoreException {
-      LoadLevel expectedLoadLevel = LoadLevel.RELATION;
+      LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.transaction_id as stripe_transaction_id,\n" + //
@@ -741,11 +743,11 @@ public class DataLoaderFactoryImplTest {
          "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
          " WHERE \n" + //
          "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.transaction_id <= jart1.transaction_id AND txs1.tx_current IN (1, 0) AND txs1.branch_id = jart1.branch_id\n" + //
+         " AND txs1.transaction_id <= jart1.transaction_id AND txs1.mod_type != 3 AND txs1.branch_id = jart1.branch_id\n" + //
          " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
-      DataLoader dataLoader = factory.fromBranchAndArtifactIds(session, BRANCH, Arrays.asList(1, 2, 3));
-      dataLoader.setLoadLevel(expectedLoadLevel);
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
       dataLoader.fromTransaction(EXPECTED_TX_ID);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
@@ -753,6 +755,58 @@ public class DataLoaderFactoryImplTest {
       dataLoader.load(cancellation, builder);
 
       verifyCommon(EXPECTED_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected);
+   }
+
+   @Test
+   public void testLoadArtifactIncludeDeletedAttributes() throws OseeCoreException {
+      LoadLevel expectedLoadLevel = LoadLevel.ALL;
+      String expected =
+         "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
+         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+         " FROM \n" + //
+         "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
+         " WHERE \n" + //
+         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+         " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
+         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
+      dataLoader.includeDeletedAttributes();
+      dataLoader.withAttributeIds(45, 55);
+      dataLoader.withAttributeTypes(CoreAttributeTypes.Annotation, CoreAttributeTypes.Category);
+
+      assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
+
+      dataLoader.load(cancellation, builder);
+
+      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected);
+   }
+
+   @Test
+   public void testLoadArtifactIncludeDeletedRelations() throws OseeCoreException {
+      LoadLevel expectedLoadLevel = LoadLevel.ALL;
+      String expected =
+         "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
+         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+         " FROM \n" + //
+         "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
+         " WHERE \n" + //
+         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_type_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+         " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
+         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+
+      DataLoader dataLoader = factory.newDataLoaderFromIds(session, BRANCH, Arrays.asList(1, 2, 3));
+      dataLoader.withLoadLevel(expectedLoadLevel);
+      dataLoader.includeDeletedRelations();
+      dataLoader.withRelationTypes(CoreRelationTypes.Default_Hierarchical__Child);
+
+      assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
+
+      dataLoader.load(cancellation, builder);
+
+      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected,
+         CoreRelationTypes.Default_Hierarchical__Child.getGuid().intValue());
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -789,7 +843,7 @@ public class DataLoaderFactoryImplTest {
       assertEquals(isHeadTx, OptionsUtil.isHeadTransaction(options));
       assertEquals(!isHeadTx, OptionsUtil.isHistorical(options));
       assertEquals(level, OptionsUtil.getLoadLevel(options));
-      assertEquals(includeDeleted, OptionsUtil.getIncludeDeleted(options));
+      assertEquals(includeDeleted, OptionsUtil.getIncludeDeletedArtifacts(options));
 
       assertTrue(joinCaptor.getValue().wasStored());
       assertEquals(3, joinCaptor.getValue().size());

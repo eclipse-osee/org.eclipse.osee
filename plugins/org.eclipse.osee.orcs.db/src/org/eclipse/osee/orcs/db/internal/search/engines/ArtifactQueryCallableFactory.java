@@ -87,7 +87,7 @@ public class ArtifactQueryCallableFactory implements QueryCallableFactory {
       }
 
       private boolean isLoadLevelTooLow(LoadLevel level) {
-         return LoadLevel.SHALLOW == level;
+         return LoadLevel.ARTIFACT_DATA == level;
       }
 
       protected boolean isPostProcessRequired() {
@@ -98,14 +98,14 @@ public class ArtifactQueryCallableFactory implements QueryCallableFactory {
          QuerySqlContext queryContext = queryContextFactory.createQueryContext(getSession(), getQueryData());
          checkForCancelled();
 
-         DataLoader loader = objectLoader.fromQueryContext(queryContext);
+         DataLoader loader = objectLoader.newDataLoader(queryContext);
          loader.setOptions(getQueryData().getOptions());
 
          if (enableFilter) {
             // Ensure we will receive attribute data for post-process
             LoadLevel level = loader.getLoadLevel();
             if (isLoadLevelTooLow(level)) {
-               loader.setLoadLevel(LoadLevel.ATTRIBUTE);
+               loader.withLoadLevel(LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA);
             }
          }
          ArtifactDataCountHandler countingHandler = factory.createHandler(this, getQueryData(), queryContext, handler);

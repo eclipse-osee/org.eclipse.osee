@@ -124,7 +124,7 @@ public class ArtifactPersistenceManager {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
       queryParameters.add(BranchManager.getBranchId(branch));
       return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT, queryParameters, branch),
-         queryParameters.toArray(), 100, LoadLevel.FULL, INCLUDE_CACHE, confirmer, null, EXCLUDE_DELETED);
+         queryParameters.toArray(), 100, LoadLevel.ALL, INCLUDE_CACHE, confirmer, null, EXCLUDE_DELETED);
    }
 
    /**

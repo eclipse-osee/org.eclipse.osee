@@ -24,7 +24,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import java.util.Iterator;
+
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -100,8 +102,8 @@ public class LoaderTest {
 
    @org.junit.Test
    public void testLoad() throws OseeCoreException {
-      DataLoader loader = loaderFactory.fromBranchAndArtifactIds(session, CoreBranches.COMMON, 5, 6, 7);
-      loader.setLoadLevel(LoadLevel.FULL);
+      DataLoader loader = loaderFactory.newDataLoaderFromIds(session, CoreBranches.COMMON, 5, 6, 7);
+      loader.withLoadLevel(LoadLevel.ALL);
 
       loader.load(cancellation, builder);
 
@@ -151,11 +153,11 @@ public class LoaderTest {
 
    @org.junit.Test
    public void testLoadByTypes() throws OseeCoreException {
-      DataLoader loader = loaderFactory.fromBranchAndArtifactIds(session, CoreBranches.COMMON, 5, 6, 7);
-      loader.setLoadLevel(LoadLevel.FULL);
+      DataLoader loader = loaderFactory.newDataLoaderFromIds(session, CoreBranches.COMMON, 5, 6, 7);
+      loader.withLoadLevel(LoadLevel.ALL);
 
-      loader.loadAttributeType(Name);
-      loader.loadRelationType(Default_Hierarchical__Parent);
+      loader.withAttributeTypes(Name);
+      loader.withRelationTypes(Default_Hierarchical__Parent);
 
       loader.load(cancellation, builder);
 
@@ -200,11 +202,11 @@ public class LoaderTest {
 
    @org.junit.Test
    public void testLoadByIds() throws OseeCoreException {
-      DataLoader loader = loaderFactory.fromBranchAndArtifactIds(session, CoreBranches.COMMON, 5, 6, 7);
-      loader.setLoadLevel(LoadLevel.FULL);
+      DataLoader loader = loaderFactory.newDataLoaderFromIds(session, CoreBranches.COMMON, 5, 6, 7);
+      loader.withLoadLevel(LoadLevel.ALL);
 
-      loader.loadAttributeLocalId(11, 14);
-      loader.loadRelationLocalId(2, 3);
+      loader.withAttributeIds(11, 14);
+      loader.withRelationIds(2, 3);
 
       loader.load(cancellation, builder);
 
@@ -248,8 +250,8 @@ public class LoaderTest {
    @org.junit.Test
    public void testLoadByGuids() throws OseeCoreException {
       String[] ids = new String[] {"AkA10I4aUSDLuFNIaegA", "AkA10LiAPEZLR4+jdFQA", "AkA2AcT6AXe6ivMFRhAA"};
-      DataLoader loader = loaderFactory.fromBranchAndIds(session, CoreBranches.COMMON, ids);
-      loader.setLoadLevel(LoadLevel.FULL);
+      DataLoader loader = loaderFactory.newDataLoaderFromGuids(session, CoreBranches.COMMON, ids);
+      loader.withLoadLevel(LoadLevel.ALL);
 
       loader.load(cancellation, builder);
 

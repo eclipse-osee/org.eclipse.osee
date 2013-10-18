@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,9 +31,7 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
 import org.eclipse.osee.orcs.db.internal.loader.executors.AbstractLoadExecutor;
 import org.eclipse.osee.orcs.db.internal.loader.executors.ArtifactQueryContextLoadExecutor;
-import org.eclipse.osee.orcs.db.internal.loader.executors.LoadExecutor;
 import org.eclipse.osee.orcs.db.internal.loader.executors.QueryContextLoadExecutor;
-import org.eclipse.osee.orcs.db.internal.loader.executors.UuidsLoadExecutor;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContext;
 
@@ -91,7 +90,7 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
    }
 
    @Override
-   public DataLoader fromQueryContext(QueryContext queryContext) throws OseeCoreException {
+   public DataLoader newDataLoader(QueryContext queryContext) throws OseeCoreException {
       AbstractLoadExecutor executor;
       if (queryContext instanceof ArtifactQuerySqlContext) {
          ArtifactQuerySqlContext sqlQueryContext = adapt(ArtifactQuerySqlContext.class, queryContext);
@@ -101,37 +100,31 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
          executor = new QueryContextLoadExecutor(loader, dbService, sqlQueryContext);
       }
       Options options = OptionsUtil.createOptions();
-      return new DataLoaderImpl(logger, executor, options);
+      return new DataLoaderImpl(logger, executor, options, null, null, branchCache, loader);
    }
 
    @Override
-   public DataLoader fromBranchAndArtifactIds(OrcsSession session, IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException {
+   public DataLoader newDataLoaderFromIds(OrcsSession session, IOseeBranch branch, Integer... ids) throws OseeCoreException {
+      return newDataLoaderFromIds(session, branch, Arrays.asList(ids));
+   }
+
+   @Override
+   public DataLoader newDataLoaderFromIds(OrcsSession session, IOseeBranch branch, Collection<Integer> ids) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
-      Conditions.checkNotNullOrEmpty(artifactIds, "artifactIds");
-
-      AbstractLoadExecutor executor = new LoadExecutor(loader, dbService, branchCache, session, branch, artifactIds);
       Options options = OptionsUtil.createOptions();
-      return new DataLoaderImpl(logger, executor, options);
+      return new DataLoaderImpl(logger, ids, options, session, branch, branchCache, loader);
    }
 
    @Override
-   public DataLoader fromBranchAndArtifactIds(OrcsSession session, IOseeBranch branch, int... artifactIds) throws OseeCoreException {
-      return fromBranchAndArtifactIds(session, branch, toCollection(artifactIds));
+   public DataLoader newDataLoaderFromGuids(OrcsSession session, IOseeBranch branch, String... guids) throws OseeCoreException {
+      return newDataLoaderFromGuids(session, branch, Arrays.asList(guids));
    }
 
    @Override
-   public DataLoader fromBranchAndIds(OrcsSession session, IOseeBranch branch, Collection<String> guids) throws OseeCoreException {
+   public DataLoader newDataLoaderFromGuids(OrcsSession session, IOseeBranch branch, Collection<String> guids) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
-      Conditions.checkNotNullOrEmpty(guids, "artifactGuids");
-
-      AbstractLoadExecutor executor = new UuidsLoadExecutor(loader, dbService, branchCache, session, branch, guids);
       Options options = OptionsUtil.createOptions();
-      return new DataLoaderImpl(logger, executor, options);
-   }
-
-   @Override
-   public DataLoader fromBranchAndIds(OrcsSession session, IOseeBranch branch, String... ids) throws OseeCoreException {
-      return fromBranchAndIds(session, branch, toCollection(ids));
+      return new DataLoaderImpl(logger, options, session, branch, branchCache, loader, guids);
    }
 
    @SuppressWarnings("unchecked")

@@ -14,14 +14,19 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -31,6 +36,8 @@ import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
 import org.eclipse.osee.orcs.db.internal.loader.executors.AbstractLoadExecutor;
+import org.eclipse.osee.orcs.db.internal.loader.executors.LoadExecutor;
+import org.eclipse.osee.orcs.db.internal.loader.executors.UuidsLoadExecutor;
 
 public class DataLoaderImpl implements DataLoader {
 
@@ -41,16 +48,46 @@ public class DataLoaderImpl implements DataLoader {
    private final Collection<IRelationType> relationTypes = new HashSet<IRelationType>();
 
    private final Log logger;
-   private final AbstractLoadExecutor loadExecutor;
+   private AbstractLoadExecutor loadExecutor;
    private final Options options;
 
-   public DataLoaderImpl(Log logger, AbstractLoadExecutor loadExecutor, Options options) {
+   private final OrcsSession session;
+   private final IOseeBranch branch;
+   private final BranchCache branchCache;
+   private final SqlObjectLoader sqlLoader;
+
+   public DataLoaderImpl(Log logger, AbstractLoadExecutor loadExecutor, Options options, OrcsSession session, IOseeBranch branch, BranchCache branchCache, SqlObjectLoader sqlLoader) {
       this.logger = logger;
       this.loadExecutor = loadExecutor;
       this.options = options;
+      this.session = session;
+      this.branch = branch;
+      this.branchCache = branchCache;
+      this.sqlLoader = sqlLoader;
    }
 
-   @Override
+   public DataLoaderImpl(Log logger, Collection<Integer> artifactIds, Options options, OrcsSession session, IOseeBranch branch, BranchCache branchCache, SqlObjectLoader sqlLoader) {
+      this.logger = logger;
+      this.options = options;
+      this.session = session;
+      this.branch = branch;
+      this.branchCache = branchCache;
+      this.sqlLoader = sqlLoader;
+
+      withArtifactIds(artifactIds);
+   }
+
+   public DataLoaderImpl(Log logger, Options options, OrcsSession session, IOseeBranch branch, BranchCache branchCache, SqlObjectLoader sqlLoader, Collection<String> artifactIds) {
+      this.logger = logger;
+      this.options = options;
+      this.session = session;
+      this.branch = branch;
+      this.branchCache = branchCache;
+      this.sqlLoader = sqlLoader;
+
+      withArtifactGuids(artifactIds);
+   }
+
    public DataLoader resetToDefaults() {
       OptionsUtil.reset(getOptions());
 
@@ -73,20 +110,52 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    @Override
-   public DataLoader includeDeleted() {
-      includeDeleted(true);
+   public DataLoader includeDeletedArtifacts() {
+      includeDeletedArtifacts(true);
       return this;
    }
 
    @Override
-   public DataLoader includeDeleted(boolean enabled) {
-      OptionsUtil.setIncludeDeleted(getOptions(), enabled);
+   public DataLoader includeDeletedArtifacts(boolean enabled) {
+      OptionsUtil.setIncludeDeletedArtifacts(getOptions(), enabled);
       return this;
    }
 
    @Override
-   public boolean areDeletedIncluded() {
-      return OptionsUtil.areDeletedIncluded(getOptions());
+   public DataLoader includeDeletedAttributes() {
+      return includeDeletedAttributes(true);
+   }
+
+   @Override
+   public DataLoader includeDeletedAttributes(boolean enabled) {
+      OptionsUtil.setIncludeDeletedAttributes(getOptions(), enabled);
+      return this;
+   }
+
+   @Override
+   public DataLoader includeDeletedRelations() {
+      return includeDeletedRelations(true);
+   }
+
+   @Override
+   public DataLoader includeDeletedRelations(boolean enabled) {
+      OptionsUtil.setIncludeDeletedRelations(getOptions(), enabled);
+      return this;
+   }
+
+   @Override
+   public boolean areDeletedArtifactsIncluded() {
+      return OptionsUtil.areDeletedArtifactsIncluded(getOptions());
+   }
+
+   @Override
+   public boolean areDeletedAttributesIncluded() {
+      return OptionsUtil.areDeletedAttributesIncluded(getOptions());
+   }
+
+   @Override
+   public boolean areDeletedRelationsIncluded() {
+      return OptionsUtil.areDeletedRelationsIncluded(getOptions());
    }
 
    @Override
@@ -101,7 +170,7 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    @Override
-   public DataLoader headTransaction() {
+   public DataLoader fromHeadTransaction() {
       OptionsUtil.setHeadTransaction(getOptions());
       return this;
    }
@@ -117,55 +186,67 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    @Override
-   public DataLoader setLoadLevel(LoadLevel loadLevel) {
+   public DataLoader withLoadLevel(LoadLevel loadLevel) {
       OptionsUtil.setLoadLevel(getOptions(), loadLevel);
       return this;
    }
 
+   private DataLoader withArtifactIds(Collection<Integer> artifactIds) {
+      loadExecutor =
+         new LoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), branchCache, session, branch, artifactIds);
+      return this;
+   }
+
+   private DataLoader withArtifactGuids(Collection<String> artifactGuids) {
+      loadExecutor =
+         new UuidsLoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), branchCache, session, branch, artifactGuids);
+      return this;
+   }
+
    @Override
-   public DataLoader loadAttributeType(IAttributeType... attributeType) throws OseeCoreException {
-      return loadAttributeTypes(Arrays.asList(attributeType));
+   public DataLoader withAttributeTypes(IAttributeType... attributeType) throws OseeCoreException {
+      return withAttributeTypes(Arrays.asList(attributeType));
    }
 
    @SuppressWarnings("unused")
    @Override
-   public DataLoader loadAttributeTypes(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
+   public DataLoader withAttributeTypes(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
       this.attributeTypes.addAll(attributeTypes);
       return this;
    }
 
    @Override
-   public DataLoader loadRelationType(IRelationType... relationType) throws OseeCoreException {
-      return loadRelationTypes(Arrays.asList(relationType));
+   public DataLoader withRelationTypes(IRelationType... relationType) throws OseeCoreException {
+      return withRelationTypes(Arrays.asList(relationType));
    }
 
    @SuppressWarnings("unused")
    @Override
-   public DataLoader loadRelationTypes(Collection<? extends IRelationType> relationTypes) throws OseeCoreException {
+   public DataLoader withRelationTypes(Collection<? extends IRelationType> relationTypes) throws OseeCoreException {
       this.relationTypes.addAll(relationTypes);
       return this;
    }
 
    @Override
-   public DataLoader loadAttributeLocalId(int... attributeIds) throws OseeCoreException {
-      return loadAttributeLocalIds(toCollection(attributeIds));
+   public DataLoader withAttributeIds(int... attributeIds) throws OseeCoreException {
+      return withAttributeIds(toCollection(attributeIds));
    }
 
    @SuppressWarnings("unused")
    @Override
-   public DataLoader loadAttributeLocalIds(Collection<Integer> attributeIds) throws OseeCoreException {
+   public DataLoader withAttributeIds(Collection<Integer> attributeIds) throws OseeCoreException {
       this.attributeIds.addAll(attributeIds);
       return this;
    }
 
    @Override
-   public DataLoader loadRelationLocalId(int... relationIds) throws OseeCoreException {
-      return loadRelationLocalIds(toCollection(relationIds));
+   public DataLoader withRelationIds(int... relationIds) throws OseeCoreException {
+      return withRelationIds(toCollection(relationIds));
    }
 
    @SuppressWarnings("unused")
    @Override
-   public DataLoader loadRelationLocalIds(Collection<Integer> relationIds) throws OseeCoreException {
+   public DataLoader withRelationIds(Collection<Integer> relationIds) throws OseeCoreException {
       this.relationIds.addAll(relationIds);
       return this;
    }
@@ -188,6 +269,11 @@ public class DataLoaderImpl implements DataLoader {
 
    ////////////////////// EXECUTE METHODS
    @Override
+   public void load(LoadDataHandler handler) throws OseeCoreException {
+      load(null, handler);
+   }
+
+   @Override
    public void load(HasCancellation cancellation, LoadDataHandler handler) throws OseeCoreException {
       long startTime = 0;
 
@@ -197,6 +283,7 @@ public class DataLoaderImpl implements DataLoader {
          startTime = System.currentTimeMillis();
          logger.trace("%s [start] - [%s] [%s]", getClass().getSimpleName(), criteria, options);
       }
+      determineLoadExecutor();
       Exception saveException = null;
       try {
          handler.onLoadStart();
@@ -228,4 +315,11 @@ public class DataLoaderImpl implements DataLoader {
       CriteriaRelation relationCriteria = new CriteriaRelation(copy(relationIds), copy(relationTypes));
       return new CriteriaOrcsLoad(artifactCriteria, attributeCriteria, relationCriteria);
    }
+
+   private void determineLoadExecutor() throws OseeCoreException {
+      if (loadExecutor == null) {
+         throw new OseeArgumentException("Either artifacts ID or Query Context must be specified");
+      }
+   }
+
 }

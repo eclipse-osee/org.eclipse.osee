@@ -35,21 +35,22 @@ public class OptionsUtilTest {
       Options defaults = OptionsUtil.createOptions();
 
       assertEquals(-1, OptionsUtil.getFromTransaction(defaults));
-      assertEquals(DeletionFlag.EXCLUDE_DELETED, OptionsUtil.getIncludeDeleted(defaults));
-      assertEquals(LoadLevel.SHALLOW, OptionsUtil.getLoadLevel(defaults));
-      assertEquals(false, OptionsUtil.areDeletedIncluded(defaults));
+      assertEquals(DeletionFlag.EXCLUDE_DELETED, OptionsUtil.getIncludeDeletedArtifacts(defaults));
+      assertEquals(LoadLevel.ALL, OptionsUtil.getLoadLevel(defaults));
+      assertEquals(false, OptionsUtil.areDeletedArtifactsIncluded(defaults));
 
+      assertEquals(false, OptionsUtil.isCacheIncluded(defaults));
       assertEquals(true, OptionsUtil.isHeadTransaction(defaults));
       assertEquals(false, OptionsUtil.isHistorical(defaults));
    }
 
    @Test
    public void testSetGetLoadLevel() {
-      assertEquals(LoadLevel.SHALLOW, OptionsUtil.getLoadLevel(options));
+      assertEquals(LoadLevel.ARTIFACT_DATA, OptionsUtil.getLoadLevel(options));
 
-      OptionsUtil.setLoadLevel(options, LoadLevel.ATTRIBUTE);
+      OptionsUtil.setLoadLevel(options, LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA);
 
-      assertEquals(LoadLevel.ATTRIBUTE, OptionsUtil.getLoadLevel(options));
+      assertEquals(LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA, OptionsUtil.getLoadLevel(options));
    }
 
    @Test
@@ -73,34 +74,46 @@ public class OptionsUtilTest {
 
    @Test
    public void testSetGetIncludeDeleted() {
-      assertEquals(DeletionFlag.EXCLUDE_DELETED, OptionsUtil.getIncludeDeleted(options));
-      assertEquals(false, OptionsUtil.areDeletedIncluded(options));
+      assertEquals(DeletionFlag.EXCLUDE_DELETED, OptionsUtil.getIncludeDeletedArtifacts(options));
+      assertEquals(false, OptionsUtil.areDeletedArtifactsIncluded(options));
 
-      OptionsUtil.setIncludeDeleted(options, true);
+      OptionsUtil.setIncludeDeletedArtifacts(options, true);
 
-      assertEquals(DeletionFlag.INCLUDE_DELETED, OptionsUtil.getIncludeDeleted(options));
-      assertEquals(true, OptionsUtil.areDeletedIncluded(options));
+      assertEquals(DeletionFlag.INCLUDE_DELETED, OptionsUtil.getIncludeDeletedArtifacts(options));
+      assertEquals(true, OptionsUtil.areDeletedArtifactsIncluded(options));
+   }
+
+   @Test
+   public void testSetGetIncludeCache() {
+      assertEquals(false, OptionsUtil.isCacheIncluded(options));
+
+      OptionsUtil.setIncludeCache(options, true);
+
+      assertEquals(true, OptionsUtil.isCacheIncluded(options));
    }
 
    @Test
    public void testReset() {
       OptionsUtil.setFromTransaction(options, 1231);
-      OptionsUtil.setLoadLevel(options, LoadLevel.ATTRIBUTE);
-      OptionsUtil.setIncludeDeleted(options, true);
+      OptionsUtil.setLoadLevel(options, LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA);
+      OptionsUtil.setIncludeDeletedArtifacts(options, true);
+      OptionsUtil.setIncludeCache(options, true);
 
       assertEquals(1231, OptionsUtil.getFromTransaction(options));
-      assertEquals(DeletionFlag.INCLUDE_DELETED, OptionsUtil.getIncludeDeleted(options));
-      assertEquals(LoadLevel.ATTRIBUTE, OptionsUtil.getLoadLevel(options));
-      assertEquals(true, OptionsUtil.areDeletedIncluded(options));
+      assertEquals(DeletionFlag.INCLUDE_DELETED, OptionsUtil.getIncludeDeletedArtifacts(options));
+      assertEquals(LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA, OptionsUtil.getLoadLevel(options));
+      assertEquals(true, OptionsUtil.areDeletedArtifactsIncluded(options));
+      assertEquals(true, OptionsUtil.isCacheIncluded(options));
       assertEquals(false, OptionsUtil.isHeadTransaction(options));
       assertEquals(true, OptionsUtil.isHistorical(options));
 
       OptionsUtil.reset(options);
 
       assertEquals(-1, OptionsUtil.getFromTransaction(options));
-      assertEquals(DeletionFlag.EXCLUDE_DELETED, OptionsUtil.getIncludeDeleted(options));
-      assertEquals(LoadLevel.SHALLOW, OptionsUtil.getLoadLevel(options));
-      assertEquals(false, OptionsUtil.areDeletedIncluded(options));
+      assertEquals(DeletionFlag.EXCLUDE_DELETED, OptionsUtil.getIncludeDeletedArtifacts(options));
+      assertEquals(LoadLevel.ALL, OptionsUtil.getLoadLevel(options));
+      assertEquals(false, OptionsUtil.areDeletedArtifactsIncluded(options));
+      assertEquals(false, OptionsUtil.isCacheIncluded(options));
       assertEquals(true, OptionsUtil.isHeadTransaction(options));
       assertEquals(false, OptionsUtil.isHistorical(options));
    }

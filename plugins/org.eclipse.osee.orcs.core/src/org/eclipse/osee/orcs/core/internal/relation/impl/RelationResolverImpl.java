@@ -62,7 +62,7 @@ public class RelationResolverImpl implements RelationResolver {
             }
          }
          if (toLoad != null && !toLoad.isEmpty()) {
-            Iterable<T> result = loader.loadNodes(session, graph, toLoad, LoadLevel.FULL);
+            Iterable<T> result = loader.loadNodes(session, graph, toLoad, LoadLevel.ALL);
             for (T item : result) {
                items.put(item.getLocalId(), item);
             }
@@ -88,7 +88,7 @@ public class RelationResolverImpl implements RelationResolver {
 
    @Override
    public void resolve(OrcsSession session, GraphData graph, RelationNode node) throws OseeCoreException {
-      loader.loadNodes(session, graph, Collections.singleton(node.getLocalId()), LoadLevel.RELATION);
+      loader.loadNodes(session, graph, Collections.singleton(node.getLocalId()), LoadLevel.RELATION_DATA);
    }
 
 }

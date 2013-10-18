@@ -98,7 +98,7 @@ public class RelationManagerTest {
 
       manager = RelationManagerFactory.createRelationManager(logger, types, relationFactory, loader);
 
-      when(loader.loadNodes(eq(session), eq(graph), anyCollectionOf(Integer.class), eq(LoadLevel.FULL))).thenAnswer(
+      when(loader.loadNodes(eq(session), eq(graph), anyCollectionOf(Integer.class), eq(LoadLevel.ALL))).thenAnswer(
          new LoaderAnswer());
 
       when(node1.getLocalId()).thenReturn(11);
@@ -175,7 +175,7 @@ public class RelationManagerTest {
    public void testGetRelatedOnSideA() throws OseeCoreException {
       ResultSet<RelationNode> nodes = manager.getRelated(session, graph, DEFAULT_HIERARCHY, node1, IS_PARENT);
 
-      verify(loader).loadNodes(eq(session), eq(graph), captor.capture(), eq(LoadLevel.FULL));
+      verify(loader).loadNodes(eq(session), eq(graph), captor.capture(), eq(LoadLevel.ALL));
 
       Collection<Integer> toLoad = captor.getValue();
       assertEquals(3, toLoad.size());
@@ -195,7 +195,7 @@ public class RelationManagerTest {
    public void testGetRelatedOnSideB() throws OseeCoreException {
       ResultSet<RelationNode> readables = manager.getRelated(session, graph, DEFAULT_HIERARCHY, node1, IS_CHILD);
 
-      verify(loader).loadNodes(eq(session), eq(graph), captor.capture(), eq(LoadLevel.FULL));
+      verify(loader).loadNodes(eq(session), eq(graph), captor.capture(), eq(LoadLevel.ALL));
 
       Collection<Integer> toLoad = captor.getValue();
       assertEquals(1, toLoad.size());

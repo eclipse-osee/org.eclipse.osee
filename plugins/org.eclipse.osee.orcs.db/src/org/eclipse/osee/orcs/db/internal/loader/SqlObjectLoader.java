@@ -82,7 +82,15 @@ public class SqlObjectLoader {
       txProcessor = new TransactionLoadProcessor(objectFactory);
    }
 
-   private IOseeDatabaseService getDatabaseService() {
+   public SqlHandlerFactory getFactory() {
+      return handlerFactory;
+   }
+
+   public SqlProvider getProvider() {
+      return sqlProvider;
+   }
+
+   public IOseeDatabaseService getDatabaseService() {
       return dbService;
    }
 
@@ -93,11 +101,11 @@ public class SqlObjectLoader {
    }
 
    private boolean isAttributeLoadingAllowed(LoadLevel level) {
-      return level != LoadLevel.SHALLOW && level != LoadLevel.RELATION;
+      return level != LoadLevel.ARTIFACT_DATA && level != LoadLevel.RELATION_DATA;
    }
 
    private boolean isRelationLoadingAllowed(LoadLevel level) {
-      return level != LoadLevel.SHALLOW && level != LoadLevel.ATTRIBUTE;
+      return level != LoadLevel.ARTIFACT_DATA && level != LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
    }
 
    private void writeSql(Criteria criteria, LoadSqlContext context) throws OseeCoreException {

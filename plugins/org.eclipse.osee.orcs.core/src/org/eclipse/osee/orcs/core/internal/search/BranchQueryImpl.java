@@ -15,11 +15,13 @@ import static org.eclipse.osee.framework.core.enums.BranchState.DELETED;
 import static org.eclipse.osee.framework.core.enums.BranchState.DELETE_IN_PROGRESS;
 import static org.eclipse.osee.framework.core.enums.BranchState.PURGED;
 import static org.eclipse.osee.framework.core.enums.BranchState.PURGE_IN_PROGRESS;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ResultSet;
@@ -77,13 +79,13 @@ public class BranchQueryImpl implements BranchQuery {
 
    @Override
    public BranchQuery includeDeleted(boolean enabled) {
-      OptionsUtil.setIncludeDeleted(getOptions(), enabled);
+      OptionsUtil.setIncludeDeletedArtifacts(getOptions(), enabled);
       return this;
    }
 
    @Override
    public boolean areDeletedIncluded() {
-      return OptionsUtil.areDeletedIncluded(getOptions());
+      return OptionsUtil.areDeletedArtifactsIncluded(getOptions());
    }
 
    @Override

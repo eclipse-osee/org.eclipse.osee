@@ -81,7 +81,7 @@ public class CallableQueryFactory {
                   results.add(data);
                }
             };
-            OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.ATTRIBUTE);
+            OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA);
             queryEngine.createArtifactQuery(getSession(), getQueryData(), handler).call();
             setItemsFound(results.size());
             return ResultSets.newResultSet(results);
@@ -95,7 +95,7 @@ public class CallableQueryFactory {
          @Override
          protected ResultSet<ArtifactReadable> innerCall() throws Exception {
             GraphBuilder handler = builderFactory.createGraphBuilder(provider);
-            OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.FULL);
+            OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.ALL);
             queryEngine.createArtifactQuery(getSession(), getQueryData(), handler).call();
             Iterable<Artifact> results = handler.getArtifacts();
             setItemsFound(Iterables.size(results));
@@ -111,7 +111,7 @@ public class CallableQueryFactory {
          protected ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> innerCall() throws Exception {
             GraphBuilder handler = builderFactory.createGraphBuilder(provider);
             ArtifactMatchDataHandler matchHandler = new ArtifactMatchDataHandler(getSession(), handler, proxyManager);
-            OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.FULL);
+            OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.ALL);
             queryEngine.createArtifactQuery(getSession(), getQueryData(), matchHandler).call();
             List<Match<ArtifactReadable, AttributeReadable<?>>> results = matchHandler.getResults();
             setItemsFound(Iterables.size(results));

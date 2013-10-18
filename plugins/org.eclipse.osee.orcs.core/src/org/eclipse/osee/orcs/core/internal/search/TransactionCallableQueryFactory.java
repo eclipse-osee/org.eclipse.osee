@@ -73,7 +73,7 @@ public class TransactionCallableQueryFactory {
                   return data;
                }
             };
-            OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.FULL);
+            OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.ALL);
             queryEngine.createTxQuery(getSession(), getQueryData(), handler).call();
             ResultSet<TransactionReadable> results = handler.getTransactions();
             setItemsFound(results.size());
@@ -94,7 +94,7 @@ public class TransactionCallableQueryFactory {
                   txs.add(data.getLocalId());
                }
             };
-            OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.FULL);
+            OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.ALL);
             queryEngine.createTxQuery(getSession(), getQueryData(), handler).call();
             setItemsFound(txs.size());
             return ResultSets.newResultSet(txs);

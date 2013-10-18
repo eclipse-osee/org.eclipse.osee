@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.core.enums.LoadLevel.ATTRIBUTE;
-import static org.eclipse.osee.framework.core.enums.LoadLevel.SHALLOW;
+import static org.eclipse.osee.framework.core.enums.LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
+import static org.eclipse.osee.framework.core.enums.LoadLevel.ARTIFACT_DATA;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 class RelationLoader {
 
    public static void loadRelationData(int joinQueryId, Collection<Artifact> artifacts, boolean historical, LoadLevel loadLevel) throws OseeCoreException {
-      if (loadLevel == SHALLOW || loadLevel == ATTRIBUTE) {
+      if (loadLevel == ARTIFACT_DATA || loadLevel == ARTIFACT_AND_ATTRIBUTE_DATA) {
          return;
       }
 

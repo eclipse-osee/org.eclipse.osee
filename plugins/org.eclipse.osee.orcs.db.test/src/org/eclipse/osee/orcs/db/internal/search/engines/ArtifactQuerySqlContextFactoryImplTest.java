@@ -17,8 +17,10 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
+
 import java.util.Iterator;
 import java.util.List;
+
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -276,7 +278,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
          " ORDER BY art1.art_id, txs1.branch_id";
 
       queryData.addCriteria(GUIDS, IDS, TYPES);
-      OptionsUtil.setIncludeDeleted(queryData.getOptions(), true);
+      OptionsUtil.setIncludeDeletedArtifacts(queryData.getOptions(), true);
 
       QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
       Assert.assertEquals(expected, context.getSql());

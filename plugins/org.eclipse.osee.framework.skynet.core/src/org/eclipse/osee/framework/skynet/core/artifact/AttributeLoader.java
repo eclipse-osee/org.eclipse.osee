@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
-import static org.eclipse.osee.framework.core.enums.LoadLevel.RELATION;
-import static org.eclipse.osee.framework.core.enums.LoadLevel.SHALLOW;
+import static org.eclipse.osee.framework.core.enums.LoadLevel.ARTIFACT_DATA;
+import static org.eclipse.osee.framework.core.enums.LoadLevel.RELATION_DATA;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 public class AttributeLoader {
 
    static void loadAttributeData(int queryId, CompositeKeyHashMap<Integer, Integer, Artifact> tempCache, boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel) throws OseeCoreException {
-      if (loadLevel == SHALLOW || loadLevel == RELATION) {
+      if (loadLevel == ARTIFACT_DATA || loadLevel == RELATION_DATA) {
          return;
       }
 
@@ -192,8 +192,6 @@ public class AttributeLoader {
       OseeSql sqlKey;
       if (historical) {
          sqlKey = OseeSql.LOAD_HISTORICAL_ATTRIBUTES;
-      } else if (loadLevel == LoadLevel.ALL_CURRENT) {
-         sqlKey = OseeSql.LOAD_ALL_CURRENT_ATTRIBUTES;
       } else if (allowDeletedArtifacts == INCLUDE_DELETED) {
          sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES_WITH_DELETED;
       } else {
