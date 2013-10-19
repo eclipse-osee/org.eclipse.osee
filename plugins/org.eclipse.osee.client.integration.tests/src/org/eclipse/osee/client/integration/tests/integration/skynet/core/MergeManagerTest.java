@@ -118,9 +118,8 @@ public class MergeManagerTest {
             }
          };
       UpdateBranchOperation update = new UpdateBranchOperation(workingBranch, resolverOperation);
-      Operations.executeAsJob(update, true);
-      // wait on operation
-      Thread.sleep(1000);
+      Operations.executeWorkAndCheckStatus(update);
+
       assertTrue("No Merge Branch was created", BranchManager.getMergeBranches(workingBranch).size() == 1);
       assertTrue("Branch is not in Rebaseline In Progress", workingBranch.getBranchState().isRebaselineInProgress());
 
@@ -143,7 +142,7 @@ public class MergeManagerTest {
 
       // make sure we can't rebase now since we've done a commit
       update = new UpdateBranchOperation(workingBranch, resolverOperation);
-      Operations.executeAsJob(update, true);
+      Operations.executeWorkAndCheckStatus(update);
       assertTrue(
          "Branch should not be updating",
          !workingBranch.getBranchState().isRebaselineInProgress() && !workingBranch.getBranchState().isRebaselineInProgress());
@@ -168,9 +167,8 @@ public class MergeManagerTest {
          };
 
       UpdateBranchOperation update = new UpdateBranchOperation(workingBranch, resolverOperation);
-      Operations.executeAsJob(update, true);
-      // wait on operation
-      Thread.sleep(1000);
+      Operations.executeWorkAndCheckStatus(update);
+
       List<MergeBranch> mergeBranches = BranchManager.getMergeBranches(workingBranch);
       Branch branchForUpdate = mergeBranches.get(0).getDestinationBranch();
       assertTrue("No Merge Branch was created", mergeBranches.size() == 1);
@@ -178,9 +176,8 @@ public class MergeManagerTest {
 
       // Try doing another Rebaseline, no addtional branches should be created
       UpdateBranchOperation update2 = new UpdateBranchOperation(workingBranch, resolverOperation);
-      Operations.executeAsJob(update2, true);
-      // wait on operation
-      Thread.sleep(1000);
+      Operations.executeWorkAndCheckStatus(update2);
+
       List<MergeBranch> mergeBranchesSecondAttempt = BranchManager.getMergeBranches(workingBranch);
       Branch branchForUpdateSecondAttempt = mergeBranchesSecondAttempt.get(0).getDestinationBranch();
       assertTrue("Branch is not in Rebaseline In Progress", workingBranch.getBranchState().isRebaselineInProgress());
@@ -204,9 +201,8 @@ public class MergeManagerTest {
          };
 
       UpdateBranchOperation update = new UpdateBranchOperation(workingBranch, resolverOperation);
-      Operations.executeAsJob(update, true);
-      // wait on operation
-      Thread.sleep(1000);
+      Operations.executeWorkAndCheckStatus(update);
+
       Branch branchForUpdate = BranchManager.getFirstMergeBranch(workingBranch).getDestinationBranch(); // this will be future working branch
 
       // Shouldn't be allowed to commit working branch
@@ -217,9 +213,7 @@ public class MergeManagerTest {
       // Finish Rebaseline
       FinishUpdateBranchOperation finishUpdateOperation =
          new FinishUpdateBranchOperation(resolverOperation.getConflictManager(), true, true);
-      Operations.executeAsJob(finishUpdateOperation, true);
-      // wait on operation
-      Thread.sleep(1000);
+      Operations.executeWorkAndCheckStatus(finishUpdateOperation);
 
       // Make sure the state is now Rebaselined
       assertTrue("Branch is not in Rebaselined", workingBranch.getBranchState().isRebaselined());
@@ -242,7 +236,6 @@ public class MergeManagerTest {
       // wait on operation
       Thread.sleep(1000);
       BranchManager.purgeBranch(branchForUpdate);
-
    }
 
    @Test
@@ -281,8 +274,8 @@ public class MergeManagerTest {
 
       // Shouldn't not be able to update from parent since we are in the process of handling a Merge from a Commit
       UpdateBranchOperation update = new UpdateBranchOperation(workingBranch, resolverOperation);
-      Operations.executeAsJob(update, true);
-      // wait on operation
+      Operations.executeWorkAndCheckStatus(update);
+
       assertTrue(
          "Branch should not be updating",
          !workingBranch.getBranchState().isRebaselineInProgress() && !workingBranch.getBranchState().isRebaselineInProgress());
@@ -294,18 +287,16 @@ public class MergeManagerTest {
 
       // Now we should be to do an update
       UpdateBranchOperation update2 = new UpdateBranchOperation(workingBranch, resolverOperation);
-      Operations.executeAsJob(update2, true);
-      // wait on operation
-      Thread.sleep(1000);
+      Operations.executeWorkAndCheckStatus(update2);
+
       assertTrue("Branch is not updating", workingBranch.getBranchState().isRebaselineInProgress());
 
       Branch branchForUpdate = BranchManager.getFirstMergeBranch(workingBranch);
 
       FinishUpdateBranchOperation finishUpdateOperation =
          new FinishUpdateBranchOperation(resolverOperation.getConflictManager(), true, true);
-      Operations.executeAsJob(finishUpdateOperation, true);
-      // wait on operation
-      Thread.sleep(1000);
+      Operations.executeWorkAndCheckStatus(finishUpdateOperation);
+
       // Make sure the state is now Rebaselined
       assertTrue("Branch is not in Rebaselined", workingBranch.getBranchState().isRebaselined());
 
@@ -336,9 +327,8 @@ public class MergeManagerTest {
 
       // Shouldn't be able to rebase
       UpdateBranchOperation update = new UpdateBranchOperation(workingBranch, resolverOperation);
-      Operations.executeAsJob(update, true);
-      // wait on operation
-      Thread.sleep(1000);
+      Operations.executeWorkAndCheckStatus(update);
+
       assertTrue(
          "Branch should not be updating",
          !workingBranch.getBranchState().isRebaselineInProgress() && !workingBranch.getBranchState().isRebaselineInProgress());
@@ -353,9 +343,8 @@ public class MergeManagerTest {
          workingBranch), DELETE_MERGE, true);
 
       update = new UpdateBranchOperation(workingBranch, resolverOperation);
-      Operations.executeAsJob(update, true);
-      // wait on operation
-      Thread.sleep(1000);
+      Operations.executeWorkAndCheckStatus(update);
+
       assertTrue(
          "Branch should not be updating",
          !workingBranch.getBranchState().isRebaselineInProgress() && !workingBranch.getBranchState().isRebaselineInProgress());
