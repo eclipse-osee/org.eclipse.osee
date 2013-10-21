@@ -334,9 +334,6 @@
        <command
              commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReportWasIs.command">
        </command>
-       <command
-             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.genericDiff.command">
-       </command>
        <separator
              name="xChngSeparator3"
              visible="true">
@@ -1385,8 +1382,6 @@
 	</extension>
 	<extension name="Commands of ChangeReportView" point="org.eclipse.ui.commands">
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command" name="Replace with Baseline Version...">
-         </command>
-      <command id="org.eclipse.osee.framework.ui.skynet.changeReportView.genericDiff.command" name="View Artifact Diff">
          </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command" name="View Word Change Report - F5">
          </command>

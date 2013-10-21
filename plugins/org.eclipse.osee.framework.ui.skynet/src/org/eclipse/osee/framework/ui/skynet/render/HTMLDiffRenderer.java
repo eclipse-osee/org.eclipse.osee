@@ -32,7 +32,7 @@ public class HTMLDiffRenderer implements IComparator {
 
    @Override
    public void compare(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, ArtifactDelta artifactDelta, String pathPrefix) throws OseeCoreException {
-      String was = null, is = null, artifactName = null;
+      String was = " ", is = " ", artifactName = null;
       Artifact startArtifact = artifactDelta.getStartArtifact();
       if (startArtifact != null) {
          was = startArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.HTMLContent, "");
