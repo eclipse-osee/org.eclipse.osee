@@ -54,6 +54,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -280,16 +281,28 @@ public class OrcsTransactionTest {
    public void testRelate() throws OseeCoreException {
       TransactionBuilder tx1 = createTx();
       ArtifactId art1 = tx1.createArtifact(CoreArtifactTypes.Component, "A component");
-      ArtifactId art2 = tx1.createArtifact(CoreArtifactTypes.Component, "B component");
-      tx1.relate(art1, CoreRelationTypes.Default_Hierarchical__Child, art2);
+      ArtifactId art2 = tx1.createArtifact(CoreArtifactTypes.User, "User Artifact");
+      tx1.relate(art1, CoreRelationTypes.Users_User, art2);
       tx1.commit();
 
       ArtifactReadable artifact = query.fromBranch(CoreBranches.COMMON).andIds(art1).getResults().getExactlyOne();
       assertEquals("A component", artifact.getName());
 
-      ResultSet<ArtifactReadable> children = artifact.getChildren();
-      assertEquals(1, children.size());
-      assertEquals("B component", children.getExactlyOne().getName());
+      ResultSet<ArtifactReadable> related = artifact.getRelated(CoreRelationTypes.Users_User);
+      assertEquals(1, related.size());
+      assertEquals("User Artifact", related.getExactlyOne().getName());
+   }
+
+   @Test
+   public void testRelateTypeCheckException() throws OseeCoreException {
+      TransactionBuilder tx1 = createTx();
+      ArtifactId art1 = tx1.createArtifact(CoreArtifactTypes.Component, "A component");
+      ArtifactId art2 = tx1.createArtifact(CoreArtifactTypes.User, "User Artifact");
+
+      thrown.expect(OseeArgumentException.class);
+      thrown.expectMessage(CoreMatchers.startsWith("Relation validity error for [artifact type[Component]"));
+      thrown.expectMessage(CoreMatchers.endsWith("only items of type [User] are allowed"));
+      tx1.relate(art2, CoreRelationTypes.Users_User, art1);
    }
 
    @Test

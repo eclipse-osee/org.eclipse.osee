@@ -216,9 +216,12 @@ public class RelationManagerImpl implements RelationManager {
       checkBranch(aNode, bNode);
       checkRelateSelf(aNode, bNode);
 
+      validity.checkRelationTypeValid(type, aNode, SIDE_A);
+      validity.checkRelationTypeValid(type, bNode, SIDE_B);
+
       // Check we can create the type on other side of each node
-      checkTypeAndCanAdd(session, graph, type, aNode, SIDE_B);
-      checkTypeAndCanAdd(session, graph, type, bNode, SIDE_A);
+      checkMultiplicityCanAdd(session, graph, type, aNode, SIDE_B);
+      checkMultiplicityCanAdd(session, graph, type, bNode, SIDE_A);
 
       Relation relation = getRelation(session, graph, aNode, type, bNode, INCLUDE_DELETED).getOneOrNull();
       boolean updated = false;
@@ -236,11 +239,6 @@ public class RelationManagerImpl implements RelationManager {
          relation.setDirty();
          order(session, graph, type, aNode, SIDE_A, sortType, OrderOp.ADD_TO_ORDER, Collections.singleton(bNode));
       }
-   }
-
-   private void checkTypeAndCanAdd(OrcsSession session, GraphData graph, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException {
-      validity.checkRelationTypeValid(type, node, side);
-      checkMultiplicityCanAdd(session, graph, type, node, side);
    }
 
    private void checkMultiplicityCanAdd(OrcsSession session, GraphData graph, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException {

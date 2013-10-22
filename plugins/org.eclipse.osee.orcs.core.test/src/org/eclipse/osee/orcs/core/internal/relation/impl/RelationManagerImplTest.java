@@ -477,14 +477,14 @@ public class RelationManagerImplTest {
 
       OseeCoreException myException = new OseeCoreException("Test Type Exception");
 
-      doThrow(myException).when(validity).checkRelationTypeValid(TYPE_1, node1, SIDE_B);
+      doThrow(myException).when(validity).checkRelationTypeValid(TYPE_1, node1, SIDE_A);
 
       thrown.expect(OseeCoreException.class);
       thrown.expectMessage("Test Type Exception");
       manager.relate(session, graph, node1, TYPE_1, node2);
 
       verify(validity).checkRelationTypeValid(TYPE_1, node1, SIDE_A);
-      verify(validity, times(0)).checkRelationTypeValid(TYPE_1, node2, SIDE_B);
+      verify(validity, times(0)).checkRelationTypeValid(TYPE_1, node2, SIDE_A);
    }
 
    @Test
@@ -498,7 +498,7 @@ public class RelationManagerImplTest {
 
       OseeCoreException myException = new OseeCoreException("Test Type Exception");
 
-      doThrow(myException).when(validity).checkRelationTypeValid(TYPE_1, node2, SIDE_A);
+      doThrow(myException).when(validity).checkRelationTypeValid(TYPE_1, node2, SIDE_B);
 
       thrown.expect(OseeCoreException.class);
       thrown.expectMessage("Test Type Exception");
