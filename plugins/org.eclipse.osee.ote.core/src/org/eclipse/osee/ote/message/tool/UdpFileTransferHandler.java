@@ -136,7 +136,7 @@ public class UdpFileTransferHandler {
       final FileChannel fileChannel;
       final FileLock lock;
       if (config.getDirection() == TransferConfig.Direction.SOCKET_TO_FILE) {
-         FileOutputStream fos = new FileOutputStream(file);
+         FileOutputStream fos = new FileOutputStream(file, config.isAppendMode());
          fileChannel = fos.getChannel();
          lock = fileChannel.tryLock(0l, Long.MAX_VALUE, false);
       } else {

@@ -34,16 +34,21 @@ public final class TransferConfig {
    private final InetSocketAddress destinationAddress;
    private final Direction direction;
    private final int blockCount;
-
+   private final boolean appendMode;
+   
    public TransferConfig(final String fileName, final InetSocketAddress sourceAddress, final InetSocketAddress destinationAddress, final Direction direction, final int blockCount) {
-      super();
-      this.fileName = fileName;
-      this.sourceAddress = sourceAddress;
-      this.destinationAddress = destinationAddress;
-      this.direction = direction;
-      this.blockCount = blockCount;
-
+	   this(fileName, sourceAddress, destinationAddress, direction, blockCount, false);
    }
+
+   public TransferConfig(final String fileName, final InetSocketAddress sourceAddress, final InetSocketAddress destinationAddress, final Direction direction, final int blockCount, boolean appendMode) {
+	      super();
+	      this.fileName = fileName;
+	      this.sourceAddress = sourceAddress;
+	      this.destinationAddress = destinationAddress;
+	      this.direction = direction;
+	      this.blockCount = blockCount;
+	      this.appendMode = appendMode;
+	   }
 
    /**
     * @return the direction
@@ -78,6 +83,10 @@ public final class TransferConfig {
     */
    public int getBlockCount() {
       return blockCount;
+   }
+
+   public boolean isAppendMode() {
+	   return appendMode;
    }
 
 }
