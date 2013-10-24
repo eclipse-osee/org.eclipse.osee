@@ -76,6 +76,9 @@ public class ScriptTask {
 
       int passTP = scriptModel.getOutputModel().getPassedTestPoints();
       int failTP = scriptModel.getOutputModel().getFailedTestPoints();
+      if (status == ScriptStatusEnum.RUNNING && scriptModel.getOutputModel().isAborted()){
+         return "(0/0)";
+      }
       if (scriptModel.getOutputModel().isAborted()) {
          return "ABORTED";
       } else if (passTP > 0 || failTP > 0) {

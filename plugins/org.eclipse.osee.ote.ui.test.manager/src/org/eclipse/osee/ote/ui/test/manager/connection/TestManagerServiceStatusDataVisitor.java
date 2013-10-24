@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -88,7 +89,6 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
                   task.setStatus(ScriptStatusEnum.CANCELLED);
                }
                notifyExecutionComplete(task);
-               // userEnvironment.notifyScriptDequeued(task.getGuid());
                scriptManager.updateScriptTableViewer(task);
             }
          }
@@ -168,11 +168,8 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
                      logOnConsole(Level.SEVERE, String.format("Test Ended Unexpectedly: [%s]", task.getName()));
                      break;
                }
-               // onOutfileSave(task, sequentialCommandEnded.getDescription(),
-               // isValidRun);
                logOnConsole(Level.INFO, String.format("Test Completed: [%s]", task.getName()));
                notifyExecutionComplete(task);
-               // userEnvironment.notifyScriptDequeued(task.getGuid());
                scriptManager.updateScriptTableViewer(task);
             }
          }
@@ -187,8 +184,8 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
          public void run() {
             checkServiceStatusDataValid(testPointUpdate);
             final ScriptTask task = scriptManager.getScriptTask(testPointUpdate.getClassName());
-            // final ScriptTask task = getScriptTask(testPointUpdate);
             if (task != null) {
+               task.getScriptModel().getOutputModel().setAborted(false);
                task.getScriptModel().getOutputModel().setPassedTestPoints(testPointUpdate.getPass());
                task.getScriptModel().getOutputModel().setFailedTestPoints(testPointUpdate.getFail());
                scriptManager.updateScriptTableViewerTimed(task);
@@ -229,13 +226,10 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
    }
 
    private ScriptTask getScriptTask(IServiceStatusDataCommand statusData) {
-      // statusData.getDescription().getDescription()
       return scriptManager.getScriptTask(statusData.getDescription().getDescription());
    }
 
    private void notifyExecutionComplete(ScriptTask scriptTask) {
-      // if (userEnvironment.getLastGUIDToRun() != null &&
-      // scriptTask.getGuid().equals(userEnvironment.getLastGUIDToRun())) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -243,7 +237,6 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
          }
       });
       logExecutorSize();
-      // }
    }
 
    @Override
