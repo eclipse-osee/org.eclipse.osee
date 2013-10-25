@@ -56,4 +56,9 @@ public abstract class AbstractDataProxy implements DataProxy {
       return storage.isInitialized() && storage.isDataValid();
    }
 
+   @Override
+   public String toString() {
+      return String.format("%s [value:[%s]]", getClass().getSimpleName(), getDisplayableString());
+   }
+
 }

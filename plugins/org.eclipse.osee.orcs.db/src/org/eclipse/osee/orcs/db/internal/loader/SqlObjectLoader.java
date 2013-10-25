@@ -76,8 +76,8 @@ public class SqlObjectLoader {
       this.handlerFactory = handlerFactory;
 
       artifactProcessor = new ArtifactLoadProcessor(objectFactory);
-      attributeProcessor = new AttributeLoadProcessor(objectFactory);
-      relationProcessor = new RelationLoadProcessor(objectFactory);
+      attributeProcessor = new AttributeLoadProcessor(logger, objectFactory);
+      relationProcessor = new RelationLoadProcessor(logger, objectFactory);
       branchProcessor = new BranchLoadProcessor(objectFactory);
       txProcessor = new TransactionLoadProcessor(objectFactory);
    }
@@ -211,9 +211,11 @@ public class SqlObjectLoader {
          for (AbstractJoinQuery join : loadContext.getJoins()) {
             join.store();
          }
-         IOseeStatement chStmt = getDatabaseService().getStatement();
+
          long startTime = System.currentTimeMillis();
+         IOseeStatement chStmt = null;
          try {
+            chStmt = getDatabaseService().getStatement();
             chStmt.runPreparedQuery(fetchSize, loadContext.getSql(), loadContext.getParameters().toArray());
 
             String processorName = null;
@@ -231,7 +233,7 @@ public class SqlObjectLoader {
                   processorName, rowCount);
             }
          } finally {
-            chStmt.close();
+            Lib.close(chStmt);
          }
       } finally {
          for (AbstractJoinQuery join : loadContext.getJoins()) {

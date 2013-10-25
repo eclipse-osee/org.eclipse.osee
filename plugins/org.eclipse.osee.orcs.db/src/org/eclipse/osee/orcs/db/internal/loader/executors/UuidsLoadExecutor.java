@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.database.core.CharJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -53,33 +54,41 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
    @Override
    public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) throws OseeCoreException {
       checkCancelled(cancellation);
-      ArtifactJoinQuery join = createIdJoin(options);
-      LoadSqlContext loadContext = new LoadSqlContext(session, options, branch);
-      int fetchSize = LoadUtil.computeFetchSize(artifactIds.size());
-      getLoader().loadArtifacts(cancellation, handler, join, criteria, loadContext, fetchSize);
+      if (!artifactIds.isEmpty()) {
+         ArtifactJoinQuery join = createIdJoin(getDatabaseService(), options);
+         LoadSqlContext loadContext = new LoadSqlContext(session, options, branch);
+         int fetchSize = LoadUtil.computeFetchSize(artifactIds.size());
+         getLoader().loadArtifacts(cancellation, handler, join, criteria, loadContext, fetchSize);
+      }
    }
 
-   private ArtifactJoinQuery createIdJoin(Options options) throws OseeCoreException {
-      ArtifactJoinQuery toReturn = JoinUtility.createArtifactJoinQuery(getDatabaseService());
-      if (!artifactIds.isEmpty()) {
-         int branchId = branchCache.getLocalId(branch);
-         Integer transactionId = OptionsUtil.getFromTransaction(options);
+   private ArtifactJoinQuery createIdJoin(IOseeDatabaseService dbService, Options options) throws OseeCoreException {
 
-         CharJoinQuery guidJoin = JoinUtility.createCharJoinQuery(getDatabaseService(), session.getGuid());
+      ArtifactJoinQuery toReturn = JoinUtility.createArtifactJoinQuery(dbService);
+
+      CharJoinQuery guidJoin = JoinUtility.createCharJoinQuery(dbService, session.getGuid());
+      try {
          for (String id : artifactIds) {
             guidJoin.add(id);
          }
+         guidJoin.store();
+
+         int branchId = branchCache.getLocalId(branch);
+         Integer transactionId = OptionsUtil.getFromTransaction(options);
+
+         IOseeStatement chStmt = null;
          try {
-            guidJoin.store();
-            IOseeStatement chStmt = getDatabaseService().getStatement();
+            chStmt = dbService.getStatement();
             chStmt.runPreparedQuery(artifactIds.size(), GUIDS_TO_IDS, guidJoin.getQueryId());
             while (chStmt.next()) {
                Integer artId = chStmt.getInt("art_id");
                toReturn.add(artId, branchId, transactionId);
             }
          } finally {
-            guidJoin.delete();
+            Lib.close(chStmt);
          }
+      } finally {
+         guidJoin.delete();
       }
       return toReturn;
    }

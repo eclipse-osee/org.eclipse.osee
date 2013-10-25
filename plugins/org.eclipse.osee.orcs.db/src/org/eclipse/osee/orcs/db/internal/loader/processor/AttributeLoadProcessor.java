@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.loader.processor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -24,31 +25,79 @@ import org.eclipse.osee.orcs.db.internal.loader.data.AttributeObjectFactory;
  */
 public class AttributeLoadProcessor extends LoadProcessor<AttributeData, AttributeObjectFactory> {
 
-   public AttributeLoadProcessor(AttributeObjectFactory factory) {
+   private Log logger;
+
+   public AttributeLoadProcessor(Log logger, AttributeObjectFactory factory) {
       super(factory);
    }
 
    @Override
    protected AttributeData createData(Object conditions, AttributeObjectFactory factory, IOseeStatement chStmt, Options options) throws OseeCoreException {
+      AttributeData toReturn = null;
+
       int branchId = chStmt.getInt("branch_id");
-      int txId = chStmt.getInt("transaction_id");
-      long gamma = chStmt.getInt("gamma_id");
-
-      boolean historical = OptionsUtil.isHistorical(options);
-      VersionData version = factory.createVersion(branchId, txId, gamma, historical);
-      if (historical) {
-         version.setStripeId(chStmt.getInt("stripe_transaction_id"));
-      }
-
-      int attrId = chStmt.getInt("attr_id");
       int artId = chStmt.getInt("art_id");
-      int typeId = chStmt.getInt("attr_type_id");
+      int attrId = chStmt.getInt("attr_id");
+      long gammaId = chStmt.getInt("gamma_id");
       ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
 
-      String value = chStmt.getString("value");
-      String uri = chStmt.getString("uri");
+      boolean historical = OptionsUtil.isHistorical(options);
 
-      return factory.createAttributeData(version, attrId, typeId, modType, artId, value, uri);
+      CreateConditions condition = asConditions(conditions);
+      if (!condition.isSame(branchId, artId, attrId)) {
+         condition.saveConditions(branchId, artId, attrId, gammaId, modType);
+
+         int txId = chStmt.getInt("transaction_id");
+
+         VersionData version = factory.createVersion(branchId, txId, gammaId, historical);
+         if (historical) {
+            version.setStripeId(chStmt.getInt("stripe_transaction_id"));
+         }
+
+         int typeId = chStmt.getInt("attr_type_id");
+
+         String value = chStmt.getString("value");
+         String uri = chStmt.getString("uri");
+
+         toReturn = factory.createAttributeData(version, attrId, typeId, modType, artId, value, uri);
+
+      } else {
+         if (!historical) {
+            logger.warn(
+               "multiple attribute versions for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
+               attrId, artId, branchId, condition.previousGammaId, gammaId, condition.previousModType, modType);
+         }
+      }
+      return toReturn;
    }
 
+   @Override
+   protected Object createPreConditions() {
+      return new CreateConditions();
+   }
+
+   private CreateConditions asConditions(Object conditions) {
+      return (CreateConditions) conditions;
+   }
+
+   private static final class CreateConditions {
+      int previousArtId = -1;
+      int previousBranchId = -1;
+      int previousAttrId = -1;
+      long previousGammaId = -1;
+      ModificationType previousModType = null;
+
+      boolean isSame(int branchId, int artifactId, int attrId) {
+         return previousBranchId == branchId && previousArtId == artifactId && previousAttrId == attrId;
+      }
+
+      void saveConditions(int branchId, int artifactId, int attrId, long gammaId, ModificationType modType) {
+         previousBranchId = branchId;
+         previousArtId = artifactId;
+         previousAttrId = attrId;
+         previousGammaId = gammaId;
+         previousModType = modType;
+      }
+
+   }
 }

@@ -49,6 +49,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -528,6 +529,84 @@ public class OrcsTransactionTest {
       assertNull(artifact3.getParent());
 
       assertEquals(true, artifact4.getRelated(Dependency__Artifact).isEmpty());
+   }
+
+   @Test
+   public void testMultiAttriVersionsWriteAndLoading() {
+      TransactionBuilder tx = createTx();
+      ArtifactId art1 = tx.createArtifact(Component, "A component");
+      tx.setSoleAttributeFromString(art1, CoreAttributeTypes.Annotation, "write1");
+      tx.commit();
+
+      tx = createTx();
+      tx.setSoleAttributeFromString(art1, CoreAttributeTypes.Annotation, "write2");
+      tx.commit();
+
+      tx = createTx();
+      tx.setSoleAttributeFromString(art1, CoreAttributeTypes.Annotation, "write3");
+      tx.commit();
+
+      tx = createTx();
+      tx.setSoleAttributeFromString(art1, CoreAttributeTypes.Annotation, "write4");
+      tx.commit();
+
+      tx = createTx();
+      tx.setSoleAttributeFromString(art1, CoreAttributeTypes.Annotation, "write5");
+      TransactionRecord lastTx = tx.commit();
+
+      ArtifactReadable art = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      ResultSet<? extends AttributeReadable<Object>> attributes = art.getAttributes(CoreAttributeTypes.Annotation);
+
+      assertEquals(1, attributes.size());
+      assertEquals("write5", attributes.getExactlyOne().getValue());
+
+      QueryBuilder builder = query.fromBranch(COMMON).fromTransaction(lastTx.getId()).andIds(art1);
+      ResultSet<ArtifactReadable> results = builder.getResults();
+      art = results.getExactlyOne();
+      attributes = art.getAttributes(CoreAttributeTypes.Annotation);
+      assertEquals(1, attributes.size());
+      assertEquals("write5", attributes.getExactlyOne().getValue());
+   }
+
+   @Test
+   public void testMultiRelationVersionsWriteAndLoading() {
+      TransactionBuilder tx = createTx();
+      ArtifactId art1 = tx.createArtifact(CoreArtifactTypes.Component, "A component");
+      ArtifactId art2 = tx.createArtifact(CoreArtifactTypes.User, "User Artifact");
+      tx.relate(art1, CoreRelationTypes.Users_User, art2, "rationale1");
+      tx.commit();
+
+      tx = createTx();
+      tx.setRationale(art1, CoreRelationTypes.Users_User, art2, "rationale2");
+      tx.commit();
+
+      tx = createTx();
+      tx.setRationale(art1, CoreRelationTypes.Users_User, art2, "rationale3");
+      tx.commit();
+
+      tx = createTx();
+      tx.setRationale(art1, CoreRelationTypes.Users_User, art2, "rationale4");
+      tx.commit();
+
+      tx = createTx();
+      tx.setRationale(art1, CoreRelationTypes.Users_User, art2, "rationale5");
+      TransactionRecord lastTx = tx.commit();
+
+      ArtifactReadable art = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      ResultSet<ArtifactReadable> related = art.getRelated(CoreRelationTypes.Users_User);
+      assertEquals(1, related.size());
+      ArtifactReadable other = related.getExactlyOne();
+      String rationale = art.getRationale(CoreRelationTypes.Users_User, other);
+
+      assertEquals("rationale5", rationale);
+
+      art = query.fromBranch(COMMON).fromTransaction(lastTx.getId()).andIds(art1).getResults().getExactlyOne();
+      related = art.getRelated(CoreRelationTypes.Users_User);
+      assertEquals(1, related.size());
+      other = related.getExactlyOne();
+      rationale = art.getRationale(CoreRelationTypes.Users_User, other);
+
+      assertEquals("rationale5", rationale);
    }
 
    private TransactionBuilder createTx() throws OseeCoreException {

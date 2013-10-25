@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -66,9 +67,10 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
             join.store();
             checkCancelled(cancellation);
          }
-         Integer transactionId = -1;
-         IOseeStatement chStmt = dbService.getStatement();
+         Integer transactionId = OptionsUtil.getFromTransaction(queryContext.getOptions());
+         IOseeStatement chStmt = null;
          try {
+            chStmt = dbService.getStatement();
             checkCancelled(cancellation);
             String query = queryContext.getSql();
             List<Object> params = queryContext.getParameters();
@@ -77,14 +79,11 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
                checkCancelled(cancellation);
                Integer artId = chStmt.getInt("art_id");
                Integer branchId = chStmt.getInt("branch_id");
-               if (OptionsUtil.isHistorical(queryContext.getOptions())) {
-                  transactionId = chStmt.getInt("transaction_id");
-               }
                artifactJoin.add(artId, branchId, transactionId);
                checkCancelled(cancellation);
             }
          } finally {
-            chStmt.close();
+            Lib.close(chStmt);
          }
       } finally {
          for (AbstractJoinQuery join : queryContext.getJoins()) {

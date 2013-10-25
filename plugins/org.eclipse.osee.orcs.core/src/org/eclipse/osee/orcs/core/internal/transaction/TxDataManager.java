@@ -146,8 +146,11 @@ public class TxDataManager {
          } else if (artifactId instanceof ArtifactReadable) {
             ArtifactReadable external = (ArtifactReadable) artifactId;
             if (txData.getBranch().equals(external.getBranch())) {
-               Artifact source = proxyManager.asInternalArtifact(external);
-               node = copyArtifactForWrite(txData, source);
+               int txId = txData.getGraph().getTransaction();
+               if (txId == external.getTransaction()) {
+                  Artifact source = proxyManager.asInternalArtifact(external);
+                  node = copyArtifactForWrite(txData, source);
+               }
             }
          }
       }
