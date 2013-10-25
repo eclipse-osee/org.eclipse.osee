@@ -39,7 +39,7 @@ public interface IOseeCache<KEY, TYPE> {
 
    Collection<TYPE> getAll() throws OseeCoreException;
 
-   TYPE getById(int typeId) throws OseeCoreException;
+   TYPE getById(Number typeId) throws OseeCoreException;
 
    TYPE getByGuid(KEY guid) throws OseeCoreException;
 

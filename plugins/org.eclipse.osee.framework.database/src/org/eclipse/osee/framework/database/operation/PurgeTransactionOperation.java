@@ -121,10 +121,9 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
          txsToDelete.add(new Object[] {toDeleteTransaction.getBranch().getId(), txIdToDelete});
 
          monitor.subTask("Find affected items");
-         Map<Integer, IdJoinQuery> arts = findAffectedItems(connection, "art_id", "osee_artifact", txsToDelete);
-         Map<Integer, IdJoinQuery> attrs = findAffectedItems(connection, "attr_id", "osee_attribute", txsToDelete);
-         Map<Integer, IdJoinQuery> rels =
-            findAffectedItems(connection, "rel_link_id", "osee_relation_link", txsToDelete);
+         Map<Long, IdJoinQuery> arts = findAffectedItems(connection, "art_id", "osee_artifact", txsToDelete);
+         Map<Long, IdJoinQuery> attrs = findAffectedItems(connection, "attr_id", "osee_attribute", txsToDelete);
+         Map<Long, IdJoinQuery> rels = findAffectedItems(connection, "rel_link_id", "osee_relation_link", txsToDelete);
          monitor.worked(1);
 
          monitor.subTask("Update Baseline Txs for Child Branches");
@@ -160,11 +159,11 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       changedTransactions = null;
    }
 
-   private void computeNewTxCurrents(OseeConnection connection, Collection<Object[]> updateData, String itemId, String tableName, Map<Integer, IdJoinQuery> affected) throws OseeCoreException {
+   private void computeNewTxCurrents(OseeConnection connection, Collection<Object[]> updateData, String itemId, String tableName, Map<Long, IdJoinQuery> affected) throws OseeCoreException {
       String query = String.format(FIND_NEW_TX_CURRENTS, tableName, itemId);
 
-      for (Entry<Integer, IdJoinQuery> entry : affected.entrySet()) {
-         Integer branchId = entry.getKey();
+      for (Entry<Long, IdJoinQuery> entry : affected.entrySet()) {
+         Long branchId = entry.getKey();
          IdJoinQuery joinQuery = entry.getValue();
 
          IOseeStatement statement = ConnectionHandler.getStatement(connection);
@@ -192,13 +191,13 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       }
    }
 
-   private Map<Integer, IdJoinQuery> findAffectedItems(OseeConnection connection, String itemId, String itemTable, List<Object[]> bindDataList) throws OseeCoreException {
-      Map<Integer, IdJoinQuery> items = new HashMap<Integer, IdJoinQuery>();
+   private Map<Long, IdJoinQuery> findAffectedItems(OseeConnection connection, String itemId, String itemTable, List<Object[]> bindDataList) throws OseeCoreException {
+      Map<Long, IdJoinQuery> items = new HashMap<Long, IdJoinQuery>();
       IOseeStatement statement = ConnectionHandler.getStatement(connection);
 
       try {
          for (Object[] bindData : bindDataList) {
-            Integer branchId = (Integer) bindData[0];
+            Long branchId = (Long) bindData[0];
             String query = String.format(SELECT_AFFECTED_ITEMS, itemId, itemTable);
             statement.runPreparedQuery(MAX_FETCH, query, bindData);
             IdJoinQuery joinId = JoinUtility.createIdJoinQuery();

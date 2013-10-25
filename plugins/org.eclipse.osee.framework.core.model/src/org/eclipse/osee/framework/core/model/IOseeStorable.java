@@ -18,11 +18,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IOseeStorable {
 
-   public final static Integer UNPERSISTED_VALUE = (int) Short.MIN_VALUE;
+   public final static Long UNPERSISTED_VALUE = (long) Short.MIN_VALUE;
 
-   int getId();
+   long getId();
 
-   void setId(int uniqueId) throws OseeCoreException;
+   void setId(long uniqueId) throws OseeCoreException;
 
    boolean isIdValid();
 

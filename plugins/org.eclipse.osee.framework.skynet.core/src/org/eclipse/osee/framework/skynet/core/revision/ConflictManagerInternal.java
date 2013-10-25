@@ -72,9 +72,9 @@ public class ConflictManagerInternal {
             AttributeConflict attributeConflict =
                new AttributeConflict(chStmt.getInt("source_gamma_id"), chStmt.getInt("dest_gamma_id"),
                   chStmt.getInt("art_id"), commitTransaction, chStmt.getString("source_value"),
-                  chStmt.getInt("attr_id"), chStmt.getInt("attr_type_id"),
-                  BranchManager.getBranch(chStmt.getInt("merge_branch_id")),
-                  BranchManager.getBranch(chStmt.getInt("dest_branch_id")));
+                  chStmt.getInt("attr_id"), chStmt.getLong("attr_type_id"),
+                  BranchManager.getBranch(chStmt.getLong("merge_branch_id")),
+                  BranchManager.getBranch(chStmt.getLong("dest_branch_id")));
             attributeConflict.setStatus(ConflictStatus.valueOf(chStmt.getInt("status")));
             conflicts.add(attributeConflict);
          }
@@ -176,7 +176,7 @@ public class ConflictManagerInternal {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          int commonTransactionNumber = transactionId != null ? transactionId.getId() : 0;
-         int commonBranchId = transactionId != null ? transactionId.getBranchId() : 0;
+         long commonBranchId = transactionId != null ? transactionId.getBranchId() : 0;
 
          chStmt.runPreparedQuery(sql, sourceBranch.getId(), sourceBranch.getBaseTransaction().getId(),
             destinationBranch.getId(), commonBranchId, commonTransactionNumber);
@@ -190,7 +190,7 @@ public class ConflictManagerInternal {
             int destGamma = chStmt.getInt("dest_gamma");
             ModificationType sourceModType = ModificationType.getMod(chStmt.getInt("source_mod_type"));
             ModificationType destModType = ModificationType.getMod(chStmt.getInt("dest_mod_type"));
-            int artTypeId = chStmt.getInt("art_type_id");
+            long artTypeId = chStmt.getLong("art_type_id");
 
             if (artId != nextArtId) {
                artId = nextArtId;
@@ -228,7 +228,7 @@ public class ConflictManagerInternal {
       AttributeConflictBuilder attributeConflictBuilder;
       try {
          int commonTransactionNumber = transactionId != null ? transactionId.getId() : 0;
-         int commonBranchId = transactionId != null ? transactionId.getBranchId() : 0;
+         long commonBranchId = transactionId != null ? transactionId.getBranchId() : 0;
 
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ATTRIBUTES), sourceBranch.getId(),
             sourceBranch.getBaseTransaction().getId(), destinationBranch.getId(), commonBranchId,
@@ -243,7 +243,7 @@ public class ConflictManagerInternal {
                int artId = chStmt.getInt("art_id");
                int sourceGamma = chStmt.getInt("source_gamma");
                int destGamma = chStmt.getInt("dest_gamma");
-               int attrTypeId = chStmt.getInt("attr_type_id");
+               long attrTypeId = chStmt.getLong("attr_type_id");
                String sourceValue =
                   chStmt.getString("source_value") != null ? chStmt.getString("source_value") : chStmt.getString("dest_value");
 
@@ -302,7 +302,7 @@ public class ConflictManagerInternal {
          endTransactionNumber) == 0;
    }
 
-   private static void cleanUpConflictDB(Collection<Conflict> conflicts, int branchId, IProgressMonitor monitor) throws OseeCoreException {
+   private static void cleanUpConflictDB(Collection<Conflict> conflicts, long branchId, IProgressMonitor monitor) throws OseeCoreException {
       monitor.subTask("Cleaning up old conflict data");
       int queryId = ArtifactLoader.getNewQueryId();
       try {
@@ -327,13 +327,13 @@ public class ConflictManagerInternal {
       monitor.worked(10);
    }
 
-   public static Collection<Integer> getDestinationBranchesMerged(int sourceBranchId) throws OseeCoreException {
-      List<Integer> destinationBranches = new LinkedList<Integer>();
+   public static Collection<Long> getDestinationBranchesMerged(long sourceBranchId) throws OseeCoreException {
+      List<Long> destinationBranches = new LinkedList<Long>();
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_DESTINATION_BRANCHES, sourceBranchId);
          while (chStmt.next()) {
-            destinationBranches.add(chStmt.getInt("dest_branch_id"));
+            destinationBranches.add(chStmt.getLong("dest_branch_id"));
          }
       } finally {
          chStmt.close();

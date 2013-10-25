@@ -437,10 +437,10 @@ public class CreateTasksOperationTest {
       }
 
       @Override
-      public int getItemTypeId() {
+      public long getItemTypeId() {
          OseeLog.log(Activator.class, Level.WARNING,
             "CreateTasksOperationTest.MockChange.getItemTypeId() - Unimplemented method called");
-         return 0;
+         return 0L;
       }
 
       @Override

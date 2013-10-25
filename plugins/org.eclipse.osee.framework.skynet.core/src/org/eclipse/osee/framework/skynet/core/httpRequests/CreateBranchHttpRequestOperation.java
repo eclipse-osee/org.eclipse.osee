@@ -46,11 +46,11 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
    private final Artifact associatedArtifact;
    private final String creationComment;
    private final int mergeAddressingQueryId;
-   private final int destinationBranchId;
+   private final long destinationBranchId;
    private Branch newBranch;
    private boolean txCopyBranchType;
 
-   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionRecord parentTransaction, String branchName, String branchGuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, int destinationBranchId) {
+   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionRecord parentTransaction, String branchName, String branchGuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, long destinationBranchId) {
       super("Create branch " + branchName, Activator.PLUGIN_ID);
       this.branchType = branchType;
       this.parentTransaction = parentTransaction;

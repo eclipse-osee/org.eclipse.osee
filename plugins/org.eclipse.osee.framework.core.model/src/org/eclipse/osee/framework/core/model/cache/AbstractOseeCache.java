@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implements IOseeCache<K, T> {
    private final HashCollection<String, T> nameToTypeMap = new HashCollection<String, T>(true,
       CopyOnWriteArrayList.class);
-   private final ConcurrentHashMap<Integer, T> idToTypeMap = new ConcurrentHashMap<Integer, T>();
+   private final ConcurrentHashMap<Long, T> idToTypeMap = new ConcurrentHashMap<Long, T>();
    private final ConcurrentHashMap<K, T> guidToTypeMap = new ConcurrentHashMap<K, T>();
 
    private final IOseeDataAccessor<K, T> dataAccessor;
@@ -186,9 +186,9 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
    }
 
    @Override
-   public T getById(int typeId) throws OseeCoreException {
+   public T getById(Number typeId) throws OseeCoreException {
       ensurePopulated();
-      return idToTypeMap.get(typeId);
+      return idToTypeMap.get(typeId.longValue());
    }
 
    public T getUniqueByName(String typeName) throws OseeCoreException {
@@ -318,7 +318,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       }
    }
 
-   public int getLocalId(Identity<K> token) throws OseeCoreException {
+   public long getLocalId(Identity<K> token) throws OseeCoreException {
       T type = get(token);
       return type != null ? type.getId() : IOseeStorable.UNPERSISTED_VALUE;
    }

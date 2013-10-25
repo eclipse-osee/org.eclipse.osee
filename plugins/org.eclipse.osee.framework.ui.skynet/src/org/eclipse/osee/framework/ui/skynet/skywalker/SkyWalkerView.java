@@ -156,7 +156,7 @@ public class SkyWalkerView extends GenericViewPart {
       try {
          if (storedGuid != null) {
             Artifact art =
-               ArtifactQuery.getArtifactFromId(storedGuid, BranchManager.getBranch(Integer.parseInt(storedBrandId)));
+               ArtifactQuery.getArtifactFromId(storedGuid, BranchManager.getBranch(Long.parseLong(storedBrandId)));
             if (art != null) {
                explore(art);
             }

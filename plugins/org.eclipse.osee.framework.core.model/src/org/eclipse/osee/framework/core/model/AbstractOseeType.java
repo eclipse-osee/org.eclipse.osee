@@ -100,7 +100,7 @@ public abstract class AbstractOseeType<KEY> extends FullyNamedIdentity<KEY> impl
    }
 
    @Override
-   public int getId() {
+   public long getId() {
       return getFieldValueLogException(IOseeStorable.UNPERSISTED_VALUE, UNIQUE_ID_FIELD_KEY);
    }
 
@@ -110,7 +110,7 @@ public abstract class AbstractOseeType<KEY> extends FullyNamedIdentity<KEY> impl
    }
 
    @Override
-   public void setId(int uniqueId) throws OseeCoreException {
+   public void setId(long uniqueId) throws OseeCoreException {
       setField(UNIQUE_ID_FIELD_KEY, uniqueId);
    }
 

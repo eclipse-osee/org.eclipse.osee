@@ -78,7 +78,7 @@ public class OseeDataTypeDatastore {
             artifactType.getAttributeTypes(BranchManager.getBranch(CoreBranches.SYSTEM_ROOT));
 
          for (IAttributeType attrType : attributeTypes) {
-            int typeId = AttributeTypeManager.getType(attrType).getId();
+            long typeId = AttributeTypeManager.getType(attrType).getId();
             toReturn.put(String.valueOf(artifactType.getId()), String.valueOf(typeId));
          }
       }

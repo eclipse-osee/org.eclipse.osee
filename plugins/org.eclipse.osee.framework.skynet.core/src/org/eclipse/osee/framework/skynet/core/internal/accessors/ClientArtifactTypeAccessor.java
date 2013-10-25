@@ -74,10 +74,10 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Long,
          updatedItems.add(cached);
       }
 
-      for (Entry<Integer, Integer[]> entry : response.getBaseToSuperTypes().entrySet()) {
+      for (Entry<Long, Long[]> entry : response.getBaseToSuperTypes().entrySet()) {
          ArtifactType baseType = cache.getById(entry.getKey());
          Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
-         for (Integer superId : entry.getValue()) {
+         for (Long superId : entry.getValue()) {
             ArtifactType superType = cache.getById(superId);
             if (superType != null) {
                superTypes.add(superType);

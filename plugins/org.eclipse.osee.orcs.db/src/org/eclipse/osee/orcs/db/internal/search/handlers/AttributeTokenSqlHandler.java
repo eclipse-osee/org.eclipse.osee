@@ -110,10 +110,10 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          attrSb.append(" AND att.attr_type_id = ");
          if (types.size() == 1) {
             attrSb.append("?");
-            int localId = toLocalId(criteria.getTypes().iterator().next());
+            long localId = toLocalId(criteria.getTypes().iterator().next());
             writer.addParameter(localId);
          } else {
-            Set<Integer> typeIds = new HashSet<Integer>();
+            Set<Long> typeIds = new HashSet<Long>();
             for (IAttributeType type : types) {
                typeIds.add(toLocalId(type));
             }

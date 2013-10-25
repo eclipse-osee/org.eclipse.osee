@@ -54,7 +54,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
             version.setStripeId(chStmt.getInt("stripe_transaction_id"));
          }
 
-         int typeId = chStmt.getInt("attr_type_id");
+      long typeId = chStmt.getLong("attr_type_id");
 
          String value = chStmt.getString("value");
          String uri = chStmt.getString("uri");

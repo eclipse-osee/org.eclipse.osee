@@ -139,7 +139,7 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Bran
    private void populateTransaction(double workAmount, OseeConnection connection, int intoTx, Branch branch, TransactionRecord copyTx) throws OseeCoreException {
       List<Object[]> data = new ArrayList<Object[]>();
       HashSet<Integer> gammas = new HashSet<Integer>(100000);
-      int parentBranchId = RelationalConstants.BRANCH_SENTINEL;
+      long parentBranchId = RelationalConstants.BRANCH_SENTINEL;
       if (branch.hasParentBranch()) {
          parentBranchId = branch.getParentBranch().getId();
       }

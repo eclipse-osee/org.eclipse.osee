@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 public class AttributeTypeCacheUpdateResponse {
 
    private final List<AttributeType> rows;
-   private final Map<Integer, Integer> attrToEnum;
+   private final Map<Long, Long> attrToEnum;
 
-   public AttributeTypeCacheUpdateResponse(List<AttributeType> rows, Map<Integer, Integer> attrToEnum) {
+   public AttributeTypeCacheUpdateResponse(List<AttributeType> rows, Map<Long, Long> attrToEnum) {
       this.rows = rows;
       this.attrToEnum = attrToEnum;
    }
@@ -31,7 +31,7 @@ public class AttributeTypeCacheUpdateResponse {
       return rows;
    }
 
-   public Map<Integer, Integer> getAttrToEnums() {
+   public Map<Long, Long> getAttrToEnums() {
       return attrToEnum;
    }
 

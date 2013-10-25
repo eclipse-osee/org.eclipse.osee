@@ -42,13 +42,13 @@ public class UpdatePreviousTxCurrent {
 // @formatter:on
 
    private final IOseeDatabaseService dbService;
-   private final int branchId;
+   private final long branchId;
    private final OseeConnection connection;
    private IdJoinQuery artifactJoin;
    private IdJoinQuery attributeJoin;
    private IdJoinQuery relationJoin;
 
-   public UpdatePreviousTxCurrent(IOseeDatabaseService dbService, OseeConnection connection, int branchId) {
+   public UpdatePreviousTxCurrent(IOseeDatabaseService dbService, OseeConnection connection, long branchId) {
       this.dbService = dbService;
       this.branchId = branchId;
       this.connection = connection;

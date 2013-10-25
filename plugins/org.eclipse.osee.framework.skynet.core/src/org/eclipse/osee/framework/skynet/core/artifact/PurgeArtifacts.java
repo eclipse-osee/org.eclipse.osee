@@ -98,7 +98,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
                StringBuilder sb = new StringBuilder();
                while (chStmt.next()) {
                   int artId = chStmt.getInt("art_id");
-                  int branchId = chStmt.getInt("branch_id");
+                  long branchId = chStmt.getLong("branch_id");
                   if (recurseChildrenBranches) {
                      Branch branch = BranchManager.getBranch(branchId);
                      Artifact artifactFromId = ArtifactQuery.getArtifactFromId(artId, branch);

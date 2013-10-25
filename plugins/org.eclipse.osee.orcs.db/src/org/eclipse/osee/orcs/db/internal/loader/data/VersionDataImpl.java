@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
  */
 public class VersionDataImpl implements VersionData {
 
-   private int branchId = RelationalConstants.BRANCH_SENTINEL;
+   private Long branchId = RelationalConstants.BRANCH_SENTINEL;
    private int txId = RelationalConstants.TRANSACTION_SENTINEL;
    private long gamma = RelationalConstants.GAMMA_SENTINEL;
    private boolean historical = RelationalConstants.IS_HISTORICAL_DEFAULT;
@@ -59,12 +59,12 @@ public class VersionDataImpl implements VersionData {
    }
 
    @Override
-   public int getBranchId() {
+   public long getBranchId() {
       return branchId;
    }
 
    @Override
-   public void setBranchId(int branchId) {
+   public void setBranchId(long branchId) {
       this.branchId = branchId;
    }
 
@@ -87,7 +87,7 @@ public class VersionDataImpl implements VersionData {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + branchId;
+      result = prime * result + branchId.hashCode();
       result = prime * result + (int) (gamma ^ (gamma >>> 32));
       result = prime * result + (historical ? 1231 : 1237);
       result = prime * result + stripeId;

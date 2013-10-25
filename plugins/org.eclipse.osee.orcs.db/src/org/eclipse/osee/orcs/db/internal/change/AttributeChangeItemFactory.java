@@ -37,7 +37,7 @@ public final class AttributeChangeItemFactory implements ChangeItemFactory {
    @Override
    public ChangeItem createItem(IOseeStatement chStmt) throws OseeCoreException {
       int attrId = chStmt.getInt("attr_id");
-      int attrTypeId = chStmt.getInt("attr_type_id");
+      long attrTypeId = chStmt.getLong("attr_type_id");
       int artId = chStmt.getInt("art_id");
 
       long gammaId = chStmt.getLong("gamma_id");

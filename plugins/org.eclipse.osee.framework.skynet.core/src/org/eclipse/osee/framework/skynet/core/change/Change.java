@@ -132,7 +132,7 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
       return txDelta;
    }
 
-   public abstract int getItemTypeId();
+   public abstract long getItemTypeId();
 
    public ArtifactType getArtifactType() {
       return getChangeArtifact().getArtifactType();

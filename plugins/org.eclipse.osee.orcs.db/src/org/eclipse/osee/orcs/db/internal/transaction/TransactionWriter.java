@@ -124,7 +124,7 @@ public class TransactionWriter {
          }
          sqlBuilder.updateAfterBinaryStorePersist();
 
-         int branchId = tx.getBranch().getId();
+         long branchId = tx.getBranch().getId();
          List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
          for (Entry<SqlOrderEnum, ArtifactJoinQuery> entry : sqlBuilder.getTxNotCurrents()) {
             fetchTxNotCurrent(connection, branchId, txNotCurrentData, entry.getKey().getTxsNotCurrentQuery(),
@@ -145,7 +145,7 @@ public class TransactionWriter {
       }
    }
 
-   private void fetchTxNotCurrent(OseeConnection connection, int branchId, List<Object[]> results, String query, ArtifactJoinQuery join) throws OseeCoreException {
+   private void fetchTxNotCurrent(OseeConnection connection, long branchId, List<Object[]> results, String query, ArtifactJoinQuery join) throws OseeCoreException {
       try {
          join.store();
          IOseeStatement chStmt = dbService.getStatement(connection);

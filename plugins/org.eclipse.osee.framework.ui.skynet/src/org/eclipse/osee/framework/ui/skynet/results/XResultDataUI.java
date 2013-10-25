@@ -32,7 +32,7 @@ public class XResultDataUI {
    /*
     * Creates hyperlink using name. Default editor will open guid for branchId given
     */
-   public static String getHyperlink(String name, String guid, int branchId) {
+   public static String getHyperlink(String name, String guid, long branchId) {
       return AHTML.getHyperlink(
          XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactBranch, guid + "(" + branchId + ")"),
          name);

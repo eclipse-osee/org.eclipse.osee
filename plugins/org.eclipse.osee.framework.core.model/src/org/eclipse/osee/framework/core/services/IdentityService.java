@@ -16,11 +16,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public interface IdentityService {
 
-   Integer getLocalId(Long universalId) throws OseeCoreException;
+   Long getLocalId(Long universalId) throws OseeCoreException;
 
-   Long getUniversalId(Integer localId) throws OseeCoreException;
+   Long getUniversalId(Long localId) throws OseeCoreException;
 
-   int getLocalId(Identity<Long> identity) throws OseeCoreException;
+   Long getLocalId(Identity<Long> identity) throws OseeCoreException;
 
    void store(Collection<Long> universalIds) throws OseeCoreException;
 

@@ -31,7 +31,7 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
    private String relationAlias;
    private String txsAlias;
 
-   private Collection<Integer> typeIds;
+   private Collection<Long> typeIds;
    private AbstractJoinQuery joinIdQuery;
    private AbstractJoinQuery joinTypeQuery;
 
@@ -68,8 +68,8 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
       txsAlias = writer.addTable(TableEnum.TXS_TABLE);
    }
 
-   private Collection<Integer> getLocalTypeIds() throws OseeCoreException {
-      Collection<Integer> toReturn = new HashSet<Integer>();
+   private Collection<Long> getLocalTypeIds() throws OseeCoreException {
+      Collection<Long> toReturn = new HashSet<Long>();
       for (Identity<Long> type : criteria.getTypes()) {
          toReturn.add(toLocalId(type));
       }

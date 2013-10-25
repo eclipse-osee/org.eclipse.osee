@@ -117,7 +117,7 @@ public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISt
    private Object[] toInsertValues(Branch branch) throws OseeCoreException {
       Branch parentBranch = branch.getParentBranch();
       TransactionRecord baseTxRecord = branch.getBaseTransaction();
-      int parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
+      long parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
       int baselineTransaction = baseTxRecord != null ? baseTxRecord.getId() : NULL_PARENT_BRANCH_ID;
 
       return new Object[] {
@@ -136,7 +136,7 @@ public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISt
    private Object[] toUpdateValues(Branch branch) throws OseeCoreException {
       Branch parentBranch = branch.getParentBranch();
       TransactionRecord baseTxRecord = branch.getBaseTransaction();
-      int parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
+      long parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
       int baselineTransaction = baseTxRecord != null ? baseTxRecord.getId() : NULL_PARENT_BRANCH_ID;
 
       getLogger().debug(

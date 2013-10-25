@@ -102,7 +102,7 @@ public class ArtifactFactoryTest {
       when(artifactData.getGuid()).thenReturn(guid);
       when(artifactData.getTypeUuid()).thenReturn(65L);
       when(artifactData.getVersion()).thenReturn(artifactVersion);
-      when(artifactVersion.getBranchId()).thenReturn(23);
+      when(artifactVersion.getBranchId()).thenReturn(23L);
 
       when(
          attributeFactory.copyAttribute(any(AttributeData.class), any(IOseeBranch.class), any(AttributeManager.class))).thenReturn(

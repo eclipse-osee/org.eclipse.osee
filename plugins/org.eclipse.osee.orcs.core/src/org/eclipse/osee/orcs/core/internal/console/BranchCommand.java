@@ -159,7 +159,7 @@ public final class BranchCommand implements ConsoleCommand {
          return item != null ? item.getGuid() : -1;
       }
 
-      private int toId(IOseeStorable item) {
+      private long toId(IOseeStorable item) {
          return item != null ? item.getId() : -1;
       }
    }

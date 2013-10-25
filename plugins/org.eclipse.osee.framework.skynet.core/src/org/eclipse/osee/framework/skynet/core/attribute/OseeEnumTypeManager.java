@@ -28,7 +28,7 @@ public class OseeEnumTypeManager {
       return ServiceUtil.getOseeCacheService().getEnumTypeCache();
    }
 
-   public static OseeEnumType getType(int enumTypeId) throws OseeCoreException {
+   public static OseeEnumType getType(long enumTypeId) throws OseeCoreException {
       OseeEnumType oseeEnumType = getCache().getById(enumTypeId);
       if (oseeEnumType == null) {
          throw new OseeTypeDoesNotExist("Osee Enum Type with id:[%s] does not exist.", enumTypeId);

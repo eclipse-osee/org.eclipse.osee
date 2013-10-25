@@ -58,7 +58,7 @@ public class DataFactoryImpl implements DataFactory {
       Conditions.checkExpressionFailOnTrue(!GUID.isValid(guidToSet),
          "Invalid guid [%s] during artifact creation [type: %s]", guidToSet, token);
 
-      int branchId = idFactory.getLocalId(branch);
+      long branchId = idFactory.getLocalId(branch);
 
       VersionData version = objectFactory.createDefaultVersionData();
       version.setBranchId(branchId);

@@ -22,9 +22,9 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 public class ArtifactConflictBuilder extends ConflictBuilder {
    private final ModificationType sourceModType;
    private final ModificationType destModType;
-   private final int artTypeId;
+   private final long artTypeId;
 
-   public ArtifactConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, Branch sourceBranch, Branch destBranch, ModificationType sourceModType, ModificationType destModType, int artTypeId) {
+   public ArtifactConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, Branch sourceBranch, Branch destBranch, ModificationType sourceModType, ModificationType destModType, long artTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, sourceBranch, destBranch);
       this.artTypeId = artTypeId;
       this.sourceModType = sourceModType;

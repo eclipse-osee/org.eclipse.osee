@@ -134,7 +134,7 @@ public final class AttributeChange extends Change {
    }
 
    @Override
-   public int getItemTypeId() {
+   public long getItemTypeId() {
       return getAttributeType().getId();
    }
 

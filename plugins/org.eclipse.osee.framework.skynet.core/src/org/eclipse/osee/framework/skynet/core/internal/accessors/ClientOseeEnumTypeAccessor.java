@@ -46,7 +46,7 @@ public class ClientOseeEnumTypeAccessor extends AbstractClientDataAccessor<Long,
       OseeEnumTypeFactory factory = getFactory();
 
       for (String[] enumTypeRow : response.getEnumTypeRows()) {
-         enumTypes.add(factory.createOrUpdate(cache, Integer.parseInt(enumTypeRow[0]),
+         enumTypes.add(factory.createOrUpdate(cache, Long.parseLong(enumTypeRow[0]),
             StorageState.valueOf(enumTypeRow[1]), Long.valueOf(enumTypeRow[2]), enumTypeRow[3]));
       }
 

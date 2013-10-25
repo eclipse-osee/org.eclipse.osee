@@ -223,10 +223,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return joinQuery;
    }
 
-   public IdJoinQuery writeIdJoin(Collection<Integer> ids) {
+   public IdJoinQuery writeIdJoin(Collection<? extends Number> ids) {
       IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery(dbService, context.getSession().getGuid());
-      for (Integer id : ids) {
-         joinQuery.add(id);
+      for (Number id : ids) {
+         joinQuery.add(id.longValue());
       }
       addJoin(joinQuery);
       return joinQuery;

@@ -23,7 +23,7 @@ public interface TxOrcsData extends TransactionReadable {
    int getAuthorId();
 
    @Override
-   int getBranchId();
+   long getBranchId();
 
    @Override
    String getComment();
@@ -41,7 +41,7 @@ public interface TxOrcsData extends TransactionReadable {
 
    void setAuthorId(int authorId);
 
-   void setBranchId(int branchId);
+   void setBranchId(long branchId);
 
    void setComment(String comment);
 

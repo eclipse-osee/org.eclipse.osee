@@ -55,7 +55,7 @@ public abstract class BaseArtifactLoopbackCmd implements IClientLoopbackCmd {
                if (Strings.isValid(branchGuid)) {
                   branch = BranchManager.getBranchByGuid(branchGuid);
                } else {
-                  branch = BranchManager.getBranch(Integer.parseInt(branchId));
+                  branch = BranchManager.getBranch(Long.parseLong(branchId));
                }
                artifact = ArtifactQuery.getArtifactFromId(guid, branch, searchDeleted);
             }

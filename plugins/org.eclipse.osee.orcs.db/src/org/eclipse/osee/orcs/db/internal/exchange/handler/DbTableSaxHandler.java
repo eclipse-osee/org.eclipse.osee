@@ -99,7 +99,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   private int getTypeId(IdentityLocator identityService, Map<String, String> fieldMap) throws OseeCoreException {
+   private long getTypeId(IdentityLocator identityService, Map<String, String> fieldMap) throws OseeCoreException {
       Conditions.checkNotNull(identityService, "identityService");
       String hexString = fieldMap.get(ExchangeDb.TYPE_GUID);
       return identityService.parseToLocalId(hexString);
@@ -132,17 +132,17 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
             }
 
             if (exportItem.equals(ExportItem.OSEE_ARTIFACT_DATA)) {
-               int typeId = getTypeId(getIdentityService(), fieldMap);
+               long typeId = getTypeId(getIdentityService(), fieldMap);
                fieldMap.put("art_type_id", String.valueOf(typeId));
             }
 
             if (exportItem.equals(ExportItem.OSEE_ATTRIBUTE_DATA)) {
-               int typeId = getTypeId(getIdentityService(), fieldMap);
+               long typeId = getTypeId(getIdentityService(), fieldMap);
                fieldMap.put("attr_type_id", String.valueOf(typeId));
             }
 
             if (exportItem.equals(ExportItem.OSEE_RELATION_LINK_DATA)) {
-               int typeId = getTypeId(getIdentityService(), fieldMap);
+               long typeId = getTypeId(getIdentityService(), fieldMap);
                fieldMap.put("rel_link_type_id", String.valueOf(typeId));
             }
 

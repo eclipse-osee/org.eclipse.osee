@@ -95,7 +95,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
 
          List<Object[]> txsToDelete = new ArrayList<Object[]>();
 
-         int txBranchId =
+         long txBranchId =
             getDatabaseService().runPreparedQueryFetchObject(RelationalConstants.BRANCH_SENTINEL,
                SELECT_TRANSACTION_BRANCH_ID, txIdToDelete);
 

@@ -118,7 +118,7 @@ public class AttributeFactoryTest {
       when(dataFactory.create(artifactData, attributeType)).thenReturn(attributeData);
       when(attributeData.getVersion()).thenReturn(attrVersionData);
       when(artifactData.getVersion()).thenReturn(artVersionData);
-      when(artVersionData.getBranchId()).thenReturn(45);
+      when(artVersionData.getBranchId()).thenReturn(45L);
 
       ArgumentCaptor<ResourceNameResolver> resolverCapture = ArgumentCaptor.forClass(ResourceNameResolver.class);
       ArgumentCaptor<WeakReference> refCapture = ArgumentCaptor.forClass(WeakReference.class);

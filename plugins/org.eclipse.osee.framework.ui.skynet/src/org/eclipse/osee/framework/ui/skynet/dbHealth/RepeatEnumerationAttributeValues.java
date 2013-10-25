@@ -94,7 +94,8 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
             ArtifactQuery.getArtifactListFromIds(artifactGuids, branch, EXCLUDE_DELETED); // bulk load for speed
             SkynetTransaction transaction =
-               TransactionManager.createTransaction(branch, "Delete Repeat Attribute Values for" + branch.getShortName());
+               TransactionManager.createTransaction(branch,
+                  "Delete Repeat Attribute Values for" + branch.getShortName());
             for (AttrData attrData : attributeData) {
                Artifact artifact = ArtifactQuery.getArtifactFromId(attrData.getArtifactGuid(), branch);
                AttributeType attributeType = AttributeTypeManager.getType(attrData.getAttributeTypeId());
@@ -129,7 +130,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
          chStmt.runPreparedQuery(FIND_REPEAT_ENUMS, branch.getId(), branch.getId());
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
-            attrData.add(new AttrData(chStmt.getString("guid"), chStmt.getInt("attr_type_id"),
+            attrData.add(new AttrData(chStmt.getString("guid"), chStmt.getLong("attr_type_id"),
                chStmt.getString("value")));
          }
       } finally {
@@ -140,10 +141,10 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
    private final class AttrData {
       private final String artifactGuid;
-      private final int attributeTypeId;
+      private final Long attributeTypeId;
       private final String value;
 
-      public AttrData(String artifactGuid, int attributeTypeId, String value) {
+      public AttrData(String artifactGuid, long attributeTypeId, String value) {
          super();
          this.artifactGuid = artifactGuid;
          this.attributeTypeId = attributeTypeId;
@@ -154,7 +155,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
          return artifactGuid;
       }
 
-      public int getAttributeTypeId() {
+      public long getAttributeTypeId() {
          return attributeTypeId;
       }
 
@@ -167,7 +168,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
          final int prime = 31;
          int result = 1;
          result = prime * result + (artifactGuid == null ? 0 : artifactGuid.hashCode());
-         result = prime * result + attributeTypeId;
+         result = prime * result + attributeTypeId.hashCode();
          result = prime * result + (value == null ? 0 : value.hashCode());
          return result;
       }

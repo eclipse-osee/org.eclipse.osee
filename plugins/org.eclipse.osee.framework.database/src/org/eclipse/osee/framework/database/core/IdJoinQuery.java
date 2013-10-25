@@ -18,9 +18,9 @@ import org.eclipse.osee.framework.database.core.DatabaseJoinAccessor.JoinItem;
 public final class IdJoinQuery extends AbstractJoinQuery {
 
    private final class TempIdEntry implements IJoinRow {
-      private final int id;
+      private final Long id;
 
-      private TempIdEntry(Integer id) {
+      private TempIdEntry(Long id) {
          this.id = id;
       }
 
@@ -38,12 +38,12 @@ public final class IdJoinQuery extends AbstractJoinQuery {
             return false;
          }
          TempIdEntry other = (TempIdEntry) obj;
-         return other.id == this.id;
+         return other.id.equals(this.id);
       }
 
       @Override
       public int hashCode() {
-         return 37 * id;
+         return 37 * id.hashCode();
       }
 
       @Override
@@ -56,7 +56,7 @@ public final class IdJoinQuery extends AbstractJoinQuery {
       super(joinAccessor, JoinItem.ID, queryId);
    }
 
-   public void add(Integer id) {
-      entries.add(new TempIdEntry(id));
+   public void add(Number id) {
+      entries.add(new TempIdEntry(id.longValue()));
    }
 }

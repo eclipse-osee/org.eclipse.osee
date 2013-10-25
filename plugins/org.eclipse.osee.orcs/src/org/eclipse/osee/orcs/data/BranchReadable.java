@@ -35,6 +35,6 @@ public interface BranchReadable extends HasLocalId, IOseeBranch {
 
    int getSourceTransaction();
 
-   int getParentBranch();
+   long getParentBranch();
 
 }

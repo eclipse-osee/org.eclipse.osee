@@ -15,12 +15,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.message.SearchResponse;
 import org.eclipse.osee.framework.core.message.SearchResponse.ArtifactMatchMetaData;
 import org.eclipse.osee.framework.core.message.SearchResponse.AttributeMatchMetaData;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -85,7 +85,7 @@ public class SearchResponseTest {
 
       Assert.assertEquals(8, searchResponse.matches());
 
-      Assert.assertFalse(Compare.isDifferent(Arrays.asList(1, 2), searchResponse.getBranchIds()));
+      Assert.assertFalse(Compare.isDifferent(Arrays.asList(1L, 2L), searchResponse.getBranchIds()));
 
       // Check Branch 1
       Collection<Integer> data1 = searchResponse.getArtifactIds(1);

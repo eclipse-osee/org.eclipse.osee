@@ -142,7 +142,7 @@ public class ChangeArtifactType {
 
          while (chStmt.next()) {
             int gammaId = chStmt.getInt("gamma_id");
-            int branchId = chStmt.getInt("branch_id");
+            long branchId = chStmt.getLong("branch_id");
             IOseeBranch branch = BranchManager.getBranch(branchId);
             int artId = gammaToArtId.get(gammaId);
             Artifact artifact = ArtifactQuery.checkArtifactFromId(artId, branch, DeletionFlag.EXCLUDE_DELETED);
@@ -260,7 +260,7 @@ public class ChangeArtifactType {
       }
    }
 
-   private Object[] toUpdate(int art_type_id, int art_id) {
+   private Object[] toUpdate(long art_type_id, int art_id) {
       return new Object[] {art_type_id, art_id};
    }
 

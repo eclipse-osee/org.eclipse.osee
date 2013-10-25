@@ -32,11 +32,11 @@ public class ArtifactJoinQueryTest {
       Assert.assertEquals(0, join.size());
       Assert.assertEquals(true, join.isEmpty());
 
-      join.add(1234, 5678, null);
+      join.add(1234, 5678L, null);
       Assert.assertEquals(1, join.size());
       Assert.assertEquals(false, join.isEmpty());
 
-      join.add(1234, 5678, null);
+      join.add(1234, 5678L, null);
       Assert.assertEquals(1, join.size());
 
       Assert.assertEquals(false, join.wasStored());
@@ -54,7 +54,7 @@ public class ArtifactJoinQueryTest {
       Assert.assertEquals(999, entry[0]);
       Assert.assertTrue(entry[1] instanceof Timestamp);
       Assert.assertEquals(1234, entry[2]);
-      Assert.assertEquals(5678, entry[3]);
+      Assert.assertEquals(5678L, entry[3]);
 
    }
 

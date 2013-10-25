@@ -48,7 +48,7 @@ public class TestRunArtifactOptions implements IPropertyStoreBasedControl {
       propertyStore.put(TestRunStorageKey.BRANCH_IDS, this.panel.getBranchIds());
 
       Branch branch = this.panel.getSelectedBranch();
-      int branchId = -1;
+      long branchId = -1;
       if (branch != null) {
          branchId = branch.getId();
       }

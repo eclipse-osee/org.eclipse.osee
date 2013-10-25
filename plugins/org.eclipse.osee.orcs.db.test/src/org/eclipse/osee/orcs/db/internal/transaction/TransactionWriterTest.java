@@ -90,7 +90,7 @@ public class TransactionWriterTest {
       when(join2.getQueryId()).thenReturn(89);
 
       when(tx.getBranch()).thenReturn(branch);
-      when(branch.getId()).thenReturn(65);
+      when(branch.getId()).thenReturn(65L);
       when(builder.getBinaryStores()).thenReturn(stores);
       when(builder.getTxNotCurrents()).thenAnswer(new Answer<Set<Entry<SqlOrderEnum, ArtifactJoinQuery>>>() {
 
@@ -160,13 +160,13 @@ public class TransactionWriterTest {
       Iterator<Object[]> params = paramCaptor.getValue().iterator();
       int index = 0;
       Object[] data = params.next();
-      Assert.assertEquals(65, data[index++]);
+      Assert.assertEquals(65L, data[index++]);
       Assert.assertEquals(51, data[index++]);
       Assert.assertEquals(80000L, data[index++]);
 
       index = 0;
       data = params.next();
-      Assert.assertEquals(65, data[index++]);
+      Assert.assertEquals(65L, data[index++]);
       Assert.assertEquals(52, data[index++]);
       Assert.assertEquals(80001L, data[index++]);
    }

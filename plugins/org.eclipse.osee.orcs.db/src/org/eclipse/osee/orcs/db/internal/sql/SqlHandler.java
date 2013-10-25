@@ -33,7 +33,7 @@ public abstract class SqlHandler<T extends Criteria> implements HasPriority {
       return idService;
    }
 
-   public int toLocalId(Identity<Long> identity) throws OseeCoreException {
+   public long toLocalId(Identity<Long> identity) throws OseeCoreException {
       return idService.getLocalId(identity);
    }
 

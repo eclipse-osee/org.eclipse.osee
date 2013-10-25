@@ -103,7 +103,7 @@ public final class RelationChange extends Change {
    }
 
    @Override
-   public int getItemTypeId() {
+   public long getItemTypeId() {
       return relationType.getId();
    }
 
@@ -114,6 +114,6 @@ public final class RelationChange extends Change {
 
    @Override
    public Class<? extends IChangeWorker> getWorker() {
-	   return worker;
+      return worker;
    }
 }

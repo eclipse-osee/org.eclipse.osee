@@ -23,22 +23,22 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
  * @author Jeff C. Phillips
  */
 public class BranchAccessObject extends AccessObject {
-   private final int branchId;
-   private static final Map<Integer, BranchAccessObject> cache = new HashMap<Integer, BranchAccessObject>();
+   private final Long branchId;
+   private static final Map<Long, BranchAccessObject> cache = new HashMap<Long, BranchAccessObject>();
 
    @Override
    public int hashCode() {
       int result = 17;
-      result = 31 * result + branchId;
+      result = 31 * result + branchId.hashCode();
       return result;
    }
 
-   public BranchAccessObject(int branchId) {
+   public BranchAccessObject(long branchId) {
       this.branchId = branchId;
    }
 
    @Override
-   public int getId() {
+   public long getId() {
       return branchId;
    }
 
@@ -65,7 +65,7 @@ public class BranchAccessObject extends AccessObject {
       return null;
    }
 
-   public static BranchAccessObject getBranchAccessObject(int branchId) {
+   public static BranchAccessObject getBranchAccessObject(long branchId) {
       BranchAccessObject branchAccessObject;
       if (cache.containsKey(branchId)) {
          branchAccessObject = cache.get(branchId);

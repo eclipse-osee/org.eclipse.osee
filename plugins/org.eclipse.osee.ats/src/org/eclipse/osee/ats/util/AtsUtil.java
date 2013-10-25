@@ -170,7 +170,7 @@ public final class AtsUtil {
       new ModifyActionableItemAction(teamArt).run();
    }
 
-   public static void openArtifact(String guid, Integer branchId, OseeCmEditor view) {
+   public static void openArtifact(String guid, Long branchId, OseeCmEditor view) {
       try {
          Branch branch = BranchManager.getBranch(branchId);
          Artifact artifact = ArtifactQuery.getArtifactFromId(guid, branch);

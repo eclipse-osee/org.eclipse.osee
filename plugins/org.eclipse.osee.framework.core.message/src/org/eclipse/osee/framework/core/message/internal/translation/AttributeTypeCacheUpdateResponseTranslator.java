@@ -53,8 +53,8 @@ public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<A
          String[] rowData = store.getArray(createKey(Fields.ROW, index));
          rows.add(createfromArray(factory, rowData));
       }
-      Map<Integer, Integer> attrToEnum = new HashMap<Integer, Integer>();
-      TranslationUtil.loadMap(attrToEnum, store, Fields.ATTR_TO_ENUM);
+      Map<Long, Long> attrToEnum = new HashMap<Long, Long>();
+      TranslationUtil.loadMapLong(attrToEnum, store, Fields.ATTR_TO_ENUM);
       return new AttributeTypeCacheUpdateResponse(rows, attrToEnum);
    }
 
@@ -68,7 +68,7 @@ public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<A
       }
       store.put(Fields.ROW_COUNT.name(), rows.size());
 
-      TranslationUtil.putMap(store, Fields.ATTR_TO_ENUM, object.getAttrToEnums());
+      TranslationUtil.putMapLong(store, Fields.ATTR_TO_ENUM, object.getAttrToEnums());
       return store;
    }
 
@@ -100,7 +100,7 @@ public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<A
       String description = data[3];
       String fileTypeExtension = data[4];
       long remoteId = Long.valueOf(data[5]);
-      int uniqueId = Integer.valueOf(data[6]);
+      long uniqueId = Long.valueOf(data[6]);
       int maxOccurrences = Integer.valueOf(data[7]);
       int minOccurrences = Integer.valueOf(data[8]);
       StorageState storageState = StorageState.valueOf(data[9]);

@@ -37,7 +37,7 @@ public final class ArtifactChangeItemFactory implements ChangeItemFactory {
    @Override
    public ChangeItem createItem(IOseeStatement chStmt) throws OseeCoreException {
       int artId = chStmt.getInt("art_id");
-      int artTypeId = chStmt.getInt("art_type_id");
+      long artTypeId = chStmt.getLong("art_type_id");
 
       long gammaId = chStmt.getLong("gamma_id");
       ModificationType modType = changeByGammaId.get(gammaId);

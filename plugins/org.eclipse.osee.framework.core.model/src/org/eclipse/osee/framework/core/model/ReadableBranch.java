@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ReadableBranch extends IOseeBranch, Readable {
 
-   int getId();
+   long getId();
 
    boolean isEditable();
 

@@ -171,7 +171,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    }
 
    @Override
-   public TransactionRecord getOrLoadPriorTransaction(TransactionCache cache, int transactionNumber, int branchId) throws OseeCoreException {
+   public TransactionRecord getOrLoadPriorTransaction(TransactionCache cache, int transactionNumber, long branchId) throws OseeCoreException {
       int priorTransactionId =
          oseeDatabaseService.runPreparedQueryFetchObject(-1, GET_PRIOR_TRANSACTION, branchId, transactionNumber);
       return cache.getOrLoad(priorTransactionId);

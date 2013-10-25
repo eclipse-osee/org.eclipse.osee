@@ -137,7 +137,7 @@ public final class ChangeManager {
             chStmt.runPreparedQuery(insertParameters.size() * 2,
                ClientSessionManager.getSql(OseeSql.CHANGE_TX_MODIFYING), queryId);
             while (chStmt.next()) {
-               Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
+               Branch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
                Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), branch);
                transactionMap.put(artifact, TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
             }
@@ -189,7 +189,7 @@ public final class ChangeManager {
                ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_MODIFYING), queryId);
             while (chStmt.next()) {
                if (chStmt.getInt("tx_count") > 0) {
-                  Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
+                  Branch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
                   Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), branch.getParentBranch());
                   branchMap.put(artifact, branch);
                }

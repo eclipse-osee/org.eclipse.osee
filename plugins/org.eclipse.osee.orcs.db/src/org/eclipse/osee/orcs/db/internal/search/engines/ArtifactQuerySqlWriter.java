@@ -28,10 +28,10 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
  */
 public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
-   private final int branchId;
+   private final long branchId;
    private final QueryType queryType;
 
-   public ArtifactQuerySqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext context, QueryType queryType, int branchId) {
+   public ArtifactQuerySqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext context, QueryType queryType, long branchId) {
       super(logger, dbService, sqlProvider, context);
       this.queryType = queryType;
       this.branchId = branchId;

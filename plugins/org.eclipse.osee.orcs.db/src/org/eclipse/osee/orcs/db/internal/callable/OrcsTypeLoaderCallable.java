@@ -65,8 +65,8 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
    private Collection<String> findOseeTypeData() throws OseeCoreException {
       Collection<String> paths = new LinkedHashSet<String>();
 
-      Integer artifactTypeId = identityService.getLocalId(CoreArtifactTypes.OseeTypeDefinition);
-      Integer attributeTypeId = identityService.getLocalId(CoreAttributeTypes.UriGeneralStringData);
+      Long artifactTypeId = identityService.getLocalId(CoreArtifactTypes.OseeTypeDefinition);
+      Long attributeTypeId = identityService.getLocalId(CoreAttributeTypes.UriGeneralStringData);
 
       IOseeStatement chStmt = null;
       try {

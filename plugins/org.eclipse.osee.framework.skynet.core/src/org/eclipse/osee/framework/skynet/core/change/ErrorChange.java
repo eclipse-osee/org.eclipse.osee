@@ -46,7 +46,7 @@ public final class ErrorChange extends Change {
    }
 
    @Override
-   public int getItemTypeId() {
+   public long getItemTypeId() {
       return 0;
    }
 
@@ -78,7 +78,7 @@ public final class ErrorChange extends Change {
 
    @Override
    public Class<? extends IChangeWorker> getWorker() {
-	   return null;
+      return null;
    }
 
 }

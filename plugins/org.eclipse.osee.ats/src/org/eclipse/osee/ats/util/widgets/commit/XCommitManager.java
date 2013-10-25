@@ -156,14 +156,14 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                         }
                         try {
                            // commit all branches in order
-                           Map<Integer, Branch> branchIdToBranchMap = new HashMap<Integer, Branch>();
+                           Map<Long, Branch> branchIdToBranchMap = new HashMap<Long, Branch>();
                            for (Branch destinationBranch : AtsBranchManagerCore.getBranchesLeftToCommit(teamArt)) {
                               branchIdToBranchMap.put(destinationBranch.getId(), destinationBranch);
                            }
-                           List<Integer> branchIds = new ArrayList<Integer>();
+                           List<Long> branchIds = new ArrayList<Long>();
                            branchIds.addAll(branchIdToBranchMap.keySet());
                            Arrays.sort(branchIds.toArray(new Integer[branchIds.size()]));
-                           for (Integer branchId : branchIds) {
+                           for (Long branchId : branchIds) {
                               Branch destinationBranch = branchIdToBranchMap.get(branchId);
                               IOperation operation =
                                  AtsBranchManager.commitWorkingBranch(teamArt, false, true, destinationBranch,

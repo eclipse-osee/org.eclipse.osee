@@ -29,9 +29,9 @@ public class AttributeConflictBuilder extends ConflictBuilder {
 
    private final String sourceValue;
    private final int attrId;
-   private final int attrTypeId;
+   private final long attrTypeId;
 
-   public AttributeConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, Branch sourceBranch, Branch destBranch, String sourceValue, int attrId, int attrTypeId) {
+   public AttributeConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, Branch sourceBranch, Branch destBranch, String sourceValue, int attrId, long attrTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, sourceBranch, destBranch);
       this.sourceValue = sourceValue;
       this.attrId = attrId;

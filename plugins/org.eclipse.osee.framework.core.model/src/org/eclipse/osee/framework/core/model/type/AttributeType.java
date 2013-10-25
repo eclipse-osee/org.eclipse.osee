@@ -95,7 +95,7 @@ public class AttributeType extends AbstractOseeType<Long> implements IAttributeT
       return getFieldValueLogException("", ATTRIBUTE_DESCRIPTION_FIELD_KEY);
    }
 
-   public int getOseeEnumTypeId() {
+   public long getOseeEnumTypeId() {
       OseeEnumType oseeEnumType = getOseeEnumType();
       return oseeEnumType == null ? -1 : oseeEnumType.getId();
    }

@@ -209,18 +209,18 @@ public class DbTableExportItem extends AbstractXmlExportItem {
    }
 
    private void handleTypeId(Appendable appendable, Object value) throws IOException, OseeCoreException {
-      int typeId = -1;
+      long typeId = -1;
       if (value instanceof Short) {
          Short xShort = (Short) value;
-         typeId = xShort.intValue();
+         typeId = xShort.longValue();
       } else if (value instanceof Integer) {
-         typeId = (Integer) value;
+         typeId = ((Integer) value).longValue();
       } else if (value instanceof Long) {
-         typeId = ((Long) value).intValue();
+         typeId = (Long) value;
       } else if (value instanceof BigInteger) {
-         typeId = ((BigInteger) value).intValue();
+         typeId = ((BigInteger) value).longValue();
       } else if (value instanceof BigDecimal) {
-         typeId = ((BigDecimal) value).intValue();
+         typeId = ((BigDecimal) value).longValue();
       } else {
          throw new OseeCoreException("Undefined Type [%s]", value != null ? value.getClass().getSimpleName() : value);
       }

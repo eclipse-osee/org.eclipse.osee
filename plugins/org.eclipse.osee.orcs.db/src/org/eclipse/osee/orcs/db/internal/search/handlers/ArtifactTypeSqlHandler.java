@@ -32,7 +32,7 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
    private String artAlias;
    private String txsAlias;
    private AbstractJoinQuery joinQuery;
-   private Collection<Integer> typeIds;
+   private Collection<Long> typeIds;
 
    private List<String> artAliases;
    private List<String> txsAliases;
@@ -62,11 +62,11 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
       txsAliases = writer.getAliases(TableEnum.TXS_TABLE);
    }
 
-   private Collection<Integer> getLocalTypeIds() throws OseeCoreException {
+   private Collection<Long> getLocalTypeIds() throws OseeCoreException {
       Collection<? extends IArtifactType> types = criteria.getTypes();
-      Collection<Integer> toReturn = new HashSet<Integer>();
+      Collection<Long> toReturn = new HashSet<Long>();
       for (IArtifactType type : types) {
-         int localId = getIdentityService().getLocalId(type);
+         long localId = getIdentityService().getLocalId(type);
          toReturn.add(localId);
       }
       return toReturn;
@@ -99,7 +99,7 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
          }
       } else {
          modified = true;
-         int localId = typeIds.iterator().next();
+         long localId = typeIds.iterator().next();
 
          int aSize = artAliases.size();
          for (int index = 0; index < aSize; index++) {

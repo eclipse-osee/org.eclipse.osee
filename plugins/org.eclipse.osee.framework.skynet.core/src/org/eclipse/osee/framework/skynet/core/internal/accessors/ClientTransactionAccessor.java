@@ -80,7 +80,7 @@ public class ClientTransactionAccessor implements ITransactionDataAccessor {
    }
 
    @Override
-   public TransactionRecord getOrLoadPriorTransaction(TransactionCache cache, int transactionNumber, int branchId) throws OseeCoreException {
+   public TransactionRecord getOrLoadPriorTransaction(TransactionCache cache, int transactionNumber, long branchId) throws OseeCoreException {
       int priorTransactionId =
          ConnectionHandler.runPreparedQueryFetchInt(transactionNumber, GET_PRIOR_TRANSACTION, branchId,
             transactionNumber);

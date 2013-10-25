@@ -61,7 +61,7 @@ public class TxQuerySqlContextFactoryImplTest {
    private static final Criteria COMMENT = comment("SimpleTemplateProviderTask", false);
    private static final Criteria TYPES = type(Arrays.asList(TransactionDetailsType.Baselined,
       TransactionDetailsType.NonBaselined));
-   private static final Criteria BRANCHIDS = branchIds(1, 2, 3, 4, 5);
+   private static final Criteria BRANCHIDS = branchIds(1L, 2L, 3L, 4L, 5L);
    private static final Criteria IDS_WITH_OPERATOR = idWithOperator(Operator.LESS_THAN, 1);
    private static final Criteria DATE_WITH_OPERATOR = dateWithOperator(Operator.LESS_THAN,
       Timestamp.valueOf("2013-05-06 12:34:56"));
@@ -279,7 +279,7 @@ public class TxQuerySqlContextFactoryImplTest {
       return new CriteriaTxType(types);
    }
 
-   private static Criteria branchIds(Integer... ids) {
+   private static Criteria branchIds(Long... ids) {
       return new CriteriaTxBranchIds(Arrays.asList(ids));
    }
 

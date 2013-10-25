@@ -7,7 +7,7 @@
 	<!-- __________________________________________________________ -->
 	
 	<Table name="OSEE_TYPE_ID_MAP" schema="OSEE" tablespace="osee_data">
-		<Column id="LOCAL_ID" defaultValue="not null" type="smallint" />
+		<Column id="LOCAL_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="REMOTE_ID" defaultValue="not null" type="BIGINT" />
 		<Constraint schema="OSEE" id="OSEE_TYPE_ID_MAP_AT_L_PK" type="PRIMARY KEY" appliesTo="LOCAL_ID" />
 		<Index id="OSEE_TYPE_ID_MAP_R_IDX" type="UNIQUE" tablespace="osee_index">
@@ -30,7 +30,7 @@
 	<Table name="OSEE_ARTIFACT" schema="OSEE" tablespace="osee_data">
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="ART_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Column id="ART_TYPE_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="GUID" defaultValue="not null" limits="22" type="VARCHAR" />
 		<Column id="HUMAN_READABLE_ID" limits="5" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_ART__G_A_PK" type="PRIMARY KEY" appliesTo="ART_ID, GAMMA_ID" />
@@ -62,7 +62,7 @@
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ATTR_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="VALUE" limits="4000" type="VARCHAR" />
 		<Column id="URI" limits="200" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_ATTRIBUTE_AT_G_PK" type="PRIMARY KEY" appliesTo="ATTR_ID, GAMMA_ID" />
@@ -108,7 +108,7 @@
 	<Table name="OSEE_RELATION_LINK" schema="OSEE" tablespace="osee_data">
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="REL_LINK_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="smallint" />
+		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="A_ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="B_ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="RATIONALE" limits="4000" type="VARCHAR" />

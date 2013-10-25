@@ -77,7 +77,7 @@ public class ChangeDataTest {
       theChanges.add(change);
 
       AttributeType paragraphAttributeType = AttributeTypeManager.getType(CoreAttributeTypes.ParagraphNumber);
-      int typeID = paragraphAttributeType.getId();
+      int typeID = ((Long) paragraphAttributeType.getId()).intValue();
       change =
          new AttributeChange(workingBranch, artifactStart.getGammaId(), artifactStart.getArtId(), null,
             ModificationType.NEW, "1.2", "", typeID, paragraphAttributeType, modType, false, artifactStart, artDelta);
@@ -96,14 +96,14 @@ public class ChangeDataTest {
          new ArtifactChange(workingBranch, artifactStart.getGammaId(), artifactStart.getArtId(), null, modType, false,
             artifactStart, artDelta);
       theChanges.add(change);
-      typeID = paragraphAttributeType.getId();
+      typeID = ((Long) paragraphAttributeType.getId()).intValue();
       change =
          new AttributeChange(workingBranch, artifactStart.getGammaId(), artifactStart.getArtId(), null,
             ModificationType.NEW, "1.2", "", typeID, paragraphAttributeType, modType, false, artifactStart, artDelta);
       theChanges.add(change);
 
       AttributeType nameAttributeType = AttributeTypeManager.getType(CoreAttributeTypes.Name);
-      typeID = nameAttributeType.getId();
+      typeID = ((Long) nameAttributeType.getId()).intValue();
       change =
          new AttributeChange(workingBranch, artifactStart.getGammaId(), artifactStart.getArtId(), null, modType,
             "test artifact 2A", "test artifact 2", typeID, nameAttributeType, modType, false, artifactStart, artDelta);

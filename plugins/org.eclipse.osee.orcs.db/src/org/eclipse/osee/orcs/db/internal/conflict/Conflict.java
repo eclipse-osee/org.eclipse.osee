@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.model.MergeBranch;
 public final class Conflict implements IOseeStorable {
    private final MergeBranch mergeBranch;
    private final ConflictStatus conflictStatus;
-   private final int itemId;
+   private final long itemId;
    private final Long sourceGammaId;
    private final Long destinationGammaId;
    private final ConflictType conflictType;
@@ -27,7 +27,7 @@ public final class Conflict implements IOseeStorable {
    private StorageState storageState;
    private boolean isDirty;
 
-   public Conflict(StorageState storageState, int itemId, ConflictType conflictType, MergeBranch mergeBranch, ConflictStatus conflictStatus, long sourceGammaId, long destinationGammaId) {
+   public Conflict(StorageState storageState, long itemId, ConflictType conflictType, MergeBranch mergeBranch, ConflictStatus conflictStatus, long sourceGammaId, long destinationGammaId) {
       this.mergeBranch = mergeBranch;
       this.storageState = storageState;
       this.conflictStatus = conflictStatus;
@@ -51,7 +51,7 @@ public final class Conflict implements IOseeStorable {
    }
 
    @Override
-   public int getId() {
+   public long getId() {
       return itemId;
    }
 
@@ -74,7 +74,7 @@ public final class Conflict implements IOseeStorable {
    }
 
    @Override
-   public void setId(int uniqueId) {
+   public void setId(long uniqueId) {
       throw new UnsupportedOperationException();
    }
 

@@ -27,9 +27,9 @@ public interface VersionData extends Cloneable {
 
    void setStripeId(int stripeId);
 
-   int getBranchId();
+   long getBranchId();
 
-   void setBranchId(int branchId);
+   void setBranchId(long branchId);
 
    boolean isInStorage();
 

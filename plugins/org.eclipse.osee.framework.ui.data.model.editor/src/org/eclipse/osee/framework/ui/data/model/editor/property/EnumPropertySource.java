@@ -59,7 +59,7 @@ public class EnumPropertySource extends ModelPropertySource {
    @Override
    public Object getPropertyValue(Object id) {
       if (id == idEnumTypeList) {
-         int enumTypeId = getDataTypeElement().getEnumTypeId();
+         long enumTypeId = getDataTypeElement().getEnumTypeId();
          OseeEnumType enumType = null;
          String descriptor = "";
          try {

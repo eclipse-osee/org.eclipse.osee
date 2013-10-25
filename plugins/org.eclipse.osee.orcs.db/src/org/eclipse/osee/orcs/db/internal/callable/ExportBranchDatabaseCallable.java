@@ -116,8 +116,8 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       ExportImportJoinQuery joinQuery = JoinUtility.createExportImportJoinQuery(getDatabaseService());
       BranchCache branchCache = getBranchCache();
       for (IOseeBranch branch : branches) {
-         int branchId = branchCache.getLocalId(branch);
-         joinQuery.add((long) branchId, -1L);
+         long branchId = branchCache.getLocalId(branch);
+         joinQuery.add(branchId, -1L);
       }
       joinQuery.store();
 

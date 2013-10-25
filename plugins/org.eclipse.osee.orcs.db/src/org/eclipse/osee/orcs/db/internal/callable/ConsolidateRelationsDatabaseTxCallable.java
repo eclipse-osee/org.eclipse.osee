@@ -53,7 +53,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
    private final List<Object[]> updateAddressingData = new ArrayList<Object[]>(5000);
    private ExportImportJoinQuery gammaJoin;
    private OseeConnection connection;
-   private int previousRelationTypeId;
+   private long previousRelationTypeId;
    private int previousArtifactAId;
    private int previousArtiafctBId;
    private long netGamma;
@@ -117,7 +117,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       try {
          chStmt.runPreparedQuery(MAX_FETCH, SELECT_RELATIONS);
          while (chStmt.next()) {
-            int relationTypeId = chStmt.getInt("rel_link_type_id");
+            long relationTypeId = chStmt.getLong("rel_link_type_id");
             int artifactAId = chStmt.getInt("a_art_id");
             int artiafctBId = chStmt.getInt("b_art_id");
 
@@ -259,7 +259,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       console.writeln(strB.toString());
    }
 
-   private boolean isNextConceptualRelation(int relationTypeId, int artifactAId, int artiafctBId) {
+   private boolean isNextConceptualRelation(long relationTypeId, int artifactAId, int artiafctBId) {
       return previousRelationTypeId != relationTypeId || previousArtifactAId != artifactAId || previousArtiafctBId != artiafctBId;
    }
 
@@ -270,7 +270,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       }
    }
 
-   private void initNextConceptualRelation(int relationTypeId, int artifactAId, int artiafctBId) throws OseeCoreException {
+   private void initNextConceptualRelation(long relationTypeId, int artifactAId, int artiafctBId) throws OseeCoreException {
       obsoleteGammas.clear();
       previousRelationTypeId = relationTypeId;
       previousArtifactAId = artifactAId;

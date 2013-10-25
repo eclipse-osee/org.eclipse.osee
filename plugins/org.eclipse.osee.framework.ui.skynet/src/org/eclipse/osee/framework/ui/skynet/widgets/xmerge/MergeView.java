@@ -185,8 +185,8 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
    public void init(IViewSite site, IMemento memento) throws PartInitException {
       super.init(site, memento);
       try {
-         Integer sourceBranchId = null;
-         Integer destBranchId = null;
+         Long sourceBranchId = null;
+         Long destBranchId = null;
 
          if (memento != null) {
             memento = memento.getChild(INPUT);
@@ -198,7 +198,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                      openViewUpon(null, null, null, TransactionManager.getTransactionId(commitTransaction), false);
                      return;
                   }
-                  sourceBranchId = memento.getInteger(SOURCE_BRANCH_ID);
+                  sourceBranchId = Long.parseLong(memento.getString(SOURCE_BRANCH_ID));
                   final Branch sourceBranch = BranchManager.getBranch(sourceBranchId);
                   if (sourceBranch == null) {
                      OseeLog.log(Activator.class, Level.WARNING,
@@ -206,7 +206,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                      mergeXWidget.setLabel("Could not restore this Merge View");
                      return;
                   }
-                  destBranchId = memento.getInteger(DEST_BRANCH_ID);
+                  destBranchId = Long.parseLong(memento.getString(DEST_BRANCH_ID));
                   final Branch destBranch = BranchManager.getBranch(destBranchId);
                   if (destBranch == null) {
                      OseeLog.log(Activator.class, Level.WARNING,
@@ -250,10 +250,10 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                childMemento.putInteger(COMMIT_NUMBER, commitTrans.getId());
             }
             if (sourceBranch != null) {
-               childMemento.putInteger(SOURCE_BRANCH_ID, sourceBranch.getId());
+               childMemento.putString(SOURCE_BRANCH_ID, Long.toString(sourceBranch.getId()));
             }
             if (destBranch != null) {
-               childMemento.putInteger(DEST_BRANCH_ID, destBranch.getId());
+               childMemento.putString(DEST_BRANCH_ID, Long.toString(destBranch.getId()));
             }
             if (transactionId != null) {
                childMemento.putInteger(TRANSACTION_NUMBER, transactionId.getId());

@@ -119,8 +119,8 @@ public class AccessControlService implements IAccessControlService {
    private final HashCollection<Integer, Integer> groupToSubjectsCache = new HashCollection<Integer, Integer>(true); // <artId, branchId>
 
    // branch_id, art_id, subject_id
-   private final CompositeKeyHashMap<Integer, Integer, Integer> artifactLockCache =
-      new CompositeKeyHashMap<Integer, Integer, Integer>();
+   private final CompositeKeyHashMap<Long, Integer, Integer> artifactLockCache =
+      new CompositeKeyHashMap<Long, Integer, Integer>();
 
    private final HashCollection<Integer, PermissionEnum> subjectToPermissionCache =
       new HashCollection<Integer, PermissionEnum>(true);
@@ -211,7 +211,7 @@ public class AccessControlService implements IAccessControlService {
          while (chStmt.next()) {
             Integer subjectId = chStmt.getInt("privilege_entity_id");
             Integer branchId = chStmt.getInt("branch_id");
-            int subjectArtifactTypeId = chStmt.getInt("art_type_id");
+            Long subjectArtifactTypeId = chStmt.getLong("art_type_id");
             PermissionEnum permission = PermissionEnum.getPermission(chStmt.getInt("permission_id"));
             BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branchId);
 
@@ -236,8 +236,8 @@ public class AccessControlService implements IAccessControlService {
          while (chStmt.next()) {
             Integer subjectId = chStmt.getInt("privilege_entity_id");
             Integer objectId = chStmt.getInt("art_id");
-            Integer branchId = chStmt.getInt("branch_id");
-            int subjectArtifactTypeId = chStmt.getInt("art_type_id");
+            Long branchId = chStmt.getLong("branch_id");
+            long subjectArtifactTypeId = chStmt.getLong("art_type_id");
             PermissionEnum permission = PermissionEnum.getPermission(chStmt.getInt("permission_id"));
 
             if (permission.equals(PermissionEnum.LOCK)) {
@@ -409,7 +409,7 @@ public class AccessControlService implements IAccessControlService {
 
       Integer artId = artifact.getArtId();
       Branch branch = artifact.getFullBranch();
-      Integer branchId = branch.getId();
+      Long branchId = branch.getId();
 
       //      accessObject = accessObjectCache.get(artId, branchId);
       accessObject = ArtifactAccessObject.getArtifactAccessObjectFromCache(artId, branch);
@@ -594,7 +594,7 @@ public class AccessControlService implements IAccessControlService {
    }
 
    private PermissionEnum getBranchPermission(IBasicArtifact<?> subject, Object object) throws OseeCoreException {
-      int branchId = ((AccessObject) object).getId();
+      long branchId = ((AccessObject) object).getId();
       Branch branch = BranchManager.getBranch(branchId);
 
       return getBranchPermission(subject, branch);
@@ -652,7 +652,7 @@ public class AccessControlService implements IAccessControlService {
       for (Artifact object : objects) {
          Integer objectArtId = object.getArtId();
          Integer subjectArtId = subject.getArtId();
-         Integer objectBranchId = object.getFullBranch().getId();
+         Long objectBranchId = object.getFullBranch().getId();
 
          if (!artifactLockCache.containsKey(objectBranchId, objectArtId)) {
             AccessObject accessObject = getAccessObject(object);
@@ -676,7 +676,7 @@ public class AccessControlService implements IAccessControlService {
       Set<Artifact> lockedArts = new HashSet<Artifact>();
       for (Artifact object : objects) {
          Integer objectArtId = object.getArtId();
-         Integer branchId = object.getFullBranch().getId();
+         Long branchId = object.getFullBranch().getId();
 
          if (artifactLockCache.containsKey(branchId, objectArtId) && canUnlockObject(object, subject)) {
             AccessObject accessObject = getAccessObject(object);
@@ -735,7 +735,7 @@ public class AccessControlService implements IAccessControlService {
       }
 
       if (hasLock(object)) {
-         int branchId = object.getFullBranch().getId();
+         long branchId = object.getFullBranch().getId();
          hasAccess = artifactLockCache.get(branchId, object.getArtId()) == UserManager.getUser().getArtId();
       }
       return hasAccess;

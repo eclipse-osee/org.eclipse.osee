@@ -476,7 +476,7 @@ public class AtsBranchManagerCore {
       return branchesInCommit.contains(getWorkingBranch(teamArt));
    }
 
-   public static Integer getId(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   public static Long getId(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       Branch branch = getWorkingBranch(teamArt);
       if (branch == null) {
          return null;

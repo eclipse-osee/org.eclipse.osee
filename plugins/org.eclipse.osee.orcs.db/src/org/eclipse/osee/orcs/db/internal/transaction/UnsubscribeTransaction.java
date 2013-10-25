@@ -78,8 +78,8 @@ public final class UnsubscribeTransaction extends DatabaseTxCallable<String> {
       return completionMethod;
    }
 
-   private boolean getRelationTxData(int branchId) throws OseeCoreException {
-      int relationTypeId = identityService.getLocalId(CoreRelationTypes.Users_Artifact);
+   private boolean getRelationTxData(long branchId) throws OseeCoreException {
+      long relationTypeId = identityService.getLocalId(CoreRelationTypes.Users_Artifact);
       IOseeStatement chStmt = getDatabaseService().getStatement();
 
       try {

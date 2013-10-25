@@ -37,7 +37,7 @@ public final class RelationChangeItemFactory implements ChangeItemFactory {
    @Override
    public ChangeItem createItem(IOseeStatement chStmt) throws OseeCoreException {
       int relLinkId = chStmt.getInt("rel_link_id");
-      int relTypeId = chStmt.getInt("rel_link_type_id");
+      long relTypeId = chStmt.getLong("rel_link_type_id");
 
       long gammaId = chStmt.getLong("gamma_id");
       ModificationType modType = changeByGammaId.get(gammaId);

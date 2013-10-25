@@ -21,11 +21,11 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAuthorIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaCommitIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxGetHead;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxBranchIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxBranchUuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxComment;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxGetHead;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIdWithOperator;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIdWithTwoOperators;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIds;
@@ -54,7 +54,7 @@ public class TransactionCriteriaFactory {
       return new CriteriaTxType(types);
    }
 
-   public Criteria newTxBranchIdCriteria(Collection<Integer> ids) {
+   public Criteria newTxBranchIdCriteria(Collection<Long> ids) {
       return new CriteriaTxBranchIds(ids);
    }
 

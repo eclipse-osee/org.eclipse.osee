@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -28,15 +29,17 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 public class IdentityServiceImpl implements IdentityService {
 
+   private static final String USE_LONG_TYPE_IDS = "use.long.type.ids";
    private static final String SELECT_ALL = "select * from osee_type_id_map";
    private static final String INSERT_SQL = "insert into osee_type_id_map (remote_id, local_id) values (?,?)";
 
-   private final Map<Long, Integer> universalIdToLocalId = new ConcurrentHashMap<Long, Integer>();
-   private final Map<Integer, Long> localIdToUniversalId = new ConcurrentHashMap<Integer, Long>();
+   private final Map<Long, Long> universalIdToLocalId = new ConcurrentHashMap<Long, Long>();
+   private final Map<Long, Long> localIdToUniversalId = new ConcurrentHashMap<Long, Long>();
    private final Set<Long> persistedIds = new ConcurrentSkipListSet<Long>();
 
    private IOseeDatabaseService service;
    private volatile boolean ensurePopulatedRanOnce;
+   private boolean useLongTypeIds = false;
 
    public void start() {
       //nothing to do 
@@ -51,15 +54,22 @@ public class IdentityServiceImpl implements IdentityService {
    }
 
    @Override
-   public Integer getLocalId(Long universalId) throws OseeCoreException {
+   public Long getLocalId(Long universalId) throws OseeCoreException {
       ensurePopulate();
       Conditions.checkNotNull(universalId, "universalId");
-      Integer localId = universalIdToLocalId.get(universalId);
+
+      Long localId;
+      if (useLongTypeIds) {
+         localId = universalId;
+      } else {
+         localId = universalIdToLocalId.get(universalId);
+      }
+
       if (localId == null) {
          reloadCache();
          localId = universalIdToLocalId.get(universalId);
          if (localId == null) {
-            localId = service.getSequence().getNextLocalTypeId();
+            localId = (long) service.getSequence().getNextLocalTypeId();
             cache(universalId, localId);
          }
       }
@@ -67,10 +77,17 @@ public class IdentityServiceImpl implements IdentityService {
    }
 
    @Override
-   public Long getUniversalId(Integer localId) throws OseeCoreException {
+   public Long getUniversalId(Long localId) throws OseeCoreException {
       ensurePopulate();
       Conditions.checkNotNull(localId, "localId");
-      Long remoteId = localIdToUniversalId.get(localId);
+
+      Long remoteId;
+      if (useLongTypeIds) {
+         remoteId = localId;
+      } else {
+         remoteId = localIdToUniversalId.get(localId);
+      }
+
       if (remoteId == null) {
          throw new OseeCoreException("Remote id for local id [%s] was not found", remoteId);
       }
@@ -85,7 +102,7 @@ public class IdentityServiceImpl implements IdentityService {
          chStmt.runPreparedQuery(1000, SELECT_ALL);
          while (chStmt.next()) {
             Long remoteId = chStmt.getLong("remote_id");
-            Integer localId = chStmt.getInt("local_id");
+            Long localId = chStmt.getLong("local_id");
             cache(remoteId, localId);
             persistedIds.add(remoteId);
          }
@@ -102,7 +119,7 @@ public class IdentityServiceImpl implements IdentityService {
       ensurePopulatedRanOnce = false;
    }
 
-   private void cache(Long remoteId, Integer localId) {
+   private void cache(Long remoteId, Long localId) {
       universalIdToLocalId.put(remoteId, localId);
       localIdToUniversalId.put(localId, remoteId);
    }
@@ -112,6 +129,7 @@ public class IdentityServiceImpl implements IdentityService {
          clear();
          ensurePopulatedRanOnce = true;
          reloadCache();
+         useLongTypeIds = OseeInfo.isCacheEnabled(USE_LONG_TYPE_IDS);
       }
    }
 
@@ -121,7 +139,7 @@ public class IdentityServiceImpl implements IdentityService {
       List<Object[]> data = new ArrayList<Object[]>();
       List<Long> toPersist = Collections.setComplement(universalIds, persistedIds);
       for (Long remoteId : toPersist) {
-         Integer localId = getLocalId(remoteId);
+         Long localId = getLocalId(remoteId);
          data.add(new Object[] {remoteId, localId});
       }
       if (!data.isEmpty() && !toPersist.isEmpty()) {
@@ -131,7 +149,7 @@ public class IdentityServiceImpl implements IdentityService {
    }
 
    @Override
-   public int getLocalId(Identity<Long> identity) throws OseeCoreException {
+   public Long getLocalId(Identity<Long> identity) throws OseeCoreException {
       return getLocalId(identity.getGuid());
    }
 

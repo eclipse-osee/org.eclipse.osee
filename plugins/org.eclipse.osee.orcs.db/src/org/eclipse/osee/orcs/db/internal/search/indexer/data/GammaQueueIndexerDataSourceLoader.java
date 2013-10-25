@@ -50,7 +50,7 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
             loaded = true;
 
             int itemId = chStmt.getInt("attr_id");
-            long typeUuid = idService.getUniversalId(chStmt.getInt("attr_type_id"));
+            long typeUuid = idService.getUniversalId(chStmt.getLong("attr_type_id"));
             long gammaId = chStmt.getLong("gamma_id");
             String uri = chStmt.getString("uri");
             String value = chStmt.getString("value");

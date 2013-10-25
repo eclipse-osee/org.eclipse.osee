@@ -58,7 +58,7 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Bra
                branch.getBranchType());
          }
 
-         int branchId = branch.getId();
+         long branchId = branch.getId();
          String sql = String.format("DELETE FROM %s WHERE branch_id = ?", sourceTableName);
          purgeFromTable(connection, sql, 0.20, branchId);
 
@@ -79,7 +79,7 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Bra
       return branch;
    }
 
-   private void purgeAccessControlTables(int branchId) throws OseeCoreException {
+   private void purgeAccessControlTables(long branchId) throws OseeCoreException {
       getDatabaseService().runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, branchId);
       checkForCancelled();
       getDatabaseService().runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, branchId);

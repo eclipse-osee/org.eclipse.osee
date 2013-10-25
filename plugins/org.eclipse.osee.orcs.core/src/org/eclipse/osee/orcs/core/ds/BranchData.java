@@ -42,9 +42,9 @@ public interface BranchData extends HasLocalId {
 
    void setSourceTransaction(int sourceTx);
 
-   int getParentBranch();
+   long getParentBranch();
 
-   void setParentBranch(int parent);
+   void setParentBranch(long parent);
 
    boolean hasParentBranch();
 

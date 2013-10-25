@@ -240,7 +240,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
       return artId;
    }
 
-   public final int getArtTypeId() {
+   public final long getArtTypeId() {
       return artifactType.getId();
    }
 

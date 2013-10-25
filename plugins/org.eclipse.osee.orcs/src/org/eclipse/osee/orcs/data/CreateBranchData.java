@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.Identity;
 public class CreateBranchData implements Identifiable<String> {
 
    private static final int NULL_ARTIFACT_ID = -1;
-   private final int MERGE_DESTINATION_BRANCH_ID = -1; // only used on merge branches
+   private final long MERGE_DESTINATION_BRANCH_ID = -1; // only used on merge branches
    private final int MERGE_ADDRESSING_QUERY_ID = -1; // only used on merge branches
 
    private String branchUuid;
@@ -34,7 +34,7 @@ public class CreateBranchData implements Identifiable<String> {
 
    // Merge Branch Legacy Support
    private int mergeAddressingQueryId = MERGE_ADDRESSING_QUERY_ID;
-   private int mergeDestinationBranchId = MERGE_DESTINATION_BRANCH_ID;
+   private long mergeDestinationBranchId = MERGE_DESTINATION_BRANCH_ID;
 
    private boolean txCopyBranchType = false;
 
@@ -120,11 +120,11 @@ public class CreateBranchData implements Identifiable<String> {
       this.mergeAddressingQueryId = mergeAddressingQueryId;
    }
 
-   public int getMergeDestinationBranchId() {
+   public long getMergeDestinationBranchId() {
       return mergeDestinationBranchId;
    }
 
-   public void setMergeDestinationBranchId(int destinationBranchId) {
+   public void setMergeDestinationBranchId(long destinationBranchId) {
       this.mergeDestinationBranchId = destinationBranchId;
    }
 

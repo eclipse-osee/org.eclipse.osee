@@ -164,7 +164,7 @@ public abstract class Conflict implements IAdaptable {
       this.status = status;
    }
 
-   public int getMergeBranchID() {
+   public long getMergeBranchID() {
       return mergeBranch.getId();
    }
 
@@ -239,5 +239,5 @@ public abstract class Conflict implements IAdaptable {
 
    public abstract int getObjectId() throws OseeCoreException;
 
-   public abstract boolean applyPreviousMerge(int mergeBranchId, int destBranchId) throws OseeCoreException;
+   public abstract boolean applyPreviousMerge(long mergeBranchId, long destBranchId) throws OseeCoreException;
 }

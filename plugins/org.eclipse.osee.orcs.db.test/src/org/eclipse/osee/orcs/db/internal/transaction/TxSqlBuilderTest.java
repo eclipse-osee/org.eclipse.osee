@@ -69,7 +69,7 @@ public class TxSqlBuilderTest {
    private static final int EXPECTED_TX_ID = 10000;
    private static final int LOADED_TX_ID = 567;
    private static final int EXPECTED_COMMIT_ID = 46;
-   private static final int EXPECTED_BRANCH_ID = 65;
+   private static final long EXPECTED_BRANCH_ID = 65L;
    private static final int EXPECTED_AUTHOR_ID = 89;
    private static final String EXPECTED_COMMENT = "My comment";
    private static final TransactionDetailsType EXPECTED_TX_TYPE = TransactionDetailsType.Baselined;
@@ -78,7 +78,7 @@ public class TxSqlBuilderTest {
    private static final int ITEM_ID = 789;
    private static final String EXP_GUID = GUID.create();
    private static final long TYPE_UUID = 72132144189L;
-   private static final int TYPE_ID = 567;
+   private static final long TYPE_ID = 567;
 
    private static final long NEXT_GAMMA_ID = 751382L;
 

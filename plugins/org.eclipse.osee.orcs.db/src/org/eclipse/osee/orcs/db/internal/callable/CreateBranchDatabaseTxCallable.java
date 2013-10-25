@@ -243,9 +243,9 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       }
    }
 
-   private void addMergeBranchEntry(double workAmount, OseeConnection connection, Branch branch, int destinationBranchId) throws OseeCoreException {
+   private void addMergeBranchEntry(double workAmount, OseeConnection connection, Branch branch, long destinationBranchId) throws OseeCoreException {
       if (branch.getBranchType().isMergeBranch()) {
-         int parentBranchId = branch.hasParentBranch() ? branch.getParentBranch().getId() : -1;
+         long parentBranchId = branch.hasParentBranch() ? branch.getParentBranch().getId() : -1;
          getDatabaseService().runPreparedUpdate(connection, MERGE_BRANCH_INSERT, parentBranchId,
             newBranchData.getMergeDestinationBranchId(), branch.getId(), 0);
       }
@@ -256,7 +256,7 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       if (branch.getBranchType() != BranchType.SYSTEM_ROOT) {
          List<Object[]> data = new ArrayList<Object[]>();
          HashSet<Integer> gammas = new HashSet<Integer>(100000);
-         int parentBranchId = -1;
+         long parentBranchId = -1;
          if (branch.hasParentBranch()) {
             parentBranchId = branch.getParentBranch().getId();
          }

@@ -24,11 +24,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 public class ArtifactAccessObject extends AccessObject {
 
    private final Integer artId;
-   private final Integer branchId;
-   private static final DoubleKeyHashMap<Integer, Integer, ArtifactAccessObject> cache =
-      new DoubleKeyHashMap<Integer, Integer, ArtifactAccessObject>();
+   private final Long branchId;
+   private static final DoubleKeyHashMap<Integer, Long, ArtifactAccessObject> cache =
+      new DoubleKeyHashMap<Integer, Long, ArtifactAccessObject>();
 
-   public ArtifactAccessObject(Integer artId, Integer branchId) {
+   public ArtifactAccessObject(Integer artId, Long branchId) {
       super();
       this.artId = artId;
       this.branchId = branchId;
@@ -38,7 +38,7 @@ public class ArtifactAccessObject extends AccessObject {
    public int hashCode() {
       int result = 17;
       result = 31 * result + artId;
-      result = 31 * result + branchId;
+      result = 31 * result + branchId.hashCode();
       return result;
    }
 
@@ -47,7 +47,7 @@ public class ArtifactAccessObject extends AccessObject {
    }
 
    @Override
-   public int getId() {
+   public long getId() {
       return branchId;
    }
 
@@ -70,7 +70,7 @@ public class ArtifactAccessObject extends AccessObject {
    }
 
    public static ArtifactAccessObject getArtifactAccessObject(Integer artId, IOseeBranch branch) throws OseeCoreException {
-      int branchId = BranchManager.getBranchId(branch);
+      long branchId = BranchManager.getBranchId(branch);
       ArtifactAccessObject accessObject = cache.get(artId, branchId);
 
       if (accessObject == null) {
@@ -85,7 +85,7 @@ public class ArtifactAccessObject extends AccessObject {
    }
 
    public static AccessObject getArtifactAccessObjectFromCache(Integer artId2, IOseeBranch branch) throws OseeCoreException {
-      int branchId2 = BranchManager.getBranchId(branch);
+      long branchId2 = BranchManager.getBranchId(branch);
       return cache.get(artId2, branchId2);
    }
 

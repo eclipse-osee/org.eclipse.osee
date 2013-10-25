@@ -153,7 +153,7 @@ public class BranchManager {
       return getCache().getByName(branchName);
    }
 
-   public static int getBranchId(IOseeBranch branch) throws OseeCoreException {
+   public static long getBranchId(IOseeBranch branch) throws OseeCoreException {
       return getBranch(branch).getId();
    }
 
@@ -174,7 +174,7 @@ public class BranchManager {
       }
    }
 
-   public static synchronized void checkAndReload(int id) throws OseeCoreException {
+   public static synchronized void checkAndReload(Long id) throws OseeCoreException {
       if (!branchExists(id)) {
          refreshBranches();
       }
@@ -197,7 +197,7 @@ public class BranchManager {
       return getCache().getByGuid(branchGuid) != null;
    }
 
-   public static boolean branchExists(int id) throws OseeCoreException {
+   public static boolean branchExists(Long id) throws OseeCoreException {
       return getCache().getById(id) != null;
    }
 
@@ -243,7 +243,7 @@ public class BranchManager {
       return getMergeBranch(sourceBranch, destBranch) != null;
    }
 
-   public static Branch getBranch(Integer branchId) throws OseeCoreException {
+   public static Branch getBranch(Long branchId) throws OseeCoreException {
       if (branchId == null) {
          throw new BranchDoesNotExist("Branch Id is null");
       }
@@ -278,17 +278,17 @@ public class BranchManager {
       Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(branch, false));
    }
 
-   public static void updateBranchType(IProgressMonitor monitor, final int branchId, String branchGuid, final BranchType type) throws OseeCoreException {
+   public static void updateBranchType(IProgressMonitor monitor, final long branchId, String branchGuid, final BranchType type) throws OseeCoreException {
       IOperation operation = new UpdateBranchTypeHttpRequestOperation(branchId, branchGuid, type);
       Operations.executeWorkAndCheckStatus(operation, monitor);
    }
 
-   public static void updateBranchState(IProgressMonitor monitor, final int branchId, String branchGuid, final BranchState state) throws OseeCoreException {
+   public static void updateBranchState(IProgressMonitor monitor, final long branchId, String branchGuid, final BranchState state) throws OseeCoreException {
       IOperation operation = new UpdateBranchStateHttpRequestOperation(branchId, branchGuid, state);
       Operations.executeWorkAndCheckStatus(operation, monitor);
    }
 
-   public static void updateBranchArchivedState(IProgressMonitor monitor, final int branchId, String branchGuid, final BranchArchivedState state) throws OseeCoreException {
+   public static void updateBranchArchivedState(IProgressMonitor monitor, final long branchId, String branchGuid, final BranchArchivedState state) throws OseeCoreException {
       IOperation operation = new UpdateBranchArchivedStateHttpRequestOperation(branchId, branchGuid, state);
       Operations.executeWorkAndCheckStatus(operation, monitor);
    }
@@ -483,7 +483,7 @@ public class BranchManager {
          associatedArtifact, creationComment, -1, -1);
    }
 
-   private static Branch createBranch(BranchType branchType, TransactionRecord parentTransaction, String branchName, String branchGuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, int destinationBranchId) throws OseeCoreException {
+   private static Branch createBranch(BranchType branchType, TransactionRecord parentTransaction, String branchName, String branchGuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, long destinationBranchId) throws OseeCoreException {
       CreateBranchHttpRequestOperation operation =
          new CreateBranchHttpRequestOperation(branchType, parentTransaction, branchName, branchGuid,
             associatedArtifact, creationComment, mergeAddressingQueryId, destinationBranchId);

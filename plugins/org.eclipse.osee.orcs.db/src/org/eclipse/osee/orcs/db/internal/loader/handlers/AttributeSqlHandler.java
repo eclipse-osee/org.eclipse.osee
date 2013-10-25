@@ -32,7 +32,7 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
    private String attrAlias;
    private String txsAlias;
 
-   private Collection<Integer> typeIds;
+   private Collection<Long> typeIds;
    private AbstractJoinQuery joinIdQuery;
    private AbstractJoinQuery joinTypeQuery;
 
@@ -68,8 +68,8 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
       txsAlias = writer.addTable(TableEnum.TXS_TABLE);
    }
 
-   private Collection<Integer> getLocalTypeIds() throws OseeCoreException {
-      Collection<Integer> toReturn = new HashSet<Integer>();
+   private Collection<Long> getLocalTypeIds() throws OseeCoreException {
+      Collection<Long> toReturn = new HashSet<Long>();
       for (Identity<Long> type : criteria.getTypes()) {
          toReturn.add(toLocalId(type));
       }

@@ -56,9 +56,9 @@ public interface TransactionQuery {
 
    TransactionQuery andBranch(Collection<? extends IOseeBranch> ids) throws OseeCoreException;
 
-   TransactionQuery andBranchIds(int... id) throws OseeCoreException;
+   TransactionQuery andBranchIds(long... id) throws OseeCoreException;
 
-   TransactionQuery andBranchIds(Collection<Integer> ids) throws OseeCoreException;
+   TransactionQuery andBranchIds(Collection<Long> ids) throws OseeCoreException;
 
    TransactionQuery andDate(Operator op, Timestamp date) throws OseeCoreException;
 

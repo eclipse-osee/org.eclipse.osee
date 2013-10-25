@@ -80,7 +80,7 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
    }
 
    @Override
-   public int getBranchId() {
+   public long getBranchId() {
       return branch.getId();
    }
 

@@ -130,7 +130,7 @@ public class WordUtil {
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         int localId = ServiceUtil.getIdentityService().getLocalId(CoreAttributeTypes.WordTemplateContent);
+         long localId = ServiceUtil.getIdentityService().getLocalId(CoreAttributeTypes.WordTemplateContent);
          chStmt.runPreparedQuery(SELECT_WORD_VALUES, artId, localId, branch.getId());
 
          List<Pair<String, Integer>> values = new LinkedList<Pair<String, Integer>>();

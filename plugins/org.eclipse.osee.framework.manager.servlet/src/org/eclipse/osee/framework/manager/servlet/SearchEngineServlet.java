@@ -87,7 +87,7 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
             ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> results = builder.getMatches();
             for (Match<ArtifactReadable, AttributeReadable<?>> match : results) {
                ArtifactReadable artifact = match.getItem();
-               int branchId = branchCache.getLocalId(artifact.getBranch());
+               long branchId = branchCache.getLocalId(artifact.getBranch());
                for (AttributeReadable<?> attribute : match.getElements()) {
                   searchResponse.add(branchId, artifact.getLocalId(), attribute.getGammaId(),
                      match.getLocation(attribute));
@@ -96,7 +96,7 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
          } else {
             ResultSet<ArtifactReadable> results = builder.getResults();
             for (ArtifactReadable artifact : results) {
-               int branchId = branchCache.getLocalId(artifact.getBranch());
+               long branchId = branchCache.getLocalId(artifact.getBranch());
                searchResponse.add(branchId, artifact.getLocalId(), -1);
             }
          }

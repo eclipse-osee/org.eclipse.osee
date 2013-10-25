@@ -53,19 +53,19 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
    }
 
    @Override
-   protected Integer getKey2(Artifact artifact) {
+   protected Long getKey2(Artifact artifact) {
       try {
          return artifact.getFullBranch().getId();
       } catch (OseeCoreException ex) {
-         return -1;
+         return -1L;
       }
    }
 
-   public Artifact getById(Integer artId, Integer branchId) {
+   public Artifact getById(Integer artId, Long branchId) {
       return asArtifact(getObjectById(artId, branchId));
    }
 
-   public Artifact getByGuid(String artGuid, Integer branchId) {
+   public Artifact getByGuid(String artGuid, Long branchId) {
       return asArtifact(getObjectByGuid(artGuid, branchId));
    }
 

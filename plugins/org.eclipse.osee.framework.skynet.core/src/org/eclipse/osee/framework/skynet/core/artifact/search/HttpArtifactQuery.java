@@ -68,7 +68,7 @@ final class HttpArtifactQuery {
 
    private List<Artifact> loadArtifacts(SearchResponse response, LoadLevel loadLevel, LoadType reload) throws OseeCoreException {
       List<Artifact> toReturn = new ArrayList<Artifact>();
-      for (Integer branchId : response.getBranchIds()) {
+      for (Long branchId : response.getBranchIds()) {
          IOseeBranch branch = BranchManager.getBranch(branchId);
          Collection<Integer> artsIds = response.getArtifactIds(branchId);
          DeletionFlag deletionFlag = searchRequest.getOptions().getDeletionFlag();

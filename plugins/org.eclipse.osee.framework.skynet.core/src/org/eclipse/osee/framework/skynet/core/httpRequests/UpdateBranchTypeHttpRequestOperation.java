@@ -33,11 +33,11 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Ryan D. Brooks
  */
 public final class UpdateBranchTypeHttpRequestOperation extends AbstractOperation {
-   private final int branchId;
+   private final long branchId;
    private final String branchGuid;
    private final BranchType type;
 
-   public UpdateBranchTypeHttpRequestOperation(int branchId, String branchGuid, BranchType type) {
+   public UpdateBranchTypeHttpRequestOperation(long branchId, String branchGuid, BranchType type) {
       super("Update branch type" + branchGuid, Activator.PLUGIN_ID);
       this.branchId = branchId;
       this.branchGuid = branchGuid;

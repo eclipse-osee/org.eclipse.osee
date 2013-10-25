@@ -73,7 +73,7 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
          }
          guidJoin.store();
 
-         int branchId = branchCache.getLocalId(branch);
+         long branchId = branchCache.getLocalId(branch);
          Integer transactionId = OptionsUtil.getFromTransaction(options);
 
          IOseeStatement chStmt = null;

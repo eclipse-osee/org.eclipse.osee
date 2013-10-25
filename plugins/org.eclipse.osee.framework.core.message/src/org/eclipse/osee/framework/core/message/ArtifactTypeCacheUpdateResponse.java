@@ -21,10 +21,10 @@ import org.eclipse.osee.framework.jdk.core.type.Triplet;
 public class ArtifactTypeCacheUpdateResponse {
 
    private final List<ArtifactTypeRow> rows;
-   private final Map<Integer, Integer[]> baseToSuper;
+   private final Map<Long, Long[]> baseToSuper;
    private final List<Triplet<Long, String, Long>> artAttrs;
 
-   public ArtifactTypeCacheUpdateResponse(List<ArtifactTypeRow> rows, Map<Integer, Integer[]> baseToSuper, List<Triplet<Long, String, Long>> artAttrs) {
+   public ArtifactTypeCacheUpdateResponse(List<ArtifactTypeRow> rows, Map<Long, Long[]> baseToSuper, List<Triplet<Long, String, Long>> artAttrs) {
       this.rows = rows;
       this.baseToSuper = baseToSuper;
       this.artAttrs = artAttrs;
@@ -34,7 +34,7 @@ public class ArtifactTypeCacheUpdateResponse {
       return rows;
    }
 
-   public Map<Integer, Integer[]> getBaseToSuperTypes() {
+   public Map<Long, Long[]> getBaseToSuperTypes() {
       return baseToSuper;
    }
 
@@ -43,13 +43,13 @@ public class ArtifactTypeCacheUpdateResponse {
    }
 
    public static final class ArtifactTypeRow {
-      private final int id;
+      private final long id;
       private final String name;
       private final Long guid;
       private final boolean isAbstract;
       private StorageState storageState;
 
-      public ArtifactTypeRow(int id, Long guid, String name, boolean isAbstract, StorageState storageState) {
+      public ArtifactTypeRow(long id, Long guid, String name, boolean isAbstract, StorageState storageState) {
          this.id = id;
          this.guid = guid;
          this.name = name;
@@ -57,7 +57,7 @@ public class ArtifactTypeCacheUpdateResponse {
          this.storageState = storageState;
       }
 
-      public int getId() {
+      public long getId() {
          return id;
       }
 
@@ -91,7 +91,7 @@ public class ArtifactTypeCacheUpdateResponse {
       }
 
       public static ArtifactTypeRow fromArray(String[] data) {
-         int id = Integer.valueOf(data[0]);
+         long id = Long.valueOf(data[0]);
          long remoteId = Long.parseLong(data[1]);
          String name = data[2];
          boolean isAbstract = Boolean.valueOf(data[3]);

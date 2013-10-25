@@ -55,7 +55,7 @@ public class AttributeConflict extends Conflict {
    public final static String DIFF_MERGE_MARKUP =
       "Can not run a diff against an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.";
    private final int attrId;
-   private final int attrTypeId;
+   private final long attrTypeId;
    private Object sourceObject;
    private Object destObject;
    private Attribute<?> attribute = null;
@@ -68,7 +68,7 @@ public class AttributeConflict extends Conflict {
    private static final boolean DEBUG =
       "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
 
-   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, String sourceValue, int attrId, int attrTypeId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) throws OseeCoreException {
+   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, String sourceValue, int attrId, long attrTypeId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
@@ -76,7 +76,7 @@ public class AttributeConflict extends Conflict {
       computeEqualsValues();
    }
 
-   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionRecord commitTransaction, String sourceValue, int attrId, int attrTypeId, Branch mergeBranch, Branch destBranch) throws OseeCoreException {
+   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionRecord commitTransaction, String sourceValue, int attrId, long attrTypeId, Branch mergeBranch, Branch destBranch) throws OseeCoreException {
       super(sourceGamma, destGamma, artId, commitTransaction, mergeBranch, destBranch);
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
@@ -221,7 +221,7 @@ public class AttributeConflict extends Conflict {
       return attrId;
    }
 
-   public int getTypeId() {
+   public long getTypeId() {
       return attrTypeId;
    }
 
@@ -479,7 +479,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public boolean applyPreviousMerge(int mergeBranchId, int destBranchId) throws OseeCoreException {
+   public boolean applyPreviousMerge(long mergeBranchId, long destBranchId) throws OseeCoreException {
       if (DEBUG) {
          System.out.println("Apply the merge using the merge branch value " + mergeBranchId);
       }

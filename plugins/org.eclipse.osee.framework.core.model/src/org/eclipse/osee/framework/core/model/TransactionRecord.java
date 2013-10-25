@@ -27,14 +27,14 @@ public class TransactionRecord extends BaseIdentity<Integer> implements ITransac
    private static final int NON_EXISTING_BRANCH = -1;
    private final TransactionDetailsType txType;
 
-   private final int branchId;
+   private final long branchId;
    private String comment;
    private Date time;
    private int authorArtId;
    private int commitArtId;
    private final BranchCache branchCache;
 
-   public TransactionRecord(int transactionNumber, int branchId, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) {
+   public TransactionRecord(int transactionNumber, long branchId, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) {
       super(transactionNumber);
       this.branchId = branchId;
       this.comment = Strings.intern(comment);
@@ -54,7 +54,7 @@ public class TransactionRecord extends BaseIdentity<Integer> implements ITransac
       return branchId != NON_EXISTING_BRANCH;
    }
 
-   public int getBranchId() {
+   public long getBranchId() {
       return branchId;
    }
 

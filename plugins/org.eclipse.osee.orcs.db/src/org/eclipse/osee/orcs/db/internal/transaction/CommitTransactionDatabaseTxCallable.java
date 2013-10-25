@@ -116,7 +116,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
 
-      int branchId = branchCache.getLocalId(branch);
+      long branchId = branchCache.getLocalId(branch);
       return factory.create(transactionNumber, branchId, comment, transactionTime, authorArtId,
          RelationalConstants.ART_ID_SENTINEL, txType, branchCache);
    }

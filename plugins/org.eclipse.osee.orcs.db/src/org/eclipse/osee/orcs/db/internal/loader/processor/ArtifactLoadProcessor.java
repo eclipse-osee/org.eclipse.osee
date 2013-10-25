@@ -51,7 +51,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
                version.setStripeId(chStmt.getInt("stripe_transaction_id"));
             }
 
-            int typeId = chStmt.getInt("art_type_id");
+            long typeId = chStmt.getLong("art_type_id");
             String guid = chStmt.getString("guid");
             toReturn = factory.createArtifactData(version, artifactId, typeId, modType, guid);
          }

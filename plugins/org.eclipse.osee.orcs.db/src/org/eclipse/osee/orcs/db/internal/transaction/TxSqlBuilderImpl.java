@@ -104,7 +104,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
             updateTxValues(data);
             if (isRowAllowed) {
                updateGamma(data);
-               int localTypeId = getLocalTypeId(data.getTypeUuid());
+               long localTypeId = getLocalTypeId(data.getTypeUuid());
                addRow(SqlOrderEnum.ARTIFACTS, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
                   data.getGuid());
             }
@@ -129,7 +129,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
                int localId = idManager.getNextAttributeId();
                data.setLocalId(localId);
             }
-            int localTypeId = getLocalTypeId(data.getTypeUuid());
+            long localTypeId = getLocalTypeId(data.getTypeUuid());
             addRow(SqlOrderEnum.ATTRIBUTES, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
                data.getArtifactId(), daoToSql.getValue(), daoToSql.getUri());
          }
@@ -160,7 +160,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
                int localId = idManager.getNextRelationId();
                data.setLocalId(localId);
             }
-            int localTypeId = getLocalTypeId(data.getTypeUuid());
+            long localTypeId = getLocalTypeId(data.getTypeUuid());
             addRow(SqlOrderEnum.RELATIONS, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
                data.getArtIdA(), data.getArtIdB(), data.getRationale());
          }
@@ -227,7 +227,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       binaryStores.add(binaryTx);
    }
 
-   private int getLocalTypeId(long typeUuidId) throws OseeCoreException {
+   private long getLocalTypeId(long typeUuidId) throws OseeCoreException {
       return idManager.getLocalId(typeUuidId);
    }
 

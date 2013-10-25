@@ -93,7 +93,7 @@ public final class ArtifactCache {
     * This method is called by attributes and relations when their dirty state changes. This way, when an artifact is
     * dirty we can hold onto a strong reference and when it is not dirty we can have a weak reference.
     */
-   public static void updateCachedArtifact(int artId, int branchId) {
+   public static void updateCachedArtifact(int artId, long branchId) {
       ACTIVE_CACHE.updateReferenceType(artId, branchId);
    }
 
@@ -176,7 +176,7 @@ public final class ArtifactCache {
       return getActive(artId, BranchManager.getBranchId(branch));
    }
 
-   public static Artifact getActive(Integer artId, Integer branchId) {
+   public static Artifact getActive(Integer artId, Long branchId) {
       return ACTIVE_CACHE.getById(artId, branchId);
    }
 

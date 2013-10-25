@@ -16,16 +16,16 @@ import org.eclipse.osee.framework.core.enums.BranchType;
  * @author Megumi Telles
  */
 public class ChangeBranchTypeRequest {
-   private final int branchId;
+   private final long branchId;
    private final BranchType type;
 
-   public ChangeBranchTypeRequest(int branchId, BranchType type) {
+   public ChangeBranchTypeRequest(long branchId, BranchType type) {
       super();
       this.branchId = branchId;
       this.type = type;
    }
 
-   public int getBranchId() {
+   public long getBranchId() {
       return branchId;
    }
 

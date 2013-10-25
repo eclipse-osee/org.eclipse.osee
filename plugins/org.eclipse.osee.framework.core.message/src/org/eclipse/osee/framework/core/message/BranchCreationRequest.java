@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
  */
 public class BranchCreationRequest {
    private final String branchName;
-   private final int parentBranchId;
+   private final long parentBranchId;
    private final int associatedArtifactId;
 
    private final BranchType branchType;
@@ -28,10 +28,10 @@ public class BranchCreationRequest {
 
    private final String creationComment;
    private final int mergeAddressingQueryId;
-   private final int mergeDestinationBranchId;
+   private final long mergeDestinationBranchId;
    private boolean isTxCopyBranchType;
 
-   public BranchCreationRequest(BranchType branchType, int sourceTransactionId, int parentBranchId, String branchGuid, String branchName, int associatedArtifactId, int authorId, String creationComment, int mergeAddressingQueryId, int destinationBranchId) {
+   public BranchCreationRequest(BranchType branchType, int sourceTransactionId, long parentBranchId, String branchGuid, String branchName, int associatedArtifactId, int authorId, String creationComment, int mergeAddressingQueryId, long destinationBranchId) {
       this.parentBranchId = parentBranchId;
       this.branchName = branchName;
       this.associatedArtifactId = associatedArtifactId;
@@ -49,7 +49,7 @@ public class BranchCreationRequest {
       return branchName;
    }
 
-   public int getParentBranchId() {
+   public long getParentBranchId() {
       return parentBranchId;
    }
 
@@ -81,7 +81,7 @@ public class BranchCreationRequest {
       return mergeAddressingQueryId;
    }
 
-   public int getMergeDestinationBranchId() {
+   public long getMergeDestinationBranchId() {
       return mergeDestinationBranchId;
    }
 

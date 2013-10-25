@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class SearchResponse {
 
    private final Map<String, Long> searchTags = new LinkedHashMap<String, Long>();
-   private final CompositeKeyHashMap<Integer, Integer, ArtifactMatchMetaData> data =
-      new CompositeKeyHashMap<Integer, Integer, ArtifactMatchMetaData>();
+   private final CompositeKeyHashMap<Long, Integer, ArtifactMatchMetaData> data =
+      new CompositeKeyHashMap<Long, Integer, ArtifactMatchMetaData>();
 
    private String errorMessage;
 
@@ -48,22 +48,22 @@ public class SearchResponse {
       return searchTags;
    }
 
-   public AttributeMatchMetaData add(int branchId, int artId, long gammaId) {
+   public AttributeMatchMetaData add(long branchId, int artId, long gammaId) {
       ArtifactMatchMetaData artifact = getOrCreateArtifactMatch(branchId, artId);
       return artifact.getOrCreate(artId, gammaId);
    }
 
-   public void add(int branchId, int artId, long gammaId, int startPosition, int endPosition) {
+   public void add(long branchId, int artId, long gammaId, int startPosition, int endPosition) {
       AttributeMatchMetaData attribute = add(branchId, artId, gammaId);
       attribute.addLocation(startPosition, endPosition);
    }
 
-   public void add(int branchId, int artId, long gammaId, Collection<MatchLocation> matches) {
+   public void add(long branchId, int artId, long gammaId, Collection<MatchLocation> matches) {
       AttributeMatchMetaData attribute = add(branchId, artId, gammaId);
       attribute.addLocations(matches);
    }
 
-   private ArtifactMatchMetaData getOrCreateArtifactMatch(int branchId, int artId) {
+   private ArtifactMatchMetaData getOrCreateArtifactMatch(long branchId, int artId) {
       ArtifactMatchMetaData artifact = getArtifactMatch(branchId, artId);
       if (artifact == null) {
          artifact = new ArtifactMatchMetaData(branchId, artId);
@@ -84,23 +84,23 @@ public class SearchResponse {
       return count;
    }
 
-   public Set<Integer> getBranchIds() {
-      Set<Integer> branchIds = new HashSet<Integer>();
-      for (Pair<Integer, Integer> entry : data.getEnumeratedKeys()) {
+   public Set<Long> getBranchIds() {
+      Set<Long> branchIds = new HashSet<Long>();
+      for (Pair<Long, Integer> entry : data.getEnumeratedKeys()) {
          branchIds.add(entry.getFirst());
       }
       return branchIds;
    }
 
-   public Collection<Integer> getArtifactIds(int branchId) {
+   public Collection<Integer> getArtifactIds(long branchId) {
       return data.getKeyedValues(branchId).keySet();
    }
 
-   public Collection<ArtifactMatchMetaData> getArtifacts(int branchId) {
+   public Collection<ArtifactMatchMetaData> getArtifacts(long branchId) {
       return data.getValues(branchId);
    }
 
-   public ArtifactMatchMetaData getArtifactMatch(int branchId, int artId) {
+   public ArtifactMatchMetaData getArtifactMatch(long branchId, int artId) {
       return data.get(branchId, artId);
    }
 
@@ -110,10 +110,10 @@ public class SearchResponse {
 
    public static final class ArtifactMatchMetaData {
       private final int artId;
-      private final int branchId;
+      private final Long branchId;
       private final Map<Long, AttributeMatchMetaData> attributeMatch = new HashMap<Long, AttributeMatchMetaData>();
 
-      public ArtifactMatchMetaData(int branchId, int artId) {
+      public ArtifactMatchMetaData(long branchId, int artId) {
          this.branchId = branchId;
          this.artId = artId;
       }
@@ -122,7 +122,7 @@ public class SearchResponse {
          return artId;
       }
 
-      public int getBranchId() {
+      public long getBranchId() {
          return branchId;
       }
 
@@ -160,7 +160,7 @@ public class SearchResponse {
          final int prime = 11;
          int result = 1;
          result = prime * result + (artId * 53);
-         result = prime * result + (branchId * 11);
+         result = prime * result + (branchId.hashCode() * 11);
          return result;
       }
 

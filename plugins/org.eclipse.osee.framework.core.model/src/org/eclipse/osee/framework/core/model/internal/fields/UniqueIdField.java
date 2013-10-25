@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.jdk.core.util.Compare;
 /**
  * @author Roberto E. Escobar
  */
-public final class UniqueIdField extends AbstractOseeField<Integer> {
+public final class UniqueIdField extends AbstractOseeField<Long> {
 
-   private Integer value;
+   private Long value;
 
    public UniqueIdField() {
       super();
@@ -30,7 +30,7 @@ public final class UniqueIdField extends AbstractOseeField<Integer> {
    }
 
    @Override
-   public void set(Integer value) throws OseeCoreException {
+   public void set(Long value) throws OseeCoreException {
       if (IOseeStorable.UNPERSISTED_VALUE.equals(get())) {
          isDirty |= Compare.isDifferent(get(), value);
          this.value = value;
@@ -40,7 +40,7 @@ public final class UniqueIdField extends AbstractOseeField<Integer> {
    }
 
    @Override
-   public Integer get() {
+   public Long get() {
       return value;
    }
 }

@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.StorageState;
 
 public final class BranchRow {
-   private final int branchId;
+   private final long branchId;
    private final String branchGuid;
 
    private final String branchName;
@@ -30,7 +30,7 @@ public final class BranchRow {
       this.storageState = storageState;
    }
 
-   public BranchRow(int branchId, String branchGuid, String branchName, BranchType branchType, BranchState branchState, BranchArchivedState branchArchived, StorageState storageState) {
+   public BranchRow(long branchId, String branchGuid, String branchName, BranchType branchType, BranchState branchState, BranchArchivedState branchArchived, StorageState storageState) {
       this.branchId = branchId;
       this.branchGuid = branchGuid;
       this.branchName = branchName;
@@ -40,7 +40,7 @@ public final class BranchRow {
       this.storageState = storageState;
    }
 
-   public int getBranchId() {
+   public long getBranchId() {
       return branchId;
    }
 

@@ -54,12 +54,12 @@ public class ClientAttributeTypeAccessor extends AbstractClientDataAccessor<Long
       AttributeTypeCacheUpdateResponse response =
          requestUpdateMessage(cache, CoreTranslatorId.ATTRIBUTE_TYPE_CACHE_UPDATE_RESPONSE);
 
-      Map<Integer, Integer> attrToEnums = response.getAttrToEnums();
+      Map<Long, Long> attrToEnums = response.getAttrToEnums();
       AttributeTypeFactory factory = getFactory();
       for (AttributeType row : response.getAttrTypeRows()) {
-         Integer uniqueId = row.getId();
+         long uniqueId = row.getId();
          OseeEnumType oseeEnumType = null;
-         Integer enumId = attrToEnums.get(uniqueId);
+         Long enumId = attrToEnums.get(uniqueId);
          if (enumId != null) {
             oseeEnumType = enumCache.getById(enumId);
          }

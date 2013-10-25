@@ -146,7 +146,7 @@ public class GraphLoader {
       try {
          chStmt.runPreparedQuery(GET_TRANSACTION_DATA, queryId);
          while (chStmt.next()) {
-            Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
+            Branch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
             TxData txData =
                new TxData(branch, chStmt.getInt("author"), chStmt.getTimestamp("time"),
                   chStmt.getString("osee_comment"), chStmt.getInt("tx_type"), chStmt.getInt("commit_art_id"),

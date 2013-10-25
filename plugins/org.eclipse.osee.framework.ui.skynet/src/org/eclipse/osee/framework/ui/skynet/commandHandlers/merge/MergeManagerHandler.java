@@ -40,7 +40,7 @@ public class MergeManagerHandler extends CommandHandler {
 
          if (!branches.isEmpty()) {
             Branch selectedBranch = branches.iterator().next();
-            Branch toBranch = BranchManager.getBranch(Integer.parseInt(event.getParameter(BranchView.BRANCH_ID)));
+            Branch toBranch = BranchManager.getBranch(Long.parseLong(event.getParameter(BranchView.BRANCH_ID)));
             if (selectedBranch != null && toBranch != null) {
                MergeView.openView(selectedBranch, toBranch, selectedBranch.getBaseTransaction());
             }

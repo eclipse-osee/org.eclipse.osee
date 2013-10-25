@@ -78,23 +78,23 @@ public class IdentityManagerImpl implements IdentityManager {
    }
 
    @Override
-   public int parseToLocalId(String value) throws OseeCoreException {
+   public Long parseToLocalId(String value) throws OseeCoreException {
       Long uuid = HexUtil.toLong(value);
       return getLocalId(uuid);
    }
 
    @Override
-   public Integer getLocalId(Long universalId) throws OseeCoreException {
+   public Long getLocalId(Long universalId) throws OseeCoreException {
       return idService.getLocalId(universalId);
    }
 
    @Override
-   public Long getUniversalId(Integer localId) throws OseeCoreException {
+   public Long getUniversalId(Long localId) throws OseeCoreException {
       return idService.getUniversalId(localId);
    }
 
    @Override
-   public int getLocalId(Identity<Long> identity) throws OseeCoreException {
+   public long getLocalId(Identity<Long> identity) throws OseeCoreException {
       return idService.getLocalId(identity);
    }
 
@@ -110,14 +110,14 @@ public class IdentityManagerImpl implements IdentityManager {
    }
 
    @Override
-   public int getLocalId(IOseeBranch branch) throws OseeCoreException {
+   public long getLocalId(IOseeBranch branch) throws OseeCoreException {
       int toReturn = dbService.runPreparedQueryFetchObject(-1, SELECT_BRANCH_ID_BY_GUID, branch.getGuid());
       Conditions.checkExpressionFailOnTrue(toReturn < 0, "Error getting branch_id for branch: [%s]", branch);
       return toReturn;
    }
 
    @Override
-   public IOseeBranch getBranch(int branchId) throws OseeCoreException {
+   public IOseeBranch getBranch(long branchId) throws OseeCoreException {
       IOseeBranch toReturn = null;
       IOseeStatement stmt = dbService.getStatement();
       try {

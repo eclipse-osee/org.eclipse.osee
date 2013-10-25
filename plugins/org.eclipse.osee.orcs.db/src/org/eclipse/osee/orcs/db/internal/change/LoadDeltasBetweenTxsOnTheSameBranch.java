@@ -53,7 +53,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
       this.changeItemLoader = new ChangeItemLoader(dbService, changeByGammaId);
    }
 
-   private int getBranchId() {
+   private long getBranchId() {
       return getEndTx().getBranchId();
    }
 

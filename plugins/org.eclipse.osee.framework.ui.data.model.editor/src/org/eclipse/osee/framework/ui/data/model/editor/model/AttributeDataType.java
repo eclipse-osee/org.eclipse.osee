@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.ui.data.model.editor.model;
 public class AttributeDataType extends DataType {
 
    private String defaultValue;
-   private int enumTypeId;
+   private long enumTypeId;
    private String toolTipText;
    private String fileTypeExtension;
    private String taggerId;
@@ -32,7 +32,7 @@ public class AttributeDataType extends DataType {
          EMPTY_STRING, -1);
    }
 
-   public AttributeDataType(String typeId, String name, String baseAttributeClass, String defaultValue, String fileTypeExtension, int maxOccurrence, int minOccurrence, String providerAttributeClass, String taggerId, String toolTipText, int enumTypeId) {
+   public AttributeDataType(String typeId, String name, String baseAttributeClass, String defaultValue, String fileTypeExtension, int maxOccurrence, int minOccurrence, String providerAttributeClass, String taggerId, String toolTipText, long enumTypeId) {
       super(typeId, name);
       this.baseAttributeClass = baseAttributeClass;
       this.defaultValue = defaultValue;
@@ -45,7 +45,7 @@ public class AttributeDataType extends DataType {
       this.enumTypeId = enumTypeId;
    }
 
-   public AttributeDataType(String name, String baseAttributeClass, String defaultValue, String fileTypeExtension, int maxOccurrence, int minOccurrence, String providerAttributeClass, String taggerId, String toolTipText, int enumTypeId) {
+   public AttributeDataType(String name, String baseAttributeClass, String defaultValue, String fileTypeExtension, int maxOccurrence, int minOccurrence, String providerAttributeClass, String taggerId, String toolTipText, long enumTypeId) {
       this(EMPTY_STRING, name, baseAttributeClass, defaultValue, fileTypeExtension, maxOccurrence, minOccurrence,
          providerAttributeClass, taggerId, toolTipText, enumTypeId);
    }
@@ -67,14 +67,14 @@ public class AttributeDataType extends DataType {
    /**
     * @return the enumTypeId
     */
-   public int getEnumTypeId() {
+   public long getEnumTypeId() {
       return enumTypeId;
    }
 
    /**
     * @param enumTypeId the enumTypeId to set
     */
-   public void setEnumTypeId(int enumTypeId) {
+   public void setEnumTypeId(long enumTypeId) {
       this.enumTypeId = enumTypeId;
    }
 

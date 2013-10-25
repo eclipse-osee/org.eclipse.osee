@@ -49,7 +49,7 @@ public class LoadExecutor extends AbstractLoadExecutor {
    public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) throws OseeCoreException {
       checkCancelled(cancellation);
 
-      int branchId = branchCache.getLocalId(branch);
+      long branchId = branchCache.getLocalId(branch);
 
       ArtifactJoinQuery join = JoinUtility.createArtifactJoinQuery(getDatabaseService());
       Integer transactionId = OptionsUtil.getFromTransaction(options);

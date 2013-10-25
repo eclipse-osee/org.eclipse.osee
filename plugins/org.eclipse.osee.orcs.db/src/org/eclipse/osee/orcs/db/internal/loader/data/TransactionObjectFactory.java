@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.core.ds.TxOrcsData;
  */
 public interface TransactionObjectFactory extends OrcsDataFactory {
 
-   TxOrcsData createTxData(int localId, TransactionDetailsType type, Date date, String comment, int branchId, int authorId, int commitId) throws OseeCoreException;
+   TxOrcsData createTxData(int localId, TransactionDetailsType type, Date date, String comment, long branchId, int authorId, int commitId) throws OseeCoreException;
 
    TxOrcsData createCopy(TxOrcsData source) throws OseeCoreException;
 }

@@ -89,7 +89,7 @@ public class DataLoaderFactoryImplTest {
    @Mock private OrcsSession session;
    //@formatter:on
 
-   private final static int EXPECTED_BRANCH_ID = 65;
+   private final static long EXPECTED_BRANCH_ID = 65;
    private final static int EXPECTED_TX_ID = 45678;
    private final static int EXPECTED_HEAD_TX_ID = 50000;
    private final static IOseeBranch BRANCH = CoreBranches.COMMON;
@@ -114,16 +114,15 @@ public class DataLoaderFactoryImplTest {
       when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");
 
       when(identityService.getLocalId(CoreAttributeTypes.Annotation)).thenReturn(
-         CoreAttributeTypes.Annotation.getGuid().intValue());
+         CoreAttributeTypes.Annotation.getGuid());
 
-      when(identityService.getLocalId(CoreAttributeTypes.Category)).thenReturn(
-         CoreAttributeTypes.Category.getGuid().intValue());
+      when(identityService.getLocalId(CoreAttributeTypes.Category)).thenReturn(CoreAttributeTypes.Category.getGuid());
 
       when(identityService.getLocalId(CoreRelationTypes.Default_Hierarchical__Child)).thenReturn(
-         CoreRelationTypes.Default_Hierarchical__Child.getGuid().intValue());
+         CoreRelationTypes.Default_Hierarchical__Child.getGuid());
 
       when(identityService.getLocalId(CoreRelationTypes.Dependency__Artifact)).thenReturn(
-         CoreRelationTypes.Dependency__Artifact.getGuid().intValue());
+         CoreRelationTypes.Dependency__Artifact.getGuid());
 
       when(dbService.getStatement()).thenReturn(chStmt);
       when(dbService.runPreparedQueryFetchObject(eq(-1), Matchers.anyString(), eq(BRANCH.getGuid()))).thenReturn(
@@ -291,7 +290,7 @@ public class DataLoaderFactoryImplTest {
       dataLoader.load(cancellation, builder);
 
       verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected,
-         CoreAttributeTypes.Annotation.getGuid().intValue());
+         CoreAttributeTypes.Annotation.getGuid());
    }
 
    @Test
@@ -316,13 +315,8 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(
-         EXPECTED_HEAD_TX_ID,
-         expectedLoadLevel,
-         EXCLUDE_DELETED,
-         expected,
-         data(JQID),
-         list(data(CoreAttributeTypes.Annotation.getGuid().intValue(), CoreAttributeTypes.Category.getGuid().intValue())));
+      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID),
+         list(data(CoreAttributeTypes.Annotation.getGuid(), CoreAttributeTypes.Category.getGuid())));
    }
 
    @Test
@@ -397,14 +391,8 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(
-         EXPECTED_HEAD_TX_ID,
-         expectedLoadLevel,
-         EXCLUDE_DELETED,
-         expected,
-         data(JQID, JQID),
-         list(data(45, 55),
-            data(CoreAttributeTypes.Annotation.getGuid().intValue(), CoreAttributeTypes.Category.getGuid().intValue())));
+      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID, JQID),
+         list(data(45, 55), data(CoreAttributeTypes.Annotation.getGuid(), CoreAttributeTypes.Category.getGuid())));
    }
 
    @Test
@@ -431,7 +419,7 @@ public class DataLoaderFactoryImplTest {
       dataLoader.load(cancellation, builder);
 
       verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected, 45,
-         CoreAttributeTypes.Annotation.getGuid().intValue());
+         CoreAttributeTypes.Annotation.getGuid());
    }
 
    @Test
@@ -583,7 +571,7 @@ public class DataLoaderFactoryImplTest {
       dataLoader.load(cancellation, builder);
 
       verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected,
-         CoreRelationTypes.Default_Hierarchical__Child.getGuid().intValue());
+         CoreRelationTypes.Default_Hierarchical__Child.getGuid());
    }
 
    @Test
@@ -615,8 +603,8 @@ public class DataLoaderFactoryImplTest {
          EXCLUDE_DELETED,
          expected,
          data(JQID),
-         list(data(CoreRelationTypes.Default_Hierarchical__Child.getGuid().intValue(),
-            CoreRelationTypes.Dependency__Artifact.getGuid().intValue())));
+         list(data(CoreRelationTypes.Default_Hierarchical__Child.getGuid(),
+            CoreRelationTypes.Dependency__Artifact.getGuid())));
    }
 
    @Test
@@ -699,10 +687,8 @@ public class DataLoaderFactoryImplTest {
          EXCLUDE_DELETED,
          expected,
          data(JQID, JQID),
-         list(
-            data(45, 55),
-            data(CoreRelationTypes.Default_Hierarchical__Child.getGuid().intValue(),
-               CoreRelationTypes.Dependency__Artifact.getGuid().intValue())));
+         list(data(45, 55),
+            data(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), CoreRelationTypes.Dependency__Artifact)));
    }
 
    @Test
@@ -729,7 +715,7 @@ public class DataLoaderFactoryImplTest {
       dataLoader.load(cancellation, builder);
 
       verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected, 45,
-         CoreRelationTypes.Default_Hierarchical__Child.getGuid().intValue());
+         CoreRelationTypes.Default_Hierarchical__Child.getGuid());
    }
 
    @Test
@@ -806,7 +792,7 @@ public class DataLoaderFactoryImplTest {
       dataLoader.load(cancellation, builder);
 
       verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected,
-         CoreRelationTypes.Default_Hierarchical__Child.getGuid().intValue());
+         CoreRelationTypes.Default_Hierarchical__Child.getGuid());
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -53,7 +53,7 @@ public final class ArtifactChange extends Change {
    }
 
    @Override
-   public int getItemTypeId() {
+   public long getItemTypeId() {
       return getArtifactType().getId();
    }
 
@@ -69,6 +69,6 @@ public final class ArtifactChange extends Change {
 
    @Override
    public Class<? extends IChangeWorker> getWorker() {
-	   return worker;
+      return worker;
    }
 }

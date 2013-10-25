@@ -156,7 +156,7 @@ public class ArtifactTransfer extends ByteArrayTransfer {
     */
    private Artifact readArtifact(DataInputStream dataIn) throws OseeCoreException, IOException {
       int artID = dataIn.readInt();
-      int branchId = dataIn.readInt();
+      long branchId = dataIn.readLong();
       return ArtifactQuery.getArtifactFromId(artID, BranchManager.getBranch(branchId));
    }
 
@@ -167,6 +167,6 @@ public class ArtifactTransfer extends ByteArrayTransfer {
     */
    private void writeArtifact(DataOutputStream dataOut, Artifact artifact) throws IOException, OseeCoreException {
       dataOut.writeInt(artifact.getArtId());
-      dataOut.writeInt(artifact.getFullBranch().getId());
+      dataOut.writeLong(artifact.getFullBranch().getId());
    }
 }

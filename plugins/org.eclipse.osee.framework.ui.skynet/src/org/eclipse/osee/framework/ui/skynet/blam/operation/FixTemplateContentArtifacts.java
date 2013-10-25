@@ -80,7 +80,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
 	private static final String AND_SPECIFIC_BRANCHES = " AND txs.branch_id = ?";
 	//@formatter:on
 
-   private int branchId;
+   private long branchId;
 
    public FixTemplateContentArtifacts() {
       super(null,

@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
  */
 public class AttributeLoader {
 
-   static void loadAttributeData(int queryId, CompositeKeyHashMap<Integer, Integer, Artifact> tempCache, boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel) throws OseeCoreException {
+   static void loadAttributeData(int queryId, CompositeKeyHashMap<Integer, Long, Artifact> tempCache, boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel) throws OseeCoreException {
       if (loadLevel == ARTIFACT_DATA || loadLevel == RELATION_DATA) {
          return;
       }
@@ -76,12 +76,12 @@ public class AttributeLoader {
 
    private static final class AttrData {
       public int artifactId = -1;
-      public int branchId = -1;
+      public long branchId = -1;
       public int attrId = -1;
       public int gammaId = -1;
       public int modType = -1;
       public int transactionId = -1;
-      public int attrTypeId = -1;
+      public long attrTypeId = -1;
       public String value = "";
       public int stripeId = -1;
       public String uri = "";
@@ -98,7 +98,7 @@ public class AttributeLoader {
          modType = chStmt.getInt("mod_type");
 
          transactionId = chStmt.getInt("transaction_id");
-         attrTypeId = chStmt.getInt("attr_type_id");
+         attrTypeId = chStmt.getLong("attr_type_id");
          value = chStmt.getString("value");
          if (historical) {
             stripeId = chStmt.getInt("stripe_transaction_id");
@@ -115,9 +115,9 @@ public class AttributeLoader {
       }
    }
 
-   private static Artifact getArtifact(AttrData current, boolean historical, CompositeKeyHashMap<Integer, Integer, Artifact> tempCache) {
+   private static Artifact getArtifact(AttrData current, boolean historical, CompositeKeyHashMap<Integer, Long, Artifact> tempCache) {
       Artifact artifact = null;
-      int key2 = historical ? current.stripeId : current.branchId;
+      long key2 = historical ? current.stripeId : current.branchId;
       artifact = tempCache.get(current.artifactId, key2);
       if (artifact == null) {
          OseeLog.logf(ArtifactLoader.class, Level.WARNING, "Orphaned attribute for artifact id[%d] branch[%d]",

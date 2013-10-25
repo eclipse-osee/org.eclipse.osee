@@ -39,7 +39,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
       int branchId = chStmt.getInt("branch_id");
       int aArtId = chStmt.getInt("a_art_id");
       int bArtId = chStmt.getInt("b_art_id");
-      int typeId = chStmt.getInt("rel_link_type_id");
+      long typeId = chStmt.getLong("rel_link_type_id");
       long gammaId = chStmt.getInt("gamma_id");
 
       boolean historical = OptionsUtil.isHistorical(options);
@@ -85,14 +85,14 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
       int previousBranchId = -1;
       int previousArtIdA = -1;
       int previousArtIdB = -1;
-      int previousTypeId = -1;
+      long previousTypeId = -1;
       long previousGammaId = -1;
 
-      boolean isSame(int branchId, int aArtId, int bArtId, int typeId) {
+      boolean isSame(int branchId, int aArtId, int bArtId, long typeId) {
          return previousBranchId == branchId && previousArtIdA == aArtId && previousArtIdB == bArtId && previousTypeId == typeId;
       }
 
-      void saveConditions(int branchId, int aArtId, int bArtId, int typeId, long gammaId) {
+      void saveConditions(int branchId, int aArtId, int bArtId, long typeId, long gammaId) {
          previousBranchId = branchId;
          previousArtIdA = aArtId;
          previousArtIdB = bArtId;

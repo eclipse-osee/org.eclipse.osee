@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryMa
  * @author Roberto E. Escobar
  */
 public abstract class AbstractArtifactCache {
-   private final CompositeKeyHashMap<Integer, Integer, Object> idCache;
-   private final CompositeKeyHashMap<String, Integer, Object> guidCache;
+   private final CompositeKeyHashMap<Integer, Long, Object> idCache;
+   private final CompositeKeyHashMap<String, Long, Object> guidCache;
 
    private static enum FilterType {
       ONLY_DIRTIES,
@@ -32,20 +32,20 @@ public abstract class AbstractArtifactCache {
    }
 
    protected AbstractArtifactCache(int initialCapacity) {
-      idCache = new CompositeKeyHashMap<Integer, Integer, Object>(initialCapacity, true);
-      guidCache = new CompositeKeyHashMap<String, Integer, Object>(initialCapacity, true);
+      idCache = new CompositeKeyHashMap<Integer, Long, Object>(initialCapacity, true);
+      guidCache = new CompositeKeyHashMap<String, Long, Object>(initialCapacity, true);
    }
 
    public Object cache(Artifact artifact) {
       Object object = asCacheObject(artifact);
-      Integer key2 = getKey2(artifact);
+      Long key2 = getKey2(artifact);
       idCache.put(artifact.getArtId(), key2, object);
       guidCache.put(artifact.getGuid(), key2, object);
       return object;
    }
 
    public void deCache(Artifact artifact) {
-      Integer key2 = getKey2(artifact);
+      Long key2 = getKey2(artifact);
       idCache.remove(artifact.getArtId(), key2);
       guidCache.remove(artifact.getGuid(), key2);
    }
@@ -70,7 +70,7 @@ public abstract class AbstractArtifactCache {
 
    private Collection<Artifact> getItems(FilterType filterType) {
       Collection<Artifact> artifacts = new HashSet<Artifact>();
-      for (Entry<Pair<String, Integer>, Object> entry : guidCache.entrySet()) {
+      for (Entry<Pair<String, Long>, Object> entry : guidCache.entrySet()) {
          Artifact art = asArtifact(entry.getValue());
          if (!isFiltered(art, filterType)) {
             artifacts.add(art);
@@ -79,13 +79,13 @@ public abstract class AbstractArtifactCache {
       return artifacts;
    }
 
-   protected abstract Integer getKey2(Artifact artifact);
+   protected abstract Long getKey2(Artifact artifact);
 
-   protected Object getObjectByGuid(String guid, Integer key2) {
+   protected Object getObjectByGuid(String guid, Long key2) {
       return guidCache.get(guid, key2);
    }
 
-   protected Object getObjectById(Integer uniqueId, Integer key2) {
+   protected Object getObjectById(Integer uniqueId, Long key2) {
       return idCache.get(uniqueId, key2);
    }
 
@@ -113,7 +113,7 @@ public abstract class AbstractArtifactCache {
    }
 
    @SuppressWarnings("unchecked")
-   public void updateReferenceType(int artId, int branchId) {
+   public void updateReferenceType(int artId, long branchId) {
       Object obj = idCache.get(artId, branchId);
       if (obj != null) {
          if (obj instanceof Artifact) {

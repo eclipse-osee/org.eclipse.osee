@@ -56,12 +56,12 @@ public final class BranchCacheUpdateUtil {
    public Collection<Branch> updateCache(AbstractBranchCacheMessage cacheMessage, IOseeCache<String, Branch> cache) throws OseeCoreException {
       List<Branch> updatedItems = new ArrayList<Branch>();
 
-      Map<Integer, Integer> branchToAssocArt = cacheMessage.getBranchToAssocArt();
+      Map<Long, Integer> branchToAssocArt = cacheMessage.getBranchToAssocArt();
 
       preLoadTransactions(cacheMessage);
 
       for (BranchRow srcItem : cacheMessage.getBranchRows()) {
-         int branchId = srcItem.getBranchId();
+         long branchId = srcItem.getBranchId();
          Branch updated =
             factory.createOrUpdate(cache, srcItem.getBranchId(), srcItem.getStorageState(), srcItem.getBranchGuid(),
                srcItem.getBranchName(), srcItem.getBranchType(), srcItem.getBranchState(),
@@ -77,7 +77,7 @@ public final class BranchCacheUpdateUtil {
          updated.setSourceTransaction(getTx(cacheMessage.getBranchToSourceTx(), branchId));
       }
 
-      for (Entry<Integer, Integer> entry : cacheMessage.getChildToParent().entrySet()) {
+      for (Entry<Long, Long> entry : cacheMessage.getChildToParent().entrySet()) {
          Branch parent = cache.getById(entry.getValue());
          if (parent != null) {
             Branch child = cache.getById(entry.getKey());
@@ -119,7 +119,7 @@ public final class BranchCacheUpdateUtil {
       }
    }
 
-   private TransactionRecord getTx(Map<Integer, Integer> branchToTx, Integer branchId) throws OseeCoreException {
+   private TransactionRecord getTx(Map<Long, Integer> branchToTx, Long branchId) throws OseeCoreException {
       TransactionRecord tx = null;
       Integer txId = branchToTx.get(branchId);
       if (txId != null && txId > 0) {
@@ -130,7 +130,7 @@ public final class BranchCacheUpdateUtil {
 
    public static void loadFromCache(AbstractBranchCacheMessage message, Collection<Branch> types) throws OseeCoreException {
       for (Branch br : types) {
-         Integer branchId = br.getId();
+         Long branchId = br.getId();
          message.getBranchRows().add(
             new BranchRow(br.getId(), br.getGuid(), br.getName(), br.getBranchType(), br.getBranchState(),
                br.getArchiveState(), br.getStorageState()));
@@ -146,7 +146,7 @@ public final class BranchCacheUpdateUtil {
       }
    }
 
-   private static void addAssocArtifact(Map<Integer, Integer> map, Integer branchId, Integer artId) {
+   private static void addAssocArtifact(Map<Long, Integer> map, Long branchId, Integer artId) {
       if (artId != null) {
          map.put(branchId, artId);
       } else {
@@ -161,7 +161,7 @@ public final class BranchCacheUpdateUtil {
       srcDestMerge.add(new Triplet<String, String, String>(src, dest, merge));
    }
 
-   private static void addTxRecord(Map<Integer, Integer> map, Integer branchId, TransactionRecord toAdd) {
+   private static void addTxRecord(Map<Long, Integer> map, Long branchId, TransactionRecord toAdd) {
       if (toAdd != null) {
          map.put(branchId, toAdd.getId());
       } else {
@@ -176,7 +176,7 @@ public final class BranchCacheUpdateUtil {
          String[] rowData = store.getArray(TranslationUtil.createKey(Fields.BRANCH_ROW, index));
          rows.add(BranchRow.fromArray(rowData));
       }
-      TranslationUtil.loadMap(message.getChildToParent(), store, Fields.CHILD_TO_PARENT);
+      TranslationUtil.loadMapLong(message.getChildToParent(), store, Fields.CHILD_TO_PARENT);
       TranslationUtil.loadMap(message.getBranchToBaseTx(), store, Fields.BRANCH_TO_BASE_TX);
       TranslationUtil.loadMap(message.getBranchToSourceTx(), store, Fields.BRANCH_TO_SRC_TX);
       TranslationUtil.loadMap(message.getBranchToAssocArt(), store, Fields.BRANCH_TO_ASSOC_ART);
@@ -192,7 +192,7 @@ public final class BranchCacheUpdateUtil {
       }
       store.put(Fields.BRANCH_COUNT.name(), rows.size());
 
-      TranslationUtil.putMap(store, Fields.CHILD_TO_PARENT, message.getChildToParent());
+      TranslationUtil.putMapLong(store, Fields.CHILD_TO_PARENT, message.getChildToParent());
       TranslationUtil.putMap(store, Fields.BRANCH_TO_BASE_TX, message.getBranchToBaseTx());
       TranslationUtil.putMap(store, Fields.BRANCH_TO_SRC_TX, message.getBranchToSourceTx());
       TranslationUtil.putMap(store, Fields.BRANCH_TO_ASSOC_ART, message.getBranchToAssocArt());

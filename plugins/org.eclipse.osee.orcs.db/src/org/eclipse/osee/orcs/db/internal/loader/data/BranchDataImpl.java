@@ -28,7 +28,7 @@ public class BranchDataImpl extends OrcsObjectImpl implements BranchData, Branch
    private int associatedArtifactId = RelationalConstants.ART_ID_SENTINEL;
    private int baseTransaction = RelationalConstants.TRANSACTION_SENTINEL;
    private int sourceTransaction = RelationalConstants.TRANSACTION_SENTINEL;
-   private int parentBranch = RelationalConstants.BRANCH_SENTINEL;
+   private long parentBranch = RelationalConstants.BRANCH_SENTINEL;
    private BranchArchivedState archiveState = BranchArchivedState.UNARCHIVED;
    private BranchState branchState = BranchState.CREATED;
    private BranchType branchType = BranchType.WORKING;
@@ -88,12 +88,12 @@ public class BranchDataImpl extends OrcsObjectImpl implements BranchData, Branch
    }
 
    @Override
-   public int getParentBranch() {
+   public long getParentBranch() {
       return parentBranch;
    }
 
    @Override
-   public void setParentBranch(int parent) {
+   public void setParentBranch(long parent) {
       parentBranch = parent;
    }
 

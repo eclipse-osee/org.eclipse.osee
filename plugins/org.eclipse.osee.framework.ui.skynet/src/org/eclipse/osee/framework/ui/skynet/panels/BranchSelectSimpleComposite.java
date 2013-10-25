@@ -171,7 +171,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
 
       // Add stored directories into selector
       if (Strings.isValid(lastSelected) == false && currentBranch != null) {
-         lastSelected = Integer.toString(currentBranch.getId());
+         lastSelected = Long.toString(currentBranch.getId());
       }
 
       if (branchIds == null) {
@@ -185,7 +185,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
       List<String> branchIdsToUse = new ArrayList<String>();
       for (String id : branchIds) {
          try {
-            Branch branch = BranchManager.getBranch(Integer.parseInt(id));
+            Branch branch = BranchManager.getBranch(Long.parseLong(id));
             if (branch != null) {
                branchIdsToUse.add(id);
             }
@@ -203,7 +203,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
          String toStore = values[i];
          if (Strings.isValid(toStore)) {
             try {
-               Branch branch = BranchManager.getBranch(Integer.parseInt(toStore));
+               Branch branch = BranchManager.getBranch(Long.parseLong(toStore));
 
                if (isBranchAllowed(branch) != false) {
                   String branchName = branch.getName();
@@ -216,8 +216,8 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
                   }
                }
             } catch (Exception ex) {
-               OseeLog.logf(Activator.class, Level.SEVERE,
-                  "Unable to add invalid branch id [%s] to selection list.", toStore);
+               OseeLog.logf(Activator.class, Level.SEVERE, "Unable to add invalid branch id [%s] to selection list.",
+                  toStore);
             }
          }
       }

@@ -113,8 +113,8 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             int attrId = chStmt.getInt("attr_id");
             int artId = chStmt.getInt("art_id");
             int sourceGamma = chStmt.getInt("gamma_id");
-            int attrTypeId = chStmt.getInt("attr_type_id");
-            int artTypeId = chStmt.getInt("art_type_id");
+            long attrTypeId = chStmt.getLong("attr_type_id");
+            long artTypeId = chStmt.getLong("art_type_id");
             String isValue = chStmt.getString("is_value");
             ModificationType modificationType = ModificationType.getMod(chStmt.getInt("mod_type"));
 
@@ -165,7 +165,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
 
    private void loadAttributeWasValues(Branch sourceBranch, TransactionRecord transactionId, Set<Integer> artIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, boolean hasBranch) throws OseeCoreException, OseeDataStoreException {
       if (!artIds.isEmpty()) {
-         int sqlParamter; // Will either be a branch id or transaction id
+         long sqlParamter; // Will either be a branch id or transaction id
          Branch wasValueBranch;
          String sql;
 

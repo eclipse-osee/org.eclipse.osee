@@ -83,7 +83,7 @@ public class DataFactoryImplTest {
       dataFactory = new DataFactoryImpl(idFactory, objectFactory, artifactCache);
 
       // VERSION
-      when(verData.getBranchId()).thenReturn(11);
+      when(verData.getBranchId()).thenReturn(11L);
       when(verData.getGammaId()).thenReturn(222L);
       when(verData.getTransactionId()).thenReturn(333);
       when(verData.getStripeId()).thenReturn(444);
@@ -124,7 +124,7 @@ public class DataFactoryImplTest {
       when(relData.getArtIdB()).thenReturn(99);
       when(relData.getRationale()).thenReturn("this is the rationale");
 
-      when(idFactory.getLocalId(CoreBranches.COMMON)).thenReturn(657);
+      when(idFactory.getLocalId(CoreBranches.COMMON)).thenReturn(657L);
    }
 
    @Test

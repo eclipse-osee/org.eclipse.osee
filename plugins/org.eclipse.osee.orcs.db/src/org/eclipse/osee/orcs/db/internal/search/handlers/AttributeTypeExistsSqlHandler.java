@@ -57,7 +57,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
       Collection<? extends IAttributeType> types = criteria.getTypes();
       if (types.size() > 1) {
-         Set<Integer> typeIds = new HashSet<Integer>();
+         Set<Long> typeIds = new HashSet<Long>();
          for (IAttributeType type : types) {
             typeIds.add(toLocalId(type));
          }
@@ -73,7 +73,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
 
       } else {
          IAttributeType type = types.iterator().next();
-         int localId = toLocalId(type);
+         long localId = toLocalId(type);
          writer.write(attrAlias);
          writer.write(".attr_type_id = ?");
          writer.addParameter(localId);

@@ -68,7 +68,7 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
             Branch selectedBranch = branches.iterator().next();
             if (selectedBranch != null) {
                try {
-                  Collection<Integer> destBranches =
+                  Collection<Long> destBranches =
                      ConflictManagerInternal.getDestinationBranchesMerged(selectedBranch.getId());
                   if (selectedBranch.getParentBranch() != null && !destBranches.contains(selectedBranch.getParentBranch().getId())) {
                      destBranches.add(selectedBranch.getParentBranch().getId());
@@ -78,7 +78,7 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
                   Command command = configCommandParameter(commandId);
                   CommandContributionItem contributionItem = null;
 
-                  for (Integer branchId : destBranches) {
+                  for (Long branchId : destBranches) {
                      contributionItem = createCommand(branchId, commandId);
 
                      if (command != null && command.isEnabled()) {
@@ -94,9 +94,9 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
       return contributionItems.toArray(new IContributionItem[0]);
    }
 
-   private CommandContributionItem createCommand(Integer branchId, String commandId) throws OseeCoreException {
+   private CommandContributionItem createCommand(Long branchId, String commandId) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put(BranchView.BRANCH_ID, Integer.toString(branchId));
+      parameters.put(BranchView.BRANCH_ID, Long.toString(branchId));
       CommandContributionItem contributionItem;
       String label = branchId == 0 ? "Can't Merge a Root Branch" : BranchManager.getBranch(branchId).getName();
 

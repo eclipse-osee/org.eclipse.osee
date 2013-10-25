@@ -25,19 +25,27 @@ public final class TranslationUtil {
       //Utility Class
    }
 
-   public static void loadArrayMap(Map<Integer, String[]> map, PropertyStore store, Enum<?> key) {
+   public static void loadArrayMap(Map<Long, String[]> map, PropertyStore store, Enum<?> key) {
       storeToArrayMap(map, store.getPropertyStore(key.name()));
    }
 
-   public static void loadMap(Map<Integer, Integer> map, PropertyStore store, Enum<?> key) {
+   public static void loadMap(Map<Long, Integer> map, PropertyStore store, Enum<?> key) {
       storeToMap(map, store.getPropertyStore(key.name()));
    }
 
-   public static void putMap(PropertyStore store, Enum<?> key, Map<Integer, Integer> map) {
+   public static void loadMapLong(Map<Long, Long> map, PropertyStore store, Enum<?> key) {
+      storeToMapLong(map, store.getPropertyStore(key.name()));
+   }
+
+   public static void putMap(PropertyStore store, Enum<?> key, Map<Long, Integer> map) {
       store.put(key.name(), mapToStore(map));
    }
 
-   public static void putArrayMap(PropertyStore store, Enum<?> key, Map<Integer, String[]> map) {
+   public static void putMapLong(PropertyStore store, Enum<?> key, Map<Long, Long> map) {
+      store.put(key.name(), mapToStoreLong(map));
+   }
+
+   public static void putArrayMap(PropertyStore store, Enum<?> key, Map<Long, String[]> map) {
       store.put(key.name(), arrayMapToStore(map));
    }
 
@@ -57,18 +65,18 @@ public final class TranslationUtil {
       store.put(key.name(), tripletLongListToStore(list));
    }
 
-   private static PropertyStore arrayMapToStore(Map<Integer, String[]> map) {
+   private static PropertyStore arrayMapToStore(Map<Long, String[]> map) {
       PropertyStore innerStore = new PropertyStore();
-      for (Entry<Integer, String[]> entry : map.entrySet()) {
+      for (Entry<Long, String[]> entry : map.entrySet()) {
          innerStore.put(String.valueOf(entry.getKey()), entry.getValue());
       }
       return innerStore;
    }
 
-   private static PropertyStore intArrayMapToStore(Map<Integer, Integer[]> map) {
+   private static PropertyStore longArrayMapToStore(Map<Long, Long[]> map) {
       PropertyStore innerStore = new PropertyStore();
-      for (Entry<Integer, Integer[]> entry : map.entrySet()) {
-         Integer[] values = entry.getValue();
+      for (Entry<Long, Long[]> entry : map.entrySet()) {
+         Long[] values = entry.getValue();
          String[] data = new String[values.length];
          for (int index = 0; index < values.length; index++) {
             data[index] = String.valueOf(values[index]);
@@ -78,37 +86,53 @@ public final class TranslationUtil {
       return innerStore;
    }
 
-   private static PropertyStore mapToStore(Map<Integer, Integer> map) {
+   private static PropertyStore mapToStore(Map<Long, Integer> map) {
       PropertyStore innerStore = new PropertyStore();
-      for (Entry<Integer, Integer> entry : map.entrySet()) {
+      for (Entry<Long, Integer> entry : map.entrySet()) {
          innerStore.put(String.valueOf(entry.getKey()), entry.getValue());
       }
       return innerStore;
    }
 
-   private static void storeToMap(Map<Integer, Integer> map, PropertyStore innerStore) {
+   private static PropertyStore mapToStoreLong(Map<Long, Long> map) {
+      PropertyStore innerStore = new PropertyStore();
+      for (Entry<Long, Long> entry : map.entrySet()) {
+         innerStore.put(String.valueOf(entry.getKey()), entry.getValue());
+      }
+      return innerStore;
+   }
+
+   private static void storeToMap(Map<Long, Integer> map, PropertyStore innerStore) {
       for (String strkey : innerStore.keySet()) {
-         Integer key = Integer.valueOf(strkey);
+         Long key = Long.valueOf(strkey);
          Integer value = innerStore.getInt(strkey);
          map.put(key, value);
       }
    }
 
-   private static void storeToArrayMap(Map<Integer, String[]> map, PropertyStore innerStore) {
+   private static void storeToMapLong(Map<Long, Long> map, PropertyStore innerStore) {
+      for (String strkey : innerStore.keySet()) {
+         Long key = Long.valueOf(strkey);
+         Long value = innerStore.getLong(strkey);
+         map.put(key, value);
+      }
+   }
+
+   private static void storeToArrayMap(Map<Long, String[]> map, PropertyStore innerStore) {
       for (String strkey : innerStore.arrayKeySet()) {
-         Integer key = Integer.valueOf(strkey);
+         Long key = Long.valueOf(strkey);
          String[] value = innerStore.getArray(strkey);
          map.put(key, value);
       }
    }
 
-   private static void storeToIntArrayMap(Map<Integer, Integer[]> map, PropertyStore innerStore) {
+   private static void storeToLongArrayMap(Map<Long, Long[]> map, PropertyStore innerStore) {
       for (String strkey : innerStore.arrayKeySet()) {
-         Integer key = Integer.valueOf(strkey);
+         Long key = Long.valueOf(strkey);
          String[] value = innerStore.getArray(strkey);
-         Integer[] intValues = new Integer[value.length];
+         Long[] intValues = new Long[value.length];
          for (int index = 0; index < value.length; index++) {
-            intValues[index] = Integer.valueOf(value[index]);
+            intValues[index] = Long.valueOf(value[index]);
          }
          map.put(key, intValues);
       }
@@ -151,12 +175,12 @@ public final class TranslationUtil {
       return innerStore;
    }
 
-   public static void loadIntArrayMap(Map<Integer, Integer[]> map, PropertyStore store, Enum<?> key) {
-      storeToIntArrayMap(map, store.getPropertyStore(key.name()));
+   public static void loadLongArrayMap(Map<Long, Long[]> map, PropertyStore store, Enum<?> key) {
+      storeToLongArrayMap(map, store.getPropertyStore(key.name()));
    }
 
-   public static void putIntArrayMap(PropertyStore store, Enum<?> key, Map<Integer, Integer[]> map) {
-      store.put(key.name(), intArrayMapToStore(map));
+   public static void putLongArrayMap(PropertyStore store, Enum<?> key, Map<Long, Long[]> map) {
+      store.put(key.name(), longArrayMapToStore(map));
    }
 
    public static String createKey(Enum<?> prefix, int index) {

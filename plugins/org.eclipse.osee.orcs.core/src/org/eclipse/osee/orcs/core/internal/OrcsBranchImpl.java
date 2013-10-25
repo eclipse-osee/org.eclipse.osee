@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsBranch;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.internal.branch.ArchiveUnarchiveBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.BranchDataFactory;
@@ -117,7 +117,7 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public ReadableBranch getBranchFromId(int id) throws OseeCoreException {
+   public ReadableBranch getBranchFromId(long id) throws OseeCoreException {
       return branchCache.getById(id);
    }
 

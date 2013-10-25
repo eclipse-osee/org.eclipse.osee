@@ -39,8 +39,8 @@ public class IdUtil {
       return sourceTransactionId;
    }
 
-   public static int getParentBranchId(CreateBranchData newBranchData, TransactionCache txCache) throws OseeCoreException {
-      int parentBranchId = RelationalConstants.BRANCH_SENTINEL;
+   public static long getParentBranchId(CreateBranchData newBranchData, TransactionCache txCache) throws OseeCoreException {
+      long parentBranchId = RelationalConstants.BRANCH_SENTINEL;
       if (BranchType.SYSTEM_ROOT != newBranchData.getBranchType()) {
          TransactionRecord sourceTx = txCache.getOrLoad(newBranchData.getFromTransaction().getGuid());
          parentBranchId = sourceTx.getBranchId();

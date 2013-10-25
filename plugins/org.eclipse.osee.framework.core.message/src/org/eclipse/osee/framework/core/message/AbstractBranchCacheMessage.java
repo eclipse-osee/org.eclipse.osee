@@ -22,20 +22,20 @@ import org.eclipse.osee.framework.jdk.core.type.Triplet;
 public abstract class AbstractBranchCacheMessage {
 
    private final List<BranchRow> rows;
-   private final Map<Integer, Integer> childToParent;
-   private final Map<Integer, Integer> branchToBaseTx;
-   private final Map<Integer, Integer> branchToSourceTx;
-   private final Map<Integer, Integer> branchToAssocArt;
-   private final Map<Integer, String[]> branchToAliases;
+   private final Map<Long, Long> childToParent;
+   private final Map<Long, Integer> branchToBaseTx;
+   private final Map<Long, Integer> branchToSourceTx;
+   private final Map<Long, Integer> branchToAssocArt;
+   private final Map<Long, String[]> branchToAliases;
    private final List<Triplet<String, String, String>> srcDestMerge;
 
    protected AbstractBranchCacheMessage() {
       this.rows = new ArrayList<BranchRow>();
-      this.childToParent = new HashMap<Integer, Integer>();
-      this.branchToBaseTx = new HashMap<Integer, Integer>();
-      this.branchToSourceTx = new HashMap<Integer, Integer>();
-      this.branchToAssocArt = new HashMap<Integer, Integer>();
-      this.branchToAliases = new HashMap<Integer, String[]>();
+      this.childToParent = new HashMap<Long, Long>();
+      this.branchToBaseTx = new HashMap<Long, Integer>();
+      this.branchToSourceTx = new HashMap<Long, Integer>();
+      this.branchToAssocArt = new HashMap<Long, Integer>();
+      this.branchToAliases = new HashMap<Long, String[]>();
       this.srcDestMerge = new ArrayList<Triplet<String, String, String>>();
    }
 
@@ -43,23 +43,23 @@ public abstract class AbstractBranchCacheMessage {
       return rows;
    }
 
-   public Map<Integer, Integer> getChildToParent() {
+   public Map<Long, Long> getChildToParent() {
       return childToParent;
    }
 
-   public Map<Integer, Integer> getBranchToBaseTx() {
+   public Map<Long, Integer> getBranchToBaseTx() {
       return branchToBaseTx;
    }
 
-   public Map<Integer, Integer> getBranchToSourceTx() {
+   public Map<Long, Integer> getBranchToSourceTx() {
       return branchToSourceTx;
    }
 
-   public Map<Integer, Integer> getBranchToAssocArt() {
+   public Map<Long, Integer> getBranchToAssocArt() {
       return branchToAssocArt;
    }
 
-   public Map<Integer, String[]> getBranchAliases() {
+   public Map<Long, String[]> getBranchAliases() {
       return branchToAliases;
    }
 

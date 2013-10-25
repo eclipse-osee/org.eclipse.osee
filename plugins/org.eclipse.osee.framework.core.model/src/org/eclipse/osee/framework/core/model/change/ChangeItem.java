@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 public abstract class ChangeItem implements Comparable<ChangeItem> {
    private final int artId;
    private final int itemId;
-   private final int itemTypeId;
+   private final long itemTypeId;
 
    private final ChangeVersion baseEntry;
    private final ChangeVersion firstChange;
@@ -28,7 +28,7 @@ public abstract class ChangeItem implements Comparable<ChangeItem> {
 
    private boolean synthetic;
 
-   protected ChangeItem(int itemId, int itemTypeId, int artId, long currentSourceGammaId, ModificationType currentSourceModType) {
+   protected ChangeItem(int itemId, long itemTypeId, int artId, long currentSourceGammaId, ModificationType currentSourceModType) {
       this.itemId = itemId;
       this.itemTypeId = itemTypeId;
       this.artId = artId;
@@ -59,7 +59,7 @@ public abstract class ChangeItem implements Comparable<ChangeItem> {
       return itemId;
    }
 
-   public int getItemTypeId() {
+   public long getItemTypeId() {
       return itemTypeId;
    }
 

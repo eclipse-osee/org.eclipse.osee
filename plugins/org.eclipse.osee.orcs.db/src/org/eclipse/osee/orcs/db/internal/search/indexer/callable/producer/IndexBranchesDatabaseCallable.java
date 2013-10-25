@@ -82,7 +82,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
    public Integer call() throws Exception {
       getLogger().info(getParamInfo());
 
-      Set<Integer> branchIds = new HashSet<Integer>();
+      Set<Long> branchIds = new HashSet<Long>();
       for (ReadableBranch branch : branches) {
          branchIds.add(branch.getId());
       }
@@ -97,7 +97,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
 
          for (IAttributeType attributeType : typesToTag) {
             if (types.isTaggable(attributeType)) {
-               int typeLocalId = idService.getLocalId(attributeType);
+               long typeLocalId = idService.getLocalId(attributeType);
                typeJoin.add(typeLocalId);
             }
          }
@@ -159,7 +159,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
       return builder.toString();
    }
 
-   private Triplet<String, String, Object[]> createQueries(Collection<Integer> branchIds, IdJoinQuery branchJoin, IdJoinQuery typeJoin) {
+   private Triplet<String, String, Object[]> createQueries(Collection<Long> branchIds, IdJoinQuery branchJoin, IdJoinQuery typeJoin) {
       Object[] params;
       String countQuery;
       String searchQuery;
@@ -173,7 +173,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
             searchQuery = FIND_ALL_TAGGABLE_ATTRIBUTES;
          }
       } else {
-         for (Integer id : branchIds) {
+         for (Long id : branchIds) {
             branchJoin.add(id);
          }
          params = new Object[] {branchJoin.getQueryId(), typeJoin.getQueryId()};

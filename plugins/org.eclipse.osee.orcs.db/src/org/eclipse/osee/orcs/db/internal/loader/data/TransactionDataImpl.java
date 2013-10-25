@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 public class TransactionDataImpl extends OrcsObjectImpl implements TxOrcsData {
 
    private int authorId = RelationalConstants.ART_ID_SENTINEL;
-   private int branchId = RelationalConstants.BRANCH_SENTINEL;
+   private long branchId = RelationalConstants.BRANCH_SENTINEL;
    private String comment = RelationalConstants.DEFAULT_COMMENT;
    private int commitId = RelationalConstants.ART_ID_SENTINEL;
    private TransactionDetailsType type = TransactionDetailsType.INVALID;
@@ -37,7 +37,7 @@ public class TransactionDataImpl extends OrcsObjectImpl implements TxOrcsData {
    }
 
    @Override
-   public int getBranchId() {
+   public long getBranchId() {
       return branchId;
    }
 
@@ -67,7 +67,7 @@ public class TransactionDataImpl extends OrcsObjectImpl implements TxOrcsData {
    }
 
    @Override
-   public void setBranchId(int branchId) {
+   public void setBranchId(long branchId) {
       this.branchId = branchId;
    }
 

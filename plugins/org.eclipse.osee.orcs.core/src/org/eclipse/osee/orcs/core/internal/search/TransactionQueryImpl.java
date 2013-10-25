@@ -126,16 +126,16 @@ public class TransactionQueryImpl implements TransactionQuery {
    }
 
    @Override
-   public TransactionQuery andBranchIds(int... ids) throws OseeCoreException {
-      Set<Integer> values = new LinkedHashSet<Integer>();
-      for (int value : ids) {
+   public TransactionQuery andBranchIds(long... ids) throws OseeCoreException {
+      Set<Long> values = new LinkedHashSet<Long>();
+      for (long value : ids) {
          values.add(value);
       }
       return andBranchIds(values);
    }
 
    @Override
-   public TransactionQuery andBranchIds(Collection<Integer> ids) throws OseeCoreException {
+   public TransactionQuery andBranchIds(Collection<Long> ids) throws OseeCoreException {
       Criteria criteria = criteriaFactory.newTxBranchIdCriteria(ids);
       addAndCheck(queryData, criteria);
       return this;

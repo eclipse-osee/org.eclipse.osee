@@ -30,19 +30,19 @@ public class RelationTypeCacheUpdateResponse {
    }
 
    public static final class RelationTypeRow {
-      private final int id;
+      private final long id;
       private final String name;
       private final long guid;
       private StorageState storageState;
 
       private final String sideAName;
       private final String sideBName;
-      private final int artifactTypeSideA;
-      private final int artifactTypeSideB;
+      private final long artifactTypeSideA;
+      private final long artifactTypeSideB;
       private final RelationTypeMultiplicity multiplicity;
       private final String defaultOrderTypeGuid;
 
-      public RelationTypeRow(int id, String name, long guid, StorageState storageState, String sideAName, String sideBName, int artifactTypeSideA, int artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) {
+      public RelationTypeRow(long id, String name, long guid, StorageState storageState, String sideAName, String sideBName, long artifactTypeSideA, long artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) {
          super();
          this.id = id;
          this.name = name;
@@ -56,15 +56,15 @@ public class RelationTypeCacheUpdateResponse {
          this.defaultOrderTypeGuid = defaultOrderTypeGuid;
       }
 
-      public int getArtifactTypeSideA() {
+      public long getArtifactTypeSideA() {
          return artifactTypeSideA;
       }
 
-      public int getArtifactTypeSideB() {
+      public long getArtifactTypeSideB() {
          return artifactTypeSideB;
       }
 
-      public int getId() {
+      public long getId() {
          return id;
       }
 
@@ -117,15 +117,15 @@ public class RelationTypeCacheUpdateResponse {
       public static RelationTypeRow fromArray(String[] data) {
          int index = 0;
 
-         int id = Integer.valueOf(data[index++]);
+         long id = Long.valueOf(data[index++]);
          long guid = Long.valueOf(data[index++]);
          String name = data[index++];
          StorageState storageState = StorageState.valueOf(data[index++]);
 
          String sideAName = data[index++];
          String sideBName = data[index++];
-         int artifactTypeSideA = Integer.valueOf(data[index++]);
-         int artifactTypeSideB = Integer.valueOf(data[index++]);
+         long artifactTypeSideA = Long.valueOf(data[index++]);
+         long artifactTypeSideB = Long.valueOf(data[index++]);
          RelationTypeMultiplicity multiplicity = RelationTypeMultiplicity.valueOf(data[index++]);
          String defaultOrderTypeGuid = data[index++];
 

@@ -54,15 +54,15 @@ public final class ArtifactLoader {
       "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) VALUES (?, ?, ?, ?, ?)";
    private static final String DELETE_FROM_JOIN_ARTIFACT = "DELETE FROM osee_join_artifact WHERE query_id = ?";
 
-   private static final CompositeKeyHashMap<Integer, Integer, ReentrantLock> loadingActiveMap =
-      new CompositeKeyHashMap<Integer, Integer, ReentrantLock>(1000, true);
+   private static final CompositeKeyHashMap<Integer, Long, ReentrantLock> loadingActiveMap =
+      new CompositeKeyHashMap<Integer, Long, ReentrantLock>(1000, true);
    private static final Random queryRandom = new Random();
 
    /**
     * (re)loads the artifacts selected by sql and then returns them in a list
     */
    public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, LoadLevel loadLevel, LoadType reload, ISearchConfirmer confirmer, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
-      List<Pair<Integer, Integer>> toLoad = selectArtifacts(sql, queryParameters, artifactCountEstimate);
+      List<Pair<Integer, Long>> toLoad = selectArtifacts(sql, queryParameters, artifactCountEstimate);
       List<Artifact> artifacts = loadSelectedArtifacts(toLoad, loadLevel, reload, allowDeleted, transactionId);
 
       if (confirmer != null) {
@@ -72,10 +72,10 @@ public final class ArtifactLoader {
    }
 
    public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionRecord transactionId) throws OseeCoreException {
-      List<Pair<Integer, Integer>> toLoad = new LinkedList<Pair<Integer, Integer>>();
-      Integer branchId = BranchManager.getBranchId(branch);
+      List<Pair<Integer, Long>> toLoad = new LinkedList<Pair<Integer, Long>>();
+      Long branchId = BranchManager.getBranchId(branch);
       for (Integer artId : new HashSet<Integer>(artIds)) {
-         toLoad.add(new Pair<Integer, Integer>(artId, branchId));
+         toLoad.add(new Pair<Integer, Long>(artId, branchId));
       }
       List<Artifact> artifacts = loadSelectedArtifacts(toLoad, loadLevel, reload, allowDeleted, transactionId);
       return artifacts;
@@ -85,7 +85,7 @@ public final class ArtifactLoader {
       return loadArtifacts(artIds, branch, loadLevel, reload, allowDeleted, null);
    }
 
-   private static List<Artifact> loadSelectedArtifacts(List<Pair<Integer, Integer>> toLoad, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionRecord transactionId) throws OseeCoreException {
+   private static List<Artifact> loadSelectedArtifacts(List<Pair<Integer, Long>> toLoad, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionRecord transactionId) throws OseeCoreException {
       Set<Artifact> artifacts = new LinkedHashSet<Artifact>();
       if (transactionId == null) {
          loadActiveArtifacts(toLoad, artifacts, loadLevel, reload, allowDeleted);
@@ -95,17 +95,17 @@ public final class ArtifactLoader {
       return new LinkedList<Artifact>(artifacts);
    }
 
-   private static void loadActiveArtifacts(List<Pair<Integer, Integer>> toLoad, Set<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) throws OseeCoreException {
+   private static void loadActiveArtifacts(List<Pair<Integer, Long>> toLoad, Set<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) throws OseeCoreException {
       if (!toLoad.isEmpty()) {
          int numRequested = toLoad.size();
-         Iterator<Pair<Integer, Integer>> iterator = toLoad.iterator();
-         CompositeKeyHashMap<Integer, Integer, ReentrantLock> locks =
-            new CompositeKeyHashMap<Integer, Integer, ReentrantLock>();
+         Iterator<Pair<Integer, Long>> iterator = toLoad.iterator();
+         CompositeKeyHashMap<Integer, Long, ReentrantLock> locks =
+            new CompositeKeyHashMap<Integer, Long, ReentrantLock>();
 
          while (iterator.hasNext()) {
-            Pair<Integer, Integer> next = iterator.next();
+            Pair<Integer, Long> next = iterator.next();
             Integer artId = next.getFirst();
-            Integer branchId = next.getSecond();
+            Long branchId = next.getSecond();
 
             Artifact active = null;
 
@@ -128,9 +128,9 @@ public final class ArtifactLoader {
          } finally {
             // remove and unlock locks this thread created but didn't load
             if (artifacts.size() != numRequested) {
-               for (Pair<Integer, Integer> loadPair : toLoad) {
+               for (Pair<Integer, Long> loadPair : toLoad) {
                   Integer artId = loadPair.getFirst();
-                  Integer branchId = loadPair.getSecond();
+                  Long branchId = loadPair.getSecond();
                   removeAndUnlock(artId, branchId);
                   locks.remove(artId, branchId);
                }
@@ -140,7 +140,7 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void removeAndUnlock(Integer artId, Integer branchId) {
+   private static void removeAndUnlock(Integer artId, Long branchId) {
       ReentrantLock lock = null;
       synchronized (loadingActiveMap) {
          lock = loadingActiveMap.remove(artId, branchId);
@@ -150,7 +150,7 @@ public final class ArtifactLoader {
       }
    }
 
-   private static boolean determineIfIShouldLoad(Set<Artifact> artifacts, DeletionFlag allowDeleted, CompositeKeyHashMap<Integer, Integer, ReentrantLock> locks, Integer artId, Integer branchId, Artifact active) {
+   private static boolean determineIfIShouldLoad(Set<Artifact> artifacts, DeletionFlag allowDeleted, CompositeKeyHashMap<Integer, Long, ReentrantLock> locks, Integer artId, Long branchId, Artifact active) {
       boolean doNotLoad = false;
       //not in the cache
       if (active == null) {
@@ -177,12 +177,12 @@ public final class ArtifactLoader {
       return doNotLoad;
    }
 
-   private static void processLocks(CompositeKeyHashMap<Integer, Integer, ReentrantLock> locks, Set<Artifact> artifacts) {
-      Iterator<Entry<Pair<Integer, Integer>, ReentrantLock>> iterator = locks.entrySet().iterator();
+   private static void processLocks(CompositeKeyHashMap<Integer, Long, ReentrantLock> locks, Set<Artifact> artifacts) {
+      Iterator<Entry<Pair<Integer, Long>, ReentrantLock>> iterator = locks.entrySet().iterator();
       while (iterator.hasNext()) {
-         Entry<Pair<Integer, Integer>, ReentrantLock> entry = iterator.next();
+         Entry<Pair<Integer, Long>, ReentrantLock> entry = iterator.next();
          Integer artId = entry.getKey().getFirst();
-         Integer branchId = entry.getKey().getSecond();
+         Long branchId = entry.getKey().getSecond();
          entry.getValue().lock();
          entry.getValue().unlock();
          Artifact active = ArtifactCache.getActive(artId, branchId);
@@ -248,7 +248,7 @@ public final class ArtifactLoader {
     * @param artifacts
     * @param locks
     */
-   private static void loadArtifacts(List<Pair<Integer, Integer>> toLoad, LoadLevel loadLevel, TransactionRecord transactionId, LoadType reload, DeletionFlag allowDeleted, Set<Artifact> artifacts) throws OseeCoreException {
+   private static void loadArtifacts(List<Pair<Integer, Long>> toLoad, LoadLevel loadLevel, TransactionRecord transactionId, LoadType reload, DeletionFlag allowDeleted, Set<Artifact> artifacts) throws OseeCoreException {
       if (toLoad != null && !toLoad.isEmpty()) {
          int queryId = ArtifactLoader.getNewQueryId();
          Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
@@ -256,7 +256,7 @@ public final class ArtifactLoader {
 
          List<Object[]> insertParameters = new LinkedList<Object[]>();
 
-         for (Pair<Integer, Integer> pair : toLoad) {
+         for (Pair<Integer, Long> pair : toLoad) {
             insertParameters.add(new Object[] {
                queryId,
                insertTime,
@@ -335,18 +335,18 @@ public final class ArtifactLoader {
    /**
     * Determines the artIds and branchIds of artifacts to load based on sql and queryParameters
     */
-   private static List<Pair<Integer, Integer>> selectArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate) throws OseeCoreException {
+   private static List<Pair<Integer, Long>> selectArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       long time = System.currentTimeMillis();
 
-      List<Pair<Integer, Integer>> toLoad = new LinkedList<Pair<Integer, Integer>>();
+      List<Pair<Integer, Long>> toLoad = new LinkedList<Pair<Integer, Long>>();
 
       try {
          chStmt.runPreparedQuery(artifactCountEstimate, sql, queryParameters);
          while (chStmt.next()) {
             int artId = chStmt.getInt("art_id");
-            int branchId = chStmt.getInt("branch_id");
-            toLoad.add(new Pair<Integer, Integer>(artId, branchId));
+            long branchId = chStmt.getLong("branch_id");
+            toLoad.add(new Pair<Integer, Long>(artId, branchId));
          }
       } finally {
          chStmt.close();
@@ -362,7 +362,7 @@ public final class ArtifactLoader {
     */
    private static Artifact retrieveShallowArtifact(IOseeStatement chStmt, LoadType reload, boolean historical) throws OseeCoreException {
       int artifactId = chStmt.getInt("art_id");
-      Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
+      Branch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
       int transactionId = Artifact.TRANSACTION_SENTINEL;
       if (historical) {
          int stripeTransactionNumber = chStmt.getInt("stripe_transaction_id");
@@ -371,7 +371,7 @@ public final class ArtifactLoader {
 
       Artifact artifact = historical ? null : ArtifactCache.getActive(artifactId, branch);
       if (artifact == null) {
-         IArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
+         IArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getLong("art_type_id"));
          ArtifactFactory factory = ArtifactTypeManager.getFactory(artifactType);
 
          artifact =
@@ -415,10 +415,10 @@ public final class ArtifactLoader {
          }
       }
       boolean historical = transactionId != null;
-      int key2;
+      long key2;
 
-      CompositeKeyHashMap<Integer, Integer, Artifact> tempCache =
-         new CompositeKeyHashMap<Integer, Integer, Artifact>(artifacts.size(), true);
+      CompositeKeyHashMap<Integer, Long, Artifact> tempCache =
+         new CompositeKeyHashMap<Integer, Long, Artifact>(artifacts.size(), true);
 
       for (Artifact artifact : artifacts) {
          key2 = historical ? transactionId.getId() : BranchManager.getBranchId(artifact.getBranch());

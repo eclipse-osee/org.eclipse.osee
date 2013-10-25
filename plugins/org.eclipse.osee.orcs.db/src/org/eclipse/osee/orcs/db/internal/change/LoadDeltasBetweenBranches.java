@@ -56,7 +56,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       this.changeItemLoader = new ChangeItemLoader(dbService, changeByGammaId);
    }
 
-   private int getSourceBranchId() {
+   private long getSourceBranchId() {
       return txDelta.getStartTx().getBranchId();
    }
 

@@ -129,7 +129,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
          AttributeTypes types = orcsApi.getOrcsTypes(null).getAttributeTypes();
          for (IAttributeType attributeType : types.getAll()) {
             if (types.getMaxOccurrences(attributeType) == 1) {
-               Integer localId = identityService.getLocalId(attributeType.getGuid());
+               Long localId = identityService.getLocalId(attributeType.getGuid());
                typeJoin.add(localId);
             }
          }

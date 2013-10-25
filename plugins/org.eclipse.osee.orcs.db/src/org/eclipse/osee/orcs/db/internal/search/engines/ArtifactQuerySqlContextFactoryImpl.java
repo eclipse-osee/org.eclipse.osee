@@ -79,7 +79,7 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
    }
 
    private AbstractSqlWriter createQueryWriter(SqlContext context, QueryData queryData, QueryType queryType) throws OseeCoreException {
-      int branchId = -1;
+      long branchId = -1;
       IOseeBranch branch = getBranchToSearch(queryData);
       if (branch != null) {
          branchId = branchCache.getLocalId(branch);

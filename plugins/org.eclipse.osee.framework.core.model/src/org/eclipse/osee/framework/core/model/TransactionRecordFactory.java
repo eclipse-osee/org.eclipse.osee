@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class TransactionRecordFactory implements IOseeTypeFactory {
 
-   public TransactionRecord create(int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) throws OseeCoreException {
+   public TransactionRecord create(int transactionNumber, long branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) throws OseeCoreException {
       Conditions.checkNotNull(branchCache, "branchCache");
       return new TransactionRecord(transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId, txType,
          branchCache);
@@ -34,7 +34,7 @@ public class TransactionRecordFactory implements IOseeTypeFactory {
       return new TransactionRecord(transactionNumber, branchCache);
    }
 
-   public TransactionRecord createOrUpdate(TransactionCache txCache, int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) throws OseeCoreException {
+   public TransactionRecord createOrUpdate(TransactionCache txCache, int transactionNumber, long branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) throws OseeCoreException {
       Conditions.checkNotNull(txCache, "txCache");
       TransactionRecord record = txCache.getById(transactionNumber);
       if (record == null) {

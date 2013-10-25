@@ -19,10 +19,10 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
 
    private final class Entry implements IJoinRow {
       private final Integer artId;
-      private final Integer branchId;
+      private final Long branchId;
       private final Integer transactionId;
 
-      private Entry(Integer artId, Integer branchId, Integer transactionId) {
+      private Entry(Integer artId, Long branchId, Integer transactionId) {
          this.artId = artId;
          this.branchId = branchId;
          this.transactionId = transactionId;
@@ -97,7 +97,7 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
       super(joinAccessor, JoinItem.ARTIFACT, queryId);
    }
 
-   public void add(Integer art_id, Integer branchId, Integer transactionId) {
+   public void add(Integer art_id, Long branchId, Integer transactionId) {
       entries.add(new Entry(art_id, branchId, transactionId));
    }
 

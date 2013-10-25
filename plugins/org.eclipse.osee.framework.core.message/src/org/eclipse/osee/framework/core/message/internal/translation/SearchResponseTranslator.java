@@ -103,7 +103,7 @@ public class SearchResponseTranslator implements ITranslator<SearchResponse> {
    private Collection<String[]> toArray(SearchResponse object) {
       Collection<String[]> toReturn = new ArrayList<String[]>();
       for (ArtifactMatchMetaData artMeta : object.getAll()) {
-         int branchId = artMeta.getBranchId();
+         long branchId = artMeta.getBranchId();
          for (AttributeMatchMetaData attrMeta : artMeta.getAll()) {
             Collection<MatchLocation> locs = attrMeta.getLocations();
             if (!locs.isEmpty()) {

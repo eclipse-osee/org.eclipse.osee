@@ -16,11 +16,11 @@ package org.eclipse.osee.framework.core.message;
 public class BranchCommitRequest {
 
    private final int userArtifact;
-   private final int sourceBranch;
-   private final int destinationBranch;
+   private final long sourceBranch;
+   private final long destinationBranch;
    private final boolean isArchiveAllowed;
 
-   public BranchCommitRequest(int userArtifact, int sourceBranch, int destinationBranch, boolean isArchiveAllowed) {
+   public BranchCommitRequest(int userArtifact, long sourceBranch, long destinationBranch, boolean isArchiveAllowed) {
       super();
       this.userArtifact = userArtifact;
       this.sourceBranch = sourceBranch;
@@ -32,11 +32,11 @@ public class BranchCommitRequest {
       return userArtifact;
    }
 
-   public int getSourceBranchId() {
+   public long getSourceBranchId() {
       return sourceBranch;
    }
 
-   public int getDestinationBranchId() {
+   public long getDestinationBranchId() {
       return destinationBranch;
    }
 

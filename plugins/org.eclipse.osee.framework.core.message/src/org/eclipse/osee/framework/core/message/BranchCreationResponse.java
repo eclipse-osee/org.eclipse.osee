@@ -15,17 +15,17 @@ package org.eclipse.osee.framework.core.message;
  */
 public class BranchCreationResponse {
 
-   private int branchId;
+   private long branchId;
 
-   public BranchCreationResponse(int branchId) {
+   public BranchCreationResponse(long branchId) {
       this.branchId = branchId;
    }
 
-   public int getBranchId() {
+   public long getBranchId() {
       return branchId;
    }
 
-   public void setBranchId(int branchId) {
+   public void setBranchId(long branchId) {
       this.branchId = branchId;
    }
 

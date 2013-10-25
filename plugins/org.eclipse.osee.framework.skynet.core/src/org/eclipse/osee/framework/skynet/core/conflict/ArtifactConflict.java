@@ -29,7 +29,7 @@ public class ArtifactConflict extends Conflict {
    private final ModificationType sourceModType;
    private final ModificationType destModType;
 
-   public ArtifactConflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch, ModificationType sourceModType, ModificationType destModType, int artTypeId) {
+   public ArtifactConflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch, ModificationType sourceModType, ModificationType destModType, long artTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
       this.sourceModType = sourceModType;
       this.destModType = destModType;
@@ -133,7 +133,7 @@ public class ArtifactConflict extends Conflict {
    }
 
    @Override
-   public boolean applyPreviousMerge(int mergeBranchId, int destBranchId) {
+   public boolean applyPreviousMerge(long mergeBranchId, long destBranchId) {
       return false;
    }
 

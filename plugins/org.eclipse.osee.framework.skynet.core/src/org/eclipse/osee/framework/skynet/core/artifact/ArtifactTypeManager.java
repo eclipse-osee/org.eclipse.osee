@@ -132,7 +132,7 @@ public class ArtifactTypeManager {
    /**
     * @return Returns the descriptor with a particular name, null if it does not exist.
     */
-   public static ArtifactType getType(int artTypeId) throws OseeCoreException {
+   public static ArtifactType getType(long artTypeId) throws OseeCoreException {
       ArtifactType artifactType = getCache().getById(artTypeId);
       if (artifactType == null) {
          throw new OseeTypeDoesNotExist("Artifact type: %d is not available.", artTypeId);
@@ -173,7 +173,7 @@ public class ArtifactTypeManager {
       "select count(1) from (select DISTINCT(art_id) FROM osee_artifact where art_type_id = ?) t1";
 
    public static void purgeArtifactType(IArtifactType artifactType) throws OseeCoreException {
-      final int artifactTypeId = ServiceUtil.getIdentityService().getLocalId(artifactType);
+      final long artifactTypeId = ServiceUtil.getIdentityService().getLocalId(artifactType);
       int artifactCount = ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ARTIFACT_OCCURRENCE, artifactTypeId);
 
       if (artifactCount != 0) {

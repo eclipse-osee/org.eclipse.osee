@@ -193,7 +193,7 @@ public class MergeXWidget extends GenericXWidget {
       return toolBarManager;
    }
 
-   private void applyPreviousMerge(final int destBranchId) {
+   private void applyPreviousMerge(final long destBranchId) {
       Job job = new Job("Apply Previous Merge") {
 
          @Override
@@ -692,14 +692,14 @@ public class MergeXWidget extends GenericXWidget {
          if (conflicts.length != 0) {
             if (conflicts[0].getSourceBranch() != null) {
                ArrayList<String> selections = new ArrayList<String>();
-               ArrayList<Integer> branchIds = new ArrayList<Integer>();
+               ArrayList<Long> branchIds = new ArrayList<Long>();
                try {
-                  Collection<Integer> destBranches =
+                  Collection<Long> destBranches =
                      ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch.getId());
-                  for (Integer integer : destBranches) {
-                     if (integer.intValue() != destBranch.getId()) {
-                        selections.add(BranchManager.getBranch(integer).getName());
-                        branchIds.add(integer);
+                  for (Long branchId : destBranches) {
+                     if (branchId.intValue() != destBranch.getId()) {
+                        selections.add(BranchManager.getBranch(branchId).getName());
+                        branchIds.add(branchId);
                      }
                   }
                   if (selections.size() > 0) {

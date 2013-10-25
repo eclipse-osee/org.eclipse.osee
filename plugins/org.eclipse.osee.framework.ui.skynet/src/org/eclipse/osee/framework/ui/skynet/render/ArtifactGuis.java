@@ -92,7 +92,7 @@ public final class ArtifactGuis {
             while (chStmt.next()) {
                int modifiedAttrId = chStmt.getInt("attr_id");
                long modifiedGammaId = chStmt.getInt("gamma_id");
-               int modifiedOnBranchId = chStmt.getInt("branch_id");
+               long modifiedOnBranchId = chStmt.getLong("branch_id");
 
                Attribute<?> attribute = artifact.getAttributeById(modifiedAttrId, false);
                if (attribute == null || attribute.getGammaId() != modifiedGammaId) {

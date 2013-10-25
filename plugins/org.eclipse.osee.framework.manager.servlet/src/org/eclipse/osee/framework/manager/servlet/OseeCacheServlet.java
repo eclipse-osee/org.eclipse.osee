@@ -277,18 +277,18 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
 
    private ArtifactTypeCacheUpdateResponse createArtifactTypeCacheUpdateResponse(OrcsTypes orcsTypes) throws OseeCoreException {
       List<ArtifactTypeRow> rows = new ArrayList<ArtifactTypeRow>();
-      Map<Integer, Integer[]> baseToSuper = new HashMap<Integer, Integer[]>();
+      Map<Long, Long[]> baseToSuper = new HashMap<Long, Long[]>();
       List<Triplet<Long, String, Long>> artAttrs = new ArrayList<Triplet<Long, String, Long>>();
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
       for (IArtifactType artType : artTypes.getAll()) {
-         int artTypeId = identityService.getLocalId(artType.getGuid());
+         long artTypeId = identityService.getLocalId(artType.getGuid());
          boolean isAbstract = artTypes.isAbstract(artType);
          rows.add(new ArtifactTypeRow(artTypeId, artType.getGuid(), artType.getName(), isAbstract,
             DEFAULT_STORAGE_STATE));
 
          Collection<? extends IArtifactType> superTypes = artTypes.getSuperArtifactTypes(artType);
          if (!superTypes.isEmpty()) {
-            Integer[] intSuperTypes = new Integer[superTypes.size()];
+            Long[] intSuperTypes = new Long[superTypes.size()];
             int index = 0;
             for (IArtifactType superType : superTypes) {
                intSuperTypes[index++] = identityService.getLocalId(superType.getGuid());
@@ -311,7 +311,7 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
 
    private AttributeTypeCacheUpdateResponse createAttributeTypeCacheUpdateResponse(OrcsTypes orcsTypes) throws OseeCoreException {
       List<AttributeType> rows = new ArrayList<AttributeType>();
-      Map<Integer, Integer> attrToEnum = new HashMap<Integer, Integer>();
+      Map<Long, Long> attrToEnum = new HashMap<Long, Long>();
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
       for (IAttributeType item : attrTypes.getAll()) {
          String baseAttributeTypeId = attrTypes.getBaseAttributeTypeId(item);
@@ -327,13 +327,13 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
             new AttributeType(item.getGuid(), item.getName(), baseAttributeTypeId, attributeProviderNameId,
                fileTypeExtension, defaultValue, minOccurrances, maxOccurrences, description, taggerId, mediaType);
 
-         int localId = identityService.getLocalId(item);
+         long localId = identityService.getLocalId(item);
          type.setId(localId);
          rows.add(type);
 
          if (attrTypes.isEnumerated(item)) {
             EnumType enumType = attrTypes.getEnumType(item);
-            int enumId = identityService.getLocalId(enumType);
+            long enumId = identityService.getLocalId(enumType);
             attrToEnum.put(localId, enumId);
          }
 
@@ -347,10 +347,10 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
       for (IRelationType item : relTypes.getAll()) {
          IArtifactType sideAType = relTypes.getArtifactTypeSideA(item);
          IArtifactType sideBType = relTypes.getArtifactTypeSideB(item);
-         int artifactTypeSideA = identityService.getLocalId(sideAType);
-         int artifactTypeSideB = identityService.getLocalId(sideBType);
+         long artifactTypeSideA = identityService.getLocalId(sideAType);
+         long artifactTypeSideB = identityService.getLocalId(sideBType);
 
-         int localId = identityService.getLocalId(item);
+         long localId = identityService.getLocalId(item);
 
          String sideAName = relTypes.getSideAName(item);
          String sideBName = relTypes.getSideBName(item);
@@ -368,7 +368,7 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
       List<String[]> enumEntryRows = new ArrayList<String[]>();
       EnumTypes enumTypes = orcsTypes.getEnumTypes();
       for (EnumType type : enumTypes.getAll()) {
-         int localId = identityService.getLocalId(type);
+         long localId = identityService.getLocalId(type);
          enumTypeRows.add(new String[] {
             String.valueOf(localId),
             DEFAULT_STORAGE_STATE.toString(),

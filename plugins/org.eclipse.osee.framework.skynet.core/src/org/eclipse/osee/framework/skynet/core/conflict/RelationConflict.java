@@ -107,7 +107,7 @@ public class RelationConflict extends Conflict {
    }
 
    @Override
-   public boolean applyPreviousMerge(int mergeBranchId, int destBranchId) {
+   public boolean applyPreviousMerge(long mergeBranchId, long destBranchId) {
       return false;
    }
 }

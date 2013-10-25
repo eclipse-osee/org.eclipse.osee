@@ -105,9 +105,9 @@ public class TransactionCache implements IOseeCache<String, TransactionRecord> {
    }
 
    @Override
-   public TransactionRecord getById(int txId) throws OseeCoreException {
+   public TransactionRecord getById(Number txId) throws OseeCoreException {
       ensurePopulated();
-      return transactionIdCache.get(txId);
+      return transactionIdCache.get(txId.intValue());
    }
 
    @Override

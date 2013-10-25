@@ -19,16 +19,16 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IdentityLocator {
 
-   int getLocalId(IOseeBranch branch) throws OseeCoreException;
+   long getLocalId(IOseeBranch branch) throws OseeCoreException;
 
-   int parseToLocalId(String value) throws OseeCoreException;
+   Long parseToLocalId(String value) throws OseeCoreException;
 
-   Integer getLocalId(Long universalId) throws OseeCoreException;
+   Long getLocalId(Long universalId) throws OseeCoreException;
 
-   Long getUniversalId(Integer localId) throws OseeCoreException;
+   Long getUniversalId(Long localId) throws OseeCoreException;
 
-   int getLocalId(Identity<Long> identity) throws OseeCoreException;
+   long getLocalId(Identity<Long> identity) throws OseeCoreException;
 
-   IOseeBranch getBranch(int branchId) throws OseeCoreException;
+   IOseeBranch getBranch(long branchId) throws OseeCoreException;
 
 }

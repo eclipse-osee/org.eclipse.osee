@@ -116,7 +116,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    @Mock private OrcsSession session;
    // @formatter:on
 
-   private final static int EXPECTED_BRANCH_ID = 65;
+   private final static long EXPECTED_BRANCH_ID = 65;
    private final static int EXPECTED_TX_ID = 45678;
 
    private QuerySqlContextFactory queryEngine;
@@ -138,12 +138,11 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       queryData = new QueryData(criteriaSet, options);
 
       when(branchCache.getLocalId(CoreBranches.COMMON)).thenReturn(EXPECTED_BRANCH_ID);
-      when(identityService.getLocalId(CoreArtifactTypes.CodeUnit)).thenReturn(
-         CoreArtifactTypes.CodeUnit.getGuid().intValue());
-      when(identityService.getLocalId(CoreAttributeTypes.Name)).thenReturn(CoreAttributeTypes.Name.getGuid().intValue());
+      when(identityService.getLocalId(CoreArtifactTypes.CodeUnit)).thenReturn(CoreArtifactTypes.CodeUnit.getGuid());
+      when(identityService.getLocalId(CoreAttributeTypes.Name)).thenReturn(CoreAttributeTypes.Name.getGuid());
 
       when(identityService.getLocalId(CoreRelationTypes.Default_Hierarchical__Child)).thenReturn(
-         CoreRelationTypes.Default_Hierarchical__Child.getGuid().intValue());
+         CoreRelationTypes.Default_Hierarchical__Child.getGuid());
 
       when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");
 
@@ -193,8 +192,8 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
       Assert.assertEquals(joins.get(1).getQueryId(), iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), iterator.next());
    }
 
    @Test
@@ -224,7 +223,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       Assert.assertEquals(0, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), iterator.next());
       Assert.assertEquals(EXPECTED_TX_ID, iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
    }
@@ -259,8 +258,8 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
       Assert.assertEquals(joins.get(1).getQueryId(), iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), iterator.next());
    }
 
    @Test
@@ -293,8 +292,8 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
       Assert.assertEquals(joins.get(1).getQueryId(), iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), iterator.next());
    }
 
    @Test
@@ -336,8 +335,8 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       Assert.assertEquals(EXPECTED_TX_ID, iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
 
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), iterator.next());
    }
 
    @Test
@@ -387,7 +386,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       Assert.assertEquals(0, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
    }
 
@@ -416,7 +415,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       Assert.assertEquals(0, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      Assert.assertEquals(CoreAttributeTypes.Name.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(CoreAttributeTypes.Name.getGuid(), iterator.next());
       Assert.assertEquals("Hello", iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
@@ -509,13 +508,13 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       Assert.assertEquals(CODED_WORD_3, iterator.next()); // Coded three
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
       Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
-      Assert.assertEquals(CoreAttributeTypes.Name.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(CoreAttributeTypes.Name.getGuid(), iterator.next());
       Assert.assertEquals("Hello", iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
 
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), iterator.next());
    }
 
    @Test
@@ -548,7 +547,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       "rel1.gamma_id = txs4.gamma_id AND txs4.tx_current = 1\n" + //
       " ORDER BY art1.art_id, txs1.branch_id";
 
-      when(branchCache.getLocalId(CoreBranches.COMMON)).thenReturn(0);
+      when(branchCache.getLocalId(CoreBranches.COMMON)).thenReturn(0L);
 
       queryData.addCriteria(GUIDS, TYPES, REL_TYPE_EXISTS, IDS, ATTR_TYPE_EXITS);
 
@@ -562,11 +561,11 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
       Assert.assertEquals(joins.get(0).getQueryId(), parameters.get(0));
       Assert.assertEquals(joins.get(1).getQueryId(), parameters.get(1));
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(2));
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(3));
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), parameters.get(2));
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), parameters.get(3));
 
-      Assert.assertEquals(CoreAttributeTypes.Name.getGuid().intValue(), parameters.get(4));
-      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid().intValue(), parameters.get(5));
+      Assert.assertEquals(CoreAttributeTypes.Name.getGuid(), parameters.get(4));
+      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), parameters.get(5));
    }
 
    @Test
@@ -616,13 +615,13 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       Assert.assertEquals(joins.get(1).getQueryId(), parameters.get(2));
       Assert.assertEquals(EXPECTED_BRANCH_ID, parameters.get(3));
 
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(4));
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(5));
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), parameters.get(4));
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), parameters.get(5));
 
-      Assert.assertEquals(CoreAttributeTypes.Name.getGuid().intValue(), parameters.get(6));
+      Assert.assertEquals(CoreAttributeTypes.Name.getGuid(), parameters.get(6));
       Assert.assertEquals(EXPECTED_BRANCH_ID, parameters.get(7));
 
-      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid().intValue(), parameters.get(8));
+      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), parameters.get(8));
       Assert.assertEquals(EXPECTED_BRANCH_ID, parameters.get(9));
    }
 
@@ -666,10 +665,10 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       Assert.assertEquals(joins.get(1).getQueryId(), parameters.get(2));
       Assert.assertEquals(EXPECTED_BRANCH_ID, parameters.get(3));
 
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(4));
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid().intValue(), parameters.get(5));
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), parameters.get(4));
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), parameters.get(5));
 
-      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid().intValue(), parameters.get(6));
+      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), parameters.get(6));
       Assert.assertEquals(joins.get(2).getQueryId(), parameters.get(7));
       Assert.assertEquals(EXPECTED_BRANCH_ID, parameters.get(8));
    }
