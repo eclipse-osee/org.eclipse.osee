@@ -196,7 +196,8 @@ public final class RenderingUtil {
    }
 
    public static String toFileName(IOseeBranch branch) throws OseeCoreException {
-      String shortName = Strings.saferReplace(Branch.getShortName(branch), "\\.", "_");
+      // replace invalid filename characters \/:"*?<>| and . and ' with _ 
+      String shortName = Strings.saferReplace(Branch.getShortName(branch), "[\\.\\/:\"*?<>|'\\\\]+", "_");
       return encode(shortName);
    }
 
