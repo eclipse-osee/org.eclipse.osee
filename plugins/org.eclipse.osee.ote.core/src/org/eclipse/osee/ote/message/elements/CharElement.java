@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.elements;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;
@@ -326,8 +329,26 @@ public class CharElement extends DiscreteElement<Character> {
    }
 
    /**
-    * Sets the element and the next ("value".length() -1) bytes to "value".charAt().
+    * <p>
+    * Sets the element's value. Can be [ab]used to set subsequent, contiguous bytes but, while widespread, this use is
+    * discouraged and may be removed in a future release. The behavior of this method differs depending on the length of
+    * string passed in and whether the underlying element is eight bits.
+    * </p>
+    * <p>
+    * For an empty string it sets the element to the null character, '\0', using {@link #setValue(Character)}, which
+    * properly accounts for cases where the element is not eight bits.
+    * </p>
+    * <p>
+    * If the string has a length of one it calls {@link #setValue(Character)} with value.charAt(0).
+    * </p>
+    * <p>
+    * If the string length is greater than one it will assume this and all subsequent elements are eight bits and set
+    * them. <b>Note</b> that it does nothing to ensure the subsequent bytes are character elements or eight bits. It
+    * will throw IllegalArgumentException if setting subsequent elements would overflow. If the element is not eight
+    * bits in size it will set as above and log a warning and stack trace but not throw an exception.
+    * </p>
     * 
+    * @param accessor
     * @param value the string to set the bytes to
     */
    @Override
@@ -341,26 +362,56 @@ public class CharElement extends DiscreteElement<Character> {
             this.getMessage());
       }
 
-      setASCIIString(value);
+      switch (value.length()) {
+         case 0:
+            setValue('\0');
+            break;
+         case 1:
+            setValue(value.charAt(0));
+            break;
+         default:
+            if (lsb == 7 && msb == 0) {
+               OseeLog.log(
+                  getClass(),
+                  Level.SEVERE,
+                  "Using parseAndSet on non-byte-sized elements is discouraged, iterate with setValue(Character) instead.\nStack Trace:\n" + Arrays.toString(Thread.currentThread().getStackTrace()));
+            }
+            setASCIIString(value);
+            break;
+      }
 
       if (accessor != null) {
          accessor.getLogger().methodEnded(accessor);
       }
    }
 
-   public void set(ITestEnvironmentAccessor a, String value) {
-      parseAndSet(a, value);
+   /**
+    * This method uses {@link #parseAndSet(ITestEnvironmentAccessor, String)} and has all the associate risks and
+    * limitations.
+    * 
+    * @param accessor
+    * @param value
+    */
+   public void set(ITestEnvironmentAccessor accessor, String value) {
+      parseAndSet(accessor, value);
    }
 
+   /**
+    * This method uses {@link #parseAndSet(ITestEnvironmentAccessor, String)} and has all the associate risks and
+    * limitations.
+    * 
+    * @param value
+    */
    public void setValue(String value) {
       parseAndSet(null, value);
    }
 
    /**
-    * Sets the element and the next ("value".length() -1) bytes to "value".charAt() and immediately sends the message
-    * that contains it..
+    * This method uses {@link #parseAndSet(ITestEnvironmentAccessor, String)} and has all the associate risks and
+    * limitations. After setting it sends the message.
     * 
-    * @param value the string to set the bytes to
+    * @param accessor
+    * @param value
     */
    public void setAndSend(ITestEnvironmentAccessor accessor, String value) {
       this.parseAndSet(accessor, value);
@@ -368,10 +419,11 @@ public class CharElement extends DiscreteElement<Character> {
    }
 
    /**
-    * Sets the element and the next ("value".length() -1) bytes to "value".charAt(). <b>No Log Record gets created in
-    * the Script Log File.</b>
+    * This method uses {@link #parseAndSet(ITestEnvironmentAccessor, String)} and has all the associate risks and
+    * limitations.
     * 
-    * @param value the string to set the bytes to
+    * @param accessor
+    * @param value
     */
    public void setNoLog(ITestEnvironmentAccessor accessor, String value) {
       this.parseAndSet(accessor, value);
@@ -476,6 +528,11 @@ public class CharElement extends DiscreteElement<Character> {
       return currentValue;
    }
 
+   /**
+    * Sets the element value, properly accounting for the bit-size of the element.
+    * 
+    * @param value
+    */
    @Override
    public void setValue(Character value) {
       getMsgData().getMem().setInt(value, byteOffset, msb, lsb);

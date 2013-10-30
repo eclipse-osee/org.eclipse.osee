@@ -24,10 +24,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
-
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -270,7 +268,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       if (!isTurnedOff) {
          ArrayList<T> dataList = memToDataMap.get(currentMemType);
          if (dataList != null) {
-        	int listSize = dataList.size();
+            int listSize = dataList.size();
             for (int i = 0; i < listSize; i++) {
                dataList.get(i).send();
             }
@@ -526,10 +524,10 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    public Element getElement(List<Object> elementPath, DataType type) {
-	  Element element = getElement(elementPath);
-	  if (element == null) {
-		  return null;
-	  }
+      Element element = getElement(elementPath);
+      if (element == null) {
+         return null;
+      }
       return element.switchMessages(this.getMessageTypeAssociation(type));
    }
 
@@ -762,31 +760,34 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    /**
-    * Verifies that the message is sent at least once using the default message timeout.
+    * Verifies that the message is sent at least once using the default message timeout. DO NOT override this method in
+    * production code.
     * 
     * @return if the check passed
     */
-   public final boolean checkForTransmission(ITestAccessor accessor) throws InterruptedException {
+   public boolean checkForTransmission(ITestAccessor accessor) throws InterruptedException {
       return checkForTransmission(accessor, TransmissionTimeoutDefault);
    }
 
    /**
-    * Verifies that the message is sent at least once within the time specified.
+    * Verifies that the message is sent at least once within the time specified. DO NOT override this method in
+    * production code.
     * 
     * @param milliseconds the amount to time (in milliseconds) to allow
     * @return if the check passed
     */
-   public final boolean checkForTransmission(ITestAccessor accessor, int milliseconds) throws InterruptedException {
+   public boolean checkForTransmission(ITestAccessor accessor, int milliseconds) throws InterruptedException {
       return checkForTransmissions(accessor, 1, milliseconds);
    }
 
    /**
-    * Verifies that the message is sent at least "numTransmission" times within the default message timeout.
+    * Verifies that the message is sent at least "numTransmission" times within the default message timeout. DO NOT
+    * override this method in production code.
     * 
     * @param numTransmissions the number of transmissions to look for
     * @return if the check passed
     */
-   public final boolean checkForTransmissions(ITestAccessor accessor, int numTransmissions) throws InterruptedException {
+   public boolean checkForTransmissions(ITestAccessor accessor, int numTransmissions) throws InterruptedException {
       return checkForTransmissions(accessor, numTransmissions, TransmissionTimeoutDefault);
    }
 

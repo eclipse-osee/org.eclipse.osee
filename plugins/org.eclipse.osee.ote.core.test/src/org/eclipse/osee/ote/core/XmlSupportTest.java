@@ -19,8 +19,7 @@ public class XmlSupportTest {
    @Test
    public void testConvertXmlCharacers() {
       String testString = "abc\n\r\0\t 123\f&<>";
-      String expected = "abc\n\r ASCII=0 \t 123 ASCII=12  ampersand  less-than  greater-than ";
-
+      String expected = "abc\n\r[ASCII=0]\t 123[ASCII=12][ampersand][less-than][greater-than]";
       String actual = XmlSupport.convertXmlCharacters(testString);
       Assert.assertEquals(expected, actual);
    }
@@ -28,7 +27,7 @@ public class XmlSupportTest {
    @Test
    public void testNonPrintableCharacter() {
       String testString = "abc\n\r\0\t 123\f&<>";
-      String expected = "abc\n\r ASCII=0 \t 123 ASCII=12 &<>";
+      String expected = "abc\n\r[ASCII=0]\t 123[ASCII=12]&<>";
 
       String actual = XmlSupport.convertNonPrintableCharacers(testString);
       Assert.assertEquals(expected, actual);

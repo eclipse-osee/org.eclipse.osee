@@ -8,3 +8,5 @@ Fragment-Host: org.eclipse.osee.ote.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit
 Export-Package: org.eclipse.osee.ote.core.framework
+Import-Package: org.mockito,
+ org.mockito.stubbing
