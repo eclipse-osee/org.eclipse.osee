@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.elements;
 
+import static org.junit.Assert.assertEquals;
+import java.util.Arrays;
 import org.eclipse.osee.ote.message.data.HeaderData;
 import org.eclipse.osee.ote.message.data.MemoryResource;
-import org.eclipse.osee.ote.message.elements.StringElement;
+import org.eclipse.osee.ote.message.data.MessageData;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -127,6 +129,51 @@ public class StringElementTest {
             check(e3, s3);
          }
       }
+   }
+
+   @Test
+   public void testSetChars() {
+      final char[] testData = {'A', 'B', '\0', 'C', 'D'};
+      final MessageData hd = new HeaderData("test_data", new MemoryResource(new byte[5], 0, 5));
+      final StringElement sut = new StringElement(null, "test string element", hd, 0, 0, 8 * 5 - 1);
+      assertEquals("Empty string to start", "", sut.getValue());
+      sut.setChars(testData);
+      assertEquals("New value is cut off by the null", "AB", sut.getValue());
+      char[] result = new char[5];
+      assertEquals("Five bytes in, five bytes back", 5, sut.getChars(result));
+      assertEquals("Exact same array comes back with getChars()", Arrays.toString(testData), Arrays.toString(result));
+   }
+
+   @Test
+   public void testSetCharsOverflow() {
+      final char[] testData = {'A', 'B', '\0', 'C', 'D', 'E'};
+      // buffer is big enough for test data
+      final MessageData hd = new HeaderData("test_data", new MemoryResource(new byte[6], 0, 6));
+      // element is not big enough for test data
+      final StringElement sut = new StringElement(null, "test string element", hd, 0, 0, 8 * 5 - 1);
+      assertEquals("Empty string to start", "", sut.getValue());
+      sut.setChars(testData);
+      assertEquals("New value is cut off by the null", "AB", sut.getValue());
+      char[] result = new char[5];
+      assertEquals("Five bytes in, five bytes back", 5, sut.getChars(result));
+      final char[] expected = {'A', 'B', '\0', 'C', 'D'};
+      assertEquals("Exact same array comes back with getChars()", Arrays.toString(expected), Arrays.toString(result));
+   }
+
+   @Test
+   public void testSetCharsUnderflow() {
+      final char[] testData = {'A', 'B', '\0', 'C'};
+      // buffer is big enough for test data
+      final MessageData hd = new HeaderData("test_data", new MemoryResource(new byte[5], 0, 5));
+      // element is not big enough for test data
+      final StringElement sut = new StringElement(null, "test string element", hd, 0, 0, 8 * 5 - 1);
+      assertEquals("Empty string to start", "", sut.getValue());
+      sut.setChars(testData);
+      assertEquals("New value is cut off by the null", "AB", sut.getValue());
+      char[] result = new char[5];
+      assertEquals("Five bytes in, five bytes back", 5, sut.getChars(result));
+      final char[] expected = {'A', 'B', '\0', 'C', '\0'};
+      assertEquals("Exact same array comes back with getChars()", Arrays.toString(expected), Arrays.toString(result));
    }
 
    private void check(StringElement elem, String value) {

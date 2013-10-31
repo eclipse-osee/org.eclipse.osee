@@ -11,7 +11,8 @@
 package org.eclipse.osee.ote.message.elements;
 
 import java.util.Collection;
-
+import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.testPoint.CheckPoint;
@@ -73,7 +74,8 @@ public class StringElement extends DiscreteElement<String> {
 
    /**
     * copies this elements chars into the given array. The array must be big enough to contain this elements data or an
-    * ArrayIndexOutOfBoundsException will be thrown.  Does not exclude or stop on null (\0) characters in the element data.
+    * ArrayIndexOutOfBoundsException will be thrown. Does not exclude or stop on null (\0) characters in the element
+    * data.
     * 
     * @param destination the destination array that will receive the char data
     * @return the actual number of characters copied. The destination array will contain undefined data starting at this
@@ -82,6 +84,22 @@ public class StringElement extends DiscreteElement<String> {
     */
    public int getChars(char[] destination) throws ArrayIndexOutOfBoundsException {
       return getMsgData().getMem().getASCIIChars(byteOffset, msb, lsb, destination);
+   }
+
+   public void setChars(final char[] data) {
+      final int sizeInBytes = (lsb - msb + 1) / 8;
+      if (data.length > sizeInBytes) {
+         OseeLog.log(getClass(), Level.WARNING,
+            "char[] passed to setChars() is bigger than the element, setting with subset of passed data");
+      } else if (data.length < sizeInBytes) {
+         OseeLog.log(getClass(), Level.WARNING,
+            "char[] passed to setChars() is smaller than element, setting subset of element");
+      }
+      MemoryResource memory = getMsgData().getMem();
+      final int bytesToSet = Math.min(data.length, sizeInBytes);
+      for (int i = 0; i < bytesToSet; i++) {
+         memory.setByte(data[i], byteOffset + i, 0, 7);
+      }
    }
 
    public boolean equals(String other) {
