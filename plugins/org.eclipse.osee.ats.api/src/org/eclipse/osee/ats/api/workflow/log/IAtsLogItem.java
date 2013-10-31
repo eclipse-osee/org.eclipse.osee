@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.api.workflow.log;
 
 import java.util.Date;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 
 /**
  * @author Donald G. Dunne
@@ -26,19 +25,15 @@ public interface IAtsLogItem {
 
    public abstract String getUserId();
 
+   public abstract String setUserId(String userId);
+
    public abstract String getMsg();
 
    public abstract void setMsg(String msg);
 
-   public abstract IAtsUser getUser();
-
    public abstract LogType getType();
 
    public abstract void setType(LogType type);
-
-   public abstract String toHTML(String labelFont);
-
-   public abstract void setUser(IAtsUser user);
 
    public abstract String getState();
 

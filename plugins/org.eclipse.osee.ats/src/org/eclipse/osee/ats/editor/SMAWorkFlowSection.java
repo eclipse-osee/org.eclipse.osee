@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
+import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
@@ -366,7 +367,7 @@ public class SMAWorkFlowSection extends SectionPart {
             IAtsLogItem item = sma.getStateStartedData(statePageName);
             if (item != null) {
                sb.append(" by ");
-               sb.append(item.getUser().getName());
+               sb.append(AtsLogUtility.getUserName(item.getUserId()));
             }
          } else if (sma.isCancelled()) {
             if (!sma.getCurrentStateName().equals(StateType.Cancelled.toString())) {
@@ -377,7 +378,7 @@ public class SMAWorkFlowSection extends SectionPart {
             IAtsLogItem item = sma.getStateStartedData(statePageName);
             if (item != null) {
                sb.append(" by ");
-               sb.append(item.getUser().getName());
+               sb.append(AtsLogUtility.getUserName(item.getUserId()));
             }
          }
          if (sma.getStateMgr().getAssignees().size() > 0) {
@@ -396,7 +397,7 @@ public class SMAWorkFlowSection extends SectionPart {
          if (item != null) {
             sb.append(item.getDate(DateUtil.MMDDYYHHMM));
             sb.append(" by ");
-            sb.append(item.getUser().getName());
+            sb.append(AtsLogUtility.getUserName(item.getUserId()));
          }
       }
       return sb.toString();

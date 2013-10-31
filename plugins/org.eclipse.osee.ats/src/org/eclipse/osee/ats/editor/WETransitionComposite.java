@@ -339,6 +339,7 @@ public class WETransitionComposite extends Composite {
          }
       }
       awa.getStateMgr().updateMetrics(awa.getStateDefinition(), additionalHours, percent, true);
+      AtsCore.getLogFactory().writeToStore(awa);
 
       return true;
    }

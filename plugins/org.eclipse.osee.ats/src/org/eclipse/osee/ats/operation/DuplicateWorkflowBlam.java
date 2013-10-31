@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
@@ -163,11 +164,15 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
             dupArt.setName(title);
          }
          dupArt.addRelation(AtsRelationTypes.ActionToWorkflow_Action, teamArt.getParentActionArtifact());
-         dupArt.getLog().addLog(LogType.Note, null, "Workflow duplicated from " + teamArt.getAtsId());
+         dupArt.getLog().addLog(LogType.Note, null, "Workflow duplicated from " + teamArt.getAtsId(),
+            AtsCore.getUserService().getCurrentUser().getUserId());
+         AtsCore.getLogFactory().writeToStore(dupArt);
          if (duplicateTasks) {
             for (TaskArtifact taskArt : teamArt.getTaskArtifacts()) {
                TaskArtifact dupTaskArt = (TaskArtifact) taskArt.duplicate(AtsUtil.getAtsBranch());
-               dupTaskArt.getLog().addLog(LogType.Note, null, "Task duplicated from " + taskArt.getAtsId());
+               dupTaskArt.getLog().addLog(LogType.Note, null, "Task duplicated from " + taskArt.getAtsId(),
+                  AtsCore.getUserService().getCurrentUser().getUserId());
+               AtsCore.getLogFactory().writeToStore(dupTaskArt);
                dupArt.addRelation(AtsRelationTypes.TeamWfToTask_Task, dupTaskArt);
                dupArt.persist(transaction);
             }

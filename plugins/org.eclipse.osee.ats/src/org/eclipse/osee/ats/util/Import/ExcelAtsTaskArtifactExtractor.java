@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
@@ -274,6 +275,7 @@ public class ExcelAtsTaskArtifactExtractor {
             }
             sma.getStateMgr().updateMetrics(sma.getStateDefinition(), hours,
                sma.getStateMgr().getPercentComplete(sma.getCurrentStateName()), true);
+            AtsCore.getLogFactory().writeToStore(sma);
          }
       }
 
@@ -291,6 +293,7 @@ public class ExcelAtsTaskArtifactExtractor {
             }
             int percentInt = percent.intValue();
             sma.getStateMgr().updateMetrics(sma.getStateDefinition(), 0, percentInt, true);
+            AtsCore.getLogFactory().writeToStore(sma);
          }
       }
 

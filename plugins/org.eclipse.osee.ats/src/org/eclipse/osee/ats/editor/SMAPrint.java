@@ -27,10 +27,12 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
+import org.eclipse.osee.ats.core.client.workflow.log.ArtifactLog;
 import org.eclipse.osee.ats.core.client.workflow.note.NoteItem;
 import org.eclipse.osee.ats.core.column.AssigneeColumn;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
+import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -114,7 +116,7 @@ public class SMAPrint extends Action {
          getTaskHtml(resultData);
       }
       resultData.addRaw(AHTML.newline());
-      resultData.addRaw(sma.getLog().getHtml());
+      resultData.addRaw(AtsLogUtility.getHtml(sma.getLog(), new ArtifactLog(sma)));
 
       XResultData rd = new XResultData();
       rd.addRaw(AHTML.beginMultiColumnTable(100, 1));

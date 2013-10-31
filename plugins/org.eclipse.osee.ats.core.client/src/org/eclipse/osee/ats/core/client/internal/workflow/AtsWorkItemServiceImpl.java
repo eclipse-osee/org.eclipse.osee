@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+import org.eclipse.osee.ats.api.workflow.log.ILogStorageProvider;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
@@ -35,6 +36,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.validator.AtsXWidgetValidateManagerClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AtsWorkData;
+import org.eclipse.osee.ats.core.client.workflow.log.ArtifactLog;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionListeners;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -232,6 +234,11 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public Collection<ITransitionListener> getTransitionListeners() {
       return TransitionListeners.getListeners();
+   }
+
+   @Override
+   public ILogStorageProvider getLogStorageProvider(IAtsWorkItem workItem) {
+      return new ArtifactLog(((AbstractWorkflowArtifact) workItem));
    }
 
 }

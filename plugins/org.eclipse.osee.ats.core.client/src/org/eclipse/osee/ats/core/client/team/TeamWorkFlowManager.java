@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -202,6 +203,7 @@ public class TeamWorkFlowManager {
       }
       teamArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, hourEstimate);
       teamArt.getStateMgr().setMetrics(TeamState.Analyze, stateHoursSpent, statePercentComplete, true, user, date);
+      AtsCore.getLogFactory().writeToStore(teamArt);
       return Result.TrueResult;
    }
 
@@ -213,6 +215,7 @@ public class TeamWorkFlowManager {
          }
       }
       teamArt.getStateMgr().setMetrics(TeamState.Authorize, stateHoursSpent, statePercentComplete, true, user, date);
+      AtsCore.getLogFactory().writeToStore(teamArt);
       return Result.TrueResult;
    }
 
@@ -224,6 +227,7 @@ public class TeamWorkFlowManager {
          }
       }
       teamArt.getStateMgr().setMetrics(TeamState.Implement, stateHoursSpent, statePercentComplete, true, user, date);
+      AtsCore.getLogFactory().writeToStore(teamArt);
       return Result.TrueResult;
    }
 

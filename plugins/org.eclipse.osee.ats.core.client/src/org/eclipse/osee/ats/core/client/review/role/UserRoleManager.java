@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
@@ -256,5 +257,6 @@ public class UserRoleManager {
       awa.getStateMgr().setMetrics(awa.getStateDefinition(), hoursSpent,
          awa.getStateMgr().getPercentComplete(awa.getCurrentStateName()), true,
          AtsClientService.get().getUserAdmin().getCurrentUser(), new Date());
+      AtsCore.getLogFactory().writeToStore(awa);
    }
 }

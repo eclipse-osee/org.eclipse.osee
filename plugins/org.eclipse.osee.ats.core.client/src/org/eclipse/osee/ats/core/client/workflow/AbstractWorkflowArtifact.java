@@ -91,7 +91,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    protected TeamWorkFlowArtifact parentTeamArt;
    protected ActionArtifact parentAction;
    private final IAtsStateManager stateMgr;
-   private final IAtsLog atsLog;
+   private IAtsLog atsLog;
+   private int atsLogTransactionNumber;
    private final AtsNote atsNote;
    private boolean inTransition = false;
    private IAtsWorkData atsWorkData;
@@ -99,7 +100,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public AbstractWorkflowArtifact(String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(guid, branch, artifactType);
       stateMgr = AtsCore.getStateFactory().getStateManager(this);
-      atsLog = AtsCore.getLogFactory().getLog(new ArtifactLog(this), AtsCore.getUserService());
       atsNote = new AtsNote(new ArtifactNote(this));
    }
 
@@ -314,9 +314,13 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          getSmaArtifactsOneLevel(this, artifacts);
          for (Artifact artifact : artifacts) {
             if (artifact instanceof AbstractWorkflowArtifact) {
-               Result result = ((AbstractWorkflowArtifact) artifact).getStateMgr().isDirtyResult();
+               AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+               Result result = awa.getStateMgr().isDirtyResult();
                if (result.isTrue()) {
                   return result;
+               }
+               if (awa.getLog().isDirty()) {
+                  return new Result(true, "Log is dirty");
                }
             }
             if (artifact.isDirty()) {
@@ -362,7 +366,11 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          getSmaArtifactsOneLevel(this, artifacts);
          for (Artifact artifact : artifacts) {
             if (artifact instanceof AbstractWorkflowArtifact) {
-               ((AbstractWorkflowArtifact) artifact).getStateMgr().writeToStore();
+               AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+               awa.getStateMgr().writeToStore();
+               if (awa.getLog().isDirty()) {
+                  AtsCore.getLogFactory().writeToStore(awa);
+               }
             }
             artifact.persist(transaction);
          }
@@ -378,7 +386,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          for (Artifact artifact : artifacts) {
             artifact.reloadAttributesAndRelations();
             if (artifact instanceof AbstractWorkflowArtifact) {
-               ((AbstractWorkflowArtifact) artifact).getStateMgr().reload();
+               AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+               awa.getStateMgr().reload();
+               awa.atsLog = null;
             }
          }
       } catch (Exception ex) {
@@ -428,6 +438,10 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public IAtsLog getLog() {
+      if (atsLog == null || atsLogTransactionNumber != getTransactionNumber()) {
+         atsLog = AtsCore.getLogFactory().getLogLoaded(new ArtifactLog(this));
+         atsLogTransactionNumber = getTransactionNumber();
+      }
       return atsLog;
    }
 
@@ -522,12 +536,13 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    private void logCreatedByChange(IAtsUser user, Date date) throws OseeCoreException {
       if (getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null) == null) {
-         atsLog.addLog(LogType.Originated, "", "", date, user);
+         getLog().addLog(LogType.Originated, "", "", date, user.getUserId());
       } else {
-         atsLog.addLog(LogType.Originated, "",
-            "Changed by " + AtsClientService.get().getUserAdmin().getCurrentUser().getName(), date, user);
-         atsLog.internalResetOriginator(user);
+         getLog().addLog(LogType.Originated, "",
+            "Changed by " + AtsClientService.get().getUserAdmin().getCurrentUser().getName(), date, user.getUserId());
+         getLog().internalResetOriginator(user);
       }
+      AtsCore.getLogFactory().writeToStore(this);
    }
 
    public void setCreatedBy(IAtsUser user, boolean logChange) throws OseeCoreException {
@@ -542,14 +557,16 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public void internalSetCreatedBy(IAtsUser user) throws OseeCoreException {
-      atsLog.internalResetOriginator(user);
+      getLog().internalResetOriginator(user);
+      AtsCore.getLogFactory().writeToStore(this);
       if (isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
          setSoleAttributeValue(AtsAttributeTypes.CreatedBy, user.getUserId());
       }
    }
 
    public void internalSetCreatedDate(Date date) throws OseeCoreException {
-      atsLog.internalResetCreatedDate(date);
+      getLog().internalResetCreatedDate(date);
+      AtsCore.getLogFactory().writeToStore(this);
       if (isAttributeTypeValid(AtsAttributeTypes.CreatedDate)) {
          setSoleAttributeValue(AtsAttributeTypes.CreatedDate, date);
       }

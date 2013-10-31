@@ -20,25 +20,23 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsLog {
 
-   public abstract String getHtml() throws OseeCoreException;
-
-   public abstract String getHtml(boolean showLog) throws OseeCoreException;
-
    public abstract List<IAtsLogItem> getLogItems() throws OseeCoreException;
 
    public abstract Date getLastStatusDate() throws OseeCoreException;
-
-   public abstract void putLogItems(List<IAtsLogItem> items);
 
    public abstract List<IAtsLogItem> getLogItemsReversed() throws OseeCoreException;
 
    /**
     * Used to reset the original originated user. Only for internal use. Kept for backward compatibility.
+    * 
+    * @param changes JavaTip
     */
    public abstract void internalResetOriginator(IAtsUser user) throws OseeCoreException;
 
    /**
     * Used to reset the original originated user. Only for internal use. Kept for backward compatibility.
+    * 
+    * @param changes JavaTip
     */
    public abstract void internalResetCreatedDate(Date date) throws OseeCoreException;
 
@@ -51,16 +49,16 @@ public interface IAtsLog {
 
    /**
     * @param state name of state or null
+    * @param userId JavaTip
+    * @param changes JavaTip
     */
-   public abstract void addLog(LogType type, String state, String msg) throws OseeCoreException;
+   public abstract void addLog(LogType type, String state, String msg, String userId) throws OseeCoreException;
 
    public abstract void addLogItem(IAtsLogItem item) throws OseeCoreException;
 
-   public abstract void addLog(LogType type, String state, String msg, Date date, IAtsUser user) throws OseeCoreException;
+   public abstract void addLog(LogType type, String state, String msg, Date date, String userId) throws OseeCoreException;
 
    public abstract void clearLog();
-
-   public abstract String getTable() throws OseeCoreException;
 
    public abstract IAtsLogItem getLastEvent(LogType type) throws OseeCoreException;
 
@@ -68,4 +66,9 @@ public interface IAtsLog {
 
    public abstract IAtsLogItem getStateEvent(LogType type) throws OseeCoreException;
 
+   public abstract void setLogId(String logId);
+
+   public abstract void setDirty(boolean dirty);
+
+   public abstract boolean isDirty();
 }

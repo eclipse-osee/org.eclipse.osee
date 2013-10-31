@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -57,6 +58,7 @@ public class TaskManager {
             taskArt.getStateMgr().setAssignee(AtsClientService.get().getUserAdmin().getCurrentUser());
          }
          taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, 100, true);
+         AtsCore.getLogFactory().writeToStore(taskArt);
          if (estimatedHours > 0.0) {
             taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimatedHours);
          }
@@ -91,6 +93,7 @@ public class TaskManager {
       }
       if (taskArt.getStateMgr().getPercentComplete(taskArt.getCurrentStateName()) != percentComplete || additionalHours > 0) {
          taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, percentComplete, true);
+         AtsCore.getLogFactory().writeToStore(taskArt);
       }
       if (changes != null) {
          taskArt.saveSMA(changes);

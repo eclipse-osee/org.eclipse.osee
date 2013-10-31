@@ -173,20 +173,14 @@ public class StateManager implements IAtsNotificationListener, IAtsStateManager 
 
    protected void logMetrics(IStateToken state, IAtsUser user, Date date) throws OseeCoreException {
       String hoursSpent = AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal(workItem));
-      logMetrics(workItem, PercentCompleteTotalUtil.getPercentCompleteTotal(workItem) + "", hoursSpent, state, user,
-         date);
-   }
-
-   public static void logMetrics(IAtsWorkItem workItem, String percent, String hours, IStateToken state, IAtsUser user, Date date) throws OseeCoreException {
       IAtsLogItem logItem =
-         AtsCore.getLogFactory().newLogItem(LogType.Metrics, date, user, state.getName(),
-            String.format("Percent %s Hours %s", percent, hours), workItem.getAtsId());
+         AtsCore.getLogFactory().newLogItem(
+            LogType.Metrics,
+            date,
+            user,
+            state.getName(),
+            String.format("Percent %s Hours %s", PercentCompleteTotalUtil.getPercentCompleteTotal(workItem), hoursSpent));
       workItem.getLog().addLogItem(logItem);
-   }
-
-   @Override
-   public void setMetrics(double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date) throws OseeCoreException {
-      setMetrics(getCurrentState(), hours, percentComplete, logMetrics, user, date);
    }
 
    /**

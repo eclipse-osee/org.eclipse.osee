@@ -41,8 +41,6 @@ public interface IAtsStateManager extends WorkStateProvider, WorkStateFactory {
 
    public abstract void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException;
 
-   public abstract void setMetrics(double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date) throws OseeCoreException;
-
    /**
     * Set metrics and log if changed
     */

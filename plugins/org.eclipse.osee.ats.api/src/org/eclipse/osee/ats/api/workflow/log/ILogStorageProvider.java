@@ -24,4 +24,6 @@ public interface ILogStorageProvider {
    String getLogTitle();
 
    String getLogId();
+
+   String getNameFromUserId(String userId);
 }

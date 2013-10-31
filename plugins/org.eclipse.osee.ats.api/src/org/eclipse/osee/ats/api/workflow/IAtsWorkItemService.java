@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
+import org.eclipse.osee.ats.api.workflow.log.ILogStorageProvider;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -74,5 +75,7 @@ public interface IAtsWorkItemService {
    void setInTransition(IAtsWorkItem workItem, boolean inTransition);
 
    Collection<ITransitionListener> getTransitionListeners();
+
+   ILogStorageProvider getLogStorageProvider(IAtsWorkItem workItem);
 
 }

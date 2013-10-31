@@ -431,7 +431,7 @@ public class TransitionManager {
    }
 
    public static void logWorkflowCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, String reason, Date cancelDate, IAtsUser cancelBy) throws OseeCoreException {
-      workItem.getLog().addLog(LogType.StateCancelled, fromState.getName(), reason, cancelDate, cancelBy);
+      workItem.getLog().addLog(LogType.StateCancelled, fromState.getName(), reason, cancelDate, cancelBy.getUserId());
       if (AtsCore.getAttrResolver().isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
          AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledBy, cancelBy.getUserId());
          AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledDate, cancelDate);
@@ -440,6 +440,8 @@ public class TransitionManager {
             fromState.getName());
       }
       validateUpdatePercentCompleteAttribute(workItem, toState);
+      AtsCore.getLogFactory().writeToStore(workItem);
+
    }
 
    public static void logWorkflowUnCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition toState) throws OseeCoreException {
@@ -450,11 +452,12 @@ public class TransitionManager {
          AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledFromState);
       }
       validateUpdatePercentCompleteAttribute(workItem, toState);
+      AtsCore.getLogFactory().writeToStore(workItem);
    }
 
    private void logWorkflowCompletedEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, String reason, Date cancelDate, IAtsUser cancelBy) throws OseeCoreException {
       workItem.getLog().addLog(LogType.StateComplete, fromState.getName(), Strings.isValid(reason) ? reason : "",
-         cancelDate, cancelBy);
+         cancelDate, cancelBy.getUserId());
       if (AtsCore.getAttrResolver().isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
          AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedBy, cancelBy.getUserId());
          AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedDate, cancelDate);
@@ -462,6 +465,7 @@ public class TransitionManager {
             fromState.getName());
       }
       validateUpdatePercentCompleteAttribute(workItem, toState);
+      AtsCore.getLogFactory().writeToStore(workItem);
    }
 
    public static void logWorkflowUnCompletedEvent(IAtsWorkItem workItem, IAtsStateDefinition toState) throws OseeCoreException {
@@ -471,6 +475,7 @@ public class TransitionManager {
          AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedFromState);
       }
       validateUpdatePercentCompleteAttribute(workItem, toState);
+      AtsCore.getLogFactory().writeToStore(workItem);
    }
 
    private static void validateUpdatePercentCompleteAttribute(IAtsWorkItem workItem, IAtsStateDefinition toState) throws OseeCoreException {
@@ -483,11 +488,14 @@ public class TransitionManager {
    }
 
    private void logStateCompletedEvent(IAtsWorkItem workItem, String fromStateName, String reason, Date date, IAtsUser user) throws OseeCoreException {
-      workItem.getLog().addLog(LogType.StateComplete, fromStateName, Strings.isValid(reason) ? reason : "", date, user);
+      workItem.getLog().addLog(LogType.StateComplete, fromStateName, Strings.isValid(reason) ? reason : "", date,
+         user.getUserId());
+      AtsCore.getLogFactory().writeToStore(workItem);
    }
 
    public static void logStateStartedEvent(IAtsWorkItem workItem, IStateToken state, Date date, IAtsUser user) throws OseeCoreException {
-      workItem.getLog().addLog(LogType.StateEntered, state.getName(), "", date, user);
+      workItem.getLog().addLog(LogType.StateEntered, state.getName(), "", date, user.getUserId());
+      AtsCore.getLogFactory().writeToStore(workItem);
    }
 
    /**

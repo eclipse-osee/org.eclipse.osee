@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
@@ -65,8 +66,7 @@ public class DecisionReviewManager {
             return result;
          }
          result =
-            transitionToState(toState.getStateType(), popup, DecisionReviewState.Decision, reviewArt, user,
-               changes);
+            transitionToState(toState.getStateType(), popup, DecisionReviewState.Decision, reviewArt, user, changes);
          if (result.isFalse()) {
             return result;
          }
@@ -99,6 +99,7 @@ public class DecisionReviewManager {
       }
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimateHours);
       reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete, true);
+      AtsCore.getLogFactory().writeToStore(reviewArt);
       return Result.TrueResult;
    }
 
@@ -125,6 +126,7 @@ public class DecisionReviewManager {
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.Decision, decision ? "Yes" : "No");
 
       reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete, true);
+      AtsCore.getLogFactory().writeToStore(reviewArt);
       return Result.TrueResult;
    }
 
@@ -147,6 +149,7 @@ public class DecisionReviewManager {
       }
       // ensure assignees are as requested
       decRev.getStateMgr().setAssignees(assignees);
+      AtsCore.getLogFactory().writeToStore(decRev);
       changes.add(decRev);
       return decRev;
    }

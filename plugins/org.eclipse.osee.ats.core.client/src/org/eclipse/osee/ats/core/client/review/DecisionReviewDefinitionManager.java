@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionAdapter;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -67,10 +68,12 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
             DecisionReviewManager.createNewDecisionReview(teamArt, revDef.getBlockingType(), revDef.getReviewTitle(),
                revDef.getRelatedToState(), revDef.getDescription(), revDef.getOptions(), users, createdDate, createdBy);
       }
-      decArt.getLog().addLog(LogType.Note, null, String.format("Review [%s] auto-generated", revDef.getName()));
+      decArt.getLog().addLog(LogType.Note, null, String.format("Review [%s] auto-generated", revDef.getName()),
+         AtsCore.getUserService().getCurrentUser().getUserId());
       for (IReviewProvider provider : ReviewProviders.getAtsReviewProviders()) {
          provider.reviewCreated(decArt);
       }
+      AtsCore.getLogFactory().writeToStore(decArt);
       changes.add(decArt);
       return decArt;
    }
@@ -88,8 +91,8 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
       for (IAtsDecisionReviewDefinition decRevDef : teamArt.getStateDefinition().getDecisionReviews()) {
          if (decRevDef.getStateEventType() != null && decRevDef.getStateEventType().equals(StateEventType.TransitionTo)) {
             DecisionReviewArtifact decArt =
-               DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, changes, teamArt,
-                  createdDate, createdBy);
+               DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, changes, teamArt, createdDate,
+                  createdBy);
             if (decArt != null) {
                changes.add(decArt);
             }

@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse  License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.api.workflow.log;
 
 import java.util.Date;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -20,11 +20,12 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsLogFactory {
 
-   public IAtsLog getLog(ILogStorageProvider storageProvider, IAtsUserService userService) throws OseeCoreException;
+   IAtsLogItem newLogItem(LogType type, Date date, IAtsUser user, String state, String msg) throws OseeCoreException;
 
-   public IAtsLogItem newLogItem(LogType type, Date date, IAtsUser user, String state, String msg, String hrid) throws OseeCoreException;
+   IAtsLog getLogLoaded(ILogStorageProvider storageProvider) throws OseeCoreException;
 
-   public IAtsLogItem newLogItem(LogType type, String date, String userId, String state, String msg, String hrid) throws OseeCoreException;
+   void writeToStore(IAtsWorkItem workItem);
 
-   public IAtsLogItem newLogItem(String type, String date, String userId, String state, String msg, String hrid) throws OseeCoreException;
+   IAtsLog getLog();
+
 }

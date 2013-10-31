@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -79,6 +80,7 @@ public class ActionManager {
             createTeamWorkflow(actionArt, teamDef, actionableItems, leads, changes, createdDate, createdBy,
                newActionListener);
          teamWf.getStateMgr().writeToStore();
+         AtsCore.getLogFactory().writeToStore(teamWf);
       }
 
       // Notify listener of action creation

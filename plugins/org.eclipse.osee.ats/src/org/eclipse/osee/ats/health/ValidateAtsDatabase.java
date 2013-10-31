@@ -51,10 +51,12 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.log.ArtifactLog;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.internal.Activator;
@@ -1162,10 +1164,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      }
                   }
                   // Generate html log which will exercise all the conversions
-                  log.getHtml();
+                  AtsLogUtility.getHtml(awa.getLog(), new ArtifactLog(awa), true);
                   // Verify that all users are resolved
                   for (IAtsLogItem logItem : awa.getLog().getLogItems()) {
-                     if (logItem.getUser() == null) {
+                     if (logItem.getUserId() == null) {
                         testNameToResultsMap.put(
                            "testAtsLogs",
                            "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " user == null for userId \"" + logItem.getUserId() + "\"");
@@ -1186,7 +1188,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
       logTestTimeSpent(date, "testAtsLogs", testNameToTimeSpentMap);
    }
-
    private static IAtsUser unAssignedUser;
    private static IAtsUser oseeSystemUser;
 

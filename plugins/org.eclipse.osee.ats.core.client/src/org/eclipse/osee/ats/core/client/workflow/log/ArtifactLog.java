@@ -15,7 +15,9 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.log.ILogStorageProvider;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -79,6 +81,16 @@ public class ArtifactLog implements ILogStorageProvider {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return "unknown";
+   }
+
+   @Override
+   public String getNameFromUserId(String userId) {
+      String name = "unknown (" + userId + ")";
+      IAtsUser user = AtsCore.getUserService().getUserById(userId);
+      if (user != null) {
+         name = user.getName();
+      }
+      return name;
    }
 
 }

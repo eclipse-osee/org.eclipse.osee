@@ -78,6 +78,8 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
       TransitionResults results = transitionMgr.handleAll();
       changes.execute();
 
+      Assert.assertFalse(teamArt.isDirty());
+      Assert.assertFalse(teamArt.getLog().isDirty());
       Assert.assertTrue(results.toString(), results.isEmpty());
 
       Assert.assertEquals("One review should be present", 1, ReviewManager.getReviews(teamArt).size());

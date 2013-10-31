@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.core.internal.log;
 
 import java.util.Date;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
@@ -27,23 +27,28 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class AtsLogFactory implements IAtsLogFactory {
 
    @Override
-   public IAtsLog getLog(ILogStorageProvider storageProvider, IAtsUserService userService) {
-      return new AtsLog(storageProvider, userService);
+   public IAtsLog getLog() {
+      return new AtsLog();
    }
 
    @Override
-   public IAtsLogItem newLogItem(LogType type, Date date, IAtsUser user, String state, String msg, String hrid) throws OseeCoreException {
-      return new LogItem(type, date, user, state, msg, hrid, AtsCore.getUserService());
+   public IAtsLog getLogLoaded(ILogStorageProvider storageProvider) {
+      IAtsLog log = getLog();
+      AtsLogReader reader = new AtsLogReader(log, storageProvider);
+      reader.load();
+      return log;
    }
 
    @Override
-   public IAtsLogItem newLogItem(LogType type, String date, String userId, String state, String msg, String hrid) throws OseeCoreException {
-      return new LogItem(type, date, userId, state, msg, hrid, AtsCore.getUserService());
+   public IAtsLogItem newLogItem(LogType type, Date date, IAtsUser user, String state, String msg) throws OseeCoreException {
+      return new LogItem(type, date, user.getUserId(), state, msg);
    }
 
    @Override
-   public IAtsLogItem newLogItem(String type, String date, String userId, String state, String msg, String hrid) throws OseeCoreException {
-      return new LogItem(type, date, userId, state, msg, hrid, AtsCore.getUserService());
+   public void writeToStore(IAtsWorkItem workItem) {
+      ILogStorageProvider storageProvider = AtsCore.getWorkItemService().getLogStorageProvider(workItem);
+      AtsLogWriter writer = new AtsLogWriter(workItem.getLog(), storageProvider);
+      writer.save();
    }
 
 }

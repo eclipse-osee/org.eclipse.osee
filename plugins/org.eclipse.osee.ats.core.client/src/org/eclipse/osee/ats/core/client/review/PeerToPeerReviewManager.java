@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
@@ -93,8 +94,8 @@ public class PeerToPeerReviewManager {
    private static Result transitionToState(StateType StateType, boolean popup, PeerToPeerReviewArtifact reviewArt, IStateToken toState, IAtsChangeSet changes) throws OseeCoreException {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(reviewArt), toState.getName(),
-            Arrays.asList(reviewArt.getStateMgr().getAssignees().iterator().next()), null,
-            changes, TransitionOption.OverrideAssigneeCheck);
+            Arrays.asList(reviewArt.getStateMgr().getAssignees().iterator().next()), null, changes,
+            TransitionOption.OverrideAssigneeCheck);
       TransitionManager transitionMgr = new TransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {
@@ -121,6 +122,7 @@ public class PeerToPeerReviewManager {
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.Location, reviewMaterials);
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.ReviewFormalType, ReviewFormalType.InFormal.name());
       reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete, true);
+      AtsCore.getLogFactory().writeToStore(reviewArt);
       return Result.TrueResult;
    }
 
@@ -140,6 +142,7 @@ public class PeerToPeerReviewManager {
          defectManager.saveToArtifact(reviewArt);
       }
       reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete, true);
+      AtsCore.getLogFactory().writeToStore(reviewArt);
       return Result.TrueResult;
    }
 
@@ -163,8 +166,7 @@ public class PeerToPeerReviewManager {
       PeerToPeerReviewArtifact peerArt =
          createNewPeerToPeerReview(
             AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(
-               actionableItem).getWorkDefinition(), null, reviewTitle, againstState, createdDate, createdBy,
-            changes);
+               actionableItem).getWorkDefinition(), null, reviewTitle, againstState, createdDate, createdBy, changes);
       peerArt.getActionableItemsDam().addActionableItem(actionableItem);
       changes.add(peerArt);
       return peerArt;

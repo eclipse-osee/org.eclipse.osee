@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
@@ -125,6 +126,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       if (Strings.isValid(relatedToState)) {
          taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, relatedToState);
       }
+      AtsCore.getLogFactory().writeToStore(taskArt);
       AtsTaskCache.decache(this);
       return taskArt;
    }
