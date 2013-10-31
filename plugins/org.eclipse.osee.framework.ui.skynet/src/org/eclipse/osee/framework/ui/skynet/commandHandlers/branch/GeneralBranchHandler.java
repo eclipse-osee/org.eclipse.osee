@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -97,7 +98,21 @@ public abstract class GeneralBranchHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       List<? extends IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
-      return !branches.isEmpty() && AccessControlManager.isOseeAdmin();
+      return !branches.isEmpty() && (AccessControlManager.isOseeAdmin() || canEnableBranches(branches));
    }
 
+   private boolean canEnableBranches(List<? extends IOseeBranch> branches) {
+      boolean canBeDeleted = true;
+      for (IOseeBranch branch : branches) {
+         if (!isEnableAllowed(BranchManager.getBranch(branch))) {
+            canBeDeleted = false;
+            break;
+         }
+      }
+      return canBeDeleted;
+   }
+
+   private boolean isEnableAllowed(Branch branch) {
+      return !BranchManager.isChangeManaged(branch) && branch.getBranchType().isWorkingBranch();
+   }
 }
