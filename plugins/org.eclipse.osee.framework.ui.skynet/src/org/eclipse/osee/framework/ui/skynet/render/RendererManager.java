@@ -217,7 +217,9 @@ public final class RendererManager {
    }
 
    public static void diff(CompareDataCollector collector, Collection<ArtifactDelta> artifactDelta, String pathPrefix, Object... options) {
-      DiffUsingRenderer operation = new DiffUsingRenderer(collector, artifactDelta, pathPrefix, options);
+      IRenderer renderer = new WordTemplateRenderer();
+      renderer.setOptions(options);
+      DiffUsingRenderer operation = new DiffUsingRenderer(collector, artifactDelta, pathPrefix, renderer, options);
       Operations.executeWork(operation);
    }
 
