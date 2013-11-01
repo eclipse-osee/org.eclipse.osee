@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.internal.core;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -130,7 +129,7 @@ public class OseeDatabaseServiceProxy implements IOseeDatabaseService {
    }
 
    @Override
-   public <O> int runBatchUpdate(String query, List<O[]> dataList) throws OseeCoreException {
+   public <O> int runBatchUpdate(String query, Iterable<O[]> dataList) throws OseeCoreException {
       checkInitialized();
       return getDatabaseService().runBatchUpdate(query, dataList);
    }
@@ -142,7 +141,7 @@ public class OseeDatabaseServiceProxy implements IOseeDatabaseService {
    }
 
    @Override
-   public <O> int runBatchUpdate(OseeConnection connection, String query, List<O[]> dataList) throws OseeCoreException {
+   public <O> int runBatchUpdate(OseeConnection connection, String query, Iterable<O[]> dataList) throws OseeCoreException {
       checkInitialized();
       return getDatabaseService().runBatchUpdate(connection, query, dataList);
    }

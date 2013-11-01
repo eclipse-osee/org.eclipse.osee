@@ -17,7 +17,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -29,13 +28,14 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Roberto E. Escobar
  */
 public final class StatementUtil {
+   private static final int MAX_COLUMN_WIDTH = 4000;
 
    private StatementUtil() {
       // Utility class
    }
 
-   public static <O extends Object> String getBatchErrorMessage(List<O[]> dataList) {
-      StringBuilder details = new StringBuilder(dataList.size() * dataList.get(0).length * 20);
+   public static <O extends Object> String getBatchErrorMessage(Iterable<O[]> dataList) {
+      StringBuilder details = new StringBuilder(MAX_COLUMN_WIDTH);
       details.append("[ DATA OBJECT: \n");
       for (Object[] data : dataList) {
          for (int i = 0; i < data.length; i++) {
@@ -58,6 +58,9 @@ public final class StatementUtil {
             }
          }
          details.append("---------\n");
+         if (details.length() > MAX_COLUMN_WIDTH) {
+            break;
+         }
       }
       details.append("]\n");
       return details.toString();
@@ -94,9 +97,9 @@ public final class StatementUtil {
             preparedIndex++;
             if (dataValue instanceof String) {
                int length = ((String) dataValue).length();
-               if (length > 4000) {
-                  throw new OseeDataStoreException("SQL data value length must be  <= 4000 not %d\nValue: %s", length,
-                     dataValue);
+               if (length > MAX_COLUMN_WIDTH) {
+                  throw new OseeDataStoreException("SQL data value length must be <= %d not %d\nValue: %s",
+                     MAX_COLUMN_WIDTH, length, dataValue);
                }
             }
 

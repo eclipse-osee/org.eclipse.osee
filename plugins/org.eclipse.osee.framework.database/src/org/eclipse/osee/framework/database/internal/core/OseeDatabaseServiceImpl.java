@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.database.internal.core;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
@@ -86,7 +85,7 @@ public class OseeDatabaseServiceImpl implements DatabaseService {
    }
 
    @Override
-   public <O extends Object> int runBatchUpdate(OseeConnection connection, String query, List<O[]> dataList) throws OseeCoreException {
+   public <O extends Object> int runBatchUpdate(OseeConnection connection, String query, Iterable<O[]> dataList) throws OseeCoreException {
       if (connection == null) {
          return runBatchUpdate(query, dataList);
       }
@@ -128,7 +127,7 @@ public class OseeDatabaseServiceImpl implements DatabaseService {
    }
 
    @Override
-   public <O> int runBatchUpdate(String query, List<O[]> dataList) throws OseeCoreException {
+   public <O> int runBatchUpdate(String query, Iterable<O[]> dataList) throws OseeCoreException {
       OseeConnection connection = getConnection();
       try {
          return runBatchUpdate(connection, query, dataList);

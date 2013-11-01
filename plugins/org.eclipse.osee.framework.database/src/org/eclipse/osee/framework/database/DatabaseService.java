@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database;
 
-import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -35,11 +34,11 @@ public interface DatabaseService {
 
    OseeConnection getConnection(IDatabaseInfo info) throws OseeCoreException;
 
-   <O extends Object> int runBatchUpdate(String query, List<O[]> dataList) throws OseeCoreException;
+   <O extends Object> int runBatchUpdate(String query, Iterable<O[]> dataList) throws OseeCoreException;
 
    <O extends Object> int runPreparedUpdate(String query, O... data) throws OseeCoreException;
 
-   <O extends Object> int runBatchUpdate(OseeConnection connection, String query, List<O[]> dataList) throws OseeCoreException;
+   <O extends Object> int runBatchUpdate(OseeConnection connection, String query, Iterable<O[]> dataList) throws OseeCoreException;
 
    <O extends Object> int runPreparedUpdate(OseeConnection connection, String query, O... data) throws OseeCoreException;
 
