@@ -121,42 +121,43 @@ public class ReviewNavigateView extends ViewPart implements IXNavigateEventListe
                      return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Navigate View - !dbConnectionIsOk");
                   }
 
-                  xNavComp = new AtsNavigateComposite(ReviewNavigateViewItems.getInstance(), parent, SWT.NONE);
+                  if (Widgets.isAccessible(parent)) {
+                     xNavComp = new AtsNavigateComposite(ReviewNavigateViewItems.getInstance(), parent, SWT.NONE);
 
-                  HelpUtil.setHelp(xNavComp, AtsHelpContext.NAVIGATOR);
-                  createToolBar();
+                     HelpUtil.setHelp(xNavComp, AtsHelpContext.NAVIGATOR);
+                     createToolBar();
 
-                  Label label = new Label(xNavComp, SWT.None);
-                  String str = getWhoAmI();
-                  if (AtsUtilCore.isAtsAdmin()) {
-                     str += " - Admin";
-                  }
-                  if (!str.equals("")) {
+                     Label label = new Label(xNavComp, SWT.None);
+                     String str = getWhoAmI();
                      if (AtsUtilCore.isAtsAdmin()) {
-                        label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-                     } else {
-                        label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
+                        str += " - Admin";
                      }
+                     if (!str.equals("")) {
+                        if (AtsUtilCore.isAtsAdmin()) {
+                           label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+                        } else {
+                           label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
+                        }
+                     }
+                     label.setText(str);
+                     label.setToolTipText(str);
+
+                     GridData gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
+                     gridData.heightHint = 15;
+                     label.setLayoutData(gridData);
+
+                     if (savedFilterStr != null) {
+                        xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
+                     }
+                     xNavComp.refresh();
+                     xNavComp.getFilteredTree().getFilterControl().setFocus();
+
+                     parent.getParent().layout(true);
+                     parent.layout(true);
+
+                     OseeStatusContributionItemFactory.addTo(navView, false);
+                     addExtensionPointListenerBecauseOfWorkspaceLoading();
                   }
-                  label.setText(str);
-                  label.setToolTipText(str);
-
-                  GridData gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
-                  gridData.heightHint = 15;
-                  label.setLayoutData(gridData);
-
-                  if (savedFilterStr != null) {
-                     xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
-                  }
-                  xNavComp.refresh();
-                  xNavComp.getFilteredTree().getFilterControl().setFocus();
-
-                  parent.getParent().layout(true);
-                  parent.layout(true);
-
-                  OseeStatusContributionItemFactory.addTo(navView, false);
-                  addExtensionPointListenerBecauseOfWorkspaceLoading();
-
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }

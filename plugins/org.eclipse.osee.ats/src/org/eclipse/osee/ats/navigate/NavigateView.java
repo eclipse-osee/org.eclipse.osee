@@ -136,47 +136,49 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
                      return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Osee Services are NOT available");
                   } else {
 
-                     xNavComp = new AtsNavigateComposite(AtsNavigateViewItems.getInstance(), parent, SWT.NONE);
+                     if (Widgets.isAccessible(parent)) {
 
-                     XNavigateEventManager.register(navView);
-                     HelpUtil.setHelp(xNavComp, AtsHelpContext.NAVIGATOR);
-                     createToolBar();
+                        xNavComp = new AtsNavigateComposite(AtsNavigateViewItems.getInstance(), parent, SWT.NONE);
 
-                     // add search text box
-                     AtsQuickSearchComposite composite = new AtsQuickSearchComposite(xNavComp, SWT.NONE);
-                     composite.addDisposeListener(new DisposeListener() {
+                        XNavigateEventManager.register(navView);
+                        HelpUtil.setHelp(xNavComp, AtsHelpContext.NAVIGATOR);
+                        createToolBar();
 
-                        @Override
-                        public void widgetDisposed(DisposeEvent e) {
-                           OseeNotificationManager.getInstance().sendNotifications();
+                        // add search text box
+                        AtsQuickSearchComposite composite = new AtsQuickSearchComposite(xNavComp, SWT.NONE);
+                        composite.addDisposeListener(new DisposeListener() {
+
+                           @Override
+                           public void widgetDisposed(DisposeEvent e) {
+                              OseeNotificationManager.getInstance().sendNotifications();
+                           }
+                        });
+
+                        userLabel = new Label(xNavComp, SWT.None);
+                        userLabel.addListener(SWT.MouseDoubleClick, new Listener() {
+                           @Override
+                           public void handleEvent(Event event) {
+                              ToggleAtsAdmin.run();
+                           }
+                        });
+                        refreshUserLabel();
+
+                        GridData gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
+                        gridData.heightHint = 15;
+                        userLabel.setLayoutData(gridData);
+
+                        if (savedFilterStr != null) {
+                           xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
                         }
-                     });
+                        xNavComp.refresh();
+                        xNavComp.getFilteredTree().getFilterControl().setFocus();
 
-                     userLabel = new Label(xNavComp, SWT.None);
-                     userLabel.addListener(SWT.MouseDoubleClick, new Listener() {
-                        @Override
-                        public void handleEvent(Event event) {
-                           ToggleAtsAdmin.run();
-                        }
-                     });
-                     refreshUserLabel();
+                        parent.getParent().layout(true);
+                        parent.layout(true);
 
-                     GridData gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
-                     gridData.heightHint = 15;
-                     userLabel.setLayoutData(gridData);
-
-                     if (savedFilterStr != null) {
-                        xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
+                        OseeStatusContributionItemFactory.addTo(navView, false);
+                        addExtensionPointListenerBecauseOfWorkspaceLoading();
                      }
-                     xNavComp.refresh();
-                     xNavComp.getFilteredTree().getFilterControl().setFocus();
-
-                     parent.getParent().layout(true);
-                     parent.layout(true);
-
-                     OseeStatusContributionItemFactory.addTo(navView, false);
-                     addExtensionPointListenerBecauseOfWorkspaceLoading();
-
                   }
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
