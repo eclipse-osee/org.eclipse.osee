@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.core.client.internal.workdef;
 
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
-import org.eclipse.osee.ats.core.client.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.logging.OseeLog;

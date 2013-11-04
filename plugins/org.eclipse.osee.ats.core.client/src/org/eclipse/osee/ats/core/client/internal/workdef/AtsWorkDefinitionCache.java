@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 
 /**
@@ -22,12 +23,12 @@ import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 public class AtsWorkDefinitionCache {
 
    // Cache the WorkDefinition used for each AbstractWorkflowId so don't have to recompute each time
-   private final Map<String, WorkDefinitionMatch> awaGuidToWorkDefinition =
-      new ConcurrentHashMap<String, WorkDefinitionMatch>();
+   private final Map<String, IWorkDefinitionMatch> awaGuidToWorkDefinition =
+      new ConcurrentHashMap<String, IWorkDefinitionMatch>();
    // Cache the WorkDefinition object for each WorkDefinition id so don't have to reload
    // This grows as WorkDefinitions are requested/loaded
-   private final Map<String, WorkDefinitionMatch> workDefIdToWorkDefintion =
-      new ConcurrentHashMap<String, WorkDefinitionMatch>();
+   private final Map<String, IWorkDefinitionMatch> workDefIdToWorkDefintion =
+      new ConcurrentHashMap<String, IWorkDefinitionMatch>();
 
    public void cache(IAtsWorkDefinition workDef, WorkDefinitionMatch match) {
       cache(workDef.getName(), match);
@@ -37,20 +38,20 @@ public class AtsWorkDefinitionCache {
       workDefIdToWorkDefintion.put(id, match);
    }
 
-   public void cache(IAtsWorkItem workItem, WorkDefinitionMatch match) {
+   public void cache(IAtsWorkItem workItem, IWorkDefinitionMatch match) {
       awaGuidToWorkDefinition.put(workItem.getGuid(), match);
    }
 
-   public WorkDefinitionMatch getWorkDefinition(IAtsWorkItem workItem) {
+   public IWorkDefinitionMatch getWorkDefinition(IAtsWorkItem workItem) {
       return awaGuidToWorkDefinition.get(workItem.getGuid());
    }
 
    //IAtsWorkDefinition
-   public WorkDefinitionMatch getWorkDefinition(String id) {
+   public IWorkDefinitionMatch getWorkDefinition(String id) {
       return workDefIdToWorkDefintion.get(id);
    }
 
-   public Iterable<WorkDefinitionMatch> getAllWorkDefinitions() {
+   public Iterable<IWorkDefinitionMatch> getAllWorkDefinitions() {
       return workDefIdToWorkDefintion.values();
    }
 

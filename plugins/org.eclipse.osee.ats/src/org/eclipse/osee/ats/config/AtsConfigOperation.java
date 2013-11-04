@@ -24,12 +24,12 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.core.client.config.AtsArtifactToken;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -85,7 +85,7 @@ public class AtsConfigOperation extends AbstractOperation {
    }
 
    private void checkWorkItemNamespaceUnique() throws OseeCoreException {
-      WorkDefinitionMatch match = null;
+      IWorkDefinitionMatch match = null;
       try {
          match = AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinition(name);
       } catch (Exception ex) {
@@ -167,7 +167,7 @@ public class AtsConfigOperation extends AbstractOperation {
    }
 
    private IAtsWorkDefinition createWorkflow(IAtsChangeSet changes, XResultData resultData, IAtsTeamDefinition teamDef) throws OseeCoreException {
-      WorkDefinitionMatch workDefMatch = AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinition(name);
+      IWorkDefinitionMatch workDefMatch = AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinition(name);
       IAtsWorkDefinition workDef = null;
       // If can't be found, create a new one
       if (!workDefMatch.isMatched()) {

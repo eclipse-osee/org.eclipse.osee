@@ -17,7 +17,7 @@ import org.eclipse.core.commands.Command;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
+import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -86,7 +86,7 @@ public class AtsWorkDefConfigRenderer extends DefaultArtifactRenderer {
          public void run() {
             for (Artifact artifact : artifacts) {
                try {
-                  WorkDefinitionMatch match =
+                  IWorkDefinitionMatch match =
                      AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinition(artifact.getName());
                   if (match.isMatched()) {
                      IEditorInput input = new AtsWorkDefConfigEditorInput(match.getWorkDefinition());

@@ -14,8 +14,10 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
@@ -268,4 +270,27 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    public boolean isInState(IAtsWorkItem workItem, IAtsStateDefinition stateDef) {
       return workItem.getStateMgr().getCurrentStateName().equals(stateDef.getName());
    }
+
+   @Override
+   public Collection<IAtsWorkDefinition> getAllWorkDefinitions() throws Exception {
+      XResultData resultData = new XResultData(false);
+      ensureLoaded(resultData);
+      List<IAtsWorkDefinition> workDefs = new ArrayList<IAtsWorkDefinition>();
+      workDefs.addAll(workDefIdToWorkDef.values());
+      return workDefs;
+   }
+
+   @Override
+   public Collection<String> getAllValidStateNames() {
+      Set<String> allValidStateNames = new HashSet<String>();
+      for (IAtsWorkDefinition workDef : workDefIdToWorkDef.values()) {
+         for (String stateName : getStateNames(workDef)) {
+            if (!allValidStateNames.contains(stateName)) {
+               allValidStateNames.add(stateName);
+            }
+         }
+      }
+      return allValidStateNames;
+   }
+
 }

@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
@@ -54,7 +55,6 @@ import org.eclipse.osee.ats.core.client.workflow.note.AtsNote;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -455,7 +455,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public IAtsWorkDefinition getWorkDefinition() {
-      WorkDefinitionMatch match = getWorkDefinitionMatch();
+      IWorkDefinitionMatch match = getWorkDefinitionMatch();
       if (match == null) {
          return null;
       }
@@ -466,7 +466,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return match.getWorkDefinition();
    }
 
-   public WorkDefinitionMatch getWorkDefinitionMatch() {
+   public IWorkDefinitionMatch getWorkDefinitionMatch() {
       try {
          return AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinition(this);
       } catch (Exception ex) {

@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.actions.ShowChangeReportAction;
 import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
@@ -48,7 +49,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.note.NoteItem;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.walker.action.OpenActionViewAction;
@@ -622,8 +622,7 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      FormsUtil.createLabelText(toolkit, topLineComp, awa.getArtifactSuperTypeName() + " Id: ",
-         awa.getAtsId());
+      FormsUtil.createLabelText(toolkit, topLineComp, awa.getArtifactSuperTypeName() + " Id: ", awa.getAtsId());
 
       try {
          String pcrId = TeamWorkFlowManager.getPcrId(awa);
@@ -657,7 +656,7 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
    public static void createWorkDefHeader(Composite comp, XFormToolkit toolkit, AbstractWorkflowArtifact sma, int horizontalSpan) {
       // Display SMA Note
-      WorkDefinitionMatch workDefMatch = sma.getWorkDefinitionMatch();
+      IWorkDefinitionMatch workDefMatch = sma.getWorkDefinitionMatch();
       Label label =
          FormsUtil.createLabelValue(toolkit, comp, "Work Definition: ", workDefMatch.getWorkDefinition().getName());
       label.addListener(SWT.MouseDoubleClick, new Listener() {

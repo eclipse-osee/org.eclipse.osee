@@ -27,13 +27,14 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
+import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.IAtsUserAdmin;
 import org.eclipse.osee.ats.core.client.IAtsVersionAdmin;
-import org.eclipse.osee.ats.core.client.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.core.client.internal.config.ActionableItemFactory;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.client.internal.config.AtsConfigCacheProvider;
@@ -56,6 +57,7 @@ import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionAdminI
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCache;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkItemArtifactProviderImpl;
+import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.ITeamWorkflowProviders;
@@ -96,6 +98,8 @@ public class AtsClientImpl implements IAtsClient {
    private IAtsWorkItemService workItemService;
    private IAtsBranchService branchService;
    private IAtsReviewService reviewService;
+   private IAttributeResolver attributeResolverService;
+   private ITeamWorkflowProviders teamWorkflowProvider;
    private static Boolean started = null;
 
    public void setAtsWorkDefinitionService(IAtsWorkDefinitionService workDefService) {
@@ -139,14 +143,16 @@ public class AtsClientImpl implements IAtsClient {
       readers.put(AtsArtifactTypes.Version, new VersionArtifactReader(actionableItemFactory, teamDefFactory,
          versionFactory, versionService));
 
-      ITeamWorkflowProviders atsTeamWorkflowProviders = TeamWorkFlowManager.getTeamWorkflowProviders();
+      teamWorkflowProvider = TeamWorkFlowManager.getTeamWorkflowProviders();
 
       workDefCacheProvider = new AtsWorkDefinitionCacheProvider(workDefService);
       workItemArtifactProvider = new AtsWorkItemArtifactProviderImpl();
       workItemService = new AtsWorkItemServiceImpl(workItemArtifactProvider);
+      attributeResolverService = new AtsAttributeResolverServiceImpl();
+
       workDefAdmin =
-         new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemArtifactProvider, workItemService,
-            workDefService, atsTeamWorkflowProviders);
+         new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService, teamWorkflowProvider,
+            attributeResolverService);
       branchService = new AtsBranchServiceImpl();
       reviewService = new AtsReviewServiceImpl();
       started = true;
@@ -174,6 +180,7 @@ public class AtsClientImpl implements IAtsClient {
       versionFactory = null;
 
       atsUserAdmin = null;
+      started = false;
    }
 
    private static void checkStarted() throws OseeStateException {
@@ -412,4 +419,8 @@ public class AtsClientImpl implements IAtsClient {
       return reviewService;
    }
 
+   @Override
+   public IAttributeResolver getAttributeResolver() {
+      return attributeResolverService;
+   }
 }

@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.config.AtsArtifactToken;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
@@ -100,17 +99,7 @@ public final class AtsWorkDefinitionSheetProviders {
                OseeLog.logf(AtsCore.class, Level.INFO,
                   "ATS Valid State Names: Missing [%s] Artifact; Falling back to loadAddDefinitions",
                   org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names.getName());
-               try {
-                  for (IAtsWorkDefinition workDef : AtsClientService.get().getWorkDefinitionAdmin().loadAllDefinitions()) {
-                     for (String stateName : AtsClientService.get().getWorkDefinitionAdmin().getStateNames(workDef)) {
-                        if (!allValidStateNames.contains(stateName)) {
-                           allValidStateNames.add(stateName);
-                        }
-                     }
-                  }
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsCore.class, Level.SEVERE, ex);
-               }
+               allValidStateNames.addAll(AtsClientService.get().getWorkDefinitionAdmin().getAllValidStateNames());
             }
             Collections.sort(allValidStateNames);
          } catch (OseeCoreException ex) {

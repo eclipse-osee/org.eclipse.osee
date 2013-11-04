@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -50,5 +51,9 @@ public interface IAtsWorkDefinitionService {
    boolean teamDefHasRule(IAtsWorkItem workItem, RuleDefinitionOption rule);
 
    boolean isInState(IAtsWorkItem workItem, IAtsStateDefinition stateDef);
+
+   Collection<IAtsWorkDefinition> getAllWorkDefinitions() throws OseeCoreException, Exception;
+
+   Collection<String> getAllValidStateNames();
 
 }

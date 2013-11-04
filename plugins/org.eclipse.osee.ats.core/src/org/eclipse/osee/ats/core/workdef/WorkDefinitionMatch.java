@@ -13,12 +13,13 @@ package org.eclipse.osee.ats.core.workdef;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorkDefinitionMatch {
+public class WorkDefinitionMatch implements IWorkDefinitionMatch {
 
    private IAtsWorkDefinition workDefinition;
    private String workDefinitionId;
@@ -35,32 +36,39 @@ public class WorkDefinitionMatch {
       }
    }
 
+   @Override
    public String getWorkDefinitionId() {
       return workDefinitionId;
    }
 
+   @Override
    public void setWorkDefinitionId(String workDefinitionId) {
       this.workDefinitionId = workDefinitionId;
    }
 
+   @Override
    public IAtsWorkDefinition getWorkDefinition() {
       return workDefinition;
    }
 
+   @Override
    public void setWorkDefinition(IAtsWorkDefinition WorkDefinition) {
       this.workDefinition = WorkDefinition;
    }
 
+   @Override
    public void addTrace(String traceStr) {
       if (trace.isEmpty() || (!trace.get(trace.size() - 1).equals(traceStr))) {
          trace.add(traceStr);
       }
    }
 
+   @Override
    public List<String> getTrace() {
       return trace;
    }
 
+   @Override
    public boolean isMatched() {
       return workDefinition != null;
    }

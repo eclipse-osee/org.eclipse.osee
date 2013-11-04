@@ -8,26 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client;
+package org.eclipse.osee.ats.api.workdef;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -46,27 +38,23 @@ public interface IAtsWorkDefinitionAdmin {
 
    void removeWorkDefinition(IAtsWorkDefinition workDef) throws OseeCoreException;
 
-   WorkDefinitionMatch getWorkDefinition(IAtsWorkItem workItem) throws OseeCoreException;
+   IWorkDefinitionMatch getWorkDefinition(IAtsWorkItem workItem) throws OseeCoreException;
 
-   Collection<IAtsWorkDefinition> getLoadedWorkDefinitions() throws OseeCoreException;
+   IWorkDefinitionMatch getWorkDefinition(String id) throws OseeCoreException;
 
-   WorkDefinitionMatch getWorkDefinition(String id) throws OseeCoreException;
-
-   WorkDefinitionMatch getWorkDefinitionForTask(IAtsTask task) throws OseeCoreException;
-
-   Set<IAtsWorkDefinition> loadAllDefinitions() throws OseeCoreException;
+   IWorkDefinitionMatch getWorkDefinitionForTask(IAtsTask task) throws OseeCoreException;
 
    IAtsWorkDefinition copyWorkDefinition(String newName, IAtsWorkDefinition workDef, XResultData resultData);
 
-   WorkDefinitionMatch getDefaultPeerToPeerWorkflowDefinitionMatch() throws OseeCoreException;
+   IWorkDefinitionMatch getDefaultPeerToPeerWorkflowDefinitionMatch() throws OseeCoreException;
 
-   WorkDefinitionMatch getWorkDefinitionForPeerToPeerReviewNotYetCreated(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   IWorkDefinitionMatch getWorkDefinitionForPeerToPeerReviewNotYetCreated(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
-   WorkDefinitionMatch getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(IAtsActionableItem actionableItem) throws OseeCoreException;
+   IWorkDefinitionMatch getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(IAtsActionableItem actionableItem) throws OseeCoreException;
 
-   WorkDefinitionMatch getWorkDefinitionForTaskNotYetCreated(TeamWorkFlowArtifact teamWf) throws OseeCoreException;
+   IWorkDefinitionMatch getWorkDefinitionForTaskNotYetCreated(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
-   boolean isTaskOverridingItsWorkDefinition(TaskArtifact taskArt) throws MultipleAttributesExist, OseeCoreException;
+   boolean isTaskOverridingItsWorkDefinition(IAtsTask task) throws MultipleAttributesExist, OseeCoreException;
 
    IAtsWorkDefinition getWorkDef(String id, XResultData resultData) throws Exception;
 
@@ -85,12 +73,10 @@ public interface IAtsWorkDefinitionAdmin {
 
    String getStorageString(IAtsWorkDefinition workDef, XResultData resultData) throws Exception;
 
-   Collection<? extends IAtsWorkItem> getWorkItems(List<Artifact> arts);
-
-   List<Artifact> get(Collection<? extends IAtsWorkItem> workItems, Class<Artifact> class1) throws OseeCoreException;
-
-   WorkDefinitionMatch getWorkDefinitionForPeerToPeerReview(IAtsPeerToPeerReview review) throws OseeCoreException;
+   IWorkDefinitionMatch getWorkDefinitionForPeerToPeerReview(IAtsPeerToPeerReview review) throws OseeCoreException;
 
    IAtsStateDefinition getStateDefinitionByName(IAtsWorkItem workItem, String stateName) throws OseeCoreException;
+
+   Collection<String> getAllValidStateNames();
 
 }

@@ -40,7 +40,7 @@ public interface IAtsWorkItemService {
 
    boolean isOfType(IAtsWorkItem item, IArtifactType matchType) throws OseeCoreException;
 
-   IAtsWorkItem getParentTeamWorkflow(IAtsWorkItem workItem) throws OseeCoreException;
+   IAtsTeamWorkflow getParentTeamWorkflow(IAtsWorkItem workItem) throws OseeCoreException;
 
    int getTransactionNumber(IAtsWorkItem workItem) throws OseeCoreException;
 

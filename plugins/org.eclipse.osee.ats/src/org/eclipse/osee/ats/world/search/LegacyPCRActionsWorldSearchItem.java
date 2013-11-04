@@ -86,13 +86,16 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
          arts = teamDefArts;
       }
 
-      IAtsQuery query =
-         AtsClientService.get().createQuery(AtsClientService.get().getWorkDefinitionAdmin().getWorkItems(arts)).withOrValue(
-            AtsAttributeTypes.LegacyPcrId, pcrIds).withOrValue(AtsAttributeTypes.TeamDefinition, teamDefGuids).isOfType(
-            AtsArtifactTypes.TeamWorkflow);
+      List<IAtsWorkItem> workItems = new ArrayList<IAtsWorkItem>();
+      for (Artifact art : arts) {
+         workItems.add((IAtsWorkItem) art);
+      }
 
-      Collection<? extends IAtsWorkItem> workItems = query.getItems();
-      List<Artifact> artifacts = AtsClientService.get().getWorkDefinitionAdmin().get(workItems, Artifact.class);
+      IAtsQuery query =
+         AtsClientService.get().createQuery(workItems).withOrValue(AtsAttributeTypes.LegacyPcrId, pcrIds).withOrValue(
+            AtsAttributeTypes.TeamDefinition, teamDefGuids).isOfType(AtsArtifactTypes.TeamWorkflow);
+
+      List<Artifact> artifacts = Collections.castAll(query.getItems());
       if (returnActions) {
          List<Artifact> actions = new ArrayList<Artifact>();
          for (Artifact artifact : artifacts) {
