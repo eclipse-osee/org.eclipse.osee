@@ -197,7 +197,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       " WHERE \n" + //
       "art1.art_type_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
       " AND \n" + // 
-      "txs1.tx_current IN (1, 0) AND txs1.branch_id = ?\n" + //
+      "txs1.mod_type <> 3 AND txs1.branch_id = ?\n" + //
       " GROUP BY art1.art_id, txs1.branch_id\n" + //
       ") xTable";
 
@@ -291,17 +291,24 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    @Test
    public void testQueryHistorical() throws OseeCoreException {
       String expected =
-         "SELECT/*+ ordered */ max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + // 
+         "WITH artUuid1 AS (SELECT max(txs.transaction_id) as transaction_id, art.art_id as art_id\n" + //
+         "    FROM osee_txs txs, osee_artifact art, osee_join_char_id id\n" + //
+         "    WHERE txs.gamma_id = art.gamma_id\n" + //
+         "    AND art.guid = id.id AND id.query_id = ? AND txs.transaction_id <= ? AND txs.branch_id = ?\n" + //
+         "    GROUP BY art.art_id)\n" + //
+         "SELECT max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + //
          " FROM \n" + //
-         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2\n" + //
+         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, artUuid1\n" + //
          " WHERE \n" + //
          "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
          " AND \n" + //
-         "txs1.tx_current IN (1, 0) AND txs1.branch_id = ?\n" + //
+         "txs1.mod_type <> 3 AND txs1.branch_id = ?\n" + //
          " AND \n" + //
-         "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.transaction_id <= ?\n" + //
+         "art2.guid = jch1.id AND jch1.query_id = ?\n" + //
          " AND \n" + //
-         "txs2.tx_current IN (1, 0) AND txs2.branch_id = ?\n" + //
+         "artUuid1.transaction_id = txs2.transaction_id AND artUuid1.art_id = art2.art_id AND art2.gamma_id = txs2.gamma_id AND txs2.transaction_id <= ?\n" + //
+         " AND \n" + //"
+         "txs2.mod_type <> 3 AND txs2.branch_id = ?\n" + //
          " AND \n" + //
          "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
          " GROUP BY art1.art_id, txs1.branch_id\n" + //
@@ -314,12 +321,15 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       Assert.assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
-      Assert.assertEquals(8, parameters.size());
+      Assert.assertEquals(11, parameters.size());
+
       List<AbstractJoinQuery> joins = context.getJoins();
-      Assert.assertEquals(2, joins.size());
+      Assert.assertEquals(3, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
+
       Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
+
       Assert.assertEquals(EXPECTED_TX_ID, iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
 
@@ -327,8 +337,103 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       Assert.assertEquals(EXPECTED_TX_ID, iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
 
+      Assert.assertEquals(joins.get(2).getQueryId(), iterator.next());
+      Assert.assertEquals(EXPECTED_TX_ID, iterator.next());
+      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
+
       Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), iterator.next());
       Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), iterator.next());
+   }
+
+   @Test
+   public void testQueryHistoricalMultipleItems() throws OseeCoreException {
+      String expected =
+         "WITH artUuid1 AS (SELECT max(txs.transaction_id) as transaction_id, art.art_id as art_id\n" + //
+         "    FROM osee_txs txs, osee_artifact art, osee_join_char_id id\n" + //
+         "    WHERE txs.gamma_id = art.gamma_id\n" + //
+         "    AND art.guid = id.id AND id.query_id = ? AND txs.transaction_id <= ? AND txs.branch_id = ?\n" + //
+         "    GROUP BY art.art_id), \n" + //
+         " attrExt1 AS (SELECT max(txs.transaction_id) as transaction_id, attr.art_id as art_id\n" + //
+         "    FROM osee_txs txs, osee_attribute attr\n" + //
+         "    WHERE txs.gamma_id = attr.gamma_id\n" + //
+         "    AND att.attr_type_id = ? AND txs.transaction_id <= ? AND txs.branch_id = ?\n" + //
+         "    GROUP BY attr.art_id)\n" + //
+         "SELECT max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + //
+         " FROM \n" + //
+         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_attribute att1, osee_txs txs3, osee_relation_link rel1, osee_txs txs4, artUuid1, attrExt1\n" + //
+         " WHERE \n" + //
+         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
+         " AND \n" + //
+         "txs1.mod_type <> 3 AND txs1.branch_id = ?\n" + //
+         " AND \n" + //
+         "art2.guid = jch1.id AND jch1.query_id = ?\n" + //
+         " AND \n" + //
+         "artUuid1.transaction_id = txs2.transaction_id AND artUuid1.art_id = art2.art_id AND art2.gamma_id = txs2.gamma_id AND txs2.transaction_id <= ?\n" + //
+         " AND \n" + //
+         "txs2.mod_type <> 3 AND txs2.branch_id = ?\n" + //
+         " AND \n" + //
+         "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
+         " AND \n" + //
+         "att1.attr_type_id = ?\n" + //
+         " AND \n" + //
+         "att1.art_id = art1.art_id AND att1.art_id = art2.art_id\n" + //
+         " AND \n" + //
+         "attrExt1.transaction_id = txs3.transaction_id AND attrExt1.art_id = att1.art_id\n" + //
+         " AND \n" + //
+         "att1.gamma_id = txs3.gamma_id AND txs3.transaction_id <= ?\n" + //
+         " AND \n" + //
+         "txs3.mod_type <> 3 AND txs3.branch_id = ?\n" + //
+         " AND \n" + //
+         "rel1.rel_link_type_id = ?\n" + //
+         " AND \n" + //
+         "(rel1.a_art_id = art1.art_id OR rel1.b_art_id = art1.art_id)\n" + //
+         " AND \n" + //
+         "(rel1.a_art_id = art2.art_id OR rel1.b_art_id = art2.art_id)\n" + //
+         " AND \n" + //
+         "rel1.gamma_id = txs4.gamma_id AND txs4.transaction_id <= ?\n" + //
+         " AND \n" + //
+         "txs4.mod_type <> 3 AND txs4.branch_id = ?\n" + //
+         " GROUP BY art1.art_id, txs1.branch_id\n" + //
+         " ORDER BY art1.art_id, txs1.branch_id";
+
+      queryData.addCriteria(GUIDS, IDS, TYPES, ATTR_TYPE_EXITS, REL_TYPE_EXISTS);
+      OptionsUtil.setFromTransaction(queryData.getOptions(), EXPECTED_TX_ID);
+
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      Assert.assertEquals(expected, context.getSql());
+
+      List<Object> parameters = context.getParameters();
+      Assert.assertEquals(20, parameters.size());
+      List<AbstractJoinQuery> joins = context.getJoins();
+      Assert.assertEquals(3, joins.size());
+
+      Iterator<Object> iterator = parameters.iterator();
+      Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
+      Assert.assertEquals(EXPECTED_TX_ID, iterator.next());
+      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
+
+      Assert.assertEquals(CoreAttributeTypes.Name.getGuid(), iterator.next());
+      Assert.assertEquals(EXPECTED_TX_ID, iterator.next());
+      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
+
+      Assert.assertEquals(joins.get(1).getQueryId(), iterator.next());
+      Assert.assertEquals(EXPECTED_TX_ID, iterator.next());
+      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
+
+      Assert.assertEquals(joins.get(2).getQueryId(), iterator.next());
+      Assert.assertEquals(EXPECTED_TX_ID, iterator.next());
+      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
+
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), iterator.next());
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), iterator.next());
+      Assert.assertEquals(CoreAttributeTypes.Name.getGuid(), iterator.next());
+
+      Assert.assertEquals(EXPECTED_TX_ID, iterator.next());
+      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
+
+      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), iterator.next());
+      Assert.assertEquals(EXPECTED_TX_ID, iterator.next());
+      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
    }
 
    @Test
@@ -620,11 +725,9 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    @Test
    public void testRelatedTo() throws OseeCoreException {
       String expected =
-         "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
+         "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + //
          " FROM \n" + //
-         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, " + //
-         "osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, " + //
-         "osee_join_id jid2, osee_relation_link rel1, osee_txs txs3\n" + //
+         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_join_id jid2, osee_relation_link rel1, osee_txs txs3\n" + //
          " WHERE \n" + //
          "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
          " AND \n" + //
@@ -638,7 +741,9 @@ public class ArtifactQuerySqlContextFactoryImplTest {
          " AND \n" + //
          "rel1.a_art_id = art2.art_id\n" + //
          " AND \n" + //
-         "rel1.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
+         "rel1.gamma_id = txs3.gamma_id\n" + //
+         " AND \n" + //
+         "txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
          " ORDER BY art1.art_id, txs1.branch_id";
 
       queryData.addCriteria(GUIDS, TYPES, IDS, RELATED_TO);
@@ -697,7 +802,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       " WHERE \n" + //
       "art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
       " AND \n" + // 
-      "txs1.tx_current IN (1, 0) AND txs1.branch_id = ?\n" + //
+      "txs1.mod_type <> 3 AND txs1.branch_id = ?\n" + //
       " GROUP BY art1.art_id, txs1.branch_id\n" + //
       ") xTable";
 
@@ -751,7 +856,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
          " WHERE \n" + //
          "art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
          " AND \n" + // 
-         "txs1.tx_current IN (1, 0) AND txs1.branch_id = ?\n" + //
+         "txs1.mod_type <> 3 AND txs1.branch_id = ?\n" + //
          " GROUP BY art1.art_id, txs1.branch_id\n" + //
          " ORDER BY art1.art_id, txs1.branch_id";
 

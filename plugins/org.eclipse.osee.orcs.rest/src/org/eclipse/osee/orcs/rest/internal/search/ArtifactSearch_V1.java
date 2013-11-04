@@ -119,7 +119,7 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
 
       QueryBuilder builder = searchQueryBuilder.build(qFactory, params);
 
-      builder.includeDeleted(params.isIncludeDeleted());
+      builder.includeDeletedArtifacts(params.isIncludeDeleted());
 
       if (params.getFromTx() > 0) {
          builder.fromTransaction(params.getFromTx());

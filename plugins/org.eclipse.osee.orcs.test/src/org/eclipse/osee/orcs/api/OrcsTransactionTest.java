@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -280,9 +281,341 @@ public class OrcsTransactionTest {
       tx.deleteArtifact(toDelete);
       tx.commit();
 
-      toDelete = query.fromBranch(CoreBranches.COMMON).andIds(artifact).includeDeleted().getResults().getOneOrNull();
+      toDelete =
+         query.fromBranch(CoreBranches.COMMON).andIds(artifact).includeDeletedArtifacts().getResults().getOneOrNull();
       assertNotNull(toDelete);
       assertTrue(toDelete.isDeleted());
+   }
+
+   @Test
+   public void testDeleteAttribute() throws OseeCoreException {
+      TransactionBuilder tx = createTx();
+      ArtifactId artifact = tx.createArtifact(CoreArtifactTypes.AccessControlModel, "deleteThis");
+      tx.createAttribute(artifact, CoreAttributeTypes.GeneralStringData, "deleted Name");
+      tx.createAttribute(artifact, CoreAttributeTypes.PublishInline, true);
+      tx.commit();
+
+      tx = createTx();
+      tx.deleteAttributes(artifact, CoreAttributeTypes.GeneralStringData);
+      tx.commit();
+
+      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      builder.andExists(CoreAttributeTypes.GeneralStringData);
+      builder.andIds(artifact);
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
+      assertEquals(0, artifacts.size());
+      builder = query.fromBranch(CoreBranches.COMMON);
+      builder.andExists(CoreAttributeTypes.GeneralStringData);
+      builder.andIds(artifact);
+      builder.includeDeletedAttributes();
+      artifacts = builder.getResults();
+      assertEquals(1, artifacts.size());
+      builder = query.fromBranch(CoreBranches.COMMON);
+      builder.andExists(CoreAttributeTypes.Annotation);
+      builder.andIds(artifact);
+      builder.includeDeletedAttributes();
+      artifacts = builder.getResults();
+      assertEquals(0, artifacts.size());
+
+      ArtifactReadable toDelete = query.fromBranch(CoreBranches.COMMON).andIds(artifact).getResults().getExactlyOne();
+
+      tx = createTx();
+      tx.deleteArtifact(toDelete);
+      tx.commit();
+
+      toDelete =
+         query.fromBranch(CoreBranches.COMMON).andIds(artifact).includeDeletedArtifacts().getResults().getOneOrNull();
+      assertNotNull(toDelete);
+      assertTrue(toDelete.isDeleted());
+
+   }
+
+   private int[] setupHistory(ArtifactId[] artifacts) {
+      TransactionBuilder tx = createTx();
+      ArtifactId artifact1 = tx.createArtifact(CoreArtifactTypes.AccessControlModel, "deleteThis");
+      tx.createAttribute(artifact1, CoreAttributeTypes.GeneralStringData, "deleted Name");
+      tx.createAttribute(artifact1, CoreAttributeTypes.PublishInline, true);
+      ArtifactId artifact2 = tx.createArtifact(CoreArtifactTypes.Folder, "deleteThisFolder");
+      tx.createAttribute(artifact2, CoreAttributeTypes.Annotation, "annotation");
+      tx.relate(artifact2, Default_Hierarchical__Parent, artifact1);
+      TransactionRecord tx1 = tx.commit();
+      artifacts[0] = artifact1;
+      artifacts[1] = artifact2;
+
+      tx = createTx();
+      tx.deleteAttributes(artifact1, CoreAttributeTypes.GeneralStringData);
+      TransactionRecord tx2 = tx.commit();
+
+      ArtifactReadable toDelete = query.fromBranch(CoreBranches.COMMON).andIds(artifact1).getResults().getExactlyOne();
+
+      tx = createTx();
+      tx.deleteArtifact(toDelete);
+      tx.deleteAttributes(artifact2, CoreAttributeTypes.Annotation);
+      tx.unrelate(artifact2, Default_Hierarchical__Parent, artifact1);
+      TransactionRecord tx3 = tx.commit();
+
+      toDelete = query.fromBranch(CoreBranches.COMMON).andIds(artifact2).getResults().getExactlyOne();
+
+      tx = createTx();
+      tx.deleteArtifact(toDelete);
+      TransactionRecord tx4 = tx.commit();
+
+      toDelete =
+         query.fromBranch(CoreBranches.COMMON).andIds(artifact1).includeDeletedArtifacts().getResults().getOneOrNull();
+      assertNotNull(toDelete);
+      assertTrue(toDelete.isDeleted());
+      int[] toReturn = {tx1.getId(), tx2.getId(), tx3.getGuid(), tx4.getId()};
+      return toReturn;
+   }
+
+   @Test
+   public void testHistoricalArtifactsCreated() throws OseeCoreException {
+
+      ArtifactId[] theArtifacts = {null, null};
+      int[] transactions = setupHistory(theArtifacts);
+      ArtifactId artifact1 = theArtifacts[0];
+      ArtifactId artifact2 = theArtifacts[1];
+      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      builder.fromTransaction(transactions[0]);
+      builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
+      builder.andIds(artifact1, artifact2);
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
+      verifyHistoricalArtifacts(artifacts, artifact1, artifact2);
+   }
+
+   @Test
+   public void testHistoricalOneArtifactDeleted() throws OseeCoreException {
+
+      ArtifactId[] theArtifacts = {null, null};
+      int[] transactions = setupHistory(theArtifacts);
+      ArtifactId artifact1 = theArtifacts[0];
+      ArtifactId artifact2 = theArtifacts[1];
+      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      builder.fromTransaction(transactions[2]);
+      builder.andIds(artifact1, artifact2);
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
+      verifyHistoricalArtifacts(artifacts, null, artifact2);
+   }
+
+   @Test
+   public void testHistoricalDeletedAttribute() throws OseeCoreException {
+
+      ArtifactId[] theArtifacts = {null, null};
+      int[] transactions = setupHistory(theArtifacts);
+      ArtifactId artifact1 = theArtifacts[0];
+      ArtifactId artifact2 = theArtifacts[1];
+      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      builder.fromTransaction(transactions[1]);
+      builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
+      builder.andIds(artifact1, artifact2);
+      // test the historical count query
+      int count = builder.getCount();
+      assertEquals(1, count);
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
+      verifyHistoricalArtifacts(artifacts, null, artifact2);
+   }
+
+   @Test
+   public void testHistoricalOneArtifactDeletedAttribute() throws OseeCoreException {
+
+      ArtifactId[] theArtifacts = {null, null};
+      int[] transactions = setupHistory(theArtifacts);
+      ArtifactId artifact1 = theArtifacts[0];
+      ArtifactId artifact2 = theArtifacts[1];
+      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      builder.fromTransaction(transactions[1]);
+      builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
+      builder.andIds(artifact1);
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
+      verifyHistoricalArtifacts(artifacts, null, null);
+   }
+
+   @Test
+   public void testHistoricalIncludeDeletedAttribute() throws OseeCoreException {
+
+      ArtifactId[] theArtifacts = {null, null};
+      int[] transactions = setupHistory(theArtifacts);
+      ArtifactId artifact1 = theArtifacts[0];
+      ArtifactId artifact2 = theArtifacts[1];
+      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      builder.fromTransaction(transactions[1]);
+      builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
+      builder.andIds(artifact1);
+      builder.includeDeletedAttributes();
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
+      verifyHistoricalArtifacts(artifacts, artifact1, null);
+   }
+
+   @Test
+   public void testHistoricalTwoArtifactsIncludeDeletedAttribute() throws OseeCoreException {
+
+      ArtifactId[] theArtifacts = {null, null};
+      int[] transactions = setupHistory(theArtifacts);
+      ArtifactId artifact1 = theArtifacts[0];
+      ArtifactId artifact2 = theArtifacts[1];
+      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      builder.fromTransaction(transactions[1]);
+      builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
+      builder.andIds(artifact2, artifact1);
+      builder.includeDeletedAttributes();
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
+      verifyHistoricalArtifacts(artifacts, artifact1, artifact2);
+   }
+
+   @Test
+   public void testHistoricalDeletedArtifacts() throws OseeCoreException {
+
+      ArtifactId[] theArtifacts = {null, null};
+      int[] transactions = setupHistory(theArtifacts);
+      ArtifactId artifact1 = theArtifacts[0];
+      ArtifactId artifact2 = theArtifacts[1];
+      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      builder.fromTransaction(transactions[2]);
+      builder.andIds(artifact1, artifact2);
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
+      verifyHistoricalArtifacts(artifacts, null, artifact2);
+   }
+
+   @Test
+   public void testHistoricalAllowDeletedArtifactsDeletedAttributes() throws OseeCoreException {
+
+      ArtifactId[] theArtifacts = {null, null};
+      int[] transactions = setupHistory(theArtifacts);
+      ArtifactId artifact1 = theArtifacts[0];
+      ArtifactId artifact2 = theArtifacts[1];
+      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      builder.fromTransaction(transactions[2]);
+      builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
+      builder.andIds(artifact1, artifact2);
+      builder.includeDeletedArtifacts();
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
+      verifyHistoricalArtifacts(artifacts, null, null);
+   }
+
+   @Test
+   public void testHistoricalAllowDeletedArtifactsNondeletedAttribute() throws OseeCoreException {
+
+      ArtifactId[] theArtifacts = {null, null};
+      int[] transactions = setupHistory(theArtifacts);
+      ArtifactId artifact1 = theArtifacts[0];
+      ArtifactId artifact2 = theArtifacts[1];
+      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      builder.fromTransaction(transactions[2]);
+      builder.andExists(CoreAttributeTypes.PublishInline, CoreAttributeTypes.Annotation);
+      builder.andIds(artifact1, artifact2);
+      builder.includeDeletedArtifacts();
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
+      verifyHistoricalArtifacts(artifacts, artifact1, null);
+   }
+
+   @Test
+   public void testHistoricalRelation() throws OseeCoreException {
+
+      ArtifactId[] theArtifacts = {null, null};
+      int[] transactions = setupHistory(theArtifacts);
+      ArtifactId artifact1 = theArtifacts[0];
+      ArtifactId artifact2 = theArtifacts[1];
+      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      builder.fromTransaction(transactions[1]);
+      builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
+      builder.andIds(artifact2, artifact1);
+      builder.includeDeletedAttributes();
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
+      verifyHistoricalArtifacts(artifacts, artifact1, artifact2);
+      Iterator<ArtifactReadable> iter = artifacts.iterator();
+      ArtifactReadable artifactActual = iter.next();
+      ArtifactReadable artifact1Actual = iter.next();
+      builder = query.fromBranch(CoreBranches.COMMON);
+      builder.fromTransaction(transactions[1]);
+      builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
+      builder.andIds(artifact1, artifact2);
+      builder.includeDeletedArtifacts();
+      builder.includeDeletedAttributes();
+      builder.andRelatedTo(Default_Hierarchical__Parent, artifact1Actual);
+      artifacts = builder.getResults();
+      verifyHistoricalArtifacts(artifacts, artifact1, null);
+   }
+
+   @Test
+   public void testHistoricalDeletedRelation() throws OseeCoreException {
+
+      ArtifactId[] theArtifacts = {null, null};
+      int[] transactions = setupHistory(theArtifacts);
+      ArtifactId artifact1 = theArtifacts[0];
+      ArtifactId artifact2 = theArtifacts[1];
+      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      builder.fromTransaction(transactions[1]);
+      builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
+      builder.andIds(artifact2, artifact1);
+      builder.includeDeletedAttributes();
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
+      verifyHistoricalArtifacts(artifacts, artifact1, artifact2);
+      Iterator<ArtifactReadable> iter = artifacts.iterator();
+      ArtifactReadable artifactActual = iter.next();
+      ArtifactReadable artifact1Actual = iter.next();
+      builder = query.fromBranch(CoreBranches.COMMON);
+      builder.fromTransaction(transactions[2]);
+      builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
+      builder.andIds(artifact1, artifact2);
+      builder.includeDeletedArtifacts();
+      builder.includeDeletedAttributes();
+      builder.andRelatedTo(Default_Hierarchical__Parent, artifact1Actual);
+      artifacts = builder.getResults();
+      verifyHistoricalArtifacts(artifacts, null, null);
+   }
+
+   @Test
+   public void testHistoricalAllowDeletedRelation() throws OseeCoreException {
+
+      ArtifactId[] theArtifacts = {null, null};
+      int[] transactions = setupHistory(theArtifacts);
+      ArtifactId artifact1 = theArtifacts[0];
+      ArtifactId artifact2 = theArtifacts[1];
+      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      builder.fromTransaction(transactions[1]);
+      builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
+      builder.andIds(artifact2, artifact1);
+      builder.includeDeletedAttributes();
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
+      verifyHistoricalArtifacts(artifacts, artifact1, artifact2);
+      Iterator<ArtifactReadable> iter = artifacts.iterator();
+      ArtifactReadable artifactActual = iter.next();
+      ArtifactReadable artifact1Actual = iter.next();
+      builder = query.fromBranch(CoreBranches.COMMON);
+      builder.fromTransaction(transactions[2]);
+      builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
+      builder.andIds(artifact1, artifact2);
+      builder.includeDeletedArtifacts();
+      builder.includeDeletedAttributes();
+      builder.includeDeletedRelations();
+      builder.andRelatedTo(Default_Hierarchical__Parent, artifact1Actual);
+      artifacts = builder.getResults();
+      verifyHistoricalArtifacts(artifacts, artifact1, null);
+   }
+
+   public void verifyHistoricalArtifacts(ResultSet<ArtifactReadable> artifacts, ArtifactId artifact, ArtifactId artifact1) throws OseeCoreException {
+      int size = artifacts.size();
+      int expectedSize = 0;
+      if (artifact != null) {
+         expectedSize++;
+      }
+      if (artifact1 != null) {
+         expectedSize++;
+      }
+      assertEquals(expectedSize, size);
+      if (size > 0) {
+         for (ArtifactReadable art : artifacts) {
+            if ((artifact != null) && art.matches(artifact)) {
+               assertEquals(1,
+                  art.getAttributeCount(CoreAttributeTypes.GeneralStringData, DeletionFlag.INCLUDE_DELETED));
+               assertEquals(1, art.getAttributeCount(CoreAttributeTypes.PublishInline, DeletionFlag.INCLUDE_DELETED));
+            } else if ((artifact1 != null) && art.matches(artifact1)) {
+               assertEquals(1, art.getAttributeCount(CoreAttributeTypes.Annotation, DeletionFlag.INCLUDE_DELETED));
+            } else {
+               assertTrue("Unexpected artifact", false);
+            }
+         }
+      }
    }
 
    @Test
@@ -538,7 +871,7 @@ public class OrcsTransactionTest {
       tx2.commit();
 
       ResultSet<ArtifactReadable> arts =
-         query.fromBranch(COMMON).andIds(art1, art2, art3, art4).includeDeleted().getResults();
+         query.fromBranch(COMMON).andIds(art1, art2, art3, art4).includeDeletedArtifacts().getResults();
       Iterator<ArtifactReadable> iterator2 = arts.iterator();
       artifact1 = iterator2.next();
       artifact2 = iterator2.next();

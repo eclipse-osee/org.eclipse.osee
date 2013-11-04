@@ -72,7 +72,7 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
 
          QueryFactory factory = orcsApi.getQueryFactory(getContext(request));
          QueryBuilder builder = factory.fromBranch(searchRequest.getBranch());
-         builder.includeDeleted(options.getDeletionFlag().areDeletedAllowed());
+         builder.includeDeletedArtifacts(options.getDeletionFlag().areDeletedAllowed());
 
          Collection<IAttributeType> attributeTypes = options.getAttributeTypeFilter();
          if (attributeTypes.isEmpty()) {

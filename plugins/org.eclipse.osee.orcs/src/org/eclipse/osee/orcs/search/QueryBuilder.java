@@ -35,11 +35,23 @@ public interface QueryBuilder {
    public static IAttributeType ANY_ATTRIBUTE_TYPE = TokenFactory.createAttributeType(Long.MIN_VALUE,
       "Any Attribute Type");
 
-   QueryBuilder includeDeleted();
+   QueryBuilder includeDeletedArtifacts();
 
-   QueryBuilder includeDeleted(boolean enabled);
+   QueryBuilder includeDeletedArtifacts(boolean enabled);
 
-   boolean areDeletedIncluded();
+   boolean areDeletedArtifactsIncluded();
+
+   QueryBuilder includeDeletedAttributes();
+
+   QueryBuilder includeDeletedAttributes(boolean enabled);
+
+   boolean areDeletedAttributesIncluded();
+
+   QueryBuilder includeDeletedRelations();
+
+   QueryBuilder includeDeletedRelations(boolean enabled);
+
+   boolean areDeletedRelationsIncluded();
 
    QueryBuilder fromTransaction(int transactionId);
 

@@ -29,11 +29,9 @@ public class QuerySqlWriter extends AbstractSqlWriter {
 
    private final TableEnum table;
    private final String idColumn;
-   private final QueryType queryType;
 
    public QuerySqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext context, QueryType queryType, TableEnum table, String idColumn) {
-      super(logger, dbService, sqlProvider, context);
-      this.queryType = queryType;
+      super(logger, dbService, sqlProvider, context, queryType);
       this.table = table;
       this.idColumn = idColumn;
    }
@@ -41,7 +39,7 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    @Override
    public void writeSelect(List<SqlHandler<?>> handlers) throws OseeCoreException {
       String tableAlias = getAliasManager().getFirstAlias(table);
-      if (queryType == QueryType.COUNT) {
+      if (isCountQueryType()) {
          write("SELECT%s count(%s.%s)", getSqlHint(), tableAlias, idColumn);
       } else {
          write("SELECT%s %s.*", getSqlHint(), tableAlias);
@@ -68,7 +66,7 @@ public class QuerySqlWriter extends AbstractSqlWriter {
 
    @Override
    public void writeGroupAndOrder() throws OseeCoreException {
-      if (queryType != QueryType.COUNT) {
+      if (!isCountQueryType()) {
          String tableAlias = getAliasManager().getFirstAlias(table);
          write("\n ORDER BY %s.%s", tableAlias, idColumn);
       }
@@ -76,6 +74,16 @@ public class QuerySqlWriter extends AbstractSqlWriter {
 
    @Override
    public String getTxBranchFilter(String txsAlias) {
+      return Strings.emptyString();
+   }
+
+   @Override
+   public String getTxBranchFilter(String txsAlias, boolean allowDeleted) throws OseeCoreException {
+      return Strings.emptyString();
+   }
+
+   @Override
+   public String getAllChangesTxBranchFilter(String txsAlias) throws OseeCoreException {
       return Strings.emptyString();
    }
 

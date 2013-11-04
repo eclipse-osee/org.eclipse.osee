@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -29,11 +30,9 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
    private final long branchId;
-   private final QueryType queryType;
 
    public ArtifactQuerySqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext context, QueryType queryType, long branchId) {
-      super(logger, dbService, sqlProvider, context);
-      this.queryType = queryType;
+      super(logger, dbService, sqlProvider, context, queryType);
       this.branchId = branchId;
    }
 
@@ -51,7 +50,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
    @Override
    public void writeSelect(List<SqlHandler<?>> handlers) throws OseeCoreException {
-      if (queryType == QueryType.COUNT) {
+      if (isCountQueryType()) {
          if (OptionsUtil.isHistorical(getOptions())) {
             write("SELECT count(xTable.art_id) FROM (\n ");
             writeSelectHelper();
@@ -69,13 +68,11 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
       if (OptionsUtil.isHistorical(getOptions())) {
          String txAlias = getAliasManager().getFirstAlias(TableEnum.TXS_TABLE);
          String artAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_TABLE);
-
          write("\n GROUP BY %s.art_id, %s.branch_id", artAlias, txAlias);
       }
-      if (queryType != QueryType.COUNT) {
+      if (!isCountQueryType()) {
          String txAlias = getAliasManager().getFirstAlias(TableEnum.TXS_TABLE);
          String artAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_TABLE);
-
          write("\n ORDER BY %s.art_id, %s.branch_id", artAlias, txAlias);
       } else {
          if (OptionsUtil.isHistorical(getOptions())) {
@@ -86,8 +83,11 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
    @Override
    public String getTxBranchFilter(String txsAlias) {
+      boolean allowDeleted =
+         OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || OptionsUtil.areDeletedAttributesIncluded(getOptions()) || OptionsUtil.areDeletedRelationsIncluded(getOptions());
+
       StringBuilder sb = new StringBuilder();
-      writeTxFilter(txsAlias, sb);
+      writeTxFilter(txsAlias, sb, allowDeleted);
       if (branchId > 0) {
          sb.append(" AND ");
          sb.append(txsAlias);
@@ -97,25 +97,34 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
       return sb.toString();
    }
 
-   private void writeTxFilter(String txsAlias, StringBuilder sb) {
+   @Override
+   public String getTxBranchFilter(String txsAlias, boolean allowDeleted) {
+      StringBuilder sb = new StringBuilder();
+      writeTxFilter(txsAlias, sb, allowDeleted);
+      if (branchId > 0) {
+         sb.append(" AND ");
+         sb.append(txsAlias);
+         sb.append(".branch_id = ?");
+         addParameter(branchId);
+      }
+      return sb.toString();
+   }
+
+   private void writeTxFilter(String txsAlias, StringBuilder sb, boolean allowDeleted) {
       if (OptionsUtil.isHistorical(getOptions())) {
          sb.append(txsAlias);
          sb.append(".transaction_id <= ?");
          addParameter(OptionsUtil.getFromTransaction(getOptions()));
-         if (!OptionsUtil.areDeletedArtifactsIncluded(getOptions())) {
+         if (!allowDeleted) {
             sb.append(AND_WITH_NEWLINES);
             sb.append(txsAlias);
-            sb.append(".tx_current");
-            sb.append(" IN (");
-            sb.append(String.valueOf(TxChange.CURRENT.getValue()));
-            sb.append(", ");
-            sb.append(String.valueOf(TxChange.NOT_CURRENT.getValue()));
-            sb.append(")");
+            sb.append(".mod_type <> ");
+            sb.append(String.valueOf(ModificationType.DELETED.getValue()));
          }
       } else {
          sb.append(txsAlias);
          sb.append(".tx_current");
-         if (OptionsUtil.areDeletedArtifactsIncluded(getOptions())) {
+         if (allowDeleted) {
             sb.append(" IN (");
             sb.append(String.valueOf(TxChange.CURRENT.getValue()));
             sb.append(", ");
@@ -128,6 +137,23 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
             sb.append(String.valueOf(TxChange.CURRENT.getValue()));
          }
       }
+   }
+
+   @Override
+   public String getAllChangesTxBranchFilter(String txsAlias) throws OseeCoreException {
+      StringBuilder sb = new StringBuilder();
+      if (OptionsUtil.isHistorical(getOptions())) {
+         sb.append(txsAlias);
+         sb.append(".transaction_id <= ?");
+         addParameter(OptionsUtil.getFromTransaction(getOptions()));
+      }
+      if (branchId > 0) {
+         sb.append(" AND ");
+         sb.append(txsAlias);
+         sb.append(".branch_id = ?");
+         addParameter(branchId);
+      }
+      return sb.toString();
    }
 
 }

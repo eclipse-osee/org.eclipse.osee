@@ -21,6 +21,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
@@ -31,7 +32,7 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 public class LoadSqlWriter extends AbstractSqlWriter {
 
    public LoadSqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext context) {
-      super(logger, dbService, sqlProvider, context);
+      super(logger, dbService, sqlProvider, context, QueryType.SELECT);
    }
 
    @Override
@@ -70,9 +71,18 @@ public class LoadSqlWriter extends AbstractSqlWriter {
 
    @Override
    public String getTxBranchFilter(String txsAlias) {
+      boolean allowDeletedAtrifacts = OptionsUtil.areDeletedArtifactsIncluded(getOptions());
+      boolean allowDeletedAttributes = OptionsUtil.areDeletedAttributesIncluded(getOptions());
+      boolean allowDeletedRelations = OptionsUtil.areDeletedRelationsIncluded(getOptions());
+      boolean areDeletedIncluded = allowDeletedAtrifacts || allowDeletedAttributes || allowDeletedRelations;
+      return getTxBranchFilter(txsAlias, areDeletedIncluded);
+   }
+
+   @Override
+   public String getTxBranchFilter(String txsAlias, boolean allowDeleted) {
       StringBuilder sb = new StringBuilder();
       String artJoinAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_JOIN_TABLE);
-      writeTxFilter(txsAlias, artJoinAlias, sb);
+      writeTxFilter(txsAlias, artJoinAlias, sb, allowDeleted);
       sb.append(" AND ");
       sb.append(txsAlias);
       sb.append(".branch_id = ");
@@ -81,7 +91,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
       return sb.toString();
    }
 
-   private void writeTxFilter(String txsAlias, String artJoinAlias, StringBuilder sb) {
+   private void writeTxFilter(String txsAlias, String artJoinAlias, StringBuilder sb, boolean areDeletedIncluded) {
       //@formatter:off 
       /*********************************************************************
        * The clause handling the inclusion of deleted items changes based on case 
@@ -102,10 +112,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
        * Allow deleted artifacts applies even if the artifact table is not in the query. The other two only make sense
        * when the table is also used
        */
-      boolean allowDeletedAtrifacts = OptionsUtil.areDeletedArtifactsIncluded(getOptions());
-      boolean allowDeletedAttributes = OptionsUtil.areDeletedAttributesIncluded(getOptions());
-      boolean allowDeletedRelations = OptionsUtil.areDeletedRelationsIncluded(getOptions());
-      boolean areDeletedIncluded = allowDeletedAtrifacts || allowDeletedAttributes || allowDeletedRelations;
+
       boolean areDeletedSame = true;
       if (areDeletedIncluded) {
          /********************************
@@ -118,6 +125,9 @@ public class LoadSqlWriter extends AbstractSqlWriter {
             }
          }
          if (count > 1) {
+            boolean allowDeletedAtrifacts = OptionsUtil.areDeletedArtifactsIncluded(getOptions());
+            boolean allowDeletedAttributes = OptionsUtil.areDeletedAttributesIncluded(getOptions());
+            boolean allowDeletedRelations = OptionsUtil.areDeletedRelationsIncluded(getOptions());
             areDeletedSame =
                !((hasTable[0] && !allowDeletedAtrifacts) || (hasTable[1] && !allowDeletedAttributes) || (hasTable[2] && !allowDeletedRelations));
          }
@@ -241,19 +251,27 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    private void buildTxClause(StringBuilder sb, String txsAlias) {
 
       sb.append(txsAlias);
-      sb.append(".tx_current");
-      if (OptionsUtil.isHistorical(getOptions())) {
-         sb.append(" IN (");
-         sb.append(String.valueOf(TxChange.CURRENT.getValue()));
-         sb.append(", ");
-         sb.append(String.valueOf(TxChange.DELETED.getValue()));
-         sb.append(", ");
-         sb.append(String.valueOf(TxChange.ARTIFACT_DELETED.getValue()));
-         sb.append(")");
-      } else {
-         sb.append(" = ");
+      if (!OptionsUtil.isHistorical(getOptions())) {
+         sb.append(".tx_current = ");
          sb.append(String.valueOf(TxChange.CURRENT.getValue()));
       }
+   }
+
+   @Override
+   public String getAllChangesTxBranchFilter(String txsAlias) throws OseeCoreException {
+      StringBuilder sb = new StringBuilder();
+      if (OptionsUtil.isHistorical(getOptions())) {
+         sb.append(txsAlias);
+         sb.append(".transaction_id <= ?");
+         addParameter(OptionsUtil.getFromTransaction(getOptions()));
+      }
+      String artJoinAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_JOIN_TABLE);
+      sb.append(" AND ");
+      sb.append(txsAlias);
+      sb.append(".branch_id = ");
+      sb.append(artJoinAlias);
+      sb.append(".branch_id");
+      return sb.toString();
    }
 
 }

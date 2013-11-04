@@ -43,12 +43,14 @@ public abstract class AbstractSqlWriter implements HasOptions {
    private final IOseeDatabaseService dbService;
    private final SqlProvider sqlProvider;
    private final SqlContext context;
+   private final QueryType queryType;
 
-   public AbstractSqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext context) {
+   public AbstractSqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext context, QueryType queryType) {
       this.logger = logger;
       this.dbService = dbService;
       this.sqlProvider = sqlProvider;
       this.context = context;
+      this.queryType = queryType;
    }
 
    public void build(SqlHandler<?>... handlers) throws OseeCoreException {
@@ -66,6 +68,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
       if (logger.isTraceEnabled()) {
          logger.trace("Sql Writer - [%s]", context);
       }
+   }
+
+   public boolean isCountQueryType() {
+      return QueryType.COUNT == queryType;
    }
 
    protected void write(List<SqlHandler<?>> handlers) throws OseeCoreException {
@@ -139,7 +145,11 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    protected abstract void writeSelect(List<SqlHandler<?>> handlers) throws OseeCoreException;
 
+   public abstract String getAllChangesTxBranchFilter(String txsAlias) throws OseeCoreException;
+
    public abstract String getTxBranchFilter(String txsAlias) throws OseeCoreException;
+
+   public abstract String getTxBranchFilter(String txsAlias, boolean allowDeleted) throws OseeCoreException;
 
    protected abstract void writeGroupAndOrder() throws OseeCoreException;
 
@@ -197,7 +207,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return alias;
    }
 
-   @SuppressWarnings("unused")
    public void write(String data, Object... params) throws OseeCoreException {
       if (params != null && params.length > 0) {
          output.append(String.format(data, params));
@@ -254,4 +263,5 @@ public abstract class AbstractSqlWriter implements HasOptions {
       String pattern = sqlProvider.getSql(SqlProvider.SQL_REG_EXP_PATTERN_KEY);
       write(pattern, field, expression);
    }
+
 }

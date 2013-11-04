@@ -70,19 +70,53 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder includeDeleted() {
-      includeDeleted(true);
+   public QueryBuilder includeDeletedAttributes() {
+      includeDeletedAttributes(true);
       return this;
    }
 
    @Override
-   public QueryBuilder includeDeleted(boolean enabled) {
+   public QueryBuilder includeDeletedAttributes(boolean enabled) {
+      OptionsUtil.setIncludeDeletedAttributes(getOptions(), enabled);
+      return this;
+   }
+
+   @Override
+   public boolean areDeletedAttributesIncluded() {
+      return OptionsUtil.areDeletedAttributesIncluded(getOptions());
+   }
+
+   @Override
+   public QueryBuilder includeDeletedRelations() {
+      includeDeletedRelations(true);
+      return this;
+   }
+
+   @Override
+   public QueryBuilder includeDeletedRelations(boolean enabled) {
+      OptionsUtil.setIncludeDeletedRelations(getOptions(), enabled);
+      return this;
+   }
+
+   @Override
+   public boolean areDeletedRelationsIncluded() {
+      return OptionsUtil.areDeletedRelationsIncluded(getOptions());
+   }
+
+   @Override
+   public QueryBuilder includeDeletedArtifacts() {
+      includeDeletedArtifacts(true);
+      return this;
+   }
+
+   @Override
+   public QueryBuilder includeDeletedArtifacts(boolean enabled) {
       OptionsUtil.setIncludeDeletedArtifacts(getOptions(), enabled);
       return this;
    }
 
    @Override
-   public boolean areDeletedIncluded() {
+   public boolean areDeletedArtifactsIncluded() {
       return OptionsUtil.areDeletedArtifactsIncluded(getOptions());
    }
 
@@ -110,7 +144,7 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder excludeDeleted() {
-      includeDeleted(false);
+      includeDeletedArtifacts(false);
       return this;
    }
 

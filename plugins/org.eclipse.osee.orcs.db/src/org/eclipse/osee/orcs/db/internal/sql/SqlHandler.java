@@ -49,12 +49,10 @@ public abstract class SqlHandler<T extends Criteria> implements HasPriority {
 
    public abstract boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException;
 
-   @SuppressWarnings("unused")
    public void addWithTables(AbstractSqlWriter writer) throws OseeCoreException {
       // Do Nothing
    }
 
-   @SuppressWarnings("unused")
    public void addSelect(AbstractSqlWriter sqlWriter) throws OseeCoreException {
       // Do Nothing
    }
