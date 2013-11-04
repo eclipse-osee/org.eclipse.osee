@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -113,6 +112,7 @@ public class UserRoleManager {
       return users;
    }
 
+   @SuppressWarnings("deprecation")
    private List<UserRole> getStoredUserRoles(Artifact artifact) throws OseeCoreException {
       // Add new ones: items in userRoles that are not in dbuserRoles
       List<UserRole> storedUserRoles = new ArrayList<UserRole>();
@@ -132,6 +132,7 @@ public class UserRoleManager {
       }
    }
 
+   @SuppressWarnings("deprecation")
    public void saveToArtifact(Artifact artifact, IAtsChangeSet changes) {
       try {
          List<UserRole> storedUserRoles = getStoredUserRoles(artifact);
@@ -163,7 +164,7 @@ public class UserRoleManager {
          }
          rollupHoursSpentToReviewState(artifact);
          validateUserRolesCompleted(artifact, storedUserRoles, userRoles);
-         changes.add((IAtsObject) artifact);
+         changes.add(artifact);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't create ats review role document", ex);
       }

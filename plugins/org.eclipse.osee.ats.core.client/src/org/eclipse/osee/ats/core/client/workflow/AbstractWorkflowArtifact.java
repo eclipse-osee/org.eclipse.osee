@@ -156,12 +156,10 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return implementers;
    }
 
-   @SuppressWarnings("unused")
    public double getWorldViewWeeklyBenefit() throws OseeCoreException {
       return 0;
    }
 
-   @SuppressWarnings("unused")
    public boolean isValidationRequired() throws OseeCoreException {
       return false;
    }
@@ -171,23 +169,19 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return "";
    }
 
-   @SuppressWarnings("unused")
    public AbstractWorkflowArtifact getParentAWA() throws OseeCoreException {
       return parentAwa;
    }
 
-   @SuppressWarnings("unused")
    public ActionArtifact getParentActionArtifact() throws OseeCoreException {
       return parentAction;
    }
 
    @Override
-   @SuppressWarnings("unused")
    public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
       return parentTeamArt;
    }
 
-   @SuppressWarnings("unused")
    public String getEditorTitle() throws OseeCoreException {
       return getType() + ": " + getName();
    }
@@ -305,7 +299,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return 0;
    }
 
-   @SuppressWarnings("unused")
    public double getManHrsPerDayPreference() throws OseeCoreException {
       return AtsUtilCore.DEFAULT_HOURS_PER_WORK_DAY;
    }
@@ -393,7 +386,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       }
    }
 
-   @SuppressWarnings("unused")
    public void getSmaArtifactsOneLevel(AbstractWorkflowArtifact smaArtifact, Set<Artifact> artifacts) throws OseeCoreException {
       artifacts.add(smaArtifact);
    }
@@ -402,7 +394,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * Called at the end of a transition just before transaction manager persist. SMAs can override to perform tasks due
     * to transition.
     */
-   @SuppressWarnings("unused")
    public void transitioned(IAtsStateDefinition fromState, IAtsStateDefinition toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
       // provided for subclass implementation
    }
@@ -426,7 +417,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return DateUtil.getMMDDYYHHMM(getLastModified());
    }
 
-   @SuppressWarnings("unused")
    public String getWorldViewSWEnhancement() throws OseeCoreException {
       return "";
    }

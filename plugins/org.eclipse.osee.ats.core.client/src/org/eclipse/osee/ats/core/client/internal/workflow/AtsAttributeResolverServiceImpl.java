@@ -106,6 +106,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
       AtsClientService.get().getArtifact(workItem).addAttribute(attributeType, value);
    }
 
+   @SuppressWarnings({"unchecked", "deprecation"})
    @Override
    public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
       List<IAttribute<T>> attrs = new ArrayList<IAttribute<T>>();

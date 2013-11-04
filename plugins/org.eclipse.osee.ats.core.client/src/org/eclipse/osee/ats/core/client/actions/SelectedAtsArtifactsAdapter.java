@@ -25,19 +25,16 @@ public class SelectedAtsArtifactsAdapter implements ISelectedAtsArtifacts {
    public SelectedAtsArtifactsAdapter() {
    }
 
-   @SuppressWarnings("unused")
    @Override
    public Set<? extends Artifact> getSelectedSMAArtifacts() throws OseeCoreException {
       return Collections.emptySet();
    }
 
-   @SuppressWarnings("unused")
    @Override
    public List<Artifact> getSelectedAtsArtifacts() throws OseeCoreException {
       return Collections.emptyList();
    }
 
-   @SuppressWarnings("unused")
    @Override
    public List<TaskArtifact> getSelectedTaskArtifacts() throws OseeCoreException {
       return Collections.emptyList();

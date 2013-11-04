@@ -25,7 +25,6 @@ public abstract class AbstractAtsArtifact extends Artifact implements IAtsObject
       super(guid, branch, artifactType);
    }
 
-   @SuppressWarnings("unused")
    public Artifact getParentAtsArtifact() throws OseeCoreException {
       return null;
    }

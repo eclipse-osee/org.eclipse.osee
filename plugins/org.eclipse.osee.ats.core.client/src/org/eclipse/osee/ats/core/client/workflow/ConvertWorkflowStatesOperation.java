@@ -163,6 +163,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
    }
 
    private void convertExactMatchAttributeValue(AbstractWorkflowArtifact awa, IAttributeType attrType) throws OseeCoreException {
+      @SuppressWarnings("deprecation")
       List<Attribute<Object>> attributes = awa.getAttributes(attrType);
       if (attributes != null && !attributes.isEmpty()) {
          for (Attribute<Object> attribute : attributes) {

@@ -83,7 +83,6 @@ public class TransitionHelper extends TransitionHelperAdapter {
       return name;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) throws OseeCoreException {
       return toAssignees;

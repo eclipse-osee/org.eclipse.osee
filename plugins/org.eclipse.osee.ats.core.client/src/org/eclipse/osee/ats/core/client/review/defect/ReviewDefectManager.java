@@ -144,6 +144,7 @@ public class ReviewDefectManager {
       return x;
    }
 
+   @SuppressWarnings("deprecation")
    private List<ReviewDefectItem> getStoredDefectItems(Artifact artifact) throws OseeCoreException {
       // Add new ones: items in userRoles that are not in dbuserRoles
       List<ReviewDefectItem> storedDefectItems = new ArrayList<ReviewDefectItem>();
@@ -154,6 +155,7 @@ public class ReviewDefectManager {
       return storedDefectItems;
    }
 
+   @SuppressWarnings("deprecation")
    public void saveToArtifact(Artifact artifact) throws OseeCoreException {
       // Change existing ones
       for (Attribute<?> attr : artifact.getAttributes(REVIEW_STORAGE_TYPE)) {
