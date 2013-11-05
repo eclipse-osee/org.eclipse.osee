@@ -1019,18 +1019,18 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       return checkMaintainNotRange(accessor, checkGroup, minValue, true, maxValue, true, milliseconds);
    }
 
-   public boolean checkPulse(ITestAccessor accessor, CheckGroup checkGroup, T pulsedValue, T nonPulsedValue, int milliseconds) throws InterruptedException {
+   public boolean checkPulse(ITestAccessor accessor, CheckGroup checkGroup, T pulsedValue, T nonPulsedValue, int milliseconds, int pulses) throws InterruptedException {
       if (accessor == null) {
          throw new NullPointerException("The parameter accessor is null");
       }
 
       accessor.getLogger().methodCalledOnObject(accessor, getFullName(),
          new MethodFormatter().add(pulsedValue).add(nonPulsedValue).add(milliseconds), getMessage());
-      final PulseCondition<T> c = new PulseCondition<T>(this, pulsedValue, nonPulsedValue);
+      final PulseCondition<T> c = new PulseCondition<T>(this, pulsedValue, nonPulsedValue, pulses);
 
       MsgWaitResult result = getMessage().waitForCondition(accessor, c, false, milliseconds);
       CheckPoint passFail =
-         new CheckPoint(getFullName(), toString(pulsedValue) + FOR_2_PULSES,
+         new CheckPoint(getFullName(), toString(pulsedValue) + " FOR " + pulses + " PULSES",
             toString(c.getLastCheckValue()) + " FOR " + c.getPulses() + " PULSES", result.isPassed(),
             result.getElapsedTime());
 
@@ -1048,13 +1048,21 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
    }
 
    public final boolean checkPulse(ITestAccessor accessor, CheckGroup checkGroup, T pulsedValue, T nonPulsedValue) throws InterruptedException {
-      return checkPulse(accessor, checkGroup, pulsedValue, nonPulsedValue, 1000);
+      return checkPulse(accessor, checkGroup, pulsedValue, nonPulsedValue, 1000, 2);
    }
 
    public final boolean checkPulse(ITestAccessor accessor, T pulsedValue, T nonPulsedValue, int milliseconds) throws InterruptedException {
-      return checkPulse(accessor, null, pulsedValue, nonPulsedValue, milliseconds);
+      return checkPulse(accessor, null, pulsedValue, nonPulsedValue, milliseconds, 2);
    }
-
+   
+   public final boolean checkPulse(ITestAccessor accessor, T pulsedValue, T nonPulsedValue, int milliseconds, int pulses) throws InterruptedException {
+      return checkPulse(accessor, null, pulsedValue, nonPulsedValue, milliseconds, pulses);
+   }
+   
+   public boolean checkPulse(ITestAccessor accessor, CheckGroup checkGroup, T pulsedValue, T nonPulsedValue, int milliseconds) throws InterruptedException {
+      return checkPulse(accessor, checkGroup, pulsedValue, nonPulsedValue, milliseconds, 2);
+   }
+   
    public abstract T valueOf(MemoryResource mem);
 
    @Override

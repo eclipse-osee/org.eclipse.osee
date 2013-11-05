@@ -42,8 +42,12 @@ public class PulseCondition<T extends Comparable<T>> extends AbstractCondition i
       lastValue = element.getValue();
       if (lastValue.equals(pulsedValue)) {
          pulses++;
-      } else if (pulses >= maxPulses && lastValue.equals(nonPulsedValue)) {
-         return true;
+      } else if (lastValue.equals(nonPulsedValue)) {
+         if( pulses >= maxPulses ) {
+            return true;
+         } else {
+            pulses = 0;
+         }
       }
       return false;
    }
