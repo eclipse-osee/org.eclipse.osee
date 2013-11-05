@@ -157,6 +157,7 @@ public class OteService implements IHostTestEnvironment, IService {
 
    @Override
    public void kill() throws RemoteException {
+      currentEnvironment.shutdown();
    }
 
    @Override

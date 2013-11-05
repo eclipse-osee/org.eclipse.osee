@@ -29,6 +29,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
 import org.apache.activemq.broker.BrokerService;
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.connection.service.IServiceConnector;
@@ -83,6 +84,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
    private LookupRegistration lookupRegistration;
    private URI masterURI;
    private NodeInfo nodeInfo;
+   private int brokerPort = 0;
    
    public OteServiceStarterImpl() {
       listenForHostRequest = new ListenForHostRequest();
@@ -176,8 +178,10 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 		String strUri;
 		try {
 			String addressAsString = getAddress();
-			int port = getServerPort();
-			strUri = String.format("tcp://%s:%d", addressAsString, port);
+			if(brokerPort <= 0){
+			   brokerPort = getServerPort();
+			}
+			strUri = String.format("tcp://%s:%d", addressAsString, brokerPort);
 			try {
 				brokerService.addConnector(strUri);
 				OseeLog.log(getClass(), Level.INFO, "Added TCP connector: " + strUri);			
@@ -286,6 +290,8 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 			try {
 				service.updateDynamicInfo();
 				remoteServiceRegistrar.unregisterService("osee.ote.server", "1.0", service.getServiceID().toString());
+				service.kill();
+				service = null;
 			} catch (RemoteException ex) {
 				OseeLog.log(getClass(), Level.SEVERE, ex);
 			}

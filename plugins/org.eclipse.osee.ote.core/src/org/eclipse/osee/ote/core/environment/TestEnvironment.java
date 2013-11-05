@@ -365,6 +365,9 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       } catch (IOException ex) {
          throw new Exception("Error in directory setup. " + outfileDir, ex);
       }
+      if(myRegistration != null){
+         myRegistration.unregister();
+      }
       myRegistration = FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(TestEnvironmentInterface.class, this, null);
    }
 
