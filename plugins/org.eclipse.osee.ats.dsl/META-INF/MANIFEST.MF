@@ -5,6 +5,7 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-Version: 0.16.0.qualifier
 Bundle-SymbolicName: org.eclipse.osee.ats.dsl;singleton:=true
 Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/*.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.ats.dsl,
  org.eclipse.osee.ats.dsl.atsDsl,
@@ -32,8 +33,8 @@ Require-Bundle: org.eclipse.xtext;bundle-version="2.3.0";visibility:=reexport,
 Import-Package: org.apache.commons.logging,
  org.apache.log4j;version="1.2.15",
  org.eclipse.core.runtime,
+ org.eclipse.osee.ats.api.workdef,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model.type,
  org.eclipse.osee.framework.jdk.core.type,
- org.eclipse.osee.framework.jdk.core.util,
- org.eclipse.osee.framework.skynet.core.attribute
+ org.eclipse.osee.framework.jdk.core.util

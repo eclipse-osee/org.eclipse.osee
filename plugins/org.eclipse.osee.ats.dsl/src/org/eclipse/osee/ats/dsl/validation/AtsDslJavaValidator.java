@@ -15,6 +15,7 @@ import java.util.Set;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.osee.ats.dsl.AttributeResolverService;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage;
 import org.eclipse.osee.ats.dsl.atsDsl.AttrWidget;
@@ -25,10 +26,8 @@ import org.eclipse.osee.ats.dsl.atsDsl.LayoutType;
 import org.eclipse.osee.ats.dsl.atsDsl.StateDef;
 import org.eclipse.osee.ats.dsl.atsDsl.ToState;
 import org.eclipse.osee.ats.dsl.atsDsl.WidgetDef;
-import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ComposedChecks;
 
@@ -135,10 +134,11 @@ public class AtsDslJavaValidator extends AbstractAtsDslJavaValidator {
    private void validateAttributeName(String attributeName, EObject source, EStructuralFeature eFeature, int feature) {
       if (Strings.isValid(attributeName)) {
          try {
-            AttributeTypeManager.getType(attributeName);
-         } catch (AttributeDoesNotExist ex) {
-            String message = String.format("Attribute type [%s] not defined in database .", attributeName);
-            warning(message, source, eFeature, feature, "attribute_type_undefined");
+            boolean valid = AttributeResolverService.get().getAttributeResolver().isAttributeNamed(attributeName);
+            if (!valid) {
+               String message = String.format("Attribute type [%s] not defined in database .", attributeName);
+               warning(message, source, eFeature, feature, "attribute_type_undefined");
+            }
          } catch (OseeCoreException ex) {
             String message =
                String.format("Exception [%s] accessing attribute type [%s].", ex.getLocalizedMessage(), attributeName);
