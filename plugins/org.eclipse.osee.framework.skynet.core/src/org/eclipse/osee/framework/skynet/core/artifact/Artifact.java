@@ -1426,22 +1426,26 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
       return duplicate(branch, new ArrayList<IAttributeType>());
    }
 
-   public final Artifact duplicate(IOseeBranch branch, Collection<IAttributeType> excudeAttributeTypes) throws OseeCoreException {
-      return duplicate(branch, artifactType, excudeAttributeTypes);
+   public final Artifact duplicate(IOseeBranch branch, Collection<IAttributeType> excludeAttributeTypes) throws OseeCoreException {
+      return duplicate(branch, artifactType, excludeAttributeTypes);
    }
 
-   public final Artifact duplicate(IOseeBranch branch, IArtifactType newType, Collection<IAttributeType> excudeAttributeTypes) throws OseeCoreException {
+   public final Artifact duplicate(IOseeBranch branch, IArtifactType newType, Collection<IAttributeType> excludeAttributeTypes) throws OseeCoreException {
       Artifact newArtifact = ArtifactTypeManager.addArtifact(newType, branch);
       // we do this because attributes were added on creation to meet the
       // minimum attribute requirements
-      newArtifact.attributes.clear();
-      copyAttributes(newArtifact, excudeAttributeTypes);
+      List<IAttributeType> typesToClear =
+         Collections.setComplement(newArtifact.attributes.keySet(), excludeAttributeTypes);
+      for (IAttributeType type : typesToClear) {
+         newArtifact.attributes.removeValues(type);
+      }
+      copyAttributes(newArtifact, excludeAttributeTypes);
       return newArtifact;
    }
 
-   private void copyAttributes(Artifact artifact, Collection<IAttributeType> excudeAttributeTypes) throws OseeCoreException {
+   private void copyAttributes(Artifact artifact, Collection<IAttributeType> excludeAttributeTypes) throws OseeCoreException {
       for (Attribute<?> attribute : getAttributes()) {
-         if (!excudeAttributeTypes.contains(attribute.getAttributeType()) && isCopyAllowed(attribute) && artifact.isAttributeTypeValid(attribute.getAttributeType())) {
+         if (!excludeAttributeTypes.contains(attribute.getAttributeType()) && isCopyAllowed(attribute) && artifact.isAttributeTypeValid(attribute.getAttributeType())) {
             artifact.addAttribute(attribute.getAttributeType(), attribute.getValue());
          }
       }

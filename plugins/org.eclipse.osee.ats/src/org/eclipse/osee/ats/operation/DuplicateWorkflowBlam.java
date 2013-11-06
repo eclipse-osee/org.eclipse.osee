@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -156,7 +157,8 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Duplicate Workflow");
       for (TeamWorkFlowArtifact teamArt : teamArts) {
-         TeamWorkFlowArtifact dupArt = (TeamWorkFlowArtifact) teamArt.duplicate(AtsUtil.getAtsBranch());
+         TeamWorkFlowArtifact dupArt =
+            (TeamWorkFlowArtifact) teamArt.duplicate(AtsUtil.getAtsBranch(), Arrays.asList(AtsAttributeTypes.AtsId));
          if (Strings.isValid(title)) {
             dupArt.setName(title);
          }
