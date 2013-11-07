@@ -21,6 +21,4 @@ public interface ISessionQuery {
 
    void selectSessionsById(ISessionCollector collector, Iterable<? extends String> ids) throws OseeCoreException;
 
-   void selectNonServerManagedSessions(ISessionCollector collector) throws OseeCoreException;
-
 }

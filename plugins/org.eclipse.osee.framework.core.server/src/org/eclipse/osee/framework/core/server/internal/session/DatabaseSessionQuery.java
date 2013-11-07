@@ -21,26 +21,16 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  * @author Roberto E. Escobar
  */
 public final class DatabaseSessionQuery implements ISessionQuery {
-   private static final String SELECT_SESSIONS_BY_SERVER_ID =
-      "select * from osee_session WHERE managed_by_server_id = ?";
+   private static final String SELECT_ALL_SESSIONS = "select * from osee_session";
 
    private static final String SELECT_SESSIONS_BY_SESSION_ID =
       "select * from osee_session, osee_join_char_id jid WHERE session_id = jid.id and jid.query_id = ?";
 
-   private static final String SELECT_SESSIONS_BY_NOT_SERVER_ID =
-      "select * from osee_session WHERE NOT managed_by_server_id = ?";
-
-   private final String serverId;
    private final IOseeDatabaseService databaseService;
 
-   public DatabaseSessionQuery(String serverId, IOseeDatabaseService databaseService) {
+   public DatabaseSessionQuery(IOseeDatabaseService databaseService) {
       super();
-      this.serverId = serverId;
       this.databaseService = databaseService;
-   }
-
-   private String getServerId() {
-      return serverId;
    }
 
    private IOseeDatabaseService getDatabaseService() {
@@ -49,12 +39,7 @@ public final class DatabaseSessionQuery implements ISessionQuery {
 
    @Override
    public void selectAllServerManagedSessions(ISessionCollector collector) throws OseeCoreException {
-      querySessions(collector, SELECT_SESSIONS_BY_SERVER_ID, getServerId());
-   }
-
-   @Override
-   public void selectNonServerManagedSessions(ISessionCollector collector) throws OseeCoreException {
-      querySessions(collector, SELECT_SESSIONS_BY_NOT_SERVER_ID, getServerId());
+      querySessions(collector, SELECT_ALL_SESSIONS);
    }
 
    @Override
@@ -85,8 +70,8 @@ public final class DatabaseSessionQuery implements ISessionQuery {
             int clientPort = chStmt.getInt("client_port");
             Date lastInteractionDate = chStmt.getTimestamp("last_interaction_date");
             String lastInteractionDetails = chStmt.getString("last_interaction");
-            collector.collect(sessionGuid, userId, creationDate, serverId, clientVersion, clientMachineName,
-               clientAddress, clientPort, lastInteractionDate, lastInteractionDetails);
+            collector.collect(sessionGuid, userId, creationDate, clientVersion, clientMachineName, clientAddress,
+               clientPort, lastInteractionDate, lastInteractionDetails);
          }
       } finally {
          chStmt.close();

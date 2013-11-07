@@ -189,7 +189,7 @@ public class SessionClientLoopbackServlet extends UnsecuredOseeHttpServlet {
    }
 
    private Iterable<? extends ISession> getSessionsByClientAddress(final String remoteAddress) throws OseeCoreException {
-      Collection<? extends ISession> allSessions = sessionManager.getAllSessions(true);
+      Collection<? extends ISession> allSessions = sessionManager.getAllSessions();
       return Iterables.filter(allSessions, new Predicate<ISession>() {
          @Override
          public boolean apply(ISession session) {

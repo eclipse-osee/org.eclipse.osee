@@ -39,9 +39,8 @@ public class SessionTest {
    private final String expectedUserId;
    private final Date expectedLastInteractionDate;
    private final String expectedLastInteraction;
-   private final String expectedManagedByServerId;
 
-   public SessionTest(Session session, String guid, String expectedClientAddress, String expectedClientMachine, String expectedClientVersion, int expectedClientPort, Date expectedCreationDate, String expectedUserId, Date expectedLastInteractionDate, String expectedLastInteraction, String exepectedManagedByServerId) {
+   public SessionTest(Session session, String guid, String expectedClientAddress, String expectedClientMachine, String expectedClientVersion, int expectedClientPort, Date expectedCreationDate, String expectedUserId, Date expectedLastInteractionDate, String expectedLastInteraction) {
       this.session = session;
       this.expectedGuid = guid;
       this.expectedClientAddress = expectedClientAddress;
@@ -52,7 +51,6 @@ public class SessionTest {
       this.expectedUserId = expectedUserId;
       this.expectedLastInteractionDate = expectedLastInteractionDate;
       this.expectedLastInteraction = expectedLastInteraction;
-      this.expectedManagedByServerId = exepectedManagedByServerId;
    }
 
    @Test
@@ -125,16 +123,6 @@ public class SessionTest {
       Assert.assertEquals(newValue, session.getLastInteractionDetails());
    }
 
-   @Test
-   public void testSetManagedByServerId() throws Exception {
-      String newValue = GUID.create();
-
-      Assert.assertEquals(expectedManagedByServerId, session.getManagedByServerId());
-
-      session.setManagedByServerId(newValue);
-      Assert.assertEquals(newValue, session.getManagedByServerId());
-   }
-
    @Parameters
    public static Collection<Object[]> getData() {
       Collection<Object[]> data = new ArrayList<Object[]>();
@@ -148,11 +136,10 @@ public class SessionTest {
          String userId = "userId-" + index;
          Date lastInteractionDate = new Date();
          String lastInteraction = "lastInteraction-" + index;
-         String managedByServerId = "serverId-" + index;
 
          Session session =
-            new Session(guid, userId, creationDate, managedByServerId, clientVersion, clientMachine, clientAddress,
-               clientPort, lastInteractionDate, lastInteraction);
+            new Session(guid, userId, creationDate, clientVersion, clientMachine, clientAddress, clientPort,
+               lastInteractionDate, lastInteraction);
 
          data.add(new Object[] {
             session,
@@ -164,8 +151,7 @@ public class SessionTest {
             creationDate,
             userId,
             lastInteractionDate,
-            lastInteraction,
-            managedByServerId});
+            lastInteraction});
       }
       return data;
    }

@@ -19,20 +19,18 @@ import org.eclipse.osee.framework.core.server.ISession;
  */
 public final class DefaultSessionCollector implements ISessionCollector {
    private final Collection<ISession> sessions;
-   private final String serverId;
    private final SessionFactory factory;
 
-   public DefaultSessionCollector(String serverId, SessionFactory factory, Collection<ISession> sessions) {
-      this.serverId = serverId;
+   public DefaultSessionCollector(SessionFactory factory, Collection<ISession> sessions) {
       this.factory = factory;
       this.sessions = sessions;
    }
 
    @Override
-   public void collect(String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) {
+   public void collect(String guid, String userId, Date creationDate, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) {
       Session session =
-         factory.createLoadedSession(guid, userId, creationDate, serverId, clientVersion, clientMachineName,
-            clientAddress, clientPort, lastInteractionDate, lastInteractionDetails);
+         factory.createLoadedSession(guid, userId, creationDate, clientVersion, clientMachineName, clientAddress,
+            clientPort, lastInteractionDate, lastInteractionDetails);
       sessions.add(session);
    }
 }

@@ -24,7 +24,6 @@ import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
-import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.database.DatabaseInfoRegistry;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -36,7 +35,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public class ServerStatsCommand implements ConsoleCommand {
 
    private IApplicationServerManager appManager;
-   private ISessionManager sessionManager;
    private DatabaseInfoRegistry registry;
    private IAuthenticationManager authenticationManager;
    private IOseeDatabaseService dbService;
@@ -53,10 +51,6 @@ public class ServerStatsCommand implements ConsoleCommand {
       this.authenticationManager = authenticationManager;
    }
 
-   public void setSessionManager(ISessionManager sessionManager) {
-      this.sessionManager = sessionManager;
-   }
-
    public void setDatabaseService(IOseeDatabaseService dbService) {
       this.dbService = dbService;
    }
@@ -71,10 +65,6 @@ public class ServerStatsCommand implements ConsoleCommand {
 
    private IAuthenticationManager getAuthenticationManager() {
       return authenticationManager;
-   }
-
-   private ISessionManager getSessionManager() {
-      return sessionManager;
    }
 
    private IOseeDatabaseService getDbService() {
@@ -99,23 +89,21 @@ public class ServerStatsCommand implements ConsoleCommand {
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
       return new ServerStatsCallable(getDbInfoRegistry(), getApplicationServerManager(), getAuthenticationManager(),
-         getSessionManager(), getDbService(), console);
+         getDbService(), console);
    }
 
    private static final class ServerStatsCallable implements Callable<Boolean> {
       private final DatabaseInfoRegistry registry;
       private final IApplicationServerManager manager;
       private final IAuthenticationManager authManager;
-      private final ISessionManager sessionManager;
       private final IOseeDatabaseService dbService;
       private final Console console;
 
-      public ServerStatsCallable(DatabaseInfoRegistry registry, IApplicationServerManager manager, IAuthenticationManager authenticationManager, ISessionManager sessionManager, IOseeDatabaseService dbService, Console console) {
+      public ServerStatsCallable(DatabaseInfoRegistry registry, IApplicationServerManager manager, IAuthenticationManager authenticationManager, IOseeDatabaseService dbService, Console console) {
          super();
          this.registry = registry;
          this.manager = manager;
          this.authManager = authenticationManager;
-         this.sessionManager = sessionManager;
          this.dbService = dbService;
          this.console = console;
       }
@@ -147,7 +135,6 @@ public class ServerStatsCommand implements ConsoleCommand {
 
          logServlets(manager);
 
-         console.writeln("\nSessionsManaged: [%s]", sessionManager.getAllSessions(false).size());
          console.writeln("\nServer State: [%s]", manager.isSystemIdle() ? "IDLE" : "BUSY");
          console.writeln("Active Threads: [%s]", manager.getNumberOfActiveThreads());
 

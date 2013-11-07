@@ -21,7 +21,6 @@ public class Session extends BaseIdentity<String> implements ISession {
 
    private final String userId;
    private final Date creationDate;
-   private String managedByServerId;
    private final String clientVersion;
    private String clientMachineName;
    private String clientAddress;
@@ -29,11 +28,10 @@ public class Session extends BaseIdentity<String> implements ISession {
    private Date lastInteractionDate;
    private String lastInteractionDetails;
 
-   public Session(String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) {
+   public Session(String guid, String userId, Date creationDate, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) {
       super(guid);
       this.userId = userId;
       this.creationDate = creationDate;
-      this.managedByServerId = managedByServerId;
       this.clientVersion = clientVersion;
       this.clientMachineName = clientMachineName;
       this.clientAddress = clientAddress;
@@ -50,11 +48,6 @@ public class Session extends BaseIdentity<String> implements ISession {
    @Override
    public Date getLastInteractionDate() {
       return lastInteractionDate;
-   }
-
-   @Override
-   public String getManagedByServerId() {
-      return managedByServerId;
    }
 
    @Override
@@ -96,10 +89,6 @@ public class Session extends BaseIdentity<String> implements ISession {
    public void setLastInteractionDate(Date lastInteractionDate) {
       this.lastInteractionDate = lastInteractionDate;
 
-   }
-
-   public void setManagedByServerId(String managedByServerId) {
-      this.managedByServerId = managedByServerId;
    }
 
    public void setClientMachineName(String clientMachineName) {

@@ -30,9 +30,9 @@ public interface ISessionManager {
 
    public Collection<ISession> getSessionByClientAddress(String clientAddress) throws OseeCoreException;
 
-   public Collection<ISession> getSessionsByUserId(String userId, boolean includeNonServerManagedSessions) throws OseeCoreException;
+   public Collection<ISession> getSessionsByUserId(String userId) throws OseeCoreException;
 
-   public Collection<ISession> getAllSessions(boolean includeNonServerManagedSessions) throws OseeCoreException;
+   public Collection<ISession> getAllSessions() throws OseeCoreException;
 
    public void releaseSessionImmediate(String... sessionId) throws OseeCoreException;
 

@@ -38,17 +38,13 @@ import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
  */
 public final class SessionManagerImpl implements ISessionManager {
 
-   private final String serverId;
    private final SessionFactory sessionFactory;
-   private final ISessionQuery sessionQuery;
    private final Cache<String, Session> sessionCache;
    private final IAuthenticationManager authenticationManager;
    private final WriteDataAccessor<Session> storeDataAccessor;
 
-   public SessionManagerImpl(String serverId, SessionFactory sessionFactory, ISessionQuery sessionQuery, Cache<String, Session> sessionCache, IAuthenticationManager authenticationManager, WriteDataAccessor<Session> storeDataAccessor) {
-      this.serverId = serverId;
+   public SessionManagerImpl(SessionFactory sessionFactory, Cache<String, Session> sessionCache, IAuthenticationManager authenticationManager, WriteDataAccessor<Session> storeDataAccessor) {
       this.sessionFactory = sessionFactory;
-      this.sessionQuery = sessionQuery;
       this.sessionCache = sessionCache;
       this.authenticationManager = authenticationManager;
       this.storeDataAccessor = storeDataAccessor;
@@ -68,10 +64,9 @@ public final class SessionManagerImpl implements ISessionManager {
             @Override
             public Session call() throws Exception {
 
-               String managedByServerId = serverId;
                Date creationDate = GlobalTime.GreenwichMeanTimestamp();
                Session session =
-                  sessionFactory.createNewSession(newSessionId, userToken.getUserId(), creationDate, managedByServerId,
+                  sessionFactory.createNewSession(newSessionId, userToken.getUserId(), creationDate,
                      credential.getVersion(), credential.getClientMachineName(), credential.getClientAddress(),
                      credential.getPort(), creationDate, StorageState.CREATED.name().toLowerCase());
 
@@ -143,10 +138,10 @@ public final class SessionManagerImpl implements ISessionManager {
    }
 
    @Override
-   public Collection<ISession> getSessionsByUserId(String userId, boolean includeNonServerManagedSessions) throws OseeCoreException {
+   public Collection<ISession> getSessionsByUserId(String userId) throws OseeCoreException {
       Conditions.checkNotNull(userId, "userId");
       Collection<ISession> toReturn = new HashSet<ISession>();
-      for (ISession session : getAllSessions(includeNonServerManagedSessions)) {
+      for (ISession session : getAllSessions()) {
          if (session.getUserId().equals(userId)) {
             toReturn.add(session);
          }
@@ -155,7 +150,7 @@ public final class SessionManagerImpl implements ISessionManager {
    }
 
    @Override
-   public Collection<ISession> getAllSessions(boolean includeNonServerManagedSessions) throws OseeCoreException {
+   public Collection<ISession> getAllSessions() throws OseeCoreException {
       Collection<ISession> toReturn = new HashSet<ISession>();
       try {
          Iterable<Session> all = sessionCache.getAll();
@@ -164,10 +159,6 @@ public final class SessionManagerImpl implements ISessionManager {
          }
       } catch (Exception e) {
          OseeExceptions.wrapAndThrow(e);
-      }
-      if (includeNonServerManagedSessions) {
-         ISessionCollector collector = new DefaultSessionCollector(serverId, sessionFactory, toReturn);
-         sessionQuery.selectNonServerManagedSessions(collector);
       }
       return toReturn;
    }

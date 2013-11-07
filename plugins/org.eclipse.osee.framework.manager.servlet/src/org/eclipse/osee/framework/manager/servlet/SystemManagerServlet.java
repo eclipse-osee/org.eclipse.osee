@@ -110,7 +110,7 @@ public class SystemManagerServlet extends UnsecuredOseeHttpServlet {
          appendable.append("Exception: ");
          appendable.append(Lib.exceptionToString(ex));
       }
-      Collection<ISession> sessionData = sessionManager.getAllSessions(true);
+      Collection<ISession> sessionData = sessionManager.getAllSessions();
       writeSessionTable(appendable, sessionData, "Sessions", requestAddress, requestPort);
    }
 
@@ -136,7 +136,7 @@ public class SystemManagerServlet extends UnsecuredOseeHttpServlet {
          appendable.append(AHTML.heading(2, "OSEE System Manager"));
          appendable.append(getAnchor(AnchorType.MANAGER_HOME_ANCHOR, null, requestAddress, requestPort));
          appendable.append(AHTML.newline(1));
-         Collection<ISession> sessionData = sessionManager.getSessionsByUserId(userId, true);
+         Collection<ISession> sessionData = sessionManager.getSessionsByUserId(userId);
          writeSessionTable(appendable, sessionData, "Sessions for [" + userId + "]", requestAddress, requestPort);
       }
    }

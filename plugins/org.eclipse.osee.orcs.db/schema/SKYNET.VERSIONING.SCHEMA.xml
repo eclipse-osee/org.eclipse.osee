@@ -523,7 +523,6 @@
 	</TableDescription>
 
 	<Table name="OSEE_SESSION" schema="OSEE" tablespace="osee_data">
-		<Column id="MANAGED_BY_SERVER_ID" defaultValue="not null" type="VARCHAR" limits="40" />
 		<Column id="SESSION_ID" defaultValue="not null" type="VARCHAR" limits="28" />
 		<Column id="USER_ID" defaultValue="not null" type="VARCHAR" limits="100"/>
 		<Column id="CLIENT_MACHINE_NAME" defaultValue="not null" type="VARCHAR" limits="100"/>

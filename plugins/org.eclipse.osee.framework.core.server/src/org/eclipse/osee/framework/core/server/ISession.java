@@ -21,8 +21,6 @@ public interface ISession {
 
    Date getLastInteractionDate();
 
-   String getManagedByServerId();
-
    String getLastInteractionDetails();
 
    String getClientMachineName();

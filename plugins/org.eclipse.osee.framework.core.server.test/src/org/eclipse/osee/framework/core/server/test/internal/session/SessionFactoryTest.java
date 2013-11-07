@@ -61,13 +61,12 @@ public class SessionFactoryTest {
    @Test
    public void testCreate() {
       Session session =
-         factory.createNewSession(guid, userId, creationDate, managedByServerId, clientVersion, clientMachineName,
-            clientAddress, clientPort, lastInteractionDate, lastInteractionDetails);
+         factory.createNewSession(guid, userId, creationDate, clientVersion, clientMachineName, clientAddress,
+            clientPort, lastInteractionDate, lastInteractionDetails);
 
       Assert.assertEquals(guid, session.getGuid());
       Assert.assertEquals(userId, session.getUserId());
       Assert.assertEquals(creationDate, session.getCreationDate());
-      Assert.assertEquals(managedByServerId, session.getManagedByServerId());
       Assert.assertEquals(clientVersion, session.getClientVersion());
       Assert.assertEquals(clientMachineName, session.getClientMachineName());
       Assert.assertEquals(clientAddress, session.getClientAddress());

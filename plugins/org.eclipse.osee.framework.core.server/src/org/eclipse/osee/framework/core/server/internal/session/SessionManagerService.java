@@ -78,15 +78,13 @@ public final class SessionManagerService implements ISessionManager {
    }
 
    public void start() throws OseeCoreException {
-      String serverId = getServerManager().getId();
       BuildTypeIdentifier identifier = new BuildTypeIdentifier(new BuildTypeDataProvider());
 
       SessionFactory sessionFactory = new SessionFactory(logger, registry, dbService, identifier);
 
-      ISessionQuery sessionQuery = new DatabaseSessionQuery(serverId, getDbService());
+      ISessionQuery sessionQuery = new DatabaseSessionQuery(getDbService());
 
-      DatabaseSessionAccessor accessor =
-         new DatabaseSessionAccessor(serverId, sessionFactory, sessionQuery, getDbService());
+      DatabaseSessionAccessor accessor = new DatabaseSessionAccessor(sessionFactory, sessionQuery, getDbService());
 
       CacheConfiguration config = CacheConfiguration.newConfiguration();
       Cache<String, Session> sessionCache = null;
@@ -97,8 +95,7 @@ public final class SessionManagerService implements ISessionManager {
       }
 
       proxiedSessionManager =
-         new SessionManagerImpl(serverId, sessionFactory, sessionQuery, sessionCache, getAuthenticationManager(),
-            accessor);
+         new SessionManagerImpl(sessionFactory, sessionCache, getAuthenticationManager(), accessor);
    }
 
    public void stop() {
@@ -131,13 +128,13 @@ public final class SessionManagerService implements ISessionManager {
    }
 
    @Override
-   public Collection<ISession> getSessionsByUserId(String userId, boolean includeNonServerManagedSessions) throws OseeCoreException {
-      return proxiedSessionManager.getSessionsByUserId(userId, includeNonServerManagedSessions);
+   public Collection<ISession> getSessionsByUserId(String userId) throws OseeCoreException {
+      return proxiedSessionManager.getSessionsByUserId(userId);
    }
 
    @Override
-   public Collection<ISession> getAllSessions(boolean includeNonServerManagedSessions) throws OseeCoreException {
-      return proxiedSessionManager.getAllSessions(includeNonServerManagedSessions);
+   public Collection<ISession> getAllSessions() throws OseeCoreException {
+      return proxiedSessionManager.getAllSessions();
    }
 
    @Override
