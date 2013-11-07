@@ -218,6 +218,17 @@ public class ChangeDataLoader extends AbstractOperation {
                ChangeVersion fromVersion = ChangeItemUtil.getStartingVersion(item);
                wasValue = fromVersion.getValue();
             }
+         } else {
+            Artifact startArtifact = artifactDelta.getBaseArtifact();
+            if (startArtifact == null) {
+               startArtifact = artifactDelta.getStartArtifact();
+            }
+            if (startArtifact != null) {
+               wasValue = startArtifact.getAttributesToString(attributeType);
+               if (wasValue == null) {
+                  wasValue = "";
+               }
+            }
          }
          change =
             new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType, isValue, wasValue, itemId,
