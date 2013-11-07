@@ -26,4 +26,8 @@ public enum CaseType implements QueryOption {
    public void accept(OptionVisitor visitor) {
       visitor.asCaseType(this);
    }
+
+   public static CaseType getCaseType(boolean isCaseSensitive) {
+      return isCaseSensitive ? MATCH_CASE : IGNORE_CASE;
+   }
 }

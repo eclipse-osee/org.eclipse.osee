@@ -25,4 +25,8 @@ public enum TokenOrderType implements QueryOption {
    public void accept(OptionVisitor visitor) {
       visitor.asTokenOrderType(this);
    }
+
+   public static TokenOrderType getTokenOrderType(boolean matchOrder) {
+      return matchOrder ? MATCH_ORDER : ANY_ORDER;
+   }
 }

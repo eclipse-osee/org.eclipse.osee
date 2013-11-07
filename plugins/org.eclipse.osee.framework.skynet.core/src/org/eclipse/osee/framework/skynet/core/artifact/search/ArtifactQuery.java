@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -33,14 +34,15 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.core.message.SearchOptions;
 import org.eclipse.osee.framework.core.message.SearchRequest;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -324,8 +326,8 @@ public class ArtifactQuery {
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
    public static Artifact getArtifactFromAttribute(IAttributeType attributeType, String attributeValue, IOseeBranch branch) throws OseeCoreException {
-      return new ArtifactQueryBuilder(branch, ALL, EXCLUDE_DELETED, new AttributeCriteria(attributeType,
-         attributeValue)).getOrCheckArtifact(QueryType.GET);
+      return new ArtifactQueryBuilder(branch, ALL, EXCLUDE_DELETED,
+         new AttributeCriteria(attributeType, attributeValue)).getOrCheckArtifact(QueryType.GET);
    }
 
    /**
@@ -505,15 +507,18 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromAttributeKeywords(IOseeBranch branch, String queryString, boolean isMatchWordOrder, DeletionFlag deletionFlag, boolean isCaseSensitive, IAttributeType... attributeTypes) throws OseeCoreException {
-      SearchOptions options = new SearchOptions();
-      options.setAttributeTypeFilter(attributeTypes);
-      options.setCaseSensive(isCaseSensitive);
-      options.setDeletedIncluded(deletionFlag);
-      options.setMatchWordOrder(isMatchWordOrder);
-
-      SearchRequest searchRequest = new SearchRequest(branch, queryString, options);
-      determineSearchAll(searchRequest);
-      return new HttpArtifactQuery(searchRequest).getArtifacts(ALL, INCLUDE_CACHE);
+      QueryBuilderArtifact queryBuilder = createQueryBuilder(branch);
+      queryBuilder.includeDeleted(deletionFlag.areDeletedAllowed());
+      QueryOption matchCase = CaseType.getCaseType(isCaseSensitive);
+      QueryOption matchWordOrder = TokenOrderType.getTokenOrderType(isMatchWordOrder);
+      Collection<IAttributeType> typesToSearch =
+         attributeTypes.length == 0 ? Collections.singleton(QueryBuilder.ANY_ATTRIBUTE_TYPE) : Arrays.asList(attributeTypes);
+      queryBuilder.and(typesToSearch, queryString, matchCase, matchWordOrder);
+      List<Artifact> toReturn = new LinkedList<Artifact>();
+      for (Artifact art : queryBuilder.getResults()) {
+         toReturn.add(art);
+      }
+      return toReturn;
    }
 
    /**
