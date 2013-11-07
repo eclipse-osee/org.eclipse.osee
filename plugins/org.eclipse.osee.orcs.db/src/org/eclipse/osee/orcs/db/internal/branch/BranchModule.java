@@ -111,8 +111,8 @@ public class BranchModule {
          public Callable<URI> exportBranch(OrcsSession session, OrcsTypes orcsTypes, List<IOseeBranch> branches, PropertyStore options, String exportName) {
             ExportItemFactory factory =
                new ExportItemFactory(logger, dbService, identityService, resourceManager, orcsTypes);
-            return new ExportBranchDatabaseCallable(session, factory, preferences, executorAdmin,
-               cachingService.getBranchCache(), branches, options, exportName);
+            return new ExportBranchDatabaseCallable(session, factory, preferences, executorAdmin, identityService,
+               branches, options, exportName);
          }
 
          @Override

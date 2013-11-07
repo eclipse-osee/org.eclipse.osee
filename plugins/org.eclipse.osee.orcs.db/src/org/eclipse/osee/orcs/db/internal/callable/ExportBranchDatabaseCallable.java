@@ -20,7 +20,6 @@ import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.ExecutionCallbackAdapter;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.database.core.ExportImportJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
@@ -32,6 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.SystemPreferences;
+import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportItemFactory;
 import org.eclipse.osee.orcs.db.internal.exchange.export.AbstractExportItem;
@@ -48,18 +48,18 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
 
    private final SystemPreferences preferences;
    private final ExecutorAdmin executorAdmin;
-   private final BranchCache branchCache;
+   private final IdentityLocator idLocator;
    private final List<IOseeBranch> branches;
    private final PropertyStore options;
 
    private String exportName;
 
-   public ExportBranchDatabaseCallable(OrcsSession session, ExportItemFactory factory, SystemPreferences preferences, ExecutorAdmin executorAdmin, BranchCache branchCache, List<IOseeBranch> branches, PropertyStore options, String exportName) {
+   public ExportBranchDatabaseCallable(OrcsSession session, ExportItemFactory factory, SystemPreferences preferences, ExecutorAdmin executorAdmin, IdentityLocator idLocator, List<IOseeBranch> branches, PropertyStore options, String exportName) {
       super(factory.getLogger(), session, factory.getDbService());
       this.factory = factory;
       this.preferences = preferences;
       this.executorAdmin = executorAdmin;
-      this.branchCache = branchCache;
+      this.idLocator = idLocator;
       this.branches = branches;
       this.options = options;
       this.exportName = exportName;
@@ -67,10 +67,6 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
 
    private SystemPreferences getSystemPreferences() {
       return preferences;
-   }
-
-   private BranchCache getBranchCache() {
-      return branchCache;
    }
 
    private ExecutorAdmin getExecutorAdmin() {
@@ -114,9 +110,9 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
 
    private void doWork() throws Exception {
       ExportImportJoinQuery joinQuery = JoinUtility.createExportImportJoinQuery(getDatabaseService());
-      BranchCache branchCache = getBranchCache();
+
       for (IOseeBranch branch : branches) {
-         long branchId = branchCache.getLocalId(branch);
+         long branchId = idLocator.getLocalId(branch);
          joinQuery.add(branchId, -1L);
       }
       joinQuery.store();

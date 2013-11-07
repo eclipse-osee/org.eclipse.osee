@@ -161,14 +161,17 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
          @Override
          public long getBranchId(IOseeBranch branch) {
             BranchCache branchCache = cacheService.getBranchCache();
-            long localId = branchCache.getLocalId(branch);
-            if (localId < 0) {
+            Branch cached = branchCache.get(branch);
+            long localId = -1;
+            if (cached != null) {
+               localId = cached.getId();
+            } else {
                IOseeStatement chStmt = dbService.getStatement();
                try {
                   chStmt.runPreparedQuery(1, "select * from osee_branch where branch_guid = ?", branch.getGuid());
                   if (chStmt.next()) {
                      try {
-                        localId = chStmt.getInt("branch_id");
+                        localId = chStmt.getLong("branch_id");
 
                         String branchName = chStmt.getString("branch_name");
                         BranchState branchState = BranchState.getBranchState(chStmt.getInt("branch_state"));

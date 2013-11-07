@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
 import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.core.enums.TokenOrderType;
-import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -119,7 +118,6 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    
    @Mock private ExecutorAdmin executorAdmin;
    @Mock private BranchIdProvider branchIdProvider;
-   @Mock private AttributeTypeCache attributeTypeCache;
    @Mock private OrcsSession session;
    // @formatter:on
 

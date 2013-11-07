@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
-import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -316,11 +315,6 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
             }
          }
       }
-   }
-
-   public long getLocalId(Identity<K> token) throws OseeCoreException {
-      T type = get(token);
-      return type != null ? type.getId() : IOseeStorable.UNPERSISTED_VALUE;
    }
 
    public void cacheFrom(AbstractOseeCache<K, T> source) throws OseeCoreException {
