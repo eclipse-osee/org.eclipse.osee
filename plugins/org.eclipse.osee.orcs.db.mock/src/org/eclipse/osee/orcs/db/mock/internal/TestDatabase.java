@@ -40,6 +40,7 @@ public class TestDatabase {
    private ServiceRegistration<?> registration;
    private File tempFolder;
    private final String connectionId;
+   private String dbId = "";
 
    public TestDatabase(String connectionId, String className, String methodName) {
       this.connectionId = connectionId;
@@ -86,7 +87,7 @@ public class TestDatabase {
       IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
       Assert.assertNotNull(dbService);
 
-      HyperSqlDbServer.startServer("0.0.0.0", port, port + 1, databaseInfo);
+      dbId = HyperSqlDbServer.startServer("0.0.0.0", port, port + 1, databaseInfo);
 
       OseeConnection connection = dbService.getConnection();
       try {
@@ -128,16 +129,19 @@ public class TestDatabase {
 
       System.setProperty("osee.application.server.data", "");
       System.setProperty("osee.db.embedded.server", "");
-      boolean isDead = HyperSqlDbServer.stopServerWithWait();
+      boolean isDead = HyperSqlDbServer.stopServerWithWait(dbId);
+
       if (isDead) {
          if (tempFolder != null) {
             Lib.deleteDir(tempFolder);
          }
-      } else {
+      }
+      // Add shutdown hook if folder was not deleted - most likely due to a 'busy' file/folder
+      if (tempFolder.exists()) {
          Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-               if (tempFolder != null) {
+               if ((tempFolder != null) && tempFolder.exists()) {
                   Lib.deleteDir(tempFolder);
                }
             }

@@ -17,43 +17,36 @@ import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
+ * @author Mark Joy
  * @author Roberto E. Escobar
  */
-public class HyperSqlDbServer {
+public final class HyperSqlDbServer {
    private static final int CHECK_ALIVE_NUMBER_OF_TIMES = 5;
 
-   private static final HyperSqlDbServer instance = new HyperSqlDbServer();
-
-   private HyperSqlServerUtil nwServer;
+   private static HyperSqlServerMgr nwServer = new HyperSqlServerMgr();
 
    private HyperSqlDbServer() {
-      this.nwServer = null;
    }
 
-   public static void startServer(String host, int port, int webPort, IDatabaseInfo dbInfo) throws Exception {
-      instance.startServerInternal(host, port, webPort, dbInfo);
+   public static void stopServer(String dbId) {
+      shutdown(dbId);
    }
 
-   public static void stopServer() {
-      instance.shutdown();
-   }
-
-   public static boolean stopServerWithWait() {
-      instance.shutdown();
-      return instance.isShutdown();
+   public static boolean stopServerWithWait(String dbId) {
+      shutdown(dbId);
+      return isShutdown(dbId);
 
    }
 
-   private void startServerInternal(String host, int port, int webPort, IDatabaseInfo dbInfo) throws Exception {
+   public static String startServer(String host, int port, int webPort, IDatabaseInfo dbInfo) throws Exception {
       OseeLog.logf(HyperSqlDbServer.class, Level.INFO,
          "Starting HyperSQL Database Server on [%s:%s] with webserver on [%s,%s]....", host, port, host, webPort);
+      String dbId = "";
       try {
-         nwServer = new HyperSqlServerUtil(InetAddress.getByName(host), port, webPort, dbInfo);
-         nwServer.start();
+         dbId = nwServer.createServerInstance(InetAddress.getByName(host), port, webPort, dbInfo);
 
-         if (isConnectionAvailable()) {
-            nwServer.printInfo();
-            addShutdownHook();
+         if (isConnectionAvailable(dbId)) {
+            nwServer.printInfo(dbId);
          } else {
             OseeLog.log(HyperSqlDbServer.class, Level.INFO,
                "Exiting, since unable to connect to HyperSQL Network Server.");
@@ -63,32 +56,23 @@ public class HyperSqlDbServer {
       } catch (Exception ex) {
          OseeLog.log(HyperSqlDbServer.class, Level.SEVERE, ex);
       }
+      return dbId;
    }
 
-   private void shutdown() {
+   private static void shutdown(String dbId) {
       OseeLog.log(HyperSqlDbServer.class, Level.INFO, "Shutting down HyperSQL Database server...");
-      nwServer.shutdown();
+      nwServer.shutdown(dbId);
       OseeLog.log(HyperSqlDbServer.class, Level.INFO, "Server down.");
    }
 
-   private void addShutdownHook() {
-      Runtime.getRuntime().addShutdownHook(new Thread() {
-         @Override
-         public void run() {
-            OseeLog.log(HyperSqlDbServer.class, Level.INFO, "Shutting down");
-            shutdown();
-         }
-      });
-   }
-
-   private boolean isConnectionAvailable() throws InterruptedException {
+   private static boolean isConnectionAvailable(String dbId) throws InterruptedException {
       boolean knowIfServerUp = false;
       int numTimes = CHECK_ALIVE_NUMBER_OF_TIMES;
 
       while (!knowIfServerUp && numTimes > 0) {
          try {
             numTimes--;
-            nwServer.testForConnection();
+            nwServer.testForConnection(dbId);
             knowIfServerUp = true;
          } catch (Exception e) {
             OseeLog.log(HyperSqlDbServer.class, Level.SEVERE,
@@ -99,13 +83,13 @@ public class HyperSqlDbServer {
       return knowIfServerUp;
    }
 
-   private boolean isShutdown() {
+   private static boolean isShutdown(String dbId) {
       boolean isDead = false;
       int numTimes = CHECK_ALIVE_NUMBER_OF_TIMES;
       while (!isDead && numTimes > 0) {
          try {
             numTimes--;
-            nwServer.testNotRunning();
+            nwServer.testNotRunning(dbId);
             isDead = true;
          } catch (Exception e) {
             isDead = false;

@@ -10,26 +10,36 @@
  *******************************************************************************/
 package org.eclipse.osee.hsqldb;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.hsqldb.Database;
 import org.hsqldb.persist.HsqlProperties;
 import org.hsqldb.server.Server;
+import org.hsqldb.server.ServerAcl.AclFormatException;
 
-public final class HyperSqlServerUtil {
+/**
+ * @author Mark Joy
+ */
+public final class HyperSqlServerMgr {
 
    private static final String sc_key_remote_open_db = "server.remote_open";
 
-   private final Collection<Server> serverControls = new ArrayList<Server>();
+   private final Map<String, Pair<Server, Thread>> serverControls =
+      new ConcurrentHashMap<String, Pair<Server, Thread>>();
 
-   public HyperSqlServerUtil(InetAddress host, int dbPort, int webPort, IDatabaseInfo dbInfo) throws Exception {
+   public HyperSqlServerMgr() {
+   }
+
+   public String createServerInstance(InetAddress host, int dbPort, int webPort, IDatabaseInfo dbInfo) throws IOException, AclFormatException {
       Server hsqlServer = new Server();
       hsqlServer.setAddress(host.getHostAddress());
       hsqlServer.setPort(dbPort);
@@ -47,51 +57,83 @@ public final class HyperSqlServerUtil {
       props.setProperty(sc_key_remote_open_db, true);
       hsqlServer.setProperties(props);
 
-      serverControls.add(hsqlServer);
       OseeLog.logf(HyperSqlDbServer.class, Level.INFO, "HyperSQL Database Server created on [%s:%s]", host, dbPort);
 
-      for (Server server : serverControls) {
-         server.setLogWriter(new PrintWriter(System.out, true));
+      hsqlServer.setLogWriter(new PrintWriter(System.out, true));
+      try {
+         hsqlServer.start();
+      } catch (Exception e) {
+         OseeLog.log(HyperSqlDbServer.class, Level.SEVERE, e.getMessage(), e);
       }
+
+      Thread shutdownHook = addShutdownHook(dbInfo.getDatabaseHome());
+      Pair<Server, Thread> serverPair = new Pair<Server, Thread>(hsqlServer, shutdownHook);
+      serverControls.put(dbInfo.getDatabaseHome(), serverPair);
+
+      return dbInfo.getDatabaseHome();
    }
 
-   public void testForConnection() throws Exception {
-      for (Server server : serverControls) {
-         server.checkRunning(true);
-      }
-   }
-
-   public void shutdown() {
-      for (Server server : serverControls) {
+   public void testForConnection(String dbId) throws Exception {
+      Pair<Server, Thread> entry = serverControls.get(dbId);
+      if (entry != null) {
          try {
-            server.shutdownWithCatalogs(Database.CLOSEMODE_COMPACT);
+            Server server = entry.getFirst();
+            server.checkRunning(true);
          } catch (Exception e) {
             OseeLog.log(HyperSqlDbServer.class, Level.SEVERE, e.getMessage(), e);
          }
       }
    }
 
-   public void testNotRunning() throws Exception {
-      for (Server server : serverControls) {
-         server.checkRunning(false);
-      }
-   }
-
-   public void start() {
-      for (Server server : serverControls) {
+   public void shutdown(String dbId) {
+      Pair<Server, Thread> entry = serverControls.remove(dbId);
+      if (entry != null) {
          try {
-            server.start();
+            entry.getFirst().shutdownWithCatalogs(Database.CLOSEMODE_COMPACT);
+            removeShutdownHook(entry.getSecond());
          } catch (Exception e) {
             OseeLog.log(HyperSqlDbServer.class, Level.SEVERE, e.getMessage(), e);
          }
       }
    }
 
-   public void printInfo() {
+   private Thread addShutdownHook(final String dbId) {
+      Thread retThread = new Thread() {
+         @Override
+         public void run() {
+            OseeLog.log(HyperSqlDbServer.class, Level.INFO, "Shutting down");
+            shutdown(dbId);
+         }
+      };
+      Runtime.getRuntime().addShutdownHook(retThread);
+      return retThread;
+   }
+
+   private void removeShutdownHook(Thread shutdownHook) {
+      if (shutdownHook != null) {
+         Runtime.getRuntime().removeShutdownHook(shutdownHook);
+      }
+   }
+
+   public void testNotRunning(String dbId) throws Exception {
+      Pair<Server, Thread> entry = serverControls.get(dbId);
+      if (entry != null) {
+         try {
+            Server server = entry.getFirst();
+            server.checkRunning(false);
+         } catch (Exception e) {
+            OseeLog.log(HyperSqlDbServer.class, Level.SEVERE, e.getMessage(), e);
+         }
+      }
+   }
+
+   public void printInfo(String dbId) {
       try {
          StringBuilder builder = new StringBuilder();
          builder.append("HyperSQL Database: ");
-         for (Server server : serverControls) {
+         Pair<Server, Thread> entry = serverControls.get(dbId);
+         if (entry != null) {
+            Server server = entry.getFirst();
             builder.append("\n\tAddress : ");
             builder.append(server.getAddress());
             builder.append("\n\tDatabase Name : ");
@@ -116,6 +158,9 @@ public final class HyperSqlServerUtil {
             builder.append(server.getStateDescriptor());
             builder.append("\n\tWebRoot : ");
             builder.append(server.getWebRoot());
+         } else {
+            builder.append("\n\tDatabase not found for id: ");
+            builder.append(dbId);
          }
          OseeLog.log(HyperSqlDbServer.class, Level.INFO, builder.toString());
       } catch (Exception ex) {

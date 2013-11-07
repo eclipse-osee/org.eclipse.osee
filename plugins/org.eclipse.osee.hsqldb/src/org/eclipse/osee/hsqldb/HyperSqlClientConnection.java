@@ -38,7 +38,7 @@ public class HyperSqlClientConnection implements IConnectionFactory {
 
       StringBuilder builder = new StringBuilder();
       builder.append(dbInfo.getConnectionUrl());
-      HyperSqlServerUtil.appendProperties(builder, props);
+      HyperSqlServerMgr.appendProperties(builder, props);
 
       String url = builder.toString();
       return DriverManager.getConnection(url, props);
