@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -77,6 +78,12 @@ public class QueryFactoryImpl implements QueryFactory {
    public QueryBuilder fromBranch(IOseeBranch branch) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       return createBuilder(branch);
+   }
+
+   @Override
+   public QueryBuilder fromBranch(String branchGuid) throws OseeCoreException {
+      return fromBranch(TokenFactory.createBranch(branchGuid,
+         String.format("N/A>%s:%s", getClass().getSimpleName(), "fromBranch")));
    }
 
    @Override

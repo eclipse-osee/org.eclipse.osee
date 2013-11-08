@@ -24,6 +24,8 @@ public interface QueryFactory {
 
    QueryBuilder fromBranch(IOseeBranch branch) throws OseeCoreException;
 
+   QueryBuilder fromBranch(String branchGuid) throws OseeCoreException;
+
    QueryBuilder fromArtifactTypeAllBranches(IArtifactType artifactType) throws OseeCoreException;
 
    QueryBuilder fromArtifacts(Collection<? extends ArtifactReadable> artifacts) throws OseeCoreException;
