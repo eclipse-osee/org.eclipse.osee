@@ -24,8 +24,6 @@ public interface ISessionManager {
 
    public void releaseSession(String sessionId) throws OseeCoreException;
 
-   public void updateSessionActivity(String sessionId, String interactionName) throws OseeCoreException;
-
    public ISession getSessionById(String sessionId) throws OseeCoreException;
 
    public Collection<ISession> getSessionByClientAddress(String clientAddress) throws OseeCoreException;

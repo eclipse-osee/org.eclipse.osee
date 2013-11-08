@@ -5,7 +5,6 @@
       <provide interface="org.eclipse.osee.framework.core.server.ISessionManager"/>
    </service>
    <reference bind="setDbService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
-   <reference bind="setServerManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IApplicationServerManager" name="IApplicationServerManager" policy="static"/>
    <reference bind="setAuthenticationManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IAuthenticationManager" name="IAuthenticationManager" policy="static"/>
    <reference bind="setDbInfoRegistry" cardinality="1..1" interface="org.eclipse.osee.framework.database.DatabaseInfoRegistry" name="DatabaseInfoRegistry" policy="static"/>
    <reference bind="setCacheAdmin" cardinality="1..1" interface="org.eclipse.osee.cache.admin.CacheAdmin" name="CacheAdmin" policy="static"/>

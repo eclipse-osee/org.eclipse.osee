@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public final class DatabaseSessionAccessor implements CacheDataLoader<String, Session>, CacheKeysLoader<String>, WriteDataAccessor<Session> {
 
    private static final String INSERT_SESSION =
-      "INSERT INTO osee_session (session_id, user_id, client_machine_name, client_address, client_port, client_version, created_on, last_interaction_date, last_interaction) VALUES (?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO osee_session (session_id, user_id, client_machine_name, client_address, client_port, client_version, created_on) VALUES (?,?,?,?,?,?,?)";
 
    private static final String DELETE_SESSION = "DELETE FROM osee_session WHERE session_id = ?";
 
@@ -70,11 +70,6 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
    }
 
    @Override
-   public void update(Iterable<Session> sessions) throws OseeCoreException {
-      executeTx(SessionTxType.UPDATE, sessions);
-   }
-
-   @Override
    public void delete(Iterable<Session> sessions) throws OseeCoreException {
       executeTx(SessionTxType.DELETE, sessions);
    }
@@ -85,10 +80,10 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
       ISessionCollector collector = new ISessionCollector() {
 
          @Override
-         public void collect(String guid, String userId, Date creationDate, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) {
+         public void collect(String guid, String userId, Date creationDate, String clientVersion, String clientMachineName, String clientAddress, int clientPort) {
             Session session =
                getFactory().createLoadedSession(guid, userId, creationDate, clientVersion, clientMachineName,
-                  clientAddress, clientPort, lastInteractionDate, lastInteractionDetails);
+                  clientAddress, clientPort);
             sessions.put(guid, session);
          }
       };
@@ -118,7 +113,7 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
       ISessionCollector idCollector = new ISessionCollector() {
 
          @Override
-         public void collect(String guid, String userId, Date creationDate, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) {
+         public void collect(String guid, String userId, Date creationDate, String clientVersion, String clientMachineName, String clientAddress, int clientPort) {
             ids.add(guid);
          }
       };
@@ -128,7 +123,6 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
 
    private static enum SessionTxType {
       CREATE,
-      UPDATE,
       DELETE;
    }
 
@@ -155,9 +149,6 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
             case CREATE:
                create(connection);
                break;
-            case UPDATE:
-               update(connection);
-               break;
             case DELETE:
                delete(connection);
                break;
@@ -174,18 +165,6 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
          if (!insertData.isEmpty()) {
             dbService.runBatchUpdate(connection, INSERT_SESSION, insertData);
          }
-      }
-
-      private void update(OseeConnection connection) {
-         // do not update session table for now
-
-         //         List<Object[]> updateData = new ArrayList<Object[]>();
-         //         for (Session session : sessions) {
-         //            updateData.add(toUpdate(session));
-         //         }
-         //         if (!updateData.isEmpty()) {
-         //            dbService.runBatchUpdate(connection, UPDATE_SESSION, updateData);
-         //         }
       }
 
       private void delete(OseeConnection connection) throws OseeCoreException {
@@ -206,13 +185,7 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
             session.getClientAddress(),
             session.getClientPort(),
             session.getClientVersion(),
-            session.getCreationDate(),
-            session.getLastInteractionDate(),
-            session.getLastInteractionDetails()};
-      }
-
-      private Object[] toUpdate(Session session) {
-         return new Object[] {session.getLastInteractionDate(), session.getLastInteractionDetails(), session.getGuid()};
+            session.getCreationDate()};
       }
 
       private Object[] toDelete(Session session) {

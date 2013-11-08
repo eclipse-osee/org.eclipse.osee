@@ -232,7 +232,6 @@ public class SystemManagerServlet extends UnsecuredOseeHttpServlet {
          "User",
          "Version",
          "Machine",
-         "Last Interaction",
          "IP",
          "Port",
          "Delete"}));
@@ -250,7 +249,6 @@ public class SystemManagerServlet extends UnsecuredOseeHttpServlet {
             session.getUserId(),
             session.getClientVersion(),
             session.getClientMachineName(),
-            dateFormat.format(session.getLastInteractionDate()),
             clientAddress,
             clientPort,
             getAnchor(AnchorType.DELETE_ANCHOR, sessionId, requestAddress, requestPort)}));

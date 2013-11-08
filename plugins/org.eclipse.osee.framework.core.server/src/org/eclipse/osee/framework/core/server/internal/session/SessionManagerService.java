@@ -17,7 +17,6 @@ import org.eclipse.osee.cache.admin.CacheConfiguration;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
@@ -36,7 +35,6 @@ public final class SessionManagerService implements ISessionManager {
    private Log logger;
    private DatabaseInfoRegistry registry;
    private IOseeDatabaseService dbService;
-   private IApplicationServerManager serverManager;
    private IAuthenticationManager authenticationManager;
    private CacheAdmin cacheAdmin;
    private ISessionManager proxiedSessionManager;
@@ -53,10 +51,6 @@ public final class SessionManagerService implements ISessionManager {
       this.dbService = dbService;
    }
 
-   public void setServerManager(IApplicationServerManager serverManager) {
-      this.serverManager = serverManager;
-   }
-
    public void setAuthenticationManager(IAuthenticationManager authenticationManager) {
       this.authenticationManager = authenticationManager;
    }
@@ -67,10 +61,6 @@ public final class SessionManagerService implements ISessionManager {
 
    private IOseeDatabaseService getDbService() {
       return dbService;
-   }
-
-   private IApplicationServerManager getServerManager() {
-      return serverManager;
    }
 
    private IAuthenticationManager getAuthenticationManager() {
@@ -110,11 +100,6 @@ public final class SessionManagerService implements ISessionManager {
    @Override
    public void releaseSession(String sessionId) throws OseeCoreException {
       proxiedSessionManager.releaseSession(sessionId);
-   }
-
-   @Override
-   public void updateSessionActivity(String sessionId, String interactionName) throws OseeCoreException {
-      proxiedSessionManager.updateSessionActivity(sessionId, interactionName);
    }
 
    @Override

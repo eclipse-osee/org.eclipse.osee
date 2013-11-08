@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.server;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -35,9 +36,8 @@ public class SecureOseeHttpServlet extends OseeHttpServlet {
    @Override
    protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
       String sessionId = getSessionId(request);
-      String interaction =
-         String.format("%s %s %s", request.getMethod(), request.getRequestURI(), request.getQueryString());
-      sessionManager.updateSessionActivity(sessionId, interaction);
+      ISession session = sessionManager.getSessionById(sessionId);
+      Conditions.checkNotNull(session, "session");
    }
 
    public boolean isInitializing(HttpServletRequest request) throws OseeCoreException {

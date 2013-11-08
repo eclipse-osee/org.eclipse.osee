@@ -21,7 +21,6 @@ import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
-import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
@@ -30,7 +29,6 @@ import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 
 /**
@@ -68,7 +66,7 @@ public final class SessionManagerImpl implements ISessionManager {
                Session session =
                   sessionFactory.createNewSession(newSessionId, userToken.getUserId(), creationDate,
                      credential.getVersion(), credential.getClientMachineName(), credential.getClientAddress(),
-                     credential.getPort(), creationDate, StorageState.CREATED.name().toLowerCase());
+                     credential.getPort());
 
                // if the user is BootStrap we do not want to insert into database since tables may not exist
                if (!SystemUser.BootStrap.equals(userToken)) {
@@ -93,16 +91,6 @@ public final class SessionManagerImpl implements ISessionManager {
    @Override
    public void releaseSession(String sessionId) throws OseeCoreException {
       releaseSessionImmediate(sessionId);
-   }
-
-   @Override
-   public void updateSessionActivity(String sessionId, String interactionName) throws OseeCoreException {
-      Conditions.checkNotNull(sessionId, "sessionId");
-      Session session = getSessionById(sessionId);
-      Conditions.checkNotNull(session, "Session", "for id [%s]", sessionId);
-      session.setLastInteractionDetails(Strings.isValid(interactionName) ? interactionName : "unknown");
-      session.setLastInteractionDate(GlobalTime.GreenwichMeanTimestamp());
-      storeDataAccessor.update(Collections.singleton(session));
    }
 
    @Override

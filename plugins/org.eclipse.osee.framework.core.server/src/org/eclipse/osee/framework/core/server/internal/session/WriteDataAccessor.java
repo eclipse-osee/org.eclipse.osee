@@ -20,8 +20,6 @@ public interface WriteDataAccessor<D> {
 
    void create(Iterable<D> sessions) throws OseeCoreException;
 
-   void update(Iterable<D> sessions) throws OseeCoreException;
-
    void delete(Iterable<D> sessions) throws OseeCoreException;
 
 }

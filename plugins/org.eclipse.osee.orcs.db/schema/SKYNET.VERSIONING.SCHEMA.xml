@@ -530,8 +530,6 @@
 		<Column id="CLIENT_PORT" defaultValue="not null" type="INTEGER" />
 		<Column id="CLIENT_VERSION" defaultValue="not null" type="VARCHAR" limits="100"/>
 		<Column id="CREATED_ON" defaultValue="not null" type="TIMESTAMP" />
-		<Column id="LAST_INTERACTION_DATE" defaultValue="not null" type="TIMESTAMP" />
-		<Column id="LAST_INTERACTION" defaultValue="not null" type="VARCHAR" limits="1000"/>
 		<Constraint schema="OSEE" id="OSEE_SESSION_PK" type="PRIMARY KEY" appliesTo="SESSION_ID" />
 	</Table>
 	

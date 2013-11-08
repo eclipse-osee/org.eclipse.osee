@@ -37,10 +37,8 @@ public class SessionTest {
    private final int expectedClientPort;
    private final Date expectedCreationDate;
    private final String expectedUserId;
-   private final Date expectedLastInteractionDate;
-   private final String expectedLastInteraction;
 
-   public SessionTest(Session session, String guid, String expectedClientAddress, String expectedClientMachine, String expectedClientVersion, int expectedClientPort, Date expectedCreationDate, String expectedUserId, Date expectedLastInteractionDate, String expectedLastInteraction) {
+   public SessionTest(Session session, String guid, String expectedClientAddress, String expectedClientMachine, String expectedClientVersion, int expectedClientPort, Date expectedCreationDate, String expectedUserId) {
       this.session = session;
       this.expectedGuid = guid;
       this.expectedClientAddress = expectedClientAddress;
@@ -49,8 +47,6 @@ public class SessionTest {
       this.expectedClientPort = expectedClientPort;
       this.expectedCreationDate = expectedCreationDate;
       this.expectedUserId = expectedUserId;
-      this.expectedLastInteractionDate = expectedLastInteractionDate;
-      this.expectedLastInteraction = expectedLastInteraction;
    }
 
    @Test
@@ -103,26 +99,6 @@ public class SessionTest {
       Assert.assertEquals(newValue, session.getClientPort());
    }
 
-   @Test
-   public void testSetGetLastInteractionDate() throws Exception {
-      Date newValue = new Date();
-
-      Assert.assertEquals(expectedLastInteractionDate, session.getLastInteractionDate());
-
-      session.setLastInteractionDate(newValue);
-      Assert.assertEquals(newValue, session.getLastInteractionDate());
-   }
-
-   @Test
-   public void testSetGetLastInteractionDetails() throws Exception {
-      String newValue = GUID.create();
-
-      Assert.assertEquals(expectedLastInteraction, session.getLastInteractionDetails());
-
-      session.setLastInteractionDetails(newValue);
-      Assert.assertEquals(newValue, session.getLastInteractionDetails());
-   }
-
    @Parameters
    public static Collection<Object[]> getData() {
       Collection<Object[]> data = new ArrayList<Object[]>();
@@ -134,12 +110,9 @@ public class SessionTest {
          int clientPort = index * 345;
          Date creationDate = new Date();
          String userId = "userId-" + index;
-         Date lastInteractionDate = new Date();
-         String lastInteraction = "lastInteraction-" + index;
 
          Session session =
-            new Session(guid, userId, creationDate, clientVersion, clientMachine, clientAddress, clientPort,
-               lastInteractionDate, lastInteraction);
+            new Session(guid, userId, creationDate, clientVersion, clientMachine, clientAddress, clientPort);
 
          data.add(new Object[] {
             session,
@@ -149,9 +122,9 @@ public class SessionTest {
             clientVersion,
             clientPort,
             creationDate,
-            userId,
-            lastInteractionDate,
-            lastInteraction});
+            userId
+
+         });
       }
       return data;
    }

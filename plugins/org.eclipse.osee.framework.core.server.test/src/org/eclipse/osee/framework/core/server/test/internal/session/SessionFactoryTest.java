@@ -34,35 +34,29 @@ public class SessionFactoryTest {
    private final String guid;
    private final String userId;
    private final Date creationDate;
-   private final String managedByServerId;
    private final String clientVersion;
    private final String clientMachineName;
    private final String clientAddress;
    private final int clientPort;
-   private final Date lastInteractionDate;
-   private final String lastInteractionDetails;
    private final MockBuildTypeIdentifier typeIdentifier = new MockBuildTypeIdentifier();
    private final SessionFactory factory = new SessionFactory(new MockLog(), null, null, typeIdentifier);
 
-   public SessionFactoryTest(String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) {
+   public SessionFactoryTest(String guid, String userId, Date creationDate, String clientVersion, String clientMachineName, String clientAddress, int clientPort) {
       super();
       this.guid = guid;
       this.userId = userId;
       this.creationDate = creationDate;
-      this.managedByServerId = managedByServerId;
       this.clientVersion = clientVersion;
       this.clientMachineName = clientMachineName;
       this.clientAddress = clientAddress;
       this.clientPort = clientPort;
-      this.lastInteractionDate = lastInteractionDate;
-      this.lastInteractionDetails = lastInteractionDetails;
    }
 
    @Test
    public void testCreate() {
       Session session =
          factory.createNewSession(guid, userId, creationDate, clientVersion, clientMachineName, clientAddress,
-            clientPort, lastInteractionDate, lastInteractionDetails);
+            clientPort);
 
       Assert.assertEquals(guid, session.getGuid());
       Assert.assertEquals(userId, session.getUserId());
@@ -71,8 +65,6 @@ public class SessionFactoryTest {
       Assert.assertEquals(clientMachineName, session.getClientMachineName());
       Assert.assertEquals(clientAddress, session.getClientAddress());
       Assert.assertEquals(clientPort, session.getClientPort());
-      Assert.assertEquals(lastInteractionDate, session.getLastInteractionDate());
-      Assert.assertEquals(lastInteractionDetails, session.getLastInteractionDetails());
    }
 
    @Parameters
@@ -87,21 +79,10 @@ public class SessionFactoryTest {
          int clientPort = index * 345;
          Date creationDate = new Date();
          String userId = "hello.userId-" + index;
-         Date lastInteractionDate = new Date();
-         String lastInteraction = "lastInteraction-" + index;
-         String managedByServerId = "serverId-" + index;
 
-         data.add(new Object[] {
-            guid,
-            userId,
-            creationDate,
-            managedByServerId,
-            clientVersion,
-            clientMachine,
-            clientAddress,
-            clientPort,
-            lastInteractionDate,
-            lastInteraction,});
+         data.add(new Object[] {guid, userId, creationDate, clientVersion, clientMachine, clientAddress, clientPort
+
+         });
       }
       return data;
    }

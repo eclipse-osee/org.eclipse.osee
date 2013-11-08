@@ -19,9 +19,7 @@ import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
@@ -34,7 +32,6 @@ import org.eclipse.osee.logger.Log;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Ordering;
 
 /**
  * @author Roberto E. Escobar
@@ -176,15 +173,6 @@ public class SessionClientLoopbackServlet extends UnsecuredOseeHttpServlet {
             }
          }
       }
-      if (sessionData == null) {
-         List<? extends ISession> sortedByNewestCreationDate = sortByNewestCreationDate(filteredByAddress);
-         for (ISession session : sortedByNewestCreationDate) {
-            if (isSessionValid(session)) {
-               sessionData = session;
-               break;
-            }
-         }
-      }
       return sessionData != null ? sessionData.getClientPort() : -1;
    }
 
@@ -196,16 +184,5 @@ public class SessionClientLoopbackServlet extends UnsecuredOseeHttpServlet {
             return remoteAddress.equals(session.getClientAddress());
          }
       });
-   }
-
-   private List<? extends ISession> sortByNewestCreationDate(Iterable<? extends ISession> sessions) {
-      Ordering<ISession> ordered = Ordering.from(new Comparator<ISession>() {
-         @Override
-         public int compare(ISession arg1, ISession arg2) {
-            return Long.valueOf(arg1.getCreationDate().getTime()).compareTo(
-               Long.valueOf(arg2.getCreationDate().getTime()));
-         }
-      });
-      return ordered.reverse().sortedCopy(sessions);
    }
 }

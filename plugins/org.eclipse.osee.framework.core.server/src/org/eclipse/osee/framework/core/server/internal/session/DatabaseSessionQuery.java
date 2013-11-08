@@ -68,10 +68,8 @@ public final class DatabaseSessionQuery implements ISessionQuery {
             String clientMachineName = chStmt.getString("client_machine_name");
             String clientAddress = chStmt.getString("client_address");
             int clientPort = chStmt.getInt("client_port");
-            Date lastInteractionDate = chStmt.getTimestamp("last_interaction_date");
-            String lastInteractionDetails = chStmt.getString("last_interaction");
             collector.collect(sessionGuid, userId, creationDate, clientVersion, clientMachineName, clientAddress,
-               clientPort, lastInteractionDate, lastInteractionDetails);
+               clientPort);
          }
       } finally {
          chStmt.close();

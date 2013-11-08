@@ -19,10 +19,6 @@ public interface ISession {
 
    String getUserId();
 
-   Date getLastInteractionDate();
-
-   String getLastInteractionDetails();
-
    String getClientMachineName();
 
    String getClientVersion();
@@ -32,10 +28,6 @@ public interface ISession {
    Date getCreationDate();
 
    int getClientPort();
-
-   void setLastInteractionDetails(String string);
-
-   void setLastInteractionDate(Date date);
 
    String getGuid();
 
