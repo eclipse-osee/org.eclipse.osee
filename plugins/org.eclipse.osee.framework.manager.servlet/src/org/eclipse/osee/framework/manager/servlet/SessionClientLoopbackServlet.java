@@ -177,8 +177,8 @@ public class SessionClientLoopbackServlet extends UnsecuredOseeHttpServlet {
          }
       }
       if (sessionData == null) {
-         List<? extends ISession> sortedByLastInteractionDate = sortByLastInteractionDate(filteredByAddress);
-         for (ISession session : sortedByLastInteractionDate) {
+         List<? extends ISession> sortedByNewestCreationDate = sortByNewestCreationDate(filteredByAddress);
+         for (ISession session : sortedByNewestCreationDate) {
             if (isSessionValid(session)) {
                sessionData = session;
                break;
@@ -198,12 +198,12 @@ public class SessionClientLoopbackServlet extends UnsecuredOseeHttpServlet {
       });
    }
 
-   private List<? extends ISession> sortByLastInteractionDate(Iterable<? extends ISession> sessions) {
+   private List<? extends ISession> sortByNewestCreationDate(Iterable<? extends ISession> sessions) {
       Ordering<ISession> ordered = Ordering.from(new Comparator<ISession>() {
          @Override
          public int compare(ISession arg1, ISession arg2) {
-            return Long.valueOf(arg1.getLastInteractionDate().getTime()).compareTo(
-               Long.valueOf(arg2.getLastInteractionDate().getTime()));
+            return Long.valueOf(arg1.getCreationDate().getTime()).compareTo(
+               Long.valueOf(arg2.getCreationDate().getTime()));
          }
       });
       return ordered.reverse().sortedCopy(sessions);
