@@ -59,22 +59,32 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    private final static String LIST_ITEM_END_TAG = "</li>";
    private final static String IMAGE_BASE_NAME = "Image Content_";
    private final String BLANK_HTML_LINE = "<br />";
+   private static String VERIFICATION_ACCEPTANCE_CRITERIA = "Verification Acceptance Criteria:";
+   private static String CRITERIA = "Criteria:";
    private final static String[] VERIFICATION_KEYWORDS = {
       "Effectivity:",
+      "Configuration:",
       "Verf Method:",
+      "Verification Method:",
       "Verf Level:",
       "Verf Location:",
+      "Verification Environment:",
       "Verf Type:",
       "Verified By:",
-      "Criteria:"};
+      VERIFICATION_ACCEPTANCE_CRITERIA,
+      CRITERIA};
    private final static IAttributeType[] FIELD_TYPE = {
       null,
+      null,
+      CoreAttributeTypes.QualificationMethod,
       CoreAttributeTypes.QualificationMethod,
       CoreAttributeTypes.VerificationLevel,
       CoreAttributeTypes.VerificationEvent,
+      CoreAttributeTypes.VerificationEvent,
       null,
       null,
-      null}; // Last one is actually a string
+      null,
+      null}; // Last two is actually a string
    private String guidString = "";
    private boolean isRequirement;
    private String subsystem;
@@ -89,7 +99,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       PARENT_ID("Parent ID"),
       PARAGRAPH_HEADING("Paragraph Heading"),
       DOCUMENT_APPLICABILITY("Document Applicability"),
-      VERIFICATION_CRITERIA("Verification Criteria (V-PIDS_Verification)"),
+      VERIFICATION_CRITERIA("Verification Criteria"),
       CHANGE_STATUS("Change Status"),
       OBJECT_HEADING("Proposed Object Heading"),
       OBJECT_TEXT("Proposed Object Text"),
@@ -102,10 +112,14 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
       private final static Map<String, RowTypeEnum> rawStringToRowType = new HashMap<String, RowTypeEnum>();
 
-      public String _rowType;
+      private final String _rowType;
 
       RowTypeEnum(String rowType) {
          _rowType = rowType;
+      }
+
+      public String getRowType() {
+         return _rowType;
       }
 
       public static synchronized RowTypeEnum fromString(String value) {
@@ -413,6 +427,14 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          if (!Strings.isValid(value)) {
             this.headerRow[i] = null;
          } else {
+            /**********************************************************************
+             * Special case Verification Method can vary depending on system that exports. However it always must
+             * contain the Verification string
+             */
+            String str = RowTypeEnum.VERIFICATION_CRITERIA.getRowType();
+            if (value.contains(RowTypeEnum.VERIFICATION_CRITERIA.getRowType())) {
+               value = RowTypeEnum.VERIFICATION_CRITERIA.getRowType();
+            }
             RowTypeEnum rowTypeEnum = RowTypeEnum.fromString(value);
             rowIndexToRowTypeMap.put(i, rowTypeEnum);
          }
@@ -501,6 +523,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
                case GUID:
                   guidString = GUID.checkOrCreate(rowValue.trim());
+                  if (Strings.isValid(guidString)) {
+                     postProcessGuids.add(guidString);
+                  }
                   break;
 
                case IS_REQ:
@@ -1019,20 +1044,22 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                   String theImage;
                   int comma = 0;
                   int imageNumber = 0;
-                  postProcessGuids.add(guidString);
                   do {
+                     String replaceName = "";
                      comma = imageFile.indexOf(',');
                      if (comma == -1) {
                         theImage = uriDirectoryName + imageFile;
+                        replaceName = imageFile;
                         imageFile = " ";
                      } else {
                         theImage = uriDirectoryName + imageFile.substring(0, comma);
+                        replaceName = imageFile.substring(0, comma);
                         imageFile = imageFile.substring(comma + 1);
                      }
                      try {
                         URI imageURI = new URI(theImage);
                         roughArtifact.addAttribute("Image Content", imageURI);
-                        rowValue = rowValue.replace(theImage, IMAGE_BASE_NAME + Integer.toString(imageNumber));
+                        rowValue = rowValue.replace(replaceName, IMAGE_BASE_NAME + Integer.toString(imageNumber));
                         imageNumber++;
                      } catch (URISyntaxException e) {
                         e.printStackTrace();
@@ -1050,7 +1077,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                break;
 
             case SUBSYSTEM:
-               if (Strings.isValid(subsystem)) {
+               if (Strings.isValid(subsystem) && !subsystem.equalsIgnoreCase("<br></br>")) {
                   roughArtifact.addAttribute(CoreAttributeTypes.Subsystem, subsystem);
                   subsystem = "";
                }
@@ -1105,7 +1132,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
        */
       for (int i = 0; i < VERIFICATION_KEYWORDS.length; i++) {
          // special case Criteria is a string attribute
-         if ((FIELD_TYPE[i] == null) && (!VERIFICATION_KEYWORDS[i].equals("Criteria:"))) {
+         if ((FIELD_TYPE[i] == null) && !((VERIFICATION_KEYWORDS[i].equals(CRITERIA)) || VERIFICATION_KEYWORDS[i].equals(VERIFICATION_ACCEPTANCE_CRITERIA))) {
             continue;
          }
          int iStart = trimmed.indexOf(VERIFICATION_KEYWORDS[i]);
@@ -1123,7 +1150,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                // find the data
                int colon = rest.indexOf(':');
                if (colon == -1) {
-                  if (VERIFICATION_KEYWORDS[i].equals("Criteria:")) {
+                  if (VERIFICATION_KEYWORDS[i].equals(CRITERIA) || VERIFICATION_KEYWORDS[i].equals(VERIFICATION_ACCEPTANCE_CRITERIA)) {
                      // special case Criteria is a string attribute
                      roughArtifact.addAttribute("Verification Acceptance Criteria", rest);
                   } else {
@@ -1133,15 +1160,28 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                   // find the start of the keyword
                   boolean foundKeyword = false;
                   for (int j = 0; (j < VERIFICATION_KEYWORDS.length); j++) {
-                     if (rest.indexOf(VERIFICATION_KEYWORDS[j]) == (colon - VERIFICATION_KEYWORDS[j].length() + 1)) {
-                        roughArtifact.addAttribute(FIELD_TYPE[i],
-                           rest.substring(0, rest.indexOf(VERIFICATION_KEYWORDS[j]) - 1));
-                        foundKeyword = true;
-                        break;
+                     int theIndex = rest.indexOf(VERIFICATION_KEYWORDS[j]);
+                     if (theIndex != -1 && (theIndex == (colon - VERIFICATION_KEYWORDS[j].length() + 1))) {
+                        int index = rest.indexOf(VERIFICATION_KEYWORDS[j]) - 1;
+                        if (index >= 0) {
+                           if (VERIFICATION_KEYWORDS[i].equals(CRITERIA) || VERIFICATION_KEYWORDS[i].equals(VERIFICATION_ACCEPTANCE_CRITERIA)) {
+                              // special case Criteria is a string attribute
+                              roughArtifact.addAttribute("Verification Acceptance Criteria", rest.substring(0, index));
+                           } else {
+                              roughArtifact.addAttribute(FIELD_TYPE[i], rest.substring(0, index));
+                           }
+                           foundKeyword = true;
+                           break;
+                        }
                      }
                   }
                   if (!foundKeyword) {
-                     roughArtifact.addAttribute(FIELD_TYPE[i], rest);
+                     if (VERIFICATION_KEYWORDS[i].equals("Criteria:") || VERIFICATION_KEYWORDS[i].equals("Verification Acceptance Criteria:")) {
+                        // special case Criteria is a string attribute
+                        roughArtifact.addAttribute("Verification Acceptance Criteria", rest);
+                     } else {
+                        roughArtifact.addAttribute(FIELD_TYPE[i], rest);
+                     }
                   }
 
                }

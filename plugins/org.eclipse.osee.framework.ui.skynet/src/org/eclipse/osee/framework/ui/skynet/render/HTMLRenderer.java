@@ -14,7 +14,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.core.commands.Command;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -25,10 +27,12 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.OutlineNumberAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
@@ -65,21 +69,26 @@ public class HTMLRenderer extends FileSystemRenderer {
    }
 
    @Override
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
+      return getRenderInputStream(presentationType, null, artifacts);
+   }
+
+   @Override
    public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
       return ImageManager.getProgramImageDescriptor("htm");
    }
 
    @Override
-   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
+   public InputStream getRenderInputStream(PresentationType presentationType, IOseeBranch branch, List<Artifact> artifacts) throws OseeCoreException {
       InputStream stream = null;
       StringBuilder content = new StringBuilder("");
       try {
          if (artifacts.size() == 1) {
             Artifact artifact = artifacts.iterator().next();
-            renderHtmlArtifact(content, artifact);
+            renderHtmlArtifact(content, branch, artifact);
          } else {
             for (Artifact artifact : artifacts) {
-               renderHtmlArtifact(content, artifact);
+               renderHtmlArtifact(content, branch, artifact);
                content.append("<br /><br /><br />");
             }
          }
@@ -138,7 +147,8 @@ public class HTMLRenderer extends FileSystemRenderer {
       return comparator;
    }
 
-   private void renderHtmlArtifact(StringBuilder output, Artifact artifact) throws Exception {
+   private void renderHtmlArtifact(StringBuilder output, IOseeBranch branch, Artifact artifact) throws Exception {
+      Map<String, String> fileNameReplace = new HashMap<String, String>();
       String htmlContent = "";
       String blankLine = "<br /><br />";
       String underline = "<span style=\"text-decoration: underline;\">";
@@ -148,7 +158,19 @@ public class HTMLRenderer extends FileSystemRenderer {
          if (type.equals(CoreAttributeTypes.HTMLContent)) {
             htmlContent = artifact.getAttributesToString(type);
          } else if (type.equals(CoreAttributeTypes.ImageContent)) {
-            // do nothing
+            List<Attribute<Object>> attrs = artifact.getAttributes((IAttributeType) type);
+            for (Object a : attrs) {
+               if (a instanceof CompressedContentAttribute) {
+                  CompressedContentAttribute c = (CompressedContentAttribute) a;
+                  InputStream stream = c.getValue();
+                  String attrId = Integer.toString(c.getId());
+                  String workingFileString =
+                     RenderingUtil.getRenderPath(this, branch, PresentationType.PREVIEW, "", "", "") + "-" + attrId;
+                  fileNameReplace.put(attrId, workingFileString);
+                  File test = new File(workingFileString);
+                  Lib.inputStreamToFile(stream, test);
+               }
+            }
          } else {
             List<Attribute<Object>> attrs = artifact.getAttributes((IAttributeType) type);
             for (Object o : attrs) {
@@ -168,6 +190,15 @@ public class HTMLRenderer extends FileSystemRenderer {
       }
       // add the HTML attribute  -- want it always on the end
       output.append(blankLine);
+      if (fileNameReplace.size() > 0) {
+         Object[] keys = fileNameReplace.keySet().toArray();
+         for (Object key : keys) {
+            String file = "file://" + File.separator;
+            file += fileNameReplace.get(key);
+            file = file.replaceAll("\\\\", "\\\\\\\\");
+            htmlContent = htmlContent.replaceAll((String) key, file);
+         }
+      }
       output.append(htmlContent);
    }
 }

@@ -68,7 +68,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    }
 
    public IFile renderToFile(List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
-      InputStream renderInputStream = getRenderInputStream(presentationType, artifacts);
+      InputStream renderInputStream = getRenderInputStream(presentationType, branch, artifacts);
       IFile workingFile = RenderingUtil.getRenderFile(this, artifacts, branch, presentationType);
       AIFile.writeToFile(workingFile, renderInputStream);
 
@@ -82,6 +82,10 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    }
 
    public abstract InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException;
+
+   public InputStream getRenderInputStream(PresentationType presentationType, IOseeBranch branch, List<Artifact> artifacts) throws OseeCoreException {
+      return getRenderInputStream(presentationType, artifacts);
+   }
 
    public abstract Program getAssociatedProgram(Artifact artifact) throws OseeCoreException;
 
