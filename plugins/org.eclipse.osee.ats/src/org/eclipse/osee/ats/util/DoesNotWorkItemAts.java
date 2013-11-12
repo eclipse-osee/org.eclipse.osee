@@ -16,9 +16,8 @@ import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
+import org.eclipse.osee.ats.health.ValidateResults;
 import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.CountingMap;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -69,17 +68,13 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
          if (ids.size() != artifacts.size()) {
             System.err.println(String.format("Id size %d doesn't match artifact size %d", ids.size(), artifacts.size()));
          }
-         HashCollection<String, String> testNameToResultsMap = null;
-         testNameToResultsMap = new HashCollection<String, String>();
-         CountingMap<String> testNameToTimeSpentMap = new CountingMap<String>();
-
+         ValidateResults results = new ValidateResults();
          SkynetTransaction transaction =
             TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Fix Working attributes.");
-         ValidateAtsDatabase.testCompletedCancelledStateAttributesSet(artifacts, transaction, testNameToResultsMap,
-            testNameToTimeSpentMap);
+         ValidateAtsDatabase.testCompletedCancelledStateAttributesSet(artifacts, transaction, results);
 
          XResultData xResultData = new XResultData();
-         ValidateAtsDatabase.addResultsMapToResultData(xResultData, testNameToResultsMap);
+         results.addResultsMapToResultData(xResultData);
          XResultDataUI.report(xResultData, getName());
 
          transaction.execute();

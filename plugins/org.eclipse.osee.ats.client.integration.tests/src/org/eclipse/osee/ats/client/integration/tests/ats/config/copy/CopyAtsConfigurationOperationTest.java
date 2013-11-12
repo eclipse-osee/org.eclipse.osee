@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.client.integration.tests.ats.config.copy;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.Assert;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
@@ -22,13 +21,13 @@ import org.eclipse.osee.ats.config.copy.ConfigData;
 import org.eclipse.osee.ats.config.copy.CopyAtsConfigurationOperation;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
+import org.eclipse.osee.ats.health.ValidateResults;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.CountingMap;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -58,11 +57,10 @@ public class CopyAtsConfigurationOperationTest {
       Collection<IAtsActionableItem> ais = getActionableItemsNameStartsWith("CISv2");
       Assert.assertEquals(5, ais.size());
 
-      HashCollection<String, String> testNameToResultsMap = new HashCollection<String, String>();
-      CountingMap<String> testNameToTimeSpentMap = new CountingMap<String>();
+      ValidateResults results = new ValidateResults();
       Collection<Artifact> aiaArts = AtsClientService.get().getConfigArtifacts(ais);
-      ValidateAtsDatabase.testActionableItemToTeamDefinition(aiaArts, testNameToResultsMap, testNameToTimeSpentMap);
-      Assert.assertEquals(0, testNameToResultsMap.size());
+      ValidateAtsDatabase.testActionableItemToTeamDefinition(aiaArts, results);
+      Assert.assertEquals(0, results.getTestNameToResultsMap().size());
    }
 
    public static Set<IAtsActionableItem> getActionableItemsNameStartsWith(String prefix) throws OseeCoreException {

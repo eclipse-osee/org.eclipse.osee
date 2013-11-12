@@ -17,12 +17,12 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
+import org.eclipse.osee.ats.health.ValidateResults;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -57,23 +57,20 @@ public class ValidateAtsConfiguration extends XNavigateItemAction {
                AtsUtilCore.getAtsBranchToken(), DeletionFlag.EXCLUDE_DELETED);
          SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), getName());
 
-         CountingMap<String> testNameToTimeSpentMap = new CountingMap<String>();
-         HashCollection<String, String> testNameToResultsMap = new HashCollection<String, String>();
+         ValidateResults results = new ValidateResults();
 
-         ValidateAtsDatabase.testAtsAttributeValues(transaction, testNameToTimeSpentMap, testNameToResultsMap, true,
-            configArts);
-         ValidateAtsDatabase.testVersionArtifacts(configArts, testNameToResultsMap, testNameToTimeSpentMap);
-         ValidateAtsDatabase.testActionableItemToTeamDefinition(configArts, testNameToResultsMap,
-            testNameToTimeSpentMap);
-         ValidateAtsDatabase.testTeamDefinitions(configArts, testNameToResultsMap, testNameToTimeSpentMap);
-         ValidateAtsDatabase.testParallelConfig(configArts, testNameToResultsMap, testNameToTimeSpentMap);
+         ValidateAtsDatabase.testAtsAttributeValues(transaction, results, true, configArts);
+         ValidateAtsDatabase.testVersionArtifacts(configArts, results);
+         ValidateAtsDatabase.testActionableItemToTeamDefinition(configArts, results);
+         ValidateAtsDatabase.testTeamDefinitions(configArts, results);
+         ValidateAtsDatabase.testParallelConfig(configArts, results);
 
          // Log counts of types checked
-         logCounts(configArts, testNameToResultsMap);
+         logCounts(configArts, results);
 
          // Log results
-         ValidateAtsDatabase.addResultsMapToResultData(rd, testNameToResultsMap);
-         ValidateAtsDatabase.addTestTimeMapToResultData(rd, testNameToTimeSpentMap);
+         results.addResultsMapToResultData(rd);
+         results.addTestTimeMapToResultData(rd);
 
          transaction.execute();
       } catch (OseeCoreException ex) {
@@ -83,14 +80,13 @@ public class ValidateAtsConfiguration extends XNavigateItemAction {
       XResultDataUI.report(rd, getName());
    }
 
-   private void logCounts(List<Artifact> configArts, HashCollection<String, String> testNameToResultsMap) {
+   private void logCounts(List<Artifact> configArts, ValidateResults results) {
       CountingMap<String> typeToCount = new CountingMap<String>();
       for (Artifact art : configArts) {
          typeToCount.put(art.getArtifactTypeName());
       }
       for (Entry<String, MutableInteger> type : typeToCount.getCounts()) {
-         testNameToResultsMap.put("Type Counts",
-            String.format("%d of type %s", type.getValue().getValue(), type.getKey()));
+         results.log("Type Counts", String.format("%d of type %s", type.getValue().getValue(), type.getKey()));
       }
    }
 }
