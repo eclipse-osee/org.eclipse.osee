@@ -4,6 +4,7 @@ Bundle-Name: OSEE Template Engine  (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.template.engine
 Bundle-Version: 0.16.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.osee.framework.jdk.core.type
+Import-Package: org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.template.engine

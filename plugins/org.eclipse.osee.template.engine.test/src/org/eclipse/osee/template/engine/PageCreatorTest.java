@@ -23,11 +23,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Unit Test for {@link HtmlPageCreator}
+ * Unit Test for {@link PageCreator}
  * 
  * @author Donald G. Dunne
  */
-public class HtmlPageCreatorTest {
+public class PageCreatorTest {
 
    private static final IResourceRegistry registry = new ResourceRegistry();
 
@@ -39,7 +39,7 @@ public class HtmlPageCreatorTest {
 
    @Test
    public void testHtmlPageCreator_KeyValues() {
-      HtmlPageCreator page = PageFactory.newHtmlPageCreator(registry, "key", "value", "key2", "value2");
+      PageCreator page = PageFactory.newPageCreator(registry, "key", "value", "key2", "value2");
       Assert.assertEquals("value", page.getValue("key"));
       Assert.assertEquals("value2", page.getValue("key2"));
    }
@@ -47,14 +47,14 @@ public class HtmlPageCreatorTest {
    @Test
    public void addSubstitution() {
       StringRule rule = new StringRule("key", "value");
-      HtmlPageCreator page = new HtmlPageCreator(registry);
+      PageCreator page = new PageCreator(registry);
       page.addSubstitution(rule);
       Assert.assertEquals("value", page.getValue("key"));
    }
 
    @Test
    public void readSubstitutions_keyValue() {
-      HtmlPageCreator page = new HtmlPageCreator(registry);
+      PageCreator page = new PageCreator(registry);
       page.readKeyValuePairs(TestValues_KeyValueHtml);
 
       Assert.assertEquals("   <h1>value</h1>", page.getValue("key"));
@@ -63,21 +63,21 @@ public class HtmlPageCreatorTest {
 
    @Test
    public void readSubstitutions_include() {
-      HtmlPageCreator page = new HtmlPageCreator(registry);
+      PageCreator page = new PageCreator(registry);
       page.readKeyValuePairs(TestValues_IncludeHtml);
       Assert.assertEquals("<!-- testHeaderPage.html -->\n\n<b>header</b>\n", page.getValue("header"));
    }
 
    @Test
    public void realizePage() {
-      HtmlPageCreator page = new HtmlPageCreator(registry);
+      PageCreator page = new PageCreator(registry);
       page.readKeyValuePairs(RealizePage_ValuesHtml);
 
       String expected = "<!-- header.html -->\n\nmy header\n\n<h1>heading1</h1>\n\n   <h2>heading2</h2>\n";
       String results = page.realizePage(RealizePage_MainPageHtml);
       Assert.assertEquals(expected, results);
 
-      page = PageFactory.newHtmlPageCreator(registry, RealizePage_ValuesHtml);
+      page = PageFactory.newPageCreator(registry, RealizePage_ValuesHtml);
       results = page.realizePage(RealizePage_MainPageHtml);
       Assert.assertEquals(expected, results);
 
@@ -117,8 +117,9 @@ public class HtmlPageCreatorTest {
 
    @Test
    public void testToString() {
-      HtmlPageCreator page = new HtmlPageCreator(registry);
+      PageCreator page = new PageCreator(registry);
       page.readKeyValuePairs(TestValues_KeyValueHtml);
       Assert.assertEquals("{key2=   <h2>value2</h2>, key=   <h1>value</h1>}", page.toString());
    }
+
 }

@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
  * 
  * @author Ryan D. Brooks
  */
-public final class HtmlPageCreator {
+public final class PageCreator {
    private static final Pattern xmlProcessingInstructionStartOrEnd = Pattern.compile("(\\?>)|(<\\?\\s*)");
    private static final Pattern xmlProcessingInstructionStart = Pattern.compile("\\s*<\\?");
    private static final Pattern emptyOrWhitespaceOnly = Pattern.compile("\\s*");
@@ -45,7 +45,7 @@ public final class HtmlPageCreator {
    private final ConcurrentHashMap<String, AppendableRule> substitutions =
       new ConcurrentHashMap<String, AppendableRule>();
 
-   public HtmlPageCreator(IResourceRegistry registry) {
+   public PageCreator(IResourceRegistry registry) {
       this.registry = registry;
    }
 
@@ -154,7 +154,7 @@ public final class HtmlPageCreator {
       if (isProcessingInstruction) {
          if (token.startsWith("include")) {
             appendInclude(page, token);
-         } else if (token.startsWith("xml ")) {
+         } else if (token.startsWith("xml ") || token.startsWith("mso-application ")) {
             page.append("<?");
             page.append(token);
             page.append("?>");
@@ -188,11 +188,16 @@ public final class HtmlPageCreator {
       Long universalId = toUniversalId(tokenStr);
       ResourceToken token = registry.getResourceToken(universalId);
       String name = token.getName();
-      boolean css = name.endsWith(".css");
 
-      page.append(css ? "/* " : "<!-- ");
-      page.append(name);
-      page.append(css ? " */\n" : " -->\n");
+      if (name.endsWith(".css")) {
+         page.append("/* ");
+         page.append(name);
+         page.append(" */\n");
+      } else if (name.endsWith(".html")) {
+         page.append("<!-- ");
+         page.append(name);
+         page.append(" -->\n");
+      }
       page.append(realizePage(token));
    }
 
