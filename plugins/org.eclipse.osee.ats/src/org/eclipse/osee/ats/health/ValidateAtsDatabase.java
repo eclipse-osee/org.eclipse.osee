@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.health;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -69,6 +68,9 @@ import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
@@ -101,6 +103,10 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
+   private static String SELECT_COMMON_ART_IDS = "SELECT /*+ ordered */ art1.art_id, txs1.branch_id " + //
+   "FROM osee_artifact art1, osee_txs txs1 " + //
+   "WHERE art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ? " + //
+   "ORDER BY art1.art_id, txs1.branch_id ";
    private boolean fixAssignees = true;
    private boolean fixAttributeValues = true;
    private final Set<String> atsIds = new HashSet<String>();
@@ -818,13 +824,32 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          xResultData = new XResultData();
       }
       xResultData.log(monitor, "testLoadAllCommonArtifactIds - Started " + DateUtil.getMMDDYYHHMM());
-      List<Integer> artIds = ArtifactQuery.selectArtifactListFromBranch(AtsUtil.getAtsBranch(), EXCLUDE_DELETED);
+      List<Integer> artIds = getCommonArtifactIds();
+      // ArtifactQuery.selectArtifactListFromBranch(AtsUtil.getAtsBranch(), EXCLUDE_DELETED);
 
       if (artIds.isEmpty()) {
          xResultData.logError("Error: Artifact load returned 0 artifacts to check");
       }
       xResultData.log(monitor, "testLoadAllCommonArtifactIds - Completed " + DateUtil.getMMDDYYHHMM());
       return Collections.subDivide(artIds, 4000);
+   }
+
+   private static List<Integer> getCommonArtifactIds() throws OseeCoreException {
+      OseeConnection connection = ConnectionHandler.getConnection();
+      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
+      List<Integer> artIds = new ArrayList<Integer>();
+      ElapsedTime time = new ElapsedTime("getCommonArtifactIds");
+      try {
+         chStmt.runPreparedQuery(SELECT_COMMON_ART_IDS, new Object[] {AtsUtil.getAtsBranch().getId()});
+         while (chStmt.next()) {
+            artIds.add(chStmt.getInt(1));
+         }
+      } finally {
+         chStmt.close();
+         connection.close();
+      }
+      time.end();
+      return artIds;
    }
 
    public static void testAtsAttributeValues(SkynetTransaction transaction, CountingMap<String> testNameToTimeSpentMap, HashCollection<String, String> testNameToResultsMap, boolean fixAttributeValues, Collection<Artifact> artifacts) {
