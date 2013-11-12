@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.util.SubscribeManager;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
@@ -187,8 +188,8 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
 
       notifyManager.clear();
-      teamArt.getStateMgr().initializeStateMachine(TeamState.Completed, null,
-         AtsClientService.get().getUserAdmin().getCurrentUser());
+      StateManagerUtility.initializeStateMachine(teamArt.getStateMgr(), TeamState.Completed, null,
+         AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
       AtsNotificationManager.notify(teamArt, AtsNotifyType.Completed);
       event = notifyManager.getNotificationEvents().get(0);
       Assert.assertEquals(AtsNotifyType.Completed.name(), event.getType());
@@ -199,23 +200,22 @@ public class AtsNotifyUsersTest {
       notifyManager.clear();
       teamArt.internalSetCreatedBy(AtsClientService.get().getUserAdmin().getUserFromOseeUser(inactiveSteve));
       teamArt.persist(getClass().getSimpleName());
-      teamArt.getStateMgr().initializeStateMachine(TeamState.Completed, null,
-         AtsClientService.get().getUserAdmin().getCurrentUser());
+      StateManagerUtility.initializeStateMachine(teamArt.getStateMgr(), TeamState.Completed, null,
+         AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
       AtsNotificationManager.notify(teamArt, AtsNotifyType.Completed);
       Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
       teamArt.internalSetCreatedBy(AtsClientService.get().getUserAdmin().getUserFromOseeUser(kay_ValidEmail));
       teamArt.persist(getClass().getSimpleName());
 
       notifyManager.clear();
-      teamArt.getStateMgr().initializeStateMachine(TeamState.Analyze, null,
-         AtsClientService.get().getUserAdmin().getCurrentUser());
+      StateManagerUtility.initializeStateMachine(teamArt.getStateMgr(), TeamState.Analyze, null,
+         AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
       TransitionHelper helper =
          new TransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), TeamState.Cancelled.getName(), null,
             "this is the reason", changes, TransitionOption.OverrideTransitionValidityCheck);
       changes.clear();
       TransitionManager transitionMgr = new TransitionManager(helper);
-      TransitionResults results = transitionMgr.handleAll();
-      changes.execute();
+      TransitionResults results = transitionMgr.handleAllAndPersist();
       Assert.assertTrue("Transition should have no errors", results.isEmpty());
 
       Assert.assertEquals(1, notifyManager.getNotificationEvents().size());
@@ -254,7 +254,6 @@ public class AtsNotifyUsersTest {
          "You have been set as the assignee of [Team Workflow] in state [Endorse] titled [AtsNotifyUsersTest-OnNewAction]",
          event.getDescription());
    }
-
    private static final class MockConfigurationProvider implements ConfigurationProvider {
 
       private final INotificationManager notificationManager;

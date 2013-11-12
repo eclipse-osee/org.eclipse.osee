@@ -98,9 +98,6 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
    private void safelyProcessHandler(final ArtifactEvent artifactEvent, final ISMAEditorEventHandler handler) throws OseeCoreException {
       final AbstractWorkflowArtifact awa = handler.getSMAEditor().getAwa();
       boolean refreshed = false;
-      if (awa.isInTransition()) {
-         return;
-      }
 
       if (artifactEvent.isDeletedPurged(awa)) {
          handler.getSMAEditor().closeEditor();

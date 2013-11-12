@@ -19,12 +19,10 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
-import org.eclipse.osee.ats.api.workflow.WorkStateProvider;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
-import org.eclipse.osee.ats.core.model.impl.WorkStateProviderImpl;
+import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.util.AtsUserGroup;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -37,24 +35,22 @@ public class MockWorkItem implements IAtsWorkItem {
    private final String name;
    private String atsId;
    private IAtsWorkData atsWorkData;
-   private WorkStateProvider workStateProvider;
+   private final IAtsStateManager stateMgr;
    private final AtsUserGroup implementers = new AtsUserGroup();
 
    public MockWorkItem(String name, String currentStateName, StateType StateType) {
-      this(name, new MockWorkData(StateType), new WorkStateProviderImpl(new MockWorkStateFactory(), new WorkStateImpl(
-         currentStateName)));
+      this(name, new MockWorkData(StateType));
    }
 
    public MockWorkItem(String name, String currentStateName, List<? extends IAtsUser> assignees) {
-      this(name, new MockWorkData(StateType.Working), new WorkStateProviderImpl(new MockWorkStateFactory(),
-         new WorkStateImpl(currentStateName)));
+      this(name, new MockWorkData(StateType.Working));
    }
 
-   public MockWorkItem(String name, IAtsWorkData atsWorkData, WorkStateProvider workStateProvider) {
+   public MockWorkItem(String name, IAtsWorkData atsWorkData) {
       this.name = name;
       atsId = name;
       this.atsWorkData = atsWorkData;
-      this.workStateProvider = workStateProvider;
+      this.stateMgr = new StateManager(this);
    }
 
    @Override
@@ -96,17 +92,8 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public WorkStateProvider getStateData() {
-      return workStateProvider;
-   }
-
-   public void setStateData(WorkStateProvider atsStateData) {
-      workStateProvider = atsStateData;
-   }
-
-   @Override
    public List<IAtsUser> getAssignees() throws OseeCoreException {
-      return workStateProvider.getAssignees();
+      return stateMgr.getAssignees();
    }
 
    public void addImplementer(IAtsUser joe) {

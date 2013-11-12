@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.util;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -19,7 +20,18 @@ public interface IAtsChangeSet {
 
    void add(Object obj) throws OseeCoreException;
 
+   Collection<Object> getObjects();
+
    void execute() throws OseeCoreException;
 
    void clear();
+
+   void addExecuteListener(IExecuteListener listener);
+
+   void addToDelete(Object obj) throws OseeCoreException;
+
+   void addAll(Object... objects) throws OseeCoreException;
+
+   boolean isEmpty();
+
 }

@@ -342,12 +342,14 @@ public class TransitionManagerTest {
       Assert.assertTrue(results.isEmpty());
 
       // validate that can't transition with InWork task
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       TaskArtifact taskArt =
          teamArt.createNewTask("New Tasks", new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(),
-            teamArt.getCurrentStateName());
+            teamArt.getCurrentStateName(), changes);
       results.clear();
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(teamArt, TransitionResult.TASKS_NOT_COMPLETED));
+      changes.execute();
 
       MockStateDefinition teamCurrentState = (MockStateDefinition) teamArt.getStateDefinition();
 
@@ -374,7 +376,7 @@ public class TransitionManagerTest {
          Assert.assertTrue(results.contains(teamArt, TransitionResult.TASKS_NOT_COMPLETED));
 
          // Cleanup task by completing and validate can transition
-         AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+         changes = new AtsChangeSet(getClass().getSimpleName());
          TaskManager.transitionToCompleted(taskArt, 0.0, 0.1, changes);
          changes.execute();
          results.clear();
@@ -462,9 +464,11 @@ public class TransitionManagerTest {
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
 
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       DecisionReviewArtifact decArt =
-         AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.None, AtsTestUtilState.Analyze);
+         AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.None, AtsTestUtilState.Analyze, changes);
       teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, decArt);
+      changes.execute();
 
       // validate that can transition cause non-blocking review
       results.clear();
@@ -484,7 +488,7 @@ public class TransitionManagerTest {
       Assert.assertTrue(results.contains(teamArt, TransitionResult.COMPLETE_BLOCKING_REVIEWS));
 
       // validate that can transition cause review completed
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      changes = new AtsChangeSet(getClass().getSimpleName());
       Result result =
          DecisionReviewManager.transitionTo(decArt, DecisionReviewState.Completed,
             AtsClientService.get().getUserAdmin().getCurrentUser(), false, changes);
@@ -612,41 +616,44 @@ public class TransitionManagerTest {
       Assert.assertEquals(0, teamArt.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0).intValue());
 
       // Transition to completed should set percent to 100
+      changes.clear();
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
             AtsTestUtil.getCompletedStateDef().getName(),
-            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null, new AtsChangeSet(
-               getClass().getSimpleName()), TransitionOption.None);
+            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null, changes, TransitionOption.None);
       TransitionManager transMgr = new TransitionManager(helper);
       TransitionResults results = new TransitionResults();
       transMgr.handleTransition(results);
+      changes.execute();
       Assert.assertTrue("Transition Error: " + results.toString(), results.isEmpty());
       Assert.assertEquals("Completed", teamArt.getCurrentStateName());
       Assert.assertEquals(100, teamArt.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 100).intValue());
 
       // Transition to Implement should set percent to 0
+      changes.clear();
       helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
             AtsTestUtil.getImplementStateDef().getName(),
-            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null, new AtsChangeSet(
-               getClass().getSimpleName()), TransitionOption.None);
+            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null, changes, TransitionOption.None);
       transMgr = new TransitionManager(helper);
       results = new TransitionResults();
       transMgr.handleTransition(results);
+      changes.execute();
 
       Assert.assertTrue("Transition Error: " + results.toString(), results.isEmpty());
       Assert.assertEquals("Implement", teamArt.getCurrentStateName());
       Assert.assertEquals(0, teamArt.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0).intValue());
 
       // Transition to Cancelled should set percent to 0
+      changes.clear();
       helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
             AtsTestUtil.getCancelledStateDef().getName(),
-            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null, new AtsChangeSet(
-               getClass().getSimpleName()), TransitionOption.None);
+            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null, changes, TransitionOption.None);
       transMgr = new TransitionManager(helper);
       results = new TransitionResults();
       transMgr.handleTransition(results);
+      changes.execute();
 
       Assert.assertTrue("Transition Error: " + results.toString(), results.isEmpty());
       Assert.assertEquals("Cancelled", teamArt.getCurrentStateName());

@@ -129,7 +129,7 @@ public class AtsCore {
 
    public static IAtsStateFactory getStateFactory() {
       if (stateFactory == null) {
-         stateFactory = new AtsStateFactory();
+         stateFactory = new AtsStateFactory(attrResolver);
       }
       return stateFactory;
    }

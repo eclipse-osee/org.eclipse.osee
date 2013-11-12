@@ -20,12 +20,9 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Donald G. Dunne
@@ -38,8 +35,7 @@ public class DemoDbTasks {
       }
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Tasks");
+      AtsChangeSet changes = new AtsChangeSet("Populate Demo DB - Create Tasks");
       boolean firstTaskWorkflow = true;
       for (TeamWorkFlowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
          List<IAtsUser> demoUsers = new ArrayList<IAtsUser>();
@@ -53,13 +49,12 @@ public class DemoDbTasks {
                DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith)));
          }
          for (String title : getTaskTitles(firstTaskWorkflow)) {
-            TaskArtifact taskArt =
-               codeArt.createNewTask(demoUsers, title, createdDate, createdBy, codeArt.getCurrentStateName());
-            taskArt.persist(transaction);
+            codeArt.createNewTask(demoUsers, title, createdDate, createdBy, codeArt.getCurrentStateName(), changes);
          }
          firstTaskWorkflow = false;
+         changes.add(codeArt);
       }
-      transaction.execute();
+      changes.execute();
    }
 
    /**

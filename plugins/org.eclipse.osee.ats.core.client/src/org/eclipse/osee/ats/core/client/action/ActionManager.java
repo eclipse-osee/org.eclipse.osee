@@ -79,8 +79,9 @@ public class ActionManager {
          TeamWorkFlowArtifact teamWf =
             createTeamWorkflow(actionArt, teamDef, actionableItems, leads, changes, createdDate, createdBy,
                newActionListener);
-         teamWf.getStateMgr().writeToStore();
+
          AtsCore.getLogFactory().writeToStore(teamWf);
+         changes.add(teamWf);
       }
 
       // Notify listener of action creation
@@ -151,7 +152,7 @@ public class ActionManager {
       }
 
       // Initialize state machine
-      teamArt.initializeNewStateMachine(assignees, createdDate, createdBy);
+      teamArt.initializeNewStateMachine(assignees, createdDate, createdBy, changes);
 
       // Notify listener of team creation
       if (newActionListener != null) {

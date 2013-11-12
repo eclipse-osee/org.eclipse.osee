@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
@@ -54,8 +55,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
@@ -212,17 +211,17 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
                "You do not have permissions to save " + awa.getArtifactTypeName() + ":" + awa);
          } else {
             try {
-               SkynetTransaction transaction =
-                  TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Workflow Editor - Save");
-               // If change was made on Attribute tab, persist awa separately.  This is cause attribute
-               // tab changes conflict with XWidget changes
                if (attributesComposite != null && getActivePage() == attributesPageIndex) {
-                  awa.persist(transaction);
+                  awa.persist("Workflow Editor - Attributes Tab - Save");
+               } else {
+                  AtsChangeSet changes = new AtsChangeSet("Workflow Editor - Save");
+                  // If change was made on Attribute tab, persist awa separately.  This is cause attribute
+                  // tab changes conflict with XWidget changes
+                  // Save widget data to artifact
+                  workFlowTab.saveXWidgetToArtifact();
+                  awa.saveSMA(changes);
+                  changes.execute();
                }
-               // Save widget data to artifact
-               workFlowTab.saveXWidgetToArtifact();
-               awa.saveSMA(transaction);
-               transaction.execute();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -571,15 +570,11 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
 
    @Override
    public boolean isTasksEditable() {
-      try {
-         if (!(awa instanceof AbstractTaskableArtifact) || awa.isCompletedOrCancelled()) {
-            return false;
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         return false;
+      boolean editable = true;
+      if (!(awa instanceof AbstractTaskableArtifact) || awa.isCompletedOrCancelled()) {
+         editable = false;
       }
-      return true;
+      return editable;
    }
 
    public boolean isPrivilegedEditModeEnabled() {

@@ -15,18 +15,17 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 
 /**
@@ -46,7 +45,12 @@ public class SMAPromptChangeStatus {
 
    public static boolean promptChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) throws OseeCoreException {
       SMAPromptChangeStatus promptChangeStatus = new SMAPromptChangeStatus(awas);
-      return promptChangeStatus.promptChangeStatus(persist).isTrue();
+      AtsChangeSet changes = new AtsChangeSet("Prompt Change Status");
+      boolean result = promptChangeStatus.promptChangeStatus(changes).isTrue();
+      if (result) {
+         changes.execute();
+      }
+      return result;
    }
 
    public static Result isValidToChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas) throws OseeCoreException {
@@ -79,7 +83,7 @@ public class SMAPromptChangeStatus {
       return Result.TrueResult;
    }
 
-   public Result promptChangeStatus(boolean persist) throws OseeCoreException {
+   public Result promptChangeStatus(IAtsChangeSet changes) throws OseeCoreException {
       Result result = isValidToChangeStatus(awas);
       if (result.isFalse()) {
          AWorkbench.popup(result);
@@ -92,19 +96,21 @@ public class SMAPromptChangeStatus {
             "Enter percent complete and number of hours you spent since last status.", data);
       if (dialog.open() == 0) {
          performChangeStatus(awas, null, data.getAdditionalHours(), data.getPercent(), data.isSplitHoursBetweenItems(),
-            persist);
+            changes);
          return Result.TrueResult;
       }
       return Result.FalseResult;
    }
 
-   public static void performChangeStatus(Collection<? extends IAtsWorkItem> workItems, String selectedOption, double hours, int percent, boolean splitHours, boolean persist) throws OseeCoreException {
+   public static void performChangeStatusAndPersist(Collection<? extends IAtsWorkItem> workItems, String selectedOption, double hours, int percent, boolean splitHours) throws OseeCoreException {
+      AtsChangeSet changes = new AtsChangeSet("ATS Prompt Change Status");
+      performChangeStatus(workItems, selectedOption, hours, percent, splitHours, changes);
+      changes.execute();
+   }
+
+   public static void performChangeStatus(Collection<? extends IAtsWorkItem> workItems, String selectedOption, double hours, int percent, boolean splitHours, IAtsChangeSet changes) throws OseeCoreException {
       if (splitHours) {
          hours = hours / workItems.size();
-      }
-      SkynetTransaction transaction = null;
-      if (persist) {
-         transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Status");
       }
       for (IAtsWorkItem workItem : workItems) {
          if (workItem.getStateMgr().isUnAssigned()) {
@@ -113,13 +119,7 @@ public class SMAPromptChangeStatus {
          }
          workItem.getStateMgr().updateMetrics(workItem.getStateDefinition(), hours, percent, true);
          AtsCore.getLogFactory().writeToStore(workItem);
-         if (persist) {
-            AtsClientService.get().getArtifact(workItem).persist(transaction);
-         }
+         changes.add(workItem);
       }
-      if (persist) {
-         transaction.execute();
-      }
-
    }
 }

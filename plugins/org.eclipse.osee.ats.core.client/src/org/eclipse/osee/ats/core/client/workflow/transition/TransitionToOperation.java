@@ -47,21 +47,22 @@ public class TransitionToOperation extends AbstractOperation {
                changes.add(awa);
             }
          }
-         changes.execute();
+         if (!changes.isEmpty()) {
+            changes.execute();
+         }
 
-         changes.reset(helper.getName());
          TransitionManager transitionMgr = new TransitionManager(helper);
-         results = transitionMgr.handleAll();
+         results = transitionMgr.handleAllAndPersist();
          if (results.isCancelled()) {
             return;
-         } else if (results.isEmpty()) {
-            changes.execute();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
-         results.addResult(new TransitionResult(String.format(
-            "Exception [%s] transitioning to [%s].  See error log for details.", ex.getLocalizedMessage(),
-            helper.getToStateName())));
+         if (results != null) {
+            results.addResult(new TransitionResult(String.format(
+               "Exception [%s] transitioning to [%s].  See error log for details.", ex.getLocalizedMessage(),
+               helper.getToStateName())));
+         }
       }
    }
 

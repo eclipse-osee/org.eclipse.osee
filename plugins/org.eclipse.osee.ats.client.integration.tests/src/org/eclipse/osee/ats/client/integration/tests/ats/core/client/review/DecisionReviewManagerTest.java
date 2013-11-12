@@ -118,11 +118,13 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
       String reviewTitle = "Test Review - " + teamWf.getName();
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReview(teamWf, ReviewBlockType.Commit, reviewTitle,
             TeamState.Implement.getName(), "description", DecisionReviewManager.getDefaultDecisionReviewOptions(),
             Arrays.asList(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay)), new Date(),
-            AtsClientService.get().getUserAdmin().getCurrentUser());
+            AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+      changes.execute();
 
       Assert.assertNotNull(decRev);
       Assert.assertEquals(reviewTitle, decRev.getName());
@@ -138,11 +140,13 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
       String reviewTitle = "Test Review - " + teamWf.getName();
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReview(teamWf, ReviewBlockType.Commit, reviewTitle,
             TeamState.Implement.getName(), "description", DecisionReviewManager.getDefaultDecisionReviewOptions(),
             Arrays.asList(AtsClientService.get().getUserAdmin().getUserFromToken(SystemUser.UnAssigned)), new Date(),
-            AtsClientService.get().getUserAdmin().getCurrentUser());
+            AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+      changes.execute();
 
       Assert.assertNotNull(decRev);
       Assert.assertEquals(reviewTitle, decRev.getName());
@@ -154,9 +158,11 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       AtsTestUtil.cleanupAndReset("DecisionReviewManagerTest - Sample");
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReview(teamWf, ReviewBlockType.Commit, true, new Date(),
-            AtsClientService.get().getUserAdmin().getCurrentUser());
+            AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+      changes.execute();
 
       Assert.assertNotNull(decRev);
       Assert.assertEquals("Should we do this?  Yes will require followup, No will not", decRev.getName());

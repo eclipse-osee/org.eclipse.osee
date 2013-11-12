@@ -14,7 +14,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
-import org.eclipse.osee.ats.api.workflow.HasStateProvider;
 import org.eclipse.osee.ats.api.workflow.HasWorkData;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
@@ -25,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsWorkItem extends IAtsObject, HasWorkData, HasAssignees, HasStateProvider {
+public interface IAtsWorkItem extends IAtsObject, HasWorkData, HasAssignees {
 
    String getAtsId();
 

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
-import java.util.logging.Level;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -44,50 +43,45 @@ public class SMAAssigneesHeader extends Composite {
       setLayout(ALayout.getZeroMarginLayout(2, false));
       editor.getToolkit().adapt(this);
 
-      try {
-         if (!sma.isCancelled() && !sma.isCompleted()) {
-            Hyperlink link = editor.getToolkit().createHyperlink(this, TARGET_VERSION, SWT.NONE);
-            link.addHyperlinkListener(new IHyperlinkListener() {
+      if (!sma.isCancelled() && !sma.isCompleted()) {
+         Hyperlink link = editor.getToolkit().createHyperlink(this, TARGET_VERSION, SWT.NONE);
+         link.addHyperlinkListener(new IHyperlinkListener() {
 
-               @Override
-               public void linkEntered(HyperlinkEvent e) {
-                  // do nothing
-               }
+            @Override
+            public void linkEntered(HyperlinkEvent e) {
+               // do nothing
+            }
 
-               @Override
-               public void linkExited(HyperlinkEvent e) {
-                  // do nothing
-               }
+            @Override
+            public void linkExited(HyperlinkEvent e) {
+               // do nothing
+            }
 
-               @Override
-               public void linkActivated(HyperlinkEvent e) {
-                  try {
-                     if (editor.isDirty()) {
-                        editor.doSave(null);
-                     }
-                     if (!isEditable && !sma.getStateMgr().getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER) && !sma.getStateMgr().getAssignees().contains(
-                        AtsClientService.get().getUserAdmin().getCurrentUser())) {
-                        AWorkbench.popup(
-                           "ERROR",
-                           "You must be assigned to modify assignees.\nContact current Assignee or Select Privileged Edit for Authorized Overriders.");
-                        return;
-                     }
-                     if (AssigneeColumnUI.promptChangeAssignees(sma, false)) {
-                        editor.doSave(null);
-                     }
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            @Override
+            public void linkActivated(HyperlinkEvent e) {
+               try {
+                  if (editor.isDirty()) {
+                     editor.doSave(null);
                   }
+                  if (!isEditable && !sma.getStateMgr().getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER) && !sma.getStateMgr().getAssignees().contains(
+                     AtsClientService.get().getUserAdmin().getCurrentUser())) {
+                     AWorkbench.popup(
+                        "ERROR",
+                        "You must be assigned to modify assignees.\nContact current Assignee or Select Privileged Edit for Authorized Overriders.");
+                     return;
+                  }
+                  if (AssigneeColumnUI.promptChangeAssignees(sma, false)) {
+                     editor.doSave(null);
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
-            });
-         } else {
-            Label origLabel = editor.getToolkit().createLabel(this, TARGET_VERSION);
-            origLabel.setLayoutData(new GridData());
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         });
+      } else {
+         Label origLabel = editor.getToolkit().createLabel(this, TARGET_VERSION);
+         origLabel.setLayoutData(new GridData());
       }
-
       valueLabel = editor.getToolkit().createLabel(this, "Not Set");
       valueLabel.setLayoutData(new GridData());
       updateLabel(sma);

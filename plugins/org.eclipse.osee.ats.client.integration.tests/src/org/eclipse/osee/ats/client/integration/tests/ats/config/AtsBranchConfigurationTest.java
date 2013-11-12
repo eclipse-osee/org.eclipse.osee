@@ -274,15 +274,13 @@ public class AtsBranchConfigurationTest {
          ActionableItems.getActionableItems(appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"));
       assertFalse(selectedActionableItems.isEmpty());
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Test branch via team definition: create action");
+      changes.reset("Test branch via team definition: create action");
       String actionTitle = BRANCH_VIA_TEAM_DEFINITION.getName() + " Req Changes";
       changes.clear();
       Artifact actionArt =
          ActionManager.createAction(null, actionTitle, "description", ChangeType.Problem, "1", false, null,
             selectedActionableItems, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
-      changes.addTo(transaction);
-      transaction.execute();
+      changes.execute();
 
       final TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
       TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf);
@@ -291,8 +289,9 @@ public class AtsBranchConfigurationTest {
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Transitioning to Implement state");
       }
+      changes.reset("Test branch via team definition: create action");
       dtwm.transitionTo(TeamState.Implement, AtsClientService.get().getUserAdmin().getCurrentUser(), false, changes);
-      teamWf.persist("Test branch via team definition: create action");
+      changes.execute();
 
       // create branch
       createBranch(namespace, teamWf);

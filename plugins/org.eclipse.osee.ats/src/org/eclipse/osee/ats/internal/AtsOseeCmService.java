@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
@@ -102,14 +103,11 @@ public class AtsOseeCmService implements IOseeCmService {
 
    @Override
    public boolean isCompleted(Artifact artifact) {
-      try {
-         if (isPcrArtifact(artifact) && artifact instanceof AbstractWorkflowArtifact) {
-            return ((AbstractWorkflowArtifact) artifact).isCompletedOrCancelled();
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      boolean completed = false;
+      if (isPcrArtifact(artifact) && artifact instanceof AbstractWorkflowArtifact) {
+         completed = ((AbstractWorkflowArtifact) artifact).isCompletedOrCancelled();
       }
-      return false;
+      return completed;
    }
 
    @Override
@@ -130,10 +128,12 @@ public class AtsOseeCmService implements IOseeCmService {
    public Artifact createWorkTask(String name, String parentPcrGuid) {
       try {
          Artifact artifact = AtsArtifactQuery.getArtifactFromId(parentPcrGuid);
+         AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName() + " - Create Work Task");
          if (artifact instanceof AbstractTaskableArtifact) {
             return ((AbstractTaskableArtifact) artifact).createNewTask(name, new Date(),
-               AtsClientService.get().getUserAdmin().getCurrentUser());
+               AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
          }
+         changes.execute();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

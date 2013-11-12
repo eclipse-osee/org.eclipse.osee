@@ -114,7 +114,10 @@ public class AtsTestUtilTest extends AtsTestUtil {
       AtsTestUtil.cleanupAndReset("AtsTestUtilTest.testGetDecisionReview");
       AtsTestUtil.validateArtifactCache();
 
-      Assert.assertNotNull(AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze));
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      Assert.assertNotNull(AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze,
+         changes));
+      changes.execute();
 
       AtsTestUtil.cleanup();
 
@@ -127,8 +130,9 @@ public class AtsTestUtilTest extends AtsTestUtil {
       AtsTestUtil.cleanupAndReset("AtsTestUtilTest.testGetPeerReview");
       AtsTestUtil.validateArtifactCache();
 
-      Assert.assertNotNull(AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze,
-         new AtsChangeSet("testGetPeerReview")));
+      AtsChangeSet changes = new AtsChangeSet("testGetPeerReview");
+      Assert.assertNotNull(AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze, changes));
+      changes.execute();
 
       AtsTestUtil.cleanup();
 

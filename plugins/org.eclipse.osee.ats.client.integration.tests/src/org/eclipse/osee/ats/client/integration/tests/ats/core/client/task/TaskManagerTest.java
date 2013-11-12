@@ -48,7 +48,9 @@ public class TaskManagerTest extends TaskManager {
    @org.junit.Test
    public void testMoveTasks_sameWorkDefinitions() throws OseeCoreException {
       AtsTestUtil.cleanupAndReset("testMoveTasks - sameWorkDefs");
-      TaskArtifact taskToMove = AtsTestUtil.getOrCreateTaskOffTeamWf1();
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      TaskArtifact taskToMove = AtsTestUtil.getOrCreateTaskOffTeamWf1(changes);
+      changes.execute();
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
 
       IAtsWorkDefinition taskWorkDef =
@@ -69,7 +71,9 @@ public class TaskManagerTest extends TaskManager {
    @org.junit.Test
    public void testMoveTasks_differentWorkDefinitions() throws OseeCoreException {
       AtsTestUtil.cleanupAndReset("testMoveTasks - diffWorkDefs");
-      TaskArtifact taskToMove = AtsTestUtil.getOrCreateTaskOffTeamWf1();
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      TaskArtifact taskToMove = AtsTestUtil.getOrCreateTaskOffTeamWf1(changes);
+      changes.execute();
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
       IAtsWorkDefinition taskWorkDef =
          AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForTask(taskToMove).getWorkDefinition();
@@ -103,7 +107,9 @@ public class TaskManagerTest extends TaskManager {
    @org.junit.Test
    public void testMoveTasks_diffWorkDefinitionsButTaskOverride() throws OseeCoreException {
       AtsTestUtil.cleanupAndReset("testMoveTasks - diffWorkDefinitionsButTaskOverride");
-      TaskArtifact taskToMove = AtsTestUtil.getOrCreateTaskOffTeamWf1();
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      TaskArtifact taskToMove = AtsTestUtil.getOrCreateTaskOffTeamWf1(changes);
+      changes.execute();
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
       IAtsWorkDefinition taskWorkDef =
          AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForTask(taskToMove).getWorkDefinition();
@@ -135,13 +141,15 @@ public class TaskManagerTest extends TaskManager {
 
       AtsTestUtil.cleanupAndReset("TaskManagerTest - TransitionToCompleted");
 
-      TaskArtifact taskArt = AtsTestUtil.getOrCreateTaskOffTeamWf1();
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      TaskArtifact taskArt = AtsTestUtil.getOrCreateTaskOffTeamWf1(changes);
+      changes.execute();
 
       // ensure nothing dirty
       AtsTestUtil.validateArtifactCache();
 
       // transition to Completed
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName() + " testTransitionToCompletedThenInWork() 1");
+      changes = new AtsChangeSet(getClass().getSimpleName() + " testTransitionToCompletedThenInWork() 1");
       Result result = TaskManager.transitionToCompleted(taskArt, 0.0, 3, changes);
       Assert.assertEquals(Result.TrueResult, result);
       changes.execute();

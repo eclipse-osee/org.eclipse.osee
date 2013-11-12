@@ -500,8 +500,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
             }
          } catch (Exception ex) {
-            testNameToResultsMap.put("testStateAttributeDuplications",
-               "Error: " + artifact.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
+            testNameToResultsMap.put(
+               "testStateAttributeDuplications",
+               "Error: " + artifact.getArtifactTypeName() + " [" + artifact.toStringWithId() + "] exception: " + ex.getLocalizedMessage());
          }
       }
       transaction.execute();

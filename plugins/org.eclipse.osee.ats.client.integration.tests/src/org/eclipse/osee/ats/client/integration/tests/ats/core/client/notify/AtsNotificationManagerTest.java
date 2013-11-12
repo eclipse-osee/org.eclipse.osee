@@ -202,6 +202,7 @@ public class AtsNotificationManagerTest {
       users.add(UserManager.getUser());
 
       teamArt.getStateMgr().addAssignees(AtsClientService.get().getUserAdmin().getAtsUsers(users));
+      AtsChangeSet.execute(getClass().getSimpleName(), teamArt);
 
       // verify notification exists now only for active, valid email Alex, not for others
       Assert.assertEquals(1, mgr.getNotificationEvents().size());
@@ -260,6 +261,7 @@ public class AtsNotificationManagerTest {
       usersToSet.add(Alex_Kay);
 
       teamArt.getStateMgr().setAssignees(AtsClientService.get().getUserAdmin().getAtsUsers(usersToSet));
+      AtsChangeSet.execute(getClass().getSimpleName(), teamArt);
 
       // verify notification exists now only for Jason_Michael, not for others
       Assert.assertEquals(1, mgr.getNotificationEvents().size());
@@ -291,7 +293,8 @@ public class AtsNotificationManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       teamArt.setCreatedBy(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay), false,
          new Date());
-      teamArt.persist(getClass().getSimpleName() + " - set originator");
+
+      AtsChangeSet.execute(getClass().getSimpleName() + " - set originator", teamArt);
 
       // set alex kay having valid email address
       User user = UserManager.getUser(DemoUsers.Alex_Kay);
@@ -333,7 +336,7 @@ public class AtsNotificationManagerTest {
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       teamArt.setCreatedBy(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay), false,
          new Date());
-      teamArt.persist(getClass().getSimpleName() + " - set originator");
+      AtsChangeSet.execute(getClass().getSimpleName() + " - set originator", teamArt);
 
       // set alex kay having valid email address
       User user = UserManager.getUser(DemoUsers.Alex_Kay);

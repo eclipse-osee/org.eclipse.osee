@@ -48,19 +48,22 @@ public class CopyActionDetailsTest {
 
    @Test
    public void test02GetDetailsStringForTask() throws OseeCoreException {
-      String str = new CopyActionDetails(AtsTestUtil.getOrCreateTaskOffTeamWf1()).getDetailsString();
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      String str = new CopyActionDetails(AtsTestUtil.getOrCreateTaskOffTeamWf1(changes)).getDetailsString();
       assertEquals(
-         "\"Task\" - " + AtsTestUtil.getOrCreateTaskOffTeamWf1().getAtsId() + " - \"AtsTestUtil - Task [CopyActionDetailsTest]\"",
+         "\"Task\" - " + AtsTestUtil.getOrCreateTaskOffTeamWf1(changes).getAtsId() + " - \"AtsTestUtil - Task [CopyActionDetailsTest]\"",
          str);
+      changes.execute();
    }
 
    @Test
    public void test03GetDetailsStringForDecisionReview() throws OseeCoreException {
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       DecisionReviewArtifact review =
-         AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze);
+         AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze, changes);
       String str = new CopyActionDetails(review).getDetailsString();
       assertEquals("\"Decision Review\" - " + review.getAtsId() + " - \"AtsTestUtil Test Decision Review\"", str);
-      review.persist(getClass().getSimpleName());
+      changes.execute();
    }
 
    @Test

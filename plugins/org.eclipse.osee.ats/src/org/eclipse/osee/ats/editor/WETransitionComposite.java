@@ -193,6 +193,8 @@ public class WETransitionComposite extends Composite {
       final IAtsStateDefinition fromStateDef = awa.getStateDefinition();
       ITransitionHelper helper = new TransitionHelperAdapter() {
 
+         private AtsChangeSet changes;
+
          @Override
          public boolean isPrivilegedEditEnabled() {
             return editor.isPrivilegedEditModeEnabled();
@@ -215,7 +217,7 @@ public class WETransitionComposite extends Composite {
          }
 
          @Override
-         public Result handleExtraHoursSpent() {
+         public Result handleExtraHoursSpent(final IAtsChangeSet changes) {
             final Result result = new Result(true, "");
             Displays.ensureInDisplayThread(new Runnable() {
 
@@ -223,7 +225,7 @@ public class WETransitionComposite extends Composite {
                public void run() {
                   boolean resultBool = false;
                   try {
-                     resultBool = handlePopulateStateMetrics(fromStateDef, toStateDef);
+                     resultBool = handlePopulateStateMetrics(fromStateDef, toStateDef, changes);
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                      result.set(false);
@@ -272,13 +274,11 @@ public class WETransitionComposite extends Composite {
          }
 
          @Override
-         public void setInTransition(IAtsWorkItem workItem, boolean inTransition) throws OseeCoreException {
-            AtsClientService.get().getWorkflowArtifact(workItem).setInTransition(inTransition);
-         }
-
-         @Override
          public IAtsChangeSet getChangeSet() {
-            return new AtsChangeSet(getName());
+            if (changes == null) {
+               changes = new AtsChangeSet(getName());
+            }
+            return changes;
          }
 
          @Override
@@ -308,7 +308,7 @@ public class WETransitionComposite extends Composite {
       });
    }
 
-   private boolean handlePopulateStateMetrics(IAtsStateDefinition fromStateDefinition, IAtsStateDefinition toStateDefinition) throws OseeCoreException {
+   private boolean handlePopulateStateMetrics(IAtsStateDefinition fromStateDefinition, IAtsStateDefinition toStateDefinition, IAtsChangeSet changes) throws OseeCoreException {
       int percent = 0;
       // If state weighting, always 100 cause state is completed
       if (AtsClientService.get().getWorkDefinitionAdmin().isStateWeightingEnabled(awa.getWorkDefinition())) {
@@ -339,8 +339,7 @@ public class WETransitionComposite extends Composite {
          }
       }
       awa.getStateMgr().updateMetrics(awa.getStateDefinition(), additionalHours, percent, true);
-      AtsCore.getLogFactory().writeToStore(awa);
-
+      changes.add(awa);
       return true;
    }
 

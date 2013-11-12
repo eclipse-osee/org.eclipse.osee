@@ -11,100 +11,64 @@
 
 package org.eclipse.osee.ats.core.internal.state;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.api.workflow.WorkState;
-import org.eclipse.osee.ats.api.workflow.WorkStateProvider;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
+import org.eclipse.osee.ats.api.workflow.state.WorkStateFactory;
 import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
-import org.eclipse.osee.ats.core.model.impl.WorkStateProviderImpl;
-import org.eclipse.osee.ats.core.notify.IAtsNotificationListener;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
-import org.eclipse.osee.ats.core.workflow.state.AtsWorkStateFactory;
 import org.eclipse.osee.ats.core.workflow.state.SimpleTeamState;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
  */
-public class StateManager implements IAtsNotificationListener, IAtsStateManager {
+public class StateManager implements IAtsStateManager {
 
    private final IAtsWorkItem workItem;
-   private WorkStateProvider stateProvider = null;
-   private int loadTransactionNumber;
+   private String currentStateName;
+   private final List<WorkState> states = new LinkedList<WorkState>();
+   private final WorkStateFactory factory;
+   private Integer percentCompleteValue = 0;
+   private final List<IAtsUser> initialAssignees = new ArrayList<IAtsUser>();
+   private boolean dirty = false;
+   private final String instanceGuid;
 
    public StateManager(IAtsWorkItem workItem) {
       this.workItem = workItem;
-   }
-
-   @Override
-   public synchronized WorkStateProvider getStateProvider() throws OseeCoreException {
-      // Refresh the StateProvider on first load or when workItem transaction number changes
-      if (stateProvider == null || AtsCore.getWorkItemService().getTransactionNumber(workItem) != loadTransactionNumber) {
-         load();
-      }
-      return stateProvider;
-   }
-
-   @Override
-   public void reload() throws OseeCoreException {
-      load();
-   }
-
-   @Override
-   public synchronized void load() throws OseeCoreException {
-      String currentStateXml =
-         AtsCore.getAttrResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "");
-      if (Strings.isValid(currentStateXml)) {
-         WorkStateImpl currentState = AtsWorkStateFactory.getFromXml(currentStateXml);
-         stateProvider = new WorkStateProviderImpl(this, currentState);
-         for (String stateXml : AtsCore.getAttrResolver().getAttributesToStringList(workItem, AtsAttributeTypes.State)) {
-            WorkStateImpl state = AtsWorkStateFactory.getFromXml(stateXml);
-            if (!state.getName().equals(currentState.getName())) {
-               if (!state.getName().equals(currentState.getName())) {
-                  stateProvider.addState(state);
-               }
-            }
-         }
-      } else {
-         stateProvider = new WorkStateProviderImpl(this);
-      }
-      ((WorkStateProviderImpl) stateProvider).setNotificationListener(this);
-      loadTransactionNumber = AtsCore.getWorkItemService().getTransactionNumber(workItem);
+      this.factory = this;
+      this.instanceGuid = GUID.create();
    }
 
    @Override
    public String getCurrentStateName() {
-      try {
-         return getStateProvider().getCurrentStateName();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsCore.class, Level.SEVERE, ex);
-      }
-      return "";
+      return currentStateName;
    }
 
    @Override
@@ -114,73 +78,69 @@ public class StateManager implements IAtsNotificationListener, IAtsStateManager 
 
    @Override
    public StateType getCurrentStateType() {
-      try {
-         if (AtsCore.getAttrResolver().isAttributeTypeValid(workItem, AtsAttributeTypes.CurrentStateType)) {
-            // backward compatibility
-            if (AtsCore.getAttrResolver().getSoleAttributeValueAsString(workItem, AtsAttributeTypes.CurrentStateType,
-               null) == null) {
-               if (getCurrentStateName().equals(TeamState.Completed.getName())) {
-                  return StateType.Completed;
-               } else if (getCurrentStateName().equals(TeamState.Cancelled.getName())) {
-                  return StateType.Cancelled;
-               } else {
-                  return StateType.Working;
-               }
-            } else {
-               return StateType.valueOf(AtsCore.getAttrResolver().getSoleAttributeValueAsString(workItem,
-                  AtsAttributeTypes.CurrentStateType, null));
-            }
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsCore.class, Level.SEVERE, ex);
+      if (getCurrentStateName().equals(TeamState.Completed.getName())) {
+         return StateType.Completed;
+      } else if (getCurrentStateName().equals(TeamState.Cancelled.getName())) {
+         return StateType.Cancelled;
+      } else {
+         return StateType.Working;
       }
-      return null;
    }
 
    @Override
    public void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {
-      WorkStateProvider provider = getStateProvider();
 
       // get hours in current state, if additional hours + current hours < 0, walk other states subtracting difference
-      double hoursInCurrentState = provider.getHoursSpent(state.getName());
+      double hoursInCurrentState = getHoursSpent(state.getName());
       double remaining = hoursInCurrentState + additionalHours;
       if (remaining < 0.0) {
-         provider.setHoursSpent(state.getName(), 0.0);
-         for (String stateName : provider.getVisitedStateNames()) {
-            hoursInCurrentState = provider.getHoursSpent(stateName);
+         setHoursSpent(state.getName(), 0.0);
+         for (String stateName : getVisitedStateNames()) {
+            hoursInCurrentState = getHoursSpent(stateName);
             remaining += hoursInCurrentState;
             if (remaining < 0.0) {
-               provider.setHoursSpent(stateName, 0.0);
+               setHoursSpent(stateName, 0.0);
             } else {
-               provider.setHoursSpent(stateName, remaining);
+               setHoursSpent(stateName, remaining);
                break;
             }
          }
       } else {
-         provider.setHoursSpent(state.getName(), remaining);
+         setHoursSpent(state.getName(), remaining);
       }
 
       if (AtsCore.getWorkDefService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
-         provider.setPercentComplete(state.getName(), percentComplete);
+         setPercentComplete(state.getName(), percentComplete);
       } else {
-         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.PercentComplete, percentComplete);
+         this.percentCompleteValue = percentComplete;
       }
       if (logMetrics) {
          logMetrics(workItem.getStateMgr().getCurrentState(), AtsCore.getUserService().getCurrentUser(), new Date());
       }
-      writeToStore();
+      setDirty(true);
    }
 
    protected void logMetrics(IStateToken state, IAtsUser user, Date date) throws OseeCoreException {
       String hoursSpent = AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal(workItem));
+      logMetrics(workItem, PercentCompleteTotalUtil.getPercentCompleteTotal(workItem) + "", hoursSpent, state, user,
+         date);
+   }
+
+   public static void logMetrics(IAtsWorkItem workItem, String percent, String hours, IStateToken state, IAtsUser user, Date date) throws OseeCoreException {
       IAtsLogItem logItem =
          AtsCore.getLogFactory().newLogItem(
             LogType.Metrics,
             date,
             user,
             state.getName(),
-            String.format("Percent %s Hours %s", PercentCompleteTotalUtil.getPercentCompleteTotal(workItem), hoursSpent));
+            String.format("Percent %s Hours %s", PercentCompleteTotalUtil.getPercentCompleteTotal(workItem),
+               Double.parseDouble(hours)));
       workItem.getLog().addLogItem(logItem);
+   }
+
+   @Override
+   public void setMetrics(double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date) throws OseeCoreException {
+      setMetrics(getCurrentState(), hours, percentComplete, logMetrics, user, date);
    }
 
    /**
@@ -201,18 +161,18 @@ public class StateManager implements IAtsNotificationListener, IAtsStateManager 
          if (logMetrics) {
             logMetrics(workItem.getStateMgr().getCurrentState(), AtsCore.getUserService().getCurrentUser(), new Date());
          }
-         writeToStore();
+         setDirty(true);
       }
    }
 
    protected boolean setMetricsIfChanged(IStateToken state, double hours, int percentComplete) throws OseeCoreException {
       boolean changed = false;
-      if (!isHoursEqual(getStateProvider().getHoursSpent(state.getName()), hours)) {
-         getStateProvider().setHoursSpent(state.getName(), hours);
+      if (!isHoursEqual(getHoursSpent(state.getName()), hours)) {
+         setHoursSpent(state.getName(), hours);
          changed = true;
       }
-      if (percentComplete != getStateProvider().getPercentComplete(state.getName())) {
-         getStateProvider().setPercentComplete(state.getName(), percentComplete);
+      if (percentComplete != getPercentComplete(state.getName())) {
+         setPercentComplete(state.getName(), percentComplete);
          changed = true;
       }
       return changed;
@@ -227,21 +187,39 @@ public class StateManager implements IAtsNotificationListener, IAtsStateManager 
    public void addAssignees(String stateName, Collection<? extends IAtsUser> assignees) throws OseeCoreException {
       if (assignees == null || assignees.isEmpty()) {
          return;
-      } else if (getStateType().isCompletedOrCancelledState()) {
-         throw new OseeStateException("Can't assign completed/cancelled states.");
       }
-      getStateProvider().addAssignees(stateName, assignees);
-      writeToStore();
+      for (IAtsUser assignee : assignees) {
+         if (AtsCoreUsers.isGuestUser(assignee)) {
+            throw new OseeArgumentException("Can not assign workflow to Guest");
+         }
+      }
+      WorkState state = getState(stateName);
+
+      List<IAtsUser> currentAssignees = state.getAssignees();
+      for (IAtsUser assignee : assignees) {
+         if (!currentAssignees.contains(assignee)) {
+            state.addAssignee(assignee);
+         }
+      }
+      if (getAssignees().size() > 1 && getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER)) {
+         removeAssignee(getCurrentStateName(), AtsCoreUsers.UNASSIGNED_USER);
+      }
+      if (getAssignees().size() > 1 && getAssignees().contains(AtsCoreUsers.SYSTEM_USER)) {
+         removeAssignee(getCurrentStateName(), AtsCoreUsers.SYSTEM_USER);
+      }
+      setDirty(true);
    }
 
    @Override
-   public String getHoursSpentStr(String stateName) throws OseeCoreException {
+   public String getHoursSpentStr(String stateName) {
       return AtsUtilCore.doubleToI18nString(getHoursSpent(stateName), true);
    }
 
    @Override
    public void setAssignee(IAtsUser assignee) throws OseeCoreException {
-      setAssignees(Arrays.asList(assignee));
+      if (assignee != null) {
+         setAssignees(Arrays.asList(assignee));
+      }
    }
 
    @Override
@@ -255,58 +233,50 @@ public class StateManager implements IAtsNotificationListener, IAtsStateManager 
 
    @Override
    public void setAssignees(String stateName, List<? extends IAtsUser> assignees) throws OseeCoreException {
-      if (assignees == null || assignees.isEmpty()) {
-         return;
-      } else {
-         IAtsStateDefinition stateDef = workItem.getWorkDefinition().getStateByName(stateName);
-         StateType stateType = stateDef.getStateType();
-         if (stateType.isCompletedOrCancelledState()) {
-            throw new OseeStateException("Can't assign completed/cancelled states.");
-         }
-      }
-      getStateProvider().setAssignees(stateName, new LinkedList<IAtsUser>(assignees));
-      writeToStore();
-   }
-
-   @Override
-   public void transitionHelper(List<? extends IAtsUser> toAssignees, IStateToken fromStateName, IStateToken toStateName, String cancelReason) throws OseeCoreException {
-      transitionHelper(toAssignees, fromStateName.getName(), toStateName.getName(), cancelReason);
-      AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType,
-         toStateName.getStateType().name());
-      writeToStore();
-   }
-
-   @Override
-   public void transitionHelper(List<? extends IAtsUser> toAssignees, String fromStateName, String toStateName, String cancelReason) throws OseeCoreException {
-      createState(toStateName);
-      setAssignees(toStateName, toAssignees);
-      setCurrentStateName(toStateName);
-      writeToStore();
-   }
-
-   /**
-    * Initializes state machine and sets the current state to stateName
-    */
-
-   @Override
-   public void initializeStateMachine(IStateToken workPage, List<? extends IAtsUser> assignees, IAtsUser currentUser) throws OseeCoreException {
-      getStateProvider().createState(workPage.getName());
-      getStateProvider().setCurrentStateName(workPage.getName());
       if (assignees == null) {
-         assignees = new LinkedList<IAtsUser>();
+         return;
       }
-      if (workPage.getStateType().isWorkingState()) {
+      IAtsStateDefinition stateDef = workItem.getWorkDefinition().getStateDefinitionByName(stateName);
+      StateType stateType = stateDef.getStateType();
+      if (stateType.isCompletedOrCancelledState()) {
          if (assignees.isEmpty()) {
-            setAssignees(Arrays.asList(currentUser));
-         } else {
-            setAssignees(assignees);
+            return;
+         }
+         throw new OseeStateException("Can't assign completed/cancelled states.");
+      }
+
+      for (IAtsUser assignee : assignees) {
+         if (AtsCoreUsers.isGuestUser(assignee)) {
+            throw new OseeArgumentException("Can not assign workflow to Guest");
          }
       }
-      if (AtsCore.getAttrResolver().isAttributeTypeValid(workItem, AtsAttributeTypes.CurrentStateType)) {
-         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType,
-            workPage.getStateType().name());
+
+      // Note: current and next state could be same
+      WorkState currState = getState(getCurrentStateName());
+      List<IAtsUser> currAssignees = currState.getAssignees();
+
+      WorkState nextState = getState(stateName);
+      List<IAtsUser> nextAssignees = new ArrayList<IAtsUser>(assignees);
+
+      List<IAtsUser> notifyNewAssignees = new ArrayList<IAtsUser>(nextAssignees);
+      notifyNewAssignees.removeAll(currAssignees);
+
+      //Update assignees for state
+      nextState.setAssignees(nextAssignees);
+
+      // Remove UnAssigned if part of assignees
+      if (getAssignees().size() > 1 && getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER)) {
+         removeAssignee(getCurrentStateName(), AtsCoreUsers.UNASSIGNED_USER);
       }
-      writeToStore();
+      setDirty(true);
+   }
+
+   @Override
+   public void transitionHelper(List<? extends IAtsUser> toAssignees, IStateToken fromState, IStateToken toState, String cancelReason) throws OseeCoreException {
+      createState(toState);
+      setAssignees(toState.getName(), toAssignees);
+      setCurrentStateName(toState.getName());
+      setDirty(true);
    }
 
    @Override
@@ -319,19 +289,21 @@ public class StateManager implements IAtsNotificationListener, IAtsStateManager 
       if (state == null) {
          return 0;
       }
-      IAtsLogItem logItem = workItem.getStateStartedData(state);
+      IAtsLogItem logItem = getStateStartedData(state);
       if (logItem == null) {
          return 0;
       }
       return new Date().getTime() - logItem.getDate().getTime();
    }
 
-   public static String getCompletedDateByState(IAtsWorkItem workItem, IAtsStateDefinition state) throws OseeCoreException {
-      IAtsLogItem stateEvent = workItem.getLog().getStateEvent(LogType.StateComplete, state.getName());
-      if (stateEvent != null && stateEvent.getDate() != null) {
-         return DateUtil.getMMDDYYHHMM(stateEvent.getDate());
-      }
-      return "";
+   @Override
+   public IAtsLogItem getStateStartedData(IStateToken state) throws OseeCoreException {
+      return getStateStartedData(state.getName());
+   }
+
+   @Override
+   public IAtsLogItem getStateStartedData(String stateName) throws OseeCoreException {
+      return workItem.getLog().getStateEvent(LogType.StateEntered, stateName);
    }
 
    @Override
@@ -340,130 +312,74 @@ public class StateManager implements IAtsNotificationListener, IAtsStateManager 
    }
 
    @Override
-   public void addState(String stateName, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete) throws OseeCoreException {
-      getStateProvider().addState(stateName, assignees, hoursSpent, percentComplete);
-      writeToStore();
+   public void addState(String stateName, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete) {
+      addState(stateName, assignees, hoursSpent, percentComplete, true);
+   }
+
+   protected void addState(String name, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete, boolean logError) {
+      if (getVisitedStateNames().contains(name)) {
+         String errorStr = String.format("Error: Duplicate state [%s] for [%s]", name, factory.getId());
+         if (logError) {
+            OseeLog.log(Activator.class, Level.SEVERE, errorStr);
+         }
+         return;
+      } else {
+         addState(factory.createStateData(name, assignees, hoursSpent, percentComplete));
+      }
    }
 
    @Override
-   public boolean isDirty() throws OseeCoreException {
-      return isDirtyResult().isTrue();
+   public boolean isDirty() {
+      return dirty;
    }
 
-   @Override
-   public Result isDirtyResult() throws OseeCoreException {
-      if (AtsCore.getAttrResolver().getAttributeCount(workItem, AtsAttributeTypes.CurrentState) == 0) {
-         return new Result(true, "StateManager: Current State new");
-      }
-      if (!AtsWorkStateFactory.toXml(this, getCurrentStateName()).equals(
-         AtsCore.getAttrResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, null))) {
-         return new Result(true, "StateManager: Current State modified");
-      }
-      for (String stateName : getStateProvider().getVisitedStateNames()) {
-         if (!stateName.equals(getCurrentStateName())) {
-            boolean found = false;
-            // Update attribute if it already exists
-            Collection<IAttribute<String>> attrs =
-               AtsCore.getAttrResolver().getAttributes(workItem, AtsAttributeTypes.State);
-            for (IAttribute<String> attr : attrs) {
-               String attrValue = attr.getValue();
-               WorkStateImpl storedState = AtsWorkStateFactory.getFromXml(attrValue);
-               if (stateName.equals(storedState.getName())) {
-                  found = true;
-                  if (!workItem.getStateMgr().getStateProvider().isSame(storedState)) {
-                     return new Result(true, String.format("StateManager: State [%s] modified was [%s] is [%s]",
-                        stateName, attrValue, AtsWorkStateFactory.toXml(workItem.getStateMgr(), stateName)));
-                  }
-               }
-            }
-            // Else, doesn't exist yet so it's dirty
-            if (!found) {
-               return new Result(true, String.format("StateManager: State [%s] added", stateName));
-            }
+   private WorkState getState(String string) {
+      for (WorkState state : states) {
+         if (state.getName().equals(string)) {
+            return state;
          }
       }
-      return Result.FalseResult;
+      return null;
    }
 
    @Override
-   public void writeToStore() throws OseeCoreException {
-      AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState,
-         AtsWorkStateFactory.toXml(this, getCurrentStateName()));
-      removeCurrentStateAttributeIfExists(getCurrentStateName());
-      writeStatesToStore();
+   public List<IAtsUser> getAssignees(String stateName) {
+      return getAssigneesForState(stateName);
    }
 
-   private void writeStatesToStore() throws OseeCoreException {
-      for (String stateName : getStateProvider().getVisitedStateNames()) {
-         if (!stateName.equals(getCurrentStateName())) {
-            boolean updated = updateStateAttributeIfExsists(stateName);
-            // Else, doesn't exist yet, create
-            if (!updated) {
-               AtsCore.getAttrResolver().addAttribute(workItem, AtsAttributeTypes.State,
-                  AtsWorkStateFactory.toXml(workItem.getStateMgr(), stateName));
-            }
-         }
+   @Override
+   public List<IAtsUser> getAssigneesForState(String fromStateName) {
+      WorkState state = getState(fromStateName);
+      if (state != null) {
+         return state.getAssignees();
+      }
+      return Collections.emptyList();
+   }
+
+   @Override
+   public List<IAtsUser> getAssignees() throws OseeStateException {
+      WorkState state = getState(getCurrentStateName());
+      if (state != null) {
+         return state.getAssignees();
+      } else {
+         throw new OseeStateException("State [%s] not found", getCurrentStateName());
       }
    }
 
-   private void removeCurrentStateAttributeIfExists(String stateName) throws OseeCoreException {
-      Collection<IAttribute<String>> attrs = AtsCore.getAttrResolver().getAttributes(workItem, AtsAttributeTypes.State);
-      for (IAttribute<String> attr : attrs) {
-         WorkStateImpl storedState = AtsWorkStateFactory.getFromXml(attr.getValue());
-         if (stateName.equals(storedState.getName())) {
-            attr.delete();
-         }
-      }
-   }
-
-   private boolean updateStateAttributeIfExsists(String stateName) throws OseeCoreException {
-      // Update attribute if it already exists
-      Collection<IAttribute<String>> attrs = AtsCore.getAttrResolver().getAttributes(workItem, AtsAttributeTypes.State);
-      for (IAttribute<String> attr : attrs) {
-         WorkStateImpl storedState = AtsWorkStateFactory.getFromXml(attr.getValue());
-         if (stateName.equals(storedState.getName())) {
-            attr.setValue(AtsWorkStateFactory.toXml(workItem.getStateMgr(), stateName));
-            return true;
-         }
-      }
-      return false;
-   }
-
    @Override
-   public void notifyAssigned(List<IAtsUser> notifyAssignees) throws OseeCoreException {
-      AtsCore.getNotifyService().notify(workItem, notifyAssignees, AtsNotifyType.Assigned);
-   }
-
-   @Override
-   public List<IAtsUser> getAssignees(String stateName) throws OseeCoreException {
-      return getStateProvider().getAssignees(stateName);
-   }
-
-   @Override
-   public List<IAtsUser> getAssigneesForState(String fromStateName) throws OseeCoreException {
-      return getStateProvider().getAssigneesForState(fromStateName);
-   }
-
-   @Override
-   public List<IAtsUser> getAssignees() throws OseeCoreException {
-      return getStateProvider().getAssignees();
-   }
-
-   @Override
-   public void setCurrentStateName(String currentStateName) throws OseeCoreException {
-      getStateProvider().setCurrentStateName(currentStateName);
-      writeToStore();
+   public void setCurrentStateName(String currentStateName) {
+      this.currentStateName = currentStateName;
+      setDirty(true);
    }
 
    @Override
    public void addAssignee(IAtsUser assignee) throws OseeCoreException {
-      addAssignees(getCurrentStateName(), Arrays.asList(assignee));
+      addAssignee(getCurrentStateName(), assignee);
    }
 
    @Override
-   public void addState(String stateName, List<? extends IAtsUser> assignees) throws OseeCoreException {
-      getStateProvider().addState(stateName, assignees);
-      writeToStore();
+   public void addState(String stateName, List<? extends IAtsUser> assignees) {
+      addState(stateName, assignees, 0, 0);
    }
 
    @Override
@@ -472,106 +388,136 @@ public class StateManager implements IAtsNotificationListener, IAtsStateManager 
    }
 
    @Override
-   public void createState(String stateName) throws OseeCoreException {
-      getStateProvider().createState(stateName);
-      writeToStore();
+   public void createState(String stateName) {
+      WorkState state = getState(stateName);
+      if (state == null) {
+         state = factory.createStateData(stateName);
+         addState(state);
+      }
    }
 
    @Override
-   public void setPercentComplete(String stateName, int percentComplete) throws OseeCoreException {
-      getStateProvider().setPercentComplete(stateName, percentComplete);
-      writeToStore();
+   public void setPercentComplete(String stateName, int percentComplete) throws OseeStateException {
+      WorkState state = getState(stateName);
+      if (state != null) {
+         state.setPercentComplete(percentComplete);
+         setDirty(true);
+      } else {
+         throw new OseeStateException("State [%s] not found", stateName);
+      }
    }
 
    @Override
-   public void setHoursSpent(String stateName, double hoursSpent) throws OseeCoreException {
-      getStateProvider().setHoursSpent(stateName, hoursSpent);
-      writeToStore();
+   public void setHoursSpent(String stateName, double hoursSpent) throws OseeStateException {
+      WorkState state = getState(stateName);
+      if (state != null) {
+         state.setHoursSpent(hoursSpent);
+         setDirty(true);
+      } else {
+         throw new OseeStateException("State [%s] not found", stateName);
+      }
    }
 
    @Override
-   public double getHoursSpent(String stateName) throws OseeCoreException {
-      return getStateProvider().getHoursSpent(stateName);
+   public double getHoursSpent(String stateName) {
+      WorkState state = getState(stateName);
+      if (state != null) {
+         return state.getHoursSpent();
+      }
+      return 0.0;
    }
 
    @Override
-   public int getPercentComplete(String stateName) throws OseeCoreException {
-      return getStateProvider().getPercentComplete(stateName);
+   public int getPercentComplete(String stateName) {
+      WorkState state = getState(stateName);
+      if (state != null) {
+         return state.getPercentComplete();
+      }
+      return 0;
    }
 
    @Override
-   public List<String> getVisitedStateNames() throws OseeCoreException {
-      return getStateProvider().getVisitedStateNames();
+   public List<String> getVisitedStateNames() {
+      List<String> stateNames = new LinkedList<String>();
+      for (WorkState state : states) {
+         stateNames.add(state.getName());
+      }
+      return stateNames;
    }
 
    @Override
    public void removeAssignee(String stateName, IAtsUser assignee) throws OseeCoreException {
-      getStateProvider().removeAssignee(stateName, assignee);
-      writeToStore();
+      WorkState state = getState(stateName);
+      if (state != null) {
+         state.removeAssignee(assignee);
+         setDirty(true);
+      } else {
+         throw new OseeStateException("State [%s] not found", stateName);
+      }
    }
 
    @Override
    public void setAssignee(IStateToken state, IAtsUser assignee) throws OseeCoreException {
-      getStateProvider().setAssignee(state.getName(), assignee);
-      writeToStore();
+      setAssignee(state.getName(), assignee);
    }
 
    @Override
-   public void createState(IStateToken state) throws OseeCoreException {
-      getStateProvider().createState(state.getName());
-      writeToStore();
+   public void createState(IStateToken state) {
+      createState(state.getName());
    }
 
    @Override
    public boolean isUnAssignedSolely() throws OseeCoreException {
-      return getStateProvider().isUnAssignedSolely();
+      return getAssignees().size() == 1 && isUnAssigned();
    }
 
    @Override
-   public String getAssigneesStr() throws OseeCoreException {
-      return getStateProvider().getAssigneesStr();
+   public String getAssigneesStr() {
+      return getAssigneesStr(getCurrentStateName());
    }
 
    @Override
    public void removeAssignee(IAtsUser assignee) throws OseeCoreException {
-      getStateProvider().removeAssignee(assignee);
-      writeToStore();
+      removeAssignee(getCurrentStateName(), assignee);
    }
 
    @Override
    public boolean isUnAssigned() throws OseeCoreException {
-      return getStateProvider().isUnAssigned();
+      return getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER);
    }
 
    @Override
    public void clearAssignees() throws OseeCoreException {
-      getStateProvider().clearAssignees();
-      writeToStore();
+      setAssignees(getCurrentStateName(), new LinkedList<IAtsUser>());
    }
 
    @Override
-   public Collection<? extends IAtsUser> getAssignees(IStateToken state) throws OseeCoreException {
-      return getStateProvider().getAssignees(state.getName());
+   public Collection<? extends IAtsUser> getAssignees(IStateToken state) {
+      return getAssignees(state.getName());
    }
 
    @Override
-   public boolean isStateVisited(IStateToken state) throws OseeCoreException {
-      return getStateProvider().isStateVisited(state.getName());
+   public boolean isStateVisited(IStateToken state) {
+      return isStateVisited(state.getName());
    }
 
    @Override
-   public String getAssigneesStr(int length) throws OseeCoreException {
-      return getStateProvider().getAssigneesStr(getCurrentStateName(), length);
+   public String getAssigneesStr(int length) {
+      return getAssigneesStr(getCurrentStateName(), length);
    }
 
    @Override
-   public String getAssigneesStr(String stateName, int length) throws OseeCoreException {
-      return getStateProvider().getAssigneesStr(stateName, length);
+   public String getAssigneesStr(String stateName, int length) {
+      String str = getAssigneesStr(stateName);
+      if (str.length() > length) {
+         return str.substring(0, length - 1) + "...";
+      }
+      return str;
    }
 
    @Override
-   public String getAssigneesStr(String stateName) throws OseeCoreException {
-      return getStateProvider().getAssigneesStr(stateName);
+   public String getAssigneesStr(String stateName) {
+      return AtsObjects.toString("; ", getAssignees(stateName));
    }
 
    @Override
@@ -581,12 +527,14 @@ public class StateManager implements IAtsNotificationListener, IAtsStateManager 
 
    @Override
    public void setAssignee(String stateName, IAtsUser assignee) throws OseeCoreException {
-      setAssignees(stateName, Arrays.asList(assignee));
+      if (assignee != null) {
+         setAssignees(stateName, Arrays.asList(assignee));
+      }
    }
 
    @Override
-   public boolean isStateVisited(String stateName) throws OseeCoreException {
-      return getStateProvider().isStateVisited(stateName);
+   public boolean isStateVisited(String stateName) {
+      return getVisitedStateNames().contains(stateName);
    }
 
    @Override
@@ -605,9 +553,21 @@ public class StateManager implements IAtsNotificationListener, IAtsStateManager 
    }
 
    @Override
-   public void addState(WorkState workState) throws OseeCoreException {
-      getStateProvider().addState(workState);
-      writeToStore();
+   public void addState(WorkState workState) {
+      addState(workState, true);
+   }
+
+   protected void addState(WorkState state, boolean logError) {
+      if (getVisitedStateNames().contains(state.getName())) {
+         String errorStr = String.format("Error: Duplicate state [%s] for [%s]", state.getName(), factory.getId());
+         if (logError) {
+            OseeLog.log(Activator.class, Level.SEVERE, errorStr);
+         }
+         return;
+      } else {
+         states.add(state);
+         setDirty(true);
+      }
    }
 
    @Override
@@ -620,8 +580,17 @@ public class StateManager implements IAtsNotificationListener, IAtsStateManager 
    }
 
    @Override
-   public boolean isSame(WorkState workState) throws OseeCoreException {
-      return getStateProvider().isSame(workState);
+   public boolean isSame(WorkState workState) {
+      WorkState thisState = getState(workState.getName());
+      if (thisState == null) {
+         return false;
+      } else if (thisState.getHoursSpent() != workState.getHoursSpent()) {
+         return false;
+      } else if (thisState.getPercentComplete() != workState.getPercentComplete()) {
+         return false;
+      }
+      return org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(thisState.getAssignees(),
+         workState.getAssignees());
    }
 
    @Override
@@ -629,4 +598,45 @@ public class StateManager implements IAtsNotificationListener, IAtsStateManager 
       return workItem.getAtsId();
    }
 
+   public void setDirty(boolean dirty) {
+      this.dirty = dirty;
+   }
+
+   @Override
+   public void setPercentCompleteValue(Integer percentComplete) {
+      this.percentCompleteValue = percentComplete;
+   }
+
+   @Override
+   public Integer getPercentCompleteValue() {
+      return this.percentCompleteValue;
+   }
+
+   public List<IAtsUser> getInitialAssignees() {
+      return initialAssignees;
+   }
+
+   @Override
+   public List<IAtsUser> getAssigneesAdded() throws OseeCoreException {
+      List<IAtsUser> added = new ArrayList<IAtsUser>();
+      List<IAtsUser> current = getAssignees();
+      for (IAtsUser user : current) {
+         if (!initialAssignees.contains(user)) {
+            added.add(user);
+         }
+      }
+      return added;
+   }
+
+   public void clear() {
+      initialAssignees.clear();
+      states.clear();
+      percentCompleteValue = null;
+      currentStateName = null;
+   }
+
+   @Override
+   public String toString() {
+      return String.format("StateManager id[%s] for workitem [%s]", instanceGuid, workItem);
+   }
 }

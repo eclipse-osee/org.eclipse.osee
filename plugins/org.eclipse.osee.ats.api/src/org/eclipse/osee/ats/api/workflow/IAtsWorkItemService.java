@@ -72,8 +72,6 @@ public interface IAtsWorkItemService {
 
    void transitioned(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, List<? extends IAtsUser> updatedAssigees, IAtsChangeSet changes) throws OseeCoreException;
 
-   void setInTransition(IAtsWorkItem workItem, boolean inTransition);
-
    Collection<ITransitionListener> getTransitionListeners();
 
    ILogStorageProvider getLogStorageProvider(IAtsWorkItem workItem);

@@ -21,12 +21,12 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.workflow.ChangeTypeDialog;
 import org.eclipse.osee.ats.workflow.ChangeTypeToSwtImage;
@@ -35,8 +35,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -96,10 +94,7 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
          }
          if (dialog.open() == 0) {
 
-            SkynetTransaction transaction = null;
-            if (persist) {
-               transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Type");
-            }
+            AtsChangeSet changes = new AtsChangeSet("ATS Prompt Change Type");
 
             ChangeType newChangeType = dialog.getSelection();
             for (TeamWorkFlowArtifact team : teams) {
@@ -107,12 +102,12 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
                if (currChangeType != newChangeType) {
                   ChangeTypeUtil.setChangeType(team, newChangeType);
                   if (persist) {
-                     team.saveSMA(transaction);
+                     team.saveSMA(changes);
                   }
                }
             }
             if (persist) {
-               transaction.execute();
+               changes.execute();
             }
          }
          return true;

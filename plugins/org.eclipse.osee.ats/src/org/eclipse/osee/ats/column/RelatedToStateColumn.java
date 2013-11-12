@@ -23,10 +23,10 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.StateListDialog;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -36,8 +36,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.SWT;
@@ -107,22 +105,18 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
             } else if (selectedState.equals(NONE)) {
                selectedState = "";
             }
-            SkynetTransaction transaction = null;
-            if (persist) {
-               transaction =
-                  TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Related-to-State");
-            }
+            AtsChangeSet changes = new AtsChangeSet("ATS Prompt Change Related-to-State");
             for (TaskArtifact task : tasks) {
                String state = task.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "");
                if (!state.equals(selectedState)) {
                   task.setSoleAttributeFromString(AtsAttributeTypes.RelatedToState, selectedState);
                   if (persist) {
-                     task.saveSMA(transaction);
+                     task.saveSMA(changes);
                   }
                }
             }
             if (persist) {
-               transaction.execute();
+               changes.execute();
             }
          }
          return true;

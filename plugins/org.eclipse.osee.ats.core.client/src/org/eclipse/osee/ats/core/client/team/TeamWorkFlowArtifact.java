@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * @author Donald G. Dunne
@@ -76,19 +75,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    @Override
    public String getArtifactSuperTypeName() {
       return "Team Workflow";
-   }
-
-   @Override
-   public void saveSMA(SkynetTransaction transaction) {
-      super.saveSMA(transaction);
-      try {
-         ActionArtifact parentAction = getParentActionArtifact();
-         ActionArtifactRollup rollup = new ActionArtifactRollup(parentAction);
-         rollup.resetAttributesOffChildren();
-         parentAction.persist(transaction);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't reset Action parent of children", ex);
-      }
    }
 
    @Override

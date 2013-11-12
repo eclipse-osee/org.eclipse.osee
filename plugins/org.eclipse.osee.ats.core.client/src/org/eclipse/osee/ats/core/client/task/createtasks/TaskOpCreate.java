@@ -40,7 +40,7 @@ public class TaskOpCreate extends AbstractTaskOp {
       String taskTitle = taskTitleProvider.getTaskTitle(metadata);
       Date creationDate = new Date();
 
-      TaskArtifact taskArt = parentTeamWf.createNewTask(taskTitle, creationDate, AtsCoreUsers.SYSTEM_USER);
+      TaskArtifact taskArt = parentTeamWf.createNewTask(taskTitle, creationDate, AtsCoreUsers.SYSTEM_USER, changes);
 
       // create for Implement state regardless of which state workflow is in
       taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, TeamState.Implement.getName());

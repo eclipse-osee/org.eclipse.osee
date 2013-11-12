@@ -8,16 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.internal.state;
+package org.eclipse.osee.ats.client.integration.tests;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.health.AtsValidateAtsDatabaseTest;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({StateManagerTest.class})
 /**
- * @author Donald G. Dunne
+ * Extension to validate ats database so test will run once after populate and once at end of the tests. Without this,
+ * JUnit only runs test once.
+ * 
+ * @author Donald G Dunne
  */
-public class AtsCore_Internal_State_Suite {
-   // TestSuite
+public class DemoDbPopulateValidateAtsDatabaseTest extends AtsValidateAtsDatabaseTest {
+   // do nothing
 }

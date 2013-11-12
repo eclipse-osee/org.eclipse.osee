@@ -131,6 +131,7 @@ public class AtsLog implements IAtsLog {
    @Override
    public void clearLog() {
       logItems.clear();
+      dirty = true;
    }
 
    @Override

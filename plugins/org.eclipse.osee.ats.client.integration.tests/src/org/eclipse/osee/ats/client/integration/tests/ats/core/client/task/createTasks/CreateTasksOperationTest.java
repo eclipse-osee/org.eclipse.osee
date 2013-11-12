@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.core.client.task.createtasks.TaskMetadata;
 import org.eclipse.osee.ats.core.client.task.createtasks.TaskOpModify;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -306,48 +305,29 @@ public class CreateTasksOperationTest {
 
       Date createdDate = new Date();
 
+      AtsChangeSet changes = new AtsChangeSet(artifactNamePrefix + " - createProperChangesAndTasks");
       TaskArtifact task01 =
-         destTeamWf.createNewTask(artifactNamePrefix + " Task 01", createdDate, AtsCoreUsers.SYSTEM_USER);
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 01", createdDate, AtsCoreUsers.SYSTEM_USER, changes);
       TaskArtifact task02 =
-         destTeamWf.createNewTask(artifactNamePrefix + " Task 02", createdDate, AtsCoreUsers.SYSTEM_USER);
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 02", createdDate, AtsCoreUsers.SYSTEM_USER, changes);
       TaskArtifact task03 =
-         destTeamWf.createNewTask(artifactNamePrefix + " Task 03", createdDate, AtsCoreUsers.SYSTEM_USER);
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 03", createdDate, AtsCoreUsers.SYSTEM_USER, changes);
       TaskArtifact task04 =
-         destTeamWf.createNewTask(artifactNamePrefix + " Task 04", createdDate, AtsCoreUsers.SYSTEM_USER);
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 04", createdDate, AtsCoreUsers.SYSTEM_USER, changes);
       TaskArtifact task05 =
-         destTeamWf.createNewTask(artifactNamePrefix + " Task 05", createdDate, AtsCoreUsers.SYSTEM_USER);
-
+         destTeamWf.createNewTask(artifactNamePrefix + " Task 05", createdDate, AtsCoreUsers.SYSTEM_USER, changes);
       task01.setSoleAttributeFromString(AtsAttributeTypes.TaskToChangedArtifactReference, changeArt01.getGuid());
       task02.setSoleAttributeFromString(AtsAttributeTypes.TaskToChangedArtifactReference, changeArt02.getGuid());
       task03.setSoleAttributeFromString(AtsAttributeTypes.TaskToChangedArtifactReference, changeArt03.getGuid());
       task04.setSoleAttributeFromString(AtsAttributeTypes.TaskToChangedArtifactReference, changeArt04.getGuid());
       task05.setSoleAttributeFromString(AtsAttributeTypes.TaskToChangedArtifactReference, changeArt05.getGuid());
+      changes.execute();
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(reqTeamWf.getWorkingBranch(),
-            artifactNamePrefix + " - createProperChangesAndTasks");
-      changeArt01.persist(transaction);
-      changeArt02.persist(transaction);
-      changeArt03.persist(transaction);
-      changeArt04.persist(transaction);
-      changeArt05.persist(transaction);
-      transaction.execute();
-
-      SkynetTransaction transaction2 =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
-            artifactNamePrefix + " - createProperChangesAndTasks - tasks");
-      task01.persist(transaction2);
-      task02.persist(transaction2);
-      task03.persist(transaction2);
-      task04.persist(transaction2);
-      task05.persist(transaction2);
-      transaction2.execute();
-
-      Collection<Change> changes =
+      Collection<Change> change =
          new ArrayList<Change>(Collections.getAggregate(mockChange01, mockChange02, mockChange03, mockChange04,
             mockChange05));
 
-      ChangeData changeData = new ChangeData(changes);
+      ChangeData changeData = new ChangeData(change);
 
       return changeData;
    }
@@ -397,36 +377,22 @@ public class CreateTasksOperationTest {
 
    private ChangeData createTasksWithoutChanges(TeamWorkFlowArtifact destTeamWf) throws OseeCoreException {
       Date createdDate = new Date();
-      TaskArtifact task01 =
-         destTeamWf.createNewTask(artifactNamePrefix + " Task 01 - No changed artifact", createdDate,
-            AtsCoreUsers.SYSTEM_USER);
-      TaskArtifact task02 =
-         destTeamWf.createNewTask(artifactNamePrefix + " Task 02 - No changed artifact", createdDate,
-            AtsCoreUsers.SYSTEM_USER);
-      TaskArtifact task03 =
-         destTeamWf.createNewTask(artifactNamePrefix + " Task 03 - No changed artifact", createdDate,
-            AtsCoreUsers.SYSTEM_USER);
-      TaskArtifact task04 =
-         destTeamWf.createNewTask(artifactNamePrefix + " Task 04 - No changed artifact", createdDate,
-            AtsCoreUsers.SYSTEM_USER);
-      TaskArtifact task05 =
-         destTeamWf.createNewTask(artifactNamePrefix + " Task 05 - No changed artifact", createdDate,
-            AtsCoreUsers.SYSTEM_USER);
+      AtsChangeSet changes = new AtsChangeSet(artifactNamePrefix + " - createTasksWithoutChanges");
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
-            artifactNamePrefix + " - createTasksWithoutChanges");
-      task01.persist(transaction);
-      task02.persist(transaction);
-      task03.persist(transaction);
-      task04.persist(transaction);
-      task05.persist(transaction);
-      transaction.execute();
+      destTeamWf.createNewTask(artifactNamePrefix + " Task 01 - No changed artifact", createdDate,
+         AtsCoreUsers.SYSTEM_USER, changes);
+      destTeamWf.createNewTask(artifactNamePrefix + " Task 02 - No changed artifact", createdDate,
+         AtsCoreUsers.SYSTEM_USER, changes);
+      destTeamWf.createNewTask(artifactNamePrefix + " Task 03 - No changed artifact", createdDate,
+         AtsCoreUsers.SYSTEM_USER, changes);
+      destTeamWf.createNewTask(artifactNamePrefix + " Task 04 - No changed artifact", createdDate,
+         AtsCoreUsers.SYSTEM_USER, changes);
+      destTeamWf.createNewTask(artifactNamePrefix + " Task 05 - No changed artifact", createdDate,
+         AtsCoreUsers.SYSTEM_USER, changes);
 
-      Collection<Change> changes = new ArrayList<Change>();
+      changes.execute();
 
-      ChangeData changeData = new ChangeData(changes);
-
+      ChangeData changeData = new ChangeData(new ArrayList<Change>());
       return changeData;
    }
    private class MockChange extends Change {

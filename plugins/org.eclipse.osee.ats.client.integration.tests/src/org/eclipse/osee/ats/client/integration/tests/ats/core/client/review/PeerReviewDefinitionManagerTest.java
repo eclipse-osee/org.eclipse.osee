@@ -72,8 +72,7 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), implement.getName(),
             Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null, changes, TransitionOption.None);
       TransitionManager transitionMgr = new TransitionManager(helper);
-      TransitionResults results = transitionMgr.handleAll();
-      changes.execute();
+      TransitionResults results = transitionMgr.handleAllAndPersist();
 
       Assert.assertTrue(results.toString(), results.isEmpty());
 

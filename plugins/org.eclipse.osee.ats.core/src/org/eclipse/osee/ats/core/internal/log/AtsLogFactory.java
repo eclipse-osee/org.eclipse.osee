@@ -32,9 +32,9 @@ public class AtsLogFactory implements IAtsLogFactory {
    }
 
    @Override
-   public IAtsLog getLogLoaded(ILogStorageProvider storageProvider) {
+   public IAtsLog getLogLoaded(IAtsWorkItem workItem) {
       IAtsLog log = getLog();
-      AtsLogReader reader = new AtsLogReader(log, storageProvider);
+      AtsLogReader reader = new AtsLogReader(log, AtsCore.getWorkItemService().getLogStorageProvider(workItem));
       reader.load();
       return log;
    }
@@ -49,6 +49,7 @@ public class AtsLogFactory implements IAtsLogFactory {
       ILogStorageProvider storageProvider = AtsCore.getWorkItemService().getLogStorageProvider(workItem);
       AtsLogWriter writer = new AtsLogWriter(workItem.getLog(), storageProvider);
       writer.save();
+      getLogLoaded(workItem);
    }
 
 }

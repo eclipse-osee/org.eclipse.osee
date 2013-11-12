@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
-
 /**
  * @author Donald G. Dunne
  */
@@ -40,11 +39,12 @@ public interface ITransitionHelper {
    public Result getCompleteOrCancellationReason();
 
    /**
+    * @param changes JavaTip
     * @return Result.isTrue with text if hours provided
     * @return Result.isFalse if no extra hours given
     * @return Result.isCancelled to cancel transition
     */
-   public Result handleExtraHoursSpent();
+   public Result handleExtraHoursSpent(IAtsChangeSet changes);
 
    public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) throws OseeCoreException;
 
@@ -59,8 +59,6 @@ public interface ITransitionHelper {
    public boolean isSystemUser() throws OseeCoreException;
 
    public boolean isSystemUserAssingee(IAtsWorkItem workItem) throws OseeCoreException;
-
-   public void setInTransition(IAtsWorkItem workItem, boolean inTransition) throws OseeCoreException;
 
    public IAtsChangeSet getChangeSet();
 

@@ -216,7 +216,7 @@ public class AtsDeleteManagerTest {
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReview(teamArt, ReviewBlockType.None, testName.name(),
             TeamState.Endorse.getName(), "Description", DecisionReviewManager.getDefaultDecisionReviewOptions(),
-            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), createdDate, createdBy);
+            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), createdDate, createdBy, changes);
       changes.add(decRev);
 
       return teamArt;

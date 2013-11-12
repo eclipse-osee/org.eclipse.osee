@@ -99,28 +99,28 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       return getRelatedArtifactsCount(AtsRelationTypes.TeamWfToTask_Task) > 0;
    }
 
-   public TaskArtifact createNewTask(String title, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
+   public TaskArtifact createNewTask(String title, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
       return createNewTask(Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), title, createdDate,
-         createdBy, null);
+         createdBy, null, changes);
    }
 
-   public TaskArtifact createNewTask(List<? extends IAtsUser> assignees, String title, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
-      return createNewTask(assignees, title, createdDate, createdBy, null);
+   public TaskArtifact createNewTask(List<? extends IAtsUser> assignees, String title, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
+      return createNewTask(assignees, title, createdDate, createdBy, null, changes);
    }
 
-   public TaskArtifact createNewTask(String title, Date createdDate, IAtsUser createdBy, String relatedToState) throws OseeCoreException {
+   public TaskArtifact createNewTask(String title, Date createdDate, IAtsUser createdBy, String relatedToState, IAtsChangeSet changes) throws OseeCoreException {
       return createNewTask(Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), title, createdDate,
-         createdBy, relatedToState);
+         createdBy, relatedToState, changes);
    }
 
-   public TaskArtifact createNewTask(List<? extends IAtsUser> assignees, String title, Date createdDate, IAtsUser createdBy, String relatedToState) throws OseeCoreException {
+   public TaskArtifact createNewTask(List<? extends IAtsUser> assignees, String title, Date createdDate, IAtsUser createdBy, String relatedToState, IAtsChangeSet changes) throws OseeCoreException {
       TaskArtifact taskArt = null;
       taskArt =
          (TaskArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Task, AtsUtilCore.getAtsBranch(), title);
 
       addRelation(AtsRelationTypes.TeamWfToTask_Task, taskArt);
       taskArt.initializeNewStateMachine(assignees, new Date(),
-         (createdBy == null ? AtsClientService.get().getUserAdmin().getCurrentUser() : createdBy));
+         (createdBy == null ? AtsClientService.get().getUserAdmin().getCurrentUser() : createdBy), changes);
 
       // Set parent state task is related to if set
       if (Strings.isValid(relatedToState)) {
@@ -128,6 +128,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       }
       AtsCore.getLogFactory().writeToStore(taskArt);
       AtsTaskCache.decache(this);
+      changes.add(taskArt);
       return taskArt;
    }
 
@@ -255,7 +256,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    public Collection<TaskArtifact> createTasks(List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, IAtsChangeSet changes) throws OseeCoreException {
       List<TaskArtifact> tasks = new ArrayList<TaskArtifact>();
       for (String title : titles) {
-         TaskArtifact taskArt = createNewTask(title, createdDate, createdBy, relatedToState);
+         TaskArtifact taskArt = createNewTask(title, createdDate, createdBy, relatedToState, changes);
          if (assignees != null && !assignees.isEmpty()) {
             Set<IAtsUser> users = new HashSet<IAtsUser>(); // NOPMD by b0727536 on 9/29/10 8:51 AM
             for (IAtsUser art : assignees) {

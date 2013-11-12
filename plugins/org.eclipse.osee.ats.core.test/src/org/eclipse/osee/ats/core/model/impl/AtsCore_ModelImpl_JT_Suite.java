@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.model.impl;
 
+import org.eclipse.osee.ats.core.internal.state.StateManagerTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   WorkStateProviderImplTest.class,
+   StateManagerTest.class,
    AtsActionGroupTest.class,
    AtsObjectTest.class,
    WorkStateImplTest.class})

@@ -62,9 +62,8 @@ public class CompletedDateColumnTest {
          new TransitionHelper("Transition to Completed", Arrays.asList(teamArt), TeamState.Completed.getName(), null,
             null, changes, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
       TransitionManager transitionMgr = new TransitionManager(helper);
-      TransitionResults results = transitionMgr.handleAll();
+      TransitionResults results = transitionMgr.handleAllAndPersist();
       Assert.assertTrue(results.toString(), results.isEmpty());
-      changes.execute();
 
       changes.clear();
       date = CompletedDateColumn.getDate(teamArt);

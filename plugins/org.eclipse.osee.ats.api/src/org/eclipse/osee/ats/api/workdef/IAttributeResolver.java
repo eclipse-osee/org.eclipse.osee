@@ -45,6 +45,10 @@ public interface IAttributeResolver {
 
    <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException;
 
-   void deleteSoleAttribute(IAtsWorkItem workItem, IAttributeType cancelledreason) throws OseeCoreException;
+   void deleteSoleAttribute(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException;
+
+   <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) throws OseeCoreException;
+
+   <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, IAttributeType attributeType, T value) throws OseeCoreException;
 
 }

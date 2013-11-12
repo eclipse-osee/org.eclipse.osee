@@ -130,8 +130,10 @@ public class TransitionToMenu {
    private static void handleTransitionToSelected(final String toStateName, final Set<IAtsWorkItem> workItems) {
       final ITransitionHelper helper = new TransitionHelperAdapter() {
 
+         private AtsChangeSet changes;
+
          @Override
-         public Result handleExtraHoursSpent() {
+         public Result handleExtraHoursSpent(final IAtsChangeSet changes) {
             final Result result = new Result(true, "");
             Displays.ensureInDisplayThread(new Runnable() {
 
@@ -169,7 +171,7 @@ public class TransitionToMenu {
                         if (dialogResult == 0) {
                            try {
                               SMAPromptChangeStatus.performChangeStatus(workItems, null, data.getAdditionalHours(),
-                                 data.getPercent(), data.isSplitHoursBetweenItems(), true);
+                              data.getPercent(), data.isSplitHoursBetweenItems(), changes);
                            } catch (OseeCoreException ex) {
                               OseeLog.log(Activator.class, Level.SEVERE, ex);
                               result.set(false);
@@ -241,13 +243,11 @@ public class TransitionToMenu {
          }
 
          @Override
-         public void setInTransition(IAtsWorkItem workItem, boolean inTransition) throws OseeCoreException {
-            AtsClientService.get().getWorkflowArtifact(workItem).setInTransition(inTransition);
-         }
-
-         @Override
          public IAtsChangeSet getChangeSet() {
-            return new AtsChangeSet(getName());
+            if (changes == null) {
+               changes = new AtsChangeSet(getName());
+            }
+            return changes;
          }
 
          @Override

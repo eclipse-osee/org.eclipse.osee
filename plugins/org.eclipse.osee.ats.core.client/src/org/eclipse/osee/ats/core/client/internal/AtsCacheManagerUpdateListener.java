@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -177,6 +178,10 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
          if (artifact instanceof AbstractReviewArtifact) {
             AtsReviewCache.decache(artifact);
          }
+      }
+      if (artifact instanceof AbstractWorkflowArtifact) {
+         AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+         awa.clearCaches();
       }
    }
 

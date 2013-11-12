@@ -10,16 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
+import static org.mockito.Mockito.when;
+import java.util.ArrayList;
 import java.util.Arrays;
-import org.junit.Assert;
+import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.HasWorkData;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.mock.MockActionGroup;
 import org.eclipse.osee.ats.core.mock.MockAtsUser;
 import org.eclipse.osee.ats.core.mock.MockWorkData;
 import org.eclipse.osee.ats.core.mock.MockWorkItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.junit.Assert;
+import org.junit.Before;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * @tests AssigneeColumn
@@ -31,6 +40,26 @@ public class AssigneeColumnTest {
    private final MockAtsUser steve = new MockAtsUser("steve");
    private final MockAtsUser alice = new MockAtsUser("alice");
 
+   // @formatter:off
+   @Mock private IAtsWorkItem workItem;
+   @Mock private IAtsWorkData workData;
+   @Mock private IAtsStateManager stateMgr;
+   @Mock private IAtsWorkItem workItem2;
+   @Mock private IAtsWorkData workData2;
+   @Mock private IAtsStateManager stateMgr2;
+   // @formatter:on
+
+   @Before
+   public void setup() {
+      MockitoAnnotations.initMocks(this);
+
+      when(workItem.getWorkData()).thenReturn(workData);
+      when(workItem.getStateMgr()).thenReturn(stateMgr);
+
+      when(workItem2.getWorkData()).thenReturn(workData2);
+      when(workItem2.getStateMgr()).thenReturn(stateMgr2);
+   }
+
    @org.junit.Test
    public void testGetAssigneeStr_null() throws OseeCoreException {
       Assert.assertEquals("", AssigneeColumn.instance.getAssigneeStr(null));
@@ -38,63 +67,84 @@ public class AssigneeColumnTest {
 
    @org.junit.Test
    public void testGetAssigneeStrFromInWorkWorkflow() throws OseeCoreException {
-      MockWorkItem workItem = new MockWorkItem("this", "Working", StateType.Working);
-      Assert.assertEquals("", AssigneeColumn.instance.getAssigneeStr(workItem));
+      List<IAtsUser> assigneesToReturn = new ArrayList<IAtsUser>();
+      assigneesToReturn.addAll(Arrays.asList(joe, steve, alice));
+      when(workData.isCompletedOrCancelled()).thenReturn(false);
+      when(workItem.getAssignees()).thenReturn(assigneesToReturn);
 
-      workItem.getStateData().setAssignees("Working", Arrays.asList(joe, steve, alice));
       Assert.assertEquals("joe; steve; alice", AssigneeColumn.instance.getAssigneeStr(workItem));
-
    }
 
    @org.junit.Test
    public void testGetAssigneeStrFromCompletedWorkflow() throws OseeCoreException {
-      MockWorkItem workItem = new MockWorkItem("this", "Working", StateType.Working);
+      List<IAtsUser> assigneesToReturn = new ArrayList<IAtsUser>();
+      when(workData.isCompletedOrCancelled()).thenReturn(false);
+      when(workItem.getAssignees()).thenReturn(assigneesToReturn);
       Assert.assertEquals("", AssigneeColumn.instance.getAssigneeStr(workItem));
 
-      workItem = new MockWorkItem("this", "Completed", StateType.Completed);
-      workItem.getWorkData().setCompletedBy(steve);
+      List<IAtsUser> implementersToReturn = new ArrayList<IAtsUser>();
+      when(workItem.getImplementers()).thenReturn(implementersToReturn);
+      when(workData.isCompletedOrCancelled()).thenReturn(true);
+      when(workData.isCompleted()).thenReturn(true);
+      when(workData.getCompletedBy()).thenReturn(steve);
       Assert.assertEquals("(steve)", AssigneeColumn.instance.getAssigneeStr(workItem));
 
       // add alice as completedFromState assignee
-      workItem.getWorkData().setCompletedFromState("Implement");
-      workItem.getStateData().addState("Implement", Arrays.asList(alice));
+      implementersToReturn.add(steve);
+      when(workData.getCompletedFromState()).thenReturn("Implement");
+      List<IAtsUser> implementStateImplementers = new ArrayList<IAtsUser>();
+      implementStateImplementers.add(alice);
+      when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
       Assert.assertEquals("(alice; steve)", AssigneeColumn.instance.getAssigneeStr(workItem));
 
       // add duplicate steve as state assigne and ensure doesn't duplicate in string
-      workItem.getStateData().addAssignee("Implement", steve);
+      implementStateImplementers.add(steve);
       Assert.assertEquals("(alice; steve)", AssigneeColumn.instance.getAssigneeStr(workItem));
-
    }
 
    @org.junit.Test
    public void testGetAssigneeStrFromCancelledWorkflow() throws OseeCoreException {
-      MockWorkItem workItem = new MockWorkItem("this", "Working", StateType.Working);
+      List<IAtsUser> assigneesToReturn = new ArrayList<IAtsUser>();
+      when(workData.isCompletedOrCancelled()).thenReturn(false);
+      when(workItem.getAssignees()).thenReturn(assigneesToReturn);
       Assert.assertEquals("", AssigneeColumn.instance.getAssigneeStr(workItem));
 
-      workItem = new MockWorkItem("this", "Cancelled", StateType.Cancelled);
-      workItem.getWorkData().setCancelledBy(steve);
+      List<IAtsUser> implementersToReturn = new ArrayList<IAtsUser>();
+      when(workItem.getImplementers()).thenReturn(implementersToReturn);
+      when(workData.isCompletedOrCancelled()).thenReturn(true);
+      when(workData.isCancelled()).thenReturn(true);
+      when(workData.getCancelledBy()).thenReturn(steve);
       Assert.assertEquals("(steve)", AssigneeColumn.instance.getAssigneeStr(workItem));
 
       // add alice as completedFromState assignee
-      workItem.getWorkData().setCancelledFromState("Implement");
-      workItem.getStateData().addState("Implement", Arrays.asList(alice));
+      implementersToReturn.add(steve);
+      when(workData.getCancelledFromState()).thenReturn("Implement");
+      List<IAtsUser> implementStateImplementers = new ArrayList<IAtsUser>();
+      implementStateImplementers.add(alice);
+      when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
       Assert.assertEquals("(alice; steve)", AssigneeColumn.instance.getAssigneeStr(workItem));
 
       // add duplicate steve as state assigne and ensure doesn't duplicate in string
-      workItem.getStateData().addAssignee("Implement", steve);
+      implementStateImplementers.add(steve);
       Assert.assertEquals("(alice; steve)", AssigneeColumn.instance.getAssigneeStr(workItem));
    }
 
    @org.junit.Test
    public void testGetAssigneesStr_hasActions_oneWorkingOneCancelled() throws OseeCoreException {
 
-      MockWorkItem workItem1 = new MockWorkItem("this", "Working", StateType.Working);
+      List<IAtsUser> assigneesToReturn = new ArrayList<IAtsUser>();
+      when(workData.isCompletedOrCancelled()).thenReturn(false);
+      when(workItem.getAssignees()).thenReturn(assigneesToReturn);
 
-      MockWorkItem workItem2 = new MockWorkItem("that", "Cancelled", StateType.Cancelled);
-      workItem2.addImplementer(joe);
+      when(workData2.isCompletedOrCancelled()).thenReturn(true);
+      when(workData2.isCancelled()).thenReturn(true);
+      when(workData2.getCancelledFromState()).thenReturn("Implement");
+      List<IAtsUser> implementStateImplementers = new ArrayList<IAtsUser>();
+      implementStateImplementers.add(joe);
+      when(workItem2.getImplementers()).thenReturn(implementStateImplementers);
 
       MockActionGroup group = new MockActionGroup("group");
-      group.addAction(workItem1);
+      group.addAction(workItem);
       group.addAction(workItem2);
 
       Assert.assertEquals("(joe)", AssigneeColumn.instance.getAssigneeStr(group));
@@ -135,16 +185,18 @@ public class AssigneeColumnTest {
    @org.junit.Test
    public void testGetAssigneesStr_hasActions_twoWorkingDuplicates() throws OseeCoreException {
 
-      MockWorkItem workItem1 = new MockWorkItem("this", "Working", StateType.Working);
-      workItem1.getStateData().setCurrentStateName("Implement");
-      workItem1.getStateData().addState("Implement", Arrays.asList(steve));
+      List<IAtsUser> assigneesToReturn = new ArrayList<IAtsUser>();
+      assigneesToReturn.add(steve);
+      when(workItem.getAssignees()).thenReturn(assigneesToReturn);
+      when(workData.isCompletedOrCancelled()).thenReturn(false);
 
-      MockWorkItem workItem2 = new MockWorkItem("that", "Working", StateType.Working);
-      workItem2.getStateData().setCurrentStateName("Implement");
-      workItem2.getStateData().addState("Implement", Arrays.asList(steve));
+      List<IAtsUser> assigneesToReturn2 = new ArrayList<IAtsUser>();
+      assigneesToReturn2.add(steve);
+      when(workItem2.getAssignees()).thenReturn(assigneesToReturn2);
+      when(workData2.isCompletedOrCancelled()).thenReturn(false);
 
       MockActionGroup group = new MockActionGroup("group");
-      group.addAction(workItem1);
+      group.addAction(workItem);
       group.addAction(workItem2);
 
       Assert.assertEquals("steve", AssigneeColumn.instance.getAssigneeStr(group));
@@ -160,10 +212,8 @@ public class AssigneeColumnTest {
          }
       });
 
-      MockWorkItem workItem1 = new MockWorkItem("this", "Completed", StateType.Completed);
-      workItem1.addImplementer(joe);
-
-      Assert.assertEquals("", column.getAssigneeStr(workItem1));
+      when(workData.isCompletedOrCancelled()).thenReturn(true);
+      Assert.assertEquals("", column.getAssigneeStr(workItem));
    }
 
    @org.junit.Test

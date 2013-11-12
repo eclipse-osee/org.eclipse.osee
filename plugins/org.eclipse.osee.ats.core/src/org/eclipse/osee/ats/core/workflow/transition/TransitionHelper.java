@@ -89,7 +89,7 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    @Override
-   public Result handleExtraHoursSpent() {
+   public Result handleExtraHoursSpent(IAtsChangeSet changes) {
       return Result.TrueResult;
    }
 
@@ -121,11 +121,6 @@ public class TransitionHelper extends TransitionHelperAdapter {
    @Override
    public IAtsChangeSet getChangeSet() {
       return changes;
-   }
-
-   @Override
-   public void setInTransition(IAtsWorkItem workItem, boolean inTransition) throws OseeCoreException {
-      AtsCore.getWorkItemService().setInTransition(workItem, inTransition);
    }
 
    @Override

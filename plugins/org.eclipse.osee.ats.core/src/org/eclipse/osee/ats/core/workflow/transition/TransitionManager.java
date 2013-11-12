@@ -13,10 +13,8 @@ package org.eclipse.osee.ats.core.workflow.transition;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -55,7 +53,6 @@ public class TransitionManager {
    private String completedCancellationReason = null;
    private IAtsUser transitionAsUser;
    private Date transitionOnDate;
-   private final Map<IAtsWorkItem, List<IAtsUser>> workItemToAssignees = new HashMap<IAtsWorkItem, List<IAtsUser>>();
 
    public TransitionManager(ITransitionHelper helper) {
       this.helper = helper;
@@ -72,22 +69,7 @@ public class TransitionManager {
       if (results.isCancelled() || !results.isEmpty()) {
          return results;
       }
-      try {
-         for (IAtsWorkItem workItem : helper.getWorkItems()) {
-            helper.setInTransition(workItem, true);
-         }
-         handleTransition(results);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsCore.class, Level.SEVERE, ex);
-      } finally {
-         for (IAtsWorkItem workItem : helper.getWorkItems()) {
-            try {
-               helper.setInTransition(workItem, false);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsCore.class, Level.SEVERE, ex);
-            }
-         }
-      }
+      handleTransition(results);
       return results;
    }
 
@@ -212,9 +194,6 @@ public class TransitionManager {
 
       }
 
-      // clear cache, so can be re-computed if above extension calls changed assignees
-      workItemToAssignees.remove(workItem);
-
       // Check again in case first check made changes that would now keep transition from happening
       if (results.isEmpty()) {
          for (ITransitionListener listener : helper.getTransitionListeners()) {
@@ -248,7 +227,7 @@ public class TransitionManager {
       if (result.isTrue()) {
          completedCancellationReason = result.getText();
       }
-      result = helper.handleExtraHoursSpent();
+      result = helper.handleExtraHoursSpent(helper.getChangeSet());
       if (result.isCancelled()) {
          results.setCancelled(true);
       } else if (result.isFalse()) {
@@ -317,11 +296,16 @@ public class TransitionManager {
                   if (toState.getStateType().isCompletedOrCancelledState()) {
                      AtsCore.getWorkItemService().clearImplementersCache(workItem);
                   }
+                  helper.getChangeSet().add(workItem);
                }
+
             } catch (Exception ex) {
                results.addResult(workItem,
                   new TransitionResult(String.format("Exception while transitioning [%s]", helper.getName()), ex));
             }
+         }
+         if (results.isEmpty()) {
+            helper.getChangeSet().execute();
          }
       } catch (Exception ex) {
          results.addResult(new TransitionResult(String.format("Exception while transitioning [%s]", helper.getName()),
@@ -439,9 +423,8 @@ public class TransitionManager {
          AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledFromState,
             fromState.getName());
       }
-      validateUpdatePercentCompleteAttribute(workItem, toState);
+      validateUpdatePercentComplete(workItem, toState);
       AtsCore.getLogFactory().writeToStore(workItem);
-
    }
 
    public static void logWorkflowUnCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition toState) throws OseeCoreException {
@@ -451,7 +434,7 @@ public class TransitionManager {
          AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledReason);
          AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledFromState);
       }
-      validateUpdatePercentCompleteAttribute(workItem, toState);
+      validateUpdatePercentComplete(workItem, toState);
       AtsCore.getLogFactory().writeToStore(workItem);
    }
 
@@ -464,7 +447,7 @@ public class TransitionManager {
          AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedFromState,
             fromState.getName());
       }
-      validateUpdatePercentCompleteAttribute(workItem, toState);
+      validateUpdatePercentComplete(workItem, toState);
       AtsCore.getLogFactory().writeToStore(workItem);
    }
 
@@ -474,16 +457,19 @@ public class TransitionManager {
          AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedDate);
          AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedFromState);
       }
-      validateUpdatePercentCompleteAttribute(workItem, toState);
+      validateUpdatePercentComplete(workItem, toState);
       AtsCore.getLogFactory().writeToStore(workItem);
    }
 
-   private static void validateUpdatePercentCompleteAttribute(IAtsWorkItem workItem, IAtsStateDefinition toState) throws OseeCoreException {
-      Integer percent = AtsCore.getAttrResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.PercentComplete, 0);
+   private static void validateUpdatePercentComplete(IAtsWorkItem workItem, IAtsStateDefinition toState) {
+      Integer percent = workItem.getStateMgr().getPercentCompleteValue();
+      if (percent == null) {
+         percent = 0;
+      }
       if (toState.getStateType().isCompletedOrCancelledState() && percent != 100) {
-         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.PercentComplete, 100);
+         workItem.getStateMgr().setPercentCompleteValue(100);
       } else if (toState.getStateType().isWorkingState() && percent == 100) {
-         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.PercentComplete, 0);
+         workItem.getStateMgr().setPercentCompleteValue(0);
       }
    }
 
@@ -533,34 +519,35 @@ public class TransitionManager {
     * entered, else use current user or UnAssigneed if current user is SystemUser.
     */
    public List<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem, IAtsStateDefinition toState) throws OseeCoreException {
-      List<IAtsUser> assignees = workItemToAssignees.get(workItem);
-      if (assignees != null && toState.getStateType().isCompletedOrCancelledState()) {
-         assignees.clear();
-      }
-      if (assignees == null) {
-         assignees = new ArrayList<IAtsUser>();
-         workItemToAssignees.put(workItem, assignees);
-         if (!toState.getStateType().isCompletedOrCancelledState()) {
-            Collection<? extends IAtsUser> requestedAssignees = helper.getToAssignees(workItem);
-            if (requestedAssignees != null) {
-               for (IAtsUser user : requestedAssignees) {
-                  assignees.add(user);
-               }
+      List<IAtsUser> assignees = new ArrayList<IAtsUser>();
+      if (toState.getStateType().isWorkingState()) {
+         Collection<? extends IAtsUser> requestedAssignees = helper.getToAssignees(workItem);
+         if (requestedAssignees != null) {
+            for (IAtsUser user : requestedAssignees) {
+               assignees.add(user);
             }
-            if (assignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
-               assignees.remove(AtsCoreUsers.UNASSIGNED_USER);
+         }
+         if (assignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
+            assignees.remove(AtsCoreUsers.UNASSIGNED_USER);
+            assignees.add(AtsCore.getUserService().getCurrentUser());
+         }
+         if (assignees.isEmpty()) {
+            if (helper.isSystemUser()) {
+               assignees.add(AtsCoreUsers.UNASSIGNED_USER);
+            } else {
                assignees.add(AtsCore.getUserService().getCurrentUser());
-            }
-            if (assignees.isEmpty()) {
-               if (helper.isSystemUser()) {
-                  assignees.add(AtsCoreUsers.UNASSIGNED_USER);
-               } else {
-                  assignees.add(AtsCore.getUserService().getCurrentUser());
-               }
             }
          }
       }
       return assignees;
+   }
+
+   public TransitionResults handleAllAndPersist() {
+      TransitionResults result = handleAll();
+      if (result.isEmpty()) {
+         helper.getChangeSet().execute();
+      }
+      return result;
    }
 
 }

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.AttributeTypeToXWidgetName;
@@ -121,4 +122,20 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    public void deleteSoleAttribute(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
       AtsClientService.get().getArtifact(workItem).deleteSoleAttribute(attributeType);
    }
+
+   @Override
+   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, IAttributeType attributeType, T value) throws OseeCoreException {
+      @SuppressWarnings("unchecked")
+      Attribute<T> attribute = (Attribute<T>) attr.getData();
+      attribute.setValue(value);
+   }
+
+   @Override
+   public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) throws OseeCoreException {
+      Artifact artifact = AtsClientService.get().getArtifact(workItem);
+      Attribute<?> attribute = (Attribute<?>) attr.getData();
+      Attribute<?> attributeById = artifact.getAttributeById(attribute.getId(), false);
+      attributeById.delete();
+   }
+
 }

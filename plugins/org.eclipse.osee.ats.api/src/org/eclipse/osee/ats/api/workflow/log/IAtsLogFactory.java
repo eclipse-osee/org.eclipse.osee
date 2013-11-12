@@ -22,7 +22,7 @@ public interface IAtsLogFactory {
 
    IAtsLogItem newLogItem(LogType type, Date date, IAtsUser user, String state, String msg) throws OseeCoreException;
 
-   IAtsLog getLogLoaded(ILogStorageProvider storageProvider) throws OseeCoreException;
+   IAtsLog getLogLoaded(IAtsWorkItem workItem);
 
    void writeToStore(IAtsWorkItem workItem);
 

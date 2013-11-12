@@ -102,8 +102,8 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
       } else {
          AtsChangeSet changes = new AtsChangeSet("Import Actions from Spreadsheet");
          extractor.createArtifactsAndNotify(changes);
-         WorldEditor.open(new WorldEditorSimpleProvider("Imported Action Artifacts", extractor.getActionArts()));
          changes.execute();
+         WorldEditor.open(new WorldEditorSimpleProvider("Imported Action Artifacts", extractor.getActionArts()));
       }
       return rd;
    }

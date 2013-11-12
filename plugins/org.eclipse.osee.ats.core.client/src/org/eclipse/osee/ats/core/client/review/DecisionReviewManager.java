@@ -133,7 +133,7 @@ public class DecisionReviewManager {
    public static DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
       DecisionReviewArtifact decRev =
          createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState, description, options, assignees,
-            createdDate, createdBy);
+            createdDate, createdBy, changes);
       changes.add(decRev);
 
       // transition to decision
@@ -154,11 +154,12 @@ public class DecisionReviewManager {
       return decRev;
    }
 
-   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, boolean againstCurrentState, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, boolean againstCurrentState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
       return createNewDecisionReview(teamArt, reviewBlockType,
          "Should we do this?  Yes will require followup, No will not",
          againstCurrentState ? teamArt.getStateMgr().getCurrentStateName() : null,
-         "Enter description of the decision, if any", getDefaultDecisionReviewOptions(), null, createdDate, createdBy);
+         "Enter description of the decision, if any", getDefaultDecisionReviewOptions(), null, createdDate, createdBy,
+         changes);
    }
 
    public static List<IAtsDecisionReviewOption> getDefaultDecisionReviewOptions() throws OseeCoreException {
@@ -184,13 +185,13 @@ public class DecisionReviewManager {
       return sb.toString();
    }
 
-   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
       DecisionReviewArtifact decRev =
          (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
             AtsUtilCore.getAtsBranch(), title);
 
       // Initialize state machine
-      decRev.initializeNewStateMachine(assignees, createdDate, createdBy);
+      decRev.initializeNewStateMachine(assignees, createdDate, createdBy, changes);
 
       teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
       if (Strings.isValid(relatedToState)) {
@@ -204,7 +205,7 @@ public class DecisionReviewManager {
          decRev.setSoleAttributeFromString(AtsAttributeTypes.ReviewBlocks, reviewBlockType.name());
       }
       AtsReviewCache.decache(teamArt);
-
+      changes.add(decRev);
       return decRev;
    }
 

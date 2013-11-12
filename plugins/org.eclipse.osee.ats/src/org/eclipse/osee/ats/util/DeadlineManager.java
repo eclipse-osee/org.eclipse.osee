@@ -53,42 +53,30 @@ public class DeadlineManager {
    }
 
    public static Result isDeadlineDateOverdue(AbstractWorkflowArtifact sma) {
-      try {
-         if (sma.isCompleted() || sma.isCancelled()) {
-            return Result.FalseResult;
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      if (new Date().after(getDeadlineDate(sma))) {
+      Result result = Result.FalseResult;
+      if (sma.isInWork() && new Date().after(getDeadlineDate(sma))) {
          return new Result(true, "Need By Date has passed.");
       }
-      return Result.FalseResult;
+      return result;
    }
 
    public static Result isEcdDateOverdue(AbstractWorkflowArtifact sma) {
-      try {
-         if (sma.isCompleted() || sma.isCancelled()) {
-            return Result.FalseResult;
+      Result result = Result.FalseResult;
+      if (sma.isInWork()) {
+         Date ecdDate = getEcdDate(sma);
+         Date deadlineDate = getDeadlineDate(sma);
+         if (ecdDate != null) {
+            if (new Date().after(ecdDate)) {
+               result = new Result(true, "Estimated Completion Date has passed.");
+            }
+            if (deadlineDate != null) {
+               if (ecdDate.after(deadlineDate)) {
+                  result = new Result(true, "Estimated Completion Date after Need By Date.");
+               }
+            }
          }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      Date ecdDate = getEcdDate(sma);
-      Date deadlineDate = getDeadlineDate(sma);
-      if (ecdDate == null) {
-         return Result.FalseResult;
-      }
-      if (new Date().after(ecdDate)) {
-         return new Result(true, "Estimated Completion Date has passed.");
-      }
-      if (deadlineDate == null) {
-         return Result.FalseResult;
-      }
-      if (ecdDate.after(deadlineDate)) {
-         return new Result(true, "Estimated Completion Date after Need By Date.");
-      }
-      return Result.FalseResult;
+      return result;
    }
 
    public static Result isDeadlinePastRelease(AbstractWorkflowArtifact sma) {

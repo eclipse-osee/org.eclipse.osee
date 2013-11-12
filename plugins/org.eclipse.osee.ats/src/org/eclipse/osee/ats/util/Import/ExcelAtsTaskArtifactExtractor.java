@@ -152,7 +152,7 @@ public class ExcelAtsTaskArtifactExtractor {
       public void processRow(String[] row) throws OseeCoreException {
          rowNum++;
          monitor.setTaskName("Processing Row " + rowNum);
-         TaskArtifact taskArt = ((AbstractTaskableArtifact) sma).createNewTask("", createdDate, createdBy, null);
+         TaskArtifact taskArt = ((AbstractTaskableArtifact) sma).createNewTask("", createdDate, createdBy, null, changes);
 
          monitor.subTask("Validating...");
          boolean valid = validateRow(row);

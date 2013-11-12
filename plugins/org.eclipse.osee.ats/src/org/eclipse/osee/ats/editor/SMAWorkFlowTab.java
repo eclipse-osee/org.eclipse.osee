@@ -691,7 +691,7 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    }
 
    public void refresh() {
-      if (editor != null && !awa.isInTransition()) {
+      if (editor != null) {
          // remove all pages
          for (SMAWorkFlowSection section : sections) {
             section.dispose();

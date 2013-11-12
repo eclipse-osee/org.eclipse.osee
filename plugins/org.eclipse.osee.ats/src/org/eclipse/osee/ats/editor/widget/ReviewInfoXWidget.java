@@ -319,11 +319,10 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                         new TransitionHelper("ATS Auto Complete Reviews", awas, TeamState.Completed.getName(), null,
                            null, changes, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
                      TransitionManager transitionMgr = new TransitionManager(helper);
-                     TransitionResults results = transitionMgr.handleAll();
+                     TransitionResults results = transitionMgr.handleAllAndPersist();
                      if (!results.isEmpty()) {
                         AWorkbench.popup(String.format("Transition Error %s", results.toString()));
                      }
-                     changes.execute();
                      smaWorkflowSection.getEditor().refreshPages();
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

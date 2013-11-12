@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
@@ -41,8 +42,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
@@ -72,12 +71,11 @@ public class TaskEditor extends AbstractArtifactEditor implements IAtsMetricsPro
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
-         SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Task Editor Save");
+         AtsChangeSet changes = new AtsChangeSet("Task Editor Save");
          for (TaskArtifact taskArt : tasks) {
-            taskArt.saveSMA(transaction);
+            changes.add(taskArt);
          }
-         transaction.execute();
+         changes.execute();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

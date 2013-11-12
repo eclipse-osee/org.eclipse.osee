@@ -12,7 +12,11 @@ package org.eclipse.osee.ats.core.client.util;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IExecuteListener;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -27,6 +31,8 @@ public class AtsChangeSet implements IAtsChangeSet {
 
    private String comment;
    private final Set<Object> objects = new HashSet<Object>();
+   private final Set<Object> deleteObjects = new HashSet<Object>();
+   private final Set<IExecuteListener> listeners = new HashSet<IExecuteListener>();
 
    public AtsChangeSet(String comment) {
       this.comment = comment;
@@ -39,21 +45,61 @@ public class AtsChangeSet implements IAtsChangeSet {
    }
 
    @Override
+   public void addAll(Object... objects) throws OseeCoreException {
+      Conditions.checkNotNull(objects, "objects");
+      for (Object obj : objects) {
+         if (obj == null) {
+            throw new OseeArgumentException("object can't be null");
+         }
+         this.objects.add(obj);
+      }
+   }
+
+   @Override
+   public void addToDelete(Object obj) throws OseeCoreException {
+      Conditions.checkNotNull(obj, "object");
+      deleteObjects.add(obj);
+   }
+
+   @Override
    public void execute() throws OseeCoreException {
       Conditions.checkNotNull(comment, "comment");
-      Conditions.checkNotNullOrEmpty(objects, "objects");
+      if (objects.isEmpty() && deleteObjects.isEmpty()) {
+         throw new OseeArgumentException("objects/deleteObjects cannot be empty");
+      }
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranchToken(), comment);
+      for (Object obj : new CopyOnWriteArrayList<Object>(objects)) {
+         if (obj instanceof IAtsWorkItem) {
+            IAtsWorkItem workItem = (IAtsWorkItem) obj;
+            if (workItem.getStateMgr().isDirty()) {
+               AtsCore.getStateFactory().writeToStore(workItem, this);
+            }
+            if (workItem.getLog().isDirty()) {
+               AtsCore.getLogFactory().writeToStore(workItem);
+            }
+         }
+      }
       for (Object obj : objects) {
          if (obj instanceof Artifact) {
             ((Artifact) obj).persist(transaction);
          } else {
-            throw new OseeArgumentException("Unhandled object type: " + obj);
+            throw new OseeArgumentException("ATsChangeSet: Unhandled object type: " + obj);
+         }
+      }
+      for (Object obj : deleteObjects) {
+         if (obj instanceof Artifact) {
+            ((Artifact) obj).deleteAndPersist(transaction);
+         } else {
+            throw new OseeArgumentException("ATsChangeSet: Unhandled deleteObject type: " + obj);
          }
       }
       transaction.execute();
-      objects.clear();
+      for (IExecuteListener listener : listeners) {
+         listener.changesStored(this);
+      }
    }
 
+   @Override
    public Set<Object> getObjects() {
       return objects;
    }
@@ -65,6 +111,8 @@ public class AtsChangeSet implements IAtsChangeSet {
    @Override
    public void clear() {
       objects.clear();
+      deleteObjects.clear();
+      listeners.clear();
    }
 
    public void addTo(SkynetTransaction transaction) throws OseeCoreException {
@@ -83,8 +131,23 @@ public class AtsChangeSet implements IAtsChangeSet {
       this.comment = comment;
    }
 
+   @Override
    public boolean isEmpty() {
-      return objects.isEmpty();
+      return objects.isEmpty() && deleteObjects.isEmpty();
    }
 
+   @Override
+   public void addExecuteListener(IExecuteListener listener) {
+      Conditions.checkNotNull(listener, "listener");
+      listeners.add(listener);
+   }
+
+   public static void execute(String comment, Object object, Object... objects) throws OseeCoreException {
+      AtsChangeSet changes = new AtsChangeSet(comment);
+      changes.add(object);
+      for (Object obj : objects) {
+         changes.add(obj);
+      }
+      changes.execute();
+   }
 }

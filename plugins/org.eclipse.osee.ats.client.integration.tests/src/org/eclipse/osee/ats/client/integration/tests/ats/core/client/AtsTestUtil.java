@@ -74,8 +74,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.support.test.util.TestUtil;
 
@@ -352,31 +350,29 @@ public class AtsTestUtil {
       changes.execute();
    }
 
-   public static TaskArtifact getOrCreateTaskOffTeamWf1() throws OseeCoreException {
+   public static TaskArtifact getOrCreateTaskOffTeamWf1(AtsChangeSet changes) throws OseeCoreException {
       ensureLoaded();
       if (taskArtWf1 == null) {
          taskArtWf1 =
             teamArt.createNewTask(getTitle("Task", postFixName), new Date(),
-               AtsClientService.get().getUserAdmin().getCurrentUser());
+               AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
          taskArtWf1.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
-         taskArtWf1.persist("AtsTestUtil - addTaskWf1");
       }
       return taskArtWf1;
    }
 
-   public static TaskArtifact getOrCreateTaskOffTeamWf2() throws OseeCoreException {
+   public static TaskArtifact getOrCreateTaskOffTeamWf2(AtsChangeSet changes) throws OseeCoreException {
       ensureLoaded();
       if (taskArtWf2 == null) {
          taskArtWf2 =
             teamArt.createNewTask(getTitle("Task", postFixName), new Date(),
-               AtsClientService.get().getUserAdmin().getCurrentUser());
+               AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
          taskArtWf2.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
-         taskArtWf2.persist("AtsTestUtil - addTaskWf2");
       }
       return taskArtWf2;
    }
 
-   public static DecisionReviewArtifact getOrCreateDecisionReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState) throws OseeCoreException {
+   public static DecisionReviewArtifact getOrCreateDecisionReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState, IAtsChangeSet changes) throws OseeCoreException {
       ensureLoaded();
       if (decRevArt == null) {
          List<IAtsDecisionReviewOption> options = new ArrayList<IAtsDecisionReviewOption>();
@@ -387,7 +383,7 @@ public class AtsTestUtil {
             DecisionReviewManager.createNewDecisionReview(teamArt, reviewBlockType,
                AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getName(),
                "Decision Review", options, Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()),
-               new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
+               new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
       }
       return decRevArt;
    }
@@ -417,17 +413,15 @@ public class AtsTestUtil {
       reset(name);
    }
 
-   private static void delete(SkynetTransaction transaction, Artifact artifact) throws OseeCoreException {
+   private static void delete(AtsChangeSet changes, Artifact artifact) throws OseeCoreException {
       if (artifact != null) {
-         artifact.deleteAndPersist(transaction);
+         changes.addToDelete(artifact);
       }
    }
 
    private static void deleteTeamWf(TeamWorkFlowArtifact teamWfToDelete) throws OseeCoreException {
       if (teamWfToDelete != null) {
-         SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
-               AtsTestUtil.class.getSimpleName() + " - cleanup deleteTeamWf");
+         AtsChangeSet changes = new AtsChangeSet(AtsTestUtil.class.getSimpleName() + " - cleanup deleteTeamWf");
 
          if (teamWfToDelete.getWorkingBranch() != null) {
             Result result = AtsBranchManagerCore.deleteWorkingBranch(teamWfToDelete, true);
@@ -436,14 +430,16 @@ public class AtsTestUtil {
             }
          }
          for (TaskArtifact taskArt : teamWfToDelete.getTaskArtifacts()) {
-            taskArt.deleteAndPersist(transaction);
+            changes.addToDelete(taskArt);
          }
          for (AbstractReviewArtifact revArt : ReviewManager.getReviews(teamWfToDelete)) {
-            revArt.deleteAndPersist(transaction);
+            changes.addToDelete(revArt);
          }
 
-         delete(transaction, teamWfToDelete);
-         transaction.execute();
+         changes.addToDelete(teamWfToDelete);
+         if (!changes.isEmpty()) {
+            changes.execute();
+         }
       }
    }
 
@@ -456,18 +452,18 @@ public class AtsTestUtil {
       SMAEditor.closeAll();
       TaskEditor.closeAll();
 
-      SkynetTransaction transaction1 =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
-            AtsTestUtil.class.getSimpleName() + " - cleanup 1");
-      delete(transaction1, peerRevArt);
-      delete(transaction1, decRevArt);
-      delete(transaction1, taskArtWf1);
-      delete(transaction1, taskArtWf2);
-      delete(transaction1, actionArt);
-      delete(transaction1, actionArt2);
-      delete(transaction1, actionArt3);
-      delete(transaction1, actionArt4);
-      transaction1.execute();
+      AtsChangeSet changes = new AtsChangeSet(AtsTestUtil.class.getSimpleName() + " - cleanup 1");
+      delete(changes, peerRevArt);
+      delete(changes, decRevArt);
+      delete(changes, taskArtWf1);
+      delete(changes, taskArtWf2);
+      delete(changes, actionArt);
+      delete(changes, actionArt2);
+      delete(changes, actionArt3);
+      delete(changes, actionArt4);
+      if (!changes.isEmpty()) {
+         changes.execute();
+      }
 
       deleteTeamWf(teamArt);
       deleteTeamWf(teamArt2);
@@ -549,7 +545,7 @@ public class AtsTestUtil {
 
    }
 
-   private static Result transitionToState(TeamWorkFlowArtifact teamArt, IStateToken toState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) throws OseeCoreException {
+   private static Result transitionToState(TeamWorkFlowArtifact teamArt, IStateToken toState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamArt), toState.getName(),
             Arrays.asList(user), null, changes, transitionOptions);

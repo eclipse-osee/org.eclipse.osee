@@ -227,11 +227,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public void setInTransition(IAtsWorkItem workItem, boolean inTransition) {
-      ((AbstractWorkflowArtifact) workItem).setInTransition(inTransition);
-   }
-
-   @Override
    public Collection<ITransitionListener> getTransitionListeners() {
       return TransitionListeners.getListeners();
    }

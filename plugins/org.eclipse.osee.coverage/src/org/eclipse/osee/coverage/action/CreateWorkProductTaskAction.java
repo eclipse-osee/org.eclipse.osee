@@ -128,7 +128,6 @@ public class CreateWorkProductTaskAction extends Action {
                ((IWorkProductRelatable) coverage).setWorkProductTaskGuid(newTaskArt.getGuid());
             }
          }
-         newTaskArt.persist(getText());
          saveable.save(relateableCoverageItems,
             CoverageUtil.getParentCoveragePackageBase(relateableCoverageItems.iterator().next()).getName());
 

@@ -87,9 +87,6 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
             if (!awa.isTeamWorkflow()) {
                return;
             }
-            if (awa.isInTransition()) {
-               return;
-            }
             switch (branchEventType) {
                case Added:
                case Deleting:

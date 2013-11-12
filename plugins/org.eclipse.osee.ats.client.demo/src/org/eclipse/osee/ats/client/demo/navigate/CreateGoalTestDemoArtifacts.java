@@ -77,7 +77,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
       for (String name : Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
          "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH", "II", "JJ",
          "KK", "LL", "MM", "NN", "OO", "PP", "QQ", "RR")) {
-         TaskArtifact taskArt = teamArt.createNewTask("Task " + name, createdDate, createdBy);
+         TaskArtifact taskArt = teamArt.createNewTask("Task " + name, createdDate, createdBy, changes);
          toolsTeamGoal.addMember(taskArt);
          changes.add(taskArt);
       }
@@ -105,10 +105,10 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
                changes);
          facilitiesGoal.addMember(ActionManager.getFirstTeam(action));
          teamArt = ActionManager.getFirstTeam(action);
-         TaskArtifact taskArt = teamArt.createNewTask("Task 1", createdDate, createdBy);
+         TaskArtifact taskArt = teamArt.createNewTask("Task 1", createdDate, createdBy, changes);
          sawCodeGoal.addMember(taskArt);
          changes.add(taskArt);
-         taskArt = teamArt.createNewTask("Task 2", createdDate, createdBy);
+         taskArt = teamArt.createNewTask("Task 2", createdDate, createdBy, changes);
          facilitiesGoal.addMember(taskArt);
          changes.add(taskArt);
       }

@@ -88,23 +88,23 @@ public class SMAPromptChangeStatusTest {
       assertTrue(SMAPromptChangeStatus.isValidToChangeStatus(tasks).isTrue());
 
       // Change two to 100, 1 hr split
-      SMAPromptChangeStatus.performChangeStatus(tasks, null, 1, 100, true, true);
+      SMAPromptChangeStatus.performChangeStatusAndPersist(tasks, null, 1, 100, true);
       validateSMAs(tasks, TaskStates.InWork.getName(), 100, 0.25);
 
       // Change two to 100, 1 hr split
       // hours should be added to inwork state; make sure completed state isn't statused
-      SMAPromptChangeStatus.performChangeStatus(tasks, null, 1, 100, true, true);
+      SMAPromptChangeStatus.performChangeStatusAndPersist(tasks, null, 1, 100, true);
       validateSMAs(tasks, TaskStates.InWork.getName(), 100, 0.50);
 
       // Change two to 99, 1 hr split
       // transitions to InWork and adds hours
       // make sure hours not added to completed state
-      SMAPromptChangeStatus.performChangeStatus(tasks, null, 1, 99, true, true);
+      SMAPromptChangeStatus.performChangeStatusAndPersist(tasks, null, 1, 99, true);
       validateSMAs(tasks, TaskStates.InWork.getName(), 99, 0.75);
 
       // Change two to 55, 0
       // no transition, no hours spent
-      SMAPromptChangeStatus.performChangeStatus(tasks, null, 0, 55, true, true);
+      SMAPromptChangeStatus.performChangeStatusAndPersist(tasks, null, 0, 55, true);
       validateSMAs(tasks, TaskStates.InWork.getName(), 55, 0.75);
 
    }
@@ -125,8 +125,7 @@ public class SMAPromptChangeStatusTest {
          new TransitionHelper("Transition to Cancelled", Arrays.asList(cancelTask), TaskStates.Cancelled.getName(),
             null, null, changes, TransitionOption.None);
       TransitionManager transitionMgr = new TransitionManager(helper);
-      TransitionResults results = transitionMgr.handleAll();
-      changes.execute();
+      TransitionResults results = transitionMgr.handleAllAndPersist();
       assertEquals("Transition should have no errors", true, results.isEmpty());
 
       Result result = SMAPromptChangeStatus.isValidToChangeStatus(tasks);

@@ -63,9 +63,8 @@ public class CancelledDateColumnTest {
          new TransitionHelper("Transition to Cancelled", Arrays.asList(teamArt), TeamState.Cancelled.getName(), null,
             "reason", changes, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
       TransitionManager transitionMgr = new TransitionManager(helper);
-      TransitionResults results = transitionMgr.handleAll();
+      TransitionResults results = transitionMgr.handleAllAndPersist();
       Assert.assertTrue(results.toString(), results.isEmpty());
-      changes.execute();
 
       changes.clear();
       date = CancelledDateColumn.getDate(teamArt);
@@ -79,9 +78,8 @@ public class CancelledDateColumnTest {
             Collections.singleton(AtsClientService.get().getUserAdmin().getCurrentUser()), null, changes,
             TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
       transitionMgr = new TransitionManager(helper);
-      results = transitionMgr.handleAll();
+      results = transitionMgr.handleAllAndPersist();
       Assert.assertTrue(results.toString(), results.isEmpty());
-      changes.execute();
 
       Assert.assertEquals("Cancelled date should be blank again", "",
          CancelledDateColumn.getInstance().getColumnText(teamArt, CancelledDateColumn.getInstance(), 0));

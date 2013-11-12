@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
@@ -222,10 +223,11 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             RelatedToStateColumn.getValidInWorkStates((TeamWorkFlowArtifact) iXTaskViewer.getAwa());
          ed.setOptions(validStates);
          if (ed.open() == 0) {
+            AtsChangeSet changes = new AtsChangeSet("Create New Task");
             taskArt =
                ((AbstractTaskableArtifact) iXTaskViewer.getAwa()).createNewTask(ed.getEntry(), new Date(),
-                  AtsClientService.get().getUserAdmin().getCurrentUser(), ed.getSelection());
-            taskArt.persist("Create New Task");
+                  AtsClientService.get().getUserAdmin().getCurrentUser(), ed.getSelection(), changes);
+            changes.execute();
             AtsTaskCache.decache((AbstractTaskableArtifact) iXTaskViewer.getAwa());
          }
       } catch (Exception ex) {

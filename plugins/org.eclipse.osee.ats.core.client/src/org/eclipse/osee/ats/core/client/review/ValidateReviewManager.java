@@ -77,7 +77,7 @@ public class ValidateReviewManager {
             DecisionReviewManager.createNewDecisionReview(
                teamArt,
                isValidateReviewBlocking(teamArt.getStateDefinition()) ? ReviewBlockType.Transition : ReviewBlockType.None,
-               true, createdDate, createdBy);
+               true, createdDate, createdBy, changes);
          decRev.setName(VALIDATE_REVIEW_TITLE);
          decRev.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions,
             "No;Followup;" + getValidateReviewFollowupUsersStr(teamArt) + "\n" + "Yes;Completed;");

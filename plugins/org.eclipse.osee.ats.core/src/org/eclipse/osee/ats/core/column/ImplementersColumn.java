@@ -74,7 +74,7 @@ public class ImplementersColumn implements ImplementersStringProvider {
          fromStateName = workItem.getWorkData().getCancelledFromState();
       }
       if (Strings.isValid(fromStateName)) {
-         for (IAtsUser user : workItem.getStateData().getAssigneesForState(fromStateName)) {
+         for (IAtsUser user : workItem.getStateMgr().getAssigneesForState(fromStateName)) {
             if (!implementers.contains(user)) {
                implementers.add(user);
             }

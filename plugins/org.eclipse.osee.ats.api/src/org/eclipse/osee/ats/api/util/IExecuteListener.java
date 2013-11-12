@@ -8,14 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.workflow;
-
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+package org.eclipse.osee.ats.api.util;
 
 /**
- * @author Donald G. Dunne
+ * @author Donald G Dunne
  */
-public interface HasStateProvider {
+public interface IExecuteListener {
 
-   WorkStateProvider getStateData() throws OseeCoreException;
+   public void changesStored(IAtsChangeSet changes);
+
 }

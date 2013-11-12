@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 
 import org.eclipse.osee.ats.actions.OpenParentAction;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -21,7 +22,12 @@ public class OpenParentActionTest extends AbstractAtsActionRunTest {
 
    @Override
    public OpenParentAction createAction() throws OseeCoreException {
-      return new OpenParentAction(AtsTestUtil.getOrCreateTaskOffTeamWf1());
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      OpenParentAction action = new OpenParentAction(AtsTestUtil.getOrCreateTaskOffTeamWf1(changes));
+      if (!changes.isEmpty()) {
+         changes.execute();
+      }
+      return action;
    }
 
 }

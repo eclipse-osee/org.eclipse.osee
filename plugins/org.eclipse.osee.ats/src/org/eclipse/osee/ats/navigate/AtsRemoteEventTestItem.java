@@ -195,13 +195,13 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       AtsChangeSet changes = new AtsChangeSet("Remote Event Test");
       TransitionHelper helper =
          new TransitionHelper("Remote Event Test", Arrays.asList(teamArt), TeamState.Analyze.getName(),
-            Collections.singleton(AtsClientService.get().getUserAdmin().getCurrentUser()), null, changes, TransitionOption.None);
+            Collections.singleton(AtsClientService.get().getUserAdmin().getCurrentUser()), null, changes,
+            TransitionOption.None);
       TransitionManager transitionMgr = new TransitionManager(helper);
-      TransitionResults results = transitionMgr.handleAll();
+      TransitionResults results = transitionMgr.handleAllAndPersist();
       if (!results.isEmpty()) {
          throw new OseeStateException(results.toString());
       }
-      changes.execute();
    }
 
    private void makeChanges6(TeamWorkFlowArtifact teamArt) throws OseeCoreException {

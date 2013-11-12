@@ -179,7 +179,7 @@ public final class GoalManager {
 
       // Initialize state machine
       goalArt.initializeNewStateMachine(Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()),
-         new Date(), AtsClientService.get().getUserAdmin().getCurrentUser());
+         new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
       changes.add(goalArt);
       return goalArt;
    }
