@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
@@ -40,52 +41,70 @@ public final class SessionManagerImpl implements ISessionManager {
    private final Cache<String, Session> sessionCache;
    private final IAuthenticationManager authenticationManager;
    private final WriteDataAccessor<Session> storeDataAccessor;
+   private final IApplicationServerManager serverManager;
 
-   public SessionManagerImpl(SessionFactory sessionFactory, Cache<String, Session> sessionCache, IAuthenticationManager authenticationManager, WriteDataAccessor<Session> storeDataAccessor) {
+   public SessionManagerImpl(SessionFactory sessionFactory, Cache<String, Session> sessionCache, IAuthenticationManager authenticationManager, WriteDataAccessor<Session> storeDataAccessor, IApplicationServerManager serverManager) {
       this.sessionFactory = sessionFactory;
       this.sessionCache = sessionCache;
       this.authenticationManager = authenticationManager;
       this.storeDataAccessor = storeDataAccessor;
+      this.serverManager = serverManager;
    }
 
    @Override
    public OseeSessionGrant createSession(final OseeCredential credential) throws OseeCoreException {
       Conditions.checkNotNull(credential, "credential");
       OseeSessionGrant sessionGrant = null;
-      final String newSessionId = GUID.create();
-      boolean isAuthenticated = authenticationManager.authenticate(credential);
-      if (isAuthenticated) {
-         final IUserToken userToken = authenticationManager.asUserToken(credential);
+      boolean supportedVersion = checkVersion(credential);
+      if (supportedVersion) {
+         final String newSessionId = GUID.create();
+         boolean isAuthenticated = authenticationManager.authenticate(credential);
+         if (isAuthenticated) {
+            final IUserToken userToken = authenticationManager.asUserToken(credential);
 
-         Callable<Session> callable = new Callable<Session>() {
+            Callable<Session> callable = new Callable<Session>() {
 
-            @Override
-            public Session call() throws Exception {
+               @Override
+               public Session call() throws Exception {
 
-               Date creationDate = GlobalTime.GreenwichMeanTimestamp();
-               Session session =
-                  sessionFactory.createNewSession(newSessionId, userToken.getUserId(), creationDate,
-                     credential.getVersion(), credential.getClientMachineName(), credential.getClientAddress(),
-                     credential.getPort());
+                  Date creationDate = GlobalTime.GreenwichMeanTimestamp();
+                  Session session =
+                     sessionFactory.createNewSession(newSessionId, userToken.getUserId(), creationDate,
+                        credential.getVersion(), credential.getClientMachineName(), credential.getClientAddress(),
+                        credential.getPort());
 
-               // if the user is BootStrap we do not want to insert into database since tables may not exist
-               if (!SystemUser.BootStrap.equals(userToken)) {
-                  storeDataAccessor.create(Collections.singleton(session));
+                  // if the user is BootStrap we do not want to insert into database since tables may not exist
+                  if (!SystemUser.BootStrap.equals(userToken)) {
+                     storeDataAccessor.create(Collections.singleton(session));
+                  }
+
+                  return session;
                }
+            };
 
-               return session;
+            try {
+               Session session = sessionCache.get(newSessionId, callable);
+               sessionGrant =
+                  sessionFactory.createSessionGrant(session, userToken, authenticationManager.getProtocol());
+            } catch (Exception e) {
+               OseeExceptions.wrapAndThrow(e);
             }
-         };
 
-         try {
-            Session session = sessionCache.get(newSessionId, callable);
-            sessionGrant = sessionFactory.createSessionGrant(session, userToken, authenticationManager.getProtocol());
-         } catch (Exception e) {
-            OseeExceptions.wrapAndThrow(e);
          }
-
       }
       return sessionGrant;
+   }
+
+   private boolean checkVersion(OseeCredential credential) {
+      boolean supported = false;
+      String clientVersion = credential.getVersion();
+      for (String version : serverManager.getSupportedVersions()) {
+         if (version.equals(clientVersion)) {
+            supported = true;
+            break;
+         }
+      }
+      return supported;
    }
 
    @Override
