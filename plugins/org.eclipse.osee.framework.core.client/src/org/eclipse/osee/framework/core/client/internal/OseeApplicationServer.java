@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class OseeApplicationServer {
 
-   private static final ArbitrationServer arbitrationServer = new ArbitrationServer();
    private static final ApplicationServer applicationServer = new ApplicationServer();
 
    private OseeApplicationServer() {
@@ -35,7 +35,6 @@ public class OseeApplicationServer {
    }
 
    public static void reset() {
-      arbitrationServer.resetStatus();
       applicationServer.resetStatus();
 
       applicationServer.setServerInfo(null);
@@ -57,28 +56,20 @@ public class OseeApplicationServer {
       if (!applicationServer.isServerInfoValid()) {
          applicationServer.resetStatus();
          OseeServerInfo serverInfo = null;
-         String overrideValue = OseeClientProperties.getOseeApplicationServer();
-         if (Strings.isValid(overrideValue)) {
-            arbitrationServer.set(Level.INFO, null, "Arbitration Overridden");
+         String appServerUri = OseeClientProperties.getOseeApplicationServer();
+         if (Strings.isValid(appServerUri)) {
             try {
                serverInfo =
-                  new OseeServerInfo("OVERRIDE", overrideValue, new String[] {"OVERRIDE"}, new Timestamp(
-                     new Date().getTime()), true);
+                  new OseeServerInfo(applicationServer.getServerAddress(), appServerUri,
+                     new String[] {OseeCodeVersion.getVersion()}, new Timestamp(new Date().getTime()), true);
             } catch (Exception ex) {
                OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
-               applicationServer.set(Level.SEVERE, ex, "Error parsing arbitration server override [%s]", overrideValue);
-            }
-         } else {
-            serverInfo = arbitrationServer.getViaArbitration();
-            if (serverInfo == null) {
-               applicationServer.set(Level.SEVERE, null, "Arbitration Server Error");
+               applicationServer.set(Level.SEVERE, ex, "Error parsing server property [%s]", appServerUri);
             }
          }
          applicationServer.setServerInfo(serverInfo);
       }
       applicationServer.checkAlive();
-
-      arbitrationServer.report();
       applicationServer.report();
    }
 

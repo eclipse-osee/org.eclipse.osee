@@ -21,6 +21,4 @@ public interface IApplicationServerLookup {
 
    public Collection<OseeServerInfo> getAvailableServers() throws OseeCoreException;
 
-   public OseeServerInfo getServerInfoBy(String version) throws OseeCoreException;
-
 }

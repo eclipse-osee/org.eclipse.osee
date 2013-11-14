@@ -15,7 +15,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.CoreClientConstants;
-import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.internal.CoreClientActivator;
 import org.eclipse.osee.framework.core.client.internal.OseeApplicationServer;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -67,11 +66,6 @@ public final class HttpUrlBuilderClient {
       return normalize(address);
    }
 
-   public String getArbitrationServerPrefix() {
-      String address = OseeClientProperties.getOseeArbitrationServer();
-      return normalize(address);
-   }
-
    public String getPermanentBaseUrl() throws OseeCoreException {
       String address = OseeInfo.getValue("osee.permanent.base.url");
       return normalize(address);
@@ -107,15 +101,6 @@ public final class HttpUrlBuilderClient {
    public String getOsgiServletServiceUrl(String context, Map<String, String> parameters) throws OseeCoreException {
       try {
          return HttpUrlBuilder.createURL(getApplicationServerPrefix(), context, parameters);
-      } catch (UnsupportedEncodingException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-         return null; // unreachable since wrapAndThrow() always throws an exception
-      }
-   }
-
-   public String getOsgiArbitrationServiceUrl(String context, Map<String, String> parameters) throws OseeCoreException {
-      try {
-         return HttpUrlBuilder.createURL(getArbitrationServerPrefix(), context, parameters);
       } catch (UnsupportedEncodingException ex) {
          OseeExceptions.wrapAndThrow(ex);
          return null; // unreachable since wrapAndThrow() always throws an exception

@@ -33,9 +33,6 @@ import org.eclipse.osee.logger.Log;
  */
 public class ApplicationServerDataStore {
 
-   private static final String GET_NUMBER_OF_SESSIONS =
-      "SELECT count(1) FROM osee_session WHERE managed_by_server_id = ?";
-
    private static final String SELECT_FROM_LOOKUP_TABLE =
       "SELECT * FROM osee_server_lookup ORDER BY server_uri desc, version_id desc";
 
@@ -58,20 +55,20 @@ public class ApplicationServerDataStore {
       return dbService;
    }
 
-   public void create(Iterable<? extends OseeServerInfo> infos) throws OseeCoreException {
-      executeTx(TxType.CREATE, infos);
+   public void create(OseeServerInfo info) throws OseeCoreException {
+      executeTx(TxType.CREATE, info);
    }
 
-   public void update(Iterable<? extends OseeServerInfo> infos) throws OseeCoreException {
-      executeTx(TxType.UPDATE, infos);
+   public void update(OseeServerInfo info) throws OseeCoreException {
+      executeTx(TxType.UPDATE, info);
    }
 
-   public void delete(Iterable<? extends OseeServerInfo> infos) throws OseeCoreException {
-      executeTx(TxType.DELETE, infos);
+   public void delete(OseeServerInfo info) throws OseeCoreException {
+      executeTx(TxType.DELETE, info);
    }
 
-   private void executeTx(TxType op, Iterable<? extends OseeServerInfo> infos) throws OseeCoreException {
-      IDbTransactionWork tx = new ServerLookupTx(getDbService(), op, infos);
+   private void executeTx(TxType op, OseeServerInfo info) throws OseeCoreException {
+      IDbTransactionWork tx = new ServerLookupTx(getDbService(), op, info);
       DatabaseTransactions.execute(getDbService(), getDbService().getConnection(), tx);
    }
 
@@ -131,10 +128,6 @@ public class ApplicationServerDataStore {
       }
    }
 
-   public int getNumberOfSessions(String serverId) throws OseeCoreException {
-      return getDbService().runPreparedQueryFetchObject(0, GET_NUMBER_OF_SESSIONS, serverId);
-   }
-
    private static enum TxType {
       CREATE,
       UPDATE,
@@ -149,13 +142,13 @@ public class ApplicationServerDataStore {
       private static final String DELETE_FROM_LOOKUP_TABLE_BY_ID = "DELETE FROM osee_server_lookup WHERE server_id = ?";
 
       private final TxType txType;
-      private final Iterable<? extends OseeServerInfo> datas;
+      private final OseeServerInfo data;
       private final IOseeDatabaseService dbService;
 
-      public ServerLookupTx(IOseeDatabaseService dbService, TxType txType, Iterable<? extends OseeServerInfo> datas) {
+      public ServerLookupTx(IOseeDatabaseService dbService, TxType txType, OseeServerInfo data) {
          this.dbService = dbService;
          this.txType = txType;
-         this.datas = datas;
+         this.data = data;
       }
 
       @Override
@@ -182,16 +175,14 @@ public class ApplicationServerDataStore {
 
       private void create(OseeConnection connection) throws OseeCoreException {
          List<Object[]> insertData = new ArrayList<Object[]>();
-         for (OseeServerInfo data : datas) {
-            String serverId = data.getServerId();
-            URI serverUri = data.getUri();
-            String uri = serverUri.toString();
-            Timestamp dateStarted = data.getDateStarted();
-            int acceptingRequests = data.isAcceptingRequests() ? 1 : 0;
+         String serverId = data.getServerId();
+         URI serverUri = data.getUri();
+         String uri = serverUri.toString();
+         Timestamp dateStarted = data.getDateStarted();
+         int acceptingRequests = data.isAcceptingRequests() ? 1 : 0;
 
-            for (String version : data.getVersion()) {
-               insertData.add(new Object[] {serverId, version, uri, dateStarted, acceptingRequests});
-            }
+         for (String version : data.getVersion()) {
+            insertData.add(new Object[] {serverId, version, uri, dateStarted, acceptingRequests});
          }
          if (!insertData.isEmpty()) {
             dbService.runBatchUpdate(connection, INSERT_LOOKUP_TABLE, insertData);
@@ -205,9 +196,7 @@ public class ApplicationServerDataStore {
 
       private void delete(OseeConnection connection) throws OseeCoreException {
          List<Object[]> deleteData = new ArrayList<Object[]>();
-         for (OseeServerInfo data : datas) {
-            deleteData.add(new Object[] {data.getServerId()});
-         }
+         deleteData.add(new Object[] {data.getServerId()});
          if (!deleteData.isEmpty()) {
             dbService.runBatchUpdate(connection, DELETE_FROM_LOOKUP_TABLE_BY_ID, deleteData);
          }

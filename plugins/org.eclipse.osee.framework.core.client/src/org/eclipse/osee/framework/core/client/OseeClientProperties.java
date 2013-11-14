@@ -33,7 +33,6 @@ public class OseeClientProperties extends OseeProperties {
    private static final String HEADER_TAG = "OSEE-Client-Property-Init";
 
    private static final String OSEE_APPLICATION_SERVER = "osee.application.server";
-   private static final String OSEE_ARBITRATION_SERVER = "osee.arbitration.server";
 
    private static final String OSEE_LOCAL_APPLICATION_SERVER = "osee.local.application.server";
    private static final String OSEE_LOCAL_HTTP_WORKER_PORT = "osee.local.http.worker.port";
@@ -177,12 +176,12 @@ public class OseeClientProperties extends OseeProperties {
    /**
     * <pre>
     * Sets the application server address and port to use. This system property sets the URL used to reference
-    * the application server. Arbitration is bypassed.
+    * the application server.
     * </pre>
     * 
     * <b>Format: </b> <code>http://address:port</code>
     * 
-    * @param application server URL to use instead going through the arbitration server
+    * @param application server URL to use
     */
    public static void setOseeApplicationServer(String value) {
       System.setProperty(OSEE_APPLICATION_SERVER, value);
@@ -191,30 +190,15 @@ public class OseeClientProperties extends OseeProperties {
    /**
     * <pre>
     * Retrieves the application server address and port to use. When specified, this system property sets the URL used to reference
-    * the application server. Arbitration is bypassed.
+    * the application server.
     * </pre>
     * 
     * <b>Format: </b> <code>http://address:port</code>
     * 
-    * @return application server URL to use instead going through the arbitration server
+    * @return application server URL
     */
    public static String getOseeApplicationServer() {
       return getProperty(OSEE_APPLICATION_SERVER);
-   }
-
-   /**
-    * <pre>
-    * Retrieves the arbitration server address and port to use. This system property must be specified for the system to
-    * gain access to OSEE data. If the application server property is set then that address takes precedence and
-    * arbitration is bypassed.
-    * </pre>
-    * 
-    * <b>Format: </b> <code>http://address:port</code>
-    * 
-    * @return default arbitration server URL to set preferences.
-    */
-   public static String getOseeArbitrationServer() {
-      return getProperty(OSEE_ARBITRATION_SERVER);
    }
 
    private static String getProperty(String name) {

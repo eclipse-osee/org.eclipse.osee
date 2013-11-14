@@ -12,16 +12,12 @@ package org.eclipse.osee.framework.core.server.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -78,71 +74,6 @@ public class ApplicationServerLookup implements IApplicationServerLookup {
          }
       }
       return healthyServers;
-   }
-
-   @Override
-   public OseeServerInfo getServerInfoBy(String version) throws OseeCoreException {
-      Collection<? extends OseeServerInfo> infos = getVersionCompatibleServers(version);
-      Collection<OseeServerInfo> healthyServers = getHealthyServers(infos);
-      return getBestAvailable(healthyServers);
-   }
-
-   public Collection<OseeServerInfo> getVersionCompatibleServers(String clientVersion) throws OseeCoreException {
-      Set<OseeServerInfo> toReturn = new HashSet<OseeServerInfo>();
-      if (Strings.isValid(clientVersion)) {
-         Collection<? extends OseeServerInfo> infos = getDataStore().getAll();
-         for (OseeServerInfo info : infos) {
-            if (isServerCompatible(info, clientVersion)) {
-               toReturn.add(info);
-            }
-         }
-      }
-      return toReturn;
-   }
-
-   private boolean isCompatibleVersion(String serverVersion, String clientVersion) {
-      boolean result = false;
-      if (serverVersion.equals(clientVersion)) {
-         result = true;
-      } else {
-         result = clientVersion.matches(serverVersion);
-         if (!result) {
-            result = serverVersion.matches(clientVersion);
-         }
-      }
-      return result;
-   }
-
-   private boolean isServerCompatible(OseeServerInfo info, String clientVersion) {
-      boolean result = false;
-      for (String version : info.getVersion()) {
-         result = isCompatibleVersion(version, clientVersion);
-         if (result) {
-            break;
-         }
-      }
-      return result;
-   }
-
-   private OseeServerInfo getBestAvailable(Collection<OseeServerInfo> infos) throws OseeCoreException {
-      OseeServerInfo result = null;
-      if (infos.size() == 1) {
-         result = infos.iterator().next();
-      } else {
-         int minSessions = Integer.MAX_VALUE;
-         for (OseeServerInfo info : infos) {
-            try {
-               int numberOfSessions = serverDataStore.getNumberOfSessions(info.getServerId());
-               if (minSessions > numberOfSessions) {
-                  result = info;
-                  minSessions = numberOfSessions;
-               }
-            } catch (OseeDataStoreException ex) {
-               logger.error(ex, "Error getting number of sessions");
-            }
-         }
-      }
-      return result;
    }
 
    private boolean isServerAlive(OseeServerInfo info) {

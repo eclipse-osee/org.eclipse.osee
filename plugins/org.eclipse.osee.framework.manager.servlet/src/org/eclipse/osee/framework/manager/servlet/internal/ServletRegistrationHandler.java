@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
@@ -34,7 +33,6 @@ import org.eclipse.osee.framework.manager.servlet.OseeModelServlet;
 import org.eclipse.osee.framework.manager.servlet.ResourceManagerServlet;
 import org.eclipse.osee.framework.manager.servlet.SearchEngineServlet;
 import org.eclipse.osee.framework.manager.servlet.SearchEngineTaggerServlet;
-import org.eclipse.osee.framework.manager.servlet.ServerLookupServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionClientLoopbackServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionManagementServlet;
 import org.eclipse.osee.framework.manager.servlet.SystemManagerServlet;
@@ -53,7 +51,6 @@ public class ServletRegistrationHandler {
    private HttpService httpService;
    private Log logger;
    private ISessionManager sessionManager;
-   private IApplicationServerLookup serverLookup;
    private IApplicationServerManager appServerManager;
    private IDataTranslationService translationService;
    private TempCachingService caching;
@@ -66,10 +63,6 @@ public class ServletRegistrationHandler {
 
    public void setSessionManager(ISessionManager sessionManager) {
       this.sessionManager = sessionManager;
-   }
-
-   public void setServerLookup(IApplicationServerLookup serverLookup) {
-      this.serverLookup = serverLookup;
    }
 
    public void setAppServerManager(IApplicationServerManager appServerManager) {
@@ -137,7 +130,6 @@ public class ServletRegistrationHandler {
       register(new SearchEngineServlet(logger, sessionManager, translationService, orcsApi),
          OseeServerContext.SEARCH_CONTEXT);
       register(new SearchEngineTaggerServlet(logger, sessionManager, orcsApi), OseeServerContext.SEARCH_TAGGING_CONTEXT);
-      register(new ServerLookupServlet(logger, serverLookup, appServerManager), OseeServerContext.LOOKUP_CONTEXT);
       register(new SessionManagementServlet(logger, sessionManager, authenticationManager),
          OseeServerContext.SESSION_CONTEXT);
       register(new SessionClientLoopbackServlet(logger, sessionManager), OseeServerContext.CLIENT_LOOPBACK_CONTEXT);

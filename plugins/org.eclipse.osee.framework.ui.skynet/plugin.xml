@@ -90,15 +90,6 @@
           name="Editors">
     </page>
  </extension>
- <extension
-       point="org.eclipse.ui.preferencePages">
-    <page
-          category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
-          class="org.eclipse.osee.framework.ui.skynet.preferences.ArbitrationServerPage"
-          id="org.eclipse.osee.framework.ui.skynet.preferences.ArbitrationServerPreferences"
-          name="Arbitration Server">
-    </page>
- </extension>
 
 	<extension id="org.eclipse.osee.framework.ui.skynet" name="OSEE" point="org.eclipse.ui.views">
 		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer" icon="images/artifact_explorer.gif" id="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer" name="Artifact Explorer"/>

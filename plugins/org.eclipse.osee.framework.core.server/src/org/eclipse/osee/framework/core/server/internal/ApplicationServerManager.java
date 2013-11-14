@@ -18,7 +18,6 @@ import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -236,7 +235,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
       OseeServerInfoMutable info = getApplicationServerInfo();
       info.setAcceptingRequests(value);
       if (PersistType.ALLOW_DB_PERSIST == persistType) {
-         dataStore.update(Collections.singleton(info));
+         dataStore.update(info);
       }
       for (String contexts : oseeHttpServlets.keySet()) {
          InternalOseeHttpServlet servlets = oseeHttpServlets.get(contexts);
@@ -341,7 +340,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
       OseeServerInfoMutable info = getApplicationServerInfo();
       refreshData(info);
       info.addVersion(version);
-      dataStore.update(Collections.singleton(info));
+      dataStore.update(info);
    }
 
    @Override
@@ -356,7 +355,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
       boolean wasRemoved = versions.remove(version);
       if (wasRemoved) {
          info.setVersions(versions);
-         dataStore.update(Collections.singleton(info));
+         dataStore.update(info);
       } else {
          throw new OseeStateException("Not part of the supported version [%s]", version);
       }
@@ -365,7 +364,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
    private boolean deregisterWithDb(OseeServerInfo info) {
       boolean status = false;
       try {
-         dataStore.delete(Collections.singleton(info));
+         dataStore.delete(info);
          status = true;
       } catch (OseeCoreException ex) {
          getLogger().info("Server lookup table is not initialized");
@@ -376,7 +375,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
    private boolean registerWithDb(OseeServerInfo info) {
       boolean status = false;
       try {
-         dataStore.create(Collections.singleton(info));
+         dataStore.create(info);
          status = true;
       } catch (OseeCoreException ex) {
          getLogger().info("Server lookup table is not initialized");

@@ -25,7 +25,6 @@ public class OseeServerContext {
    public static final String SEARCH_TAGGING_CONTEXT = asAbsoluteContext("search/tagger");
    public static final String RESOURCE_CONTEXT = asAbsoluteContext("resource");
    public static final String SESSION_CONTEXT = asAbsoluteContext("session");
-   public static final String LOOKUP_CONTEXT = asAbsoluteContext("server/lookup");
    public static final String CLIENT_LOOPBACK_CONTEXT = asAbsoluteContext("client/loopback");
    public static final String ARTIFACT_CONTEXT = asAbsoluteContext("artifact");
    public static final String OSEE_MODEL_CONTEXT = asAbsoluteContext("model");
