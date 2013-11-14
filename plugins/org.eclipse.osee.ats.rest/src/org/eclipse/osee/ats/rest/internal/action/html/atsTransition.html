@@ -1,0 +1,13 @@
+	</br>
+   <form action="/ats/action/<?guid?>/state" method="post">
+		<input type="hidden" name="operation" value="transition">
+		<input type="hidden" name="guid" value="<?guid?>">
+	   <button name="transitionButton">Transition</button>
+	   <label>To State</label> <input placeholder="type to filter" type="text" name="toState" <?defaultToStateValue?> id="toState" list="ToStateList" />
+	   <label>As User Id: </label><input type="text" name="asUserId" value="Joe Smith">
+	   <label>Cancel Reason: </label> <input type="text" name="reason" value="because">
+	</form>
+	</br>	
+	
+	<?ToStateList?>
+	

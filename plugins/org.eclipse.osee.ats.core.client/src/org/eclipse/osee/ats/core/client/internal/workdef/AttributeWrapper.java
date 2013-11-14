@@ -45,4 +45,9 @@ public class AttributeWrapper<T> implements IAttribute<T> {
       attr.setValue(value);
    }
 
+   @Override
+   public int getId() {
+      return attr.getId();
+   }
+
 }

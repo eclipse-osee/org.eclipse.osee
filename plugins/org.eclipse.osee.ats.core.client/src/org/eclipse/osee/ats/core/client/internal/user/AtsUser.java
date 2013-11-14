@@ -144,4 +144,9 @@ public class AtsUser implements IAtsUser {
       return String.format("[%s][%s]", getName(), getGuid());
    }
 
+   @Override
+   public Object getStoreObject() {
+      return user;
+   }
+
 }

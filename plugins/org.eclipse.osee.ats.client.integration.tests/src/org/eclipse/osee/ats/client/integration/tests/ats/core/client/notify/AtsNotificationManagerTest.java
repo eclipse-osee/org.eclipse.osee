@@ -97,10 +97,11 @@ public class AtsNotificationManagerTest {
       UserManager.getUser(DemoUsers.Alex_Kay).persist(getClass().getSimpleName());
 
       // reset the originator
+      AtsChangeSet changes = new AtsChangeSet("Change Originator");
       teamArt.setCreatedBy(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay), false,
-         new Date());
+         new Date(), changes);
       // persist will kick event which will log the notification event and send
-      teamArt.persist("Change originator");
+      changes.execute();
 
       // verify notification exists now
       Assert.assertEquals(1, mgr.getNotificationEvents().size());
@@ -113,7 +114,7 @@ public class AtsNotificationManagerTest {
 
       // reset the originator back to joe smith
       teamArt.setCreatedBy(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith), false,
-         new Date());
+         new Date(), changes);
       // persist will kick event which will log the notification event and send
       teamArt.persist("Change originator");
       AtsNotificationManager.setInTest(true);
@@ -128,7 +129,7 @@ public class AtsNotificationManagerTest {
 
       // reset the originator
       teamArt.setCreatedBy(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay), false,
-         new Date());
+         new Date(), changes);
       // persist will kick event which will log the notification event and send
       teamArt.persist("Change originator");
 
@@ -141,7 +142,7 @@ public class AtsNotificationManagerTest {
 
       // reset the originator back to joe smith
       teamArt.setCreatedBy(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith), false,
-         new Date());
+         new Date(), changes);
       // persist will kick event which will log the notification event and send
       teamArt.persist("Change originator");
       AtsNotificationManager.setInTest(true);
@@ -156,7 +157,7 @@ public class AtsNotificationManagerTest {
 
       // reset the originator
       teamArt.setCreatedBy(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay), false,
-         new Date());
+         new Date(), changes);
       // persist will kick event which will log the notification event and send
       teamArt.persist("Change originator");
 
@@ -291,10 +292,10 @@ public class AtsNotificationManagerTest {
 
       // set originator as Alex Kay
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName() + " - set originator");
       teamArt.setCreatedBy(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay), false,
-         new Date());
-
-      AtsChangeSet.execute(getClass().getSimpleName() + " - set originator", teamArt);
+         new Date(), changes);
+      changes.execute();
 
       // set alex kay having valid email address
       User user = UserManager.getUser(DemoUsers.Alex_Kay);
@@ -304,7 +305,7 @@ public class AtsNotificationManagerTest {
 
       // verify no notification events yet
       Assert.assertEquals(0, mgr.getNotificationEvents().size());
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      changes.reset(getClass().getSimpleName());
       Result result =
          AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsClientService.get().getUserAdmin().getCurrentUser(),
             changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
@@ -334,9 +335,10 @@ public class AtsNotificationManagerTest {
 
       // set originator as Alex Kay
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName() + " - set originator");
       teamArt.setCreatedBy(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay), false,
-         new Date());
-      AtsChangeSet.execute(getClass().getSimpleName() + " - set originator", teamArt);
+         new Date(), changes);
+      changes.execute();
 
       // set alex kay having valid email address
       User user = UserManager.getUser(DemoUsers.Alex_Kay);
@@ -346,7 +348,7 @@ public class AtsNotificationManagerTest {
 
       // verify no notification events yet
       Assert.assertEquals(0, mgr.getNotificationEvents().size());
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      changes.reset(getClass().getSimpleName());
       Result result =
          AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled, AtsClientService.get().getUserAdmin().getCurrentUser(),
             changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);

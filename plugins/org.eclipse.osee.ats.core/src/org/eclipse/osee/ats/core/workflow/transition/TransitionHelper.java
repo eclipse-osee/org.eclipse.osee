@@ -38,7 +38,7 @@ public class TransitionHelper extends TransitionHelperAdapter {
    private final Collection<? extends IAtsUser> toAssignees;
    private String toStateName;
    private final IAtsChangeSet changes;
-   private boolean executeChanges;
+   private boolean executeChanges = false;
 
    public TransitionHelper(String name, Collection<? extends IAtsWorkItem> awas, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, TransitionOption... transitionOption) {
       this.name = name;

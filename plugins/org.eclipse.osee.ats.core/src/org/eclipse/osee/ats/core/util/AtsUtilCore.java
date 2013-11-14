@@ -10,6 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.util;
 
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workflow.IAttribute;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.orcs.data.ArtifactId;
+import org.eclipse.osee.orcs.data.AttributeId;
 
 /**
  * @author Donald G. Dunne
@@ -17,6 +23,10 @@ package org.eclipse.osee.ats.core.util;
 public class AtsUtilCore {
 
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
+
+   public IOseeBranch getAtsBranchToken() {
+      return CoreBranches.COMMON;
+   }
 
    public static boolean isInTest() {
       return Boolean.valueOf(System.getProperty("osee.isInTest"));
@@ -38,4 +48,11 @@ public class AtsUtilCore {
       }
    }
 
+   public static ArtifactId toArtifactId(IAtsWorkItem workItem) {
+      return new ArtifactIdWrapper(workItem);
+   }
+
+   public static AttributeId toAttributeId(IAttribute<?> attr) {
+      return new AttributeIdWrapper(attr);
+   }
 }

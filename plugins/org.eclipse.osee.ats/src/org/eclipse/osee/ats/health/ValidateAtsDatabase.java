@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.AtsReviewCache;
@@ -46,9 +47,9 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.log.ArtifactLog;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -301,8 +302,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                         stateDef.getName(), XResultDataUI.getHyperlink(artifact)));
                      if (stateDef.getStateType() == StateType.Working) {
                         awa.setSoleAttributeFromString(AtsAttributeTypes.CurrentStateType, StateType.Working.name());
-                        TransitionManager.logWorkflowUnCompletedEvent(awa, stateDef);
-                        TransitionManager.logWorkflowUnCancelledEvent(awa, stateDef);
+                        AtsChangeSet changes = new AtsChangeSet(ValidateAtsDatabase.class.getSimpleName());
+                        TransitionManager.logWorkflowUnCompletedEvent(awa, stateDef, changes);
+                        TransitionManager.logWorkflowUnCancelledEvent(awa, stateDef, changes);
                         awa.persist(transaction);
                         results.log(artifact, "testCompletedCancelledStateAttributesSet", "FIXED");
                      } else {
@@ -1147,7 +1149,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   }
                   for (IStateToken state : Arrays.asList(TeamState.Completed, TeamState.Cancelled)) {
                      if (awa.isInState(state)) {
-                        IAtsLogItem logItem = awa.getStateStartedData(state);
+                        IAtsLogItem logItem = awa.getStateMgr().getStateStartedData(state);
                         if (logItem == null) {
                            try {
                               results.log(
@@ -1178,7 +1180,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      }
                   }
                   // Generate html log which will exercise all the conversions
-                  AtsLogUtility.getHtml(awa.getLog(), new ArtifactLog(awa), true);
+                  AtsLogUtility.getHtml(awa.getLog(),
+                     AtsCore.getLogFactory().getLogProvider(awa, AtsCore.getAttrResolver()), true);
                   // Verify that all users are resolved
                   for (IAtsLogItem logItem : awa.getLog().getLogItems()) {
                      if (logItem.getUserId() == null) {

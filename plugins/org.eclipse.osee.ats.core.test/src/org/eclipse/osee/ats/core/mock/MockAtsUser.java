@@ -127,4 +127,9 @@ public class MockAtsUser implements IAtsUser {
       return toString();
    }
 
+   @Override
+   public Object getStoreObject() {
+      return null;
+   }
+
 }

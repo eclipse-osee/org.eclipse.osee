@@ -284,4 +284,9 @@ public class MockArtifact implements ArtifactReadable {
       return null;
    }
 
+   @Override
+   public <T> T getSoleAttributeValue(IAttributeType attributeType, T defaultValue) throws OseeCoreException {
+      return null;
+   }
+
 }

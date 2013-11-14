@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -399,12 +400,12 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       private void getChildrenFromWorkDefinitionMatch(Object element, List<Object> items) {
          try {
             items.addAll(AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
-               ((WorkDefinitionMatch) element).getWorkDefinition()));
+               ((IWorkDefinitionMatch) element).getWorkDefinition()));
          } catch (OseeStateException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-         items.add(new WrappedPercentWeight(((WorkDefinitionMatch) element).getWorkDefinition()));
-         items.add(new WrappedTrace(((WorkDefinitionMatch) element).getTrace()));
+         items.add(new WrappedPercentWeight(((IWorkDefinitionMatch) element).getWorkDefinition()));
+         items.add(new WrappedTrace(((IWorkDefinitionMatch) element).getTrace()));
       }
 
       private void getUsersFromDecisionReviewOpt(IAtsDecisionReviewOption revOpt, List<Object> items) {

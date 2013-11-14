@@ -21,7 +21,7 @@ public interface IAtsStateFactory {
 
    IAtsStateManager getStateManager(IAtsWorkItem workItem) throws OseeCoreException;
 
-   IAtsStateManager getStateManager(IAtsWorkItem workItem, boolean inDb);
+   IAtsStateManager getStateManager(IAtsWorkItem workItem, boolean load);
 
    void writeToStore(IAtsWorkItem workItem, IAtsChangeSet changes) throws OseeCoreException;
 

@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
@@ -30,6 +31,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
@@ -126,7 +128,8 @@ public class TransitionManager {
                // Validate Editable
                boolean stateIsEditable =
                   WorkflowManagerCore.isEditable(workItem, workItem.getStateDefinition(),
-                     helper.isPrivilegedEditEnabled());
+                     helper.isPrivilegedEditEnabled(), helper.getTransitionUser(),
+                     AtsCore.getUserService().isAtsAdmin());
                boolean currentlyUnAssigned =
                   workItem.getStateMgr().getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER);
                workItem.getStateMgr().validateNoBootstrapUser();
@@ -254,16 +257,16 @@ public class TransitionManager {
                   IAtsUser transitionUser = getTransitionAsUser();
                   // Log transition
                   if (fromState.getStateType().isCancelledState()) {
-                     logWorkflowUnCancelledEvent(workItem, toState);
+                     logWorkflowUnCancelledEvent(workItem, toState, helper.getChangeSet());
                   } else if (fromState.getStateType().isCompletedState()) {
-                     logWorkflowUnCompletedEvent(workItem, toState);
+                     logWorkflowUnCompletedEvent(workItem, toState, helper.getChangeSet());
                   }
                   if (toState.getStateType().isCancelledState()) {
                      logWorkflowCancelledEvent(workItem, fromState, toState, completedCancellationReason,
-                        transitionDate, transitionUser);
+                        transitionDate, transitionUser, helper.getChangeSet());
                   } else if (toState.getStateType().isCompletedState()) {
                      logWorkflowCompletedEvent(workItem, fromState, toState, completedCancellationReason,
-                        transitionDate, transitionUser);
+                        transitionDate, transitionUser, helper.getChangeSet());
                   } else {
                      logStateCompletedEvent(workItem, workItem.getStateMgr().getCurrentStateName(),
                         completedCancellationReason, transitionDate, transitionUser);
@@ -286,9 +289,6 @@ public class TransitionManager {
                      }
                   }
 
-                  AtsCore.getWorkItemService().transitioned(workItem, fromState, toState, updatedAssigees,
-                     helper.getChangeSet());
-
                   // Notify extension points of transition
                   for (ITransitionListener listener : helper.getTransitionListeners()) {
                      listener.transitioned(workItem, fromState, toState, updatedAssigees, helper.getChangeSet());
@@ -304,7 +304,7 @@ public class TransitionManager {
                   new TransitionResult(String.format("Exception while transitioning [%s]", helper.getName()), ex));
             }
          }
-         if (results.isEmpty()) {
+         if (results.isEmpty() && helper.isExecuteChanges()) {
             helper.getChangeSet().execute();
          }
       } catch (Exception ex) {
@@ -414,74 +414,73 @@ public class TransitionManager {
       }
    }
 
-   public static void logWorkflowCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, String reason, Date cancelDate, IAtsUser cancelBy) throws OseeCoreException {
+   public static void logWorkflowCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, String reason, Date cancelDate, IAtsUser cancelBy, IAtsChangeSet changes) throws OseeCoreException {
       workItem.getLog().addLog(LogType.StateCancelled, fromState.getName(), reason, cancelDate, cancelBy.getUserId());
       if (AtsCore.getAttrResolver().isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
-         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledBy, cancelBy.getUserId());
-         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledDate, cancelDate);
-         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledReason, reason);
+         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledBy, cancelBy.getUserId(),
+            changes);
+         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledDate, cancelDate, changes);
+         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledReason, reason, changes);
          AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledFromState,
-            fromState.getName());
+            fromState.getName(), changes);
       }
-      validateUpdatePercentComplete(workItem, toState);
-      AtsCore.getLogFactory().writeToStore(workItem);
+      validateUpdatePercentComplete(workItem, toState, changes);
    }
 
-   public static void logWorkflowUnCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition toState) throws OseeCoreException {
+   public static void logWorkflowUnCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition toState, IAtsChangeSet changes) throws OseeCoreException {
       if (AtsCore.getAttrResolver().isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
-         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledBy);
-         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledDate);
-         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledReason);
-         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledFromState);
+         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledBy, changes);
+         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledDate, changes);
+         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledReason, changes);
+         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledFromState, changes);
       }
-      validateUpdatePercentComplete(workItem, toState);
-      AtsCore.getLogFactory().writeToStore(workItem);
+      validateUpdatePercentComplete(workItem, toState, changes);
    }
 
-   private void logWorkflowCompletedEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, String reason, Date cancelDate, IAtsUser cancelBy) throws OseeCoreException {
+   private void logWorkflowCompletedEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, String reason, Date cancelDate, IAtsUser cancelBy, IAtsChangeSet changes) throws OseeCoreException {
       workItem.getLog().addLog(LogType.StateComplete, fromState.getName(), Strings.isValid(reason) ? reason : "",
          cancelDate, cancelBy.getUserId());
       if (AtsCore.getAttrResolver().isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
-         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedBy, cancelBy.getUserId());
-         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedDate, cancelDate);
+         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedBy, cancelBy.getUserId(),
+            changes);
+         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedDate, cancelDate, changes);
          AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedFromState,
-            fromState.getName());
+            fromState.getName(), changes);
       }
-      validateUpdatePercentComplete(workItem, toState);
-      AtsCore.getLogFactory().writeToStore(workItem);
+      validateUpdatePercentComplete(workItem, toState, changes);
    }
 
-   public static void logWorkflowUnCompletedEvent(IAtsWorkItem workItem, IAtsStateDefinition toState) throws OseeCoreException {
+   public static void logWorkflowUnCompletedEvent(IAtsWorkItem workItem, IAtsStateDefinition toState, IAtsChangeSet changes) throws OseeCoreException {
       if (AtsCore.getAttrResolver().isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
-         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedBy);
-         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedDate);
-         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedFromState);
+         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedBy, changes);
+         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedDate, changes);
+         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedFromState, changes);
       }
-      validateUpdatePercentComplete(workItem, toState);
-      AtsCore.getLogFactory().writeToStore(workItem);
+      validateUpdatePercentComplete(workItem, toState, changes);
    }
 
-   private static void validateUpdatePercentComplete(IAtsWorkItem workItem, IAtsStateDefinition toState) {
-      Integer percent = workItem.getStateMgr().getPercentCompleteValue();
+   private static void validateUpdatePercentComplete(IAtsWorkItem workItem, IAtsStateDefinition toState, IAtsChangeSet changes) {
+      IAtsStateManager stateMgr = workItem.getStateMgr();
+      Integer percent = stateMgr.getPercentCompleteValue();
       if (percent == null) {
          percent = 0;
       }
       if (toState.getStateType().isCompletedOrCancelledState() && percent != 100) {
-         workItem.getStateMgr().setPercentCompleteValue(100);
+         stateMgr.setPercentCompleteValue(100);
+         changes.add(workItem);
       } else if (toState.getStateType().isWorkingState() && percent == 100) {
-         workItem.getStateMgr().setPercentCompleteValue(0);
+         stateMgr.setPercentCompleteValue(0);
+         changes.add(workItem);
       }
    }
 
    private void logStateCompletedEvent(IAtsWorkItem workItem, String fromStateName, String reason, Date date, IAtsUser user) throws OseeCoreException {
       workItem.getLog().addLog(LogType.StateComplete, fromStateName, Strings.isValid(reason) ? reason : "", date,
          user.getUserId());
-      AtsCore.getLogFactory().writeToStore(workItem);
    }
 
    public static void logStateStartedEvent(IAtsWorkItem workItem, IStateToken state, Date date, IAtsUser user) throws OseeCoreException {
       workItem.getLog().addLog(LogType.StateEntered, state.getName(), "", date, user.getUserId());
-      AtsCore.getLogFactory().writeToStore(workItem);
    }
 
    /**

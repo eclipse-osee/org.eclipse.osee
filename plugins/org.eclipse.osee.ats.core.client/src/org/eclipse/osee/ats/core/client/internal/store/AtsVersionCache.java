@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.core.client.internal.store;
 
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.client.internal.CacheProvider;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
+import org.eclipse.osee.ats.core.util.CacheProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**

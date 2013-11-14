@@ -232,6 +232,21 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
+   public <T> T getSoleAttributeValue(IAttributeType attributeType, T defaultValue) throws OseeCoreException {
+      T value = defaultValue;
+      Attribute<T> attribute = null;
+      try {
+         attribute = getSoleAttribute(attributeType);
+      } catch (AttributeDoesNotExist ex) {
+         // do nothing
+      }
+      if (attribute != null) {
+         value = attribute.getValue();
+      }
+      return value;
+   }
+
+   @Override
    public <T> void setSoleAttributeValue(IAttributeType attributeType, T value) throws OseeCoreException {
       Attribute<T> attribute = getOrCreateSoleAttribute(attributeType);
       attribute.setValue(value);

@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
@@ -62,6 +63,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
       return getAttributeType(attributeName).getDescription();
    }
 
+   @Override
    public AttributeType getAttributeType(String attributeName) {
       try {
          return AttributeTypeManager.getType(attributeName);
@@ -138,4 +140,71 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
       attributeById.delete();
    }
 
+   @Override
+   public void deleteSoleAttribute(IAtsWorkItem workItem, IAttributeType attributeType, IAtsChangeSet changes) throws OseeCoreException {
+      if (changes != null) {
+         changes.deleteSoleAttribute(workItem, attributeType);
+      } else {
+         deleteSoleAttribute(workItem, attributeType);
+      }
+   }
+
+   @Override
+   public void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, String value, IAtsChangeSet changes) throws OseeCoreException {
+      if (changes != null) {
+         changes.setSoleAttributeValue(workItem, attributeType, value);
+      } else {
+         setSoleAttributeValue(workItem, attributeType, value);
+      }
+   }
+
+   @Override
+   public void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, Object value, IAtsChangeSet changes) throws OseeCoreException {
+      if (changes != null) {
+         changes.setSoleAttributeValue(workItem, attributeType, value);
+      } else {
+         setSoleAttributeValue(workItem, attributeType, value);
+      }
+   }
+
+   @Override
+   public void addAttribute(IAtsWorkItem workItem, IAttributeType attributeType, Object value, IAtsChangeSet changes) throws OseeCoreException {
+      if (changes != null) {
+         changes.addAttribute(workItem, attributeType, value);
+      } else {
+         AtsClientService.get().getArtifact(workItem).addAttribute(attributeType, value);
+      }
+   }
+
+   @Override
+   public void deleteSoleAttribute(IAtsWorkItem workItem, IAttributeType attributeType, Object value, IAtsChangeSet changes) throws OseeCoreException {
+      if (changes != null) {
+         changes.deleteAttribute(workItem, attributeType, value);
+      } else {
+         AtsClientService.get().getArtifact(workItem).deleteAttribute(attributeType, value);
+      }
+   }
+
+   @Override
+   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, IAttributeType attributeType, T value, IAtsChangeSet changes) throws OseeCoreException {
+      if (changes != null) {
+         changes.setValue(workItem, attr, attributeType, value);
+      } else {
+         @SuppressWarnings("unchecked")
+         Attribute<T> attribute = (Attribute<T>) attr.getData();
+         attribute.setValue(value);
+      }
+   }
+
+   @Override
+   public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr, IAtsChangeSet changes) throws OseeCoreException {
+      if (changes != null) {
+         changes.deleteAttribute(workItem, attr);
+      } else {
+         Artifact artifact = AtsClientService.get().getArtifact(workItem);
+         Attribute<?> attribute = (Attribute<?>) attr.getData();
+         Attribute<?> attributeById = artifact.getAttributeById(attribute.getId(), false);
+         attributeById.delete();
+      }
+   }
 }

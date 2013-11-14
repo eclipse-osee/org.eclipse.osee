@@ -8,17 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.internal;
+package org.eclipse.osee.ats.rest.internal.workitem;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
- * @author Donald G. Dunne
+ * @author Donald G Dunne
  */
-public interface CacheProvider<T> {
+public class PeerToPeerReview extends AbstractReview implements IAtsPeerToPeerReview {
 
-   T get() throws OseeCoreException;
-
-   void invalidate();
+   public PeerToPeerReview(ArtifactReadable artifact) {
+      super(artifact);
+   }
 
 }

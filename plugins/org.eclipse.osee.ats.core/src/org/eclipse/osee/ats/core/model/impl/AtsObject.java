@@ -79,4 +79,9 @@ public class AtsObject extends FullyNamedIdentity<String> implements IAtsObject 
       return true;
    }
 
+   @Override
+   public Object getStoreObject() {
+      return null;
+   }
+
 }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.workflow;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.AtsCore;
@@ -22,12 +23,13 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class WorkflowManagerCore {
 
    public static boolean isEditable(IAtsWorkItem workItem, IAtsStateDefinition stateDef, boolean privilegedEditEnabled) throws OseeCoreException {
-      // must be writeable
-      return !AtsCore.getWorkItemService().isReadOnly(workItem) &&
-      // and access control writeable
-      AtsCore.getWorkItemService().isAccessControlWrite(workItem) &&
-      // and current state
-      (stateDef == null || AtsCore.getWorkDefService().isInState(workItem, stateDef)) &&
+      return isEditable(workItem, stateDef, privilegedEditEnabled, AtsCore.getUserService().getCurrentUser(),
+         AtsCore.getUserService().isAtsAdmin());
+   }
+
+   public static boolean isEditable(IAtsWorkItem workItem, IAtsStateDefinition stateDef, boolean privilegedEditEnabled, IAtsUser currentUser, boolean isAtsAdmin) throws OseeCoreException {
+      // must be current state
+      return (stateDef == null || AtsCore.getWorkDefService().isInState(workItem, stateDef)) &&
       // and one of these
       //
       // page is define to allow anyone to edit
@@ -37,9 +39,9 @@ public class WorkflowManagerCore {
          // privileged edit mode is on
          privilegedEditEnabled ||
          // current user is assigned
-         AtsCore.getUserService().isAssigneeMe(workItem) ||
+         workItem.getStateMgr().getAssignees().contains(currentUser) ||
       // current user is ats admin
-      AtsCore.getUserService().isAtsAdmin());
+      isAtsAdmin);
    }
 
 }

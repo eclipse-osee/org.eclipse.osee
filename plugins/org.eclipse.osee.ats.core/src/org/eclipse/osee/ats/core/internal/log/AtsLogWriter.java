@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.internal.log;
 
 import java.util.regex.Pattern;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.ILogStorageProvider;
@@ -39,7 +40,7 @@ public class AtsLogWriter {
       this.storageProvider = storageProvider;
    }
 
-   public void save() {
+   public void save(IAtsChangeSet changes) {
       try {
          Document doc = Jaxp.newDocumentNamespaceAware();
          Element rootElement = doc.createElement(ATS_LOG_TAG);
@@ -53,7 +54,7 @@ public class AtsLogWriter {
             element.setAttribute("msg", item.getMsg());
             rootElement.appendChild(element);
          }
-         storageProvider.saveLogXml(Jaxp.getDocumentXml(doc));
+         storageProvider.saveLogXml(Jaxp.getDocumentXml(doc), changes);
       } catch (Exception ex) {
          OseeLog.log(AtsCore.class, OseeLevel.SEVERE_POPUP, "Can't create ats log document", ex);
       }

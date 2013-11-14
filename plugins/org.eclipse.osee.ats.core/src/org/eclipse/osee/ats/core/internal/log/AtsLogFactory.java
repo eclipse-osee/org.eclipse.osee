@@ -13,12 +13,14 @@ package org.eclipse.osee.ats.core.internal.log;
 import java.util.Date;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.ILogStorageProvider;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
-import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.core.workflow.log.AtsLogStoreProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -32,9 +34,9 @@ public class AtsLogFactory implements IAtsLogFactory {
    }
 
    @Override
-   public IAtsLog getLogLoaded(IAtsWorkItem workItem) {
+   public IAtsLog getLogLoaded(IAtsWorkItem workItem, IAttributeResolver attrResolver) {
       IAtsLog log = getLog();
-      AtsLogReader reader = new AtsLogReader(log, AtsCore.getWorkItemService().getLogStorageProvider(workItem));
+      AtsLogReader reader = new AtsLogReader(log, getLogProvider(workItem, attrResolver));
       reader.load();
       return log;
    }
@@ -45,11 +47,15 @@ public class AtsLogFactory implements IAtsLogFactory {
    }
 
    @Override
-   public void writeToStore(IAtsWorkItem workItem) {
-      ILogStorageProvider storageProvider = AtsCore.getWorkItemService().getLogStorageProvider(workItem);
-      AtsLogWriter writer = new AtsLogWriter(workItem.getLog(), storageProvider);
-      writer.save();
-      getLogLoaded(workItem);
+   public void writeToStore(IAtsWorkItem workItem, IAttributeResolver attrResolver, IAtsChangeSet changes) {
+      AtsLogWriter writer = new AtsLogWriter(workItem.getLog(), getLogProvider(workItem, attrResolver));
+      writer.save(changes);
+      getLogLoaded(workItem, attrResolver);
+   }
+
+   @Override
+   public ILogStorageProvider getLogProvider(IAtsWorkItem workItem, IAttributeResolver attrResolver) {
+      return new AtsLogStoreProvider(workItem, attrResolver);
    }
 
 }

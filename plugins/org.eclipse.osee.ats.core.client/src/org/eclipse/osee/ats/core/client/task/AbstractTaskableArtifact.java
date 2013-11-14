@@ -24,9 +24,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
@@ -62,14 +60,6 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       super.atsDelete(deleteArts, allRelated);
       for (TaskArtifact taskArt : getTaskArtifacts()) {
          taskArt.atsDelete(deleteArts, allRelated);
-      }
-   }
-
-   @Override
-   public void transitioned(IAtsStateDefinition fromState, IAtsStateDefinition toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
-      super.transitioned(fromState, toState, toAssignees, changes);
-      for (TaskArtifact taskArt : getTaskArtifacts()) {
-         taskArt.parentWorkFlowTransitioned(fromState, toState, toAssignees, changes);
       }
    }
 
@@ -126,7 +116,6 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       if (Strings.isValid(relatedToState)) {
          taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, relatedToState);
       }
-      AtsCore.getLogFactory().writeToStore(taskArt);
       AtsTaskCache.decache(this);
       changes.add(taskArt);
       return taskArt;

@@ -16,11 +16,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
+import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -75,7 +79,7 @@ public class AtsChangeSet implements IAtsChangeSet {
                AtsCore.getStateFactory().writeToStore(workItem, this);
             }
             if (workItem.getLog().isDirty()) {
-               AtsCore.getLogFactory().writeToStore(workItem);
+               AtsCore.getLogFactory().writeToStore(workItem, AtsClientService.get().getAttributeResolver(), this);
             }
          }
       }
@@ -149,5 +153,63 @@ public class AtsChangeSet implements IAtsChangeSet {
          changes.add(obj);
       }
       changes.execute();
+   }
+
+   @Override
+   public void deleteSoleAttribute(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
+      Artifact artifact = AtsClientService.get().getArtifact(workItem);
+      artifact.deleteSoleAttribute(attributeType);
+      add(artifact);
+   }
+
+   @Override
+   public void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, String value) throws OseeCoreException {
+      Artifact artifact = AtsClientService.get().getArtifact(workItem);
+      artifact.setSoleAttributeValue(attributeType, value);
+      add(artifact);
+   }
+
+   @Override
+   public void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException {
+      Artifact artifact = AtsClientService.get().getArtifact(workItem);
+      artifact.setSoleAttributeValue(attributeType, value);
+      add(artifact);
+   }
+
+   @Override
+   public void addAttribute(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException {
+      Artifact artifact = AtsClientService.get().getArtifact(workItem);
+      artifact.addAttribute(attributeType, value);
+      add(artifact);
+   }
+
+   @Override
+   public void deleteAttribute(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException {
+      Artifact artifact = AtsClientService.get().getArtifact(workItem);
+      artifact.deleteAttribute(attributeType, value);
+      add(artifact);
+   }
+
+   @Override
+   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, IAttributeType attributeType, T value) throws OseeCoreException {
+      Artifact artifact = AtsClientService.get().getArtifact(workItem);
+      @SuppressWarnings("unchecked")
+      Attribute<T> attribute = (Attribute<T>) attr.getData();
+      attribute.setValue(value);
+      add(artifact);
+   }
+
+   @Override
+   public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) throws OseeCoreException {
+      Artifact artifact = AtsClientService.get().getArtifact(workItem);
+      Attribute<?> attribute = (Attribute<?>) attr.getData();
+      attribute.delete();
+      add(artifact);
+   }
+
+   @Override
+   public boolean isAttributeTypeValid(IAtsWorkItem workItem, IAttributeType attributeType) {
+      Artifact artifact = AtsClientService.get().getArtifact(workItem);
+      return artifact.getAttributeTypes().contains(attributeType);
    }
 }

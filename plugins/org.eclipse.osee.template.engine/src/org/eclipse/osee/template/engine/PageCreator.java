@@ -71,7 +71,11 @@ public final class PageCreator {
    }
 
    public String getValue(String ruleName) {
-      return substitutions.get(ruleName).toString();
+      AppendableRule appendableRule = substitutions.get(ruleName);
+      if (appendableRule != null) {
+         return appendableRule.toString();
+      }
+      return null;
    }
 
    public void readKeyValuePairs(ResourceToken valuesResource) {

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core;
 
 import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
+import org.eclipse.osee.ats.api.notify.IAtsNotificationServiceProvider;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
@@ -38,12 +39,13 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
  */
 public class AtsCore {
 
+   public static final String PLUGIN_ID = "org.eclipse.osee.ats.core";
    private static IAtsColumnUtilities columnUtilities;
    private static IAtsLogFactory logFactory;
    private static IAtsStateFactory stateFactory;
    private static IAttributeResolver attrResolver;
    private static IAtsWorkDefinitionService workDefService;
-   private static IAtsNotificationService notifyService;
+   private static IAtsNotificationServiceProvider notifyServiceProvider;
    private static IAtsUserService userService;
    private static Boolean started = null;
    private static IAtsWorkItemServiceProvider workItemServiceProvider;
@@ -58,8 +60,8 @@ public class AtsCore {
       AtsCore.workDefService = workDefService;
    }
 
-   public static void setAtsNotificationService(IAtsNotificationService notifyService) {
-      AtsCore.notifyService = notifyService;
+   public static void setAtsNotificationServiceProvider(IAtsNotificationServiceProvider notifyServiceProvider) {
+      AtsCore.notifyServiceProvider = notifyServiceProvider;
    }
 
    public static void setAtsWorkItemServiceProvider(IAtsWorkItemServiceProvider workItemServiceProvider) {
@@ -83,9 +85,10 @@ public class AtsCore {
       Conditions.checkNotNull(workDefService, "IAtsWorkDefinitionService");
       Conditions.checkNotNull(workItemServiceProvider, "IAtsWorkItemServiceProvider");
       Conditions.checkNotNull(attrResolver, "IAttributeResolver");
-      Conditions.checkNotNull(notifyService, "IAtsNotificationService");
+      Conditions.checkNotNull(notifyServiceProvider, "IAtsNotificationService");
       Conditions.checkNotNull(branchServiceProvider, "IAtsBranchServiceProvider");
       Conditions.checkNotNull(reviewServiceProvider, "IAtsReviewServiceProvider");
+      System.out.println("ATS - AtsCore started");
       started = true;
    }
 
@@ -110,9 +113,9 @@ public class AtsCore {
       return workDefService;
    }
 
-   public static IAtsNotificationService getNotifyService() throws OseeStateException {
+   public static IAtsNotificationService getNotifyService() throws OseeCoreException {
       checkStarted();
-      return notifyService;
+      return notifyServiceProvider.getNotifyService();
    }
 
    public static IAtsUserService getUserService() throws OseeStateException {

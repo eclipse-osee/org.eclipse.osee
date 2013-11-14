@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.core.client.internal.config;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
-import org.eclipse.osee.ats.core.client.internal.CacheProvider;
 import org.eclipse.osee.ats.core.client.internal.IAtsArtifactStore;
+import org.eclipse.osee.ats.core.util.CacheProvider;
 import org.eclipse.osee.framework.core.data.LazyObject;
 
 /**

@@ -77,4 +77,9 @@ public class ActionArtifact extends Artifact implements IAtsAction {
       setSoleAttributeFromString(AtsAttributeTypes.AtsId, atsId);
    }
 
+   @Override
+   public Object getStoreObject() {
+      return this;
+   }
+
 }

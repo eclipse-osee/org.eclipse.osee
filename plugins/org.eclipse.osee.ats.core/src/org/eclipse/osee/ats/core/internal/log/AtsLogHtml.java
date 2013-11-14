@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.ILogStorageProvider;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -64,7 +65,7 @@ public class AtsLogHtml {
    private String getUserName(String userId) {
       String name = userId;
       if (storeProvider != null) {
-         String userName = storeProvider.getNameFromUserId(userId);
+         String userName = AtsCore.getUserService().getUserById(userId).getName();
          if (Strings.isValid(userName)) {
             name = userName;
          }

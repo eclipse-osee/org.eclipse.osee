@@ -13,7 +13,8 @@ package org.eclipse.osee.ats.core.client.internal.workdef;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
-import org.eclipse.osee.ats.core.client.internal.CacheProvider;
+import org.eclipse.osee.ats.core.util.CacheProvider;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionCache;
 import org.eclipse.osee.framework.core.data.LazyObject;
 
 /**

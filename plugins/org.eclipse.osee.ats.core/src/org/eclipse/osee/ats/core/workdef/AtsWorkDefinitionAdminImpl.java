@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.internal.workdef;
+package org.eclipse.osee.ats.core.workdef;
 
 import java.util.Collection;
 import java.util.List;
@@ -19,6 +19,8 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
+import org.eclipse.osee.ats.api.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -30,11 +32,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
-import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.internal.CacheProvider;
-import org.eclipse.osee.ats.core.client.team.ITeamWorkflowProviders;
-import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
+import org.eclipse.osee.ats.core.internal.Activator;
+import org.eclipse.osee.ats.core.util.CacheProvider;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -48,9 +47,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
 
    private final CacheProvider<AtsWorkDefinitionCache> cacheProvider;
-   private final IAtsWorkItemService workItemService;
    private final IAtsWorkDefinitionService workDefinitionService;
    private final ITeamWorkflowProviders teamWorkflowProviders;
+   private final IAtsWorkItemService workItemService;
    private final IAttributeResolver attributeResolver;
 
    public AtsWorkDefinitionAdminImpl(CacheProvider<AtsWorkDefinitionCache> workDefCacheProvider, IAtsWorkItemService workItemService, IAtsWorkDefinitionService workDefinitionService, ITeamWorkflowProviders teamWorkflowProviders, IAttributeResolver attributeResolver) {
@@ -347,9 +346,8 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
    @Override
    public IWorkDefinitionMatch getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(IAtsActionableItem actionableItem) throws OseeCoreException {
       Conditions.notNull(actionableItem, AtsWorkDefinitionAdminImpl.class.getSimpleName());
-      IWorkDefinitionMatch match = new WorkDefinitionMatch();
-      IAtsTeamDefinition teamDefinitionInherited = actionableItem.getTeamDefinitionInherited();
-      match = getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(teamDefinitionInherited);
+      IWorkDefinitionMatch match =
+         getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(actionableItem.getTeamDefinitionInherited());
       if (!match.isMatched()) {
          match = getDefaultPeerToPeerWorkflowDefinitionMatch();
       }
@@ -360,7 +358,7 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
     * @return WorkDefinitionMatch of teamDefinition configured with RelatedPeerWorkflowDefinition attribute with recurse
     * up to top teamDefinition or will return no match
     */
-   protected IWorkDefinitionMatch getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(IAtsTeamDefinition teamDefinition) throws OseeCoreException {
+   public IWorkDefinitionMatch getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(IAtsTeamDefinition teamDefinition) throws OseeCoreException {
       Conditions.notNull(teamDefinition, AtsWorkDefinitionAdminImpl.class.getSimpleName());
       IWorkDefinitionMatch match = new WorkDefinitionMatch();
       String workDefId = teamDefinition.getRelatedPeerWorkDefinition();
@@ -420,5 +418,4 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
    public Collection<String> getAllValidStateNames() {
       return workDefinitionService.getAllValidStateNames();
    }
-
 }

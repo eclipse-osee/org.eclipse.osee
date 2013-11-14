@@ -61,6 +61,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.services.HasCmAccessControl;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.IGroupExplorerProvider;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -98,11 +99,14 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public void initializeNewStateMachine(List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
+      Conditions.checkNotNull(createdDate, "createdDate");
+      Conditions.checkNotNull(createdBy, "createdBy");
+      Conditions.checkNotNull(changes, "changes");
       IAtsStateDefinition startState = getWorkDefinition().getStartState();
       StateManagerUtility.initializeStateMachine(getStateMgr(), startState, assignees,
          (createdBy == null ? AtsClientService.get().getUserAdmin().getCurrentUser() : createdBy), changes);
       IAtsUser user = createdBy == null ? AtsClientService.get().getUserAdmin().getCurrentUser() : createdBy;
-      setCreatedBy(user, true, createdDate);
+      setCreatedBy(user, true, createdDate, changes);
       TransitionManager.logStateStartedEvent(this, startState, createdDate, user);
    }
 
@@ -142,10 +146,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public double getWorldViewWeeklyBenefit() throws OseeCoreException {
       return 0;
-   }
-
-   public boolean isValidationRequired() throws OseeCoreException {
-      return false;
    }
 
    @Override
@@ -336,11 +336,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          getSmaArtifactsOneLevel(this, artifacts);
          for (Artifact artifact : artifacts) {
             if (artifact instanceof AbstractWorkflowArtifact) {
-               AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
                changes.add(artifact);
-               if (awa.getLog().isDirty()) {
-                  AtsCore.getLogFactory().writeToStore(awa);
-               }
             }
          }
       } catch (Exception ex) {
@@ -406,7 +402,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public IAtsLog getLog() {
       if (atsLog == null || atsLogTransactionNumber != getTransactionNumber()) {
-         atsLog = AtsCore.getLogFactory().getLogLoaded(this);
+         atsLog = AtsCore.getLogFactory().getLogLoaded(this, AtsClientService.get().getAttributeResolver());
          atsLogTransactionNumber = getTransactionNumber();
       }
       return atsLog;
@@ -489,17 +485,27 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return false;
       }
+
    }
 
-   public void setCreatedBy(IAtsUser user, boolean logChange, Date date) throws OseeCoreException {
+   public void setCreatedBy(IAtsUser user, boolean logChange, Date date, IAtsChangeSet changes) throws OseeCoreException {
       if (logChange) {
          logCreatedByChange(user, date);
       }
-      if (isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
-         setSoleAttributeValue(AtsAttributeTypes.CreatedBy, user.getUserId());
-      }
-      if (isAttributeTypeValid(AtsAttributeTypes.CreatedDate)) {
-         setSoleAttributeValue(AtsAttributeTypes.CreatedDate, date);
+      if (changes == null) {
+         if (isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
+            setSoleAttributeValue(AtsAttributeTypes.CreatedBy, user.getUserId());
+         }
+         if (isAttributeTypeValid(AtsAttributeTypes.CreatedDate)) {
+            setSoleAttributeValue(AtsAttributeTypes.CreatedDate, date);
+         }
+      } else {
+         if (changes.isAttributeTypeValid(this, AtsAttributeTypes.CreatedBy)) {
+            changes.setSoleAttributeValue(this, AtsAttributeTypes.CreatedBy, user.getUserId());
+         }
+         if (changes.isAttributeTypeValid(this, AtsAttributeTypes.CreatedDate)) {
+            changes.setSoleAttributeValue(this, AtsAttributeTypes.CreatedDate, date);
+         }
       }
       AtsNotificationManager.notify(this, AtsNotifyType.Originator);
    }
@@ -512,33 +518,19 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
             "Changed by " + AtsClientService.get().getUserAdmin().getCurrentUser().getName(), date, user.getUserId());
          getLog().internalResetOriginator(user);
       }
-      AtsCore.getLogFactory().writeToStore(this);
    }
 
-   public void setCreatedBy(IAtsUser user, boolean logChange) throws OseeCoreException {
-      Date date = new Date();
-      if (logChange) {
-         logCreatedByChange(user, date);
-      }
-      if (isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
-         setSoleAttributeValue(AtsAttributeTypes.CreatedBy, user.getUserId());
-      }
-      AtsNotificationManager.notify(this, AtsNotifyType.Originator);
-   }
-
-   public void internalSetCreatedBy(IAtsUser user) throws OseeCoreException {
+   public void internalSetCreatedBy(IAtsUser user, IAtsChangeSet changes) throws OseeCoreException {
       getLog().internalResetOriginator(user);
-      AtsCore.getLogFactory().writeToStore(this);
-      if (isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
-         setSoleAttributeValue(AtsAttributeTypes.CreatedBy, user.getUserId());
+      if (changes.isAttributeTypeValid(this, AtsAttributeTypes.CreatedBy)) {
+         changes.setSoleAttributeValue(this, AtsAttributeTypes.CreatedBy, user.getUserId());
       }
    }
 
-   public void internalSetCreatedDate(Date date) throws OseeCoreException {
+   public void internalSetCreatedDate(Date date, IAtsChangeSet changes) throws OseeCoreException {
       getLog().internalResetCreatedDate(date);
-      AtsCore.getLogFactory().writeToStore(this);
-      if (isAttributeTypeValid(AtsAttributeTypes.CreatedDate)) {
-         setSoleAttributeValue(AtsAttributeTypes.CreatedDate, date);
+      if (changes.isAttributeTypeValid(this, AtsAttributeTypes.CreatedDate)) {
+         changes.setSoleAttributeValue(this, AtsAttributeTypes.CreatedDate, date);
       }
    }
 
@@ -578,8 +570,12 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return reason;
    }
 
-   public void setCancellationReason(String reason) throws OseeCoreException {
-      setSoleAttributeValue(AtsAttributeTypes.CancelledReason, reason);
+   public void setCancellationReason(String reason, IAtsChangeSet changes) throws OseeCoreException {
+      if (changes == null) {
+         setSoleAttributeValue(AtsAttributeTypes.CancelledReason, reason);
+      } else {
+         changes.setSoleAttributeValue(this, AtsAttributeTypes.CancelledReason, reason);
+      }
    }
 
    public String getCancelledFromState() throws OseeCoreException {
@@ -612,15 +608,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public IAtsLogItem getStateCancelledData(String stateName) throws OseeCoreException {
       return getLog().getStateEvent(LogType.StateCancelled, stateName);
-   }
-
-   @Override
-   public IAtsLogItem getStateStartedData(IStateToken state) throws OseeCoreException {
-      return getStateStartedData(state.getName());
-   }
-
-   public IAtsLogItem getStateStartedData(String stateName) throws OseeCoreException {
-      return getLog().getStateEvent(LogType.StateEntered, stateName);
    }
 
    public String getCompletedFromState() throws OseeCoreException {
@@ -774,13 +761,13 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public void setAtsId(String atsId) throws OseeCoreException {
-      setSoleAttributeFromString(AtsAttributeTypes.AtsId, atsId);
+   public void setAtsId(String atsId, IAtsChangeSet changes) throws OseeCoreException {
+      changes.setSoleAttributeValue(this, AtsAttributeTypes.AtsId, atsId);
    }
 
    @Override
-   public String getTypeName() {
-      return getArtifactTypeName();
+   public Object getStoreObject() {
+      return this;
    }
 
 }

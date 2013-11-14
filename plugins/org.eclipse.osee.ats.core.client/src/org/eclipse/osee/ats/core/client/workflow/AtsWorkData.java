@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -111,6 +112,21 @@ public class AtsWorkData implements IAtsWorkData {
    @Override
    public void setCancelledBy(IAtsUser cancelledBy) throws OseeCoreException {
       awa.setSoleAttributeValue(AtsAttributeTypes.CompletedDate, cancelledBy);
+   }
+
+   @Override
+   public IAtsUser getCreatedBy() throws OseeCoreException {
+      return AtsCore.getUserService().getUserById(awa.getSoleAttributeValue(AtsAttributeTypes.CreatedBy, ""));
+   }
+
+   @Override
+   public Date getCreatedDate() throws OseeCoreException {
+      return awa.getSoleAttributeValue(AtsAttributeTypes.CreatedDate);
+   }
+
+   @Override
+   public String getArtifactTypeName() throws OseeCoreException {
+      return awa.getArtifactTypeName();
    }
 
 }

@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api;
 
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
 import org.eclipse.osee.ats.api.workflow.HasWorkData;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
-import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -28,7 +27,7 @@ public interface IAtsWorkItem extends IAtsObject, HasWorkData, HasAssignees {
 
    String getAtsId();
 
-   void setAtsId(String atsId) throws OseeCoreException;
+   void setAtsId(String atsId, IAtsChangeSet changes) throws OseeCoreException;
 
    IAtsTeamWorkflow getParentTeamWorkflow() throws OseeCoreException;
 
@@ -40,12 +39,8 @@ public interface IAtsWorkItem extends IAtsObject, HasWorkData, HasAssignees {
 
    IAtsStateDefinition getStateDefinition() throws OseeCoreException;
 
-   IAtsLogItem getStateStartedData(IStateToken state) throws OseeCoreException;
-
    boolean isTask();
 
    boolean isTeamWorkflow();
-
-   String getTypeName();
 
 }

@@ -1,0 +1,38 @@
+	#atsNavigator {
+		background-color:#C3CCDB;
+		height:850px;
+		width:300px;
+		float:left;
+		border:1px solid black
+	}
+	#navHeader {
+		text-align:center
+	}
+	#divHeader {
+	   width:851px;
+	   background-color:#98B8EB
+	}
+	#divHeaderTitle {
+	   margin-bottom:0;
+	   height:30px;
+	   width:850px;
+	   text-align:center;
+	   border:1px solid black
+	}
+	#divFooter {
+	   background-color:#98B8EB;
+	   width:850px;
+	   clear:both;
+	   text-align:center;
+	   border:1px solid black
+	}
+	#atsBodyOld {
+	   background-color:#C3CCDB;
+	   height:400px;
+	   width:850px;
+	   float:left;
+	   border:1px solid black
+	}
+	p.clear {
+		clear:both;
+	}

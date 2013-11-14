@@ -54,4 +54,10 @@ public interface IAtsWorkData {
 
    public void setCancelledBy(IAtsUser cancelledBy) throws OseeCoreException;
 
+   public String getArtifactTypeName() throws OseeCoreException;
+
+   public IAtsUser getCreatedBy() throws OseeCoreException;
+
+   public Date getCreatedDate() throws OseeCoreException;
+
 }

@@ -1,0 +1,67 @@
+<?include path="4000000000000000 pageDeclaration.html"?>
+<head>
+  <meta name="author" content="Donald G. Dunne" />
+  <title>OSEE ATS</title>
+  <style>
+    <?include path="4000000000000013 atsCore.css"?>
+  </style>
+  <script>
+    <?include path="4000000000000002 oseeCore.js"?>
+  </script>
+</head>
+
+<body>
+
+<div id="atsBody">
+   <b><?pageTitle?></b></br>
+	
+<table border="1" cellpadding="3" cellspacing="0" width="100%">
+   <tr><td>
+
+   <table border="0" cellpadding="3" cellspacing="0" width="100%"><tr>
+      <td><font color="black" face="Arial" size="-1"> <b>Title: </b></font><?title?></td>
+   </tr></table>
+
+   <table border="0" cellpadding="3" cellspacing="0" width="100%"><tr>
+   	<td><font color="black" face="Arial" size="-1"><b>Current State: </b></font><?state?></td>
+		<td><font color="black" face="Arial" size="-1"><b>Created: </b></font><?createdDate?></td>
+		<td><font color="black" face="Arial" size="-1"><b>Originator: </b></font><?originator?></td>
+   </tr></table>
+   
+   <table border="0" cellpadding="3" cellspacing="0" width="100%"><tr>
+   	<td><font color="black" face="Arial" size="-1"><b>Team: </b></font><?team?></td>
+   	<td><font color="black" face="Arial" size="-1"><b>Id: </b></font><?id?></td>
+   	<td><font color="black" face="Arial" size="-1"><b>ATS Id: </b></font><?atsId?></td>
+	</tr></table>
+	
+   <table border="0" cellpadding="3" cellspacing="0" width="100%"><tr>
+		<td><font color="black" face="Arial" size="-1"><b>Targeted Version: </b></font><?version?></td>
+		<td><font color="black" face="Arial" size="-1"><b>Assignees: </b></font><?assignees?></td>
+	</tr></table>
+	
+   <table border="0" cellpadding="3" cellspacing="0" width="100%"><tr>
+   	<td><font color="black" face="Arial" size="-1"><b>Change Type: </b></font><?changeType?></td>
+   	<td><font color="black" face="Arial" size="-1"><b>Priority: </b></font><?priority?></td>
+   	<td><font color="black" face="Arial" size="-1"><b>Need By: </b></font><?needBy?></td>
+   </tr><tr>
+   	<td><font color="black" face="Arial" size="-1"><b>Workflow: </b></font><?workflow?></td>
+   	<td><font color="black" face="Arial" size="-1"><b>Workflow Definition: </b></font><?workDef?></td>
+   
+   </tr><tr>
+   	<td><font color="black" face="Arial" size="-1"><b>Actionable Item(s): </b></font><?ais?></td>
+   </tr></table>
+   
+   
+</td></tr>
+</table>
+<?transition?>
+</div>
+
+<table border="1" cellpadding="3" cellspacing="0" width="100%">
+   <tr><td>
+      <?states?>   
+   </td></tr>
+</table>
+
+</body>
+</html>

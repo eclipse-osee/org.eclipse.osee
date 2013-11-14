@@ -13,14 +13,13 @@ package org.eclipse.osee.ats.core.mock;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
-import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.util.AtsUserGroup;
@@ -136,17 +135,12 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public IAtsLogItem getStateStartedData(IStateToken state) {
-      return null;
-   }
-
-   @Override
    public IAtsWorkDefinition getWorkDefinition() {
       return null;
    }
 
    @Override
-   public void setAtsId(String atsId) {
+   public void setAtsId(String atsId, IAtsChangeSet changes) {
       this.atsId = atsId;
    }
 
@@ -161,7 +155,7 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public String getTypeName() {
+   public Object getStoreObject() {
       return null;
    }
 

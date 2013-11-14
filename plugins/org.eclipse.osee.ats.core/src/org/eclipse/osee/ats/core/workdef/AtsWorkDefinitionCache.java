@@ -8,14 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.internal.workdef;
+package org.eclipse.osee.ats.core.workdef;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
-import org.eclipse.osee.ats.core.workdef.WorkDefinitionMatch;
 
 /**
  * @author Donald G. Dunne

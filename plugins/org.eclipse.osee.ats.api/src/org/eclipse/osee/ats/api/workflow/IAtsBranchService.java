@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -20,5 +21,7 @@ public interface IAtsBranchService {
    boolean isBranchInCommit(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
    boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+
+   IOseeBranch getBranch(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
 }

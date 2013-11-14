@@ -110,7 +110,7 @@ public class AtsNotifyUsersTest {
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       teamArt.setName(AtsNotifyUsersTest.class.getSimpleName() + "-testNotify");
-      teamArt.internalSetCreatedBy(AtsClientService.get().getUserAdmin().getUserFromOseeUser(kay_ValidEmail));
+      teamArt.internalSetCreatedBy(AtsClientService.get().getUserAdmin().getUserFromOseeUser(kay_ValidEmail), changes);
       List<User> assignees = new ArrayList<User>();
       assignees.addAll(Arrays.asList(inactiveSteve, alex_NoValidEmail, jason_ValidEmail, kay_ValidEmail,
          joeSmith_CurrentUser));
@@ -129,11 +129,11 @@ public class AtsNotifyUsersTest {
          event.getDescription());
 
       notifyManager.clear();
-      teamArt.internalSetCreatedBy(AtsClientService.get().getUserAdmin().getUserFromOseeUser(inactiveSteve));
+      teamArt.internalSetCreatedBy(AtsClientService.get().getUserAdmin().getUserFromOseeUser(inactiveSteve), changes);
       teamArt.persist(getClass().getSimpleName());
       AtsNotificationManager.notify(teamArt, AtsNotifyType.Originator);
       Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
-      teamArt.internalSetCreatedBy(AtsClientService.get().getUserAdmin().getUserFromOseeUser(kay_ValidEmail));
+      teamArt.internalSetCreatedBy(AtsClientService.get().getUserAdmin().getUserFromOseeUser(kay_ValidEmail), changes);
       teamArt.persist(getClass().getSimpleName());
 
       notifyManager.clear();
@@ -198,13 +198,13 @@ public class AtsNotifyUsersTest {
          event.getDescription());
 
       notifyManager.clear();
-      teamArt.internalSetCreatedBy(AtsClientService.get().getUserAdmin().getUserFromOseeUser(inactiveSteve));
+      teamArt.internalSetCreatedBy(AtsClientService.get().getUserAdmin().getUserFromOseeUser(inactiveSteve), changes);
       teamArt.persist(getClass().getSimpleName());
       StateManagerUtility.initializeStateMachine(teamArt.getStateMgr(), TeamState.Completed, null,
          AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
       AtsNotificationManager.notify(teamArt, AtsNotifyType.Completed);
       Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
-      teamArt.internalSetCreatedBy(AtsClientService.get().getUserAdmin().getUserFromOseeUser(kay_ValidEmail));
+      teamArt.internalSetCreatedBy(AtsClientService.get().getUserAdmin().getUserFromOseeUser(kay_ValidEmail), changes);
       teamArt.persist(getClass().getSimpleName());
 
       notifyManager.clear();

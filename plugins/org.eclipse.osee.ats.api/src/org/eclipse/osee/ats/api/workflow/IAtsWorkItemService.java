@@ -11,16 +11,12 @@
 package org.eclipse.osee.ats.api.workflow;
 
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
-import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
-import org.eclipse.osee.ats.api.workflow.log.ILogStorageProvider;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -48,19 +44,15 @@ public interface IAtsWorkItemService {
 
    IStateToken getCurrentState(IAtsWorkItem workItem) throws OseeCoreException;
 
-   Collection<IAtsTask> getTasks(IAtsTeamWorkflow atsObject, IStateToken relatedToState) throws OseeCoreException;
+   Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf, IStateToken relatedToState) throws OseeCoreException;
 
-   Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow atsObject) throws OseeCoreException;
+   Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
-   Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow atsObject, IStateToken state) throws OseeCoreException;
+   Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf, IStateToken state) throws OseeCoreException;
 
-   Collection<IAtsTask> getTasks(IAtsTeamWorkflow iAtsTeamWorkflow) throws OseeCoreException;
+   Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
    IAtsTeamWorkflow getFirstTeam(IAtsAction action) throws OseeCoreException;
-
-   boolean isReadOnly(IAtsWorkItem workItem);
-
-   boolean isAccessControlWrite(IAtsWorkItem workItem);
 
    String getCurrentStateName(IAtsWorkItem workItem);
 
@@ -70,10 +62,8 @@ public interface IAtsWorkItemService {
 
    Collection<IAtsTask> getTaskArtifacts(IAtsWorkItem workItem) throws OseeCoreException;
 
-   void transitioned(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, List<? extends IAtsUser> updatedAssigees, IAtsChangeSet changes) throws OseeCoreException;
-
    Collection<ITransitionListener> getTransitionListeners();
 
-   ILogStorageProvider getLogStorageProvider(IAtsWorkItem workItem);
+   String getTargetedVersionStr(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
 }

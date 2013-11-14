@@ -605,6 +605,7 @@ public class StateManager implements IAtsStateManager {
    @Override
    public void setPercentCompleteValue(Integer percentComplete) {
       this.percentCompleteValue = percentComplete;
+      setDirty(true);
    }
 
    @Override

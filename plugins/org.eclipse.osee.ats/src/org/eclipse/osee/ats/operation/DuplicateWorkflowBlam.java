@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
+import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.AtsCore;
@@ -32,7 +33,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -44,8 +44,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -155,8 +153,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
 
    private void handleCreateDuplicate(Collection<TeamWorkFlowArtifact> teamArts, boolean duplicateTasks, String title) throws OseeCoreException {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Duplicate Workflow");
+      AtsChangeSet changes = new AtsChangeSet("Duplicate Workflow");
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          TeamWorkFlowArtifact dupArt =
             (TeamWorkFlowArtifact) teamArt.duplicate(AtsUtil.getAtsBranch(), Arrays.asList(AtsAttributeTypes.AtsId));
@@ -166,26 +163,24 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          dupArt.addRelation(AtsRelationTypes.ActionToWorkflow_Action, teamArt.getParentActionArtifact());
          dupArt.getLog().addLog(LogType.Note, null, "Workflow duplicated from " + teamArt.getAtsId(),
             AtsCore.getUserService().getCurrentUser().getUserId());
-         AtsCore.getLogFactory().writeToStore(dupArt);
+         changes.add(dupArt);
          if (duplicateTasks) {
             for (TaskArtifact taskArt : teamArt.getTaskArtifacts()) {
                TaskArtifact dupTaskArt = (TaskArtifact) taskArt.duplicate(AtsUtil.getAtsBranch());
                dupTaskArt.getLog().addLog(LogType.Note, null, "Task duplicated from " + taskArt.getAtsId(),
                   AtsCore.getUserService().getCurrentUser().getUserId());
-               AtsCore.getLogFactory().writeToStore(dupTaskArt);
                dupArt.addRelation(AtsRelationTypes.TeamWfToTask_Task, dupTaskArt);
-               dupArt.persist(transaction);
+               changes.add(dupTaskArt);
             }
          }
          newTeamArts.add(dupArt);
-         dupArt.persist(transaction);
          // Notify all extension points that workflow is being duplicated in case they need to add, remove
          // attributes or relations
          for (ITeamWorkflowProvider teamExtension : TeamWorkFlowManager.getTeamWorkflowProviders()) {
             teamExtension.teamWorkflowDuplicating(teamArt, dupArt);
          }
       }
-      transaction.execute();
+      changes.execute();
       for (TeamWorkFlowArtifact newTeamArt : newTeamArts) {
          SMAEditor.editArtifact(newTeamArt);
       }

@@ -100,11 +100,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    }
 
    @Override
-   public boolean isValidationRequired() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false);
-   }
-
-   @Override
    public String getEditorTitle() throws OseeCoreException {
       try {
          if (getTeamDefinition().isTeamUsesVersions()) {

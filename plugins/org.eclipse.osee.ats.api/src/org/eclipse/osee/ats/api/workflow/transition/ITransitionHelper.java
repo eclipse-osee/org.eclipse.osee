@@ -66,4 +66,8 @@ public interface ITransitionHelper {
 
    public Collection<ITransitionListener> getTransitionListeners();
 
+   public IAtsUser getTransitionUser() throws OseeCoreException;
+
+   public void setTransitionUser(IAtsUser user) throws OseeCoreException;
+
 }

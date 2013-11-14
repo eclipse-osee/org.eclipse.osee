@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
+import org.eclipse.osee.ats.api.notify.IAtsNotificationServiceProvider;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
@@ -28,7 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 /**
  * @author Donald G. Dunne
  */
-public class AtsNotificationServiceImpl implements IAtsNotificationService {
+public class AtsNotificationServiceImpl implements IAtsNotificationService, IAtsNotificationServiceProvider {
 
    public AtsNotificationServiceImpl() {
    }
@@ -64,6 +65,11 @@ public class AtsNotificationServiceImpl implements IAtsNotificationService {
    public void notify(IAtsWorkItem workItem, Collection<? extends IAtsUser> notifyUsers, AtsNotifyType... notifyTypes) throws OseeCoreException {
       AtsNotificationManager.notify((AbstractWorkflowArtifact) AtsClientService.get().getArtifact(workItem),
          notifyUsers, notifyTypes);
+   }
+
+   @Override
+   public IAtsNotificationService getNotifyService() {
+      return this;
    }
 
 }

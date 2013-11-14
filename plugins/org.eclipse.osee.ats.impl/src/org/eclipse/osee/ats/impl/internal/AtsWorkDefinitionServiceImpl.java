@@ -73,6 +73,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       Conditions.checkNotNull(workDefStore, "IAtsWorkDefinitionStore");
       Conditions.checkNotNull(attrResolver, "IAttributeResolver");
       Conditions.checkNotNull(userService, "IAtsWorkDefinitionStore");
+      System.out.println("ATS - AtsWorkDefinitionServiceImpl started");
    }
 
    public void stop() {

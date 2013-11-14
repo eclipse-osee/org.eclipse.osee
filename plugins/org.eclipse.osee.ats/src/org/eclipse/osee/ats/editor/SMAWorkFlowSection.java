@@ -364,7 +364,7 @@ public class SMAWorkFlowSection extends SectionPart {
             }
             sb.append(" - ");
             sb.append(DateUtil.getMMDDYYHHMM(sma.getCompletedDate()));
-            IAtsLogItem item = sma.getStateStartedData(statePageName);
+            IAtsLogItem item = sma.getStateMgr().getStateStartedData(statePageName);
             if (item != null) {
                sb.append(" by ");
                sb.append(AtsLogUtility.getUserName(item.getUserId()));
@@ -375,7 +375,7 @@ public class SMAWorkFlowSection extends SectionPart {
             }
             sb.append(" - ");
             sb.append(DateUtil.getMMDDYYHHMM(sma.internalGetCancelledDate()));
-            IAtsLogItem item = sma.getStateStartedData(statePageName);
+            IAtsLogItem item = sma.getStateMgr().getStateStartedData(statePageName);
             if (item != null) {
                sb.append(" by ");
                sb.append(AtsLogUtility.getUserName(item.getUserId()));

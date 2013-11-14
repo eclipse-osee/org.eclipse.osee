@@ -14,6 +14,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -29,6 +30,11 @@ public class AtsBranchServiceImpl implements IAtsBranchService {
    @Override
    public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       return AtsBranchManagerCore.isWorkingBranchInWork(teamWf);
+   }
+
+   @Override
+   public Branch getBranch(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+      return AtsBranchManagerCore.getWorkingBranch((TeamWorkFlowArtifact) teamWf);
    }
 
 }

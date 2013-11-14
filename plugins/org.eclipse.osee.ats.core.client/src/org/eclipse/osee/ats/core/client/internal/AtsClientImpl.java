@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -53,14 +54,11 @@ import org.eclipse.osee.ats.core.client.internal.store.TeamDefinitionArtifactWri
 import org.eclipse.osee.ats.core.client.internal.store.VersionArtifactReader;
 import org.eclipse.osee.ats.core.client.internal.store.VersionArtifactWriter;
 import org.eclipse.osee.ats.core.client.internal.user.AtsUserAdminImpl;
-import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionAdminImpl;
-import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCache;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkItemArtifactProviderImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
-import org.eclipse.osee.ats.core.client.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AtsBranchServiceImpl;
@@ -68,6 +66,9 @@ import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.IVersionFactory;
+import org.eclipse.osee.ats.core.util.CacheProvider;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
+import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionCache;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -154,7 +155,7 @@ public class AtsClientImpl implements IAtsClient {
          new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService, teamWorkflowProvider,
             attributeResolverService);
       branchService = new AtsBranchServiceImpl();
-      reviewService = new AtsReviewServiceImpl();
+      reviewService = new AtsReviewServiceImpl(this);
       started = true;
    }
 
@@ -367,13 +368,17 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public Artifact getArtifact(IAtsObject atsObject) throws OseeCoreException {
       Artifact results = null;
-      if (atsObject instanceof Artifact) {
-         results = (Artifact) atsObject;
+      if (atsObject.getStoreObject() != null) {
+         results = (Artifact) atsObject.getStoreObject();
       } else {
-         try {
-            results = AtsArtifactQuery.getArtifactFromId(atsObject.getGuid());
-         } catch (ArtifactDoesNotExist ex) {
-            // do nothing
+         if (atsObject instanceof Artifact) {
+            results = (Artifact) atsObject;
+         } else {
+            try {
+               results = AtsArtifactQuery.getArtifactFromId(atsObject.getGuid());
+            } catch (ArtifactDoesNotExist ex) {
+               // do nothing
+            }
          }
       }
       return results;

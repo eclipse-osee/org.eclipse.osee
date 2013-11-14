@@ -73,7 +73,7 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
       for (IReviewProvider provider : ReviewProviders.getAtsReviewProviders()) {
          provider.reviewCreated(peerArt);
       }
-      AtsCore.getLogFactory().writeToStore(peerArt);
+      changes.add(peerArt);
       return peerArt;
    }
 

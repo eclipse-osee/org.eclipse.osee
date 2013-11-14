@@ -66,14 +66,14 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
       } else {
          decArt =
             DecisionReviewManager.createNewDecisionReview(teamArt, revDef.getBlockingType(), revDef.getReviewTitle(),
-               revDef.getRelatedToState(), revDef.getDescription(), revDef.getOptions(), users, createdDate, createdBy, changes);
+               revDef.getRelatedToState(), revDef.getDescription(), revDef.getOptions(), users, createdDate, createdBy,
+               changes);
       }
       decArt.getLog().addLog(LogType.Note, null, String.format("Review [%s] auto-generated", revDef.getName()),
          AtsCore.getUserService().getCurrentUser().getUserId());
       for (IReviewProvider provider : ReviewProviders.getAtsReviewProviders()) {
          provider.reviewCreated(decArt);
       }
-      AtsCore.getLogFactory().writeToStore(decArt);
       changes.add(decArt);
       return decArt;
    }

@@ -14,6 +14,7 @@ import java.util.Date;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -131,4 +132,18 @@ public class MockWorkData implements IAtsWorkData {
       this.StateType = StateType;
    }
 
+   @Override
+   public IAtsUser getCreatedBy() throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public Date getCreatedDate() throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public String getArtifactTypeName() throws OseeCoreException {
+      return null;
+   }
 }

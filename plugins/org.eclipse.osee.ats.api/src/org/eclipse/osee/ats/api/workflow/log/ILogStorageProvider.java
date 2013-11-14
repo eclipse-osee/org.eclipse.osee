@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.workflow.log;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 
 /**
  * @author Donald G. Dunne
@@ -19,11 +20,10 @@ public interface ILogStorageProvider {
 
    String getLogXml();
 
-   IStatus saveLogXml(String xml);
+   IStatus saveLogXml(String xml, IAtsChangeSet changes);
 
    String getLogTitle();
 
    String getLogId();
 
-   String getNameFromUserId(String userId);
 }

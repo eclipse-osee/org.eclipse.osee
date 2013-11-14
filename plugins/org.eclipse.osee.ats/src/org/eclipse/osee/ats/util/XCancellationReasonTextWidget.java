@@ -50,7 +50,7 @@ public class XCancellationReasonTextWidget extends XText implements IArtifactWid
    @Override
    public void saveToArtifact() throws OseeCoreException {
       if (Strings.isValid(getText())) {
-         sma.setCancellationReason(getText());
+         sma.setCancellationReason(getText(), null);
       }
    }
 

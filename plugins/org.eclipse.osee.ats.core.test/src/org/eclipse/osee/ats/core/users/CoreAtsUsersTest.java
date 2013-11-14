@@ -232,5 +232,10 @@ public class CoreAtsUsersTest {
       public String toStringWithId() {
          return String.format("[%s][%s]", getName(), getGuid());
       }
+
+      @Override
+      public Object getStoreObject() {
+         return null;
+      }
    };
 }

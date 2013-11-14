@@ -22,14 +22,9 @@
 		<module>../../plugins/org.eclipse.osee.ats.mocks</module>
 		<module>../../plugins/org.eclipse.osee.ats.help.ui</module>
 		<module>../../plugins/org.eclipse.osee.ats</module>
-		<module>../../plugins/org.eclipse.osee.ats.core</module>
-		<module>../../plugins/org.eclipse.osee.ats.core.test</module>
 		<module>../../plugins/org.eclipse.osee.ats.core.client</module>
 		<module>../../plugins/org.eclipse.osee.ats.core.client.test</module>
-		<module>../../plugins/org.eclipse.osee.ats.dsl</module>
 		<module>../../plugins/org.eclipse.osee.ats.dsl.ui</module>
-		<module>../../plugins/org.eclipse.osee.ats.impl</module>
-		<module>../../plugins/org.eclipse.osee.ats.impl.test</module>
 
 		<module>../../plugins/org.eclipse.osee.ats.reports</module>
 		<module>../../plugins/org.eclipse.osee.ats.reports.burndown</module>

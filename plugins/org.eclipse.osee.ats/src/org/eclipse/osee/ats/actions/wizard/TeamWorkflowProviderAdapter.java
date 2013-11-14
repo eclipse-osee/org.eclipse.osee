@@ -14,9 +14,8 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -25,49 +24,43 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public abstract class TeamWorkflowProviderAdapter implements ITeamWorkflowProvider {
 
-   @SuppressWarnings("unused")
    @Override
    public boolean isResponsibleForTeamWorkflowCreation(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) throws OseeCoreException {
       return false;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public IArtifactType getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) throws OseeCoreException {
       return null;
    }
 
-   @SuppressWarnings("unused")
    @Override
-   public void teamWorkflowDuplicating(TeamWorkFlowArtifact teamArt, TeamWorkFlowArtifact dupTeamArt) throws OseeCoreException {
+   public void teamWorkflowDuplicating(IAtsTeamWorkflow teamWf, IAtsTeamWorkflow dupTeamArt) throws OseeCoreException {
       // provided for subclass implementation
    }
 
    @Override
-   public void teamWorkflowCreated(TeamWorkFlowArtifact teamArt) {
+   public void teamWorkflowCreated(IAtsTeamWorkflow teamWf) {
       // provided for subclass implementation
    }
 
-   @SuppressWarnings("unused")
    @Override
    public String getWorkflowDefinitionId(IAtsWorkItem workItem) throws OseeCoreException {
       return null;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public String getRelatedTaskWorkflowDefinitionId(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       return null;
    }
 
-   @SuppressWarnings("unused")
    @Override
-   public String getPcrId(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   public String getPcrId(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       return null;
    }
 
    @Override
-   public String getArtifactTypeShortName(TeamWorkFlowArtifact teamArt) {
+   public String getArtifactTypeShortName(IAtsTeamWorkflow teamWf) {
       return null;
    }
 

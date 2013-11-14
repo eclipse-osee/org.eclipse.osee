@@ -12,6 +12,9 @@ package org.eclipse.osee.ats.api.workflow;
 
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
+/**
+ * @author Donald G Dunne
+ */
 public interface IAttribute<T> {
 
    public T getValue() throws OseeCoreException;
@@ -21,4 +24,6 @@ public interface IAttribute<T> {
    public void delete() throws OseeCoreException;
 
    public void setValue(T value) throws OseeCoreException;
+
+   public int getId();
 }

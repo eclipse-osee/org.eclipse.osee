@@ -42,20 +42,19 @@ public class StateManagerWriter {
 
       String currentStateName = stateMgr.getCurrentStateName();
       attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState,
-         AtsWorkStateFactory.toXml(stateMgr, currentStateName));
+         AtsWorkStateFactory.toXml(stateMgr, currentStateName), changes);
 
       removeCurrentStateAttributeIfExists(currentStateName, changes);
 
       writeStatesToStore(changes);
 
       StateType stateType = workItem.getWorkDefinition().getStateByName(currentStateName).getStateType();
-      attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, stateType.name());
-      if (stateMgr.getPercentCompleteValue() != null) {
-         attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.PercentComplete,
-            stateMgr.getPercentCompleteValue());
-      } else {
-         attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.PercentComplete);
+      attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, stateType.name(), changes);
+      Integer percentCompleteValue = stateMgr.getPercentCompleteValue();
+      if (percentCompleteValue == null) {
+         percentCompleteValue = 0;
       }
+      attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.PercentComplete, percentCompleteValue, changes);
    }
 
    private void writeStatesToStore(IAtsChangeSet changes) throws OseeCoreException {
@@ -65,7 +64,7 @@ public class StateManagerWriter {
             // Else, doesn't exist yet, create
             if (!updated) {
                attrResolver.addAttribute(workItem, AtsAttributeTypes.State,
-                  AtsWorkStateFactory.toXml(workItem.getStateMgr(), stateName));
+                  AtsWorkStateFactory.toXml(workItem.getStateMgr(), stateName), changes);
             }
          }
       }
@@ -76,7 +75,7 @@ public class StateManagerWriter {
       for (IAttribute<String> attr : attrs) {
          WorkStateImpl storedState = AtsWorkStateFactory.getFromXml(attr.getValue());
          if (stateName.equals(storedState.getName())) {
-            attrResolver.deleteAttribute(workItem, attr);
+            attrResolver.deleteAttribute(workItem, attr, changes);
          }
       }
    }
@@ -88,7 +87,7 @@ public class StateManagerWriter {
          WorkStateImpl storedState = AtsWorkStateFactory.getFromXml(attr.getValue());
          if (stateName.equals(storedState.getName())) {
             attrResolver.setValue(workItem, attr, AtsAttributeTypes.State,
-               AtsWorkStateFactory.toXml(workItem.getStateMgr(), stateName));
+               AtsWorkStateFactory.toXml(workItem.getStateMgr(), stateName), changes);
             return true;
          }
       }

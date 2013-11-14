@@ -13,11 +13,15 @@ package org.eclipse.osee.ats.rest.internal;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.core.Application;
+import org.eclipse.osee.ats.rest.internal.action.ActionResource;
+import org.eclipse.osee.ats.rest.internal.action.AtsResourceTokens;
 import org.eclipse.osee.ats.rest.internal.build.report.resources.BuildTraceReportResource;
 import org.eclipse.osee.ats.rest.internal.resources.ProgramResource;
 import org.eclipse.osee.ats.rest.internal.resources.ProgramsResource;
+import org.eclipse.osee.ats.rest.internal.util.JaxRsExceptionMapper;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.template.engine.OseeTemplateTokens;
 
 /**
  * @author John Misinco
@@ -52,4 +56,13 @@ public class AtsApplication extends Application {
       return classes;
    }
 
+   @Override
+   public Set<Object> getSingletons() {
+      AtsResourceTokens.register(orcsApi.getResourceRegistry());
+      OseeTemplateTokens.register(orcsApi.getResourceRegistry());
+      Set<Object> singletons = new HashSet<Object>();
+      singletons.add(new JaxRsExceptionMapper(orcsApi.getResourceRegistry()));
+      singletons.add(new ActionResource(orcsApi));
+      return singletons;
+   }
 }

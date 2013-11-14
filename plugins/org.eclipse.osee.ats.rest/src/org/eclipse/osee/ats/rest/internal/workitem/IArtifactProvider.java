@@ -8,16 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.team;
+package org.eclipse.osee.ats.rest.internal.workitem;
 
-import java.util.List;
-import org.eclipse.osee.ats.core.client.workflow.ITeamWorkflowProvider;
+import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
- * @author Donald G. Dunne
+ * @author Donald G Dunne
  */
-public interface ITeamWorkflowProviders extends Iterable<ITeamWorkflowProvider> {
+public interface IArtifactProvider {
 
-   List<ITeamWorkflowProvider> getTeamWorkflowProviders();
-
+   ArtifactReadable getArtifact(IAtsObject atsObject) throws OseeCoreException;
 }

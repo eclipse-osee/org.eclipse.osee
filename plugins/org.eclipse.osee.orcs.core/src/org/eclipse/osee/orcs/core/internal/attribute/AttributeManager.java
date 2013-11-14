@@ -31,6 +31,8 @@ public interface AttributeManager extends AttributeContainer {
 
    <T> T getSoleAttributeValue(IAttributeType attributeType) throws OseeCoreException;
 
+   <T> T getSoleAttributeValue(IAttributeType attributeType, T defaultValue) throws OseeCoreException;
+
    String getSoleAttributeAsString(IAttributeType attributeType) throws OseeCoreException;
 
    String getSoleAttributeAsString(IAttributeType attributeType, String defaultValue) throws OseeCoreException;
