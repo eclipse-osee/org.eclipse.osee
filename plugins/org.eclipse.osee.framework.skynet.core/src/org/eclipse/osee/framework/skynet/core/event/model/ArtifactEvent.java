@@ -22,12 +22,10 @@ import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.event.filter.BranchGuidEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 
@@ -106,7 +104,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return isRelAddedChangedDeleted(artifact.getBasicGuidArtifact());
    }
 
-   public boolean isRelAddedChangedDeleted(IBasicGuidArtifact guidArt) {
+   private boolean isRelAddedChangedDeleted(IBasicGuidArtifact guidArt) {
       return isRelChange(guidArt) || isRelAdded(guidArt) || isRelDeletedPurged(guidArt);
    }
 
@@ -114,7 +112,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return isHasEvent(artifact.getBasicGuidArtifact());
    }
 
-   public boolean isHasEvent(IBasicGuidArtifact guidArt) {
+   private boolean isHasEvent(IBasicGuidArtifact guidArt) {
       return isModified(guidArt) || isDeletedPurged(guidArt) || isRelChange(guidArt) || isRelDeletedPurged(guidArt) || isRelAdded(guidArt);
    }
 
@@ -122,7 +120,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return isDeletedPurged(artifact.getBasicGuidArtifact());
    }
 
-   public boolean isDeletedPurged(IBasicGuidArtifact guidArt) {
+   private boolean isDeletedPurged(IBasicGuidArtifact guidArt) {
       for (EventBasicGuidArtifact gArt : artifacts) {
          if (gArt.is(EventModType.Deleted, EventModType.Purged) && gArt.equals(guidArt)) {
             return true;
@@ -131,19 +129,13 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return false;
    }
 
-   public Collection<Artifact> getRelModifiedCacheArtifacts() {
-      try {
-         return ArtifactCache.getActive(getRelationsArts(RelationEventType.ModifiedRationale));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      return java.util.Collections.emptyList();
-   }
-
    public Collection<Artifact> getRelCacheArtifacts() {
       try {
-         return ArtifactCache.getActive(getRelationsArts(RelationEventType.ModifiedRationale, RelationEventType.Added,
-            RelationEventType.Deleted, RelationEventType.Purged, RelationEventType.Undeleted));
+         if (isOnCachedBranch()) {
+            return ArtifactCache.getActive(getRelationsArts(RelationEventType.ModifiedRationale,
+               RelationEventType.Added, RelationEventType.Deleted, RelationEventType.Purged,
+               RelationEventType.Undeleted));
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -152,7 +144,9 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
 
    public Collection<Artifact> getCacheArtifacts(EventModType... eventModTypes) {
       try {
-         return ArtifactCache.getActive(get(eventModTypes));
+         if (isOnCachedBranch()) {
+            return ArtifactCache.getActive(get(eventModTypes));
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -163,7 +157,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return getRelOrderChangedArtifacts((IRelationType[]) null);
    }
 
-   public Collection<DefaultBasicGuidArtifact> getRelOrderChangedArtifacts(IRelationType... relationTypes) {
+   private Collection<DefaultBasicGuidArtifact> getRelOrderChangedArtifacts(IRelationType... relationTypes) {
       Set<DefaultBasicGuidArtifact> guidArts = new HashSet<DefaultBasicGuidArtifact>();
       for (DefaultBasicGuidRelationReorder record : relationReorderRecords) {
          if (relationTypes == null) {
@@ -191,7 +185,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return guidArts;
    }
 
-   public Collection<IBasicGuidArtifact> getRelationsArts(RelationEventType... eventModTypes) {
+   private Collection<IBasicGuidArtifact> getRelationsArts(RelationEventType... eventModTypes) {
       Set<IBasicGuidArtifact> guidArts = new HashSet<IBasicGuidArtifact>();
       for (EventBasicGuidRelation guidRel : getRelations(eventModTypes)) {
          guidArts.add(guidRel.getArtA());
@@ -200,7 +194,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return guidArts;
    }
 
-   public Collection<EventBasicGuidRelation> getRelations(RelationEventType... eventModTypes) {
+   private Collection<EventBasicGuidRelation> getRelations(RelationEventType... eventModTypes) {
       Set<EventBasicGuidRelation> guidRels = new HashSet<EventBasicGuidRelation>();
       for (EventBasicGuidRelation guidRel : relations) {
          for (RelationEventType modType : eventModTypes) {
@@ -216,7 +210,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return isReloaded(artifact.getBasicGuidArtifact());
    }
 
-   public boolean isReloaded(IBasicGuidArtifact guidArt) {
+   private boolean isReloaded(IBasicGuidArtifact guidArt) {
       return get(EventModType.Reloaded).contains(guidArt);
    }
 
@@ -224,7 +218,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return isModified(artifact.getBasicGuidArtifact());
    }
 
-   public boolean isModified(IBasicGuidArtifact guidArt) {
+   private boolean isModified(IBasicGuidArtifact guidArt) {
       return get(EventModType.Modified).contains(guidArt);
    }
 
@@ -232,21 +226,14 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return isModifiedReloaded(artifact.getBasicGuidArtifact());
    }
 
-   public boolean isModifiedReloaded(IBasicGuidArtifact guidArt) {
+   private boolean isModifiedReloaded(IBasicGuidArtifact guidArt) {
       return get(EventModType.Modified, EventModType.Reloaded).contains(guidArt);
    }
 
    /**
     * Relation rationale changed
     */
-   public boolean isRelChange(Artifact artifact) {
-      return isRelChange(artifact.getBasicGuidArtifact());
-   }
-
-   /**
-    * Relation rationale changed
-    */
-   public boolean isRelChange(IBasicGuidArtifact guidArt) {
+   private boolean isRelChange(IBasicGuidArtifact guidArt) {
       for (EventBasicGuidRelation guidRel : getRelations(RelationEventType.ModifiedRationale)) {
          if (guidRel.getArtA().equals(guidArt) || guidRel.getArtB().equals(guidArt)) {
             return true;
@@ -255,11 +242,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return false;
    }
 
-   public boolean isRelDeletedPurged(Artifact artifact) {
-      return isRelDeletedPurged(artifact.getBasicGuidArtifact());
-   }
-
-   public boolean isRelDeletedPurged(IBasicGuidArtifact guidArt) {
+   private boolean isRelDeletedPurged(IBasicGuidArtifact guidArt) {
       for (EventBasicGuidRelation guidRel : getRelations(RelationEventType.Deleted, RelationEventType.Purged)) {
          if (guidRel.getArtA().equals(guidArt) || guidRel.getArtB().equals(guidArt)) {
             return true;
@@ -268,11 +251,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return false;
    }
 
-   public boolean isRelAdded(Artifact artifact) {
-      return isRelAdded(artifact.getBasicGuidArtifact());
-   }
-
-   public boolean isRelAdded(IBasicGuidArtifact guidArt) {
+   private boolean isRelAdded(IBasicGuidArtifact guidArt) {
       for (EventBasicGuidRelation guidRel : getRelations(RelationEventType.Added, RelationEventType.Undeleted)) {
          if (guidRel.getArtA().equals(guidArt) || guidRel.getArtB().equals(guidArt)) {
             return true;
@@ -291,7 +270,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       }
    }
 
-   public String getArtifactsString(List<EventBasicGuidArtifact> artifacts) {
+   private String getArtifactsString(List<EventBasicGuidArtifact> artifacts) {
       if (artifacts.size() <= 10) {
          return artifacts.toString();
       } else {
@@ -299,7 +278,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       }
    }
 
-   public String getRelationsString(List<EventBasicGuidRelation> relations) {
+   private String getRelationsString(List<EventBasicGuidRelation> relations) {
       if (relations.size() <= 10) {
          return relations.toString();
       } else {
@@ -307,29 +286,8 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       }
    }
 
-   /**
-    * Returns cached artifacts given type
-    */
-   public Collection<Artifact> getArtifactsInRelations(IRelationType relationType, RelationEventType... relationEventTypes) throws OseeCoreException {
-      Set<Artifact> artifacts = new HashSet<Artifact>();
-      Collection<RelationEventType> modTypes = Collections.getAggregate(relationEventTypes);
-      for (EventBasicGuidRelation guidRel : relations) {
-         if (modTypes.contains(guidRel.getModType())) {
-            artifacts.addAll(ArtifactCache.getActive(guidRel));
-         }
-      }
-      return artifacts;
-   }
-
-   public boolean isMatch(Collection<IEventFilter> eventFilters) {
-      for (IEventFilter eventFilter : eventFilters) {
-         for (EventBasicGuidArtifact guidArt : artifacts) {
-            if (!((BranchGuidEventFilter) eventFilter).isMatch(guidArt.getBranchGuid())) {
-               break;
-            }
-         }
-      }
-      return false;
+   private boolean isOnCachedBranch() {
+      return BranchManager.branchExists(getBranchGuid());
    }
 
 }
