@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IdentityService;
@@ -79,16 +78,14 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
    private static final long serialVersionUID = 6693534844874109524L;
    private final IDataTranslationService translationService;
    private final IOseeModelFactoryService factoryService;
-   private final ISessionManager sessionManager;
    private final BranchCache branchCache;
    private final TransactionCache txCache;
    private final OrcsApi orcsApi;
    private final IdentityService identityService;
    private static final StorageState DEFAULT_STORAGE_STATE = StorageState.CREATED;
 
-   public OseeCacheServlet(Log logger, ISessionManager sessionManager, IDataTranslationService translationService, TempCachingService cachingService, OrcsApi orcsApi, IOseeModelFactoryService factoryService, IdentityService identityService) {
+   public OseeCacheServlet(Log logger, IDataTranslationService translationService, TempCachingService cachingService, OrcsApi orcsApi, IOseeModelFactoryService factoryService, IdentityService identityService) {
       super(logger);
-      this.sessionManager = sessionManager;
       this.translationService = translationService;
       this.branchCache = cachingService.getBranchCache();
       this.txCache = cachingService.getTransactionCache();
@@ -108,7 +105,7 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
          IDataTranslationService service = getTranslationService();
          ApplicationContext context = createAppContext(req);
          OrcsTypes orcsTypes = orcsApi.getOrcsTypes(context);
-         Pair<Object, ITranslatorId> pair = createResponse(true, new CacheUpdateRequest(cacheId), orcsTypes);
+         Pair<Object, ITranslatorId> pair = createResponse(new CacheUpdateRequest(cacheId), orcsTypes);
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/xml");
          resp.setCharacterEncoding("UTF-8");
@@ -123,19 +120,15 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
    @Override
    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
       try {
-         String sessionId = req.getParameter("sessionId");
-         String clientVersion = ModCompatible.getClientVersion(sessionManager, sessionId);
-         boolean isCompatible = ModCompatible.is_0_9_2_Compatible(clientVersion);
-
          CacheOperation operation = CacheOperation.fromString(req.getParameter("function"));
          switch (operation) {
             case UPDATE:
                ApplicationContext context = createAppContext(req);
                OrcsTypes orcsTypes = orcsApi.getOrcsTypes(context);
-               sendUpdates(isCompatible, req, resp, orcsTypes);
+               sendUpdates(req, resp, orcsTypes);
                break;
             case STORE:
-               storeUpdates(isCompatible, req, resp);
+               storeUpdates(req, resp);
                break;
             default:
                throw new UnsupportedOperationException();
@@ -159,7 +152,7 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
       resp.getWriter().close();
    }
 
-   private void storeUpdates(boolean isCompatible, HttpServletRequest req, HttpServletResponse resp) throws OseeCoreException {
+   private void storeUpdates(HttpServletRequest req, HttpServletResponse resp) throws OseeCoreException {
       IDataTranslationService service = getTranslationService();
 
       BranchCacheStoreRequest updateRequest = null;
@@ -198,7 +191,7 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
       }
    }
 
-   private void sendUpdates(boolean isCompatible, HttpServletRequest req, HttpServletResponse resp, OrcsTypes orcsTypes) throws OseeCoreException {
+   private void sendUpdates(HttpServletRequest req, HttpServletResponse resp, OrcsTypes orcsTypes) throws OseeCoreException {
       IDataTranslationService service = getTranslationService();
 
       CacheUpdateRequest updateRequest = null;
@@ -214,13 +207,11 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
 
       OutputStream outputStream = null;
       try {
-         Pair<Object, ITranslatorId> pair = createResponse(isCompatible, updateRequest, orcsTypes);
+         Pair<Object, ITranslatorId> pair = createResponse(updateRequest, orcsTypes);
 
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/xml");
          resp.setCharacterEncoding("UTF-8");
-
-         ModCompatible.makeSendCompatible(isCompatible, pair.getFirst());
 
          inputStream = service.convertToStream(pair.getFirst(), pair.getSecond());
          outputStream = resp.getOutputStream();
@@ -230,7 +221,7 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
       }
    }
 
-   private Pair<Object, ITranslatorId> createResponse(boolean isCompatible, CacheUpdateRequest updateRequest, OrcsTypes orcsTypes) throws OseeCoreException {
+   private Pair<Object, ITranslatorId> createResponse(CacheUpdateRequest updateRequest, OrcsTypes orcsTypes) throws OseeCoreException {
       Object response = null;
       ITranslatorId transalatorId = null;
       switch (updateRequest.getCacheId()) {

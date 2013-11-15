@@ -147,8 +147,8 @@ public class ServletRegistrationHandler {
       register(new SessionManagementServlet(logger, sessionManager, authenticationManager),
          OseeServerContext.SESSION_CONTEXT);
       register(new SessionClientLoopbackServlet(logger, sessionManager), OseeServerContext.CLIENT_LOOPBACK_CONTEXT);
-      register(new OseeCacheServlet(logger, sessionManager, translationService, caching, orcsApi, factoryService,
-         identityService), OseeServerContext.CACHE_CONTEXT);
+      register(new OseeCacheServlet(logger, translationService, caching, orcsApi, factoryService, identityService),
+         OseeServerContext.CACHE_CONTEXT);
       register(new OseeModelServlet(logger, sessionManager, translationService, orcsApi),
          OseeServerContext.OSEE_MODEL_CONTEXT);
       register(new UnsubscribeServlet(logger, context, orcsApi), "osee/unsubscribe");

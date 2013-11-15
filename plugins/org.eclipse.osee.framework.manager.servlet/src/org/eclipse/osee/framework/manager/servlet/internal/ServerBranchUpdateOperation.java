@@ -18,9 +18,7 @@ import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.enums.CacheOperation;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
-import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.message.BranchCacheStoreRequest;
-import org.eclipse.osee.framework.core.message.BranchRow;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
@@ -29,7 +27,6 @@ import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.util.HttpMessage;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.util.HttpUrlBuilder;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -56,40 +53,12 @@ public class ServerBranchUpdateOperation extends AbstractOperation {
       this.branches = branches;
    }
 
-   private boolean is_0_9_2_Compatible(String... versions) {
-      for (String version : versions) {
-         if (Strings.isValid(version)) {
-            String toCheck = version.toLowerCase();
-            if (!toCheck.startsWith("0.9.0") && !toCheck.startsWith("0.9.1")) {
-               return true;
-            }
-         }
-      }
-      return false;
-   }
-
-   private StorageState getCompatibleState(StorageState state) {
-      StorageState toReturn = state;
-      if (state == StorageState.PURGED) {
-         toReturn = StorageState.DELETED;
-      } else if (state == StorageState.LOADED) {
-         toReturn = StorageState.MODIFIED;
-      }
-      return toReturn;
-   }
-
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       logger.trace("Sending server update event for [%s]", branches);
 
       BranchCacheStoreRequest request = BranchCacheStoreRequest.fromCache(branches);
       request.setServerUpdateMessage(true);
-
-      BranchCacheStoreRequest request0_9_1 = BranchCacheStoreRequest.fromCache(branches);
-      request0_9_1.setServerUpdateMessage(true);
-      for (BranchRow row : request0_9_1.getBranchRows()) {
-         row.setStorageState(getCompatibleState(row.getStorageState()));
-      }
 
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", CacheOperation.STORE.name());
@@ -100,10 +69,8 @@ public class ServerBranchUpdateOperation extends AbstractOperation {
                String urlString =
                   HttpUrlBuilder.createURL(serverInfo.getUri(), OseeServerContext.CACHE_CONTEXT, parameters);
 
-               BranchCacheStoreRequest message = is_0_9_2_Compatible(serverInfo.getVersion()) ? request : request0_9_1;
-
                AcquireResult updateResponse =
-                  HttpMessage.send(urlString, translationService, CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST, message,
+                  HttpMessage.send(urlString, translationService, CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST, request,
                      null);
                if (!updateResponse.wasSuccessful()) {
                   logger.error("Error relaying branch updates to servers");
