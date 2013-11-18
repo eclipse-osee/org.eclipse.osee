@@ -32,9 +32,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
       boolean wasDirty = false;
       Artifact artifact = getArtifactFromEditorInput();
       if (artifact != null) {
-         if (!artifact.isDeleted()) {
-            wasDirty = super.isDirty() || artifact.isDirty();
-         }
+         wasDirty = super.isDirty() || artifact.isDirty();
       }
       return wasDirty;
    }
