@@ -140,9 +140,13 @@ public class MergeInProgressHandler {
       Branch sourceBranch = conflictManager.getSourceBranch();
       Branch destinationBranch = conflictManager.getDestinationBranch();
 
-      message.append(String.format(
-         "Couldn't commit branch because of unresolved conflicts\n\n\"[%s]\"\n\n onto destination branch \n\n\"[%s]\"\n\n",
-         sourceBranch, destinationBranch));
+      if (allConflictsResolved) {
+         message.append("Ready to commit");
+      } else {
+         message.append("Couldn't commit branch because of unresolved conflicts");
+      }
+      message.append(String.format("\n\n\"[%s]\"\n\n onto destination branch \n\n\"[%s]\"\n\n", sourceBranch,
+         destinationBranch));
 
       int numOriginalConflicts = conflictManager.getOriginalConflicts().size();
       if (allConflictsResolved) {
