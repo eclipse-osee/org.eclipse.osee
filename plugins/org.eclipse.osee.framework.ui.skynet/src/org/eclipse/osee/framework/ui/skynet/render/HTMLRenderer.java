@@ -183,6 +183,7 @@ public class HTMLRenderer extends FileSystemRenderer {
                      output.append(underlineEnd);
                      output.append(":    ");
                      output.append(attributeValue);
+                     break;
                   }
                }
             }

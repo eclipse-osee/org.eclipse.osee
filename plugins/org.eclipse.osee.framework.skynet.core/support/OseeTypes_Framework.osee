@@ -1141,7 +1141,7 @@ attributeType "Verification Event" extends EnumeratedAttribute {
 	uuid 0x1000000000000094
 	dataProvider DefaultAttributeDataProvider
 	min 1
-	max 1
+	max unlimited
 	enumType "enum.req.verification.event"
 	defaultValue "Unspecified"
 	mediaType "text/plain"

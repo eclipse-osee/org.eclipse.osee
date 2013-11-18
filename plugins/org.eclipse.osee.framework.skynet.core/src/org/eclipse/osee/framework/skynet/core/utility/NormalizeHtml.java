@@ -336,7 +336,7 @@ public final class NormalizeHtml {
          }
          Elements div = doc.select("div");
          for (Element e : div) {
-            if (!e.hasText()) {
+            if (!e.hasText() && !e.html().contains("<img")) {
                e.remove();
             } else {
                e.unwrap();

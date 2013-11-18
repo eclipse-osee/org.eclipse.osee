@@ -19,17 +19,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.Vector;
 import org.cyberneko.html.parsers.SAXParser;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
@@ -431,7 +436,6 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
              * Special case Verification Method can vary depending on system that exports. However it always must
              * contain the Verification string
              */
-            String str = RowTypeEnum.VERIFICATION_CRITERIA.getRowType();
             if (value.contains(RowTypeEnum.VERIFICATION_CRITERIA.getRowType())) {
                value = RowTypeEnum.VERIFICATION_CRITERIA.getRowType();
             }
@@ -1153,6 +1157,10 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                   if (VERIFICATION_KEYWORDS[i].equals(CRITERIA) || VERIFICATION_KEYWORDS[i].equals(VERIFICATION_ACCEPTANCE_CRITERIA)) {
                      // special case Criteria is a string attribute
                      roughArtifact.addAttribute("Verification Acceptance Criteria", rest);
+                  } else if (FIELD_TYPE[i].equals(CoreAttributeTypes.QualificationMethod)) {
+                     parseAndStoreEnum(roughArtifact, rest, CoreAttributeTypes.QualificationMethod);
+                  } else if (FIELD_TYPE[i].equals(CoreAttributeTypes.VerificationEvent)) {
+                     parseAndStoreEnum(roughArtifact, rest, CoreAttributeTypes.VerificationEvent);
                   } else {
                      roughArtifact.addAttribute(FIELD_TYPE[i], rest);
                   }
@@ -1167,6 +1175,12 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                            if (VERIFICATION_KEYWORDS[i].equals(CRITERIA) || VERIFICATION_KEYWORDS[i].equals(VERIFICATION_ACCEPTANCE_CRITERIA)) {
                               // special case Criteria is a string attribute
                               roughArtifact.addAttribute("Verification Acceptance Criteria", rest.substring(0, index));
+                           } else if (FIELD_TYPE[i].equals(CoreAttributeTypes.QualificationMethod)) {
+                              parseAndStoreEnum(roughArtifact, rest.substring(0, index),
+                                 CoreAttributeTypes.QualificationMethod);
+                           } else if (FIELD_TYPE[i].equals(CoreAttributeTypes.VerificationEvent)) {
+                              parseAndStoreEnum(roughArtifact, rest.substring(0, index),
+                                 CoreAttributeTypes.VerificationEvent);
                            } else {
                               roughArtifact.addAttribute(FIELD_TYPE[i], rest.substring(0, index));
                            }
@@ -1187,6 +1201,30 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                }
             }
          }
+      }
+   }
+
+   private void parseAndStoreEnum(RoughArtifact roughArtifact, String data, IAttributeType type) {
+      StringTokenizer theTokens = new StringTokenizer(data, " ");
+      AttributeType attr = AttributeTypeManager.getType(type.getName());
+      OseeEnumType enumType = attr.getOseeEnumType();
+      Set<String> theValues = enumType.valuesAsOrderedStringSet();
+      String singleItem = "";
+      while (theTokens.hasMoreTokens()) {
+         singleItem += theTokens.nextToken();
+         for (String item : theValues) {
+            if (item.equals(singleItem)) {
+               roughArtifact.addAttribute(type, singleItem);
+               singleItem = "";
+               break;
+            }
+         }
+         if (Strings.isValid(singleItem)) {
+            singleItem += " ";
+         }
+      }
+      if (Strings.isValid(singleItem)) {
+         roughArtifact.addAttribute(type, singleItem);
       }
    }
 
@@ -1215,7 +1253,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                imageFileList.append(inputHTML.substring(src + 1, iEnd));
                first = false;
             } else {
-               imageFileList.append("," + outputHtml.substring(src + 1, iEnd));
+               imageFileList.append("," + inputHTML.substring(src + 1, iEnd));
             }
             img = Lower.indexOf("img ", src);
          } else {
@@ -1248,6 +1286,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          }
          openBracket = processString.indexOf('<');
       }
+      returnValue += processString;
       return returnValue;
    }
 
