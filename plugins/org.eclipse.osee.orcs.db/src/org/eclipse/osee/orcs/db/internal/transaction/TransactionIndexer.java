@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -46,7 +47,10 @@ public class TransactionIndexer implements TransactionProcessor {
          txData.getChangeSet().accept(new OrcsVisitorAdapter() {
             @Override
             public void visit(AttributeData data) {
-               datas.add(data);
+               IAttributeType type = types.getByUuid(data.getTypeUuid());
+               if (types.isTaggable(type)) {
+                  datas.add(data);
+               }
             }
          });
 

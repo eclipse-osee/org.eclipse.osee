@@ -165,6 +165,34 @@ public class OrcsTransactionTest {
    }
 
    @Test
+   public void testCreateArtifactWithoutTagger() throws OseeCoreException {
+      String comment = "Test Artifact with untagged attribute";
+      String expectedName = "Create An Artifact";
+      String expectedAnnotation = "Annotate It";
+      String expectedQualifaction = "Test";
+
+      Branch branch = orcsApi.getBranchCache().get(CoreBranches.COMMON);
+      TransactionRecord previousTx = orcsApi.getTxsCache().getHeadTransaction(branch);
+
+      TransactionBuilder tx = txFactory.createTransaction(branch, userArtifact, comment);
+
+      ArtifactId artifactId = tx.createArtifact(CoreArtifactTypes.SubsystemRequirementHTML, expectedName);
+
+      tx.setAttributesFromStrings(artifactId, CoreAttributeTypes.Annotation, expectedAnnotation);
+      tx.setAttributesFromStrings(artifactId, CoreAttributeTypes.QualificationMethod, expectedQualifaction);
+      assertEquals(expectedName, artifactId.getName());
+
+      TransactionRecord newTx = tx.commit();
+
+      ArtifactReadable artifactReadable =
+         query.fromBranch(CoreBranches.COMMON).andIds(artifactId).getResults().getExactlyOne();
+      assertEquals(expectedName, artifactReadable.getName());
+      assertEquals(expectedQualifaction,
+         artifactReadable.getSoleAttributeAsString(CoreAttributeTypes.QualificationMethod));
+
+   }
+
+   @Test
    public void testCopyArtifact() throws Exception {
       ArtifactReadable guestUser =
          query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();

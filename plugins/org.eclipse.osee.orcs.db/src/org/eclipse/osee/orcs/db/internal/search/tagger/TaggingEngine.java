@@ -45,6 +45,12 @@ public class TaggingEngine {
       return key;
    }
 
+   public boolean hasTagger(String taggerId) {
+      String key = normalize(taggerId);
+      Tagger tagger = taggers.get(key);
+      return tagger != null;
+   }
+
    public Tagger getTagger(String taggerId) throws OseeCoreException {
       String key = normalize(taggerId);
       Tagger tagger = taggers.get(key);

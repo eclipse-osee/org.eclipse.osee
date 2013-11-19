@@ -132,16 +132,19 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
             try {
                long typeUuid = source.getTypeUuid();
                String taggerId = getTaggerIdByTypeUuid(typeUuid);
-               Tagger tagger = taggingEngine.getTagger(taggerId);
-               tagger.tagIt(source, tagCollector);
-               if (isStorageAllowed(toStore)) {
-                  if (getLogger().isDebugEnabled()) {
+               if (taggingEngine.hasTagger(taggerId)) {
+                  Tagger tagger = taggingEngine.getTagger(taggerId);
+                  tagger.tagIt(source, tagCollector);
+                  if (isStorageAllowed(toStore)) {
                      getLogger().debug("Stored a - [%s] - connectionId[%s] - [%s]", getTagQueueQueryId(), connection,
                         toStore);
+                     storeTags(connection, toStore);
                   }
-                  storeTags(connection, toStore);
+               } else {
+                  getLogger().error("Field has invalid tagger[%s] provider and cannot be tagged - [Gamma: %s]",
+                     taggerId, gamma);
                }
-            } catch (Throwable ex) {
+            } catch (Exception ex) {
                getLogger().error(ex, "Unable to tag - [%s]", gamma);
             } finally {
                long endItemTime = System.currentTimeMillis() - startItemTime;
@@ -151,9 +154,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       }
 
       if (!toStore.isEmpty()) {
-         if (getLogger().isDebugEnabled()) {
-            getLogger().debug("Stored b - [%s] - connectionId[%s] - [%s]", getTagQueueQueryId(), connection, toStore);
-         }
+         getLogger().debug("Stored b - [%s] - connectionId[%s] - [%s]", getTagQueueQueryId(), connection, toStore);
          storeTags(connection, toStore);
       }
       return tagCollector.getTotalTags();
