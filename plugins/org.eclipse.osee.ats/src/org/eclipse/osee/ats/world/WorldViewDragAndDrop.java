@@ -64,6 +64,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
    }
 
    protected boolean isValidForArtifactDrop(DropTargetEvent event) {
+      boolean validForDrop = false;
       if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
          ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
 
@@ -71,12 +72,13 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
             Artifact[] artifacts = artData.getArtifacts();
             for (Artifact art : artifacts) {
                if (AtsUtil.isAtsArtifact(art) || art.isOfType(CoreArtifactTypes.UniversalGroup)) {
-                  return true;
+                  validForDrop = true;
+                  break;
                }
             }
          }
       }
-      return false;
+      return validForDrop;
    }
 
    @Override

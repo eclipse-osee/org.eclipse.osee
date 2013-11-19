@@ -523,7 +523,7 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
       @Override
       public void performDragOver(DropTargetEvent event) {
          if (isValidForArtifactDrop(event)) {
-            event.detail = DND.DROP_MOVE;
+            event.detail = DND.DROP_COPY;
             Artifact selectedArtifact = getSelectedArtifact(event);
             if (selectedArtifact != null) {
                if (isFeedbackAfter) {
@@ -559,7 +559,9 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
                }
                goalArtifact.persist(SMAMembersTab.class.getSimpleName());
                worldComposite.getXViewer().refresh(goalArtifact);
-               worldComposite.getXViewer().update(dropTarget, null);
+               if (dropTarget != null) {
+                  worldComposite.getXViewer().update(dropTarget, null);
+               }
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.WARNING, Lib.exceptionToString(ex));
