@@ -18,6 +18,8 @@
 
 	<modules>
 		<module>../../plugins/org.eclipse.osee.define.report</module>
+		<module>../../plugins/org.eclipse.osee.define.report.test</module>
+		
 		<module>../../plugins/org.eclipse.osee.framework.authentication.ldap.core</module>
 		<module>../../plugins/org.eclipse.osee.framework.core.server</module>
 		<module>../../plugins/org.eclipse.osee.framework.core.server.test</module>
