@@ -147,7 +147,7 @@ public class ChangeReportResponseTranslator implements ITranslator<ChangeReportR
 
       ChangeItemType type = ChangeItemType.getType(row[0]);
       int itemId = Integer.parseInt(row[1]);
-      int itemTypeId = Integer.parseInt(row[2]);
+      long itemTypeId = Long.parseLong(row[2]);
       switch (type) {
          case ARTIFACT:
             boolean synthetic = Boolean.parseBoolean(row[3]);

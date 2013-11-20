@@ -93,7 +93,7 @@ public class TransactionCacheUpdateResponseTranslator implements ITranslator<Tra
       Date timeStamp = new Date(Long.valueOf(data[index++]));
       int authorArtId = Integer.valueOf(data[index++]);
       int commitArtId = Integer.valueOf(data[index++]);
-      int branchId = Integer.valueOf(data[index++]);
+      long branchId = Long.valueOf(data[index++]);
       return factory.create(txId, branchId, comment, timeStamp, authorArtId, commitArtId, txType, branchCache);
    }
 }

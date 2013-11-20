@@ -40,7 +40,7 @@ public class BranchCreationRequestTranslator implements ITranslator<BranchCreati
    @Override
    public BranchCreationRequest convert(PropertyStore store) {
       String branchName = store.get(Fields.BRANCH_NAME.name());
-      int parentBranchId = store.getInt(Fields.PARENT_BRANCH_ID.name());
+      long parentBranchId = store.getLong(Fields.PARENT_BRANCH_ID.name());
       int associatedArtifactId = store.getInt(Fields.ASSOCIATED_ART_ID.name());
 
       BranchType branchType = BranchType.valueOf(store.get(Fields.BRANCH_TYPE.name()));

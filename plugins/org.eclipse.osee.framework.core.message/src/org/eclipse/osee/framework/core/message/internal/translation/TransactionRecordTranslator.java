@@ -51,7 +51,7 @@ public final class TransactionRecordTranslator implements ITranslator<Transactio
       Date time = new Timestamp(store.getLong(Entry.TRANSACTION_TIMESTAMP.name()));
       int authorArtId = store.getInt(Entry.TRANSACTION_AUTHOR_ART_ID.name());
       int commitArtId = store.getInt(Entry.TRANSACTION_COMMIT_ART_ID.name());
-      int branchId = store.getInt(Entry.TRANSACTION_BRANCH.name());
+      long branchId = store.getLong(Entry.TRANSACTION_BRANCH.name());
       return txRecordFactory.create(transactionNumber, branchId, comment, time, authorArtId, commitArtId, txType,
          branchCache);
    }

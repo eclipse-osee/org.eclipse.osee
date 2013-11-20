@@ -26,7 +26,7 @@ public class PurgeBranchRequestTranslator implements ITranslator<PurgeBranchRequ
 
    @Override
    public PurgeBranchRequest convert(PropertyStore propertyStore) {
-      int branchId = propertyStore.getInt(Entry.BRANCH_ID.name());
+      long branchId = propertyStore.getLong(Entry.BRANCH_ID.name());
       boolean recursive = propertyStore.getBoolean(Entry.RECURSIVE.name());
       PurgeBranchRequest request = new PurgeBranchRequest(branchId, recursive);
       return request;

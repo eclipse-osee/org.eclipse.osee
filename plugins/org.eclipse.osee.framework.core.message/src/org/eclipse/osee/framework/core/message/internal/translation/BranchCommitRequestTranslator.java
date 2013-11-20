@@ -28,8 +28,8 @@ public final class BranchCommitRequestTranslator implements ITranslator<BranchCo
 
    @Override
    public BranchCommitRequest convert(PropertyStore propertyStore) {
-      int srcBranchId = propertyStore.getInt(Entry.SRC_BRANCH_ID.name());
-      int destBranchId = propertyStore.getInt(Entry.DEST_BRANCH_ID.name());
+      long srcBranchId = propertyStore.getLong(Entry.SRC_BRANCH_ID.name());
+      long destBranchId = propertyStore.getLong(Entry.DEST_BRANCH_ID.name());
       int userArtifactId = propertyStore.getInt(Entry.USER_ART_ID.name());
 
       boolean isArchiveAllowed = propertyStore.getBoolean(Entry.IS_ARCHIVE_ALLOWED.name());
