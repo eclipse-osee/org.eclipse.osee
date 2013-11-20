@@ -20,6 +20,10 @@
 		<module>../../plugins/org.eclipse.osee.template.engine</module>
 		<module>../../plugins/org.eclipse.osee.template.engine.test</module>
 
+		<module>../../plugins/org.eclipse.osee.disposition.rest.model</module>
+		<module>../../plugins/org.eclipse.osee.disposition.rest</module>
+		<module>../../plugins/org.eclipse.osee.disposition.rest.test</module>
+
 		<module>../../plugins/org.eclipse.osee.framework.authentication.ldap.core</module>
 		<module>../../plugins/org.eclipse.osee.framework.core.server</module>
 		<module>../../plugins/org.eclipse.osee.framework.core.server.test</module>
@@ -51,6 +55,7 @@
 		<module>../../features/org.eclipse.osee.x.server.external.feature</module>
 
 		<module>../../plugins/org.eclipse.osee.x.server.p2</module>
+
 		<module>../../plugins/org.eclipse.osee.x.server.integration.tests</module>
 	</modules>
 

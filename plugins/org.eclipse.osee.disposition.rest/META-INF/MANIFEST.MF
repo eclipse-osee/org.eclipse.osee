@@ -1,0 +1,34 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Disposition REST (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.disposition.rest
+Bundle-Version: 0.16.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Service-Component: OSGI-INF/*.xml
+Import-Package: 
+ com.sun.jersey.api.client,
+ javax.ws.rs,
+ javax.ws.rs.core,
+ javax.ws.rs.ext,
+ org.eclipse.core.runtime,
+ org.eclipse.osee.disposition.model,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.model,
+ org.eclipse.osee.framework.core.services,
+ org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.resource.management,
+ org.eclipse.osee.framework.resource.management.util,
+ org.eclipse.osee.logger,
+ org.eclipse.osee.orcs,
+ org.eclipse.osee.orcs.data,
+ org.eclipse.osee.orcs.search,
+ org.eclipse.osee.orcs.transaction,
+ org.eclipse.osee.orcs.utility,
+ org.eclipse.osee.template.engine,
+ org.json,
+ org.osgi.framework

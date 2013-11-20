@@ -1,0 +1,146 @@
+import
+"platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
+
+artifactType "Disposition Set" extends "Artifact" {
+   uuid 0x0000000000000327
+   attribute "Active"
+   attribute "dispo.Import Path"
+   attribute "dispo.Notes JSON"
+   attribute "dispo.Date Created"
+   attribute "dispo.Status Count"
+}
+
+artifactType "dispo.Dispositionable Item" extends "Artifact" {
+   uuid 0x0000000000000328//need to get actual uuids
+   attribute "Active"
+   attribute "dispo.Annotations JSON"
+   attribute "dispo.Discrepancies JSON"
+   attribute "dispo.Date Created"
+   attribute "dispo.Item Status"
+   attribute "dispo.Last Updated"
+}
+
+attributeType "dispo.Annotations JSON" extends StringAttribute {
+	uuid 0x1000000000000386
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+   defaultValue "[]"
+   fileExtension "txt"
+	mediaType "text/plain"
+}
+
+attributeType "dispo.Discrepancies JSON" extends StringAttribute {
+	uuid 0x1000000000000387
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+   defaultValue "[]"
+   fileExtension "txt"
+	mediaType "text/plain"
+}
+
+attributeType "dispo.Notes JSON" extends StringAttribute {
+	uuid 0x1000000000000388
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+	taggerId DefaultAttributeTaggerProvider
+   defaultValue "[]"
+   fileExtension "txt"
+	mediaType "text/plain"
+}
+
+
+attributeType "dispo.Import Path" extends StringAttribute {
+	uuid 0x1000000000000389
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   fileExtension "txt"
+	mediaType "text/plain"
+}
+
+attributeType "dispo.Status Count" extends StringAttribute {
+	uuid 0x1000000000000390
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   fileExtension "txt"
+	mediaType "text/plain"
+}
+
+attributeType "dispo.Import State" extends EnumeratedAttribute {
+	uuid 0x3000000000000196
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "enum.dispo.imported state"
+   defaultValue "No Import"
+	mediaType "text/plain"
+}
+
+oseeEnumType "enum.dispo.imported state" {
+	uuid 0x3000000000000197
+	entry "No Import"
+	entryGuid "AHkD1ZWRgG65kO2xwA"
+	entry "Imported"
+	entryGuid "AHkD42Lk63rhGqAyBOAA"
+	entry "Import Failed"
+	entryGuid "AHkD145yThP3YIc3P3AA"
+	entry "Importing"
+	entryGuid "AHkD1ZnB3kjoOpcY2bgA"
+	entry "Unspecified"
+	entryGuid "AHkD1ZtZdviGWH2sJvwC"
+}
+
+attributeType "dispo.Item Status" extends EnumeratedAttribute {
+	uuid 0x3000000000000198
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "enum.dispo.item status"
+   defaultValue "No Import"
+	mediaType "text/plain"
+}
+
+oseeEnumType "enum.dispo.item status" {
+	uuid 0x3000000000000199
+	entry "PASS"
+	entryGuid "AHkD1ZWRgG95kO2xwA"
+	entry "INCOMPLETE"
+	entryGuid "AHkD82Lk63rhGqAyBOAA"
+	entry "COMPLETE"
+	entryGuid "AHk1145yThP3YIc3P3AA"
+	entry "Unspecified"
+	entryGuid "AHkD1ZtZdviGWH2sJvwC"
+}
+
+
+attributeType "dispo.Date Created" extends DateAttribute {
+	uuid 0x1000000000000391
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   mediaType "text/calendar"
+}
+
+attributeType "dispo.Last Updated" extends DateAttribute {
+	uuid 0x1000000000000392
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   mediaType "text/calendar"
+}
+
+relationType "dispo.Assigned" {
+	uuid 0x2000000000000181
+	sideAName "dispoableItem"
+	sideAArtifactType "dispo.Dispositionable Item"
+	sideBName "user"
+	sideBArtifactType "User"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_ONE
+}
