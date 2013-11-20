@@ -59,10 +59,11 @@ public abstract class AbstractWordCompare implements IComparator {
       boolean show = !getRenderer().getBooleanOption(IRenderer.NO_DISPLAY);
       boolean executeVbScript = System.getProperty("os.name").contains("Windows");
       boolean skipErrors = !getRenderer().getBooleanOption(IRenderer.SKIP_ERRORS);
+      boolean diffFieldCodes = !UserManager.getBooleanSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES);
 
       IVbaDiffGenerator diffGenerator =
          WordUiUtil.createScriptGenerator(presentationType == PresentationType.MERGE, show,
-            presentationType == PresentationType.MERGE, executeVbScript, skipErrors);
+            presentationType == PresentationType.MERGE, executeVbScript, skipErrors, diffFieldCodes);
       return diffGenerator;
    }
 

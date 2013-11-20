@@ -39,16 +39,18 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    private static final String OSEE_WORD_DIFF_SLEEP_MS = "osee.word.diff.sleep.ms";
 
    private final static String header_begin =
-      "Option Explicit\n\nDim oWord\nDim baseDoc\nDim compareDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\ndim wdGranularityWordLevel\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim wdDoNotSaveChanges\nDim mainDoc\ndim newDoc\n\nPublic Sub main()\n ";
+      "Option Explicit\n\nDim oWord\nDim baseDoc\nDim compareDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\ndim wdGranularityWordLevel\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim wdDoNotSaveChanges\nDim wdFieldCodeChanges\nDim mainDoc\ndim newDoc\n\nPublic Sub main()\n ";
 
    private final static String header_end =
       "wdCompareTargetSelectedDiff = 2\n    wdGranularityWordLevel = 1\n    wdDoNotSaveChanges = 0\n    wdFormattingFromCurrent = 3\n    wdFormatXML = 11\n\n    authorName = \"OSEE Doc compare\"\n    set oWord = WScript.CreateObject(\"Word.Application\")\n    oWord.Visible = False\n    detectFormatChanges = ";
 
+   private final static String diff_field_codes = "    wdFieldCodeChanges = ";
+
    private static final String Skip_Errors = "On error resume next\n ";
 
    private final static String comparisonCommand =
-   // The true/false flags define what to compare: Formats, Case, Whitespace, Tables, Headers, Footers, TextBox, Field values, Comments 
-      "    set newDoc = oWord.CompareDocuments (baseDoc, compareDoc, wdCompareTargetSelectedDiff, wdGranularityWordLevel, true, true, true, true, true, true, true, false, true, true, authorName) \n    compareDoc.close \n    newDoc.Activate\n    set compareDoc = oWord.ActiveDocument\n\n";
+   // The true/false flags define what to compare: Formats, Case, Whitespace, Tables, Headers, Footers, TextBox, Field values (wdFieldCodeChanges), Comments 
+      "    set newDoc = oWord.CompareDocuments (baseDoc, compareDoc, wdCompareTargetSelectedDiff, wdGranularityWordLevel, true, true, true, true, true, true, true, wdFieldCodeChanges, true, true, authorName) \n    compareDoc.close \n    newDoc.Activate\n    set compareDoc = oWord.ActiveDocument\n\n";
    private final static String comparisonCommandFirst =
       "    set mainDoc = compareDoc\n    baseDoc.close\n    set baseDoc = Nothing\n";
 
@@ -66,16 +68,18 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
 
    private final boolean merge;
    private final boolean show;
+   private final boolean diffFieldCode;
    private final boolean detectFormatChanges;
    private final boolean executeVbScript;
    private final boolean skipErrors;
 
-   public VbaWordDiffGenerator(boolean merge, boolean show, boolean detectFormatChanges, boolean executeVbScript, boolean skipErrors) {
+   public VbaWordDiffGenerator(boolean merge, boolean show, boolean detectFormatChanges, boolean executeVbScript, boolean skipErrors, boolean diffFieldCode) {
       this.merge = merge;
       this.show = show;
       this.detectFormatChanges = detectFormatChanges;
       this.executeVbScript = executeVbScript;
       this.skipErrors = skipErrors;
+      this.diffFieldCode = diffFieldCode;
    }
 
    @Override
@@ -93,6 +97,8 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
 
          writer.append("");
          writer.append(Boolean.toString(detectFormatChanges));
+         writer.append("\n");
+         writer.append(diff_field_codes + String.valueOf(diffFieldCode));
          writer.append("\n\n");
 
          addComparison(monitor, writer, compareData, merge);
@@ -135,7 +141,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
             throw new OperationCanceledException();
          }
 
-         //Unforunately Word seems to need a little extra time to close, otherwise Word 2007 will crash periodically if too many files are being compared.
+         //Unfortunately Word seems to need a little extra time to close, otherwise Word 2007 will crash periodically if too many files are being compared.
          String propertyWordDiffSleepMs = System.getProperty(OSEE_WORD_DIFF_SLEEP_MS, "250");// Quarter second is the default sleep value
          appendable.append("WScript.sleep(" + propertyWordDiffSleepMs + ")\n");
 

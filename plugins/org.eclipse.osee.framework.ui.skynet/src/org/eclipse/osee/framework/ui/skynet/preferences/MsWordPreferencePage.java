@@ -30,8 +30,11 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
    public static final String IDENTFY_IMAGE_CHANGES = "IdentifyImageChangesInWordDiff";
    public static final String MUTI_EDIT_SAVE_ALL_CHANGES = "multieditSaveAllChanges";
+   public static final String IGNORE_FIELD_CODE_CHANGES = "ignoreFieldCodeChanges";
+
    private Button identifyImageChangesInWord;
    private Button saveAllChanges;
+   private Button ignoreFieldCodes;
 
    @Override
    protected Control createContents(Composite parent) {
@@ -44,6 +47,10 @@ public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPr
       saveAllChanges = new Button(parent, SWT.CHECK);
       saveAllChanges.setText("When multi-editing, save all changed artifacts (even those with no textual changes)");
       saveAllChanges.setSelection(getUserBooleanSetting(MUTI_EDIT_SAVE_ALL_CHANGES));
+
+      ignoreFieldCodes = new Button(parent, SWT.CHECK);
+      ignoreFieldCodes.setText("Ignore Field Codes when performing Word diff");
+      ignoreFieldCodes.setSelection(getUserBooleanSetting(IGNORE_FIELD_CODE_CHANGES));
 
       return parent;
    }
@@ -77,6 +84,7 @@ public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPr
    public boolean performOk() {
       setUserBooleanSetting(IDENTFY_IMAGE_CHANGES, identifyImageChangesInWord);
       setUserBooleanSetting(MUTI_EDIT_SAVE_ALL_CHANGES, saveAllChanges);
+      setUserBooleanSetting(IGNORE_FIELD_CODE_CHANGES, ignoreFieldCodes);
       try {
          UserManager.getUser().persist(getClass().getSimpleName());
       } catch (OseeCoreException ex) {

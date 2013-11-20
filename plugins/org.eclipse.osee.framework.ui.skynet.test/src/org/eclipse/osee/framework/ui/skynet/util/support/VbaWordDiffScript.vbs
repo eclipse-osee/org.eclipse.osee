@@ -13,6 +13,7 @@ Dim wdCompareTargetSelectedMerge
 Dim wdFormattingFromCurrent
 Dim wdFormatXML
 Dim wdDoNotSaveChanges
+Dim wdFieldCodeChanges
 Dim mainDoc
 dim newDoc
 
@@ -27,6 +28,7 @@ Public Sub main()
     set oWord = WScript.CreateObject("Word.Application")
     oWord.Visible = False
     detectFormatChanges = false
+    wdFieldCodeChanges = true
 
 WScript.sleep(250)
     ver1 = "##SRC_FILE1##"
@@ -41,7 +43,7 @@ WScript.sleep(250)
     compareDoc.AcceptAllRevisions
     compareDoc.TrackRevisions = false
     compareDoc.Save
-    set newDoc = oWord.CompareDocuments (baseDoc, compareDoc, wdCompareTargetSelectedDiff, wdGranularityWordLevel, true, true, true, true, true, true, true, false, true, true, authorName) 
+    set newDoc = oWord.CompareDocuments (baseDoc, compareDoc, wdCompareTargetSelectedDiff, wdGranularityWordLevel, true, true, true, true, true, true, true, wdFieldCodeChanges, true, true, authorName) 
     compareDoc.close 
     newDoc.Activate
     set compareDoc = oWord.ActiveDocument

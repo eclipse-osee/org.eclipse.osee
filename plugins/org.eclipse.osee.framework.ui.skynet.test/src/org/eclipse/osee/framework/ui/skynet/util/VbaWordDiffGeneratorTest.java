@@ -12,11 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.io.File;
 import java.io.IOException;
-import org.junit.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -49,7 +49,7 @@ public class VbaWordDiffGeneratorTest {
       // Can only execute VBS file on windows
       boolean executeVbs = Lib.isWindows();
 
-      VbaWordDiffGenerator diff = new VbaWordDiffGenerator(false, false, false, executeVbs, false);
+      VbaWordDiffGenerator diff = new VbaWordDiffGenerator(false, false, false, executeVbs, false, true);
       IProgressMonitor monitor = new NullProgressMonitor();
       diff.generate(monitor, compareData);
 

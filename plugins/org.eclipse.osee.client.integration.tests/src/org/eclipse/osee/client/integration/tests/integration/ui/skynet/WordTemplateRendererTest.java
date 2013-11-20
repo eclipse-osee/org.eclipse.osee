@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
@@ -184,7 +186,7 @@ public class WordTemplateRendererTest {
          null);
       try {
          String contents = getFileAsString(resultPath);
-         basicDocumentCheck(contents, tabString, false);
+         basicDocumentCheck(contents, tabString, false, false);
       } catch (IOException ex) {
          // Do nothing - test failed
       }
@@ -203,7 +205,7 @@ public class WordTemplateRendererTest {
          null);
       try {
          String contents = getFileAsString(resultPath);
-         basicDocumentCheck(contents, "", false);
+         basicDocumentCheck(contents, "", false, false);
       } catch (IOException ex) {
          // Do nothing - test failed
       }
@@ -221,7 +223,7 @@ public class WordTemplateRendererTest {
          null);
       try {
          String contents = getFileAsString(resultPath);
-         basicDocumentCheck(contents, tabString, false);
+         basicDocumentCheck(contents, tabString, false, false);
       } catch (IOException ex) {
          // Do nothing - test failed
       }
@@ -240,7 +242,7 @@ public class WordTemplateRendererTest {
          null);
       try {
          String contents = getFileAsString(resultPath);
-         basicDocumentCheck(contents, "", false);
+         basicDocumentCheck(contents, "", false, false);
       } catch (IOException ex) {
          // Do nothing - test failed
       }
@@ -273,7 +275,7 @@ public class WordTemplateRendererTest {
 
          Assert.assertTrue("Paragraph Number only Link not found",
             contents.contains("<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>2.1</w:t></w:r>"));
-         basicDocumentCheck(contents, "", true);
+         basicDocumentCheck(contents, "", true, false);
       } catch (IOException ex) {
          // Do nothing - test failed
       }
@@ -297,7 +299,7 @@ public class WordTemplateRendererTest {
          contents = getFileAsString(resultPath);
          Assert.assertTrue("Paragraph Number & Name Link not found",
             contents.contains("<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>2.1 Hardware</w:t></w:r>"));
-         basicDocumentCheck(contents, "", false);
+         basicDocumentCheck(contents, "", false, false);
          // Need to replace word created ids with something consistent for testing
          Matcher m = findSetRsidR.matcher(contents);
          while (m.find()) {
@@ -347,7 +349,7 @@ public class WordTemplateRendererTest {
          contents = getFileAsString(resultPath);
          Assert.assertTrue("Paragraph Number & Name Link not found",
             contents.contains("<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>2.1 Hardware</w:t></w:r>"));
-         basicDocumentCheck(contents, tabString, false);
+         basicDocumentCheck(contents, tabString, false, false);
          Assert.assertTrue(
             "Paragraph Number 2 is not updated",
             contents.contains("<w:r><w:t>Notes</w:t></w:r></w:p><w:p><w:r><w:t> Paragraph Number: </w:t></w:r><w:r><w:t>2</w:t></w:r>"));
@@ -381,7 +383,7 @@ public class WordTemplateRendererTest {
       String contents;
       try {
          contents = getFileAsString(resultPath);
-         basicDocumentCheck(contents, "", false);
+         basicDocumentCheck(contents, "", false, false);
          Matcher m = findBlankPage.matcher(contents);
          int counter = 0;
          while (m.find()) {
@@ -422,6 +424,58 @@ public class WordTemplateRendererTest {
 
       } catch (IOException ex) {
          // Do nothing - test failed
+      }
+   }
+
+   @Test
+   public void testPublishDiffWithFieldCodes() throws OseeCoreException {
+      modifyOption("Publish As Diff", true);
+      List<Artifact> artifacts = new ArrayList<Artifact>();
+      setupFieldCodeChange();
+      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
+      artifacts.add(updateDoc);
+      renderer.publish(singleTemplate, null, artifacts, options);
+
+      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
+         null);
+      try {
+         String contents = getFileAsString(resultPath);
+         basicDocumentCheck(contents, "", false, true);
+         Assert.assertTrue(
+            "Field Code Diff not as expected",
+            contents.contains("<w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>Hardware</w:t></w:r><aml:annotation aml:id=\"8\" w:type=\"Word.Insertion\""));
+         Assert.assertTrue(
+            "Field Code Diff not as expected",
+            contents.contains("<aml:content><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t> Functions</w:t></w:r></aml:content></aml:annotation>"));
+      } catch (IOException ex) {
+         // Do nothing - test failed
+      }
+   }
+
+   @Test
+   public void testPublishDiffWithOutFieldCodes() throws OseeCoreException {
+      modifyOption("Publish As Diff", true);
+      List<Artifact> artifacts = new ArrayList<Artifact>();
+      setupFieldCodeChange();
+      UserManager.setSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES, "true");
+      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
+      artifacts.add(updateDoc);
+      renderer.publish(singleTemplate, null, artifacts, options);
+
+      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
+         null);
+      try {
+         String contents = getFileAsString(resultPath);
+         basicDocumentCheck(contents, "", false, true);
+         Assert.assertTrue(
+            "Appears to have Field Code Diff",
+            contents.contains("<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>Hardware Functions</w:t></w:r></w:hlink>"));
+      } catch (IOException ex) {
+         // Do nothing - test failed
+      } finally {
+         UserManager.setSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES, "false");
       }
    }
 
@@ -618,6 +672,21 @@ public class WordTemplateRendererTest {
       onChildTx.execute();
    }
 
+   // Add a change to use a different hyperlink for field code diff testing
+   private void setupFieldCodeChange() {
+      SkynetTransaction onChildTx = TransactionManager.createTransaction(updateBranch, "WORKING UPDATE");
+      String hdwrGuid =
+         docFolder.getDescendant("Subsystem").getDescendant("Hardware").getDescendant("Hardware Functions").getGuid();
+      String notesGuid = docFolder.getDescendant("Notes").getGuid();
+      Artifact notes = ArtifactQuery.getArtifactFromId(notesGuid, updateBranch);
+      notes.setSoleAttributeValue(
+         CoreAttributeTypes.WordTemplateContent,
+         beginWordString + "Notes are great for small topics, and the link" + beginLinkInsert + hdwrGuid + endLinkInsert + " too." + endWordString);
+
+      notes.persist(onChildTx);
+      onChildTx.execute();
+   }
+
    private static String getResourceData(String relativePath) throws IOException {
       String value = Lib.fileToString(WordTemplateProcessorTest.class, "support/" + relativePath);
       Assert.assertTrue(Strings.isValid(value));
@@ -641,7 +710,7 @@ public class WordTemplateRendererTest {
       }
    }
 
-   private void basicDocumentCheck(String document, String pubString, boolean merge) {
+   private void basicDocumentCheck(String document, String pubString, boolean merge, boolean fieldcode) {
       String testName = method.getQualifiedTestName();
       String altString = "\" ";
       String period = "";
@@ -669,9 +738,11 @@ public class WordTemplateRendererTest {
       Assert.assertTrue(
          String.format("%s, Expected 3. Subsystem", testName),
          document.contains("<wx:t wx:val=\"3" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Subsystem</w:t></w:r>"));
-      Assert.assertTrue(
-         String.format("%s, Expected 3.1 Hardware", testName),
-         document.contains("<wx:t wx:val=\"3.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware</w:t></w:r>"));
+      if (!fieldcode) {
+         Assert.assertTrue(
+            String.format("%s, Expected 3.1 Hardware", testName),
+            document.contains("<wx:t wx:val=\"3.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware</w:t></w:r>"));
+      }
       Assert.assertTrue(
          String.format("%s, Expected 3.1.1 Hardware Functions", testName),
          document.contains("<wx:t wx:val=\"3.1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware Functions</w:t></w:r>"));
