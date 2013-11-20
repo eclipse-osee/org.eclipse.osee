@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.action;
 
+import java.util.Arrays;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,10 +22,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.rest.internal.AtsServerImpl;
 import org.eclipse.osee.ats.rest.internal.action.ActionUtility.ActionLoadLevel;
+import org.eclipse.osee.ats.rest.internal.util.AtsUtilRest;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -94,24 +102,78 @@ public final class ActionResource {
     */
    @POST
    @Consumes("application/x-www-form-urlencoded")
-   public Response addOrUpdateAction(MultivaluedMap<String, String> form, @Context UriInfo uriInfo) throws Exception {
+   public Response createAction(MultivaluedMap<String, String> form, @Context UriInfo uriInfo) throws Exception {
       // get parameters
+      String htmlStr = "";
       String query = uriInfo.getPath();
       System.out.println("query [" + query + "]");
-      String title = form.getFirst("ats_title");
-      String description = form.getFirst("desc");
-      String actionableItemName = form.getFirst("actionableItems");
-      String changeType = form.getFirst("changeType");
-      String priority = form.getFirst("priority");
+      String searchId = form.getFirst("searchId");
+      if (Strings.isValid(searchId)) {
+         htmlStr = getSearchResults(searchId);
+      } else {
+         String title = form.getFirst("ats_title");
+         String description = form.getFirst("desc");
+         String actionableItemName = form.getFirst("actionableItems");
+         String changeType = form.getFirst("changeType");
+         String priority = form.getFirst("priority");
 
-      // create action
-      ArtifactId actionId =
-         ActionUtility.createAction(orcsApi, title, description, actionableItemName, changeType, priority);
-      ArtifactReadable action = AtsServerImpl.get().getArtifactByGuid(actionId.getGuid());
+         // create action
+         ArtifactId actionId =
+            ActionUtility.createAction(orcsApi, title, description, actionableItemName, changeType, priority);
+         ArtifactReadable action = AtsServerImpl.get().getArtifactByGuid(actionId.getGuid());
 
-      String htmlStr =
-         ActionUtility.displayAction(registry, action, "Action Created - " + action.getGuid(), ActionLoadLevel.HEADER);
+         htmlStr =
+            ActionUtility.displayAction(registry, action, "Action Created - " + action.getGuid(),
+               ActionLoadLevel.HEADER);
+      }
       return Response.status(200).entity(htmlStr).build();
    }
 
+   private String getSearchResults(String searchId) throws Exception {
+      String results = null;
+      ArtifactReadable action = null;
+      if (GUID.isValid(searchId)) {
+         action = AtsServerImpl.get().getArtifactByGuid(searchId);
+      }
+      if (action != null) {
+         IAtsWorkItem workItem = AtsServerImpl.get().getWorkItemFactory().getWorkItem(action);
+         if (workItem != null) {
+            results = ActionUtility.displayAction(registry, action, "Action - " + searchId, ActionLoadLevel.HEADER);
+         } else {
+            results = AHTML.simplePage(String.format("Undisplayable %s", action));
+         }
+      }
+      if (!Strings.isValid(results)) {
+         for (IAttributeType attrType : Arrays.asList(AtsAttributeTypes.AtsId, AtsAttributeTypes.LegacyPcrId)) {
+            ResultSet<ArtifactReadable> legacyQueryResults =
+               orcsApi.getQueryFactory(null).fromBranch(AtsUtilRest.getAtsBranch()).and(attrType,
+                  org.eclipse.osee.framework.core.enums.Operator.EQUAL, searchId).getResults();
+            if (legacyQueryResults.size() == 1) {
+               results =
+                  ActionUtility.displayAction(registry, legacyQueryResults.getExactlyOne(), "Action - " + searchId,
+                     ActionLoadLevel.HEADER);
+               break;
+            } else if (legacyQueryResults.size() > 1) {
+               results = getGuidListHtml(legacyQueryResults);
+               break;
+            }
+         }
+      }
+      if (!Strings.isValid(results)) {
+         results = AHTML.simplePage(String.format("Unknown Id [%s]", searchId));
+      }
+      return results;
+   }
+
+   private String getGuidListHtml(ResultSet<ArtifactReadable> results2) {
+      StringBuilder sb = new StringBuilder("Returned ");
+      sb.append(results2.size());
+      sb.append(" results.");
+      sb.append(AHTML.newline(2));
+      for (ArtifactReadable art : results2) {
+         sb.append(AHTML.getHyperlink("/ats/action/" + art.getGuid(), art.toString()));
+         sb.append(AHTML.newline());
+      }
+      return AHTML.simplePage(sb.toString());
+   }
 }

@@ -1,0 +1,51 @@
+<?include path="4000000000000000 pageDeclaration.html"?>
+<head>
+  <meta name="author" content="Donald G. Dunne" />
+  <title>OSEE ATS</title>
+  <style>
+    <?include path="4000000000000013 atsCore.css"?>
+  </style>
+  <script>
+		<?include path="4000000000000002 oseeCore.js"?>
+  </script>
+</head>
+
+<body>
+
+<div id="atsBody">
+<b>Search Action</b>
+<form id="oseeAppForm">		
+	<input type="text" id="searchId" placeholder="enter id" />
+	<input type="button" id="searchButton" value="Search" />
+</form>
+</div>
+
+<script>
+	function searchButton() {
+		post_with_parms("/ats/action", getParams());
+	}
+
+	function getParams() {
+		var params = new Object();
+		var form = document.getElementById("oseeAppForm");
+		var inputElements = form.getElementsByTagName("input");
+		
+		for(var i = 0; i < inputElements.length; i++) {
+		var inputElement = inputElements[i];
+			var id = inputElement.getAttribute("id");
+			if (id == null) {
+				console.log(inputElement);
+				console.log("has no id");
+			} else {
+				params[id] = inputElement.value;
+			}
+		}
+		return params;
+	}
+   
+	var button = document.getElementById("searchButton");
+	button.addEventListener("click", searchButton);
+</script>
+
+</body>
+</html>

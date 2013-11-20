@@ -32,6 +32,7 @@ public final class AtsResourceTokens {
    public static final ResourceToken AtsNewActionValuesHtml = createToken(0x4000000000000012L, "atsNewActionValues.html");
    public static final ResourceToken AtsCoreCss = createToken(0x4000000000000013L, "atsCore.css");
    public static final ResourceToken TransitionHtml = createToken(0x4000000000000014L, "atsTransition.html");
+   public static final ResourceToken AtsSearchHtml = createToken(0x4000000000000015L, "atsSearch.html");
    // @formatter:on
 
    private static ResourceToken createToken(Long uuid, String name) {

@@ -60,4 +60,15 @@ public final class AtsUiResource {
       page.addSubstitution(rule);
       return page.realizePage(AtsResourceTokens.AtsNewActionHtml);
    }
+
+   /**
+    * @return html5 action entry page
+    */
+   @Path("Search")
+   @GET
+   @Produces(MediaType.TEXT_HTML)
+   public String getSearch() throws Exception {
+      PageCreator page = PageFactory.newPageCreator(registry, AtsResourceTokens.AtsValuesHtml);
+      return page.realizePage(AtsResourceTokens.AtsSearchHtml);
+   }
 }
