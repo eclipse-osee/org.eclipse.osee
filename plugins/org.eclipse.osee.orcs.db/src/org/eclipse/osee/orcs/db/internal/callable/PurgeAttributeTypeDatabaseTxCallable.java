@@ -70,10 +70,10 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastor
       IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery();
       try {
          if (types.size() == 1) {
-            chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_ATTR_TYPE, identityService.getLocalId(types.iterator().next()));
+            chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_ATTR_TYPE, types.iterator().next().getGuid());
          } else {
             for (IAttributeType type : types) {
-               joinQuery.add(identityService.getLocalId(type));
+               joinQuery.add(type.getGuid());
             }
             joinQuery.store(connection);
             chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_ATTR_MULT_TYPES, joinQuery.getQueryId());
@@ -94,11 +94,10 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastor
       IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery();
       try {
          if (types.size() == 1) {
-            chStmt.runPreparedQuery(RETRIEVE_GAMMAS_WITH_BRANCH_IDS,
-               identityService.getLocalId(types.iterator().next()));
+            chStmt.runPreparedQuery(RETRIEVE_GAMMAS_WITH_BRANCH_IDS, types.iterator().next().getGuid());
          } else {
             for (IAttributeType type : types) {
-               joinQuery.add(identityService.getLocalId(type));
+               joinQuery.add(type.getGuid());
             }
             chStmt.runPreparedQuery(RETRIEVE_GAMMAS_WITH_BRANCH_IDS_MULT_TYPES, joinQuery.getQueryId());
          }

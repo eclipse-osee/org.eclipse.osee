@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
 
 public final class UnsubscribeTransaction extends DatabaseTxCallable<String> {
@@ -40,15 +39,12 @@ public final class UnsubscribeTransaction extends DatabaseTxCallable<String> {
 
    private int relationId;
    private int currentGammaId;
-   private final IdentityLocator identityService;
    private final ArtifactReadable groupArtifact;
    private final ArtifactReadable userArtifact;
    private String completionMethod;
 
-   public UnsubscribeTransaction(Log logger, IOseeDatabaseService databaseService, IdentityLocator identityService, ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
+   public UnsubscribeTransaction(Log logger, IOseeDatabaseService databaseService, ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
       super(logger, databaseService, "Delete Relation");
-      this.identityService = identityService;
-
       this.groupArtifact = groupArtifact;
       this.userArtifact = userArtifact;
    }
@@ -79,7 +75,7 @@ public final class UnsubscribeTransaction extends DatabaseTxCallable<String> {
    }
 
    private boolean getRelationTxData(long branchId) throws OseeCoreException {
-      long relationTypeId = identityService.getLocalId(CoreRelationTypes.Users_Artifact);
+      long relationTypeId = CoreRelationTypes.Users_Artifact.getGuid();
       IOseeStatement chStmt = getDatabaseService().getStatement();
 
       try {

@@ -13,11 +13,11 @@ package org.eclipse.osee.framework.core.message.test.translation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.message.internal.translation.OseeImportModelRequestTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
 import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
 import org.eclipse.osee.framework.core.translation.ITranslator;
+import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -45,9 +45,7 @@ public class OseeImportModelRequestTranslatorTest extends BaseTranslatorTest<Ose
       ITranslator<OseeImportModelRequest> translator = new OseeImportModelRequestTranslator();
 
       List<Object[]> data = new ArrayList<Object[]>();
-      data.add(new Object[] {
-         new OseeImportModelRequest("dummy:/model.osee", "dummy model", false, true, false),
-         translator});
+      data.add(new Object[] {new OseeImportModelRequest("dummy:/model.osee", "dummy model", false, true), translator});
       return data;
    }
 }

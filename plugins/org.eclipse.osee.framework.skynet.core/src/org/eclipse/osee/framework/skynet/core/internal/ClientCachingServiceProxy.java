@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientArtifactTypeAccessor;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientAttributeTypeAccessor;
@@ -37,21 +36,16 @@ import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientTransacti
  */
 public class ClientCachingServiceProxy implements IOseeCachingService {
 
-   private IdentityService identityService;
    private IOseeModelFactoryService modelFactory;
 
    private IOseeCachingService proxiedService;
-
-   public void setIdentityService(IdentityService identityService) {
-      this.identityService = identityService;
-   }
 
    public void setModelFactory(IOseeModelFactoryService modelFactory) {
       this.modelFactory = modelFactory;
    }
 
    public void start() {
-      proxiedService = createService(modelFactory, identityService);
+      proxiedService = createService(modelFactory);
    }
 
    public void stop() {
@@ -95,11 +89,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    }
 
    @Override
-   public IdentityService getIdentityService() {
-      return getProxiedService().getIdentityService();
-   }
-
-   @Override
    public Collection<?> getCaches() {
       return getProxiedService().getCaches();
    }
@@ -119,7 +108,7 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
       getProxiedService().clearAll();
    }
 
-   private IOseeCachingService createService(IOseeModelFactoryService factory, IdentityService identityService) {
+   private IOseeCachingService createService(IOseeModelFactoryService factory) {
       TransactionCache transactionCache = new TransactionCache();
       ClientBranchAccessor clientBranchAccessor =
          new ClientBranchAccessor(factory.getBranchFactory(), transactionCache);
@@ -143,6 +132,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
          new RelationTypeCache(new ClientRelationTypeAccessor(factory.getRelationTypeFactory(), artifactTypeCache));
 
       return new OseeCachingService(branchCache, transactionCache, artifactTypeCache, attributeTypeCache,
-         relationTypeCache, oseeEnumTypeCache, identityService);
+         relationTypeCache, oseeEnumTypeCache);
    }
 }

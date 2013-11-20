@@ -97,8 +97,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
 
          for (IAttributeType attributeType : typesToTag) {
             if (types.isTaggable(attributeType)) {
-               long typeLocalId = idService.getLocalId(attributeType);
-               typeJoin.add(typeLocalId);
+               typeJoin.add(attributeType.getGuid());
             }
          }
 

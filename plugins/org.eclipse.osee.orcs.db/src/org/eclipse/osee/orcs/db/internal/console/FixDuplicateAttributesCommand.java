@@ -16,7 +16,6 @@ import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ExportImportJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -36,14 +35,9 @@ import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleCommand {
 
    private OrcsApi orcsApi;
-   private IdentityService identityService;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
-   }
-
-   public void setIdentityService(IdentityService identityService) {
-      this.identityService = identityService;
    }
 
    @Override
@@ -129,8 +123,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
          AttributeTypes types = orcsApi.getOrcsTypes(null).getAttributeTypes();
          for (IAttributeType attributeType : types.getAll()) {
             if (types.getMaxOccurrences(attributeType) == 1) {
-               Long localId = identityService.getLocalId(attributeType.getGuid());
-               typeJoin.add(localId);
+               typeJoin.add(attributeType.getGuid());
             }
          }
          typeJoin.store();

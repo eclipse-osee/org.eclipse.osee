@@ -77,7 +77,7 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
       if (attributeType != null) {
          writer.write(attrAlias);
          writer.write(".attr_type_id = ?");
-         writer.addParameter(toLocalId(attributeType));
+         writer.addParameter(attributeType.getGuid());
       }
 
       if (value != null) {

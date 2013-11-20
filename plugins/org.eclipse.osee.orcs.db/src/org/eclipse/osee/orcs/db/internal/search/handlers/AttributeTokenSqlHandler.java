@@ -110,12 +110,12 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          attrSb.append(" AND att.attr_type_id = ");
          if (types.size() == 1) {
             attrSb.append("?");
-            long localId = toLocalId(criteria.getTypes().iterator().next());
-            writer.addParameter(localId);
+            long typeId = criteria.getTypes().iterator().next().getGuid();
+            writer.addParameter(typeId);
          } else {
             Set<Long> typeIds = new HashSet<Long>();
             for (IAttributeType type : types) {
-               typeIds.add(toLocalId(type));
+               typeIds.add(type.getGuid());
             }
             AbstractJoinQuery joinQuery = writer.writeIdJoin(typeIds);
 

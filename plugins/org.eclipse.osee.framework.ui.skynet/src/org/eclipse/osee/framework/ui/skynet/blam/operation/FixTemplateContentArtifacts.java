@@ -104,7 +104,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
          Object[] params = new Object[allBranches ? 3 : 4];
          params[0] = TxChange.CURRENT.getValue();
          params[1] = TransactionDetailsType.NonBaselined.getId();
-         params[2] = ServiceUtil.getIdentityService().getLocalId(CoreAttributeTypes.WordTemplateContent);
+         params[2] = CoreAttributeTypes.WordTemplateContent.getGuid();
          if (!allBranches) {
             params[3] = branchId;
          }

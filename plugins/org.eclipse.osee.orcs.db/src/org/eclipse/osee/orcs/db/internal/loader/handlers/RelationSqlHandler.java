@@ -71,7 +71,7 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
    private Collection<Long> getLocalTypeIds() throws OseeCoreException {
       Collection<Long> toReturn = new HashSet<Long>();
       for (Identity<Long> type : criteria.getTypes()) {
-         toReturn.add(toLocalId(type));
+         toReturn.add(type.getGuid());
       }
       return toReturn;
    }

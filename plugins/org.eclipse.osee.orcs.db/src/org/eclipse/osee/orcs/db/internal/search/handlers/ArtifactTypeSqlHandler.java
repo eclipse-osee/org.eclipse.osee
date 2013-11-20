@@ -66,8 +66,7 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
       Collection<? extends IArtifactType> types = criteria.getTypes();
       Collection<Long> toReturn = new HashSet<Long>();
       for (IArtifactType type : types) {
-         long localId = getIdentityService().getLocalId(type);
-         toReturn.add(localId);
+         toReturn.add(type.getGuid());
       }
       return toReturn;
    }

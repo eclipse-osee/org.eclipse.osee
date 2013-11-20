@@ -55,7 +55,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
       IRelationTypeSide typeSide = criteria.getType();
       writer.write(relAlias);
       writer.write(".rel_link_type_id = ?");
-      writer.addParameter(toLocalId(typeSide));
+      writer.addParameter(typeSide.getGuid());
 
       Collection<Integer> ids = criteria.getIds();
       if (!ids.isEmpty()) {

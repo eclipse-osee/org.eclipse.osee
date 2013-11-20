@@ -173,8 +173,8 @@ public class ArtifactTypeManager {
       "select count(1) from (select DISTINCT(art_id) FROM osee_artifact where art_type_id = ?) t1";
 
    public static void purgeArtifactType(IArtifactType artifactType) throws OseeCoreException {
-      final long artifactTypeId = ServiceUtil.getIdentityService().getLocalId(artifactType);
-      int artifactCount = ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ARTIFACT_OCCURRENCE, artifactTypeId);
+      int artifactCount =
+         ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ARTIFACT_OCCURRENCE, artifactType.getGuid());
 
       if (artifactCount != 0) {
          throw new OseeArgumentException(

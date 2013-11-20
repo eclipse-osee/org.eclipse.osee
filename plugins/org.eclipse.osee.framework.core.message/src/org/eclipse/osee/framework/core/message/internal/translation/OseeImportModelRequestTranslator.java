@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 public class OseeImportModelRequestTranslator implements ITranslator<OseeImportModelRequest> {
 
    private static enum Fields {
-      PERSIST,
       GENERATE_EMF_COMPARE,
       GENERATE_DIRTY_REPORT,
       MODEL_NAME,
@@ -33,9 +32,8 @@ public class OseeImportModelRequestTranslator implements ITranslator<OseeImportM
       String modelName = store.get(Fields.MODEL_NAME.name());
       boolean createTypeChangeReport = store.getBoolean(Fields.GENERATE_DIRTY_REPORT.name());
       boolean createCompareReport = store.getBoolean(Fields.GENERATE_EMF_COMPARE.name());
-      boolean isPersistAllowed = store.getBoolean(Fields.PERSIST.name());
 
-      return new OseeImportModelRequest(modelName, model, createTypeChangeReport, createCompareReport, isPersistAllowed);
+      return new OseeImportModelRequest(modelName, model, createTypeChangeReport, createCompareReport);
    }
 
    @Override
@@ -45,7 +43,6 @@ public class OseeImportModelRequestTranslator implements ITranslator<OseeImportM
       store.put(Fields.MODEL.name(), object.getModel());
       store.put(Fields.GENERATE_DIRTY_REPORT.name(), object.isCreateTypeChangeReport());
       store.put(Fields.GENERATE_EMF_COMPARE.name(), object.isCreateCompareReport());
-      store.put(Fields.PERSIST.name(), object.isPersistAllowed());
       return store;
    }
 }

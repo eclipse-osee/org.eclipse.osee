@@ -568,7 +568,7 @@
 
 	<Table name="OSEE_JOIN_ID" schema="OSEE" tablespace="osee_data">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="ID" type="INTEGER" />
+		<Column id="ID" type="BIGINT" />
 		<Column id="INSERT_TIME" type="TIMESTAMP" />
 		<Index id="OSEE_JOIN_ID__Q_I_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="QUERY_ID"/>
@@ -579,7 +579,7 @@
 	<TableDescription referenceTable="OSEE_JOIN_ID">
 		<Note purpose="Temporary working table to improve performance of joins"/>
 		<Column id="QUERY_ID" 		description="randomly generated identifier for this short-lived join"/>
-		<Column id="ID" 				description="application specific INTEGER identifier"/>
+		<Column id="ID" 				description="application specific NUMBER identifier"/>
 		<Column id="INSERT_TIME" 	description="time this join query was started"/>
 	</TableDescription>
 

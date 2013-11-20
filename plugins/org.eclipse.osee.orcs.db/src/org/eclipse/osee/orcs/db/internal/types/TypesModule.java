@@ -11,14 +11,11 @@
 package org.eclipse.osee.orcs.db.internal.types;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
@@ -53,7 +50,7 @@ public class TypesModule {
 
          @Override
          public Callable<IResource> getOrcsTypesLoader(OrcsSession session) {
-            return new OrcsTypeLoaderCallable(logger, session, dbService, identityService, resourceManager);
+            return new OrcsTypeLoaderCallable(logger, session, dbService, resourceManager);
          }
 
          @Override
@@ -69,22 +66,6 @@ public class TypesModule {
          @Override
          public Callable<Void> purgeRelationsByRelationType(OrcsSession session, Collection<? extends IRelationType> typesToPurge) {
             return new PurgeRelationTypeDatabaseTxCallable(logger, session, dbService, identityService, typesToPurge);
-         }
-
-         @Override
-         public Callable<Void> persistTypeIdentities(OrcsSession session, final Collection<Identity<Long>> types) {
-            return new Callable<Void>() {
-
-               @Override
-               public Void call() throws Exception {
-                  List<Long> toPersist = new LinkedList<Long>();
-                  for (Identity<Long> type : types) {
-                     toPersist.add(type.getGuid());
-                  }
-                  identityService.store(toPersist);
-                  return null;
-               }
-            };
          }
 
       };

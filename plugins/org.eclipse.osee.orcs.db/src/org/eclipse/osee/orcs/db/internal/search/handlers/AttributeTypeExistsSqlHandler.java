@@ -59,7 +59,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
       if (types.size() > 1) {
          Set<Long> typeIds = new HashSet<Long>();
          for (IAttributeType type : types) {
-            typeIds.add(toLocalId(type));
+            typeIds.add(type.getGuid());
          }
          joinQuery = writer.writeIdJoin(typeIds);
 
@@ -73,10 +73,9 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
 
       } else {
          IAttributeType type = types.iterator().next();
-         long localId = toLocalId(type);
          writer.write(attrAlias);
          writer.write(".attr_type_id = ?");
-         writer.addParameter(localId);
+         writer.addParameter(type.getGuid());
       }
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);

@@ -104,8 +104,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
             updateTxValues(data);
             if (isRowAllowed) {
                updateGamma(data);
-               long localTypeId = getLocalTypeId(data.getTypeUuid());
-               addRow(SqlOrderEnum.ARTIFACTS, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
+               addRow(SqlOrderEnum.ARTIFACTS, data.getLocalId(), data.getTypeUuid(), data.getVersion().getGammaId(),
                   data.getGuid());
             }
             addTxs(SqlOrderEnum.ARTIFACTS, data);
@@ -129,8 +128,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
                int localId = idManager.getNextAttributeId();
                data.setLocalId(localId);
             }
-            long localTypeId = getLocalTypeId(data.getTypeUuid());
-            addRow(SqlOrderEnum.ATTRIBUTES, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
+            addRow(SqlOrderEnum.ATTRIBUTES, data.getLocalId(), data.getTypeUuid(), data.getVersion().getGammaId(),
                data.getArtifactId(), daoToSql.getValue(), daoToSql.getUri());
          }
          addTxs(SqlOrderEnum.ATTRIBUTES, data);
@@ -160,8 +158,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
                int localId = idManager.getNextRelationId();
                data.setLocalId(localId);
             }
-            long localTypeId = getLocalTypeId(data.getTypeUuid());
-            addRow(SqlOrderEnum.RELATIONS, data.getLocalId(), localTypeId, data.getVersion().getGammaId(),
+            addRow(SqlOrderEnum.RELATIONS, data.getLocalId(), data.getTypeUuid(), data.getVersion().getGammaId(),
                data.getArtIdA(), data.getArtIdB(), data.getRationale());
          }
          addTxs(SqlOrderEnum.RELATIONS, data);
@@ -225,10 +222,6 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
 
    private void addBinaryStore(DaoToSql binaryTx) {
       binaryStores.add(binaryTx);
-   }
-
-   private long getLocalTypeId(long typeUuidId) throws OseeCoreException {
-      return idManager.getLocalId(typeUuidId);
    }
 
 }

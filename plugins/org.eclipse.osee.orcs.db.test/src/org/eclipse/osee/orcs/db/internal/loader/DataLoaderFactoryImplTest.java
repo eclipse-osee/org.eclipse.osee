@@ -113,17 +113,6 @@ public class DataLoaderFactoryImplTest {
       when(branchCache.getLocalId(BRANCH)).thenReturn(EXPECTED_BRANCH_ID);
       when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");
 
-      when(identityService.getLocalId(CoreAttributeTypes.Annotation)).thenReturn(
-         CoreAttributeTypes.Annotation.getGuid());
-
-      when(identityService.getLocalId(CoreAttributeTypes.Category)).thenReturn(CoreAttributeTypes.Category.getGuid());
-
-      when(identityService.getLocalId(CoreRelationTypes.Default_Hierarchical__Child)).thenReturn(
-         CoreRelationTypes.Default_Hierarchical__Child.getGuid());
-
-      when(identityService.getLocalId(CoreRelationTypes.Dependency__Artifact)).thenReturn(
-         CoreRelationTypes.Dependency__Artifact.getGuid());
-
       when(dbService.getStatement()).thenReturn(chStmt);
       when(dbService.runPreparedQueryFetchObject(eq(-1), Matchers.anyString(), eq(BRANCH.getGuid()))).thenReturn(
          EXPECTED_HEAD_TX_ID);

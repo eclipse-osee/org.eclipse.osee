@@ -28,6 +28,4 @@ public interface IOseeCachingService extends TempCachingService {
 
    OseeEnumTypeCache getEnumTypeCache();
 
-   IdentityService getIdentityService();
-
 }

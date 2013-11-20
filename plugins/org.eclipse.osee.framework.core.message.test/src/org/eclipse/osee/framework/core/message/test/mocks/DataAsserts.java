@@ -217,7 +217,6 @@ public final class DataAsserts {
          Assert.assertEquals(expected.getModelName(), actual.getModelName());
          Assert.assertEquals(expected.isCreateCompareReport(), actual.isCreateCompareReport());
          Assert.assertEquals(expected.isCreateTypeChangeReport(), actual.isCreateTypeChangeReport());
-         Assert.assertEquals(expected.isPersistAllowed(), actual.isPersistAllowed());
       }
    }
 

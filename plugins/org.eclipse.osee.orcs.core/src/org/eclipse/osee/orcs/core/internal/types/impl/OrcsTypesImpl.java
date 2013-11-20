@@ -13,14 +13,12 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
@@ -144,23 +142,6 @@ public class OrcsTypesImpl implements OrcsTypes {
    @Override
    public Callable<Void> purgeRelationsByRelationType(Collection<? extends IRelationType> relationTypes) {
       return dataStore.purgeRelationsByRelationType(session, relationTypes);
-   }
-
-   @Override
-   public Callable<Void> save() {
-      return new Callable<Void>() {
-
-         @Override
-         public Void call() throws Exception {
-            Collection<Identity<Long>> types = new LinkedList<Identity<Long>>();
-            types.addAll(artifactTypes.getAll());
-            types.addAll(attributeTypes.getAll());
-            types.addAll(relationTypes.getAll());
-            types.addAll(enumTypes.getAll());
-            dataStore.persistTypeIdentities(session, types).call();
-            return null;
-         }
-      };
    }
 
 }

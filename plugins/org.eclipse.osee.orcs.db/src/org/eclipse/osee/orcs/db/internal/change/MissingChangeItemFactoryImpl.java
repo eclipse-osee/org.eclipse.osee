@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -35,7 +34,6 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
-
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -189,24 +187,22 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
    private ArtifactChangeItem createArtifactChangeItem(ArtifactData data) throws OseeCoreException {
       ArtifactChangeItem artChange =
-         new ArtifactChangeItem(data.getLocalId(), identityService.getLocalId(data.getTypeUuid()),
-            data.getVersion().getGammaId(), determineModType(data));
+         new ArtifactChangeItem(data.getLocalId(), data.getTypeUuid(), data.getVersion().getGammaId(),
+            determineModType(data));
       return artChange;
    }
 
    private AttributeChangeItem createAttributeChangeItem(AttributeData data) throws OseeCoreException {
       AttributeChangeItem attrChange =
-         new AttributeChangeItem(data.getLocalId(), identityService.getLocalId(data.getTypeUuid()),
-            data.getArtifactId(), data.getVersion().getGammaId(), determineModType(data),
-            data.getDataProxy().getDisplayableString());
+         new AttributeChangeItem(data.getLocalId(), data.getTypeUuid(), data.getArtifactId(),
+            data.getVersion().getGammaId(), determineModType(data), data.getDataProxy().getDisplayableString());
       attrChange.getNetChange().copy(attrChange.getCurrentVersion());
       return attrChange;
    }
 
    private RelationChangeItem createRelationChangeItem(RelationData data) throws OseeCoreException {
-      return new RelationChangeItem(data.getLocalId(), identityService.getLocalId(data.getTypeUuid()),
-         data.getVersion().getGammaId(), determineModType(data), data.getArtIdA(), data.getArtIdB(),
-         data.getRationale());
+      return new RelationChangeItem(data.getLocalId(), data.getTypeUuid(), data.getVersion().getGammaId(),
+         determineModType(data), data.getArtIdA(), data.getArtIdB(), data.getRationale());
    }
 
 }

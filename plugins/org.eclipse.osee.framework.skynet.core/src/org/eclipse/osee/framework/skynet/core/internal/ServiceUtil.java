@@ -16,7 +16,6 @@ import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -60,10 +59,6 @@ public final class ServiceUtil {
 
    public static OseeEventService getEventService() throws OseeCoreException {
       return getService(OseeEventService.class);
-   }
-
-   public static IdentityService getIdentityService() throws OseeCoreException {
-      return getService(IdentityService.class);
    }
 
    public static IOseeCachingService getOseeCacheService() throws OseeCoreException {

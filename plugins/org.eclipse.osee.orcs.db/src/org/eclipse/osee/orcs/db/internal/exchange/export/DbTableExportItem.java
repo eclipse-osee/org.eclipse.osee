@@ -20,7 +20,6 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.HexUtil;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -224,9 +223,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
       } else {
          throw new OseeCoreException("Undefined Type [%s]", value != null ? value.getClass().getSimpleName() : value);
       }
-      Long uuid = identityService.getUniversalId(typeId);
-      Conditions.checkNotNull(uuid, "abstartOseeType", "localId[%s] for [%s]", typeId, getSource());
-      String uuidString = HexUtil.toString(uuid);
+      String uuidString = HexUtil.toString(typeId);
       ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, uuidString);
    }
 

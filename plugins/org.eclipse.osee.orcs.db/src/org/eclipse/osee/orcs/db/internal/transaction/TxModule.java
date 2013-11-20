@@ -65,7 +65,7 @@ public class TxModule {
 
          @Override
          public Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
-            return new UnsubscribeTransaction(logger, dbService, idManager, userArtifact, groupArtifact);
+            return new UnsubscribeTransaction(logger, dbService, userArtifact, groupArtifact);
          }
 
          @Override

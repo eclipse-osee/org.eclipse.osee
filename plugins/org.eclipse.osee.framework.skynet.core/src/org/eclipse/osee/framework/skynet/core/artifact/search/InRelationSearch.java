@@ -13,12 +13,10 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Robert A. Fisher
@@ -41,8 +39,7 @@ public class InRelationSearch implements ISearchPrimitive {
 
    @Override
    public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) throws OseeCoreException {
-      IdentityService remoteIdManager = ServiceUtil.getIdentityService();
-      dataList.add(remoteIdManager.getLocalId(relationType));
+      dataList.add(relationType.getGuid());
       dataList.add(BranchManager.getBranchId(branch));
       dataList.add(ModificationType.DELETED.getValue());
       return "rel_1.rel_link_type_id = ? AND rel_1.gamma_id = txs1.gamma_id AND txs1.transaction_id = (SELECT max(txs1.transaction_id) FROM osee_relation_link rel2, osee_txs txs1 WHERE rel2.rel_link_id = rel_1.rel_link_id AND rel2.gamma_id = txs1.gamma_id AND txs1.branch_id = ? AND txs1.mod_type <>?)";

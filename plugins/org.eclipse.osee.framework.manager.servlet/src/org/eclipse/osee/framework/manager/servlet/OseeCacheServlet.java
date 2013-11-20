@@ -49,7 +49,6 @@ import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslatorId;
@@ -81,17 +80,15 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
    private final BranchCache branchCache;
    private final TransactionCache txCache;
    private final OrcsApi orcsApi;
-   private final IdentityService identityService;
    private static final StorageState DEFAULT_STORAGE_STATE = StorageState.CREATED;
 
-   public OseeCacheServlet(Log logger, IDataTranslationService translationService, TempCachingService cachingService, OrcsApi orcsApi, IOseeModelFactoryService factoryService, IdentityService identityService) {
+   public OseeCacheServlet(Log logger, IDataTranslationService translationService, TempCachingService cachingService, OrcsApi orcsApi, IOseeModelFactoryService factoryService) {
       super(logger);
       this.translationService = translationService;
       this.branchCache = cachingService.getBranchCache();
       this.txCache = cachingService.getTransactionCache();
       this.orcsApi = orcsApi;
       this.factoryService = factoryService;
-      this.identityService = identityService;
    }
 
    public IDataTranslationService getTranslationService() {
@@ -272,7 +269,7 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
       List<Triplet<Long, String, Long>> artAttrs = new ArrayList<Triplet<Long, String, Long>>();
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
       for (IArtifactType artType : artTypes.getAll()) {
-         long artTypeId = identityService.getLocalId(artType.getGuid());
+         long artTypeId = artType.getGuid();
          boolean isAbstract = artTypes.isAbstract(artType);
          rows.add(new ArtifactTypeRow(artTypeId, artType.getGuid(), artType.getName(), isAbstract,
             DEFAULT_STORAGE_STATE));
@@ -282,7 +279,7 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
             Long[] intSuperTypes = new Long[superTypes.size()];
             int index = 0;
             for (IArtifactType superType : superTypes) {
-               intSuperTypes[index++] = identityService.getLocalId(superType.getGuid());
+               intSuperTypes[index++] = superType.getGuid();
             }
             baseToSuper.put(artTypeId, intSuperTypes);
          }
@@ -318,14 +315,13 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
             new AttributeType(item.getGuid(), item.getName(), baseAttributeTypeId, attributeProviderNameId,
                fileTypeExtension, defaultValue, minOccurrances, maxOccurrences, description, taggerId, mediaType);
 
-         long localId = identityService.getLocalId(item);
-         type.setId(localId);
+         long typeId = item.getGuid();
+         type.setId(typeId);
          rows.add(type);
 
          if (attrTypes.isEnumerated(item)) {
             EnumType enumType = attrTypes.getEnumType(item);
-            long enumId = identityService.getLocalId(enumType);
-            attrToEnum.put(localId, enumId);
+            attrToEnum.put(typeId, enumType.getGuid());
          }
 
       }
@@ -338,18 +334,14 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
       for (IRelationType item : relTypes.getAll()) {
          IArtifactType sideAType = relTypes.getArtifactTypeSideA(item);
          IArtifactType sideBType = relTypes.getArtifactTypeSideB(item);
-         long artifactTypeSideA = identityService.getLocalId(sideAType);
-         long artifactTypeSideB = identityService.getLocalId(sideBType);
-
-         long localId = identityService.getLocalId(item);
 
          String sideAName = relTypes.getSideAName(item);
          String sideBName = relTypes.getSideBName(item);
          RelationTypeMultiplicity multiplicity = relTypes.getMultiplicity(item);
          String defaultOrderTypeGuid = relTypes.getDefaultOrderTypeGuid(item);
 
-         rows.add(new RelationTypeRow(localId, item.getName(), item.getGuid(), DEFAULT_STORAGE_STATE, sideAName,
-            sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity, defaultOrderTypeGuid));
+         rows.add(new RelationTypeRow(item.getGuid(), item.getName(), item.getGuid(), DEFAULT_STORAGE_STATE, sideAName,
+            sideBName, sideAType.getGuid(), sideBType.getGuid(), multiplicity, defaultOrderTypeGuid));
       }
       return new RelationTypeCacheUpdateResponse(rows);
    }
@@ -359,9 +351,8 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
       List<String[]> enumEntryRows = new ArrayList<String[]>();
       EnumTypes enumTypes = orcsTypes.getEnumTypes();
       for (EnumType type : enumTypes.getAll()) {
-         long localId = identityService.getLocalId(type);
          enumTypeRows.add(new String[] {
-            String.valueOf(localId),
+            String.valueOf(type.getGuid()),
             DEFAULT_STORAGE_STATE.toString(),
             String.valueOf(type.getGuid()),
             type.getName()});

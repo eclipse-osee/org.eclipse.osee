@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -38,17 +37,15 @@ public class OseeCachingService implements IOseeCachingService {
    private final AttributeTypeCache attributeTypeCache;
    private final RelationTypeCache relationTypeCache;
    private final OseeEnumTypeCache oseeEnumTypeCache;
-   public final IdentityService identityService;
    private final Collection<IOseeCache<?, ?>> caches;
 
-   public OseeCachingService(BranchCache branchCache, TransactionCache transactionCache, ArtifactTypeCache artifactTypeCache, AttributeTypeCache attributeTypeCache, RelationTypeCache relationTypeCache, OseeEnumTypeCache oseeEnumTypeCache, IdentityService identityService) {
+   public OseeCachingService(BranchCache branchCache, TransactionCache transactionCache, ArtifactTypeCache artifactTypeCache, AttributeTypeCache attributeTypeCache, RelationTypeCache relationTypeCache, OseeEnumTypeCache oseeEnumTypeCache) {
       this.branchCache = branchCache;
       this.transactionCache = transactionCache;
       this.artifactTypeCache = artifactTypeCache;
       this.attributeTypeCache = attributeTypeCache;
       this.relationTypeCache = relationTypeCache;
       this.oseeEnumTypeCache = oseeEnumTypeCache;
-      this.identityService = identityService;
       caches = new HashSet<IOseeCache<?, ?>>();
       caches.add(branchCache);
       caches.add(transactionCache);
@@ -108,7 +105,6 @@ public class OseeCachingService implements IOseeCachingService {
    public synchronized void reloadAll() throws OseeCoreException {
       getBranchCache().reloadCache();
       getTransactionCache().reloadCache();
-      getIdentityService().clear();
       getArtifactTypeCache().reloadCache();
 
       //reloading the artifactTypeCache will reload these:
@@ -127,8 +123,4 @@ public class OseeCachingService implements IOseeCachingService {
       getRelationTypeCache().decacheAll();
    }
 
-   @Override
-   public IdentityService getIdentityService() {
-      return identityService;
-   }
 }

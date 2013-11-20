@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.manager.servlet.AdminServlet;
@@ -62,16 +61,11 @@ public class ServletRegistrationHandler {
    private IOseeModelFactoryService factoryService;
    private IResourceManager resourceManager;
    private OrcsApi orcsApi;
-   private IdentityService identityService;
 
    private final Set<String> contexts = new HashSet<String>();
 
    public void setSessionManager(ISessionManager sessionManager) {
       this.sessionManager = sessionManager;
-   }
-
-   public void setIdentityService(IdentityService identityService) {
-      this.identityService = identityService;
    }
 
    public void setServerLookup(IApplicationServerLookup serverLookup) {
@@ -147,7 +141,7 @@ public class ServletRegistrationHandler {
       register(new SessionManagementServlet(logger, sessionManager, authenticationManager),
          OseeServerContext.SESSION_CONTEXT);
       register(new SessionClientLoopbackServlet(logger, sessionManager), OseeServerContext.CLIENT_LOOPBACK_CONTEXT);
-      register(new OseeCacheServlet(logger, translationService, caching, orcsApi, factoryService, identityService),
+      register(new OseeCacheServlet(logger, translationService, caching, orcsApi, factoryService),
          OseeServerContext.CACHE_CONTEXT);
       register(new OseeModelServlet(logger, sessionManager, translationService, orcsApi),
          OseeServerContext.OSEE_MODEL_CONTEXT);

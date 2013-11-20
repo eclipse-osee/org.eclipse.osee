@@ -133,10 +133,6 @@ public class OseeModelServlet extends SecureOseeHttpServlet {
 
          getOrcsTypes().loadTypes(resource, isInitializing(req)).call();
 
-         if (modelRequest.isPersistAllowed()) {
-            getOrcsTypes().save().call();
-         }
-
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/xml");
          resp.setCharacterEncoding("UTF-8");

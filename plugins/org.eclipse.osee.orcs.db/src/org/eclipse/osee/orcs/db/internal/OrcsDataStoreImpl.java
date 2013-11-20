@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
@@ -52,7 +51,6 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
 
    private Log logger;
    private IOseeDatabaseService dbService;
-   private IdentityService identityService;
    private SystemPreferences preferences;
    private ExecutorAdmin executorAdmin;
    private IResourceManager resourceManager;
@@ -70,10 +68,6 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
 
    public void setLogger(Log logger) {
       this.logger = logger;
-   }
-
-   public void setIdentityService(IdentityService identityService) {
-      this.identityService = identityService;
    }
 
    public void setDatabaseService(IOseeDatabaseService dbService) {
@@ -114,7 +108,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
 
       sqlProvider = createSqlProvider();
 
-      idManager = new IdentityManagerImpl(dbService, identityService);
+      idManager = new IdentityManagerImpl(dbService);
 
       TypesModule typesModule = new TypesModule(logger, dbService, idManager, resourceManager);
       typesDataStore = typesModule.createTypesDataStore();

@@ -47,6 +47,4 @@ public interface OrcsTypes {
 
    void invalidateAll();
 
-   Callable<Void> save();
-
 }

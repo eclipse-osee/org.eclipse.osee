@@ -90,7 +90,7 @@ public class DeleteRelationDatabaseCallable extends AbstractDatastoreTxCallable<
    }
 
    private Triplet<Integer, Integer, Integer> getRelationModAndGammaTxData(Branch commonBranch, IRelationTypeSide relationType, int aArtId, int bArtId) throws OseeCoreException {
-      long relationTypeId = identityService.getLocalId(relationType);
+      long relationTypeId = relationType.getGuid();
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
          chStmt.runPreparedQuery(1, SELECT_RELATION_LINK, relationTypeId, aArtId, bArtId, commonBranch.getId(),

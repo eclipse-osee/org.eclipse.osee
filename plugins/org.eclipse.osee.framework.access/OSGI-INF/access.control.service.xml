@@ -6,7 +6,6 @@
    </service>
    <reference bind="setDbService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
    <reference bind="setCachingService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeCachingService" name="IOseeCachingService" policy="static"/>
-   <reference bind="setIdentityService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IdentityService" name="IdentityService" policy="static"/>
    <reference bind="setEventService" cardinality="1..1" interface="org.eclipse.osee.framework.skynet.core.event.OseeEventService" name="OseeEventService" policy="static"/>
    <reference bind="setLifecycleService" cardinality="1..1" interface="org.eclipse.osee.framework.lifecycle.ILifecycleService" name="ILifecycleService" policy="static"/>
    <reference bind="addAccessProvider" cardinality="1..n" interface="org.eclipse.osee.framework.access.IAccessProvider" name="IAccessProvider" policy="dynamic" unbind="removeAccessProvider"/>

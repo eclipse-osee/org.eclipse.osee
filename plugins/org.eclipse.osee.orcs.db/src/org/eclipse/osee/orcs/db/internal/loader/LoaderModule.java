@@ -46,7 +46,7 @@ public class LoaderModule {
 
    public OrcsObjectFactory createOrcsObjectFactory(AttributeTypes attributeTypes) {
       ProxyDataFactory proxyFactory = new AttributeDataProxyFactory(proxyProvider, attributeTypes);
-      return new OrcsObjectFactoryImpl(proxyFactory, idFactory);
+      return new OrcsObjectFactoryImpl(proxyFactory);
    }
 
    public DataFactory createDataFactory(OrcsObjectFactory factory, ArtifactTypes artifactTypes) {

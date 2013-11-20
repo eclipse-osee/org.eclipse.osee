@@ -156,7 +156,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
          List<AttrData> attrData = new ArrayList<AttrData>();
          IOseeStatement chStmt = ServiceUtil.getOseeDatabaseService().getStatement();
          try {
-            chStmt.runPreparedQuery(GET_ATTRS, ServiceUtil.getIdentityService().getLocalId(attributeType));
+            chStmt.runPreparedQuery(GET_ATTRS, attributeType.getGuid());
             while (chStmt.next()) {
                checkForCancelledStatus(monitor);
                String uri = chStmt.getString("uri");

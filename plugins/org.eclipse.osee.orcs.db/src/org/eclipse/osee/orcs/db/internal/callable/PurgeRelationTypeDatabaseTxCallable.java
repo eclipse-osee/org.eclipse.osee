@@ -65,7 +65,7 @@ public final class PurgeRelationTypeDatabaseTxCallable extends AbstractDatastore
       IOseeStatement chStmt = getDatabaseService().getStatement(connection);
       try {
          for (IRelationType type : types) {
-            chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_REL_LINK_TXS, identityService.getLocalId(type));
+            chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_REL_LINK_TXS, type.getGuid());
             while (chStmt.next()) {
                gammas.add(new Integer[] {chStmt.getInt("gamma_id")});
             }

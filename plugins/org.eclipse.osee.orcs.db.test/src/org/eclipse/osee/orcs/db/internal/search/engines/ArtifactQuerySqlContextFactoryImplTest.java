@@ -17,10 +17,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
-
 import java.util.Iterator;
 import java.util.List;
-
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -138,12 +136,6 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       queryData = new QueryData(criteriaSet, options);
 
       when(branchCache.getLocalId(CoreBranches.COMMON)).thenReturn(EXPECTED_BRANCH_ID);
-      when(identityService.getLocalId(CoreArtifactTypes.CodeUnit)).thenReturn(CoreArtifactTypes.CodeUnit.getGuid());
-      when(identityService.getLocalId(CoreAttributeTypes.Name)).thenReturn(CoreAttributeTypes.Name.getGuid());
-
-      when(identityService.getLocalId(CoreRelationTypes.Default_Hierarchical__Child)).thenReturn(
-         CoreRelationTypes.Default_Hierarchical__Child.getGuid());
-
       when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");
 
       doAnswer(new Answer<Void>() {

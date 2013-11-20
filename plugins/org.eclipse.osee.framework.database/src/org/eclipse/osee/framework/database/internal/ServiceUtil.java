@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.database.internal;
 
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -50,14 +49,6 @@ public final class ServiceUtil {
    public static IOseeDatabaseService getDatabaseService() throws OseeDataStoreException {
       try {
          return getService(IOseeDatabaseService.class);
-      } catch (OseeCoreException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
-
-   public static IdentityService getIdentityService() throws OseeDataStoreException {
-      try {
-         return getService(IdentityService.class);
       } catch (OseeCoreException ex) {
          throw new OseeDataStoreException(ex);
       }

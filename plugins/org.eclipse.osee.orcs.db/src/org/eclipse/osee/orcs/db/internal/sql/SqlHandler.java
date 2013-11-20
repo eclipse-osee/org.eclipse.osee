@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.sql;
 
 import org.eclipse.osee.framework.jdk.core.type.HasPriority;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -31,10 +30,6 @@ public abstract class SqlHandler<T extends Criteria> implements HasPriority {
 
    public IdentityLocator getIdentityService() {
       return idService;
-   }
-
-   public long toLocalId(Identity<Long> identity) throws OseeCoreException {
-      return idService.getLocalId(identity);
    }
 
    public void setLogger(Log logger) {

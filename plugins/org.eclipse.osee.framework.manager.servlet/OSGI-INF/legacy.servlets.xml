@@ -13,6 +13,5 @@
    <reference bind="setFactoryService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeModelFactoryService" name="IOseeModelFactoryService" policy="static"/>
    <reference bind="setResourceManager" cardinality="1..1" interface="org.eclipse.osee.framework.resource.management.IResourceManager" name="IResourceManager" policy="static"/>
    <reference bind="setOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
-   <reference bind="setIdentityService" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IdentityService" name="IdentityService" policy="static"/>
    
 </scr:component>

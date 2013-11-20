@@ -49,7 +49,6 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -131,19 +130,17 @@ public class AccessControlService implements IAccessControlService {
 
    private final IOseeCachingService cachingService;
    private final IOseeDatabaseService databaseService;
-   private final IdentityService identityService;
    private final OseeEventService eventService;
 
    private IArtifactEventListener listener1;
    private IArtifactEventListener listener2;
 
    private final AtomicBoolean ensurePopulated = new AtomicBoolean(false);
+   public AccessControlService(IOseeDatabaseService databaseService, IOseeCachingService cachingService, OseeEventService eventService) {
 
-   public AccessControlService(IOseeDatabaseService databaseService, IOseeCachingService cachingService, IdentityService identityService, OseeEventService eventService) {
       super();
       this.databaseService = databaseService;
       this.cachingService = cachingService;
-      this.identityService = identityService;
       this.eventService = eventService;
    }
 
@@ -268,8 +265,7 @@ public class AccessControlService implements IAccessControlService {
 
          IOseeStatement chStmt = getDatabaseService().getStatement();
          try {
-            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId,
-               identityService.getLocalId(CoreRelationTypes.Users_User));
+            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId, CoreRelationTypes.Users_User.getGuid());
 
             // get group members and populate subjectToGroupCache
             while (chStmt.next()) {

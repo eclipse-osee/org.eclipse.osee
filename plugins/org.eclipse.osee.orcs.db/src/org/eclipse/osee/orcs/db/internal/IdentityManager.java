@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal;
 
-import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -28,8 +27,6 @@ public interface IdentityManager extends IdentityLocator {
    String getUniqueGuid(String guid) throws OseeCoreException;
 
    long getNextGammaId() throws OseeCoreException;
-
-   void store(List<Long> toPersist) throws OseeCoreException;
 
    void invalidateIds() throws OseeDataStoreException;
 

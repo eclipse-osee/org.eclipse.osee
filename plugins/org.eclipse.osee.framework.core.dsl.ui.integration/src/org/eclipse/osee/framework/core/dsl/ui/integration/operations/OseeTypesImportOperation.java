@@ -37,14 +37,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 public class OseeTypesImportOperation extends AbstractOperation {
    private final IOseeCachingService cacheService;
    private final URI model;
-   private final boolean isPersistAllowed;
    private final boolean createTypeChangeReport;
 
-   public OseeTypesImportOperation(IOseeCachingService cacheService, URI model, boolean createTypeChangeReport, boolean isPersistAllowed) {
+   public OseeTypesImportOperation(IOseeCachingService cacheService, URI model, boolean createTypeChangeReport) {
       super("Import Osee Types Model", DslUiIntegrationConstants.PLUGIN_ID);
       this.cacheService = cacheService;
       this.model = model;
-      this.isPersistAllowed = isPersistAllowed;
       this.createTypeChangeReport = createTypeChangeReport;
    }
 
@@ -72,8 +70,7 @@ public class OseeTypesImportOperation extends AbstractOperation {
       Map<String, String> parameters = new HashMap<String, String>();
 
       OseeImportModelRequest modelRequest =
-         new OseeImportModelRequest(getName(model), getModel(model.toURL()), createTypeChangeReport, false,
-            isPersistAllowed);
+         new OseeImportModelRequest(getName(model), getModel(model.toURL()), createTypeChangeReport, false);
 
       OseeImportModelResponse response =
          HttpClientMessage.send(OseeServerContext.OSEE_MODEL_CONTEXT, parameters,

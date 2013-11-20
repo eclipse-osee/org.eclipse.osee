@@ -78,7 +78,6 @@ public class TxSqlBuilderTest {
    private static final int ITEM_ID = 789;
    private static final String EXP_GUID = GUID.create();
    private static final long TYPE_UUID = 72132144189L;
-   private static final long TYPE_ID = 567;
 
    private static final long NEXT_GAMMA_ID = 751382L;
 
@@ -154,7 +153,6 @@ public class TxSqlBuilderTest {
       when(tx.getTimeStamp()).thenReturn(EXPECTED_TX_TIME);
       when(tx.getTxType()).thenReturn(EXPECTED_TX_TYPE);
 
-      when(idManager.getLocalId(TYPE_UUID)).thenReturn(TYPE_ID);
       when(idManager.getNextGammaId()).thenReturn(NEXT_GAMMA_ID);
    }
 
@@ -199,7 +197,7 @@ public class TxSqlBuilderTest {
          verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS, SqlOrderEnum.ARTIFACTS));
 
          // @formatter:off
-         verifyRow(SqlOrderEnum.ARTIFACTS, ITEM_ID, TYPE_ID, NEXT_GAMMA_ID, EXP_GUID);
+         verifyRow(SqlOrderEnum.ARTIFACTS, ITEM_ID, TYPE_UUID, NEXT_GAMMA_ID, EXP_GUID);
          verifyRow(SqlOrderEnum.TXS, EXPECTED_TX_ID, NEXT_GAMMA_ID, modType.getValue(), TxChange.CURRENT.getValue(), EXPECTED_BRANCH_ID);
          verifyQuery(SqlOrderEnum.ARTIFACTS);
          // @formatter:on
@@ -269,7 +267,7 @@ public class TxSqlBuilderTest {
          verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS, SqlOrderEnum.RELATIONS));
 
          // @formatter:off
-         verifyRow(SqlOrderEnum.RELATIONS, ITEM_ID, TYPE_ID, NEXT_GAMMA_ID, A_ART_ID, B_ART_ID, RATIONALE);
+         verifyRow(SqlOrderEnum.RELATIONS, ITEM_ID, TYPE_UUID, NEXT_GAMMA_ID, A_ART_ID, B_ART_ID, RATIONALE);
          verifyRow(SqlOrderEnum.TXS, EXPECTED_TX_ID, NEXT_GAMMA_ID, modType.getValue(), TxChange.CURRENT.getValue(), EXPECTED_BRANCH_ID);
          verifyQuery(SqlOrderEnum.RELATIONS);
          // @formatter:on
@@ -313,7 +311,7 @@ public class TxSqlBuilderTest {
          verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS, SqlOrderEnum.ATTRIBUTES));
 
          // @formatter:off
-         verifyRow(SqlOrderEnum.ATTRIBUTES, ITEM_ID, TYPE_ID, NEXT_GAMMA_ID, ATTR_ARTIFACT_ID,  ATTR_VALUE, ATTR_URI);
+         verifyRow(SqlOrderEnum.ATTRIBUTES, ITEM_ID, TYPE_UUID, NEXT_GAMMA_ID, ATTR_ARTIFACT_ID,  ATTR_VALUE, ATTR_URI);
          verifyRow(SqlOrderEnum.TXS, EXPECTED_TX_ID, NEXT_GAMMA_ID, modType.getValue(), TxChange.CURRENT.getValue(), EXPECTED_BRANCH_ID);
          verifyQuery(SqlOrderEnum.ATTRIBUTES);
          // @formatter:on
@@ -328,7 +326,7 @@ public class TxSqlBuilderTest {
          when(dataProxy.getData()).thenReturn(new Object[] {"aValue", "aURI"});
 
          builder.updateAfterBinaryStorePersist();
-         verifyRow(SqlOrderEnum.ATTRIBUTES, ITEM_ID, TYPE_ID, NEXT_GAMMA_ID, ATTR_ARTIFACT_ID, "aValue", "aURI");
+         verifyRow(SqlOrderEnum.ATTRIBUTES, ITEM_ID, TYPE_UUID, NEXT_GAMMA_ID, ATTR_ARTIFACT_ID, "aValue", "aURI");
 
          reset(attrData);
       }

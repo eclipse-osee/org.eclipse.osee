@@ -27,7 +27,6 @@ import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.ProxyDataFactory;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
@@ -38,16 +37,10 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
 
    private final ProxyDataFactory proxyFactory;
-   private final IdentityLocator identityService;
 
-   public OrcsObjectFactoryImpl(ProxyDataFactory proxyFactory, IdentityLocator identityService) {
+   public OrcsObjectFactoryImpl(ProxyDataFactory proxyFactory) {
       super();
       this.proxyFactory = proxyFactory;
-      this.identityService = identityService;
-   }
-
-   private long toUuid(long localId) throws OseeCoreException {
-      return identityService.getUniversalId(localId);
    }
 
    @Override
@@ -90,8 +83,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public ArtifactData createArtifactData(VersionData version, int localId, long localTypeID, ModificationType modType, String guid) throws OseeCoreException {
-      long typeUuid = toUuid(localTypeID);
+   public ArtifactData createArtifactData(VersionData version, int localId, long typeUuid, ModificationType modType, String guid) throws OseeCoreException {
       return createArtifactFromRow(version, localId, typeUuid, modType, typeUuid, modType, guid);
    }
 
@@ -109,8 +101,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public AttributeData createAttributeData(VersionData version, int localId, long localTypeID, ModificationType modType, int artifactId, String value, String uri) throws OseeCoreException {
-      long typeId = toUuid(localTypeID);
+   public AttributeData createAttributeData(VersionData version, int localId, long typeId, ModificationType modType, int artifactId, String value, String uri) throws OseeCoreException {
       DataProxy proxy = proxyFactory.createProxy(typeId, value, uri);
       return createAttributeFromRow(version, localId, typeId, modType, typeId, modType, artifactId, proxy);
    }
@@ -133,8 +124,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public RelationData createRelationData(VersionData version, int localId, long localTypeID, ModificationType modType, int aArtId, int bArtId, String rationale) throws OseeCoreException {
-      long typeId = toUuid(localTypeID);
+   public RelationData createRelationData(VersionData version, int localId, long typeId, ModificationType modType, int aArtId, int bArtId, String rationale) throws OseeCoreException {
       return createRelationData(version, localId, typeId, modType, typeId, modType, aArtId, bArtId, rationale);
    }
 

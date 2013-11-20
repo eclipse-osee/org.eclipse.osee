@@ -79,7 +79,7 @@ public class DataFactoryImplTest {
 
       guid = GUID.create();
 
-      OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory, identityService);
+      OrcsObjectFactory objectFactory = new OrcsObjectFactoryImpl(proxyFactory);
       dataFactory = new DataFactoryImpl(idFactory, objectFactory, artifactCache);
 
       // VERSION

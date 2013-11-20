@@ -15,7 +15,6 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.orcs.OrcsSession;
 
@@ -31,7 +30,5 @@ public interface OrcsTypesDataStore {
    Callable<Void> purgeAttributesByAttributeType(OrcsSession session, Collection<? extends IAttributeType> attributeTypes);
 
    Callable<Void> purgeRelationsByRelationType(OrcsSession session, Collection<? extends IRelationType> relationTypes);
-
-   Callable<Void> persistTypeIdentities(OrcsSession session, Collection<Identity<Long>> types);
 
 }

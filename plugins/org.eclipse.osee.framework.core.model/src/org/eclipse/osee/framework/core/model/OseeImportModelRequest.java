@@ -17,14 +17,12 @@ public class OseeImportModelRequest {
 
    private final String model;
    private final String modelName;
-   private final boolean isPersistAllowed;
    private final boolean createTypeChangeReport;
    private final boolean createCompareReport;
 
-   public OseeImportModelRequest(String modelName, String model, boolean createTypeChangeReport, boolean createCompareReport, boolean isPersistAllowed) {
+   public OseeImportModelRequest(String modelName, String model, boolean createTypeChangeReport, boolean createCompareReport) {
       this.modelName = modelName;
       this.model = model;
-      this.isPersistAllowed = isPersistAllowed;
       this.createCompareReport = createCompareReport;
       this.createTypeChangeReport = createTypeChangeReport;
    }
@@ -39,10 +37,6 @@ public class OseeImportModelRequest {
 
    public boolean isCreateCompareReport() {
       return createCompareReport;
-   }
-
-   public boolean isPersistAllowed() {
-      return isPersistAllowed;
    }
 
    public String getModelName() {

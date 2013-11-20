@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -43,7 +42,6 @@ public final class AccessControlServiceProxy implements IAccessControlService {
 
    private IOseeDatabaseService dbService;
    private IOseeCachingService cachingService;
-   private IdentityService identityService;
    private OseeEventService eventService;
    private ILifecycleService lifecycleService;
 
@@ -57,10 +55,6 @@ public final class AccessControlServiceProxy implements IAccessControlService {
 
    public void setCachingService(IOseeCachingService cachingService) {
       this.cachingService = cachingService;
-   }
-
-   public void setIdentityService(IdentityService identityService) {
-      this.identityService = identityService;
    }
 
    public void setEventService(OseeEventService eventService) {
@@ -140,7 +134,7 @@ public final class AccessControlServiceProxy implements IAccessControlService {
    }
 
    public void start() {
-      accessService = new AccessControlService(dbService, cachingService, identityService, eventService);
+      accessService = new AccessControlService(dbService, cachingService, eventService);
 
       accessEventListener = new AccessEventListener(accessService, new AccessControlCacheHandler());
       eventService.addListener(EventQosType.PRIORITY, accessEventListener);

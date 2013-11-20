@@ -10,17 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.util;
 
-import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.services.IdentityService;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.HexUtil;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
@@ -36,12 +33,10 @@ public class IdentityManagerImpl implements IdentityManager {
    private static final String SELECT_BRANCH_ID_BY_GUID = "select branch_id from osee_branch where branch_guid = ?";
 
    private final IOseeDatabaseService dbService;
-   private final IdentityService idService;
 
-   public IdentityManagerImpl(IOseeDatabaseService dbService, IdentityService idService) {
+   public IdentityManagerImpl(IOseeDatabaseService dbService) {
       super();
       this.dbService = dbService;
-      this.idService = idService;
    }
 
    private IOseeSequence getSequence() throws OseeDataStoreException {
@@ -79,34 +74,12 @@ public class IdentityManagerImpl implements IdentityManager {
 
    @Override
    public Long parseToLocalId(String value) throws OseeCoreException {
-      Long uuid = HexUtil.toLong(value);
-      return getLocalId(uuid);
-   }
-
-   @Override
-   public Long getLocalId(Long universalId) throws OseeCoreException {
-      return idService.getLocalId(universalId);
-   }
-
-   @Override
-   public Long getUniversalId(Long localId) throws OseeCoreException {
-      return idService.getUniversalId(localId);
-   }
-
-   @Override
-   public long getLocalId(Identity<Long> identity) throws OseeCoreException {
-      return idService.getLocalId(identity);
-   }
-
-   @Override
-   public void store(List<Long> toPersist) throws OseeCoreException {
-      idService.store(toPersist);
+      return HexUtil.toLong(value);
    }
 
    @Override
    public void invalidateIds() throws OseeDataStoreException {
       getSequence().clear();
-      idService.clear();
    }
 
    @Override
