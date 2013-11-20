@@ -54,7 +54,7 @@ public class AtsLog implements IAtsLog {
 
    @Override
    public List<IAtsLogItem> getLogItemsReversed() throws OseeCoreException {
-      List<IAtsLogItem> logItems = getLogItems();
+      List<IAtsLogItem> logItems = new ArrayList<IAtsLogItem>(getLogItems());
       Collections.reverse(logItems);
       return logItems;
    }
