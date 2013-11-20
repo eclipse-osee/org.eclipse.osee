@@ -10,18 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.client;
 
-import java.net.URL;
-import java.util.Dictionary;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.core.client.internal.CoreClientActivator;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -29,8 +18,6 @@ import org.osgi.framework.FrameworkUtil;
 public class OseeClientProperties extends OseeProperties {
 
    private static final OseeClientProperties instance = new OseeClientProperties();
-
-   private static final String HEADER_TAG = "OSEE-Client-Property-Init";
 
    private static final String OSEE_APPLICATION_SERVER = "osee.application.server";
 
@@ -51,35 +38,6 @@ public class OseeClientProperties extends OseeProperties {
    private static final String OSEE_IS_IN_DB_INIT = "osee.is.in.db.init";
 
    private static final String OSEE_COMMIT_SKIP_CHECKS_AND_EVENTS = "osee.commit.skipChecksAndEvents";
-
-   private enum InitializerFlag {
-      overwrite_settings,
-      client_defaults;
-
-      public static InitializerFlag fromString(String value) {
-         InitializerFlag toReturn = client_defaults;
-         if (Strings.isValid(value)) {
-            value = value.toLowerCase();
-            for (InitializerFlag flag : InitializerFlag.values()) {
-               if (flag.name().equals(value)) {
-                  toReturn = flag;
-                  break;
-               }
-            }
-         }
-         return toReturn;
-      }
-   }
-
-   private final Properties defaultProperties;
-   private final Properties overwriteProperties;
-
-   private OseeClientProperties() {
-      super();
-      this.defaultProperties = new Properties();
-      this.overwriteProperties = new Properties();
-      initialize();
-   }
 
    public static boolean isInDbInit() {
       return Boolean.valueOf(getProperty(OSEE_IS_IN_DB_INIT));
@@ -206,15 +164,7 @@ public class OseeClientProperties extends OseeProperties {
    }
 
    private static String getProperty(String name, String defaultValue) {
-      String toReturn = null;
-      if (instance.overwriteProperties.containsKey(name)) {
-         toReturn = instance.overwriteProperties.getProperty(name);
-      } else if (instance.defaultProperties.containsKey(name)) {
-         toReturn = System.getProperty(name, instance.defaultProperties.getProperty(name));
-      } else {
-         toReturn = System.getProperty(name, defaultValue);
-      }
-      return toReturn;
+      return System.getProperty(name, defaultValue);
    }
 
    /**
@@ -226,65 +176,4 @@ public class OseeClientProperties extends OseeProperties {
       return instance.toString();
    }
 
-   private BundleContext getBundleContext() {
-      Bundle bundle = FrameworkUtil.getBundle(getClass());
-      BundleContext context = bundle.getBundleContext();
-      return context;
-   }
-
-   public void initialize() {
-      BundleContext context = getBundleContext();
-      for (Bundle bundle : context.getBundles()) {
-         Dictionary<?, ?> header = bundle.getHeaders();
-         if (header != null) {
-            String data = (String) header.get(HEADER_TAG);
-            if (Strings.isValid(data)) {
-               String[] entries = data.split(",");
-               for (String entry : entries) {
-                  int index = entry.indexOf(';');
-                  if (index != -1) {
-                     String resourcePath = entry.substring(0, index);
-                     String flagString = entry.substring(index + 1, entry.length());
-                     processInitializer(bundle, resourcePath, InitializerFlag.fromString(flagString));
-                  } else {
-                     processInitializer(bundle, entry, InitializerFlag.client_defaults);
-                  }
-               }
-            }
-         }
-      }
-   }
-
-   private void processInitializer(Bundle bundle, String resourcePath, InitializerFlag flag) {
-      URL url = bundle.getResource(resourcePath);
-      if (url != null) {
-         Properties properties = new Properties();
-         try {
-            properties.loadFromXML(url.openStream());
-         } catch (Exception ex) {
-            OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
-         }
-         if (!properties.isEmpty()) {
-            OseeLog.logf(CoreClientActivator.class, Level.INFO, "Initializing properties [%s]", flag);
-
-            Properties itemToSet = null;
-            switch (flag) {
-               case client_defaults:
-                  itemToSet = defaultProperties;
-                  break;
-               case overwrite_settings:
-                  itemToSet = overwriteProperties;
-                  // Set System properties. Also cache the values to prevent application overwrites.
-                  for (Entry<Object, Object> entry : properties.entrySet()) {
-                     System.setProperty((String) entry.getKey(), (String) entry.getValue());
-                  }
-                  break;
-            }
-
-            if (itemToSet != null) {
-               itemToSet.putAll(properties);
-            }
-         }
-      }
-   }
 }
