@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactId;
@@ -115,14 +116,24 @@ public class ActionUtility {
    }
 
    private static ArtifactReadable getActionableItem(OrcsApi orcsApi, String actionableItemName) throws OseeCoreException {
-      ArtifactReadable ai =
+      ResultSet<ArtifactReadable> results =
          orcsApi.getQueryFactory(AtsUtilRest.getApplicationContext()).fromBranch(COMMON).andIsOfType(
-            AtsArtifactTypes.ActionableItem).andNameEquals(actionableItemName).getResults().getExactlyOne();
+            AtsArtifactTypes.ActionableItem).andNameEquals(actionableItemName).getResults();
+      if (results.isEmpty()) {
+         throw new OseeStateException("No Actionable Item found named [%s]", actionableItemName);
+      }
+
+      ArtifactReadable ai = results.getExactlyOne();
       return ai;
    }
 
    private static ArtifactReadable getTeamDefinition(OrcsApi orcsApi, ArtifactReadable ai) throws OseeCoreException {
-      return ai.getRelated(AtsRelationTypes.TeamActionableItem_Team).getExactlyOne();
+      ResultSet<ArtifactReadable> related = ai.getRelated(AtsRelationTypes.TeamActionableItem_Team);
+      if (related.isEmpty()) {
+         throw new OseeStateException("No Team Definition found for AI [%s]", ai);
+      }
+
+      return related.getExactlyOne();
    }
 
    private static ArtifactReadable getWorkDefinition(OrcsApi orcsApi, String workDefinitionName) throws OseeCoreException {
@@ -144,7 +155,6 @@ public class ActionUtility {
       return getWorkDefinitionName(orcsApi, parentTeamDef);
    }
 
-   // TODO Move AtsLog and AtsLogItem to shared bundle
    private static String getLog(IAtsUser currentUser, String startState, Date createdDate) throws OseeCoreException {
       String log =
          "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><AtsLog><Item date=\"INSERT_DATE\" msg=\"\" state=\"\" type=\"Originated\" userId=\"INSERT_USER_NAME\"/><Item date=\"INSERT_DATE\" msg=\"\" state=\"INSERT_STATE_NAME\" type=\"StateEntered\" userId=\"INSERT_USER_NAME\"/></AtsLog>";
