@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.column.ActionableItemsColumnUI;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -93,43 +92,28 @@ public class SMAActionableItemHeader extends Composite {
       }
       final TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) sma;
       ActionArtifact parentAction = teamWf.getParentActionArtifact();
-      if (!sma.isCancelled() && !sma.isCompleted()) {
-         if (parentAction == null) {
-            label.setText(" " + "Error: No Parent Action.");
-            label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-         } else if (parentAction.getActionableItems().isEmpty()) {
-            label.setText(" " + "Error: No Actionable Items identified.");
-            label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-         } else {
-            StringBuffer sb = new StringBuffer(teamWf.getActionableItemsDam().getActionableItemsStr());
-            if (ActionManager.getTeams(parentAction).size() > 1) {
-               sb.append("         Other: ");
-               for (TeamWorkFlowArtifact workflow : ActionManager.getTeams(parentAction)) {
-                  if (!workflow.equals(teamWf)) {
-                     sb.append(workflow.getActionableItemsDam().getActionableItemsStr());
-                     sb.append(", ");
-                  }
+      if (parentAction == null) {
+         label.setText(" " + "Error: No Parent Action.");
+         label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+      } else if (parentAction.getActionableItems().isEmpty()) {
+         label.setText(" " + "Error: No Actionable Items identified.");
+         label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+      } else {
+         StringBuffer sb = new StringBuffer(teamWf.getActionableItemsDam().getActionableItemsStr());
+         if (ActionManager.getTeams(parentAction).size() > 1) {
+            sb.append("         Other: ");
+            for (TeamWorkFlowArtifact workflow : ActionManager.getTeams(parentAction)) {
+               if (!workflow.equals(teamWf)) {
+                  sb.append(workflow.getActionableItemsDam().getActionableItemsStr());
+                  sb.append(", ");
                }
             }
-            label.setText(sb.toString().replaceFirst(", $", ""));
-            label.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
          }
-         label.update();
-         layout();
-      } else {
-         if (parentAction == null) {
-            label.setText(" " + "Error: No Parent Action.");
-            label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-         } else if (parentAction.getActionableItems().isEmpty()) {
-            label.setText(" " + "Error: No Actionable Items identified.");
-            label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-         } else {
-            label.setText(" " + ActionableItemsColumnUI.getActionableItemsStr(parentAction));
-            label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-            label.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
-         }
-         label.update();
-         layout();
+         label.setText(sb.toString().replaceFirst(", $", ""));
+         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         label.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
       }
+      label.update();
+      layout();
    }
 }
