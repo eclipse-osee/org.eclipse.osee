@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
-
 /**
  * @author Donald G. Dunne
  */
@@ -27,4 +26,6 @@ public interface IAtsColumnUtilities {
    IAtsColumnUtility getWorkPackageProgramUtility();
 
    IAtsColumnUtility getWorkPackageGuidUtility();
+
+   IAtsColumnUtility getTeamUtility();
 }

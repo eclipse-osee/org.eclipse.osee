@@ -25,8 +25,6 @@ public abstract class AbstractRelatedWorkPackageColumn implements IAtsColumnUtil
 
    private final IAtsEarnedValueServiceProvider earnedValueServiceProvider;
 
-   protected static final String CELL_ERROR_PREFIX = "!Error";
-
    public AbstractRelatedWorkPackageColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
       this.earnedValueServiceProvider = earnedValueServiceProvider;
    }
@@ -43,7 +41,7 @@ public abstract class AbstractRelatedWorkPackageColumn implements IAtsColumnUtil
             }
          }
       } catch (OseeCoreException ex) {
-         result = CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
+         result = AtsColumnUtilities.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
       }
       return result;
    }

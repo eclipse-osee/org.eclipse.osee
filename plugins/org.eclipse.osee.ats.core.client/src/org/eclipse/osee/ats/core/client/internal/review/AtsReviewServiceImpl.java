@@ -65,4 +65,9 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       return ((AbstractReviewArtifact) review).getReviewBlockType();
    }
 
+   @Override
+   public boolean isStandAloneReview(IAtsAbstractReview review) {
+      return ((AbstractReviewArtifact) review).isStandAloneReview();
+   }
+
 }

@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.column.DeadlineColumn;
-import org.eclipse.osee.ats.column.TeamColumn;
 import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
@@ -83,7 +82,8 @@ public class SMAPrint extends Action {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ", sma.getCurrentStateName()),
          //
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ", TeamColumn.getName(sma)),
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ",
+            AtsCore.getColumnUtilities().getTeamUtility().getColumnText(sma)),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ", AssigneeColumn.instance.getAssigneeStr(sma)),
          //

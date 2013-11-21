@@ -37,4 +37,6 @@ public interface IAtsReviewService {
 
    ReviewBlockType getReviewBlockType(IAtsAbstractReview reviewArt) throws OseeCoreException;
 
+   boolean isStandAloneReview(IAtsAbstractReview review);
+
 }

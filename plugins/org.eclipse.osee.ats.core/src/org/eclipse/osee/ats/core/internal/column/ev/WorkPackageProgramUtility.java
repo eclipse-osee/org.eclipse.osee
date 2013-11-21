@@ -28,7 +28,7 @@ public class WorkPackageProgramUtility extends AbstractRelatedWorkPackageColumn 
       try {
          return workPkg.getWorkPackageProgram();
       } catch (OseeCoreException ex) {
-         return AbstractRelatedWorkPackageColumn.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
+         return AtsColumnUtilities.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
       }
    }
 

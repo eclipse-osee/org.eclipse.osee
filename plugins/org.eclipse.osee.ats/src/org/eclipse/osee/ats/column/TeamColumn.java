@@ -12,14 +12,9 @@ package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
 /**
@@ -51,19 +46,6 @@ public class TeamColumn extends XViewerAtsColumn implements IXViewerValueColumn 
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      return getName(element);
-   }
-
-   public static String getName(Object element) {
-      try {
-         if (Artifacts.isOfType(element, AtsArtifactTypes.TeamWorkflow)) {
-            return ((TeamWorkFlowArtifact) element).getTeamName();
-         } else if (element instanceof AbstractWorkflowArtifact) {
-            return getName(((AbstractWorkflowArtifact) element).getParentTeamWorkflow());
-         }
-      } catch (OseeCoreException ex) {
-         LogUtil.getCellExceptionString(ex);
-      }
-      return "";
+      return AtsCore.getColumnUtilities().getTeamUtility().getColumnText(element);
    }
 }

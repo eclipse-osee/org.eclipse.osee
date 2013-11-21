@@ -15,6 +15,7 @@ Import-Package: org.eclipse.emf.ecore.util,
  org.eclipse.osee.ats.core,
  org.eclipse.osee.ats.core.users,
  org.eclipse.osee.ats.mocks,
+ org.eclipse.osee.support.test.util,
  org.hamcrest.core,
  org.mockito;bundle-version="1.9.0",
  org.objenesis

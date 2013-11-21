@@ -125,7 +125,9 @@ public class AtsCore {
 
    public static IAtsColumnUtilities getColumnUtilities() {
       if (columnUtilities == null) {
-         columnUtilities = new AtsColumnUtilities(AtsEarnedValueService.getEarnedValueServiceProvider());
+         columnUtilities =
+            new AtsColumnUtilities(getReviewService(), getWorkItemService(),
+               AtsEarnedValueService.getEarnedValueServiceProvider());
       }
       return columnUtilities;
    }

@@ -50,7 +50,7 @@ public class ActivityIdUtility implements IActivityIdUtility {
             result = sb.toString().replaceFirst(", $", "");
          }
       } catch (OseeCoreException ex) {
-         return AbstractRelatedWorkPackageColumn.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
+         return AtsColumnUtilities.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
       }
       return result;
    }

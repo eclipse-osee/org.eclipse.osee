@@ -11,10 +11,16 @@
 package org.eclipse.osee.ats.core.internal.column.ev;
 
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
+import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.column.IActivityIdUtility;
 import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
 import org.eclipse.osee.ats.core.column.IAtsColumnUtility;
+import org.eclipse.osee.ats.core.internal.column.TeamColumnUtility;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsColumnUtilities implements IAtsColumnUtilities {
 
    private final IAtsEarnedValueServiceProvider earnedValueServiceProvider;
@@ -24,9 +30,23 @@ public class AtsColumnUtilities implements IAtsColumnUtilities {
    private WorkPackageTypeUtility workPackageTypeUtility;
    private WorkPackageProgramUtility workPackageProgramUtility;
    private IAtsColumnUtility workPackageGuidUtility;
+   private TeamColumnUtility teamColumnUtility;
+   private final IAtsWorkItemService workItemService;
+   private final IAtsReviewService reviewService;
+   public static final String CELL_ERROR_PREFIX = "!Error";
 
-   public AtsColumnUtilities(IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
+   public AtsColumnUtilities(IAtsReviewService reviewService, IAtsWorkItemService workItemService, IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
+      this.reviewService = reviewService;
+      this.workItemService = workItemService;
       this.earnedValueServiceProvider = earnedValueServiceProvider;
+   }
+
+   @Override
+   public IAtsColumnUtility getTeamUtility() {
+      if (teamColumnUtility == null) {
+         teamColumnUtility = new TeamColumnUtility(workItemService, reviewService);
+      }
+      return teamColumnUtility;
    }
 
    @Override

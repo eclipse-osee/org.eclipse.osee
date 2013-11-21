@@ -197,4 +197,9 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       return AtsClientService.get().getAtsVersionService().getTargetedVersion(teamWf).getName();
    }
 
+   @Override
+   public String getTeamName(IAtsTeamWorkflow teamWf) {
+      return teamWf.getTeamDefinition().getName();
+   }
+
 }

@@ -66,4 +66,6 @@ public interface IAtsWorkItemService {
 
    String getTargetedVersionStr(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
+   String getTeamName(IAtsTeamWorkflow teamWf);
+
 }

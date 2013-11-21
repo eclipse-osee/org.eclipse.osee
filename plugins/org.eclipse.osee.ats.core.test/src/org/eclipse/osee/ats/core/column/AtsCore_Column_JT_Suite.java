@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
+import org.eclipse.osee.ats.core.internal.column.TeamColumnUtilityTest;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -21,7 +22,8 @@ import org.junit.runners.Suite;
    ActionableItemsColumnTest.class,
    AssigneeColumnTest.class,
    ImplementersColumnTest.class,
-   ParentTopTeamColumnTest.class})
+   ParentTopTeamColumnTest.class,
+   TeamColumnUtilityTest.class})
 /**
  * This test suite contains tests that can be run as stand-alone JUnit tests (JT)
  *

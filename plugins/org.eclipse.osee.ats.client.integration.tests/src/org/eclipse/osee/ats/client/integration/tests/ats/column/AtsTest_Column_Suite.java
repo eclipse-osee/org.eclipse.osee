@@ -27,7 +27,6 @@ import org.junit.runners.Suite;
    PriorityColumnTest.class,
    TargetedVersionColumnTest.class,
    TypeColumnTest.class,
-   TeamColumnTest.class,
    ParentStateAndIdColumnTest.class,
    StateColumnTest.class,
    OriginatorColumnTest.class,
