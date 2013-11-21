@@ -133,13 +133,11 @@ public class ResourceManagerServlet extends SecureOseeHttpServlet {
       } catch (MalformedLocatorException ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
-         handleError(response,
-            String.format("Unable to locate resource: [%s] - %s", request.getRequestURI(), ex.getLocalizedMessage()),
-            ex);
+         handleError(response, String.format("Unable to locate resource: [%s] - %s", request.getRequestURI(), ex), ex);
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
          response.setContentType("text/plain");
-         handleError(response, String.format("Error saving resource: [%s]", ex.getLocalizedMessage()), ex);
+         handleError(response, String.format("Error saving resource: [%s]", ex), ex);
       }
    }
 
