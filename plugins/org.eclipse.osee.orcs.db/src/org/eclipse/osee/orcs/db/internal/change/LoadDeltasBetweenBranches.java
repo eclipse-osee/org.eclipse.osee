@@ -41,7 +41,7 @@ import org.eclipse.osee.orcs.db.internal.change.ChangeItemLoader.ChangeItemFacto
  */
 public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<ChangeItem>> {
    private static final String SELECT_SOURCE_BRANCH_CHANGES =
-      "select gamma_id, mod_type from osee_txs where branch_id = ? and tx_current <> ? and transaction_id <> ?";
+      "select gamma_id, mod_type from osee_txs txs where txs.branch_id = ? and txs.tx_current <> ? and txs.transaction_id <> ? AND NOT EXISTS (SELECT 1 FROM osee_txs txs1 WHERE txs1.branch_id = ? AND txs1.transaction_id = ? AND (txs1.gamma_id = txs.gamma_id))";
 
    private final HashMap<Long, ModificationType> changeByGammaId = new HashMap<Long, ModificationType>();
 
@@ -101,8 +101,10 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
    private void loadSourceBranchChanges(TransactionJoinQuery txJoin) throws OseeCoreException {
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
-         chStmt.runPreparedQuery(MAX_FETCH, SELECT_SOURCE_BRANCH_CHANGES, getSourceBranchId(),
-            TxChange.NOT_CURRENT.getValue(), getSourceBaselineTransactionId());
+         long sourceBranchId = getSourceBranchId();
+         int sourceBaselineTxsId = getSourceBaselineTransactionId();
+         chStmt.runPreparedQuery(MAX_FETCH, SELECT_SOURCE_BRANCH_CHANGES, sourceBranchId,
+            TxChange.NOT_CURRENT.getValue(), sourceBaselineTxsId, sourceBranchId, sourceBaselineTxsId);
          while (chStmt.next()) {
             checkForCancelled();
             Long gammaId = chStmt.getLong("gamma_id");
