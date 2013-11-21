@@ -11,12 +11,17 @@
 package org.eclipse.osee.ats.rest.internal.build.report.table;
 
 import java.io.OutputStream;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import org.eclipse.osee.ats.rest.internal.build.report.model.AtsElementData;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import com.lowagie.text.Anchor;
 import com.lowagie.text.BadElementException;
@@ -38,6 +43,16 @@ public class BuildTraceTable {
    private Table nestedHeaderTable;
    private Document document;
    private final OutputStream output;
+   private SortedSet<Pair<String, Table>> sortedRpcr;
+
+   private static Comparator<Pair<String, Table>> PairCompare = new Comparator<Pair<String, Table>>() {
+      @Override
+      public int compare(Pair<String, Table> pair1, Pair<String, Table> pair2) {
+         String name1 = pair1.getFirst();
+         String name2 = pair2.getFirst();
+         return name1.compareTo(name2);
+      }
+   };
 
    public BuildTraceTable(OutputStream output) {
       this.output = output;
@@ -83,6 +98,8 @@ public class BuildTraceTable {
       nestedHeaderTable.addCell(script);
 
       traceReportTable.insertTable(nestedHeaderTable);
+      sortedRpcr = new TreeSet<Pair<String, Table>>(PairCompare);
+
    }
 
    private Anchor setHyperlink(String element, String link) {
@@ -91,7 +108,7 @@ public class BuildTraceTable {
       return anchor;
    }
 
-   public void addbuildTraceCells(Table buildTraceTable, String element) throws OseeCoreException {
+   private void addbuildTraceCells(Table buildTraceTable, String element) throws OseeCoreException {
       String url = String.format(AtsElementData.CHANGE_REPORT_URL_TEMPLATE, element);
       try {
          buildTraceTable.addCell(setHyperlink(element.toString(), url));
@@ -101,22 +118,29 @@ public class BuildTraceTable {
 
    }
 
-   public void addRequirementTraceCells(Table nestedRequirementTable, ArtifactReadable element) throws OseeCoreException {
+   private void addRequirementTraceCells(Table nestedRequirementTable, String element) throws OseeCoreException {
 
       try {
-         nestedRequirementTable.addCell(element.getName());
+         nestedRequirementTable.addCell(element);
       } catch (BadElementException ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
    }
 
-   public void addNewTestScriptTraceCells(Table nestedTestScriptTable, Iterable<ArtifactReadable> testScripts) throws OseeCoreException {
+   private void addNewTestScriptTraceCells(Table nestedTestScriptTable, Iterable<ArtifactReadable> testScripts) throws OseeCoreException {
       if (testScripts != null) {
+         // If test script has a name store in sorted set
+         SortedSet<String> sortedList = new TreeSet<String>();
          for (ArtifactReadable script : testScripts) {
+            if (!script.getName().isEmpty()) {
+               sortedList.add(script.getName());
+            }
+         }
+         // Create test script Table
+         Iterator<String> treeItr = sortedList.iterator();
+         while (treeItr.hasNext()) {
             try {
-               if (!script.getName().isEmpty()) {
-                  nestedTestScriptTable.addCell(script.getName());
-               }
+               nestedTestScriptTable.addCell(treeItr.next());
             } catch (BadElementException ex) {
                OseeExceptions.wrapAndThrow(ex);
             }
@@ -127,20 +151,30 @@ public class BuildTraceTable {
    public void addRpcrToTable(String rpcr, Map<ArtifactReadable, Iterable<ArtifactReadable>> requirementsToTests) throws OseeCoreException {
 
       try {
-         addbuildTraceCells(traceReportTable, rpcr);
          Table nestedRequirementTable = new Table(2);
          nestedRequirementTable.setAutoFillEmptyCells(true);
+         SortedSet<Pair<String, Table>> nestedRpcr = new TreeSet<Pair<String, Table>>(PairCompare);
+
          for (Entry<ArtifactReadable, Iterable<ArtifactReadable>> entry : requirementsToTests.entrySet()) {
             ArtifactReadable changedReq = entry.getKey();
             if (Conditions.notNull(changedReq)) {
-               addRequirementTraceCells(nestedRequirementTable, changedReq);
                Table nestedTestScriptTable = new Table(1);
-               nestedRequirementTable.setAutoFillEmptyCells(true);
                addNewTestScriptTraceCells(nestedTestScriptTable, entry.getValue());
-               nestedRequirementTable.insertTable(nestedTestScriptTable);
+               // Store Requirement string and TestScriptTable for sorting
+               Pair<String, Table> newPair = new Pair<String, Table>(changedReq.getName(), nestedTestScriptTable);
+               nestedRpcr.add(newPair);
             }
          }
-         traceReportTable.insertTable(nestedRequirementTable);
+         // Create sorted requirement Table
+         Iterator<Pair<String, Table>> treeItr = nestedRpcr.iterator();
+         while (treeItr.hasNext()) {
+            Pair<String, Table> pair = treeItr.next();
+            addRequirementTraceCells(nestedRequirementTable, pair.getFirst());
+            nestedRequirementTable.insertTable(pair.getSecond());
+         }
+         // Save RPCR ID with sorted requirement string Table.
+         Pair<String, Table> newPair = new Pair<String, Table>(rpcr, nestedRequirementTable);
+         sortedRpcr.add(newPair);
       } catch (BadElementException ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
@@ -148,9 +182,16 @@ public class BuildTraceTable {
    }
 
    public void close() throws OseeCoreException {
-      reportTable.insertTable(traceReportTable);
 
       try {
+         // Create sorted RPCR Table
+         Iterator<Pair<String, Table>> treeItr = sortedRpcr.iterator();
+         while (treeItr.hasNext()) {
+            Pair<String, Table> pair = treeItr.next();
+            addbuildTraceCells(traceReportTable, pair.getFirst());
+            traceReportTable.insertTable(pair.getSecond());
+         }
+         reportTable.insertTable(traceReportTable);
          document.add(reportTable);
       } catch (DocumentException ex) {
          OseeExceptions.wrapAndThrow(ex);

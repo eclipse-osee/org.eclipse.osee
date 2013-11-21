@@ -11,6 +11,10 @@
 package org.eclipse.osee.ats.rest.internal.build.report.table;
 
 import java.io.OutputStream;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import com.lowagie.text.Anchor;
@@ -30,6 +34,7 @@ public class UrlListTable {
    private final OutputStream output;
    private Table table;
    private Document document;
+   private SortedSet<Anchor> sortedList;
 
    public UrlListTable(OutputStream output) {
       this.output = output;
@@ -37,6 +42,15 @@ public class UrlListTable {
 
    public void initializeTable(String title, String header) throws OseeCoreException {
       document = new Document();
+      sortedList = new TreeSet<Anchor>(new Comparator<Anchor>() {
+
+         @Override
+         public int compare(Anchor anchor1, Anchor anchor2) {
+            String name1 = anchor1.get(0).toString();
+            String name2 = anchor2.get(0).toString();
+            return name1.compareTo(name2);
+         }
+      });
       HtmlWriter.getInstance(document, output);
       document.addTitle(title);
       document.open();
@@ -54,18 +68,20 @@ public class UrlListTable {
       table.setAlignment(Element.ALIGN_LEFT);
    }
 
-   public void addUrl(String name, String url) throws OseeCoreException {
+   public void addUrl(String name, String url) {
       Anchor anchor = new Anchor(name);
       anchor.setReference(url);
-      try {
-         table.addCell(anchor);
-      } catch (BadElementException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      }
+      // Save to a sorted set until complete then add to table in 'close()'
+      sortedList.add(anchor);
    }
 
    public void close() throws OseeCoreException {
       try {
+         // Create Table from sorted set
+         Iterator<Anchor> treeItr = sortedList.iterator();
+         while (treeItr.hasNext()) {
+            table.addCell(treeItr.next());
+         }
          document.add(table);
       } catch (DocumentException ex) {
          OseeExceptions.wrapAndThrow(ex);
