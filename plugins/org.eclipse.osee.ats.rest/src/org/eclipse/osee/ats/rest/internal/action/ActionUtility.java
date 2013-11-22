@@ -14,11 +14,14 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.rest.internal.AtsServerImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsUtilRest;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -26,6 +29,7 @@ import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -44,17 +48,31 @@ public class ActionUtility {
       STATE
    }
 
-   public static ArtifactId createAction(OrcsApi orcsApi, String title, String description, String actionableItemName, String changeType, String priority) throws OseeCoreException {
+   public static ArtifactId createAction(OrcsApi orcsApi, String title, String description, String actionableItemName, String changeType, String priority, String asUserId) throws OseeCoreException {
+      Conditions.checkNotNullOrEmpty(title, "Title");
+      Conditions.checkNotNullOrEmpty(description, "Description");
+      Conditions.checkNotNullOrEmpty(actionableItemName, "Actionable Item");
+      Conditions.checkNotNullOrEmpty(changeType, "Change Type");
+      Conditions.checkNotNullOrEmpty(priority, "Priority");
+      Conditions.checkNotNullOrEmpty(asUserId, "UserId");
+      IAtsUser user = AtsCore.getUserService().getUserById(asUserId);
+      if (user == null) {
+         throw new OseeStateException("User by id [%s] does not exist", asUserId);
+      }
+      ArtifactReadable ai = getActionableItem(orcsApi, actionableItemName);
+      ArtifactReadable teamDef = getTeamDefinition(orcsApi, ai);
+      String workDefinitionName = getWorkDefinitionName(orcsApi, teamDef);
+      if (!Strings.isValid(workDefinitionName)) {
+         throw new OseeStateException("Work Definition for Team Def [%s] does not exist", teamDef);
+      }
+
       TransactionFactory txFactory = orcsApi.getTransactionFactory(AtsUtilRest.getApplicationContext());
-      ArtifactReadable currentUser = AtsServerImpl.get().getCurrentUser();
-      TransactionBuilder tx = txFactory.createTransaction(COMMON, currentUser, "Create ATS Action");
+      TransactionBuilder tx =
+         txFactory.createTransaction(COMMON, (ArtifactReadable) user.getStoreObject(), "Create ATS Action");
       ArtifactId action = tx.createArtifact(AtsArtifactTypes.Action, title);
       tx.setSoleAttributeFromString(action, AtsAttributeTypes.Description, description);
       tx.setSoleAttributeFromString(action, AtsAttributeTypes.ChangeType, changeType);
       tx.setSoleAttributeFromString(action, AtsAttributeTypes.PriorityType, priority);
-
-      ArtifactReadable ai = getActionableItem(orcsApi, actionableItemName);
-      ArtifactReadable teamDef = getTeamDefinition(orcsApi, ai);
 
       ArtifactId teamWf = tx.createArtifact(getTeamWfArtifactType(null), title);
       tx.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Description, description);
@@ -63,7 +81,6 @@ public class ActionUtility {
       tx.setSoleAttributeFromString(teamWf, AtsAttributeTypes.PriorityType, priority);
       tx.setSoleAttributeFromString(teamWf, AtsAttributeTypes.TeamDefinition, teamDef.getGuid());
 
-      String workDefinitionName = getWorkDefinitionName(orcsApi, teamDef);
       ArtifactReadable workDef = getWorkDefinition(orcsApi, workDefinitionName);
       String startState = getStartState(workDef);
       String assignees = getAssigneesStorageString(orcsApi, teamDef);
@@ -71,11 +88,10 @@ public class ActionUtility {
          String.format("%s;%s;;", startState, assignees));
 
       tx.setSoleAttributeFromString(teamWf, AtsAttributeTypes.CurrentStateType, StateType.Working.name());
-      tx.setSoleAttributeFromString(teamWf, AtsAttributeTypes.CreatedBy,
-         AtsServerImpl.get().getUserService().getCurrentUser().getUserId());
+      tx.setSoleAttributeFromString(teamWf, AtsAttributeTypes.CreatedBy, user.getUserId());
       Date createdDate = new Date();
       tx.setSoleAttributeValue(teamWf, AtsAttributeTypes.CreatedDate, createdDate);
-      String log = getLog(AtsServerImpl.get().getUserService().getCurrentUser(), startState, createdDate);
+      String log = getLog(user, startState, createdDate);
       tx.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Log, log);
 
       // Add relation between Action and TeamWf
@@ -127,13 +143,12 @@ public class ActionUtility {
       return ai;
    }
 
-   private static ArtifactReadable getTeamDefinition(OrcsApi orcsApi, ArtifactReadable ai) throws OseeCoreException {
-      ResultSet<ArtifactReadable> related = ai.getRelated(AtsRelationTypes.TeamActionableItem_Team);
-      if (related.isEmpty()) {
-         throw new OseeStateException("No Team Definition found for AI [%s]", ai);
-      }
-
-      return related.getExactlyOne();
+   private static ArtifactReadable getTeamDefinition(OrcsApi orcsApi, ArtifactReadable aiArt) throws OseeCoreException {
+      IAtsActionableItem ai = AtsServerImpl.get().getWorkItemFactory().getActionableItem(aiArt);
+      IAtsTeamDefinition teamDef = ai.getTeamDefinitionInherited();
+      if (teamDef == null) {
+         throw new OseeStateException("No related Team Definition for AI [%s]", ai);
+      }      return AtsServerImpl.get().getArtifact(teamDef);
    }
 
    private static ArtifactReadable getWorkDefinition(OrcsApi orcsApi, String workDefinitionName) throws OseeCoreException {

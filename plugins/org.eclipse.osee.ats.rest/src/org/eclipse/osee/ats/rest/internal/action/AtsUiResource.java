@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.action;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -54,12 +58,24 @@ public final class AtsUiResource {
    public String getNewSource() throws Exception {
       PageCreator page = PageFactory.newPageCreator(registry, AtsResourceTokens.AtsValuesHtml);
       page.readKeyValuePairs(AtsResourceTokens.AtsNewActionValuesHtml);
+      List<ArtifactReadable> sortedAis = new ArrayList<ArtifactReadable>();
+      for (ArtifactReadable ai : ActionUtility.getAis(orcsApi)) {
+         sortedAis.add(ai);
+      }
+      Collections.sort(sortedAis, new IdComparator());
       AppendableRule rule =
-         new IdentifiableOptionsRule<ArtifactReadable>("ActionableItemDataList", ActionUtility.getAis(orcsApi),
-            "actionableItemList");
+         new IdentifiableOptionsRule<ArtifactReadable>("ActionableItemDataList", sortedAis, "actionableItemList");
       page.addSubstitution(rule);
       return page.realizePage(AtsResourceTokens.AtsNewActionHtml);
    }
+
+   private static final class IdComparator implements Comparator<ArtifactReadable> {
+
+      @Override
+      public int compare(ArtifactReadable arg0, ArtifactReadable arg1) {
+         return arg0.getName().compareTo(arg1.getName());
+      }
+   };
 
    /**
     * @return html5 action entry page
@@ -71,4 +87,5 @@ public final class AtsUiResource {
       PageCreator page = PageFactory.newPageCreator(registry, AtsResourceTokens.AtsValuesHtml);
       return page.realizePage(AtsResourceTokens.AtsSearchHtml);
    }
+
 }

@@ -108,6 +108,7 @@ public final class ActionResource {
       String query = uriInfo.getPath();
       System.out.println("query [" + query + "]");
       String searchId = form.getFirst("searchId");
+
       if (Strings.isValid(searchId)) {
          htmlStr = getSearchResults(searchId);
       } else {
@@ -116,16 +117,18 @@ public final class ActionResource {
          String actionableItemName = form.getFirst("actionableItems");
          String changeType = form.getFirst("changeType");
          String priority = form.getFirst("priority");
+         String userId = form.getFirst("userId");
 
          // create action
          ArtifactId actionId =
-            ActionUtility.createAction(orcsApi, title, description, actionableItemName, changeType, priority);
+            ActionUtility.createAction(orcsApi, title, description, actionableItemName, changeType, priority, userId);
          ArtifactReadable action = AtsServerImpl.get().getArtifactByGuid(actionId.getGuid());
 
          htmlStr =
             ActionUtility.displayAction(registry, action, "Action Created - " + action.getGuid(),
                ActionLoadLevel.HEADER);
       }
+
       return Response.status(200).entity(htmlStr).build();
    }
 

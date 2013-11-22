@@ -18,6 +18,8 @@
 	<?widgets?>
 	<?ActionableItemDataList?>
 	<br/><br/>
+	<input type="button" id="populateButton" value="Populate" />
+	<input type="button" id="clearButton" value="Clear" />
 	<input type="button" id="createButton" value="Create" />
 </form>
 </div>
@@ -30,8 +32,8 @@
 	function getParams() {
 		var params = new Object();
 		var form = document.getElementById("oseeAppForm");
-		var inputElements = form.getElementsByTagName("input");
 		
+		var inputElements = form.getElementsByTagName("input");
 		for(var i = 0; i < inputElements.length; i++) {
 		var inputElement = inputElements[i];
 			var id = inputElement.getAttribute("id");
@@ -42,29 +44,31 @@
 				params[id] = inputElement.value;
 			}
 		}
+		params["changeType"] = document.getElementById("changeType").value
 		return params;
 	}
-	document.onmousedown=checkRightClick;  
-   function checkRightClick(e) {
-        var rightclick;
-        if (!e) var e = window.event;
-        if (e.which) rightclick = (e.which == 3);
-        else if (e.button) rightclick = (e.button == 2);
-        if (rightclick) {
-            populateTestData();
-        }
-   }
+	
    function populateTestData() {
-		document.getElementById('ats_title').value = 'This is my title';
+		document.getElementById('ats_title').value = 'Test Action - Delete Me';
 		document.getElementById('desc').value = 'This is my description';
-		document.getElementById("actionableItems").value = 'SAW Code';
 		document.getElementById("changeType").value = 'Improvement';
+	}
+
+   function clearTestData() {
+		document.getElementById('ats_title').value = '';
+		document.getElementById('desc').value = '';
+		document.getElementById("actionableItems").value = '';
+		document.getElementById("changeType").value = '';
+		document.getElementById("userId").value = '';
 	}
 
    
 	var button = document.getElementById("createButton");
 	button.addEventListener("click", createAction);
-	button.addEventListener("click", populateTestData);
+	var button2 = document.getElementById("populateButton");
+	button2.addEventListener("click", populateTestData);
+	var button3 = document.getElementById("clearButton");
+	button3.addEventListener("click", clearTestData);
 </script>
 
 </body>

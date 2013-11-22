@@ -1,19 +1,20 @@
 <?widgets?>		
 	<label>Title</label> <input type="text" id="ats_title" name="title"/><br/>
 	<label>Description</label> <input type="text" id="desc" /><br/>
+	<label>User Id</label> <input type="text" id="userId" /><br/>
    <label>Actionable Item</label> <input placeholder="type to filter" type="text" id="actionableItems" list="actionableItemList" /><br/>
    <label>Change Type</label>
-	<select>
+	<select id="changeType" >
 		<option value="Improvement">Improvement</option>
 		<option value="Problem">Problem</option>
 		<option value="Refinement">Refinement</option>
 		<option value="Support">Support</option>
    </select><br />
    <label>Priority</label>
-   	<input type="radio" name="priority" value="1">1 (High)
-  		<input type="radio" name="priority" value="2">2 
-  		<input type="radio" name="priority" value="3">3
-  		<input type="radio" name="priority" value="4">4
-  		<input type="radio" name="priority" value="5">5 (Low)<br/>
+   	<input type="radio" id="priority" value="1">1 (High)
+  		<input type="radio" id="priority" value="2">2 
+  		<input type="radio" id="priority" value="3">3
+  		<input type="radio" id="priority" value="4">4
+  		<input type="radio" id="priority" value="5">5 (Low)<br/>
    <label>Deadline</label> <input type="date" name="deadline">
    
