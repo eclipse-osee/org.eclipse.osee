@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.manager.servlet;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.concurrent.Callable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
@@ -53,8 +53,10 @@ public class BranchManagerServlet extends SecureOseeHttpServlet {
    @Override
    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
       try {
-         CancellableCallable<?> callable = createCallable(req, resp);
-         callable.call();
+         Callable<?> callable = createCallable(req, resp);
+         if (callable != null) {
+            callable.call();
+         }
       } catch (Exception ex) {
          getLogger().error(ex, "Branch servlet request error: [%s]", req.toString());
          resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
@@ -69,7 +71,7 @@ public class BranchManagerServlet extends SecureOseeHttpServlet {
       return ApplicationContextFactory.createContext(getSessionId(req));
    }
 
-   private AbstractBranchCallable<?, ?> createCallable(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+   private Callable<?> createCallable(HttpServletRequest req, HttpServletResponse resp) throws Exception {
       String rawFunction = req.getParameter("function");
       Function function = Function.fromString(rawFunction);
 
@@ -97,6 +99,9 @@ public class BranchManagerServlet extends SecureOseeHttpServlet {
             break;
          case UPDATE_BRANCH_STATE:
             callable = new ChangeBranchStateCallable(applicationContext, req, resp, translationService, orcsApi);
+            break;
+         case RELOAD_BRANCH_CACHE:
+            orcsApi.getBranchCache().reloadCache();
             break;
          default:
             throw new UnsupportedOperationException();

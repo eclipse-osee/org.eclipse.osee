@@ -12,8 +12,10 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -23,6 +25,8 @@ import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -31,6 +35,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
@@ -188,6 +193,7 @@ public class XBranchWidget extends GenericXWidget {
          @Override
          public void widgetSelected(SelectionEvent e) {
             try {
+               refreshServerBranchCache();
                BranchManager.refreshBranches();
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -196,6 +202,12 @@ public class XBranchWidget extends GenericXWidget {
          }
       });
 
+   }
+
+   private void refreshServerBranchCache() {
+      Map<String, String> parameters = new HashMap<String, String>();
+      parameters.put("function", Function.RELOAD_BRANCH_CACHE.name());
+      HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, null, null, null);
    }
 
    public ArrayList<Branch> getSelectedBranches() {
