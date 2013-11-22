@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -99,17 +100,22 @@ public final class StateResource {
       String guid = form.getFirst("guid");
       String operation = form.getFirst("operation");
       String toState = form.getFirst("toState");
-      Conditions.checkNotNull(toState, "toState");
+      Conditions.checkNotNullOrEmpty(toState, "toState");
       String reason = form.getFirst("reason");
       Conditions.checkNotNull(reason, "reason");
       String asUserId = form.getFirst("asUserId");
       Conditions.checkNotNull(asUserId, "asUserId");
+      Conditions.checkNotNullOrEmpty(asUserId, "UserId");
+      IAtsUser user = AtsCore.getUserService().getUserById(asUserId);
+      if (user == null) {
+         throw new OseeStateException("User by id [%s] does not exist", asUserId);
+      }
 
       if (operation.equals("transition")) {
          ArtifactReadable action = AtsServerImpl.get().getArtifactByGuid(guid);
          workItem = AtsServerImpl.get().getWorkItemFactory().getWorkItem(action);
 
-         AtsChangeSet changes = new AtsChangeSet("Cancel Action");
+         AtsChangeSet changes = new AtsChangeSet("Transition Action - Server");
          TransitionHelper helper =
             new TransitionHelper("Transition " + guid, Collections.singleton(workItem), toState,
                workItem.getAssignees(), reason, changes, TransitionOption.None);

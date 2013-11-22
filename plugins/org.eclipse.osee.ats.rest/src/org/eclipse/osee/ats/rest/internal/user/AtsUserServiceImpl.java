@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.rest.internal.util.AtsUtilRest;
+import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -57,11 +58,12 @@ public class AtsUserServiceImpl implements IAtsUserService {
    public IAtsUser getUserById(String userId) throws OseeCoreException {
       IAtsUser atsUser = null;
       if (Strings.isValid(userId)) {
-         ArtifactReadable userArt =
+         ResultSet<ArtifactReadable> results =
             orcsApi.getQueryFactory(AtsUtilRest.getApplicationContext()).fromBranch(CoreBranches.COMMON).andIsOfType(
                CoreArtifactTypes.User).and(CoreAttributeTypes.UserId,
-               org.eclipse.osee.framework.core.enums.Operator.EQUAL, userId).getResults().getExactlyOne();
-         if (userArt != null) {
+               org.eclipse.osee.framework.core.enums.Operator.EQUAL, userId).getResults();
+         if (!results.isEmpty()) {
+            ArtifactReadable userArt = results.getExactlyOne();
             atsUser = new AtsUser(userArt);
          }
       }
