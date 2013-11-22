@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.database.core.DatabaseJoinAccessor.JoinItem;
 /**
  * @author Roberto E. Escobar
  */
-public final class IdJoinQuery extends AbstractJoinQuery {
+public class IdJoinQuery extends AbstractJoinQuery {
 
    private final class TempIdEntry implements IJoinRow {
       private final Long id;

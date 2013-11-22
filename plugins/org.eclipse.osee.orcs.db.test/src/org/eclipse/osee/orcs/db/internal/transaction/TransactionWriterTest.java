@@ -25,8 +25,8 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -51,6 +51,17 @@ import org.mockito.stubbing.Answer;
  */
 public class TransactionWriterTest {
 
+   private static final long BRANCH_ID = 65L;
+
+   private static final int QUERY_ID_1 = 88;
+   private static final int QUERY_ID_2 = 89;
+
+   private static final int TX_1 = 51;
+   private static final int TX_2 = 52;
+
+   private static final long GAMMA_1 = 80000L;
+   private static final long GAMMA_2 = 80001L;
+
    //@formatter:off
    @Mock private Log logger;
    @Mock private IOseeDatabaseService dbService;
@@ -63,8 +74,8 @@ public class TransactionWriterTest {
    @Mock private DaoToSql dao1;
    @Mock private DaoToSql dao2;
    
-   @Mock private ArtifactJoinQuery join1;
-   @Mock private ArtifactJoinQuery join2;
+   @Mock private IdJoinQuery join1;
+   @Mock private IdJoinQuery join2;
    
    @Mock private IOseeStatement chStmt;
    @Captor private ArgumentCaptor<List<Object[]>> paramCaptor;
@@ -82,29 +93,29 @@ public class TransactionWriterTest {
 
       stores = Arrays.asList(dao1, dao2);
 
-      final Map<SqlOrderEnum, ArtifactJoinQuery> joins = new LinkedHashMap<SqlOrderEnum, ArtifactJoinQuery>();
+      final Map<SqlOrderEnum, IdJoinQuery> joins = new LinkedHashMap<SqlOrderEnum, IdJoinQuery>();
       joins.put(SqlOrderEnum.ARTIFACTS, join1);
       joins.put(SqlOrderEnum.ATTRIBUTES, join2);
 
-      when(join1.getQueryId()).thenReturn(88);
-      when(join2.getQueryId()).thenReturn(89);
+      when(join1.getQueryId()).thenReturn(QUERY_ID_1);
+      when(join2.getQueryId()).thenReturn(QUERY_ID_2);
 
       when(tx.getBranch()).thenReturn(branch);
-      when(branch.getId()).thenReturn(65L);
+      when(branch.getId()).thenReturn(BRANCH_ID);
       when(builder.getBinaryStores()).thenReturn(stores);
-      when(builder.getTxNotCurrents()).thenAnswer(new Answer<Set<Entry<SqlOrderEnum, ArtifactJoinQuery>>>() {
+      when(builder.getTxNotCurrents()).thenAnswer(new Answer<Set<Entry<SqlOrderEnum, IdJoinQuery>>>() {
 
          @Override
-         public Set<Entry<SqlOrderEnum, ArtifactJoinQuery>> answer(InvocationOnMock invocation) throws Throwable {
-            Set<Entry<SqlOrderEnum, ArtifactJoinQuery>> values = joins.entrySet();
+         public Set<Entry<SqlOrderEnum, IdJoinQuery>> answer(InvocationOnMock invocation) throws Throwable {
+            Set<Entry<SqlOrderEnum, IdJoinQuery>> values = joins.entrySet();
             return values;
          }
       });
       when(dbService.getStatement(connection)).thenReturn(chStmt);
 
       when(chStmt.next()).thenReturn(true).thenReturn(true).thenReturn(false);
-      when(chStmt.getInt("transaction_id")).thenReturn(51).thenReturn(52);
-      when(chStmt.getLong("gamma_id")).thenReturn(80000L).thenReturn(80001L);
+      when(chStmt.getInt("transaction_id")).thenReturn(TX_1).thenReturn(TX_2);
+      when(chStmt.getLong("gamma_id")).thenReturn(GAMMA_1).thenReturn(GAMMA_2);
    }
 
    @Test
@@ -138,11 +149,11 @@ public class TransactionWriterTest {
       inOrder.verify(builder).getTxNotCurrents();
 
       inOrder.verify(join1).store();
-      inOrder.verify(chStmt).runPreparedQuery(SqlOrderEnum.ARTIFACTS.getTxsNotCurrentQuery(), 88);
+      inOrder.verify(chStmt).runPreparedQuery(SqlOrderEnum.ARTIFACTS.getTxsNotCurrentQuery(), QUERY_ID_1, BRANCH_ID);
       inOrder.verify(join1).delete();
 
       inOrder.verify(join2).store();
-      inOrder.verify(chStmt).runPreparedQuery(SqlOrderEnum.ATTRIBUTES.getTxsNotCurrentQuery(), 89);
+      inOrder.verify(chStmt).runPreparedQuery(SqlOrderEnum.ATTRIBUTES.getTxsNotCurrentQuery(), QUERY_ID_2, BRANCH_ID);
       inOrder.verify(join2).delete();
 
       inOrder.verify(builder).getInsertData(SqlOrderEnum.ARTIFACTS);
@@ -160,14 +171,14 @@ public class TransactionWriterTest {
       Iterator<Object[]> params = paramCaptor.getValue().iterator();
       int index = 0;
       Object[] data = params.next();
-      Assert.assertEquals(65L, data[index++]);
-      Assert.assertEquals(51, data[index++]);
-      Assert.assertEquals(80000L, data[index++]);
+      Assert.assertEquals(BRANCH_ID, data[index++]);
+      Assert.assertEquals(TX_1, data[index++]);
+      Assert.assertEquals(GAMMA_1, data[index++]);
 
       index = 0;
       data = params.next();
-      Assert.assertEquals(65L, data[index++]);
-      Assert.assertEquals(52, data[index++]);
-      Assert.assertEquals(80001L, data[index++]);
+      Assert.assertEquals(BRANCH_ID, data[index++]);
+      Assert.assertEquals(TX_2, data[index++]);
+      Assert.assertEquals(GAMMA_2, data[index++]);
    }
 }

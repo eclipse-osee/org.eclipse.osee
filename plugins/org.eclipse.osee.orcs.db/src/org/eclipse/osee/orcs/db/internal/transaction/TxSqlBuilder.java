@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
+import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderEnum;
@@ -28,7 +28,7 @@ public interface TxSqlBuilder {
 
    void accept(TransactionRecord tx, OrcsChangeSet txData) throws OseeCoreException;
 
-   Set<Entry<SqlOrderEnum, ArtifactJoinQuery>> getTxNotCurrents();
+   Set<Entry<SqlOrderEnum, IdJoinQuery>> getTxNotCurrents();
 
    List<Object[]> getInsertData(SqlOrderEnum key);
 

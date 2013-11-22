@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
+import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -98,7 +98,7 @@ public class TxSqlBuilderTest {
    @Mock private OrcsChangeSet txData;
 
    @Mock private DataProxy dataProxy;
-   @Mock private ArtifactJoinQuery join;
+   @Mock private IdJoinQuery join;
    // @formatter:on
 
    private VersionData versionData;
@@ -119,7 +119,7 @@ public class TxSqlBuilderTest {
       builder = new TxSqlBuilderImpl(dbService, idManager) {
 
          @Override
-         protected ArtifactJoinQuery createJoin() {
+         protected IdJoinQuery createJoin() {
             return join;
          }
 
@@ -364,11 +364,11 @@ public class TxSqlBuilderTest {
 
    private void verifyQuery(SqlOrderEnum key) {
       assertEquals(1, builder.getTxNotCurrents().size());
-      Entry<SqlOrderEnum, ArtifactJoinQuery> entry = builder.getTxNotCurrents().iterator().next();
+      Entry<SqlOrderEnum, IdJoinQuery> entry = builder.getTxNotCurrents().iterator().next();
       assertEquals(key, entry.getKey());
       assertEquals(join, entry.getValue());
 
-      verify(entry.getValue()).add(ITEM_ID, EXPECTED_BRANCH_ID, -1);
+      verify(entry.getValue()).add(ITEM_ID);
    }
 
    private void verifyRow(SqlOrderEnum key, Object... expecteds) {

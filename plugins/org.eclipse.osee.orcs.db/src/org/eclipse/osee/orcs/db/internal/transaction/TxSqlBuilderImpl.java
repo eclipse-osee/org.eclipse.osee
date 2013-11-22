@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
+import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -48,7 +48,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    private int txId;
    private List<DaoToSql> binaryStores;
    private HashCollection<SqlOrderEnum, Object[]> dataItemInserts;
-   private Map<SqlOrderEnum, ArtifactJoinQuery> txNotCurrentsJoin;
+   private Map<SqlOrderEnum, IdJoinQuery> txNotCurrentsJoin;
 
    public TxSqlBuilderImpl(IOseeDatabaseService dbService, IdentityManager idManager) {
       super();
@@ -58,8 +58,8 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    }
 
    @Override
-   public Set<Entry<SqlOrderEnum, ArtifactJoinQuery>> getTxNotCurrents() {
-      return txNotCurrentsJoin != null ? txNotCurrentsJoin.entrySet() : Collections.<Entry<SqlOrderEnum, ArtifactJoinQuery>> emptySet();
+   public Set<Entry<SqlOrderEnum, IdJoinQuery>> getTxNotCurrents() {
+      return txNotCurrentsJoin != null ? txNotCurrentsJoin.entrySet() : Collections.<Entry<SqlOrderEnum, IdJoinQuery>> emptySet();
    }
 
    @Override
@@ -89,7 +89,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       txId = tx.getId();
       binaryStores = new ArrayList<DaoToSql>();
       dataItemInserts = new HashCollection<SqlOrderEnum, Object[]>();
-      txNotCurrentsJoin = new HashMap<SqlOrderEnum, ArtifactJoinQuery>();
+      txNotCurrentsJoin = new HashMap<SqlOrderEnum, IdJoinQuery>();
 
       addRow(SqlOrderEnum.TXS_DETAIL, txId, tx.getComment(), tx.getTimeStamp(), tx.getAuthor(), tx.getBranchId(),
          tx.getTxType().getId());
@@ -176,12 +176,12 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
          TxChange.getCurrent(modType).getValue(), data.getBranchId());
 
       if (key.hasTxNotCurrentQuery()) {
-         ArtifactJoinQuery join = txNotCurrentsJoin.get(key);
+         IdJoinQuery join = txNotCurrentsJoin.get(key);
          if (join == null) {
             join = createJoin();
             txNotCurrentsJoin.put(key, join);
          }
-         join.add(orcsData.getLocalId(), data.getBranchId(), RelationalConstants.TRANSACTION_SENTINEL);
+         join.add(orcsData.getLocalId());
       }
    }
 
@@ -211,8 +211,8 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       return toReturn;
    }
 
-   protected ArtifactJoinQuery createJoin() {
-      return JoinUtility.createArtifactJoinQuery(dbService);
+   protected IdJoinQuery createJoin() {
+      return JoinUtility.createIdJoinQuery(dbService);
    }
 
    protected boolean isGammaCreationAllowed(OrcsData data) {

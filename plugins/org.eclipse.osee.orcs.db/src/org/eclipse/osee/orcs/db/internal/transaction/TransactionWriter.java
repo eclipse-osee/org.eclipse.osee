@@ -16,7 +16,7 @@ import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
+import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -47,13 +47,13 @@ public class TransactionWriter {
       "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type) VALUES (?, ?, ?, ?, ?, ?)";
 
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS =
-      "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_artifact jart1, osee_artifact art, osee_txs txs WHERE jart1.query_id = ? AND art.art_id = jart1.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = jart1.branch_id AND txs.tx_current <> " + TxChange.NOT_CURRENT.getValue();
+      "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_artifact art, osee_txs txs WHERE jid.query_id = ? AND art.art_id = jid.id AND art.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxChange.NOT_CURRENT.getValue();
 
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES =
-      "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_artifact jart1, osee_attribute attr, osee_txs txs WHERE jart1.query_id = ? AND attr.attr_id = jart1.art_id AND attr.gamma_id = txs.gamma_id AND txs.branch_id = jart1.branch_id AND txs.tx_current <> " + TxChange.NOT_CURRENT.getValue();
+      "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_attribute attr, osee_txs txs WHERE jid.query_id = ? AND attr.attr_id = jid.id AND attr.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxChange.NOT_CURRENT.getValue();
 
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS =
-      "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_artifact jart1, osee_relation_link rel, osee_txs txs WHERE jart1.query_id = ? AND rel.rel_link_id = jart1.art_id AND rel.gamma_id = txs.gamma_id AND txs.branch_id = jart1.branch_id AND txs.tx_current <> " + TxChange.NOT_CURRENT.getValue();
+      "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id jid, osee_relation_link rel, osee_txs txs WHERE jid.query_id = ? AND rel.rel_link_id = jid.id AND rel.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxChange.NOT_CURRENT.getValue();
 
    public static enum SqlOrderEnum {
       ARTIFACTS(INSERT_ARTIFACT, TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS),
@@ -126,7 +126,7 @@ public class TransactionWriter {
 
          long branchId = tx.getBranch().getId();
          List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
-         for (Entry<SqlOrderEnum, ArtifactJoinQuery> entry : sqlBuilder.getTxNotCurrents()) {
+         for (Entry<SqlOrderEnum, ? extends AbstractJoinQuery> entry : sqlBuilder.getTxNotCurrents()) {
             fetchTxNotCurrent(connection, branchId, txNotCurrentData, entry.getKey().getTxsNotCurrentQuery(),
                entry.getValue());
          }
@@ -145,12 +145,12 @@ public class TransactionWriter {
       }
    }
 
-   private void fetchTxNotCurrent(OseeConnection connection, long branchId, List<Object[]> results, String query, ArtifactJoinQuery join) throws OseeCoreException {
+   private void fetchTxNotCurrent(OseeConnection connection, long branchId, List<Object[]> results, String query, AbstractJoinQuery join) throws OseeCoreException {
       try {
          join.store();
          IOseeStatement chStmt = dbService.getStatement(connection);
          try {
-            chStmt.runPreparedQuery(query, join.getQueryId());
+            chStmt.runPreparedQuery(query, join.getQueryId(), branchId);
             while (chStmt.next()) {
                results.add(new Object[] {branchId, chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
             }
