@@ -37,6 +37,6 @@ public interface IAtsUserService {
 
    boolean isAssigneeMe(IAtsWorkItem workItem) throws OseeCoreException;
 
-   boolean isAtsAdmin();
+   boolean isAtsAdmin(IAtsUser user);
 
 }

@@ -58,7 +58,8 @@ public class WorkflowManager {
       // and access control writeable
       awa.isAccessControlWrite() && //
 
-      (WorkflowManagerCore.isEditable(awa, awa.getStateDefinition(), privilegedEditEnabled) || //
+      (WorkflowManagerCore.isEditable(AtsClientService.get().getUserAdmin().getCurrentUser(), awa,
+         awa.getStateDefinition(), privilegedEditEnabled) || //
          // page is define to allow anyone to edit
          awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll.name()) ||
          // awa is child of TeamWorkflow that has AllowAssigneeToAll rule

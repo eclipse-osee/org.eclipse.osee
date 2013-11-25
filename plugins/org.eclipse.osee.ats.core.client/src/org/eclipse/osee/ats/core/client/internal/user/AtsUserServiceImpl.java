@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -94,8 +94,8 @@ public class AtsUserServiceImpl implements IAtsUserService {
    }
 
    @Override
-   public boolean isAtsAdmin() {
-      return AtsUtilCore.isAtsAdmin();
+   public boolean isAtsAdmin(IAtsUser user) {
+      return AtsGroup.AtsAdmin.isMember(user);
    }
 
    @Override

@@ -84,7 +84,9 @@ public class SMAWorkFlowSection extends SectionPart {
       this.sma = sma;
       this.editor = editor;
 
-      isEditable = WorkflowManagerCore.isEditable(sma, page.getStateDefinition(), editor.isPrivilegedEditModeEnabled());
+      isEditable =
+         WorkflowManagerCore.isEditable(AtsClientService.get().getUserAdmin().getCurrentUser(), sma,
+            page.getStateDefinition(), editor.isPrivilegedEditModeEnabled());
       isGlobalEditable = !sma.isReadOnly() && sma.isAccessControlWrite() && editor.isPrivilegedEditModeEnabled();
       isCurrentState = sma.isInState(page);
       // parent.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
@@ -425,8 +427,13 @@ public class SMAWorkFlowSection extends SectionPart {
             // Notify extensions of widget modified
             for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
                try {
-                  item.widgetModified(xWidget, editor.getToolkit(), sma.getStateDefinition(), sma,
-                     WorkflowManagerCore.isEditable(sma, sma.getStateDefinition(), false));
+                  item.widgetModified(
+                     xWidget,
+                     editor.getToolkit(),
+                     sma.getStateDefinition(),
+                     sma,
+                     WorkflowManagerCore.isEditable(AtsClientService.get().getUserAdmin().getCurrentUser(), sma,
+                        sma.getStateDefinition(), false));
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }

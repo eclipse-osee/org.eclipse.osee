@@ -65,4 +65,12 @@ public enum AtsGroup {
       group.removeTemporaryOverride();
    }
 
+   public boolean isMember(Identifiable<String> user) {
+      for (Artifact art : group.getGroupArtifact().getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
+         if (art.getGuid().equals(user.getGuid())) {
+            return true;
+         }
+      }
+      return false;
+   }
 }

@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.rest.internal.user;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.rest.internal.util.AtsUtilRest;
@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -118,26 +117,18 @@ public class AtsUserServiceImpl implements IAtsUserService {
    }
 
    @Override
-   public boolean isAtsAdmin() {
-      boolean admin = false;
-      try {
-         ArtifactReadable atsAdminGroup =
-            orcsApi.getQueryFactory(AtsUtilRest.getApplicationContext()).fromBranch(CoreBranches.COMMON).andIsOfType(
-               CoreArtifactTypes.UserGroup).and(CoreAttributeTypes.Name,
-               org.eclipse.osee.framework.core.enums.Operator.EQUAL, "AtsAdmin").getResults().getExactlyOne();
-         if (atsAdminGroup != null) {
-            ArtifactReadable currentUserArt = getCurrentUserArt();
-            for (ArtifactReadable adminArt : atsAdminGroup.getRelated(CoreRelationTypes.Users_User)) {
-               if (adminArt.equals(currentUserArt)) {
-                  admin = true;
-                  break;
-               }
-            }
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsUserServiceImpl.class, Level.SEVERE, ex);
-      }
+   public boolean isAtsAdmin(IAtsUser user) {
+      boolean admin =
+         orcsApi.getQueryFactory(null).fromBranch(AtsUtilRest.getAtsBranch()).andGuid(
+            AtsArtifactToken.AtsAdmin.getGuid()).andRelatedTo(CoreRelationTypes.Users_User, getUserArt(user)).getCount() == 1;
       return admin;
+   }
+
+   private ArtifactReadable getUserArt(IAtsUser user) {
+      if (user.getStoreObject() instanceof ArtifactReadable) {
+         return (ArtifactReadable) user.getStoreObject();
+      }
+      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilRest.getAtsBranch()).andGuid(user.getGuid()).getResults().getExactlyOne();
    }
 
    @Override

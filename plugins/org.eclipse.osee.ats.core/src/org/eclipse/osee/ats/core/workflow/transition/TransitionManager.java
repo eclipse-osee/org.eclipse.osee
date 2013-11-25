@@ -129,7 +129,7 @@ public class TransitionManager {
                boolean stateIsEditable =
                   WorkflowManagerCore.isEditable(workItem, workItem.getStateDefinition(),
                      helper.isPrivilegedEditEnabled(), helper.getTransitionUser(),
-                     AtsCore.getUserService().isAtsAdmin());
+                     AtsCore.getUserService().isAtsAdmin(helper.getTransitionUser()));
                boolean currentlyUnAssigned =
                   workItem.getStateMgr().getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER);
                workItem.getStateMgr().validateNoBootstrapUser();

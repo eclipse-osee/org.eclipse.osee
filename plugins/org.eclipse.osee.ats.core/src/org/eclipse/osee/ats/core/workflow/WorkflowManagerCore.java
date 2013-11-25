@@ -22,9 +22,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class WorkflowManagerCore {
 
-   public static boolean isEditable(IAtsWorkItem workItem, IAtsStateDefinition stateDef, boolean privilegedEditEnabled) throws OseeCoreException {
-      return isEditable(workItem, stateDef, privilegedEditEnabled, AtsCore.getUserService().getCurrentUser(),
-         AtsCore.getUserService().isAtsAdmin());
+   public static boolean isEditable(IAtsUser user, IAtsWorkItem workItem, IAtsStateDefinition stateDef, boolean privilegedEditEnabled) throws OseeCoreException {
+      return isEditable(workItem, stateDef, privilegedEditEnabled, user, AtsCore.getUserService().isAtsAdmin(user));
    }
 
    public static boolean isEditable(IAtsWorkItem workItem, IAtsStateDefinition stateDef, boolean privilegedEditEnabled, IAtsUser currentUser, boolean isAtsAdmin) throws OseeCoreException {
