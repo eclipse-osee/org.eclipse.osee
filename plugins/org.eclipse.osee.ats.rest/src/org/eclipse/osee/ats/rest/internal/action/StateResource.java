@@ -106,8 +106,8 @@ public final class StateResource {
       String asUserId = form.getFirst("asUserId");
       Conditions.checkNotNull(asUserId, "asUserId");
       Conditions.checkNotNullOrEmpty(asUserId, "UserId");
-      IAtsUser user = AtsCore.getUserService().getUserById(asUserId);
-      if (user == null) {
+      IAtsUser transitionUser = AtsCore.getUserService().getUserById(asUserId);
+      if (transitionUser == null) {
          throw new OseeStateException("User by id [%s] does not exist", asUserId);
       }
 
@@ -119,8 +119,7 @@ public final class StateResource {
          TransitionHelper helper =
             new TransitionHelper("Transition " + guid, Collections.singleton(workItem), toState,
                workItem.getAssignees(), reason, changes, TransitionOption.None);
-         IAtsUser asAtsUser = AtsCore.getUserService().getUserById(asUserId);
-         helper.setTransitionUser(asAtsUser);
+         helper.setTransitionUser(transitionUser);
          TransitionManager mgr = new TransitionManager(helper);
          TransitionResults results = mgr.handleAll();
          if (!results.isEmpty()) {
@@ -134,7 +133,7 @@ public final class StateResource {
          action = AtsServerImpl.get().getArtifactByGuid(guid);
          htmlStr =
             ActionUtility.displayAction(registry, action, "Action Transitioned - " + action.getGuid(),
-               ActionLoadLevel.HEADER_FULL);
+               ActionLoadLevel.HEADER);
       } else {
          throw new OseeCoreException("Unhandled operation [%s]", operation);
       }
