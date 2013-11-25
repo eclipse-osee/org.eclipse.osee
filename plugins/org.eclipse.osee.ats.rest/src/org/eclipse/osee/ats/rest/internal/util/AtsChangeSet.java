@@ -50,7 +50,7 @@ public class AtsChangeSet implements IAtsChangeSet {
       objects.add(obj);
    }
 
-   public TransactionBuilder getTxFactory() throws OseeCoreException {
+   public TransactionBuilder getTransaction() throws OseeCoreException {
       if (transaction == null) {
          transaction =
             AtsServerImpl.get().getOrcsApi().getTransactionFactory(null).createTransaction(AtsUtilRest.getAtsBranch(),
@@ -84,12 +84,12 @@ public class AtsChangeSet implements IAtsChangeSet {
       for (Object obj : deleteObjects) {
          if (obj instanceof IAtsWorkItem) {
             ArtifactReadable artifact = AtsServerImpl.get().getArtifact((IAtsWorkItem) obj);
-            getTxFactory().deleteArtifact(artifact);
+            getTransaction().deleteArtifact(artifact);
          } else {
             throw new OseeArgumentException("AtsChangeSet: Unhandled deleteObject type: " + obj);
          }
       }
-      transaction.commit();
+      getTransaction().commit();
       for (IExecuteListener listener : listeners) {
          listener.changesStored(this);
       }
@@ -132,38 +132,38 @@ public class AtsChangeSet implements IAtsChangeSet {
 
    @Override
    public void deleteSoleAttribute(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
-      getTxFactory().deleteSoleAttribute(AtsUtilCore.toArtifactId(workItem), attributeType);
+      getTransaction().deleteSoleAttribute(AtsUtilCore.toArtifactId(workItem), attributeType);
    }
 
    @Override
    public void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, String value) throws OseeCoreException {
-      getTxFactory().setSoleAttributeValue(AtsUtilCore.toArtifactId(workItem), attributeType, value);
+      getTransaction().setSoleAttributeValue(AtsUtilCore.toArtifactId(workItem), attributeType, value);
    }
 
    @Override
    public void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException {
-      getTxFactory().setSoleAttributeValue(AtsUtilCore.toArtifactId(workItem), attributeType, value);
+      getTransaction().setSoleAttributeValue(AtsUtilCore.toArtifactId(workItem), attributeType, value);
    }
 
    @Override
    public void addAttribute(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException {
-      getTxFactory().createAttribute(AtsUtilCore.toArtifactId(workItem), attributeType, value);
+      getTransaction().createAttribute(AtsUtilCore.toArtifactId(workItem), attributeType, value);
    }
 
    @Override
    public void deleteAttribute(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException {
-      getTxFactory().deleteAttributesWithValue(AtsUtilCore.toArtifactId(workItem), attributeType, value);
+      getTransaction().deleteAttributesWithValue(AtsUtilCore.toArtifactId(workItem), attributeType, value);
    }
 
    @Override
    public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, IAttributeType attributeType, T value) throws OseeCoreException {
       ArtifactId artifactId = AtsUtilCore.toArtifactId(workItem);
-      getTxFactory().setAttributeById(artifactId, AtsUtilCore.toAttributeId(attr), value);
+      getTransaction().setAttributeById(artifactId, AtsUtilCore.toAttributeId(attr), value);
    }
 
    @Override
    public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) throws OseeCoreException {
-      getTxFactory().deleteByAttributeId(AtsUtilCore.toArtifactId(workItem), AtsUtilCore.toAttributeId(attr));
+      getTransaction().deleteByAttributeId(AtsUtilCore.toArtifactId(workItem), AtsUtilCore.toAttributeId(attr));
    }
 
    @Override
