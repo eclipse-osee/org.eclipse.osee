@@ -22,6 +22,8 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -117,20 +119,6 @@ public class XText extends XWidget {
          }
 
          this.parent = parent;
-
-         ModifyListener textListener = new ModifyListener() {
-
-            @Override
-            public void modifyText(ModifyEvent e) {
-               if (sText != null) {
-                  debug("modifyText");
-                  text = sText.getText();
-                  validate();
-                  notifyXModifiedListeners();
-               }
-            }
-         };
-
          if (fillVertically) {
             composite = new Composite(parent, SWT.NONE);
             GridLayout layout = ALayout.getZeroMarginLayout(1, false);
@@ -188,7 +176,26 @@ public class XText extends XWidget {
 
          sText.setLayoutData(gd);
          sText.setMenu(getDefaultMenu());
-         sText.addModifyListener(textListener);
+         sText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+               if (Widgets.isAccessible(sText)) {
+                  text = sText.getText();
+                  notifyXModifiedListeners();
+               }
+            }
+         });
+         sText.addFocusListener(new FocusAdapter() {
+
+            @Override
+            public void focusLost(org.eclipse.swt.events.FocusEvent e) {
+               if (Widgets.isAccessible(sText)) {
+                  text = sText.getText();
+                  validate();
+               }
+            }
+         });
          if (text != null) {
             sText.setText(text);
          }
@@ -412,6 +419,12 @@ public class XText extends XWidget {
       }
    }
 
+   public void addFocusListener(FocusListener focusListener) {
+      if (sText != null) {
+         sText.addFocusListener(focusListener);
+      }
+   }
+
    public String get() {
       if (debug) {
          System.err.println("text set *" + text + "*");
@@ -509,12 +522,6 @@ public class XText extends XWidget {
     */
    public void setDragableArtifact(boolean dragableArtifact) {
       this.dragableArtifact = dragableArtifact;
-   }
-
-   public void debug(String str) {
-      if (debug) {
-         System.err.println("AText :" + str);
-      }
    }
 
    @Override
