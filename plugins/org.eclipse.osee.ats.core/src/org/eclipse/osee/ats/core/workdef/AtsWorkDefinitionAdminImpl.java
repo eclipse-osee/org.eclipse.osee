@@ -415,7 +415,7 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
    }
 
    @Override
-   public Collection<String> getAllValidStateNames() {
-      return workDefinitionService.getAllValidStateNames();
+   public Collection<String> getAllValidStateNames(XResultData resultData) throws Exception {
+      return workDefinitionService.getAllValidStateNames(resultData);
    }
 }

@@ -13,10 +13,8 @@ package org.eclipse.osee.ats.impl.internal;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -51,8 +49,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
-   private Map<String, IAtsWorkDefinition> workDefIdToWorkDef;
-
    private IAtsWorkDefinitionStore workDefStore;
    private IAttributeResolver attrResolver;
    private IAtsUserService userService;
@@ -74,10 +70,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       Conditions.checkNotNull(attrResolver, "IAttributeResolver");
       Conditions.checkNotNull(userService, "IAtsWorkDefinitionStore");
       System.out.println("ATS - AtsWorkDefinitionServiceImpl started");
-   }
-
-   public void stop() {
-      workDefIdToWorkDef = null;
    }
 
    @Override
@@ -115,26 +107,8 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       }
    };
 
-   private void ensureLoaded(XResultData resultData) throws Exception {
-      if (workDefIdToWorkDef == null) {
-         workDefIdToWorkDef = new HashMap<String, IAtsWorkDefinition>(15);
-         for (Pair<String, String> entry : workDefStore.getWorkDefinitionStrings()) {
-            String name = entry.getFirst();
-            String workDefStr = entry.getSecond();
-            AtsDsl atsDsl = ModelUtil.loadModel(name + ".ats", workDefStr);
-            ConvertAtsDslToWorkDefinition convert =
-               new ConvertAtsDslToWorkDefinition(name, atsDsl, resultData, attrResolver, userService);
-            IAtsWorkDefinition workDef = convert.convert();
-            if (workDefIdToWorkDef != null) {
-               workDefIdToWorkDef.put(name, workDef);
-            }
-         }
-      }
-   }
-
    @Override
    public IAtsWorkDefinition getWorkDef(String workDefId, XResultData resultData) throws Exception {
-      ensureLoaded(resultData);
       String workDefStr = workDefStore.loadWorkDefinitionString(workDefId);
       AtsDsl atsDsl = ModelUtil.loadModel(workDefId + ".ats", workDefStr);
       ConvertAtsDslToWorkDefinition convert =
@@ -244,11 +218,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public void clearCaches() {
-      workDefIdToWorkDef = null;
-   }
-
-   @Override
    public boolean teamDefHasRule(IAtsWorkItem workItem, RuleDefinitionOption option) {
       boolean hasRule = false;
       IAtsTeamWorkflow teamWf = null;
@@ -273,18 +242,24 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    @Override
-   public Collection<IAtsWorkDefinition> getAllWorkDefinitions() throws Exception {
-      XResultData resultData = new XResultData(false);
-      ensureLoaded(resultData);
+   public Collection<IAtsWorkDefinition> getAllWorkDefinitions(XResultData resultData) throws Exception {
       List<IAtsWorkDefinition> workDefs = new ArrayList<IAtsWorkDefinition>();
-      workDefs.addAll(workDefIdToWorkDef.values());
+      for (Pair<String, String> entry : workDefStore.getWorkDefinitionStrings()) {
+         String name = entry.getFirst();
+         String workDefStr = entry.getSecond();
+         AtsDsl atsDsl = ModelUtil.loadModel(name + ".ats", workDefStr);
+         ConvertAtsDslToWorkDefinition convert =
+            new ConvertAtsDslToWorkDefinition(name, atsDsl, resultData, attrResolver, userService);
+         IAtsWorkDefinition workDef = convert.convert();
+         workDefs.add(workDef);
+      }
       return workDefs;
    }
 
    @Override
-   public Collection<String> getAllValidStateNames() {
+   public Collection<String> getAllValidStateNames(XResultData resultData) throws Exception {
       Set<String> allValidStateNames = new HashSet<String>();
-      for (IAtsWorkDefinition workDef : workDefIdToWorkDef.values()) {
+      for (IAtsWorkDefinition workDef : getAllWorkDefinitions(resultData)) {
          for (String stateName : getStateNames(workDef)) {
             if (!allValidStateNames.contains(stateName)) {
                allValidStateNames.add(stateName);

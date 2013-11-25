@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.core.client.internal.workdef;
 
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionCache;
@@ -37,7 +36,7 @@ public class LoadAtsWorkDefinitionCacheCallable implements Callable<AtsWorkDefin
       AtsWorkDefinitionCache cache = new AtsWorkDefinitionCache();
 
       XResultData resultData = new XResultData(false);
-      workDefinitionService.getWorkDef(IAtsWorkDefinitionAdmin.TaskWorkflowDefinitionId, resultData);
+      workDefinitionService.getAllWorkDefinitions(resultData);
 
       if (!resultData.isEmpty()) {
          OseeLog.log(Activator.class, Level.SEVERE, "Error " + NAME + resultData.toString());

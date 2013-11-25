@@ -46,14 +46,12 @@ public interface IAtsWorkDefinitionService {
 
    String getStorageString(IAtsWorkDefinition workDef, XResultData resultData) throws Exception;
 
-   void clearCaches();
-
    boolean teamDefHasRule(IAtsWorkItem workItem, RuleDefinitionOption rule);
 
    boolean isInState(IAtsWorkItem workItem, IAtsStateDefinition stateDef);
 
-   Collection<IAtsWorkDefinition> getAllWorkDefinitions() throws OseeCoreException, Exception;
+   Collection<IAtsWorkDefinition> getAllWorkDefinitions(XResultData resultData) throws OseeCoreException, Exception;
 
-   Collection<String> getAllValidStateNames();
+   Collection<String> getAllValidStateNames(XResultData resultData) throws Exception;
 
 }

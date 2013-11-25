@@ -96,13 +96,15 @@ public final class AtsWorkDefinitionSheetProviders {
                   allValidStateNames.add(value);
                }
             } else {
+               XResultData resultData = new XResultData(false);
                OseeLog.logf(AtsCore.class, Level.INFO,
                   "ATS Valid State Names: Missing [%s] Artifact; Falling back to loadAddDefinitions",
                   org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names.getName());
-               allValidStateNames.addAll(AtsClientService.get().getWorkDefinitionAdmin().getAllValidStateNames());
+               allValidStateNames.addAll(AtsClientService.get().getWorkDefinitionAdmin().getAllValidStateNames(
+                  resultData));
             }
             Collections.sort(allValidStateNames);
-         } catch (OseeCoreException ex) {
+         } catch (Exception ex) {
             OseeLog.log(AtsCore.class, Level.SEVERE, ex);
          }
       }

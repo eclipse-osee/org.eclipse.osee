@@ -77,6 +77,6 @@ public interface IAtsWorkDefinitionAdmin {
 
    IAtsStateDefinition getStateDefinitionByName(IAtsWorkItem workItem, String stateName) throws OseeCoreException;
 
-   Collection<String> getAllValidStateNames();
+   Collection<String> getAllValidStateNames(XResultData resultData) throws Exception;
 
 }
