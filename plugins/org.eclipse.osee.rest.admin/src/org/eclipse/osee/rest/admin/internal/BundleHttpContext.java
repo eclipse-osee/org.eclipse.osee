@@ -21,15 +21,23 @@ import org.osgi.service.http.HttpContext;
  */
 public class BundleHttpContext implements HttpContext {
 
-   private final Bundle bundle;
+   private final Iterable<Bundle> bundles;
 
-   public BundleHttpContext(Bundle bundle) {
-      this.bundle = bundle;
+   public BundleHttpContext(Iterable<Bundle> bundles) {
+      this.bundles = bundles;
    }
 
    @Override
-   public URL getResource(String name) {
-      return bundle.getEntry(name);
+   public URL getResource(String path) {
+      // find first bundle that has an entry for the path
+      URL toReturn = null;
+      for (Bundle bundle : bundles) {
+         toReturn = bundle.getEntry(path);
+         if (toReturn != null) {
+            return toReturn;
+         }
+      }
+      return toReturn;
    }
 
    @Override

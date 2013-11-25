@@ -12,21 +12,14 @@ package org.eclipse.osee.rest.admin.internal;
 
 import java.util.Collections;
 import java.util.List;
-import javax.ws.rs.core.Application;
 import org.eclipse.osee.logger.Log;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.http.HttpContext;
 import com.sun.jersey.api.core.DefaultResourceConfig;
-import com.sun.jersey.api.core.ResourceConfig;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 /**
  * @author Roberto E. Escobar
  */
-
 public class RestComponentFactory {
-
    private final Log logger;
    private List<Object> defaultSingletonResources;
 
@@ -42,38 +35,9 @@ public class RestComponentFactory {
       return defaultSingletonResources;
    }
 
-   public ServletContainer createContainer(Log logger, ServiceReference<Application> reference) throws Exception {
-      Bundle bundle = reference.getBundle();
-      Application application = bundle.getBundleContext().getService(reference);
-      RestServiceUtils.checkValid(application);
-
+   public RestServletContainer createContainer(Log logger) throws Exception {
       DefaultResourceConfig config = new DefaultResourceConfig();
-      config.add(application);
-
-      for (Object resource : getResourceSingletons()) {
-         config.getSingletons().add(resource);
-      }
-
-      if (hasExtendedWadl(bundle)) {
-         config.getProperties().put(ResourceConfig.PROPERTY_WADL_GENERATOR_CONFIG,
-            new BundleWadlGeneratorConfig(logger, bundle));
-      }
-
       ServletContainer container = new ServletContainer(config);
-      return container;
-   }
-
-   public HttpContext createHttpContext(ServiceReference<Application> reference) {
-      Bundle bundle = reference.getBundle();
-      return new BundleHttpContext(bundle);
-   }
-
-   private boolean hasExtendedWadl(Bundle bundle) {
-      return hasEntry(bundle, "REST-INF/application-doc.xml") && hasEntry(bundle, "REST-INF/application-grammars.xml") && hasEntry(
-         bundle, "REST-INF/resourcedoc.xml");
-   }
-
-   private boolean hasEntry(Bundle bundle, String path) {
-      return bundle.getEntry(path) != null;
+      return new RestServletContainer(logger, container, config);
    }
 }

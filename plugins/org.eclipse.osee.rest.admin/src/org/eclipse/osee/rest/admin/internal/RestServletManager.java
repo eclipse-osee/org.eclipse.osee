@@ -48,7 +48,7 @@ public class RestServletManager {
 
    public void start() throws Exception {
       RestComponentFactory factory = new RestComponentFactory(logger);
-      registry = new RestServletRegistry(logger, factory, httpService, eventService);
+      registry = new RestServletRegistry(logger, httpService, eventService, factory);
       thread = createRegistrationThread(registry);
       thread.start();
    }
