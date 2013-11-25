@@ -53,8 +53,8 @@ public class TransitionManager {
 
    private final ITransitionHelper helper;
    private String completedCancellationReason = null;
-   private IAtsUser transitionAsUser;
    private Date transitionOnDate;
+   private List<IAtsUser> toAssignees;
 
    public TransitionManager(ITransitionHelper helper) {
       this.helper = helper;
@@ -488,14 +488,11 @@ public class TransitionManager {
     * programatic transitions.
     */
    public IAtsUser getTransitionAsUser() throws OseeCoreException {
-      if (transitionAsUser == null) {
-         return AtsCore.getUserService().getCurrentUser();
+      IAtsUser user = helper.getTransitionUser();
+      if (user == null) {
+         user = AtsCore.getUserService().getCurrentUser();
       }
-      return transitionAsUser;
-   }
-
-   public void setTransitionAsUser(IAtsUser transitionAsUser) {
-      this.transitionAsUser = transitionAsUser;
+      return user;
    }
 
    /**
@@ -518,27 +515,29 @@ public class TransitionManager {
     * entered, else use current user or UnAssigneed if current user is SystemUser.
     */
    public List<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem, IAtsStateDefinition toState) throws OseeCoreException {
-      List<IAtsUser> assignees = new ArrayList<IAtsUser>();
-      if (toState.getStateType().isWorkingState()) {
-         Collection<? extends IAtsUser> requestedAssignees = helper.getToAssignees(workItem);
-         if (requestedAssignees != null) {
-            for (IAtsUser user : requestedAssignees) {
-               assignees.add(user);
+      if (toAssignees == null) {
+         toAssignees = new ArrayList<IAtsUser>();
+         if (toState.getStateType().isWorkingState()) {
+            Collection<? extends IAtsUser> requestedAssignees = helper.getToAssignees(workItem);
+            if (requestedAssignees != null) {
+               for (IAtsUser user : requestedAssignees) {
+                  toAssignees.add(user);
+               }
             }
-         }
-         if (assignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
-            assignees.remove(AtsCoreUsers.UNASSIGNED_USER);
-            assignees.add(AtsCore.getUserService().getCurrentUser());
-         }
-         if (assignees.isEmpty()) {
-            if (helper.isSystemUser()) {
-               assignees.add(AtsCoreUsers.UNASSIGNED_USER);
-            } else {
-               assignees.add(AtsCore.getUserService().getCurrentUser());
+            if (toAssignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
+               toAssignees.remove(AtsCoreUsers.UNASSIGNED_USER);
+               toAssignees.add(getTransitionAsUser());
+            }
+            if (toAssignees.isEmpty()) {
+               if (helper.isSystemUser()) {
+                  toAssignees.add(AtsCoreUsers.UNASSIGNED_USER);
+               } else {
+                  toAssignees.add(getTransitionAsUser());
+               }
             }
          }
       }
-      return assignees;
+      return toAssignees;
    }
 
    public TransitionResults handleAllAndPersist() {
