@@ -12,8 +12,10 @@ package org.eclipse.osee.framework.skynet.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,13 +30,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class OseeGroup {
    private static final String USERS_GROUP_FOLDER_NAME = "User Groups";
 
-   private final String groupName;
    private Artifact groupArtifact;
-   private final Map<String, Boolean> temporaryOverride = new HashMap<String, Boolean>();
+   private final Map<IArtifactToken, Boolean> temporaryOverride = new HashMap<IArtifactToken, Boolean>();
+   private final IArtifactToken token;
 
-   public OseeGroup(String groupName) {
-      this.groupName = groupName;
-      this.groupArtifact = null;
+   public OseeGroup(IArtifactToken token) {
+      this.token = token;
       this.groupArtifact = null;
    }
 
@@ -73,8 +74,8 @@ public class OseeGroup {
    }
 
    public boolean isTemporaryOverride(User user) {
-      if (temporaryOverride.get(groupName) != null) {
-         return temporaryOverride.get(groupName);
+      if (temporaryOverride.get(token) != null) {
+         return temporaryOverride.get(token);
       }
       return false;
    }
@@ -83,29 +84,34 @@ public class OseeGroup {
     * Allow user to temporarily override admin
     */
    public void setTemporaryOverride(boolean member) {
-      temporaryOverride.put(groupName, member);
+      temporaryOverride.put(token, member);
    }
 
    public void removeTemporaryOverride() {
-      temporaryOverride.remove(groupName);
+      temporaryOverride.remove(token);
    }
 
    private void checkGroupExists() throws OseeCoreException {
       if (groupArtifact == null) {
-         groupArtifact = getOrCreateGroupArtifact(groupName);
+         groupArtifact = getOrCreateGroupArtifact(token);
       }
    }
 
-   private Artifact getOrCreateGroupArtifact(String groupName) throws OseeCoreException {
+   private Artifact getOrCreateGroupArtifact(IArtifactToken token) throws OseeCoreException {
       Branch branch = BranchManager.getCommonBranch();
-      String cacheKey = CoreArtifactTypes.UserGroup + "." + groupName;
+      String cacheKey = CoreArtifactTypes.UserGroup + "." + token;
       Artifact groupArtifact = ArtifactCache.getByTextId(cacheKey, branch);
 
       if (groupArtifact == null) {
-         groupArtifact = ArtifactQuery.checkArtifactFromTypeAndName(CoreArtifactTypes.UserGroup, groupName, branch);
+         try {
+            groupArtifact = ArtifactQuery.getArtifactFromToken(token, branch);
+         } catch (ArtifactDoesNotExist ex) {
+            // do nothing
+         }
          if (groupArtifact == null) {
             Artifact userGroupsFolder = getOrCreateUserGroupsFolder(branch);
-            groupArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.UserGroup, branch, groupName);
+            groupArtifact =
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.UserGroup, branch, token.getName(), token.getGuid());
             userGroupsFolder.addChild(groupArtifact);
          }
          ArtifactCache.cacheByTextId(cacheKey, groupArtifact);
@@ -138,6 +144,6 @@ public class OseeGroup {
 
    @Override
    public String toString() {
-      return "OseeGroup [groupName=" + groupName + "]";
+      return "OseeGroup [groupName=" + token.getName() + "]";
    }
 }

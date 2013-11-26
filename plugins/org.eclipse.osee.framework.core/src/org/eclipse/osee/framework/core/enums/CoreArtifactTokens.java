@@ -18,6 +18,8 @@ public final class CoreArtifactTokens {
    // @formatter:off
    public static IArtifactToken DefaultHierarchyRoot = TokenFactory.createArtifactToken("AEslkN+d4hWXjQvnZ1gA", "Default Hierarchy Root", CoreArtifactTypes.RootArtifact);
    public static IArtifactToken GroupRoot = TokenFactory.createArtifactToken("AExdLMeOTGhhPY4CyvQA", "Root Artifact", CoreArtifactTypes.UniversalGroup);
+   public static IArtifactToken Everyone = TokenFactory.createArtifactToken("AAABEbn4DKoAaR82FZsL3A", "Everyone", CoreArtifactTypes.UserGroup);
+   public static IArtifactToken OseeAdmin = TokenFactory.createArtifactToken("AAABHaItmnUAG6ZAYlFKag", "OseeAdmin", CoreArtifactTypes.UserGroup);
    // @formatter:on
 
    private CoreArtifactTokens() {

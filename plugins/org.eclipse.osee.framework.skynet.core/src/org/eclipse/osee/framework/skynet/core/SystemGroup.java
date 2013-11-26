@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
+import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -18,13 +20,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public enum SystemGroup {
 
-   Everyone,
-   OseeAdmin;
+   Everyone(CoreArtifactTokens.Everyone),
+   OseeAdmin(CoreArtifactTokens.OseeAdmin);
 
    private final OseeGroup group;
 
-   SystemGroup() {
-      group = new OseeGroup(name());
+   SystemGroup(IArtifactToken token) {
+      group = new OseeGroup(token);
    }
 
    public Artifact getArtifact() throws OseeCoreException {

@@ -37,6 +37,10 @@ public final class AtsArtifactToken {
       CoreArtifactTypes.UniversalGroup);
    public static IArtifactToken WorkDef_State_Names = TokenFactory.createArtifactToken("BFqfTrN8W3QmQSFAi6wA",
       "WorkDef_State_Names", CoreArtifactTypes.GeneralData);
+   public static IArtifactToken AtsAdmin = TokenFactory.createArtifactToken("AAABHaItoVsAG6ZAAMyhQw", "AtsAdmin",
+      CoreArtifactTypes.UserGroup);
+   public static IArtifactToken AtsTempAdmin = TokenFactory.createArtifactToken("AAABHaItoVsAG7ZAAMyhQw",
+      "AtsTempAdmin", CoreArtifactTypes.UserGroup);
 
    private AtsArtifactToken() {
       // Constants

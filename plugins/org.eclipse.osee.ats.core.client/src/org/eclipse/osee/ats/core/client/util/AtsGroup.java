@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.util;
 
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.OseeGroup;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -20,13 +24,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public enum AtsGroup {
 
-   AtsAdmin, // Admin setting upon startup
-   AtsTempAdmin; // Allows user to temporarily toggle admin; overrides AtsAdmin
+   AtsAdmin(AtsArtifactToken.AtsAdmin), // Admin setting upon startup
+   AtsTempAdmin(AtsArtifactToken.AtsTempAdmin); // Allows user to temporarily toggle admin; overrides AtsAdmin
 
    private final OseeGroup group;
 
-   AtsGroup() {
-      group = new OseeGroup(name());
+   AtsGroup(IArtifactToken token) {
+      group = new OseeGroup(token);
    }
 
    public Artifact getArtifact() throws OseeCoreException {
