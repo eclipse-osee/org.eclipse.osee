@@ -88,7 +88,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {
+   public void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics, IAtsUser user) throws OseeCoreException {
 
       // get hours in current state, if additional hours + current hours < 0, walk other states subtracting difference
       double hoursInCurrentState = getHoursSpent(state.getName());
@@ -115,7 +115,7 @@ public class StateManager implements IAtsStateManager {
          this.percentCompleteValue = percentComplete;
       }
       if (logMetrics) {
-         logMetrics(workItem.getStateMgr().getCurrentState(), AtsCore.getUserService().getCurrentUser(), new Date());
+         logMetrics(workItem.getStateMgr().getCurrentState(), user, new Date());
       }
       setDirty(true);
    }
@@ -159,7 +159,7 @@ public class StateManager implements IAtsStateManager {
       boolean changed = setMetricsIfChanged(state, hours, percentComplete);
       if (changed) {
          if (logMetrics) {
-            logMetrics(workItem.getStateMgr().getCurrentState(), AtsCore.getUserService().getCurrentUser(), new Date());
+            logMetrics(workItem.getStateMgr().getCurrentState(), user, new Date());
          }
          setDirty(true);
       }

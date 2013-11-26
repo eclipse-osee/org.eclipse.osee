@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
@@ -274,7 +275,8 @@ public class ExcelAtsTaskArtifactExtractor {
                throw new OseeArgumentException("Invalid Hours Spent \"%s\" for row %d", str, rowNum);
             }
             sma.getStateMgr().updateMetrics(sma.getStateDefinition(), hours,
-               sma.getStateMgr().getPercentComplete(sma.getCurrentStateName()), true);
+               sma.getStateMgr().getPercentComplete(sma.getCurrentStateName()), true,
+               AtsCore.getUserService().getCurrentUser());
          }
       }
 
@@ -291,7 +293,8 @@ public class ExcelAtsTaskArtifactExtractor {
                throw new OseeArgumentException("Invalid Percent Complete \"%s\" for row %d", str, rowNum);
             }
             int percentInt = percent.intValue();
-            sma.getStateMgr().updateMetrics(sma.getStateDefinition(), 0, percentInt, true);
+            sma.getStateMgr().updateMetrics(sma.getStateDefinition(), 0, percentInt, true,
+               AtsCore.getUserService().getCurrentUser());
          }
       }
 

@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
@@ -120,7 +121,8 @@ public class PeerToPeerReviewManager {
       }
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.Location, reviewMaterials);
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.ReviewFormalType, ReviewFormalType.InFormal.name());
-      reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete, true);
+      reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete,
+         true, AtsCore.getUserService().getCurrentUser());
       return Result.TrueResult;
    }
 
@@ -139,7 +141,8 @@ public class PeerToPeerReviewManager {
          }
          defectManager.saveToArtifact(reviewArt);
       }
-      reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete, true);
+      reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete,
+         true, AtsCore.getUserService().getCurrentUser());
       return Result.TrueResult;
    }
 

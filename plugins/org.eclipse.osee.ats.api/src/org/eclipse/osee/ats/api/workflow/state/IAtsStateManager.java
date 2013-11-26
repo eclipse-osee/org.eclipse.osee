@@ -31,7 +31,7 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    StateType getCurrentStateType();
 
-   void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException;
+   void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics, IAtsUser user) throws OseeCoreException;
 
    void setMetrics(double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date) throws OseeCoreException;
 

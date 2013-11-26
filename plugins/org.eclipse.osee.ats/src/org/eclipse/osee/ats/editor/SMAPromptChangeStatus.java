@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -116,7 +117,8 @@ public class SMAPromptChangeStatus {
             workItem.getStateMgr().removeAssignee(AtsCoreUsers.UNASSIGNED_USER);
             workItem.getStateMgr().addAssignee(AtsClientService.get().getUserAdmin().getCurrentUser());
          }
-         workItem.getStateMgr().updateMetrics(workItem.getStateDefinition(), hours, percent, true);
+         workItem.getStateMgr().updateMetrics(workItem.getStateDefinition(), hours, percent, true,
+            AtsCore.getUserService().getCurrentUser());
          changes.add(workItem);
       }
    }
