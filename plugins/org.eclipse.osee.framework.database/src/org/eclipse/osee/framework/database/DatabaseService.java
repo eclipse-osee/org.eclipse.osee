@@ -46,6 +46,8 @@ public interface DatabaseService {
 
    <T, O extends Object> T runPreparedQueryFetchObject(OseeConnection connection, T defaultValue, String query, O... data) throws OseeCoreException;
 
+   void runQuery(IQueryProcessor processor, String query, Object... data);
+
    boolean isProduction() throws OseeCoreException;
 
    Map<String, String> getStatistics() throws OseeCoreException;
