@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.impl.internal.model;
 import org.junit.Assert;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
-import org.eclipse.osee.ats.impl.internal.model.PeerReviewDefinition;
+import org.eclipse.osee.ats.impl.internal.workdef.model.PeerReviewDefinition;
 import org.junit.Test;
 
 /**

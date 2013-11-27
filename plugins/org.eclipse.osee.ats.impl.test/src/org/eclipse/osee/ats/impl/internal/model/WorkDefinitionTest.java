@@ -17,6 +17,8 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.impl.internal.AtsWorkDefinitionServiceImpl;
+import org.eclipse.osee.ats.impl.internal.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.impl.internal.workdef.model.WorkDefinition;
 import org.junit.Assert;
 import org.junit.Test;
 

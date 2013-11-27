@@ -17,13 +17,13 @@ import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.impl.internal.AtsWorkDefinitionServiceImpl;
-import org.eclipse.osee.ats.impl.internal.model.CompositeLayoutItem;
-import org.eclipse.osee.ats.impl.internal.model.DecisionReviewDefinition;
-import org.eclipse.osee.ats.impl.internal.model.LayoutItem;
-import org.eclipse.osee.ats.impl.internal.model.PeerReviewDefinition;
-import org.eclipse.osee.ats.impl.internal.model.StateDefinition;
-import org.eclipse.osee.ats.impl.internal.model.WidgetDefinition;
-import org.eclipse.osee.ats.impl.internal.model.WorkDefinition;
+import org.eclipse.osee.ats.impl.internal.workdef.model.CompositeLayoutItem;
+import org.eclipse.osee.ats.impl.internal.workdef.model.DecisionReviewDefinition;
+import org.eclipse.osee.ats.impl.internal.workdef.model.LayoutItem;
+import org.eclipse.osee.ats.impl.internal.workdef.model.PeerReviewDefinition;
+import org.eclipse.osee.ats.impl.internal.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.impl.internal.workdef.model.WidgetDefinition;
+import org.eclipse.osee.ats.impl.internal.workdef.model.WorkDefinition;
 import org.junit.Test;
 
 public class StateDefinitionTest {

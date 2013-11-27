@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.impl.internal.model;
 
 import org.junit.Assert;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
-import org.eclipse.osee.ats.impl.internal.model.WidgetDefinition;
+import org.eclipse.osee.ats.impl.internal.workdef.model.WidgetDefinition;
 import org.junit.Test;
 
 /**

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.model;
 
-import org.eclipse.osee.ats.impl.internal.model.AbstractWorkDefItem;
+import org.eclipse.osee.ats.impl.internal.workdef.model.AbstractWorkDefItem;
 import org.junit.Assert;
 import org.junit.Test;
 

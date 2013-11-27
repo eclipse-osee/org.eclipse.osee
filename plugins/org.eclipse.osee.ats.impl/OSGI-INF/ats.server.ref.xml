@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.osee.ats.impl.internal.AtsServerService">
+   <implementation class="org.eclipse.osee.ats.impl.internal.AtsServerService"/>
+   <reference bind="setAtsServer" cardinality="1..1" interface="org.eclipse.osee.ats.impl.IAtsServer" name="IAtsServer" policy="static"/>
+</scr:component>
+
