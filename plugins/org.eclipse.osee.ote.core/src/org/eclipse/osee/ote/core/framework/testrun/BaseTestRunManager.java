@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.core.framework.testrun;
 
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -130,5 +131,13 @@ public class BaseTestRunManager implements ITestRunManager {
    @Override
    public boolean isAborted() {
       return aborted;
+   }
+
+   @Override
+   public boolean isCurrentThreadScript() {
+      if (testRunThread != null) {
+         return Thread.currentThread() == testRunThread.getThread();
+      }
+      return false;
    }
 }

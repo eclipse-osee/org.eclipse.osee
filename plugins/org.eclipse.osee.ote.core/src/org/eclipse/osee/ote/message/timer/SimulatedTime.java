@@ -49,7 +49,7 @@ public class SimulatedTime extends TimerControl {
             task.baseRunOneCycle(cycleCount);
          } catch (Throwable ex) {
             OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE,
-               "Aborting the test script because an Environment Task is failing", ex);
+                  "Aborting the test script because an Environment Task is failing", ex);
             env.getRunManager().abort(ex, false);
          }
       }
@@ -85,16 +85,17 @@ public class SimulatedTime extends TimerControl {
          cycleCounters.add(cycleCountDown);
       }
 
+      unlockScriptControl();
+
+      return cycleCountDown;
+   }
+
+   protected void unlockScriptControl() {
       try {
          scriptControl.unlock();
       } catch (IllegalMonitorStateException ex) {
-         if (!Thread.currentThread().getName().contains("(JSK) mux request dispatch") || !Thread.currentThread().getName().contains(
-               "(JSK) Mux request dispatch")) {
-            OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex);
-         }
+         OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, ex);
       }
-      
-      return cycleCountDown;
    }
 
    @Override
@@ -180,5 +181,10 @@ public class SimulatedTime extends TimerControl {
    @Override
    public long getTimeOfDay() {
       return sysTime + getEnvTime();
+   }
+
+   @Override
+   public boolean isRealtime() {
+      return false;
    }
 }

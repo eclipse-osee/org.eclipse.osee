@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.util.benchmark.Benchmark;
 import org.eclipse.osee.ote.core.environment.EnvironmentTask;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
@@ -28,7 +29,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
  */
 public class RealTime extends TimerControl {
    private final HashMap<EnvironmentTask, ScheduledFuture<?>> handleMap =
-      new HashMap<EnvironmentTask, ScheduledFuture<?>>(32);
+         new HashMap<EnvironmentTask, ScheduledFuture<?>>(32);
 
    /**
     * Constructor
@@ -43,7 +44,7 @@ public class RealTime extends TimerControl {
          final WeakReference<TestEnvironment> te = new WeakReference<TestEnvironment>(environment);
          final ScheduledFuture<?> handle = schedulePeriodicTask(new Runnable() {
             final Benchmark bm = new Benchmark(task.getClass().getName() + ":" + task.getHzRate() + "Hz",
-               (long) (1000000.0 / task.getHzRate()));
+                  (long) (1000000.0 / task.getHzRate()));
 
             @Override
             public void run() {
@@ -59,7 +60,7 @@ public class RealTime extends TimerControl {
                      h.cancel(false);
                   }
                   te.get().handleException(ex, "exception while running one cycle for task " + task.toString(),
-                     Level.SEVERE, false);
+                        Level.SEVERE, false);
                }
             }
 
@@ -150,5 +151,10 @@ public class RealTime extends TimerControl {
    @Override
    public long getTimeOfDay() {
       return getEnvTime();
+   }
+
+   @Override
+   public boolean isRealtime() {
+      return true;
    }
 }

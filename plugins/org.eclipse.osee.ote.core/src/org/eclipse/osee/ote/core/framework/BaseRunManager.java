@@ -61,7 +61,7 @@ public class BaseRunManager implements IRunManager {
             if (rb.isReturnStatusOK()) {
                try {
                   rb.append(lifecycleListenerProvider.notifyPostInstantiation(propertyStore, testRunManager.getTest(),
-                     env));
+                        env));
                } catch (Throwable th) {
                   MethodResultImpl result = new MethodResultImpl(ReturnCode.ERROR);
                   result.addStatus(new BaseStatus(this.getClass().getName(), Level.SEVERE, th));
@@ -113,5 +113,10 @@ public class BaseRunManager implements IRunManager {
    @Override
    public TestScript getCurrentScript() {
       return testRunManager.getTest();
+   }
+
+   @Override
+   public boolean isCurrentThreadScript() {
+      return testRunManager.isCurrentThreadScript();
    }
 }

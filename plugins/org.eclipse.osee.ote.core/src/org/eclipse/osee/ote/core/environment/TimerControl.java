@@ -18,10 +18,13 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.ote.core.environment.interfaces.BasicTimeout;
 import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
 import org.eclipse.osee.ote.core.environment.interfaces.ITimerControl;
+import org.eclipse.osee.ote.core.framework.IRunManager;
 
 public abstract class TimerControl implements ITimerControl {
 
    private final ScheduledExecutorService executor;
+   private IRunManager runManager;
+
 
    public TimerControl(int maxTimers) {
       executor = Executors.newScheduledThreadPool(maxTimers);
@@ -51,5 +54,15 @@ public abstract class TimerControl implements ITimerControl {
          setTimerFor(obj, milliseconds);
          obj.wait();
       }
+   }
+
+   @Override
+   public void setRunManager(IRunManager runManager) {
+      this.runManager = runManager;
+   }
+
+   @Override
+   public IRunManager getRunManager() {
+      return runManager;
    }
 }

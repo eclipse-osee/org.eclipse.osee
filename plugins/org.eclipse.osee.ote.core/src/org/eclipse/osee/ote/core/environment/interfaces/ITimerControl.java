@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 
 import org.eclipse.osee.ote.core.environment.EnvironmentTask;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
+import org.eclipse.osee.ote.core.framework.IRunManager;
 
 public interface ITimerControl {
    void addTask(EnvironmentTask task, TestEnvironment environment);
@@ -41,4 +42,10 @@ public interface ITimerControl {
    public void step();
 
    long getTimeOfDay();
+
+   public void setRunManager(IRunManager runManager);
+
+   public IRunManager getRunManager();
+
+   public boolean isRealtime();
 }

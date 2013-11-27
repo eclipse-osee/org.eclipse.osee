@@ -31,4 +31,6 @@ public interface IRunManager {
    public boolean isAborted();
 
    public TestScript getCurrentScript();
+
+   public boolean isCurrentThreadScript();
 }

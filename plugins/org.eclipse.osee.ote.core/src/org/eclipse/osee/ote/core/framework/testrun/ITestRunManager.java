@@ -30,4 +30,6 @@ public interface ITestRunManager {
    boolean abort(Throwable th, boolean wait);
 
    boolean isAborted();
+
+   boolean isCurrentThreadScript();
 }

@@ -22,6 +22,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.TestCase;
@@ -43,6 +44,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestStation;
 import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
 import org.eclipse.osee.ote.core.environment.interfaces.ITimerControl;
 import org.eclipse.osee.ote.core.environment.status.CommandEndedStatusEnum;
+import org.eclipse.osee.ote.core.framework.IRunManager;
 import org.eclipse.osee.ote.core.log.ITestPointTally;
 import org.eclipse.osee.ote.core.log.TestLogger;
 import org.eclipse.osee.ote.core.log.record.TestPointRecord;
@@ -54,9 +56,9 @@ import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAcce
 
 public class UnitTestAccessor implements ITestEnvironmentMessageSystemAccessor, ITestAccessor {
    private final HashMap<EnvironmentTask, ScheduledFuture<?>> handleMap =
-      new HashMap<EnvironmentTask, ScheduledFuture<?>>(32);
+         new HashMap<EnvironmentTask, ScheduledFuture<?>>(32);
    private final ScheduledExecutorService executor =
-      Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+         Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
    private final IScriptControl scriptCtrl = new ScriptControl();
    private final IReportData reportData = new ReportDataControl();
    private final ITestLogger testLogger = new TestLogger() {
@@ -511,8 +513,21 @@ public class UnitTestAccessor implements ITestEnvironmentMessageSystemAccessor, 
 
       @Override
       public long getTimeOfDay() {
-         // TODO Auto-generated method stub
          return 0;
+      }
+
+      @Override
+      public void setRunManager(IRunManager runManager) {
+      }
+
+      @Override
+      public IRunManager getRunManager() {
+         return null;
+      }
+
+      @Override
+      public boolean isRealtime() {
+         return false;
       }
 
    };
