@@ -1,28 +1,34 @@
 package org.eclipse.osee.ote.rest.internal;
 
-import org.eclipse.osee.ote.OTEConfiguration;
-import org.eclipse.osee.ote.OTEConfigurationItem;
-import org.eclipse.osee.ote.rest.model.OteConfiguration;
-import org.eclipse.osee.ote.rest.model.OteConfigurationItem;
+import org.eclipse.osee.ote.Configuration;
+import org.eclipse.osee.ote.ConfigurationItem;
+import org.eclipse.osee.ote.rest.model.OTEConfiguration;
+import org.eclipse.osee.ote.rest.model.OTEConfigurationItem;
 
 public class TranslateUtil {
 
-   public static OTEConfiguration translateToOtherConfig(OteConfiguration restConfig) {
-      OTEConfiguration config = new OTEConfiguration();
-      for(OteConfigurationItem item:restConfig.getItems()){
+   public static Configuration translateToOtherConfig(OTEConfiguration restConfig) {
+      if(restConfig == null){
+         return null;
+      }
+      Configuration config = new Configuration();
+      for(OTEConfigurationItem item:restConfig.getItems()){
          config.addItem(TranslateUtil.translateToOtherConfig(item));
       }
       return config;
    }
    
-   public static OTEConfigurationItem translateToOtherConfig(OteConfigurationItem restConfigItem) {
-      return new OTEConfigurationItem(restConfigItem.getLocationUrl(), restConfigItem.getBundleVersion(), restConfigItem.getBundleName(), restConfigItem.getMd5Digest());
+   public static ConfigurationItem translateToOtherConfig(OTEConfigurationItem restConfigItem) {
+      return new ConfigurationItem(restConfigItem.getLocationUrl(), restConfigItem.getBundleVersion(), restConfigItem.getBundleName(), restConfigItem.getMd5Digest(), restConfigItem.isOsgiBundle());
    }
    
-   public static OteConfiguration translateConfig(OTEConfiguration config){
-      OteConfiguration restConfig = new OteConfiguration();
-      for(OTEConfigurationItem item:config.getItems()){
-         OteConfigurationItem newitem = new OteConfigurationItem();
+   public static OTEConfiguration translateConfig(Configuration config){
+      if(config == null){
+         return null;
+      }
+      OTEConfiguration restConfig = new OTEConfiguration();
+      for(ConfigurationItem item:config.getItems()){
+         OTEConfigurationItem newitem = new OTEConfigurationItem();
          newitem.setBundleName(item.getSymbolicName());
          newitem.setBundleVersion(item.getVersion());
          newitem.setLocationUrl(item.getLocationUrl());

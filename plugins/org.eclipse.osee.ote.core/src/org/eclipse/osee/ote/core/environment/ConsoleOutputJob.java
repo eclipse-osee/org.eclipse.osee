@@ -27,7 +27,7 @@ public class ConsoleOutputJob implements Runnable {
       try {
          callback.initiateInformationalPrompt(message);
       } catch (Throwable e) {
-         e.printStackTrace();
+         System.out.println(message);
       }
    }
 

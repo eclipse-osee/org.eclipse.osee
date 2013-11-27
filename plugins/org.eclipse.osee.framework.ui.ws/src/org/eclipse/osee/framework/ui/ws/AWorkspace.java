@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.ws;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -33,8 +34,10 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.part.ISetSelectionTarget;
 import org.eclipse.ui.views.navigator.IResourceNavigator;
 import org.eclipse.ui.views.navigator.ResourceNavigator;
+import org.eclipse.ui.navigator.CommonNavigator;
 
 /**
  * @author Donald G. Dunne
@@ -180,6 +183,9 @@ public final class AWorkspace {
       } else if (targetPart instanceof IPackagesViewPart) {
          IPackagesViewPart navigator = (IPackagesViewPart) targetPart;
          return (StructuredSelection) navigator.getTreeViewer().getSelection();
+      } else if (targetPart instanceof CommonNavigator) {
+         CommonNavigator navigator = (CommonNavigator) targetPart;
+         return (StructuredSelection) navigator.getCommonViewer().getSelection();
       }
       return null;
    }

@@ -87,9 +87,6 @@ public abstract class AbstractInteractivePrompt<T> extends AbstractRemotePrompt 
          } finally {
             script.getTestEnvironment().getScriptCtrl().lock();
          }
-         if (exception != null) {
-            throw exception;
-         }
          return response;
       }
    }

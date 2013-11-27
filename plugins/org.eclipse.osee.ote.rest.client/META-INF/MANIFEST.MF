@@ -18,6 +18,7 @@ Import-Package: javax.ws.rs,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.network,
+ org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.plugin.core.server
 Export-Package: org.eclipse.osee.ote.rest.client
 Bundle-ActivationPolicy: lazy
@@ -25,4 +26,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.ote.rest.model,
  com.sun.jersey;bundle-version="1.18.0",
  com.sun.jersey.client.apache;bundle-version="1.18.0",
- javax.servlet
+ javax.servlet,
+ org.codehaus.jackson.core

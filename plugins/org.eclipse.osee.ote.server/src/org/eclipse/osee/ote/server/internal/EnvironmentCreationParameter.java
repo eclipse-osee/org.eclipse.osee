@@ -21,7 +21,6 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentServiceConfig;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
 import org.eclipse.osee.ote.server.TestEnvironmentFactory;
-import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -34,16 +33,14 @@ class EnvironmentCreationParameter {
    private ITestEnvironment remoteTestEnvironment;
    private ITestEnvironment exportedRemoteTestEnvironment;
    private TestEnvironmentFactory factory;
-   private final PackageAdmin packageAdmin;
    private final String environmentFactoryClass;
 
-   public EnvironmentCreationParameter(IRuntimeLibraryManager runtimeLibraryManager, NodeInfo oteEmbeddedBroker, IServiceConnector serviceConnector, ITestEnvironmentServiceConfig config, TestEnvironmentFactory factory, String environmentFactoryClass, PackageAdmin packageAdmin) {
+   public EnvironmentCreationParameter(IRuntimeLibraryManager runtimeLibraryManager, NodeInfo oteEmbeddedBroker, IServiceConnector serviceConnector, ITestEnvironmentServiceConfig config, TestEnvironmentFactory factory, String environmentFactoryClass) {
       this.oteEmbeddedBroker = oteEmbeddedBroker;
       this.serviceConnector = serviceConnector;
       this.config = config;
       this.runtimeLibraryManager = runtimeLibraryManager;
       this.factory = factory;
-      this.packageAdmin = packageAdmin;
       this.environmentFactoryClass = environmentFactoryClass;
 
    }
@@ -66,7 +63,7 @@ class EnvironmentCreationParameter {
 
    public MessageSystemTestEnvironment createEnvironment() throws Throwable {
       if (factory == null) {
-         ExportClassLoader exportClassLoader = new ExportClassLoader(packageAdmin);
+         ExportClassLoader exportClassLoader = ExportClassLoader.getInstance();
          Class<? extends TestEnvironmentFactory> clazz =
             exportClassLoader.loadClass(environmentFactoryClass).asSubclass(TestEnvironmentFactory.class);
          factory = clazz.newInstance();

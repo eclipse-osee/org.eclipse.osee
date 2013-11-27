@@ -10,19 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.framework.command;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
 
-public interface ICommandHandle extends Remote {
-   boolean cancelAll(boolean mayInterruptIfRunning) throws RemoteException;
+public interface ICommandHandle {
+   boolean cancelAll(boolean mayInterruptIfRunning);
 
-   boolean cancelSingle(boolean mayInterruptIfRunning) throws RemoteException;
+   boolean cancelSingle(boolean mayInterruptIfRunning);
 
-   ITestCommandResult get() throws RemoteException;
+   ITestCommandResult get();
 
-   boolean isCancelled() throws RemoteException;
+   boolean isCancelled();
 
-   boolean isDone() throws RemoteException;
+   boolean isDone();
 
-   String getCommandKey() throws RemoteException;
+   String getCommandKey();
 }

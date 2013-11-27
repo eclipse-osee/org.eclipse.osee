@@ -26,8 +26,6 @@ public interface ITestEnvironment extends Remote {
 
    Remote getControlInterface(String controlInterfaceID) throws RemoteException;
 
-   ICommandHandle addCommand(ITestServerCommand cmd) throws RemoteException;
-
    IRemoteCommandConsole getCommandConsole() throws RemoteException;
    public void closeCommandConsole(IRemoteCommandConsole console) throws RemoteException;
 

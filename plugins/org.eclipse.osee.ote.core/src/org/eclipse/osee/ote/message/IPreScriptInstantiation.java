@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.message;
 /**
  * @author Andrew M. Finkbeiner
  */
-@Deprecated
 public interface IPreScriptInstantiation {
    void run();
 }

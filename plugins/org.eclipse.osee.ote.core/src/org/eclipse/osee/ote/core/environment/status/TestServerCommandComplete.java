@@ -11,7 +11,8 @@
 package org.eclipse.osee.ote.core.environment.status;
 
 import java.io.Serializable;
-import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
+
+import org.eclipse.osee.ote.core.framework.command.TestCommandStatus;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -19,10 +20,12 @@ import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
 public class TestServerCommandComplete implements Serializable, IServiceStatusData {
 
    private static final long serialVersionUID = -2678833105694275416L;
-   private final ICommandHandle handle;
+   private TestCommandStatus cmdStatus;
+   private Throwable th;
 
-   public TestServerCommandComplete(ICommandHandle handle) {
-      this.handle = handle;
+   public TestServerCommandComplete(TestCommandStatus cmdStatus, Throwable th) {
+      this.cmdStatus = cmdStatus;
+      this.th = th;
    }
 
    @Override
@@ -30,7 +33,11 @@ public class TestServerCommandComplete implements Serializable, IServiceStatusDa
       visitor.asTestServerCommandComplete(this);
    }
 
-   public ICommandHandle getHandle() {
-      return handle;
+   public TestCommandStatus getCmdStatus() {
+      return cmdStatus;
+   }
+   
+   public Throwable getThrowable() {
+      return th;
    }
 }

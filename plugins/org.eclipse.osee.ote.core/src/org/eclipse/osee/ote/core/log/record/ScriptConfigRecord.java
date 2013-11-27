@@ -124,9 +124,9 @@ public class ScriptConfigRecord extends TestRecord {
       writeElement(writer, BaseTestTags.SCRIPT_NAME, getMessage());
 
       writer.writeStartElement("User");
-      writer.writeAttribute("name", this.userName);
-      writer.writeAttribute("email", this.userEmail);
-      writer.writeAttribute("id", this.userId);
+      writer.writeAttribute("name", userName == null ? "N/A" : userName);
+      writer.writeAttribute("email", userEmail == null ? "N/A" : userEmail);
+      writer.writeAttribute("id", userId == null ? "N/A" : userId);
       writer.writeEndElement();
 
       if (scriptVersionRecord != null) {
@@ -153,6 +153,5 @@ public class ScriptConfigRecord extends TestRecord {
       this.userName = name;
       this.userEmail = email;
       this.userId = id;
-
    }
 }

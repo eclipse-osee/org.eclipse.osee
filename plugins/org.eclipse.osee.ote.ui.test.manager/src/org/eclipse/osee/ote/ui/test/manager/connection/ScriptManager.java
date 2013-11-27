@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Vector;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -36,6 +37,7 @@ import org.eclipse.osee.ote.ui.test.manager.jobs.StoreOutfileJob;
 import org.eclipse.osee.ote.ui.test.manager.models.OutputModelJob;
 import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask;
 import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask.ScriptStatusEnum;
+import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTaskList;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -76,7 +78,11 @@ public abstract class ScriptManager implements Runnable {
    public void notifyScriptDequeued(String className) {
       ScriptTask task = guidToScriptTask.get(className);
       if (task != null) {
-         guidToScriptTask.remove(task);
+         
+         ScriptTask value = guidToScriptTask.remove(task);
+         if(value == null){
+            System.out.println("did not dq");
+         }
       }
    }
 
@@ -121,7 +127,21 @@ public abstract class ScriptManager implements Runnable {
    }
 
    public ScriptTask getScriptTask(String name) {
-      return guidToScriptTask.get(name);
+      ScriptTask t = guidToScriptTask.get(name);
+      if(t == null){
+         Object obj = stv.getInput();
+         if(obj instanceof ScriptTaskList){
+            ScriptTaskList stl = (ScriptTaskList)obj;
+            for(ScriptTask task:stl.getTasks()){
+               String clazz = task.getScriptModel().getTestClass();
+               if(clazz.equals(name)){
+                  t = task;
+                  break;
+               }
+            }
+         }
+      }
+      return t;
    }
 
    public void notifyScriptQueued(GUID theGUID, final ScriptTask script) {

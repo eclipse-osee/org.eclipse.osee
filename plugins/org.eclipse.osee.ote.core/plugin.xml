@@ -20,4 +20,29 @@
          point="org.eclipse.osee.framework.jini.JiniInterface">
       <RegisterBundle/>
    </extension>
+   <extension
+         id="server"
+         name="OTE Server"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.eclipse.osee.ote.core.ServerApplication">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="server"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.osee.ote.core.server"
+            name="ote.server">
+         <property
+               name="appName"
+               value="ote.server">
+         </property>
+      </product>
+   </extension>
 </plugin>

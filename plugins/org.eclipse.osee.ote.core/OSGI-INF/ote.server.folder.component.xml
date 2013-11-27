@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.ote.server.folder">
+   <implementation class="org.eclipse.osee.ote.internal.OTEFolderImpl"/>
+   <service>
+      <provide interface="org.eclipse.osee.ote.OTEServerFolder"/>
+   </service>
+</scr:component>

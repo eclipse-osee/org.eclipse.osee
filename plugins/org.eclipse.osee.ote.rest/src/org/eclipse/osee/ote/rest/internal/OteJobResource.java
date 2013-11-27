@@ -18,7 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.ote.rest.model.OteJobStatus;
+import org.eclipse.osee.ote.rest.model.OTEJobStatus;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -44,7 +44,7 @@ public class OteJobResource {
    
    @GET
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   public OteJobStatus getConfig() throws OseeCoreException, InterruptedException, ExecutionException {
+   public OTEJobStatus getConfig() throws OseeCoreException, InterruptedException, ExecutionException {
 	  return store.getJob(uuid);
    }
  

@@ -35,6 +35,7 @@ public class BundleInfoLite {
    private final Manifest manifest;
    private byte[] md5Digest;
    private Bundle bundle;
+
    
    public BundleInfoLite(URL systemLocation) throws IOException {
       File tmpFile;
@@ -128,7 +129,6 @@ public class BundleInfoLite {
 		   bundle.uninstall();
 	   }
 	   return bundle;
-	   
    }
    
    public boolean isInstalled() {

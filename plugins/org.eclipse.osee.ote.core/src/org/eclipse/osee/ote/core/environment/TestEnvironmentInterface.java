@@ -90,4 +90,6 @@ public interface TestEnvironmentInterface {
 
    public IEnvironmentFactory getEnvironmentFactory();
 
+   void setupOutfileDir(String outfileDir) throws IOException;
+
 }

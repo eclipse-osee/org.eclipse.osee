@@ -157,35 +157,8 @@ public class OteService implements IHostTestEnvironment, IService {
 
    @Override
    public void kill() throws RemoteException {
-      if (currentEnvironment != null) {
+      if(currentEnvironment != null){
          currentEnvironment.shutdown();
-      }
-   }
-
-   @Override
-   public void cleanupRuntimeBundles() throws RemoteException {
-      if (runtimeLibraryManager != null) {
-         runtimeLibraryManager.cleanup();
-      }
-   }
-
-   @Override
-   public void sendRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException {
-      try {
-         runtimeLibraryManager.loadBundles(bundles);
-      } catch (Exception ex) {
-         OseeLog.log(OteService.class, Level.SEVERE, ex);
-         throw new RemoteException(ex.getMessage());
-      }
-   }
-
-   @Override
-   public void updateRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException {
-      try {
-         runtimeLibraryManager.updateBundles(bundles);
-      } catch (Exception ex) {
-         OseeLog.log(OteService.class, Level.SEVERE, ex);
-         throw new RemoteException(ex.getMessage());
       }
    }
 
@@ -200,15 +173,10 @@ public class OteService implements IHostTestEnvironment, IService {
          updateDynamicInfo();
       }
    }
-   
-   @Override
-   public BundleConfigurationReport checkBundleConfiguration(Collection<BundleDescription> bundles) throws RemoteException {
-      try {
-         return runtimeLibraryManager.checkBundleConfiguration(bundles);
-      } catch (Exception ex) {
-         OseeLog.log(OteService.class, Level.SEVERE, ex);
-         throw new RemoteException(ex.getMessage());
-      }
-   }
 
+   @Override
+   public String getHttpURL() throws RemoteException {
+      return (String)enhancedProperties.getProperty("appServerURI");
+   }
+   
 }

@@ -12,6 +12,10 @@ package org.eclipse.osee.ote.rest.internal;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import javax.ws.rs.Consumes;
@@ -25,8 +29,9 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriBuilderException;
 import javax.ws.rs.core.UriInfo;
 
-import org.eclipse.osee.ote.rest.model.OteConfiguration;
-import org.eclipse.osee.ote.rest.model.OteJobStatus;
+import org.eclipse.osee.ote.rest.model.OTEConfiguration;
+import org.eclipse.osee.ote.rest.model.OTEConfigurationItem;
+import org.eclipse.osee.ote.rest.model.OTEJobStatus;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -43,15 +48,32 @@ public class OteConfigurationResource {
 
    @GET
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   public OteConfiguration getConfiguration() throws MalformedURLException, IllegalArgumentException, UriBuilderException, InterruptedException, ExecutionException {
+   public OTEConfiguration getConfiguration() throws MalformedURLException, IllegalArgumentException, UriBuilderException, InterruptedException, ExecutionException {
       return getDataStore().getConfiguration(uriInfo);
    }
    
    @POST
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   public OteJobStatus createConfig(OteConfiguration config) throws IOException, InterruptedException, ExecutionException {
+   public OTEJobStatus createConfig(OTEConfiguration config) throws IOException, InterruptedException, ExecutionException {
       return getDataStore().setup(config, uriInfo);
+   }
+   
+   @GET
+   @Produces({MediaType.TEXT_HTML})
+   public String getHtmlConfiguration() throws MalformedURLException, IllegalArgumentException, UriBuilderException, InterruptedException, ExecutionException {
+      OTEConfiguration config = getDataStore().getConfiguration(uriInfo);
+      HTMLBuilder b = new HTMLBuilder();
+      b.open("OTE Server Configuration");
+      b.h2("Server Configuration");      
+      b.ulStart();
+      List<OTEConfigurationItem> items = config.getItems();
+      Collections.sort(items, new OTEConfigItemSort());
+      for(OTEConfigurationItem item:config.getItems()){
+         b.li(String.format("%s %s", item.getBundleName(), item.getBundleVersion()));
+      }
+      b.ulStop();
+      return b.get();
    }
    
    private OteConfigurationStore getDataStore(){

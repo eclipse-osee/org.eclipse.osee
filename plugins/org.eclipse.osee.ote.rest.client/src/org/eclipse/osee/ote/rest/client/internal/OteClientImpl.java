@@ -18,9 +18,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
-import org.eclipse.osee.ote.rest.client.ConfigurationProgress;
-import org.eclipse.osee.ote.rest.client.GetFileProgress;
+import org.eclipse.osee.ote.rest.client.OTECacheItem;
 import org.eclipse.osee.ote.rest.client.OteClient;
+import org.eclipse.osee.ote.rest.client.Progress;
+import org.eclipse.osee.ote.rest.client.ProgressWithCancel;
+import org.eclipse.osee.ote.rest.model.OTEConfiguration;
+import org.eclipse.osee.ote.rest.model.OTETestRun;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -62,13 +65,28 @@ public class OteClientImpl implements OteClient, WebResourceFactory {
    }
 
    @Override
-   public Future<GetFileProgress> getFile(URI uri, File destination, String filePath, final GetFileProgress progress){
+   public Future<Progress> getFile(URI uri, File destination, String filePath, final Progress progress){
       return executor.submit(new GetOteServerFile(uri, destination, filePath, progress, this));
    }
    
    @Override
-   public Future<ConfigurationProgress> configureServerEnvironment(URI uri, List<File> jars, final ConfigurationProgress progress){
-      return executor.submit(new ConfigureOteServerFile(uri, jars, progress, this));
+   public Future<Progress> configureServerEnvironment(URI uri, List<File> jars, final Progress progress){
+      return executor.submit(new ConfigureOteServer(uri, jars, progress, this));
+   }
+
+   @Override
+   public Future<Progress> updateServerJarCache(URI uri, String baseJarURL, List<OTECacheItem> jars, Progress progress) {
+      return executor.submit(new PrepareOteServerFile(uri, baseJarURL, jars, progress, this));
+   }
+
+   @Override
+   public Future<ProgressWithCancel> runTest(URI uri, OTETestRun tests, Progress progress) {
+      return executor.submit(new RunTests(uri, tests, progress, this));
+   }
+
+   @Override
+   public Future<Progress> configureServerEnvironment(URI uri, OTEConfiguration configuration, Progress progress) {
+      return executor.submit(new ConfigureOteServer(uri, configuration, progress, this));
    }
 
 }

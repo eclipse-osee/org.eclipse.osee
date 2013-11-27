@@ -15,11 +15,17 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Future;
 
+import org.eclipse.osee.ote.rest.model.OTEConfiguration;
+import org.eclipse.osee.ote.rest.model.OTETestRun;
+
 
 /**
  * @author Andrew Finkbeiner
  */
 public interface OteClient {
-   Future<GetFileProgress> getFile(URI uri, File destination, String filePath, final GetFileProgress progress);
-   Future<ConfigurationProgress> configureServerEnvironment(URI uri, List<File> jars, final ConfigurationProgress progress);
+   Future<Progress> getFile(URI uri, File destination, String filePath, final Progress progress);
+   Future<Progress> configureServerEnvironment(URI uri, List<File> jars, final Progress progress);
+   Future<Progress> configureServerEnvironment(URI uri, OTEConfiguration configuration, final Progress progress);
+   Future<Progress> updateServerJarCache(URI uri, String baseJarURL, List<OTECacheItem> jars, final Progress progress);
+   Future<ProgressWithCancel> runTest(URI uri, OTETestRun tests, Progress progress);
 }

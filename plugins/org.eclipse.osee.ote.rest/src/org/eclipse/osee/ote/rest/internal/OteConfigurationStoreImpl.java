@@ -5,16 +5,16 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.ws.rs.core.UriBuilderException;
 import javax.ws.rs.core.UriInfo;
 
+import org.eclipse.osee.ote.Configuration;
+import org.eclipse.osee.ote.ConfigurationStatus;
 import org.eclipse.osee.ote.OTEApi;
-import org.eclipse.osee.ote.OTEConfiguration;
-import org.eclipse.osee.ote.OTEConfigurationStatus;
-import org.eclipse.osee.ote.OTEFuture;
-import org.eclipse.osee.ote.rest.model.OteConfiguration;
-import org.eclipse.osee.ote.rest.model.OteJobStatus;
+import org.eclipse.osee.ote.rest.model.OTEConfiguration;
+import org.eclipse.osee.ote.rest.model.OTEJobStatus;
 
 public class OteConfigurationStoreImpl implements OteConfigurationStore {
 
@@ -41,15 +41,20 @@ public class OteConfigurationStoreImpl implements OteConfigurationStore {
 	}
 
    @Override
-   public OteJobStatus setup(OteConfiguration config, UriInfo uriInfo) throws InterruptedException, ExecutionException, MalformedURLException, IllegalArgumentException, UriBuilderException {
-      OTEConfiguration realConfig = TranslateUtil.translateToOtherConfig(config);
-      ConfigurationJobStatus status = createConfigurationJobStatus(config, uriInfo);
-      OTEFuture<OTEConfigurationStatus> future = ote.loadConfiguration(realConfig, status);
+   public OTEJobStatus setup(OTEConfiguration config, UriInfo uriInfo) throws InterruptedException, ExecutionException, MalformedURLException, IllegalArgumentException, UriBuilderException {
+      Configuration realConfig = TranslateUtil.translateToOtherConfig(config);
+      ConfigurationJobStatus status = createConfigurationJobStatus(realConfig, uriInfo);
+      Future<ConfigurationStatus> future = null;
+      if(config.getInstall()){
+         future = ote.loadConfiguration(realConfig, status);
+      } else {
+         future = ote.downloadConfigurationJars(realConfig, status);
+      }
       status.setFuture(future);
       return status.getStatus();
    }
 
-   private ConfigurationJobStatus createConfigurationJobStatus(OteConfiguration config, UriInfo uriInfo) throws MalformedURLException, IllegalArgumentException, UriBuilderException {
+   private ConfigurationJobStatus createConfigurationJobStatus(Configuration config, UriInfo uriInfo) throws MalformedURLException, IllegalArgumentException, UriBuilderException {
       ConfigurationJobStatus status = new ConfigurationJobStatus();
       status.setId(UUID.randomUUID().toString());
       status.setUrl(generateJobUrl(status, uriInfo));
@@ -62,22 +67,22 @@ public class OteConfigurationStoreImpl implements OteConfigurationStore {
    }
    
    @Override
-   public OteJobStatus reset(UriInfo uriInfo) throws InterruptedException, ExecutionException, MalformedURLException, IllegalArgumentException, UriBuilderException {
+   public OTEJobStatus reset(UriInfo uriInfo) throws InterruptedException, ExecutionException, MalformedURLException, IllegalArgumentException, UriBuilderException {
       ConfigurationJobStatus status = createConfigurationJobStatus(uriInfo);
-      OTEFuture<OTEConfigurationStatus> future = ote.resetConfiguration(status);
+      Future<ConfigurationStatus> future = ote.resetConfiguration(status);
       status.setFuture(future);
       return status.getStatus();
    }
 
    @Override
-   public OteConfiguration getConfiguration(UriInfo uriInfo) throws MalformedURLException, IllegalArgumentException, UriBuilderException, InterruptedException, ExecutionException {
+   public OTEConfiguration getConfiguration(UriInfo uriInfo) throws MalformedURLException, IllegalArgumentException, UriBuilderException, InterruptedException, ExecutionException {
       ConfigurationJobStatus status = createConfigurationJobStatus(uriInfo);
-      OTEFuture<OTEConfigurationStatus> future = ote.getConfiguration();
+      Future<ConfigurationStatus> future = ote.getConfiguration();
       status.setFuture(future);
       if(future.isDone()){
          return TranslateUtil.translateConfig(future.get().getConfiguration());
       } else {
-         return new OteConfiguration();
+         return new OTEConfiguration();
       }
    }
 
@@ -90,7 +95,7 @@ public class OteConfigurationStoreImpl implements OteConfigurationStore {
    }
 
    @Override
-   public OteJobStatus getJob(String uuid) throws InterruptedException, ExecutionException {
+   public OTEJobStatus getJob(String uuid) throws InterruptedException, ExecutionException {
       return oteJobs.get(uuid);
    }
 

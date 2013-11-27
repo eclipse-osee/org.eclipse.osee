@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.server.internal;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -21,13 +20,10 @@ import java.util.logging.Level;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.Message;
-import org.eclipse.osee.ote.core.ReturnStatus;
 import org.eclipse.osee.ote.core.ServiceUtility;
 import org.eclipse.osee.ote.core.cmd.Command;
 import org.eclipse.osee.ote.core.environment.console.ICommandManager;
 import org.eclipse.osee.ote.core.environment.interfaces.IRemoteCommandConsole;
-import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
-import org.eclipse.osee.ote.core.framework.command.ITestServerCommand;
 import org.eclipse.osee.ote.core.model.IModel;
 import org.eclipse.osee.ote.core.model.IModelListener;
 import org.eclipse.osee.ote.core.model.IModelManagerRemote;
@@ -46,7 +42,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
    private RemoteModelManager modelManager;
    private final HashMap<IRemoteCommandConsole, RemoteShell> exportedConsoles =
       new HashMap<IRemoteCommandConsole, RemoteShell>(32);
-   private final boolean keepEnvAliveWithNoUsers;
 
    private final ReentrantLock lock = new ReentrantLock();
    private IRemoteMessageService exportedRemoteMessageService;
@@ -57,7 +52,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       }
       this.env = currentEnvironment;
       this.serviceConnector = serviceConnector;
-      this.keepEnvAliveWithNoUsers = keepEnvAliveWithNoUsers;
    }
 
    @Override
@@ -92,15 +86,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
          exportedRemoteMessageService = (IRemoteMessageService)this.serviceConnector.export(service);
       }
       return exportedRemoteMessageService;
-   }
-
-   public ReturnStatus isRunningJarVersions(String[] jarVersions) {
-      return env.getRuntimeManager().isRunningJarVersions(jarVersions);
-   }
-
-   @Override
-   public ICommandHandle addCommand(ITestServerCommand cmd) throws RemoteException {
-      return env.addCommand(cmd);
    }
 
    @Override
@@ -143,19 +128,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
          OseeLog.log(RemoteTestEnvironment.class, Level.FINE, "closed command console");
       } else {
          OseeLog.log(RemoteTestEnvironment.class, Level.FINE, "trying to remove non existing console");
-      }
-   }
-
-   private void closeAllConsoles() throws RemoteException {
-      lock.lock();
-      LinkedList<IRemoteCommandConsole> consoles;
-      try {
-         consoles = new LinkedList<IRemoteCommandConsole>(exportedConsoles.keySet());
-      } finally {
-         lock.unlock();
-      }
-      for (IRemoteCommandConsole console : consoles) {
-         closeCommandConsole(console);
       }
    }
 
@@ -203,19 +175,19 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
          env.getModelManager().removeModelActivityListener(listener, key);
       }
 
+      @SuppressWarnings("rawtypes")
       @Override
       public List<ModelKey> getRegisteredModels() throws RemoteException {
          return env.getModelManager().getRegisteredModels();
       }
 
       @Override
-      @SuppressWarnings("unchecked")
+      @SuppressWarnings({ "unchecked", "rawtypes" })
       public Remote getRemoteModel(ModelKey<?> key) throws RemoteException {
          try {
             Class modelClass;
             try {
-
-               modelClass = env.loadClassFromScriptLoader(key.getClassName());
+               modelClass = env.loadClassFromMessageLoader(key.getClassName());
             } catch (ClassNotFoundException ex) {
                throw new RemoteException("Could not load model class: " + key.getClassName(), ex);
             }
@@ -233,11 +205,11 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       }
 
       @Override
-      @SuppressWarnings("unchecked")
+      @SuppressWarnings({ "unchecked", "rawtypes" })
       public void changeModelState(ModelKey<?> key, ModelState state) throws RemoteException {
          Class modelClass;
          try {
-            modelClass = env.loadClassFromScriptLoader(key.getClassName());
+            modelClass = env.loadClassFromMessageLoader(key.getClassName());
          } catch (ClassNotFoundException ex) {
             throw new RemoteException("Could not load model class: " + key.getClassName());
          }
@@ -250,6 +222,7 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
          return env.getModelManager().getModelState(key);
       }
 
+      @SuppressWarnings("rawtypes")
       @Override
       public void releaseAllReferences(ModelKey key) throws RemoteException {
          env.getModelManager().releaseAllReferences(key);

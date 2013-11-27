@@ -201,13 +201,15 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 		brokerService.start();
 		URI uri = new URI(strUri);
 		
-		System.out.printf("SERVER ACTIVEMQ URI[\n\t%s\n]\n", strUri);
+		System.out.printf("SERVER CONNECTION(ACTIVEMQ) URI[\n\t%s\n]\n", strUri);
+		System.out.printf("SERVER URL[\n\thttp://%s:%s/ote\n]\n", InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(System.getProperty("org.osgi.service.http.port")));
+		System.out.printf("SERVER REST WADL[http://%s:%s/ote/application.wadl]\n", InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(System.getProperty("org.osgi.service.http.port")));
 
 		nodeInfo = new NodeInfo("OTEEmbeddedBroker", uri);
 
 		EnvironmentCreationParameter environmentCreationParameter =
 				new EnvironmentCreationParameter(runtimeLibraryManager, nodeInfo, serviceSideConnector, config, factory,
-						environmentFactoryClass, packageAdmin);
+						environmentFactoryClass);
 
 		service =
 				new OteService(runtimeLibraryManager, environmentCreationParameter, oteSessions, propertyParameter,
@@ -292,7 +294,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 				remoteServiceRegistrar.unregisterService("osee.ote.server", "1.0", service.getServiceID().toString());
 				service.kill();
 				service = null;
-			} catch (RemoteException ex) {
+			} catch (Exception ex) {
 				OseeLog.log(getClass(), Level.SEVERE, ex);
 			}
 		}

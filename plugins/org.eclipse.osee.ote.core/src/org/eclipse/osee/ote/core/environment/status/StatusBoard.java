@@ -36,6 +36,8 @@ import org.eclipse.osee.ote.core.environment.status.msg.TestPointUpdateMessage;
 import org.eclipse.osee.ote.core.environment.status.msg.TestServerCommandCompleteMessage;
 import org.eclipse.osee.ote.core.environment.status.msg.TestStartMessage;
 import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
+import org.eclipse.osee.ote.core.framework.command.ITestCommandResult;
+import org.eclipse.osee.ote.core.framework.command.TestCommandStatus;
 import org.eclipse.osee.ote.message.event.OteEventMessageUtil;
 import org.eclipse.osee.ote.message.event.SerializedClassMessage;
 import org.osgi.service.event.EventAdmin;
@@ -46,8 +48,7 @@ import org.osgi.service.event.EventAdmin;
  */
 public class StatusBoard implements ITestEnvironmentListener, OTEStatusBoard {
    private static final long TP_UPDATE_THROTTLE = 5000;
-   private CommandDescription currentCommand;
-
+   
    private long lastTpUpdateTime = 0;
 
    private final ThreadPoolExecutor executor;
@@ -141,8 +142,6 @@ private EventAdmin eventAdmin;
 
    @Override
    public void onCommandBegan(TestEnvironment env, CommandDescription cmdDesc) {
-      this.currentCommand = cmdDesc;
-
       SequentialCommandBegan seqCmdBegan = new SequentialCommandBegan();
       seqCmdBegan.set(cmdDesc);
       try {
@@ -186,6 +185,7 @@ private EventAdmin eventAdmin;
 	   }
    }
 
+   @SuppressWarnings("rawtypes")
    void notifyListeners(final SerializedClassMessage msg) {
       executor.execute(new StatusBoardRunnable(msg) {
          @Override
@@ -202,13 +202,19 @@ private EventAdmin eventAdmin;
 
    @Override
    public void dispose() {
-      currentCommand = null;
    }
 
    @Override
    public void onTestServerCommandFinished(TestEnvironment env, ICommandHandle handle) {
 	   try {
-		   TestServerCommandCompleteMessage msg = new TestServerCommandCompleteMessage(new TestServerCommandComplete(handle));
+	      ITestCommandResult status = handle.get();
+	      TestCommandStatus cmdStatus = null;
+	      Throwable th = null;
+	      if(status != null){
+	         cmdStatus = status.getStatus();
+	         th = status.getThrowable();
+	      }
+		   TestServerCommandCompleteMessage msg = new TestServerCommandCompleteMessage(new TestServerCommandComplete(cmdStatus, th));
 		   notifyListeners(msg);
 	   } catch (IOException e) {
 		   OseeLog.log(StatusBoard.class, Level.SEVERE, e);

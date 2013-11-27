@@ -105,7 +105,7 @@ public class ClientSession extends AbstractRemoteSession {
       try {
          sessionDelegate.handleInformationPrompt(message);
       } catch (Exception ex) {
-         throw new RemoteException("exception initiating prompt", ex);
+         System.out.println(message);
       }
    }
 

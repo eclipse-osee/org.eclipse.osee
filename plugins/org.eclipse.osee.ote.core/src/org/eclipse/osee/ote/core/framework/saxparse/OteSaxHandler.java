@@ -192,7 +192,7 @@ public class OteSaxHandler extends AbstractSaxHandler {
       if (handler != null) {
          handler.startElementFound(uri, localName, name, attributes);
       } else {
-         System.out.println(name);
+         System.out.println("No Handler for ELEMENT type" + name);
       }
    }
 

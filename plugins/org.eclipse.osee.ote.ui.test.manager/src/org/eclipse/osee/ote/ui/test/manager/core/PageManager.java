@@ -44,21 +44,21 @@ public class PageManager {
 
    protected void createPages(Composite parent) {
       hostPage = new HostPage(parent, SWT.NONE, testManager);
-      registerPage(hostPage);
+      registerPage(hostPage, false);
 
       scriptPage = this.factory.getScriptPageNewInstance(parent, SWT.NONE, testManager);
       scriptPage.createPage();
-      registerPage(scriptPage);
+      registerPage(scriptPage, true);
 
       advancedPage = this.factory.getAdvancedPageNewInstance(parent, SWT.NONE, testManager);
       advancedPage.createPage();
-      registerPage(advancedPage);
+      registerPage(advancedPage, false);
 
    }
 
-   private void registerPage(TestManagerPage page) {
+   private void registerPage(TestManagerPage page, boolean isScriptPage) {
       pages.add(page);
-      testManager.registerPage(testManager.addPage(page), page.getPageName());
+      testManager.registerPage(testManager.addPage(page), page.getPageName(), isScriptPage);
    }
 
    /**

@@ -12,11 +12,9 @@ package org.eclipse.osee.ote.core.framework.prompt;
 
 import java.net.UnknownHostException;
 import java.util.concurrent.Executor;
-import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.IUserSession;
-import org.eclipse.osee.ote.core.environment.TestEnvironment;
 
 /**
  * @author Ken J. Aguilar
@@ -33,16 +31,16 @@ public class InformationalPrompt extends AbstractRemotePrompt {
 
             @Override
             public void run() {
+               String message = null;
                try {
-                  String message = getPromptMessage();
+                  message = getPromptMessage();
                   if (message != null) {
                      session.initiateInformationalPrompt(getPromptMessage());
                   } else {
                      session.initiateInformationalPrompt("null message");
                   }
                } catch (Exception e) {
-                  OseeLog.log(TestEnvironment.class, Level.SEVERE, "exception while performing informational prompt", e);
-
+                  System.out.println(message);
                }
             }
          });

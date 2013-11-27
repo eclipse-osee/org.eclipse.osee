@@ -246,20 +246,18 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
          @Override
          public void run() {
             try {
-               ITestCommandResult result = end.getHandle().get();
-               TestCommandStatus status = result.getStatus();
-               Throwable th = result.getThrowable();
-               if (th != null) {
-                  th.printStackTrace();
+               TestCommandStatus result = end.getCmdStatus();
+               Throwable th = end.getThrowable();
+               if (th != null && result != null) {
+                  OseeLog.log(TestManagerPlugin.class, Level.INFO, String.format("TestServer Command Completed [%s]", result.name()), th);
+               } else if ( result != null){
+                  OseeLog.log(TestManagerPlugin.class, Level.INFO, String.format("TestServer Command Completed [%s]", result.name()));
                }
-               if (status != null) {
-                  System.out.println(status.name());
-               }
-            } catch (RemoteException ex) {
+            } catch (Exception ex) {
                OseeLog.log(TestManagerPlugin.class, Level.SEVERE, ex);
+            } finally {
+               notifyExecutionComplete(null);
             }
-
-            notifyExecutionComplete(null);
          }
       });
       logExecutorSize();
@@ -342,6 +340,7 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
                scriptManager.notifyScriptStart(task);
                logOnConsole(Level.INFO, String.format("Test Started: [%s]", task.getName()));
             }
+            
          }
       });
       logExecutorSize();

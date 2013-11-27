@@ -18,7 +18,6 @@
 
 	<modules>
 		<module>../../plugins/org.eclipse.osee.framework.ui.workspacebundleloader</module>
-		<module>../../plugins/org.eclipse.osee.ote</module>
 		<module>../../plugins/org.eclipse.osee.ote.master</module>
 		<module>../../plugins/org.eclipse.osee.ote.master.test</module>
 		<module>../../plugins/org.eclipse.osee.ote.master.rest</module>
@@ -27,7 +26,6 @@
 		<module>../../features/org.eclipse.osee.ote.server.external.feature</module>
 		<module>../../features/org.eclipse.osee.ote.master.feature</module>
 		<module>../../plugins/org.eclipse.osee.ote.master.product</module>
-		<module>../../plugins/org.eclipse.osee.ote.test</module>
 		<module>../../plugins/org.eclipse.osee.ote.rest</module>
 		<module>../../plugins/org.eclipse.osee.ote.rest.client</module>
 		<module>../../plugins/org.eclipse.osee.ote.rest.model</module>
@@ -44,6 +42,7 @@
 		<module>../../plugins/org.eclipse.osee.ote.server</module>
 		<module>../../plugins/org.eclipse.osee.ote.help.ui</module>
 		<module>../../plugins/org.eclipse.osee.ote.ui</module>
+		<module>../../plugins/org.eclipse.osee.ote.ui.builder</module>
 		<module>../../plugins/org.eclipse.osee.ote.ui.markers</module>
 		<module>../../plugins/org.eclipse.osee.ote.version</module>
 		<module>../../plugins/org.eclipse.osee.ote.version.git</module>

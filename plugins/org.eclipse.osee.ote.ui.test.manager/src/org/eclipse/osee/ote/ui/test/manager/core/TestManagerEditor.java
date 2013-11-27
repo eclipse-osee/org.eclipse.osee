@@ -86,7 +86,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
 
    private boolean reloadSourcePage = false;
 
-   private int scriptPageIndex;
+   private int scriptPageIndex = 1;
 
    private TextEditor sourceEditor;
 
@@ -116,6 +116,7 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
    public void activateScriptsPage() {
       setActivePage(scriptPageIndex);
    }
+   
 
    public void addFile(String fullPath) {
       pageManager.getScriptPage().addFile(fullPath);
@@ -163,8 +164,11 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
       doSave();
    }
 
-   protected void registerPage(int pageNumber, String pageName) {
+   protected void registerPage(int pageNumber, String pageName, boolean isScriptPage) {
       setPageText(pageNumber, pageName);
+      if(isScriptPage){
+         scriptPageIndex = pageNumber;
+      }
    }
 
    public void executionCompleted() {

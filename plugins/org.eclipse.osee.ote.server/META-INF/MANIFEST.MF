@@ -22,6 +22,7 @@ Import-Package: org.apache.felix.service.command;status=provisional;version="0.8
  org.eclipse.osee.framework.messaging.services,
  org.eclipse.osee.framework.messaging.services.messages,
  org.eclipse.osee.framework.plugin.core.util,
+ org.eclipse.osee.ote,
  org.eclipse.osee.ote.connection.jini,
  org.eclipse.osee.ote.core,
  org.eclipse.osee.ote.core.cmd,

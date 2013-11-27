@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.framework.messaging.MessagingGateway;
 import org.eclipse.osee.framework.messaging.NodeInfo;
+import org.eclipse.osee.ote.OseeLogStatusCallback;
 import org.eclipse.osee.ote.core.GCHelper;
 import org.eclipse.osee.ote.core.OseeTestThread;
 import org.eclipse.osee.ote.core.OteProperties;
@@ -305,7 +306,8 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       return getTimerCtrl().setTimerFor(listener, time);
    }
 
-   protected void setupOutfileDir(String outfileDir) throws IOException {
+   @Override
+   public void setupOutfileDir(String outfileDir) throws IOException {
       if (Strings.isValid(outfileDir)) {
          outDir = new File(outfileDir);
          if (!outDir.isDirectory()) {
@@ -329,7 +331,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
          return;
       }
       isShutdown = true;
-      runtimeManager.cleanup();
+      runtimeManager.uninstall(new OseeLogStatusCallback());
       Activator.getInstance().unregisterTestEnvironment();
       // here we remove all environment tasks (emulators)
       removeAllTasks();
@@ -372,10 +374,10 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    }
 
    protected void stop() {
-      try {
+      try{
          myRegistration.unregister();
-      } catch (IllegalStateException ex) {
-         // Service may have already been unregistered, but we don't care
+      } catch (IllegalStateException ex){
+         //ignore if it's already unregistered
       }
    }
 

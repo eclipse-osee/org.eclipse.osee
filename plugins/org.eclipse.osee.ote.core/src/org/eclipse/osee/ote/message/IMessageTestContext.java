@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message;
 
+import org.eclipse.osee.ote.Configuration;
 import org.eclipse.osee.ote.core.framework.command.ITestContext;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public interface IMessageTestContext extends ITestContext {
-   void resetScriptLoader(String[] strings) throws Exception;
+   void resetScriptLoader(Configuration configuration, String[] strings) throws Exception;
+
+   void resetScriptLoader(String[] array) throws Exception;
 }

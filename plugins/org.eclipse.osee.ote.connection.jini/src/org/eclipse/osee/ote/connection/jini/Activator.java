@@ -12,6 +12,8 @@ package org.eclipse.osee.ote.connection.jini;
 
 import java.util.logging.Level;
 
+import net.jini.config.ConfigurationException;
+
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.framework.jini.JiniClassServer;
@@ -58,27 +60,39 @@ public class Activator extends Plugin {
    }
 
    void startJini() throws Exception {
-      try {
-         JiniClassServer.getInstance().addResourceFinder(new FrameworkResourceFinder());
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
-      BundleContext context = getBundle().getBundleContext();
-      connectionServiceTracker = new ServiceTracker(context, IConnectionService.class.getName(), null);
-      connectionServiceTracker.open();
+      Thread startJini = new Thread(new Runnable() {
+         @Override
+         public void run() {
+            try {
+               JiniClassServer.getInstance().addResourceFinder(new FrameworkResourceFinder());
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+            BundleContext context = getBundle().getBundleContext();
+            connectionServiceTracker = new ServiceTracker(context, IConnectionService.class.getName(), null);
+            connectionServiceTracker.open();
 
-      packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
-      packageAdminTracker.open();
+            packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
+            packageAdminTracker.open();
 
-      PackageAdmin pa = (PackageAdmin) packageAdminTracker.getService();
+            PackageAdmin pa = (PackageAdmin) packageAdminTracker.getService();
 
-      exportClassLoader = new ExportClassLoader(pa);
-      IConnectionService service = (IConnectionService) connectionServiceTracker.getService();
+            exportClassLoader = new ExportClassLoader(pa);
+            IConnectionService service = (IConnectionService) connectionServiceTracker.getService();
 
-      registrar = new JiniConnectorRegistrar(exportClassLoader, service);
-
-      // register the service
-      registration = context.registerService(IJiniConnectorRegistrar.class.getName(), registrar, null);
+            try {
+               registrar = new JiniConnectorRegistrar(exportClassLoader, service);
+               registration = context.registerService(IJiniConnectorRegistrar.class.getName(), registrar, null);            
+            } catch (ConfigurationException e) {
+               e.printStackTrace();
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+         }
+      });
+      startJini.setDaemon(true);
+      startJini.setName("Starting Jini");
+      startJini.start();
    }
 
    @Override

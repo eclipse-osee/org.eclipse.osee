@@ -10,18 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.osee.ote.Configuration;
 import org.eclipse.osee.ote.core.IUserSession;
 import org.eclipse.osee.ote.core.ServiceUtility;
 import org.eclipse.osee.ote.core.TestScript;
-import org.eclipse.osee.ote.core.environment.BundleDescription;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.BasicTimeout;
 import org.eclipse.osee.ote.core.environment.interfaces.IEnvironmentFactory;
@@ -64,6 +61,7 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
       }
    }
 
+   @SuppressWarnings("rawtypes")
    @Override
    public IMessageManager getMsgManager() {
       return ServiceUtility.getService(IMessageManager.class, false);
@@ -73,86 +71,37 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
       return ServiceUtility.getService(IModelManager.class, 5000);
    }
 
-   @Deprecated
-   public boolean isMessageJarAvailable(String version) {
-      return getRuntimeManager().isMessageJarAvailable(version);
-   }
-
-   public boolean isBundleAvailable(String symbolicName, String version, byte[] md5Digest) {
-      return getRuntimeManager().isBundleAvailable(symbolicName, version, md5Digest);
-   }
-
    /**
     * provides a way for sub classes to instantiate test scripts in their own way.
     */
    protected abstract TestScript instantiateScriptClass(Class<?> scriptClass, IUserSession connection) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException;
 
-   @Deprecated
-   public void sendRuntimeJar(byte[] messageJar) throws IOException {
-      getRuntimeManager().addJarToClassLoader(messageJar);
-   }
-
-   public void sendRuntimeBundle(Collection<BundleDescription> bundles) throws Exception {
-      getRuntimeManager().loadBundles(bundles);
-   }
-
-   public void updateRuntimeBundle(Collection<BundleDescription> bundles) throws Exception {
-      getRuntimeManager().updateBundles(bundles);
-   }
-
-   public void cleanupRuntimeBundles() throws Exception {
-      if (isNoBundleCleanup()) {
-         return;
-      } else {
-         getRuntimeManager().cleanup();
-         cleanupClassReferences();
-      }
-   }
-
-   private boolean isNoBundleCleanup() {
-      return Boolean.valueOf(System.getProperty("osee.ote.nobundlecleanup"));
-   }
-
    public abstract void singleStepEnv();
 
-   public void setClientClasses(URL[] urls) throws RemoteException {
-      clientClasses = urls;
-   }
-
    @Override
-   public void resetScriptLoader(String[] strings) throws Exception {
-      getRuntimeManager().resetScriptLoader(strings);
+   public void resetScriptLoader(Configuration configuration, String[] strings) throws Exception {
+      getRuntimeManager().resetScriptLoader(configuration, strings);
    }
 
-   @Deprecated
-   public Class<?> loadClassFromScriptLoader(String path) throws ClassNotFoundException {
-      return getRuntimeManager().loadFromScriptClassLoader(path);
-   }
-
-   @Deprecated
    public void addPreInstantiationListener(IPreScriptInstantiation listener) {
       preInstantiation.add(listener);
    }
 
-   @Deprecated
    public void removePreInstantiationListener(IPreScriptInstantiation listener) {
       preInstantiation.remove(listener);
    }
 
-   @Deprecated
    public void notifyPreInstantiationListeners() {
       for (IPreScriptInstantiation pre : preInstantiation) {
          pre.run();
       }
    }
 
-   @Deprecated
    public IOInstrumentation getIOInstrumentation(String name) {
       setupIOInstrumentation();
       return ioInstrumentation.getIOInstrumentation(name);
    }
 
-   @Deprecated
    public IOInstrumentation registerIOInstrumentation(String name, IOInstrumentation io) {
       setupIOInstrumentation();
       return ioInstrumentation.registerIOInstrumentation(name, io);
@@ -173,7 +122,6 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
       ioInstrumentation.removeRegistrationListener(listener);
    }
 
-   @Deprecated
    public Class<?> loadClassFromMessageLoader(String path) throws ClassNotFoundException {
       return getRuntimeManager().loadFromRuntimeLibraryLoader(path);
    }

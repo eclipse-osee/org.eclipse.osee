@@ -37,11 +37,16 @@ public class OteRestApplication extends Application {
    @Override
    public Set<Class<?>> getClasses() {
       Set<Class<?>> classes = new HashSet<Class<?>>();
+      classes.add(OteRootResource.class);
       classes.add(OseeCoreExceptionMapper.class);
       classes.add(OteConfigurationResource.class);
       classes.add(OteJobsResource.class);
       classes.add(OteFilesResource.class);
+      classes.add(OteRunTestResource.class);
+      classes.add(OteBatchesResource.class);
       return classes;
    }
+   
+   
 
 }

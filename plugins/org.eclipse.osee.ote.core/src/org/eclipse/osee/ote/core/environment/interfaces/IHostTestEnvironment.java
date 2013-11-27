@@ -12,15 +12,12 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.Collection;
 import java.util.UUID;
 
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.ote.core.ConnectionRequestResult;
 import org.eclipse.osee.ote.core.IRemoteUserSession;
-import org.eclipse.osee.ote.core.environment.BundleConfigurationReport;
-import org.eclipse.osee.ote.core.environment.BundleDescription;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentConfig;
 
 /**
@@ -32,9 +29,7 @@ public interface IHostTestEnvironment extends Remote {
    ConnectionRequestResult requestEnvironment(IRemoteUserSession session, UUID id, TestEnvironmentConfig config) throws RemoteException;
    void disconnect(UUID sessionId) throws RemoteException;
    
-   BundleConfigurationReport checkBundleConfiguration(Collection<BundleDescription> bundles) throws RemoteException;
-   void sendRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException;
-   void updateRuntimeBundle(Collection<BundleDescription> bundles) throws RemoteException;
-   void cleanupRuntimeBundles() throws RemoteException;
    public NodeInfo getBroker() throws RemoteException;
+   
+   public String getHttpURL() throws RemoteException;
 }

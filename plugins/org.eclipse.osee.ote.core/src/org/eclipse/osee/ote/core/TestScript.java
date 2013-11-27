@@ -166,7 +166,6 @@ public abstract class TestScript implements ITimeout {
       Collections.synchronizedSet(new HashSet<Class<? extends TestScript>>());
    private static final AtomicLong constructed = new AtomicLong(0);
    private static final AtomicLong finalized = new AtomicLong(0);
-   private final IUserSession userSession;
    private final boolean isBatchable;
    private final ITestStation testStation;
    private CommandDescription cmdDescription;
@@ -196,7 +195,6 @@ public abstract class TestScript implements ITimeout {
    public TestScript(TestEnvironment environment, IUserSession callback, ScriptTypeEnum scriptType, boolean isBatchable) {
       constructed.incrementAndGet();
       this.scriptType = scriptType;
-      this.userSession = ServiceUtility.getService(OTESessionManager.class).getActiveUser();
       this.isBatchable = isBatchable;
       this.isMpLevel = false;
 
@@ -264,7 +262,7 @@ public abstract class TestScript implements ITimeout {
    }
 
    public IUserSession getUserSession() {
-      return userSession;
+      return ServiceUtility.getService(OTESessionManager.class).getActiveUser();
    }
 
    public TestScript getTestScript() {
@@ -294,9 +292,9 @@ public abstract class TestScript implements ITimeout {
             @Override
             public void run() {
                try {
-                  userSession.initiateInformationalPrompt(prompt.toString());
+                  getUserSession().initiateInformationalPrompt(prompt.toString());
                } catch (Exception e) {
-                  e.printStackTrace();
+                  System.out.println(prompt.toString());
                }
             }
          });

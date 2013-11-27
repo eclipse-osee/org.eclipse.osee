@@ -10,50 +10,35 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.environment.interfaces;
 
-import java.io.IOException;
-import java.util.Collection;
-import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
-import org.eclipse.osee.ote.core.ReturnStatus;
-import org.eclipse.osee.ote.core.environment.BundleConfigurationReport;
-import org.eclipse.osee.ote.core.environment.BundleDescription;
-import org.osgi.framework.Version;
+import org.eclipse.osee.ote.Configuration;
+import org.eclipse.osee.ote.ConfigurationStatus;
+import org.eclipse.osee.ote.OTEStatusCallback;
 
-public interface IRuntimeLibraryManager extends Xmlizable, XmlizableStream {
-   /**
-    * @deprecated use isBundleAvailable
-    */
-   @Deprecated
-   boolean isMessageJarAvailable(String version);
-
-   boolean isBundleAvailable(String symbolicName, String version, byte[] md5Digest);
-
-   ReturnStatus isRunningJarVersions(String[] versions);
-
-   void addRuntimeLibraryListener(RuntimeLibraryListener listener);
-
-   void removeRuntimeLibraryListener(RuntimeLibraryListener listener);
-
-   /**
-    * @deprecated see loadBundle
-    */
-   @Deprecated
-   void addJarToClassLoader(byte[] jarData) throws IOException;
-
-   void loadBundles(Collection<BundleDescription> bundles) throws Exception;
-
-   BundleConfigurationReport checkBundleConfiguration(Collection<BundleDescription> bundles) throws Exception;
-
-   void updateBundles(Collection<BundleDescription> bundles) throws Exception;
-
-   void resetScriptLoader(String[] strings) throws Exception;
+/**
+ * An interface for 
+ * 
+ * @author Andrew M. Finkbeiner
+ *
+ */
+public interface IRuntimeLibraryManager extends XmlizableStream {
 
    Class<?> loadFromScriptClassLoader(String path) throws ClassNotFoundException;
 
-   Class<?> loadClass(String name, Version version) throws ClassNotFoundException;
-
    Class<?> loadFromRuntimeLibraryLoader(String path) throws ClassNotFoundException;
 
-   void cleanup();
+   boolean installed();
+
+   boolean uninstall(OTEStatusCallback<ConfigurationStatus> callable);
+
+   boolean install(Configuration configuration, OTEStatusCallback<ConfigurationStatus> callable);
+
+   boolean start(OTEStatusCallback<ConfigurationStatus> callable);
+
+   void clearJarCache();
+
+   boolean acquireBundles(Configuration configuration, OTEStatusCallback<ConfigurationStatus> callable);
+
+   void resetScriptLoader(Configuration configuration, String[] strings) throws Exception;
 
 }

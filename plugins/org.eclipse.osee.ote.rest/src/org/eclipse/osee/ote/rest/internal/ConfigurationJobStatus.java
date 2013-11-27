@@ -2,20 +2,20 @@ package org.eclipse.osee.ote.rest.internal;
 
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.ote.OTEConfigurationStatus;
-import org.eclipse.osee.ote.OTEFuture;
+import org.eclipse.osee.ote.ConfigurationStatus;
 import org.eclipse.osee.ote.OTEStatusCallback;
-import org.eclipse.osee.ote.rest.model.OteJobStatus;
+import org.eclipse.osee.ote.rest.model.OTEJobStatus;
 
-public class ConfigurationJobStatus implements OTEStatusCallback<OTEConfigurationStatus>, OteJob {
+public class ConfigurationJobStatus implements OTEStatusCallback<ConfigurationStatus>, OteJob {
 
    private int totalUnitsOfWork;
    private int count;
    private StringBuilder errorLog;
    private StringBuilder statusLog;
-   private OTEFuture<OTEConfigurationStatus> future;
+   private Future<ConfigurationStatus> future;
    private String uuid;
    private URL url;
    
@@ -26,7 +26,7 @@ public class ConfigurationJobStatus implements OTEStatusCallback<OTEConfiguratio
    }
    
    @Override
-   public void complete(OTEConfigurationStatus done) {
+   public void complete(ConfigurationStatus done) {
    }
 
    @Override
@@ -59,13 +59,13 @@ public class ConfigurationJobStatus implements OTEStatusCallback<OTEConfiguratio
       errorLog.append("\n");
    }
 
-   public void setFuture(OTEFuture<OTEConfigurationStatus> future) {
+   public void setFuture(Future<ConfigurationStatus> future) {
       this.future = future;
    }
 
    @Override
-   public OteJobStatus getStatus() throws InterruptedException, ExecutionException {
-      OteJobStatus jobStatus = new OteJobStatus();
+   public OTEJobStatus getStatus() throws InterruptedException, ExecutionException {
+      OTEJobStatus jobStatus = new OTEJobStatus();
       if(future.isDone()){
          jobStatus.setJobComplete(true);
          jobStatus.setSuccess(future.get().isSuccess());

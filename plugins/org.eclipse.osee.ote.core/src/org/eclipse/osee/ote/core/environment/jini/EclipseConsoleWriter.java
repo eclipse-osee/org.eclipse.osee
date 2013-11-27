@@ -51,7 +51,7 @@ public class EclipseConsoleWriter extends Writer {
       try {
          callback.initiateInformationalPrompt(buffer.toString());
       } catch (Exception ex) {
-         throw new IOException("failed to initate promt");
+         System.out.println(buffer.toString());
       }
       buffer.delete(0, buffer.length());
    }

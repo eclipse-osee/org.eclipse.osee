@@ -62,6 +62,7 @@ public class ClassServerInst {
             };
          pathResourceFinder = new PathResourceFinder(new String[] {}, false);
          classServer.addResourceFinder(new UserLibResourceFinder());
+         classServer.addResourceFinder(new OTEBuilderResourceFinder());
          classServer.addResourceFinder(pathResourceFinder);
          classServer.start();
 

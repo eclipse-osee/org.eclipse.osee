@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
-import org.eclipse.osee.ote.rest.model.OteJobStatus;
+import org.eclipse.osee.ote.rest.model.OTEJobStatus;
 
 public class OteJobStoreImpl implements OteJobStore {
 
@@ -15,7 +15,7 @@ public class OteJobStoreImpl implements OteJobStore {
    }
    
    @Override
-   public OteJobStatus get(String uuid) throws InterruptedException, ExecutionException {
+   public OTEJobStatus get(String uuid) throws InterruptedException, ExecutionException {
       OteJob job = jobs.get(uuid);
       if(job != null){
          return job.getStatus(); 

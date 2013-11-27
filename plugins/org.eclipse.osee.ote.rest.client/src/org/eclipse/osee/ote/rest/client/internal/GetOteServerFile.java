@@ -7,21 +7,21 @@ import java.net.URI;
 
 import javax.ws.rs.core.MediaType;
 
-import org.eclipse.osee.ote.rest.client.GetFileProgress;
+import org.eclipse.osee.ote.rest.client.Progress;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
-public class GetOteServerFile extends BaseClientCallable<GetFileProgress> {
+public class GetOteServerFile extends BaseClientCallable<Progress> {
 
    private URI uri;
    private String filePath;
    @SuppressWarnings("unused")
-   private GetFileProgress progress;
+   private Progress progress;
    private WebResourceFactory factory;
    private File destination;
    
-   public GetOteServerFile(URI uri, File destination, String filePath, GetFileProgress progress, WebResourceFactory factory) {
+   public GetOteServerFile(URI uri, File destination, String filePath, Progress progress, WebResourceFactory factory) {
       super(progress);
       this.uri = uri;
       this.filePath = filePath;
