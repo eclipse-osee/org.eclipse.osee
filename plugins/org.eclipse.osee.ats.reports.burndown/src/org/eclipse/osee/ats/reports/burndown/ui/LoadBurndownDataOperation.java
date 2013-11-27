@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.reports.burndown.internal.AtsClientService;
 import org.eclipse.osee.ats.reports.burndown.issues.IssueBurndownLog;
 import org.eclipse.osee.ats.reports.burndown.issues.IssueBurndownModel;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**

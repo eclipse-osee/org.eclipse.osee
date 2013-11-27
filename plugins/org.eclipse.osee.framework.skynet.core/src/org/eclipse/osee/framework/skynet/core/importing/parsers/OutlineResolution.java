@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.importing.ReqNumbering;
 

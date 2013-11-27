@@ -14,7 +14,7 @@ import org.eclipse.osee.ats.reports.efficiency.internal.Activator;
 import org.eclipse.osee.ats.reports.efficiency.team.TeamEfficiencyModel;
 import org.eclipse.osee.ats.reports.efficiency.team.VersionEfficiency;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * Class to extract data from workflows and fills the TeamEfficiencyModel

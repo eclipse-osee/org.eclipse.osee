@@ -14,8 +14,8 @@ import org.eclipse.osee.coverage.internal.vcast.operations.VCastAdaCoverage_V5_3
 import org.eclipse.osee.coverage.internal.vcast.operations.VCastAdaCoverage_V6_0_ImportOperation;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar

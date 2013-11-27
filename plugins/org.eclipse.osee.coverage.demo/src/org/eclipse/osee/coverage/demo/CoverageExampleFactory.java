@@ -12,8 +12,8 @@ package org.eclipse.osee.coverage.demo;
 
 import java.net.URL;
 import org.eclipse.osee.coverage.ICoverageImporter;
-import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;

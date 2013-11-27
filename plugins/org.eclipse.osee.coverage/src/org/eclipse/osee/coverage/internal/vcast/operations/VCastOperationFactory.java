@@ -15,9 +15,9 @@ import java.net.URI;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.vcast.CoverageImportData;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar

@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.messaging.event.res.internal;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.messaging.ConnectionListener;
 import org.eclipse.osee.framework.messaging.MessageService;
 import org.eclipse.osee.framework.messaging.event.res.IFrameworkEventListener;

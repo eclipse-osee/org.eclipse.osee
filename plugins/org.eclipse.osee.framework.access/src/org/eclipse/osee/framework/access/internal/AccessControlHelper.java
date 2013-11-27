@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.access.internal;
 
 import org.eclipse.osee.framework.core.services.IAccessControlService;
-import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;

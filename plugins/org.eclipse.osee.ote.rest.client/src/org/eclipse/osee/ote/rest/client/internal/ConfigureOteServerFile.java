@@ -4,10 +4,8 @@ import java.io.File;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.List;
-
 import javax.ws.rs.core.MediaType;
-
-import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.ote.rest.client.ConfigurationProgress;
 import org.eclipse.osee.ote.rest.client.internal.jarserver.BundleInfo;
@@ -16,7 +14,6 @@ import org.eclipse.osee.ote.rest.model.OteConfiguration;
 import org.eclipse.osee.ote.rest.model.OteConfigurationIdentity;
 import org.eclipse.osee.ote.rest.model.OteConfigurationItem;
 import org.eclipse.osee.ote.rest.model.OteJobStatus;
-
 import com.sun.jersey.api.client.WebResource;
 
 public class ConfigureOteServerFile extends BaseClientCallable<ConfigurationProgress> {
