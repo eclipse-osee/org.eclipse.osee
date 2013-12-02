@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({StateTypeAdapterTest.class, StateTypeTest.class})
+@Suite.SuiteClasses({WorkflowManagerCoreTest.class, StateTypeAdapterTest.class, StateTypeTest.class})
 /**
  * This test suite contains tests that can be run as stand-alone JUnit tests (JT)
  *
