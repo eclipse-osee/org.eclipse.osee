@@ -62,10 +62,10 @@ public class StateManagerTest {
       MockWorkItem workItem = Mockito.spy(new MockWorkItem("mock work item", "Endorse", StateType.Working));
       stateMgr = Mockito.spy(new StateManager(workItem));
       when(workItem.getWorkDefinition()).thenReturn(workDef);
-      when(workDef.getStateDefinitionByName("endorse")).thenReturn(endorseStateDef);
+      when(workDef.getStateByName("endorse")).thenReturn(endorseStateDef);
       when(endorseStateDef.getStateType()).thenReturn(StateType.Working);
 
-      when(workDef.getStateDefinitionByName("analyze")).thenReturn(analyzeStateDef);
+      when(workDef.getStateByName("analyze")).thenReturn(analyzeStateDef);
       when(analyzeStateDef.getStateType()).thenReturn(StateType.Working);
    }
 

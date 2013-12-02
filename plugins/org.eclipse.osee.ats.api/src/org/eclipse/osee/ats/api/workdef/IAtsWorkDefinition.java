@@ -37,8 +37,6 @@ public interface IAtsWorkDefinition extends Identifiable<String>, HasDescription
 
    IAtsStateDefinition getStateByName(String name);
 
-   IAtsStateDefinition getStateDefinitionByName(String name);
-
    IAtsStateDefinition getStartState();
 
 }

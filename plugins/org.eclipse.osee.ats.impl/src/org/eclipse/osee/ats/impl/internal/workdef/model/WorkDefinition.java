@@ -119,9 +119,4 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
       return false;
    }
 
-   @Override
-   public IAtsStateDefinition getStateDefinitionByName(String name) {
-      return getStateByName(name);
-   }
-
 }

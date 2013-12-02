@@ -76,10 +76,6 @@ public class AtsLogWorkPage extends StateXWidgetPage {
          return false;
       }
 
-      @Override
-      public IAtsStateDefinition getStateDefinitionByName(String name) {
-         return null;
-      }
    }
 
    public AtsLogWorkPage(String title) {

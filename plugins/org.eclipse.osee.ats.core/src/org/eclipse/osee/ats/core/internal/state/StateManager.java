@@ -236,7 +236,7 @@ public class StateManager implements IAtsStateManager {
       if (assignees == null) {
          return;
       }
-      IAtsStateDefinition stateDef = workItem.getWorkDefinition().getStateDefinitionByName(stateName);
+      IAtsStateDefinition stateDef = workItem.getWorkDefinition().getStateByName(stateName);
       StateType stateType = stateDef.getStateType();
       if (stateType.isCompletedOrCancelledState()) {
          if (assignees.isEmpty()) {

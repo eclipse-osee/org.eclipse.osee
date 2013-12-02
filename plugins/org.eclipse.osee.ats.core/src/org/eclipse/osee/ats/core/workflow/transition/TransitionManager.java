@@ -248,8 +248,7 @@ public class TransitionManager {
          for (IAtsWorkItem workItem : helper.getWorkItems()) {
             try {
                IAtsStateDefinition fromState = workItem.getStateDefinition();
-               IAtsStateDefinition toState =
-                  workItem.getWorkDefinition().getStateDefinitionByName(helper.getToStateName());
+               IAtsStateDefinition toState = workItem.getWorkDefinition().getStateByName(helper.getToStateName());
 
                //Ignore transitions to the same state
                if (!fromState.equals(toState)) {
