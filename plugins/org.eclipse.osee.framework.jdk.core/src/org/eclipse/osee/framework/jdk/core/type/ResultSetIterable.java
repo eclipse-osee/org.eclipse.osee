@@ -8,14 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.util;
+package org.eclipse.osee.framework.jdk.core.type;
 
+import java.util.Collection;
 import java.util.Iterator;
-import org.eclipse.osee.framework.core.data.ResultSet;
-import org.eclipse.osee.framework.core.exception.ItemDoesNotExist;
-import org.eclipse.osee.framework.core.exception.MultipleItemsExist;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar
@@ -24,7 +20,7 @@ public class ResultSetIterable<T> implements ResultSet<T> {
 
    private final Iterable<T> data;
 
-   public ResultSetIterable(Iterable<T> iterable) {
+   protected ResultSetIterable(Iterable<T> iterable) {
       super();
       this.data = iterable;
    }
@@ -71,12 +67,25 @@ public class ResultSetIterable<T> implements ResultSet<T> {
 
    @Override
    public int size() {
-      return Iterables.size(getData());
+      Iterable<T> it = getData();
+      int count = 0;
+      if (it instanceof Collection) {
+         count = ((Collection<?>) it).size();
+      } else {
+         count = 0;
+         Iterator<?> iterator = it.iterator();
+         while (iterator.hasNext()) {
+            iterator.next();
+            count++;
+         }
+      }
+      return count;
    }
 
    @Override
    public boolean isEmpty() {
-      return Iterables.isEmpty(getData());
+      Iterable<T> it = getData();
+      return it == null || !it.iterator().hasNext();
    }
 
    protected OseeCoreException createManyExistException(int count) {

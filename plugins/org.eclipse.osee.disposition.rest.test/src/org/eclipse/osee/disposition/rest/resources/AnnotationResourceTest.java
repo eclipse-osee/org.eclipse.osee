@@ -12,15 +12,14 @@ package org.eclipse.osee.disposition.rest.resources;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
-import java.util.Collections;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.resources.AnnotationResource;
 import org.eclipse.osee.disposition.rest.util.HtmlWriter;
-import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,9 +85,9 @@ public class AnnotationResourceTest {
 
    @Test
    public void testGetAllAsHtml() {
-      // No Annotations
-      when(dispositionApi.getDispoAnnotations("branchId", "itemId")).thenReturn(
-         new ResultSetList<DispoAnnotationData>());
+      // No Annotations3
+      ResultSet<DispoAnnotationData> emptyResultSet = ResultSets.emptyResultSet();
+      when(dispositionApi.getDispoAnnotations("branchId", "itemId")).thenReturn(emptyResultSet);
       Response noAnnotationsReponse = resource.getAllDispoAnnotations();
       String messageActual = (String) noAnnotationsReponse.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noAnnotationsReponse.getStatus());
@@ -97,8 +96,7 @@ public class AnnotationResourceTest {
       DispoAnnotationData annotation = new DispoAnnotationData();
       annotation.setId(mockIndex);
       annotation.setLocationRefs("1-10");
-      ResultSetList<DispoAnnotationData> resultSet =
-         new ResultSetList<DispoAnnotationData>(Collections.singletonList(annotation));
+      ResultSet<DispoAnnotationData> resultSet = ResultSets.singleton(annotation);
 
       when(dispositionApi.getDispoAnnotations("branchId", "itemId")).thenReturn(resultSet);
       when(htmlWriter.createDispositionPage("Annotations", resultSet)).thenReturn("htmlFromWriter");

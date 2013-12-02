@@ -25,18 +25,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.ResultSet;
-import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -51,7 +50,6 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.transaction.TxData.TxState;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
-import org.eclipse.osee.orcs.core.internal.util.ResultSetIterable;
 import org.eclipse.osee.orcs.core.internal.util.ValueProvider;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -202,7 +200,7 @@ public class TxDataManagerTest {
    public void testGetForWriteId() throws OseeCoreException {
       when(txData.getWriteable(artifactId1)).thenReturn(null);
 
-      ResultSet<Artifact> loaded = new ResultSetIterable<Artifact>(Collections.<Artifact> singleton(artifact1));
+      ResultSet<Artifact> loaded = ResultSets.singleton(artifact1);
       when(loader.loadArtifacts(eq(session), eq(graph), anyCollectionOf(ArtifactId.class))).thenReturn(loaded);
 
       Artifact actual = txDataManager.getForWrite(txData, artifactId1);
@@ -234,7 +232,7 @@ public class TxDataManagerTest {
       when(readable1.getBranch()).thenReturn(CoreBranches.COMMON);
       when(txData.getWriteable(readable1)).thenReturn(null);
 
-      ResultSet<Artifact> loaded = new ResultSetIterable<Artifact>(Collections.<Artifact> singleton(artifact1));
+      ResultSet<Artifact> loaded = ResultSets.singleton(artifact1);
       when(loader.loadArtifacts(eq(session), eq(graph), anyCollectionOf(ArtifactId.class))).thenReturn(loaded);
 
       Artifact actual = txDataManager.getForWrite(txData, readable1);
@@ -265,7 +263,7 @@ public class TxDataManagerTest {
       when(artifact1.getBranch()).thenReturn(CoreBranches.COMMON);
       when(txData.getWriteable(readable1)).thenReturn(null);
 
-      ResultSet<Artifact> loaded = new ResultSetIterable<Artifact>(Collections.<Artifact> singleton(artifact2));
+      ResultSet<Artifact> loaded = ResultSets.singleton(artifact2);
       when(loader.loadArtifacts(eq(session), eq(graph), anyCollectionOf(ArtifactId.class))).thenReturn(loaded);
 
       Artifact actual = txDataManager.getForWrite(txData, artifact1);
@@ -285,7 +283,7 @@ public class TxDataManagerTest {
       when(txData.getWriteable(artifactId2)).thenReturn(artifact2);
 
       List<Artifact> artifacts = Arrays.asList(artifact1, artifact3);
-      ResultSet<Artifact> loaded = new ResultSetList<Artifact>(artifacts);
+      ResultSet<Artifact> loaded = ResultSets.newResultSet(artifacts);
       when(loader.loadArtifacts(eq(session), eq(graph), anyCollectionOf(ArtifactId.class))).thenReturn(loaded);
 
       Iterable<Artifact> actual = txDataManager.getForWrite(txData, ids);
@@ -457,7 +455,7 @@ public class TxDataManagerTest {
       when(txData.getTxState()).thenReturn(TxState.NEW_TX);
       when(txData.getBranch()).thenReturn(branch);
 
-      ResultSet<Artifact> loaded = new ResultSetIterable<Artifact>(Collections.<Artifact> singleton(artifact1));
+      ResultSet<Artifact> loaded = ResultSets.singleton(artifact1);
       when(loader.loadArtifacts(eq(session), eq(COMMON), anyCollectionOf(ArtifactId.class))).thenReturn(loaded);
       when(artifactFactory.introduceArtifact(artifact1, branch)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);

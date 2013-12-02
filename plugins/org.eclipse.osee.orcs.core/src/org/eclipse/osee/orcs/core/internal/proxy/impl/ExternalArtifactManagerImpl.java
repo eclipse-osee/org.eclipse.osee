@@ -10,15 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.proxy.impl;
 
-import org.eclipse.osee.framework.core.data.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
-import org.eclipse.osee.orcs.core.internal.util.ResultSetIterable;
-import org.eclipse.osee.orcs.core.internal.util.ResultSets;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import com.google.common.base.Function;
@@ -69,7 +68,7 @@ public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
                return asExternalArtifact(session, internal);
             }
          });
-      return new ResultSetIterable<ArtifactReadable>(transformed);
+      return ResultSets.newResultSet(transformed);
    }
 
    @Override

@@ -16,9 +16,9 @@ import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.attributeV
 import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.deletionFlagEquals;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.core.internal.util.AbstractTypeCollection;
 import com.google.common.base.Predicate;
 

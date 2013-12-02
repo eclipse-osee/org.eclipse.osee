@@ -30,9 +30,9 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.ats.impl.internal.AtsServerService;
-import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 

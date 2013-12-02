@@ -16,11 +16,11 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.ResultSet;
-import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -76,7 +76,7 @@ public class BranchCallableQueryFactory {
             queryEngine.createBranchQuery(getSession(), getQueryData(), handler).call();
             List<BranchReadable> results = handler.getBranches();
             setItemsFound(results.size());
-            return new ResultSetList<BranchReadable>(results);
+            return ResultSets.newResultSet(results);
          }
       };
    }
@@ -98,7 +98,7 @@ public class BranchCallableQueryFactory {
             queryEngine.createBranchQuery(getSession(), getQueryData(), handler).call();
             List<IOseeBranch> results = handler.getBranches();
             setItemsFound(results.size());
-            return new ResultSetList<IOseeBranch>(results);
+            return ResultSets.newResultSet(results);
          }
       };
    }

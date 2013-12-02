@@ -16,10 +16,10 @@ import javax.ws.rs.core.Application;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.messages.DispoAnnotationMessageReader;
 import org.eclipse.osee.disposition.rest.messages.DispoAnnotationMessageWriter;
-import org.eclipse.osee.disposition.rest.messages.DispoSetMessageReader;
-import org.eclipse.osee.disposition.rest.messages.DispoSetMessageWriter;
 import org.eclipse.osee.disposition.rest.messages.DispoItemMessageReader;
 import org.eclipse.osee.disposition.rest.messages.DispoItemMessageWriter;
+import org.eclipse.osee.disposition.rest.messages.DispoSetMessageReader;
+import org.eclipse.osee.disposition.rest.messages.DispoSetMessageWriter;
 import org.eclipse.osee.disposition.rest.util.HtmlWriter;
 import org.eclipse.osee.disposition.rest.util.TemplateRegistry;
 

@@ -12,7 +12,7 @@ package org.eclipse.osee.display.presenter.internal;
 
 import org.eclipse.osee.display.api.search.AsyncSearchListener;
 import org.eclipse.osee.executor.admin.ExecutionCallback;
-import org.eclipse.osee.framework.core.data.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;

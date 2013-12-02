@@ -8,13 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.util;
+package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ResultSet;
-import org.eclipse.osee.framework.core.data.ResultSetList;
-import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar
@@ -50,7 +47,7 @@ public final class ResultSets {
 
    public static <T> ResultSet<T> newResultSet(Iterable<T> iterable) {
       ResultSet<T> toReturn;
-      if (Iterables.isEmpty(iterable)) {
+      if (iterable == null || !iterable.iterator().hasNext()) {
          toReturn = emptyResultSet();
       } else {
          toReturn = new ResultSetIterable<T>(iterable);

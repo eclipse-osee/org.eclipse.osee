@@ -8,14 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.data;
+package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.ItemDoesNotExist;
-import org.eclipse.osee.framework.core.exception.MultipleItemsExist;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -24,12 +21,12 @@ public class ResultSetList<T> implements ResultSet<T> {
 
    private final List<T> data;
 
-   public ResultSetList() {
+   protected ResultSetList() {
       super();
       this.data = Collections.emptyList();
    }
 
-   public ResultSetList(List<T> data) {
+   protected ResultSetList(List<T> data) {
       super();
       this.data = data;
    }

@@ -21,7 +21,7 @@ import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.util.HtmlWriter;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
  * @author Angel Avila

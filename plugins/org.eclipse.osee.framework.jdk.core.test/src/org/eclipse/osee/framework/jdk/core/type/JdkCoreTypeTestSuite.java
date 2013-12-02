@@ -24,6 +24,7 @@ import org.junit.runners.Suite;
    PropertyStoreTest.class,
    PropertyStoreWriterTest.class,
    QuadTest.class,
+   ResultSetIterableTest.class,
    TripletTest.class})
 public class JdkCoreTypeTestSuite {
    // Test Suite

@@ -12,16 +12,15 @@ package org.eclipse.osee.disposition.rest.resources;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
-import java.util.Collections;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.resources.DispoProgramResource;
 import org.eclipse.osee.disposition.rest.util.HtmlWriter;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -54,14 +53,15 @@ public class DispoProgramResourceTest {
    @Test
    public void testGetAllAsHtml() {
       // No Sets
-      when(dispoApi.getDispoPrograms()).thenReturn(new ResultSetList<IOseeBranch>());
+      ResultSet<IOseeBranch> emptyResultSet = ResultSets.emptyResultSet();
+      when(dispoApi.getDispoPrograms()).thenReturn(emptyResultSet);
       Response noProgramsResponse = resource.getAllPrograms();
       String messageActual = (String) noProgramsResponse.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noProgramsResponse.getStatus());
       assertEquals(DispoMessages.Program_NoneFound, messageActual);
 
       IOseeBranch branch = TokenFactory.createBranch(id1.getGuid(), "testBranch");
-      ResultSetList<IOseeBranch> branchList = new ResultSetList<IOseeBranch>(Collections.singletonList(branch));
+      ResultSet<IOseeBranch> branchList = ResultSets.singleton(branch);
 
       when(dispoApi.getDispoPrograms()).thenReturn(branchList);
       when(htmlWriter.createDispositionPage("Programs", branchList)).thenReturn("htmlFromWriter");
@@ -84,8 +84,7 @@ public class DispoProgramResourceTest {
       when(dispoApi.getDispoProgramById(id1.getGuid())).thenReturn(testBranch);
       String prefixPath = testBranch.getGuid() + "/dispositionSet/";
       String subTitle = "Disposition Sets";
-      when(htmlWriter.createDispoPage(testBranch.getName(), prefixPath, subTitle, "[]")).thenReturn(
-         "htmlFromWriter");
+      when(htmlWriter.createDispoPage(testBranch.getName(), prefixPath, subTitle, "[]")).thenReturn("htmlFromWriter");
 
       Response response = resource.getProgramById(testBranch.getGuid());
       String returnedHtml = (String) response.getEntity();

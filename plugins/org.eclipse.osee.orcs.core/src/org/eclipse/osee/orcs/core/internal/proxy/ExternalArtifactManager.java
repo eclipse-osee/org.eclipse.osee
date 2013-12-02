@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.proxy;
 
-import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;

@@ -25,8 +25,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.ResultSet;
-import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -36,6 +34,8 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeId;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -90,7 +90,7 @@ public class MockArtifact implements ArtifactReadable {
       if (data == null) {
          data = Collections.emptyList();
       }
-      return new ResultSetList<ArtifactReadable>(data);
+      return ResultSets.newResultSet(data);
    }
 
    public void addRelation(IRelationTypeSide relation, ArtifactReadable artifact) {
@@ -145,7 +145,7 @@ public class MockArtifact implements ArtifactReadable {
       } else {
          toReturn = Collections.emptyList();
       }
-      return new ResultSetList<AttributeReadable<T>>(toReturn);
+      return ResultSets.newResultSet(toReturn);
    }
 
    @Override
@@ -176,7 +176,7 @@ public class MockArtifact implements ArtifactReadable {
             toReturn.add(new MockAttribute<Object>(entry.getKey(), value));
          }
       }
-      return new ResultSetList<AttributeReadable<Object>>(toReturn);
+      return ResultSets.newResultSet(toReturn);
    }
 
    public void clearRelations() {

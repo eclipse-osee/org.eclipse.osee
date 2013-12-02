@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.util;
+package org.eclipse.osee.framework.jdk.core.type;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -17,10 +17,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.ResultSet;
-import org.eclipse.osee.framework.core.exception.ItemDoesNotExist;
-import org.eclipse.osee.framework.core.exception.MultipleItemsExist;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;

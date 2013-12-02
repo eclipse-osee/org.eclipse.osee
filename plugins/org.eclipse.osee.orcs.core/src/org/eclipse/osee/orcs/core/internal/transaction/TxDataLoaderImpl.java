@@ -14,9 +14,10 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.ResultSet;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
@@ -27,7 +28,6 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.graph.GraphFactory;
 import org.eclipse.osee.orcs.core.internal.graph.GraphProvider;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
-import org.eclipse.osee.orcs.core.internal.util.ResultSetIterable;
 import org.eclipse.osee.orcs.data.ArtifactId;
 
 /**
@@ -64,7 +64,7 @@ public class TxDataLoaderImpl implements TxDataLoader {
       DataLoader loader = createLoader(session, branch, artifactIds);
       GraphBuilder handler = graphBuilderFactory.createGraphBuilder(graphProvider);
       loader.load(null, handler);
-      return new ResultSetIterable<Artifact>(handler.getArtifacts());
+      return ResultSets.newResultSet(handler.getArtifacts());
    }
 
    @Override
@@ -73,7 +73,7 @@ public class TxDataLoaderImpl implements TxDataLoader {
       loader.fromTransaction(graph.getTransaction());
       GraphBuilder handler = graphBuilderFactory.createBuilderForGraph(graph);
       loader.load(null, handler);
-      return new ResultSetIterable<Artifact>(handler.getArtifacts());
+      return ResultSets.newResultSet(handler.getArtifacts());
    }
 
    @Override

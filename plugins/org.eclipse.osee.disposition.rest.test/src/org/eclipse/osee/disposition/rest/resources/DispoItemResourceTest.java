@@ -12,16 +12,15 @@ package org.eclipse.osee.disposition.rest.resources;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
-import java.util.Collections;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.resources.DispoItemResource;
 import org.eclipse.osee.disposition.rest.util.HtmlWriter;
-import org.eclipse.osee.framework.core.data.ResultSetList;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +57,8 @@ public class DispoItemResourceTest {
    @Test
    public void testGetAllAsHtml() {
       // No Items
-      when(dispositionApi.getDispoItems("branchId", "setId")).thenReturn(new ResultSetList<DispoItemData>());
+      ResultSet<DispoItemData> emptyResultSet = ResultSets.emptyResultSet();
+      when(dispositionApi.getDispoItems("branchId", "setId")).thenReturn(emptyResultSet);
       Response noItemsResponse = resource.getAllDispoItems();
       String messageActual = (String) noItemsResponse.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noItemsResponse.getStatus());
@@ -67,7 +67,7 @@ public class DispoItemResourceTest {
       DispoItemData item = new DispoItemData();
       item.setGuid(id1.getGuid());
       item.setName("Item");
-      ResultSetList<DispoItemData> resultSet = new ResultSetList<DispoItemData>(Collections.singletonList(item));
+      ResultSet<DispoItemData> resultSet = ResultSets.singleton(item);
 
       when(dispositionApi.getDispoItems("branchId", "setId")).thenReturn(resultSet);
       when(htmlWriter.createDispositionPage("Dispositionable Items", resultSet)).thenReturn("htmlFromWriter");
@@ -108,7 +108,8 @@ public class DispoItemResourceTest {
       DispoItemData item = new DispoItemData();
       item.setGuid(id1.getGuid());
       item.setName("item");
-      ResultSetList<DispoAnnotationData> resultAnnotations = new ResultSetList<DispoAnnotationData>();
+      ResultSet<DispoAnnotationData> emptyResultSet = ResultSets.emptyResultSet();
+      ResultSet<DispoAnnotationData> resultAnnotations = emptyResultSet;
       when(dispositionApi.getDispoItemById("branchId", item.getGuid())).thenReturn(item);
       when(dispositionApi.getDispoAnnotations("branchId", id1.getGuid())).thenReturn(resultAnnotations);
       String prefixPath = item.getGuid() + "/annotation/";

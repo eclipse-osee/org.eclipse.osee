@@ -14,8 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Future;
-import org.eclipse.osee.framework.core.data.ResultSet;
-import org.eclipse.osee.framework.core.data.ResultSetList;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
@@ -26,7 +26,7 @@ import com.google.common.collect.MapMaker;
  */
 public class ArtifactProviderCache {
    private static final ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> EMPTY_SET =
-      new ResultSetList<Match<ArtifactReadable, AttributeReadable<?>>>();
+      ResultSets.emptyResultSet();
    private final ConcurrentMap<ArtifactReadable, ArtifactReadable> parentCache;
    private final Set<ArtifactReadable> artifactsWithNoParent = new HashSet<ArtifactReadable>();
 

@@ -22,8 +22,8 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.executor.admin.WorkUtility;
 import org.eclipse.osee.executor.admin.WorkUtility.PartitionFactory;
-import org.eclipse.osee.framework.core.data.ResultSet;
-import org.eclipse.osee.framework.core.data.ResultSetList;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
@@ -54,7 +54,7 @@ public class FilteredResultSetCallable extends CancellableCallable<ResultSet<Mat
       List<Match<ArtifactReadable, AttributeReadable<?>>> artifacts = filter(results);
 
       Collections.sort(artifacts, new MatchComparator(SortOrder.ASCENDING));
-      return new ResultSetList<Match<ArtifactReadable, AttributeReadable<?>>>(artifacts);
+      return ResultSets.newResultSet(artifacts);
    }
 
    @Override
