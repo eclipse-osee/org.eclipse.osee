@@ -29,11 +29,11 @@ public class AtsLogUtility {
    }
 
    public static String getHtml(IAtsLog atsLog, ILogStorageProvider storageProvider, boolean showLogTitle) throws OseeCoreException {
-      return (new AtsLogHtml(atsLog, storageProvider, showLogTitle)).get();
+      return (new AtsLogHtml(atsLog, storageProvider, AtsCore.getUserService(), showLogTitle)).get();
    }
 
    public static String getTable(IAtsLog atsLog, ILogStorageProvider storageProvider) throws OseeCoreException {
-      return (new AtsLogHtml(atsLog, storageProvider, true)).getTable();
+      return (new AtsLogHtml(atsLog, storageProvider, AtsCore.getUserService(), true)).getTable();
    }
 
    public static String getToStringUser(IAtsLogItem item) {

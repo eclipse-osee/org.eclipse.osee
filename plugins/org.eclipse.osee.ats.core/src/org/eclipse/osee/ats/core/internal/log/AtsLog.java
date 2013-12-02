@@ -111,21 +111,22 @@ public class AtsLog implements IAtsLog {
    }
 
    @Override
-   public void addLogItem(IAtsLogItem item) throws OseeCoreException {
-      addLog(item.getType(), item.getState(), item.getMsg(), item.getDate(), item.getUserId());
+   public IAtsLogItem addLogItem(IAtsLogItem item) throws OseeCoreException {
+      return addLog(item.getType(), item.getState(), item.getMsg(), item.getDate(), item.getUserId());
    }
 
    @Override
-   public void addLog(LogType type, String state, String msg, String userId) throws OseeCoreException {
-      addLog(type, state, msg, new Date(), userId);
+   public IAtsLogItem addLog(LogType type, String state, String msg, String userId) throws OseeCoreException {
+      return addLog(type, state, msg, new Date(), userId);
    }
 
    @Override
-   public void addLog(LogType type, String state, String msg, Date date, String userId) throws OseeCoreException {
+   public IAtsLogItem addLog(LogType type, String state, String msg, Date date, String userId) throws OseeCoreException {
       LogItem logItem = new LogItem(type, date, userId, state, msg);
       List<IAtsLogItem> logItems = getLogItems();
       logItems.add(logItem);
       dirty = true;
+      return logItem;
    }
 
    @Override

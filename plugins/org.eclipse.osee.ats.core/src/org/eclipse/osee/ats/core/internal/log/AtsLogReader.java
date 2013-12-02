@@ -10,16 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.internal.log;
 
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.ILogStorageProvider;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -45,18 +42,6 @@ public class AtsLogReader {
                new LogItem(m.group(4), m.group(1), Strings.intern(m.group(5)), Strings.intern(m.group(3)),
                   AXml.xmlToText(m.group(2)));
             atsLog.addLogItem(item);
-         }
-
-         Matcher m2 = AtsLogWriter.LOG_ITEM_TAG_PATTERN.matcher(xml);
-         int openTagsFound = 0;
-         while (m2.find()) {
-            openTagsFound++;
-         }
-         int size = atsLog.getLogItems().size();
-         if (size != openTagsFound) {
-            OseeLog.logf(AtsCore.class, Level.SEVERE,
-               "ATS Log: open tags found %d doesn't match log items parsed %d for %s", openTagsFound, size,
-               storeProvider.getLogId());
          }
       }
       atsLog.setDirty(false);

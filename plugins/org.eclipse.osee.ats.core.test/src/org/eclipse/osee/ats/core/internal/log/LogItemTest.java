@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.internal.log;
 
 import static org.mockito.Mockito.when;
+import java.util.Calendar;
 import java.util.Date;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
@@ -24,6 +25,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 /**
+ * Test Case for {@link LogItem}
+ * 
  * @author Donald G. Dunne
  */
 public class LogItemTest {
@@ -86,6 +89,41 @@ public class LogItemTest {
 
       Assert.assertEquals("my msg (Error)from Analyze by " + user.getName() + " on " + DateUtil.getMMDDYYHHMM(date),
          item.toString());
+   }
+
+   @Test
+   public void testSetsAndGets() throws OseeCoreException {
+      Date date = new Date();
+      IAtsLogItem item = getTestLogItem(date, user);
+      item.setMsg("new msg");
+      Assert.assertEquals("new msg", item.getMsg());
+
+      item.setState("Implement");
+      Assert.assertEquals("Implement", item.getState());
+
+      item.setUserId("asdf");
+      Assert.assertEquals("asdf", item.getUserId());
+
+      item.setType(LogType.Note);
+      Assert.assertEquals(LogType.Note, item.getType());
+
+      Calendar cal = Calendar.getInstance();
+      cal.set(2011, 10, 1);
+      Date newDate = cal.getTime();
+      item.setDate(newDate);
+      Assert.assertNotEquals(date, item.getDate());
+      Assert.assertEquals(newDate, item.getDate());
+   }
+
+   @Test
+   public void testDatePattern() {
+      Calendar cal = Calendar.getInstance();
+      cal.set(2011, 10, 1);
+      Date date = cal.getTime();
+      IAtsLogItem item = getTestLogItem(date, user);
+
+      Assert.assertEquals(date.toString(), item.getDate(null));
+      Assert.assertEquals("11/01/2011", item.getDate("MM/dd/yyyy"));
    }
 
 }

@@ -12,10 +12,11 @@ package org.eclipse.osee.ats.core.internal.log;
 
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.ILogStorageProvider;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -29,9 +30,11 @@ public class AtsLogHtml {
    private final IAtsLog atsLog;
    private final boolean showLogTitle;
    private final ILogStorageProvider storeProvider;
+   private final IAtsUserService atsUserService;
 
-   public AtsLogHtml(IAtsLog atsLog, ILogStorageProvider storeProvider, boolean showLogTitle) {
+   public AtsLogHtml(IAtsLog atsLog, ILogStorageProvider storeProvider, IAtsUserService atsUserService, boolean showLogTitle) {
       this.storeProvider = storeProvider;
+      this.atsUserService = atsUserService;
       this.showLogTitle = showLogTitle;
       this.atsLog = atsLog;
    }
@@ -64,10 +67,13 @@ public class AtsLogHtml {
 
    private String getUserName(String userId) {
       String name = userId;
-      if (storeProvider != null) {
-         String userName = AtsCore.getUserService().getUserById(userId).getName();
-         if (Strings.isValid(userName)) {
-            name = userName;
+      if (atsUserService != null) {
+         IAtsUser userById = atsUserService.getUserById(userId);
+         if (userById != null) {
+            String userName = userById.getName();
+            if (Strings.isValid(userName)) {
+               name = userName;
+            }
          }
       }
       return name;

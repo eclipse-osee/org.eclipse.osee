@@ -52,11 +52,11 @@ public interface IAtsLog {
     * @param userId JavaTip
     * @param changes JavaTip
     */
-   public abstract void addLog(LogType type, String state, String msg, String userId) throws OseeCoreException;
+   public abstract IAtsLogItem addLog(LogType type, String state, String msg, String userId) throws OseeCoreException;
 
-   public abstract void addLogItem(IAtsLogItem item) throws OseeCoreException;
+   public abstract IAtsLogItem addLogItem(IAtsLogItem item) throws OseeCoreException;
 
-   public abstract void addLog(LogType type, String state, String msg, Date date, String userId) throws OseeCoreException;
+   public abstract IAtsLogItem addLog(LogType type, String state, String msg, Date date, String userId) throws OseeCoreException;
 
    public abstract void clearLog();
 

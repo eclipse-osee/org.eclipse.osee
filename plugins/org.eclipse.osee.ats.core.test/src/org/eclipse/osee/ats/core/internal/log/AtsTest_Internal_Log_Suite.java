@@ -20,7 +20,13 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({LogItemTest.class})
+@Suite.SuiteClasses({
+   AtsLogWriterTest.class,
+   AtsLogReaderTest.class,
+   AtsLogTest.class,
+   AtsLogFactoryTest.class,
+   LogItemTest.class,
+   AtsLogHtmlTest.class})
 public class AtsTest_Internal_Log_Suite {
 
    @BeforeClass
