@@ -47,8 +47,8 @@ public final class CoreRelationTypes {
    public static final IRelationTypeSide SupportingInfo_SupportedBy = TokenFactory.createRelationTypeSide(SIDE_A, 0x2000000000000166L, "Supporting Info");
    public static final IRelationTypeSide SupportingInfo_SupportingInfo = SupportingInfo_SupportedBy.getOpposite();
    
-   public static final IRelationTypeSide SupportingRequirement_Supports = TokenFactory.createRelationTypeSide(SIDE_A, 0x200000000000017CL, "Supporting Requirement");
-   public static final IRelationTypeSide SupportingRequirement_SupportingRequirement = SupportingRequirement_Supports.getOpposite();
+   public static final IRelationTypeSide SupportingRequirement__Higher_Level = TokenFactory.createRelationTypeSide(SIDE_A, 0x200000000000017CL, "Supporting Requirement");
+   public static final IRelationTypeSide SupportingRequirement__Lower_Level = SupportingRequirement__Higher_Level.getOpposite();
    
    public static final IRelationTypeSide TeamMember_Team = TokenFactory.createRelationTypeSide(SIDE_A, 0x200000000000016AL, "TeamMember");
    public static final IRelationTypeSide TeamMember_Member = TeamMember_Team.getOpposite();
