@@ -33,6 +33,7 @@ public final class OseeTemplateTestTokens {
    public static final ResourceToken HeaderHtml = createToken(0x40000000000000F6L, "header.html");
    public static final ResourceToken RealizePage_ValuesHtml = createToken(0x40000000000000F7L, "realizePage_Values.html");
    public static final ResourceToken MyTestCss = createToken(0x40000000000000F8L, "myTest.css");
+   public static final ResourceToken RealizePage_ListItems = createToken(0x40000000000000F9L, "realizePage_ListItems.html");
    // @formatter:on
 
    private static ResourceToken createToken(Long uuid, String name) {

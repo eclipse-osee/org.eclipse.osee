@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
 /**
  * @author Ryan D. Brooks
  */
-public abstract class OptionsRule<T extends Identity<String> & Named> extends AppendableRule {
+public abstract class OptionsRule<T extends Identity<String> & Named> extends AppendableRule<T> {
    private final String listId;
 
    protected String getListId() {
@@ -57,13 +57,18 @@ public abstract class OptionsRule<T extends Identity<String> & Named> extends Ap
     */
    public abstract Iterable<T> getOptions();
 
+   @Override
+   public void applyTo(Appendable appendable, T option) throws IOException {
+      appendable.append("<option value=\"");
+      appendable.append(option.getName());
+      appendable.append("\" guid=\"");
+      appendable.append(option.getGuid());
+      appendable.append("\">\n");
+   }
+
    private void appendOptions(Appendable appendable) throws IOException {
       for (T option : getOptions()) {
-         appendable.append("<option value=\"");
-         appendable.append(option.getName());
-         appendable.append("\" guid=\"");
-         appendable.append(option.getGuid());
-         appendable.append("\">\n");
+         applyTo(appendable, option);
       }
    }
 }

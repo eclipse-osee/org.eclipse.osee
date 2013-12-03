@@ -16,11 +16,15 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
 /**
  * @author Ryan D. Brooks
  */
-public abstract class AppendableRule implements Named {
+public abstract class AppendableRule<T> implements Named {
    private final String ruleName;
 
    public AppendableRule(String ruleName) {
       this.ruleName = ruleName;
+   }
+
+   public AppendableRule() {
+      this("unnamed rule");
    }
 
    @Override
@@ -29,4 +33,8 @@ public abstract class AppendableRule implements Named {
    }
 
    public abstract void applyTo(Appendable appendable) throws IOException;
+
+   public void applyTo(Appendable appendable, T data) throws IOException {
+      applyTo(appendable);
+   }
 }

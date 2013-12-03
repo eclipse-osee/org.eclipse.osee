@@ -11,43 +11,39 @@
 package org.eclipse.osee.template.engine;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Ryan D. Brooks
  */
-public final class CompositeRule<T> extends AppendableRule<T> {
-   private final List<AppendableRule<T>> rules = new ArrayList<AppendableRule<T>>();
+public class ListItemRule<T> extends AppendableRule<T> {
+   private final AppendableRule<T> innerHtml;
 
-   public CompositeRule(String ruleName) {
+   public ListItemRule(String ruleName, AppendableRule<T> innerHtml) {
       super(ruleName);
+      this.innerHtml = innerHtml;
+   }
+
+   public ListItemRule(AppendableRule<T> innerHtml) {
+      this.innerHtml = innerHtml;
    }
 
    @Override
    public void applyTo(Appendable appendable) throws IOException {
-      for (AppendableRule<T> rule : rules) {
-         rule.applyTo(appendable);
-      }
+      appendable.append("<li>");
+      innerHtml.applyTo(appendable);
+      appendable.append("</li>\n");
    }
 
    @Override
    public void applyTo(Appendable appendable, T data) throws IOException {
-      for (AppendableRule<T> rule : rules) {
-         rule.applyTo(appendable, data);
-      }
+      appendable.append("<li>");
+      innerHtml.applyTo(appendable, data);
+      appendable.append("</li>");
    }
 
-   public void addRule(AppendableRule<T> rule) {
-      rules.add(rule);
-   }
-
-   public boolean ruleExists(String ruleName) {
-      for (AppendableRule<T> rule : rules) {
-         if (rule.getName().equals(ruleName)) {
-            return true;
-         }
-      }
-      return false;
+   public static void appendTo(Appendable appendable, CharSequence text) throws IOException {
+      appendable.append("<li>");
+      appendable.append(text);
+      appendable.append("</li>\n");
    }
 }

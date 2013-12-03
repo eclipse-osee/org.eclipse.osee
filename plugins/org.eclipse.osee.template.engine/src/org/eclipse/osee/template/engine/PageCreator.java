@@ -42,14 +42,14 @@ public final class PageCreator {
    private static final int NumOfCharsInTypicalSmallPage = 7000;
 
    private final IResourceRegistry registry;
-   private final ConcurrentHashMap<String, AppendableRule> substitutions =
-      new ConcurrentHashMap<String, AppendableRule>();
+   private final ConcurrentHashMap<String, AppendableRule<?>> substitutions =
+      new ConcurrentHashMap<String, AppendableRule<?>>();
 
    public PageCreator(IResourceRegistry registry) {
       this.registry = registry;
    }
 
-   public void addSubstitution(AppendableRule rule) {
+   public void addSubstitution(AppendableRule<?> rule) {
       substitutions.put(rule.getName(), rule);
    }
 
@@ -71,7 +71,7 @@ public final class PageCreator {
    }
 
    public String getValue(String ruleName) {
-      AppendableRule appendableRule = substitutions.get(ruleName);
+      AppendableRule<?> appendableRule = substitutions.get(ruleName);
       if (appendableRule != null) {
          return appendableRule.toString();
       }
@@ -163,7 +163,7 @@ public final class PageCreator {
             page.append(token);
             page.append("?>");
          } else {
-            AppendableRule rule = substitutions.get(token);
+            AppendableRule<?> rule = substitutions.get(token);
             if (rule == null) {
                throw new OseeArgumentException("no substitution was found for token %s", token);
             }

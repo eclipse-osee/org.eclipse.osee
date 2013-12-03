@@ -17,7 +17,7 @@ import java.util.Calendar;
 /**
  * @author Megumi Telles
  */
-public final class WordDocumentPropertiesRule extends AppendableRule {
+public final class WordDocumentPropertiesRule extends AppendableRule<String> {
 
    private static final String LINES_PARAGRAPHS_CHARACTERS_WITH_SPACES__VERSION =
       "<o:Lines>1</o:Lines><o:Paragraphs>1</o:Paragraphs><o:CharactersWithSpaces>0</o:CharactersWithSpaces><o:Version>1</o:Version>";
@@ -87,5 +87,4 @@ public final class WordDocumentPropertiesRule extends AppendableRule {
       return String.format("title = [ %s ], author = [ %s ], company = [ %s ]", title, author, company);
 
    }
-
 }

@@ -15,7 +15,7 @@ import java.io.IOException;
 /**
  * @author Ryan D. Brooks
  */
-public final class StringRule extends AppendableRule {
+public final class StringRule extends AppendableRule<CharSequence> {
    private final CharSequence value;
 
    public StringRule(String ruleName, CharSequence value) {
@@ -25,7 +25,12 @@ public final class StringRule extends AppendableRule {
 
    @Override
    public void applyTo(Appendable appendable) throws IOException {
-      appendable.append(value);
+      applyTo(appendable, value);
+   }
+
+   @Override
+   public void applyTo(Appendable appendable, CharSequence data) throws IOException {
+      appendable.append(data);
    }
 
    @Override

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.template.engine;
 
+import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.RealizePage_ListItems;
 import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.RealizePage_MainPageHtml;
 import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.RealizePage_ValuesHtml;
 import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.TestMainPage_WithIncludeFileHtml;
@@ -17,6 +18,7 @@ import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.TestValues
 import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.TestValues_KeyValueHtml;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -122,4 +124,42 @@ public class PageCreatorTest {
       Assert.assertEquals("{key2=   <h2>value2</h2>, key=   <h1>value</h1>}", page.toString());
    }
 
+   @Test
+   public void testHyperLinkRule() {
+      PageCreator page = new PageCreator(registry);
+      page.addSubstitution(new HyperLinkRule("header", "http://www.stackoverflow.com", "Stack Overflow"));
+      page.addSubstitution(new HyperLinkRule("key1", "http://www.google.com", "Google!"));
+      page.addSubstitution(new HyperLinkRule("key2", "http://www.eclipse.org", "Eclipse"));
+      String expected = "<a href=\"http://www.stackoverflow.com\">Stack Overflow</a>\n\n" //
+         + "<a href=\"http://www.google.com\">Google!</a>\n\n" //
+         + "<a href=\"http://www.eclipse.org\">Eclipse</a>\n";
+      String actual = page.realizePage(RealizePage_MainPageHtml);
+      Assert.assertEquals(expected, actual);
+   }
+
+   @Test
+   public void testListItemRule() {
+      PageCreator page = new PageCreator(registry);
+      page.addSubstitution(new ListItemRule<Pair<CharSequence, CharSequence>>("key1", (new HyperLinkRule(
+         "ruleNameDoesntMatter", "http://www.eclipse.org", "Eclipse"))));
+      CompositeRule<Pair<CharSequence, CharSequence>> listItemsComposite =
+         new CompositeRule<Pair<CharSequence, CharSequence>>("key2");
+
+      ListItemRule<Pair<CharSequence, CharSequence>> li1 =
+         new ListItemRule<Pair<CharSequence, CharSequence>>("keyDoesntMatter", (new HyperLinkRule("keyDoesntMatter",
+            "http://www.stackoverflow.com", "Stack Overflow")));
+      ListItemRule<Pair<CharSequence, CharSequence>> li2 =
+         new ListItemRule<Pair<CharSequence, CharSequence>>("keyDoesntMatter", (new HyperLinkRule("keyDoesntMatter",
+            "http://www.google.com", "Google!")));
+
+      listItemsComposite.addRule(li1);
+      listItemsComposite.addRule(li2);
+
+      page.addSubstitution(listItemsComposite);
+      String expected = "<ol>\n<li><a href=\"http://www.eclipse.org\">Eclipse</a></li>\n\n</ol>\n\n" //
+         + "<ul>\n<li><a href=\"http://www.stackoverflow.com\">Stack Overflow</a></li>\n" //
+         + "<li><a href=\"http://www.google.com\">Google!</a></li>\n\n</ul>";
+      String actual = page.realizePage(RealizePage_ListItems);
+      Assert.assertEquals(expected, actual);
+   }
 }

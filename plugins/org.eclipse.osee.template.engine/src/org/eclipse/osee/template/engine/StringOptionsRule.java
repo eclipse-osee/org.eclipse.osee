@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * @author Donald G. Dunne
  */
-public class StringOptionsRule extends AppendableRule {
+public class StringOptionsRule extends AppendableRule<String> {
    private final String listId;
    private final List<String> options = new ArrayList<String>();
 
