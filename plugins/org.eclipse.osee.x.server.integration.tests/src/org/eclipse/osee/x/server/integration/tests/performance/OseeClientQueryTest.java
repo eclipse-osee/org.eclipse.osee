@@ -39,9 +39,8 @@ import org.junit.rules.MethodRule;
 @PerfTest(threads = 2, invocations = 100)
 public class OseeClientQueryTest {
 
-   // Randomly selected guids
-   private static final String GUID1 = "ABNRvbZxXHICYklfslwA";
-   private static final String GUID2 = "D2hZ1_MwKRsqTILDKawA";
+   private static final String GUID1 = SystemUser.Guest.getGuid();
+   private static final String GUID2 = SystemUser.OseeSystem.getGuid();
 
    private static final IOseeBranch SAW_1 = new IOseeBranch() {
 
