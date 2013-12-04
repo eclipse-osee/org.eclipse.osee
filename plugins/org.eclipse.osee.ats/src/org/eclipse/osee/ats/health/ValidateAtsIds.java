@@ -16,11 +16,13 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsIdProvider;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -105,13 +107,12 @@ public class ValidateAtsIds extends AbstractBlam {
          try {
             artifactListFromIds = ArtifactQuery.getArtifactListFromIds(subList, CoreBranches.COMMON);
             for (Artifact art : artifactListFromIds) {
-               String artHrid = art.getHrid();
                String atsId = art.getSoleAttributeValueAsString(AtsAttributeTypes.AtsId, "");
-               if (!atsId.equals(artHrid)) {
-                  if (persist) {
-                     art.setSoleAttributeFromString(AtsAttributeTypes.AtsId, artHrid);
-                     art.persist(tx);
-                  }
+               if (!Strings.isValid(atsId) && persist) {
+                  log("Not set: " + art.getName() + " artType: " + art.getArtifactTypeName());
+                  atsId = AtsIdProvider.get().getNextId();
+                  art.setSoleAttributeFromString(AtsAttributeTypes.AtsId, atsId);
+                  art.persist(tx);
                }
             }
          } catch (Exception ex) {

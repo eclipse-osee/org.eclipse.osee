@@ -121,19 +121,6 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
       this.artifactType = ArtifactTypeManager.getType(artifactType);
    }
 
-   // begin temp code
-   private String hrid = "";
-
-   public String getHrid() {
-      return hrid;
-   }
-
-   public void setHrid(String hrid) {
-      this.hrid = hrid;
-   }
-
-   // end temp code
-
    public final boolean isInDb() {
       return transactionId != TRANSACTION_SENTINEL;
    }

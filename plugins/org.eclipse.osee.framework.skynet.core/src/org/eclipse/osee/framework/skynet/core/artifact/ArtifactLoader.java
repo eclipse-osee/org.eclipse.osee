@@ -378,8 +378,6 @@ public final class ArtifactLoader {
             factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), artifactType,
                chStmt.getInt("gamma_id"), branch, transactionId, ModificationType.getMod(chStmt.getInt("mod_type")),
                historical);
-         // temp code
-         artifact.setHrid(chStmt.getString("human_readable_id"));
       }
 
       if (reload == LoadType.RELOAD_CACHE) {

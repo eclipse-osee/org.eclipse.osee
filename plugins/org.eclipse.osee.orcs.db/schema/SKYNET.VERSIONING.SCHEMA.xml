@@ -32,7 +32,6 @@
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ART_TYPE_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="GUID" defaultValue="not null" limits="22" type="VARCHAR" />
-		<Column id="HUMAN_READABLE_ID" limits="5" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_ART__G_A_PK" type="PRIMARY KEY" appliesTo="ART_ID, GAMMA_ID" />
 	 	<Constraint schema="OSEE" id="OSEE_ART__ART_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ART_TYPE_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_TYPE_ID_MAP" column="LOCAL_ID" />

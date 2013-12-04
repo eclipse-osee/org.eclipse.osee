@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.util.AtsIdProvider;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -71,12 +70,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
       }
 
       if (!inDataStore) {
-         String atsId = HumanReadableId.generate();
-         if (OseeInfo.isBooleanUsingCache("new.ats.ids")) {
-            atsId = AtsIdProvider.get().getNextId();
-         } else {
-            toReturn.setHrid(atsId);
-         }
+         String atsId = AtsIdProvider.get().getNextId();
          toReturn.setSoleAttributeFromString(AtsAttributeTypes.AtsId, atsId);
       }
 
