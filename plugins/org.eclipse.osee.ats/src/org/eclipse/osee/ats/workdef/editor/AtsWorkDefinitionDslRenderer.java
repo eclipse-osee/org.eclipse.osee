@@ -26,7 +26,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -178,7 +178,7 @@ public final class AtsWorkDefinitionDslRenderer extends FileSystemRenderer {
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         if (!AtsUtilCore.isAtsAdmin()) {
+         if (!AtsUtilClient.isAtsAdmin()) {
             AWorkbench.popup("Must be ATS Admin to make Work Definition changes.");
             return;
          }

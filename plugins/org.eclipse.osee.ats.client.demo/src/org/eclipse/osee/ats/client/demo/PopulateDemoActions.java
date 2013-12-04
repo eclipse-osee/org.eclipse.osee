@@ -41,7 +41,7 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
@@ -140,7 +140,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
    }
 
    public void run(boolean prompt) throws Exception {
-      AtsUtilCore.setEmailEnabled(false);
+      AtsUtilClient.setEmailEnabled(false);
       if (AtsUtil.isProductionDb()) {
          throw new IllegalStateException("PopulateDemoActions should not be run on production DB");
       }

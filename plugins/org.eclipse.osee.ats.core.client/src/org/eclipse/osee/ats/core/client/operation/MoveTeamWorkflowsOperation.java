@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -50,7 +50,7 @@ public class MoveTeamWorkflowsOperation extends AbstractOperation {
          throw new OseeArgumentException("ERROR", "Must provide Destination Team Workflow.");
       }
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilClient.getAtsBranch(), getName());
       if (Strings.isValid(destActionTitle)) {
          destTeamWorkflow.getParentActionArtifact().setName(destActionTitle);
       }

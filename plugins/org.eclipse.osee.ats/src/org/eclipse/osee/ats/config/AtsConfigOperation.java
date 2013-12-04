@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.core.client.config.AtsArtifactToken;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
@@ -177,7 +177,7 @@ public class AtsConfigOperation extends AbstractOperation {
             Artifact workDefArt =
                AtsWorkDefinitionImporter.get().importWorkDefinitionToDb(workDefXml, workDef.getName(), name,
                   resultData, changes);
-            Artifact folder = AtsUtilCore.getFromToken(AtsArtifactToken.WorkDefinitionsFolder);
+            Artifact folder = AtsUtilClient.getFromToken(AtsArtifactToken.WorkDefinitionsFolder);
             folder.addChild(workDefArt);
             changes.add(folder);
          } catch (Exception ex) {

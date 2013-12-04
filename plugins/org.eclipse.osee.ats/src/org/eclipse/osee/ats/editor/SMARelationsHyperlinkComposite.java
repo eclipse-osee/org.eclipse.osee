@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -123,7 +123,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
                this,
                String.format("\"%s\" - %s",
                   art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60),
-                  AtsUtilCore.getAtsId(art)), SWT.NONE);
+                  AtsUtilClient.getAtsId(art)), SWT.NONE);
          link.addHyperlinkListener(new IHyperlinkListener() {
 
             @Override

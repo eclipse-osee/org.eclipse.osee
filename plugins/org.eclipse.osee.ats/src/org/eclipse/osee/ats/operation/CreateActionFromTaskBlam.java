@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
@@ -103,14 +103,14 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
                   return;
                }
                try {
-                  AtsUtilCore.setEmailEnabled(false);
+                  AtsUtilClient.setEmailEnabled(false);
                   Collection<TaskArtifact> taskArts = Collections.castAll(artifacts);
                   Collection<IAtsActionableItem> aias = Collections.castAll(aiasArts);
                   handleCreateActions(taskArts, title, aias, changeType, priority, monitor);
                } catch (Exception ex) {
                   log(ex);
                } finally {
-                  AtsUtilCore.setEmailEnabled(true);
+                  AtsUtilClient.setEmailEnabled(true);
                }
 
             } catch (Exception ex) {

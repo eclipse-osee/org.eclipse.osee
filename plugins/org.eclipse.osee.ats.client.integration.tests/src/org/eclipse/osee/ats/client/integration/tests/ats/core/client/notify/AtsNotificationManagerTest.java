@@ -33,8 +33,9 @@ import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
@@ -57,7 +58,7 @@ public class AtsNotificationManagerTest {
 
    @BeforeClass
    public static void setup() {
-      AtsUtilCore.setEmailEnabled(true);
+      AtsUtilClient.setEmailEnabled(true);
    }
 
    @AfterClass
@@ -69,7 +70,7 @@ public class AtsNotificationManagerTest {
 
       AtsNotificationManager.setInTest(true);
       AtsTestUtil.cleanup();
-      AtsUtilCore.setEmailEnabled(false);
+      AtsUtilClient.setEmailEnabled(false);
    }
 
    @org.junit.Test
@@ -400,7 +401,7 @@ public class AtsNotificationManagerTest {
       changes.execute();
 
       SkynetTransaction transaction2 =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
+         TransactionManager.createTransaction(AtsUtilClient.getAtsBranch(), getClass().getSimpleName());
 
       actionArt.getTeams().iterator().next().deleteAndPersist(transaction2);
       actionArt.deleteAndPersist(transaction2);

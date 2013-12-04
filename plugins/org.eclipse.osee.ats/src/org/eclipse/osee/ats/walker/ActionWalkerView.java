@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -157,7 +157,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
                if (parentArtifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                   artifact = ((TeamWorkFlowArtifact) parentArtifact).getParentActionArtifact();
                } else {
-                  OseeLog.log(Activator.class, Level.SEVERE, "Unknown parent " + AtsUtilCore.getAtsId(art));
+                  OseeLog.log(Activator.class, Level.SEVERE, "Unknown parent " + AtsUtilClient.getAtsId(art));
                }
             }
          }
@@ -292,7 +292,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return AtsUtilCore.getAtsObjectEventFilters();
+      return AtsUtilClient.getAtsObjectEventFilters();
    }
 
    @Override

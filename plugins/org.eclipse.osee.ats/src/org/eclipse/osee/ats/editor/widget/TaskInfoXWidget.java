@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.internal.Activator;
@@ -116,7 +116,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
    public void addAdminRightClickOption() {
       try {
          // If ATS Admin, allow right-click to auto-complete tasks
-         if (AtsUtilCore.isAtsAdmin() && !AtsUtil.isProductionDb()) {
+         if (AtsUtilClient.isAtsAdmin() && !AtsUtil.isProductionDb()) {
             labelWidget.addListener(SWT.MouseUp, new Listener() {
                @Override
                public void handleEvent(Event event) {

@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
@@ -121,7 +121,7 @@ public class TaskManager {
 
       // Move Tasks
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Drop Add Tasks");
+         TransactionManager.createTransaction(AtsUtilClient.getAtsBranch(), "Drop Add Tasks");
       for (Artifact art : taskArts) {
          if (art.isOfType(AtsArtifactTypes.Task)) {
             TaskArtifact taskArt = (TaskArtifact) art;

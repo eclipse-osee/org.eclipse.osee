@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
@@ -69,7 +69,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             IAtsVersion verArt = (IAtsVersion) ld.getResult()[0];
 
             // Validate team lead status
-            if (!AtsUtilCore.isAtsAdmin() && !AtsVersionService.get().getTeamDefinition(verArt).getLeads().contains(
+            if (!AtsUtilClient.isAtsAdmin() && !AtsVersionService.get().getTeamDefinition(verArt).getLeads().contains(
                AtsClientService.get().getUserAdmin().getCurrentUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
@@ -86,7 +86,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             if (errorStr != null) {
                AWorkbench.popup("ERROR", errorStr);
             }
-            if (errorStr != null && !AtsUtilCore.isAtsAdmin()) {
+            if (errorStr != null && !AtsUtilClient.isAtsAdmin()) {
                return;
             } else if (errorStr != null && !MessageDialog.openConfirm(Displays.getActiveShell(), "Override",
                "ATS Admin Enabled - Override completed condition and release anyway?")) {

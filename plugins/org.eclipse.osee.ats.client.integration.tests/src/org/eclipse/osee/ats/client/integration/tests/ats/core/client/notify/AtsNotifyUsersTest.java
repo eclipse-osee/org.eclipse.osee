@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager.Configurat
 import org.eclipse.osee.ats.core.client.notify.AtsNotifyUsers;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.util.SubscribeManager;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
@@ -57,7 +57,7 @@ import org.junit.Assert;
 public class AtsNotifyUsersTest {
    @org.junit.BeforeClass
    public static void setup() throws OseeCoreException {
-      AtsUtilCore.setEmailEnabled(true);
+      AtsUtilClient.setEmailEnabled(true);
       AtsTestUtil.cleanupAndReset(AtsNotificationManagerTest.class.getSimpleName());
       cleanUpAction();
    }
@@ -72,18 +72,18 @@ public class AtsNotifyUsersTest {
       AtsTestUtil.cleanup();
       cleanUpAction();
 
-      AtsUtilCore.setEmailEnabled(false);
+      AtsUtilClient.setEmailEnabled(false);
 
       AtsTestUtil.validateArtifactCache();
-      AtsUtilCore.setEmailEnabled(false);
+      AtsUtilClient.setEmailEnabled(false);
 
    }
 
    private static void cleanUpAction() throws OseeCoreException {
       SkynetTransaction changes =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsNotifyUsersTest.class.getSimpleName());
+         TransactionManager.createTransaction(AtsUtilClient.getAtsBranch(), AtsNotifyUsersTest.class.getSimpleName());
       for (Artifact art : ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.Name,
-         AtsNotifyUsersTest.class.getSimpleName(), AtsUtilCore.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
+         AtsNotifyUsersTest.class.getSimpleName(), AtsUtilClient.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
          art.deleteAndPersist(changes);
       }
       changes.execute();

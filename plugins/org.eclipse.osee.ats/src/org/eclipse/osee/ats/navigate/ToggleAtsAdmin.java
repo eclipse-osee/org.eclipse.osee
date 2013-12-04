@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -48,7 +48,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
             AWorkbench.popup("Current User not configured for Temporary Admin");
             return;
          }
-         boolean isAdmin = AtsUtilCore.isAtsAdmin();
+         boolean isAdmin = AtsUtilClient.isAtsAdmin();
          String message = "Currently " + (isAdmin ? "ADMIN" : "NOT ADMIN") + " - Toggle?";
          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Toggle ATS Admin", message)) {
 

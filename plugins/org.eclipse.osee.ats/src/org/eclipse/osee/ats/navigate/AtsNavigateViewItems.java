@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.config.ValidateAtsConfiguration;
 import org.eclipse.osee.ats.config.editor.AtsConfigResultsEditorNavigateItem;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.ev.EvNavigateItems;
 import org.eclipse.osee.ats.goal.GoalSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
@@ -190,7 +190,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    }
 
    private void createAdminItems(XNavigateItem parent, List<XNavigateItem> items) throws OseeCoreException, OseeArgumentException {
-      if (AtsUtilCore.isAtsAdmin()) {
+      if (AtsUtilClient.isAtsAdmin()) {
          XNavigateItem adminItems = new XNavigateItem(parent, "Admin", PluginUiImage.ADMIN);
 
          XNavigateItem dbConvertItems = new XNavigateItem(adminItems, "Database Conversions", PluginUiImage.ADMIN);

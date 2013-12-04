@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.core.client.review.role.UserRoleError;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleValidator;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -509,7 +509,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return Arrays.asList(EventUtil.getCommonBranchFilter(), AtsUtilCore.getReviewArtifactTypeEventFilter());
+      return Arrays.asList(EventUtil.getCommonBranchFilter(), AtsUtilClient.getReviewArtifactTypeEventFilter());
    }
 
    @Override

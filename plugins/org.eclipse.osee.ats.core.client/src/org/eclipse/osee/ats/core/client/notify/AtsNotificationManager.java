@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -58,7 +58,7 @@ public class AtsNotificationManager {
     * Handle notifications for subscription by IAtsTeamDefinition and ActionableItem
     */
    public static void notifySubscribedByTeamOrActionableItem(TeamWorkFlowArtifact teamArt) {
-      if (isInTest() || !AtsUtilCore.isEmailEnabled() || !isProduction()) {
+      if (isInTest() || !AtsUtilClient.isEmailEnabled() || !isProduction()) {
          return;
       }
       boolean notificationAdded = false;
@@ -130,7 +130,7 @@ public class AtsNotificationManager {
    }
 
    public static void notify(AbstractWorkflowArtifact awa, Collection<? extends IAtsUser> notifyUsers, AtsNotifyType... notifyTypes) throws OseeCoreException {
-      if (isInTest() || !AtsUtilCore.isEmailEnabled() || !isProduction() || awa.getName().startsWith("tt ")) {
+      if (isInTest() || !AtsUtilClient.isEmailEnabled() || !isProduction() || awa.getName().startsWith("tt ")) {
          return;
       }
       AtsNotifyUsers.notify(getNotificationManager(), awa, notifyUsers, notifyTypes);

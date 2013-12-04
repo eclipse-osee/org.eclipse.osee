@@ -46,7 +46,7 @@ import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.note.NoteItem;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
@@ -477,7 +477,7 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       toolBarMgr.add(new AddNoteAction(awa, editor));
       toolBarMgr.add(new OpenInAtsWorldAction(awa));
       toolBarMgr.add(new OpenActionViewAction());
-      if (AtsUtilCore.isAtsAdmin()) {
+      if (AtsUtilClient.isAtsAdmin()) {
          toolBarMgr.add(new OpenInArtifactEditorAction(editor));
       }
       toolBarMgr.add(new OpenVersionArtifactAction(awa));

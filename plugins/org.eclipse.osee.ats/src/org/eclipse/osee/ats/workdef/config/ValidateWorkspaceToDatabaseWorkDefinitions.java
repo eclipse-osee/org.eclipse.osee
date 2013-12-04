@@ -15,7 +15,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.workdef.AtsDslUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;

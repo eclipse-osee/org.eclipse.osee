@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.world.search;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -49,7 +49,7 @@ public class MultipleIdSearchUi {
       @Override
       public void run() {
          EntryDialog ed = null;
-         if (AtsUtilCore.isAtsAdmin()) {
+         if (AtsUtilClient.isAtsAdmin()) {
             ed =
                new EntryCheckDialog(data.getName(), "Enter Legacy ID, Guid or ID (comma separated)", "Include ArtIds");
          } else {

@@ -41,11 +41,12 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -170,7 +171,7 @@ public class ExcelAtsActionArtifactExtractor {
    }
 
    public void createArtifactsAndNotify(IAtsChangeSet changes) {
-      AtsUtilCore.setEmailEnabled(false);
+      AtsUtilClient.setEmailEnabled(false);
       Set<TeamWorkFlowArtifact> teamWfs = new HashSet<TeamWorkFlowArtifact>();
       Date createdDate = new Date();
       try {
@@ -230,7 +231,7 @@ public class ExcelAtsActionArtifactExtractor {
             }
             teamWfs.addAll(newTeamArts);
          }
-         AtsUtilCore.setEmailEnabled(true);
+         AtsUtilClient.setEmailEnabled(true);
          if (emailPOCs) {
             for (TeamWorkFlowArtifact team : teamWfs) {
                AtsNotificationManager.notify(team, AtsNotifyType.Assigned);
@@ -239,7 +240,7 @@ public class ExcelAtsActionArtifactExtractor {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       } finally {
-         AtsUtilCore.setEmailEnabled(true);
+         AtsUtilClient.setEmailEnabled(true);
       }
    }
 

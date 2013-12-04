@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.Versions;
@@ -95,8 +95,8 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
             }
             boolean modified =
                promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) useArt),
-                  AtsUtilCore.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
-                  AtsUtilCore.isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked);
+                  AtsUtilClient.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+                  AtsUtilClient.isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked);
             XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
             if (modified && isPersistViewer(xViewer)) {
                useArt.persist("persist goals via alt-left-click");
@@ -114,7 +114,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
    }
 
    public static boolean promptChangeVersion(AbstractWorkflowArtifact sma, VersionReleaseType versionReleaseType, VersionLockedType versionLockType) throws OseeCoreException {
-      if (AtsUtilCore.isAtsAdmin() && !sma.isTeamWorkflow()) {
+      if (AtsUtilClient.isAtsAdmin() && !sma.isTeamWorkflow()) {
          AWorkbench.popup("ERROR ", "Cannot set version for: \n\n" + sma.getName());
          return false;
       }
@@ -131,10 +131,10 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
          if (AtsVersionService.get().isReleased(teamArt) || AtsVersionService.get().isVersionLocked(teamArt)) {
             String error =
                "Team Workflow\n \"" + teamArt.getName() + "\"\n targeted version is locked or already released.";
-            if (AtsUtilCore.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
+            if (AtsUtilClient.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
                error + "\n\nOverride?")) {
                return false;
-            } else if (!AtsUtilCore.isAtsAdmin()) {
+            } else if (!AtsUtilClient.isAtsAdmin()) {
                AWorkbench.popup("ERROR", error);
                continue;
             }
@@ -169,10 +169,10 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
       //now check selected version
       if (newVersion.isVersionLocked()) {
          String error = "Version \"" + newVersion.getCommitFullDisplayName() + "\" is locked or already released.";
-         if (AtsUtilCore.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
+         if (AtsUtilClient.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
             error + "\n\nOverride?")) {
             return false;
-         } else if (!AtsUtilCore.isAtsAdmin()) {
+         } else if (!AtsUtilClient.isAtsAdmin()) {
             AWorkbench.popup("ERROR", error);
          }
       }
@@ -218,8 +218,8 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
             }
          }
 
-         promptChangeVersion(awas, AtsUtilCore.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
-            AtsUtilCore.isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked);
+         promptChangeVersion(awas, AtsUtilClient.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+            AtsUtilClient.isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked);
          getXViewer().update(awas.toArray(), null);
          return;
       } catch (OseeCoreException ex) {

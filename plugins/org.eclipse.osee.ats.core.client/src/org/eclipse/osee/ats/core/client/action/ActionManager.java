@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
@@ -56,7 +56,7 @@ public class ActionManager {
          monitor.subTask("Creating Action");
       }
       ActionArtifact actionArt =
-         (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtilCore.getAtsBranch());
+         (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtilClient.getAtsBranch());
       setArtifactIdentifyData(actionArt, title, desc, changeType, priority, validationRequired, needByDate);
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
@@ -113,17 +113,17 @@ public class ActionManager {
          for (TeamWorkFlowArtifact teamArt : ActionManager.getTeams(actionArt)) {
             if (teamArt.getTeamDefinition().equals(teamDef)) {
                throw new OseeArgumentException("Team [%s] already exists for Action [%s]", teamDef,
-                  AtsUtilCore.getAtsId(actionArt));
+                  AtsUtilClient.getAtsId(actionArt));
             }
          }
       }
 
       TeamWorkFlowArtifact teamArt = null;
       if (guid == null) {
-         teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch());
+         teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilClient.getAtsBranch());
       } else {
          teamArt =
-            (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), null, guid);
+            (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilClient.getAtsBranch(), null, guid);
       }
 
       setArtifactIdentifyData(actionArt, teamArt);

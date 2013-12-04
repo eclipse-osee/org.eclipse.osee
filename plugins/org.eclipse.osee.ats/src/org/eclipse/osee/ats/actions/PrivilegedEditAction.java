@@ -16,7 +16,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -54,7 +54,7 @@ public class PrivilegedEditAction extends AbstractAtsAction {
          }
       } else {
          Set<IAtsUser> users = PrivilegedUserManager.getPrivilegedUsers(sma);
-         if (AtsUtilCore.isAtsAdmin()) {
+         if (AtsUtilClient.isAtsAdmin()) {
             users.add(AtsClientService.get().getUserAdmin().getCurrentUser());
          }
          StringBuffer stringBuffer = new StringBuffer();

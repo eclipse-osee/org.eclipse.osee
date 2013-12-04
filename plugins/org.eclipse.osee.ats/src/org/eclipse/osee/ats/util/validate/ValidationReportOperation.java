@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -135,7 +135,7 @@ public class ValidationReportOperation extends AbstractOperation {
    }
 
    public static String getRequirementHyperlink(Artifact art) throws OseeCoreException {
-      String atsId = AtsUtilCore.getAtsId(art);
+      String atsId = AtsUtilClient.getAtsId(art);
       String linkName = String.format("%s(%s)", art.getName(), atsId);
       return XResultDataUI.getHyperlink(linkName, atsId, art.getFullBranch().getId());
    }

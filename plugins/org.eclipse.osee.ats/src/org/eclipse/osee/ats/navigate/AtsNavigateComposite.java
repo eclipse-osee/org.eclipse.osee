@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -63,7 +63,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
    @Override
    public void refresh() {
       super.refresh();
-      if (AtsUtilCore.isAtsAdmin()) {
+      if (AtsUtilClient.isAtsAdmin()) {
          for (XNavigateItem item : getInput()) {
             if (item.getName().equals("Admin")) {
                filteredTree.getViewer().expandToLevel(item, 1);

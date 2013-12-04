@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -44,7 +44,7 @@ public class PrivilegedUserManager {
       if (parentSma != null) {
          users.addAll(parentSma.getStateMgr().getAssignees());
       }
-      if (AtsUtilCore.isAtsAdmin()) {
+      if (AtsUtilClient.isAtsAdmin()) {
          users.add(AtsClientService.get().getUserAdmin().getCurrentUser());
       }
       return users;

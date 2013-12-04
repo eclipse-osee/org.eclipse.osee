@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.internal.Activator;
@@ -341,7 +341,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
 
    private void createAttributesTab() {
       try {
-         if (!AtsUtilCore.isAtsAdmin()) {
+         if (!AtsUtilClient.isAtsAdmin()) {
             return;
          }
 

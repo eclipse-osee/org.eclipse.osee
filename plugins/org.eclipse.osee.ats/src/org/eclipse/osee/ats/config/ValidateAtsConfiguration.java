@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.health.ValidateResults;
 import org.eclipse.osee.ats.internal.Activator;

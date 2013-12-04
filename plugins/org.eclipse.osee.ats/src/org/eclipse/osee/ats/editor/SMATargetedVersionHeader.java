@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.internal.Activator;
@@ -71,7 +71,7 @@ public class SMATargetedVersionHeader extends Composite {
                         editor.doSave(null);
                      }
                      if (TargetedVersionColumn.promptChangeVersion(sma,
-                        AtsUtilCore.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+                        AtsUtilClient.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
                         VersionLockedType.UnLocked)) {
                         updateLabel(sma);
                         editor.onDirtied();

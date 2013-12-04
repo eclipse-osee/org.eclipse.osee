@@ -17,10 +17,9 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -36,9 +35,8 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 /**
  * @author Donald G. Dunne
  */
-public class AtsUtilCore {
+public class AtsUtilClient {
    private static final String DEFAULT_ATS_ID_VALUE = "0";
-   public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
    private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter = new ArtifactTypeEventFilter(
       AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action, AtsArtifactTypes.Task, AtsArtifactTypes.Goal,
       AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview, AtsArtifactTypes.Version);
@@ -51,10 +49,6 @@ public class AtsUtilCore {
 
    public static boolean isEmailEnabled() {
       return emailEnabled;
-   }
-
-   public static boolean isInTest() {
-      return Boolean.valueOf(System.getProperty("osee.isInTest"));
    }
 
    public static void setEmailEnabled(boolean enabled) {
@@ -103,28 +97,8 @@ public class AtsUtilCore {
       }
    }
 
-   public static String doubleToI18nString(double d) {
-      return doubleToI18nString(d, false);
-   }
-
-   public static String doubleToI18nString(double d, boolean blankIfZero) {
-      if (blankIfZero && d == 0) {
-         return "";
-      }
-      // This enables java to use same string for all 0 cases instead of creating new one
-      else if (d == 0) {
-         return "0.00";
-      } else {
-         return String.format("%4.2f", d);
-      }
-   }
-
    public static Branch getAtsBranch() throws OseeCoreException {
       return BranchManager.getCommonBranch();
-   }
-
-   public static IOseeBranch getAtsBranchToken() {
-      return CoreBranches.COMMON;
    }
 
    public static String getAtsId(Artifact art) throws OseeCoreException {
@@ -138,7 +112,7 @@ public class AtsUtilCore {
    public static Artifact getFromToken(IArtifactToken token) {
       Artifact toReturn = null;
       try {
-         toReturn = ArtifactQuery.getArtifactFromToken(token, getAtsBranchToken());
+         toReturn = ArtifactQuery.getArtifactFromToken(token, AtsUtilCore.getAtsBranchToken());
       } catch (OseeCoreException ex) {
          // Do Nothing;
       }

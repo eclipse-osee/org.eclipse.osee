@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -160,7 +160,7 @@ public class ExcelAtsTaskArtifactExtractor {
          if (!valid) {
             return;
          }
-         AtsUtilCore.setEmailEnabled(false);
+         AtsUtilClient.setEmailEnabled(false);
          for (int i = 0; i < row.length; i++) {
             if (headerRow[i] == null) {
                OseeLog.log(Activator.class, Level.SEVERE, "Null header column => " + i);
@@ -188,7 +188,7 @@ public class ExcelAtsTaskArtifactExtractor {
                OseeLog.log(Activator.class, Level.SEVERE, "Unhandled column => " + headerRow[i]);
             }
          }
-         AtsUtilCore.setEmailEnabled(true);
+         AtsUtilClient.setEmailEnabled(true);
          if (taskArt.isCompleted()) {
             Result result = TaskManager.transitionToCompleted(taskArt, 0.0, 0, changes);
             if (result.isFalse()) {

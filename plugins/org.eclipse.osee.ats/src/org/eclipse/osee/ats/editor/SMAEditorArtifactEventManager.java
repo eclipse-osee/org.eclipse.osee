@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -69,7 +69,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return AtsUtilCore.getAtsObjectEventFilters();
+      return AtsUtilClient.getAtsObjectEventFilters();
    }
 
    @Override

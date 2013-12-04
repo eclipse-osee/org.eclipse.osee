@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
@@ -58,7 +58,7 @@ public class AtsOseeCmService implements IOseeCmService {
 
    @Override
    public boolean isCmAdmin() {
-      return AtsUtilCore.isAtsAdmin();
+      return AtsUtilClient.isAtsAdmin();
    }
 
    @Override

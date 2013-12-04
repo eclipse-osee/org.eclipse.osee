@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -106,7 +106,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    public TaskArtifact createNewTask(List<? extends IAtsUser> assignees, String title, Date createdDate, IAtsUser createdBy, String relatedToState, IAtsChangeSet changes) throws OseeCoreException {
       TaskArtifact taskArt = null;
       taskArt =
-         (TaskArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Task, AtsUtilCore.getAtsBranch(), title);
+         (TaskArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Task, AtsUtilClient.getAtsBranch(), title);
 
       addRelation(AtsRelationTypes.TeamWfToTask_Task, taskArt);
       taskArt.initializeNewStateMachine(assignees, new Date(),

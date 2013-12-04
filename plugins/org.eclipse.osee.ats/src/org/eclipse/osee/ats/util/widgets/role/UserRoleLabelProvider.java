@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.defect.DefectSeverityToImage;

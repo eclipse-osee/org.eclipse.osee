@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
 import org.eclipse.osee.ats.client.demo.DemoSubsystems;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;

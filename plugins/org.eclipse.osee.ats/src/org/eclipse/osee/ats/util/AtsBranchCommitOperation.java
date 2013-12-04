@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
@@ -84,7 +84,7 @@ public class AtsBranchCommitOperation extends AbstractOperation {
                final Result tempResult = item.committing(teamArt);
                if (tempResult.isFalse()) {
                   // Allow Admin to override state validation
-                  if (AtsUtilCore.isAtsAdmin()) {
+                  if (AtsUtilClient.isAtsAdmin()) {
                      Displays.pendInDisplayThread(new Runnable() {
                         @Override
                         public void run() {

@@ -53,7 +53,7 @@ import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.internal.Activator;
@@ -399,7 +399,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
       updateEditMenuActions();
 
-      if (AtsUtilCore.isAtsAdmin()) {
+      if (AtsUtilClient.isAtsAdmin()) {
          mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
          mm.insertBefore(XViewer.MENU_GROUP_PRE, deletePurgeAtsObjectAction);
          deletePurgeAtsObjectAction.setEnabled(getSelectedAtsArtifacts().size() > 0);

@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.actions.OpenChangeReportByIdAction;
 import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.actions.OpenWorldByIdAction;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -188,11 +188,11 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
 
             public void refreshUserLabel() {
                String str = getWhoAmI();
-               if (AtsUtilCore.isAtsAdmin()) {
+               if (AtsUtilClient.isAtsAdmin()) {
                   str += " - Admin";
                }
                if (!str.equals("")) {
-                  if (AtsUtilCore.isAtsAdmin()) {
+                  if (AtsUtilClient.isAtsAdmin()) {
                      userLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
                   } else {
                      userLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));

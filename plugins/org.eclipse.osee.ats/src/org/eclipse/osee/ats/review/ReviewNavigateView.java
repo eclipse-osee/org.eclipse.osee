@@ -28,7 +28,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -129,11 +129,11 @@ public class ReviewNavigateView extends ViewPart implements IXNavigateEventListe
 
                      Label label = new Label(xNavComp, SWT.None);
                      String str = getWhoAmI();
-                     if (AtsUtilCore.isAtsAdmin()) {
+                     if (AtsUtilClient.isAtsAdmin()) {
                         str += " - Admin";
                      }
                      if (!str.equals("")) {
-                        if (AtsUtilCore.isAtsAdmin()) {
+                        if (AtsUtilClient.isAtsAdmin()) {
                            label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
                         } else {
                            label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
