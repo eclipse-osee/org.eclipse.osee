@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Jersey Source
-Bundle-SymbolicName: com.sun.jersey.source
-Bundle-Version: 1.8.0.qualifier
-Bundle-Vendor: jersey.java.net
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6

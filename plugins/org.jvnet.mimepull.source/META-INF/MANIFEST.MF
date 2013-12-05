@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Mimepull Source
-Bundle-SymbolicName: org.jvnet.mimepull.source
-Bundle-Version: 1.5.0.qualifier
-Bundle-Vendor: mimepull.java.net
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
