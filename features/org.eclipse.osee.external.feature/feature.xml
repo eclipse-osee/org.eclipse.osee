@@ -35,7 +35,7 @@
       <import plugin="com.jcraft.jsch" version="0.1.44" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.logging" version="1.1.1" match="equivalent"/>
       <import plugin="org.eclipse.jgit"/>
-      <import plugin="com.sun.jersey" version="1.8.0" match="equivalent"/>
+      <import plugin="com.sun.jersey" version="1.18.0" match="equivalent"/>
       <import plugin="com.google.guava" version="11.0.0" match="greaterOrEqual"/>
    </requires>
 
@@ -307,6 +307,13 @@
 
    <plugin
          id="org.hsqldb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.sun.jersey.multipart"
          download-size="0"
          install-size="0"
          version="0.0.0"

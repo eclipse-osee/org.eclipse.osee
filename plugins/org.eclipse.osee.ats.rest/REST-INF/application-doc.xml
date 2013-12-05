@@ -1,4 +1,4 @@
-<applicationDocs targetNamespace="http://research.sun.com/wadl/2006/10">
-	<doc xml:lang="en" title="The OSEE ATS API">
+<applicationDocs targetNamespace="http://wadl.dev.java.net/2009/02">
+	<doc xml:lang="en" title="OSEE ATS REST API">
 	</doc>
 </applicationDocs>

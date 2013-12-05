@@ -17,10 +17,6 @@
 	<version>0.16.0-SNAPSHOT</version>
 
 	<modules>
-		<module>../../plugins/com.sun.jersey</module>
-		<module>../../plugins/com.sun.jersey.client.apache</module>
-		<module>../../plugins/org.jvnet.mimepull</module>
-
 		<module>../../plugins/org.eclipse.osee.logger</module>
 		<module>../../plugins/org.eclipse.osee.logger.slf4j</module>
 		<module>../../plugins/org.eclipse.osee.logback.config</module>

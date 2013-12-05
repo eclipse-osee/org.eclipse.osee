@@ -23,6 +23,6 @@ Export-Package: org.eclipse.osee.ote.rest.client
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.ote.rest.model,
- com.sun.jersey;bundle-version="1.8.0",
- com.sun.jersey.client.apache;bundle-version="1.8.0",
+ com.sun.jersey;bundle-version="1.18.0",
+ com.sun.jersey.client.apache;bundle-version="1.18.0",
  javax.servlet

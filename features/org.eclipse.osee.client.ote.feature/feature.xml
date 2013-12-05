@@ -52,8 +52,8 @@
       <import plugin="org.eclipse.jgit"/>
       <import plugin="org.eclipse.team.svn.core"/>
       <import plugin="org.apache.felix.gogo.runtime"/>
-      <import plugin="com.sun.jersey" version="1.8.0" match="greaterOrEqual"/>
-      <import plugin="com.sun.jersey.client.apache" version="1.8.0" match="greaterOrEqual"/>
+      <import plugin="com.sun.jersey" version="1.18.0" match="greaterOrEqual"/>
+      <import plugin="com.sun.jersey.client.apache" version="1.18.0" match="greaterOrEqual"/>
       <import plugin="javax.servlet"/>
       <import plugin="javax.ws.rs"/>
       <import plugin="org.apache.commons.lang"/>

@@ -31,7 +31,7 @@
       <import plugin="javax.mail.glassfish"/>
       <import plugin="com.vaadin" version="6.6.6" match="greaterOrEqual"/>
       <import plugin="javax.servlet" version="2.5.0" match="greaterOrEqual"/>
-      <import plugin="com.sun.jersey" version="1.8.0" match="greaterOrEqual"/>
+      <import plugin="com.sun.jersey" version="1.18.0" match="greaterOrEqual"/>
       <import plugin="javax.ws.rs"/>
       <import plugin="org.junit"/>
       <import plugin="com.google.guava" version="11.0.0" match="greaterOrEqual"/>
