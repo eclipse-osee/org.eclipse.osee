@@ -11,14 +11,18 @@
 package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ResultSetIterable<T> implements ResultSet<T> {
 
-   private final Iterable<T> data;
+   private Iterable<T> data;
 
    protected ResultSetIterable(Iterable<T> iterable) {
       super();
@@ -96,4 +100,15 @@ public class ResultSetIterable<T> implements ResultSet<T> {
       return new ItemDoesNotExist("No item found");
    }
 
+   @Override
+   public ResultSet<T> sort(Comparator<T> comparator) {
+      List<T> list = new LinkedList<T>();
+      for (T item : data) {
+         list.add(item);
+      }
+
+      Collections.sort(list, comparator);
+      data = list;
+      return this;
+   }
 }

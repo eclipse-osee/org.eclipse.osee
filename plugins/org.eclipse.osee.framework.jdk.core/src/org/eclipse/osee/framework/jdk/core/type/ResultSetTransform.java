@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.type;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,6 +30,7 @@ public class ResultSetTransform<I, F extends Identity<I>, T extends Identity<I>>
    private final ResultSet<F> result;
    private final Function<I, F, T> function;
    private final Map<I, T> objectMap = new HashMap<I, T>();
+   private List<T> data;
 
    protected ResultSetTransform(ResultSet<F> result, Function<I, F, T> factory) {
       this.function = factory;
@@ -59,6 +64,9 @@ public class ResultSetTransform<I, F extends Identity<I>, T extends Identity<I>>
 
    @Override
    public Iterator<T> iterator() {
+      if (data != null) {
+         return data.iterator();
+      }
       final Iterator<F> iterator = result.iterator();
       return new Iterator<T>() {
 
@@ -98,5 +106,17 @@ public class ResultSetTransform<I, F extends Identity<I>, T extends Identity<I>>
          }
       }
       return object;
+   }
+
+   @Override
+   public ResultSet<T> sort(Comparator<T> comparator) {
+      List<T> list = new LinkedList<T>();
+      Iterator<T> iter = iterator();
+      while (iter.hasNext()) {
+         list.add(iter.next());
+      }
+      Collections.sort(list, comparator);
+      data = list;
+      return this;
    }
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.type;
 
+import java.util.Comparator;
 
 /**
  * @author Ryan D. Brooks
@@ -26,5 +27,7 @@ public interface ResultSet<T> extends Iterable<T> {
    int size();
 
    boolean isEmpty();
+
+   ResultSet<T> sort(Comparator<T> comparator);
 
 }

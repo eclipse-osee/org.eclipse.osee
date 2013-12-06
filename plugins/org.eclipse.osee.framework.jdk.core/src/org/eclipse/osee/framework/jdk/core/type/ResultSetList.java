@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -82,4 +83,9 @@ public class ResultSetList<T> implements ResultSet<T> {
       return data.isEmpty();
    }
 
+   @Override
+   public ResultSet<T> sort(Comparator<T> comparator) {
+      Collections.sort(getList(), comparator);
+      return this;
+   }
 }
