@@ -28,22 +28,6 @@
 		<module>../../plugins/org.eclipse.osee.framework.core.message.test</module>
 		<module>../../plugins/org.eclipse.osee.framework.manager.servlet</module>
 
-		<module>../../plugins/org.eclipse.osee.display.api</module>
-		<module>../../plugins/org.eclipse.osee.display.view.web</module>
-		<module>../../plugins/org.eclipse.osee.display.presenter</module>
-		<module>../../plugins/org.eclipse.osee.display.presenter.mocks</module>
-		<module>../../plugins/org.eclipse.osee.display.presenter.test</module>
-
-		<module>../../plugins/org.eclipse.osee.ats.api</module>
-		<module>../../plugins/org.eclipse.osee.ats.ui.api</module>
-		<module>../../plugins/org.eclipse.osee.ats.view.web</module>
-		<module>../../plugins/org.eclipse.osee.ats.presenter</module>
-		<module>../../plugins/org.eclipse.osee.ats.rest</module>
-		<module>../../plugins/org.eclipse.osee.ats.dsl</module>
-		<module>../../plugins/org.eclipse.osee.ats.core</module>
-		<module>../../plugins/org.eclipse.osee.ats.impl</module>
-		<module>../../plugins/org.eclipse.osee.ats.presenter.test</module>
-
 		<module>../../plugins/org.eclipse.osee.database</module>
 
 		<module>../../features/org.eclipse.osee.x.server.legacy.feature</module>
