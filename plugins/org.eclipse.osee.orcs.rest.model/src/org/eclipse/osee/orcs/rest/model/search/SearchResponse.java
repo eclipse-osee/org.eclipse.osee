@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model.search;
 
+import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -29,7 +30,7 @@ public class SearchResponse implements SearchResult {
    private SearchRequest searchRequest;
 
    @XmlTransient
-   private List<Integer> ids;
+   private List<Integer> ids = new LinkedList<Integer>();
 
    public void setSearchRequest(SearchRequest searchRequest) {
       this.searchRequest = searchRequest;
@@ -70,6 +71,9 @@ public class SearchResponse implements SearchResult {
    @XmlElementWrapper(name = "ids")
    @XmlElement(name = "id")
    public List<Integer> getIds() {
+      if (ids == null) {
+         ids = new LinkedList<Integer>();
+      }
       return ids;
    }
 

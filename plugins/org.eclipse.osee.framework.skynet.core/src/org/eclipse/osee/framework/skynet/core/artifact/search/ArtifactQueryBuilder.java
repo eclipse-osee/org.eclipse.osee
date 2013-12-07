@@ -20,6 +20,7 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -271,8 +272,12 @@ public class ArtifactQueryBuilder {
 
    private List<Artifact> loadArtifactsFromServerIds(LoadType reload) throws OseeCoreException {
       List<Integer> ids = createOrcsQuery().getSearchResult().getIds();
-      List<Artifact> artifacts =
-         ArtifactLoader.loadArtifacts(ids, branch, loadLevel, reload, allowDeleted, transactionId);
+      List<Artifact> artifacts;
+      if (ids != null && !ids.isEmpty()) {
+         artifacts = ArtifactLoader.loadArtifacts(ids, branch, loadLevel, reload, allowDeleted, transactionId);
+      } else {
+         artifacts = Collections.emptyList();
+      }
       return artifacts;
    }
 
@@ -417,7 +422,8 @@ public class ArtifactQueryBuilder {
             tx = TransactionManager.getTransactionId(txId);
          }
          List<Artifact> results =
-            ArtifactLoader.loadArtifacts(localIds, branch, LoadLevel.ARTIFACT_DATA, LoadType.INCLUDE_CACHE, allowDeleted, tx);
+            ArtifactLoader.loadArtifacts(localIds, branch, LoadLevel.ARTIFACT_DATA, LoadType.INCLUDE_CACHE,
+               allowDeleted, tx);
          return results.size();
       }
 

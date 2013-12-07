@@ -658,9 +658,16 @@ public class ArtifactQuery {
          DeletionFlag deletionFlag =
             searchParameters.isIncludeDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED;
 
-         List<Artifact> loadedArtifacts =
-            ArtifactLoader.loadArtifacts(result.getIds(), branch, LoadLevel.ALL, INCLUDE_CACHE, deletionFlag, tx);
-         return ResultSets.newResultSet(loadedArtifacts);
+         List<Integer> ids = result.getIds();
+         ResultSet<Artifact> toReturn;
+         if (ids != null && !ids.isEmpty()) {
+            List<Artifact> loadedArtifacts =
+               ArtifactLoader.loadArtifacts(ids, branch, LoadLevel.ALL, INCLUDE_CACHE, deletionFlag, tx);
+            toReturn = ResultSets.newResultSet(loadedArtifacts);
+         } else {
+            toReturn = ResultSets.emptyResultSet();
+         }
+         return toReturn;
       }
    }
 }
