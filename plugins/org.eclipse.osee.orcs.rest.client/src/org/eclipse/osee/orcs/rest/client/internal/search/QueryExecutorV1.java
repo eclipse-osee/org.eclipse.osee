@@ -48,8 +48,8 @@ public class QueryExecutorV1 implements QueryExecutor {
    }
 
    @Override
-   public SearchResult getResults(IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
-      SearchResponse result = performSearch(RequestType.IDS, OutputFormat.XML, branch, predicates, options);
+   public SearchResult getResults(RequestType request, IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
+      SearchResponse result = performSearch(request, OutputFormat.XML, branch, predicates, options);
       return result;
    }
 

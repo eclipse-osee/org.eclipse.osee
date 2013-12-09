@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.SearchResult;
 
 /**
@@ -220,15 +221,20 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public SearchResult getSearchResult() throws OseeCoreException {
+   public SearchResult getSearchResult(RequestType request) throws OseeCoreException {
       QueryOptions qOptions = options.clone();
-      return executor.getResults(branch, predicates, qOptions);
+      return executor.getResults(request, branch, predicates, qOptions);
    }
 
    @Override
    public int getCount() throws OseeCoreException {
       QueryOptions qOptions = options.clone();
       return executor.getCount(branch, predicates, qOptions);
+   }
+
+   @Override
+   public List<Integer> getIds() {
+      return getSearchResult(RequestType.IDS).getIds();
    }
 
 }

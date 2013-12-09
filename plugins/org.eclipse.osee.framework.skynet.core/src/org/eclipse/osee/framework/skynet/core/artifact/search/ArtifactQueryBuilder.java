@@ -271,7 +271,7 @@ public class ArtifactQueryBuilder {
    }
 
    private List<Artifact> loadArtifactsFromServerIds(LoadType reload) throws OseeCoreException {
-      List<Integer> ids = createOrcsQuery().getSearchResult().getIds();
+      List<Integer> ids = createOrcsQuery().getIds();
       List<Artifact> artifacts;
       if (ids != null && !ids.isEmpty()) {
          artifacts = ArtifactLoader.loadArtifacts(ids, branch, loadLevel, reload, allowDeleted, transactionId);
@@ -291,7 +291,7 @@ public class ArtifactQueryBuilder {
    }
 
    public List<Integer> selectArtifacts(int artifactCountEstimate) throws OseeCoreException {
-      return createOrcsQuery().getSearchResult().getIds();
+      return createOrcsQuery().getIds();
    }
 
    public int countArtifacts() throws OseeCoreException {
@@ -438,6 +438,12 @@ public class ArtifactQueryBuilder {
       public void andLocalIds(Collection<Integer> artifactIds) {
          localIds.addAll(artifactIds);
       }
+
+      @SuppressWarnings("unused")
+      public List<Integer> getIds() {
+         return new LinkedList<Integer>(localIds);
+      }
+
    }
 
 }

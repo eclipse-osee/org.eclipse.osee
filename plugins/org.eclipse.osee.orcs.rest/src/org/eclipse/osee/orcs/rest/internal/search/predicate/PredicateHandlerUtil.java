@@ -78,7 +78,7 @@ public class PredicateHandlerUtil {
    }
 
    private static long parseUuid(String uuid) throws OseeCoreException {
-      if (uuid.matches("\\d+")) {
+      if (uuid.matches("-?\\d+")) {
          return Long.parseLong(uuid);
       } else if (HexUtil.isHexString(uuid)) {
          return HexUtil.toLong(uuid);

@@ -20,14 +20,21 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.rest.internal.OrcsApplication;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.DslFactory;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.DslTranslator;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchQueryBuilder;
+import org.eclipse.osee.orcs.rest.model.search.RequestType;
+import org.eclipse.osee.orcs.rest.model.search.SearchMatch;
 import org.eclipse.osee.orcs.rest.model.search.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.SearchResponse;
+import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
@@ -125,23 +132,41 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
          builder.fromTransaction(params.getFromTx());
       }
 
-      SearchResponse result;
-      if (params.getFields().equals("count")) {
-         result = new SearchResponse();
-         int total = builder.getCount();
-         result.setTotal(total);
-
-      } else if (params.getFields().equals("ids")) {
-         List<Integer> localIds = new LinkedList<Integer>();
-         for (HasLocalId art : builder.getResultsAsLocalIds()) {
-            localIds.add(art.getLocalId());
-         }
-         result = new SearchResponse();
-         result.setIds(localIds);
-         result.setTotal(localIds.size());
-      } else {
-         throw new UnsupportedOperationException();
+      SearchResponse result = new SearchResponse();
+      RequestType request = RequestType.valueOf(params.getFields().toUpperCase());
+      List<Integer> localIds = new LinkedList<Integer>();
+      switch (request) {
+         case COUNT:
+            int total = builder.getCount();
+            result.setTotal(total);
+            break;
+         case IDS:
+            for (HasLocalId art : builder.getResultsAsLocalIds()) {
+               localIds.add(art.getLocalId());
+            }
+            result.setIds(localIds);
+            result.setTotal(localIds.size());
+            break;
+         case MATCHES:
+            ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> matches = builder.getMatches();
+            List<SearchMatch> searchMatches = new LinkedList<SearchMatch>();
+            for (Match<ArtifactReadable, AttributeReadable<?>> match : matches) {
+               int artId = match.getItem().getLocalId();
+               localIds.add(artId);
+               for (AttributeReadable<?> attribute : match.getElements()) {
+                  int attrId = attribute.getLocalId();
+                  List<MatchLocation> locations = match.getLocation(attribute);
+                  searchMatches.add(new SearchMatch(artId, attrId, locations));
+               }
+            }
+            result.setIds(localIds);
+            result.setMatches(searchMatches);
+            result.setTotal(searchMatches.size());
+            break;
+         default:
+            throw new UnsupportedOperationException();
       }
+
       result.setSearchRequest(params);
       result.setSearchTime(System.currentTimeMillis() - startTime);
       return result;

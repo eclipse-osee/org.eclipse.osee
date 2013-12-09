@@ -26,8 +26,6 @@ import org.junit.runners.Suite;
    DataTranslationServiceTest.class,
    OseeImportModelRequestTranslatorTest.class,
    OseeImportModelResponseTranslatorTest.class,
-   SearchRequestTranslatorTest.class,
-   SearchResponseTranslatorTest.class,
    TableDataTranslatorTest.class,
    TransactionCacheUpdateResponseTranslatorTest.class,
    TransactionRecordTranslatorTest.class,

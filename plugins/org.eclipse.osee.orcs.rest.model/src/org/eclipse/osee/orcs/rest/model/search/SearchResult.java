@@ -28,4 +28,6 @@ public interface SearchResult {
 
    List<Integer> getIds();
 
+   List<SearchMatch> getSearchMatches();
+
 }

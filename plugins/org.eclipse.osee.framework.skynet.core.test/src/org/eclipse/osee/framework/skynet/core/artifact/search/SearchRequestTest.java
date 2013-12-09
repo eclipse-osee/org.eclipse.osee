@@ -8,12 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.message.test.data;
+package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.message.SearchOptions;
-import org.eclipse.osee.framework.core.message.SearchRequest;
-import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,7 +27,7 @@ public class SearchRequestTest {
       SearchRequest request = new SearchRequest(CoreBranches.COMMON, "Search", new SearchOptions());
       Assert.assertEquals(CoreBranches.COMMON, request.getBranch());
       Assert.assertEquals("Search", request.getRawSearch());
-      DataAsserts.assertEquals(new SearchOptions(), request.getOptions());
+      assertEquals(new SearchOptions(), request.getOptions());
    }
 
    @Test
@@ -37,6 +35,20 @@ public class SearchRequestTest {
       SearchRequest request = new SearchRequest(CoreBranches.COMMON, "Search", new SearchOptions());
       Assert.assertEquals(CoreBranches.COMMON, request.getBranch());
       Assert.assertEquals("Search", request.getRawSearch());
-      DataAsserts.assertEquals(new SearchOptions(), request.getOptions());
+      assertEquals(new SearchOptions(), request.getOptions());
+   }
+
+   private static void assertEquals(SearchOptions expected, SearchOptions actual) {
+      if (expected == null) {
+         Assert.assertNull(actual);
+      } else {
+         Assert.assertEquals(expected.isSearchAll(), actual.isSearchAll());
+         Assert.assertEquals(expected.isCaseSensitive(), actual.isCaseSensitive());
+         Assert.assertEquals(expected.isFindAllLocationsEnabled(), actual.isFindAllLocationsEnabled());
+         Assert.assertEquals(expected.getDeletionFlag(), actual.getDeletionFlag());
+         Assert.assertEquals(expected.isMatchWordOrder(), actual.isMatchWordOrder());
+
+         Assert.assertTrue(Collections.isEqual(expected.getAttributeTypeFilter(), actual.getAttributeTypeFilter()));
+      }
    }
 }

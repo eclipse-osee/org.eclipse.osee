@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import org.eclipse.osee.framework.core.message.SearchResponse.ArtifactMatchMetaData;
-import org.eclipse.osee.framework.core.message.SearchResponse.AttributeMatchMetaData;
+import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -23,15 +22,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
  */
 public class ArtifactMatch {
    private final Artifact artifact;
-   private final ArtifactMatchMetaData matchMetaData;
+   private final HashCollection<Attribute<?>, MatchLocation> matchData =
+      new HashCollection<Attribute<?>, MatchLocation>();
 
-   public ArtifactMatch(Artifact artifact, ArtifactMatchMetaData matchMetaData) {
+   public ArtifactMatch(Artifact artifact) {
       this.artifact = artifact;
-      this.matchMetaData = matchMetaData;
    }
 
    public boolean hasMatchData() {
-      return matchMetaData != null;
+      return !matchData.isEmpty();
    }
 
    public Artifact getArtifact() {
@@ -39,13 +38,10 @@ public class ArtifactMatch {
    }
 
    public HashCollection<Attribute<?>, MatchLocation> getMatchData() throws OseeCoreException {
-      HashCollection<Attribute<?>, MatchLocation> matchData = new HashCollection<Attribute<?>, MatchLocation>();
-      for (Attribute<?> attribute : artifact.getAttributes()) {
-         AttributeMatchMetaData match = matchMetaData.getAttributeMatch((long) attribute.getGammaId());
-         if (match != null) {
-            matchData.put(attribute, match.getLocations());
-         }
-      }
       return matchData;
+   }
+
+   public void addMatchData(Attribute<?> attr, Collection<MatchLocation> locations) {
+      matchData.put(attr, locations);
    }
 }

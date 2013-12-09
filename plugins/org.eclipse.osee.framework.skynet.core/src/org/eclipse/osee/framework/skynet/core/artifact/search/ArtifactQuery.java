@@ -21,9 +21,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
@@ -41,7 +43,6 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.core.message.SearchRequest;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
@@ -50,10 +51,12 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
@@ -61,6 +64,8 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
+import org.eclipse.osee.orcs.rest.model.search.RequestType;
+import org.eclipse.osee.orcs.rest.model.search.SearchMatch;
 import org.eclipse.osee.orcs.rest.model.search.SearchParameters;
 import org.eclipse.osee.orcs.rest.model.search.SearchResult;
 
@@ -529,20 +534,18 @@ public class ArtifactQuery {
     * @param findAllMatchLocations when set to <b>true</b> returns all match locations instead of just returning the
     * first one. When returning all match locations, search performance may be slow.
     */
-   public static List<ArtifactMatch> getArtifactMatchesFromAttributeKeywords(SearchRequest searchRequest) throws OseeCoreException {
-      determineSearchAll(searchRequest);
-      return new HttpArtifactQuery(searchRequest).getArtifactsWithMatches(ALL, INCLUDE_CACHE);
-   }
+   public static Iterable<ArtifactMatch> getArtifactMatchesFromAttributeKeywords(SearchRequest searchRequest) throws OseeCoreException {
+      QueryBuilderArtifact queryBuilder = createQueryBuilder(searchRequest.getBranch());
+      SearchOptions options = searchRequest.getOptions();
+      queryBuilder.includeDeleted(options.getDeletionFlag().areDeletedAllowed());
+      QueryOption matchCase = CaseType.getCaseType(options.isCaseSensitive());
+      QueryOption matchWordOrder = TokenOrderType.getTokenOrderType(options.isMatchWordOrder());
 
-   /**
-    * Since the application server can support non taggable attribute types, the artifact query is filtering only
-    * taggable types here.
-    */
-   private static void determineSearchAll(SearchRequest searchRequest) {
-      if (searchRequest.getOptions().getAttributeTypeFilter().isEmpty()) {
-         searchRequest.getOptions().setIsSearchAll(true);
-         searchRequest.getOptions().addAttributeTypeFilter(QueryBuilder.ANY_ATTRIBUTE_TYPE);
-      }
+      Collection<IAttributeType> typesToSearch =
+         Conditions.hasValues(options.getAttributeTypeFilter()) ? options.getAttributeTypeFilter() : Collections.singleton(QueryBuilder.ANY_ATTRIBUTE_TYPE);
+      queryBuilder.and(typesToSearch, searchRequest.getRawSearch(), matchCase, matchWordOrder);
+
+      return queryBuilder.getMatches();
    }
 
    public static Artifact reloadArtifactFromId(int artId, IOseeBranch branch) throws OseeCoreException {
@@ -646,7 +649,7 @@ public class ArtifactQuery {
       // this method is called from invoke in the localMethod case
       @SuppressWarnings("unused")
       public ResultSet<Artifact> getResults() throws OseeCoreException {
-         SearchResult result = proxied.getSearchResult();
+         SearchResult result = proxied.getSearchResult(RequestType.IDS);
          SearchParameters searchParameters = result.getSearchParameters();
 
          IOseeBranch branch = TokenFactory.createBranch(searchParameters.getBranchUuid(), "N/A");
@@ -668,6 +671,49 @@ public class ArtifactQuery {
             toReturn = ResultSets.emptyResultSet();
          }
          return toReturn;
+      }
+
+      // this method is called from invoke in the localMethod case
+      @SuppressWarnings("unused")
+      public ResultSet<ArtifactMatch> getMatches() throws OseeCoreException {
+         SearchResult result = proxied.getSearchResult(RequestType.MATCHES);
+         SearchParameters searchParameters = result.getSearchParameters();
+
+         IOseeBranch branch = TokenFactory.createBranch(searchParameters.getBranchUuid(), "N/A");
+
+         TransactionRecord tx = null;
+         if (searchParameters.getFromTx() > 0) {
+            tx = TransactionManager.getTransactionId(searchParameters.getFromTx());
+         }
+         DeletionFlag deletionFlag =
+            searchParameters.isIncludeDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED;
+
+         Map<Integer, Artifact> artIdToArtifact = new HashMap<Integer, Artifact>();
+
+         List<Artifact> loadedArtifacts =
+            ArtifactLoader.loadArtifacts(result.getIds(), branch, LoadLevel.ALL, INCLUDE_CACHE, deletionFlag, tx);
+
+         for (Artifact art : loadedArtifacts) {
+            artIdToArtifact.put(art.getArtId(), art);
+         }
+
+         Map<Artifact, ArtifactMatch> matches = new HashMap<Artifact, ArtifactMatch>();
+         for (SearchMatch match : result.getSearchMatches()) {
+            int artId = match.getArtId();
+            int attrId = match.getAttrId();
+            Artifact art = artIdToArtifact.get(artId);
+            if (art != null) {
+               ArtifactMatch toAddTo = matches.get(art);
+               if (toAddTo == null) {
+                  toAddTo = new ArtifactMatch(art);
+                  matches.put(art, toAddTo);
+               }
+               Attribute<?> attribute = art.getAttributeById(attrId, searchParameters.isIncludeDeleted());
+               toAddTo.addMatchData(attribute, match.getLocations());
+            }
+         }
+
+         return ResultSets.newResultSet(matches.values());
       }
    }
 }

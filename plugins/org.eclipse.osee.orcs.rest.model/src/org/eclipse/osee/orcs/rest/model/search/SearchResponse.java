@@ -32,6 +32,9 @@ public class SearchResponse implements SearchResult {
    @XmlTransient
    private List<Integer> ids = new LinkedList<Integer>();
 
+   @XmlTransient
+   private List<SearchMatch> searchMatches = new LinkedList<SearchMatch>();
+
    public void setSearchRequest(SearchRequest searchRequest) {
       this.searchRequest = searchRequest;
    }
@@ -84,6 +87,17 @@ public class SearchResponse implements SearchResult {
    @Override
    public SearchParameters getSearchParameters() {
       return getSearchRequest();
+   }
+
+   public void setMatches(List<SearchMatch> searchMatches) {
+      this.searchMatches = searchMatches;
+   }
+
+   @Override
+   @XmlElementWrapper(name = "matches")
+   @XmlElement(name = "match")
+   public List<SearchMatch> getSearchMatches() {
+      return searchMatches;
    }
 
 }

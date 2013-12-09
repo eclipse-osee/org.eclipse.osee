@@ -20,8 +20,6 @@ import org.junit.runners.Suite;
    BranchCommitResponseTest.class,
    CacheUpdateRequestTest.class,
    PurgeBranchRequestTest.class,
-   SearchRequestTest.class,
-   SearchResponseTest.class,
    TransactionCacheUpdateResponseTest.class,})
 /**
  * @author Roberto E. Escobar

@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.rest.client;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -20,6 +21,7 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.orcs.rest.model.search.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.SearchResult;
 
 /**
@@ -178,10 +180,17 @@ public interface QueryBuilder {
     * 
     * @return artifact search results
     */
-   SearchResult getSearchResult() throws OseeCoreException;
+   SearchResult getSearchResult(RequestType request) throws OseeCoreException;
 
    /**
     * Count search results
     */
    int getCount() throws OseeCoreException;
+
+   /**
+    * Convenience method for getting art ids of results
+    * 
+    * @return artifact search ids
+    */
+   List<Integer> getIds();
 }

@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.search.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.SearchResult;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -70,13 +71,14 @@ public class OseeClientQueryTest {
       createClient = IntegrationUtil.createClient();
 
       // Establish initial connection to the db using this random query
-      createClient.createQueryBuilder(COMMON).andIds(SystemUser.OseeSystem).getSearchResult();
+      createClient.createQueryBuilder(COMMON).andIds(SystemUser.OseeSystem).getSearchResult(RequestType.IDS);
    }
 
    @Test
    public void searchForAttributeTypeByTokenId() throws OseeCoreException {
       final int EXPECTED_RESULTS = 1;
-      SearchResult results = createClient.createQueryBuilder(COMMON).andIds(SystemUser.OseeSystem).getSearchResult();
+      SearchResult results =
+         createClient.createQueryBuilder(COMMON).andIds(SystemUser.OseeSystem).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
@@ -84,42 +86,45 @@ public class OseeClientQueryTest {
    public void searchForAttributeTypeByTokenIds() throws OseeCoreException {
       final int EXPECTED_RESULTS = 2;
       SearchResult results =
-         createClient.createQueryBuilder(COMMON).andIds(SystemUser.OseeSystem, SystemUser.Guest).getSearchResult();
+         createClient.createQueryBuilder(COMMON).andIds(SystemUser.OseeSystem, SystemUser.Guest).getSearchResult(
+            RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
    public void searchForArtifactByGuid() throws OseeCoreException {
       final int EXPECTED_RESULTS = 1;
-      SearchResult results = createClient.createQueryBuilder(COMMON).andGuids(GUID1).getSearchResult();
+      SearchResult results = createClient.createQueryBuilder(COMMON).andGuids(GUID1).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
    public void searchForArtifactByGuids() throws OseeCoreException {
       final int EXPECTED_RESULTS = 2;
-      SearchResult results = createClient.createQueryBuilder(COMMON).andGuids(GUID1, GUID2).getSearchResult();
+      SearchResult results =
+         createClient.createQueryBuilder(COMMON).andGuids(GUID1, GUID2).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
    public void searchForArtifactByLocalId() throws OseeCoreException {
       final int EXPECTED_RESULTS = 1;
-      SearchResult results = createClient.createQueryBuilder(COMMON).andLocalId(9).getSearchResult();
+      SearchResult results = createClient.createQueryBuilder(COMMON).andLocalId(9).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
    public void searchForArtifactByLocalIds() throws OseeCoreException {
       final int EXPECTED_RESULTS = 2;
-      SearchResult results = createClient.createQueryBuilder(COMMON).andLocalId(19, 9).getSearchResult();
+      SearchResult results = createClient.createQueryBuilder(COMMON).andLocalId(19, 9).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
    public void searchForArtifactByName() throws OseeCoreException {
       final int EXPECTED_RESULTS = 1;
-      SearchResult results = createClient.createQueryBuilder(COMMON).andNameEquals("Joe Smith").getSearchResult();
+      SearchResult results =
+         createClient.createQueryBuilder(COMMON).andNameEquals("Joe Smith").getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
@@ -128,14 +133,16 @@ public class OseeClientQueryTest {
       final int EXPECTED_RESULTS = 43;
       SearchResult results =
          createClient.createQueryBuilder(COMMON).and(CoreAttributeTypes.Name, "SAW", CaseType.IGNORE_CASE,
-            TokenOrderType.MATCH_ORDER, TokenDelimiterMatch.ANY, MatchTokenCountType.IGNORE_TOKEN_COUNT).getSearchResult();
+            TokenOrderType.MATCH_ORDER, TokenDelimiterMatch.ANY, MatchTokenCountType.IGNORE_TOKEN_COUNT).getSearchResult(
+            RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
    public void searchForArtifactType() throws OseeCoreException {
       final int EXPECTED_RESULTS = 7;
-      SearchResult results = createClient.createQueryBuilder(SAW_1).andTypeEquals(Folder).getSearchResult();
+      SearchResult results =
+         createClient.createQueryBuilder(SAW_1).andTypeEquals(Folder).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
@@ -143,7 +150,8 @@ public class OseeClientQueryTest {
    public void searchForArtifactTypes() throws OseeCoreException {
       final int EXPECTED_RESULTS = 24;
       SearchResult results =
-         createClient.createQueryBuilder(SAW_1).andTypeEquals(GeneralData, GeneralDocument, SoftwareRequirement).getSearchResult();
+         createClient.createQueryBuilder(SAW_1).andTypeEquals(GeneralData, GeneralDocument, SoftwareRequirement).getSearchResult(
+            RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
@@ -151,14 +159,15 @@ public class OseeClientQueryTest {
    public void searchForArtifactTypesIncludeTypeInheritance() throws OseeCoreException {
       final int EXPECTED_RESULTS = 150;
       SearchResult results =
-         createClient.createQueryBuilder(SAW_1).andIsOfType(GeneralData, GeneralDocument, Requirement).getSearchResult();
+         createClient.createQueryBuilder(SAW_1).andIsOfType(GeneralData, GeneralDocument, Requirement).getSearchResult(
+            RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
    public void searchForExistenceOfAttributeType() throws OseeCoreException {
       final int EXPECTED_RESULTS = 28;
-      SearchResult results = createClient.createQueryBuilder(COMMON).andExists(Active).getSearchResult();
+      SearchResult results = createClient.createQueryBuilder(COMMON).andExists(Active).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
@@ -166,7 +175,7 @@ public class OseeClientQueryTest {
    public void searchForExistenceOfAttributeTypeIncludeDeleted() throws OseeCoreException {
       final int EXPECTED_RESULTS = 28;
       SearchResult results =
-         createClient.createQueryBuilder(COMMON).andExists(Active).includeDeleted().getSearchResult();
+         createClient.createQueryBuilder(COMMON).andExists(Active).includeDeleted().getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
@@ -174,7 +183,7 @@ public class OseeClientQueryTest {
    public void searchForExistenceOfAttributeTypes() throws OseeCoreException {
       final int EXPECTED_RESULTS = 28;
       SearchResult results =
-         createClient.createQueryBuilder(COMMON).andExists(Active, AccessContextId).getSearchResult();
+         createClient.createQueryBuilder(COMMON).andExists(Active, AccessContextId).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 

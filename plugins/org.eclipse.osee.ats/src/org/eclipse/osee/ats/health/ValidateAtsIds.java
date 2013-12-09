@@ -96,7 +96,7 @@ public class ValidateAtsIds extends AbstractBlam {
       SkynetTransaction tx = null;
       QueryBuilderArtifact builder = ArtifactQuery.createQueryBuilder(CoreBranches.COMMON);
       builder.andIsOfType(toCheck);
-      List<Integer> result = builder.getSearchResult().getIds();
+      List<Integer> result = builder.getIds();
       for (int i = startNumber; i < result.size(); i += partitionSize) {
          if (persist) {
             tx = TransactionManager.createTransaction(CoreBranches.COMMON, "Update AtsId Attribute");

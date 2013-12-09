@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.type;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * @author Roberto E. Escobar
  */
+@XmlRootElement(name = "MatchLocation")
 public class MatchLocation {
    private int startPosition;
    private int endPosition;

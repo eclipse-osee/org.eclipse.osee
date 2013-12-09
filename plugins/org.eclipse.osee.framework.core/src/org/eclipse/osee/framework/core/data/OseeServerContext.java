@@ -18,7 +18,6 @@ public class OseeServerContext {
    private static final String BASE_CONTEXT = "osee";
 
    public static final String PROCESS_CONTEXT = "GET.ARTIFACT"; // For backwards compatibility must remain without base context.
-   public static final String SEARCH_CONTEXT = asAbsoluteContext("search");
    public static final String MANAGER_CONTEXT = asAbsoluteContext("manager");
    public static final String BRANCH_CONTEXT = asAbsoluteContext("branch");
    public static final String BRANCH_EXCHANGE_CONTEXT = asAbsoluteContext("branch/exchange");

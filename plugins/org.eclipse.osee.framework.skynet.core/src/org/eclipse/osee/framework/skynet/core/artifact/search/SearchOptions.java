@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.message;
+package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.Collection;
 import java.util.HashSet;

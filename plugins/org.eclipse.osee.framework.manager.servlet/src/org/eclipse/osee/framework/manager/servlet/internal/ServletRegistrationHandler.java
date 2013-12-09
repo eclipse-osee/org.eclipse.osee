@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.manager.servlet.DataServlet;
 import org.eclipse.osee.framework.manager.servlet.OseeCacheServlet;
 import org.eclipse.osee.framework.manager.servlet.OseeModelServlet;
 import org.eclipse.osee.framework.manager.servlet.ResourceManagerServlet;
-import org.eclipse.osee.framework.manager.servlet.SearchEngineServlet;
 import org.eclipse.osee.framework.manager.servlet.SearchEngineTaggerServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionClientLoopbackServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionManagementServlet;
@@ -127,8 +126,6 @@ public class ServletRegistrationHandler {
          OseeServerContext.BRANCH_EXCHANGE_CONTEXT);
       register(new BranchManagerServlet(logger, sessionManager, translationService, orcsApi),
          OseeServerContext.BRANCH_CONTEXT);
-      register(new SearchEngineServlet(logger, sessionManager, translationService, orcsApi),
-         OseeServerContext.SEARCH_CONTEXT);
       register(new SearchEngineTaggerServlet(logger, sessionManager, orcsApi), OseeServerContext.SEARCH_TAGGING_CONTEXT);
       register(new SessionManagementServlet(logger, sessionManager, authenticationManager),
          OseeServerContext.SESSION_CONTEXT);

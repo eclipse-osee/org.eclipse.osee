@@ -16,8 +16,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.osee.framework.core.message.SearchOptions;
-import org.eclipse.osee.framework.core.message.SearchRequest;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -30,6 +28,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactMatch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.SearchOptions;
+import org.eclipse.osee.framework.skynet.core.artifact.search.SearchRequest;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.search.page.AttributeLineElement;
 import org.eclipse.osee.framework.ui.skynet.search.page.AttributeMatch;
@@ -92,7 +92,7 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       long endOfloadTime = startTime;
       int lineMatches = 0;
       try {
-         List<ArtifactMatch> matches = ArtifactQuery.getArtifactMatchesFromAttributeKeywords(searchRequest);
+         Iterable<ArtifactMatch> matches = ArtifactQuery.getArtifactMatchesFromAttributeKeywords(searchRequest);
 
          endOfloadTime = System.currentTimeMillis();
 

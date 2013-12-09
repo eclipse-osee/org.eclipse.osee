@@ -15,5 +15,6 @@ package org.eclipse.osee.orcs.rest.model.search;
  */
 public enum RequestType {
    COUNT,
-   IDS;
+   IDS,
+   MATCHES;
 }

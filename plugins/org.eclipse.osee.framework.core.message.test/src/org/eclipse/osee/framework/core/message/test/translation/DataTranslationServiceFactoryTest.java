@@ -31,8 +31,6 @@ import org.eclipse.osee.framework.core.message.internal.translation.OseeEnumType
 import org.eclipse.osee.framework.core.message.internal.translation.OseeImportModelRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.OseeImportModelResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.RelationTypeCacheUpdateResponseTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.SearchRequestTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.SearchResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TableDataTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
@@ -97,9 +95,6 @@ public class DataTranslationServiceFactoryTest {
       checkExists(srvc, TableDataTranslator.class, CoreTranslatorId.TABLE_DATA);
 
       checkExists(srvc, DatastoreInitRequestTranslator.class, CoreTranslatorId.OSEE_DATASTORE_INIT_REQUEST);
-
-      checkExists(srvc, SearchRequestTranslator.class, CoreTranslatorId.SEARCH_REQUEST);
-      checkExists(srvc, SearchResponseTranslator.class, CoreTranslatorId.SEARCH_RESPONSE);
 
       srvc.stop();
    }

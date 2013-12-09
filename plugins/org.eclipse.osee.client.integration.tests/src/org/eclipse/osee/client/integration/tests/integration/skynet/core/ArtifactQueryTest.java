@@ -28,8 +28,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.message.SearchOptions;
-import org.eclipse.osee.framework.core.message.SearchRequest;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
@@ -47,6 +45,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
+import org.eclipse.osee.framework.skynet.core.artifact.search.SearchOptions;
+import org.eclipse.osee.framework.skynet.core.artifact.search.SearchRequest;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -249,7 +249,7 @@ public class ArtifactQueryTest {
       options.setIsSearchAll(true);
       options.setCaseSensive(false);
       SearchRequest request = new SearchRequest(DemoBranches.SAW_Bld_1, "robot", options);
-      List<ArtifactMatch> matches = ArtifactQuery.getArtifactMatchesFromAttributeKeywords(request);
+      Iterable<ArtifactMatch> matches = ArtifactQuery.getArtifactMatchesFromAttributeKeywords(request);
       boolean found = false;
       for (ArtifactMatch match : matches) {
          if (match.getArtifact().getName().equals("Read-Write Minimum Rate")) {
