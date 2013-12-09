@@ -17,8 +17,8 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
-import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
-import org.eclipse.osee.ats.core.workflow.state.AtsWorkStateFactory;
+import org.eclipse.osee.ats.api.workflow.WorkState;
+import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -30,19 +30,21 @@ public class StateManagerWriter {
    private final IAtsWorkItem workItem;
    private final StateManager stateMgr;
    private final IAtsChangeSet changes;
+   private final IAtsWorkStateFactory workStateFactory;
 
-   public StateManagerWriter(IAtsWorkItem workItem, StateManager stateMgr, IAttributeResolver attrResolver, IAtsChangeSet changes) {
+   public StateManagerWriter(IAtsWorkItem workItem, StateManager stateMgr, IAttributeResolver attrResolver, IAtsChangeSet changes, IAtsWorkStateFactory workStateFactory) {
       this.workItem = workItem;
       this.stateMgr = stateMgr;
       this.attrResolver = attrResolver;
       this.changes = changes;
+      this.workStateFactory = workStateFactory;
    }
 
    public void writeToStore() throws OseeCoreException {
 
       String currentStateName = stateMgr.getCurrentStateName();
       attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState,
-         AtsWorkStateFactory.toXml(stateMgr, currentStateName), changes);
+         workStateFactory.toStoreStr(stateMgr, currentStateName), changes);
 
       removeCurrentStateAttributeIfExists(currentStateName, changes);
 
@@ -64,7 +66,7 @@ public class StateManagerWriter {
             // Else, doesn't exist yet, create
             if (!updated) {
                attrResolver.addAttribute(workItem, AtsAttributeTypes.State,
-                  AtsWorkStateFactory.toXml(workItem.getStateMgr(), stateName), changes);
+                  workStateFactory.toStoreStr(workItem.getStateMgr(), stateName), changes);
             }
          }
       }
@@ -73,7 +75,7 @@ public class StateManagerWriter {
    private void removeCurrentStateAttributeIfExists(String stateName, IAtsChangeSet changes) throws OseeCoreException {
       Collection<IAttribute<String>> attrs = attrResolver.getAttributes(workItem, AtsAttributeTypes.State);
       for (IAttribute<String> attr : attrs) {
-         WorkStateImpl storedState = AtsWorkStateFactory.getFromXml(attr.getValue());
+         WorkState storedState = workStateFactory.fromStoreStr(attr.getValue());
          if (stateName.equals(storedState.getName())) {
             attrResolver.deleteAttribute(workItem, attr, changes);
          }
@@ -84,10 +86,10 @@ public class StateManagerWriter {
       // Update attribute if it already exists
       Collection<IAttribute<String>> attrs = attrResolver.getAttributes(workItem, AtsAttributeTypes.State);
       for (IAttribute<String> attr : attrs) {
-         WorkStateImpl storedState = AtsWorkStateFactory.getFromXml(attr.getValue());
+         WorkState storedState = workStateFactory.fromStoreStr(attr.getValue());
          if (stateName.equals(storedState.getName())) {
             attrResolver.setValue(workItem, attr, AtsAttributeTypes.State,
-               AtsWorkStateFactory.toXml(workItem.getStateMgr(), stateName), changes);
+               workStateFactory.toStoreStr(workItem.getStateMgr(), stateName), changes);
             return true;
          }
       }

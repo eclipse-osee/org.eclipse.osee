@@ -17,19 +17,19 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
-import org.eclipse.osee.ats.core.workflow.state.AtsWorkStateFactory;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
@@ -179,7 +179,7 @@ public class SMAPromptChangeStatusTest {
             0.0);
 
          for (String xml : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
-            WorkStateImpl state = AtsWorkStateFactory.getFromXml(xml);
+            WorkState state = AtsCore.getWorkStateFactory().fromStoreStr(xml);
             boolean isCompletedCancelledState = isCompletedCancelledState(awa, state.getName());
             if (isCompletedCancelledState) {
                assertTrue("completed/cancelled ats.State [" + xml + "] wrong " + awa.getAtsId(), xml.endsWith(";;;"));

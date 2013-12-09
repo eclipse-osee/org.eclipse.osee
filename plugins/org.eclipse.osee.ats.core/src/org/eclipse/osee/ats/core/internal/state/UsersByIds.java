@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.users;
+package org.eclipse.osee.ats.core.internal.state;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,13 +23,15 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
+ * Pack and unpack userIds denoted by <userid><userid> string
+ * 
  * @author Donald G. Dunne
  */
 public class UsersByIds {
 
-   public static Pattern userPattern = Pattern.compile("<(.*?)>");
+   public Pattern userPattern = Pattern.compile("<(.*?)>");
 
-   public static String getStorageString(Collection<IAtsUser> users) throws OseeCoreException {
+   public String getStorageString(Collection<IAtsUser> users) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       for (IAtsUser u : users) {
          sb.append("<" + u.getUserId() + ">");
@@ -37,7 +39,7 @@ public class UsersByIds {
       return sb.toString();
    }
 
-   public static List<IAtsUser> getUsers(String sorageString) {
+   public List<IAtsUser> getUsers(String sorageString) {
       List<IAtsUser> users = new ArrayList<IAtsUser>();
       Matcher m = userPattern.matcher(sorageString);
       while (m.find()) {

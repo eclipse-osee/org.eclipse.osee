@@ -333,7 +333,8 @@ public class StateManager implements IAtsStateManager {
       return dirty;
    }
 
-   private WorkState getState(String string) {
+   @Override
+   public WorkState getState(String string) {
       for (WorkState state : states) {
          if (state.getName().equals(string)) {
             return state;
@@ -577,20 +578,6 @@ public class StateManager implements IAtsStateManager {
             throw new OseeStateException("Assignee can't be bootstrap user");
          }
       }
-   }
-
-   @Override
-   public boolean isSame(WorkState workState) {
-      WorkState thisState = getState(workState.getName());
-      if (thisState == null) {
-         return false;
-      } else if (thisState.getHoursSpent() != workState.getHoursSpent()) {
-         return false;
-      } else if (thisState.getPercentComplete() != workState.getPercentComplete()) {
-         return false;
-      }
-      return org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(thisState.getAssignees(),
-         workState.getAssignees());
    }
 
    @Override

@@ -408,40 +408,6 @@ public class StateManagerTest {
    }
 
    @Test
-   public void testIsSame() {
-      WorkStateImpl endorse = new WorkStateImpl("endorse");
-      stateMgr.addState(endorse);
-
-      WorkStateImpl endorse2 = new WorkStateImpl("endorse");
-
-      Assert.assertTrue(stateMgr.isSame(endorse2));
-      endorse.setHoursSpent(4);
-      endorse.setPercentComplete(23);
-      endorse2.setHoursSpent(4);
-      endorse2.setPercentComplete(23);
-      Assert.assertTrue(stateMgr.isSame(endorse2));
-
-      endorse2.setHoursSpent(5);
-      Assert.assertFalse(stateMgr.isSame(endorse2));
-      endorse2.setHoursSpent(4);
-      Assert.assertTrue(stateMgr.isSame(endorse2));
-
-      endorse2.setPercentComplete(5);
-      Assert.assertFalse(stateMgr.isSame(endorse2));
-      endorse2.setPercentComplete(23);
-      Assert.assertTrue(stateMgr.isSame(endorse2));
-
-      endorse2.addAssignee(joe);
-      Assert.assertFalse(stateMgr.isSame(endorse2));
-      endorse.addAssignee(joe);
-      Assert.assertTrue(stateMgr.isSame(endorse2));
-
-      WorkStateImpl analyze = new WorkStateImpl("blah");
-      Assert.assertFalse(stateMgr.isSame(analyze));
-
-   }
-
-   @Test
    public void testIsHoursEqual() {
       IAtsWorkItem awa = Mockito.mock(IAtsWorkItem.class);
       StateManager mgr = new StateManager(awa);

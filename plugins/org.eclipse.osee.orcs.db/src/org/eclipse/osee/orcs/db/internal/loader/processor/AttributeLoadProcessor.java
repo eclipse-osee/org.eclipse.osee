@@ -54,10 +54,14 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
             version.setStripeId(chStmt.getInt("stripe_transaction_id"));
          }
 
-      long typeId = chStmt.getLong("attr_type_id");
+         long typeId = chStmt.getLong("attr_type_id");
 
          String value = chStmt.getString("value");
          String uri = chStmt.getString("uri");
+         if (typeId == 167) {
+            System.err.println(String.format("Loading artId[%s] attrTypeId[%s]  value[%s]", artId, typeId, value));
+            System.out.println("here");
+         }
 
          toReturn = factory.createAttributeData(version, attrId, typeId, modType, artId, value, uri);
 

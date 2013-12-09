@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,17 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow;
 
-import org.eclipse.osee.ats.core.workflow.state.AtsCore_Workflow_State_Suite;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.core.workflow.state.StateTypeAdapter;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({AtsCore_Workflow_State_Suite.class, WorkflowManagerCoreTest.class, StateTypeTest.class})
 /**
- * This test suite contains tests that can be run as stand-alone JUnit tests (JT)
- *
  * @author Donald G. Dunne
  */
-public class AtsCore_Workflow_JT_Suite {
-   // Test Suite
+public class TestState extends StateTypeAdapter {
+
+   public TestState(String pageName, StateType StateType) {
+      super(TestState.class, pageName, StateType);
+   }
+
 }

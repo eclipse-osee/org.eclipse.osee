@@ -14,16 +14,19 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
+import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
@@ -61,7 +64,7 @@ public class StateCompletedColumn extends XViewerAtsColumn implements IXViewerVa
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) element;
             IAtsStateDefinition state = awa.getStateDefinitionByName(stateName);
             if (state != null) {
-               String date = StateManagerUtility.getCompletedDateByState(awa, state);
+               String date = getCompletedDateByState(awa, state);
                return date;
             }
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
@@ -69,7 +72,7 @@ public class StateCompletedColumn extends XViewerAtsColumn implements IXViewerVa
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                IAtsStateDefinition state = team.getStateDefinitionByName(stateName);
                if (state != null) {
-                  String date = StateManagerUtility.getCompletedDateByState(team, state);
+                  String date = getCompletedDateByState(team, state);
                   if (Strings.isValid(date)) {
                      dates.add(date);
                   }
@@ -80,6 +83,14 @@ public class StateCompletedColumn extends XViewerAtsColumn implements IXViewerVa
          }
       } catch (OseeCoreException ex) {
          LogUtil.getCellExceptionString(ex);
+      }
+      return "";
+   }
+
+   String getCompletedDateByState(IAtsWorkItem workItem, IAtsStateDefinition state) throws OseeCoreException {
+      IAtsLogItem stateEvent = workItem.getLog().getStateEvent(LogType.StateComplete, state.getName());
+      if (stateEvent != null && stateEvent.getDate() != null) {
+         return DateUtil.getMMDDYYHHMM(stateEvent.getDate());
       }
       return "";
    }

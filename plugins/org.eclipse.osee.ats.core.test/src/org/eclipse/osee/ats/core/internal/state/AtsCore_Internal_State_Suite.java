@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({StateManagerTest.class})
+@Suite.SuiteClasses({AtsWorkStateFactoryTest.class, StateManagerTest.class})
 /**
  * @author Donald G. Dunne
  */

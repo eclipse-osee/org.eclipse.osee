@@ -140,8 +140,6 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    void validateNoBootstrapUser() throws OseeCoreException;
 
-   boolean isSame(WorkState workState) throws OseeCoreException;
-
    @Override
    String getId();
 
@@ -154,5 +152,7 @@ public interface IAtsStateManager extends WorkStateFactory {
    Integer getPercentCompleteValue();
 
    void setPercentCompleteValue(Integer percentComplete);
+
+   WorkState getState(String string);
 
 }

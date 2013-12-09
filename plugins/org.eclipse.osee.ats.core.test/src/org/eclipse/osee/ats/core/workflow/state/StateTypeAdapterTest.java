@@ -8,10 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.workflow;
+package org.eclipse.osee.ats.core.workflow.state;
 
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.core.workflow.state.StateTypeAdapter;
+import org.eclipse.osee.ats.core.workflow.OneStates;
+import org.eclipse.osee.ats.core.workflow.OrderedStates;
+import org.eclipse.osee.ats.core.workflow.TestState;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -79,11 +81,12 @@ public class StateTypeAdapterTest {
       Assert.assertEquals("[Endorse][Working]", state.toString());
    }
 
-   private class TestState extends StateTypeAdapter {
-
-      public TestState(String pageName, StateType StateType) {
-         super(TestState.class, pageName, StateType);
-      }
-
+   @Test
+   public void testDescription() {
+      TestState state = new TestState("Endorse", StateType.Working);
+      Assert.assertNull(state.getDescription());
+      state.setDescription("description");
+      Assert.assertEquals("description", state.getDescription());
    }
+
 }

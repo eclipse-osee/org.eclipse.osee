@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
+import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.internal.AtsConfigUtility;
@@ -30,6 +31,7 @@ import org.eclipse.osee.ats.core.internal.AtsEarnedValueService;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnUtilities;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.AtsStateFactory;
+import org.eclipse.osee.ats.core.internal.state.AtsWorkStateFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -51,6 +53,7 @@ public class AtsCore {
    private static IAtsWorkItemServiceProvider workItemServiceProvider;
    private static IAtsBranchServiceProvider branchServiceProvider;
    private static IAtsReviewServiceProvider reviewServiceProvider;
+   private static AtsWorkStateFactory workStateFactory;
 
    public void setAtsUserService(IAtsUserService userService) {
       AtsCore.userService = userService;
@@ -134,9 +137,16 @@ public class AtsCore {
 
    public static IAtsStateFactory getStateFactory() {
       if (stateFactory == null) {
-         stateFactory = new AtsStateFactory(attrResolver);
+         stateFactory = new AtsStateFactory(attrResolver, getWorkStateFactory());
       }
       return stateFactory;
+   }
+
+   public static IAtsWorkStateFactory getWorkStateFactory() {
+      if (workStateFactory == null) {
+         workStateFactory = new AtsWorkStateFactory(getUserService());
+      }
+      return workStateFactory;
    }
 
    public static IAtsLogFactory getLogFactory() {

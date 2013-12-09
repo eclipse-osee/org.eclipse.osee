@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.core.internal.state;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
-import org.eclipse.osee.ats.core.workflow.state.AtsWorkStateFactory;
+import org.eclipse.osee.ats.api.workflow.WorkState;
+import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -26,21 +26,23 @@ public class StateManagerReader {
    private final StateManager stateMgr;
    private final IAttributeResolver attrResolver;
    private final IAtsWorkItem workItem;
+   private final IAtsWorkStateFactory workStateFactory;
 
-   public StateManagerReader(IAtsWorkItem workItem, StateManager stateMgr, IAttributeResolver attrResolver) {
+   public StateManagerReader(IAtsWorkItem workItem, StateManager stateMgr, IAttributeResolver attrResolver, IAtsWorkStateFactory workStateFactory) {
       this.workItem = workItem;
       this.stateMgr = stateMgr;
       this.attrResolver = attrResolver;
+      this.workStateFactory = workStateFactory;
    }
 
    public synchronized void load() throws OseeCoreException {
       String currentStateXml = attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "");
       if (Strings.isValid(currentStateXml)) {
-         WorkStateImpl currentState = AtsWorkStateFactory.getFromXml(currentStateXml);
+         WorkState currentState = workStateFactory.fromStoreStr(currentStateXml);
          stateMgr.setCurrentStateName(currentState.getName());
          stateMgr.addState(currentState);
          for (String stateXml : attrResolver.getAttributesToStringList(workItem, AtsAttributeTypes.State)) {
-            WorkStateImpl state = AtsWorkStateFactory.getFromXml(stateXml);
+            WorkState state = workStateFactory.fromStoreStr(stateXml);
             if (!state.getName().equals(currentState.getName())) {
                if (!state.getName().equals(currentState.getName())) {
                   stateMgr.addState(state);

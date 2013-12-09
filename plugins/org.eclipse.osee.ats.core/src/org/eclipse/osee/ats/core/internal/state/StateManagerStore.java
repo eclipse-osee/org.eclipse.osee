@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
+import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,20 +29,20 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class StateManagerStore {
 
-   public void writeToStore(IAtsWorkItem workItem, IAttributeResolver attrResolver, IAtsChangeSet changes) throws OseeCoreException {
+   public void writeToStore(IAtsWorkItem workItem, IAttributeResolver attrResolver, IAtsChangeSet changes, IAtsWorkStateFactory workStateFactory) throws OseeCoreException {
       StateManager stateMgr = (StateManager) workItem.getStateMgr();
-      StateManagerWriter writer = new StateManagerWriter(workItem, stateMgr, attrResolver, changes);
+      StateManagerWriter writer = new StateManagerWriter(workItem, stateMgr, attrResolver, changes, workStateFactory);
       List<IAtsUser> assigneesAdded = stateMgr.getAssigneesAdded();
       writer.writeToStore();
-      changes.addExecuteListener(getPostPersistExecutionListener(assigneesAdded));
+      changes.addExecuteListener(getPostPersistExecutionListener(assigneesAdded, workStateFactory));
    }
 
-   public static void postPersistNotifyReset(IAtsWorkItem workItem, IAttributeResolver attrResolver, List<IAtsUser> assigneesAdded) throws OseeCoreException {
+   public static void postPersistNotifyReset(IAtsWorkItem workItem, IAttributeResolver attrResolver, List<IAtsUser> assigneesAdded, IAtsWorkStateFactory workStateFactory) throws OseeCoreException {
       AtsCore.getNotifyService().notify(workItem, assigneesAdded, AtsNotifyType.Assigned);
-      load(workItem, workItem.getStateMgr(), attrResolver);
+      load(workItem, workItem.getStateMgr(), attrResolver, workStateFactory);
    }
 
-   public static IExecuteListener getPostPersistExecutionListener(final List<IAtsUser> assigneesAdded) {
+   public static IExecuteListener getPostPersistExecutionListener(final List<IAtsUser> assigneesAdded, final IAtsWorkStateFactory workStateFactory) {
       return new IExecuteListener() {
 
          @Override
@@ -49,7 +50,8 @@ public class StateManagerStore {
             for (Object obj : changes.getObjects()) {
                if (obj instanceof IAtsWorkItem) {
                   try {
-                     postPersistNotifyReset((IAtsWorkItem) obj, AtsCore.getAttrResolver(), assigneesAdded);
+                     postPersistNotifyReset((IAtsWorkItem) obj, AtsCore.getAttrResolver(), assigneesAdded,
+                        workStateFactory);
                   } catch (OseeCoreException ex) {
                      OseeLog.log(AtsCore.class, Level.SEVERE, ex);
                   }
@@ -59,10 +61,10 @@ public class StateManagerStore {
       };
    }
 
-   public static void load(IAtsWorkItem workItem, IAtsStateManager stateMgr, IAttributeResolver attrResolver) throws OseeCoreException {
+   public static void load(IAtsWorkItem workItem, IAtsStateManager stateMgr, IAttributeResolver attrResolver, IAtsWorkStateFactory workStateFactory) throws OseeCoreException {
       StateManager stateManager = (StateManager) stateMgr;
       stateManager.clear();
-      StateManagerReader reader = new StateManagerReader(workItem, stateManager, attrResolver);
+      StateManagerReader reader = new StateManagerReader(workItem, stateManager, attrResolver, workStateFactory);
       reader.load();
    }
 
