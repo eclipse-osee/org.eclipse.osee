@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -64,6 +65,7 @@ public class AtsLogHtmlTest {
    }
 
    @Test
+   @Ignore("Error checking dates with systems in different timezones")
    public void testSave() {
 
       // without title and with user name resolution

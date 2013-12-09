@@ -18,10 +18,9 @@ import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
-import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -56,16 +55,13 @@ public class TeamColumnUtilityTest {
       when(ai.getTeamDefinition()).thenReturn(teamDef);
    }
 
-   @org.junit.Test
+   @Test
    public void testGetColumnText() throws Exception {
-      SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
       TeamColumnUtility utility = new TeamColumnUtility(workItemService, reviewService);
 
       Assert.assertEquals(TEAM_NAME, utility.getColumnText(teamWf));
       Assert.assertEquals(TEAM_NAME, utility.getColumnText(review));
       Assert.assertEquals("", utility.getColumnText("some object"));
       Assert.assertEquals(TEAM_NAME, utility.getColumnText(standAloneReview));
-
-      TestUtil.severeLoggingEnd(loggingMonitor);
    }
 }

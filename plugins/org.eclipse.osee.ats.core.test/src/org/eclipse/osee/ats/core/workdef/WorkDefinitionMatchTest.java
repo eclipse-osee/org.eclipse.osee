@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.core.workdef;
 
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.mocks.MockWorkDefinition;
 import org.junit.Assert;
 import org.junit.Test;
 

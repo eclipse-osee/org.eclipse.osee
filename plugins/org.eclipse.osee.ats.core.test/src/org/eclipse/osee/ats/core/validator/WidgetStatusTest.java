@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.validator;
 
-import org.junit.Assert;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

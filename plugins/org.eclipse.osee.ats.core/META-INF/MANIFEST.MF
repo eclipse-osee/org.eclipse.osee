@@ -4,7 +4,6 @@ Bundle-Name: ATS Core
 Bundle-SymbolicName: org.eclipse.osee.ats.core;singleton:=true
 Bundle-Version: 0.16.0.qualifier
 Bundle-ActivationPolicy: lazy
-Eclipse-ExtensibleAPI: true
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.inject,
  org.eclipse.core.runtime,

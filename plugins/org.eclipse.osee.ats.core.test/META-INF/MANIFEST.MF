@@ -5,17 +5,9 @@ Bundle-SymbolicName: org.eclipse.osee.ats.core.test
 Bundle-Version: 0.16.0.qualifier
 Fragment-Host: org.eclipse.osee.ats.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.junit;bundle-version="4.11.0",
+Require-Bundle: org.junit,
  org.mockito;bundle-version="1.9.0",
  org.hamcrest.core,
  org.objenesis
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Export-Package: org.eclipse.osee.ats.core
-Import-Package: org.eclipse.emf.ecore.util,
- org.eclipse.osee.ats.core,
- org.eclipse.osee.ats.core.users,
- org.eclipse.osee.ats.mocks,
- org.eclipse.osee.support.test.util,
- org.hamcrest.core,
- org.mockito;bundle-version="1.9.0",
- org.objenesis
+Import-Package: org.eclipse.emf.ecore.util
