@@ -35,7 +35,7 @@ public class MessageInstance {
    private SubscriptionKey serverSubscriptionKey = null;
    private int refcount = 0;
    private boolean supported = true;
-   private IRemoteMessageService service;
+   private volatile IRemoteMessageService service;
 
    public MessageInstance(Message msg, MessageMode mode, DataType type) {
       this.msg = msg;
@@ -111,7 +111,7 @@ public class MessageInstance {
 	  if(service != null){
 		  try {
 			  Set<? extends DataType> envSet = service.getAvailablePhysicalTypes();
-			  Set<DataType> available = msg.getAvailableMemTypes();
+			  Set<DataType> available = msg.getAssociatedMessages().keySet();
 			  for(DataType type : available.toArray(new DataType[available.size()])){
 				  if(envSet.contains(type)){
 					  set.add(type);

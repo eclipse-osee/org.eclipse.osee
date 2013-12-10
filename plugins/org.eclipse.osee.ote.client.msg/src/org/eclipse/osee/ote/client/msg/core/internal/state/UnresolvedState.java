@@ -12,7 +12,9 @@ package org.eclipse.osee.ote.client.msg.core.internal.state;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.client.msg.core.db.AbstractMessageDataBase;
 import org.eclipse.osee.ote.client.msg.core.db.MessageInstance;
 import org.eclipse.osee.ote.client.msg.core.internal.MessageSubscription;
@@ -54,12 +56,19 @@ public class UnresolvedState extends AbstractSubscriptionState {
    @Override
    public ISubscriptionState onMessageDbFound(AbstractMessageDataBase msgDB) {
       try {
-         instance = msgDB.acquireInstance(msgClassName, getMode(), getMemType());
+    	  DataType requestedType = getMemType();
+          if (requestedType == null && getSubscription().getRequestedDataType() != null) {
+        	  instance = msgDB.acquireInstance(msgClassName, getMode(), getSubscription().getRequestedDataType());        	           	 
+          } else {
+        	  instance = msgDB.acquireInstance(msgClassName, getMode(), requestedType);        	  
+          }
+
          this.type = instance.getType();
          getSubscription().notifyResolved();
          return new InactiveState(instance, msgDB, this);
       } catch (Exception e) {
-//         OseeLog.log(UnresolvedState.class, Level.SEVERE, "problems acquring instance for " + getMsgClassName(), e); should we be logging this?
+    	 // Yes we do need to log this
+         OseeLog.log(UnresolvedState.class, Level.SEVERE, "problems acquring instance for " + getMsgClassName());
          getSubscription().notifyInvalidated();
          return this;
       }

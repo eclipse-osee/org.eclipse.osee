@@ -42,6 +42,7 @@ import org.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient;
 import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystem;
 import org.eclipse.osee.ote.message.tool.IFileTransferHandle;
+import org.eclipse.osee.ote.message.tool.MessageMode;
 import org.eclipse.osee.ote.message.tool.TransferConfig;
 import org.eclipse.osee.ote.message.tool.UdpFileTransferHandler;
 import org.eclipse.osee.ote.service.ConnectionEvent;
@@ -61,7 +62,7 @@ public class MessageSubscriptionService implements IOteMessageService, ITestConn
    private final InetAddress localAddress;
    private final List<MessageSubscription> subscriptions = new CopyOnWriteArrayList<MessageSubscription>();
    private IMsgToolServiceClient exportedThis = null;
-   private AbstractMessageDataBase msgDatabase;
+   private volatile AbstractMessageDataBase msgDatabase;
    private UdpFileTransferHandler fileTransferHandler;
 
    private final ExecutorService threadPool = Executors.newFixedThreadPool(MAX_CONCURRENT_WORKER_THREADS,
@@ -82,9 +83,9 @@ public class MessageSubscriptionService implements IOteMessageService, ITestConn
     * Monitors a set of channels for message updates and dispatches the updates to worker threads
     */
    private UpdateDispatcher dispatcher = null;
-   private IRemoteMessageService service;
+   private volatile IRemoteMessageService service;
 
-   private IOteClientService clientService;
+   private volatile IOteClientService clientService;
 
    public void start(){
 	   clientService.addConnectionListener(this);
@@ -121,6 +122,41 @@ public class MessageSubscriptionService implements IOteMessageService, ITestConn
       }
       subscriptions.add(subscription);
       return subscription;
+   }
+   
+   @Override
+   public IMessageSubscription subscribe(String name, MessageMode mode) {
+	      return subscribe(name, (DataType)null, mode);
+   }
+
+   @Override
+   public IMessageSubscription subscribe(String name, DataType dataType,
+		   MessageMode mode) {
+	   MessageSubscription subscription = new MessageSubscription(this);
+	   subscription.bind(name, dataType, mode);
+	   if (msgDatabase != null) {
+		   subscription.attachMessageDb(msgDatabase);
+		   if (service != null) {
+			   subscription.attachService(service);
+		   }
+	   }
+	   subscriptions.add(subscription);
+	   return subscription;
+   }
+   
+   @Override
+   public IMessageSubscription subscribe(String name, String dataType,
+		   MessageMode mode) {
+	   MessageSubscription subscription = new MessageSubscription(this);
+	   subscription.bind(name, dataType, mode);
+	   if (msgDatabase != null) {
+		   subscription.attachMessageDb(msgDatabase);
+		   if (service != null) {
+			   subscription.attachService(service);
+		   }
+	   }
+	   subscriptions.add(subscription);
+	   return subscription;
    }
 
    /**
@@ -345,4 +381,5 @@ public class MessageSubscriptionService implements IOteMessageService, ITestConn
    public void removeSubscription(MessageSubscription subscription) {
       subscriptions.remove(subscription);
    }
+
 }

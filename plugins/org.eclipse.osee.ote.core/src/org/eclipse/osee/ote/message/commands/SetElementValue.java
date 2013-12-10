@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.message.commands;
 
 import java.io.Serializable;
 import java.util.List;
+
 import org.eclipse.osee.ote.message.enums.DataType;
 
 /**
@@ -19,20 +20,22 @@ import org.eclipse.osee.ote.message.enums.DataType;
  * @author Andrew M. Finkbeiner
  * @author Ken J. Aguilar
  */
-public class SetElementValue implements Serializable {
+public final class SetElementValue implements Serializable {
 
    private static final long serialVersionUID = -6696340729803635664L;
    private final String message;
    private final List<Object> element;
    private final String value;
    private final DataType type;
+   private final boolean shouldSend;
 
-   public SetElementValue(String message, DataType type, List<Object> elementPath, String value) {
+   public SetElementValue(String message, DataType type, List<Object> elementPath, String value, boolean shouldSend) {
       super();
       this.message = message;
       this.type = type;
       this.element = elementPath;
       this.value = value;
+      this.shouldSend = shouldSend;
    }
 
    /**
@@ -55,5 +58,9 @@ public class SetElementValue implements Serializable {
 
    public DataType getMemType() {
       return type;
+   }
+   
+   public boolean shouldSend() {
+	   return shouldSend;
    }
 }

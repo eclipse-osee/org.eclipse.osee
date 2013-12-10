@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.client.msg.core;
 
 import java.util.List;
 import java.util.Set;
+
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.tool.MessageMode;
@@ -45,7 +46,7 @@ public interface IMessageSubscription {
    void send() throws Exception;
 
    void setElementValue(List<Object> path, String value) throws Exception;
-
+   void setElementValueNoSend(List<Object> path, String value) throws Exception;
    void zeroize(List<Object> path) throws Exception;
 
    void changeMessageMode(MessageMode mode);

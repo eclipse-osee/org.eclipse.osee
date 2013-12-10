@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.client.msg.core.internal;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import org.eclipse.osee.ote.client.msg.core.IMessageSubscription;
 import org.eclipse.osee.ote.client.msg.core.ISubscriptionListener;
 import org.eclipse.osee.ote.client.msg.core.db.AbstractMessageDataBase;
@@ -32,8 +33,11 @@ public class MessageSubscription implements IMessageSubscription {
 
    private ISubscriptionState currentState = null;
    private final MessageSubscriptionService msgService;
-   private final HashSet<ISubscriptionListener> listeners = new HashSet<ISubscriptionListener>();
+   private final CopyOnWriteArraySet<ISubscriptionListener> listeners = new CopyOnWriteArraySet<ISubscriptionListener>();
 
+   private String requestedDataType;
+   
+   
    /**
     * creates a subscription with no reference to a message
     */
@@ -42,11 +46,16 @@ public class MessageSubscription implements IMessageSubscription {
    }
 
    public synchronized void bind(String name) {
-      bind(name, null, MessageMode.READER);
+      bind(name, (DataType)null, MessageMode.READER);
    }
 
-   private void bind(String name, DataType type, MessageMode mode) {
+   public synchronized void bind(String name, DataType type, MessageMode mode) {
       currentState = new UnresolvedState(name, this, type, mode);
+   }
+
+   public synchronized void bind(String name, String type, MessageMode mode) {
+	   requestedDataType = type;
+	   currentState = new UnresolvedState(name, this, null, mode);
    }
 
    @Override
@@ -156,13 +165,20 @@ public class MessageSubscription implements IMessageSubscription {
 
    @Override
    public void setElementValue(List<Object> path, String value) throws Exception {
-      final SetElementValue cmd = new SetElementValue(getMessageClassName(), getMemType(), path, value);
+      final SetElementValue cmd = new SetElementValue(getMessageClassName(), getMemType(), path, value, true);
       msgService.getService().setElementValue(cmd);
    }
 
    @Override
+   public void setElementValueNoSend(List<Object> path, String value)
+		   throws Exception {
+	   final SetElementValue cmd = new SetElementValue(getMessageClassName(), getMemType(), path, value, false);
+	   msgService.getService().setElementValue(cmd);
+   }
+
+   @Override
    public void send() throws Exception {
-      final SetElementValue cmd = new SetElementValue(getMessageClassName(), getMemType(), null, null);
+      final SetElementValue cmd = new SetElementValue(getMessageClassName(), getMemType(), null, null, true);
       msgService.getService().setElementValue(cmd);
    }
 
@@ -229,4 +245,14 @@ public class MessageSubscription implements IMessageSubscription {
    public boolean removeSubscriptionListener(ISubscriptionListener listener) {
       return listeners.remove(listener);
    }
+
+   public String getRequestedDataType() {
+	   return requestedDataType;
+   }
+
+   public void setRequestedDataType(String requestedDataType) {
+	   this.requestedDataType = requestedDataType;
+   }
+   
+   
 }
