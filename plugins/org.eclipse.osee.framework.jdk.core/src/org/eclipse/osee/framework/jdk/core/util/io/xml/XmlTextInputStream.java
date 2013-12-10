@@ -26,6 +26,8 @@ public class XmlTextInputStream extends BufferedInputStream {
    private static final String STOP_PARAGRAPH = "</w:p";
    private static final String START_WORDML_TEXT = "<w:t>";
    private static final String END_WORDML_TEXT = "</w:t>";
+   private static final String LINE_BREAK = "<w:br/>";
+   private static final String TAB = "<w:tab/>";
 
    private IReadHelper readHelper;
 
@@ -186,6 +188,7 @@ public class XmlTextInputStream extends BufferedInputStream {
       private boolean collect;
       private boolean isCarriageReturn;
       private boolean isStartOfParagraph;
+      private boolean isBreak;
       private final StringBuilder buffer;
 
       private boolean wasSaved;
@@ -200,6 +203,7 @@ public class XmlTextInputStream extends BufferedInputStream {
          collect = false;
          isStartOfParagraph = false;
          isCarriageReturn = false;
+         isBreak = false;
 
          wasSaved = false;
          lastPartOfTag = false;
@@ -211,11 +215,12 @@ public class XmlTextInputStream extends BufferedInputStream {
       @Override
       public int process(int value) throws IOException {
          isStartOfParagraph = false;
+         isBreak = false;
          if ((char) value == '<') {
             partOfTag = true;
             buffer.append((char) value);
          }
-         while ((partOfTag || isCarriageReturn || isStartOfParagraph != true && collect != true) && available() > 0) {
+         while ((partOfTag || isCarriageReturn || isStartOfParagraph != true && collect != true && isBreak != true) && available() > 0) {
             value = readFromOriginalBuffer();
             if ((char) value == '<') {
                partOfTag = true;
@@ -239,10 +244,15 @@ public class XmlTextInputStream extends BufferedInputStream {
                   isStartOfParagraph = true;
                } else if (tag.startsWith(STOP_PARAGRAPH)) {
                   isStartOfParagraph = false;
+               } else if (tag.startsWith(LINE_BREAK)) {
+                  isBreak = true;
+               } else if (tag.startsWith(TAB)) {
+                  isBreak = true;
                }
+
                buffer.delete(0, buffer.length());
                value = ' ';
-               if (isStartOfParagraph != true && available() > 0) {
+               if (isStartOfParagraph != true && isBreak != true && available() > 0) {
                   value = readFromOriginalBuffer();
                   if ((char) value == '<') {
                      partOfTag = true;

@@ -76,7 +76,7 @@ public class TagProcessorTest {
    public void testCollectFromScanner() throws UnsupportedEncodingException {
       Scanner sourceScanner = null;
       try {
-         sourceScanner = new Scanner(new XmlTextInputStream(rawData));
+         sourceScanner = new Scanner(new XmlTextInputStream(rawData), "UTF-8");
          List<Pair<String, Long>> actual = new ArrayList<Pair<String, Long>>();
          TagCollector tagCollector = new MockTagCollector(actual);
          tagProcessor.collectFromScanner(sourceScanner, tagCollector);
@@ -93,7 +93,7 @@ public class TagProcessorTest {
       List<Object[]> data = new ArrayList<Object[]>();
 
       TagProcessor tagProcess = new TagProcessor(new EnglishLanguage(new MockLog()), new TagEncoder());
-      for (int index = 1; index < 7; index++) {
+      for (int index = 1; index <= 8; index++) {
          String name = "test" + index;
          String rawData = getResource(name + ".data.xml");
          String expectedParsed = getResource(name + ".expected.txt");
