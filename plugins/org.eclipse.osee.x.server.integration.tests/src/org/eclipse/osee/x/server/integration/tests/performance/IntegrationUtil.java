@@ -15,8 +15,8 @@ import org.databene.contiperf.report.CSVLatencyReportModule;
 import org.databene.contiperf.report.CSVSummaryReportModule;
 import org.databene.contiperf.report.HtmlReportModule;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
-import org.eclipse.osee.orcs.rest.client.OseeClientConfig;
 import org.eclipse.osee.orcs.rest.client.OseeClientStandaloneSetup;
+import org.eclipse.osee.rest.client.OseeClientConfig;
 import org.junit.rules.MethodRule;
 
 public final class IntegrationUtil {

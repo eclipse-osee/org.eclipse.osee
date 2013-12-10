@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.orcs.rest.client.internal.WebClientProviderImpl">
-   <implementation class="org.eclipse.osee.orcs.rest.client.internal.WebClientProviderImpl"/>
-   <service>
-      <provide interface="org.eclipse.osee.orcs.rest.client.internal.WebClientProvider"/>
-   </service>
-   <reference bind="setProxyService" cardinality="1..1" interface="org.eclipse.core.net.proxy.IProxyService" name="IProxyService" policy="static"/>
-</scr:component>

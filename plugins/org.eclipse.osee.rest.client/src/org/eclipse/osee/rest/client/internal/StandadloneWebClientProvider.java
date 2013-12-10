@@ -8,11 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.client.internal;
+package org.eclipse.osee.rest.client.internal;
 
 import java.net.URI;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.rest.client.WebClientProvider;
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.AsyncWebResource;
 import com.sun.jersey.api.client.Client;
@@ -57,6 +58,8 @@ public class StandadloneWebClientProvider implements WebClientProvider {
             properties.put(ApacheHttpClientConfig.PROPERTY_PROXY_URI, proxyAddress);
          }
          client = ApacheHttpClient.create(clientConfig);
+         //         client.setReadTimeout(interval);
+         //         client.setConnectTimeout(interval);
       }
       return client;
    }

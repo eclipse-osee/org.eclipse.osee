@@ -53,6 +53,7 @@
 		<module>../../plugins/org.eclipse.osee.display.mvp.test</module>
 
 		<module>../../plugins/org.eclipse.osee.rest.admin</module>
+		<module>../../plugins/org.eclipse.osee.rest.client</module>
 
 		<module>../../features/org.eclipse.osee.x.core.external.feature</module>
 		<module>../../features/org.eclipse.osee.x.core.feature</module>

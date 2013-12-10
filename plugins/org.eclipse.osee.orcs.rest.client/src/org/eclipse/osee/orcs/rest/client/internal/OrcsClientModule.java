@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.client.internal;
 
-import org.eclipse.osee.framework.core.services.URIProvider;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
-import org.eclipse.osee.orcs.rest.client.OseeClientConfig;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.AbstractMatcher;
@@ -24,23 +22,11 @@ import com.google.inject.spi.TypeListener;
 /**
  * @author Roberto E. Escobar
  */
-public class StandaloneModule extends AbstractModule {
-
-   private final OseeClientConfig config;
-
-   public StandaloneModule(OseeClientConfig config) {
-      this.config = config;
-   }
+public class OrcsClientModule extends AbstractModule {
 
    @Override
    protected void configure() {
-      bindConstant().annotatedWith(OseeServerAddress.class).to(config.getServerAddress());
-      bindConstant().annotatedWith(OseeHttpProxyAddress.class).to(config.getProxyAddress());
-
       bind(OseeClient.class).to(OseeClientImpl.class);
-      bind(WebClientProvider.class).to(StandadloneWebClientProvider.class);
-      bind(URIProvider.class).to(StandadloneUriProviderImpl.class);
-
       TypeListener listener = new TypeListener() {
 
          @Override
@@ -74,6 +60,6 @@ public class StandaloneModule extends AbstractModule {
       public boolean matches(TypeLiteral<?> subType) {
          return subType.equals(superType) || superType.getRawType().isAssignableFrom(subType.getRawType());
       }
-
    }
+
 }

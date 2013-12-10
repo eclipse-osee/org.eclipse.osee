@@ -1,0 +1,36 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE REST Client (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.rest.client
+Bundle-Version: 0.16.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/*.xml
+Import-Package: com.google.inject,
+ com.google.inject.binder,
+ com.google.inject.matcher,
+ com.google.inject.name,
+ com.google.inject.spi,
+ com.google.inject.util,
+ javax.inject,
+ javax.ws.rs,
+ javax.ws.rs.core,
+ org.eclipse.core.net.proxy,
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.services,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util
+Export-Package: org.eclipse.osee.rest.client
+Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
+ javax.servlet;visibility:=reexport,
+ com.google.inject,
+ org.apache.commons.httpclient;visibility:=reexport,
+ org.apache.commons.logging;visibility:=reexport,
+ org.apache.log4j;visibility:=reexport,
+ org.slf4j.api;visibility:=reexport,
+ org.codehaus.jackson.core;visibility:=reexport,
+ org.codehaus.jackson.jaxrs;visibility:=reexport,
+ org.codehaus.jackson.mapper;visibility:=reexport,
+ com.sun.jersey;bundle-version="1.18.0",
+ com.sun.jersey.client.apache;bundle-version="1.18.0"

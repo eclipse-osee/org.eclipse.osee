@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.client.internal;
+package org.eclipse.osee.rest.client.internal;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

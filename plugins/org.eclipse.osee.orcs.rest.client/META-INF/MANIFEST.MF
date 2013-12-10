@@ -6,34 +6,17 @@ Bundle-Version: 0.16.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
-Import-Package: com.sun.jersey.client.apache,
- com.sun.jersey.client.apache.config,
- com.sun.jersey.api.client,
- com.sun.jersey.api.client.config,
- com.sun.jersey.core.impl.provider.entity,
- javax.inject,
- javax.ws.rs,
+Import-Package: com.sun.jersey.api.client,
  javax.ws.rs.core,
- org.eclipse.core.net.proxy,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
- org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.services,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.orcs.rest.model,
- org.eclipse.osee.orcs.rest.model.search
+ org.eclipse.osee.orcs.rest.model.search,
+ org.eclipse.osee.rest.client
 Export-Package: org.eclipse.osee.orcs.rest.client
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
- javax.servlet;visibility:=reexport,
- com.google.inject,
- org.apache.commons.httpclient;visibility:=reexport,
- org.apache.commons.logging;visibility:=reexport,
- org.apache.log4j;visibility:=reexport,
- org.slf4j.api;visibility:=reexport,
- org.codehaus.jackson.core;visibility:=reexport,
- org.codehaus.jackson.jaxrs;visibility:=reexport,
- org.codehaus.jackson.mapper;visibility:=reexport,
- com.sun.jersey;bundle-version="1.18.0",
- com.sun.jersey.client.apache;bundle-version="1.18.0"
+Require-Bundle: com.google.inject,
+ com.sun.jersey;bundle-version="1.18.0"

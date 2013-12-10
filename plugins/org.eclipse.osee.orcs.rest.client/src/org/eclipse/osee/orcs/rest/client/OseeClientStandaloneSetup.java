@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.client;
 
+import org.eclipse.osee.orcs.rest.client.internal.OrcsClientModule;
 import org.eclipse.osee.orcs.rest.client.internal.OseeClientImpl;
-import org.eclipse.osee.orcs.rest.client.internal.StandaloneModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import org.eclipse.osee.rest.client.OseeClientConfig;
+import org.eclipse.osee.rest.client.OseeRestClientStandaloneSetup;
+import com.google.inject.Module;
 
 /**
- * Class to use when using the API
+ * Class to use when using the API in a non-OSGI environment
  * 
  * @author Roberto E. Escobar
  */
@@ -27,7 +28,7 @@ public final class OseeClientStandaloneSetup {
    }
 
    public static OseeClient createClient(OseeClientConfig config) {
-      Injector injector = Guice.createInjector(new StandaloneModule(config));
-      return injector.getInstance(OseeClientImpl.class);
+      Module module = new OrcsClientModule();
+      return OseeRestClientStandaloneSetup.createClient(OseeClientImpl.class, config, module);
    }
 }
