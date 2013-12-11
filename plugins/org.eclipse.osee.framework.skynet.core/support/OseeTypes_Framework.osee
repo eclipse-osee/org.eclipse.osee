@@ -1452,6 +1452,7 @@ attributeType "CSCI" extends EnumeratedAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max unlimited
+	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.req.csci"
 	defaultValue "Unspecified"
 	mediaType "text/plain"
