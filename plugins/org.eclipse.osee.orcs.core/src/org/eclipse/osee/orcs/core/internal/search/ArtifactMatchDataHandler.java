@@ -69,9 +69,9 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
          ArtifactMatch artifactMatch = matches.get(artId);
          if (artifactMatch == null) {
             artifactMatch = new ArtifactMatch();
-            artifactMatch.addLocation(data.getLocalId(), match);
+            matches.put(artId, artifactMatch);
          }
-         matches.put(artId, artifactMatch);
+         artifactMatch.addLocation(data.getLocalId(), match);
       }
    }
 
