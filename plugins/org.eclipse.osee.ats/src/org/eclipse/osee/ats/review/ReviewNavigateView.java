@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.review;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -34,8 +32,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.navigate.AtsNavigateComposite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
-import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -90,11 +87,10 @@ public class ReviewNavigateView extends ViewPart implements IXNavigateEventListe
    }
 
    public void refreshData() {
-      List<IOperation> ops = new ArrayList<IOperation>();
-      ops.addAll(AtsBulkLoad.getConfigLoadingOperations());
-      ops.add(new ReviewNavigateViewItemsOperation());
-      IOperation operation = new CompositeOperation("Load Review Navigator", Activator.PLUGIN_ID, ops);
-      Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(this));
+      OperationBuilder builder = Operations.createBuilder("Load Review Navigator");
+      builder.addAll(AtsBulkLoad.getConfigLoadingOperations());
+      builder.addOp(new ReviewNavigateViewItemsOperation());
+      Operations.executeAsJob(builder.build(), false, Job.LONG, new ReloadJobChangeAdapter(this));
    }
 
    private final class ReloadJobChangeAdapter extends JobChangeAdapter {

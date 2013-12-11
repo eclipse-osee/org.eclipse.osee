@@ -18,9 +18,9 @@ import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.internal.vcast.datastore.VCastDataStoreFactory;
 import org.eclipse.osee.coverage.internal.vcast.operations.VCastDataStoreToExcelOperation;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -81,7 +81,7 @@ public class SqliteToExcelBlam extends AbstractBlam {
             Program.launch(path);
          }
       };
-      return new CompositeOperation(getName(), Activator.PLUGIN_ID, op1, op2);
+      return Operations.createBuilder(getName(), op1, op2).build();
    }
 
    @Override

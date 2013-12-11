@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.change.view;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -25,8 +23,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
-import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -210,17 +207,16 @@ public class ChangeReportPage extends FormPage {
    }
 
    public void recomputeChangeReport(boolean isReloadAllowed) {
-      List<IOperation> ops = new ArrayList<IOperation>();
+      OperationBuilder builder = Operations.createBuilder("Load Change Report Data");
       ChangeUiData changeData = getEditorInput().getChangeData();
-      ops.add(new UpdateChangeUiData(changeData));
+      builder.addOp(new UpdateChangeUiData(changeData));
       if (isReloadAllowed) {
          changeData.reset();
          onLoad();
-         ops.add(new LoadChangesOperation(changeData));
+         builder.addOp(new LoadChangesOperation(changeData));
       }
-      ops.add(new LoadAssociatedArtifactOperation(changeData));
-      IOperation operation = new CompositeOperation("Load Change Report Data", Activator.PLUGIN_ID, ops);
-      Operations.executeAsJob(operation, true, Job.LONG, new ReloadJobChangeAdapter());
+      builder.addOp(new LoadAssociatedArtifactOperation(changeData));
+      Operations.executeAsJob(builder.build(), true, Job.LONG, new ReloadJobChangeAdapter());
    }
 
    private final class ReloadJobChangeAdapter extends JobChangeAdapter {

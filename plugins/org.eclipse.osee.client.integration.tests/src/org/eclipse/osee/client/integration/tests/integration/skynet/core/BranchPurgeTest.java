@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
+import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -104,12 +104,11 @@ public class BranchPurgeTest {
       // Count rows and check that increased
       assertThatIncreased(initialRowCount, TestUtil.getTableRowCounts(TABLES));
 
-      CompositeOperation operation =
-         new CompositeOperation(method.getQualifiedTestName(), method.getQualifiedTestName(),
-            new PurgeBranchHttpRequestOperation(branch, false), new PurgeUnusedBackingDataAndTransactions(
-               NullOperationLogger.getSingleton()));
+      OperationBuilder builder =
+         Operations.createBuilder(method.getQualifiedTestName(), new PurgeBranchHttpRequestOperation(branch, false),
+            new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
 
-      Operations.executeWorkAndCheckStatus(operation);
+      Operations.executeWorkAndCheckStatus(builder.build());
 
       // Count rows and check that same as when began
       // TODO looks like artifacts are not being removed when purge a branch

@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.history;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -23,8 +21,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.editor.history.operations.LoadChangesOperation;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
-import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -52,10 +49,9 @@ public final class HistoryRefreshAction extends Action {
       setToolTipText("Already Loading, Please Wait");
       this.xHistoryViewer.getXViewer().setInput(Arrays.asList("Loading..."));
 
-      List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(new LoadChangesOperation(xHistoryViewer.awa, xHistoryViewer.changes));
-      IOperation operation = new CompositeOperation("Load History Viewer", Activator.PLUGIN_ID, ops);
-      Operations.executeAsJob(operation, true, Job.LONG, new JobChangeAdapter() {
+      OperationBuilder builder = Operations.createBuilder("Load History Viewer");
+      builder.addOp(new LoadChangesOperation(xHistoryViewer.awa, xHistoryViewer.changes));
+      Operations.executeAsJob(builder.build(), true, Job.LONG, new JobChangeAdapter() {
 
          @Override
          public void done(IJobChangeEvent event) {

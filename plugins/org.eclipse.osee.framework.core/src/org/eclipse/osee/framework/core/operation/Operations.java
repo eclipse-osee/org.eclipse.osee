@@ -144,6 +144,14 @@ public final class Operations {
       return new OperationBuilderImpl(operationName, Activator.PLUGIN_ID);
    }
 
+   public static OperationBuilder createBuilder(String name, IOperation operation, IOperation... operations) {
+      OperationBuilder builder = createBuilder(name);
+      builder.addOp(operation);
+      for (IOperation op : operations) {
+         builder.addOp(op);
+      }
+      return builder;
+   }
    private static final class OperationJob extends Job {
       private final IOperation operation;
 
@@ -165,4 +173,5 @@ public final class Operations {
          return OperationJob.class.equals(family);
       }
    }
+
 }

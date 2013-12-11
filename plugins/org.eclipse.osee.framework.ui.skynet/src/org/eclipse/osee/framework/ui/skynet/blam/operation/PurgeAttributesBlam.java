@@ -19,9 +19,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
@@ -63,10 +64,10 @@ public class PurgeAttributesBlam extends AbstractBlam {
          }
       }
 
-      List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(new PurgeAttributes(attributesToPurge));
-      ops.add(new ReportPurgedAttributes(attributesToPurge));
-      return new CompositeOperation(getName(), Activator.PLUGIN_ID, ops);
+      OperationBuilder builder = Operations.createBuilder(getName());
+      builder.addOp(new PurgeAttributes(attributesToPurge));
+      builder.addOp(new ReportPurgedAttributes(attributesToPurge));
+      return builder.build();
    }
 
    @Override

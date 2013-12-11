@@ -19,10 +19,11 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
+import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
@@ -88,14 +89,15 @@ public final class ArtifactImportOperationFactory {
                "ArtifactImportOperationFactory: Artifact Import Wizard transaction");
       }
 
-      List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(new SourceToRoughArtifactOperation(logger, extractor, sourceFile, collector));
-      ops.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, collector, resolver, false, extractor));
-      ops.add(new ArtifactValidationCheckOperation(destinationArtifact.getDescendants(), stopOnError));
+      OperationBuilder builder = Operations.createBuilder("Artifact Import");
+      builder.addOp(new SourceToRoughArtifactOperation(logger, extractor, sourceFile, collector));
+      builder.addOp(new RoughToRealArtifactOperation(transaction, destinationArtifact, collector, resolver, false,
+         extractor));
+      builder.addOp(new ArtifactValidationCheckOperation(destinationArtifact.getDescendants(), stopOnError));
       if (executeTransaction) {
-         ops.add(new CompleteArtifactImportOperation(transaction, destinationArtifact));
+         builder.addOp(new CompleteArtifactImportOperation(transaction, destinationArtifact));
       }
-      return new CompositeOperation("Artifact Import", Activator.PLUGIN_ID, ops);
+      return builder.build();
    }
 
    private static void CheckAndThrow(Object... objects) {
@@ -116,28 +118,28 @@ public final class ArtifactImportOperationFactory {
     * </ol>
     */
    public static IOperation createOperation(File sourceFile, Artifact destinationArtifact, OperationLogger logger, IArtifactExtractor extractor, IArtifactImportResolver resolver, RoughArtifactCollector collector, Collection<IArtifactType> selectionArtifactTypes, boolean stopOnError, boolean deleteUnMatched, boolean runFilterByAttributes) throws OseeCoreException {
-      List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(createArtifactsCompOperation(
+      OperationBuilder builder =
+         Operations.createBuilder("Artifact Import - ArtifactAndRoughToRealOperation, RoughToRealOperation");
+      builder.addOp(createArtifactsCompOperation(
          "Artifact Import - SourceToRoughArtifact, FilterArtifactTypesByAttributeTypes", sourceFile,
          destinationArtifact, logger, extractor, collector, selectionArtifactTypes, runFilterByAttributes));
-      ops.add(createRoughToRealOperation(
+      builder.addOp(createRoughToRealOperation(
          "Artifact Import - RoughToRealArtifactOperation, ArtifactValidationCheckOperation, CompleteArtifactImportOperation",
          destinationArtifact, resolver, stopOnError, collector, deleteUnMatched, null));
-      return new CompositeOperation("Artifact Import - ArtifactAndRoughToRealOperation, RoughToRealOperation",
-         Activator.PLUGIN_ID, ops);
+      return builder.build();
    }
 
    /**
     * @see ArtifactImportPage
     */
    public static IOperation createArtifactsCompOperation(String opDescription, File sourceFile, Artifact destinationArtifact, OperationLogger logger, IArtifactExtractor extractor, RoughArtifactCollector collector, Collection<IArtifactType> selectionArtifactTypes, boolean runFilterByAttributes) {
-      List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(new SourceToRoughArtifactOperation(logger, extractor, sourceFile, collector));
+      OperationBuilder builder = Operations.createBuilder(opDescription);
+      builder.addOp(new SourceToRoughArtifactOperation(logger, extractor, sourceFile, collector));
       if (runFilterByAttributes) {
-         ops.add(new FilterArtifactTypesByAttributeTypes(destinationArtifact.getBranch(), collector,
+         builder.addOp(new FilterArtifactTypesByAttributeTypes(destinationArtifact.getBranch(), collector,
             selectionArtifactTypes));
       }
-      return new CompositeOperation(opDescription, Activator.PLUGIN_ID, ops);
+      return builder.build();
    }
 
    /**
@@ -149,16 +151,16 @@ public final class ArtifactImportOperationFactory {
          TransactionManager.createTransaction(destinationArtifact.getBranch(),
             "Artifact Import Wizard transaction " + opName);
 
-      List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, collector, resolver,
+      OperationBuilder builder = Operations.createBuilder(opName);
+      builder.addOp(new RoughToRealArtifactOperation(transaction, destinationArtifact, collector, resolver,
          deleteUnmatchedArtifacts, extractor));
 
       final List<Artifact> children = new ArrayList<Artifact>();
-      ops.add(new FetchAndAddDescendantsOperation(children, destinationArtifact));
-      ops.add(new ArtifactValidationCheckOperation(children, stopOnError));
-      ops.add(new CompleteArtifactImportOperation(transaction, destinationArtifact));
+      builder.addOp(new FetchAndAddDescendantsOperation(children, destinationArtifact));
+      builder.addOp(new ArtifactValidationCheckOperation(children, stopOnError));
+      builder.addOp(new CompleteArtifactImportOperation(transaction, destinationArtifact));
 
-      return new CompositeOperation(opName, Activator.PLUGIN_ID, ops);
+      return builder.build();
    }
 
    private static class FetchAndAddDescendantsOperation extends AbstractOperation {

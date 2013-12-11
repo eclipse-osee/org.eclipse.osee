@@ -16,8 +16,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.enums.OperationBehavior;
 import org.eclipse.osee.framework.core.mocks.MockAbstractOperation;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.junit.Assert;
 import org.junit.Test;
@@ -46,9 +46,9 @@ public class AbstractOperationTest {
 
    @Test
    public void testCompositeOperationOk() {
-      CompositeOperation compositeOperation =
-         new CompositeOperation("two oks", "test", new MockAbstractOperation(), new MockAbstractOperation());
-      IStatus status = testOperation(compositeOperation, IStatus.OK);
+      OperationBuilder builder =
+         Operations.createBuilder("two oks", new MockAbstractOperation(), new MockAbstractOperation());
+      IStatus status = testOperation(builder.build(), IStatus.OK);
       Assert.assertEquals(0, status.getChildren().length);
    }
 
@@ -58,10 +58,9 @@ public class AbstractOperationTest {
       Exception exception2 = new Exception("ex2");
       IOperation operation1 = new MockAbstractOperation(exception1);
       IOperation operation2 = new MockAbstractOperation(exception2);
-      CompositeOperation compositeOperation =
-         new CompositeOperation("two exceptions", "test", OperationBehavior.ContinueOnError, operation1, operation2);
-
-      IStatus status = testOperation(compositeOperation, IStatus.ERROR);
+      OperationBuilder builder = Operations.createBuilder("two exceptions", operation1, operation2);
+      builder.executionBehavior(OperationBehavior.ContinueOnError);
+      IStatus status = testOperation(builder.build(), IStatus.ERROR);
 
       Assert.assertEquals(MultiStatus.class, status.getClass());
       Assert.assertEquals(exception1.toString(), status.getChildren()[0].getMessage());
