@@ -37,7 +37,7 @@ public final class ResultSets {
 
    public static <T> ResultSet<T> newResultSet(List<T> list) {
       ResultSet<T> toReturn;
-      if (list.isEmpty()) {
+      if (list == null || list.isEmpty()) {
          toReturn = emptyResultSet();
       } else {
          toReturn = new ResultSetList<T>(list);
