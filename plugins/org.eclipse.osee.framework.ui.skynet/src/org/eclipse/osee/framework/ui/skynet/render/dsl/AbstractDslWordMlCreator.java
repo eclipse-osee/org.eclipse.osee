@@ -1,0 +1,79 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+//@formatter:off
+package org.eclipse.osee.framework.ui.skynet.render.dsl;
+
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+
+
+/**
+ * @author Theron Virgin
+ * @author Megumi Telles
+ */
+public abstract class AbstractDslWordMlCreator {
+
+   private static final String[] XML_CHARS = new String[] {"[&]", "[<]", "[>]", "[\"]"};
+   private static final String[] XML_ESCAPES = new String[] {"&amp;", "&lt;", "&gt;", "&quot;"};
+   private static String emptyParagraph = "<w:p/>";
+   private static String paragraphEnd = "</w:t></w:r></w:p>";
+   private static String start =
+         "<w:p><w:pPr><w:pStyle w:val=\"reqlang1\"/><w:spacing w:before=\"0\" w:after=\"0\"/></w:pPr><w:r><w:t>";
+   private static final String[] TAB_ARRAY =
+         new String[] {"\r\t\t\t\t\t\t\t\t", "\r\t\t\t\t\t\t\t", "\r\t\t\t\t\t\t", "\r\t\t\t\t\t", "\r\t\t\t\t",
+               "\r\t\t\t", "\r\t\t", "\r\t"};
+   private static final String[] TAB_STYLE_ARRAY =
+         new String[] {"w:val=\"reqlang9\"", "w:val=\"reqlang8\"", "w:val=\"reqlang7\"", "w:val=\"reqlang6\"",
+               "w:val=\"reqlang5\"", "w:val=\"reqlang4\"", "w:val=\"reqlang3\"", "w:val=\"reqlang2\""};
+
+   public String getWordMlFromAttribute(String attribute, PresentationType presentationType) {
+      String toReturn = "";
+      toReturn = emptyParagraph + getIfWordMl(attribute, true);
+      return toReturn;
+   }
+
+   public String getIfWordMl(String attribute, boolean addEndParagraph) {
+      String wordml = attribute;
+      wordml = escape(wordml).toString();
+      wordml = wordml.replace("\r\n", "\r");
+      wordml = wordml.replace("\n\r", "\r");
+      wordml = wordml.replace("\n", "\r");
+      wordml = replaceTabs(wordml);
+      wordml = wordml.replace("\r", paragraphEnd + start);
+      wordml = start + wordml;
+      wordml = wordml + paragraphEnd;
+
+      if (addEndParagraph) {
+         wordml = wordml.concat("<w:p></w:p>");
+      }
+      return wordml;
+   }
+
+   public String replaceTabs(String wordml) {
+      for (int x = 0; x < TAB_ARRAY.length; x++) {
+         wordml =
+            wordml.replace(TAB_ARRAY[x], (paragraphEnd + start).replace("w:val=\"reqlang1\"", TAB_STYLE_ARRAY[x]));
+      }
+      return wordml;
+   }
+
+   public CharSequence escape(CharSequence text) {
+      String textString = text.toString();
+      for (int x = 0; x < XML_CHARS.length; x++) {
+         textString = textString.replaceAll(XML_CHARS[x], XML_ESCAPES[x]);
+      }
+
+      return textString;
+   }
+
+   public abstract boolean isArtifactAttribute(Attribute<?> attribute);
+
+}
