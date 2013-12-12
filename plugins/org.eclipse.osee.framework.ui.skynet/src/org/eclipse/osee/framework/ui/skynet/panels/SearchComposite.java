@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.HelpContext;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -53,11 +54,14 @@ public class SearchComposite extends Composite implements Listener {
    private Button executeSearch;
    private Button clear;
    private boolean entryChanged;
+   private final String buttonText, groupBoxText;
 
-   public SearchComposite(Composite parent, int style) {
+   public SearchComposite(Composite parent, int style, String buttonText, String groupBoxText) {
       super(parent, style);
       this.listeners = new HashSet<Listener>();
       this.entryChanged = false;
+      this.buttonText = buttonText;
+      this.groupBoxText = groupBoxText;
       createControl(this);
    }
 
@@ -72,14 +76,21 @@ public class SearchComposite extends Composite implements Listener {
    }
 
    private void createSearchInputArea(Composite parent) {
-      Group group = new Group(parent, SWT.NONE);
-      group.setLayout(new GridLayout(2, false));
-      group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      group.setText("Enter Search String");
+      Composite parentToUse = null;
+      if (Strings.isValid(groupBoxText)) {
+         Group group = new Group(parent, SWT.NONE);
+         group.setText(groupBoxText);
+         group.setLayout(new GridLayout(2, false));
+         parentToUse = group;
+      } else {
+         parentToUse = new Composite(parent, SWT.NONE);
+         parentToUse.setLayout(ALayout.getZeroMarginLayout(2, false));
+      }
+      parentToUse.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      createButtonBar(group);
+      createButtonBar(parentToUse);
 
-      this.searchArea = new Combo(group, SWT.BORDER);
+      this.searchArea = new Combo(parentToUse, SWT.BORDER);
       this.searchArea.setFont(getFont());
       this.searchArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       this.searchArea.addKeyListener(new KeyAdapter() {
@@ -117,7 +128,7 @@ public class SearchComposite extends Composite implements Listener {
 
    private void createButtonBar(Composite parent) {
       this.executeSearch = new Button(parent, SWT.NONE);
-      this.executeSearch.setText("Search");
+      this.executeSearch.setText(buttonText);
       this.executeSearch.addSelectionListener(new SelectionAdapter() {
 
          @Override

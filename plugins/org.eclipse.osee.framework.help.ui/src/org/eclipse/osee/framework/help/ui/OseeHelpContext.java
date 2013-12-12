@@ -41,10 +41,9 @@ public final class OseeHelpContext {
 
    public static final HelpContext QUICK_SEARCH = toContext("quick_search_view");
    public static final HelpContext QUICK_SEARCH_TYPE_FILTER = toContext("quick_search_attribute_type_filter");
-   public static final HelpContext QUICK_SEARCH_BY_ID = toContext("quick_search_by_id_option");
    public static final HelpContext QUICK_SEARCH_INCLUDE_DELETED = toContext("quick_search_deleted_option");
    public static final HelpContext QUICK_SEARCH_WORD_ORDER = toContext("quick_search_word_order_option");
-   public static final HelpContext QUICK_SEARCH_MATCH_ALL = toContext("quick_search_all_match_locations_option");
+   public static final HelpContext QUICK_SEARCH_EXACT_MATCH = toContext("quick_search_exact_match_option");
    public static final HelpContext QUICK_SEARCH_CASE_SENSITIVE = toContext("quick_search_case_sensitive_option");
 
    public static final HelpContext SKY_WALKER_VIEW = toContext("sky_walker_view");

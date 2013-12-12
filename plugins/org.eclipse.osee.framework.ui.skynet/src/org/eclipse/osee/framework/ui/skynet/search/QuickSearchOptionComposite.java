@@ -16,12 +16,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.logging.Level;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.window.Window;
@@ -39,7 +37,6 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeFilteredCheckTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
-import org.eclipse.osee.framework.ui.swt.HidingComposite;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -70,24 +67,17 @@ public class QuickSearchOptionComposite extends Composite {
    private final Map<String, Text> textAreas;
    private final Map<String, Boolean> optionsMap;
 
-   private final Set<String> mutuallyExclusiveOptionSet;
    private final Map<String, IOptionConfigurationHandler<?>> configurableOptionSet;
-   private Composite wordOrderComposite;
 
    public QuickSearchOptionComposite(Composite parent, int style) {
       super(parent, style);
       this.optionsButtons = new LinkedHashMap<String, Button>();
       this.textAreas = new HashMap<String, Text>();
       this.optionsMap = new LinkedHashMap<String, Boolean>();
-      this.mutuallyExclusiveOptionSet = new HashSet<String>();
       this.configurableOptionSet = new HashMap<String, IOptionConfigurationHandler<?>>();
 
       for (String option : SearchOption.asLabels()) {
          this.optionsMap.put(option, false);
-      }
-      for (String option : SearchOption.getMutuallyExclusiveOptions()) {
-         this.optionsMap.put(option, false);
-         this.mutuallyExclusiveOptionSet.add(option);
       }
       for (String option : SearchOption.getConfigurableOptions().keySet()) {
          this.optionsMap.put(option, false);
@@ -130,26 +120,16 @@ public class QuickSearchOptionComposite extends Composite {
          button.setSelection(isSelected);
          this.optionsMap.put(option, isSelected);
       }
-      updateMatchWordOrderOptions();
+      updateExactMatchOptions();
    }
 
-   private void updateMatchWordOrderOptions() {
-      boolean setEnabled = isMatchWordOrderEnabled();
-      if (Widgets.isAccessible(wordOrderComposite)) {
-         wordOrderComposite.setVisible(setEnabled);
-         wordOrderComposite.setEnabled(setEnabled);
-         if (!setEnabled) {
-            optionsMap.put(SearchOption.Case_Sensitive.asLabel(), setEnabled);
-            optionsMap.put(SearchOption.All_Match_Locations.asLabel(), setEnabled);
-         } else {
-            optionsMap.put(SearchOption.Case_Sensitive.asLabel(),
-               optionsButtons.get(SearchOption.Case_Sensitive.asLabel()).getSelection());
-            optionsMap.put(SearchOption.All_Match_Locations.asLabel(),
-               optionsButtons.get(SearchOption.All_Match_Locations.asLabel()).getSelection());
-         }
-         optionGroup.getParent().layout();
-         optionGroup.getParent().getParent().getParent().layout();
-      }
+   private void updateExactMatchOptions() {
+      Button caseBtn = optionsButtons.get(SearchOption.Case_Sensitive.asLabel());
+      Button mwoBtn = optionsButtons.get(SearchOption.Match_Word_Order.asLabel());
+
+      boolean exactMatch = isExactMatchEnabled();
+      caseBtn.setEnabled(!exactMatch);
+      mwoBtn.setEnabled(!exactMatch);
    }
 
    private Button getOrCreateOptionsButton(String option) {
@@ -168,15 +148,6 @@ public class QuickSearchOptionComposite extends Composite {
          mainComposite = new Composite(parent, SWT.NONE);
          mainComposite.setLayout(ALayout.getZeroMarginLayout(4, false));
          mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      } else if (option.equals(SearchOption.All_Match_Locations.asLabel()) || option.equals(SearchOption.Case_Sensitive.asLabel())) {
-         if (wordOrderComposite == null) {
-            wordOrderComposite = new HidingComposite(parent, SWT.NONE);
-            GridLayout layout = new GridLayout();
-            layout.marginLeft = 15;
-            wordOrderComposite.setLayout(layout);
-            wordOrderComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-         }
-         mainComposite = wordOrderComposite;
       }
 
       Button toReturn = new Button(mainComposite, SWT.CHECK);
@@ -189,29 +160,9 @@ public class QuickSearchOptionComposite extends Composite {
             Object object = e.getSource();
             if (object instanceof Button) {
                Button button = (Button) object;
-               if (mutuallyExclusiveOptionSet.contains(button.getData())) {
-                  if (button.getSelection()) {
-                     for (String entry : mutuallyExclusiveOptionSet) {
-                        Button other = optionsButtons.get(entry);
-                        if (!other.equals(button)) {
-                           other.setSelection(false);
-                        }
-                        optionsMap.put((String) other.getData(), other.getSelection());
-                     }
-                  }
-               }
                optionsMap.put((String) button.getData(), button.getSelection());
 
-               Object data = button.getData();
-               boolean selection = optionsMap.get(SearchOption.By_Id.asLabel()).booleanValue();
-               if (data.equals(SearchOption.By_Id.asLabel()) && selection) {
-                  optionsMap.put(SearchOption.Match_Word_Order.asLabel(), false);
-                  optionsButtons.get(SearchOption.Match_Word_Order.asLabel()).setSelection(false);
-               } else if (data.equals(SearchOption.Match_Word_Order.asLabel()) && selection) {
-                  optionsMap.put(SearchOption.By_Id.asLabel(), false);
-                  optionsButtons.get(SearchOption.By_Id.asLabel()).setSelection(false);
-               }
-               updateMatchWordOrderOptions();
+               updateExactMatchOptions();
             }
          }
       });
@@ -244,20 +195,12 @@ public class QuickSearchOptionComposite extends Composite {
       return toReturn;
    }
 
-   public boolean isSearchByIdEnabled() {
-      return isOptionSelected(SearchOption.By_Id.asLabel());
-   }
-
-   public boolean isIncludeDeletedEnabled() {
-      return isOptionSelected(SearchOption.Include_Deleted.asLabel());
-   }
-
    public boolean isMatchWordOrderEnabled() {
       return isOptionSelected(SearchOption.Match_Word_Order.asLabel());
    }
 
-   public boolean isMatchAllLocationsEnabled() {
-      return isOptionSelected(SearchOption.All_Match_Locations.asLabel());
+   public boolean isExactMatchEnabled() {
+      return isOptionSelected(SearchOption.Exact_Match.asLabel());
    }
 
    public boolean isCaseSensitiveEnabled() {
@@ -265,11 +208,11 @@ public class QuickSearchOptionComposite extends Composite {
    }
 
    public boolean isAttributeTypeFilterEnabled() {
-      return isOptionSelected(SearchOption.Attribute_Type_Filter.asLabel());
+      return isOptionSelected(SearchOption.Attribute_Types.asLabel());
    }
 
    public IAttributeType[] getAttributeTypeFilter() {
-      IOptionConfigurationHandler<?> handler = getConfiguration(SearchOption.Attribute_Type_Filter.asLabel());
+      IOptionConfigurationHandler<?> handler = getConfiguration(SearchOption.Attribute_Types.asLabel());
       IAttributeType[] types = (IAttributeType[]) handler.getConfigData();
       return isAttributeTypeFilterEnabled() ? types : new IAttributeType[0];
    }
@@ -353,29 +296,24 @@ public class QuickSearchOptionComposite extends Composite {
    }
 
    private enum SearchOption {
-      Attribute_Type_Filter(OseeHelpContext.QUICK_SEARCH_TYPE_FILTER, "When selected, searches only through the artifact's containing the selected attribute types.", true, new AttributeTypeFilterConfigHandler()),
-      By_Id(OseeHelpContext.QUICK_SEARCH_BY_ID, "When selected, searches by GUID(s). Accepts comma or space separated ids.", true),
-      Include_Deleted(OseeHelpContext.QUICK_SEARCH_INCLUDE_DELETED, "When selected, does not filter out deleted artifacts from search results.", false),
-      Match_Word_Order(OseeHelpContext.QUICK_SEARCH_WORD_ORDER, "When selected, search will match query word order.", false),
-      All_Match_Locations(OseeHelpContext.QUICK_SEARCH_MATCH_ALL, "When selected, returns all match locations. NOTE: If the search matches many artifacts, performance may be slow.", false),
-      Case_Sensitive(OseeHelpContext.QUICK_SEARCH_CASE_SENSITIVE, "When selected, performs a case sensitive search. NOTE: This is only applicable if match word order is also selected.", false);
+      Attribute_Types(OseeHelpContext.QUICK_SEARCH_TYPE_FILTER, "Searches only the selected attribute types.", new AttributeTypeFilterConfigHandler()),
+      Match_Word_Order(OseeHelpContext.QUICK_SEARCH_WORD_ORDER, "Matches text containing search words in same order as input."),
+      Case_Sensitive(OseeHelpContext.QUICK_SEARCH_CASE_SENSITIVE, "Matches text containing the same case as input."),
+      Exact_Match(OseeHelpContext.QUICK_SEARCH_EXACT_MATCH, "Matches each input character exactly, including case and order.");
 
       private static String[] labels = null;
-      private static String[] mutuallyExclusive = null;
       private static Map<String, IOptionConfigurationHandler<?>> configurable = null;
       private final HelpContext helpContext;
       private final String toolTip;
-      private final boolean isRadio;
       private final IOptionConfigurationHandler<?> configHandler;
 
-      SearchOption(HelpContext helpContext, String toolTip, boolean isRadio) {
-         this(helpContext, toolTip, isRadio, null);
+      SearchOption(HelpContext helpContext, String toolTip) {
+         this(helpContext, toolTip, null);
       }
 
-      SearchOption(HelpContext helpContext, String toolTip, boolean isRadio, IOptionConfigurationHandler<?> configHandler) {
+      SearchOption(HelpContext helpContext, String toolTip, IOptionConfigurationHandler<?> configHandler) {
          this.helpContext = helpContext;
          this.toolTip = toolTip;
-         this.isRadio = isRadio;
          this.configHandler = configHandler;
       }
 
@@ -397,19 +335,6 @@ public class QuickSearchOptionComposite extends Composite {
 
       public IOptionConfigurationHandler<?> getConfigHandler() {
          return configHandler;
-      }
-
-      public static String[] getMutuallyExclusiveOptions() {
-         if (mutuallyExclusive == null) {
-            List<String> exclusiveOptions = new ArrayList<String>();
-            for (SearchOption option : SearchOption.values()) {
-               if (option.isRadio) {
-                  exclusiveOptions.add(option.asLabel());
-               }
-            }
-            mutuallyExclusive = exclusiveOptions.toArray(new String[exclusiveOptions.size()]);
-         }
-         return mutuallyExclusive;
       }
 
       public static Map<String, IOptionConfigurationHandler<?>> getConfigurableOptions() {

@@ -44,7 +44,6 @@ public class SearchRequestTest {
       } else {
          Assert.assertEquals(expected.isSearchAll(), actual.isSearchAll());
          Assert.assertEquals(expected.isCaseSensitive(), actual.isCaseSensitive());
-         Assert.assertEquals(expected.isFindAllLocationsEnabled(), actual.isFindAllLocationsEnabled());
          Assert.assertEquals(expected.getDeletionFlag(), actual.getDeletionFlag());
          Assert.assertEquals(expected.isMatchWordOrder(), actual.isMatchWordOrder());
 

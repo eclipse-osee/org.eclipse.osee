@@ -24,8 +24,8 @@ public class SearchOptions {
    private DeletionFlag deletionFlag;
    private boolean isMatchWordOrder;
    private boolean isCaseSensive;
-   private boolean isFindAllLocationsEnabled;
    private boolean isSearchAll;
+   private boolean isExactMatch;
 
    public SearchOptions() {
       deletionFlag = DeletionFlag.EXCLUDE_DELETED;
@@ -43,12 +43,12 @@ public class SearchOptions {
       return isCaseSensive;
    }
 
-   public boolean isFindAllLocationsEnabled() {
-      return isFindAllLocationsEnabled;
-   }
-
    public boolean isSearchAll() {
       return isSearchAll;
+   }
+
+   public boolean isExactMatch() {
+      return isExactMatch;
    }
 
    public Collection<IAttributeType> getAttributeTypeFilter() {
@@ -81,17 +81,17 @@ public class SearchOptions {
       this.isCaseSensive = isCaseSensive;
    }
 
-   public void setFindAllLocationsEnabled(boolean isFindAllLocationsEnabled) {
-      this.isFindAllLocationsEnabled = isFindAllLocationsEnabled;
-   }
-
    public void setIsSearchAll(boolean isSearchAll) {
       this.isSearchAll = isSearchAll;
    }
 
+   public void setExactMatch(boolean exactMatchEnabled) {
+      this.isExactMatch = exactMatchEnabled;
+   }
+
    @Override
    public String toString() {
-      return "SearchOptions [attributeTypeGuids=" + attributeTypeGuids + ", isIncludeDeleted=" + getDeletionFlag() + ", isMatchWordOrder=" + isMatchWordOrder + ", isCaseSensive=" + isCaseSensive + ", isFindAllLocationsEnabled=" + isFindAllLocationsEnabled + "]";
+      return "SearchOptions [attributeTypeGuids=" + attributeTypeGuids + ", isIncludeDeleted=" + getDeletionFlag() + ", isMatchWordOrder=" + isMatchWordOrder + ", isCaseSensive=" + isCaseSensive + ", isExactMatch=" + isExactMatch + "]";
    }
 
 }

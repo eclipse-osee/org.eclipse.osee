@@ -78,8 +78,8 @@
 	</context>
 
 	<context id="quick_search_by_id_option"  title="Quick Search - By Id Option">
-	   <description>Search for artifacts with a particular GUID or HRID on the selected branch.</description>
-	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_Options" label="By Id Option"/> 
+	   <description>Search for artifacts with a particular GUID on the selected branch.</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_Options" label="By GUID Option"/> 
 		<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_View" label="Quick Search View"/>	
 		<topic href="OSEE/Users_Guide/Features/Services.html#Attribute_Tagging_for_Quick_Search" label="Attribute Tagging"/>		
 	</context>
@@ -98,9 +98,9 @@
 		<topic href="OSEE/Users_Guide/Features/Services.html#Attribute_Tagging_for_Quick_Search" label="Attribute Tagging"/>		
 	</context>
 	
-	<context id="quick_search_all_match_locations_option"  title="Quick Search - Match All Locations Option">
-	   <description>During a word order match, gather all matches locations to display a summary in the search results.</description>
-	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_Options" label="Match All Locations Option"/> 
+	<context id="quick_search_exact_match_option"  title="Quick Search - Exact Match Option">
+	   <description>Match the phrase exactly as entered in the search.</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_Options" label="Exact Match Option"/> 
 		<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_View" label="Quick Search View"/>	
 		<topic href="OSEE/Users_Guide/Features/Services.html#Attribute_Tagging_for_Quick_Search" label="Attribute Tagging"/>		
 	</context>

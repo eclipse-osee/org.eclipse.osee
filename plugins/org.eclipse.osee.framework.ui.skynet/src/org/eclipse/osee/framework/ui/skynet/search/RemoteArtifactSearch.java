@@ -55,15 +55,6 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          optionsList.add("Include Deleted");
       }
 
-      if (options.isMatchWordOrder()) {
-         optionsList.add("Match Word Order");
-         if (options.isFindAllLocationsEnabled()) {
-            optionsList.add("All Matches");
-         } else {
-            optionsList.add("1st Match Only");
-         }
-      }
-
       if (options.isCaseSensitive()) {
          optionsList.add("Case Sensitive");
       }

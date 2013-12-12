@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
@@ -540,10 +541,16 @@ public class ArtifactQuery {
       queryBuilder.includeDeleted(options.getDeletionFlag().areDeletedAllowed());
       QueryOption matchCase = CaseType.getCaseType(options.isCaseSensitive());
       QueryOption matchWordOrder = TokenOrderType.getTokenOrderType(options.isMatchWordOrder());
+      QueryOption matchExact = TokenDelimiterMatch.ANY;
+      if (options.isExactMatch()) {
+         matchCase = CaseType.MATCH_CASE;
+         matchWordOrder = TokenOrderType.MATCH_ORDER;
+         matchExact = TokenDelimiterMatch.EXACT;
+      }
 
       Collection<IAttributeType> typesToSearch =
          Conditions.hasValues(options.getAttributeTypeFilter()) ? options.getAttributeTypeFilter() : Collections.singleton(QueryBuilder.ANY_ATTRIBUTE_TYPE);
-      queryBuilder.and(typesToSearch, searchRequest.getRawSearch(), matchCase, matchWordOrder);
+      queryBuilder.and(typesToSearch, searchRequest.getRawSearch(), matchCase, matchWordOrder, matchExact);
 
       return queryBuilder.getMatches();
    }

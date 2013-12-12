@@ -245,7 +245,6 @@ public class ArtifactQueryTest {
    @Test
    public void testMultipleMatchLocations() {
       SearchOptions options = new SearchOptions();
-      options.setFindAllLocationsEnabled(true);
       options.setIsSearchAll(true);
       options.setCaseSensive(false);
       SearchRequest request = new SearchRequest(DemoBranches.SAW_Bld_1, "robot", options);
