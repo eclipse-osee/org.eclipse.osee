@@ -41,7 +41,7 @@ import org.eclipse.osee.orcs.db.internal.change.ChangeItemLoader.ChangeItemFacto
  */
 public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<ChangeItem>> {
    private static final String SELECT_SOURCE_BRANCH_CHANGES =
-      "select gamma_id, mod_type from osee_txs txs where txs.branch_id = ? and txs.tx_current <> ? and txs.transaction_id <> ? AND NOT EXISTS (SELECT 1 FROM osee_txs txs1 WHERE txs1.branch_id = ? AND txs1.transaction_id = ? AND (txs1.gamma_id = txs.gamma_id))";
+      "select gamma_id, mod_type from osee_txs txs where txs.branch_id = ? and txs.tx_current <> ? and txs.transaction_id <> ? AND NOT EXISTS (SELECT 1 FROM osee_txs txs1 WHERE txs1.branch_id = ? AND txs1.transaction_id = ? AND txs1.gamma_id = txs.gamma_id and txs1.mod_type = txs.mod_type)";
 
    private final HashMap<Long, ModificationType> changeByGammaId = new HashMap<Long, ModificationType>();
 
