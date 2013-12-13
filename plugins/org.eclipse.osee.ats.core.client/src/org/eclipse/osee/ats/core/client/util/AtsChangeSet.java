@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.util;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
+import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -32,38 +30,10 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 /**
  * @author Donald G. Dunne
  */
-public class AtsChangeSet implements IAtsChangeSet {
-
-   private String comment;
-   private final Set<Object> objects = new HashSet<Object>();
-   private final Set<Object> deleteObjects = new HashSet<Object>();
-   private final Set<IExecuteListener> listeners = new HashSet<IExecuteListener>();
+public class AtsChangeSet extends AbstractAtsChangeSet {
 
    public AtsChangeSet(String comment) {
-      this.comment = comment;
-   }
-
-   @Override
-   public void add(Object obj) throws OseeCoreException {
-      Conditions.checkNotNull(obj, "object");
-      objects.add(obj);
-   }
-
-   @Override
-   public void addAll(Object... objects) throws OseeCoreException {
-      Conditions.checkNotNull(objects, "objects");
-      for (Object obj : objects) {
-         if (obj == null) {
-            throw new OseeArgumentException("object can't be null");
-         }
-         this.objects.add(obj);
-      }
-   }
-
-   @Override
-   public void addToDelete(Object obj) throws OseeCoreException {
-      Conditions.checkNotNull(obj, "object");
-      deleteObjects.add(obj);
+      super(comment, null);
    }
 
    @Override
@@ -104,22 +74,6 @@ public class AtsChangeSet implements IAtsChangeSet {
       }
    }
 
-   @Override
-   public Set<Object> getObjects() {
-      return objects;
-   }
-
-   public void setComment(String comment) {
-      this.comment = comment;
-   }
-
-   @Override
-   public void clear() {
-      objects.clear();
-      deleteObjects.clear();
-      listeners.clear();
-   }
-
    public void addTo(SkynetTransaction transaction) throws OseeCoreException {
       Conditions.checkNotNull(transaction, "transaction");
       for (Object obj : objects) {
@@ -129,22 +83,6 @@ public class AtsChangeSet implements IAtsChangeSet {
             throw new OseeArgumentException("Unhandled object type");
          }
       }
-   }
-
-   public void reset(String comment) {
-      clear();
-      this.comment = comment;
-   }
-
-   @Override
-   public boolean isEmpty() {
-      return objects.isEmpty() && deleteObjects.isEmpty();
-   }
-
-   @Override
-   public void addExecuteListener(IExecuteListener listener) {
-      Conditions.checkNotNull(listener, "listener");
-      listeners.add(listener);
    }
 
    public static void execute(String comment, Object object, Object... objects) throws OseeCoreException {
