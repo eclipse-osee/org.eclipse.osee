@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.column.AssigneeColumn;
 import org.eclipse.osee.ats.internal.Activator;
@@ -35,7 +36,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
@@ -87,14 +87,14 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
             if (!(useArt instanceof AbstractWorkflowArtifact)) {
                return false;
             }
-            boolean modified =
-               promptChangeAssignees(Arrays.asList((AbstractWorkflowArtifact) useArt), isPersistViewer());
+            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) useArt;
+            boolean modified = promptChangeAssignees(Arrays.asList(awa), isPersistViewer());
             XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
             if (modified && isPersistViewer(xViewer)) {
-               useArt.persist("persist assignees via alt-left-click");
+               AtsChangeSet.execute("persist assignees via alt-left-click", awa);
             }
             if (modified) {
-               xViewer.update(useArt, null);
+               xViewer.update(awa, null);
                return true;
             }
          }
@@ -124,11 +124,13 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
       UserCheckTreeDialog uld = new UserCheckTreeDialog();
       uld.setMessage("Select to assign.\nDeSelect to un-assign.");
       if (awas.iterator().next().getParentTeamWorkflow() != null) {
-         uld.setTeamMembers(AtsClientService.get().getUserAdmin().getOseeUsers(awas.iterator().next().getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));
+         uld.setTeamMembers(AtsClientService.get().getUserAdmin().getOseeUsers(
+            awas.iterator().next().getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));
       }
 
       if (awas.size() == 1) {
-         uld.setInitialSelections(AtsClientService.get().getUserAdmin().getOseeUsers(awas.iterator().next().getStateMgr().getAssignees()));
+         uld.setInitialSelections(AtsClientService.get().getUserAdmin().getOseeUsers(
+            awas.iterator().next().getStateMgr().getAssignees()));
       }
       if (uld.open() != 0) {
          return false;
@@ -146,7 +148,7 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
          awa.getStateMgr().setAssignees(users);
       }
       if (persist) {
-         Artifacts.persistInTransaction("Assignee - Prompt Change", awas);
+         AtsChangeSet.execute("Assignee - Prompt Change", awas);
       }
       return true;
    }
@@ -203,7 +205,8 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
          return null;
       }
       if (artifact instanceof AbstractWorkflowArtifact) {
-         return FrameworkArtifactImageProvider.getUserImage(AtsClientService.get().getUserAdmin().getOseeUsers(((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees()));
+         return FrameworkArtifactImageProvider.getUserImage(AtsClientService.get().getUserAdmin().getOseeUsers(
+            ((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees()));
       }
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
