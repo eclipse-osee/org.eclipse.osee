@@ -120,7 +120,7 @@ public class BundleInfoLite {
    }
    
    public void install(BundleContext context) throws BundleException, IOException{
-	   bundle = context.installBundle(this.systemLocation.getFile(), this.getSystemLocation().openStream());
+	   bundle = context.installBundle("reference:" + this.getSystemLocation().toExternalForm());
    }
    
    public Bundle uninstall() throws BundleException{
