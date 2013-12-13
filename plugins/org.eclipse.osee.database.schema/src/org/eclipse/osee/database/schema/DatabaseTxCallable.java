@@ -62,7 +62,6 @@ public abstract class DatabaseTxCallable<T> extends DatabaseCallable<T> {
       // Do nothing
    }
 
-   @SuppressWarnings("unused")
    protected void handleTxFinally() throws OseeCoreException {
       // Do nothing
    }

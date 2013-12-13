@@ -30,7 +30,6 @@ public class RectangleShape extends Shape {
       setSize(new Dimension(100, 50));
    }
 
-   @SuppressWarnings("unused")
    @Override
    public org.eclipse.osee.framework.core.util.Result validForSave() throws OseeCoreException {
       return Result.TrueResult;
@@ -51,7 +50,6 @@ public class RectangleShape extends Shape {
       return null;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public Result doSave(SkynetTransaction transaction) throws OseeCoreException {
       return Result.TrueResult;

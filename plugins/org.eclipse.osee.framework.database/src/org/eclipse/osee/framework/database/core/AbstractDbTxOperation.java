@@ -49,7 +49,6 @@ public abstract class AbstractDbTxOperation extends AbstractOperation {
       // default implementation
    }
 
-   @SuppressWarnings("unused")
    //OseeCoreException is thrown by inheriting class
    protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
       // default implementation

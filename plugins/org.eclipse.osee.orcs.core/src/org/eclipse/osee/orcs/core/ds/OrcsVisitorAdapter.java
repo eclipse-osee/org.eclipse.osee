@@ -17,19 +17,16 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class OrcsVisitorAdapter implements OrcsVisitor {
 
-   @SuppressWarnings("unused")
    @Override
    public void visit(ArtifactData data) throws OseeCoreException {
       //
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void visit(AttributeData data) throws OseeCoreException {
       //
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void visit(RelationData data) throws OseeCoreException {
       //

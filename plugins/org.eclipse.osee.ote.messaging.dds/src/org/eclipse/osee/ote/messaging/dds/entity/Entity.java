@@ -140,7 +140,7 @@ public abstract class Entity {
       enabled = true;
       return ReturnCode.OK;
    }
-   
+
    protected void dispose() {
       parentFactory = null;
       listener = null;

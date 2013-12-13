@@ -121,7 +121,6 @@ public class DefaultArtifactRenderer implements IRenderer {
       return NO_MATCH;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public int minimumRanking() throws OseeCoreException {
       return NO_MATCH;
@@ -254,7 +253,6 @@ public class DefaultArtifactRenderer implements IRenderer {
       return orderedAttributeTypes;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void open(final List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {

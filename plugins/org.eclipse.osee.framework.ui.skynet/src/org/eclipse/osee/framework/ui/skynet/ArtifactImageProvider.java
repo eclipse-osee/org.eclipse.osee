@@ -28,12 +28,10 @@ public abstract class ArtifactImageProvider {
     * call. Alternatively, providers that wish to defer to the basic implementation should call return
     * super.setupImage()
     */
-   @SuppressWarnings("unused")
    public String setupImage(IArtifact artifact) throws OseeCoreException {
       return ArtifactImageManager.setupImageNoProviders(artifact);
    }
 
-   @SuppressWarnings("unused")
    public String setupImage(IArtifactType artifactType) throws OseeCoreException {
       return ArtifactImageManager.setupImage(BaseImage.getBaseImageEnum(artifactType));
    }

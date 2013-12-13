@@ -32,19 +32,16 @@ public class BufferedLoadDataHandler extends ArtifactDataCountHandler {
       return buffer;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void onData(ArtifactData data) throws OseeCoreException {
       buffer.addData(data);
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void onData(AttributeData data) throws OseeCoreException {
       buffer.addData(data);
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void onData(RelationData data) throws OseeCoreException {
       buffer.addData(data);

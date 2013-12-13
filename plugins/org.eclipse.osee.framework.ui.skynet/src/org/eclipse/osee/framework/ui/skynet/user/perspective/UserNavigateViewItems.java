@@ -69,7 +69,6 @@ public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateComm
       }
    }
 
-   @SuppressWarnings("unused")
    public void addOseePeerSectionChildren(XNavigateItem parentItem) throws OseeCoreException {
       try {
          items.add(new XNavigateItemAction(parentItem, new OpenUsersInMassEditor("Open Active Users", Active.Active),

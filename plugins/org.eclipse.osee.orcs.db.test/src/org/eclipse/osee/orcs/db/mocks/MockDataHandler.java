@@ -31,7 +31,6 @@ public class MockDataHandler implements DataHandler {
       reset();
    }
 
-   @SuppressWarnings("unused")
    @Override
    public byte[] acquire(DataResource resource) throws OseeCoreException {
       setAcquire(true);
@@ -39,7 +38,6 @@ public class MockDataHandler implements DataHandler {
       return content;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void save(long storageId, DataResource resource, byte[] rawContent) throws OseeCoreException {
       setSave(true);
@@ -48,7 +46,6 @@ public class MockDataHandler implements DataHandler {
       this.content = rawContent;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void delete(DataResource resource) throws OseeCoreException {
       setDelete(true);

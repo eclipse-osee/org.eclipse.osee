@@ -230,7 +230,6 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       dynamicXWidgetLayout.processlayoutDatas(xWidgetXml);
    }
 
-   @SuppressWarnings("unused")
    protected void processLayoutDatas(Element element) throws OseeCoreException {
       dynamicXWidgetLayout.processLayoutDatas(element);
    }

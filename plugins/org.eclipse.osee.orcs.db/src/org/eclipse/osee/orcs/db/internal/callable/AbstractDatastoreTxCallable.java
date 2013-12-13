@@ -63,7 +63,6 @@ public abstract class AbstractDatastoreTxCallable<T> extends AbstractDatastoreCa
       // Do nothing
    }
 
-   @SuppressWarnings("unused")
    protected void handleTxFinally() throws OseeCoreException {
       // Do nothing
    }

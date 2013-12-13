@@ -155,7 +155,6 @@ public class OseeDslAccessModelTest {
          return contextId;
       }
 
-      @SuppressWarnings("unused")
       @Override
       public AccessContext getContext(Collection<AccessContext> contexts, IAccessContextId contextId) throws OseeCoreException {
          this.contextId = contextId;
@@ -163,7 +162,6 @@ public class OseeDslAccessModelTest {
          return contextToReturn;
       }
 
-      @SuppressWarnings("unused")
       @Override
       public void computeAccessDetails(AccessDetailCollector collector, AccessContext context, Object objectToCheck) throws OseeCoreException {
          //

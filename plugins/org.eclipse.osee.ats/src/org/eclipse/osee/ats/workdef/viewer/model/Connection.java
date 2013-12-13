@@ -74,7 +74,6 @@ public class Connection extends ModelElement {
       return lineStyle;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public Result validForSave() throws OseeCoreException {
       System.err.println("Add Connection validations.");
@@ -157,7 +156,6 @@ public class Connection extends ModelElement {
       return 1;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public Result doSave(SkynetTransaction transaction) throws OseeCoreException {
       return Result.TrueResult;

@@ -252,7 +252,6 @@ public abstract class AbstractOseeCacheTest<K, T extends AbstractOseeType<K>> {
       //      public void storeItems(Collection<T> toStore) throws OseeCoreException {
    }
 
-   @SuppressWarnings("unused")
    //OseeCoreException is thrown by inheriting class.
    protected void checkEquals(T expected, T actual) throws OseeCoreException {
       Assert.assertEquals(expected, actual);

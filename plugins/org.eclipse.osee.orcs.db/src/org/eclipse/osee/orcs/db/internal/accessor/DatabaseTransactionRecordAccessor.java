@@ -164,7 +164,6 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       return record;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void load(TransactionCache transactionCache) throws OseeCoreException {
       // Not implemented

@@ -38,13 +38,11 @@ public abstract class AtsStateItem implements IAtsStateItem {
       this.name = name;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public Result committing(AbstractWorkflowArtifact sma) throws OseeCoreException {
       return Result.TrueResult;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public String getBranchShortName(AbstractWorkflowArtifact sma) throws OseeCoreException {
       return null;
@@ -55,49 +53,41 @@ public abstract class AtsStateItem implements IAtsStateItem {
       return name;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public Collection<IAtsUser> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision) throws OseeCoreException {
       return null;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws OseeCoreException {
       return null;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public List<XWidget> getDynamicXWidgetsPostBody(AbstractWorkflowArtifact sma, String stateName) throws OseeCoreException {
       return Collections.emptyList();
    }
 
-   @SuppressWarnings("unused")
    @Override
    public List<XWidget> getDynamicXWidgetsPreBody(AbstractWorkflowArtifact sma, String stateName) throws OseeCoreException {
       return Collections.emptyList();
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) throws OseeCoreException {
       // provided for subclass implementation
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void widgetModified(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) throws OseeCoreException {
       // provided for subclass implementation
    }
 
-   @SuppressWarnings("unused")
    @Override
    public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) throws OseeCoreException {
       return Result.TrueResult;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public boolean isAccessControlViaAssigneesEnabledForBranching() throws OseeCoreException {
       return false;
@@ -113,7 +103,7 @@ public abstract class AtsStateItem implements IAtsStateItem {
       return getName();
    }
 
-   @SuppressWarnings("unused")
    public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
+      // provided for subclass implementation
    }
 }

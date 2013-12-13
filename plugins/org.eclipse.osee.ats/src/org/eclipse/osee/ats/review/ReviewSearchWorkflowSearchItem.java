@@ -78,7 +78,6 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       return new ReviewSearchWorkflowSearchItem(this);
    }
 
-   @SuppressWarnings("unused")
    @Override
    public String getParameterXWidgetXml() throws OseeCoreException {
       return "<xWidgets>" +
@@ -144,7 +143,6 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       return Strings.truncate(getName() + sb.toString(), WorldEditor.TITLE_MAX_LENGTH, true);
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       if (widget.getLabel().equals("Assignee")) {
@@ -335,7 +333,6 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
       // do nothing
    }
 
-   @SuppressWarnings("unused")
    @Override
    public Result isParameterSelectionValid() throws OseeCoreException {
       try {

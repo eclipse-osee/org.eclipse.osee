@@ -18,56 +18,47 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class LoadDataHandlerAdapter implements LoadDataHandler {
 
-   @SuppressWarnings("unused")
    @Override
    public void onLoadStart() throws OseeCoreException {
       //
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void onLoadDescription(LoadDescription data) throws OseeCoreException {
       //
    }
 
    @Override
-   @SuppressWarnings("unused")
    public void onData(BranchData data) throws OseeCoreException {
       //
    }
-   
+
    @Override
-   @SuppressWarnings("unused")
    public void onData(TxOrcsData data) throws OseeCoreException {
       //
    }
 
    @Override
-   @SuppressWarnings("unused")
    public void onData(ArtifactData data) throws OseeCoreException {
       //
    }
 
    @Override
-   @SuppressWarnings("unused")
    public void onData(AttributeData data) throws OseeCoreException {
       //
    }
 
    @Override
-   @SuppressWarnings("unused")
    public void onData(RelationData data) throws OseeCoreException {
       //
    }
 
    @Override
-   @SuppressWarnings("unused")
    public void onData(AttributeData data, MatchLocation match) throws OseeCoreException {
       //
    }
 
    @Override
-   @SuppressWarnings("unused")
    public void onLoadEnd() throws OseeCoreException {
       //
    }

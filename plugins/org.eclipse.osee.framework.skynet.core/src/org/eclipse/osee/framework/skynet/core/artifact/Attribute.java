@@ -70,7 +70,6 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
    /**
     * Base implementation does nothing. Subclasses may override to do setup that depends on the attribute state data.
     */
-   @SuppressWarnings("unused")
    protected void uponInitialize() throws OseeCoreException {
       // provided for subclass implementation
    }

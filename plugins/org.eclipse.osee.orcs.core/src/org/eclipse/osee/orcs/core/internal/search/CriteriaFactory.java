@@ -42,7 +42,6 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 /**
  * @author Roberto E. Escobar
  */
-@SuppressWarnings("unused")
 public class CriteriaFactory {
 
    private final ArtifactTypes artifactTypeCache;

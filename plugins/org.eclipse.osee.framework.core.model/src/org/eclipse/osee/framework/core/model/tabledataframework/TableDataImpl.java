@@ -158,7 +158,6 @@ public class TableDataImpl implements TableData {
     * (for any reason) and should not be included in the report.
     * @throws OseeCoreException
     */
-   @SuppressWarnings("unused")
    protected boolean validateRow(Collection<Object> rowData) throws OseeCoreException {
       //Override with subclass if needed
       return true;
@@ -172,7 +171,6 @@ public class TableDataImpl implements TableData {
     * @return Return symantics is the same as validateRow()
     * @throws OseeCoreException
     */
-   @SuppressWarnings("unused")
    protected boolean validateRowUseOnlyKeyColums() throws OseeCoreException {
       //Override with subclass if needed
       return true;

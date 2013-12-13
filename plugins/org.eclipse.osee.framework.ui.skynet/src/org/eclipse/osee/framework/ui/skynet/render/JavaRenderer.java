@@ -205,7 +205,6 @@ public class JavaRenderer extends FileSystemRenderer {
       return ImageManager.getImageDescriptor(FrameworkImage.JAVA_COMPILATION_UNIT);
    }
 
-   @SuppressWarnings("unused")
    @Override
    protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
       throw new UnsupportedOperationException();

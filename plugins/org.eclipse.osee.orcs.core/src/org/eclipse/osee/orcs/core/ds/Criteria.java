@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class Criteria {
 
-   @SuppressWarnings("unused")
    public void checkValid(Options options) throws OseeCoreException {
       // For subclasses to implement
    }

@@ -22,13 +22,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class TransitionAdapter implements ITransitionListener {
 
-   @SuppressWarnings("unused")
    @Override
    public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) throws OseeCoreException {
       // provided for subclass implementation
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
       // provided for subclass implementation

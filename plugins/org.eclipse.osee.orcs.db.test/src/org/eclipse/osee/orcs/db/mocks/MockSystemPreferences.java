@@ -17,7 +17,6 @@ import org.eclipse.osee.orcs.core.SystemPreferences;
 /**
  * @author Roberto E. Escobar
  */
-@SuppressWarnings("unused")
 public class MockSystemPreferences implements SystemPreferences {
 
    @Override

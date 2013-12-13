@@ -49,7 +49,6 @@ public class ArtifactFactory {
       this.providerFactory = providerFactory;
    }
 
-   @SuppressWarnings("unused")
    public Artifact createArtifact(ArtifactData artifactData) throws OseeCoreException {
       //TODO implement an artifact class resolver for specific artifact types
       ValueProvider<Branch, OrcsData> branchProvider = providerFactory.createBranchProvider(artifactData);

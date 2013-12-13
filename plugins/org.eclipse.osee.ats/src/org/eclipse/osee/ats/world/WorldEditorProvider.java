@@ -34,7 +34,6 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
       return getName();
    }
 
-   @SuppressWarnings("unused")
    @Override
    public IAtsVersion getTargetedVersionArtifact() throws OseeCoreException {
       return null;

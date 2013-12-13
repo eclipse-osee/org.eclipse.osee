@@ -41,14 +41,12 @@ public class MockOseeDataAccessor<K, T extends IOseeStorable> implements IOseeDa
       return wasStoreCalled;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void load(IOseeCache<K, T> cache) throws OseeCoreException {
       Assert.assertNotNull(cache);
       setLoadCalled(true);
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void store(Collection<T> types) throws OseeCoreException {
       Assert.assertNotNull(types);

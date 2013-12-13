@@ -58,7 +58,6 @@ public abstract class DbTransaction {
     * 
     * @throws OseeCoreException
     */
-   @SuppressWarnings("unused")
    //OseeCoreException is thrown by inheriting class
    protected void handleTxFinally() throws OseeCoreException {
       // override to add additional code to finally

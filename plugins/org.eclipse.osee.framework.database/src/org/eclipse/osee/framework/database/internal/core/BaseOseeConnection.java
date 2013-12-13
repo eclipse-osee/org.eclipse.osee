@@ -81,7 +81,6 @@ public class BaseOseeConnection extends OseeConnection {
       return conn.prepareCall(sql, resultSetType, resultSetConcurrency);
    }
 
-   @SuppressWarnings("unused")
    @Override
    protected void destroy() throws OseeCoreException {
       try {

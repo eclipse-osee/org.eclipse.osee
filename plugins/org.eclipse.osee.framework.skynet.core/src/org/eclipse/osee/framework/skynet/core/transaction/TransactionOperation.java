@@ -69,7 +69,6 @@ public abstract class TransactionOperation<K> extends AbstractOperation implemen
    @Override
    public abstract boolean containsItem(Object object);
 
-   @SuppressWarnings("unused")
    @Override
    public void rollback() throws OseeCoreException {
       // Do Nothing

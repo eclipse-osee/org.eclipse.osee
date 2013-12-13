@@ -208,7 +208,6 @@ public abstract class Conflict implements IAdaptable {
       return status;
    }
 
-   @SuppressWarnings("unused")
    public void computeEqualsValues() throws OseeCoreException {
       // provided for subclass implementation
    }

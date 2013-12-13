@@ -121,7 +121,6 @@ public class XNavigateComposite extends Composite {
       handleDoubleClick(item);
    }
 
-   @SuppressWarnings("unused")
    protected void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) throws OseeCoreException {
       disposeTooltip();
 

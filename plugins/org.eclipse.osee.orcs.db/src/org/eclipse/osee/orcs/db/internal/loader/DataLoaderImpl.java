@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -208,7 +207,6 @@ public class DataLoaderImpl implements DataLoader {
       return withAttributeTypes(Arrays.asList(attributeType));
    }
 
-   @SuppressWarnings("unused")
    @Override
    public DataLoader withAttributeTypes(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
       this.attributeTypes.addAll(attributeTypes);
@@ -220,7 +218,6 @@ public class DataLoaderImpl implements DataLoader {
       return withRelationTypes(Arrays.asList(relationType));
    }
 
-   @SuppressWarnings("unused")
    @Override
    public DataLoader withRelationTypes(Collection<? extends IRelationType> relationTypes) throws OseeCoreException {
       this.relationTypes.addAll(relationTypes);
@@ -232,7 +229,6 @@ public class DataLoaderImpl implements DataLoader {
       return withAttributeIds(toCollection(attributeIds));
    }
 
-   @SuppressWarnings("unused")
    @Override
    public DataLoader withAttributeIds(Collection<Integer> attributeIds) throws OseeCoreException {
       this.attributeIds.addAll(attributeIds);
@@ -244,7 +240,6 @@ public class DataLoaderImpl implements DataLoader {
       return withRelationIds(toCollection(relationIds));
    }
 
-   @SuppressWarnings("unused")
    @Override
    public DataLoader withRelationIds(Collection<Integer> relationIds) throws OseeCoreException {
       this.relationIds.addAll(relationIds);

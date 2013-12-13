@@ -188,19 +188,16 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       return XWidgetParser.extractWorkAttributes(new SwtXWidgetRenderer(), getXWidgetsXml());
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void createXWidgetLayoutData(XWidgetRendererItem layoutData, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       // provided for subclass implementation
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       // provided for subclass implementation
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       // provided for subclass implementation
@@ -222,7 +219,6 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       return getName().toLowerCase().contains(titleEnd.toLowerCase().trim()) ? getName() : getName() + titleEnd;
    }
 
-   @SuppressWarnings("unused")
    public void addWidgets(IManagedForm managedForm, FormEditor editor, Composite sectionBody) throws OseeCoreException {
       // provided for subclass implementation
    }

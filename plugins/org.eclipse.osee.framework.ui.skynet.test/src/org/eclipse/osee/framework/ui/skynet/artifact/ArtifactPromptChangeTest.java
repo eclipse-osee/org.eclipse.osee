@@ -95,7 +95,6 @@ public class ArtifactPromptChangeTest {
    }
 
    private static class MockPromptFactory implements IPromptFactory {
-      @SuppressWarnings("unused")
       @Override
       public IHandlePromptChange createPrompt(IAttributeType attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) throws OseeCoreException {
          return new TestPromptChange(attributeType, persist);
@@ -111,13 +110,11 @@ public class ArtifactPromptChangeTest {
          this.persist = persist;
       }
 
-      @SuppressWarnings("unused")
       @Override
       public boolean promptOk() throws OseeCoreException {
          return true;
       }
 
-      @SuppressWarnings("unused")
       @Override
       public boolean store() throws OseeCoreException {
          return persist && attributeType.equals(TEST_ATTRIBUTE_TYPE);

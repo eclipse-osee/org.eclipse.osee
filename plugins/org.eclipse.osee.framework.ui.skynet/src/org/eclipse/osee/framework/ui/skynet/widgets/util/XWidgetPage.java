@@ -76,17 +76,14 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
       this((String) null, optionResolver, null);
    }
 
-   @SuppressWarnings("unused")
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetPage page, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       // provided for subclass implementation
    }
 
-   @SuppressWarnings("unused")
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetPage page, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       // provided for subclass implementation
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void createXWidgetLayoutData(XWidgetRendererItem workAttr, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       // provided for subclass implementation

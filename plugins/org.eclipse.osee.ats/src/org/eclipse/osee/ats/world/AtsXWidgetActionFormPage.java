@@ -196,7 +196,6 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       }
    }
 
-   @SuppressWarnings("unused")
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() throws OseeCoreException {
       return null;
    }

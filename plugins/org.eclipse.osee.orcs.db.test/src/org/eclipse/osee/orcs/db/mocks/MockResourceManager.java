@@ -33,37 +33,31 @@ public class MockResourceManager implements IResourceManager {
       return false;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public IResource acquire(IResourceLocator locator, PropertyStore options) throws OseeCoreException {
       return null;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public boolean exists(IResourceLocator locator) throws OseeCoreException {
       return false;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public IResourceLocator save(IResourceLocator locatorHint, IResource resource, PropertyStore options) throws OseeCoreException {
       return null;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public int delete(IResourceLocator locator) throws OseeCoreException {
       return 0;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public IResourceLocator generateResourceLocator(String protocol, String seed, String name) throws OseeCoreException {
       return null;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public IResourceLocator getResourceLocator(String path) throws OseeCoreException {
       return null;

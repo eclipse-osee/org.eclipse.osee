@@ -56,8 +56,7 @@ public class MessageServiceImpl implements MessageService {
             OseeLog.log(MessageServiceImpl.class, Level.SEVERE, ex1);
          }
       }
-      OseeLog.logf(Activator.class, Level.FINER,
-         "Default URI for message Service [%s]", defaultURI.toASCIIString());
+      OseeLog.logf(Activator.class, Level.FINER, "Default URI for message Service [%s]", defaultURI.toASCIIString());
       return defaultURI;
    }
 
@@ -81,17 +80,15 @@ public class MessageServiceImpl implements MessageService {
       return connectionNodes.isEmpty();
    }
 
-   @SuppressWarnings("unused")
    @Override
    public ConnectionNode get(NodeInfo nodeInfo) throws OseeCoreException {
       ConnectionNode node = connectionNodes.get(nodeInfo);
       if (node == null) {
-         OseeLog.logf(Activator.class, Level.FINEST,
-            "going to create a new Connection Node for [%s]", nodeInfo.toString());
+         OseeLog.logf(Activator.class, Level.FINEST, "going to create a new Connection Node for [%s]",
+            nodeInfo.toString());
          node = factory.create(nodeInfo);
          connectionNodes.put(nodeInfo, node);
-         OseeLog.logf(Activator.class, Level.FINE,
-            "Created a new Connection Node for [%s]", nodeInfo.toString());
+         OseeLog.logf(Activator.class, Level.FINE, "Created a new Connection Node for [%s]", nodeInfo.toString());
       }
       return node;
    }

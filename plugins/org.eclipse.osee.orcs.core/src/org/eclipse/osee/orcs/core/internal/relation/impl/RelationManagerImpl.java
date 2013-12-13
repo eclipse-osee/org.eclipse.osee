@@ -40,9 +40,9 @@ import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
@@ -333,7 +333,6 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    ///////////////////////// READ HELPERS ///////////////////
-   @SuppressWarnings("unused")
    private void ensureRelationsInitialized(OrcsSession session, GraphData graph, RelationNode node) throws OseeCoreException {
       if (graph.getAdjacencies(node) == null) {
          RelationNodeAdjacencies container = relationFactory.createRelationContainer();

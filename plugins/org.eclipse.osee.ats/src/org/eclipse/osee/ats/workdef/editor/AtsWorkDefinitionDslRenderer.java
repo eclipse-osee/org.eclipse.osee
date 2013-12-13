@@ -92,7 +92,6 @@ public final class AtsWorkDefinitionDslRenderer extends FileSystemRenderer {
       return true;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public void open(final List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       final PresentationType resultantpresentationType =
@@ -117,7 +116,6 @@ public final class AtsWorkDefinitionDslRenderer extends FileSystemRenderer {
       });
    }
 
-   @SuppressWarnings("unused")
    @Override
    public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
       return "ats";
