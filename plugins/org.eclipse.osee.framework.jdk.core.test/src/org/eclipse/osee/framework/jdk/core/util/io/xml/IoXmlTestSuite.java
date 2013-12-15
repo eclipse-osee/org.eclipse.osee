@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
-ExcelXmlWriterTest.class})
+ExcelXmlWriterTest.class, ExcelColumnTest.class})
 public class IoXmlTestSuite {
    // Test Suite
 }

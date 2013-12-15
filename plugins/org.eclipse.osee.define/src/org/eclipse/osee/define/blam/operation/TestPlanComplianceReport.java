@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelColumn;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
@@ -335,9 +336,8 @@ public final class TestPlanComplianceReport extends AbstractBlam {
 
    private void initReport() throws IOException {
       excelWriter = new ExcelXmlWriter(defaultWriter);
-      excelWriter.startSheet(getName(), 200);
+      excelWriter.startSheet(getName(), ExcelColumn.newEqualWidthColumns(200, 150));
       excelWriter.setRowHeight(80.0);
-      excelWriter.setAllColumnWidth(150.0);
       excelWriter.writeRow(columnHeaders);
    }
 

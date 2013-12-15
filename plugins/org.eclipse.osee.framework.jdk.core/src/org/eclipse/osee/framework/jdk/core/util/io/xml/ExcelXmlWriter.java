@@ -15,10 +15,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -37,6 +35,8 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
       ERROR,
       CENTERED,
    };
+
+   public static final String WrappedStyle = "OseeWraped";
 
    public static final Pattern stylePattern = Pattern.compile("<Style.*</Style>\\s*", Pattern.DOTALL);
 
@@ -62,11 +62,12 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
       " <NumberFormat/>\n" + //
       " <Protection/>\n" + //
       "</Style>\n" + //
-      "<Style ss:ID=\"s62\"><NumberFormat ss:Format=\"Short Date\"/></Style>\n" + //
+      "<Style ss:ID=\"OseeDate\"><NumberFormat ss:Format=\"Short Date\"/></Style>\n" + //
       "<Style ss:ID=\"OseeBoldStyle\"><Font x:Family=\"Swiss\" ss:Bold=\"1\"/></Style>\n" + //
       "<Style ss:ID=\"OseeItalicStyle\"><Font x:Family=\"Swiss\" ss:Italic=\"1\"/></Style>\n" + //
       "<Style ss:ID=\"OseeErrorStyle\"><Font x:Family=\"Swiss\" ss:Color=\"#FF0000\" ss:Bold=\"1\"/></Style>\n" + //
-      "<Style ss:ID=\"OseeCentered\"><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Bottom\"/></Style>\n";
+      "<Style ss:ID=\"OseeCentered\"><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Bottom\"/></Style>\n" + //
+      "<Style ss:ID=\"OseeWraped\"><Alignment ss:Vertical=\"Top\" ss:WrapText=\"1\"/></Style>";
 
    private final BufferedWriter out;
    private boolean inSheet;
@@ -78,7 +79,6 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
    private final Map<Integer, Integer> mColSpanMap = new HashMap<Integer, Integer>();
 
    private double rowHeight;
-   private double allColumnWidths = 0.0;
 
    public ExcelXmlWriter(File file) throws IOException {
       this(new FileWriter(file));
@@ -119,26 +119,30 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
 
    @Override
    public void startSheet(String worksheetName, int columnCount) throws IOException {
-      List<Integer> columnWidths = new ArrayList<Integer>();
-      startSheet(worksheetName, columnCount, columnWidths);
+      startSheet(worksheetName, ExcelColumn.newEmptyColumns(columnCount));
    }
 
-   public void startSheet(String worksheetName, int columnCount, List<Integer> columnWidths) throws IOException {
+   public void startSheet(String worksheetName, ExcelColumn... columns) throws IOException {
       if (worksheetName.length() > 31) {
          worksheetName = worksheetName.substring(0, 31);
       }
-      out.write(String.format(" <Worksheet ss:Name=\"%s\">\n", worksheetName));
+      out.write(" <Worksheet ss:Name=\"");
+      out.write(worksheetName);
+      out.write("\">\n");
 
-      out.write("  <Table x:FullColumns=\"1\" x:FullRows=\"1\" ss:ExpandedColumnCount=\"" + columnCount + "\">\n");
+      out.write("  <Table x:FullColumns=\"1\" x:FullRows=\"1\" ss:ExpandedColumnCount=\"");
+      out.write(String.valueOf(columns.length));
+      out.write("\">\n");
 
-      if (allColumnWidths != 0.0) {
-         for (int i = 0; i < columnCount; i++) {
-            out.write(String.format("   <Column ss:Width=\"%f\"/>\n", allColumnWidths));
+      for (ExcelColumn column : columns) {
+         column.writeColumnDefinition(out);
+      }
+
+      if (columns[0].getName() != null) {
+         for (ExcelColumn column : columns) {
+            writeCell(column.getName());
          }
-      } else {
-         for (Integer colWidth : columnWidths) {
-            out.write("   <Column ss:Width=\"" + colWidth + "\"/>\n");
-         }
+         endRow();
       }
 
       inSheet = true;
@@ -185,7 +189,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
 
          //Cell styles
          if (cellData instanceof Date) {
-            out.write(" ss:StyleID=\"s62\"");
+            out.write(" ss:StyleID=\"OseeDate\"");
          } else if (applyStyle) {
             applyStyleToCell(cellIndex);
          }
@@ -253,6 +257,9 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
          case ERROR:
             mStyleMap.put(cellIndex, "OseeErrorStyle");
             break;
+         case CENTERED:
+            mStyleMap.put(cellIndex, "OseeCentered");
+            break;
       }
    }
 
@@ -268,10 +275,6 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
 
    public void setRowHeight(double rowHeight) {
       this.rowHeight = rowHeight;
-   }
-
-   public void setAllColumnWidth(double allColumnWidths) {
-      this.allColumnWidths = allColumnWidths;
    }
 
    private void applyStyleToCell(int cellIndex) throws IOException {
