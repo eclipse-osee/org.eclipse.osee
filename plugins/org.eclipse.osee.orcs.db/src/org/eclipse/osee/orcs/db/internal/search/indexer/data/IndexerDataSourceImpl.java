@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.net.URI;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
@@ -100,15 +99,9 @@ public class IndexerDataSourceImpl implements IndexedResource {
             toReturn = resource.getContent();
          } catch (OseeCoreException ex) {
             throw new IOException(ex);
-         } finally {
-            Lib.close(toReturn);
          }
-      } else {
-         try {
-            toReturn = new ByteArrayInputStream(getStringValue().getBytes("UTF-8"));
-         } finally {
-            Lib.close(toReturn);
-         }
+      } else if (Strings.isValid(getStringValue())) {
+         toReturn = new ByteArrayInputStream(getStringValue().getBytes("UTF-8"));
       }
       return toReturn;
    }

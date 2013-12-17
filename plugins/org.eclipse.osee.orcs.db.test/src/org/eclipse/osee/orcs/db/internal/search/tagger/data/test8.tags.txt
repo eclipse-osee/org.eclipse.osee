@@ -6,3 +6,8 @@ reserved -539428360
 yes 6654
 it 434
 is 402
+the 3866
+quick 4182975
+brown 1431435
+fox 16239
+hello 1520625

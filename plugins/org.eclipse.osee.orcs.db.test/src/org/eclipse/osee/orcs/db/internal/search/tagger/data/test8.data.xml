@@ -2,4 +2,6 @@
 <w:r><w:rPr><w:sz-cs w:val="18"/></w:rPr><w:t>5 = ARC-210</w:t></w:r>
 <w:r><w:rPr><w:sz-cs w:val="18"/></w:rPr><w:br/></w:r>
 <w:r><w:rPr><w:sz w:val="18"/><w:sz-cs w:val="18"/></w:rPr><w:t>6 = RESERVED</w:t></w:r><w:r><w:tab/><w:t>yes it is.</w:t></w:r>
+<w:p><w:r w:rsidR="00CE6B16"><w:rPr><w:rFonts w:ascii="Helvetica" w:hAnsi="Helvetica" w:cs="Helvetica"/></w:rPr><w:t xml:space="preserve"> The quick brown fox.</w:t></w:r>
+<w:tab wx:wTab="2880" wx:tlc="none" wx:cTlc="14"/><w:t>Hello</w:t></w:p>
 </w:p>

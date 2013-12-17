@@ -22,12 +22,12 @@ import org.eclipse.osee.framework.jdk.core.util.ReservedCharacters;
  * @author Roberto E. Escobar
  */
 public class XmlTextInputStream extends BufferedInputStream {
-   private static final String START_PARAGRAPH = "<w:p";
-   private static final String STOP_PARAGRAPH = "</w:p";
-   private static final String START_WORDML_TEXT = "<w:t>";
+   private static final String START_PARAGRAPH_REGEX = "<w:p( .+)?>";
+   private static final String STOP_PARAGRAPH = "</w:p>";
+   private static final String START_WORDML_TEXT_REGEX = "<w:t( .+)?>";
    private static final String END_WORDML_TEXT = "</w:t>";
    private static final String LINE_BREAK = "<w:br/>";
-   private static final String TAB = "<w:tab/>";
+   private static final String TAB_REGEX = "<w:tab( .+)?/>";
 
    private IReadHelper readHelper;
 
@@ -236,17 +236,17 @@ public class XmlTextInputStream extends BufferedInputStream {
             if ((char) value == '>') {
                partOfTag = false;
                String tag = buffer.toString();
-               if (tag.equals(START_WORDML_TEXT)) {
+               if (tag.matches(START_WORDML_TEXT_REGEX)) {
                   collect = true;
                } else if (tag.equals(END_WORDML_TEXT)) {
                   collect = false;
-               } else if (tag.startsWith(START_PARAGRAPH)) {
+               } else if (tag.matches(START_PARAGRAPH_REGEX)) {
                   isStartOfParagraph = true;
                } else if (tag.startsWith(STOP_PARAGRAPH)) {
                   isStartOfParagraph = false;
                } else if (tag.startsWith(LINE_BREAK)) {
                   isBreak = true;
-               } else if (tag.startsWith(TAB)) {
+               } else if (tag.matches(TAB_REGEX)) {
                   isBreak = true;
                }
 

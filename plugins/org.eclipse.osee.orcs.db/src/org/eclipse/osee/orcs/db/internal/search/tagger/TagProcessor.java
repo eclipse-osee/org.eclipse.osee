@@ -40,8 +40,12 @@ public class TagProcessor {
    public void collectFromInputStream(InputStream inputStream, TagCollector tagCollector) {
       if (inputStream != null) {
          Scanner scanner = new Scanner(inputStream, "UTF-8");
-         while (scanner.hasNext()) {
-            processWord(scanner.next(), tagCollector);
+         try {
+            while (scanner.hasNext()) {
+               processWord(scanner.next(), tagCollector);
+            }
+         } finally {
+            scanner.close();
          }
       }
    }
