@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Server Define Report (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.define.report
+Bundle-Version: 0.17.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/*.xml
+Import-Package: com.google.common.base,
+ com.google.common.collect,
+ javax.ws.rs,
+ javax.ws.rs.core,
+ org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.jdk.core.util.io.xml,
+ org.eclipse.osee.orcs,
+ org.eclipse.osee.orcs.data,
+ org.eclipse.osee.orcs.search,
+ org.eclipse.osee.template.engine,
+ org.osgi.framework
