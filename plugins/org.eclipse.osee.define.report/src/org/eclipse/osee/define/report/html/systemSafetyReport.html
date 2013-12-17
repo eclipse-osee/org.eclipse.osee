@@ -1,0 +1,26 @@
+<?author?>Ryan D. Brooks
+<?title?>System Safety Report
+<?usageAndDescription?>
+       <strong>Generates the System Safety Report</strong>
+       <ul>
+               <li>Selected Branch - provide the Branch to obtain the System Safety Report for</li>
+               <li>Code Root Directory - if specified, provides:
+               <ul>
+                   <li> a file listing the directories to search </li>
+                   <li> a directory to recurse into looking for files</li>
+               </ul>
+               </li>
+               <li>Script Parsers - allows selection of the type of parsing</li>
+               <li>Start Button - generates the report</li>
+       </ul>
+<?widgets?>
+      <label>Selected Branch</label> <input id="selected_branch" type="text" list="workingAndBaslineBranches" required/><br />
+      <label>Code Root Directory</label><input id="code_root_dir" type="text" /><br />
+<?javaScript?>
+       function oseeAppStart(oseeAppParams) {
+
+           var branch = oseeAppParams["selected_branch"];
+           var rootDir = oseeAppParams["code_root_dir"];
+           window.location.assign("../safety?branch="+branch+"&code_root="+rootDir);
+
+       }

@@ -26,6 +26,7 @@ public final class OseeDefineResourceTokens {
 
    // @formatter:off
 
+   public static final ResourceToken SystemSafetyReportHtml = createToken(0x45AFE00000000001L, "systemSafetyReport.html");
    public static final ResourceToken RequirementReportHtml = createToken(0x45AFE00000000003L, "requirementReport.html");
 
    // @formatter:on

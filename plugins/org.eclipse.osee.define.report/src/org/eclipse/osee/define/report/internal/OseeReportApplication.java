@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.define.report.OseeDefineResourceTokens;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -22,14 +23,20 @@ import org.eclipse.osee.orcs.OrcsApi;
 public final class OseeReportApplication extends Application {
    private OrcsApi orcsApi;
    private final Set<Object> singletons = new HashSet<Object>();
+   private Log logger;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
    }
 
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
+
    public void start() {
       OseeDefineResourceTokens.register(orcsApi.getResourceRegistry());
       singletons.add(new RequirementResource(orcsApi));
+      singletons.add(new SystemSafetyResource(logger, orcsApi));
    }
 
    @Override
