@@ -14,7 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.MatchResult;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 
@@ -44,9 +43,9 @@ public class AnyTokenOrderProcessor implements TokenOrderProcessor {
    }
 
    @Override
-   public boolean processToken(String token, MatchResult match) {
+   public boolean processToken(String token, MatchLocation match) {
       if (trackingSet.found(token)) {
-         locations.add(createMatchLocation(match.start(), match.end()));
+         locations.add(createMatchLocation(match.getStartPosition(), match.getEndPosition()));
       }
       return trackingSet.areAllFound();
    }

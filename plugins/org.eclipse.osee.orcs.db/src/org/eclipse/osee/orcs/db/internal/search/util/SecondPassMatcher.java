@@ -12,8 +12,6 @@ package org.eclipse.osee.orcs.db.internal.search.util;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Scanner;
-import java.util.regex.MatchResult;
 import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -49,9 +47,8 @@ public class SecondPassMatcher implements StreamMatcher {
    }
 
    private void parseSearchString(TokenOrderProcessor processor, String toSearch, CheckedOptions options) {
-      Scanner toSearchScanner = new Scanner(toSearch);
+      SecondPassScanner toSearchScanner = new SecondPassScanner(toSearch, options.getDelimiter());
       try {
-         toSearchScanner.useDelimiter(options.getDelimiter());
          while (toSearchScanner.hasNext()) {
             String next = toSearchScanner.next();
             next = normalizeCase(options.getCaseType(), next);
@@ -63,9 +60,8 @@ public class SecondPassMatcher implements StreamMatcher {
    }
 
    private void searchStream(TokenOrderProcessor processor, InputStream inputStream, CheckedOptions options, boolean findAllMatchLocations) {
-      Scanner inputStreamScanner = new Scanner(inputStream);
+      SecondPassScanner inputStreamScanner = new SecondPassScanner(inputStream, options.getDelimiter());
       try {
-         inputStreamScanner.useDelimiter(options.getDelimiter());
          int numTokensProcessed = 0;
          boolean isProcessorDone = false;
          while (inputStreamScanner.hasNext()) {
@@ -78,7 +74,7 @@ public class SecondPassMatcher implements StreamMatcher {
 
             /**
              * the purpose of this here is to allow one more token to be read after the processor has signaled that it
-             * is complete. the if statement above will catch the case when too many tokens are present.
+             * is complete. The if statement above will catch the case when too many tokens are present.
              */
             if (isProcessorDone && !findAllMatchLocations) {
                break;
@@ -86,8 +82,7 @@ public class SecondPassMatcher implements StreamMatcher {
 
             String next = inputStreamScanner.next();
             next = normalizeCase(options.getCaseType(), next);
-
-            MatchResult match = inputStreamScanner.match();
+            MatchLocation match = inputStreamScanner.match();
             isProcessorDone = processor.processToken(next, match);
          }
 

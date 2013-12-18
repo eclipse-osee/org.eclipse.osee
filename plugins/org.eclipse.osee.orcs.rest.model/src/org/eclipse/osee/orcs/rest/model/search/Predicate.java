@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.rest.model.search;
 
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
@@ -25,12 +26,12 @@ public class Predicate {
    private SearchOp op;
    private List<SearchFlag> flags;
    private List<String> values;
-   private String delimiter;
+   private TokenDelimiterMatch delimiter;
 
    public Predicate() {
    }
 
-   public Predicate(SearchMethod type, List<String> typeParameters, SearchOp op, List<SearchFlag> flags, String delimiter, List<String> values) {
+   public Predicate(SearchMethod type, List<String> typeParameters, SearchOp op, List<SearchFlag> flags, TokenDelimiterMatch delimiter, List<String> values) {
       this.type = type;
       this.typeParameters = typeParameters;
       this.op = op;
@@ -39,8 +40,8 @@ public class Predicate {
       this.delimiter = delimiter;
    }
 
-   public void setDelimiter(String regex) {
-      this.delimiter = regex;
+   public void setDelimiter(TokenDelimiterMatch delimiter) {
+      this.delimiter = delimiter;
    }
 
    public void setType(SearchMethod type) {
@@ -83,7 +84,7 @@ public class Predicate {
       return values;
    }
 
-   public String getDelimiter() {
+   public TokenDelimiterMatch getDelimiter() {
       return delimiter;
    }
 

@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.SearchFlag;
 import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
@@ -45,7 +44,7 @@ public class PredicateFactoryImpl implements PredicateFactory {
 
       List<SearchFlag> getFlags();
 
-      String getDelimiter();
+      TokenDelimiterMatch getDelimiter();
    }
 
    @Override
@@ -73,21 +72,21 @@ public class PredicateFactoryImpl implements PredicateFactory {
    }
 
    private Predicate createIdsSearch(SearchMethod method, List<String> ids) {
-      return new Predicate(method, emptyStringList, SearchOp.EQUALS, emptySearchFlagList, Strings.EMPTY_STRING, ids);
+      return new Predicate(method, emptyStringList, SearchOp.EQUALS, emptySearchFlagList, null, ids);
    }
 
    @Override
    public Predicate createIsOfTypeSearch(Collection<? extends IArtifactType> artifactType) {
       List<String> typeIds = getLongIds(artifactType);
-      return new Predicate(SearchMethod.IS_OF_TYPE, emptyStringList, SearchOp.EQUALS, emptySearchFlagList,
-         Strings.EMPTY_STRING, typeIds);
+      return new Predicate(SearchMethod.IS_OF_TYPE, emptyStringList, SearchOp.EQUALS, emptySearchFlagList, null,
+         typeIds);
    }
 
    @Override
    public Predicate createTypeEqualsSearch(Collection<? extends IArtifactType> artifactType) {
       List<String> typeIds = getLongIds(artifactType);
-      return new Predicate(SearchMethod.TYPE_EQUALS, emptyStringList, SearchOp.EQUALS, emptySearchFlagList,
-         Strings.EMPTY_STRING, typeIds);
+      return new Predicate(SearchMethod.TYPE_EQUALS, emptyStringList, SearchOp.EQUALS, emptySearchFlagList, null,
+         typeIds);
    }
 
    @Override
@@ -111,8 +110,7 @@ public class PredicateFactoryImpl implements PredicateFactory {
             option.getDelimiter(), valuesList);
       } else {
          SearchOp op = convertToSearchOp(operator);
-         return new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeIds, op, emptySearchFlagList, Strings.EMPTY_STRING,
-            valuesList);
+         return new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeIds, op, emptySearchFlagList, null, valuesList);
       }
 
    }
@@ -121,14 +119,14 @@ public class PredicateFactoryImpl implements PredicateFactory {
    public Predicate createAttributeExistsSearch(Collection<? extends IAttributeType> attributeTypes) {
       List<String> typeIds = getLongIds(attributeTypes);
       return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("attrType"), SearchOp.EQUALS, emptySearchFlagList,
-         Strings.EMPTY_STRING, typeIds);
+         null, typeIds);
    }
 
    @Override
    public Predicate createRelationExistsSearch(Collection<? extends IRelationType> relationTypes) {
       List<String> typeIds = getLongIds(relationTypes);
       return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("relType"), SearchOp.EQUALS, emptySearchFlagList,
-         Strings.EMPTY_STRING, typeIds);
+         null, typeIds);
    }
 
    @Override
@@ -143,7 +141,7 @@ public class PredicateFactoryImpl implements PredicateFactory {
          }
       }
       return new Predicate(SearchMethod.RELATED_TO, Arrays.asList(side + relationTypeSide.getGuid().toString()),
-         SearchOp.EQUALS, emptySearchFlagList, Strings.EMPTY_STRING, values);
+         SearchOp.EQUALS, emptySearchFlagList, null, values);
    }
 
    private List<String> getLongIds(Collection<? extends Identity<Long>> types) {

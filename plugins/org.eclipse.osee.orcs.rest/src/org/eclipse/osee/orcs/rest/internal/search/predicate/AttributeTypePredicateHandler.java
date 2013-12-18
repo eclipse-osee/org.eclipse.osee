@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
 import org.eclipse.osee.framework.core.enums.Operator;
-import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -53,8 +52,7 @@ public class AttributeTypePredicateHandler implements PredicateHandler {
          MatchTokenCountType countType = getMatchTokenCountType(flags);
          if (values.size() == 1) {
             builder =
-               builder.and(attributeTypes, values.iterator().next(),
-                  TokenDelimiterMatch.custom(predicate.getDelimiter()), ct, orderType, countType);
+               builder.and(attributeTypes, values.iterator().next(), predicate.getDelimiter(), ct, orderType, countType);
          } else {
             for (IAttributeType type : attributeTypes) {
                builder = builder.and(type, getOperator(op), values);

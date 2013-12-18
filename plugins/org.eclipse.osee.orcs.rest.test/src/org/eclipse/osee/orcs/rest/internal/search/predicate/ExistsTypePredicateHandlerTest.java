@@ -10,23 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.search.predicate;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyCollectionOf;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.SearchFlag;
 import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
 import org.eclipse.osee.orcs.rest.model.search.SearchOp;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -138,7 +142,8 @@ public class ExistsTypePredicateHandlerTest {
       String attrType2 = "34567";
       List<String> values = Arrays.asList(attrType1, attrType2);
       Predicate testPredicate =
-         new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, SearchOp.EQUALS, flags, "", values);
+         new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, SearchOp.EQUALS, flags, TokenDelimiterMatch.ANY,
+            values);
       handler.handle(builder, testPredicate);
 
       verify(builder).andExists(attrTypeSideCaptor.capture());
@@ -157,14 +162,17 @@ public class ExistsTypePredicateHandlerTest {
       String value = "12A4G";
       List<String> values = Collections.singletonList(value);
       Predicate testPredicate =
-         new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, SearchOp.EQUALS, flags, "", values);
+         new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, SearchOp.EQUALS, flags, TokenDelimiterMatch.ANY,
+            values);
       handler.handle(builder, testPredicate);
       verify(builder, never()).andExists(anyCollectionOf(IAttributeType.class));
 
       value = "12A4G";
       typeParameters = Collections.singletonList("relType");
       values = Collections.singletonList(value);
-      testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, SearchOp.EQUALS, flags, "", values);
+      testPredicate =
+         new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, SearchOp.EQUALS, flags, TokenDelimiterMatch.ANY,
+            values);
       handler.handle(builder, testPredicate);
       verify(builder, never()).andExists(any(IRelationTypeSide.class));
    }
@@ -173,8 +181,8 @@ public class ExistsTypePredicateHandlerTest {
    public void testBadValuesThrowException() throws OseeCoreException {
       ExistsTypePredicateHandler handler = new ExistsTypePredicateHandler();
       Predicate testPredicate =
-         new Predicate(SearchMethod.ATTRIBUTE_TYPE, Collections.singletonList("relType"), SearchOp.EQUALS, null, "",
-            Collections.singletonList("A12A4G"));
+         new Predicate(SearchMethod.ATTRIBUTE_TYPE, Collections.singletonList("relType"), SearchOp.EQUALS, null,
+            TokenDelimiterMatch.ANY, Collections.singletonList("A12A4G"));
       handler.handle(builder, testPredicate);
    }
 }

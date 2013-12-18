@@ -10,33 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
-import java.util.regex.Pattern;
-
 /**
  * @author John Misinco
  */
-public class TokenDelimiterMatch implements QueryOption {
-   public static final TokenDelimiterMatch EXACT = new TokenDelimiterMatch(Pattern.compile(""));
-   public static final TokenDelimiterMatch WHITESPACE = new TokenDelimiterMatch(Pattern.compile("\\s+"));
-   public static final TokenDelimiterMatch ANY = new TokenDelimiterMatch(Pattern.compile("([^a-zA-Z0-9])+"));
-
-   private final Pattern pattern;
-
-   private TokenDelimiterMatch(Pattern pattern) {
-      this.pattern = pattern;
-   }
-
-   public Pattern getPattern() {
-      return pattern;
-   }
+public enum TokenDelimiterMatch implements QueryOption {
+   EXACT,
+   WHITESPACE,
+   ANY;
 
    @Override
    public void accept(OptionVisitor visitor) {
       visitor.asTokenDelimiterMatch(this);
    }
 
-   public static TokenDelimiterMatch custom(String regex) {
-      return new TokenDelimiterMatch(Pattern.compile(regex));
+   public static TokenDelimiterMatch fromString(String delimiter) {
+      TokenDelimiterMatch toReturn = ANY;
+      for (TokenDelimiterMatch value : values()) {
+         if (value.name().equals(delimiter)) {
+            toReturn = value;
+            break;
+         }
+      }
+      return toReturn;
    }
 
 }

@@ -261,6 +261,7 @@ public class XmlTextInputStream extends BufferedInputStream {
                }
             }
          }
+
          if (available() <= 0) {
             value = -1;
          }

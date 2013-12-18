@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
@@ -89,7 +90,8 @@ public class DslTranslatorImpl_V1 implements DslTranslator {
 
       List<String> values = Arrays.asList(value.split(",\\s*"));
       List<String> typeParams = Arrays.asList(typeParameters.split(",\\s*"));
-      return new Predicate(searchMethod, typeParams, searchOp, searchFlags, delimiter, values);
+      TokenDelimiterMatch delim = TokenDelimiterMatch.fromString(delimiter);
+      return new Predicate(searchMethod, typeParams, searchOp, searchFlags, delim, values);
    }
 
    private String getMatch(Matcher m) {

@@ -65,8 +65,8 @@ public class SearchDslTest {
       when(queryFactory.fromBranch(any(IOseeBranch.class))).thenReturn(builder);
 
       Predicate predicate =
-         new Predicate(SearchMethod.ATTRIBUTE_TYPE, Arrays.asList("1000000000000070"), SearchOp.EQUALS, null,
-            Strings.EMPTY_STRING, Arrays.asList("AtsAdmin"));
+         new Predicate(SearchMethod.ATTRIBUTE_TYPE, Arrays.asList("1000000000000070"), SearchOp.EQUALS, null, null,
+            Arrays.asList("AtsAdmin"));
       SearchRequest params =
          new SearchRequest(BRANCH.getGuid(), Arrays.asList(predicate), Strings.EMPTY_STRING, Strings.EMPTY_STRING, 0,
             false);

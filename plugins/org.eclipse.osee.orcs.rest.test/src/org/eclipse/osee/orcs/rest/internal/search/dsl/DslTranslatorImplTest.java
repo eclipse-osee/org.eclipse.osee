@@ -12,13 +12,14 @@ package org.eclipse.osee.orcs.rest.internal.search.dsl;
 
 import java.util.List;
 import java.util.Random;
-import org.junit.Assert;
+import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.SearchFlag;
 import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
 import org.eclipse.osee.orcs.rest.model.search.SearchOp;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -160,19 +161,19 @@ public class DslTranslatorImplTest {
       Assert.assertEquals(SearchOp.GREATER_THAN, predicate.getOp());
       Assert.assertTrue(predicate.getValues().contains("AtsAdmin"));
 
-      test = "[t:ids&tp:1000000000000070&op:<&v:AtsAdmin&d:'bo'b]''']";
-      test += "&[t:attrType&tp:1000000000000070&op:==&v:TestAdmin&d:'bo'b]'[]&]'']";
+      test = "[t:ids&tp:1000000000000070&op:<&v:AtsAdmin&d:ANY']";
+      test += "&[t:attrType&tp:1000000000000070&op:==&v:TestAdmin&d:ANY']";
       predicates = translator.translate(test);
       Assert.assertEquals(2, predicates.size());
       predicate = predicates.get(0);
       Assert.assertEquals(SearchMethod.IDS, predicate.getType());
       Assert.assertEquals(SearchOp.LESS_THAN, predicate.getOp());
       Assert.assertTrue(predicate.getValues().contains("AtsAdmin"));
-      Assert.assertEquals("bo'b]''", predicate.getDelimiter());
+      Assert.assertEquals(TokenDelimiterMatch.ANY, predicate.getDelimiter());
       predicate = predicates.get(1);
       Assert.assertEquals(SearchMethod.ATTRIBUTE_TYPE, predicate.getType());
       Assert.assertEquals(SearchOp.EQUALS, predicate.getOp());
       Assert.assertTrue(predicate.getValues().contains("TestAdmin"));
-      Assert.assertEquals("bo'b]'[]&]'", predicate.getDelimiter());
+      Assert.assertEquals(TokenDelimiterMatch.ANY, predicate.getDelimiter());
    }
 }

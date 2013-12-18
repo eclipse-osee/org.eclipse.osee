@@ -26,7 +26,7 @@ import org.eclipse.osee.orcs.rest.model.search.SearchFlag;
  */
 public class OptionConverter implements OptionVisitor, RestSearchOptions {
    private final List<SearchFlag> flags = new LinkedList<SearchFlag>();
-   private String delimiter;
+   private TokenDelimiterMatch delimiter;
 
    private StringBuilder buffer;
 
@@ -35,10 +35,8 @@ public class OptionConverter implements OptionVisitor, RestSearchOptions {
       for (QueryOption option : options) {
          option.accept(this);
       }
-      if (buffer == null) {
-         delimiter = TokenDelimiterMatch.ANY.getPattern().pattern();
-      } else {
-         delimiter = buffer.toString();
+      if (delimiter == null) {
+         delimiter = TokenDelimiterMatch.ANY;
       }
    }
 
@@ -73,7 +71,7 @@ public class OptionConverter implements OptionVisitor, RestSearchOptions {
       if (buffer == null) {
          buffer = new StringBuilder();
       }
-      buffer.append(option.getPattern().pattern());
+      buffer.append(option.name());
    }
 
    @Override
@@ -82,8 +80,8 @@ public class OptionConverter implements OptionVisitor, RestSearchOptions {
    }
 
    @Override
-   public String getDelimiter() {
-      return delimiter.toString();
+   public TokenDelimiterMatch getDelimiter() {
+      return delimiter;
    }
 
 };

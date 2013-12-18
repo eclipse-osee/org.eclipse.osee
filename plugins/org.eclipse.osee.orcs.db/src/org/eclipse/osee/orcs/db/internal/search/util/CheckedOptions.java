@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.util;
 
-import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
 import org.eclipse.osee.framework.core.enums.OptionVisitor;
@@ -51,8 +50,8 @@ public class CheckedOptions implements OptionVisitor {
       return countType;
    }
 
-   public Pattern getDelimiter() {
-      return delimiter.getPattern();
+   public TokenDelimiterMatch getDelimiter() {
+      return delimiter;
    }
 
    public void accept(QueryOption... options) {

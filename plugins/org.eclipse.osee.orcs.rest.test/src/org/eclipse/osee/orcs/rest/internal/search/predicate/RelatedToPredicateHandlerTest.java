@@ -10,14 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.search.predicate;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
@@ -25,6 +26,7 @@ import org.eclipse.osee.orcs.rest.model.search.SearchFlag;
 import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
 import org.eclipse.osee.orcs.rest.model.search.SearchOp;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -54,8 +56,8 @@ public class RelatedToPredicateHandlerTest {
       RelatedToPredicateHandler handler = new RelatedToPredicateHandler();
       List<SearchFlag> emptySearchFlags = Collections.emptyList();
       Predicate testPredicate =
-         new Predicate(SearchMethod.RELATED_TO, Arrays.asList("A1", "B2"), SearchOp.EQUALS, emptySearchFlags, "",
-            Arrays.asList("4", "5"));
+         new Predicate(SearchMethod.RELATED_TO, Arrays.asList("A1", "B2"), SearchOp.EQUALS, emptySearchFlags,
+            TokenDelimiterMatch.ANY, Arrays.asList("4", "5"));
       handler.handle(builder, testPredicate);
       verify(builder, times(2)).andRelatedToLocalIds(rtsCaptor.capture(), idsCaptor.capture());
       List<IRelationTypeSide> rts = rtsCaptor.getAllValues();
@@ -73,8 +75,8 @@ public class RelatedToPredicateHandlerTest {
       RelatedToPredicateHandler handler = new RelatedToPredicateHandler();
       List<SearchFlag> emptySearchFlags = Collections.emptyList();
       Predicate testPredicate =
-         new Predicate(SearchMethod.RELATED_TO, Arrays.asList("A1", "B2"), SearchOp.EQUALS, emptySearchFlags, "",
-            Arrays.asList(GUID.create()));
+         new Predicate(SearchMethod.RELATED_TO, Arrays.asList("A1", "B2"), SearchOp.EQUALS, emptySearchFlags,
+            TokenDelimiterMatch.ANY, Arrays.asList(GUID.create()));
       handler.handle(builder, testPredicate);
    }
 

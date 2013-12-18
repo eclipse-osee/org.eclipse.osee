@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.search.util;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.MatchResult;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 
 /**
@@ -45,18 +44,18 @@ public class MatchTokenOrderProcessor implements TokenOrderProcessor {
    }
 
    @Override
-   public boolean processToken(String token, MatchResult match) {
+   public boolean processToken(String token, MatchLocation match) {
       if (!tokensToSearch.get(matchIdx).equals(token)) {
          matchIdx = 0;
       }
 
       if (tokensToSearch.get(matchIdx).equals(token)) {
          if (matchIdx == 0) {
-            matchStart = match.start();
+            matchStart = match.getStartPosition();
          }
          matchIdx++;
          if (matchIdx == numTokensToMatch) {
-            locations.add(createMatchLocation(matchStart, match.end()));
+            locations.add(createMatchLocation(matchStart, match.getEndPosition()));
             matchIdx = 0;
          }
       }

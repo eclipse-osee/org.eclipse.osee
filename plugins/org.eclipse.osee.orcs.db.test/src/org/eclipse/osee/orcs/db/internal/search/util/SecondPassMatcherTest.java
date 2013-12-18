@@ -89,12 +89,6 @@ public class SecondPassMatcherTest {
          getLocs());
       addTest(data, matcher, "What     does", "what does", CaseType.IGNORE_CASE, TokenDelimiterMatch.WHITESPACE,
          TokenOrderType.MATCH_ORDER, MatchTokenCountType.MATCH_TOKEN_COUNT, false, getLocs(1, 13));
-      addTest(data, matcher, "What->does] this mean", "what does   this", CaseType.IGNORE_CASE,
-         TokenDelimiterMatch.custom("(->|\\s|])+"), TokenOrderType.MATCH_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT,
-         false, getLocs(1, 16));
-      addTest(data, matcher, "What->does] this mean", "what does   this", CaseType.IGNORE_CASE,
-         TokenDelimiterMatch.custom("(->|\\s|])+"), TokenOrderType.MATCH_ORDER, MatchTokenCountType.MATCH_TOKEN_COUNT,
-         false, getLocs());
       addTest(data, matcher, "What->does] .this. mean", "What does   tHis", CaseType.IGNORE_CASE,
          TokenDelimiterMatch.ANY, TokenOrderType.MATCH_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT, false,
          getLocs(1, 17));
@@ -136,12 +130,6 @@ public class SecondPassMatcherTest {
          getLocs());
       addTest(data, matcher, "What     does", "what does", CaseType.IGNORE_CASE, TokenDelimiterMatch.WHITESPACE,
          TokenOrderType.MATCH_ORDER, MatchTokenCountType.MATCH_TOKEN_COUNT, true, getLocs(1, 13));
-      addTest(data, matcher, "What->does] this mean", "what does   this", CaseType.IGNORE_CASE,
-         TokenDelimiterMatch.custom("(->|\\s|])+"), TokenOrderType.MATCH_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT,
-         true, getLocs(1, 16));
-      addTest(data, matcher, "What->does] this mean", "what does   this", CaseType.IGNORE_CASE,
-         TokenDelimiterMatch.custom("(->|\\s|])+"), TokenOrderType.MATCH_ORDER, MatchTokenCountType.MATCH_TOKEN_COUNT,
-         true, getLocs());
       addTest(data, matcher, "What->does] .this. mean", "What does   tHis", CaseType.IGNORE_CASE,
          TokenDelimiterMatch.ANY, TokenOrderType.MATCH_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT, true,
          getLocs(1, 17));

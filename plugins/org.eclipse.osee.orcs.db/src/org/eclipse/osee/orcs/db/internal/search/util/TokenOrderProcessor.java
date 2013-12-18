@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.util;
 
 import java.util.List;
-import java.util.regex.MatchResult;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 
 /**
@@ -26,7 +25,7 @@ public interface TokenOrderProcessor {
    /**
     * Returns true when all match criteria have been met
     */
-   boolean processToken(String token, MatchResult match);
+   boolean processToken(String token, MatchLocation match);
 
    List<MatchLocation> getLocations();
 
