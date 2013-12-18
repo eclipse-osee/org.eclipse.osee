@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0">
+	<OCD name="ldap.authentication.provider.metatypes" description="LDAP Authentication Provider component config" id="ldap.authentication.provider.metatypes"
+		localization="org.eclipse.osee.authentication.ldap.LdapConfiguration">
+
+		<AD name="LDAP Server Address" id="ldap.server.address" required="true" type="String" />
+		<AD name="LDAP Credentials To Use" id="ldap.credential.source" required="true" type="String" default="SYSTEM_CREDENTIALS">
+			<Option label="System Defined" value="SYSTEM_CREDENTIALS" />
+			<Option label="User Credentials" value="USER_CREDENTIALS" />
+		</AD>
+		<AD name="LDAP Server User Name" id="ldap.username" required="true" type="String" default="null" />
+		<AD name="LDAP Server Password" id="ldap.password" required="true" type="Password" default="null" />
+
+		<AD name="LDAP Server Authentication Type" id="ldap.authentication.type" required="true" type="String" default="SIMPLE">
+			<Option label="None" value="NONE" />
+			<Option label="Simple" value="SIMPLE" />
+			<Option label="Digest MD5" value="DIGEST_MD5" />
+			<Option label="Other" value="EXTERNAL" />
+			<Option label="Gss API" value="GSSAPI" />
+		</AD>
+		<AD name="LDAP SSL Verify Enabled" id="ldap.ssl.verify.enabled" required="true" type="String" default="false" />
+
+		<AD name="LDAP convert username to lowercase on login" id="ldap.username.to.lowercase.enabled" required="true" type="Boolean"
+			default="false" />
+
+		<AD name="LDAP Read Timeout" id="ldap.read.timeout" required="true" type="Long" default="-1" />
+		<AD name="LDAP Search Referral Handling" id="ldap.referral.handling" required="true" type="String" default="IGNORE">
+			<Option label="Ignore" value="IGNORE" />
+			<Option label="Follow" value="FOLLOW" />
+		</AD>
+
+
+		<AD name="LDAP Accounts Search Base" id="ldap.account.search.base" required="true" type="String" />
+		<AD name="LDAP Accounts Search Scope" id="ldap.account.search.scope" required="true" type="String" default="SUBTREE_SCOPE">
+			<Option label="Object Scope" value="OBJECT_SCOPE" />
+			<Option label="One Level Scope" value="ONE_LEVEL_SCOPE" />
+			<Option label="Subtree" value="SUBTREE_SCOPE" />
+		</AD>
+
+		<AD name="LDAP Accounts Search Pattern" id="ldap.account.search.base" required="false" type="String" />
+		<AD name="LDAP Accounts Search User Name Variable" id="ldap.account.username.bind.variable" required="false" type="String" />
+		<AD name="LDAP Accounts Search User Name Pattern" id="ldap.account.username.pattern" required="false" type="String" />
+		<AD name="LDAP Accounts Search Display Name Pattern" id="ldap.account.display.name" required="false" type="String" />
+		<AD name="LDAP Accounts Search Email Pattern" id="ldap.account.email.address" required="false" type="String" />
+		
+		<AD name="LDAP Groups Search Base" id="ldap.group.search.base" required="true" type="String" />
+		<AD name="LDAP Groups Search Scope" id="ldap.group.search.scope" required="true" type="String" default="SUBTREE_SCOPE">
+			<Option label="Object Scope" value="OBJECT_SCOPE" />
+			<Option label="One Level Scope" value="ONE_LEVEL_SCOPE" />
+			<Option label="Subtree" value="SUBTREE_SCOPE" />
+		</AD>
+
+		<AD name="LDAP Groups Search Pattern" id="ldap.group.search.pattern" required="false" type="String" />
+		<AD name="LDAP Groups Search Name Pattern" id="ldap.group.name.pattern" required="false" type="String" />
+		<AD name="LDAP Groups Search By Group Member Pattern" id="group.by.group.member.search.pattern" required="false" type="String" />
+		<AD name="LDAP Groups Member Of Group" id="ldap.group.member.of.groups" required="false" type="String" />
+
+	</OCD>
+	<Designate pid="org.eclipse.osee.authentication.ldap.internal.LdapAuthenticationProvider">
+		<Object ocdref="ldap.authentication.provider.metatypes" />
+	</Designate>
+</metatype:MetaData>
