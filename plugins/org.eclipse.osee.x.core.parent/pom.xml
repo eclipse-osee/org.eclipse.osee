@@ -36,6 +36,9 @@
 		<module>../../plugins/org.eclipse.osee.framework.jdk.core</module>
 		<module>../../plugins/org.eclipse.osee.framework.jdk.core.test</module>
 
+		<module>../../plugins/org.eclipse.osee.authentication.admin</module>
+		<module>../../plugins/org.eclipse.osee.authentication.admin.test</module>
+
 		<module>../../plugins/org.eclipse.osee.account.admin</module>
 		<module>../../plugins/org.eclipse.osee.account.admin.test</module>
 
