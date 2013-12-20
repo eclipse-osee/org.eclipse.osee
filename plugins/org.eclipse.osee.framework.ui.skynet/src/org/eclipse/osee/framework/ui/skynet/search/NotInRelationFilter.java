@@ -14,19 +14,19 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.NotInRelationSearch;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
 import org.eclipse.swt.widgets.Control;
 
 /**
  * @author Ryan D. Brooks
  */
-public class InRelationFilter extends SearchFilter {
+public class NotInRelationFilter extends SearchFilter {
    private final ComboViewer relationTypeList;
    private final ComboViewer relationSideList;
 
-   public InRelationFilter(Control optionsControl, ComboViewer relationTypeList, ComboViewer relationSideList) {
-      super("Artifact in Relation", optionsControl);
+   public NotInRelationFilter(Control optionsControl, ComboViewer relationTypeList, ComboViewer relationSideList) {
+      super("Artifact not in Relation", optionsControl);
       this.relationTypeList = relationTypeList;
       this.relationSideList = relationSideList;
    }
@@ -43,7 +43,7 @@ public class InRelationFilter extends SearchFilter {
       } catch (OseeArgumentException ex) {
          // do nothing, user wants either
       }
-      ISearchPrimitive primitive = new InRelationSearch(relationType, sideAName);
+      ISearchPrimitive primitive = new NotInRelationSearch(relationType, sideAName);
 
       filterViewer.addItem(primitive, getFilterName(), typeName, sideName);
    }
@@ -55,7 +55,7 @@ public class InRelationFilter extends SearchFilter {
 
    @Override
    public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
-      ISearchPrimitive primitive = InRelationSearch.getPrimitive(storageString);
+      ISearchPrimitive primitive = NotInRelationSearch.getPrimitive(storageString);
       filterViewer.addItem(primitive, getFilterName(), type, value);
    }
 }

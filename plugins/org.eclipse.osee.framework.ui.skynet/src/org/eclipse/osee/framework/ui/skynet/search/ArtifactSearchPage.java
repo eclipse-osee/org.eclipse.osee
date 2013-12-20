@@ -87,10 +87,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    private static ISearchPageContainer aContainer;
 
    private Button addButton;
-   private Button allButton;
-   private Button atLeastOneButton;
    private ComboViewer searchTypeList;
-   private Button notButton;
 
    private StackLayout selectionLayout;
    private static FilterTableViewer filterviewer;
@@ -122,7 +119,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
          addFilterControls(mainComposite);
          addTableControls(mainComposite);
-         addSearchScope(mainComposite);
          addFilterListeners();
 
          setControl(parent);
@@ -153,24 +149,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       return branch;
    }
 
-   /**
-    * Controls to allow the user to select wether all the filters are combined using AND or OR
-    */
-   private void addSearchScope(Composite composite) {
-      Group allSelectionGroup = new Group(composite, SWT.NONE);
-      allSelectionGroup.setText("Artifacts that match");
-      allSelectionGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-      allSelectionGroup.setLayout(new GridLayout(2, false));
-
-      allButton = new Button(allSelectionGroup, SWT.RADIO);
-      allButton.setText("All filters (AND)");
-      allButton.setSelection(true);
-
-      atLeastOneButton = new Button(allSelectionGroup, SWT.RADIO);
-      atLeastOneButton.setText("At least one filter (OR)");
-   }
-
    private void createArtifactTypeSearchControls(Composite optionsComposite) {
       artifactTypeControls = new Composite(optionsComposite, SWT.NONE);
       artifactTypeControls.setLayout(new GridLayout(1, true));
@@ -195,12 +173,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       addToSearchTypeList(new ArtifactTypeFilter(artifactTypeControls, artifactTypeList));
    }
 
-   private void createOrphanSearchControls(Composite optionsComposite) {
-      //uses the artifactTypeList from Artifact_type_filter
-      artifactTypeList.getList().select(0);
-      addToSearchTypeList(new OrphanSearchFilter("Orphan Search", artifactTypeControls, artifactTypeList));
-   }
-
    private void addToSearchTypeList(SearchFilter filter) {
       searchTypeList.add(filter.getFilterName());
       searchTypeList.setData(filter.getFilterName(), filter);
@@ -217,7 +189,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       final ComboViewer relationSideList = new ComboViewer(relationControls, SWT.DROP_DOWN | SWT.READ_ONLY);
       relationSideList.setContentProvider(new SearchContentProvider());
       relationSideList.setLabelProvider(new StringSearchLabelProvider());
-      relationSideList.setSorter(new SearchSorter());
 
       try {
          for (RelationType linkDescriptor : RelationTypeManager.getValidTypes(getSelectedBranch())) {
@@ -236,6 +207,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
                (RelationType) relationTypeList.getData(relationTypeList.getCombo().getText());
             relationSideList.add(linkDescriptor.getSideAName());
             relationSideList.add(linkDescriptor.getSideBName());
+            relationSideList.add("-Either-");
             relationSideList.getCombo().select(0);
          }
       });
@@ -247,10 +219,12 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
          RelationType linkDescriptor = (RelationType) relationTypeList.getData(relationTypeList.getCombo().getText());
          relationSideList.add(linkDescriptor.getSideAName());
          relationSideList.add(linkDescriptor.getSideBName());
+         relationSideList.add("-Either-");
          relationSideList.getCombo().select(0);
       }
 
       addToSearchTypeList(new InRelationFilter(relationControls, relationTypeList, relationSideList));
+      addToSearchTypeList(new NotInRelationFilter(relationControls, relationTypeList, relationSideList));
    }
 
    private void createAttributeSearchControls(Composite optionsComposite) {
@@ -321,10 +295,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       searchTypeList.setLabelProvider(new StringSearchLabelProvider());
       searchTypeList.setSorter(new SearchSorter());
 
-      notButton = new Button(composite, SWT.CHECK);
-      notButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.FILL, true, false));
-      notButton.setText("Not Equal");
-
       selectionLayout = new StackLayout();
 
       Composite optionsComposite = new Composite(filterGroup, SWT.BORDER);
@@ -334,7 +304,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       optionsComposite.setLayout(selectionLayout);
       createAttributeSearchControls(optionsComposite);
       createArtifactTypeSearchControls(optionsComposite);
-      createOrphanSearchControls(optionsComposite);
       createRelationSearchControls(optionsComposite);
 
       searchTypeList.getCombo().setVisibleItemCount(7);
@@ -355,7 +324,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
          @Override
          public void widgetSelected(SelectionEvent e) {
             SearchFilter searchFilter = (SearchFilter) searchTypeList.getData(searchTypeList.getCombo().getText());
-            searchFilter.setNot(notButton.getSelection());
             searchFilter.addFilterTo(filterviewer);
             updateOKStatus();
          }
@@ -421,7 +389,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    @Override
    public boolean performAction() {
       NewSearchUI.activateSearchResultView();
-      filterviewer.getFilterList().setAllSelected(allButton.getSelection());
+      filterviewer.getFilterList().setAllSelected(true);
       AbstractArtifactSearchQuery searchQuery =
          new FilterArtifactSearchQuery(filterviewer.getFilterList(), getSelectedBranch());
       NewSearchUI.runQueryInBackground(searchQuery);
@@ -431,7 +399,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
    @Override
    public boolean performReplace() {
-      filterviewer.getFilterList().setAllSelected(allButton.getSelection());
+      filterviewer.getFilterList().setAllSelected(true);
       AbstractArtifactSearchQuery searchQuery =
          new FilterArtifactSearchQuery(filterviewer.getFilterList(), getSelectedBranch());
 

@@ -10,42 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import java.util.List;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
  * @author Robert A. Fisher
  */
 public class ArtifactTypeSearch implements ISearchPrimitive {
-   private final Identity<Long> artifactType;
-   private final DeprecatedOperator operation;
-   private static final String tables = "osee_artifact";
-   private final static String TOKEN = ";";
+   private final IArtifactType artifactType;
 
-   public ArtifactTypeSearch(Identity<Long> type, DeprecatedOperator operation) {
+   public ArtifactTypeSearch(IArtifactType type) {
       super();
       this.artifactType = type;
-      this.operation = operation;
-   }
-
-   @Override
-   public String getArtIdColName() {
-      return "art_id";
-   }
-
-   @Override
-   public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) throws OseeCoreException {
-      String sql = "osee_artifact.art_type_id = ?";
-      dataList.add(artifactType.getGuid());
-      return sql;
-   }
-
-   @Override
-   public String getTableSql(List<Object> dataList, IOseeBranch branch) {
-      return tables;
    }
 
    @Override
@@ -55,17 +31,17 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
 
    @Override
    public String getStorageString() {
-      return artifactType.getGuid().toString() + TOKEN + operation.name();
+      return artifactType.getGuid().toString();
    }
 
    public static ArtifactTypeSearch getPrimitive(String storageString) {
-      String[] values = storageString.split(TOKEN);
-      if (values.length != 2) {
-         throw new IllegalStateException("Value for " + ArtifactTypeSearch.class.getSimpleName() + " not parsable");
-      }
+      IArtifactType type = TokenFactory.createArtifactType(Long.parseLong(storageString), "SearchArtType");
+      return new ArtifactTypeSearch(type);
+   }
 
-      Identity<Long> identity = new BaseIdentity<Long>(Long.valueOf(values[0]));
-      return new ArtifactTypeSearch(identity, DeprecatedOperator.valueOf(values[1]));
+   @Override
+   public void addToQuery(QueryBuilderArtifact builder) {
+      builder.andIsOfType(artifactType);
    }
 
 }

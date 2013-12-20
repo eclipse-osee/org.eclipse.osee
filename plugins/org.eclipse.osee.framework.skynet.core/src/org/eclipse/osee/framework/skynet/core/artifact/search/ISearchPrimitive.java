@@ -10,34 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import java.util.List;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public interface ISearchPrimitive {
-
-   /**
-    * The sql operators that will provide a set of art_id's for the given search.
-    * 
-    * @return Return SQL string
-    * @throws OseeCoreException TODO
-    */
-   public String getCriteriaSql(List<Object> dataList, IOseeBranch branch) throws OseeCoreException;
-
-   /**
-    * The name of the column to use as the art_id column.
-    * 
-    * @return Return artifact column name string
-    */
-   public String getArtIdColName();
-
-   /**
-    * Returns a list of the tables, comma separated, that are necessary for the sql statement returned from getSql().
-    * 
-    * @return tables string
-    * @see ISearchPrimitive#getCriteriaSql(List, IOseeBranch)
-    */
-   public String getTableSql(List<Object> dataList, IOseeBranch branch);
 
    /**
     * Returns a string which can be used to later re-acquire the primitive in full
@@ -45,4 +19,7 @@ public interface ISearchPrimitive {
     * @return Return storage string
     */
    public String getStorageString();
+
+   void addToQuery(QueryBuilderArtifact builder);
+
 }

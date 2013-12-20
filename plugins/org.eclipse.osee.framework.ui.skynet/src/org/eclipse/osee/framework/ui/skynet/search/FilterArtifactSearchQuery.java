@@ -11,14 +11,13 @@
 package org.eclipse.osee.framework.ui.skynet.search;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryBuilderArtifact;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModel;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
 
@@ -38,30 +37,25 @@ public class FilterArtifactSearchQuery extends AbstractLegacyArtifactSearchQuery
    @Override
    public Collection<Artifact> getArtifacts() throws OseeCoreException {
       boolean firstTime = true;
-      List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
+
+      QueryBuilderArtifact queryBuilderArtifact = ArtifactQuery.createQueryBuilder(branch);
 
       for (FilterModel model : filterList.getFilters()) {
-         criteria.add(model.getSearchPrimitive());
+         model.getSearchPrimitive().addToQuery(queryBuilderArtifact);
 
          if (!firstTime) {
-            if (filterList.isAllSelected()) {
-               criteriaLabel += " and ";
-            } else {
-               criteriaLabel += " or ";
-            }
+            criteriaLabel += " and ";
          }
-
          criteriaLabel += model;
          firstTime = false;
       }
 
-      MaxMatchCountConfirmer confirmer = new MaxMatchCountConfirmer();
-      Collection<Artifact> artifacts =
-         ArtifactPersistenceManager.getArtifacts(criteria, filterList.isAllSelected(), branch, confirmer);
-      if (confirmer.isConfirmed()) {
-         return artifacts;
+      List<Artifact> toReturn = new LinkedList<Artifact>();
+      for (Artifact art : queryBuilderArtifact.getResults()) {
+         toReturn.add(art);
       }
-      return Collections.emptyList();
+
+      return toReturn;
    }
 
    @Override

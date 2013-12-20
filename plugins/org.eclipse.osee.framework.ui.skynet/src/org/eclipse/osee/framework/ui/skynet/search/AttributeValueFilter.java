@@ -14,7 +14,6 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.NotSearch;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
@@ -37,13 +36,9 @@ public class AttributeValueFilter extends SearchFilter {
       String typeName = attributeTypeList.getCombo().getText();
       String value = attributeValue.getText();
 
-      OperatorAndValue result = handleWildCard(value);
       IAttributeType attributeType = (IAttributeType) attributeTypeList.getData(typeName);
-      ISearchPrimitive primitive = new AttributeValueSearch(attributeType, result.value, result.operator);
-      if (not) {
-         primitive = new NotSearch(primitive);
-      }
-      filterViewer.addItem(primitive, getFilterName(), typeName, result.value);
+      ISearchPrimitive primitive = new AttributeValueSearch(attributeType, value);
+      filterViewer.addItem(primitive, getFilterName(), typeName, value);
    }
 
    @Override
@@ -54,9 +49,6 @@ public class AttributeValueFilter extends SearchFilter {
    @Override
    public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
       ISearchPrimitive primitive = AttributeValueSearch.getPrimitive(storageString);
-      if (isNotEnabled) {
-         primitive = new NotSearch(primitive);
-      }
       filterViewer.addItem(primitive, getFilterName(), type, value);
    }
 

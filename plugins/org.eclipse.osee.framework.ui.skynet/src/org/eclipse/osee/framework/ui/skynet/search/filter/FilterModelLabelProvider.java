@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.search.filter;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.osee.framework.skynet.core.artifact.search.NotSearch;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -58,11 +57,6 @@ public class FilterModelLabelProvider implements ITableLabelProvider {
       switch (columnIndex) {
          case FilterTableViewer.DELETE_NUM:
             return ImageManager.getImage(FrameworkImage.REMOVE);
-         case FilterTableViewer.SEARCH_NUM:
-            if (((FilterModel) element).getSearchPrimitive() instanceof NotSearch) {
-               return ImageManager.getImage(FrameworkImage.NOT_EQUAL);
-            }
-            break;
       }
       return null;
    }
