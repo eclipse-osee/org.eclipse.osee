@@ -25,5 +25,6 @@ public class Cell implements Xmlizable {
    }
 
    public void initializeFromXml(Document doc) {
+      // do nothing
    }
 }

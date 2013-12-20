@@ -25,5 +25,6 @@ public class Row implements Xmlizable {
    }
 
    public void initializeFromXml(Document doc) {
+      // do nothing
    }
 }

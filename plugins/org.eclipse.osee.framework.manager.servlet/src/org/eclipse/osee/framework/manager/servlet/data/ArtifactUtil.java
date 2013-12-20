@@ -22,7 +22,6 @@ public class ArtifactUtil {
    private static final String URI_BY_GUID =
       "SELECT att.uri FROM osee_artifact art, osee_attribute att, %s txs where art.guid = ? and art.art_id = att.art_id and att.uri is not null and att.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.tx_current = ?";
 
-   @SuppressWarnings("unchecked")
    public static String getUri(String artifactGuid, Branch branch) throws OseeCoreException {
       String sql = String.format(URI_BY_GUID, getTransactionTable(branch));
       return ConnectionHandler.runPreparedQueryFetchString("", sql, artifactGuid, branch.getId(),

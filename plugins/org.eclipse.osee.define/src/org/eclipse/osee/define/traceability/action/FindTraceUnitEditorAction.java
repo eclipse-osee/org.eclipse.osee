@@ -47,9 +47,11 @@ public class FindTraceUnitEditorAction implements IEditorActionDelegate {
 
    @Override
    public void selectionChanged(IAction action, ISelection selection) {
+      // do nothing
    }
 
    @Override
    public void setActiveEditor(IAction action, IEditorPart targetEditor) {
+      // do nothing
    }
 }

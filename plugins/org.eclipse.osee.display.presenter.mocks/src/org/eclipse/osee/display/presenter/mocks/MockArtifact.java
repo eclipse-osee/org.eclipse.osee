@@ -256,7 +256,7 @@ public class MockArtifact implements ArtifactReadable {
 
    @Override
    public ArtifactReadable getParent() throws OseeCoreException {
-      return null;
+      return parent;
    }
 
    @Override

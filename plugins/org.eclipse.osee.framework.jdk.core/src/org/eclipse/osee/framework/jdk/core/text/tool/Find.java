@@ -90,33 +90,36 @@ public class Find {
       File resultFile = new File("results.txt");
       BufferedWriter out = new BufferedWriter(new FileWriter(resultFile));
 
-      List<File> files = Lib.recursivelyListFiles(new File(args[1]), Pattern.compile(args[2]));
-      System.out.println("Searching " + files.size() + " files...");
-      if (files.isEmpty()) {
-         return;
+      try {
+         List<File> files = Lib.recursivelyListFiles(new File(args[1]), Pattern.compile(args[2]));
+         System.out.println("Searching " + files.size() + " files...");
+         if (files.isEmpty()) {
+            return;
+         }
+
+         FileToBufferConvert toBuffer = null;
+         if (Boolean.valueOf(args[6]).booleanValue()) {
+            toBuffer = new StripBlockComments();
+         } else {
+            toBuffer = simpleToBuffer;
+         }
+
+         Find app = new Find(patterns, files, toBuffer);
+         app.setRegionPadding(Integer.parseInt(args[3]), Integer.parseInt(args[4]));
+
+         if (Boolean.valueOf(args[5]).booleanValue()) {
+            app.findMeNot();
+         } else {
+            app.find(999999, true);
+         }
+         OutputStreamWriter stdOut = new OutputStreamWriter(System.out);
+         stdOut.write(resultFile.getAbsolutePath());
+
+         app.writeUnusedPatterns(stdOut);
+         app.getResults().writeFindResutls(out);
+      } finally {
+         out.close();
       }
-
-      FileToBufferConvert toBuffer = null;
-      if (Boolean.valueOf(args[6]).booleanValue()) {
-         toBuffer = new StripBlockComments();
-      } else {
-         toBuffer = simpleToBuffer;
-      }
-
-      Find app = new Find(patterns, files, toBuffer);
-      app.setRegionPadding(Integer.parseInt(args[3]), Integer.parseInt(args[4]));
-
-      if (Boolean.valueOf(args[5]).booleanValue()) {
-         app.findMeNot();
-      } else {
-         app.find(999999, true);
-      }
-      OutputStreamWriter stdOut = new OutputStreamWriter(System.out);
-      stdOut.write(resultFile.getAbsolutePath());
-
-      app.writeUnusedPatterns(stdOut);
-      app.getResults().writeFindResutls(out);
-      out.close();
    }
 
    public void setRegionPadding(int precedingCount, int trailingCount) {

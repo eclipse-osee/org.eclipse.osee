@@ -72,7 +72,7 @@ public final class ComponentUtility {
    }
 
    public static SearchPresenter<?, ?> getPresenter(Component component) {
-      SearchPresenter presenter = null;
+      SearchPresenter<?, ?> presenter = null;
       if (isAccessible(component)) {
          Application app = component.getApplication();
          if (app instanceof HasPresenter) {

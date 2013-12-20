@@ -11,11 +11,10 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.framework.jdk.core.type.Named;
 
 /**
  * @author Ryan D. Brooks
  */
 public interface IOseeBranch extends Identifiable<String> {
-   // composition interface requires no additional methods,fields
+   // composition interface requires no additional methods,fields 
 }

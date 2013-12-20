@@ -278,7 +278,7 @@ public class MockAtsWebSearchPresenter<T extends AtsSearchHeaderComponent, K ext
       }
    }
 
-   public static AtsSearchPresenter getInstance() {
+   public static AtsSearchPresenter<?, ?> getInstance() {
       return atsBackend;
    }
 

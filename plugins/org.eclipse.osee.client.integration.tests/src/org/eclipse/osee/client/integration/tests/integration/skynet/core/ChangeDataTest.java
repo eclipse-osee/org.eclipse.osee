@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
-import static junit.framework.Assert.assertEquals;
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.client.demo.DemoBranches;

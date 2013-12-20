@@ -31,6 +31,7 @@ public class BaseIdentity<T> implements Identity<T> {
       return getGuid().hashCode();
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public boolean equals(Object obj) {
       boolean equal = false;

@@ -24,10 +24,12 @@ public class MockLogger implements Log {
 
    @Override
    public void trace(String format, Object... args) {
+      // do nothing
    }
 
    @Override
    public void trace(Throwable th, String format, Object... args) {
+      // do nothing
    }
 
    @Override
@@ -37,10 +39,12 @@ public class MockLogger implements Log {
 
    @Override
    public void debug(String format, Object... args) {
+      // do nothing
    }
 
    @Override
    public void debug(Throwable th, String format, Object... args) {
+      // do nothing
    }
 
    @Override
@@ -50,10 +54,12 @@ public class MockLogger implements Log {
 
    @Override
    public void info(String format, Object... args) {
+      // do nothing
    }
 
    @Override
    public void info(Throwable th, String format, Object... args) {
+      // do nothing
    }
 
    @Override
@@ -63,10 +69,12 @@ public class MockLogger implements Log {
 
    @Override
    public void warn(String format, Object... args) {
+      // do nothing
    }
 
    @Override
    public void warn(Throwable th, String format, Object... args) {
+      // do nothing
    }
 
    @Override
@@ -76,10 +84,12 @@ public class MockLogger implements Log {
 
    @Override
    public void error(String format, Object... args) {
+      // do nothing
    }
 
    @Override
    public void error(Throwable th, String format, Object... args) {
+      // do nothing
    }
 
 }

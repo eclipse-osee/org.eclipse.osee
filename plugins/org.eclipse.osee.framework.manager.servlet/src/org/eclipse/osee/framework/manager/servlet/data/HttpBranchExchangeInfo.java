@@ -35,7 +35,6 @@ public class HttpBranchExchangeInfo {
    private boolean deleteExportFile;
    private final PropertyStore options;
 
-   @SuppressWarnings("unchecked")
    public HttpBranchExchangeInfo(HttpServletRequest request) throws Exception {
       this.options = new PropertyStore();
       this.function = null;

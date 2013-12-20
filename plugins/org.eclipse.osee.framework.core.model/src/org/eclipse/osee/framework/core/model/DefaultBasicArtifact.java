@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
  */
 public final class DefaultBasicArtifact extends NamedIdentity<String> implements IBasicArtifact<Object> {
 
-   private static final long serialVersionUID = -4997763989583925345L;
    private final int artId;
 
    public DefaultBasicArtifact(int artId, String guid, String name) {

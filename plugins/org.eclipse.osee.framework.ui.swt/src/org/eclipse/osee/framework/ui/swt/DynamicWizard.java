@@ -119,6 +119,7 @@ public abstract class DynamicWizard implements IWizard {
     */
    @Override
    public void addPages() {
+      // do nothing
    }
 
    @Override

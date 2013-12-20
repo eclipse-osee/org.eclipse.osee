@@ -122,10 +122,12 @@ public class RelationImporter implements RowProcessor {
 
    @Override
    public void processEmptyRow() {
+      // do nothing
    }
 
    @Override
    public void processCommentRow(String[] row) {
+      // do nothing
    }
 
    @Override
@@ -141,5 +143,6 @@ public class RelationImporter implements RowProcessor {
 
    @Override
    public void foundStartOfWorksheet(String sheetName) {
+      // do nothing
    }
 }

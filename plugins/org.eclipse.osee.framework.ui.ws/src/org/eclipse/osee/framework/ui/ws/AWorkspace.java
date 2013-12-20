@@ -201,6 +201,7 @@ public final class AWorkspace {
                recursiveFileFind(fileName, res, matches);
             }
          } catch (CoreException ex) {
+            // do nothing
          }
       }
    }
@@ -224,6 +225,7 @@ public final class AWorkspace {
                recursiveFileFindMatch(regex, res, matches);
             }
          } catch (CoreException ex) {
+            // do nothing
          }
       }
    }

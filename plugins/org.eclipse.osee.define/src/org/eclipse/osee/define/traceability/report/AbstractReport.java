@@ -64,5 +64,6 @@ public abstract class AbstractReport {
    public abstract void process(IProgressMonitor monitor) throws OseeCoreException;
 
    public void clear() {
+      // do nothing
    }
 }

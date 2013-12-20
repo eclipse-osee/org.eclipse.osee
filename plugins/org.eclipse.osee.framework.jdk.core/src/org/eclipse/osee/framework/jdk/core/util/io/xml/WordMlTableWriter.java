@@ -72,17 +72,16 @@ public class WordMlTableWriter extends AbstractSheetWriter {
 
    @Override
    public void writeCellText(Object cellData, int cellIndex) throws IOException {
-	  if(cellData instanceof String){
-		  String cellDataStr = (String)cellData;
-	      str.append(CELL_STRART);
-	      if (cellDataStr != null) {
-	         str.append(cellDataStr);
-	      }
-	      str.append(CELL_END);
-	  }
+      if (cellData instanceof String) {
+         String cellDataStr = (String) cellData;
+         str.append(CELL_STRART);
+         str.append(cellDataStr);
+         str.append(CELL_END);
+      }
    }
 
    @Override
    public void endWorkbook() {
+      // do nothing
    }
 }

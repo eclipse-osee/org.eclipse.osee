@@ -36,6 +36,7 @@ public class JavaJdtTipsAndTricks {
       // JavaTip 02) Content assist after insanceof condition - Cast added for you
       // How: type "obj." > Ctrl-Space > select getLocalizedMessage; Exception cast added automatically 
       if (obj instanceof Exception) {
+         // do nothing
       }
    }
 
@@ -81,6 +82,7 @@ public class JavaJdtTipsAndTricks {
       // How: Select "start" parameter above > Ctrl+1 > assign parameter to new field
    }
 
+   @SuppressWarnings("unused")
    public void quickFixField() {
       // JavaTip 11) Quick-Fix - convert local variable to global
       // How: type 'String str = "this is it";' > select "str" > Ctrl+1 > convert local to field
@@ -134,6 +136,7 @@ public class JavaJdtTipsAndTricks {
       // JavaTip 19) Quick-Fix - cast and assign off instanceof 
       // How: cursor on instanceof > Ctrl+1 > Introduce new local with cast type
       if (obj instanceof String) {
+         // do nothing
       }
 
       // JavaTip 20) Quick-Fix - Inverse boolean expression 
@@ -144,13 +147,14 @@ public class JavaJdtTipsAndTricks {
       // How: perform previous java tip > select outer if statements > Ctrl+1 > Join if statements
       boolean thisVar = false, thatVar = true;
       if (thisVar && !thatVar) {
-
+         // do nothing
       }
 
       // JavaTip 23) Quick-Fix - Add parentheses
       // How: select line below > Ctrl+1 > Add paranoidal parentheses
       boolean a = false, b = true, c = true, d = false;
       if (a == b && c != d) {
+         // do nothing
       }
 
       // JavaTip 24) Quick-Fix - Conditional expresion to if/else and back

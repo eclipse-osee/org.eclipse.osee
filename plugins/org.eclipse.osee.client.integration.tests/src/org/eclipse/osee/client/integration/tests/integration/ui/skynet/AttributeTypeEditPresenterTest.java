@@ -134,9 +134,9 @@ public class AttributeTypeEditPresenterTest {
          display.setSelected(itemToSelect);
 
          if (OperationType.ADD_ITEM == operationType) {
-            Assert.assertTrue(artifact.getAttributes(itemToSelect).isEmpty());
+            Assert.assertTrue(artifact.getAttributeCount(itemToSelect) == 0);
          } else if (OperationType.REMOVE_ITEM == operationType) {
-            Assert.assertFalse(artifact.getAttributes(itemToSelect).isEmpty());
+            Assert.assertFalse(artifact.getAttributeCount(itemToSelect) == 0);
          }
 
          Assert.assertNull(display.getAddWidgetsAttributeTypes());
@@ -149,7 +149,7 @@ public class AttributeTypeEditPresenterTest {
          checkDisplay(display, operationType, expectedTitle, expectedOpMessage, selectable);
 
          if (OperationType.ADD_ITEM == operationType) {
-            Assert.assertFalse(artifact.getAttributes(itemToSelect).isEmpty());
+            Assert.assertFalse(artifact.getAttributeCount(itemToSelect) == 0);
             Assert.assertNull(display.getRemoveWidgetsAttributeTypes());
 
             Collection<IAttributeType> addedTypes = display.getAddWidgetsAttributeTypes();
@@ -157,7 +157,7 @@ public class AttributeTypeEditPresenterTest {
             Assert.assertEquals(itemToSelect, addedTypes.iterator().next());
 
          } else if (OperationType.REMOVE_ITEM == operationType) {
-            Assert.assertTrue(artifact.getAttributes(itemToSelect).isEmpty());
+            Assert.assertTrue(artifact.getAttributeCount(itemToSelect) == 0);
             Assert.assertNull(display.getAddWidgetsAttributeTypes());
 
             Collection<IAttributeType> removedTypes = display.getRemoveWidgetsAttributeTypes();

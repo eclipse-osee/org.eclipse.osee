@@ -217,8 +217,7 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
 
    @Override
    public void setErrorMessage(String shortMsg, String longMsg, MsgType msgType) {
-      OseeExceptionDialogComponent dlg =
-         new OseeExceptionDialogComponent(msgType, shortMsg, longMsg, getApplication().getMainWindow());
+      // do nothing
    }
 
    @Override
@@ -268,5 +267,6 @@ public class OseeSearchResultsListComponent extends VerticalLayout implements Se
 
    @Override
    public void noSearchResultsFound() {
+      // do nothing
    }
 }

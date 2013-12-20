@@ -39,17 +39,9 @@ public class OseeFooter extends HorizontalLayout {
 
    public String getApplicationInfo() {
       StringBuilder builder = new StringBuilder();
-      //      String productName = getProductName();
-      //      if (productName != null) {
-      //         builder.append(productName);
-      //         builder.append(", ");
-      //      }
       builder.append("Version: ");
       builder.append(getApplication().getVersion());
       return builder.toString();
    }
 
-   private String getProductName() {
-      return "Open System Engineering Environment Open Source Edition";
-   }
 }

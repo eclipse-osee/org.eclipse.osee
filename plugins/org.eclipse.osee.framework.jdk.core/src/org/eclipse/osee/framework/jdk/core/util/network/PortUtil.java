@@ -92,7 +92,7 @@ public class PortUtil {
       if (nextPort >= basePort + 250 - numberOfPorts) {
          nextPort = basePort;
       }
-      for (int i = nextPort, count = 1; i < basePort + 250; i++, count++) {
+      for (int i = nextPort; i < basePort + 250; i++) {
          boolean passed = true;
          for (int j = i; j < numberOfPorts + i; j++) {
             if (!checkIfPortIsTaken(j)) {

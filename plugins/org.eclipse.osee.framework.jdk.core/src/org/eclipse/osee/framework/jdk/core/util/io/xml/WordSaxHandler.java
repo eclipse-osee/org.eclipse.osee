@@ -40,10 +40,6 @@ public class WordSaxHandler extends AbstractSaxHandler {
          inHeader = true;
       } else if (localName.equalsIgnoreCase("ftr")) {
          inFooter = true;
-      } else if (localName.equalsIgnoreCase("Table")) {
-
-      } else if (localName.equalsIgnoreCase("Worksheet")) {
-
       }
    }
 

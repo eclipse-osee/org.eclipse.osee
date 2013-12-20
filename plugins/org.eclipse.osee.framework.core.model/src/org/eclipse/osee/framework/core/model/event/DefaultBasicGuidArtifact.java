@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
  * @author Donald G. Dunne
  */
 public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IBasicGuidArtifact {
-   private static final long serialVersionUID = -4997763989583925345L;
    private final String branchGuid;
    private Long artTypeGuid;
 

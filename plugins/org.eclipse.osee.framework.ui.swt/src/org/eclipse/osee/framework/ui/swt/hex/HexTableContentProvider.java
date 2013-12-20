@@ -35,7 +35,7 @@ class HexTableContentProvider implements ILazyContentProvider {
 
    @Override
    public void dispose() {
-
+      // do nothing
    }
 
    @Override

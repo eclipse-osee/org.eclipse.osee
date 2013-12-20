@@ -18,5 +18,5 @@ import com.vaadin.ui.CustomComponent;
  */
 @SuppressWarnings("serial")
 public abstract class OseeSearchHeaderComponent extends CustomComponent implements SearchHeaderComponent {
-
+   // do nothing
 }

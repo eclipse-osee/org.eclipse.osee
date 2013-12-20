@@ -40,10 +40,6 @@ public class AXml {
       return addTagData(elementName, data, false);
    }
 
-   public static String addTagData(String elementName, Integer[] data, String separator) {
-      return addTagData(elementName, Collections.toString(separator, data), false);
-   }
-
    public static String addTagData(String elementName, Collection<Integer> data, String separator) {
       return addTagData(elementName, Collections.toString(separator, data), false);
    }

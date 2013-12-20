@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsConfigObject extends IAtsObject {
-
-   String toStringWithId();
+   // do nothing
 }

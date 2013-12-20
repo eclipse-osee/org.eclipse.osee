@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.swt;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -59,7 +60,7 @@ public class HyperLinkLabel extends Label {
 
    public static void adapt(final Label label) {
       label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
-      label.addMouseTrackListener(new MouseTrackListener() {
+      label.addMouseTrackListener(new MouseTrackAdapter() {
 
          @Override
          public void mouseEnter(MouseEvent e) {
@@ -71,13 +72,10 @@ public class HyperLinkLabel extends Label {
             label.setCursor(null);
          };
 
-         @Override
-         public void mouseHover(MouseEvent e) {
-         }
       });
    }
 
-   MouseTrackListener listener = new MouseTrackListener() {
+   MouseTrackListener listener = new MouseTrackAdapter() {
 
       @Override
       public void mouseEnter(MouseEvent e) {
@@ -89,9 +87,6 @@ public class HyperLinkLabel extends Label {
          setCursor(null);
       };
 
-      @Override
-      public void mouseHover(MouseEvent e) {
-      }
    };
 
    public void refresh() {
@@ -112,10 +107,6 @@ public class HyperLinkLabel extends Label {
    public void setHyperEnabled(boolean hyperEnabled) {
       this.hyperEnabled = hyperEnabled;
       refresh();
-   }
-
-   @Override
-   protected void checkSubclass() {
    }
 
 }

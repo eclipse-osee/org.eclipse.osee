@@ -17,8 +17,6 @@ import java.nio.channels.DatagramChannel;
 
 public class SingletonApplicationInstance {
 
-   private static DatagramChannel lockChannel;
-
    public static void verifySingleton(int port) throws Exception {
       if (findOther(port)) {
          System.out.println("found another instance");
@@ -34,7 +32,6 @@ public class SingletonApplicationInstance {
          channel.configureBlocking(true);
          InetSocketAddress address = new InetSocketAddress(host, port);
          channel.socket().bind(address);
-         lockChannel = channel;
          return false;
       } catch (BindException e) {
          return true;

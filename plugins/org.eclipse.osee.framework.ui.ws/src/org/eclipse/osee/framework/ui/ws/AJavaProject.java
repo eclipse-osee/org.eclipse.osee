@@ -80,10 +80,10 @@ public final class AJavaProject {
                if (paths[i].getPath().toFile().exists()) {
                   //          urls.add(paths[i].getPath().toFile());
                } else {
-                  File f = null;
-                  f = new File(AWorkspace.getWorkspacePath().concat(paths[i].getPath().toOSString()));
-                  if (f != null && f.exists()) {
-                     urls.add(f);
+                  File file = null;
+                  file = new File(AWorkspace.getWorkspacePath().concat(paths[i].getPath().toOSString()));
+                  if (file.exists()) {
+                     urls.add(file);
                   }
                }
             } else if (paths[i].getEntryKind() == IClasspathEntry.CPE_PROJECT) {

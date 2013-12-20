@@ -34,11 +34,12 @@ public class FindTraceUnitActionDelegate implements IWorkbenchWindowActionDelega
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override
    public void init(IWorkbenchWindow window) {
-      int i = 0;
+      // do nothing
    }
 
    @Override

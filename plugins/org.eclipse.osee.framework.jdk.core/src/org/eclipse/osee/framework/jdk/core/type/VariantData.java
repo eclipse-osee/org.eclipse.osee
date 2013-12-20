@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  * @author Roberto E. Escobar
  */
 public class VariantData implements IVariantData {
-   private static final long serialVersionUID = 9076969425223251739L;
 
    private static final String EXCEPTION_MESSAGE = "No setting found for key: [%s]";
    private static final String CONVERSION_EXCEPTION_MESSAGE = "Unable to convert [%s] from [%s] to [%s]";

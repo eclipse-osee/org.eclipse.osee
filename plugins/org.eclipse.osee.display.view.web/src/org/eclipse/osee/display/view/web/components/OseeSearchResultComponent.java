@@ -10,15 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.display.view.web.components;
 
-import org.eclipse.osee.display.api.components.SearchHeaderComponent;
 import org.eclipse.osee.display.api.components.SearchResultComponent;
 import org.eclipse.osee.display.api.data.DisplayOptions;
 import org.eclipse.osee.display.api.data.SearchResultMatch;
 import org.eclipse.osee.display.api.data.StyledText;
 import org.eclipse.osee.display.api.data.ViewArtifact;
-import org.eclipse.osee.display.api.data.ViewSearchParameters;
-import org.eclipse.osee.display.api.search.SearchNavigator;
-import org.eclipse.osee.display.api.search.SearchPresenter;
 import org.eclipse.osee.display.view.web.CssConstants;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
@@ -38,8 +34,6 @@ public class OseeSearchResultComponent extends VerticalLayout implements SearchR
    private final Label artifactType = new Label("", Label.CONTENT_XHTML);
    private final int TOPBOTTOM_VERT_SPACE = 8;
    private boolean isLayoutComplete = false;
-   private SearchPresenter<SearchHeaderComponent, ViewSearchParameters> searchPresenter;
-   private SearchNavigator navigator;
 
    @Override
    public void attach() {
@@ -83,8 +77,6 @@ public class OseeSearchResultComponent extends VerticalLayout implements SearchR
       row0.setComponentAlignment(artifactType, Alignment.MIDDLE_LEFT);
    }
 
-   private static int i = 0;
-
    @Override
    public void setArtifact(ViewArtifact artifact) {
       this.artifact = artifact;
@@ -102,8 +94,7 @@ public class OseeSearchResultComponent extends VerticalLayout implements SearchR
 
    @Override
    public void setErrorMessage(String shortMsg, String longMsg, MsgType msgType) {
-      OseeExceptionDialogComponent dlg =
-         new OseeExceptionDialogComponent(msgType, shortMsg, longMsg, getApplication().getMainWindow());
+      // do nothing
    }
 
    @Override

@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.swt;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.widgets.Composite;
@@ -26,11 +26,7 @@ public class EnhancedTabFolder implements ITabFolderItem {
 
    public EnhancedTabFolder(Composite parent, int style) {
       folder = new TabFolder(parent, style);
-      folder.addSelectionListener(new SelectionListener() {
-
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
+      folder.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent event) {

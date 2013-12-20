@@ -26,7 +26,7 @@ import com.vaadin.ui.VerticalLayout;
 public abstract class AbstractCommonView extends VerticalLayout implements Navigator.View, HasViewTitle {
 
    protected OseeSearchHeaderComponent searchHeader;
-   private SearchPresenter searchPresenter;
+   private SearchPresenter<?, ?> searchPresenter;
 
    private boolean isLayoutComplete = false;
    private String initialUrl;

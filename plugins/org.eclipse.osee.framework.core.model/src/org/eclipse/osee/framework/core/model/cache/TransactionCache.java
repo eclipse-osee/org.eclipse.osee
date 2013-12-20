@@ -138,14 +138,17 @@ public class TransactionCache implements IOseeCache<String, TransactionRecord> {
 
    @Override
    public void storeAllModified() {
+      // do nothing
    }
 
    @Override
    public void storeItems(TransactionRecord... items) {
+      // do nothing
    }
 
    @Override
    public void storeItems(Collection<TransactionRecord> toStore) {
+      // do nothing
    }
 
    public TransactionRecord getPriorTransaction(TransactionRecord transactionId) throws OseeCoreException {

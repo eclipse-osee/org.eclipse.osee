@@ -217,8 +217,7 @@ public class OseeRelationsComponent extends VerticalLayout implements RelationCo
 
    @Override
    public void setErrorMessage(String shortMsg, String longMsg, MsgType msgType) {
-      OseeExceptionDialogComponent dlg =
-         new OseeExceptionDialogComponent(msgType, shortMsg, longMsg, getApplication().getMainWindow());
+      // do nothing
    }
 
    @Override

@@ -19,8 +19,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public final class OseeExceptions {
 
-   private static final String MSG = "OSEE Version: [%s]\nException message: [%s]";
-
    private OseeExceptions() {
       // private empty constructor is to prevent external instantiation
    }

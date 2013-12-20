@@ -582,7 +582,7 @@ public final class Widgets {
          rdo.setData(obj);
          rdo.setSelection(count == 0 ? true : false);
          positionGridItem(rdo, false, SWT.BEGINNING, SWT.CENTER);
-         rdo.addSelectionListener(new SelectionListener() {
+         rdo.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                if (rdo.getSelection()) {
@@ -590,10 +590,6 @@ public final class Widgets {
                }
             }
 
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-
-            }
          });
          count++;
       }
@@ -613,7 +609,7 @@ public final class Widgets {
          rdo.setData(obj);
          rdo.setSelection(count == 0 ? true : false);
          positionGridItem(rdo, false, SWT.BEGINNING, SWT.CENTER);
-         rdo.addSelectionListener(new SelectionListener() {
+         rdo.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
                if (rdo.getSelection()) {
@@ -622,10 +618,6 @@ public final class Widgets {
                }
             }
 
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-
-            }
          });
          count++;
       }

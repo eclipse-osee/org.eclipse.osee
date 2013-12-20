@@ -51,7 +51,7 @@ public class TreeViewerUtility {
 
    @SuppressWarnings("unchecked")
    private static <A extends Object> void populateSelectionHash(TreeViewer tree, Map<A, Object> selectionHash) {
-      Iterator iterator = ((IStructuredSelection) tree.getSelection()).iterator();
+      Iterator<?> iterator = ((IStructuredSelection) tree.getSelection()).iterator();
 
       while (iterator.hasNext()) {
          selectionHash.put((A) iterator.next(), dummy);

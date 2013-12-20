@@ -25,10 +25,12 @@ public class SimpleOseeHandler extends Handler {
 
    @Override
    public void close() throws SecurityException {
+      // do nothing
    }
 
    @Override
    public void flush() {
+      // do nothing
    }
 
    @Override

@@ -241,9 +241,7 @@ public class SourceCounter {
             }
             slocCounter += slocCount;
 
-            String authorsStr = "";
             for (String author : authors) {
-               authorsStr += author + "; ";
                authorToFileCount.put(author);
                authorToSlocCount.put(author, slocCount);
             }

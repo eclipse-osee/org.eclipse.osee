@@ -89,7 +89,7 @@ public abstract class FilterableCollection<MATCH_DATA, KEY, DATA> {
       return createResultSet(values);
    }
 
-   @SuppressWarnings({"unchecked", "unused"})
+   @SuppressWarnings({"unchecked"})
    private <T extends DATA> List<T> getListByFilter(Collection<DATA> source, Predicate<MATCH_DATA> matcher) throws OseeCoreException {
       List<T> toReturn;
       if (source != null && !source.isEmpty()) {

@@ -39,7 +39,7 @@ public abstract class BaseOseeFieldTest {
       Assert.assertEquals(message, test.isInitExpectedDirty(), test.getField().isDirty());
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({"unchecked", "rawtypes"})
    @Test
    public void testSettterGetter() throws OseeCoreException {
       int index = 0;

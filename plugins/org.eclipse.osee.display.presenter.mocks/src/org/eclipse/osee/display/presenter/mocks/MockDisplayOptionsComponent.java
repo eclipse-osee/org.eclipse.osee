@@ -20,10 +20,12 @@ public class MockDisplayOptionsComponent implements DisplayOptionsComponent {
 
    @Override
    public void clearAll() {
+      // do nothing
    }
 
    @Override
    public void setDisplayOptions(DisplayOptions options) {
+      // do nothing
    }
 
 }

@@ -16,7 +16,6 @@ import org.eclipse.osee.display.view.web.AbstractCommonView;
 import org.eclipse.osee.display.view.web.components.OseeArtifactNameLinkComponent;
 import org.eclipse.osee.display.view.web.components.OseeAttributeComponent;
 import org.eclipse.osee.display.view.web.components.OseeBreadcrumbComponent;
-import org.eclipse.osee.display.view.web.components.OseeExceptionDialogComponent;
 import org.eclipse.osee.display.view.web.components.OseeLeftMarginContainer;
 import org.eclipse.osee.display.view.web.components.OseeRelationsComponent;
 import com.vaadin.ui.Alignment;
@@ -146,8 +145,7 @@ public abstract class OseeArtifactView extends AbstractCommonView implements Art
 
    @Override
    public void setErrorMessage(String shortMsg, String longMsg, MsgType msgType) {
-      OseeExceptionDialogComponent dlg =
-         new OseeExceptionDialogComponent(msgType, shortMsg, longMsg, getApplication().getMainWindow());
+      // do nothing
    }
 
    @Override

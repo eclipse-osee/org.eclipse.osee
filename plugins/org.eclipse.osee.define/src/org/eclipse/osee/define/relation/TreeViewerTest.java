@@ -89,10 +89,12 @@ public class TreeViewerTest {
 
       @Override
       public void addListener(ILabelProviderListener listener) {
+         // do nothing
       }
 
       @Override
       public void removeListener(ILabelProviderListener listener) {
+         // do nothing
       }
 
       @Override
@@ -172,16 +174,19 @@ public class TreeViewerTest {
 
          @Override
          public void dispose() {
+            // do nothing
          }
 
          @Override
          public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            // do nothing
          }
       };
 
       ILabelProvider labelProvider2 = new ILabelProvider() {
          @Override
          public void dispose() {
+            // do nothing
          }
 
          @Override
@@ -191,10 +196,12 @@ public class TreeViewerTest {
 
          @Override
          public void addListener(ILabelProviderListener listener) {
+            // do nothing
          }
 
          @Override
          public void removeListener(ILabelProviderListener listener) {
+            // do nothing
          }
 
          @Override

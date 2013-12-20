@@ -102,6 +102,7 @@ public class TreeNode implements ITreeNode, Serializable {
       }
    }
 
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       if (adapter == null) {

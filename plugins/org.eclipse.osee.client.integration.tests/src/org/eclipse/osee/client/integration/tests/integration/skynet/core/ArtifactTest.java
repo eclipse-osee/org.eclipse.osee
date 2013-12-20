@@ -12,8 +12,8 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
-import org.eclipse.osee.client.demo.DemoTypes;
 import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.client.demo.DemoTypes;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -47,8 +47,7 @@ public final class ArtifactTest {
 
    @Before
    public void setUp() throws Exception {
-      artifactWithSpecialAttr =
-         ArtifactTypeManager.addArtifact(DemoTypes.DemoTestRequirement, DemoBranches.SAW_Bld_1);
+      artifactWithSpecialAttr = ArtifactTypeManager.addArtifact(DemoTypes.DemoTestRequirement, DemoBranches.SAW_Bld_1);
    }
 
    @After
@@ -69,7 +68,7 @@ public final class ArtifactTest {
 
       Artifact copiedArtifact = artifactWithSpecialAttr.duplicate(DemoBranches.SAW_Bld_2);
       try {
-         Assert.assertFalse(copiedArtifact.getAttributes(CoreAttributeTypes.Partition).isEmpty());
+         Assert.assertFalse(copiedArtifact.getAttributeCount(CoreAttributeTypes.Partition) == 0);
       } finally {
          if (copiedArtifact != null) {
             copiedArtifact.deleteAndPersist();
@@ -84,7 +83,7 @@ public final class ArtifactTest {
 
       Artifact copiedArtifact = artifactWithSpecialAttr.duplicate(CoreBranches.COMMON);
       try {
-         Assert.assertTrue(copiedArtifact.getAttributes(CoreAttributeTypes.Partition).isEmpty());
+         Assert.assertTrue(copiedArtifact.getAttributeCount(CoreAttributeTypes.Partition) == 0);
       } finally {
          if (copiedArtifact != null) {
             copiedArtifact.deleteAndPersist();

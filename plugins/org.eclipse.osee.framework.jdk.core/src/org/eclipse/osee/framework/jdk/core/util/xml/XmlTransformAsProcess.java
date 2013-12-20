@@ -46,7 +46,7 @@ public class XmlTransformAsProcess {
       outputFromNetwork = null;
    }
 
-   private URL getClassLocation(final Class classToFind) {
+   private URL getClassLocation(final Class<XmlTransformServer> classToFind) {
       URL result = null;
       if (classToFind == null) {
          throw new IllegalArgumentException("Class is null");
@@ -68,6 +68,7 @@ public class XmlTransformAsProcess {
                      result = new URL(result, classAsResource);
                   }
                } catch (MalformedURLException ignore) {
+                  // do nothing
                }
             }
          }

@@ -158,8 +158,8 @@ public final class ArtifactImportWizardTest {
 
       //check if artifacts have correct attributes copied over
       for (Artifact artifact : afterArtifacts) {
-         List<?> attributes = artifact.getAttributes(CoreAttributeTypes.ParagraphNumber);
-         for (Object attribute : attributes) {
+         List<String> attributes = artifact.getAttributesToStringList(CoreAttributeTypes.ParagraphNumber);
+         for (String attribute : attributes) {
             String paragraphNumberAnswer = answerParagraphNumbers.get(artifact.getName());
             if (paragraphNumberAnswer != null) {
                Assert.assertTrue(String.format("Expected attribute: %s, on Artifact %s, was not copied. ",

@@ -37,7 +37,6 @@ public class Xml {
    private static final String[] XML_ESCAPES = new String[] {"&amp;", "&lt;", "&gt;", "&quot;"};
    private static final String LINEFEED = "&#10;";
    private static final String CARRIAGE_RETURN = "&#13;";
-   private static final Pattern squareBracket = Pattern.compile("\\]");
    public final static XPathFactory myXPathFactory = XPathFactory.newInstance();
    public final static XPath myXPath = myXPathFactory.newXPath();
    public final static String wordLeader1 =

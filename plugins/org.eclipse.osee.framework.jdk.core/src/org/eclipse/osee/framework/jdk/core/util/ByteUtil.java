@@ -48,23 +48,19 @@ public class ByteUtil {
    }
 
    public static void printHex(byte[] data, int bytesPerGroup, int groupPerLine, StringBuilder strBuilder) {
-      int groups = 0;
       for (int i = 0; i < data.length; i++) {
          strBuilder.append(ByteUtil.toHexString(data[i]));
          if ((i + 1) % bytesPerGroup == 0) {
             strBuilder.append(" ");
-            groups++;
          }
       }
    }
 
    public static void printHex(byte[] data, int bytesPerGroup, int groupPerLine, boolean isSpaced, StringBuilder strBuilder) {
-      int groups = 0;
       for (int i = 0; i < data.length; i++) {
          strBuilder.append(ByteUtil.toHexString(data[i]));
          if ((i + 1) % bytesPerGroup == 0 && isSpaced) {
             strBuilder.append(" ");
-            groups++;
          }
       }
    }

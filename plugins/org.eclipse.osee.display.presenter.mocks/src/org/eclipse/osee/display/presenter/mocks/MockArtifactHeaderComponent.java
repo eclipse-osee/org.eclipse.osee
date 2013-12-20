@@ -36,6 +36,7 @@ public class MockArtifactHeaderComponent implements ArtifactHeaderComponent {
 
    @Override
    public void clearAll() {
+      // do nothing
    }
 
    @Override

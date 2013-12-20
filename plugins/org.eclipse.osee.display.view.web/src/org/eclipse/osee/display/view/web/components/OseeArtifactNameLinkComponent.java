@@ -48,7 +48,7 @@ public class OseeArtifactNameLinkComponent extends HorizontalLayout {
             public void layoutClick(LayoutClickEvent event) {
                String url = ComponentUtility.getUrl(OseeArtifactNameLinkComponent.this);
                SearchNavigator navigator = ComponentUtility.getNavigator(OseeArtifactNameLinkComponent.this);
-               SearchPresenter presenter = ComponentUtility.getPresenter(OseeArtifactNameLinkComponent.this);
+               SearchPresenter<?, ?> presenter = ComponentUtility.getPresenter(OseeArtifactNameLinkComponent.this);
                presenter.selectArtifact(url, OseeArtifactNameLinkComponent.this.artifact, navigator);
             }
          });
@@ -94,8 +94,6 @@ public class OseeArtifactNameLinkComponent extends HorizontalLayout {
    public ViewArtifact getArtifact() {
       return artifact;
    }
-
-   private int debugindex = 0;
 
    public void setArtifact(ViewArtifact artifact) {
       this.artifact = artifact;

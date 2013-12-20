@@ -142,17 +142,15 @@ public class ArtifactQueryTest {
       criteria.add(new AttributeCriteria(CoreAttributeTypes.FavoriteBranch, "Common"));
       // test against a couple of attributes types that are not taggable; expect exception
       try {
-         List<Artifact> artifacts =
-            ArtifactQuery.getArtifactListFromCriteria(BranchManager.getCommonBranch(), 1000, criteria);
+         ArtifactQuery.getArtifactListFromCriteria(BranchManager.getCommonBranch(), 1000, criteria);
          Assert.fail("Should have thrown an exception as the attribute type are not taggable");
       } catch (OseeCoreException e) {
          Assert.assertTrue(e.getMessage(), Boolean.TRUE);
       }
 
       try {
-         List<Artifact> artifacts =
-            ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Active,
-               "true", BranchManager.getCommonBranch());
+         ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Active, "true",
+            BranchManager.getCommonBranch());
          Assert.fail("Should have thrown an exception as the attribute type are not taggable");
       } catch (OseeCoreException e) {
          Assert.assertTrue(e.getMessage(), Boolean.TRUE);
@@ -161,17 +159,15 @@ public class ArtifactQueryTest {
       criteria.clear();
       criteria.add(new AttributeCriteria(CoreAttributeTypes.Email, "john.doe@somewhere.com"));
       try {
-         List<Artifact> artifacts =
-            ArtifactQuery.getArtifactListFromCriteria(BranchManager.getCommonBranch(), 1000, criteria);
+         ArtifactQuery.getArtifactListFromCriteria(BranchManager.getCommonBranch(), 1000, criteria);
          Assert.assertTrue("This attribute type is taggable", Boolean.TRUE);
       } catch (OseeCoreException e) {
          Assert.fail(e.getMessage());
       }
 
       try {
-         List<Artifact> artifacts =
-            ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Notes,
-               "My Notes", BranchManager.getCommonBranch());
+         ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Notes,
+            "My Notes", BranchManager.getCommonBranch());
          Assert.assertTrue("This attribute type is taggable", Boolean.TRUE);
       } catch (OseeCoreException e) {
          Assert.fail(e.getMessage());

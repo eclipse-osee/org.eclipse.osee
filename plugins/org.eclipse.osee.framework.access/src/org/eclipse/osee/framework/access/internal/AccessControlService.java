@@ -136,6 +136,7 @@ public class AccessControlService implements IAccessControlService {
    private IArtifactEventListener listener2;
 
    private final AtomicBoolean ensurePopulated = new AtomicBoolean(false);
+
    public AccessControlService(IOseeDatabaseService databaseService, IOseeCachingService cachingService, OseeEventService eventService) {
 
       super();
@@ -480,6 +481,7 @@ public class AccessControlService implements IAccessControlService {
       }
    }
 
+   @SuppressWarnings("unchecked")
    public void persistPermission(AccessControlData data, boolean recurse) {
       ensurePopulated();
       Artifact subject = data.getSubject();

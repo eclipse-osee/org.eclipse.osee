@@ -55,6 +55,7 @@ public class MockSearchResultsListComponent implements SearchResultsListComponen
 
    @Override
    public void noSearchResultsFound() {
+      // do nothing
    }
 
 }

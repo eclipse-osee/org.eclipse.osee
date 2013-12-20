@@ -158,7 +158,7 @@ public class ArtifactCacheQueryTest {
       assertNotNull(artifactWithDoubleBbb);
 
       // should be two static id attributes
-      int count = artifactWithDoubleBbb.getAttributes(CoreAttributeTypes.StaticId).size();
+      int count = artifactWithDoubleBbb.getAttributeCount(CoreAttributeTypes.StaticId);
       assertTrue("Expected 2 attributes; Returned " + count, count == 2);
 
       count = artifactWithDoubleBbb.getAttributeCount(CoreAttributeTypes.StaticId);

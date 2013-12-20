@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.define;
 
-import static junit.framework.Assert.assertEquals;
 import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;

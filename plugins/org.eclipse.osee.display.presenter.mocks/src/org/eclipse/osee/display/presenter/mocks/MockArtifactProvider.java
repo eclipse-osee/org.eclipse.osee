@@ -85,7 +85,7 @@ public class MockArtifactProvider implements ArtifactProvider {
    public ArtifactReadable getParent(ArtifactReadable art) {
       if (art instanceof MockArtifact) {
          MockArtifact mArt = (MockArtifact) art;
-         return null;
+         return mArt.getParent();
       } else {
          return null;
       }

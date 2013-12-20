@@ -56,6 +56,7 @@ public class Zip {
          // Complete the ZIP file
          out.close();
       } catch (IOException e) {
+         // do nothing
       }
 
    }

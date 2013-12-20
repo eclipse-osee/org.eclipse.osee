@@ -157,38 +157,36 @@ public abstract class AbstractOseeCacheTest<K, T extends AbstractOseeType<K>> {
       checkEquals(item2, actual.iterator().next());
 
       String originalName = item1.getName();
-      if (item1 instanceof AbstractOseeType) {
-         cache.decache(item1);
+      cache.decache(item1);
 
-         ((AbstractOseeType) item1).setName(item2.getName());
+      ((AbstractOseeType<?>) item1).setName(item2.getName());
 
-         if (cache.isNameUniquenessEnforced()) {
-            try {
-               cache.cache(item1);
-               Assert.fail("This line should not be executed");
-            } catch (OseeCoreException ex) {
-               Assert.assertTrue(ex instanceof OseeStateException);
-            }
-
-            actual = cache.getByName(originalName);
-            Assert.assertNotNull(actual);
-            Assert.assertEquals(0, actual.size());
-
-         } else {
+      if (cache.isNameUniquenessEnforced()) {
+         try {
             cache.cache(item1);
-
-            actual = cache.getByName(originalName);
-            Assert.assertNotNull(actual);
-            Assert.assertEquals(0, actual.size());
-
-            actual = cache.getByName(item2.getName());
-            Assert.assertNotNull(actual);
-            Assert.assertEquals(2, actual.size());
-
-            checkEquals(item2, actual.iterator().next());
+            Assert.fail("This line should not be executed");
+         } catch (OseeCoreException ex) {
+            Assert.assertTrue(ex instanceof OseeStateException);
          }
-         ((AbstractOseeType) item1).setName(originalName);
+
+         actual = cache.getByName(originalName);
+         Assert.assertNotNull(actual);
+         Assert.assertEquals(0, actual.size());
+
+      } else {
+         cache.cache(item1);
+
+         actual = cache.getByName(originalName);
+         Assert.assertNotNull(actual);
+         Assert.assertEquals(0, actual.size());
+
+         actual = cache.getByName(item2.getName());
+         Assert.assertNotNull(actual);
+         Assert.assertEquals(2, actual.size());
+
+         checkEquals(item2, actual.iterator().next());
       }
+      ((AbstractOseeType<?>) item1).setName(originalName);
    }
 
    @Test

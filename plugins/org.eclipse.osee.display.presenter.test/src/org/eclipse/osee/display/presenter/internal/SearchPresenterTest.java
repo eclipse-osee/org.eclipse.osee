@@ -132,10 +132,6 @@ public class SearchPresenterTest {
          new SearchPresenterImpl<SearchHeaderComponent, ViewSearchParameters>(provider, new MockLogger());
       String artGuid = GUID.create();
       MockArtifact testArt = new MockArtifact(artGuid, "name");
-      MockArtifact parentArt = new MockArtifact(GUID.create(), "parent");
-      MockArtifact grandParentArt = new MockArtifact(GUID.create(), "grandParent");
-      parentArt.setParent(grandParentArt);
-      testArt.setParent(parentArt);
       RelationType relType =
          new RelationType(0L, "typeName", "sideA", "sideB", CoreArtifactTypes.AbstractSoftwareRequirement,
             CoreArtifactTypes.AbstractTestResult, RelationTypeMultiplicity.ONE_TO_ONE, "");

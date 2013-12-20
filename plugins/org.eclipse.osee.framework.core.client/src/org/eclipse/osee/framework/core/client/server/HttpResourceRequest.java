@@ -75,25 +75,22 @@ public class HttpResourceRequest implements IHttpMethod {
    private URL findResource(String urlRequested) {
       URL resource = null;
       if (Strings.isValid(urlRequested) && urlRequested.endsWith("/") != true) {
-         if (resource == null) {
-            List<IConfigurationElement> elements =
-               ExtensionPoints.getExtensionElements("org.eclipse.osee.framework.skynet.core.WebPage", "WebPageFolder");
-            for (IConfigurationElement element : elements) {
-               String resourceName = element.getAttribute("Path");
-               String bundleName = element.getContributor().getName();
+         List<IConfigurationElement> elements =
+            ExtensionPoints.getExtensionElements("org.eclipse.osee.framework.skynet.core.WebPage", "WebPageFolder");
+         for (IConfigurationElement element : elements) {
+            String resourceName = element.getAttribute("Path");
+            String bundleName = element.getContributor().getName();
 
-               if (Strings.isValid(bundleName) && Strings.isValid(resourceName)) {
-                  try {
-                     Bundle bundle = Platform.getBundle(bundleName);
-                     URL url = bundle.getEntry(resourceName + urlRequested);
-                     if (url != null) {
-                        resource = FileLocator.resolve(url);
-                        break;
-                     }
-                  } catch (Exception ex) {
-                     throw new IllegalArgumentException(String.format("Unable to Load: [%s.%s]", bundleName,
-                        resourceName));
+            if (Strings.isValid(bundleName) && Strings.isValid(resourceName)) {
+               try {
+                  Bundle bundle = Platform.getBundle(bundleName);
+                  URL url = bundle.getEntry(resourceName + urlRequested);
+                  if (url != null) {
+                     resource = FileLocator.resolve(url);
+                     break;
                   }
+               } catch (Exception ex) {
+                  throw new IllegalArgumentException(String.format("Unable to Load: [%s.%s]", bundleName, resourceName));
                }
             }
          }

@@ -213,6 +213,7 @@ public final class Lib {
       return stringWriter.toString();
    }
 
+   @SuppressWarnings("resource")
    public static void copyFile(File source, File destination) throws IOException {
       final FileChannel in = new FileInputStream(source).getChannel();
       try {
