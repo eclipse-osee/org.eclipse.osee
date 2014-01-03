@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.jdk.core.type;
 /**
  * @author Ryan D. Brooks
  */
-public class CaseInsensitiveString implements CharSequence {
+public class CaseInsensitiveString implements CharSequence, Comparable<CaseInsensitiveString> {
    private final String originalString;
    private final String upperCaseString;
 
@@ -60,5 +60,10 @@ public class CaseInsensitiveString implements CharSequence {
    @Override
    public CharSequence subSequence(int beginIndex, int endIndex) {
       return originalString.subSequence(beginIndex, endIndex);
+   }
+
+   @Override
+   public int compareTo(CaseInsensitiveString other) {
+      return this.originalString.compareTo(other.originalString);
    }
 }

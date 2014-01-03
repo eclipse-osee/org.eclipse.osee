@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -32,12 +33,12 @@ import com.google.common.collect.SetMultimap;
  */
 public class TraceAccumulator {
 
-   private final SetMultimap<String, String> traceMarkToFiles = HashMultimap.create();
+   private final SetMultimap<CaseInsensitiveString, String> traceMarkToFiles = HashMultimap.create();
    private final SetMultimap<String, String> fileToMalformeddMarks = HashMultimap.create();
    private final LinkedList<String> noTraceFiles = new LinkedList<String>();
    private final Pattern filePattern;
    private final Iterable<TraceMatch> traceMatches;
-   private SetMultimap<String, String> fileToTraceMarks;
+   private SetMultimap<String, CaseInsensitiveString> fileToTraceMarks;
    private String relativePath;
 
    public TraceAccumulator(String filePattern, Iterable<TraceMatch> traceMatches) {
@@ -64,7 +65,7 @@ public class TraceAccumulator {
          throw new OseeArgumentException("Invalid directory path [%s]", root.getCanonicalPath());
       }
 
-      fileToTraceMarks = Multimaps.invertFrom(traceMarkToFiles, HashMultimap.<String, String> create());
+      fileToTraceMarks = Multimaps.invertFrom(traceMarkToFiles, HashMultimap.<String, CaseInsensitiveString> create());
    }
 
    private void traceFile(File root) throws IOException {
@@ -87,7 +88,7 @@ public class TraceAccumulator {
    }
 
    public void addValidTrace(String traceMark) {
-      traceMarkToFiles.put(traceMark, relativePath);
+      traceMarkToFiles.put(new CaseInsensitiveString(traceMark), relativePath);
    }
 
    public int parseInputStream(InputStream providedStream) {
@@ -125,18 +126,18 @@ public class TraceAccumulator {
    }
 
    public Set<String> getFiles(String requirement) {
-      return traceMarkToFiles.get(requirement);
+      return traceMarkToFiles.get(new CaseInsensitiveString(requirement));
    }
 
    public Set<String> getFiles() {
       return fileToTraceMarks.keySet();
    }
 
-   public Set<String> getTraceMarks(String codeUnit) {
+   public Set<CaseInsensitiveString> getTraceMarks(String codeUnit) {
       return fileToTraceMarks.get(codeUnit);
    }
 
-   public Set<String> getTraceMarks() {
+   public Set<CaseInsensitiveString> getTraceMarks() {
       return traceMarkToFiles.keySet();
    }
 

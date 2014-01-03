@@ -11,6 +11,7 @@
 package org.eclipse.osee.define.report.internal;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.define.report.OseeDefineResourceTokens;
@@ -33,10 +34,14 @@ public final class OseeReportApplication extends Application {
       this.logger = logger;
    }
 
-   public void start() {
+   public void start(Map<String, Object> properties) {
       OseeDefineResourceTokens.register(orcsApi.getResourceRegistry());
       singletons.add(new RequirementResource(orcsApi));
+      logger.debug(">>>>> registered Requirement resource");
       singletons.add(new SystemSafetyResource(logger, orcsApi));
+      logger.debug(">>>>> registered Safety resource");
+      singletons.add(new SRSTraceReportResource(logger, orcsApi, properties));
+      logger.debug(">>>>> registered SRS Trace resource");
    }
 
    @Override
