@@ -11,16 +11,16 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 
 /**
  * @author Roberto E. Escobar
  */
-public class RelationTypeExistsSqlHandler extends AbstractRelationSqlHandler<CriteriaRelationTypeExists> {
+public class RelationTypeSideExistsSqlHandler extends AbstractRelationSqlHandler<CriteriaRelationTypeSideExists> {
 
    private String relAlias;
 
@@ -32,30 +32,25 @@ public class RelationTypeExistsSqlHandler extends AbstractRelationSqlHandler<Cri
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
-      IRelationType type = criteria.getType();
+      IRelationTypeSide type = criteria.getType();
       writer.write(relAlias);
       writer.write(".rel_link_type_id = ?");
       writer.addParameter(type.getGuid());
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
+      String side = type.getSide().isSideA() ? "a" : "b";
       if (!aliases.isEmpty()) {
          writer.writeAndLn();
          int aSize = aliases.size();
          for (int index = 0; index < aSize; index++) {
             String artAlias = aliases.get(index);
 
-            writer.write("(");
             writer.write(relAlias);
-            writer.write(".a_art_id = ");
+            writer.write(".");
+            writer.write(side);
+            writer.write("_art_id = ");
             writer.write(artAlias);
             writer.write(".art_id");
-
-            writer.write(" OR ");
-
-            writer.write(relAlias);
-            writer.write(".b_art_id = ");
-            writer.write(artAlias);
-            writer.write(".art_id)");
 
             if (index + 1 < aSize) {
                writer.writeAndLn();

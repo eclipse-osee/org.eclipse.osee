@@ -35,6 +35,9 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeNotExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideNotExists;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -70,6 +73,18 @@ public class CriteriaFactory {
 
    public Criteria createExistsCriteria(IRelationType relationType) throws OseeCoreException {
       return new CriteriaRelationTypeExists(relationType);
+   }
+
+   public Criteria createExistsCriteria(IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      return new CriteriaRelationTypeSideExists(relationTypeSide);
+   }
+
+   public Criteria createNotExistsCriteria(IRelationType relationType) {
+      return new CriteriaRelationTypeNotExists(relationType);
+   }
+
+   public Criteria createNotExistsCriteria(IRelationTypeSide relationTypeSide) {
+      return new CriteriaRelationTypeSideNotExists(relationTypeSide);
    }
 
    public Criteria createAttributeCriteria(IAttributeType attributeType, Operator operator, Collection<String> values) throws OseeCoreException {

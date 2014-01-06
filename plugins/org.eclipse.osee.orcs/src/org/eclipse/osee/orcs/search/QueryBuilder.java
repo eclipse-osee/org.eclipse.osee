@@ -131,6 +131,27 @@ public interface QueryBuilder {
    QueryBuilder andExists(IRelationType relationType) throws OseeCoreException;
 
    /**
+    * Search criteria that checks for non-existence of a relation type
+    * 
+    * @param relationTypeSide the type to check for non-existence
+    */
+   QueryBuilder andNotExists(IRelationTypeSide relationTypeSide) throws OseeCoreException;
+
+   /**
+    * Search criteria that follows the relation link ending on the given side
+    * 
+    * @param relationTypeSide the type to start following the link from
+    */
+   QueryBuilder andExists(IRelationTypeSide relationTypeSide) throws OseeCoreException;
+
+   /**
+    * Search criteria that checks for non-existence of a relation type
+    * 
+    * @param relationType the type to check for non-existence
+    */
+   QueryBuilder andNotExists(IRelationType relationType) throws OseeCoreException;
+
+   /**
     * Artifact name equals value
     */
    QueryBuilder andNameEquals(String artifactName) throws OseeCoreException;

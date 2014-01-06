@@ -53,6 +53,9 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranch;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.db.internal.BranchIdProvider;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeNotExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideNotExists;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
@@ -367,7 +370,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
          "    GROUP BY attr.art_id)\n" + //
          "SELECT max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + //
          " FROM \n" + //
-         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_attribute att1, osee_txs txs3, osee_relation_link rel1, osee_txs txs4, artUuid1, attrExt1\n" + //
+         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_attribute att1, osee_txs txs3, osee_txs txs4, osee_relation_link rel1, artUuid1, attrExt1\n" + //
          " WHERE \n" + //
          "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
          " AND \n" + //
@@ -397,7 +400,9 @@ public class ArtifactQuerySqlContextFactoryImplTest {
          " AND \n" + //
          "(rel1.a_art_id = art2.art_id OR rel1.b_art_id = art2.art_id)\n" + //
          " AND \n" + //
-         "rel1.gamma_id = txs4.gamma_id AND txs4.transaction_id <= ?\n" + //
+         "rel1.gamma_id = txs4.gamma_id\n" + //
+         " AND \n" + //
+         "txs4.transaction_id <= ?\n" + //
          " AND \n" + //
          "txs4.mod_type <> 3 AND txs4.branch_id = ?\n" + //
          " GROUP BY art1.art_id, txs1.branch_id\n" + //
@@ -632,7 +637,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       "osee_join_id jid1, osee_artifact art1, osee_txs txs1, " + //
       "osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, " + //
       "osee_attribute att1, osee_txs txs3, " + //
-      "osee_relation_link rel1, osee_txs txs4\n" + //
+      "osee_txs txs4, osee_relation_link rel1\n" + //
       " WHERE \n" + //
       "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1\n" + //
       " AND \n" + //
@@ -652,7 +657,9 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       " AND \n" + //
       "(rel1.a_art_id = art2.art_id OR rel1.b_art_id = art2.art_id)\n" + //
       " AND \n" + // 
-      "rel1.gamma_id = txs4.gamma_id AND txs4.tx_current = 1\n" + //
+      "rel1.gamma_id = txs4.gamma_id\n" + //
+      " AND \n" + //
+      "txs4.tx_current = 1\n" + //
       " ORDER BY art1.art_id, txs1.branch_id";
 
       when(branchIdProvider.getBranchId(CoreBranches.COMMON)).thenReturn(0L);
@@ -684,7 +691,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1, " + //
          "osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, " + //
          "osee_attribute att1, osee_txs txs3, " + //
-         "osee_relation_link rel1, osee_txs txs4\n" + //
+         "osee_txs txs4, osee_relation_link rel1\n" + //
          " WHERE \n" + //
          "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
          " AND \n" + //
@@ -704,7 +711,9 @@ public class ArtifactQuerySqlContextFactoryImplTest {
          " AND \n" + //
          "(rel1.a_art_id = art2.art_id OR rel1.b_art_id = art2.art_id)\n" + //
          " AND \n" + // 
-         "rel1.gamma_id = txs4.gamma_id AND txs4.tx_current = 1 AND txs4.branch_id = ?\n" + //
+         "rel1.gamma_id = txs4.gamma_id\n" + //
+         " AND \n" + //
+         "txs4.tx_current = 1 AND txs4.branch_id = ?\n" + //
          " ORDER BY art1.art_id, txs1.branch_id";
 
       queryData.addCriteria(GUIDS, TYPES, REL_TYPE_EXISTS, IDS, ATTR_TYPE_EXITS);
@@ -912,5 +921,98 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       Iterator<Object> iterator = parameters.iterator();
       Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
+   }
+
+   @Test
+   public void testRelationTypeNotExists() throws OseeCoreException {
+      String expected = "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + //
+      " FROM \n" + //
+      "osee_artifact art1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "NOT EXISTS (SELECT 1 FROM osee_relation_link rel, osee_txs txs WHERE rel.rel_link_type_id = ?\n" + //
+      " AND \n" + //
+      "(rel.a_art_id = art1.art_id OR rel.b_art_id = art1.art_id)\n" + //
+      " AND \n" + //
+      "rel.gamma_id = txs.gamma_id\n" + //
+      " AND \n" + //
+      "txs.tx_current = 1 AND txs.branch_id = ?)\n" + //
+      " AND \n" + //
+      "art1.gamma_id = txs1.gamma_id\n" + //
+      " AND \n" + //
+      "txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " ORDER BY art1.art_id, txs1.branch_id";
+
+      Criteria relTypeNotExists = new CriteriaRelationTypeNotExists(CoreRelationTypes.Default_Hierarchical__Child);
+      queryData.addCriteria(relTypeNotExists);
+
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      Assert.assertEquals(expected, context.getSql());
+
+      List<Object> parameters = context.getParameters();
+      Assert.assertEquals(3, parameters.size());
+
+      List<AbstractJoinQuery> joins = context.getJoins();
+      Assert.assertEquals(0, joins.size());
+   }
+
+   @Test
+   public void testRelationTypeSideNotExists() throws OseeCoreException {
+      String expected = "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + //
+      " FROM \n" + //
+      "osee_artifact art1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "NOT EXISTS (SELECT 1 FROM osee_relation_link rel, osee_txs txs WHERE rel.rel_link_type_id = ?\n" + //
+      " AND \n" + //
+      "rel.b_art_id = art1.art_id\n" + //
+      " AND \n" + //
+      "rel.gamma_id = txs.gamma_id\n" + //
+      " AND \n" + //
+      "txs.tx_current = 1 AND txs.branch_id = ?)\n" + //
+      " AND \n" + //
+      "art1.gamma_id = txs1.gamma_id\n" + //
+      " AND \n" + //
+      "txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " ORDER BY art1.art_id, txs1.branch_id";
+
+      Criteria relTypeSideNotExists =
+         new CriteriaRelationTypeSideNotExists(CoreRelationTypes.Default_Hierarchical__Child);
+      queryData.addCriteria(relTypeSideNotExists);
+
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      Assert.assertEquals(expected, context.getSql());
+
+      List<Object> parameters = context.getParameters();
+      Assert.assertEquals(3, parameters.size());
+
+      List<AbstractJoinQuery> joins = context.getJoins();
+      Assert.assertEquals(0, joins.size());
+   }
+
+   @Test
+   public void testRelationTypeSideExists() throws OseeCoreException {
+      String expected = "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + //
+      " FROM \n" + //
+      "osee_artifact art1, osee_txs txs1, osee_relation_link rel1\n" + //
+      " WHERE \n" + //
+      "rel1.rel_link_type_id = ?\n" + //
+      " AND \n" + //
+      "rel1.b_art_id = art1.art_id\n" + //
+      " AND \n" + //
+      "rel1.gamma_id = txs1.gamma_id\n" + // 
+      " AND \n" + //
+      "txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " ORDER BY art1.art_id, txs1.branch_id";
+
+      Criteria relTypeSideNotExists = new CriteriaRelationTypeSideExists(CoreRelationTypes.Default_Hierarchical__Child);
+      queryData.addCriteria(relTypeSideNotExists);
+
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+      Assert.assertEquals(expected, context.getSql());
+
+      List<Object> parameters = context.getParameters();
+      Assert.assertEquals(2, parameters.size());
+
+      List<AbstractJoinQuery> joins = context.getJoins();
+      Assert.assertEquals(0, joins.size());
    }
 }

@@ -14,12 +14,16 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.rest.internal.search.PredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
+import org.eclipse.osee.orcs.rest.model.search.SearchOp;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
@@ -36,10 +40,10 @@ public class ExistsTypePredicateHandler implements PredicateHandler {
       List<String> typeParameters = predicate.getTypeParameters();
       Collection<String> values = predicate.getValues();
 
-      Conditions.checkNotNull(typeParameters, "typeParameters");
+      Conditions.checkNotNullOrEmpty(typeParameters, "typeParameters");
       Conditions.checkNotNull(values, "values");
 
-      if (typeParameters.size() == 1) {
+      if (typeParameters.size() >= 1) {
          String existsType = typeParameters.get(0);
          if ("attrType".equals(existsType)) {
             Collection<IAttributeType> attributeTypes = PredicateHandlerUtil.getIAttributeTypes(values);
@@ -47,8 +51,24 @@ public class ExistsTypePredicateHandler implements PredicateHandler {
                builder.andExists(attributeTypes);
             }
          } else if ("relType".equals(existsType)) {
+            SearchOp op = predicate.getOp();
             for (IRelationType rt : PredicateHandlerUtil.getIRelationTypes(values)) {
-               builder.andExists(rt);
+               if (op == SearchOp.EQUALS) {
+                  builder.andExists(rt);
+               } else {
+                  builder.andNotExists(rt);
+               }
+            }
+         } else if ("relTypeSide".equals(existsType)) {
+            SearchOp op = predicate.getOp();
+            RelationSide side = typeParameters.get(1).equals("A") ? RelationSide.SIDE_A : RelationSide.SIDE_B;
+            for (IRelationType rt : PredicateHandlerUtil.getIRelationTypes(values)) {
+               IRelationTypeSide rts = TokenFactory.createRelationTypeSide(side, rt.getGuid(), "SearchRelTypeSide");
+               if (op == SearchOp.EQUALS) {
+                  builder.andExists(rts);
+               } else {
+                  builder.andNotExists(rts);
+               }
             }
          }
       }

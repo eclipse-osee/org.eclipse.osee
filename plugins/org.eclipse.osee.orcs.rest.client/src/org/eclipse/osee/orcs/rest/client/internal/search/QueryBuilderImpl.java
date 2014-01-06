@@ -169,6 +169,24 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
+   public QueryBuilder andExists(IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      predicates.add(predicateFactory.createRelationTypeSideExistsSearch(relationTypeSide));
+      return this;
+   }
+
+   @Override
+   public QueryBuilder andNotExists(IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      predicates.add(predicateFactory.createRelationTypeSideNotExistsSearch(relationTypeSide));
+      return this;
+   }
+
+   @Override
+   public QueryBuilder andNotExists(IRelationType relationType) throws OseeCoreException {
+      predicates.add(predicateFactory.createRelationNotExistsSearch(Collections.singleton(relationType)));
+      return this;
+   }
+
+   @Override
    public QueryBuilder andNameEquals(String artifactName) {
       return and(CoreAttributeTypes.Name, Operator.EQUAL, artifactName);
    }

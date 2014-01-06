@@ -41,7 +41,7 @@ public class DslTranslatorImplTest {
       DslTranslatorImpl_V1 translator = new DslTranslatorImpl_V1();
 
       //test bad op
-      String test = "[t:attrType&tp:1000000000000070&op:<>&v:AtsAdmin]";
+      String test = "[t:attrType&tp:1000000000000070&op:<=&v:AtsAdmin]";
       translator.translate(test);
    }
 

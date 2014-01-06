@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -229,6 +229,24 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
+   public QueryBuilder andNotExists(IRelationType relationType) throws OseeCoreException {
+      Criteria criteria = criteriaFactory.createNotExistsCriteria(relationType);
+      return addAndCheck(getQueryData(), criteria);
+   }
+
+   @Override
+   public QueryBuilder andNotExists(IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      Criteria criteria = criteriaFactory.createNotExistsCriteria(relationTypeSide);
+      return addAndCheck(getQueryData(), criteria);
+   }
+
+   @Override
+   public QueryBuilder andExists(IRelationTypeSide relationTypeSide) throws OseeCoreException {
+      Criteria criteria = criteriaFactory.createExistsCriteria(relationTypeSide);
+      return addAndCheck(getQueryData(), criteria);
+   }
+
+   @Override
    public QueryBuilder and(IAttributeType attributeType, Operator operator, String value) throws OseeCoreException {
       Criteria criteria =
          criteriaFactory.createAttributeCriteria(attributeType, operator, Collections.singleton(value));
@@ -383,4 +401,5 @@ public class QueryBuilderImpl implements QueryBuilder {
    public CancellableCallable<Integer> createCount() throws OseeCoreException {
       return queryFactory.createCount(session, checkAndCloneQueryData());
    }
+
 }

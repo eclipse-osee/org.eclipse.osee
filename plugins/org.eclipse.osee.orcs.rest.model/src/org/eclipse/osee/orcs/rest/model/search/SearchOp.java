@@ -20,7 +20,8 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public enum SearchOp {
    EQUALS("=="),
    LESS_THAN("<"),
-   GREATER_THAN(">");
+   GREATER_THAN(">"),
+   NOT_EQUALS("<>");
 
    private final String token;
 

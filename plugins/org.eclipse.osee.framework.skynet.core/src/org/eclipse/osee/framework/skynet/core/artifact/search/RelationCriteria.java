@@ -35,6 +35,10 @@ public class RelationCriteria implements ArtifactSearchCriteria {
       this(relationEnum, relationEnum.getSide());
    }
 
+   public RelationCriteria(IRelationType relationType) {
+      this(relationType, null);
+   }
+
    public RelationCriteria(IRelationType relationType, RelationSide relationSide) {
       this(0, relationType, relationSide);
    }
@@ -51,8 +55,12 @@ public class RelationCriteria implements ArtifactSearchCriteria {
          IRelationTypeSide rts =
             TokenFactory.createRelationTypeSide(relationSide, relationType.getGuid(), Strings.EMPTY_STRING);
          builder.andRelatedToLocalIds(rts, artifactId);
-      } else {
+      } else if (relationSide == null) {
          builder.andExists(relationType);
+      } else {
+         IRelationTypeSide rts =
+            TokenFactory.createRelationTypeSide(relationSide, relationType.getGuid(), "SearchRelationTypeSide");
+         builder.andExists(rts);
       }
    }
 

@@ -43,6 +43,12 @@ public interface PredicateFactory {
 
    Predicate createRelationExistsSearch(Collection<? extends IRelationType> relationTypes);
 
+   Predicate createRelationNotExistsSearch(Collection<? extends IRelationType> relationTypes);
+
+   Predicate createRelationTypeSideNotExistsSearch(IRelationTypeSide relationTypeSide);
+
+   Predicate createRelationTypeSideExistsSearch(IRelationTypeSide relationTypeSide);
+
    Predicate createRelatedToSearch(IRelationTypeSide relationTypeSide, Collection<?> ids);
 
 }

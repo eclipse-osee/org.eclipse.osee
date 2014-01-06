@@ -130,6 +130,27 @@ public class PredicateFactoryImpl implements PredicateFactory {
    }
 
    @Override
+   public Predicate createRelationTypeSideExistsSearch(IRelationTypeSide relationTypeSide) {
+      String side = relationTypeSide.getSide().isSideA() ? "A" : "B";
+      return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("relTypeSide", side), SearchOp.EQUALS,
+         emptySearchFlagList, null, getLongIds(relationTypeSide));
+   }
+
+   @Override
+   public Predicate createRelationTypeSideNotExistsSearch(IRelationTypeSide relationTypeSide) {
+      String side = relationTypeSide.getSide().isSideA() ? "A" : "B";
+      return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("relTypeSide", side), SearchOp.NOT_EQUALS,
+         emptySearchFlagList, null, getLongIds(relationTypeSide));
+   }
+
+   @Override
+   public Predicate createRelationNotExistsSearch(Collection<? extends IRelationType> relationTypes) {
+      List<String> typeIds = getLongIds(relationTypes);
+      return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("relType"), SearchOp.NOT_EQUALS,
+         emptySearchFlagList, null, typeIds);
+   }
+
+   @Override
    public Predicate createRelatedToSearch(IRelationTypeSide relationTypeSide, Collection<?> ids) {
       List<String> values = new LinkedList<String>();
       String side = relationTypeSide.getSide().isSideA() ? "A" : "B";
@@ -151,6 +172,10 @@ public class PredicateFactoryImpl implements PredicateFactory {
          toReturn.add(String.valueOf(value));
       }
       return toReturn;
+   }
+
+   private List<String> getLongIds(Identity<Long> type) {
+      return getLongIds(Collections.singletonList(type));
    }
 
    private SearchOp convertToSearchOp(Operator op) {
@@ -176,4 +201,5 @@ public class PredicateFactoryImpl implements PredicateFactory {
       visitor.accept(options);
       return visitor;
    }
+
 }
