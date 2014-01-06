@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.search;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -20,7 +22,6 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -95,9 +96,9 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
             if (artifactMatch.hasMatchData()) {
                try {
                   Artifact artifact = artifactMatch.getArtifact();
-                  HashCollection<Attribute<?>, MatchLocation> matchData = artifactMatch.getMatchData();
+                  HashCollection<Integer, MatchLocation> matchData = artifactMatch.getMatchData();
                   if (!matchData.isEmpty()) {
-                     for (Attribute<?> attribute : matchData.keySet()) {
+                     for (Integer attribute : matchData.keySet()) {
                         for (MatchLocation matchLocation : matchData.getValues(attribute)) {
                            resultCollector.acceptMatchData(artifact, attribute, matchLocation);
                            lineMatches++;
@@ -132,6 +133,7 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
 
       private final AbstractTextSearchResult fResult;
       private ArrayList<Match> fCachedMatches;
+      private final Map<Integer, String> attrContent = new HashMap<Integer, String>();
 
       private ResultCollector(AbstractTextSearchResult result) {
          fResult = result;
@@ -143,7 +145,7 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          return true;
       }
 
-      public boolean acceptMatchData(Artifact artifact, Attribute<?> attribute, MatchLocation matchLocation) {
+      public boolean acceptMatchData(Artifact artifact, int attribute, MatchLocation matchLocation) {
          int matchOffset = matchLocation.getStartPosition() - 1;
          if (matchOffset < 0) {
             matchOffset = 0;
@@ -159,24 +161,32 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          return true;
       }
 
-      private AttributeLineElement getLineElement(int offset, int matchEnd, Artifact artifact, Attribute<?> attribute) {
+      private AttributeLineElement getLineElement(int offset, int matchEnd, Artifact artifact, int attrId) {
          int lineNumber = 1;
          int lineStart = 0;
+         String content = null;
+         if (attrContent.containsKey(attrId)) {
+            content = attrContent.get(attrId);
+         } else {
+            content = getContentFromAttribute(artifact.getAttributeById(attrId, false));
+            attrContent.put(attrId, content);
+         }
          if (!fCachedMatches.isEmpty()) {
             AttributeMatch last = (AttributeMatch) fCachedMatches.get(fCachedMatches.size() - 1);
             AttributeLineElement lineElement = last.getLineElement();
-            if (lineElement.contains(offset) && lineElement.getAttribute().equals(attribute)) {
+            if (lineElement.contains(offset) && lineElement.getAttribute() == attrId) {
                return lineElement;
             }
-            lineStart = lineElement.getOffset() + lineElement.getLength();
-            lineNumber = lineElement.getLine() + 1;
+            if (lineElement.getAttribute() == attrId) {
+               lineStart = lineElement.getOffset() + lineElement.getLength();
+               lineNumber = lineElement.getLine();
+            }
          }
          if (offset < lineStart) {
             return null; // offset before the last line
          }
 
          int i = lineStart;
-         String content = getContentFromAttribute(attribute);
          int contentLength = content.length();
          int charCount = 0;
          while (i < contentLength) {
@@ -192,25 +202,17 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
                }
                if (offset < i) {
                   String lineContent = getContents(content, lineStart, i); // include line delimiter
-                  return new AttributeLineElement(artifact, attribute, lineNumber, lineStart, lineContent);
+                  return new AttributeLineElement(artifact, attrId, lineNumber, lineStart, lineContent);
                }
                lineNumber++;
                lineStart = i;
             }
          }
          if (offset < i) {
-            String lineContent = getContents(attribute, lineStart, i);
-            return new AttributeLineElement(artifact, attribute, lineNumber, lineStart, lineContent);
+            String lineContent = getContents(content, lineStart, i);
+            return new AttributeLineElement(artifact, attrId, lineNumber, lineStart, lineContent);
          }
          return null; // offset outside of range
-      }
-
-      public String getContents(Attribute<?> attribute, int start, int end) {
-         String contents = getContentFromAttribute(attribute);
-         if (Strings.isValid(contents)) {
-            contents = getContents(contents, start, end);
-         }
-         return contents;
       }
 
       private String getContentFromAttribute(Attribute<?> attribute) {

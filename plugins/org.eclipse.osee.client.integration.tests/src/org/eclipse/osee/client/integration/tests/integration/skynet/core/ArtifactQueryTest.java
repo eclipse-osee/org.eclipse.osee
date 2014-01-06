@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactMatch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -248,9 +247,10 @@ public class ArtifactQueryTest {
       boolean found = false;
       for (ArtifactMatch match : matches) {
          if (match.getArtifact().getName().equals("Read-Write Minimum Rate")) {
-            HashCollection<Attribute<?>, MatchLocation> matchData = match.getMatchData();
-            for (Attribute<?> attr : matchData.keySet()) {
-               if (attr.isOfType(CoreAttributeTypes.WordTemplateContent)) {
+            HashCollection<Integer, MatchLocation> matchData = match.getMatchData();
+            for (int attr : matchData.keySet()) {
+
+               if (match.getArtifact().getAttributeById(attr, false).isOfType(CoreAttributeTypes.WordTemplateContent)) {
                   found = true;
                   Assert.assertEquals(2, matchData.getValues(attr).size());
                   break;

@@ -57,7 +57,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
@@ -715,8 +714,7 @@ public class ArtifactQuery {
                   toAddTo = new ArtifactMatch(art);
                   matches.put(art, toAddTo);
                }
-               Attribute<?> attribute = art.getAttributeById(attrId, searchParameters.isIncludeDeleted());
-               toAddTo.addMatchData(attribute, match.getLocations());
+               toAddTo.addMatchData(attrId, match.getLocations());
             }
          }
 

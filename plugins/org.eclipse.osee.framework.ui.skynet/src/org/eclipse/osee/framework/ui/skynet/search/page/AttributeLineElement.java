@@ -22,13 +22,13 @@ import org.eclipse.search.ui.text.Match;
  */
 public class AttributeLineElement implements IAdaptable {
 
-   private final Attribute<?> attribute;
+   private final int attribute;
    private final Artifact parent;
    private final int lineNumber;
    private final int lineStartOffset;
    private final String lineContents;
 
-   public AttributeLineElement(Artifact parent, Attribute<?> attribute, int lineNumber, int lineStartOffset, String contents) {
+   public AttributeLineElement(Artifact parent, int attribute, int lineNumber, int lineStartOffset, String contents) {
       this.parent = parent;
       this.attribute = attribute;
       this.lineContents = contents;
@@ -84,7 +84,7 @@ public class AttributeLineElement implements IAdaptable {
       return count;
    }
 
-   public Attribute<?> getAttribute() {
+   public int getAttribute() {
       return attribute;
    }
 

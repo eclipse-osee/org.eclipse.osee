@@ -15,15 +15,13 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ArtifactMatch {
    private final Artifact artifact;
-   private final HashCollection<Attribute<?>, MatchLocation> matchData =
-      new HashCollection<Attribute<?>, MatchLocation>();
+   private final HashCollection<Integer, MatchLocation> matchData = new HashCollection<Integer, MatchLocation>();
 
    public ArtifactMatch(Artifact artifact) {
       this.artifact = artifact;
@@ -37,11 +35,11 @@ public class ArtifactMatch {
       return artifact;
    }
 
-   public HashCollection<Attribute<?>, MatchLocation> getMatchData() throws OseeCoreException {
+   public HashCollection<Integer, MatchLocation> getMatchData() throws OseeCoreException {
       return matchData;
    }
 
-   public void addMatchData(Attribute<?> attr, Collection<MatchLocation> locations) {
+   public void addMatchData(Integer attr, Collection<MatchLocation> locations) {
       matchData.put(attr, locations);
    }
 }
