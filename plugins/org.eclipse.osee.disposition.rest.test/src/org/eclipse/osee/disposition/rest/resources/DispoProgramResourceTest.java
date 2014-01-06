@@ -64,7 +64,7 @@ public class DispoProgramResourceTest {
       ResultSet<IOseeBranch> branchList = ResultSets.singleton(branch);
 
       when(dispoApi.getDispoPrograms()).thenReturn(branchList);
-      when(htmlWriter.createDispositionPage("Programs", branchList)).thenReturn("htmlFromWriter");
+      when(htmlWriter.createDispositionPage("Programs", "", branchList)).thenReturn("htmlFromWriter");
       Response oneSetResponse = resource.getAllPrograms();
       String html = (String) oneSetResponse.getEntity();
       assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());
@@ -82,7 +82,7 @@ public class DispoProgramResourceTest {
 
       IOseeBranch testBranch = TokenFactory.createBranch(id1.getGuid(), "testBranch");
       when(dispoApi.getDispoProgramById(id1.getGuid())).thenReturn(testBranch);
-      String prefixPath = testBranch.getGuid() + "/dispositionSet/";
+      String prefixPath = testBranch.getGuid() + "/set";
       String subTitle = "Disposition Sets";
       when(htmlWriter.createDispoPage(testBranch.getName(), prefixPath, subTitle, "[]")).thenReturn("htmlFromWriter");
 

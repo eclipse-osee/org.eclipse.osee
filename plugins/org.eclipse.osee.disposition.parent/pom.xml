@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.eclipse.osee</groupId>
+		<artifactId>org.eclipse.osee.x.parent</artifactId>
+		<version>0.17.0-SNAPSHOT</version>
+		<relativePath>../../plugins/org.eclipse.osee.x.parent</relativePath>
+	</parent>
+
+	<groupId>org.eclipse.osee</groupId>
+	<artifactId>org.eclipse.osee.disposition.parent</artifactId>
+	<packaging>pom</packaging>
+	<name>OSEE Disposition - Parent (Incubation)</name>
+	<version>0.17.0-SNAPSHOT</version>
+
+	<modules>
+		<module>../../plugins/org.eclipse.osee.disposition.rest.model</module>
+		
+		<module>../../plugins/org.eclipse.osee.disposition.rest</module>
+		<module>../../plugins/org.eclipse.osee.disposition.rest.test</module>
+		
+		<module>../../features/org.eclipse.osee.disposition.feature</module>
+	</modules>
+
+
+	<profiles>
+		<profile>
+			<id>osee-dispo-stage-only</id>
+			<activation>
+				<property>
+					<name>osee-build-stage</name>
+					<value>osee-dispo</value>
+				</property>
+			</activation>
+			<modules>
+				<module>../../plugins/org.eclipse.osee.orcs.db.mock</module>
+			</modules>
+		</profile>
+	</profiles>
+</project>

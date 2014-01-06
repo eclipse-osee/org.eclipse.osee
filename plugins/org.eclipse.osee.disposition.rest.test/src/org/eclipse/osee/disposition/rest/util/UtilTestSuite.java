@@ -13,11 +13,11 @@ package org.eclipse.osee.disposition.rest.util;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({HtmlWriterTest.class})
 /**
  * @author Angel Avila
  */
+@RunWith(Suite.class)
+@Suite.SuiteClasses({HtmlWriterTest.class})
 public class UtilTestSuite {
    // Test Suite
 }

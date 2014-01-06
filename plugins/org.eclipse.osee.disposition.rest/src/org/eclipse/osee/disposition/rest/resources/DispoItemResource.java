@@ -13,6 +13,7 @@ package org.eclipse.osee.disposition.rest.resources;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -25,6 +26,7 @@ import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.util.HtmlWriter;
+import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
@@ -41,6 +43,12 @@ public class DispoItemResource {
       this.branchGuid = branchGuid;
       this.setId = setId;
       this.writer = writer;
+   }
+
+   @POST
+   public Response postDispoItem(DispoItemData dispoItem) {
+      Identifiable<String> createDispoItem = dispoApi.createDispoItem(branchGuid, setId, dispoItem);
+      return Response.status(Status.OK).entity(createDispoItem.getGuid()).build();
    }
 
    /**
@@ -61,7 +69,7 @@ public class DispoItemResource {
          html = "There are currently no disposition items available under this set";
       } else {
          status = Status.OK;
-         html = writer.createDispositionPage("Dispositionable Items", dispoItems);
+         html = writer.createDispositionPage("Dispositionable Items", "item/", dispoItems);
       }
       return Response.status(status).entity(html).build();
    }
@@ -109,7 +117,7 @@ public class DispoItemResource {
       } else {
          status = Status.OK;
          String title = "Annotations";
-         String prefixPath = itemId + "/annotation/";
+         String prefixPath = itemId + "/annotation";
          html = writer.createDispoPage(dispoItem.getName(), prefixPath, title, "[]");
       }
       return Response.status(status).entity(html).build();
@@ -163,5 +171,4 @@ public class DispoItemResource {
    public AnnotationResource getAnnotation(@PathParam("itemId") String itemId) {
       return new AnnotationResource(dispoApi, writer, branchGuid, setId, itemId);
    }
-
 }

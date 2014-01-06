@@ -63,6 +63,7 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
       return notesList;
    }
 
+   @Override
    public String getImportState() {
       return importState;
    }

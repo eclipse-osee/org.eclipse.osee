@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop">
+   <implementation class="org.eclipse.osee.disposition.rest.internal.DispoApiImpl"/>
+   <service>
+      <provide interface="org.eclipse.osee.disposition.rest.DispoApi"/>
+   </service>
+   <reference bind="setStorageProvider" cardinality="1..1" interface="org.eclipse.osee.disposition.rest.internal.StorageProvider" name="StorageProvider" policy="static"/>
+   <reference bind="setDataFactory" cardinality="1..1" interface="org.eclipse.osee.disposition.rest.internal.DispoDataFactory" name="DispoDataFactory" policy="static"/>
+   <reference bind="setDispoConnector" cardinality="1..1" interface="org.eclipse.osee.disposition.rest.internal.DispoConnector" name="DispoConnector" policy="static"/>
+   <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
+</scr:component>

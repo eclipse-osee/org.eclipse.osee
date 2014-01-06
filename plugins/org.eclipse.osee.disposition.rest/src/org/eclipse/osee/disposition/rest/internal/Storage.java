@@ -8,18 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.disposition.rest.test;
+package org.eclipse.osee.disposition.rest.internal;
 
-import org.eclipse.osee.disposition.rest.resources.ResourcesTestSuite;
-import org.eclipse.osee.disposition.rest.util.UtilTestSuite;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.eclipse.osee.framework.resource.management.IResource;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ResourcesTestSuite.class, UtilTestSuite.class})
 /**
  * @author Angel Avila
  */
-public class AllRestTestSuite {
-   // Test Suite
+public interface Storage extends DispoQuery, DispoWriter {
+
+   boolean typesExist();
+
+   void storeTypes(IResource resource);
+
 }

@@ -5,9 +5,9 @@
 
 	<parent>
 		<groupId>org.eclipse.osee</groupId>
-		<artifactId>org.eclipse.osee.x.server.parent</artifactId>
+		<artifactId>org.eclipse.osee.disposition.parent</artifactId>
 		<version>0.17.0-SNAPSHOT</version>
-		<relativePath>../../plugins/org.eclipse.osee.x.server.parent</relativePath>
+		<relativePath>../../plugins/org.eclipse.osee.disposition.parent</relativePath>
 	</parent>
 
 	<artifactId>org.eclipse.osee.disposition.rest.test</artifactId>
@@ -22,10 +22,32 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<testSuite>org.eclipse.osee.disposition.rest.test</testSuite>
-					<testClass>org.eclipse.osee.disposition.rest.test.AllRestTestSuite</testClass>
+					<testClass>org.eclipse.osee.disposition.rest.DispositionTestSuite</testClass>
+					<dependencies>
+						<dependency>
+							<type>eclipse-feature</type>
+							<artifactId>org.eclipse.osee.x.core.external.feature</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-feature</type>
+							<artifactId>org.eclipse.osee.x.core.feature</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-feature</type>
+							<artifactId>org.eclipse.osee.orcs.feature</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-feature</type>
+							<artifactId>org.eclipse.osee.disposition.feature</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+					</dependencies>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-	
+
 </project>

@@ -14,6 +14,7 @@ package org.eclipse.osee.disposition.model;
 import java.util.Date;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * @author Angel Avila
@@ -31,5 +32,5 @@ public interface DispoItem extends Identifiable<String> {
 
    JSONArray getDiscrepanciesList();
 
-   JSONArray getAnnotationsList();
+   JSONObject getAnnotationsList();
 }

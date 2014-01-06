@@ -13,15 +13,15 @@ package org.eclipse.osee.disposition.rest.resources;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+/**
+ * @author Angel Avila
+ */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AnnotationResourceTest.class,
    DispoItemResourceTest.class,
    DispoProgramResourceTest.class,
    DispoSetResourceTest.class})
-/**
- * @author Angel Avila
- */
 public class ResourcesTestSuite {
    // Test Suite
 }

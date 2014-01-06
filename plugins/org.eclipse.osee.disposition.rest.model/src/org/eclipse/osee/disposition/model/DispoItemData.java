@@ -15,6 +15,7 @@ import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * @author Angel Avila
@@ -29,7 +30,7 @@ public class DispoItemData implements DispoItem {
    private Date lastUpdate;
    private String status;
    private JSONArray discrepanciesList;
-   private JSONArray annotationsList;
+   private JSONObject annotationsList;
 
    public DispoItemData() {
 
@@ -71,7 +72,7 @@ public class DispoItemData implements DispoItem {
    }
 
    @Override
-   public JSONArray getAnnotationsList() {
+   public JSONObject getAnnotationsList() {
       return annotationsList;
    }
 
@@ -83,7 +84,7 @@ public class DispoItemData implements DispoItem {
       this.discrepanciesList = discrepanciesList;
    }
 
-   public void setAnnotationsList(JSONArray annotationsList) {
+   public void setAnnotationsList(JSONObject annotationsList) {
       this.annotationsList = annotationsList;
    }
 

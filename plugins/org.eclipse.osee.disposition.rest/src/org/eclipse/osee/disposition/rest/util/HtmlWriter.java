@@ -32,10 +32,10 @@ public class HtmlWriter {
       this.registry = registry;
    }
 
-   public String createDispositionPage(String title, Iterable<? extends Identifiable<String>> dispoEntities) {
+   public String createDispositionPage(String title, String path, Iterable<? extends Identifiable<String>> dispoEntities) {
 
       PageCreator page = PageFactory.newPageCreator(registry, "title", title);
-      page.addSubstitution(new LinkListRule("disposition", false, dispoEntities));
+      page.addSubstitution(new LinkListRule("disposition", path, false, dispoEntities));
       //      page.addSubstitution(new StringRule("subTitle", ""));
       page.addSubstitution(new StringRule("notes", ""));
       return page.realizePage(TemplateRegistry.DispositionHtml);
@@ -46,7 +46,7 @@ public class HtmlWriter {
       //      page.addSubstitution(new StringRule("disposition", ""));
       String asHtmlLink = String.format("<li><a href=\"%s\">%s</a></li>", prefix, subTitle);
       page.addSubstitution(new StringRule("disposition", asHtmlLink));
-      page.addSubstitution(new AppendableRule("notes") {
+      page.addSubstitution(new AppendableRule<String>("notes") {
          @Override
          public void applyTo(Appendable appendable) throws IOException {
             try {
@@ -84,14 +84,16 @@ public class HtmlWriter {
          }
       }
    }
-   private static final class LinkListRule extends AppendableRule {
+   private static final class LinkListRule extends AppendableRule<String> {
       private final boolean ordered;
       private final Iterable<? extends Identifiable<String>> indentities;
+      private final String path;
 
-      public LinkListRule(String ruleName, boolean ordered, Iterable<? extends Identifiable<String>> indentities) {
+      public LinkListRule(String ruleName, String path, boolean ordered, Iterable<? extends Identifiable<String>> indentities) {
          super(ruleName);
          this.ordered = ordered;
          this.indentities = indentities;
+         this.path = path;
       }
 
       @Override
@@ -100,6 +102,7 @@ public class HtmlWriter {
          for (Identifiable<String> indentity : indentities) {
             appendable.append("<li>");
             appendable.append("<a href=\"");
+            appendable.append(path);
             appendable.append(indentity.getGuid());
             appendable.append("\">");
             appendable.append(indentity.getName());

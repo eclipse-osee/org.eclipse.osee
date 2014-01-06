@@ -126,7 +126,7 @@ public class DispoSetResourceTest {
       ResultSet<DispoSetData> resultSet = ResultSets.singleton(set);
 
       when(dispositionApi.getDispoSets("branchId")).thenReturn(resultSet);
-      when(htmlWriter.createDispositionPage("Disposition Sets", resultSet)).thenReturn("htmlFromWriter");
+      when(htmlWriter.createDispositionPage("Disposition Sets", "set/", resultSet)).thenReturn("htmlFromWriter");
       Response oneSetResponse = resource.getAllDispoSets();
       String html = (String) oneSetResponse.getEntity();
       assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());
@@ -170,7 +170,7 @@ public class DispoSetResourceTest {
       ResultSet<DispoItemData> resultListItems = emptyResultSet;
       when(dispositionApi.getDispoSetById("branchId", id1.getGuid())).thenReturn(set);
       when(dispositionApi.getDispoItems("branchId", id1.getGuid())).thenReturn(resultListItems);
-      String prefixPath = set.getGuid() + "/dispositionableItem/";
+      String prefixPath = set.getGuid() + "/item";
       String subTitle = "Dispositionable Items";
       when(htmlWriter.createDispoPage(set.getName(), prefixPath, subTitle, "[]")).thenReturn("htmlFromWriter");
       Response response = resource.getDispoSetByIdHtml(set.getGuid());

@@ -98,7 +98,7 @@ public class DispoSetResource {
          html = DispoMessages.Set_NoneFound;
       } else {
          status = Status.OK;
-         html = writer.createDispositionPage("Disposition Sets", allDispoSets);
+         html = writer.createDispositionPage("Disposition Sets", "set/", allDispoSets);
       }
       return Response.status(status).entity(html).build();
    }
@@ -147,7 +147,7 @@ public class DispoSetResource {
          String notesJsonString = dispoSetArt.getNotesList().toString();
          status = Status.OK;
          String title = "Dispositionable Items";
-         String prefixPath = setId + "/dispositionableItem/";
+         String prefixPath = setId + "/item";
          html = writer.createDispoPage(dispoSetArt.getName(), prefixPath, title, notesJsonString);
       }
       return Response.status(status).entity(html).build();

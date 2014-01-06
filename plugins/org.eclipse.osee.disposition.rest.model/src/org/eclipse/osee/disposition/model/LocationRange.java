@@ -25,6 +25,11 @@ public class LocationRange {
    public LocationRange() {
    }
 
+   public LocationRange(int start) {
+      this.start = start;
+      this.end = start;
+   }
+
    public LocationRange(int start, int end) {
       this.start = start;
       this.end = end;

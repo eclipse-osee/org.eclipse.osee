@@ -8,6 +8,7 @@ artifactType "Disposition Set" extends "Artifact" {
    attribute "dispo.Notes JSON"
    attribute "dispo.Date Created"
    attribute "dispo.Status Count"
+   attribute "dispo.Import State"
 }
 
 artifactType "dispo.Dispositionable Item" extends "Artifact" {

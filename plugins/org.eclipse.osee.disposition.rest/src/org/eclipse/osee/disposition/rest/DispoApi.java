@@ -39,22 +39,20 @@ public interface DispoApi {
 
    ResultSet<DispoAnnotationData> getDispoAnnotations(String programId, String itemId);
 
-   DispoAnnotationData getDispoAnnotationByIndex(String programId, String itemId, int index);
+   DispoAnnotationData getDispoAnnotationByIndex(String programId, String itemId, String annotationId);
 
    // Writes
    Identifiable<String> createDispoSet(String programId, DispoSetDescriptorData descriptor);
 
-   Identifiable<String> createDispotem(String programId, String setId, DispoItemData dispoItem);
+   Identifiable<String> createDispoItem(String programId, String setId, DispoItemData dispoItem);
 
-   Integer createDispoAnnotation(String programId, String setId, String itemId, DispoAnnotationData annotation);
-
-   // Writes
+   String createDispoAnnotation(String programId, String itemId, DispoAnnotationData annotation);
 
    boolean editDispoSet(String programId, String dispoSetId, DispoSetData newDispoSet);
 
    boolean editDispoItem(String programId, String itemId, DispoItemData newDispoItem);
 
-   boolean editDispoAnnotation(String programId, String itemId, int index, DispoAnnotationData newAnnotation);
+   boolean editDispoAnnotation(String programId, String itemId, String annotationId, DispoAnnotationData newAnnotation);
 
    // Deletes
 
@@ -62,7 +60,7 @@ public interface DispoApi {
 
    boolean deleteDispoItem(String programId, String itemId);
 
-   boolean deleteDispoAnnotation(String programId, String itemId, int index);
+   boolean deleteDispoAnnotation(String programId, String itemId, String annotationId);
 
    // Utilities
    boolean isUniqueSetName(String programId, String setName);

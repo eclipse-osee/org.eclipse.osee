@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import org.eclipse.osee.disposition.model.DispoItemData;
+import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.json.JSONObject;
 
@@ -37,22 +38,7 @@ public class DispoItemMessageReader implements MessageBodyReader<DispoItemData> 
       String inputStreamToString = Lib.inputStreamToString(entityStream);
       try {
          JSONObject jsonObject = new JSONObject(inputStreamToString);
-         DispoItemData dispoItem = new DispoItemData();
-         if (jsonObject.has("name")) {
-            dispoItem.setName(jsonObject.getString("name"));
-         }
-         if (jsonObject.has("guid")) {
-            dispoItem.setGuid(jsonObject.getString("guid"));
-         }
-         if (jsonObject.has("itemStatus")) {
-            dispoItem.setStatus(jsonObject.getString("itemStatus"));
-         }
-         if (jsonObject.has("discrepanciesList")) {
-            dispoItem.setDiscrepanciesList(jsonObject.getJSONArray("discrepanciesList"));
-         }
-         if (jsonObject.has("annotationsList")) {
-            dispoItem.setAnnotationsList(jsonObject.getJSONArray("annotationsList"));
-         }
+         DispoItemData dispoItem = DispoUtil.jsonObjToDispoItem(jsonObject);
          return dispoItem;
       } catch (Exception ex) {
          throw new IOException("Error deserializing a Dispositionable Item.", ex);

@@ -19,7 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import org.eclipse.osee.disposition.model.DispoSetData;
-import org.eclipse.osee.disposition.model.DispoSetData.DispositionOperationsEnum;
+import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.json.JSONObject;
 
@@ -38,20 +38,7 @@ public class DispoSetMessageReader implements MessageBodyReader<DispoSetData> {
       String inputStreamToString = Lib.inputStreamToString(entityStream);
       try {
          JSONObject jsonObject = new JSONObject(inputStreamToString);
-         DispoSetData dispoSet = new DispoSetData();
-         if (jsonObject.has("importPath")) {
-            dispoSet.setImportPath(jsonObject.getString("importPath"));
-         }
-         if (jsonObject.has("name")) {
-            dispoSet.setName(jsonObject.getString("name"));
-         }
-         if (jsonObject.has("operation")) {
-            dispoSet.setOperation((DispositionOperationsEnum) jsonObject.get("operation"));
-         }
-         if (jsonObject.has("notesList")) {
-            dispoSet.setNotesList(jsonObject.getJSONArray("notesList"));
-         }
-
+         DispoSetData dispoSet = DispoUtil.jsonObjToDispoSet(jsonObject);
          return dispoSet;
       } catch (Exception ex) {
          throw new IOException("Error deserializing a Disposition Set.", ex);

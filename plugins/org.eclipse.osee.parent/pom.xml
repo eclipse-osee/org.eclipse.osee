@@ -46,7 +46,7 @@
 		<xerces-version>2.6.1</xerces-version>
 
 		<jaxb2-maven-version>1.5</jaxb2-maven-version>
-		
+
 		<platform-version-name>kepler</platform-version-name>
 		<orbit-version>R20130517111416</orbit-version>
 		<xtext-version>2.0.0</xtext-version>
@@ -682,6 +682,38 @@
 					<id>eclipse-ip</id>
 					<layout>p2</layout>
 					<url>${eclipse-ip-site}</url>
+				</repository>
+			</repositories>
+		</profile>
+
+		<profile>
+			<id>osee-dispo</id>
+			<activation>
+				<property>
+					<name>osee-build-stage</name>
+					<value>osee-dispo</value>
+				</property>
+			</activation>
+			<properties>
+				<eclipse-ip-site>${git-repo-root}/org.eclipse.ip/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
+				<osee-xcore-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
+				<osee-orcs-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.orcs.p2/target/repository</osee-orcs-site>
+			</properties>
+			<repositories>
+				<repository>
+					<id>eclipse-ip</id>
+					<layout>p2</layout>
+					<url>${eclipse-ip-site}</url>
+				</repository>
+				<repository>
+					<id>osee-xcore</id>
+					<layout>p2</layout>
+					<url>${osee-xcore-site}</url>
+				</repository>
+				<repository>
+					<id>osee-orcs</id>
+					<layout>p2</layout>
+					<url>${osee-orcs-site}</url>
 				</repository>
 			</repositories>
 		</profile>

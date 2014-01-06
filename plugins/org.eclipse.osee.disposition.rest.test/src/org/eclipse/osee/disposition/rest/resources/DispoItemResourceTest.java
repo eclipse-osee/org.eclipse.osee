@@ -70,7 +70,7 @@ public class DispoItemResourceTest {
       ResultSet<DispoItemData> resultSet = ResultSets.singleton(item);
 
       when(dispositionApi.getDispoItems("branchId", "setId")).thenReturn(resultSet);
-      when(htmlWriter.createDispositionPage("Dispositionable Items", resultSet)).thenReturn("htmlFromWriter");
+      when(htmlWriter.createDispositionPage("Dispositionable Items", "item/", resultSet)).thenReturn("htmlFromWriter");
       Response oneSetResponse = resource.getAllDispoItems();
       String html = (String) oneSetResponse.getEntity();
       assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());
@@ -112,7 +112,7 @@ public class DispoItemResourceTest {
       ResultSet<DispoAnnotationData> resultAnnotations = emptyResultSet;
       when(dispositionApi.getDispoItemById("branchId", item.getGuid())).thenReturn(item);
       when(dispositionApi.getDispoAnnotations("branchId", id1.getGuid())).thenReturn(resultAnnotations);
-      String prefixPath = item.getGuid() + "/annotation/";
+      String prefixPath = item.getGuid() + "/annotation";
       String subTitle = "Annotations";
       when(htmlWriter.createDispoPage(item.getName(), prefixPath, subTitle, "[]")).thenReturn("htmlFromWriter");
       Response response = resource.getDispoItemsByIdHtml(item.getGuid());

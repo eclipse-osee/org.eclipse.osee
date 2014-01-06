@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
+import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.json.JSONObject;
 
@@ -37,20 +38,10 @@ public class DispoAnnotationMessageReader implements MessageBodyReader<DispoAnno
       String inputStreamToString = Lib.inputStreamToString(entityStream);
       try {
          JSONObject jsonObject = new JSONObject(inputStreamToString);
-         DispoAnnotationData dispoAnnotation = new DispoAnnotationData();
-         if (jsonObject.has("index")) {
-            dispoAnnotation.setId(jsonObject.getInt("index"));
-         }
-         if (jsonObject.has("locationRef")) {
-            dispoAnnotation.setLocationRefs(jsonObject.getString("locationRef"));
-         }
-         if (jsonObject.has("notesList")) {
-            dispoAnnotation.setNotesList(jsonObject.getJSONArray("notesList"));
-         }
-         return dispoAnnotation;
+         DispoAnnotationData annotationData = DispoUtil.jsonObjToDispoAnnotationData(jsonObject);
+         return annotationData;
       } catch (Exception ex) {
          throw new IOException("Error deserializing a Dispositionable Item.", ex);
       }
    }
-
 }

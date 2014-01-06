@@ -23,17 +23,29 @@ import org.json.JSONArray;
 @XmlRootElement(name = "DispoAnnotationData")
 public class DispoAnnotationData implements Identifiable<String> {
 
-   private int id;
+   private String id;
    private JSONArray notesList;
    private String locationRefs;
-   private boolean isValid;
+   private boolean isConnected;
    private JSONArray idsOfCoveredDiscrepancies;
+   private String resolution;
+   private boolean isResolutionValid;
 
    public DispoAnnotationData() {
 
    }
 
-   public int getId() {
+   @Override
+   public String getGuid() {
+      return id;
+   }
+
+   @Override
+   public String getName() {
+      return locationRefs;
+   }
+
+   public String getId() {
       return id;
    }
 
@@ -49,8 +61,16 @@ public class DispoAnnotationData implements Identifiable<String> {
       return idsOfCoveredDiscrepancies;
    }
 
-   public boolean getIsValid() {
-      return isValid;
+   public boolean getIsConnected() {
+      return isConnected;
+   }
+
+   public String getResolution() {
+      return resolution;
+   }
+
+   public boolean getIsResolutionValid() {
+      return isResolutionValid;
    }
 
    public void setLocationRefs(String locationRefs) {
@@ -61,30 +81,32 @@ public class DispoAnnotationData implements Identifiable<String> {
       this.notesList = notesList;
    }
 
-   public void setId(int id) {
+   public void setId(String id) {
       this.id = id;
    }
 
-   public void setIsValid(boolean isValid) {
-      this.isValid = isValid;
+   public void setIsConnected(boolean isConnected) {
+      this.isConnected = isConnected;
    }
 
    public void setIdsOfCoveredDiscrepancies(JSONArray idsOfCoveredDiscrepancies) {
       this.idsOfCoveredDiscrepancies = idsOfCoveredDiscrepancies;
    }
 
-   @Override
-   public String getGuid() {
-      return String.valueOf(id);
+   public void setResolution(String resolution) {
+      this.resolution = resolution;
    }
 
-   @Override
-   public String getName() {
-      return locationRefs;
+   public void setIsResolutionValid(boolean isResolutionValid) {
+      this.isResolutionValid = isResolutionValid;
    }
 
    public void addCoveredDiscrepancyIndex(Discrepancy discrepancy) {
       idsOfCoveredDiscrepancies.put(discrepancy.getId());
+   }
+
+   public boolean isValid() {
+      return isConnected && isResolutionValid;
    }
 
    @Override

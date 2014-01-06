@@ -28,18 +28,16 @@ import org.mockito.MockitoAnnotations;
  */
 public class HtmlWriterTest {
 
-   private final static String PAGE_FORMAT =
-      "<!-- pageDeclaration.html -->\n" + //
-      "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + //
-      "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML Basic 1.1//EN\" \"http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd\">\n" + //
-      "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">\n" + //
-      "<head>\n" + //
-      "       <title>%s</title>\n" + //
-      "</head>\n" + //
-      "<body>\n" + //
-      "%s" + //
-      "</body>\n" + //
-      "</html>";
+   private final static String PAGE_FORMAT = "<!-- pageDeclaration.html -->\n" + //
+   "<!DOCTYPE HTML>\n" + //
+   "<html>\n" + //   
+   "<head>\n" + //
+   "       <title>%s</title>\n" + //
+   "</head>\n" + //
+   "<body>\n" + //
+   "%s" + //
+   "</body>\n" + //
+   "</html>";
 
    private HtmlWriter writer;
 
@@ -69,7 +67,7 @@ public class HtmlWriterTest {
       "\t<ul><li><a href=\"abcdef\">Id 1</a></li><li><a href=\"12345\">Id 2</a></li></ul>\n");
 
       @SuppressWarnings("unchecked")
-      String actual = writer.createDispositionPage("Hello", Arrays.asList(id1, id2));
+      String actual = writer.createDispositionPage("Hello", "", Arrays.asList(id1, id2));
       assertEquals(expected, actual);
    }
 

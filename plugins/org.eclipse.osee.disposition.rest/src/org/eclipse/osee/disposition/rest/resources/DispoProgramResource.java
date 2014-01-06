@@ -55,7 +55,7 @@ public class DispoProgramResource {
          html = DispoMessages.Program_NoneFound;
       } else {
          status = Status.OK;
-         html = writer.createDispositionPage("Programs", allPrograms);
+         html = writer.createDispositionPage("Programs", "", allPrograms);
       }
       return Response.status(status).entity(html).build();
    }
@@ -81,7 +81,7 @@ public class DispoProgramResource {
       } else {
          status = Status.OK;
          String subTitle = "Disposition Sets";
-         String prefixPath = programId + "/dispositionSet/";
+         String prefixPath = programId + "/set";
          html = writer.createDispoPage(dispoBranch.getName(), prefixPath, subTitle, "[]");
       }
 
