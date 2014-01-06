@@ -158,37 +158,4 @@ public class ActionableItems {
       return children;
    }
 
-   /**
-    * Return all active actionable items that this team is responsible for
-    */
-   public static List<IAtsActionableItem> getActiveForTeam(IAtsTeamDefinition teamDef, Active active) {
-      List<IAtsActionableItem> results = new ArrayList<IAtsActionableItem>();
-      for (IAtsActionableItem ai : teamDef.getActionableItems()) {
-         getActiveForTeam(teamDef, active, results, ai);
-         for (IAtsActionableItem childAi : ai.getChildrenActionableItems()) {
-            getActiveForTeam(teamDef, active, results, childAi);
-         }
-      }
-      return results;
-   }
-
-   /**
-    * Add ai to results if owned by teamDef an matches active status
-    */
-   private static void getActiveForTeam(IAtsTeamDefinition teamDef, Active active, List<IAtsActionableItem> results, IAtsActionableItem ai) {
-      if (ai.getTeamDefinition() == null || ai.getTeamDefinition().equals(teamDef)) {
-         if (active == Active.Both) {
-            results.add(ai);
-         } else {
-            // assume active unless otherwise specified
-            boolean attributeActive = ai.isActive();
-            if (active == Active.Active && attributeActive) {
-               results.add(ai);
-            } else if (active == Active.InActive && !attributeActive) {
-               results.add(ai);
-            }
-         }
-      }
-   }
-
 }

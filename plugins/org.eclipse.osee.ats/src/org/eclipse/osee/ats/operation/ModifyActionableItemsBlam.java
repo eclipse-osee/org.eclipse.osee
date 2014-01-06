@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.DuplicateWorkflowAction;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.CreateTeamData;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.ai.ModifyActionableItems;
@@ -138,7 +137,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       newLabel.setText("New Workflows\n(select to create new workflows)");
 
       wfTree = new OSEECheckedFilteredTree(treeComp, SWT.CHECK | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-      wfTree.getViewer().setContentProvider(new ArrayTreeContentProvider());
+      wfTree.getViewer().setContentProvider(new WorkflowsActiveAisContentProvider(defaultTeamWorkflow, Active.Active));
       wfTree.getViewer().setLabelProvider(new AtsObjectLabelProvider());
       wfTree.getViewer().setSorter(new AtsObjectNameSorter());
       wfTree.setLayoutData(data);
@@ -227,10 +226,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          clearTables();
       } else {
          try {
-            IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
-            Set<IAtsActionableItem> activeForTeam = new HashSet<IAtsActionableItem>();
-            activeForTeam.addAll(ActionableItems.getActiveForTeam(teamDef, Active.Active));
-            wfTree.getViewer().setInput(activeForTeam);
+            wfTree.getViewer().setInput(teamWf);
             Set<IAtsActionableItem> actionableItems = teamWf.getActionableItems();
             wfTree.setInitalChecked(Arrays.asList(actionableItems.toArray()));
 
@@ -319,6 +315,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       public void done(IJobChangeEvent event) {
          super.done(event);
          List<TeamWorkFlowArtifact> newTeamWfs = op.getNewTeamWfs();
+         refreshTables(op.getTeamWf());
          if (!newTeamWfs.isEmpty()) {
             AtsUtil.openInAtsWorldEditor("New Team Workflows", newTeamWfs);
          }
@@ -330,10 +327,15 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       private final ModifyActionableItems job;
       List<TeamWorkFlowArtifact> newTeamWfs = new ArrayList<TeamWorkFlowArtifact>();
       private final TeamWorkFlowArtifact teamWf;
+
+      public TeamWorkFlowArtifact getTeamWf() {
+         return teamWf;
+      }
+
       private final XResultData results;
 
       public ModifyActionableItemOperation(TeamWorkFlowArtifact teamWf, XResultData results, ModifyActionableItems job) {
-         super("Create Team Workflow(s)", Activator.PLUGIN_ID);
+         super("Modify Actionable Items", Activator.PLUGIN_ID);
          this.teamWf = teamWf;
          this.results = results;
          this.job = job;
@@ -354,12 +356,16 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          for (IAtsActionableItem checkedAi : job.getAddAis()) {
             results.logWithFormat("Actionable Item [%s] will be added to this workflow\n", checkedAi);
             teamWf.getActionableItemsDam().addActionableItem(checkedAi);
+            changes.add(teamWf);
          }
          for (IAtsActionableItem currAi : job.getRemoveAis()) {
             results.logWithFormat("Actionable Item [%s] will be removed from this workflow\n", currAi);
             teamWf.getActionableItemsDam().removeActionableItem(currAi);
+            changes.add(teamWf);
          }
-         changes.execute();
+         if (!changes.isEmpty()) {
+            changes.execute();
+         }
       }
 
       public List<TeamWorkFlowArtifact> getNewTeamWfs() {
