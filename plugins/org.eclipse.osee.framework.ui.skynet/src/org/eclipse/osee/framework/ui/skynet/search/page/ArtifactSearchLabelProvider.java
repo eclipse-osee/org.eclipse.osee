@@ -19,9 +19,11 @@ import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelP
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.StyledString.Styler;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecorator;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -140,7 +142,13 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
 
    @SuppressWarnings("unchecked")
    private StyledString getLineElementLabel(AttributeLineElement lineElement) {
-      String lineNumberString = String.format("%s, %s ", lineElement.getLine(), lineElement.getOffset());
+      String lineNumberString;
+      Attribute<?> attribute = lineElement.getParent().getAttributeById(lineElement.getAttribute(), false);
+      if (attribute.isOfType(CoreAttributeTypes.WholeWordContent) || attribute.isOfType(CoreAttributeTypes.WordTemplateContent)) {
+         lineNumberString = "";
+      } else {
+         lineNumberString = String.format("%s, %s ", lineElement.getLine(), lineElement.getOffset());
+      }
       StyledString str = new StyledString(lineNumberString, StyledString.QUALIFIER_STYLER);
 
       Match[] matches = lineElement.getMatches(fPage.getInput());

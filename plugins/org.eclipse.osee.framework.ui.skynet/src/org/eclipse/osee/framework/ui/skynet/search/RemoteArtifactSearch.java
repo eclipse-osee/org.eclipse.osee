@@ -134,6 +134,7 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       private final AbstractTextSearchResult fResult;
       private ArrayList<Match> fCachedMatches;
       private final Map<Integer, String> attrContent = new HashMap<Integer, String>();
+      private static final int HALF_LINE_CHAR_COUNT = 40;
 
       private ResultCollector(AbstractTextSearchResult result) {
          fResult = result;
@@ -186,31 +187,51 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
             return null; // offset before the last line
          }
 
-         int i = lineStart;
+         int newLineStart = offset;
          int contentLength = content.length();
          int charCount = 0;
+         int i = offset - 1;
+         boolean markLineStart = true;
+         while (i >= lineStart) {
+            char ch = content.charAt(i--);
+            if (ch == '\r') {
+               continue;
+            }
+            charCount++;
+            if (ch == '\n') {
+               lineNumber++;
+            }
+            if (charCount >= HALF_LINE_CHAR_COUNT && Character.isWhitespace(ch) || (ch == '\n')) {
+               if (markLineStart) {
+                  newLineStart = i + 1;
+                  markLineStart = false;
+                  if (ch == '\n') {
+                     charCount = 0;
+                  }
+               }
+            }
+         }
+         i++;
+         if (markLineStart) {
+            newLineStart = i;
+         }
+
+         i = matchEnd;
+         charCount = 0;
          while (i < contentLength) {
             char ch = content.charAt(i++);
             charCount++;
-            if (charCount >= 40 && Character.isWhitespace(ch) && matchEnd < i) {
+            if (charCount >= HALF_LINE_CHAR_COUNT && Character.isWhitespace(ch)) {
                ch = '\n';
                charCount = 0;
             }
             if (ch == '\n' || ch == '\r') {
-               if (ch == '\r' && i < contentLength && content.charAt(i) == '\n') {
-                  i++;
-               }
-               if (offset < i) {
-                  String lineContent = getContents(content, lineStart, i); // include line delimiter
-                  return new AttributeLineElement(artifact, attrId, lineNumber, lineStart, lineContent);
-               }
-               lineNumber++;
-               lineStart = i;
+               break;
             }
          }
          if (offset < i) {
-            String lineContent = getContents(content, lineStart, i);
-            return new AttributeLineElement(artifact, attrId, lineNumber, lineStart, lineContent);
+            String lineContent = getContents(content, newLineStart, i);
+            return new AttributeLineElement(artifact, attrId, lineNumber, newLineStart, lineContent);
          }
          return null; // offset outside of range
       }
