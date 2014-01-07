@@ -1,0 +1,40 @@
+/*******************************************************************************
+ * Copyright (c) 2013 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.authorization.admin;
+
+/**
+ * Class to collect configuration constants such as keys and default values.
+ * 
+ * @author Roberto E. Escobar
+ */
+public final class AuthorizationConstants {
+
+   private AuthorizationConstants() {
+      // Constants class
+   }
+
+   public static final String NAMESPACE = "authorization";
+
+   private static String qualify(String value) {
+      return String.format("%s.%s", NAMESPACE, value);
+   }
+
+   public static final String DENY_ALL_AUTHORIZER_SCHEME = "Override - DenyAll";
+   public static final String PERMIT_ALL_AUTHORIZER_SCHEME = "Override - PermitAll";
+   public static final String NONE_AUTHORIZATION_PROVIDER = "None";
+
+   public static final AuthorizationOverride DEFAULT_AUTHORIZATION_OVERRIDE = AuthorizationOverride.PERMIT_ALL;
+   public static final String DEFAULT_AUTHORIZATION_PROVIDER = NONE_AUTHORIZATION_PROVIDER;
+
+   public static final String AUTHORIZATION_OVERRIDE = qualify("override");
+   public static final String AUTHORIZATION_SCHEME_ALLOWED = qualify("scheme.allowed");
+
+}

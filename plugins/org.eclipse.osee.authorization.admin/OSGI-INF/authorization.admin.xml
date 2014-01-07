@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" configuration-policy="optional" deactivate="stop" modified="update">
+   <implementation class="org.eclipse.osee.authorization.admin.internal.AuthorizationAdminImpl"/>
+   <service>
+      <provide interface="org.eclipse.osee.authorization.admin.AuthorizationAdmin"/>
+   </service>
+   <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
+   <reference bind="addAuthorizationProvider" cardinality="0..n" interface="org.eclipse.osee.authorization.admin.AuthorizationProvider" name="AuthorizationProvider" policy="dynamic" unbind="removeAuthorizationProvider"/>
+   <property name="authorization.scheme.override" type="String" value="PERMIT_ALL"/>
+   <property name="authorization.scheme.allowed" type="String" value="None"/> 
+</scr:component>
