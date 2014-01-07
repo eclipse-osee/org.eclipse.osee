@@ -14,10 +14,10 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.services.URIProvider;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 import org.eclipse.osee.orcs.rest.client.internal.search.PredicateFactory;
@@ -26,7 +26,6 @@ import org.eclipse.osee.orcs.rest.client.internal.search.QueryBuilderImpl;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutorV1;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
 import org.eclipse.osee.orcs.rest.model.Client;
-import org.eclipse.osee.orcs.rest.model.ExceptionEntity;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 import org.eclipse.osee.rest.client.WebClientProvider;
 import com.google.inject.Inject;
@@ -72,10 +71,14 @@ public class OseeClientImpl implements OseeClient {
       return new QueryBuilderImpl(branch, predicates, options, predicateFactory, executor);
    }
 
+   private UriBuilder newBuilder() {
+      return UriBuilder.fromUri(uriProvider.getApplicationServerURI()).path("oseex");
+   }
+
    @Override
    public boolean isClientVersionSupportedByApplicationServer() {
       boolean result = false;
-      URI uri = uriProvider.getEncodedURI("oseex/client", null);
+      URI uri = newBuilder().path("client").build();
       WebResource resource = clientProvider.createResource(uri);
       Client clientResult = null;
       try {
@@ -84,8 +87,7 @@ public class OseeClientImpl implements OseeClient {
             result = clientResult.getSupportedVersions().contains(OseeCodeVersion.getVersion());
          }
       } catch (UniformInterfaceException ex) {
-         ExceptionEntity entity = ex.getResponse().getEntity(ExceptionEntity.class);
-         throw new OseeCoreException(entity.getExceptionString());
+         throw clientProvider.handleException(ex);
       }
       return result;
    }

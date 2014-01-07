@@ -13,6 +13,7 @@ package org.eclipse.osee.rest.client;
 import java.net.URI;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import com.sun.jersey.api.client.AsyncWebResource;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
 /**
@@ -24,5 +25,7 @@ public interface WebClientProvider {
    WebResource createResource(URI uri) throws OseeCoreException;
 
    AsyncWebResource createAsyncResource(URI uri) throws OseeCoreException;
+
+   RuntimeException handleException(UniformInterfaceException ex);
 
 }

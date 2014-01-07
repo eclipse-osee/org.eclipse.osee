@@ -17,7 +17,6 @@ import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.services.URIProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.orcs.rest.model.ExceptionEntity;
 import org.eclipse.osee.orcs.rest.model.search.OutputFormat;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.RequestType;
@@ -80,8 +79,7 @@ public class QueryExecutorV1 implements QueryExecutor {
             resource.accept(MediaType.APPLICATION_JSON_TYPE).type(MediaType.APPLICATION_JSON_TYPE).post(
                SearchResponse.class, params);
       } catch (UniformInterfaceException ex) {
-         ExceptionEntity entity = ex.getResponse().getEntity(ExceptionEntity.class);
-         throw new OseeCoreException(entity.getExceptionString());
+         throw clientProvider.handleException(ex);
       }
       return searchResult;
    }

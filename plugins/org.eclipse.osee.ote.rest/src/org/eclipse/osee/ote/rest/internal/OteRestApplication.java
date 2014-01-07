@@ -12,10 +12,7 @@ package org.eclipse.osee.ote.rest.internal;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.ws.rs.core.Application;
-
-import org.eclipse.osee.ote.rest.internal.mappers.OseeCoreExceptionMapper;
 
 /**
  * Get application.wadl at this context to get rest documentation
@@ -25,20 +22,19 @@ import org.eclipse.osee.ote.rest.internal.mappers.OseeCoreExceptionMapper;
 public class OteRestApplication extends Application {
 
    private static OteConfigurationStore store;
-   
-   public void setOteConfigurationStore(OteConfigurationStore store){
+
+   public void setOteConfigurationStore(OteConfigurationStore store) {
       OteRestApplication.store = store;
    }
-   
-   public static OteConfigurationStore get(){
+
+   public static OteConfigurationStore get() {
       return store;
    }
-   
+
    @Override
    public Set<Class<?>> getClasses() {
       Set<Class<?>> classes = new HashSet<Class<?>>();
       classes.add(OteRootResource.class);
-      classes.add(OseeCoreExceptionMapper.class);
       classes.add(OteConfigurationResource.class);
       classes.add(OteJobsResource.class);
       classes.add(OteFilesResource.class);

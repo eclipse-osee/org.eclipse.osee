@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.rest.admin.internal;
 
+import java.util.Collections;
+import java.util.List;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.logger.Log;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;
-import com.sun.jersey.api.core.ApplicationAdapter;
+import com.sun.jersey.api.core.DefaultResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 
@@ -25,19 +27,39 @@ import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 public class RestComponentFactory {
 
+   private final Log logger;
+   private List<Object> defaultSingletonResources;
+
+   public RestComponentFactory(Log logger) {
+      this.logger = logger;
+   }
+
+   public List<Object> getResourceSingletons() {
+      if (defaultSingletonResources == null) {
+         GenericExceptionMapper exceptionMapper = new GenericExceptionMapper(logger);
+         defaultSingletonResources = Collections.<Object> singletonList(exceptionMapper);
+      }
+      return defaultSingletonResources;
+   }
+
    public ServletContainer createContainer(Log logger, ServiceReference<Application> reference) throws Exception {
       Bundle bundle = reference.getBundle();
       Application application = bundle.getBundleContext().getService(reference);
       RestServiceUtils.checkValid(application);
 
-      ApplicationAdapter adapter = new ApplicationAdapter(application);
+      DefaultResourceConfig config = new DefaultResourceConfig();
+      config.add(application);
+
+      for (Object resource : getResourceSingletons()) {
+         config.getSingletons().add(resource);
+      }
 
       if (hasExtendedWadl(bundle)) {
-         adapter.getProperties().put(ResourceConfig.PROPERTY_WADL_GENERATOR_CONFIG,
+         config.getProperties().put(ResourceConfig.PROPERTY_WADL_GENERATOR_CONFIG,
             new BundleWadlGeneratorConfig(logger, bundle));
       }
 
-      ServletContainer container = new ServletContainer(adapter);
+      ServletContainer container = new ServletContainer(config);
       return container;
    }
 
