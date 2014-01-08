@@ -137,7 +137,9 @@ public final class AccessControlServiceProxy implements IAccessControlService {
       accessService = new AccessControlService(dbService, cachingService, eventService);
 
       accessEventListener = new AccessEventListener(accessService, new AccessControlCacheHandler());
-      eventService.addListener(EventQosType.PRIORITY, accessEventListener);
+      if (eventService != null) {
+         eventService.addListener(EventQosType.PRIORITY, accessEventListener);
+      }
       accessService.start();
    }
 
@@ -153,7 +155,9 @@ public final class AccessControlServiceProxy implements IAccessControlService {
       registered.clear();
 
       if (accessEventListener != null) {
-         eventService.removeListener(EventQosType.PRIORITY, accessEventListener);
+         if (eventService != null) {
+            eventService.removeListener(EventQosType.PRIORITY, accessEventListener);
+         }
          accessEventListener = null;
       }
 

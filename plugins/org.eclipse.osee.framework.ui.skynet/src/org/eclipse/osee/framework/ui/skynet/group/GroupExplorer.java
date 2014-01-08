@@ -89,64 +89,63 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
    @Override
    public void createPartControl(Composite parent) {
 
-      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
-         return;
-      }
+      if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
-      GridData gridData = new GridData();
-      gridData.verticalAlignment = GridData.FILL;
-      gridData.horizontalAlignment = GridData.FILL;
-      gridData.grabExcessVerticalSpace = true;
-      gridData.grabExcessHorizontalSpace = true;
+         GridData gridData = new GridData();
+         gridData.verticalAlignment = GridData.FILL;
+         gridData.horizontalAlignment = GridData.FILL;
+         gridData.grabExcessVerticalSpace = true;
+         gridData.grabExcessHorizontalSpace = true;
 
-      GridLayout gridLayout = new GridLayout(1, false);
-      gridData.heightHint = 1000;
-      gridData.widthHint = 1000;
+         GridLayout gridLayout = new GridLayout(1, false);
+         gridData.heightHint = 1000;
+         gridData.widthHint = 1000;
 
-      parentComp = parent;
+         parentComp = parent;
 
-      parentComp.setLayout(gridLayout);
-      parentComp.setLayoutData(gridData);
+         parentComp.setLayout(gridLayout);
+         parentComp.setLayoutData(gridData);
 
-      branchSelect = new XBranchSelectWidget("");
-      branchSelect.setDisplayLabel(false);
-      branchSelect.setSelection(branch);
-      branchSelect.createWidgets(parentComp, 1);
+         branchSelect = new XBranchSelectWidget("");
+         branchSelect.setDisplayLabel(false);
+         branchSelect.setSelection(branch);
+         branchSelect.createWidgets(parentComp, 1);
 
-      branchSelect.addListener(new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            try {
-               branch = BranchManager.getBranch(branchSelect.getData());
-               refresh();
-               groupExpDnd.setBranch(branch);
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
+         branchSelect.addListener(new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+               try {
+                  branch = BranchManager.getBranch(branchSelect.getData());
+                  refresh();
+                  groupExpDnd.setBranch(branch);
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
             }
-         }
 
-      });
+         });
 
-      treeViewer = new GroupTreeViewer(this, parentComp);
-      treeViewer.setContentProvider(new GroupContentProvider());
-      treeViewer.setLabelProvider(new GroupLabelProvider());
-      treeViewer.setUseHashlookup(true);
-      treeViewer.addDoubleClickListener(new ArtifactDoubleClick());
-      treeViewer.getControl().setLayoutData(gridData);
+         treeViewer = new GroupTreeViewer(this, parentComp);
+         treeViewer.setContentProvider(new GroupContentProvider());
+         treeViewer.setLabelProvider(new GroupLabelProvider());
+         treeViewer.setUseHashlookup(true);
+         treeViewer.addDoubleClickListener(new ArtifactDoubleClick());
+         treeViewer.getControl().setLayoutData(gridData);
 
-      OseeStatusContributionItemFactory.addTo(this, true);
+         OseeStatusContributionItemFactory.addTo(this, true);
 
-      OseeEventManager.addListener(this);
+         OseeEventManager.addListener(this);
 
-      groupExpDnd = new GroupExplorerDragAndDrop(treeViewer, VIEW_ID, branch);
+         groupExpDnd = new GroupExplorerDragAndDrop(treeViewer, VIEW_ID, branch);
 
-      getSite().setSelectionProvider(treeViewer);
-      parentComp.layout();
-      createActions();
-      getViewSite().getActionBars().updateActionBars();
-      rebuildMenu();
-      refresh();
-      setFocusWidget(parentComp);
+         getSite().setSelectionProvider(treeViewer);
+         parentComp.layout();
+         createActions();
+         getViewSite().getActionBars().updateActionBars();
+         rebuildMenu();
+         refresh();
+         setFocusWidget(parentComp);
+      }
    }
 
    @Override

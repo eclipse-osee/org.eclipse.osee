@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -92,29 +93,31 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
    @Override
    public void createPartControl(Composite parent) {
 
-      viewerComp = new Composite(parent, SWT.BORDER);
-      viewerComp.setLayout(new FillLayout());
+      if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
+         viewerComp = new Composite(parent, SWT.BORDER);
+         viewerComp.setLayout(new FillLayout());
 
-      viewer = new GraphViewer(viewerComp, ZestStyles.NONE);
-      viewer.setContentProvider(new ActionWalkerContentProvider(this));
-      viewer.setLabelProvider(new ActionWalkerLabelProvider());
-      viewer.setConnectionStyle(ZestStyles.CONNECTIONS_SOLID);
-      viewer.setNodeStyle(ZestStyles.NODES_NO_LAYOUT_RESIZE);
-      viewer.addDoubleClickListener(new IDoubleClickListener() {
+         viewer = new GraphViewer(viewerComp, ZestStyles.NONE);
+         viewer.setContentProvider(new ActionWalkerContentProvider(this));
+         viewer.setLabelProvider(new ActionWalkerLabelProvider());
+         viewer.setConnectionStyle(ZestStyles.CONNECTIONS_SOLID);
+         viewer.setNodeStyle(ZestStyles.NODES_NO_LAYOUT_RESIZE);
+         viewer.addDoubleClickListener(new IDoubleClickListener() {
 
-         @Override
-         public void doubleClick(DoubleClickEvent event) {
-            handleItemDoubleClick(event);
-         }
+            @Override
+            public void doubleClick(DoubleClickEvent event) {
+               handleItemDoubleClick(event);
+            }
 
-      });
-      createActions();
-      layoutMgr.start();
-      refresh();
+         });
+         createActions();
+         layoutMgr.start();
+         refresh();
 
-      setFocusWidget(viewer.getControl());
-      HelpUtil.setHelp(viewer.getControl(), AtsHelpContext.ACTION_VIEW);
-      OseeEventManager.addListener(this);
+         setFocusWidget(viewer.getControl());
+         HelpUtil.setHelp(viewer.getControl(), AtsHelpContext.ACTION_VIEW);
+         OseeEventManager.addListener(this);
+      }
    }
 
    @Override

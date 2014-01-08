@@ -19,4 +19,8 @@ public interface OseeClient {
 
    QueryBuilder createQueryBuilder(IOseeBranch branch);
 
+   boolean isClientVersionSupportedByApplicationServer();
+
+   boolean isApplicationServerAlive();
+
 }

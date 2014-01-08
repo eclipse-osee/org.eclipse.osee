@@ -62,7 +62,6 @@ class StatusManager {
    }
 
    public Collection<IHealthStatus> getHealthStatus() {
-
       return services.values();
    }
 
@@ -96,4 +95,5 @@ class StatusManager {
    public IHealthStatus getHealthStatusByName(String sourceName) {
       return services.get(sourceName);
    }
+
 }

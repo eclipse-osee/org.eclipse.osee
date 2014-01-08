@@ -77,7 +77,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
@@ -268,113 +267,113 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    @Override
    public void createPartControl(Composite parent) {
       try {
-         if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
-            return;
-         }
-         // TODO: Trigger User Loading to prevent lock up -- Need to remove this once service based
-         UserManager.getUser();
-         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-         gridData.heightHint = 1000;
-         gridData.widthHint = 1000;
+         if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
-         parent.setLayout(new GridLayout(1, false));
-         parent.setLayoutData(gridData);
+            // TODO: Trigger User Loading to prevent lock up -- Need to remove this once service based
+            UserManager.getUser();
+            GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+            gridData.heightHint = 1000;
+            gridData.widthHint = 1000;
 
-         branchSelect = new XBranchSelectWidget("");
-         branchSelect.setDisplayLabel(false);
-         branchSelect.setSelection(branch);
-         branchSelect.createWidgets(parent, 1);
+            parent.setLayout(new GridLayout(1, false));
+            parent.setLayoutData(gridData);
 
-         branchSelect.addListener(new Listener() {
-            @Override
-            public void handleEvent(Event event) {
-               try {
-                  IOseeBranch selectedBranch = branchSelect.getData();
-                  if (selectedBranch != null) {
-                     branch = BranchManager.getBranch(selectedBranch);
-                     dragAndDropWorker.updateBranch(selectedBranch);
-                     explore(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch));
+            branchSelect = new XBranchSelectWidget("");
+            branchSelect.setDisplayLabel(false);
+            branchSelect.setSelection(branch);
+            branchSelect.createWidgets(parent, 1);
+
+            branchSelect.addListener(new Listener() {
+               @Override
+               public void handleEvent(Event event) {
+                  try {
+                     IOseeBranch selectedBranch = branchSelect.getData();
+                     if (selectedBranch != null) {
+                        branch = BranchManager.getBranch(selectedBranch);
+                        dragAndDropWorker.updateBranch(selectedBranch);
+                        explore(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch));
+                     }
+                  } catch (Exception ex) {
+                     setErrorString("Error loading branch (see error log for details): " + ex.getLocalizedMessage());
+                     OseeLog.log(getClass(), Level.SEVERE, ex);
                   }
-               } catch (Exception ex) {
-                  setErrorString("Error loading branch (see error log for details): " + ex.getLocalizedMessage());
-                  OseeLog.log(getClass(), Level.SEVERE, ex);
                }
-            }
 
-         });
+            });
 
-         stackComposite = new Composite(parent, SWT.NONE);
-         stackLayout = new StackLayout();
-         stackComposite.setLayout(stackLayout);
-         stackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+            stackComposite = new Composite(parent, SWT.NONE);
+            stackLayout = new StackLayout();
+            stackComposite.setLayout(stackLayout);
+            stackComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-         branchWarningComposite = createBranchWarningComposite(stackComposite);
+            branchWarningComposite = createBranchWarningComposite(stackComposite);
 
-         treeViewer = new TreeViewer(stackComposite);
-         myTree = treeViewer.getTree();
-         Tree tree = treeViewer.getTree();
-         final ArtifactExplorer fArtExplorere = this;
-         tree.addDisposeListener(new DisposeListener() {
+            treeViewer = new TreeViewer(stackComposite);
+            myTree = treeViewer.getTree();
+            Tree tree = treeViewer.getTree();
+            final ArtifactExplorer fArtExplorere = this;
+            tree.addDisposeListener(new DisposeListener() {
 
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-               ArtifactExplorerEventManager.remove(fArtExplorere);
-            }
-         });
-         treeViewer.setContentProvider(new ArtifactContentProvider());
+               @Override
+               public void widgetDisposed(DisposeEvent e) {
+                  ArtifactExplorerEventManager.remove(fArtExplorere);
+               }
+            });
+            treeViewer.setContentProvider(new ArtifactContentProvider());
 
-         treeViewer.setLabelProvider(new ArtifactLabelProvider(artifactDecorator));
-         treeViewer.addDoubleClickListener(new ArtifactDoubleClick());
-         treeViewer.getControl().setLayoutData(gridData);
+            treeViewer.setLabelProvider(new ArtifactLabelProvider(artifactDecorator));
+            treeViewer.addDoubleClickListener(new ArtifactDoubleClick());
+            treeViewer.getControl().setLayoutData(gridData);
 
-         // We can not use the hash lookup because an artifact may not have a
-         // good equals.
-         // This can be added back once the content provider is converted over to
-         // use job node.
-         treeViewer.setUseHashlookup(false);
+            // We can not use the hash lookup because an artifact may not have a
+            // good equals.
+            // This can be added back once the content provider is converted over to
+            // use job node.
+            treeViewer.setUseHashlookup(false);
 
-         treeViewer.addSelectionChangedListener(new SelectionCountChangeListener(getViewSite()));
-         globalMenuHelper = new ArtifactTreeViewerGlobalMenuHelper(treeViewer);
+            treeViewer.addSelectionChangedListener(new SelectionCountChangeListener(getViewSite()));
+            globalMenuHelper = new ArtifactTreeViewerGlobalMenuHelper(treeViewer);
 
-         IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
-         createCollapseAllAction(toolbarManager);
-         createUpAction(toolbarManager);
-         createNewArtifactExplorerAction(toolbarManager);
-         createShowChangeReportAction(toolbarManager);
-         addOpenQuickSearchAction(toolbarManager);
-         toolbarManager.add(new OpenAssociatedArtifactFromBranchProvider(this));
+            IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
+            createCollapseAllAction(toolbarManager);
+            createUpAction(toolbarManager);
+            createNewArtifactExplorerAction(toolbarManager);
+            createShowChangeReportAction(toolbarManager);
+            addOpenQuickSearchAction(toolbarManager);
+            toolbarManager.add(new OpenAssociatedArtifactFromBranchProvider(this));
 
-         artifactDecorator.setViewer(treeViewer);
-         artifactDecorator.addActions(getViewSite().getActionBars().getMenuManager(), this);
+            artifactDecorator.setViewer(treeViewer);
+            artifactDecorator.addActions(getViewSite().getActionBars().getMenuManager(), this);
 
-         getSite().setSelectionProvider(treeViewer);
-         addExploreSelection();
+            getSite().setSelectionProvider(treeViewer);
+            addExploreSelection();
 
-         setupPopupMenu();
+            setupPopupMenu();
 
-         myTreeEditor = new TreeEditor(myTree);
-         myTreeEditor.horizontalAlignment = SWT.LEFT;
-         myTreeEditor.grabHorizontal = true;
-         myTreeEditor.minimumWidth = 50;
+            myTreeEditor = new TreeEditor(myTree);
+            myTreeEditor.horizontalAlignment = SWT.LEFT;
+            myTreeEditor.grabHorizontal = true;
+            myTreeEditor.minimumWidth = 50;
 
-         dragAndDropWorker = new ArtifactExplorerDragAndDrop(treeViewer, VIEW_ID, this, branch);
+            dragAndDropWorker = new ArtifactExplorerDragAndDrop(treeViewer, VIEW_ID, this, branch);
 
-         OseeStatusContributionItemFactory.addTo(this, false);
+            OseeStatusContributionItemFactory.addTo(this, false);
 
-         updateEnablementsEtAl();
-         trees.add(tree);
-         HelpUtil.setHelp(treeViewer.getControl(), OseeHelpContext.ARTIFACT_EXPLORER);
+            updateEnablementsEtAl();
+            trees.add(tree);
+            HelpUtil.setHelp(treeViewer.getControl(), OseeHelpContext.ARTIFACT_EXPLORER);
 
-         refreshBranchWarning();
-         getViewSite().getActionBars().updateActionBars();
-         setFocusWidget(treeViewer.getControl());
+            refreshBranchWarning();
+            getViewSite().getActionBars().updateActionBars();
+            setFocusWidget(treeViewer.getControl());
 
+            OseeEventManager.addListener(this);
+            ArtifactExplorerEventManager.add(this);
+         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
-      OseeEventManager.addListener(this);
-      ArtifactExplorerEventManager.add(this);
    }
 
    private void refreshBranchWarning() {
@@ -1218,43 +1217,42 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    @Override
    public void init(IViewSite site, IMemento memento) throws PartInitException {
       super.init(site, memento);
+      if (DbConnectionExceptionComposite.dbConnectionIsOk()) {
+         try {
+            if (memento != null && memento.getString(ROOT_GUID) != null && memento.getString(ROOT_BRANCH) != null) {
+               Branch branch = BranchManager.getBranch(Long.parseLong(memento.getString(ROOT_BRANCH)));
 
-      if (OseeUiActivator.areOSEEServicesAvailable().isFalse()) {
-         return;
-      }
-
-      try {
-         if (memento != null && memento.getString(ROOT_GUID) != null && memento.getString(ROOT_BRANCH) != null) {
-            Branch branch = BranchManager.getBranch(Long.parseLong(memento.getString(ROOT_BRANCH)));
-
-            if (!branch.getArchiveState().isArchived() || AccessControlManager.isOseeAdmin()) {
-               Artifact previousArtifact = ArtifactQuery.checkArtifactFromId(memento.getString(ROOT_GUID), branch);
-               if (previousArtifact != null) {
-                  explore(previousArtifact);
-               } else {
-                  /*
-                   * simply means that the previous artifact that was used as the root for the artiactExplorer does not
-                   * exist because it was deleted or this workspace was last used with a different branch or database,
-                   * so let the logic below get the default hierarchy root artifact
-                   */
+               if (!branch.getArchiveState().isArchived() || AccessControlManager.isOseeAdmin()) {
+                  Artifact previousArtifact = ArtifactQuery.checkArtifactFromId(memento.getString(ROOT_GUID), branch);
+                  if (previousArtifact != null) {
+                     explore(previousArtifact);
+                  } else {
+                     /*
+                      * simply means that the previous artifact that was used as the root for the artiactExplorer does
+                      * not exist because it was deleted or this workspace was last used with a different branch or
+                      * database, so let the logic below get the default hierarchy root artifact
+                      */
+                  }
+                  return;
                }
-               return;
             }
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
    @Override
    public void saveState(IMemento memento) {
       super.saveState(memento);
-      if (explorerRoot != null) {
-         memento.putString(ROOT_GUID, explorerRoot.getGuid());
-         try {
-            memento.putString(ROOT_BRANCH, String.valueOf(explorerRoot.getFullBranch().getId()));
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+      if (DbConnectionExceptionComposite.dbConnectionIsOk()) {
+         if (explorerRoot != null) {
+            memento.putString(ROOT_GUID, explorerRoot.getGuid());
+            try {
+               memento.putString(ROOT_BRANCH, String.valueOf(explorerRoot.getFullBranch().getId()));
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
          }
       }
    }

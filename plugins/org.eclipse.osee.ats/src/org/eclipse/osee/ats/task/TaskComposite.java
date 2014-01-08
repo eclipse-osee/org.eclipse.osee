@@ -95,35 +95,33 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
       setLayout(ALayout.getZeroMarginLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      if (!DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
-         return;
-      }
-
       try {
+         if (DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
 
-         showReleaseMetricsLabel = new Label(this, SWT.NONE);
-         showReleaseMetricsLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            showReleaseMetricsLabel = new Label(this, SWT.NONE);
+            showReleaseMetricsLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         taskXViewer = new TaskXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor());
-         taskXViewer.setTasksEditable(iXTaskViewer.isTasksEditable());
-         taskXViewer.setNewTaskSelectionEnabled(iXTaskViewer.isTasksEditable());
-         taskXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+            taskXViewer = new TaskXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor());
+            taskXViewer.setTasksEditable(iXTaskViewer.isTasksEditable());
+            taskXViewer.setNewTaskSelectionEnabled(iXTaskViewer.isTasksEditable());
+            taskXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
-         taskXViewer.setContentProvider(new WorldContentProvider(taskXViewer));
-         taskXViewer.setLabelProvider(new WorldLabelProvider(taskXViewer));
+            taskXViewer.setContentProvider(new WorldContentProvider(taskXViewer));
+            taskXViewer.setLabelProvider(new WorldLabelProvider(taskXViewer));
 
-         Tree tree = taskXViewer.getTree();
-         GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL | GridData.GRAB_HORIZONTAL);
-         gridData.heightHint = 100;
-         gridData.widthHint = 100;
-         tree.setLayoutData(gridData);
-         tree.setHeaderVisible(true);
-         tree.setLinesVisible(true);
+            Tree tree = taskXViewer.getTree();
+            GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL | GridData.GRAB_HORIZONTAL);
+            gridData.heightHint = 100;
+            gridData.widthHint = 100;
+            tree.setLayoutData(gridData);
+            tree.setHeaderVisible(true);
+            tree.setLinesVisible(true);
 
-         setupDragAndDropSupport();
-         parent.layout();
+            setupDragAndDropSupport();
+            parent.layout();
 
-         WorldXViewerEventManager.add(this);
+            WorldXViewerEventManager.add(this);
+         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

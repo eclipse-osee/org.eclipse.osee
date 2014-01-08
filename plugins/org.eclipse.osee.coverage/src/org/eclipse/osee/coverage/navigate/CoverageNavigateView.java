@@ -51,77 +51,76 @@ public class CoverageNavigateView extends GenericViewPart {
 
    @Override
    public void createPartControl(Composite parent) {
-      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
-         return;
-      }
+      if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
-      comp = new Composite(parent, SWT.None);
-      comp.setLayout(ALayout.getZeroMarginLayout());
-      comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+         comp = new Composite(parent, SWT.None);
+         comp.setLayout(ALayout.getZeroMarginLayout());
+         comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      xBranchSelectWidget = new XBranchSelectWidget("");
-      xBranchSelectWidget.setDisplayLabel(false);
-      if (CoverageUtil.getBranch() != null) {
-         xBranchSelectWidget.setSelection(CoverageUtil.getBranch());
-      }
-      xBranchSelectWidget.createWidgets(comp, 1);
-      xBranchSelectWidget.addListener(new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            try {
-               IOseeBranch selectedBranch = xBranchSelectWidget.getData();
-               if (selectedBranch != null) {
-                  CoverageUtil.setNavigatorSelectedBranch(selectedBranch);
+         xBranchSelectWidget = new XBranchSelectWidget("");
+         xBranchSelectWidget.setDisplayLabel(false);
+         if (CoverageUtil.getBranch() != null) {
+            xBranchSelectWidget.setSelection(CoverageUtil.getBranch());
+         }
+         xBranchSelectWidget.createWidgets(comp, 1);
+         xBranchSelectWidget.addListener(new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+               try {
+                  IOseeBranch selectedBranch = xBranchSelectWidget.getData();
+                  if (selectedBranch != null) {
+                     CoverageUtil.setNavigatorSelectedBranch(selectedBranch);
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(getClass(), Level.SEVERE, ex);
                }
-            } catch (Exception ex) {
-               OseeLog.log(getClass(), Level.SEVERE, ex);
             }
-         }
 
-      });
-      CoverageUtil.addBranchChangeListener(new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            if (Widgets.isAccessible(xBranchSelectWidget.getControl())) {
-               xBranchSelectWidget.setSelection(CoverageUtil.getBranch());
+         });
+         CoverageUtil.addBranchChangeListener(new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+               if (Widgets.isAccessible(xBranchSelectWidget.getControl())) {
+                  xBranchSelectWidget.setSelection(CoverageUtil.getBranch());
+               }
             }
-         }
-      });
-      xNavComp = new XNavigateComposite(new CoverageNavigateViewItems(), comp, SWT.NONE);
-      GridData gridData = new GridData(GridData.FILL_BOTH);
-      gridData.widthHint = 100;
-      xNavComp.setLayoutData(gridData);
+         });
+         xNavComp = new XNavigateComposite(new CoverageNavigateViewItems(), comp, SWT.NONE);
+         GridData gridData = new GridData(GridData.FILL_BOTH);
+         gridData.widthHint = 100;
+         xNavComp.setLayoutData(gridData);
 
-      createActions();
+         createActions();
 
-      Label label = new Label(xNavComp, SWT.None);
-      String str = getWhoAmI();
-      if (CoverageUtil.isAdmin()) {
-         str += " - Admin";
-      }
-      if (!str.equals("")) {
+         Label label = new Label(xNavComp, SWT.None);
+         String str = getWhoAmI();
          if (CoverageUtil.isAdmin()) {
-            label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-         } else {
-            label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
+            str += " - Admin";
          }
+         if (!str.equals("")) {
+            if (CoverageUtil.isAdmin()) {
+               label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+            } else {
+               label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
+            }
+         }
+         label.setText(str);
+         label.setToolTipText(str);
+         gridData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.VERTICAL_ALIGN_CENTER);
+         gridData.heightHint = 15;
+         label.setLayoutData(gridData);
+
+         HelpUtil.setHelp(xNavComp, CoverageHelpContext.NAVIGATOR);
+
+         xNavComp.refresh();
+         xNavComp.getFilteredTree().getFilterControl().setFocus();
+
+         parent.getParent().layout(true);
+         parent.layout(true);
+
+         OseeStatusContributionItemFactory.addTo(this, false);
+         setFocusWidget(comp);
       }
-      label.setText(str);
-      label.setToolTipText(str);
-      gridData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.VERTICAL_ALIGN_CENTER);
-      gridData.heightHint = 15;
-      label.setLayoutData(gridData);
-
-      HelpUtil.setHelp(xNavComp, CoverageHelpContext.NAVIGATOR);
-
-      xNavComp.refresh();
-      xNavComp.getFilteredTree().getFilterControl().setFocus();
-
-      parent.getParent().layout(true);
-      parent.layout(true);
-
-      OseeStatusContributionItemFactory.addTo(this, false);
-      setFocusWidget(comp);
    }
 
    private String getWhoAmI() {

@@ -71,8 +71,10 @@ public class UserNavigateView extends ViewPart implements IXNavigateEventListene
    @Override
    public void createPartControl(Composite parent) {
       this.parent = parent;
-      loadingComposite = new LoadingComposite(parent);
-      refreshData();
+      if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
+         loadingComposite = new LoadingComposite(parent);
+         refreshData();
+      }
    }
 
    @Override
@@ -107,44 +109,44 @@ public class UserNavigateView extends ViewPart implements IXNavigateEventListene
                      loadingComposite.dispose();
                   }
 
-                  if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
-                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Navigate View - !dbConnectionIsOk");
-                  }
+                  if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
-                  xNavComp = new XNavigateComposite(UserNavigateViewItems.getInstance(), parent, SWT.NONE);
+                     xNavComp = new XNavigateComposite(UserNavigateViewItems.getInstance(), parent, SWT.NONE);
 
-                  createToolBar();
+                     createToolBar();
 
-                  Label label = new Label(xNavComp, SWT.None);
-                  String str = getWhoAmI();
-                  if (SystemGroup.OseeAdmin.isCurrentUserMember()) {
-                     str += " - Admin";
-                  }
-                  if (!str.equals("")) {
+                     Label label = new Label(xNavComp, SWT.None);
+                     String str = getWhoAmI();
                      if (SystemGroup.OseeAdmin.isCurrentUserMember()) {
-                        label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-                     } else {
-                        label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
+                        str += " - Admin";
                      }
+                     if (!str.equals("")) {
+                        if (SystemGroup.OseeAdmin.isCurrentUserMember()) {
+                           label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+                        } else {
+                           label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
+                        }
+                     }
+                     label.setText(str);
+                     label.setToolTipText(str);
+
+                     GridData gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
+                     gridData.heightHint = 15;
+                     label.setLayoutData(gridData);
+
+                     if (savedFilterStr != null) {
+                        xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
+                     }
+                     xNavComp.refresh();
+                     xNavComp.getFilteredTree().getFilterControl().setFocus();
+
+                     parent.getParent().layout(true);
+                     parent.layout(true);
+
+                     OseeStatusContributionItemFactory.addTo(navView, false);
+                     addExtensionPointListenerBecauseOfWorkspaceLoading();
+
                   }
-                  label.setText(str);
-                  label.setToolTipText(str);
-
-                  GridData gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
-                  gridData.heightHint = 15;
-                  label.setLayoutData(gridData);
-
-                  if (savedFilterStr != null) {
-                     xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
-                  }
-                  xNavComp.refresh();
-                  xNavComp.getFilteredTree().getFilterControl().setFocus();
-
-                  parent.getParent().layout(true);
-                  parent.layout(true);
-
-                  OseeStatusContributionItemFactory.addTo(navView, false);
-                  addExtensionPointListenerBecauseOfWorkspaceLoading();
 
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -216,9 +218,11 @@ public class UserNavigateView extends ViewPart implements IXNavigateEventListene
       super.saveState(memento);
       memento = memento.createChild(INPUT);
 
-      if (xNavComp != null && xNavComp.getFilteredTree().getFilterControl() != null && !xNavComp.getFilteredTree().isDisposed()) {
-         String filterStr = xNavComp.getFilteredTree().getFilterControl().getText();
-         memento.putString(FILTER_STR, filterStr);
+      if (DbConnectionExceptionComposite.dbConnectionIsOk()) {
+         if (xNavComp != null && xNavComp.getFilteredTree().getFilterControl() != null && !xNavComp.getFilteredTree().isDisposed()) {
+            String filterStr = xNavComp.getFilteredTree().getFilterControl().getText();
+            memento.putString(FILTER_STR, filterStr);
+         }
       }
    }
 
@@ -226,19 +230,21 @@ public class UserNavigateView extends ViewPart implements IXNavigateEventListene
    public void init(IViewSite site, IMemento memento) throws PartInitException {
       super.init(site, memento);
 
-      // set the context (org.eclipse.ui.contexts) to osee to make the osee hotkeys available
-      IContextService contextService = (IContextService) getSite().getService(IContextService.class);
-      contextService.activateContext("org.eclipse.osee.contexts.window");
+      if (DbConnectionExceptionComposite.dbConnectionIsOk()) {
+         // set the context (org.eclipse.ui.contexts) to osee to make the osee hotkeys available
+         IContextService contextService = (IContextService) getSite().getService(IContextService.class);
+         contextService.activateContext("org.eclipse.osee.contexts.window");
 
-      try {
-         if (memento != null) {
-            memento = memento.getChild(INPUT);
+         try {
             if (memento != null) {
-               savedFilterStr = memento.getString(FILTER_STR);
+               memento = memento.getChild(INPUT);
+               if (memento != null) {
+                  savedFilterStr = memento.getString(FILTER_STR);
+               }
             }
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.WARNING, "NavigateView error on init", ex);
          }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.WARNING, "NavigateView error on init", ex);
       }
    }
 

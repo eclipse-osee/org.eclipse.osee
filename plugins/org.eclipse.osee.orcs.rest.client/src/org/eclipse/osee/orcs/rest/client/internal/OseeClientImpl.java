@@ -10,10 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.client.internal;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.services.URIProvider;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 import org.eclipse.osee.orcs.rest.client.internal.search.PredicateFactory;
@@ -21,9 +25,13 @@ import org.eclipse.osee.orcs.rest.client.internal.search.PredicateFactoryImpl;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryBuilderImpl;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutorV1;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
+import org.eclipse.osee.orcs.rest.model.Client;
+import org.eclipse.osee.orcs.rest.model.ExceptionEntity;
 import org.eclipse.osee.orcs.rest.model.search.Predicate;
 import org.eclipse.osee.rest.client.WebClientProvider;
 import com.google.inject.Inject;
+import com.sun.jersey.api.client.UniformInterfaceException;
+import com.sun.jersey.api.client.WebResource;
 
 /**
  * @author John Misinco
@@ -64,4 +72,33 @@ public class OseeClientImpl implements OseeClient {
       return new QueryBuilderImpl(branch, predicates, options, predicateFactory, executor);
    }
 
+   @Override
+   public boolean isClientVersionSupportedByApplicationServer() {
+      boolean result = false;
+      URI uri = uriProvider.getEncodedURI("oseex/client", null);
+      WebResource resource = clientProvider.createResource(uri);
+      Client clientResult = null;
+      try {
+         clientResult = resource.accept(MediaType.APPLICATION_XML).get(Client.class);
+         if (clientResult != null) {
+            result = clientResult.getSupportedVersions().contains(OseeCodeVersion.getVersion());
+         }
+      } catch (UniformInterfaceException ex) {
+         ExceptionEntity entity = ex.getResponse().getEntity(ExceptionEntity.class);
+         throw new OseeCoreException(entity.getExceptionString());
+      }
+      return result;
+   }
+
+   @Override
+   public boolean isApplicationServerAlive() {
+      boolean alive = false;
+      try {
+         isClientVersionSupportedByApplicationServer();
+         alive = true;
+      } catch (Exception ex) {
+         alive = false;
+      }
+      return alive;
+   }
 }

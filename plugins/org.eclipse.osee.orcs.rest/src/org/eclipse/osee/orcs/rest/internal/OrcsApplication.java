@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.rest.internal;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.core.Application;
+import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.mappers.OseeCoreExceptionMapper;
 import org.eclipse.osee.orcs.rest.internal.mappers.ThrowableExceptionMapper;
@@ -24,7 +25,14 @@ import org.eclipse.osee.orcs.rest.internal.mappers.ThrowableExceptionMapper;
  */
 public class OrcsApplication extends Application {
 
+   private final Set<Object> resources = new HashSet<Object>();
+   private final Set<Class<?>> classes = new HashSet<Class<?>>();
    private static OrcsApi orcsApi;
+   private IApplicationServerManager serverManager;
+
+   public void setServerManager(IApplicationServerManager serverManager) {
+      this.serverManager = serverManager;
+   }
 
    public void setOrcsApi(OrcsApi orcsApi) {
       OrcsApplication.orcsApi = orcsApi;
@@ -34,13 +42,26 @@ public class OrcsApplication extends Application {
       return orcsApi;
    }
 
-   @Override
-   public Set<Class<?>> getClasses() {
-      Set<Class<?>> classes = new HashSet<Class<?>>();
+   public void start() {
+      resources.add(new ClientResource(serverManager));
       classes.add(BranchesResource.class);
       classes.add(OseeCoreExceptionMapper.class);
       classes.add(ThrowableExceptionMapper.class);
+   }
+
+   public void stop() {
+      resources.clear();
+      classes.clear();
+   }
+
+   @Override
+   public Set<Class<?>> getClasses() {
       return classes;
+   }
+
+   @Override
+   public Set<Object> getSingletons() {
+      return resources;
    }
 
 }

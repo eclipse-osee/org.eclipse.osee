@@ -89,8 +89,10 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
    @Override
    public void createPartControl(Composite parent) {
       this.parent = parent;
-      loadingComposite = new LoadingComposite(parent);
-      refreshData();
+      if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
+         loadingComposite = new LoadingComposite(parent);
+         refreshData();
+      }
    }
 
    public void refreshData() {
@@ -125,12 +127,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
                      xNavComp.dispose();
                   }
 
-                  if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
-                     parent.getParent().layout(true);
-                     parent.layout(true);
-
-                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Osee Services are NOT available");
-                  } else {
+                  if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
                      if (Widgets.isAccessible(parent)) {
 
@@ -279,31 +276,35 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
    @Override
    public void saveState(IMemento memento) {
       super.saveState(memento);
-      memento = memento.createChild(INPUT);
+      if (DbConnectionExceptionComposite.dbConnectionIsOk()) {
+         memento = memento.createChild(INPUT);
 
-      if (xNavComp != null && xNavComp.getFilteredTree().getFilterControl() != null && !xNavComp.getFilteredTree().isDisposed()) {
-         String filterStr = xNavComp.getFilteredTree().getFilterControl().getText();
-         memento.putString(FILTER_STR, filterStr);
+         if (xNavComp != null && xNavComp.getFilteredTree().getFilterControl() != null && !xNavComp.getFilteredTree().isDisposed()) {
+            String filterStr = xNavComp.getFilteredTree().getFilterControl().getText();
+            memento.putString(FILTER_STR, filterStr);
+         }
       }
    }
 
    @Override
    public void init(IViewSite site, IMemento memento) throws PartInitException {
       super.init(site, memento);
+      if (DbConnectionExceptionComposite.dbConnectionIsOk()) {
 
-      // set the context (org.eclipse.ui.contexts) to be osee to make the osee hotkeys available
-      IContextService contextService = (IContextService) getSite().getService(IContextService.class);
-      contextService.activateContext("org.eclipse.osee.contexts.window");
+         // set the context (org.eclipse.ui.contexts) to be osee to make the osee hotkeys available
+         IContextService contextService = (IContextService) getSite().getService(IContextService.class);
+         contextService.activateContext("org.eclipse.osee.contexts.window");
 
-      try {
-         if (memento != null) {
-            memento = memento.getChild(INPUT);
+         try {
             if (memento != null) {
-               savedFilterStr = memento.getString(FILTER_STR);
+               memento = memento.getChild(INPUT);
+               if (memento != null) {
+                  savedFilterStr = memento.getString(FILTER_STR);
+               }
             }
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.WARNING, "NavigateView error on init", ex);
          }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.WARNING, "NavigateView error on init", ex);
       }
    }
 

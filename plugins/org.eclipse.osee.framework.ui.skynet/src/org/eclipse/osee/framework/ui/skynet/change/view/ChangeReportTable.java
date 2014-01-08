@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeXViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeXViewerFactory;
@@ -51,40 +52,44 @@ public class ChangeReportTable implements EditorSection.IWidget {
 
    @Override
    public void onCreate(IManagedForm managedForm, Composite parent) {
-      FormToolkit toolkit = managedForm.getToolkit();
-      ScrolledForm form = managedForm.getForm();
-      form.getBody().setLayout(new GridLayout());
-      form.getBody().setBackground(parent.getBackground());
 
-      Composite composite = toolkit.createComposite(parent, SWT.BORDER);
+      if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
-      GridLayout layout = new GridLayout();
-      layout.marginBottom = 5;
-      layout.marginHeight = 0;
-      layout.marginWidth = 0;
-      composite.setLayout(layout);
-      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-      gd.widthHint = 300;
-      composite.setLayoutData(gd);
-      toolkit.paintBordersFor(composite);
+         FormToolkit toolkit = managedForm.getToolkit();
+         ScrolledForm form = managedForm.getForm();
+         form.getBody().setLayout(new GridLayout());
+         form.getBody().setBackground(parent.getBackground());
 
-      int viewerStyle = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
-      xChangeViewer = new ChangeXViewer(composite, viewerStyle, new ChangeXViewerFactory());
-      xChangeViewer.setContentProvider(new XChangeContentProvider());
-      xChangeViewer.setLabelProvider(new XChangeLabelProvider(xChangeViewer));
+         Composite composite = toolkit.createComposite(parent, SWT.BORDER);
 
-      Tree tree = xChangeViewer.getTree();
-      GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-      gridData.heightHint = 100;
-      tree.setLayout(ALayout.getZeroMarginLayout());
-      tree.setLayoutData(gridData);
-      tree.setHeaderVisible(true);
-      tree.setLinesVisible(true);
+         GridLayout layout = new GridLayout();
+         layout.marginBottom = 5;
+         layout.marginHeight = 0;
+         layout.marginWidth = 0;
+         composite.setLayout(layout);
+         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+         gd.widthHint = 300;
+         composite.setLayoutData(gd);
+         toolkit.paintBordersFor(composite);
 
-      adaptAll(toolkit, composite);
+         int viewerStyle = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
+         xChangeViewer = new ChangeXViewer(composite, viewerStyle, new ChangeXViewerFactory());
+         xChangeViewer.setContentProvider(new XChangeContentProvider());
+         xChangeViewer.setLabelProvider(new XChangeLabelProvider(xChangeViewer));
 
-      new ChangeDragAndDrop(tree, ChangeXViewerFactory.NAMESPACE);
-      onUpdate();
+         Tree tree = xChangeViewer.getTree();
+         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+         gridData.heightHint = 100;
+         tree.setLayout(ALayout.getZeroMarginLayout());
+         tree.setLayoutData(gridData);
+         tree.setHeaderVisible(true);
+         tree.setLinesVisible(true);
+
+         adaptAll(toolkit, composite);
+
+         new ChangeDragAndDrop(tree, ChangeXViewerFactory.NAMESPACE);
+         onUpdate();
+      }
    }
 
    private void adaptAll(FormToolkit toolkit, Composite composite) {

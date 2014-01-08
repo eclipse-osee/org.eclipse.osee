@@ -75,17 +75,16 @@ public class AtsMetricsComposite extends ScrolledComposite {
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       adapt(mainComp);
 
-      if (!DbConnectionExceptionComposite.dbConnectionIsOk(mainComp)) {
-         return;
+      if (DbConnectionExceptionComposite.dbConnectionIsOk(mainComp)) {
+
+         adapt(this);
+         creatToolBar(mainComp);
+
+         setContent(mainComp);
+         setExpandHorizontal(true);
+         setExpandVertical(true);
+         layout();
       }
-
-      adapt(this);
-      creatToolBar(mainComp);
-
-      setContent(mainComp);
-      setExpandHorizontal(true);
-      setExpandVertical(true);
-      layout();
    }
 
    private void creatToolBar(Composite composite) {

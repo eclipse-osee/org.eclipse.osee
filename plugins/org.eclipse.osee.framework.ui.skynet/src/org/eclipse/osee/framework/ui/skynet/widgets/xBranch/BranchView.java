@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.action.EditTransactionComment;
 import org.eclipse.osee.framework.ui.skynet.action.ITransactionRecordSelectionProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.dnd.Clipboard;
@@ -98,51 +99,54 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
       parent.setLayout(layout);
       parent.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      xBranchWidget = new XBranchWidget();
-      xBranchWidget.setDisplayLabel(false);
-      xBranchWidget.createWidgets(parent, 1);
+      if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
-      branchViewPresentationPreferences = new BranchViewPresentationPreferences(this);
-      xBranchWidget.loadData();
-      final BranchView fBranchView = this;
+         xBranchWidget = new XBranchWidget();
+         xBranchWidget.setDisplayLabel(false);
+         xBranchWidget.createWidgets(parent, 1);
 
-      final XViewer branchWidget = xBranchWidget.getXViewer();
+         branchViewPresentationPreferences = new BranchViewPresentationPreferences(this);
+         xBranchWidget.loadData();
+         final BranchView fBranchView = this;
 
-      MenuManager menuManager = new MenuManager();
-      menuManager.setRemoveAllWhenShown(true);
-      menuManager.addMenuListener(new IMenuListener() {
-         @Override
-         public void menuAboutToShow(IMenuManager manager) {
-            MenuManager menuManager = (MenuManager) manager;
-            branchWidget.setColumnMultiEditEnabled(true);
-            menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-            menuManager.add(new EditTransactionComment(fBranchView));
-            menuManager.add(new Separator());
-            menuManager.add(new TableCustomizationAction(branchWidget));
-            menuManager.add(new ViewTableReportAction(branchWidget));
-            menuManager.add(new ViewSelectedCellDataAction(branchWidget, clipboard, Option.Copy));
-            menuManager.add(new ViewSelectedCellDataAction(branchWidget, null, Option.View));
-            try {
-               if (AccessControlManager.isOseeAdmin()) {
-                  menuManager.add(new ColumnMultiEditAction(branchWidget));
+         final XViewer branchWidget = xBranchWidget.getXViewer();
+
+         MenuManager menuManager = new MenuManager();
+         menuManager.setRemoveAllWhenShown(true);
+         menuManager.addMenuListener(new IMenuListener() {
+            @Override
+            public void menuAboutToShow(IMenuManager manager) {
+               MenuManager menuManager = (MenuManager) manager;
+               branchWidget.setColumnMultiEditEnabled(true);
+               menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+               menuManager.add(new EditTransactionComment(fBranchView));
+               menuManager.add(new Separator());
+               menuManager.add(new TableCustomizationAction(branchWidget));
+               menuManager.add(new ViewTableReportAction(branchWidget));
+               menuManager.add(new ViewSelectedCellDataAction(branchWidget, clipboard, Option.Copy));
+               menuManager.add(new ViewSelectedCellDataAction(branchWidget, null, Option.View));
+               try {
+                  if (AccessControlManager.isOseeAdmin()) {
+                     menuManager.add(new ColumnMultiEditAction(branchWidget));
+                  }
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
-         }
-      });
+         });
 
-      menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-      branchWidget.getTree().setMenu(menuManager.createContextMenu(branchWidget.getTree()));
-      getSite().registerContextMenu(VIEW_ID, menuManager, branchWidget);
-      getSite().setSelectionProvider(branchWidget);
-      HelpUtil.setHelp(parent, OseeHelpContext.BRANCH_MANAGER);
-      OseeStatusContributionItemFactory.addTo(this, true);
-      getViewSite().getActionBars().updateActionBars();
+         menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+         branchWidget.getTree().setMenu(menuManager.createContextMenu(branchWidget.getTree()));
+         getSite().registerContextMenu(VIEW_ID, menuManager, branchWidget);
+         getSite().setSelectionProvider(branchWidget);
+         HelpUtil.setHelp(parent, OseeHelpContext.BRANCH_MANAGER);
+         OseeStatusContributionItemFactory.addTo(this, true);
+         getViewSite().getActionBars().updateActionBars();
 
-      setFocusWidget(xBranchWidget.getControl());
+         setFocusWidget(xBranchWidget.getControl());
 
-      OseeEventManager.addListener(this);
+         OseeEventManager.addListener(this);
+      }
    }
 
    public static void revealBranch(Branch branch) throws OseeCoreException {

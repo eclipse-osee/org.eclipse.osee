@@ -61,6 +61,7 @@ import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.menu.CompareArtifactAction;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -113,51 +114,55 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
 
    @Override
    public void createPartControl(Composite parent) {
-      GridLayout layout = new GridLayout();
-      layout.numColumns = 1;
-      layout.verticalSpacing = 0;
-      layout.marginWidth = 0;
-      layout.marginHeight = 0;
-      parent.setLayout(layout);
-      parent.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      xHistoryWidget = new XHistoryWidget() {
+      if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
-         @Override
-         protected void onRefresh() {
-            refreshTitle();
-         }
-      };
-      xHistoryWidget.setDisplayLabel(false);
-      xHistoryWidget.createWidgets(parent, 1);
+         GridLayout layout = new GridLayout();
+         layout.numColumns = 1;
+         layout.verticalSpacing = 0;
+         layout.marginWidth = 0;
+         layout.marginHeight = 0;
+         parent.setLayout(layout);
+         parent.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      MenuManager menuManager = new MenuManager();
-      menuManager.setRemoveAllWhenShown(true);
-      menuManager.addMenuListener(new IMenuListener() {
-         @Override
-         public void menuAboutToShow(IMenuManager manager) {
-            MenuManager menuManager = (MenuManager) manager;
-            menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-         }
-      });
+         xHistoryWidget = new XHistoryWidget() {
 
-      menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+            @Override
+            protected void onRefresh() {
+               refreshTitle();
+            }
+         };
+         xHistoryWidget.setDisplayLabel(false);
+         xHistoryWidget.createWidgets(parent, 1);
 
-      xHistoryWidget.getXViewer().getTree().setMenu(
-         menuManager.createContextMenu(xHistoryWidget.getXViewer().getTree()));
+         MenuManager menuManager = new MenuManager();
+         menuManager.setRemoveAllWhenShown(true);
+         menuManager.addMenuListener(new IMenuListener() {
+            @Override
+            public void menuAboutToShow(IMenuManager manager) {
+               MenuManager menuManager = (MenuManager) manager;
+               menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+            }
+         });
 
-      getSite().registerContextMenu(VIEW_ID, menuManager, xHistoryWidget.getXViewer());
-      getSite().setSelectionProvider(xHistoryWidget.getXViewer());
+         menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
-      HelpUtil.setHelp(parent, OseeHelpContext.HISTORY_VIEW);
+         xHistoryWidget.getXViewer().getTree().setMenu(
+            menuManager.createContextMenu(xHistoryWidget.getXViewer().getTree()));
 
-      OseeStatusContributionItemFactory.addTo(this, true);
+         getSite().registerContextMenu(VIEW_ID, menuManager, xHistoryWidget.getXViewer());
+         getSite().setSelectionProvider(xHistoryWidget.getXViewer());
 
-      setupMenus();
+         HelpUtil.setHelp(parent, OseeHelpContext.HISTORY_VIEW);
 
-      setFocusWidget(xHistoryWidget.getXViewer().getControl());
+         OseeStatusContributionItemFactory.addTo(this, true);
 
-      OseeEventManager.addListener(this);
+         setupMenus();
+
+         setFocusWidget(xHistoryWidget.getXViewer().getControl());
+
+         OseeEventManager.addListener(this);
+      }
    }
 
    private void setupMenus() {

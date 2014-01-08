@@ -147,16 +147,22 @@ public class AccessControlService implements IAccessControlService {
 
    public void start() {
       listener1 = new AccessControlUpdateListener();
-      eventService.addListener(EventQosType.NORMAL, listener1);
+      if (eventService != null) {
+         eventService.addListener(EventQosType.NORMAL, listener1);
+      }
    }
 
    public void stop() {
       if (listener1 != null) {
-         eventService.removeListener(EventQosType.NORMAL, listener1);
+         if (eventService != null) {
+            eventService.removeListener(EventQosType.NORMAL, listener1);
+         }
          listener1 = null;
       }
       if (listener2 != null) {
-         eventService.removeListener(EventQosType.NORMAL, listener2);
+         if (eventService != null) {
+            eventService.removeListener(EventQosType.NORMAL, listener2);
+         }
          listener2 = null;
       }
    }
@@ -351,7 +357,9 @@ public class AccessControlService implements IAccessControlService {
 
       if (listener2 == null) {
          listener2 = new AccessControlUpdateListener((Artifact) userArtifact.getFullArtifact());
-         eventService.addListener(EventQosType.NORMAL, listener2);
+         if (eventService != null) {
+            eventService.addListener(EventQosType.NORMAL, listener2);
+         }
       }
 
       AccessData accessData = null;
@@ -676,7 +684,9 @@ public class AccessControlService implements IAccessControlService {
          }
       }
       try {
-         eventService.send(this, event);
+         if (eventService != null) {
+            eventService.send(this, event);
+         }
       } catch (Exception ex) {
          OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
       }
@@ -700,7 +710,9 @@ public class AccessControlService implements IAccessControlService {
          }
       }
       try {
-         eventService.send(this, event);
+         if (eventService != null) {
+            eventService.send(this, event);
+         }
       } catch (Exception ex) {
          OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
       }

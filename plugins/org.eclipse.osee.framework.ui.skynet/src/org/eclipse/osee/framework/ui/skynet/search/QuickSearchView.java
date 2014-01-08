@@ -91,7 +91,7 @@ public class QuickSearchView extends GenericViewPart {
 
    @Override
    public void saveState(IMemento memento) {
-      if (memento != null) {
+      if (DbConnectionExceptionComposite.dbConnectionIsOk() && memento != null) {
          if (Widgets.isAccessible(attrSearchComposite)) {
             memento.putString(LAST_QUERY_KEY_ID, attrSearchComposite.getQuery());
             IOseeBranch branch = branchSelect.getData();
@@ -119,7 +119,7 @@ public class QuickSearchView extends GenericViewPart {
    }
 
    private void loadState() {
-      if (memento != null) {
+      if (DbConnectionExceptionComposite.dbConnectionIsOk() && memento != null) {
          if (Widgets.isAccessible(attrSearchComposite)) {
             String lastQuery = memento.getString(LAST_QUERY_KEY_ID);
             List<String> queries = new ArrayList<String>();
@@ -155,64 +155,63 @@ public class QuickSearchView extends GenericViewPart {
 
    @Override
    public void createPartControl(Composite parent) {
-      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
-         return;
-      }
+      if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
-      Group group = new Group(parent, SWT.NONE);
-      group.setLayout(new GridLayout());
-      group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+         Group group = new Group(parent, SWT.NONE);
+         group.setLayout(new GridLayout());
+         group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      branchSelect = new XBranchSelectWidget("");
-      branchSelect.setDisplayLabel(false);
-      branchSelect.createWidgets(group, 2);
-      branchSelect.addListener(attrSearchListener);
-      branchSelect.addListener(guidSearchListener);
-      // allow user to double click the branch text area to select the branch
-      if (Widgets.isAccessible(branchSelect.getSelectComposite())) {
-         if (Widgets.isAccessible(branchSelect.getSelectComposite().getBranchSelectText())) {
-            branchSelect.getSelectComposite().getBranchSelectText().setDoubleClickEnabled(true);
+         branchSelect = new XBranchSelectWidget("");
+         branchSelect.setDisplayLabel(false);
+         branchSelect.createWidgets(group, 2);
+         branchSelect.addListener(attrSearchListener);
+         branchSelect.addListener(guidSearchListener);
+         // allow user to double click the branch text area to select the branch
+         if (Widgets.isAccessible(branchSelect.getSelectComposite())) {
+            if (Widgets.isAccessible(branchSelect.getSelectComposite().getBranchSelectText())) {
+               branchSelect.getSelectComposite().getBranchSelectText().setDoubleClickEnabled(true);
+            }
          }
+         OseeStatusContributionItemFactory.addTo(this, true);
+
+         Composite panel = new Composite(group, SWT.NONE);
+         GridLayout gL = new GridLayout();
+         gL.marginHeight = 0;
+         gL.marginWidth = 0;
+         panel.setLayout(gL);
+         panel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+         Group attrSearchGroup = new Group(panel, SWT.NONE);
+         attrSearchGroup.setLayout(new GridLayout());
+         attrSearchGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+         attrSearchGroup.setText("Search by Attributes:");
+
+         attrSearchComposite = new SearchComposite(attrSearchGroup, SWT.NONE, "Search", null);
+         attrSearchComposite.addListener(attrSearchListener);
+
+         optionsComposite = new QuickSearchOptionComposite(attrSearchGroup, SWT.NONE);
+         optionsComposite.setLayout(ALayout.getZeroMarginLayout());
+         optionsComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+         guidSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by GUID:");
+         guidSearchComposite.addListener(guidSearchListener);
+
+         includeDeleted = new Button(group, SWT.CHECK);
+         includeDeleted.setToolTipText("When selected, does not filter out deleted artifacts from search results.");
+         includeDeleted.setText("Include Deleted");
+
+         loadState();
+         compositeEnablement(attrSearchComposite, false);
+         attrSearchComposite.setHelpContext(OseeHelpContext.QUICK_SEARCH);
+
+         branchLabel = new Label(group, SWT.NONE);
+         branchLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+         branchLabel.setText("");
+
+         createClearHistoryAction();
+
+         setFocusWidget(attrSearchComposite);
       }
-      OseeStatusContributionItemFactory.addTo(this, true);
-
-      Composite panel = new Composite(group, SWT.NONE);
-      GridLayout gL = new GridLayout();
-      gL.marginHeight = 0;
-      gL.marginWidth = 0;
-      panel.setLayout(gL);
-      panel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-      Group attrSearchGroup = new Group(panel, SWT.NONE);
-      attrSearchGroup.setLayout(new GridLayout());
-      attrSearchGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      attrSearchGroup.setText("Search by Attributes:");
-
-      attrSearchComposite = new SearchComposite(attrSearchGroup, SWT.NONE, "Search", null);
-      attrSearchComposite.addListener(attrSearchListener);
-
-      optionsComposite = new QuickSearchOptionComposite(attrSearchGroup, SWT.NONE);
-      optionsComposite.setLayout(ALayout.getZeroMarginLayout());
-      optionsComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-      guidSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by GUID:");
-      guidSearchComposite.addListener(guidSearchListener);
-
-      includeDeleted = new Button(group, SWT.CHECK);
-      includeDeleted.setToolTipText("When selected, does not filter out deleted artifacts from search results.");
-      includeDeleted.setText("Include Deleted");
-
-      loadState();
-      compositeEnablement(attrSearchComposite, false);
-      attrSearchComposite.setHelpContext(OseeHelpContext.QUICK_SEARCH);
-
-      branchLabel = new Label(group, SWT.NONE);
-      branchLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      branchLabel.setText("");
-
-      createClearHistoryAction();
-
-      setFocusWidget(attrSearchComposite);
    }
 
    private void createClearHistoryAction() {

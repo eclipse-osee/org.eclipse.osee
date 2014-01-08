@@ -21,7 +21,11 @@ import org.eclipse.swt.widgets.Composite;
 public class DbConnectionExceptionComposite extends ExceptionComposite {
 
    public DbConnectionExceptionComposite(Composite parent, Exception ex) {
-      super(parent, ex);
+      this(parent, ex.toString());
+   }
+
+   public DbConnectionExceptionComposite(Composite parent, String message) {
+      super(parent, message);
    }
 
    /**
@@ -29,16 +33,26 @@ public class DbConnectionExceptionComposite extends ExceptionComposite {
     * DbConnectionExceptionComposite will be displayed in parent giving exception information.
     */
    public static boolean dbConnectionIsOk(Composite parent) {
-      //      try {
-      //         ConnectionHandler.getConnection();
-      //      } catch (Exception ex) {
-      //         if (parent != null) new DbConnectionExceptionComposite(parent, ex);
-      //      }
-      Result result = OseeUiActivator.areOSEEServicesAvailable();
+      Result result = dbConnectionIsOkResult();
       if (result.isFalse()) {
-         new DbConnectionExceptionComposite(parent, new Exception(
-            "OSEE Service(s) Unavailable:\n\t" + result.getText().replaceAll("\n", "\n\t")));
+         new DbConnectionExceptionComposite(parent, result.getText());
+         parent.layout();
       }
       return result.isTrue();
    }
+
+   public static Result dbConnectionIsOkResult() {
+      Result result = Result.TrueResult;
+      if (!OseeUiActivator.isApplicationServerAlive()) {
+         result = new Result("The OSEE Application Server is not available.\n\nDatabase capability disabled.");
+      } else {
+         result = OseeUiActivator.areOSEEServicesAvailable();
+      }
+      return result;
+   }
+
+   public static boolean dbConnectionIsOk() {
+      return dbConnectionIsOkResult().isTrue();
+   }
+
 }

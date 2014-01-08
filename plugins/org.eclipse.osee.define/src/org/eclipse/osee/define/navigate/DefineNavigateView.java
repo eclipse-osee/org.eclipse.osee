@@ -43,8 +43,10 @@ public class DefineNavigateView extends GenericViewPart implements IXNavigateEve
 
    @Override
    public void refresh(XNavigateItem item) {
-      if (xNavComp != null && Widgets.isAccessible(xNavComp.getFilteredTree()) && Widgets.isAccessible(xNavComp.getFilteredTree().getViewer().getTree())) {
-         xNavComp.getFilteredTree().getViewer().refresh(item);
+      if (DbConnectionExceptionComposite.dbConnectionIsOk()) {
+         if (xNavComp != null && Widgets.isAccessible(xNavComp.getFilteredTree()) && Widgets.isAccessible(xNavComp.getFilteredTree().getViewer().getTree())) {
+            xNavComp.getFilteredTree().getViewer().refresh(item);
+         }
       }
    }
 
@@ -53,17 +55,17 @@ public class DefineNavigateView extends GenericViewPart implements IXNavigateEve
     */
    @Override
    public void createPartControl(Composite parent) {
-      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
-         return;
-      }
+      if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
-      xNavComp = new XNavigateComposite(new DefineNavigateViewItems(), parent, SWT.NONE);
-      XNavigateEventManager.register(this);
-      HelpUtil.setHelp(xNavComp, OseeHelpContext.DEFINE_NAVIGATOR);
-      createActions();
-      xNavComp.refresh();
-      addExtensionPointListenerBecauseOfWorkspaceLoading();
-      setFocusWidget(xNavComp);
+         xNavComp = new XNavigateComposite(new DefineNavigateViewItems(), parent, SWT.NONE);
+         XNavigateEventManager.register(this);
+         HelpUtil.setHelp(xNavComp, OseeHelpContext.DEFINE_NAVIGATOR);
+         createActions();
+         xNavComp.refresh();
+         addExtensionPointListenerBecauseOfWorkspaceLoading();
+         setFocusWidget(xNavComp);
+
+      }
    }
 
    private void addExtensionPointListenerBecauseOfWorkspaceLoading() {

@@ -109,8 +109,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    @Override
    public void createControl(Composite parent) {
       initializeDialogUnits(parent);
-      boolean isConnectionOk = DbConnectionExceptionComposite.dbConnectionIsOk(parent);
-      if (isConnectionOk != false) {
+      if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
          Composite mainComposite = new Composite(parent, SWT.NONE);
          mainComposite.setFont(parent.getFont());
          mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));

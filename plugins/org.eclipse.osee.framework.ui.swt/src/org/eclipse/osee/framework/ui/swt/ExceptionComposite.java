@@ -27,14 +27,17 @@ import org.eclipse.ui.PlatformUI;
 public class ExceptionComposite extends Composite {
 
    public ExceptionComposite(Composite parent, Exception ex) {
+      this(parent, ex.toString());
+   }
+
+   public ExceptionComposite(Composite parent, String message) {
       super(parent, SWT.NONE);
       setLayout(ALayout.getZeroMarginLayout(1, true));
       setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-      createErrorArea(this, ex);
+      createErrorArea(this, message);
    }
 
-   private Control createErrorArea(Composite parent, Exception ex) {
+   private Control createErrorArea(Composite parent, String message) {
       Composite composite = new Composite(parent, SWT.BORDER);
       composite.setLayout(new GridLayout(2, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -51,7 +54,7 @@ public class ExceptionComposite extends Composite {
       text.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_RED));
       text.setBackground(Displays.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
       text.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, true));
-      text.setText(ex.toString());
+      text.setText(message);
       return composite;
    }
 }

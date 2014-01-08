@@ -84,29 +84,29 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
       mainComp.setLayout(ALayout.getZeroMarginLayout());
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      if (!DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
+      if (DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
+
+         worldXViewer =
+            new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
+               xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory(), null);
+         worldXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+
+         worldXViewer.setContentProvider(new WorldContentProvider(worldXViewer));
+         worldXViewer.setLabelProvider(new WorldLabelProvider(worldXViewer));
+
+         if (createDragAndDrop) {
+            new WorldViewDragAndDrop(this, WorldEditor.EDITOR_ID);
+         }
+
+         setContent(mainComp);
+         setExpandHorizontal(true);
+         setExpandVertical(true);
+         layout();
+
+         WorldXViewerEventManager.add(this);
+      } else {
          worldXViewer = null;
-         return;
       }
-
-      worldXViewer =
-         new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
-            xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory(), null);
-      worldXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-
-      worldXViewer.setContentProvider(new WorldContentProvider(worldXViewer));
-      worldXViewer.setLabelProvider(new WorldLabelProvider(worldXViewer));
-
-      if (createDragAndDrop) {
-         new WorldViewDragAndDrop(this, WorldEditor.EDITOR_ID);
-      }
-
-      setContent(mainComp);
-      setExpandHorizontal(true);
-      setExpandVertical(true);
-      layout();
-
-      WorldXViewerEventManager.add(this);
    }
 
    public double getManHoursPerDayPreference() throws OseeCoreException {
