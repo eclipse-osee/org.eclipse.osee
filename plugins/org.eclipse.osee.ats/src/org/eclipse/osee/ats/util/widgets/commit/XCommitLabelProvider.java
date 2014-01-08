@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -103,7 +104,12 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       Branch branch = null;
       if (element instanceof ICommitConfigArtifact) {
          ICommitConfigArtifact configArt = (ICommitConfigArtifact) element;
-         branch = BranchManager.getBranchByGuid(configArt.getBaslineBranchGuid());
+         String baslineBranchGuid = configArt.getBaslineBranchGuid();
+         if (Strings.isValid(baslineBranchGuid)) {
+            branch = BranchManager.getBranchByGuid(baslineBranchGuid);
+         } else {
+            return String.format("Branch not configured for [%s]", element);
+         }
       } else if (element instanceof TransactionRecord) {
          TransactionRecord txRecord = (TransactionRecord) element;
          branch = txRecord.getBranch();

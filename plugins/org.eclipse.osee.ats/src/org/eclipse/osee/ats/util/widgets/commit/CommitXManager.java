@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -90,7 +91,10 @@ public class CommitXManager extends XViewer {
          ICommitConfigArtifact configArt = null;
          if (firstSelectedArt instanceof ICommitConfigArtifact) {
             configArt = (ICommitConfigArtifact) firstSelectedArt;
-            branch = BranchManager.getBranchByGuid(configArt.getBaslineBranchGuid());
+            String baslineBranchGuid = configArt.getBaslineBranchGuid();
+            if (Strings.isValid(baslineBranchGuid)) {
+               branch = BranchManager.getBranchByGuid(baslineBranchGuid);
+            }
             displayName = configArt.toString();
          } else if (firstSelectedArt instanceof TransactionRecord) {
             TransactionRecord txRecord = (TransactionRecord) firstSelectedArt;
