@@ -418,7 +418,12 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    /**
-    * Gets a list of all the message's data elements
+    * Gets a list of all the message's data elements.
+    * <br>
+    * This returns ALL the elements, which may not be mapped to the
+    * active data type and/or may be non-mapping elements.
+    * 
+    * Use {@link #getElements(DataType)} to get mapped elements
     * 
     * @return a collection of {@link Element}s
     */
@@ -437,6 +442,9 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    }
 
+   /**
+    * @return a collection of mapped {@link Element}s for the specified DataType
+    */
    public Collection<Element> getElements(DataType type) {
       checkState();
       LinkedList<Element> list = new LinkedList<Element>();
