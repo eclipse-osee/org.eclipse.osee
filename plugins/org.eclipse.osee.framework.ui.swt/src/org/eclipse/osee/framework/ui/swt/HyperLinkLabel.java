@@ -16,6 +16,7 @@ import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -26,9 +27,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Donald G. Dunne
  */
 
-public class HyperLinkLabel extends Label {
+public class HyperLinkLabel {
 
    private boolean hyperEnabled = true;
+   private Label label = null;
    /**
     * Amount of the margin width around the hyperlink (default is 1).
     */
@@ -48,12 +50,12 @@ public class HyperLinkLabel extends Label {
    }
 
    public HyperLinkLabel(FormToolkit toolkit, Composite parent, int style, String text) {
-      super(parent, style);
+      label = new Label(parent, style);
       if (text != null) {
-         setText(text);
+         label.setText(text);
       }
       if (toolkit != null) {
-         toolkit.adapt(this, true, true);
+         toolkit.adapt(label, true, true);
       }
       refresh();
    }
@@ -79,24 +81,24 @@ public class HyperLinkLabel extends Label {
 
       @Override
       public void mouseEnter(MouseEvent e) {
-         setCursor(CursorManager.getCursor(SWT.CURSOR_HAND));
+         label.setCursor(CursorManager.getCursor(SWT.CURSOR_HAND));
       }
 
       @Override
       public void mouseExit(MouseEvent e) {
-         setCursor(null);
+         label.setCursor(null);
       };
 
    };
 
    public void refresh() {
       if (hyperEnabled) {
-         setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
-         removeMouseTrackListener(listener);
-         addMouseTrackListener(listener);
+         label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
+         label.removeMouseTrackListener(listener);
+         label.addMouseTrackListener(listener);
       } else {
-         setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
-         removeMouseTrackListener(listener);
+         label.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
+         label.removeMouseTrackListener(listener);
       }
    }
 
@@ -107,6 +109,14 @@ public class HyperLinkLabel extends Label {
    public void setHyperEnabled(boolean hyperEnabled) {
       this.hyperEnabled = hyperEnabled;
       refresh();
+   }
+
+   public void setText(String text) {
+      label.setText(text);
+   }
+
+   public void addListener(int mouseup, Listener listener) {
+      label.addListener(mouseup, listener);
    }
 
 }
