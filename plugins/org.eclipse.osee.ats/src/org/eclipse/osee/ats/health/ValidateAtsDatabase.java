@@ -278,7 +278,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
          testCompletedCancelledStateAttributesSet(artifacts, transaction, results);
          transaction.execute();
-      } catch (OseeCoreException ex) {
+      } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          results.log("testCompletedCancelledStateAttributesSet", "Error: Exception: " + ex.getLocalizedMessage());
       }
@@ -369,7 +369,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             }
          }
          transaction.execute();
-      } catch (OseeCoreException ex) {
+      } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          results.log("testCompletedCancelledPercentComplete", "Error: Exception: " + ex.getLocalizedMessage());
       }
@@ -517,7 +517,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
          testAtsAttributeValues(transaction, results, fixAttributeValues, artifacts);
          transaction.execute();
-      } catch (OseeCoreException ex) {
+      } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          results.log("testAtsAttributeValues", "Error: Exception: " + ex.getLocalizedMessage());
       }
@@ -852,7 +852,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             if (artifact.hasDirtyAttributes()) {
                artifact.persist(transaction);
             }
-         } catch (OseeCoreException ex) {
+         } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             results.log(artifact, "testAtsAttributeValues",
                "Error: " + artifact.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());
@@ -915,7 +915,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                results.log(artifact, "testAtsActionsHaveTeamWorkflow",
                   "Error: Action " + XResultDataUI.getHyperlink(artifact) + " has no Team Workflows\n");
             }
-         } catch (OseeCoreException ex) {
+         } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             results.log(artifact, "testAtsActionsHaveTeamWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
          }
@@ -978,7 +978,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   }
                }
             }
-         } catch (OseeCoreException ex) {
+         } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             results.log(artifact, "testAtsWorkflowsHaveZeroOrOneVersion",
                "Error: Exception: " + ex.getLocalizedMessage());
@@ -1007,7 +1007,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   }
                }
             }
-         } catch (OseeCoreException ex) {
+         } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             results.log(artifact, "testAtsWorkflowsValidVersion", "Error: Exception: " + ex.getLocalizedMessage());
          }
@@ -1032,7 +1032,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                         AtsRelationTypes.TeamWfToTask_TeamWf).size() + " parents.");
                }
             }
-         } catch (OseeCoreException ex) {
+         } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             results.log(artifact, "testTasksHaveParentWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
          }
@@ -1057,7 +1057,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      "Error: ActionableItem " + XResultDataUI.getHyperlink(artifact.getName(), artifact) + " has to related IAtsTeamDefinition and is set to Actionable");
                }
             }
-         } catch (OseeCoreException ex) {
+         } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             results.log(artifact, "testActionableItemToTeamDefinition", "Error: Exception: " + ex.getLocalizedMessage());
          }
@@ -1090,7 +1090,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      "testReviewsHaveValidDefectAndRoleXml",
                      "Error: Review " + XResultDataUI.getHyperlink(reviewArtifact) + " has role attribute, but no roles (xml parsing error).");
                }
-            } catch (OseeCoreException ex) {
+            } catch (Exception ex) {
                results.log(artifact, "testReviewsHaveValidDefectAndRoleXml",
                   "Error: Exception processing Review defect test " + ex.getLocalizedMessage());
             }
@@ -1115,7 +1115,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      "Error: Review " + XResultDataUI.getHyperlink(reviewArtifact) + " has 0 related parents and 0 actionable items.");
                }
             }
-         } catch (OseeCoreException ex) {
+         } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             results.log(artifact, "testTeamDefinitionHasWorkflow", "Error: Exception: " + ex.getLocalizedMessage());
          }
@@ -1258,7 +1258,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      "testStateMachineAssignees",
                      "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " In Work without assignees");
                }
-            } catch (OseeCoreException ex) {
+            } catch (Exception ex) {
                results.log("testStateMachineAssignees",
                   "Error: Exception testing assignees: " + ex.getLocalizedMessage());
                OseeLog.log(Activator.class, Level.SEVERE, ex);
