@@ -28,8 +28,6 @@ public class OptionConverter implements OptionVisitor, RestSearchOptions {
    private final List<SearchFlag> flags = new LinkedList<SearchFlag>();
    private TokenDelimiterMatch delimiter;
 
-   private StringBuilder buffer;
-
    public void accept(QueryOption[] options) {
       reset();
       for (QueryOption option : options) {
@@ -42,7 +40,6 @@ public class OptionConverter implements OptionVisitor, RestSearchOptions {
 
    private void reset() {
       flags.clear();
-      buffer = null;
    }
 
    @Override
@@ -68,10 +65,7 @@ public class OptionConverter implements OptionVisitor, RestSearchOptions {
 
    @Override
    public void asTokenDelimiterMatch(TokenDelimiterMatch option) {
-      if (buffer == null) {
-         buffer = new StringBuilder();
-      }
-      buffer.append(option.name());
+      delimiter = option;
    }
 
    @Override
