@@ -1,0 +1,115 @@
+/*******************************************************************************
+ * Copyright (c) 2013 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.account.admin.internal.validator;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import java.util.regex.Pattern;
+import org.eclipse.osee.account.admin.AccountField;
+import org.junit.Test;
+
+/**
+ * Test Case for {@link AbstractConfigurableValidator}
+ * 
+ * @author Roberto E. Escobar
+ */
+public abstract class AbstractConfigurableValidatorTest<T extends AbstractConfigurableValidator> extends AbstractValidatorTest<T> {
+
+   private Pattern pattern;
+   private final String invalidCustomPatternValue;
+
+   public AbstractConfigurableValidatorTest(AccountField fieldType, String validValue, String invalidValue, String invalidCustomPatternValue) {
+      super(fieldType, validValue, invalidValue);
+      this.invalidCustomPatternValue = invalidCustomPatternValue;
+   }
+
+   @Override
+   public void testSetup() {
+      super.testSetup();
+
+      pattern = createCustomPattern();
+   }
+
+   protected String getInvalidCustomPatternValue() {
+      return invalidCustomPatternValue;
+   }
+
+   protected Pattern getPattern() {
+      return pattern;
+   }
+
+   protected abstract Pattern createCustomPattern();
+
+   @Test
+   public void testGetSetCustomPattern() {
+      T validator = getValidator();
+
+      validator.setCustomPattern(null);
+      boolean patternStatus = validator.hasCustomPattern();
+      assertFalse(patternStatus);
+
+      validator.setCustomPattern(getPattern());
+      patternStatus = validator.hasCustomPattern();
+      assertTrue(patternStatus);
+
+      Pattern actualPattern = validator.getCustomPattern();
+      assertEquals(getPattern(), actualPattern);
+   }
+
+   @Test
+   public void testValidateWithCustomPattern() {
+      T validator = getValidator();
+
+      validator.setCustomPattern(getPattern());
+      boolean patternStatus = validator.hasCustomPattern();
+      assertTrue(patternStatus);
+
+      getValidator().validate(getValidValue());
+   }
+
+   @Test
+   public void testIsValidWithCustomPattern() {
+      T validator = getValidator();
+
+      validator.setCustomPattern(getPattern());
+      boolean patternStatus = validator.hasCustomPattern();
+      assertTrue(patternStatus);
+
+      boolean status = getValidator().isValid(getValidValue());
+      assertTrue(status);
+   }
+
+   @Test
+   public void testIsNotValidWithCustomPattern() {
+      T validator = getValidator();
+
+      validator.setCustomPattern(getPattern());
+      boolean patternStatus = validator.hasCustomPattern();
+      assertTrue(patternStatus);
+
+      boolean status = getValidator().isValid(getInvalidCustomPatternValue());
+      assertFalse(status);
+   }
+
+   @Test
+   public abstract void testExists();
+
+   @Test
+   public abstract void testNotExists();
+
+   @Test
+   public abstract void testValidateFailNotUnique();
+
+   @Test
+   public abstract void testGetPatternFromConfig();
+
+}

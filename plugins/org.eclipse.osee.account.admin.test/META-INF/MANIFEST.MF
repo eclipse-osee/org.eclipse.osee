@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Account Admin Test (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.account.admin.test
+Bundle-Version: 0.17.0.qualifier
+Fragment-Host: org.eclipse.osee.account.admin;bundle-version="0.17.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Import-Package: org.hamcrest.core,
+ org.junit,
+ org.junit.rules,
+ org.junit.runner,
+ org.junit.runners,
+ org.mockito,
+ org.mockito.stubbing
