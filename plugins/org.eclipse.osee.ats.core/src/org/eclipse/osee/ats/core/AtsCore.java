@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
-import org.eclipse.osee.ats.core.internal.AtsConfigUtility;
+import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
 import org.eclipse.osee.ats.core.internal.AtsEarnedValueService;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnUtilities;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
@@ -54,6 +54,11 @@ public class AtsCore {
    private static IAtsBranchServiceProvider branchServiceProvider;
    private static IAtsReviewServiceProvider reviewServiceProvider;
    private static AtsWorkStateFactory workStateFactory;
+   private static IAtsConfigProvider atsConfigProvider;
+
+   public void setAtsConfigProvider(IAtsConfigProvider atsConfigProvider) {
+      AtsCore.atsConfigProvider = atsConfigProvider;
+   }
 
    public void setAtsUserService(IAtsUserService userService) {
       AtsCore.userService = userService;
@@ -157,7 +162,7 @@ public class AtsCore {
    }
 
    public static IAtsConfig getAtsConfig() throws OseeStateException {
-      return AtsConfigUtility.getAtsConfigProvider().getAtsConfig();
+      return atsConfigProvider.getAtsConfig();
    }
 
    public static IAtsBranchService getBranchService() throws OseeCoreException {
@@ -166,6 +171,10 @@ public class AtsCore {
 
    public static IAtsReviewService getReviewService() throws OseeCoreException {
       return reviewServiceProvider.getReviewService();
+   }
+
+   public static IAtsConfigProvider getAtsConfigProvider() {
+      return atsConfigProvider;
    }
 
 }
