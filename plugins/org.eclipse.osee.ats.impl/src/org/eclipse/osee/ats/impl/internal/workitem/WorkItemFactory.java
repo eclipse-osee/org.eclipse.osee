@@ -11,14 +11,10 @@
 package org.eclipse.osee.ats.impl.internal.workitem;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -66,38 +62,6 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAtsConfigObject getConfigObject(Object artifact) throws OseeCoreException {
-      IAtsConfigObject configObject = null;
-      try {
-         if (artifact instanceof ArtifactReadable) {
-            ArtifactReadable artRead = (ArtifactReadable) artifact;
-            if (artRead.isOfType(AtsArtifactTypes.Version)) {
-               configObject = getVersion(artifact);
-            } else if (artRead.isOfType(AtsArtifactTypes.TeamDefinition)) {
-               configObject = getTeamDef(artRead);
-            } else if (artRead.isOfType(AtsArtifactTypes.ActionableItem)) {
-               configObject = getActionableItem(artRead);
-            }
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(WorkItemFactory.class, Level.SEVERE, ex);
-      }
-      return configObject;
-   }
-
-   @Override
-   public IAtsVersion getVersion(Object artifact) {
-      IAtsVersion version = null;
-      if (artifact instanceof ArtifactReadable) {
-         ArtifactReadable artRead = (ArtifactReadable) artifact;
-         if (artRead.isOfType(AtsArtifactTypes.Version)) {
-            version = new Version((ArtifactReadable) artifact);
-         }
-      }
-      return version;
-   }
-
-   @Override
    public IAtsGoal getGoal(Object artifact) throws OseeCoreException {
       IAtsGoal goal = null;
       if (artifact instanceof ArtifactReadable) {
@@ -133,30 +97,6 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
          }
       }
       return review;
-   }
-
-   @Override
-   public IAtsTeamDefinition getTeamDef(Object artifact) throws OseeCoreException {
-      IAtsTeamDefinition teamDef = null;
-      if (artifact instanceof ArtifactReadable) {
-         ArtifactReadable artRead = (ArtifactReadable) artifact;
-         if (artRead.isOfType(AtsArtifactTypes.TeamDefinition)) {
-            teamDef = new TeamDefinition((ArtifactReadable) artifact);
-         }
-      }
-      return teamDef;
-   }
-
-   @Override
-   public IAtsActionableItem getActionableItem(Object artifact) throws OseeCoreException {
-      IAtsActionableItem ai = null;
-      if (artifact instanceof ArtifactReadable) {
-         ArtifactReadable artRead = (ArtifactReadable) artifact;
-         if (artRead.isOfType(AtsArtifactTypes.ActionableItem)) {
-            ai = new ActionableItem((ArtifactReadable) artifact);
-         }
-      }
-      return ai;
    }
 
 }

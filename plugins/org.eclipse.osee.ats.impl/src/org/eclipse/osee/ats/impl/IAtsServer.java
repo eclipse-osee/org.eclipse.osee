@@ -14,6 +14,8 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.notify.IAtsNotificationServiceProvider;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
+import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
+import org.eclipse.osee.ats.api.team.IAtsConfigItemFactoryProvider;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsStoreFactory;
@@ -31,7 +33,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 /**
  * @author Donald G Dunne
  */
-public interface IAtsServer extends IAtsConfigProvider, IAtsNotificationServiceProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemServiceProvider, IAtsWorkDefinitionServiceProvider, IArtifactProvider {
+public interface IAtsServer extends IAtsConfigItemFactoryProvider, IAtsConfigProvider, IAtsNotificationServiceProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemServiceProvider, IAtsWorkDefinitionServiceProvider, IArtifactProvider {
 
    OrcsApi getOrcsApi() throws OseeCoreException;
 
@@ -52,5 +54,8 @@ public interface IAtsServer extends IAtsConfigProvider, IAtsNotificationServiceP
    IAttributeResolver getAttributeResolver();
 
    IAtsStoreFactory getStoreFactory();
+
+   @Override
+   IAtsConfigItemFactory getConfigItemFactory();
 
 }

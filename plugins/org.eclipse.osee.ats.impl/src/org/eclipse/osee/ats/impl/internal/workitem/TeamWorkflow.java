@@ -32,7 +32,7 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
       for (Object aiGuidObj : artifact.getAttributeValues(AtsAttributeTypes.ActionableItem)) {
          String aiGuid = (String) aiGuidObj;
          ArtifactReadable aiArt = AtsServerService.get().getArtifactByGuid(aiGuid);
-         IAtsActionableItem ai = AtsServerService.get().getWorkItemFactory().getActionableItem(aiArt);
+         IAtsActionableItem ai = AtsServerService.get().getConfigItemFactory().getActionableItem(aiArt);
          ais.add(ai);
       }
       return ais;
@@ -42,7 +42,7 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
    public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
       String teamDefGuid = artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition);
       ArtifactReadable teamDefArt = AtsServerService.get().getArtifactByGuid(teamDefGuid);
-      IAtsTeamDefinition teamDef = AtsServerService.get().getWorkItemFactory().getTeamDef(teamDefArt);
+      IAtsTeamDefinition teamDef = AtsServerService.get().getConfigItemFactory().getTeamDef(teamDefArt);
       return teamDef;
    }
 

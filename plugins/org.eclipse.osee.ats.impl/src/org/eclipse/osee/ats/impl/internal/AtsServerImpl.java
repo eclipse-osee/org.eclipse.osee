@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.impl.internal;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsStoreFactory;
@@ -34,6 +35,7 @@ import org.eclipse.osee.ats.impl.internal.util.AtsUtilServer;
 import org.eclipse.osee.ats.impl.internal.util.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.impl.internal.util.TeamWorkflowProvider;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsWorkItemServiceImpl;
+import org.eclipse.osee.ats.impl.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItemFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -64,11 +66,17 @@ public class AtsServerImpl implements IAtsServer {
    private TeamWorkflowProvider teamWorkflowProvider;
    private AtsAttributeResolverServiceImpl attributeResolverService;
    private IAtsConfig config;
+   private IAtsConfigItemFactory configItemFactory;
    private static Boolean started = null;
 
    public static AtsServerImpl get() {
       checkStarted();
       return instance;
+   }
+
+   @Override
+   public IAtsConfigItemFactory getConfigItemFactory() {
+      return configItemFactory;
    }
 
    public void setOrcsApi(OrcsApi orcsApi) {
@@ -89,6 +97,7 @@ public class AtsServerImpl implements IAtsServer {
       Conditions.checkNotNull(userService, "IAtsUserService");
       instance = this;
       workItemFactory = new WorkItemFactory();
+      configItemFactory = new ConfigItemFactory();
       notifyService = new AtsNotificationServiceImpl();
 
       workItemService = new AtsWorkItemServiceImpl(workItemFactory, this);

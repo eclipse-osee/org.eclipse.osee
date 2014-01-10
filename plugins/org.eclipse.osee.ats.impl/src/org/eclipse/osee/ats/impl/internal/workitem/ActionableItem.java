@@ -40,7 +40,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       Set<IAtsActionableItem> children = new HashSet<IAtsActionableItem>();
       try {
          for (ArtifactReadable childArt : artifact.getRelated(CoreRelationTypes.Default_Hierarchical__Child)) {
-            IAtsActionableItem childTeamDef = AtsServerService.get().getWorkItemFactory().getActionableItem(childArt);
+            IAtsActionableItem childTeamDef = AtsServerService.get().getConfigItemFactory().getActionableItem(childArt);
             children.add(childTeamDef);
          }
       } catch (OseeCoreException ex) {
@@ -55,7 +55,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       try {
          ResultSet<ArtifactReadable> related = artifact.getRelated(CoreRelationTypes.Default_Hierarchical__Parent);
          if (!related.isEmpty()) {
-            parent = AtsServerService.get().getWorkItemFactory().getActionableItem(related.iterator().next());
+            parent = AtsServerService.get().getConfigItemFactory().getActionableItem(related.iterator().next());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -69,7 +69,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       try {
          ResultSet<ArtifactReadable> related = artifact.getRelated(AtsRelationTypes.TeamActionableItem_Team);
          if (!related.isEmpty()) {
-            teamDef = AtsServerService.get().getWorkItemFactory().getTeamDef(related.iterator().next());
+            teamDef = AtsServerService.get().getConfigItemFactory().getTeamDef(related.iterator().next());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

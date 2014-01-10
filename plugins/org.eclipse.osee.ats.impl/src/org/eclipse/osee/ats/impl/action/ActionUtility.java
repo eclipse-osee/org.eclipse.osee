@@ -30,8 +30,8 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactId;
@@ -142,7 +142,7 @@ public class ActionUtility {
    }
 
    private static ArtifactReadable getTeamDefinition(OrcsApi orcsApi, ArtifactReadable aiArt) throws OseeCoreException {
-      IAtsActionableItem ai = AtsServerImpl.get().getWorkItemFactory().getActionableItem(aiArt);
+      IAtsActionableItem ai = AtsServerImpl.get().getConfigItemFactory().getActionableItem(aiArt);
       IAtsTeamDefinition teamDef = ai.getTeamDefinitionInherited();
       if (teamDef == null) {
          throw new OseeStateException("No related Team Definition for AI [%s]", ai);

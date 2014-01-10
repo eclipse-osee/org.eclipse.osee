@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.team;
 
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -34,13 +31,5 @@ public interface IAtsWorkItemFactory {
    IAtsAbstractReview getReview(Object artifact) throws OseeCoreException;
 
    IAtsGoal getGoal(Object artifact) throws OseeCoreException;
-
-   IAtsTeamDefinition getTeamDef(Object artifact) throws OseeCoreException;
-
-   IAtsActionableItem getActionableItem(Object aiArt) throws OseeCoreException;
-
-   IAtsConfigObject getConfigObject(Object artifact) throws OseeCoreException;
-
-   IAtsVersion getVersion(Object artifact) throws OseeCoreException;
 
 }

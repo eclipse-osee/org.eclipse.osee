@@ -34,7 +34,7 @@ public abstract class AbstractReview extends WorkItem implements IAtsAbstractRev
       for (Object aiGuidObj : artifact.getAttributeValues(AtsAttributeTypes.ActionableItem)) {
          String aiGuid = (String) aiGuidObj;
          ArtifactReadable aiArt = AtsServerService.get().getArtifactByGuid(aiGuid);
-         IAtsActionableItem ai = AtsServerService.get().getWorkItemFactory().getActionableItem(aiArt);
+         IAtsActionableItem ai = AtsServerService.get().getConfigItemFactory().getActionableItem(aiArt);
          ais.add(ai);
       }
       return ais;
