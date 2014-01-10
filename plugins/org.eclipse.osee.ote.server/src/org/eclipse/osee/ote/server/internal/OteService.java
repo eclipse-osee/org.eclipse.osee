@@ -157,12 +157,16 @@ public class OteService implements IHostTestEnvironment, IService {
 
    @Override
    public void kill() throws RemoteException {
-      currentEnvironment.shutdown();
+      if (currentEnvironment != null) {
+         currentEnvironment.shutdown();
+      }
    }
 
    @Override
    public void cleanupRuntimeBundles() throws RemoteException {
-      runtimeLibraryManager.cleanup();
+      if (runtimeLibraryManager != null) {
+         runtimeLibraryManager.cleanup();
+      }
    }
 
    @Override
