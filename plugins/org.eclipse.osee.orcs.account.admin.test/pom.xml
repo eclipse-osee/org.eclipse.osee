@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.eclipse.osee</groupId>
+		<artifactId>org.eclipse.osee.orcs.parent</artifactId>
+		<version>0.17.0-SNAPSHOT</version>
+		<relativePath>../../plugins/org.eclipse.osee.orcs.parent</relativePath>
+	</parent>
+
+	<artifactId>org.eclipse.osee.orcs.account.admin.test</artifactId>
+	<packaging>eclipse-test-plugin</packaging>
+	<name>OSEE ORCS Account Admin Test - (Incubation)</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<testSuite>org.eclipse.osee.orcs.account.admin.test</testSuite>
+					<testClass>org.eclipse.osee.orcs.account.admin.OrcsAccountTestSuite</testClass>
+					<dependencies>
+						<dependency>
+							<type>eclipse-feature</type>
+							<artifactId>org.eclipse.osee.x.core.external.feature</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-feature</type>
+							<artifactId>org.eclipse.osee.x.core.feature</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+						<dependency>
+							<type>eclipse-feature</type>
+							<artifactId>org.eclipse.osee.orcs.feature</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+					</dependencies>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

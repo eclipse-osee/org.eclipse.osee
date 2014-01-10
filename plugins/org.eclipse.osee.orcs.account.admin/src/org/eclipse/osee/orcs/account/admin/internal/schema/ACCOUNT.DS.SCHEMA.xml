@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TableConfig>
+
+	<Table name="OSEE_ACCOUNT_ACCESS" schema="OSEE" tablespace="osee_data">
+		<Column id="ACCOUNT_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="ACCESS_TOKEN" defaultValue="not null" type="VARCHAR" limits="100" />
+		<Column id="CREATED_ON" defaultValue="not null" type="TIMESTAMP" />
+		<Column id="LAST_ACCESSED_ON" defaultValue="not null" type="TIMESTAMP" />
+		<Column id="ACCESSED_FROM" defaultValue="not null" type="VARCHAR" limits="100" />
+		<Column id="ACCESS_DETAILS" defaultValue="not null" type="VARCHAR" limits="100" />
+		
+		<Constraint schema="OSEE" id="OSEE_ACCOUNT_ACCESS_PK" type="PRIMARY KEY" appliesTo="ACCOUNT_ID, ACCESS_TOKEN" />
+		<Index id="OSEE_ACCOUNT_ACCESS_T_IDX" type="UNIQUE" tablespace="osee_index">
+			<AppliesTo id="ACCESS_TOKEN"/>
+		</Index>
+	</Table>
+
+	<TableDescription referenceTable="OSEE_ACCOUNT_SESSION">
+		<Note purpose="Core table used to store account session tokens" />
+	</TableDescription>
+
+</TableConfig>
