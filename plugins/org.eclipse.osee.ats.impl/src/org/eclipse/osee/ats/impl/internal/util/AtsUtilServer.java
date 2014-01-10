@@ -11,12 +11,18 @@
 package org.eclipse.osee.ats.impl.internal.util;
 
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workflow.IAttribute;
+import org.eclipse.osee.ats.core.util.ArtifactIdWrapper;
+import org.eclipse.osee.ats.core.util.AttributeIdWrapper;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeId;
 
 /**
  * @author Donald G. Dunne
@@ -41,6 +47,14 @@ public class AtsUtilServer {
             orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(atsObject.getGuid()).getResults().getExactlyOne();
       }
       return result;
+   }
+
+   public static ArtifactId toArtifactId(IAtsWorkItem workItem) {
+      return new ArtifactIdWrapper(workItem);
+   }
+
+   public static AttributeId toAttributeId(IAttribute<?> attr) {
+      return new AttributeIdWrapper(attr);
    }
 
    public static ArtifactReadable getArtifactByGuid(OrcsApi orcsApi, String guid) throws OseeCoreException {

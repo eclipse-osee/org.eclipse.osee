@@ -11,12 +11,17 @@
 package org.eclipse.osee.ats.impl.internal.workitem;
 
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
+import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class DecisionReview extends AbstractReview implements IAtsDecisionReview {
 
-   public DecisionReview(ArtifactReadable artifact) {
-      super(artifact);
+   public DecisionReview(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
+      super(logger, atsServer, artifact);
    }
 
 }

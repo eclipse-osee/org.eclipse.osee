@@ -8,23 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.impl.internal;
+package org.eclipse.osee.ats.impl.action;
 
-import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.impl.action.ActionUtility.ActionLoadLevel;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
- * @author Donald G Dunne
+ * @author Donald G. Dunne
  */
-public class AtsServerService {
+public interface IWorkItemPage {
 
-   private static IAtsServer atsServer;
+   String getHtml(ArtifactReadable action, String title, ActionLoadLevel actionLoadLevel) throws Exception;
 
-   public void setAtsServer(IAtsServer atsServer) {
-      AtsServerService.atsServer = atsServer;
-   }
-
-   public static IAtsServer get() {
-      return atsServer;
-   }
+   String getHtmlWithStates(ArtifactReadable action, String title, ActionLoadLevel actionLoadLevel) throws Exception;
 
 }

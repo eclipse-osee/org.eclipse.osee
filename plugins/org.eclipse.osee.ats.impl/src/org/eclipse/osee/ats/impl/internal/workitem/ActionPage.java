@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.impl.action;
+package org.eclipse.osee.ats.impl.internal.workitem;
 
 import java.io.IOException;
 import java.rmi.activation.Activator;
@@ -24,9 +24,9 @@ import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.impl.action.ActionUtility;
 import org.eclipse.osee.ats.impl.action.ActionUtility.ActionLoadLevel;
-import org.eclipse.osee.ats.impl.internal.AtsServerImpl;
-import org.eclipse.osee.ats.impl.internal.AtsServerService;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -53,8 +53,10 @@ public class ActionPage {
    private final IResourceRegistry registry;
    private final String title;
    private final ArtifactReadable action;
+   private final IAtsServer atsServer;
 
-   public ActionPage(IResourceRegistry registry, ArtifactReadable action, String title, ActionLoadLevel actionLoadLevel) {
+   public ActionPage(IAtsServer atsServer, IResourceRegistry registry, ArtifactReadable action, String title, ActionLoadLevel actionLoadLevel) {
+      this.atsServer = atsServer;
       this.registry = registry;
       this.action = action;
       this.title = title;
@@ -63,7 +65,7 @@ public class ActionPage {
 
    private IAtsWorkItem getWorkItem() {
       if (workItem == null) {
-         workItem = AtsServerImpl.get().getWorkItemFactory().getWorkItem(action);
+         workItem = atsServer.getWorkItemFactory().getWorkItem(action);
       }
       return workItem;
    }
@@ -129,7 +131,7 @@ public class ActionPage {
    private String getTeamStr(ArtifactReadable action) {
       String results = action.getSoleAttributeAsString(AtsAttributeTypes.TeamDefinition);
       if (isShowHeaderFull()) {
-         results = AtsServerService.get().getArtifactByGuid(results).getName();
+         results = atsServer.getArtifactByGuid(results).getName();
       }
       return results;
    }
@@ -137,7 +139,7 @@ public class ActionPage {
    private String getAIStr(ArtifactReadable action) {
       String results = action.getSoleAttributeAsString(AtsAttributeTypes.ActionableItem);
       if (isShowHeaderFull()) {
-         results = AtsServerService.get().getArtifactByGuid(results).getName();
+         results = atsServer.getArtifactByGuid(results).getName();
       }
       return results;
    }

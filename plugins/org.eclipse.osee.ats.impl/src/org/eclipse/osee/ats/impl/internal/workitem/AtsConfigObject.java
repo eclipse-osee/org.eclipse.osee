@@ -10,22 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.workitem;
 
-import java.rmi.activation.Activator;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.impl.internal.AtsServerService;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -33,14 +31,26 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObject implements IAtsConfigObject {
    protected final ArtifactReadable artifact;
+   private final Log logger;
+   private final IAtsServer atsServer;
 
-   public AtsConfigObject(ArtifactReadable artifact) {
+   public AtsConfigObject(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
       super(artifact.getGuid(), artifact.getName());
+      this.logger = logger;
+      this.atsServer = atsServer;
       this.artifact = artifact;
    }
 
+   public Log getLogger() {
+      return logger;
+   }
+
+   public IAtsServer getAtsServer() {
+      return atsServer;
+   }
+
    public void setFullName(String fullName) {
-      OseeLog.log(TeamDefinition.class, Level.SEVERE, "TeamDefinition.setFullName not implemented");
+      logger.error("TeamDefinition.setFullName not implemented yet");
    }
 
    public abstract String getTypeName();
@@ -50,7 +60,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    }
 
    public void setActionable(boolean actionable) {
-      OseeLog.log(TeamDefinition.class, Level.SEVERE, "TeamDefinition.setActionable not implemented");
+      logger.error("TeamDefinition.setActionable not implemented yet");
    }
 
    public boolean isActionable() {
@@ -63,13 +73,13 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
       try {
          value = (T) artifact.getSoleAttributeValue(attributeType, defaultValue);
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         logger.error(ex, "Error getting attribute value for - attributeType[%s]", attributeType);
       }
       return value;
    }
 
    public void setActive(boolean active) {
-      OseeLog.log(TeamDefinition.class, Level.SEVERE, "TeamDefinition.setActive not implemented");
+      logger.error("TeamDefinition.setActive not implemented yet");
    }
 
    public boolean isActive() {
@@ -81,7 +91,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
       try {
          results = artifact.getAttributeValues(CoreAttributeTypes.StaticId);
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         logger.error(ex, "Error getting static Ids");
       }
       return results;
    }
@@ -94,15 +104,15 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
       return getRelatedUsers(AtsRelationTypes.SubscribedUser_User);
    }
 
-   Collection<IAtsUser> getRelatedUsers(IRelationTypeSide relation) {
+   protected Collection<IAtsUser> getRelatedUsers(IRelationTypeSide relation) {
       Set<IAtsUser> results = new HashSet<IAtsUser>();
       try {
          for (ArtifactReadable userArt : artifact.getRelated(relation)) {
-            IAtsUser lead = AtsServerService.get().getUserService().getUserById(userArt.getGuid());
+            IAtsUser lead = getAtsServer().getUserService().getUserById(userArt.getGuid());
             results.add(lead);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         logger.error(ex, "Error getting related Users for relationTypeSide[%s]", relation);
       }
       return results;
    }

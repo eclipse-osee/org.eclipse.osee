@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.workitem;
 
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
@@ -18,8 +17,9 @@ import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -27,13 +27,21 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class WorkItemFactory implements IAtsWorkItemFactory {
 
+   private final Log logger;
+   private final IAtsServer atsServer;
+
+   public WorkItemFactory(Log logger, IAtsServer atsServer) {
+      this.logger = logger;
+      this.atsServer = atsServer;
+   }
+
    @Override
    public IAtsTeamWorkflow getTeamWf(Object artifact) throws OseeCoreException {
       IAtsTeamWorkflow team = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-            team = new TeamWorkflow((ArtifactReadable) artifact);
+            team = new TeamWorkflow(logger, atsServer, (ArtifactReadable) artifact);
          }
       }
       return team;
@@ -56,7 +64,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(WorkItemFactory.class, Level.SEVERE, ex);
+         logger.error(ex, "Error getting work item for [%s]", artifact);
       }
       return workItem;
    }
@@ -67,7 +75,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.Goal)) {
-            goal = new Goal((ArtifactReadable) artifact);
+            goal = new Goal(logger, atsServer, (ArtifactReadable) artifact);
          }
       }
       return goal;
@@ -79,7 +87,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.Task)) {
-            task = new Task((ArtifactReadable) artifact);
+            task = new Task(logger, atsServer, (ArtifactReadable) artifact);
          }
       }
       return task;
@@ -91,9 +99,9 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.PeerToPeerReview)) {
-            review = new PeerToPeerReview(artRead);
+            review = new PeerToPeerReview(logger, atsServer, artRead);
          } else {
-            review = new DecisionReview(artRead);
+            review = new DecisionReview(logger, atsServer, artRead);
          }
       }
       return review;

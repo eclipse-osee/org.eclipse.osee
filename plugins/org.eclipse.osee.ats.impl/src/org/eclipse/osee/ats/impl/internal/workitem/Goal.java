@@ -11,12 +11,17 @@
 package org.eclipse.osee.ats.impl.internal.workitem;
 
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
+import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class Goal extends WorkItem implements IAtsGoal {
 
-   public Goal(ArtifactReadable artifact) {
-      super(artifact);
+   public Goal(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
+      super(logger, atsServer, artifact);
    }
 
 }

@@ -14,19 +14,23 @@ import java.util.Date;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
-import org.eclipse.osee.ats.core.AtsCore;
-import org.eclipse.osee.ats.impl.internal.AtsServerService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class WorkData implements IAtsWorkData {
 
    private final ArtifactReadable artifact;
+   private final IAtsUserService atsUserService;
 
-   public WorkData(IAtsWorkItem workItem, ArtifactReadable artifact) {
+   public WorkData(IAtsUserService atsUserService, IAtsWorkItem workItem, ArtifactReadable artifact) {
+      this.atsUserService = atsUserService;
       this.artifact = artifact;
    }
 
@@ -37,8 +41,7 @@ public class WorkData implements IAtsWorkData {
 
    @Override
    public IAtsUser getCompletedBy() throws OseeCoreException {
-      return AtsServerService.get().getUserService().getUserById(
-         artifact.getSoleAttributeValue(AtsAttributeTypes.CompletedBy, ""));
+      return atsUserService.getUserById(artifact.getSoleAttributeValue(AtsAttributeTypes.CompletedBy, ""));
    }
 
    @Override
@@ -53,8 +56,7 @@ public class WorkData implements IAtsWorkData {
 
    @Override
    public IAtsUser getCancelledBy() throws OseeCoreException {
-      return AtsServerService.get().getUserService().getUserById(
-         artifact.getSoleAttributeValue(AtsAttributeTypes.CancelledBy, ""));
+      return atsUserService.getUserById(artifact.getSoleAttributeValue(AtsAttributeTypes.CancelledBy, ""));
    }
 
    @Override
@@ -124,7 +126,7 @@ public class WorkData implements IAtsWorkData {
 
    @Override
    public IAtsUser getCreatedBy() throws OseeCoreException {
-      return AtsCore.getUserService().getUserById(artifact.getSoleAttributeValue(AtsAttributeTypes.CreatedBy, ""));
+      return atsUserService.getUserById(artifact.getSoleAttributeValue(AtsAttributeTypes.CreatedBy, ""));
    }
 
    @Override

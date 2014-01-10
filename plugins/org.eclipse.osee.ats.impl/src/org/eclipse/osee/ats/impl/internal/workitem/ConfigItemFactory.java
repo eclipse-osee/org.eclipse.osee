@@ -10,21 +10,29 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.workitem;
 
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
  */
 public class ConfigItemFactory implements IAtsConfigItemFactory {
+
+   private final Log logger;
+   private final IAtsServer atsServer;
+
+   public ConfigItemFactory(Log logger, IAtsServer atsServer) {
+      this.logger = logger;
+      this.atsServer = atsServer;
+   }
 
    @Override
    public IAtsConfigObject getConfigObject(Object artifact) throws OseeCoreException {
@@ -41,7 +49,7 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(WorkItemFactory.class, Level.SEVERE, ex);
+         logger.error(ex, "Error getting config object for [%s]", artifact);
       }
       return configObject;
    }
@@ -52,7 +60,7 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.Version)) {
-            version = new Version((ArtifactReadable) artifact);
+            version = new Version(logger, atsServer, (ArtifactReadable) artifact);
          }
       }
       return version;
@@ -64,7 +72,7 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.TeamDefinition)) {
-            teamDef = new TeamDefinition((ArtifactReadable) artifact);
+            teamDef = new TeamDefinition(logger, atsServer, (ArtifactReadable) artifact);
          }
       }
       return teamDef;
@@ -76,7 +84,7 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.ActionableItem)) {
-            ai = new ActionableItem((ArtifactReadable) artifact);
+            ai = new ActionableItem(logger, atsServer, (ArtifactReadable) artifact);
          }
       }
       return ai;

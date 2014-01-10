@@ -15,8 +15,9 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
-import org.eclipse.osee.ats.impl.internal.AtsServerService;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -24,8 +25,8 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public abstract class AbstractReview extends WorkItem implements IAtsAbstractReview {
 
-   public AbstractReview(ArtifactReadable artifact) {
-      super(artifact);
+   public AbstractReview(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
+      super(logger, atsServer, artifact);
    }
 
    @Override
@@ -33,8 +34,8 @@ public abstract class AbstractReview extends WorkItem implements IAtsAbstractRev
       Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
       for (Object aiGuidObj : artifact.getAttributeValues(AtsAttributeTypes.ActionableItem)) {
          String aiGuid = (String) aiGuidObj;
-         ArtifactReadable aiArt = AtsServerService.get().getArtifactByGuid(aiGuid);
-         IAtsActionableItem ai = AtsServerService.get().getConfigItemFactory().getActionableItem(aiArt);
+         ArtifactReadable aiArt = getAtsServer().getArtifactByGuid(aiGuid);
+         IAtsActionableItem ai = getAtsServer().getConfigItemFactory().getActionableItem(aiArt);
          ais.add(ai);
       }
       return ais;

@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.impl.internal.workitem;
 
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -18,8 +20,8 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class PeerToPeerReview extends AbstractReview implements IAtsPeerToPeerReview {
 
-   public PeerToPeerReview(ArtifactReadable artifact) {
-      super(artifact);
+   public PeerToPeerReview(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
+      super(logger, atsServer, artifact);
    }
 
 }

@@ -10,23 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.util;
 
-import java.rmi.activation.Activator;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
-import org.eclipse.osee.ats.impl.internal.AtsServerService;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
@@ -34,10 +33,19 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
  */
 public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
 
-   private static OrcsApi orcsApi;
+   private OrcsApi orcsApi;
+   private Log logger;
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
 
    public void setOrcsApi(OrcsApi orcsApi) {
-      AtsAttributeResolverServiceImpl.orcsApi = orcsApi;
+      this.orcsApi = orcsApi;
+   }
+
+   private ArtifactReadable getArtifact(IAtsObject atsObject) {
+      return AtsUtilServer.getArtifact(orcsApi, atsObject);
    }
 
    public void start() throws OseeCoreException {
@@ -62,7 +70,8 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
             widgetDef.setXWidgetName(AttributeTypeToXWidgetName.getXWidgetName(orcsApi, getAttributeType(attributeName)));
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsAttributeResolverServiceImpl.class, Level.SEVERE, ex);
+         logger.error(ex, "Error setXWidgetNameBasedOnAttributeName - attributeName [%s] widgetDef[%s]", attributeName,
+            widgetDef);
       }
    }
 
@@ -81,30 +90,30 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         logger.error(ex, "Error getting attribute type with name [%s]", attributeName);
       }
       return attrType;
    }
 
    @Override
    public <T> T getSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, T defaultReturnValue) throws OseeCoreException {
-      return AtsServerService.get().getArtifact(workItem).getSoleAttributeValue(attributeType, defaultReturnValue);
+      return getArtifact(workItem).getSoleAttributeValue(attributeType, defaultReturnValue);
 
    }
 
    @Override
    public Collection<String> getAttributesToStringList(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
-      return AtsServerService.get().getArtifact(workItem).getAttributeValues(attributeType);
+      return getArtifact(workItem).getAttributeValues(attributeType);
    }
 
    @Override
    public boolean isAttributeTypeValid(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
-      return AtsServerService.get().getArtifact(workItem).isAttributeTypeValid(attributeType);
+      return getArtifact(workItem).isAttributeTypeValid(attributeType);
    }
 
    @Override
    public String getSoleAttributeValueAsString(IAtsWorkItem workItem, IAttributeType attributeType, String defaultValue) throws OseeCoreException {
-      return AtsServerService.get().getArtifact(workItem).getSoleAttributeValue(attributeType, defaultValue).toString();
+      return getArtifact(workItem).getSoleAttributeValue(attributeType, defaultValue).toString();
    }
 
    @Override
@@ -116,7 +125,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
 
    @Override
    public int getAttributeCount(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
-      return AtsServerService.get().getArtifact(workItem).getAttributeCount(attributeType);
+      return getArtifact(workItem).getAttributeCount(attributeType);
    }
 
    @Override
@@ -129,7 +138,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    @Override
    public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
       Collection<IAttribute<T>> attrs = new ArrayList<IAttribute<T>>();
-      for (AttributeReadable<Object> attr : AtsServerService.get().getArtifact(workItem).getAttributes(attributeType)) {
+      for (AttributeReadable<Object> attr : getArtifact(workItem).getAttributes(attributeType)) {
          attrs.add(new AttributeWrapper<T>((AttributeReadable<T>) attr));
       }
       return attrs;

@@ -22,9 +22,13 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
+import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.impl.action.IWorkItemPage;
 import org.eclipse.osee.ats.impl.internal.util.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.impl.internal.util.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsBranchServiceImpl;
@@ -37,9 +41,11 @@ import org.eclipse.osee.ats.impl.internal.util.TeamWorkflowProvider;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.impl.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItemFactory;
+import org.eclipse.osee.ats.impl.internal.workitem.WorkItemPage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -50,6 +56,7 @@ public class AtsServerImpl implements IAtsServer {
 
    public static String PLUGIN_ID = "org.eclipse.osee.ats.rest";
    private static OrcsApi orcsApi;
+   private Log logger;
    private static IAtsWorkItemFactory workItemFactory;
    private static AtsServerImpl instance;
    private static IAtsWorkDefinitionService workDefService;
@@ -65,10 +72,18 @@ public class AtsServerImpl implements IAtsServer {
    private IAtsConfig config;
    private IAtsConfigItemFactory configItemFactory;
    private static Boolean started = null;
+   private IAtsLogFactory atsLogFactory;
+   private IAtsStateFactory atsStateFactory;
+   private IAtsStoreFactory atsStoreFactory;
+   private IWorkItemPage workItemPage;
 
    public static AtsServerImpl get() {
       checkStarted();
       return instance;
+   }
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
    }
 
    @Override
@@ -93,11 +108,11 @@ public class AtsServerImpl implements IAtsServer {
       Conditions.checkNotNull(workDefService, "IAtsWorkDefinitionService");
       Conditions.checkNotNull(userService, "IAtsUserService");
       instance = this;
-      workItemFactory = new WorkItemFactory();
-      configItemFactory = new ConfigItemFactory();
+      workItemFactory = new WorkItemFactory(logger, this);
+      configItemFactory = new ConfigItemFactory(logger, this);
       notifyService = new AtsNotificationServiceImpl();
 
-      workItemService = new AtsWorkItemServiceImpl(workItemFactory, this);
+      workItemService = new AtsWorkItemServiceImpl(this, workItemFactory, this);
       branchService = new AtsBranchServiceImpl(orcsApi);
       reviewService = new AtsReviewServiceImpl(this, workItemService);
       workDefCacheProvider = new AtsWorkDefinitionCacheProvider(workDefService);
@@ -109,7 +124,12 @@ public class AtsServerImpl implements IAtsServer {
          new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService, teamWorkflowProvider,
             attributeResolverService);
 
-      config = new AtsArtifactConfigCache(orcsApi);
+      atsLogFactory = AtsCoreFactory.newLogFactory();
+      atsStateFactory = AtsCoreFactory.newStateFactory(attributeResolverService, userService);
+      atsStoreFactory = new AtsStoreFactoryImpl(this);
+      workItemPage = new WorkItemPage(this, orcsApi.getResourceRegistry());
+
+      config = new AtsArtifactConfigCache(this, orcsApi);
       System.out.println("ATS - AtsServerImpl started");
       started = true;
    }
@@ -196,7 +216,22 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public IAtsStoreFactory getStoreFactory() {
-      return new AtsStoreFactoryImpl();
+      return atsStoreFactory;
+   }
+
+   @Override
+   public IAtsLogFactory getLogFactory() {
+      return atsLogFactory;
+   }
+
+   @Override
+   public IAtsStateFactory getStateFactory() {
+      return atsStateFactory;
+   }
+
+   @Override
+   public IWorkItemPage getWorkItemPage() {
+      return workItemPage;
    }
 
 }

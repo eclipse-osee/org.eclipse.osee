@@ -24,7 +24,10 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionServiceProvider;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
+import org.eclipse.osee.ats.impl.action.IWorkItemPage;
 import org.eclipse.osee.ats.impl.internal.workitem.IArtifactProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -57,5 +60,11 @@ public interface IAtsServer extends IAtsConfigItemFactoryProvider, IAtsConfigPro
 
    @Override
    IAtsConfigItemFactory getConfigItemFactory();
+
+   IAtsStateFactory getStateFactory();
+
+   IAtsLogFactory getLogFactory();
+
+   IWorkItemPage getWorkItemPage();
 
 }

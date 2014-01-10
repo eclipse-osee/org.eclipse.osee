@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -39,6 +38,9 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class ActionUtility {
 
    public static enum ActionLoadLevel {
@@ -176,11 +178,6 @@ public class ActionUtility {
       log = log.replaceAll("INSERT_USER_NAME", currentUser.getUserId());
       log = log.replaceAll("INSERT_STATE_NAME", startState);
       return log;
-   }
-
-   public static String displayAction(IResourceRegistry registry, ArtifactReadable action, String title, ActionLoadLevel actionLoadLevel) throws Exception {
-      ActionPage page = new ActionPage(registry, action, title, actionLoadLevel);
-      return page.generate();
    }
 
 }

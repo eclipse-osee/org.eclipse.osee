@@ -13,15 +13,22 @@ package org.eclipse.osee.ats.impl.internal.util;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreFactory;
+import org.eclipse.osee.ats.impl.IAtsServer;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsStoreFactoryImpl implements IAtsStoreFactory {
 
+   private final IAtsServer atsServer;
+
+   public AtsStoreFactoryImpl(IAtsServer atsServer) {
+      this.atsServer = atsServer;
+   }
+
    @Override
    public IAtsChangeSet createAtsChangeSet(String comment, IAtsUser user) {
-      return new AtsChangeSet(comment, user);
+      return new AtsChangeSet(atsServer, comment, user);
    }
 
 }

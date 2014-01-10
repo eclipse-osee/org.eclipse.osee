@@ -10,20 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.workitem;
 
-import java.rmi.activation.Activator;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.impl.internal.AtsServerService;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -31,8 +29,8 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class ActionableItem extends AtsConfigObject implements IAtsActionableItem {
 
-   public ActionableItem(ArtifactReadable artifact) {
-      super(artifact);
+   public ActionableItem(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
+      super(logger, atsServer, artifact);
    }
 
    @Override
@@ -40,11 +38,11 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       Set<IAtsActionableItem> children = new HashSet<IAtsActionableItem>();
       try {
          for (ArtifactReadable childArt : artifact.getRelated(CoreRelationTypes.Default_Hierarchical__Child)) {
-            IAtsActionableItem childTeamDef = AtsServerService.get().getConfigItemFactory().getActionableItem(childArt);
+            IAtsActionableItem childTeamDef = getAtsServer().getConfigItemFactory().getActionableItem(childArt);
             children.add(childTeamDef);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         getLogger().error(ex, "Error getting Children Actionable Items");
       }
       return children;
    }
@@ -55,10 +53,10 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       try {
          ResultSet<ArtifactReadable> related = artifact.getRelated(CoreRelationTypes.Default_Hierarchical__Parent);
          if (!related.isEmpty()) {
-            parent = AtsServerService.get().getConfigItemFactory().getActionableItem(related.iterator().next());
+            parent = getAtsServer().getConfigItemFactory().getActionableItem(related.iterator().next());
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         getLogger().error(ex, "Error getParentActionableItem");
       }
       return parent;
    }
@@ -69,10 +67,10 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       try {
          ResultSet<ArtifactReadable> related = artifact.getRelated(AtsRelationTypes.TeamActionableItem_Team);
          if (!related.isEmpty()) {
-            teamDef = AtsServerService.get().getConfigItemFactory().getTeamDef(related.iterator().next());
+            teamDef = getAtsServer().getConfigItemFactory().getTeamDef(related.iterator().next());
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         getLogger().error(ex, "Error getTeamDefinition");
       }
       return teamDef;
    }
@@ -84,22 +82,22 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
 
    @Override
    public void setParentActionableItem(IAtsActionableItem parentActionableItem) {
-      OseeLog.log(TeamDefinition.class, Level.SEVERE, "ActionableItem.setParentActionableItem not implemented");
+      getLogger().error("Error ActionableItem.setParentActionableItem not implemented");
    }
 
    @Override
    public void setTeamDefinition(IAtsTeamDefinition teamDef) {
-      OseeLog.log(TeamDefinition.class, Level.SEVERE, "ActionableItem.setTeamDefinition not implemented");
+      getLogger().error("Error ActionableItem.setTeamDefinition not implemented");
    }
 
    @Override
    public void setActionable(boolean actionable) {
-      OseeLog.log(TeamDefinition.class, Level.SEVERE, "ActionableItem.setActionable not implemented");
+      getLogger().error("Error ActionableItem.setActionable not implemented");
    }
 
    @Override
    public void setActive(boolean active) {
-      OseeLog.log(TeamDefinition.class, Level.SEVERE, "ActionableItem.setActive not implemented");
+      getLogger().error("Error ActionableItem.setActive not implemented");
    }
 
    @Override

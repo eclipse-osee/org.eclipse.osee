@@ -15,13 +15,18 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class Version extends AtsConfigObject implements IAtsVersion {
 
-   public Version(ArtifactReadable artifact) {
-      super(artifact);
+   public Version(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
+      super(logger, atsServer, artifact);
    }
 
    @Override

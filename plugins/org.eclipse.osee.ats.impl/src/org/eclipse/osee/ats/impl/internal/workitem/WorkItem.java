@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.workitem;
 
-import java.rmi.activation.Activator;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -27,13 +25,12 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
-import org.eclipse.osee.ats.impl.internal.AtsServerService;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -47,10 +44,18 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    private IAtsLog atsLog;
    private IAtsWorkData workData;
    private IWorkDefinitionMatch match;
+   private final IAtsServer atsServer;
+   private final Log logger;
 
-   public WorkItem(ArtifactReadable artifact) {
+   public WorkItem(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
       super(artifact.getName(), artifact.getGuid());
+      this.logger = logger;
+      this.atsServer = atsServer;
       this.artifact = artifact;
+   }
+
+   protected IAtsServer getAtsServer() {
+      return atsServer;
    }
 
    @Override
@@ -58,7 +63,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
       try {
          return artifact.getSoleAttributeAsString(AtsAttributeTypes.Description, "");
       } catch (OseeCoreException ex) {
-         OseeLog.log(WorkItem.class, Level.SEVERE, ex);
+         logger.error(ex, "Error getting description for artifact[%s]", artifact);
          return "exception: " + ex.getLocalizedMessage();
       }
    }
@@ -66,7 +71,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public IAtsWorkData getWorkData() {
       if (workData == null) {
-         workData = new WorkData(this, artifact);
+         workData = new WorkData(atsServer.getUserService(), this, artifact);
       }
       return workData;
    }
@@ -111,7 +116,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
             teamArt = results.iterator().next();
          }
       }
-      return AtsServerService.get().getWorkItemFactory().getTeamWf(teamArt);
+      return atsServer.getWorkItemFactory().getTeamWf(teamArt);
    }
 
    private boolean isReview() {
@@ -122,9 +127,9 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    public IAtsStateManager getStateMgr() {
       if (stateMgr == null) {
          try {
-            stateMgr = AtsCore.getStateFactory().getStateManager(this, true);
+            stateMgr = getAtsServer().getStateFactory().getStateManager(this, true);
          } catch (OseeCoreException ex) {
-            OseeLog.log(WorkItem.class, Level.SEVERE, ex);
+            logger.error(ex, "Error getting stateManager for artifact[%s]", artifact);
          }
       }
       return stateMgr;
@@ -134,9 +139,9 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    public IAtsLog getLog() {
       if (atsLog == null) {
          try {
-            atsLog = AtsCore.getLogFactory().getLogLoaded(this, AtsServerService.get().getAttributeResolver());
+            atsLog = getAtsServer().getLogFactory().getLogLoaded(this, atsServer.getAttributeResolver());
          } catch (OseeCoreException ex) {
-            OseeLog.log(WorkItem.class, Level.SEVERE, ex);
+            logger.error(ex, "Error getting Log for artifact[%s]", artifact);
          }
       }
       return atsLog;
@@ -150,7 +155,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
             return null;
          }
          if (!match.isMatched()) {
-            OseeLog.log(Activator.class, Level.SEVERE, match.toString());
+            logger.error("Error getting work definition for artifact[%s] - using match [%s]", artifact, match);
             return null;
          }
       }
@@ -160,9 +165,9 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    public IWorkDefinitionMatch getWorkDefinitionMatch() {
       if (match == null) {
          try {
-            match = AtsServerService.get().getWorkDefAdmin().getWorkDefinition(this);
+            match = getAtsServer().getWorkDefAdmin().getWorkDefinition(this);
          } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            logger.error("Error getting work definition match for artifact[%s]", artifact);
          }
       }
       return match;

@@ -16,14 +16,18 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.impl.internal.AtsServerService;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
 
-   public TeamWorkflow(ArtifactReadable artifact) {
-      super(artifact);
+   public TeamWorkflow(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
+      super(logger, atsServer, artifact);
    }
 
    @Override
@@ -31,8 +35,8 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
       Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
       for (Object aiGuidObj : artifact.getAttributeValues(AtsAttributeTypes.ActionableItem)) {
          String aiGuid = (String) aiGuidObj;
-         ArtifactReadable aiArt = AtsServerService.get().getArtifactByGuid(aiGuid);
-         IAtsActionableItem ai = AtsServerService.get().getConfigItemFactory().getActionableItem(aiArt);
+         ArtifactReadable aiArt = getAtsServer().getArtifactByGuid(aiGuid);
+         IAtsActionableItem ai = getAtsServer().getConfigItemFactory().getActionableItem(aiArt);
          ais.add(ai);
       }
       return ais;
@@ -41,8 +45,8 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
    @Override
    public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
       String teamDefGuid = artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition);
-      ArtifactReadable teamDefArt = AtsServerService.get().getArtifactByGuid(teamDefGuid);
-      IAtsTeamDefinition teamDef = AtsServerService.get().getConfigItemFactory().getTeamDef(teamDefArt);
+      ArtifactReadable teamDefArt = getAtsServer().getArtifactByGuid(teamDefGuid);
+      IAtsTeamDefinition teamDef = getAtsServer().getConfigItemFactory().getTeamDef(teamDefArt);
       return teamDef;
    }
 

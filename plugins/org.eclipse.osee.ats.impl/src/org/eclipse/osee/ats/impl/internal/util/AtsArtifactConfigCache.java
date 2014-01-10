@@ -14,8 +14,8 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.internal.AtsServerImpl;
-import org.eclipse.osee.ats.impl.internal.AtsServerService;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -29,8 +29,10 @@ public class AtsArtifactConfigCache implements IAtsConfig {
 
    private final OrcsApi orcsApi;
    private final AtsConfigCache cache;
+   private final IAtsServer server;
 
-   public AtsArtifactConfigCache(OrcsApi orcsApi) {
+   public AtsArtifactConfigCache(IAtsServer server, OrcsApi orcsApi) {
+      this.server = server;
       this.orcsApi = orcsApi;
       cache = new AtsConfigCache();
    }
@@ -58,7 +60,7 @@ public class AtsArtifactConfigCache implements IAtsConfig {
          ArtifactReadable artifact =
             orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(guid).getResults().getOneOrNull();
          if (artifact != null) {
-            result = (A) AtsServerService.get().getConfigItemFactory().getConfigObject(artifact);
+            result = (A) server.getConfigItemFactory().getConfigObject(artifact);
             if (result != null) {
                cache.cache(result);
             }

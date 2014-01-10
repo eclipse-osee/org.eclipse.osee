@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.impl.action.ActionUtility;
 import org.eclipse.osee.ats.impl.action.ActionUtility.ActionLoadLevel;
 import org.eclipse.osee.ats.rest.internal.AtsServerService;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -44,11 +43,9 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 @Path("action")
 public final class ActionResource {
    private final OrcsApi orcsApi;
-   private final IResourceRegistry registry;
 
    public ActionResource(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
-      registry = orcsApi.getResourceRegistry();
    }
 
    @GET
@@ -66,7 +63,7 @@ public final class ActionResource {
    @Produces(MediaType.TEXT_HTML)
    public String getAction(@PathParam("id") String guid) throws Exception {
       ArtifactReadable action = AtsServerService.get().getArtifactByGuid(guid);
-      return ActionUtility.displayAction(registry, action, "Action - " + guid, ActionLoadLevel.HEADER);
+      return AtsServerService.get().getWorkItemPage().getHtml(action, "Action - " + guid, ActionLoadLevel.HEADER);
    }
 
    /**
@@ -78,7 +75,7 @@ public final class ActionResource {
    @Produces(MediaType.TEXT_HTML)
    public String getActionFull(@PathParam("id") String guid) throws Exception {
       ArtifactReadable action = AtsServerService.get().getArtifactByGuid(guid);
-      return ActionUtility.displayAction(registry, action, "Action - " + guid, ActionLoadLevel.HEADER_FULL);
+      return AtsServerService.get().getWorkItemPage().getHtml(action, "Action - " + guid, ActionLoadLevel.HEADER_FULL);
    }
 
    /**
@@ -126,7 +123,7 @@ public final class ActionResource {
          ArtifactReadable action = AtsServerService.get().getArtifactByGuid(actionId.getGuid());
 
          htmlStr =
-            ActionUtility.displayAction(registry, action, "Action Created - " + action.getGuid(),
+            AtsServerService.get().getWorkItemPage().getHtml(action, "Action Created - " + action.getGuid(),
                ActionLoadLevel.HEADER);
       }
 
@@ -142,7 +139,8 @@ public final class ActionResource {
       if (action != null) {
          IAtsWorkItem workItem = AtsServerService.get().getWorkItemFactory().getWorkItem(action);
          if (workItem != null) {
-            results = ActionUtility.displayAction(registry, action, "Action - " + searchId, ActionLoadLevel.HEADER);
+            results =
+               AtsServerService.get().getWorkItemPage().getHtml(action, "Action - " + searchId, ActionLoadLevel.HEADER);
          } else {
             results = AHTML.simplePage(String.format("Undisplayable %s", action));
          }
@@ -154,8 +152,8 @@ public final class ActionResource {
                   org.eclipse.osee.framework.core.enums.Operator.EQUAL, searchId).getResults();
             if (legacyQueryResults.size() == 1) {
                results =
-                  ActionUtility.displayAction(registry, legacyQueryResults.getExactlyOne(), "Action - " + searchId,
-                     ActionLoadLevel.HEADER);
+                  AtsServerService.get().getWorkItemPage().getHtml(legacyQueryResults.getExactlyOne(),
+                     "Action - " + searchId, ActionLoadLevel.HEADER);
                break;
             } else if (legacyQueryResults.size() > 1) {
                results = getGuidListHtml(legacyQueryResults);

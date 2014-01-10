@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.workitem;
 
-import java.rmi.activation.Activator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -25,15 +23,14 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
-import org.eclipse.osee.ats.core.AtsCore;
-import org.eclipse.osee.ats.impl.internal.AtsServerService;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -41,8 +38,8 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinition {
 
-   public TeamDefinition(ArtifactReadable artifact) {
-      super(artifact);
+   public TeamDefinition(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
+      super(logger, atsServer, artifact);
    }
 
    @Override
@@ -56,19 +53,19 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       try {
          for (Object aiGuidObj : artifact.getAttributeValues(AtsAttributeTypes.ActionableItem)) {
             String aiGuid = (String) aiGuidObj;
-            ArtifactReadable aiArt = AtsServerService.get().getArtifactByGuid(aiGuid);
-            IAtsActionableItem ai = AtsServerService.get().getConfigItemFactory().getActionableItem(aiArt);
+            ArtifactReadable aiArt = getAtsServer().getArtifactByGuid(aiGuid);
+            IAtsActionableItem ai = getAtsServer().getConfigItemFactory().getActionableItem(aiArt);
             ais.add(ai);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         getLogger().error(ex, "Error getActionableItems");
       }
       return ais;
    }
 
    @Override
    public void setParentTeamDef(IAtsTeamDefinition parentTeamDef) {
-      OseeLog.log(TeamDefinition.class, Level.SEVERE, "TeamDefinition.setParentTeamDef not implemented");
+      getLogger().error("TeamDefinition.setParentTeamDef not implemented");
    }
 
    @Override
@@ -77,10 +74,10 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       try {
          ResultSet<ArtifactReadable> related = artifact.getRelated(CoreRelationTypes.Default_Hierarchical__Parent);
          if (!related.isEmpty()) {
-            parent = AtsServerService.get().getConfigItemFactory().getTeamDef(related.iterator().next());
+            parent = getAtsServer().getConfigItemFactory().getTeamDef(related.iterator().next());
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         getLogger().error(ex, "Error getParentTeamDef");
       }
       return parent;
    }
@@ -90,11 +87,11 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       Set<IAtsTeamDefinition> children = new HashSet<IAtsTeamDefinition>();
       try {
          for (ArtifactReadable childArt : artifact.getRelated(CoreRelationTypes.Default_Hierarchical__Child)) {
-            IAtsTeamDefinition childTeamDef = AtsServerService.get().getConfigItemFactory().getTeamDef(childArt);
+            IAtsTeamDefinition childTeamDef = getAtsServer().getConfigItemFactory().getTeamDef(childArt);
             children.add(childTeamDef);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         getLogger().error(ex, "Error getChildrenTeamDefinitions");
       }
       return children;
    }
@@ -124,7 +121,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public void setAllowCommitBranch(boolean allowCommitBranch) {
-      OseeLog.log(TeamDefinition.class, Level.SEVERE, "TeamDefinition.setAllowCommitBranch not implemented");
+      getLogger().error("TeamDefinition.setAllowCommitBranch not implemented");
    }
 
    @Override
@@ -133,7 +130,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       try {
          set = artifact.getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, false);
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         getLogger().error(ex, "Error is allow commit branch");
       }
       return set;
    }
@@ -151,7 +148,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public void setAllowCreateBranch(boolean allowCreateBranch) {
-      OseeLog.log(TeamDefinition.class, Level.SEVERE, "TeamDefinition.setAllowCreateBranch not implemented");
+      getLogger().error("TeamDefinition.setAllowCreateBranch not implemented");
    }
 
    @Override
@@ -160,7 +157,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       try {
          set = artifact.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false);
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         getLogger().error(ex, "Error get allow create branch");
       }
       return set;
    }
@@ -178,7 +175,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public void setBaselineBranchGuid(String parentBranchGuid) {
-      OseeLog.log(TeamDefinition.class, Level.SEVERE, "TeamDefinition.setBaselineBranchGuid not implemented");
+      getLogger().error("TeamDefinition.setBaselineBranchGuid not implemented");
    }
 
    @Override
@@ -253,11 +250,11 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       Set<IAtsVersion> results = new HashSet<IAtsVersion>();
       try {
          for (ArtifactReadable verArt : artifact.getRelated(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-            IAtsVersion version = (IAtsVersion) AtsCore.getAtsConfig().getSoleByGuid(verArt.getGuid());
+            IAtsVersion version = (IAtsVersion) getAtsServer().getAtsConfig().getSoleByGuid(verArt.getGuid());
             results.add(version);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         getLogger().error(ex, "Error getting versions");
       }
       return results;
    }
@@ -305,7 +302,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public void setWorkflowDefinition(String workflowDefinitionName) {
-      OseeLog.log(TeamDefinition.class, Level.SEVERE, "TeamDefinition.setWorkflowDefinition not implemented");
+      getLogger().error("TeamDefinition.setWorkflowDefinition not implemented");
    }
 
    @Override
@@ -320,12 +317,12 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public void setRelatedTaskWorkDefinition(String name) {
-      OseeLog.log(TeamDefinition.class, Level.SEVERE, "TeamDefinition.setRelatedTaskWorkDefinition not implemented");
+      getLogger().error("TeamDefinition.setRelatedTaskWorkDefinition not implemented");
    }
 
    @Override
    public void initialize(String fullname, String description, Collection<IAtsUser> leads, Collection<IAtsUser> members, Collection<IAtsActionableItem> actionableItems, TeamDefinitionOptions... teamDefinitionOptions) {
-      OseeLog.log(TeamDefinition.class, Level.SEVERE, "TeamDefinition.setActionable not implemented");
+      getLogger().error("TeamDefinition.setActionable not implemented");
    }
 
    @Override
@@ -335,12 +332,12 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public void setRelatedPeerWorkDefinition(String relatedPeerWorkDefinition) {
-      OseeLog.log(TeamDefinition.class, Level.SEVERE, "TeamDefinition.setRelatedPeerWorkDefinition not implemented");
+      getLogger().error("TeamDefinition.setRelatedPeerWorkDefinition not implemented");
    }
 
    @Override
    public void addRule(String rule) {
-      OseeLog.log(TeamDefinition.class, Level.SEVERE, "TeamDefinition.addRule not implemented");
+      getLogger().error("TeamDefinition.addRule not implemented");
    }
 
    @Override
@@ -349,7 +346,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       try {
          rules = artifact.getAttributeValues(AtsAttributeTypes.RuleDefinition);
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         getLogger().error(ex, "Error getting rules");
       }
       return rules;
    }
@@ -368,7 +365,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public void removeRule(String rule) {
-      OseeLog.log(TeamDefinition.class, Level.SEVERE, "TeamDefinition.setActionable not implemented");
+      getLogger().error("TeamDefinition.setActionable not implemented");
    }
 
 }
