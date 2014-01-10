@@ -36,11 +36,11 @@ public class OTEServerRuntimeCacheImpl implements OTEServerRuntimeCache  {
       folder = oteServerFolder.getCacheFolder();
       if (!folder.exists()) {
          if (!folder.mkdirs()) {
-            throw new RuntimeException("Could not create JAR cache at " + folder.getAbsolutePath());
+            OseeLog.log(getClass(), Level.SEVERE, "Could not create JAR cache at " + folder.getAbsolutePath());
          }
       }
       if (!folder.isDirectory()) {
-         throw new IllegalStateException("the JAR cache is not a directory! Path=" + folder.getAbsolutePath());
+         OseeLog.log(getClass(), Level.SEVERE, "The JAR cache is not a directory! Path=" + folder.getAbsolutePath());
       }
       clean();
    }
@@ -137,36 +137,40 @@ public class OTEServerRuntimeCacheImpl implements OTEServerRuntimeCache  {
    }
    
    private void clean(){
-      File[] bundleFolders = folder.listFiles();
-      for(File bundleFolder: bundleFolders){
-         if(bundleFolder.isDirectory()){
-            File[] jars = bundleFolder.listFiles(new FileFilter() {
-               @Override
-               public boolean accept(File file) {
-                  return file.getAbsolutePath().endsWith(".jar");
-               }
-            });
-            if(jars.length == 0){
-               if(bundleFolder.listFiles().length == 0){
-                  bundleFolder.delete();
-               }
-            } else {
-               for(File jar:jars){
-                  File dateFile = new File(jar.getAbsolutePath() + ".date");
-                  if(dateFile.exists()){
-                     if(isDateFileOld(dateFile)){//delete files that haven't been recently used
-                        if(jar.exists()){
+      if(folder.exists()){
+         File[] bundleFolders = folder.listFiles();
+         if(bundleFolders != null){
+            for(File bundleFolder: bundleFolders){
+               if(bundleFolder.isDirectory()){
+                  File[] jars = bundleFolder.listFiles(new FileFilter() {
+                     @Override
+                     public boolean accept(File file) {
+                        return file.getAbsolutePath().endsWith(".jar");
+                     }
+                  });
+                  if(jars.length == 0){
+                     if(bundleFolder.listFiles().length == 0){
+                        bundleFolder.delete();
+                     }
+                  } else {
+                     for(File jar:jars){
+                        File dateFile = new File(jar.getAbsolutePath() + ".date");
+                        if(dateFile.exists()){
+                           if(isDateFileOld(dateFile)){//delete files that haven't been recently used
+                              if(jar.exists()){
+                                 jar.delete();
+                              }
+                              dateFile.delete();
+                           }  
+                        } else { //delete a jar without a ".date" file
                            jar.delete();
                         }
-                        dateFile.delete();
-                     }  
-                  } else { //delete a jar without a ".date" file
-                     jar.delete();
+                     }
                   }
+               } else { //delete legacy style cache items
+                  bundleFolder.delete();
                }
             }
-         } else { //delete legacy style cache items
-            bundleFolder.delete();
          }
       }
    }

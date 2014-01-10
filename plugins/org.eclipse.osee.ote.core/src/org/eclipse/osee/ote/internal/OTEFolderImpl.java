@@ -40,17 +40,21 @@ public class OTEFolderImpl implements OTEServerFolder{
     */
    @Override
    public void cleanOldBatchFolders(){
-      File[] files = BATCHES.listFiles();
-      for(File file:files){
-         if(file.isDirectory()){
-            File delete = new File(file, DELETE_MARKER);
-            boolean deleteFolder = delete.exists();
-            if(deleteFolder){
-               File[] toDelete = file.listFiles();
-               for(File f:toDelete){
-                  f.delete();
+      if(BATCHES.exists()){
+         File[] files = BATCHES.listFiles();
+         if(files != null){
+            for(File file:files){
+               if(file.isDirectory()){
+                  File delete = new File(file, DELETE_MARKER);
+                  boolean deleteFolder = delete.exists();
+                  if(deleteFolder){
+                     File[] toDelete = file.listFiles();
+                     for(File f:toDelete){
+                        f.delete();
+                     }
+                     file.delete();
+                  }
                }
-               file.delete();
             }
          }
       }
