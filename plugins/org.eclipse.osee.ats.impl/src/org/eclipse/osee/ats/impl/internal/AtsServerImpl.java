@@ -37,14 +37,11 @@ import org.eclipse.osee.ats.impl.internal.util.TeamWorkflowProvider;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.impl.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItemFactory;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Donald G Dunne
@@ -150,14 +147,7 @@ public class AtsServerImpl implements IAtsServer {
    @Override
    public ArtifactReadable getArtifact(IAtsObject atsObject) throws OseeCoreException {
       checkStarted();
-      ArtifactReadable result = null;
-      if (atsObject.getStoreObject() != null) {
-         result = (ArtifactReadable) atsObject.getStoreObject();
-      } else {
-         result =
-            orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(atsObject.getGuid()).getResults().getExactlyOne();
-      }
-      return result;
+      return AtsUtilServer.getArtifact(orcsApi, atsObject);
    }
 
    @Override
@@ -185,13 +175,7 @@ public class AtsServerImpl implements IAtsServer {
    @Override
    public ArtifactReadable getArtifactByGuid(String guid) throws OseeCoreException {
       checkStarted();
-      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(guid).getResults().getExactlyOne();
-   }
-
-   @SuppressWarnings("unchecked")
-   public ArtifactReadable getCurrentUser() throws OseeCoreException {
-      QueryFactory query = orcsApi.getQueryFactory(null);
-      return query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      return AtsUtilServer.getArtifactByGuid(orcsApi, guid);
    }
 
    @Override

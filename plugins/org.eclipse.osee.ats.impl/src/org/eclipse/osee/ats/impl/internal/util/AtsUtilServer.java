@@ -10,9 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.util;
 
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.ApplicationContext;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
@@ -26,6 +30,21 @@ public class AtsUtilServer {
 
    public static IOseeBranch getAtsBranch() {
       return CoreBranches.COMMON;
+   }
+
+   public static ArtifactReadable getArtifact(OrcsApi orcsApi, IAtsObject atsObject) throws OseeCoreException {
+      ArtifactReadable result = null;
+      if (atsObject.getStoreObject() != null) {
+         result = (ArtifactReadable) atsObject.getStoreObject();
+      } else {
+         result =
+            orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(atsObject.getGuid()).getResults().getExactlyOne();
+      }
+      return result;
+   }
+
+   public static ArtifactReadable getArtifactByGuid(OrcsApi orcsApi, String guid) throws OseeCoreException {
+      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(guid).getResults().getExactlyOne();
    }
 
 }
