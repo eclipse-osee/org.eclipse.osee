@@ -23,6 +23,8 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 public final class BaseToHeadHandler implements IChangeReportUiHandler {
 
+   private static final int BRANCH_NAME_LEN = 60;
+
    @Override
    public String getActionName() {
       return "Open report showing all changes made the branch";
@@ -37,7 +39,7 @@ public final class BaseToHeadHandler implements IChangeReportUiHandler {
    public String getName(TransactionDelta txDelta) {
       String branchName;
       try {
-         branchName = txDelta.getEndTx().getBranch().getShortName();
+         branchName = txDelta.getEndTx().getBranch().getShortName(BRANCH_NAME_LEN);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
          branchName = "Unknown";

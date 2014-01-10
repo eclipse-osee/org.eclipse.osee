@@ -22,6 +22,8 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 public final class CurrentsAgainstParentHandler implements IChangeReportUiHandler {
 
+   private static final int BRANCH_NAME_LEN = 60;
+
    @Override
    public String getActionName() {
       return "Open changes between the branch and the lastest changes from its parent branch";
@@ -36,7 +38,7 @@ public final class CurrentsAgainstParentHandler implements IChangeReportUiHandle
    public String getName(TransactionDelta txDelta) {
       String branchName;
       try {
-         branchName = txDelta.getStartTx().getBranch().getShortName();
+         branchName = txDelta.getStartTx().getBranch().getShortName(BRANCH_NAME_LEN);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
          branchName = "Unknown";

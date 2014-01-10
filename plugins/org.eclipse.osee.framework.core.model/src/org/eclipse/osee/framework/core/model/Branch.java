@@ -88,6 +88,10 @@ public class Branch extends AbstractOseeType<String> implements WriteableBranch,
       return getShortName(this);
    }
 
+   public String getShortName(int length) {
+      return Strings.truncate(getName(), length);
+   }
+
    public static String getShortName(IOseeBranch branch) {
       return Strings.truncate(branch.getName(), SHORT_NAME_LIMIT);
    }
