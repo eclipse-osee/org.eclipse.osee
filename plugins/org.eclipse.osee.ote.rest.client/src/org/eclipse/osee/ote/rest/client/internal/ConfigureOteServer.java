@@ -7,10 +7,9 @@ import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
+import org.eclipse.osee.ote.core.BundleInfo;
 import org.eclipse.osee.ote.rest.client.Progress;
-import org.eclipse.osee.ote.rest.client.internal.jarserver.BundleInfo;
 import org.eclipse.osee.ote.rest.client.internal.jarserver.HeadlessClassServer;
 import org.eclipse.osee.ote.rest.model.OTEConfiguration;
 import org.eclipse.osee.ote.rest.model.OTEConfigurationIdentity;

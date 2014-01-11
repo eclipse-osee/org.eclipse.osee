@@ -30,7 +30,7 @@ public class BundleDescription implements Serializable {
    private final URL location;
    private final boolean systemLibrary;
    private final byte[] manifestData;
-   private final byte[] md5Digest;
+   private final String md5Digest;
    private transient Manifest manifest;
 
    /**
@@ -44,7 +44,7 @@ public class BundleDescription implements Serializable {
       this.md5Digest = null;
    }
 
-   public BundleDescription(URL systemLocation, URL serverLocation, Manifest manifest, boolean systemLibrary, byte[] md5Digest) {
+   public BundleDescription(URL systemLocation, URL serverLocation, Manifest manifest, boolean systemLibrary, String md5Digest) {
       if (systemLocation == null) {
          throw new IllegalArgumentException("systemLocation must not be null");
       }
@@ -119,7 +119,7 @@ public class BundleDescription implements Serializable {
    /**
     * @return the md5Digest
     */
-   public byte[] getMd5Digest() {
+   public String getMd5Digest() {
       return md5Digest;
    }
 

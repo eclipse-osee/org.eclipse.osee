@@ -32,7 +32,7 @@ public class BundleInfo {
    private final File file;
    private final Manifest manifest;
    private final boolean systemLibrary;
-   private byte[] md5Digest;
+   private String md5Digest;
 
    public BundleInfo(URL systemLocation, String bundleServerBaseLocation, boolean systemLibrary) throws IOException {
       File tmpFile;
@@ -148,21 +148,23 @@ public class BundleInfo {
    /**
     * @return the md5Digest
     */
-   public byte[] getMd5Digest() {
+   public String getMd5Digest() {
       // Do lazy calculation of this since it can be costly
       // and does not get read for all bundle info's
       if (md5Digest == null) {
          try {
             InputStream in = systemLocation.openStream();
 
-            md5Digest = ChecksumUtil.createChecksum(in, "MD5");
+            md5Digest = ChecksumUtil.createChecksumAsString(in, "MD5");
 
             in.close();
          } catch (NoSuchAlgorithmException ex) {
             throw new IllegalStateException("Always expect MD5 to be available", ex);
          } catch (IOException ex) {
             throw new IllegalStateException("Always expect local jar file to be available", ex);
-         }
+         } catch (Exception e) {
+			e.printStackTrace();
+		}
       }
       return md5Digest;
    }

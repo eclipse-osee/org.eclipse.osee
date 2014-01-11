@@ -20,6 +20,7 @@ public enum RunTestsKeys {
    executablePathsArray,
    executableArg1Array,
    executableArg2Array,
-   spare1;
+   spare1,
+   batchmode;
    
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.server.ResourceFinder;
+import org.eclipse.osee.ote.core.BundleInfo;
 
 public class BundleResourceFinder extends ResourceFinder {
 

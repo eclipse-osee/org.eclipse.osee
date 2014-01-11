@@ -447,11 +447,8 @@ public abstract class TestScript implements ITimeout {
       return testPointTally.getTestPointTotal();
    }
 
-   public void addScriptSummary(Xmlizable xml) {
-      sciprtResultRecord.addChildElement(xml);
-      if (xml instanceof XmlizableStream) {
-         sciprtResultRecord.addChildElement((XmlizableStream) xml);
-      }
+   public void addScriptSummary(XmlizableStream xml) {
+	   sciprtResultRecord.addChildElement((XmlizableStream) xml);
    }
 
    /**

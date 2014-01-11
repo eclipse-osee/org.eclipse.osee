@@ -19,5 +19,4 @@ import org.eclipse.osee.ote.core.framework.command.ITestContext;
 public interface IMessageTestContext extends ITestContext {
    void resetScriptLoader(Configuration configuration, String[] strings) throws Exception;
 
-   void resetScriptLoader(String[] array) throws Exception;
 }

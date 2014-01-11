@@ -15,8 +15,6 @@ import java.rmi.RemoteException;
 
 import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.ote.core.cmd.Command;
-import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
-import org.eclipse.osee.ote.core.framework.command.ITestServerCommand;
 import org.eclipse.osee.ote.core.model.IModelManagerRemote;
 
 /**
