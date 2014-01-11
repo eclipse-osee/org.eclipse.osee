@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.rest.client.internal;
+package org.eclipse.osee.rest.client;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -22,6 +22,6 @@ import com.google.inject.BindingAnnotation;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @BindingAnnotation
-public @interface OseeServerAddress {
+public @interface OseeHttpProxyAddress {
    //
 }

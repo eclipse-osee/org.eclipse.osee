@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.services;
 
 import java.net.URI;
-import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -21,7 +20,5 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public interface URIProvider {
 
    URI getApplicationServerURI() throws OseeCoreException;
-
-   URI getEncodedURI(String context, Map<String, String> params) throws OseeCoreException;
 
 }

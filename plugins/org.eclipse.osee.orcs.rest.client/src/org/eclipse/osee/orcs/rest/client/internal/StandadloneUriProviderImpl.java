@@ -8,15 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.rest.client.internal;
+package org.eclipse.osee.orcs.rest.client.internal;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Map;
-import java.util.Map.Entry;
-import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.framework.core.services.URIProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.rest.client.OseeServerAddress;
 import com.google.inject.Inject;
 
 /**
@@ -31,32 +29,15 @@ public class StandadloneUriProviderImpl implements URIProvider {
       this.serverAddress = serverAddress;
    }
 
-   public String getServerAddress() {
-      String value = serverAddress;
-      if (!value.endsWith("/")) {
-         value += '/';
-      }
-      return value;
-   }
-
    @Override
    public URI getApplicationServerURI() {
       URI toReturn = null;
       try {
-         toReturn = new URI(getServerAddress());
+         toReturn = new URI(serverAddress);
       } catch (URISyntaxException ex) {
          throw new OseeCoreException(ex);
       }
       return toReturn;
-   }
-
-   @Override
-   public URI getEncodedURI(String context, Map<String, String> params) {
-      UriBuilder builder = UriBuilder.fromPath(getServerAddress()).path(context);
-      for (Entry<String, String> entry : params.entrySet()) {
-         builder.queryParam(entry.getKey(), entry.getValue());
-      }
-      return builder.build();
    }
 
 };

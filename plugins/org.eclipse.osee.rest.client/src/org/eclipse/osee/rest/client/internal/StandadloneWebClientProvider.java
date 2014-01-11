@@ -13,6 +13,7 @@ package org.eclipse.osee.rest.client.internal;
 import java.net.URI;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.rest.client.OseeHttpProxyAddress;
 import org.eclipse.osee.rest.client.WebClientProvider;
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.AsyncWebResource;

@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.rest.client.internal;
 
-import org.eclipse.osee.framework.core.services.URIProvider;
 import org.eclipse.osee.rest.client.OseeClientConfig;
+import org.eclipse.osee.rest.client.OseeHttpProxyAddress;
+import org.eclipse.osee.rest.client.OseeServerAddress;
 import org.eclipse.osee.rest.client.WebClientProvider;
 import com.google.inject.AbstractModule;
 
@@ -32,6 +33,5 @@ public class StandaloneModule extends AbstractModule {
       bindConstant().annotatedWith(OseeHttpProxyAddress.class).to(config.getProxyAddress());
 
       bind(WebClientProvider.class).to(StandadloneWebClientProvider.class);
-      bind(URIProvider.class).to(StandadloneUriProviderImpl.class);
    }
 }

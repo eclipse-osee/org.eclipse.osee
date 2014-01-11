@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.client.internal;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Map;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.services.URIProvider;
@@ -30,17 +29,6 @@ public class URIProviderImpl implements URIProvider {
       try {
          toReturn = new URI(HttpUrlBuilderClient.getInstance().getApplicationServerPrefix());
       } catch (URISyntaxException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      }
-      return toReturn;
-   }
-
-   @Override
-   public URI getEncodedURI(String context, Map<String, String> params) throws OseeCoreException {
-      URI toReturn = null;
-      try {
-         toReturn = new URI(HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(context, params));
-      } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
       return toReturn;
