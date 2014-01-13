@@ -181,7 +181,7 @@ osee.log.default=INFO
 		<attribute name="executable" default="true" />
 		<attribute name="extraVMArgs" default=" " />
 		<sequential>
-			<echo file="@{filepath}" append="false">java \
+			<echo file="@{filepath}" append="false">java -server \
 -Xmx@{serverMaxMem} \
 -Dorg.osgi.service.http.port=@{serverport} \
 -Dosee.db.connection.id=@{connection.id} \
