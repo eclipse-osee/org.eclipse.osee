@@ -66,7 +66,7 @@ public enum AtsGroup {
    }
 
    public boolean isMember(Identifiable<String> user) {
-      for (Artifact art : group.getGroupArtifact().getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
+      for (Artifact art : group.getGroupArtifact().getRelatedArtifacts(CoreRelationTypes.Users_User)) {
          if (art.getGuid().equals(user.getGuid())) {
             return true;
          }
