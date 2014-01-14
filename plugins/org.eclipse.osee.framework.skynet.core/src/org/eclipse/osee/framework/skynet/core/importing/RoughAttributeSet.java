@@ -90,6 +90,9 @@ public final class RoughAttributeSet implements Iterable<Entry<CaseInsensitiveSt
 
    public Collection<String> getAttributeValueList(String attributeTypeName) {
       Collection<RoughAttribute> roughAttributes = attributes.get(new CaseInsensitiveString(attributeTypeName));
+      if (roughAttributes == null) {
+         return null;
+      }
       Collection<String> values = new ArrayList<String>();
       for (RoughAttribute attribute : roughAttributes) {
          if (!attribute.hasURI()) {

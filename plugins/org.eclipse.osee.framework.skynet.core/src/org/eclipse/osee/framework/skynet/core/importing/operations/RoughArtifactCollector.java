@@ -72,6 +72,10 @@ public class RoughArtifactCollector {
       return roughRelations;
    }
 
+   public boolean removeArtifact(RoughArtifact roughArtifact) {
+      return roughArtifacts.remove(roughArtifact);
+   }
+
    @Override
    public String toString() {
       return roughArtifacts.toString();

@@ -15,6 +15,7 @@ import java.io.FileFilter;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -86,15 +87,29 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       CoreAttributeTypes.VerificationLevel,
       CoreAttributeTypes.VerificationEvent,
       CoreAttributeTypes.VerificationEvent,
-      null,
+      CoreAttributeTypes.VerificationEvent,
       null,
       null,
       null}; // Last two is actually a string
    private String guidString = "";
    private boolean isRequirement;
+   private boolean publishInLine;
+   private boolean inHeaderRow;
    private String subsystem;
    private String documentApplicability = "";
    private DataTypeEnum lastDataType = DataTypeEnum.OTHER;
+   private final static String REQUIREMENT_SUBSTRING = "Req";
+   private RoughArtifact headerArtifact;
+   private RoughArtifact firstRequirement;
+   private int numberRequirements;
+
+   private static final String[] ATTRIBUTES_TO_MERGE = {
+      CoreAttributeTypes.LegacyId.getName(),
+      CoreAttributeTypes.HTMLContent.getName(),
+      CoreAttributeTypes.QualificationMethod.getName(),
+      CoreAttributeTypes.VerificationEvent.getName(),
+      CoreAttributeTypes.VerificationLevel.getName(),
+      VERIFICATION_ACCEPTANCE_CRITERIA};
 
    private static enum RowTypeEnum {
       ID("ID"),
@@ -168,6 +183,12 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             }
          }
          DataTypeEnum returnVal = rawStringToDataType.get(value);
+         if (returnVal == null) {
+            // special case the Requirement case can have several values depending on program
+            if (value.contains(REQUIREMENT_SUBSTRING)) {
+               returnVal = REQUIREMENT;
+            }
+         }
          return returnVal != null ? returnVal : OTHER;
       }
    }
@@ -348,6 +369,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       public void endDocument() throws SAXException {
          try {
             processArtifact();
+            if (numberRequirements <= 1) {
+               mergeFirstRequirement();
+            }
          } catch (OseeCoreException ex) {
             throw new SAXException(ex);
          }
@@ -371,7 +395,12 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       paragraphNumber = "";
       paragraphName = "";
       isRequirement = false;
+      publishInLine = false;
+      inHeaderRow = false;
       subsystem = "";
+      headerArtifact = null;
+      firstRequirement = null;
+      numberRequirements = 0;
 
       this.collector = collector;
       String fileName = source.getAuthority();
@@ -447,28 +476,73 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
    public void processRow(String[] row) throws OseeCoreException {
       /***************************************************************
-       * First check the document applicability box, if it is empty this is a header row
+       * A note on what is happening here Different input types are supported. The major difference is single or
+       * multiple requirement format. In a single requirement format, all headings have only one requirement. In a
+       * multiple requirement format, a heading has more than one requirement. The OSEE presentation of these two cases
+       * is different. In the single case, only one artifact is created for each heading. In the multiple case, an
+       * artifact is created for the heading and artifacts are created for each REQUIREMENT. If there is a non
+       * requirement following the heading (e.g. Information), this will be merged with the heading artifact.
        */
-      boolean isHeaderRow = false, foundDataType = false, isList;
-      int rowIndex;
+      /**************************************************************
+       * At the start of this method, the previous information is stored and we are getting ready to process the current
+       * row. Before we start processing this row, it must be determined if this is a new heading or a new requirement.
+       * If this is either of those, create an artifact of the previous data. When a new heading is found, check the
+       * number of requirements in the previous heading. If there is 1 or 0 requirements (0 happens if there is only
+       * information types) merge the first requirement with the header artifact.
+       */
+      boolean isHeaderRow = false, foundDataType = false, isList, isNewRequirement = false;
+      int rowIndex, documentIndex = -1, isRequirementIndex = -1, dataTypeIndex = -1;
       for (rowIndex = 0; rowIndex < row.length; rowIndex++) {
          RowTypeEnum rowType = rowIndexToRowTypeMap.get(rowIndex);
          if (rowType == RowTypeEnum.DOCUMENT_APPLICABILITY) {
-            String rowValue = row[rowIndex].toLowerCase().trim();
-            if (rowValue.equals("") || rowValue.equals("<br></br>") || rowValue.equals("<br>") || rowValue.equals("<br />")) {
-               if (inArtifact) {
-                  processArtifact();
+            documentIndex = rowIndex;
+         } else if (rowType == RowTypeEnum.IS_REQ) {
+            isRequirementIndex = rowIndex;
+         } else if (rowType == RowTypeEnum.DATA_TYPE) {
+            dataTypeIndex = rowIndex;
+         }
+      }
+      if (isRequirementIndex > -1) {
+         String rowValue = row[isRequirementIndex].toLowerCase().trim();
+         isNewRequirement = (rowValue.equals("true"));
+      } else if (dataTypeIndex > -1) {
+         String rowValue = row[dataTypeIndex];
+         isNewRequirement = rowValue.contains(REQUIREMENT_SUBSTRING);
+      }
+      inHeaderRow = (inHeaderRow && !isNewRequirement);
+      if (documentIndex > -1) {
+         String rowValue = row[documentIndex].toLowerCase().trim();
+         boolean emptyValue =
+            (rowValue.equals("") || rowValue.equals("<br></br>") || rowValue.equals("<br>") || rowValue.equals("<br />"));
+         if (inHeaderRow || emptyValue || isNewRequirement) {
+            if (inArtifact || inHeaderRow) {
+               processArtifact();
+               publishInLine = !emptyValue;
+               if (isNewRequirement) {
+                  numberRequirements++;
                }
-               inArtifact = false;
-               isHeaderRow = true;
-            } else {
-               if (Strings.isValid(documentApplicability)) {
-                  if (rowValue.indexOf(documentApplicability.toLowerCase()) == -1) {
-                     return;
+               if (inHeaderRow) {
+                  mergeFirstRequirement();
+               }
+               if (emptyValue) {
+                  if (numberRequirements <= 1) {
+                     mergeFirstRequirement();
                   }
+                  numberRequirements = 0;
+                  headerArtifact = null;
                }
             }
-            break;
+            inArtifact = false;
+            isHeaderRow = emptyValue;
+            inHeaderRow = isHeaderRow || (inHeaderRow && !isNewRequirement);
+            isRequirement = false;
+         } else {
+            if (Strings.isValid(documentApplicability)) {
+               if (rowValue.indexOf(documentApplicability.toLowerCase()) == -1) {
+                  return;
+               }
+            }
+            inHeaderRow = (inHeaderRow && !isNewRequirement);
          }
       }
       if (!rowIndexToRowTypeMap.isEmpty()) {
@@ -563,10 +637,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                         break;
 
                      case NOT_DEFINED:
-                        // bad row -- clear the artifact and terminate processing
-                        inArtifact = false;
-                        theArtifact.clear();
-                        return;
+                        isRequirement = lastDataType.equals(DataTypeEnum.REQUIREMENT);
+                        break;
 
                      case LIST:
                         isRequirement = lastDataType.equals(DataTypeEnum.REQUIREMENT);
@@ -581,13 +653,23 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
                   break;
 
+               case OBJECT_NUMBER:
+                  if (!Strings.isValid(paragraphNumber)) {
+                     paragraphNumber = rowValue;
+                  }
+                  break;
+
+               case PARAGRAPH_HEADING:
+                  if (!inHeaderRow) {
+                     paragraphName = rowValue.trim();
+                  }
+                  break;
+
                case CHANGE_STATUS:
                case OBJECT_HEADING:
                case OBJECT_TEXT:
                case CHANGE_RATIONALE:
                case LINKS:
-               case OBJECT_NUMBER:
-               case PARAGRAPH_HEADING:
                case OTHER:
                   break;
 
@@ -1021,17 +1103,27 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          return;
       }
       RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY, paragraphName.trim());
+      if (headerArtifact == null) {
+         headerArtifact = roughArtifact;
+         firstRequirement = null;
+      } else if (firstRequirement == null) {
+         firstRequirement = roughArtifact;
+      }
       roughArtifact.setSectionNumber(paragraphNumber.trim());
       roughArtifact.addAttribute(CoreAttributeTypes.ParagraphNumber, paragraphNumber);
       if (!isRequirement) {
          roughArtifact.setPrimaryArtifactType(CoreArtifactTypes.HeadingHTML);
          roughArtifact.setRoughArtifactKind(RoughArtifactKind.SECONDARY);
       }
+      if (publishInLine) {
+         roughArtifact.addAttribute(CoreAttributeTypes.PublishInline, "True");
+      }
       if (!Strings.isValid(guidString)) {
          guidString = GUID.create();
       }
       roughArtifact.setGuid(guidString);
       guidString = "";
+      paragraphNumber = "";
       for (int rowIndex = 0; rowIndex < theArtifact.size(); rowIndex++) {
          RowTypeEnum rowType = rowIndexToRowTypeMap.get(rowIndex);
 
@@ -1062,7 +1154,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                      }
                      try {
                         URI imageURI = new URI(theImage);
-                        roughArtifact.addAttribute("Image Content", imageURI);
+                        roughArtifact.addAttribute(CoreAttributeTypes.ImageContent.getName(), imageURI);
                         rowValue = rowValue.replace(replaceName, IMAGE_BASE_NAME + Integer.toString(imageNumber));
                         imageNumber++;
                      } catch (URISyntaxException e) {
@@ -1170,7 +1262,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                   for (int j = 0; (j < VERIFICATION_KEYWORDS.length); j++) {
                      int theIndex = rest.indexOf(VERIFICATION_KEYWORDS[j]);
                      if (theIndex != -1 && (theIndex == (colon - VERIFICATION_KEYWORDS[j].length() + 1))) {
-                        int index = rest.indexOf(VERIFICATION_KEYWORDS[j]) - 1;
+                        int index = rest.indexOf(VERIFICATION_KEYWORDS[j]);
                         if (index >= 0) {
                            if (VERIFICATION_KEYWORDS[i].equals(CRITERIA) || VERIFICATION_KEYWORDS[i].equals(VERIFICATION_ACCEPTANCE_CRITERIA)) {
                               // special case Criteria is a string attribute
@@ -1401,4 +1493,57 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       return adjust;
    }
 
+   /**************************************************************************
+    * This is called if there is only one requirement under a header. Merge the requirement with the header in only one
+    * artifact.
+    */
+   private void mergeFirstRequirement() {
+
+      if ((headerArtifact == null) || (firstRequirement == null)) {
+         return;
+      }
+      // If merging a requirement to a header change to primary type
+
+      if (firstRequirement.getRoughArtifactKind().equals(RoughArtifactKind.PRIMARY)) {
+         headerArtifact.setPrimaryArtifactType(CoreArtifactTypes.HTMLArtifact);
+         headerArtifact.setRoughArtifactKind(RoughArtifactKind.PRIMARY);
+      }
+
+      Collection<URI> requirementUri = firstRequirement.getURIAttributes();
+      if (requirementUri.size() > 0) {
+         for (URI uri : requirementUri) {
+            headerArtifact.addAttribute(CoreAttributeTypes.ImageContent.getName(), uri);
+         }
+      }
+      for (String type : ATTRIBUTES_TO_MERGE) {
+         // get values from header and requirement
+         String headerValue = null;
+         String requirementValue = null;
+         requirementValue = firstRequirement.getRoughAttribute(type);
+         if (requirementValue == null) {
+            // type not in requirement -- do nothing for this type
+            continue;
+         }
+         headerValue = headerArtifact.getRoughAttribute(type);
+         if (headerValue == null) {
+            // type is not in header or is binary
+            headerValue = "";
+         }
+
+         if (Strings.isValid(headerValue)) {
+            if (type.equals(CoreAttributeTypes.HTMLContent.getName())) {
+               headerValue += "<br>" + requirementValue;
+            } else {
+               if (!headerValue.contains(requirementValue)) {
+                  headerValue += "," + requirementValue;
+               }
+            }
+         } else {
+            headerValue = requirementValue;
+         }
+         headerArtifact.setAttribute(type, headerValue);
+      }
+      collector.removeArtifact(firstRequirement);
+      firstRequirement = null;
+   }
 }
