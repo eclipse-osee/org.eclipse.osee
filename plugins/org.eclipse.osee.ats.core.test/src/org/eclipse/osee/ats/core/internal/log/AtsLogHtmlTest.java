@@ -11,8 +11,9 @@
 package org.eclipse.osee.ats.core.internal.log;
 
 import static org.mockito.Mockito.when;
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
@@ -22,9 +23,9 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.ILogStorageProvider;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -65,24 +66,23 @@ public class AtsLogHtmlTest {
    }
 
    @Test
-   @Ignore("Error checking dates with systems in different timezones")
    public void testSave() {
-
       // without title and with user name resolution
       when(atsUserService.getUserById("456")).thenReturn(Joe);
       IAtsLogItem item = log.addLog(LogType.Originated, "", "", "456");
       Date testDate2011 = getTestDate2011();
+      String dateString = new SimpleDateFormat(DateUtil.MMDDYYHHMM, Locale.US).format(testDate2011);
       item.setDate(testDate2011);
       item = log.addLog(LogType.StateEntered, "Analyze", "", "456");
       item.setDate(testDate2011);
       AtsLogHtml writer = new AtsLogHtml(log, storeProvider, atsUserService, false);
       String html = writer.get();
-      Assert.assertEquals(getHtmlStr(), html);
+      Assert.assertEquals(getHtmlStr(dateString), html);
 
       // With title
       writer = new AtsLogHtml(log, storeProvider, atsUserService, true);
       html = writer.get();
-      Assert.assertEquals(getHtmlStrWithTitle(), html);
+      Assert.assertEquals(getHtmlStrWithTitle(dateString), html);
 
       // No user name
       when(atsUserService.getUserById("456")).thenReturn(null);
@@ -104,18 +104,16 @@ public class AtsLogHtmlTest {
 
    }
 
-   private Object getHtmlStr() {
-      return "<table border=\"1\" cellpadding=\"3\" cellspacing=\"0\" width=\"100%\"><tr><th>Event</th><th>State</th><th>Message</th><th>User</th><th>Date</th></tr><tr><td>Originated</td><td>.</td><td>.</td><td>Joe</td><td>12/01/2006 01:00 AM</td></tr><tr><td>StateEntered</td><td>Analyze</td><td>.</td><td>Joe</td><td>12/01/2006 01:00 AM</td></tr></table>";
+   private Object getHtmlStr(String dateString) {
+      return "<table border=\"1\" cellpadding=\"3\" cellspacing=\"0\" width=\"100%\"><tr><th>Event</th><th>State</th><th>Message</th><th>User</th><th>Date</th></tr><tr><td>Originated</td><td>.</td><td>.</td><td>Joe</td><td>" + dateString + "</td></tr><tr><td>StateEntered</td><td>Analyze</td><td>.</td><td>Joe</td><td>" + dateString + "</td></tr></table>";
    }
 
-   private Object getHtmlStrWithTitle() {
-      return "&nbsp;<font color=\"black\" face=\"Arial\" size=\"-1\"><b>This is the title</b></font><table border=\"1\" cellpadding=\"3\" cellspacing=\"0\" width=\"100%\"><tr><th>Event</th><th>State</th><th>Message</th><th>User</th><th>Date</th></tr><tr><td>Originated</td><td>.</td><td>.</td><td>Joe</td><td>12/01/2006 01:00 AM</td></tr><tr><td>StateEntered</td><td>Analyze</td><td>.</td><td>Joe</td><td>12/01/2006 01:00 AM</td></tr></table>";
+   private Object getHtmlStrWithTitle(String dateString) {
+      return "&nbsp;<font color=\"black\" face=\"Arial\" size=\"-1\"><b>This is the title</b></font><table border=\"1\" cellpadding=\"3\" cellspacing=\"0\" width=\"100%\"><tr><th>Event</th><th>State</th><th>Message</th><th>User</th><th>Date</th></tr><tr><td>Originated</td><td>.</td><td>.</td><td>Joe</td><td>" + dateString + "</td></tr><tr><td>StateEntered</td><td>Analyze</td><td>.</td><td>Joe</td><td>" + dateString + "</td></tr></table>";
    }
 
    public Date getTestDate2011() {
-      Calendar cal = Calendar.getInstance();
-      Date date = new Date(new Long("1164960000000").longValue());
-      cal.setTime(date);
+      Date date = new Date(1164960000000L);
       return date;
    }
 }
