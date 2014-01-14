@@ -26,7 +26,6 @@ public class RuntimeBundleServer {
    private ClassServer classServer;
    private String classServerPath;
    private ResourceFinder resourceFinder;
-   private OTEBuilderResourceFinder oteBuilderFinder;
 
    /**
     * Creates a new ClassServer which will serve all projects currently in the workspace
@@ -41,9 +40,7 @@ public class RuntimeBundleServer {
             }
          };
          resourceFinder = new RuntimeLibResourceFinder(safeWorkspaceTracker);
-         oteBuilderFinder = new OTEBuilderResourceFinder();
          classServer.addResourceFinder(resourceFinder);
-         classServer.addResourceFinder(oteBuilderFinder);
          classServer.start();
          if(useHostAddress instanceof Inet6Address){
         	 classServerPath = "http://[" + useHostAddress.getHostAddress() + "]:" + classServer.getPort() + "/";

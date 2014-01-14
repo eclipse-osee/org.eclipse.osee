@@ -85,4 +85,12 @@ public class Properties {
       return null;
    }
 
+   public String get(String key) {
+      KeyValue pair = findPair(key);
+      if(pair != null){
+         return pair.getValue();
+      }
+      return null;
+   }
+
 }
