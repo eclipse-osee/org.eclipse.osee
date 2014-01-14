@@ -145,8 +145,8 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       oteServerSideEndpointSender = new OteServerSideEndpointSender(this);
       BundleContext context = Platform.getBundle("org.eclipse.osee.ote.core").getBundleContext();
       return getServiceTracker(MessagingGateway.class.getName(), new OteEnvironmentTrackerCustomizer(context,
-         oteServerSideEndpointRecieve, oteServerSideEndpointSender,
-         OteServerSideEndpointSender.OTE_SERVER_SIDE_SEND_PROTOCOL));
+            oteServerSideEndpointRecieve, oteServerSideEndpointSender,
+            OteServerSideEndpointSender.OTE_SERVER_SIDE_SEND_PROTOCOL));
    }
 
    public void sendCommand(Command command) {
@@ -313,10 +313,10 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
                throw new IOException("Failed to create the output directory");
             }
             OseeLog.logf(TestEnvironment.class, Level.INFO,
-               "Outfile Dir [%s] created.", outDir.getAbsolutePath());
+                  "Outfile Dir [%s] created.", outDir.getAbsolutePath());
          } else {
             OseeLog.logf(TestEnvironment.class, Level.FINE,
-               "Outfile Dir [%s] exists.", outDir.getAbsolutePath());
+                  "Outfile Dir [%s] exists.", outDir.getAbsolutePath());
          }
       } else {
          throw new IOException("A valid outfile directory must be specified.");
@@ -372,7 +372,11 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    }
 
    protected void stop() {
-      myRegistration.unregister();
+      try {
+         myRegistration.unregister();
+      } catch (IllegalStateException ex) {
+         // Service may have already been unregistered, but we don't care
+      }
    }
 
    protected void cleanupClassReferences() {
