@@ -36,13 +36,14 @@ import org.eclipse.swt.program.Program;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * @author Jonathan E. Jensen
  */
 public abstract class AbstractDslRenderer extends FileSystemRenderer {
 
+   private static final String DEFAULT_EDITOR_ID = "org.eclipse.osee.framework.core.dsl.OseeDsl";
    protected static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.render.dsl.editor.command";
 
    protected AbstractDslRenderer() {
@@ -124,6 +125,10 @@ public abstract class AbstractDslRenderer extends FileSystemRenderer {
       return NO_MATCH;
    }
 
+   protected String getEditorId() {
+      return DEFAULT_EDITOR_ID;
+   }
+
    @Override
    public final void open(final List<Artifact> artifacts, final PresentationType presentationType) {
 
@@ -137,7 +142,7 @@ public abstract class AbstractDslRenderer extends FileSystemRenderer {
                   if (file != null) {
                      IWorkbench workbench = PlatformUI.getWorkbench();
                      IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-                     IDE.openEditor(page, file);
+                     page.openEditor(new DslEditorInput(file, artifacts), getEditorId());
                   }
                } catch (Exception ex) {
                   OseeLog.log(DslUiIntegrationConstants.class, OseeLevel.SEVERE_POPUP, ex);
@@ -157,5 +162,35 @@ public abstract class AbstractDslRenderer extends FileSystemRenderer {
    @Override
    public final Program getAssociatedProgram(Artifact artifact) throws OseeCoreException {
       throw new OseeCoreException("should not be called");
+   }
+
+   private static class DslEditorInput extends FileEditorInput {
+
+      private final List<Artifact> artifacts;
+
+      public DslEditorInput(IFile file, List<Artifact> artifacts) {
+         super(file);
+         this.artifacts = artifacts;
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+         boolean toReturn = false;
+         if (obj instanceof DslEditorInput) {
+            List<Artifact> toCheck = ((DslEditorInput) obj).artifacts;
+            toReturn = toCheck.size() == artifacts.size();
+            if (toReturn) {
+               for (Artifact art : toCheck) {
+                  if (!artifacts.contains(art)) {
+                     toReturn = false;
+                     break;
+
+                  }
+               }
+            }
+         }
+         return toReturn;
+      }
+
    }
 }
