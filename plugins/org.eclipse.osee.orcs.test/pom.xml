@@ -34,11 +34,11 @@
 							<artifactId>org.eclipse.osee.database.schema</artifactId>
 							<version>0.0.0</version>
 						</dependency>
-						<!-- 		<dependency>
+						<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.event.osgi</artifactId>
 							<version>0.0.0</version> 
-						</dependency>-->
+						</dependency>
 					<!-- 	<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.event</artifactId>
@@ -144,11 +144,11 @@
 							<artifactId>org.eclipse.equinox.ds</artifactId>
 							<version>0.0.0</version>
 						</dependency>
-							<!-- 	<dependency>
+						<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.equinox.event</artifactId>
 							<version>0.0.0</version>
-						</dependency> -->
+						</dependency>
 						<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.equinox.preferences</artifactId>

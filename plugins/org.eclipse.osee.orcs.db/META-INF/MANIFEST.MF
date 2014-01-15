@@ -6,25 +6,20 @@ Bundle-Version: 0.17.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/*.xml
-Import-Package: org.eclipse.core.runtime,
- org.eclipse.emf.common.notify,
- org.eclipse.emf.common.util,
- org.eclipse.emf.ecore,
- org.eclipse.emf.ecore.util,
+Import-Package: com.google.common.base,
+ com.google.common.collect,
+ com.google.common.io,
+ org.eclipse.core.runtime,
  org.eclipse.osee.console.admin,
  org.eclipse.osee.database.schema,
  org.eclipse.osee.event,
  org.eclipse.osee.executor.admin,
  org.eclipse.osee.framework.core.data,
- org.eclipse.osee.framework.core.dsl,
- org.eclipse.osee.framework.core.dsl.oseeDsl,
- org.eclipse.osee.framework.core.dsl.oseeDsl.util,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.model.cache,
  org.eclipse.osee.framework.core.model.change,
- org.eclipse.osee.framework.core.model.type,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.core.services,
  org.eclipse.osee.framework.core.util,
@@ -49,8 +44,6 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.orcs.core.ds.criteria,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,
- org.eclipse.osee.orcs.utility,
  org.osgi.framework
 Bundle-ActivationPolicy: lazy
-Require-Bundle: com.google.guava;bundle-version="[11.0.0,15.0.0)"
 Export-Package: org.eclipse.osee.orcs.db.internal.search.tagger

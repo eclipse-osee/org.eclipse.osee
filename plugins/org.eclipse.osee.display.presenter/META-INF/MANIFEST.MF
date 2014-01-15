@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.eclipse.osee.display.presenter
 Bundle-Version: 0.17.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.osee.display.api,
+Import-Package: com.google.common.collect,
+ org.eclipse.osee.display.api,
  org.eclipse.osee.display.api.components,
  org.eclipse.osee.display.api.data,
  org.eclipse.osee.display.api.search,
@@ -24,5 +25,3 @@ Import-Package: org.eclipse.osee.display.api,
  org.eclipse.osee.orcs.search,
  org.eclipse.osee.orcs.utility
 Export-Package: org.eclipse.osee.display.presenter
-Require-Bundle: org.eclipse.core.runtime,
- com.google.guava;bundle-version="[11.0.0,15.0.0)"

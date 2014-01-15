@@ -5,8 +5,11 @@ Bundle-SymbolicName: org.eclipse.osee.cache.admin
 Bundle-Version: 0.17.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: com.google.guava;bundle-version="[11.0.0,15.0.0)"
-Import-Package: org.eclipse.osee.framework.jdk.core.type
+Import-Package: com.google.common.base,
+ com.google.common.cache,
+ com.google.common.collect,
+ com.google.common.util.concurrent,
+ org.eclipse.osee.framework.jdk.core.type
 Service-Component: OSGI-INF/*.xml
 Export-Package: org.eclipse.osee.cache.admin
 Bundle-ActivationPolicy: lazy

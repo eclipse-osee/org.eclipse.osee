@@ -4,32 +4,18 @@ Bundle-Name: ORCS Integration Test
 Bundle-SymbolicName: org.eclipse.osee.orcs.test
 Bundle-Version: 0.17.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Fragment-Host: org.eclipse.osee.orcs;bundle-version="0.10.2.qualifier"
+Fragment-Host: org.eclipse.osee.orcs
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.osee.event,
- org.eclipse.osee.executor.admin,
- org.eclipse.osee.framework.core.data,
- org.eclipse.osee.framework.core.enums,
- org.eclipse.osee.framework.core.exception,
- org.eclipse.osee.framework.core.model,
- org.eclipse.osee.framework.core.model.cache,
+Import-Package: com.google.common.base,
+ com.google.common.collect,
+ org.eclipse.osee.event,
  org.eclipse.osee.framework.core.services,
  org.eclipse.osee.framework.database,
- org.eclipse.osee.framework.jdk.core.type,
- org.eclipse.osee.framework.jdk.core.util,
- org.eclipse.osee.orcs,
- org.eclipse.osee.orcs.core.ds,
- org.eclipse.osee.orcs.data,
- org.eclipse.osee.orcs.db.mock,
- org.eclipse.osee.orcs.search,
- org.eclipse.osee.orcs.transaction,
- org.eclipse.osee.orcs.utility,
- org.osgi.service.event
-Require-Bundle: org.junit,
- org.eclipse.equinox.event,
- org.eclipse.core.runtime,
- org.eclipse.osee.event.osgi,
  org.eclipse.osee.logger,
- org.eclipse.osee.framework.database,
- org.eclipse.osee.framework.core.model,
- com.google.guava;bundle-version="[11.0.0,15.0.0)"
+ org.eclipse.osee.orcs.db.mock,
+ org.hamcrest.core,
+ org.junit,
+ org.junit.rules,
+ org.junit.runner,
+ org.junit.runners,
+ org.osgi.service.event

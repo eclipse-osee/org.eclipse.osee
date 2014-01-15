@@ -6,14 +6,14 @@ Bundle-Version: 0.17.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
-Import-Package: com.google.common.cache;version="[11.0,15)",
- com.lowagie.text;version="2.1.7",
- com.lowagie.text.html;version="2.1.7",
- com.lowagie.text.rtf.table;version="2.1.7",
+Import-Package: com.google.common.cache,
+ com.lowagie.text,
+ com.lowagie.text.html,
+ com.lowagie.text.rtf.table,
  com.sun.jersey.core.header;version="1.18.0",
  javax.ws.rs,
  javax.ws.rs.core,
- javax.ws.rs.ext;version="1.1.1",
+ javax.ws.rs.ext,
  org.apache.commons.lang,
  org.eclipse.core.runtime,
  org.eclipse.osee.ats.api,

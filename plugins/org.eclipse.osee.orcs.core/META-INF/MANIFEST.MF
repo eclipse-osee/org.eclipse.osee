@@ -7,7 +7,9 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/*.xml
 Import-Package: com.google.common.base,
- org.eclipse.emf.common.notify,
+ com.google.common.collect,
+ com.google.common.io,
+ org.eclipse.core.runtime,
  org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,
  org.eclipse.emf.ecore.util,
@@ -22,9 +24,11 @@ Import-Package: com.google.common.base,
  org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.model.cache,
  org.eclipse.osee.framework.core.model.change,
- org.eclipse.osee.framework.core.model.type,
  org.eclipse.osee.framework.core.services,
  org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.jdk.core.util.io.xml,
  org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.logger,
  org.eclipse.osee.orcs,
@@ -36,7 +40,4 @@ Import-Package: com.google.common.base,
 Export-Package: org.eclipse.osee.orcs.core,
  org.eclipse.osee.orcs.core.ds,
  org.eclipse.osee.orcs.core.ds.criteria
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.osee.framework.jdk.core,
- com.google.guava;bundle-version="[11.0.0,15.0.0)"
 Bundle-ActivationPolicy: lazy

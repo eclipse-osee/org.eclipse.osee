@@ -56,7 +56,6 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
-import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -662,8 +661,8 @@ public class OrcsTransactionTest {
       ArtifactId art2 = tx1.createArtifact(CoreArtifactTypes.User, "User Artifact");
 
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage(CoreMatchers.startsWith("Relation validity error for [artifact type[Component]"));
-      thrown.expectMessage(CoreMatchers.endsWith("only items of type [User] are allowed"));
+      thrown.expectMessage("Relation validity error for [artifact type[Component]");
+      thrown.expectMessage("only items of type [User] are allowed");
       tx1.relate(art2, CoreRelationTypes.Users_User, art1);
    }
 

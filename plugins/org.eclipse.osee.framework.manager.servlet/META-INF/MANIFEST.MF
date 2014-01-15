@@ -1,10 +1,16 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Servlet Plug-in
-Bundle-SymbolicName: org.eclipse.osee.framework.manager.servlet;singleton:=true
+Bundle-SymbolicName: org.eclipse.osee.framework.manager.servlet
 Bundle-Version: 0.17.0.qualifier
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.osee.event,
+Import-Package: com.google.common.base,
+ com.google.common.collect,
+ javax.servlet,
+ javax.servlet.http,
+ org.eclipse.core.runtime,
+ org.eclipse.core.runtime.jobs,
+ org.eclipse.osee.event,
  org.eclipse.osee.executor.admin,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
@@ -38,6 +44,3 @@ Import-Package: org.eclipse.osee.event,
  org.osgi.util.tracker
 Service-Component: OSGI-INF/*.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.eclipse.core.runtime,
- javax.servlet;bundle-version="2.5.0",
- com.google.guava;bundle-version="[11.0.0,15.0.0)"
