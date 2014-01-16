@@ -43,6 +43,7 @@ public class BuildTraceTable {
    private Table nestedHeaderTable;
    private Document document;
    private final OutputStream output;
+   private final String changeReportUrlTemplate;
    private SortedSet<Pair<String, Table>> sortedRpcr;
 
    private static Comparator<Pair<String, Table>> PairCompare = new Comparator<Pair<String, Table>>() {
@@ -54,8 +55,9 @@ public class BuildTraceTable {
       }
    };
 
-   public BuildTraceTable(OutputStream output) {
+   public BuildTraceTable(OutputStream output, String changeReportUrlTemplate) {
       this.output = output;
+      this.changeReportUrlTemplate = changeReportUrlTemplate;
    }
 
    private void createTables() throws OseeCoreException {
@@ -109,7 +111,7 @@ public class BuildTraceTable {
    }
 
    private void addbuildTraceCells(Table buildTraceTable, String element) throws OseeCoreException {
-      String url = String.format(AtsElementData.CHANGE_REPORT_URL_TEMPLATE, element);
+      String url = String.format(changeReportUrlTemplate, element);
       try {
          buildTraceTable.addCell(setHyperlink(element.toString(), url));
       } catch (BadElementException ex) {
@@ -119,7 +121,6 @@ public class BuildTraceTable {
    }
 
    private void addRequirementTraceCells(Table nestedRequirementTable, String element) throws OseeCoreException {
-
       try {
          nestedRequirementTable.addCell(element);
       } catch (BadElementException ex) {
@@ -149,7 +150,6 @@ public class BuildTraceTable {
    }
 
    public void addRpcrToTable(String rpcr, Map<ArtifactReadable, Iterable<ArtifactReadable>> requirementsToTests) throws OseeCoreException {
-
       try {
          Table nestedRequirementTable = new Table(2);
          nestedRequirementTable.setAutoFillEmptyCells(true);
@@ -182,7 +182,6 @@ public class BuildTraceTable {
    }
 
    public void close() throws OseeCoreException {
-
       try {
          // Create sorted RPCR Table
          Iterator<Pair<String, Table>> treeItr = sortedRpcr.iterator();

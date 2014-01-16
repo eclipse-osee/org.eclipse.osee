@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.rest.internal.build.report.parser.AtsProgramDataPars
 import org.eclipse.osee.ats.rest.internal.build.report.table.UrlListTable;
 import org.eclipse.osee.ats.rest.internal.build.report.util.InputFilesUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
  * @author John Misinco
@@ -49,7 +50,8 @@ public class ProgramsResource {
                   public void handleData(AtsProgramData data) {
                      String uri = String.format(PROGRAM_URI_TEMPLATE, data.getProgramId(), data.getProgramName());
                      try {
-                        table.addUrl(data.getProgramName(), uri);
+                        Pair<String, String> pair = new Pair<String, String>(data.getProgramName(), uri);
+                        table.addUrl(pair);
                      } catch (OseeCoreException ex) {
                         AtsApplication.getLogger().error(ex, "Error handling AtsProgramData");
                      }

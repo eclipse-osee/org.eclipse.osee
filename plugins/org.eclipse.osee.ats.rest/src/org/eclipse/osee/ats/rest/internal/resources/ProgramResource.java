@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.rest.internal.build.report.parser.AtsBuildDataParser
 import org.eclipse.osee.ats.rest.internal.build.report.table.UrlListTable;
 import org.eclipse.osee.ats.rest.internal.build.report.util.InputFilesUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
  * @author John Misinco
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class ProgramResource {
 
    private static final String TRACE_URI_TEMPLATE = "../buildTraceReport/%s/%s?program=%s&build=%s";
+   private static final String OFFLINE_TRACE_URI_TEMPLATE = "../buildTraceReport/archive/%s/%s?program=%s&build=%s";
 
    @GET
    @Path("{programId}")
@@ -46,18 +48,23 @@ public class ProgramResource {
          public void write(OutputStream output) throws WebApplicationException {
             final UrlListTable table = new UrlListTable(output);
             try {
-               table.initializeTable("Builds", programName + " Builds");
+               table.initializeTable("Builds", programName + " Builds", "Offline Download");
 
                AtsDataHandler<AtsBuildData> handler = new AtsDataHandler<AtsBuildData>() {
 
                   @Override
                   public void handleData(AtsBuildData data) {
                      if (data.getBuildProgramId().equals(programId)) {
-                        String uri =
+                        String buildUri =
                            String.format(TRACE_URI_TEMPLATE, programId, data.getBuildId(), programName,
                               data.getBuildName());
+                        String archiveUri =
+                           String.format(OFFLINE_TRACE_URI_TEMPLATE, programId, data.getBuildId(), programName,
+                              data.getBuildName());
                         try {
-                           table.addUrl(data.getBuildName(), uri);
+                           Pair<String, String> build = new Pair<String, String>(data.getBuildName(), buildUri);
+                           Pair<String, String> offline = new Pair<String, String>("download", archiveUri);
+                           table.addUrl(build, offline);
                         } catch (OseeCoreException ex) {
                            AtsApplication.getLogger().error(ex, "Error handling AtsBuildData");
                         }
