@@ -37,6 +37,9 @@ public class RestComponentFactory {
 
    public RestServletContainer createContainer(Log logger) throws Exception {
       DefaultResourceConfig config = new DefaultResourceConfig();
+      for (Object resource : getResourceSingletons()) {
+         config.getSingletons().add(resource);
+      }
       ServletContainer container = new ServletContainer(config);
       return new RestServletContainer(logger, container, config);
    }
