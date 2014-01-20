@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.action.ActionUtility.ActionLoadLevel;
+import org.eclipse.osee.ats.impl.action.ActionLoadLevel;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;

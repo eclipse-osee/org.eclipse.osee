@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.impl.action;
+package org.eclipse.osee.ats.impl.internal.workitem;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Date;
@@ -41,12 +41,6 @@ public class ActionUtility {
 
    private final OrcsApi orcsApi;
    private final IAtsServer atsServer;
-
-   public enum ActionLoadLevel {
-      HEADER,
-      HEADER_FULL,
-      STATE
-   }
 
    public ActionUtility(OrcsApi orcsApi, IAtsServer atsServer) {
       this.orcsApi = orcsApi;
@@ -129,10 +123,6 @@ public class ActionUtility {
    // TODO Need to check extensions to get correct type
    private IArtifactType getTeamWfArtifactType(ArtifactReadable teamDef) {
       return AtsArtifactTypes.TeamWorkflow;
-   }
-
-   public ResultSet<ArtifactReadable> getAis() throws OseeCoreException {
-      return orcsApi.getQueryFactory(null).fromBranch(COMMON).andIsOfType(AtsArtifactTypes.ActionableItem).getResults();
    }
 
    private ArtifactReadable getActionableItem(OrcsApi orcsApi, String actionableItemName) throws OseeCoreException {

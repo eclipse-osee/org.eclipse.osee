@@ -26,8 +26,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.action.ActionUtility;
-import org.eclipse.osee.ats.impl.action.ActionUtility.ActionLoadLevel;
+import org.eclipse.osee.ats.impl.action.ActionLoadLevel;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -43,12 +42,10 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 @Path("action")
 public final class ActionResource {
 
-   private final ActionUtility actionUtility;
    private final IAtsServer atsServer;
    private final OrcsApi orcsApi;
 
-   public ActionResource(ActionUtility actionUtility, IAtsServer atsServer, OrcsApi orcsApi) {
-      this.actionUtility = actionUtility;
+   public ActionResource(IAtsServer atsServer, OrcsApi orcsApi) {
       this.atsServer = atsServer;
       this.orcsApi = orcsApi;
    }
@@ -124,7 +121,8 @@ public final class ActionResource {
 
          // create action
          ArtifactId actionId =
-            actionUtility.createAction(title, description, actionableItemName, changeType, priority, userId);
+            atsServer.getWorkItemPage().createAction(title, description, actionableItemName, changeType, priority,
+               userId);
          ArtifactReadable action = atsServer.getArtifactByGuid(actionId.getGuid());
 
          htmlStr =

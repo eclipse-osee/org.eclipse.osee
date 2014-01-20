@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.action.ActionUtility;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.ats.rest.internal.build.report.resources.BuildTraceReportResource;
 import org.eclipse.osee.ats.rest.internal.resources.ActionResource;
@@ -55,15 +54,13 @@ public class AtsApplication extends Application {
       AtsResourceTokens.register(registry);
       OseeTemplateTokens.register(registry);
 
-      ActionUtility actionUtility = new ActionUtility(orcsApi, atsServer);
-
       singletons.add(new JaxRsExceptionMapper(registry));
 
       singletons.add(new ProgramsResource(logger));
       singletons.add(new ProgramResource(logger));
       singletons.add(new BuildTraceReportResource(logger, orcsApi));
 
-      singletons.add(new ActionResource(actionUtility, atsServer, orcsApi));
+      singletons.add(new ActionResource(atsServer, orcsApi));
       System.out.println("ATS - AtsApplication started");
    }
 

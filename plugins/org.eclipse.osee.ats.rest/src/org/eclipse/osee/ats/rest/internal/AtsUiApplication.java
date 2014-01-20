@@ -13,13 +13,10 @@ package org.eclipse.osee.ats.rest.internal;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.core.Application;
-import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.action.ActionUtility;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.ats.rest.internal.resources.AtsUiResource;
 import org.eclipse.osee.ats.rest.internal.util.JaxRsExceptionMapper;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
-import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.template.engine.OseeTemplateTokens;
 
@@ -31,19 +28,9 @@ public class AtsUiApplication extends Application {
    private final Set<Object> singletons = new HashSet<Object>();
 
    private OrcsApi orcsApi;
-   private IAtsServer atsServer;
-   private Log logger;
-
-   public void setLogger(Log logger) {
-      this.logger = logger;
-   }
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
-   }
-
-   public void setAtsServer(IAtsServer atsServer) {
-      this.atsServer = atsServer;
    }
 
    public void start() {
@@ -52,10 +39,8 @@ public class AtsUiApplication extends Application {
       AtsResourceTokens.register(registry);
       OseeTemplateTokens.register(registry);
 
-      ActionUtility actionUtility = new ActionUtility(orcsApi, atsServer);
-
       singletons.add(new JaxRsExceptionMapper(registry));
-      singletons.add(new AtsUiResource(actionUtility, registry));
+      singletons.add(new AtsUiResource(orcsApi));
       System.out.println("ATS - AtsUiApplication started");
    }
 

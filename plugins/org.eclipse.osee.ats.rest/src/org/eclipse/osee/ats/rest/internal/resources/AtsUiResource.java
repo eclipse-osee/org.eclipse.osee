@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.resources;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,10 +19,12 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.ats.impl.action.ActionUtility;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
-import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.template.engine.AppendableRule;
 import org.eclipse.osee.template.engine.IdentifiableOptionsRule;
@@ -33,12 +36,10 @@ import org.eclipse.osee.template.engine.PageFactory;
  */
 @Path("action")
 public final class AtsUiResource {
-   private final IResourceRegistry registry;
-   private final ActionUtility actionUtility;
+   private final OrcsApi orcsApi;
 
-   public AtsUiResource(ActionUtility actionUtility, IResourceRegistry registry) {
-      this.actionUtility = actionUtility;
-      this.registry = registry;
+   public AtsUiResource(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
    }
 
    /**
@@ -57,14 +58,14 @@ public final class AtsUiResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getNewSource() throws Exception {
-      PageCreator page = PageFactory.newPageCreator(registry, AtsResourceTokens.AtsValuesHtml);
+      PageCreator page = PageFactory.newPageCreator(orcsApi.getResourceRegistry(), AtsResourceTokens.AtsValuesHtml);
       page.readKeyValuePairs(AtsResourceTokens.AtsNewActionValuesHtml);
       List<ArtifactReadable> sortedAis = new ArrayList<ArtifactReadable>();
-      for (ArtifactReadable ai : actionUtility.getAis()) {
+      for (ArtifactReadable ai : getAis()) {
          sortedAis.add(ai);
       }
       Collections.sort(sortedAis, new IdComparator());
-      AppendableRule rule =
+      AppendableRule<ArtifactReadable> rule =
          new IdentifiableOptionsRule<ArtifactReadable>("ActionableItemDataList", sortedAis, "actionableItemList");
       page.addSubstitution(rule);
       return page.realizePage(AtsResourceTokens.AtsNewActionHtml);
@@ -78,6 +79,10 @@ public final class AtsUiResource {
       }
    };
 
+   private ResultSet<ArtifactReadable> getAis() throws OseeCoreException {
+      return orcsApi.getQueryFactory(null).fromBranch(COMMON).andIsOfType(AtsArtifactTypes.ActionableItem).getResults();
+   }
+
    /**
     * @return html5 action entry page
     */
@@ -85,7 +90,7 @@ public final class AtsUiResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getSearch() throws Exception {
-      PageCreator page = PageFactory.newPageCreator(registry, AtsResourceTokens.AtsValuesHtml);
+      PageCreator page = PageFactory.newPageCreator(orcsApi.getResourceRegistry(), AtsResourceTokens.AtsValuesHtml);
       return page.realizePage(AtsResourceTokens.AtsSearchHtml);
    }
 
