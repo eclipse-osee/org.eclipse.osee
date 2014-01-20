@@ -17,7 +17,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
-import org.eclipse.osee.ats.rest.internal.AtsApplication;
 import org.eclipse.osee.ats.rest.internal.build.report.model.AtsProgramData;
 import org.eclipse.osee.ats.rest.internal.build.report.parser.AtsAbstractSAXParser.AtsDataHandler;
 import org.eclipse.osee.ats.rest.internal.build.report.parser.AtsProgramDataParser;
@@ -25,6 +24,7 @@ import org.eclipse.osee.ats.rest.internal.build.report.table.UrlListTable;
 import org.eclipse.osee.ats.rest.internal.build.report.util.InputFilesUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author John Misinco
@@ -33,6 +33,12 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 public class ProgramsResource {
 
    private static final String PROGRAM_URI_TEMPLATE = "program/%s?program=%s";
+
+   private final Log logger;
+
+   public ProgramsResource(Log logger) {
+      this.logger = logger;
+   }
 
    @GET
    @Produces(MediaType.TEXT_HTML)
@@ -53,7 +59,7 @@ public class ProgramsResource {
                         Pair<String, String> pair = new Pair<String, String>(data.getProgramName(), uri);
                         table.addUrl(pair);
                      } catch (OseeCoreException ex) {
-                        AtsApplication.getLogger().error(ex, "Error handling AtsProgramData");
+                        logger.error(ex, "Error handling AtsProgramData");
                      }
 
                   }

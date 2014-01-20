@@ -20,7 +20,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
-import org.eclipse.osee.ats.rest.internal.AtsApplication;
 import org.eclipse.osee.ats.rest.internal.build.report.model.AtsBuildData;
 import org.eclipse.osee.ats.rest.internal.build.report.parser.AtsAbstractSAXParser.AtsDataHandler;
 import org.eclipse.osee.ats.rest.internal.build.report.parser.AtsBuildDataParser;
@@ -28,6 +27,7 @@ import org.eclipse.osee.ats.rest.internal.build.report.table.UrlListTable;
 import org.eclipse.osee.ats.rest.internal.build.report.util.InputFilesUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author John Misinco
@@ -37,6 +37,12 @@ public class ProgramResource {
 
    private static final String TRACE_URI_TEMPLATE = "../buildTraceReport/%s/%s?program=%s&build=%s";
    private static final String OFFLINE_TRACE_URI_TEMPLATE = "../buildTraceReport/archive/%s/%s?program=%s&build=%s";
+
+   private final Log logger;
+
+   public ProgramResource(Log logger) {
+      this.logger = logger;
+   }
 
    @GET
    @Path("{programId}")
@@ -66,7 +72,7 @@ public class ProgramResource {
                            Pair<String, String> offline = new Pair<String, String>("download", archiveUri);
                            table.addUrl(build, offline);
                         } catch (OseeCoreException ex) {
-                           AtsApplication.getLogger().error(ex, "Error handling AtsBuildData");
+                           logger.error(ex, "Error handling AtsBuildData");
                         }
 
                      }

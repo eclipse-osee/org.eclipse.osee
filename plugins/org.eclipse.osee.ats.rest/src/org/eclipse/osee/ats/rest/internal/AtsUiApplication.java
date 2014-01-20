@@ -13,9 +13,12 @@ package org.eclipse.osee.ats.rest.internal;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.core.Application;
+import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.impl.action.ActionUtility;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.ats.rest.internal.resources.AtsUiResource;
 import org.eclipse.osee.ats.rest.internal.util.JaxRsExceptionMapper;
+import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.template.engine.OseeTemplateTokens;
@@ -25,38 +28,43 @@ import org.eclipse.osee.template.engine.OseeTemplateTokens;
  */
 public class AtsUiApplication extends Application {
 
-   private static OrcsApi orcsApi;
-   private static Log logger;
+   private final Set<Object> singletons = new HashSet<Object>();
 
-   public void setOrcsApi(OrcsApi orcsApi) {
-      AtsUiApplication.orcsApi = orcsApi;
-   }
-
-   public static OrcsApi getOrcsApi() {
-      return orcsApi;
-   }
-
-   public static Log getLogger() {
-      return logger;
-   }
+   private OrcsApi orcsApi;
+   private IAtsServer atsServer;
+   private Log logger;
 
    public void setLogger(Log logger) {
-      AtsUiApplication.logger = logger;
+      this.logger = logger;
    }
 
-   @Override
-   public Set<Class<?>> getClasses() {
-      Set<Class<?>> classes = new HashSet<Class<?>>();
-      return classes;
+   public void setOrcsApi(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
+   }
+
+   public void setAtsServer(IAtsServer atsServer) {
+      this.atsServer = atsServer;
+   }
+
+   public void start() {
+      IResourceRegistry registry = orcsApi.getResourceRegistry();
+
+      AtsResourceTokens.register(registry);
+      OseeTemplateTokens.register(registry);
+
+      ActionUtility actionUtility = new ActionUtility(orcsApi, atsServer);
+
+      singletons.add(new JaxRsExceptionMapper(registry));
+      singletons.add(new AtsUiResource(actionUtility, registry));
+      System.out.println("ATS - AtsUiApplication started");
+   }
+
+   public void stop() {
+      singletons.clear();
    }
 
    @Override
    public Set<Object> getSingletons() {
-      AtsResourceTokens.register(orcsApi.getResourceRegistry());
-      OseeTemplateTokens.register(orcsApi.getResourceRegistry());
-      Set<Object> singletons = new HashSet<Object>();
-      singletons.add(new JaxRsExceptionMapper(orcsApi.getResourceRegistry()));
-      singletons.add(new AtsUiResource(orcsApi));
       return singletons;
    }
 

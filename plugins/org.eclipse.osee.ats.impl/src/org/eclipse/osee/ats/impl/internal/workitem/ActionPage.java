@@ -11,10 +11,8 @@
 package org.eclipse.osee.ats.impl.internal.workitem;
 
 import java.io.IOException;
-import java.rmi.activation.Activator;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
@@ -23,7 +21,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.action.ActionUtility.ActionLoadLevel;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
@@ -33,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.template.engine.PageCreator;
@@ -53,8 +50,10 @@ public class ActionPage {
    private final String title;
    private final ArtifactReadable action;
    private final IAtsServer atsServer;
+   private final Log logger;
 
-   public ActionPage(IAtsServer atsServer, IResourceRegistry registry, ArtifactReadable action, String title, ActionLoadLevel actionLoadLevel) {
+   public ActionPage(Log logger, IAtsServer atsServer, IResourceRegistry registry, ArtifactReadable action, String title, ActionLoadLevel actionLoadLevel) {
+      this.logger = logger;
       this.atsServer = atsServer;
       this.registry = registry;
       this.action = action;
@@ -86,7 +85,7 @@ public class ActionPage {
       page.addKeyValuePair("description", action.getSoleAttributeAsString(AtsAttributeTypes.Description, ""));
       page.addKeyValuePair("team", getTeamStr(action));
       page.addKeyValuePair("ais", getAIStr(action));
-      page.addKeyValuePair("state", AtsCore.getWorkItemService().getCurrentStateName(workItem));
+      page.addKeyValuePair("state", atsServer.getWorkItemService().getCurrentStateName(workItem));
       page.addKeyValuePair("assignees", getAssigneesStr(workItem, action));
       page.addKeyValuePair("id", workItem.getGuid());
       page.addKeyValuePair("atsId", workItem.getAtsId());
@@ -181,12 +180,12 @@ public class ActionPage {
       if (isShowHeaderFull()) {
          try {
             IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-            String str = AtsCore.getWorkItemService().getTargetedVersionStr(teamWf);
+            String str = atsServer.getWorkItemService().getTargetedVersionStr(teamWf);
             if (Strings.isValid(str)) {
                version = str;
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            logger.error(ex, "Error getting version for [%s]", workItem);
             version = "exception: " + ex.getLocalizedMessage();
          }
       }
@@ -199,7 +198,7 @@ public class ActionPage {
          IAtsWorkDefinition workDefinition = workItem.getWorkDefinition();
          Collection<String> visitedStates = workItem.getStateMgr().getVisitedStateNames();
          List<IAtsStateDefinition> statesOrderedByOrdinal =
-            AtsCore.getWorkDefService().getStatesOrderedByOrdinal(workDefinition);
+            atsServer.getWorkDefService().getStatesOrderedByOrdinal(workDefinition);
          for (int index = statesOrderedByOrdinal.size() - 1; index >= 0; index--) {
             IAtsStateDefinition state = statesOrderedByOrdinal.get(index);
             if (visitedStates.contains(state.getName())) {
@@ -249,8 +248,8 @@ public class ActionPage {
       sb.append(layout.getName());
       sb.append(": ");
       try {
-         sb.append(AtsCore.getAttrResolver().getAttributesToStringList(workItem,
-            AtsCore.getAttrResolver().getAttributeType(layout.getAtrributeName())));
+         sb.append(atsServer.getAttributeResolver().getAttributesToStringList(workItem,
+            atsServer.getAttributeResolver().getAttributeType(layout.getAtrributeName())));
       } catch (OseeCoreException ex) {
          sb.append("exception: " + ex.getLocalizedMessage());
       }

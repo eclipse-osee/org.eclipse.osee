@@ -34,7 +34,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.rest.internal.AtsApplication;
 import org.eclipse.osee.ats.rest.internal.build.report.model.AtsElementData;
 import org.eclipse.osee.ats.rest.internal.build.report.model.AtsWorkflowData;
 import org.eclipse.osee.ats.rest.internal.build.report.parser.ArtIdParser;
@@ -52,6 +51,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -67,6 +67,14 @@ import com.sun.jersey.core.header.ContentDisposition;
 public class BuildTraceReportResource {
 
    private static final String CHANGE_REPORTS_PATH = "/atsData/changeReports/";
+
+   private final Log logger;
+   private final OrcsApi orcsApi;
+
+   public BuildTraceReportResource(Log logger, OrcsApi orcsApi) {
+      this.logger = logger;
+      this.orcsApi = orcsApi;
+   }
 
    @GET
    @Path("archive/{programId}/{buildId}")
@@ -132,7 +140,6 @@ public class BuildTraceReportResource {
    }
 
    private void createTraceReport(final String buildId, final String programName, final String buildName, String urlTemplate, final Collection<String> pcrIds, OutputStream output) {
-      OrcsApi orcsApi = AtsApplication.getOrcsApi();
       final QueryFactory queryFactory = orcsApi.getQueryFactory(null);
       final IOseeBranch branch = getBaselineBranch(buildId, queryFactory);
 
@@ -166,7 +173,7 @@ public class BuildTraceReportResource {
                   buildTraceTable.addRpcrToTable(pcrId, requirementsToTests);
 
                } catch (OseeCoreException ex) {
-                  AtsApplication.getLogger().error(ex, "Error handling AtsWorkflowData");
+                  logger.error(ex, "Error handling AtsWorkflowData");
                }
             }
          }

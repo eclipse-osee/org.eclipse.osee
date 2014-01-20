@@ -27,11 +27,10 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.action.ActionUtility.ActionLoadLevel;
-import org.eclipse.osee.ats.rest.internal.AtsServerService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -44,10 +43,13 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 @Path("state")
 public final class StateResource {
+
+   private final IAtsServer atsServer;
    private IAtsWorkItem workItem;
    private final String guid;
 
-   public StateResource(OrcsApi orcsApi, String guid) {
+   public StateResource(IAtsServer atsServer, OrcsApi orcsApi, String guid) {
+      this.atsServer = atsServer;
       this.guid = guid;
    }
 
@@ -57,8 +59,8 @@ public final class StateResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getStates() throws Exception {
-      ArtifactReadable action = AtsServerService.get().getArtifactByGuid(guid);
-      return AtsServerService.get().getWorkItemPage().getHtml(action, "Action - " + guid, ActionLoadLevel.STATE);
+      ArtifactReadable action = atsServer.getArtifactByGuid(guid);
+      return atsServer.getWorkItemPage().getHtml(action, "Action - " + guid, ActionLoadLevel.STATE);
    }
 
    /**
@@ -69,9 +71,8 @@ public final class StateResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getTransition(@PathParam("id") String guid) throws Exception {
-      ArtifactReadable action = AtsServerService.get().getArtifactByGuid(guid);
-      return AtsServerService.get().getWorkItemPage().getHtmlWithStates(action, "Action - " + guid,
-         ActionLoadLevel.STATE);
+      ArtifactReadable action = atsServer.getArtifactByGuid(guid);
+      return atsServer.getWorkItemPage().getHtmlWithStates(action, "Action - " + guid, ActionLoadLevel.STATE);
    }
 
    /**
@@ -101,17 +102,17 @@ public final class StateResource {
       String asUserId = form.getFirst("asUserId");
       Conditions.checkNotNull(asUserId, "asUserId");
       Conditions.checkNotNullOrEmpty(asUserId, "UserId");
-      IAtsUser transitionUser = AtsCore.getUserService().getUserById(asUserId);
+      IAtsUser transitionUser = atsServer.getUserService().getUserById(asUserId);
       if (transitionUser == null) {
          throw new OseeStateException("User by id [%s] does not exist", asUserId);
       }
 
       if (operation.equals("transition")) {
-         ArtifactReadable action = AtsServerService.get().getArtifactByGuid(guid);
-         workItem = AtsServerService.get().getWorkItemFactory().getWorkItem(action);
+         ArtifactReadable action = atsServer.getArtifactByGuid(guid);
+         workItem = atsServer.getWorkItemFactory().getWorkItem(action);
 
          IAtsChangeSet changes =
-            AtsServerService.get().getStoreFactory().createAtsChangeSet("Transition Action - Server", transitionUser);
+            atsServer.getStoreFactory().createAtsChangeSet("Transition Action - Server", transitionUser);
          TransitionHelper helper =
             new TransitionHelper("Transition " + guid, Collections.singleton(workItem), toState,
                workItem.getAssignees(), reason, changes, TransitionOption.None);
@@ -126,9 +127,9 @@ public final class StateResource {
          }
 
          // reload before display
-         action = AtsServerService.get().getArtifactByGuid(guid);
+         action = atsServer.getArtifactByGuid(guid);
          htmlStr =
-            AtsServerService.get().getWorkItemPage().getHtml(action, "Action Transitioned - " + action.getGuid(),
+            atsServer.getWorkItemPage().getHtml(action, "Action Transitioned - " + action.getGuid(),
                ActionLoadLevel.HEADER);
       } else {
          throw new OseeCoreException("Unhandled operation [%s]", operation);

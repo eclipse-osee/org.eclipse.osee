@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.impl.action.ActionUtility;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.template.engine.AppendableRule;
 import org.eclipse.osee.template.engine.IdentifiableOptionsRule;
@@ -34,12 +33,12 @@ import org.eclipse.osee.template.engine.PageFactory;
  */
 @Path("action")
 public final class AtsUiResource {
-   private final OrcsApi orcsApi;
    private final IResourceRegistry registry;
+   private final ActionUtility actionUtility;
 
-   public AtsUiResource(OrcsApi orcsApi) {
-      this.orcsApi = orcsApi;
-      registry = orcsApi.getResourceRegistry();
+   public AtsUiResource(ActionUtility actionUtility, IResourceRegistry registry) {
+      this.actionUtility = actionUtility;
+      this.registry = registry;
    }
 
    /**
@@ -61,7 +60,7 @@ public final class AtsUiResource {
       PageCreator page = PageFactory.newPageCreator(registry, AtsResourceTokens.AtsValuesHtml);
       page.readKeyValuePairs(AtsResourceTokens.AtsNewActionValuesHtml);
       List<ArtifactReadable> sortedAis = new ArrayList<ArtifactReadable>();
-      for (ArtifactReadable ai : ActionUtility.getAis(orcsApi)) {
+      for (ArtifactReadable ai : actionUtility.getAis()) {
          sortedAis.add(ai);
       }
       Collections.sort(sortedAis, new IdComparator());

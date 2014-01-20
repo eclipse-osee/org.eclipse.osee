@@ -14,6 +14,7 @@ import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.action.ActionUtility.ActionLoadLevel;
 import org.eclipse.osee.ats.impl.action.IWorkItemPage;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -23,21 +24,23 @@ public class WorkItemPage implements IWorkItemPage {
 
    private final IResourceRegistry registry;
    private final IAtsServer atsServer;
+   private final Log logger;
 
-   public WorkItemPage(IAtsServer atsServer, IResourceRegistry registry) {
+   public WorkItemPage(Log logger, IAtsServer atsServer, IResourceRegistry registry) {
+      this.logger = logger;
       this.atsServer = atsServer;
       this.registry = registry;
    }
 
    @Override
    public String getHtml(ArtifactReadable action, String title, ActionLoadLevel actionLoadLevel) throws Exception {
-      ActionPage page = new ActionPage(atsServer, registry, action, title, actionLoadLevel);
+      ActionPage page = new ActionPage(logger, atsServer, registry, action, title, actionLoadLevel);
       return page.generate();
    }
 
    @Override
    public String getHtmlWithStates(ArtifactReadable action, String title, ActionLoadLevel actionLoadLevel) throws Exception {
-      ActionPage page = new ActionPage(atsServer, registry, action, title, actionLoadLevel);
+      ActionPage page = new ActionPage(logger, atsServer, registry, action, title, actionLoadLevel);
       page.addTransitionStates();
       return page.generate();
    }
