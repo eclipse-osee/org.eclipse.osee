@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class AtsUser implements IAtsUser {
 
-   private final ArtifactReadable user;
+   private ArtifactReadable user;
 
    public AtsUser(ArtifactReadable user) {
       this.user = user;
@@ -144,6 +144,13 @@ public class AtsUser implements IAtsUser {
    @Override
    public Object getStoreObject() {
       return user;
+   }
+
+   @Override
+   public void setStoreObject(Object object) {
+      if (object instanceof ArtifactReadable) {
+         this.user = (ArtifactReadable) object;
+      }
    }
 
 }

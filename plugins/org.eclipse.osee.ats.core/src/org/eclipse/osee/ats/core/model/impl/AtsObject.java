@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 public class AtsObject extends FullyNamedIdentity<String> implements IAtsObject {
 
    private String desc;
+   private Object object;
 
    public AtsObject(String name, String guid) {
       super(guid, name);
@@ -81,7 +82,12 @@ public class AtsObject extends FullyNamedIdentity<String> implements IAtsObject 
 
    @Override
    public Object getStoreObject() {
-      return null;
+      return object;
+   }
+
+   @Override
+   public void setStoreObject(Object object) {
+      this.object = object;
    }
 
 }

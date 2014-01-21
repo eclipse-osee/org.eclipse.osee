@@ -184,6 +184,11 @@ public class CoreAtsUsersTest {
       public String getGuid() {
          return "ASE434dfgsdfgs";
       }
+
+      @Override
+      public void setStoreObject(Object object) {
+         // do nothing
+      }
    };
 
    private class ExceptionUser implements IAtsUser {
@@ -236,6 +241,11 @@ public class CoreAtsUsersTest {
       @Override
       public Object getStoreObject() {
          return null;
+      }
+
+      @Override
+      public void setStoreObject(Object object) {
+         // do nothing
       }
    };
 }

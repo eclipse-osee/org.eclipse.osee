@@ -29,4 +29,14 @@ public abstract class AbstractAtsArtifact extends Artifact implements IAtsObject
       return null;
    }
 
+   @Override
+   public Object getStoreObject() {
+      return this;
+   }
+
+   @Override
+   public void setStoreObject(Object object) {
+      // do nothing
+   }
+
 }

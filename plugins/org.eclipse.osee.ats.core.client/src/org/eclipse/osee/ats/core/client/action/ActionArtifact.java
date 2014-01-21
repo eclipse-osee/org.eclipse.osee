@@ -82,4 +82,9 @@ public class ActionArtifact extends Artifact implements IAtsAction {
       return this;
    }
 
+   @Override
+   public void setStoreObject(Object object) {
+      // do nothing
+   }
+
 }

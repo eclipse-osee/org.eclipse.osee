@@ -13,16 +13,19 @@ package org.eclipse.osee.ats.version;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.util.AtsRelationChange;
+import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
@@ -120,8 +123,10 @@ public class CreateNewVersionItem extends XNavigateItemAction {
             for (String newVer : newVersionNames) {
                IAtsVersion version = AtsClientService.get().createVersion(newVer);
                versions.add(version);
-               AtsVersionService.get().setTeamDefinition(version, teamDefHoldingVersions);
                changes.add(version);
+               changes.add(new AtsRelationChange(teamDefHoldingVersions,
+                  AtsRelationTypes.TeamDefinitionToVersion_Version, Collections.singleton(version),
+                  RelationOperation.Add));
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

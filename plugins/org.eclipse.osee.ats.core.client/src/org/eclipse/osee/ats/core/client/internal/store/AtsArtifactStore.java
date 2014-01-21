@@ -44,7 +44,9 @@ public class AtsArtifactStore implements IAtsArtifactStore {
       IAtsArtifactWriter<T> writer = getWriter(configObject.getClass());
       Conditions.checkNotNull(writer, "writer");
 
-      return writer.store(configObject, cache, changes);
+      Artifact art = writer.store(configObject, cache, changes);
+      configObject.setStoreObject(art);
+      return art;
    }
 
    @Override

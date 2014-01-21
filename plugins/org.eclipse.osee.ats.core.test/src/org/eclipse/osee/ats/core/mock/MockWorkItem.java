@@ -159,4 +159,9 @@ public class MockWorkItem implements IAtsWorkItem {
       return null;
    }
 
+   @Override
+   public void setStoreObject(Object object) {
+      // do nothing
+   }
+
 }

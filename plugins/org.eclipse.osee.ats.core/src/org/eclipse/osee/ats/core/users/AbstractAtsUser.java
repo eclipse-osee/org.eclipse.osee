@@ -123,4 +123,8 @@ public abstract class AbstractAtsUser implements IAtsUser {
       return null;
    }
 
+   @Override
+   public void setStoreObject(Object object) {
+      // do nothing
+   }
 }

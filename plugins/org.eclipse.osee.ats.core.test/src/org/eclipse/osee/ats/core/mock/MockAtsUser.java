@@ -132,4 +132,9 @@ public class MockAtsUser implements IAtsUser {
       return null;
    }
 
+   @Override
+   public void setStoreObject(Object object) {
+      // do nothing
+   }
+
 }

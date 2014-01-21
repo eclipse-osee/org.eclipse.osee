@@ -765,9 +765,4 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       changes.setSoleAttributeValue(this, AtsAttributeTypes.AtsId, atsId);
    }
 
-   @Override
-   public Object getStoreObject() {
-      return this;
-   }
-
 }

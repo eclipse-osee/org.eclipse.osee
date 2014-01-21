@@ -24,4 +24,6 @@ public interface IAtsObject extends Identifiable<String>, HasDescription {
 
    Object getStoreObject();
 
+   void setStoreObject(Object object);
+
 }

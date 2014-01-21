@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.User;
  */
 public class AtsUser implements IAtsUser {
 
-   private final User user;
+   private User user;
 
    public AtsUser(User user) {
       this.user = user;
@@ -147,6 +147,13 @@ public class AtsUser implements IAtsUser {
    @Override
    public Object getStoreObject() {
       return user;
+   }
+
+   @Override
+   public void setStoreObject(Object object) {
+      if (object instanceof User) {
+         this.user = (User) object;
+      }
    }
 
 }
