@@ -39,7 +39,6 @@ public class CriteriaBranchName extends Criteria {
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      super.checkValid(options);
       Conditions.checkNotNullOrEmpty(getValue(), "branch name value");
    }
 

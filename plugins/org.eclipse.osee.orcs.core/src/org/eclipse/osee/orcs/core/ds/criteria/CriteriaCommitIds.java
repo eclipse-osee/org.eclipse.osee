@@ -30,7 +30,6 @@ public class CriteriaCommitIds extends Criteria {
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      super.checkValid(options);
       Conditions.checkNotNullOrEmpty(ids, "Author ids");
    }
 

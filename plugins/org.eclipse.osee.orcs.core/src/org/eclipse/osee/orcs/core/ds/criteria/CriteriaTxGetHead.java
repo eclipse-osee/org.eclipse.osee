@@ -38,7 +38,6 @@ public class CriteriaTxGetHead extends Criteria {
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      super.checkValid(options);
       Conditions.checkExpressionFailOnTrue(branch == null && branchId < 0, "Missing valid branch");
    }
 

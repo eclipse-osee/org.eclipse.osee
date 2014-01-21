@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
  * @author Roberto E. Escobar
@@ -21,11 +19,6 @@ public class CriteriaAllTxs extends Criteria {
 
    public CriteriaAllTxs() {
       super();
-   }
-
-   @Override
-   public void checkValid(Options options) throws OseeCoreException {
-      super.checkValid(options);
    }
 
    @Override

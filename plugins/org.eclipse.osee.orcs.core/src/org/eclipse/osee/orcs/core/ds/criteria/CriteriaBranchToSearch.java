@@ -11,9 +11,7 @@
 package org.eclipse.osee.orcs.core.ds.criteria;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.data.HasBranch;
 
 /**
@@ -31,11 +29,6 @@ public class CriteriaBranchToSearch extends Criteria implements HasBranch {
    @Override
    public IOseeBranch getBranch() {
       return branch;
-   }
-
-   @Override
-   public void checkValid(Options options) throws OseeCoreException {
-      super.checkValid(options);
    }
 
    @Override

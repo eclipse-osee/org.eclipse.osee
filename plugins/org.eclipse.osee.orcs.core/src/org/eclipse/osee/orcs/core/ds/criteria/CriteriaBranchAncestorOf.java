@@ -34,7 +34,6 @@ public class CriteriaBranchAncestorOf extends Criteria {
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      super.checkValid(options);
       Conditions.checkNotNull(getChild(), "Child branch");
    }
 

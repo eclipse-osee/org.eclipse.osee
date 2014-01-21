@@ -33,7 +33,6 @@ public class CriteriaArtifactGuids extends Criteria {
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      super.checkValid(options);
       Conditions.checkNotNullOrEmpty(artifactGuids, "artifact guids");
       List<String> invalids = new ArrayList<String>();
       for (String guid : artifactGuids) {

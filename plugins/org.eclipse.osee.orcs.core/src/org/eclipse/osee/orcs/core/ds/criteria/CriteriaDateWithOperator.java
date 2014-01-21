@@ -11,9 +11,7 @@
 package org.eclipse.osee.orcs.core.ds.criteria;
 
 import java.sql.Timestamp;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.search.Operator;
 
 /**
@@ -28,11 +26,6 @@ public class CriteriaDateWithOperator extends Criteria {
       super();
       this.date = date;
       this.op = op;
-   }
-
-   @Override
-   public void checkValid(Options options) throws OseeCoreException {
-      super.checkValid(options);
    }
 
    public Operator getOperator() {

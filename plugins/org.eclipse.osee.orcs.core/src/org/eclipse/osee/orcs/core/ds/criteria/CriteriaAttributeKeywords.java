@@ -65,7 +65,6 @@ public class CriteriaAttributeKeywords extends Criteria {
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      super.checkValid(options);
       Conditions.checkNotNullOrEmpty(getValues(), "search value");
       Conditions.checkNotNullOrEmpty(getTypes(), "attribute types");
       checkMultipleValues();

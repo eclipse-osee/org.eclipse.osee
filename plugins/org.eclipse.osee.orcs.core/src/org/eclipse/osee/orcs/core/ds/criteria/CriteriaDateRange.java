@@ -31,7 +31,6 @@ public class CriteriaDateRange extends Criteria {
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      super.checkValid(options);
       if (from.after(to)) {
          throw new OseeArgumentException("from date must be less than to date");
       }

@@ -31,7 +31,6 @@ public class CriteriaBranch extends Criteria implements HasBranch {
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      super.checkValid(options);
       Conditions.checkNotNull(branch, "branch");
    }
 

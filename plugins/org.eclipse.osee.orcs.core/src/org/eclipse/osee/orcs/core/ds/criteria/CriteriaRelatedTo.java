@@ -40,7 +40,6 @@ public class CriteriaRelatedTo extends Criteria {
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      super.checkValid(options);
       Conditions.checkNotNull(getType(), "relation type side");
    }
 

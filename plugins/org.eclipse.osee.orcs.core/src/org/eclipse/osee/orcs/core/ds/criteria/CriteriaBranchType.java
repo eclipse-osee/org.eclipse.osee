@@ -35,7 +35,6 @@ public class CriteriaBranchType extends Criteria {
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      super.checkValid(options);
       Conditions.checkExpressionFailOnTrue(getTypes().isEmpty(), "Branch Types cannot be empty");
    }
 

@@ -35,7 +35,6 @@ public class CriteriaTxType extends Criteria {
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      super.checkValid(options);
       Conditions.checkExpressionFailOnTrue(getTypes().isEmpty(), "Transaction Types cannot be empty");
    }
 

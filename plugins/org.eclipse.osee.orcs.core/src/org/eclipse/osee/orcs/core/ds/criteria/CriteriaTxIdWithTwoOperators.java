@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.search.Operator;
 
 /**
@@ -29,11 +27,6 @@ public class CriteriaTxIdWithTwoOperators extends Criteria {
       this.op1 = op1;
       this.id2 = id2;
       this.op2 = op2;
-   }
-
-   @Override
-   public void checkValid(Options options) throws OseeCoreException {
-      super.checkValid(options);
    }
 
    public Operator getOperator1() {

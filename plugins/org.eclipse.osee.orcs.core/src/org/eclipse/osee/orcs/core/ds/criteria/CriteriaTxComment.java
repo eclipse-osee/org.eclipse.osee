@@ -39,7 +39,6 @@ public class CriteriaTxComment extends Criteria {
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      super.checkValid(options);
       Conditions.checkNotNullOrEmpty(getValue(), "comment value");
    }
 

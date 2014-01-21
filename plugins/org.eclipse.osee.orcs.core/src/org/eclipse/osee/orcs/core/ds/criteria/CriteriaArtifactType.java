@@ -37,7 +37,6 @@ public class CriteriaArtifactType extends Criteria {
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      super.checkValid(options);
       Conditions.checkNotNullOrEmpty(artifactTypes, "artifact types");
    }
 
