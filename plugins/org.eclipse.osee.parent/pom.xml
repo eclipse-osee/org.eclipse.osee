@@ -35,16 +35,18 @@
 		<pmd-version>2.5</pmd-version>
 		<checkstyle-version>2.6</checkstyle-version>
 		<javadoc-version>2.9.1</javadoc-version>
-		<jaxdoclet-version>0.9.0</jaxdoclet-version>
-		<jersey-wadlgen-version>1.17.1</jersey-wadlgen-version>
-		<jersey-version>1.17.1</jersey-version>
-		<jaxb2-maven-version>1.5</jaxb2-maven-version>
-		<jaxrs-version>1.1.1</jaxrs-version>
 		<build-helper-maven-plugin-version>1.7</build-helper-maven-plugin-version>
 		<maven-resources-version>2.5</maven-resources-version>
+
+		<jaxdoclet-version>0.9.0</jaxdoclet-version>
+		<jersey-version>1.17.1</jersey-version>
+		<jersey-wadlgen-version>1.17.1</jersey-wadlgen-version>
+		<jaxrs-version>1.1.1</jaxrs-version>
 		<maven-clean-version>2.5</maven-clean-version>
 		<xerces-version>2.6.1</xerces-version>
 
+		<jaxb2-maven-version>1.5</jaxb2-maven-version>
+		
 		<platform-version-name>kepler</platform-version-name>
 		<orbit-version>R20130517111416</orbit-version>
 		<xtext-version>2.0.0</xtext-version>
@@ -113,9 +115,8 @@
 					<format>'v'yyyyMMddHHmm'${build-alias}'</format>
 					<archiveSite>true</archiveSite>
 					<environments>
-						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
-							</environment> <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
-							</environment> -->
+						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> </environment> <environment> <os>macosx</os> <ws>cocoa</ws> 
+							<arch>x86</arch> </environment> -->
 						<environment>
 							<os>macosx</os>
 							<ws>cocoa</ws>
@@ -159,9 +160,8 @@
 					</filters>
 					<resolver>p2</resolver>
 					<environments>
-						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
-							</environment> <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
-							</environment> -->
+						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> </environment> <environment> <os>macosx</os> <ws>cocoa</ws> 
+							<arch>x86</arch> </environment> -->
 						<environment>
 							<os>macosx</os>
 							<ws>cocoa</ws>
@@ -532,9 +532,8 @@
 									<append>true</append>
 								</configuration>
 							</execution>
-							<!-- <execution> <id>create-coverage-reports</id> <phase>verify</phase> 
-								<goals> <goal>report</goal> </goals> <configuration> <dataFile>${sonar.jacoco.reportPath}</dataFile> 
-								<includes>*.osee.*</includes> <outputDirectory>${coverage.reportPath}</outputDirectory> 
+							<!-- <execution> <id>create-coverage-reports</id> <phase>verify</phase> <goals> <goal>report</goal> </goals> <configuration> 
+								<dataFile>${sonar.jacoco.reportPath}</dataFile> <includes>*.osee.*</includes> <outputDirectory>${coverage.reportPath}</outputDirectory> 
 								<outputEncoding>UTF-8</outputEncoding> </configuration> </execution> -->
 						</executions>
 					</plugin>
@@ -599,7 +598,7 @@
 				<!--<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site> -->
 				<subversive-site>http://download.eclipse.org/technology/subversive/${subversive-version}/update-site</subversive-site>
 				<polarion-site>http://community.polarion.com/projects/subversive/download/eclipse/${polarion-version}/update-site</polarion-site>
-				<!-- <egit-site>http://download.eclipse.org/egit/updates</egit-site>-->
+				<!-- <egit-site>http://download.eclipse.org/egit/updates</egit-site> -->
 			</properties>
 			<repositories>
 				<repository>
@@ -607,8 +606,7 @@
 					<layout>p2</layout>
 					<url>${nebula-site}</url>
 				</repository>
-				<!--<repository> <id>wikitext</id> <layout>p2</layout> <url>${wikitext-site}</url> 
-					</repository> -->
+				<!--<repository> <id>wikitext</id> <layout>p2</layout> <url>${wikitext-site}</url> </repository> -->
 				<repository>
 					<id>polarion</id>
 					<layout>p2</layout>
@@ -619,11 +617,7 @@
 					<layout>p2</layout>
 					<url>${subversive-site}</url>
 				</repository>
-				<!-- <repository>
-					<id>egit</id>
-					<layout>p2</layout>
-					<url>${egit-site}</url>
-				</repository>-->
+				<!-- <repository> <id>egit</id> <layout>p2</layout> <url>${egit-site}</url> </repository> -->
 			</repositories>
 		</profile>
 
