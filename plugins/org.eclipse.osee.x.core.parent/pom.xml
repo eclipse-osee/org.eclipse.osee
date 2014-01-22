@@ -60,6 +60,10 @@
 		<module>../../plugins/org.eclipse.osee.rest.admin.test</module>
 		<module>../../plugins/org.eclipse.osee.rest.client</module>
 
+		<module>../../plugins/org.eclipse.osee.account.rest</module>
+		<module>../../plugins/org.eclipse.osee.account.rest.test</module>
+		<module>../../plugins/org.eclipse.osee.account.rest.model</module>
+
 		<module>../../features/org.eclipse.osee.x.core.external.feature</module>
 		<module>../../features/org.eclipse.osee.x.core.feature</module>
 
