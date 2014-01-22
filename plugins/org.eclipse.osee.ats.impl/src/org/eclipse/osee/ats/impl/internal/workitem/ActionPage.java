@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.action.ActionUtility;
 import org.eclipse.osee.ats.impl.action.ActionUtility.ActionLoadLevel;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
@@ -123,7 +122,12 @@ public class ActionPage {
       if (isShowHeaderFull()) {
          results = workItem.getStateMgr().getAssigneesStr();
       } else {
-         results = action.getSoleAttributeAsString(AtsAttributeTypes.CurrentState);
+         String currState = action.getSoleAttributeAsString(AtsAttributeTypes.CurrentState);
+         String assignees = currState.split(";")[1];
+         assignees = assignees.replaceAll("><", "; ");
+         assignees = assignees.replaceAll(">", "");
+         assignees = assignees.replaceAll("<", "");
+         results = assignees;
       }
       return results;
    }
