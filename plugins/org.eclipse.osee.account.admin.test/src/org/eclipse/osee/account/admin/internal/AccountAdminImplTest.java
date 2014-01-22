@@ -38,6 +38,9 @@ import org.eclipse.osee.account.admin.AccountLoginRequestBuilder;
 import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
+import org.eclipse.osee.authentication.admin.AuthenticatedUser;
+import org.eclipse.osee.authentication.admin.AuthenticationAdmin;
+import org.eclipse.osee.authentication.admin.AuthenticationRequest;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -72,15 +75,18 @@ public class AccountAdminImplTest {
    // @formatter:off
    @Mock private Log logger;
    @Mock private AccountStorage storage;
+   @Mock private AuthenticationAdmin authenticationAdmin;
    
    @Mock private CreateAccountRequest request;
    @Mock private Account account;
    @Mock private AccountAccess accountAccess;
    @Mock private AccountPreferences preferences;
    @Mock private Identifiable<String> newAccount;
+   @Mock private AuthenticatedUser authenticatedUser;
    @Captor private ArgumentCaptor<Map<String, String>> newPrefsCaptor;
    @Captor private ArgumentCaptor<String> tokenCaptor;
    @Captor private ArgumentCaptor<AccessDetails> accessDetailsCaptor;
+   @Captor private ArgumentCaptor<AuthenticationRequest> authenticationRequestCaptor;
    // @formatter:on
 
    private AccountAdminImpl accountAdmin;
@@ -92,6 +98,7 @@ public class AccountAdminImplTest {
       accountAdmin = new AccountAdminImpl();
       accountAdmin.setLogger(logger);
       accountAdmin.setAccountStorage(storage);
+      accountAdmin.setAuthenticationAdmin(authenticationAdmin);
       accountAdmin.start(Collections.<String, Object> emptyMap());
 
       when(newAccount.getGuid()).thenReturn(UUID);
@@ -621,10 +628,21 @@ public class AccountAdminImplTest {
       .accessedBy(accessDetails)//
       .build();
 
+      when(authenticationAdmin.authenticate(any(AuthenticationRequest.class))).thenReturn(authenticatedUser);
+      when(authenticatedUser.getName()).thenReturn(EMAIL);
+
       thrown.expect(AccountLoginException.class);
       thrown.expectMessage("Login Error - Unable to find account for username[" + userName + "] using authentication scheme[" + scheme + "] and userId[" + userName + "]");
       accountAdmin.login(request);
+
       verify(storage, times(0)).createAccountAccess(anyString(), any(Account.class), any(AccessDetails.class));
+
+      verify(authenticationAdmin).authenticate(authenticationRequestCaptor.capture());
+
+      AuthenticationRequest authRequest = authenticationRequestCaptor.getValue();
+      assertEquals(scheme, authRequest.getScheme());
+      assertEquals(userName, authRequest.getUserName());
+      assertEquals(password, authRequest.getPassword());
    }
 
    @Test
@@ -640,6 +658,8 @@ public class AccountAdminImplTest {
 
       when(storage.getAccountByEmail(EMAIL)).thenReturn(resultSet);
       when(storage.createAccountAccess(anyString(), eq(account), any(AccessDetails.class))).thenReturn(access);
+      when(authenticationAdmin.authenticate(any(AuthenticationRequest.class))).thenReturn(authenticatedUser);
+      when(authenticatedUser.getName()).thenReturn(EMAIL);
 
       AccountLoginRequest request = AccountLoginRequestBuilder.newBuilder()//
       .userName(userName)//
@@ -658,6 +678,13 @@ public class AccountAdminImplTest {
       AccessDetails actualDetails = accessDetailsCaptor.getValue();
       assertEquals(remoteAddress, actualDetails.getRemoteAddress());
       assertEquals(accessDetails, actualDetails.getAccessDetails());
+
+      verify(authenticationAdmin).authenticate(authenticationRequestCaptor.capture());
+
+      AuthenticationRequest authRequest = authenticationRequestCaptor.getValue();
+      assertEquals(scheme, authRequest.getScheme());
+      assertEquals(userName, authRequest.getUserName());
+      assertEquals(password, authRequest.getPassword());
    }
 
    @Test

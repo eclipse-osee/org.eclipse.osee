@@ -6,7 +6,8 @@ Bundle-Version: 0.17.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/*.xml
-Import-Package: org.eclipse.osee.framework.jdk.core.type,
+Import-Package: org.eclipse.osee.authentication.admin,
+ org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.logger
 Export-Package: org.eclipse.osee.account.admin,

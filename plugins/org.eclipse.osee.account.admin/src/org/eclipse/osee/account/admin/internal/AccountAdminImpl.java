@@ -25,6 +25,10 @@ import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
 import org.eclipse.osee.account.admin.internal.validator.FieldValidator;
+import org.eclipse.osee.authentication.admin.AuthenticatedUser;
+import org.eclipse.osee.authentication.admin.AuthenticationAdmin;
+import org.eclipse.osee.authentication.admin.AuthenticationRequest;
+import org.eclipse.osee.authentication.admin.AuthenticationRequestBuilder;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
@@ -38,6 +42,8 @@ public class AccountAdminImpl implements AccountAdmin {
 
    private Log logger;
    private AccountStorage storage;
+   private AuthenticationAdmin authenticationAdmin;
+
    private AccountFieldResolver resolver;
    private AccountValidator validator;
 
@@ -47,6 +53,10 @@ public class AccountAdminImpl implements AccountAdmin {
 
    public void setAccountStorage(AccountStorage storage) {
       this.storage = storage;
+   }
+
+   public void setAuthenticationAdmin(AuthenticationAdmin authenticationAdmin) {
+      this.authenticationAdmin = authenticationAdmin;
    }
 
    public void start(Map<String, Object> props) {
@@ -311,8 +321,15 @@ public class AccountAdminImpl implements AccountAdmin {
       return storage.getAccountAccessByAccessToken(accessToken);
    }
 
-   private String authenticate(AccountLoginRequest request) {
-      return request.getUserName();
+   private String authenticate(AccountLoginRequest login) {
+      AuthenticationRequest request = AuthenticationRequestBuilder.newBuilder()//
+      .scheme(login.getScheme())//
+      .userName(login.getUserName())//
+      .password(login.getPassword())//
+      .build();
+
+      AuthenticatedUser authenticate = authenticationAdmin.authenticate(request);
+      return authenticate.getName();
    }
 
    @Override

@@ -6,4 +6,5 @@
    </service>
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
    <reference bind="setAccountStorage" cardinality="1..1" interface="org.eclipse.osee.account.admin.ds.AccountStorage" name="AccountStorage" policy="static"/>
+   <reference bind="setAuthenticationAdmin" cardinality="1..1" interface="org.eclipse.osee.authentication.admin.AuthenticationAdmin" name="AuthenticationAdmin" policy="static"/>
 </scr:component>
