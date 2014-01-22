@@ -14,6 +14,8 @@ import org.databene.contiperf.junit.ContiPerfRule;
 import org.databene.contiperf.report.CSVLatencyReportModule;
 import org.databene.contiperf.report.CSVSummaryReportModule;
 import org.databene.contiperf.report.HtmlReportModule;
+import org.eclipse.osee.account.rest.client.AccountClient;
+import org.eclipse.osee.account.rest.client.AccountClientStandaloneSetup;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.OseeClientStandaloneSetup;
 import org.eclipse.osee.rest.client.OseeClientConfig;
@@ -41,6 +43,11 @@ public final class IntegrationUtil {
       String serverAddress = System.getProperty(OSEE_APPLICATION_SERVER, DEFAULT_OSEE_APPLICATION_SERVER);
       OseeClientConfig config = new OseeClientConfig(serverAddress);
       return config;
+   }
+
+   public static AccountClient createAccountClient() {
+      OseeClientConfig config = createClientConfig();
+      return AccountClientStandaloneSetup.createClient(config);
    }
 
 }
