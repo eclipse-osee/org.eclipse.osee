@@ -18,7 +18,7 @@ public enum RuleDefinitionOption {
    RequireStateHourSpentPrompt("StateDefinition Option: Will popup a dialog to prompt user for time spent in this state."),
    AddDecisionValidateBlockingReview("StateDefinition Option: Will auto-create a blocking decision review for this state requesting validation for this workflow."),
    AddDecisionValidateNonBlockingReview("StateDefinition Option: Will auto-create a non blocking decision review requesting validation of workflow changes."),
-   AllowTransitionWithWorkingBranch("StateDefinition Option: Will allow transition to next state without committing current working branch."),
+   AllowTransitionWithWorkingBranch("StateDefinition Option: Will allow transition to this state without committing current working branch."),
    ForceAssigneesToTeamLeads("StateDefinition Option: Will force this state to be assigned back to the configured team leads.  Useful for authorization state."),
    RequireTargetedVersion("StateDefinition and Team Definition Option: Requires workflow to be targeted for version before transition is allowed."),
    AllowPrivilegedEditToTeamMember("StateDefinition and Team Definition Option: Allow team member to privileged edit workflow assigned to team."),

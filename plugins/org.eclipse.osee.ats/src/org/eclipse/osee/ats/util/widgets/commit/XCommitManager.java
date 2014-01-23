@@ -334,15 +334,11 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
          String infoStr = "Double-click item to perform Action";
          if (xCommitManager != null && xCommitManager.getXCommitViewer() != null && xCommitManager.getXCommitViewer().getTeamArt() != null && xCommitManager.getXCommitViewer().getTeamArt() != null) {
             if (!AtsBranchManagerCore.isAllObjectsToCommitToConfigured(xCommitManager.getXCommitViewer().getTeamArt())) {
-               infoStr = "All branches must be configured and committed - Double-click item to perform Action";
+               infoStr = "All branches must be configured - Double-click item to perform Action";
                backgroundColor = SWT.COLOR_RED;
                returnStatus =
                   new Status(IStatus.ERROR, getClass().getSimpleName(),
                      "All branches must be configured and committed.");
-            } else if (!AtsBranchManagerCore.isBranchesAllCommitted(xCommitManager.getXCommitViewer().getTeamArt())) {
-               infoStr = "All branches must be committed - Double-click item to perform Action";
-               backgroundColor = SWT.COLOR_RED;
-               returnStatus = new Status(IStatus.ERROR, getClass().getSimpleName(), "All branches must be committed.");
             }
          }
          updateExtraInfoLabel(backgroundColor, infoStr);

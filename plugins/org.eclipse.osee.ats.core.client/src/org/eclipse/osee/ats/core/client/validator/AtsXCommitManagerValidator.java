@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.client.validator;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
@@ -39,7 +40,7 @@ public class AtsXCommitManagerValidator extends AtsXWidgetValidator {
                   if (!AtsBranchManagerCore.isAllObjectsToCommitToConfigured(teamArt)) {
                      return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef,
                         "All branches must be configured and committed.");
-                  } else if (!AtsBranchManagerCore.isBranchesAllCommitted(teamArt)) {
+                  } else if (!transitionToWithWorkingBranchRuleExists(toStateDef) && !AtsBranchManagerCore.isBranchesAllCommitted(teamArt)) {
                      return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef,
                         "All branches must be committed.");
                   }
@@ -53,4 +54,9 @@ public class AtsXCommitManagerValidator extends AtsXWidgetValidator {
       }
       return result;
    }
+
+   private boolean transitionToWithWorkingBranchRuleExists(IAtsStateDefinition toStateDef) {
+      return toStateDef.hasRule(RuleDefinitionOption.AllowTransitionWithWorkingBranch.name());
+   }
+
 }
