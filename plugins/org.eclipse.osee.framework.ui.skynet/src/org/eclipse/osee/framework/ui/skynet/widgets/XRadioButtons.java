@@ -69,9 +69,10 @@ public class XRadioButtons extends GenericXWidget {
       xButtons.add(rb);
    }
 
-   public void addButton(String item) {
+   public XRadioButton addButton(String item) {
       XRadioButton rb = new XRadioButton(item);
       xButtons.add(rb);
+      return rb;
    }
 
    public void selectAll(boolean selected) {

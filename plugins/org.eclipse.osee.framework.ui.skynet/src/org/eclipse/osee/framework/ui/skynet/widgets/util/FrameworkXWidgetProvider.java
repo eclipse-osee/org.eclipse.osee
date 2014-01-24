@@ -72,6 +72,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtons;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromMultiChoiceBranch;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromMultiChoiceDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XStackedDam;
@@ -159,6 +161,29 @@ public final class FrameworkXWidgetProvider {
             xWidget = new XButton(name);
          } else if (xWidgetName.equals("XButtonPush")) {
             xWidget = new XButtonPush(name);
+         } else if (xWidgetName.startsWith("XRadioButtons")) {
+            String values[] =
+               xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+            if (values.length > 0) {
+               XRadioButtons radio = new XRadioButtons(name, "");
+
+               if (xWidgetLayoutData.getXOptionHandler().contains(XOption.SORTED)) {
+                  Arrays.sort(values);
+               }
+
+               String defaultValue = xWidgetLayoutData.getDefaultValue();
+               for (String value : values) {
+                  XRadioButton button = radio.addButton(value);
+                  if (Strings.isValid(defaultValue) && value.equals(defaultValue)) {
+                     button.setSelected(true);
+                  }
+               }
+
+               xWidget = radio;
+            } else {
+               throw new OseeArgumentException(
+                  "Invalid XRadioButtons.  Must be \"XRadioButtons(option1,option2,option3)\"");
+            }
          } else if (xWidgetName.equals("XLabelDam")) {
             xWidget = new XLabelDam(name);
          } else if (xWidgetName.equals("XMembersList")) {
