@@ -12,15 +12,12 @@
    	policy="static" 
    	bind="setLogger" />
    	
-    <reference interface="org.eclipse.osee.event.EventService" name="EventService" 
-   	cardinality="1..1"  
-   	policy="static" 
-   	bind="setEventService" />
    
    <reference interface="javax.ws.rs.core.Application" name="Application" 
     cardinality="1..n" 
     policy="dynamic" 
     bind="addApplication" 
     unbind="removeApplication" />
+   <reference bind="setExecutorAdmin" cardinality="1..1" interface="org.eclipse.osee.executor.admin.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
     
 </scr:component>

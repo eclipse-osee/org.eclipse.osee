@@ -10,33 +10,35 @@
  *******************************************************************************/
 package org.eclipse.osee.rest.admin.internal;
 
-import java.util.Map;
+import java.util.Iterator;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.FutureTask;
 import javax.ws.rs.core.Application;
-import org.eclipse.osee.event.EventService;
+import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.rest.admin.RestAdminConstants;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
+import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 /**
  * @author Roberto E. Escobar
  */
 public class RestServletRegistry {
 
-   private final ConcurrentHashMap<String, RestServletContainer> servlets =
-      new ConcurrentHashMap<String, RestServletContainer>();
+   private final ConcurrentHashMap<String, LazyObject<RestServletContainer>> servlets =
+      new ConcurrentHashMap<String, LazyObject<RestServletContainer>>();
 
    private final Log logger;
    private final HttpService httpService;
-   private final EventService eventService;
    private final RestComponentFactory factory;
 
-   public RestServletRegistry(Log logger, HttpService httpService, EventService eventService, RestComponentFactory factory) {
+   public RestServletRegistry(Log logger, HttpService httpService, RestComponentFactory factory) {
       super();
       this.logger = logger;
       this.httpService = httpService;
-      this.eventService = eventService;
       this.factory = factory;
    }
 
@@ -44,59 +46,93 @@ public class RestServletRegistry {
       String componentName = RestServiceUtils.getComponentName(reference);
       String contextName = RestServiceUtils.getContextName(reference);
 
-      boolean requiresRegistration = false;
+      LazyObject<RestServletContainer> provider = getProvider(contextName);
+      RestServletContainer container = provider.get();
 
-      RestServletContainer newContainer = factory.createContainer(logger);
+      Bundle bundle = reference.getBundle();
+      Application application = bundle.getBundleContext().getService(reference);
+      container.addApplication(componentName, bundle, application);
 
-      RestServletContainer container = servlets.putIfAbsent(contextName, newContainer);
-      if (container == null) {
-         container = newContainer;
-         requiresRegistration = true;
-      }
-
-      synchronized (container) {
-         container.addApplication(componentName, reference);
-         notifyRegistration(componentName, contextName);
-
-         if (requiresRegistration) {
-            httpService.registerServlet(contextName, container.getContainer(), null, container.getHttpContext());
-            logger.debug("Registered servlet for [%s] with alias [%s]\n", componentName, contextName);
-         } else {
-            container.reload();
-         }
-      }
+      container.reload();
    }
 
    public void deregister(ServiceReference<Application> reference) {
       String componentName = RestServiceUtils.getComponentName(reference);
       String contextName = RestServiceUtils.getContextName(reference);
 
-      logger.debug("De-registering servlet for [%s] with alias [%s]\n", componentName, contextName);
-      RestServletContainer container = servlets.get(contextName);
-      if (container != null) {
-         synchronized (container) {
-            container.removeApplication(componentName);
+      LazyObject<RestServletContainer> provider = getProvider(contextName);
+      RestServletContainer container = provider.get();
 
-            if (container.isEmpty()) {
-               servlets.remove(contextName);
-               httpService.unregister(contextName);
-               container.destroy();
-            } else {
-               container.reload();
-            }
+      container.removeApplication(componentName);
+      if (container.isEmpty()) {
+         removeContainer(provider);
+      } else {
+         container.reload();
+      }
+   }
+
+   public void cleanUp() {
+      Iterator<LazyObject<RestServletContainer>> iterator = servlets.values().iterator();
+      while (iterator.hasNext()) {
+         LazyObject<RestServletContainer> provider = iterator.next();
+         RestServletContainer container = provider.get();
+         container.cleanUp();
+         removeContainer(provider);
+         iterator.remove();
+      }
+      servlets.clear();
+   }
+
+   private void removeContainer(LazyObject<RestServletContainer> provider) {
+      RestServletContainer container = provider.get();
+      String contextName = container.getContext();
+
+      logger.debug("Remove - servlet context[%s]", contextName);
+      servlets.remove(contextName);
+      httpService.unregister(contextName);
+      container.destroy();
+      provider.invalidate();
+   }
+
+   private LazyObject<RestServletContainer> getProvider(final String contextName) {
+      LazyObject<RestServletContainer> provider = servlets.get(contextName);
+      if (provider == null) {
+         LazyObject<RestServletContainer> newProvider = new ServletContainerProvider(contextName);
+         provider = servlets.putIfAbsent(contextName, newProvider);
+         if (provider == null) {
+            provider = newProvider;
          }
       }
-      notifyDeRegistration(componentName, contextName);
+      return provider;
    }
 
-   private void notifyRegistration(String componentName, String contextName) {
-      Map<String, String> data = RestServiceUtils.toMap(componentName, contextName);
-      eventService.postEvent(RestAdminConstants.REST_REGISTRATION_EVENT, data);
-   }
+   private class ServletContainerProvider extends LazyObject<RestServletContainer> implements ObjectProvider<RestServletContainer> {
 
-   private void notifyDeRegistration(String componentName, String contextName) {
-      Map<String, String> data = RestServiceUtils.toMap(componentName, contextName);
-      eventService.postEvent(RestAdminConstants.REST_DEREGISTRATION_EVENT, data);
+      private final String contextName;
+
+      public ServletContainerProvider(String contextName) {
+         super();
+         this.contextName = contextName;
+      }
+
+      @Override
+      protected FutureTask<RestServletContainer> createLoaderTask() {
+         Callable<RestServletContainer> newCallable = new Callable<RestServletContainer>() {
+            @Override
+            public RestServletContainer call() throws Exception {
+               logger.debug("Add - servlet context[%s]", contextName);
+               RestServletContainer container = factory.createContainer(contextName);
+
+               String name = container.getContext();
+               ServletContainer servletContainer = container.getContainer();
+               HttpContext httpContext = container.getHttpContext();
+
+               httpService.registerServlet(name, servletContainer, null, httpContext);
+               return container;
+            }
+         };
+         return new FutureTask<RestServletContainer>(newCallable);
+      }
    }
 
 }

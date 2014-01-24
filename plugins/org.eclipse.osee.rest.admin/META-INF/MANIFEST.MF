@@ -19,7 +19,7 @@ Import-Package: com.google.common.io,
  javax.ws.rs,
  javax.ws.rs.core,
  javax.ws.rs.ext,
- org.eclipse.osee.event,
+ org.eclipse.osee.executor.admin,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.logger,
@@ -28,7 +28,6 @@ Import-Package: com.google.common.io,
  org.osgi.service.http
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.rest.admin
-Require-Bundle: org.eclipse.core.runtime,
- org.codehaus.jackson.core,
+Require-Bundle: org.codehaus.jackson.core,
  org.codehaus.jackson.jaxrs,
  org.codehaus.jackson.mapper

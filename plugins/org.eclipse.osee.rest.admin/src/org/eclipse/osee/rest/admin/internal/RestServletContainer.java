@@ -16,7 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.logger.Log;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;
 import com.sun.jersey.api.core.DefaultResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
@@ -27,25 +26,32 @@ import com.sun.jersey.spi.container.servlet.ServletContainer;
  */
 public class RestServletContainer {
    private final Map<String, Application> applications = new ConcurrentHashMap<String, Application>();
-   private final Map<String, Bundle> bundles = new ConcurrentHashMap<String, Bundle>();
 
+   private final Log logger;
+   private final String baseContext;
+   private final Map<String, Bundle> bundles;
    private final ServletContainer container;
    private final DefaultResourceConfig resourceConfig;
    private final HttpContext context;
    private final BundleWadlGeneratorConfig wadl;
 
-   public RestServletContainer(Log logger, ServletContainer container, DefaultResourceConfig resourceConfig) {
+   public RestServletContainer(Log logger, String baseContext, Map<String, Bundle> bundles, ServletContainer container, DefaultResourceConfig resourceConfig, HttpContext context, BundleWadlGeneratorConfig wadl) {
       super();
+      this.logger = logger;
+      this.baseContext = baseContext;
+      this.bundles = bundles;
       this.container = container;
       this.resourceConfig = resourceConfig;
-      this.wadl = new BundleWadlGeneratorConfig(logger, bundles.values());
-      this.context = new BundleHttpContext(bundles.values());
+      this.context = context;
+      this.wadl = wadl;
    }
 
-   public void addApplication(String key, ServiceReference<Application> reference) {
-      Bundle bundle = reference.getBundle();
+   public String getContext() {
+      return baseContext;
+   }
 
-      Application application = bundle.getBundleContext().getService(reference);
+   public void addApplication(String key, Bundle bundle, Application application) {
+      logger.debug("Add - servlet context[%s] - application[%s]", getContext(), key);
       applications.put(key, application);
       resourceConfig.add(application);
       bundles.put(key, bundle);
@@ -62,6 +68,7 @@ public class RestServletContainer {
    }
 
    public void removeApplication(String key) {
+      logger.debug("Remove - servlet context[%s] - application[%s]", getContext(), key);
       Application remove = applications.remove(key);
       if (remove != null) {
          removeResources(resourceConfig.getClasses(), remove.getClasses());
@@ -73,16 +80,18 @@ public class RestServletContainer {
       }
    }
 
-   public Iterable<String> getComponents() {
-      return applications.keySet();
-   }
-
-   public boolean isEmpty() {
-      return applications.isEmpty();
+   public void cleanUp() {
+      for (String key : applications.keySet()) {
+         removeApplication(key);
+      }
    }
 
    private void removeResources(Set<?> set, Set<?> toRemove) {
       set.removeAll(toRemove);
+   }
+
+   public boolean isEmpty() {
+      return applications.isEmpty();
    }
 
    public void destroy() {
@@ -100,4 +109,5 @@ public class RestServletContainer {
    public HttpContext getHttpContext() {
       return context;
    }
+
 }

@@ -31,15 +31,16 @@ import com.sun.jersey.server.wadl.generators.resourcedoc.WadlGeneratorResourceDo
 public class BundleWadlGeneratorConfig extends WadlGeneratorConfig {
 
    private final Log logger;
-   private final Iterable<Bundle> bundles;
+   private final ObjectProvider<Iterable<Bundle>> provider;
 
-   public BundleWadlGeneratorConfig(Log logger, Iterable<Bundle> bundles) {
+   public BundleWadlGeneratorConfig(Log logger, ObjectProvider<Iterable<Bundle>> provider) {
       this.logger = logger;
-      this.bundles = bundles;
+      this.provider = provider;
    }
 
    public boolean hasExtendedWadl() {
       boolean result = false;
+      Iterable<Bundle> bundles = provider.get();
       for (Bundle bundle : bundles) {
          result = hasExtendedWadl(bundle);
          if (result) {
@@ -91,6 +92,7 @@ public class BundleWadlGeneratorConfig extends WadlGeneratorConfig {
    private InputStream getAsInputStream(String path, String xmlRoot) throws Exception {
       RestResourceConcatenator concat = new RestResourceConcatenator();
       concat.initialize(xmlRoot);
+      Iterable<Bundle> bundles = provider.get();
       for (Bundle bundle : bundles) {
          if (hasExtendedWadl(bundle)) {
             URL url = bundle.getResource(path);
