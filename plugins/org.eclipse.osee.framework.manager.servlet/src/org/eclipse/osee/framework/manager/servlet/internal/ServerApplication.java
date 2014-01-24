@@ -8,44 +8,34 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.internal;
+package org.eclipse.osee.framework.manager.servlet.internal;
 
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.core.Application;
-import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 
 /**
  * Get application.wadl at this context to get rest documentation
  * 
  * @author Roberto E. Escobar
  */
-public class OrcsApplication extends Application {
+public class ServerApplication extends Application {
 
    private final Set<Object> resources = new HashSet<Object>();
-   private final Set<Class<?>> classes = new HashSet<Class<?>>();
-   private static OrcsApi orcsApi;
 
-   public void setOrcsApi(OrcsApi orcsApi) {
-      OrcsApplication.orcsApi = orcsApi;
-   }
+   private IApplicationServerManager serverManager;
 
-   public static OrcsApi getOrcsApi() {
-      return orcsApi;
+   public void setServerManager(IApplicationServerManager serverManager) {
+      this.serverManager = serverManager;
    }
 
    public void start() {
-      classes.add(BranchesResource.class);
+      resources.add(new ClientResource(serverManager));
    }
 
    public void stop() {
       resources.clear();
-      classes.clear();
-   }
-
-   @Override
-   public Set<Class<?>> getClasses() {
-      return classes;
    }
 
    @Override
