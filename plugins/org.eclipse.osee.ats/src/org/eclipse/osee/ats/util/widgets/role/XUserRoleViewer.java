@@ -341,6 +341,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
                roleMgr.addOrUpdateUserRole(userRole, reviewArt);
                changes.add(reviewArt);
             }
+            roleMgr.saveToArtifact(changes);
             changes.execute();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
