@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Osee Display View Web
 Bundle-SymbolicName: org.eclipse.osee.display.view.web
-Bundle-Version: 0.16.0.qualifier
+Bundle-Version: 0.16.1.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.vaadin,
