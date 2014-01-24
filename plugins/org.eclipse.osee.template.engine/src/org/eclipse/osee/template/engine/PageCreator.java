@@ -112,17 +112,23 @@ public final class PageCreator {
 
             addKeyValuePair(id, substitution);
          }
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex);
       } finally {
          scanner.close();
       }
    }
 
    public String realizePage(ResourceToken templateResource) {
-      return realizePage(registry.getResource(templateResource.getGuid())).toString();
+      StringBuilder page = new StringBuilder(NumOfCharsInTypicalSmallPage);
+      return realizePage(templateResource, page).toString();
    }
 
-   private StringBuilder realizePage(InputStream template) {
-      StringBuilder page = new StringBuilder(NumOfCharsInTypicalSmallPage);
+   public Appendable realizePage(ResourceToken templateResource, Appendable page) {
+      return realizePage(registry.getResource(templateResource.getGuid()), page);
+   }
+
+   private Appendable realizePage(InputStream template, Appendable page) {
       Scanner scanner = new Scanner(template, "UTF-8");
       try {
          scanner.useDelimiter(xmlProcessingInstructionStartOrEnd);
@@ -132,6 +138,8 @@ public final class PageCreator {
             processToken(page, scanner.next(), isProcessingInstruction);
             isProcessingInstruction = !isProcessingInstruction;
          }
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex);
       } finally {
          scanner.close();
       }
@@ -154,7 +162,7 @@ public final class PageCreator {
       throw new OseeArgumentException("include id from token [%s] is in of the expected format", token);
    }
 
-   private void processToken(StringBuilder page, String token, boolean isProcessingInstruction) {
+   private void processToken(Appendable page, String token, boolean isProcessingInstruction) throws IOException {
       if (isProcessingInstruction) {
          if (token.startsWith("include")) {
             appendInclude(page, token);
@@ -188,7 +196,7 @@ public final class PageCreator {
       return beginIndex > endIndex ? "" : token.substring(beginIndex, endIndex);
    }
 
-   private void appendInclude(StringBuilder page, String tokenStr) {
+   private void appendInclude(Appendable page, String tokenStr) throws IOException {
       Long universalId = toUniversalId(tokenStr);
       ResourceToken token = registry.getResourceToken(universalId);
       String name = token.getName();
