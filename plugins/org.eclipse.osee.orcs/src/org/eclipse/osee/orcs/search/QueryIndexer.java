@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.model.ReadableBranch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -24,7 +24,7 @@ public interface QueryIndexer {
 
    CancellableCallable<Integer> indexAllFromQueue(IndexerCollector... collector);
 
-   CancellableCallable<Integer> indexBranches(Set<ReadableBranch> branches, boolean indexOnlyMissing, IndexerCollector... collector);
+   CancellableCallable<Integer> indexBranches(Set<BranchReadable> branches, boolean indexOnlyMissing, IndexerCollector... collector);
 
    /**
     * Create tags for attributes specified in xml stream. Notifies listener of tagging events. <b>

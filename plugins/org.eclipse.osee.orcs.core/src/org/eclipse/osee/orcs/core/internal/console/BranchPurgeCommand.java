@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.ReadableBranch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -107,7 +107,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          unArchived, unDeleted, baseline, runPurge);
    }
 
-   private static class PurgeBranchCallable extends CancellableCallable<List<ReadableBranch>> {
+   private static class PurgeBranchCallable extends CancellableCallable<List<BranchReadable>> {
 
       private final Console console;
       private final OrcsBranch orcsBranch;
@@ -192,7 +192,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
       }
 
       @Override
-      public List<ReadableBranch> call() throws Exception {
+      public List<BranchReadable> call() throws Exception {
          Collection<Branch> branchesToPurge = getBranchesToPurge();
          branchesToPurge.addAll(getMergeBranches(branchesToPurge));
 
@@ -206,13 +206,13 @@ public final class BranchPurgeCommand implements ConsoleCommand {
                console.writeln("Branch [%s] guid [%s] will be purged!", toPurge.getName(), toPurge.getGuid());
             }
 
-            List<ReadableBranch> purged = new LinkedList<ReadableBranch>();
+            List<BranchReadable> purged = new LinkedList<BranchReadable>();
             if (runPurge) {
                int size = orderedBranches.size();
                int count = 0;
                for (Branch aBranch : orderedBranches) {
                   console.writeln("Purging Branch [%s of %s]: [%s]", ++count, size, aBranch);
-                  Callable<List<ReadableBranch>> callable = orcsBranch.purgeBranch(aBranch, false);
+                  Callable<List<BranchReadable>> callable = orcsBranch.purgeBranch(aBranch, false);
                   purged.addAll(callable.call());
                }
             }

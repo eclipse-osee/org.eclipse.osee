@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.ReadableBranch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -46,31 +46,31 @@ public interface OrcsBranch {
    // branch state
    // assoc art id
 
-   Callable<ReadableBranch> createTopLevelBranch(IOseeBranch branch, ArtifactReadable author) throws OseeCoreException;
+   Callable<BranchReadable> createTopLevelBranch(IOseeBranch branch, ArtifactReadable author) throws OseeCoreException;
 
-   Callable<ReadableBranch> createBaselineBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException;
+   Callable<BranchReadable> createBaselineBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException;
 
-   Callable<ReadableBranch> createWorkingBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException;
+   Callable<BranchReadable> createWorkingBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException;
 
-   Callable<ReadableBranch> createCopyTxBranch(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException;
+   Callable<BranchReadable> createCopyTxBranch(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException;
 
-   Callable<ReadableBranch> createPortBranch(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException;
-
-   /////////////////////////////////////////////////////////////////////////
-
-   Callable<ReadableBranch> changeBranchState(IOseeBranch branch, BranchState newState);
-
-   Callable<ReadableBranch> changeBranchType(IOseeBranch branch, BranchType branchType);
-
-   Callable<ReadableBranch> deleteBranch(IOseeBranch branch);
+   Callable<BranchReadable> createPortBranch(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException;
 
    /////////////////////////////////////////////////////////////////////////
 
-   Callable<ReadableBranch> createBranch(CreateBranchData branchData);
+   Callable<BranchReadable> changeBranchState(IOseeBranch branch, BranchState newState);
 
-   Callable<ReadableBranch> archiveUnarchiveBranch(IOseeBranch branch, ArchiveOperation archiveOp);
+   Callable<BranchReadable> changeBranchType(IOseeBranch branch, BranchType branchType);
 
-   Callable<List<ReadableBranch>> purgeBranch(IOseeBranch branch, boolean recurse);
+   Callable<BranchReadable> deleteBranch(IOseeBranch branch);
+
+   /////////////////////////////////////////////////////////////////////////
+
+   Callable<BranchReadable> createBranch(CreateBranchData branchData);
+
+   Callable<BranchReadable> archiveUnarchiveBranch(IOseeBranch branch, ArchiveOperation archiveOp);
+
+   Callable<List<BranchReadable>> purgeBranch(IOseeBranch branch, boolean recurse);
 
    Callable<TransactionRecord> commitBranch(ArtifactReadable committer, IOseeBranch source, IOseeBranch destination);
 
@@ -85,6 +85,6 @@ public interface OrcsBranch {
    Callable<URI> checkBranchExchangeIntegrity(URI fileToCheck);
 
    // For backwards compatibility - should be removed in the future or added to branchQuery
-   ReadableBranch getBranchFromId(long id) throws OseeCoreException;
+   BranchReadable getBranchFromId(long id) throws OseeCoreException;
 
 }

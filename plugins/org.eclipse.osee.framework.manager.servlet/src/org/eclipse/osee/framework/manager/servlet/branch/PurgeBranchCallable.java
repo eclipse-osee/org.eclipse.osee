@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.PurgeBranchRequest;
-import org.eclipse.osee.framework.core.model.ReadableBranch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -36,7 +36,7 @@ public class PurgeBranchCallable extends AbstractBranchCallable<PurgeBranchReque
       IOseeBranch toPurge = getBranchOps().getBranchFromId(request.getBranchId());
       boolean recurse = request.isRecursive();
 
-      Callable<List<ReadableBranch>> callable = getBranchOps().purgeBranch(toPurge, recurse);
+      Callable<List<BranchReadable>> callable = getBranchOps().purgeBranch(toPurge, recurse);
       callAndCheckForCancel(callable);
 
       return Boolean.TRUE;

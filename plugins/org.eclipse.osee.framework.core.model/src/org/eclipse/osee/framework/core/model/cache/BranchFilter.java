@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.core.model.ReadableBranch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -45,7 +45,7 @@ public class BranchFilter {
       this(BranchArchivedState.ALL, branchTypes);
    }
 
-   public boolean matches(ReadableBranch branch) throws OseeCoreException {
+   public boolean matches(BranchReadable branch) throws OseeCoreException {
       if (associatedArtifact != null && !branch.getAssociatedArtifactId().equals(associatedArtifact.getArtId())) {
          return false;
       }

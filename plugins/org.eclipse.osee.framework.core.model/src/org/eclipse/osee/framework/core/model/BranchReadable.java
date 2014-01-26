@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Roberto E. Escobar
  */
-public interface ReadableBranch extends IOseeBranch {
+public interface BranchReadable extends IOseeBranch {
 
    long getId();
 
@@ -39,19 +39,19 @@ public interface ReadableBranch extends IOseeBranch {
 
    TransactionRecord getSourceTransaction() throws OseeCoreException;
 
-   ReadableBranch getParentBranch() throws OseeCoreException;
+   BranchReadable getParentBranch() throws OseeCoreException;
 
    boolean hasParentBranch() throws OseeCoreException;
 
-   Collection<? extends ReadableBranch> getChildBranches() throws OseeCoreException;
+   Collection<? extends BranchReadable> getChildBranches() throws OseeCoreException;
 
-   Collection<? extends ReadableBranch> getChildBranches(boolean recurse) throws OseeCoreException;
+   Collection<? extends BranchReadable> getChildBranches(boolean recurse) throws OseeCoreException;
 
-   Collection<? extends ReadableBranch> getAllChildBranches(boolean recurse) throws OseeCoreException;
+   Collection<? extends BranchReadable> getAllChildBranches(boolean recurse) throws OseeCoreException;
 
-   void getChildBranches(Collection<? extends ReadableBranch> children, boolean recurse, BranchFilter filter) throws OseeCoreException;
+   void getChildBranches(Collection<? extends BranchReadable> children, boolean recurse, BranchFilter filter) throws OseeCoreException;
 
-   Collection<? extends ReadableBranch> getAncestors() throws OseeCoreException;
+   Collection<? extends BranchReadable> getAncestors() throws OseeCoreException;
 
    boolean isAncestorOf(IOseeBranch branch) throws OseeCoreException;
 

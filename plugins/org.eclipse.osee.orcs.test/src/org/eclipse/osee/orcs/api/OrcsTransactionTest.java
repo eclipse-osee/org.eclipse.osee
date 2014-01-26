@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.ReadableBranch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -209,9 +209,9 @@ public class OrcsTransactionTest {
 
       // duplicate on different branch
       IOseeBranch branchToken = TokenFactory.createBranch(GUID.create(), "DuplicateArtifact tests");
-      Callable<ReadableBranch> callableBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact);
+      Callable<BranchReadable> callableBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact);
 
-      ReadableBranch topLevelBranch = callableBranch.call();
+      BranchReadable topLevelBranch = callableBranch.call();
 
       TransactionBuilder transaction2 =
          txFactory.createTransaction(topLevelBranch, userArtifact, testName.getMethodName());
@@ -229,7 +229,7 @@ public class OrcsTransactionTest {
          query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
 
       IOseeBranch branchToken = TokenFactory.createBranch(GUID.create(), "IntroduceArtifact tests");
-      ReadableBranch topLevelBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact).call();
+      BranchReadable topLevelBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact).call();
 
       TransactionBuilder transaction =
          txFactory.createTransaction(topLevelBranch, userArtifact, testName.getMethodName());

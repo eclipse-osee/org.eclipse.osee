@@ -13,14 +13,14 @@ package org.eclipse.osee.orcs.core.internal.branch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.ReadableBranch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 
-public class ChangeBranchTypeCallable extends AbstractBranchCallable<ReadableBranch> {
+public class ChangeBranchTypeCallable extends AbstractBranchCallable<BranchReadable> {
 
    private final BranchCache cache;
    private final IOseeBranch branchToken;
@@ -34,7 +34,7 @@ public class ChangeBranchTypeCallable extends AbstractBranchCallable<ReadableBra
    }
 
    @Override
-   protected ReadableBranch innerCall() throws Exception {
+   protected BranchReadable innerCall() throws Exception {
       Conditions.checkNotNull(branchToken, "branch");
       Conditions.checkNotNull(branchType, "branchType");
 

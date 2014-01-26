@@ -13,6 +13,6 @@ package org.eclipse.osee.framework.core.model;
 /**
  * @author Roberto E. Escobar
  */
-public interface WriteableBranch extends ReadableBranch {
+public interface WriteableBranch extends BranchReadable {
    // Place-holder
 }

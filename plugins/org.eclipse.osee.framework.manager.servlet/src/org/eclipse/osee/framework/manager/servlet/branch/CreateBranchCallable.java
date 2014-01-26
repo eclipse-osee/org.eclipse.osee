@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.BranchCreationRequest;
 import org.eclipse.osee.framework.core.message.BranchCreationResponse;
-import org.eclipse.osee.framework.core.model.ReadableBranch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -54,11 +54,11 @@ public class CreateBranchCallable extends AbstractBranchCallable<BranchCreationR
       createData.setMergeDestinationBranchId(request.getMergeDestinationBranchId());
       createData.setMergeAddressingQueryId(request.getMergeAddressingQueryId());
       createData.setTxCopyBranchType(request.txIsCopied());
-      Callable<ReadableBranch> callable;
+      Callable<BranchReadable> callable;
 
       callable = getBranchOps().createBranch(createData);
 
-      ReadableBranch newBranch = callAndCheckForCancel(callable);
+      BranchReadable newBranch = callAndCheckForCancel(callable);
 
       BranchCreationResponse creationResponse = new BranchCreationResponse(-1);
       creationResponse.setBranchId(newBranch.getId());

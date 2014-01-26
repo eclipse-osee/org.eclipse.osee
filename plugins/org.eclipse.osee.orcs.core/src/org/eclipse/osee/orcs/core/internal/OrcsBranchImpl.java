@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.LazyObject;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.ReadableBranch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
@@ -69,22 +69,22 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<ReadableBranch> createBranch(CreateBranchData branchData) {
+   public Callable<BranchReadable> createBranch(CreateBranchData branchData) {
       return new CreateBranchCallable(logger, session, branchStore, branchData);
    }
 
    @Override
-   public Callable<ReadableBranch> archiveUnarchiveBranch(IOseeBranch branch, ArchiveOperation archiveOp) {
+   public Callable<BranchReadable> archiveUnarchiveBranch(IOseeBranch branch, ArchiveOperation archiveOp) {
       return new ArchiveUnarchiveBranchCallable(logger, session, branchStore, branchCache, branch, archiveOp);
    }
 
    @Override
-   public Callable<ReadableBranch> deleteBranch(IOseeBranch branch) {
+   public Callable<BranchReadable> deleteBranch(IOseeBranch branch) {
       return new DeleteBranchCallable(logger, session, branchStore, branchCache, branch);
    }
 
    @Override
-   public Callable<List<ReadableBranch>> purgeBranch(IOseeBranch branch, boolean recurse) {
+   public Callable<List<BranchReadable>> purgeBranch(IOseeBranch branch, boolean recurse) {
       return new PurgeBranchCallable(logger, session, branchStore, branchCache, branch, recurse);
    }
 
@@ -107,17 +107,17 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<ReadableBranch> changeBranchState(IOseeBranch branch, BranchState newState) {
+   public Callable<BranchReadable> changeBranchState(IOseeBranch branch, BranchState newState) {
       return new ChangeBranchStateCallable(logger, session, branchStore, branchCache, branch, newState);
    }
 
    @Override
-   public Callable<ReadableBranch> changeBranchType(IOseeBranch branch, BranchType branchType) {
+   public Callable<BranchReadable> changeBranchType(IOseeBranch branch, BranchType branchType) {
       return new ChangeBranchTypeCallable(logger, session, branchStore, branchCache, branch, branchType);
    }
 
    @Override
-   public ReadableBranch getBranchFromId(long id) throws OseeCoreException {
+   public BranchReadable getBranchFromId(long id) throws OseeCoreException {
       return branchCache.getById(id);
    }
 
@@ -137,34 +137,34 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<ReadableBranch> createTopLevelBranch(IOseeBranch branch, ArtifactReadable author) throws OseeCoreException {
+   public Callable<BranchReadable> createTopLevelBranch(IOseeBranch branch, ArtifactReadable author) throws OseeCoreException {
       CreateBranchData branchData = branchDataFactory.createTopLevelBranchData(branch, author);
       return createBranch(branchData);
    }
 
    @Override
-   public Callable<ReadableBranch> createBaselineBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public Callable<BranchReadable> createBaselineBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
       CreateBranchData branchData =
          branchDataFactory.createBaselineBranchData(branch, author, parent, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
-   public Callable<ReadableBranch> createWorkingBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public Callable<BranchReadable> createWorkingBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
       CreateBranchData branchData =
          branchDataFactory.createWorkingBranchData(branch, author, parent, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
-   public Callable<ReadableBranch> createCopyTxBranch(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public Callable<BranchReadable> createCopyTxBranch(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
       CreateBranchData branchData =
          branchDataFactory.createCopyTxBranchData(branch, author, fromTransaction, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
-   public Callable<ReadableBranch> createPortBranch(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public Callable<BranchReadable> createPortBranch(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
       CreateBranchData branchData =
          branchDataFactory.createPortBranchData(branch, author, fromTransaction, associatedArtifact);
       return createBranch(branchData);

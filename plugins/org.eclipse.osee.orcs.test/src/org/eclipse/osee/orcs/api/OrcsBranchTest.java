@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.model.ReadableBranch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -79,10 +79,10 @@ public class OrcsBranchTest {
       ArtifactReadable author = getSystemUser();
 
       ITransaction tx = TokenFactory.createTransaction(SOURCE_TX_ID);
-      Callable<ReadableBranch> callable = branchInterface.createCopyTxBranch(branch, author, tx, null);
+      Callable<BranchReadable> callable = branchInterface.createCopyTxBranch(branch, author, tx, null);
 
       assertNotNull(callable);
-      ReadableBranch priorBranch = callable.call();
+      BranchReadable priorBranch = callable.call();
 
       // in the database, on the common branch, the users are all created in transaction 8
       // the common branch will have one user named Joe Smith
@@ -103,10 +103,10 @@ public class OrcsBranchTest {
       IOseeBranch postbranch = TokenFactory.createBranch(GUID.create(), "PostBranch");
 
       ITransaction tx1 = TokenFactory.createTransaction(CHANGED_TX_ID);
-      Callable<ReadableBranch> postCallable = branchInterface.createCopyTxBranch(postbranch, author, tx1, null);
+      Callable<BranchReadable> postCallable = branchInterface.createCopyTxBranch(postbranch, author, tx1, null);
 
       assertNotNull(postCallable);
-      ReadableBranch postBranch = postCallable.call();
+      BranchReadable postBranch = postCallable.call();
 
       int postResult = query.fromBranch(postBranch).andNameEquals(ARTIFACT_NAME).getResults().size();
       assertEquals(1, postResult);
@@ -131,10 +131,10 @@ public class OrcsBranchTest {
       ArtifactReadable author = getSystemUser();
 
       ITransaction tx = TokenFactory.createTransaction(SOURCE_TX_ID);
-      Callable<ReadableBranch> callableBranch = branchInterface.createCopyTxBranch(branch, author, tx, null);
+      Callable<BranchReadable> callableBranch = branchInterface.createCopyTxBranch(branch, author, tx, null);
 
       // the new branch will contain two transactions - these should have the same change report as the original branch
-      ReadableBranch postBranch = callableBranch.call();
+      BranchReadable postBranch = callableBranch.call();
 
       callable = branchInterface.compareBranch(postBranch);
       List<ChangeItem> newItems = callable.call();
@@ -148,8 +148,8 @@ public class OrcsBranchTest {
       // set up the initial branch
       IOseeBranch branch = TokenFactory.createBranch(GUID.create(), "BaseBranch");
 
-      Callable<ReadableBranch> callableBranch = branchInterface.createTopLevelBranch(branch, author);
-      ReadableBranch base = callableBranch.call();
+      Callable<BranchReadable> callableBranch = branchInterface.createTopLevelBranch(branch, author);
+      BranchReadable base = callableBranch.call();
       // put some changes on the base branch
       TransactionBuilder tx = txFactory.createTransaction(base, author, "add some changes");
       ArtifactId folder = tx.createArtifact(CoreArtifactTypes.Folder, "BaseFolder");
@@ -158,10 +158,10 @@ public class OrcsBranchTest {
       // create working branch off of base to make some changes
       // set up the child branch
       IOseeBranch branchName = TokenFactory.createBranch(GUID.create(), "ChildBranch");
-      Callable<ReadableBranch> callableChildBranch =
+      Callable<BranchReadable> callableChildBranch =
          branchInterface.createWorkingBranch(branchName, author, base, null);
 
-      ReadableBranch childBranch = callableChildBranch.call();
+      BranchReadable childBranch = callableChildBranch.call();
 
       TransactionBuilder tx2 = txFactory.createTransaction(childBranch, author, "modify and make new arts");
       ArtifactReadable readableFolder = query.fromBranch(childBranch).andIds(folder).getResults().getExactlyOne();
@@ -178,9 +178,9 @@ public class OrcsBranchTest {
       // create a disjoint working branch from common
 
       IOseeBranch commonName = TokenFactory.createBranch(GUID.create(), "ChildFromCommonBranch");
-      Callable<ReadableBranch> callableBranchFromCommon =
+      Callable<BranchReadable> callableBranchFromCommon =
          branchInterface.createWorkingBranch(commonName, author, CoreBranches.COMMON, null);
-      ReadableBranch commonChildBranch = callableBranchFromCommon.call();
+      BranchReadable commonChildBranch = callableBranchFromCommon.call();
 
       branchInterface.commitBranch(author, childBranch, commonChildBranch).call();
 

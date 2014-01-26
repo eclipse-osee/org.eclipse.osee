@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.model.ReadableBranch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -63,11 +63,11 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
    private final AttributeTypes types;
    private final IndexingTaskConsumer consumer;
    private final IndexerCollector collector;
-   private final Collection<ReadableBranch> branches;
+   private final Collection<BranchReadable> branches;
    private final Collection<? extends IAttributeType> typesToTag;
    private final boolean tagOnlyMissingGammas;
 
-   public IndexBranchesDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service, IdentityLocator idService, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, Collection<? extends IAttributeType> typesToTag, Collection<ReadableBranch> branches, boolean tagOnlyMissingGammas) {
+   public IndexBranchesDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service, IdentityLocator idService, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, Collection<? extends IAttributeType> typesToTag, Collection<BranchReadable> branches, boolean tagOnlyMissingGammas) {
       super(logger, session, service);
       this.idService = idService;
       this.types = types;
@@ -83,7 +83,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
       getLogger().info(getParamInfo());
 
       Set<Long> branchIds = new HashSet<Long>();
-      for (ReadableBranch branch : branches) {
+      for (BranchReadable branch : branches) {
          branchIds.add(branch.getId());
       }
 

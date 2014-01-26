@@ -238,7 +238,7 @@ public class Branch extends AbstractOseeType<String> implements WriteableBranch,
    }
 
    @Override
-   public void getChildBranches(Collection<? extends ReadableBranch> children, boolean recurse, BranchFilter filter) throws OseeCoreException {
+   public void getChildBranches(Collection<? extends BranchReadable> children, boolean recurse, BranchFilter filter) throws OseeCoreException {
       uncheckedGetChildBranches(children, recurse, filter);
    }
 
