@@ -13,12 +13,12 @@ package org.eclipse.osee.rest.admin.internal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.rest.admin.internal.RestResourceConcatenator.InputStreamSupplier;
 import org.osgi.framework.Bundle;
+import com.google.common.io.InputSupplier;
 import com.sun.jersey.api.wadl.config.WadlGeneratorConfig;
 import com.sun.jersey.api.wadl.config.WadlGeneratorDescription;
 import com.sun.jersey.server.wadl.generators.WadlGeneratorApplicationDoc;
@@ -39,58 +39,62 @@ public class BundleWadlGeneratorConfig extends WadlGeneratorConfig {
    }
 
    public boolean hasExtendedWadl() {
-      return !getWadlBundles().isEmpty();
-   }
-
-   public List<Bundle> getWadlBundles() {
-      List<Bundle> output = new ArrayList<Bundle>();
+      boolean result = false;
       for (Bundle bundle : bundles) {
-         if (hasExtendedWadl(bundle)) {
-            output.add(bundle);
+         result = hasExtendedWadl(bundle);
+         if (result) {
+            break;
          }
       }
-      return output;
+      return result;
    }
 
    @Override
    public List<WadlGeneratorDescription> configure() {
       List<WadlGeneratorDescription> toReturn;
-      RestResourceConcatenator wadlResource = new RestResourceConcatenator();
-      wadlResource.initialize("resourceDoc");
-      RestResourceConcatenator wadlApp = new RestResourceConcatenator();
-      wadlApp.initialize("applicationDocs");
-      RestResourceConcatenator wadlGrammar = new RestResourceConcatenator();
-      wadlGrammar.initialize("grammars");
+
+      InputStream appDocsStream = null;
+      InputStream grammarsStream = null;
+      InputStream resourceDocStream = null;
       try {
-         toReturn =
-            generator(WadlGeneratorApplicationDoc.class).prop("applicationDocsStream",
-               getAsInputStream("REST-INF/application-doc.xml", wadlApp)) //
-            .generator(WadlGeneratorGrammarsSupport.class).prop("grammarsStream",
-               getAsInputStream("REST-INF/application-grammars.xml", wadlGrammar)) //
-            .generator(WadlGeneratorResourceDocSupport.class).prop("resourceDocStream",
-               getAsInputStream("REST-INF/resourcedoc.xml", wadlResource)) //
-            .descriptions();
+         appDocsStream = getAsInputStream("REST-INF/application-doc.xml", "applicationDocs");
+         grammarsStream = getAsInputStream("REST-INF/application-grammars.xml", "grammars");
+         resourceDocStream = getAsInputStream("REST-INF/resourcedoc.xml", "resourceDoc");
+
+         toReturn = generator(WadlGeneratorApplicationDoc.class) //
+         .prop("applicationDocsStream", appDocsStream) //
+         .generator(WadlGeneratorGrammarsSupport.class) //
+         .prop("grammarsStream", grammarsStream) //
+         .generator(WadlGeneratorResourceDocSupport.class) //
+         .prop("resourceDocStream", resourceDocStream) //
+         .descriptions();
       } catch (Exception ex) {
          logger.error(ex, "Error generating wadl");
          toReturn = Collections.emptyList();
+      } finally {
+         Lib.close(appDocsStream);
+         Lib.close(grammarsStream);
+         Lib.close(resourceDocStream);
       }
       return toReturn;
    }
 
-   private static InputStreamSupplier localSupplier(final URL url) {
-      return new InputStreamSupplier() {
+   private static InputSupplier<InputStream> newSupplier(final URL url) {
+      return new InputSupplier<InputStream>() {
          @Override
-         public InputStream getInputStream() throws IOException {
+         public InputStream getInput() throws IOException {
             return url.openStream();
          }
       };
    }
 
-   private InputStream getAsInputStream(String path, RestResourceConcatenator concat) throws Exception {
+   private InputStream getAsInputStream(String path, String xmlRoot) throws Exception {
+      RestResourceConcatenator concat = new RestResourceConcatenator();
+      concat.initialize(xmlRoot);
       for (Bundle bundle : bundles) {
          if (hasExtendedWadl(bundle)) {
             URL url = bundle.getResource(path);
-            concat.addResource(localSupplier(url));
+            concat.addResource(newSupplier(url));
          }
       }
       return concat.getAsInputStream();

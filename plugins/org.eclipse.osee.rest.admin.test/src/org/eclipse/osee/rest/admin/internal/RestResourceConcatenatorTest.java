@@ -17,11 +17,11 @@ import java.io.UnsupportedEncodingException;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.rest.admin.internal.RestResourceConcatenator.InputStreamSupplier;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import com.google.common.io.InputSupplier;
 
 /**
  * Unit Test for {@link RestResourceConcatenator}
@@ -194,10 +194,10 @@ public class RestResourceConcatenatorTest {
 
    }
 
-   private static InputStreamSupplier testSupplier(final String input) {
-      return new InputStreamSupplier() {
+   private static InputSupplier<InputStream> testSupplier(final String input) {
+      return new InputSupplier<InputStream>() {
          @Override
-         public InputStream getInputStream() throws IOException {
+         public InputStream getInput() throws IOException {
             return Lib.stringToInputStream(input);
          }
       };

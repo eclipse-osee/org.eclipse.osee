@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import com.google.common.io.InputSupplier;
 
 /**
  * @author David W. Miller
@@ -46,14 +47,11 @@ public class RestResourceConcatenator {
       return String.format("%s Object: \n  contents {%s}\n", this.getClass().getName(), getResources());
    }
 
-   public static interface InputStreamSupplier {
-      public InputStream getInputStream() throws IOException;
-   }
-
-   public void addResource(InputStreamSupplier supplier) throws IOException {
+   public void addResource(InputSupplier<? extends InputStream> supplier) throws IOException {
       Conditions.checkNotNull(supplier, "InputStreamSupplier");
-      InputStream is = supplier.getInputStream();
+      InputStream is = null;
       try {
+         is = supplier.getInput();
          processResource(Lib.inputStreamToString(is));
       } finally {
          Lib.close(is);
