@@ -14,7 +14,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import org.eclipse.osee.ats.core.client.internal.IAtsArtifactStore;
 import org.eclipse.osee.ats.core.util.CacheProvider;
-import org.eclipse.osee.framework.core.data.LazyObject;
+import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 
 /**
  * Thread safe loading of ATS Config Objects

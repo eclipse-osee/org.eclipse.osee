@@ -14,7 +14,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
-import org.eclipse.osee.framework.core.data.LazyObject;
+import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.util.Resource;
 import org.eclipse.osee.logger.Log;

@@ -21,9 +21,9 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp.PoolingDriver;
 import org.apache.commons.pool.ObjectPool;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
-import org.eclipse.osee.framework.core.data.LazyObject;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.IConnectionFactory;
+import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**

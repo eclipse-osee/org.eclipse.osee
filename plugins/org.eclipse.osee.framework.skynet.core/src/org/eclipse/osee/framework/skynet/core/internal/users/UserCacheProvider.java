@@ -17,7 +17,7 @@ import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.cache.admin.CacheConfiguration;
 import org.eclipse.osee.cache.admin.CacheDataLoader;
 import org.eclipse.osee.cache.admin.CacheKeysLoader;
-import org.eclipse.osee.framework.core.data.LazyObject;
+import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.skynet.core.User;
 
 /**

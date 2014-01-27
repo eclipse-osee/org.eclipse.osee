@@ -8,12 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.data;
+package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicReference;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -42,7 +40,7 @@ public abstract class LazyObject<T> {
             object = task.get();
             instanceReference.set(object);
          } catch (Exception ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            throw new OseeCoreException(ex);
          }
       }
       return object;

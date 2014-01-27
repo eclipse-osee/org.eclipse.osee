@@ -28,12 +28,12 @@ import org.apache.commons.dbcp.PoolingDriver;
 import org.apache.commons.pool.ObjectPool;
 import org.apache.commons.pool.impl.GenericKeyedObjectPoolFactory;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
-import org.eclipse.osee.framework.core.data.LazyObject;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.database.core.IConnectionFactory;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.database.internal.core.PoolFactory.PoolConfiguration;
+import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 
 /**
  * @author Roberto E. Escobar
