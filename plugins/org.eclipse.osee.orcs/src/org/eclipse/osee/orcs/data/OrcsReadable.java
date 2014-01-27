@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
-import org.eclipse.osee.framework.core.data.Readable;
-
 /**
  * @author Roberto E. Escobar
  */
-public interface OrcsReadable extends Readable, HasDeleteState {
+public interface OrcsReadable extends HasDeleteState {
    //
 }

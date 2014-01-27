@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.model;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.Readable;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -22,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Roberto E. Escobar
  */
-public interface ReadableBranch extends IOseeBranch, Readable {
+public interface ReadableBranch extends IOseeBranch {
 
    long getId();
 
