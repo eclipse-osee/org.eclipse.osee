@@ -28,7 +28,7 @@ public class ArtifactJoinQueryTest {
    @Test
    public void testAdd() throws OseeCoreException {
       MockJoinAccessor joinAccessor = new MockJoinAccessor();
-      ArtifactJoinQuery join = new ArtifactJoinQuery(joinAccessor, 999);
+      ArtifactJoinQuery join = new ArtifactJoinQuery(joinAccessor, 999, 10);
       Assert.assertEquals(0, join.size());
       Assert.assertEquals(true, join.isEmpty());
 
@@ -61,7 +61,7 @@ public class ArtifactJoinQueryTest {
    @Test(expected = OseeDataStoreException.class)
    public void testStoreTwice() throws OseeCoreException {
       MockJoinAccessor joinAccessor = new MockJoinAccessor();
-      ArtifactJoinQuery join = new ArtifactJoinQuery(joinAccessor, 1000);
+      ArtifactJoinQuery join = new ArtifactJoinQuery(joinAccessor, 1000, 10);
 
       Assert.assertEquals(false, join.wasStored());
       join.store();
@@ -71,5 +71,17 @@ public class ArtifactJoinQueryTest {
       Assert.assertEquals(1000, joinAccessor.getQueryId());
 
       join.store();
+   }
+
+   @Test(expected = OseeDataStoreException.class)
+   public void testMoreThanAllowed() throws OseeCoreException {
+      MockJoinAccessor joinAccessor = new MockJoinAccessor();
+      int maxSize = 5;
+      ArtifactJoinQuery join = new ArtifactJoinQuery(joinAccessor, 1000, maxSize);
+
+      for (int i = 0; i < maxSize + 1; i++) {
+         join.add(i + 1, 1123L, null);
+      }
+
    }
 }

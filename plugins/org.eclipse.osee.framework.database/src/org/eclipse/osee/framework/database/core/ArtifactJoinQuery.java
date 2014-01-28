@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.core;
 
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.DatabaseJoinAccessor.JoinItem;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ArtifactJoinQuery extends AbstractJoinQuery {
+
+   private final int maxJoinSize;
 
    private final class Entry implements IJoinRow {
       private final Integer artId;
@@ -93,12 +96,16 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
       }
    }
 
-   protected ArtifactJoinQuery(IJoinAccessor joinAccessor, int queryId) {
+   protected ArtifactJoinQuery(IJoinAccessor joinAccessor, int queryId, int maxJoinSize) {
       super(joinAccessor, JoinItem.ARTIFACT, queryId);
+      this.maxJoinSize = maxJoinSize;
    }
 
    public void add(Integer art_id, Long branchId, Integer transactionId) {
       entries.add(new Entry(art_id, branchId, transactionId));
+      if (entries.size() > maxJoinSize) {
+         throw new OseeDataStoreException("Exceeded max artifact join size of [%d]", maxJoinSize);
+      }
    }
 
 }

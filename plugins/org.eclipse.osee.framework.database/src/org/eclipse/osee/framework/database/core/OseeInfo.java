@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.database.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -31,19 +32,28 @@ public class OseeInfo {
    private static Map<String, String> cache = new HashMap<String, String>();
 
    public static String getValue(String key) throws OseeCoreException {
-      String toReturn = ConnectionHandler.runPreparedQueryFetchString("", GET_VALUE_SQL, key);
+      return getValue(ConnectionHandler.getDatabase(), key);
+   }
+
+   public static String getValue(IOseeDatabaseService service, String key) throws OseeCoreException {
+      String toReturn = service.runPreparedQueryFetchObject("", GET_VALUE_SQL, key);
       cache.put(key, toReturn);
       return toReturn;
    }
 
-   public static String getCachedValue(String key) throws OseeCoreException {
+   public static String getCachedValue(IOseeDatabaseService service, String key) throws OseeCoreException {
       String cacheValue = cache.get(key);
       if (cacheValue == null) {
-         cacheValue = getValue(key);
+         cacheValue = getValue(service, key);
          cache.put(key, cacheValue);
       }
 
       return cacheValue;
+
+   }
+
+   public static String getCachedValue(String key) throws OseeCoreException {
+      return getCachedValue(ConnectionHandler.getDatabase(), key);
    }
 
    /**
