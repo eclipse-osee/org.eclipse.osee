@@ -147,6 +147,10 @@ public class VariableMap {
       return variableMap.get(variableName);
    }
 
+   public String getRadioSelection(String variableName) {
+      return getSingleCollectionValue(String.class, variableName);
+   }
+
    @Override
    public String toString() {
       return variableMap.toString();
