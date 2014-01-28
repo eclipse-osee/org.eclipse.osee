@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.core.mock.MockAtsUser;
+import org.eclipse.osee.ats.core.AbstractUserTest;
 import org.eclipse.osee.ats.core.mock.MockWorkItem;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -36,16 +36,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 /**
  * @author Donald G. Dunne
  */
-public class StateManagerTest {
-
-   private final MockAtsUser joe = new MockAtsUser("joe");
-   private final MockAtsUser steve = new MockAtsUser("steve");
-   private final MockAtsUser alice = new MockAtsUser("alice");
+public class StateManagerTest extends AbstractUserTest {
 
    private StateManager stateMgr;
 
@@ -55,9 +50,10 @@ public class StateManagerTest {
    @Mock private IAtsStateDefinition analyzeStateDef;
    // @formatter:on
 
+   @Override
    @Before
    public void setup() {
-      MockitoAnnotations.initMocks(this);
+      super.setup();
 
       MockWorkItem workItem = Mockito.spy(new MockWorkItem("mock work item", "Endorse", StateType.Working));
       stateMgr = Mockito.spy(new StateManager(workItem));
@@ -158,7 +154,7 @@ public class StateManagerTest {
       // create state with two assignees
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
-      List<MockAtsUser> currentAssignees = Arrays.asList(joe, steve);
+      List<IAtsUser> currentAssignees = Arrays.asList(joe, steve);
       stateMgr.setAssignees(currentAssignees);
       stateMgr.getInitialAssignees().addAll(currentAssignees);
 
@@ -176,11 +172,11 @@ public class StateManagerTest {
       // create state with two assignees
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
-      List<MockAtsUser> currentAssignees = Arrays.asList(joe);
+      List<IAtsUser> currentAssignees = Arrays.asList(joe);
       stateMgr.setAssignees(currentAssignees);
       stateMgr.getInitialAssignees().addAll(currentAssignees);
 
-      List<MockAtsUser> newAssignees = Arrays.asList(joe, steve);
+      List<IAtsUser> newAssignees = Arrays.asList(joe, steve);
       stateMgr.setAssignees("endorse", newAssignees);
       Assert.assertTrue(stateMgr.getAssignees().contains(joe));
       Assert.assertTrue(stateMgr.getAssignees().contains(steve));

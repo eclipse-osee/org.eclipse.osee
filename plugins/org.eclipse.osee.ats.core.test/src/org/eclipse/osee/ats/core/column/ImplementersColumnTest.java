@@ -19,25 +19,20 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
+import org.eclipse.osee.ats.core.AbstractUserTest;
 import org.eclipse.osee.ats.core.mock.MockActionGroup;
-import org.eclipse.osee.ats.core.mock.MockAtsUser;
 import org.eclipse.osee.ats.core.mock.MockWorkItem;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 /**
  * @tests ImplementersColumn
  * @author Donald G. Dunne
  */
-public class ImplementersColumnTest {
-
-   private final MockAtsUser joe = new MockAtsUser("joe");
-   private final MockAtsUser steve = new MockAtsUser("steve");
-   private final MockAtsUser alice = new MockAtsUser("alice");
+public class ImplementersColumnTest extends AbstractUserTest {
 
    // @formatter:off
    @Mock private IAtsWorkItem workItem;
@@ -48,9 +43,10 @@ public class ImplementersColumnTest {
    @Mock private IAtsStateManager stateMgr2;
    // @formatter:on
 
+   @Override
    @Before
    public void setup() {
-      MockitoAnnotations.initMocks(this);
+      super.setup();
 
       when(workItem.getWorkData()).thenReturn(workData);
       when(workItem.getStateMgr()).thenReturn(stateMgr);
@@ -135,14 +131,16 @@ public class ImplementersColumnTest {
       when(workData.getCompletedBy()).thenReturn(steve);
       when(workData.getCompletedFromState()).thenReturn("Implement");
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
-      Assert.assertEquals("alice; steve", ImplementersColumn.instance.getImplementersStr(workItem));
+      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("alice"));
+      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("steve"));
 
       when(workData.isCompletedOrCancelled()).thenReturn(true);
       when(workData.isCancelled()).thenReturn(true);
       when(workData.getCancelledBy()).thenReturn(steve);
       when(workData.getCancelledFromState()).thenReturn("Implement");
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
-      Assert.assertEquals("alice; steve", ImplementersColumn.instance.getImplementersStr(workItem));
+      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("alice"));
+      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("steve"));
    }
 
    /**
@@ -161,7 +159,8 @@ public class ImplementersColumnTest {
       when(workData.getCompletedBy()).thenReturn(steve);
       when(workData.getCompletedFromState()).thenReturn("Implement");
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
-      Assert.assertEquals("alice; steve", ImplementersColumn.instance.getImplementersStr(workItem));
+      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("alice"));
+      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("steve"));
 
       when(workItem.getImplementers()).thenReturn(implementersToReturn);
       when(workData.isCompletedOrCancelled()).thenReturn(true);
@@ -169,7 +168,8 @@ public class ImplementersColumnTest {
       when(workData.getCancelledBy()).thenReturn(steve);
       when(workData.getCancelledFromState()).thenReturn("Implement");
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
-      Assert.assertEquals("alice; steve", ImplementersColumn.instance.getImplementersStr(workItem));
+      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("alice"));
+      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("steve"));
    }
 
    /**
@@ -186,14 +186,16 @@ public class ImplementersColumnTest {
       when(workData.getCompletedBy()).thenReturn(steve);
       when(workData.getCompletedFromState()).thenReturn("Implement");
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
-      Assert.assertEquals("alice; steve", ImplementersColumn.instance.getImplementersStr(workItem));
+      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("alice"));
+      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("steve"));
 
       when(workData.isCompletedOrCancelled()).thenReturn(true);
       when(workData.isCancelled()).thenReturn(true);
       when(workData.getCancelledBy()).thenReturn(steve);
       when(workData.getCancelledFromState()).thenReturn("Implement");
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
-      Assert.assertEquals("alice; steve", ImplementersColumn.instance.getImplementersStr(workItem));
+      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("alice"));
+      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("steve"));
    }
 
    /**
@@ -212,7 +214,9 @@ public class ImplementersColumnTest {
       List<IAtsUser> implementStateImplementers = new ArrayList<IAtsUser>();
       implementStateImplementers.add(alice);
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
-      Assert.assertEquals("alice; joe; steve", ImplementersColumn.instance.getImplementersStr(workItem));
+      Assert.assertTrue(ImplementersColumn.instance.getImplementersStr(workItem).contains("alice"));
+      Assert.assertTrue(ImplementersColumn.instance.getImplementersStr(workItem).contains("joe"));
+      Assert.assertTrue(ImplementersColumn.instance.getImplementersStr(workItem).contains("steve"));
 
       implementersToReturn = new ArrayList<IAtsUser>();
       when(workItem.getImplementers()).thenReturn(implementersToReturn);
@@ -224,7 +228,9 @@ public class ImplementersColumnTest {
       implementStateImplementers = new ArrayList<IAtsUser>();
       implementStateImplementers.add(alice);
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
-      Assert.assertEquals("alice; joe; steve", ImplementersColumn.instance.getImplementersStr(workItem));
+      Assert.assertTrue(ImplementersColumn.instance.getImplementersStr(workItem).contains("alice"));
+      Assert.assertTrue(ImplementersColumn.instance.getImplementersStr(workItem).contains("joe"));
+      Assert.assertTrue(ImplementersColumn.instance.getImplementersStr(workItem).contains("steve"));
 
    }
 

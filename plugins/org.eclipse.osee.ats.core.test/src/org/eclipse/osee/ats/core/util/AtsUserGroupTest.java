@@ -11,17 +11,14 @@
 package org.eclipse.osee.ats.core.util;
 
 import java.util.Arrays;
+import org.eclipse.osee.ats.core.AbstractUserTest;
 import org.junit.Assert;
-import org.eclipse.osee.ats.core.mock.MockAtsUser;
 import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsUserGroupTest {
-   private final MockAtsUser joe = new MockAtsUser("joe");
-   private final MockAtsUser steve = new MockAtsUser("steve");
-   private final MockAtsUser alice = new MockAtsUser("alice");
+public class AtsUserGroupTest extends AbstractUserTest {
 
    @Test
    public void testGetSetAddRemoveUsers() {
@@ -45,7 +42,9 @@ public class AtsUserGroupTest {
    public void testToString() {
       AtsUserGroup group = new AtsUserGroup();
       group.setUsers(Arrays.asList(joe, steve));
-      Assert.assertEquals("[User [joe - joe - null], User [steve - steve - null]]", group.toString());
+      String toString = group.toString();
+      Assert.assertTrue(toString.contains("joe"));
+      Assert.assertTrue(toString.contains("steve"));
    }
 
 }

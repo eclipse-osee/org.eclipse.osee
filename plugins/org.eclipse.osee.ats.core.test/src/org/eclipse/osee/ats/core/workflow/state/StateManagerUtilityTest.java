@@ -245,24 +245,4 @@ public class StateManagerUtilityTest {
       verify(notifyService).notify(workItem, assigneesAdded, AtsNotifyType.Assigned);
    }
 
-   @Test
-   public void testGetPostPersistExecutionListener_exception() {
-      StateManager stateMgr = new StateManager(workItem);
-      stateMgr.setCurrentStateName("Analyze");
-      TestState state = new TestState("Analyze", StateType.Working);
-      StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
-      Assert.assertEquals("Analyze", stateMgr.getCurrentStateName());
-      Assert.assertEquals(2, stateMgr.getAssignees().size());
-
-      when(workItem.getStateMgr()).thenReturn(stateMgr);
-      List<Object> objects = new ArrayList<Object>();
-      when(changes.getObjects()).thenReturn(objects);
-
-      objects.add(workItem);
-
-      IExecuteListener listener =
-         StateManagerUtility.getPostPersistExecutionListener(attrResolver, workStateFactory, notifyService);
-      listener.changesStored(changes);
-   }
-
 }

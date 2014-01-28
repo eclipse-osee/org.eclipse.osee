@@ -5,20 +5,17 @@
  */
 package org.eclipse.osee.ats.core.users;
 
+import static org.mockito.Mockito.when;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.Assert;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.mock.MockAtsUser;
+import org.eclipse.osee.ats.core.AbstractUserTest;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.junit.Assert;
 import org.junit.Test;
 
-public class AtsUsersUtilityTest {
-
-   private final MockAtsUser joe = new MockAtsUser("joe");
-   private final MockAtsUser steve = new MockAtsUser("steve");
-   private final MockAtsUser alice = new MockAtsUser("alice");
+public class AtsUsersUtilityTest extends AbstractUserTest {
 
    @Test
    public void testIsEmailValid() {
@@ -35,9 +32,9 @@ public class AtsUsersUtilityTest {
       users.add(alice);
       Assert.assertTrue(AtsUsersUtility.getValidEmailUsers(users).isEmpty());
 
-      joe.setEmail("b@b.com");
-      steve.setEmail("asdf");
-      alice.setEmail(null);
+      when(joe.getEmail()).thenReturn("b@b.com");
+      when(steve.getEmail()).thenReturn("asdf");
+      when(alice.getEmail()).thenReturn(null);
 
       Assert.assertEquals(1, AtsUsersUtility.getValidEmailUsers(users).size());
       Assert.assertEquals(joe, AtsUsersUtility.getValidEmailUsers(users).iterator().next());
@@ -49,12 +46,12 @@ public class AtsUsersUtilityTest {
       users.add(joe);
       users.add(steve);
       users.add(alice);
-      joe.setEmail("b@b.com");
-      joe.setActive(true);
-      steve.setEmail("b@b.com");
-      steve.setActive(false);
-      alice.setEmail("b@b.com");
-      alice.setActive(true);
+      when(joe.getEmail()).thenReturn("b@b.com");
+      when(joe.isActive()).thenReturn(true);
+      when(steve.getEmail()).thenReturn("b@b.com");
+      when(steve.isActive()).thenReturn(false);
+      when(alice.getEmail()).thenReturn("b@b.com");
+      when(alice.isActive()).thenReturn(true);
 
       Collection<IAtsUser> activeEmailUsers = AtsUsersUtility.getActiveEmailUsers(users);
       Assert.assertEquals(2, activeEmailUsers.size());

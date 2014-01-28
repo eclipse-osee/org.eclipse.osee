@@ -11,16 +11,14 @@
 package org.eclipse.osee.ats.core.model.impl;
 
 import java.util.Arrays;
-import org.eclipse.osee.ats.core.mock.MockAtsUser;
+import org.eclipse.osee.ats.core.AbstractUserTest;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorkStateImplTest {
-   private final MockAtsUser joe = new MockAtsUser("joe");
-   private final MockAtsUser steve = new MockAtsUser("steve");
+public class WorkStateImplTest extends AbstractUserTest {
 
    @Test
    public void testWorkStateImplStringListOfQextendsIAtsUser() {
