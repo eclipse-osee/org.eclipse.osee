@@ -11,26 +11,23 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -109,29 +106,23 @@ public class ArtifactQueryTest {
 
    @Test
    public void testGetArtifactListFromType() throws OseeCoreException {
-      // Should exist
-      Set<Artifact> searchedArtifacts = new LinkedHashSet<Artifact>();
-      for (IOseeBranch branch : BranchManager.getBranches(new BranchFilter())) {
-         searchedArtifacts.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, branch,
-            DeletionFlag.INCLUDE_DELETED));
-      }
-      // make sure at least one artifact exists
-      Assert.assertTrue("No artifacts found", searchedArtifacts.size() > 0);
+      List<Artifact> artifacts =
+         ArtifactQuery.getArtifactListFromType(SoftwareRequirement, DemoBranches.SAW_Bld_1,
+            DeletionFlag.INCLUDE_DELETED);
 
-      //check to see if there are multiple branches found
-      String firstGuid = "";
-      Boolean pass = false;
-      for (Artifact a : searchedArtifacts) {
-         if ("" == firstGuid) {
-            firstGuid = a.getBranchGuid();
-         } else {
-            if (firstGuid != a.getBranchGuid()) {
-               pass = true;
-               break;
-            }
+      Assert.assertFalse("No artifacts found in testGetArtifactListFromType()", artifacts.isEmpty());
+
+      // ensure all of correct type
+      boolean pass = true;
+
+      for (Artifact artifact : artifacts) {
+         if (!artifact.isOfType(SoftwareRequirement)) {
+            pass = false;
+            break;
          }
       }
-      Assert.assertTrue("No artifacts on multiple branches found", pass);
+
+      Assert.assertTrue("Artifact is not a Software Requirement", pass);
    }
 
    @Test

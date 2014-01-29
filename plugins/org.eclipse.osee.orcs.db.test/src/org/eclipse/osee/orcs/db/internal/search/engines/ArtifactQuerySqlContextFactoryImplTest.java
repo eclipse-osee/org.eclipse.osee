@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
@@ -62,7 +63,9 @@ import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
@@ -100,6 +103,9 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       asList(45, 61));
 
    private static final Criteria ALL_ARTIFACTS = new CriteriaAllArtifacts();
+
+   @Rule
+   public ExpectedException thrown = ExpectedException.none();
 
    // @formatter:off
    @Mock private Log logger;
@@ -616,6 +622,10 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryExistsNoBranch() throws OseeCoreException {
+
+      thrown.expect(OseeArgumentException.class);
+      thrown.expectMessage("getTxBranchFilter: branch id must be > 0");
+
       String expected = "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
       " FROM \n" + //
       "osee_join_id jid1, osee_artifact art1, osee_txs txs1, " + //

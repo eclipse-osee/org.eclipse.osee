@@ -14,6 +14,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -93,6 +94,8 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
          sb.append(txsAlias);
          sb.append(".branch_id = ?");
          addParameter(branchId);
+      } else {
+         throw new OseeArgumentException("getTxBranchFilter: branch id must be > 0");
       }
       return sb.toString();
    }
