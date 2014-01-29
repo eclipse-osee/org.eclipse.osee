@@ -15,6 +15,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.swt.SWT;
 
 /**
@@ -53,6 +54,8 @@ public class AtsIdColumn extends XViewerValueColumn {
       try {
          if (element instanceof IAtsWorkItem) {
             result = ((IAtsWorkItem) element).getAtsId();
+         } else if (element instanceof IAtsAction) {
+            result = ((IAtsAction) element).getAtsId();
          } else if (element instanceof IAtsObject) {
             result = ((IAtsObject) element).getGuid();
          }
