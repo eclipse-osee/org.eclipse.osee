@@ -39,7 +39,7 @@ public class Collections {
     * @return A String which starts with 'start', followed by the elements in the Collection c separated by 'separator',
     * ending with 'end'.
     */
-   public static String toString(Collection<?> items, String prefix, String separator, String suffix) {
+   public static String toString(Iterable<?> items, String prefix, String separator, String suffix) {
       StringBuilder strB = new StringBuilder();
 
       if (prefix != null) {
@@ -67,7 +67,7 @@ public class Collections {
       return toString(separator, Arrays.asList(items));
    }
 
-   public static String toString(String separator, Collection<?> c) {
+   public static String toString(String separator, Iterable<?> c) {
       return toString(c, null, separator, null);
    }
 
