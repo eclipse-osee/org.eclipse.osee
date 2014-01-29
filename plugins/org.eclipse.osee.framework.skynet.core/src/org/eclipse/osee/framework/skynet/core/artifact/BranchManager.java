@@ -29,10 +29,12 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -42,11 +44,14 @@ import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -77,6 +82,7 @@ public class BranchManager {
 
    private static final String LAST_DEFAULT_BRANCH = "LastDefaultBranch";
    public static final String COMMIT_COMMENT = "Commit Branch ";
+   private static final BranchFactory branchFactory = new BranchFactory();
 
    private Branch lastBranch;
 
@@ -170,14 +176,56 @@ public class BranchManager {
     */
    public static synchronized void checkAndReload(String guid) throws OseeCoreException {
       if (!branchExists(guid)) {
-         refreshBranches();
+         loadBranchToCache(guid);
       }
    }
 
    public static synchronized void checkAndReload(Long id) throws OseeCoreException {
       if (!branchExists(id)) {
-         refreshBranches();
+         loadBranchToCache(id);
       }
+   }
+
+   private static void loadBranchToCache(String guid) {
+      loadBranchToCache("select * from osee_branch where branch_guid = ?", guid);
+   }
+
+   private static void loadBranchToCache(long id) {
+      loadBranchToCache("select * from osee_branch where branch_id = ?", id);
+   }
+
+   private static void loadBranchToCache(String sql, Object id) {
+      IOseeDatabaseService databaseService = ServiceUtil.getOseeDatabaseService();
+
+      IOseeStatement chStmt = null;
+      try {
+         chStmt = databaseService.getStatement();
+         chStmt.runPreparedQuery(1, sql, id);
+         if (chStmt.next()) {
+            int branchId = chStmt.getInt("branch_id");
+            String branchName = chStmt.getString("branch_name");
+            BranchState branchState = BranchState.getBranchState(chStmt.getInt("branch_state"));
+            BranchType branchType = BranchType.valueOf(chStmt.getInt("branch_type"));
+            BranchArchivedState archiveState = BranchArchivedState.valueOf(chStmt.getInt("archived"));
+            String branchGuid = chStmt.getString("branch_guid");
+
+            long parentBranchId = chStmt.getLong("parent_branch_id");
+            int sourceTx = chStmt.getInt("parent_transaction_id");
+            int baseTx = chStmt.getInt("baseline_transaction_id");
+            int assocArtId = chStmt.getInt("associated_art_id");
+
+            Branch created =
+               branchFactory.createOrUpdate(getCache(), branchId, StorageState.LOADED, branchGuid, branchName,
+                  branchType, branchState, archiveState.isArchived());
+            created.setBaseTransaction(TransactionManager.getTransactionId(baseTx));
+            created.setSourceTransaction(TransactionManager.getTransactionId(sourceTx));
+            created.setAssociatedArtifactId(assocArtId);
+            created.setParentBranch(getBranch(parentBranchId));
+         }
+      } finally {
+         Lib.close(chStmt);
+      }
+
    }
 
    public static Branch getBranchByGuid(String guid) throws OseeCoreException {

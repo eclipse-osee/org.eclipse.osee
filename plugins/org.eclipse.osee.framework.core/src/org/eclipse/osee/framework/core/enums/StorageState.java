@@ -20,8 +20,7 @@ public enum StorageState {
    LOADED(0),
    CREATED(1),
    MODIFIED(2),
-   PURGED(3), //
-   DELETED(4); // TODO remove after release
+   PURGED(3);
 
    private final int value;
 
