@@ -17,9 +17,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.ws.rs.core.Application;
+import org.eclipse.osee.authorization.admin.AuthorizationAdmin;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.rest.admin.internal.filters.SecurityContextFilter;
+import org.eclipse.osee.rest.admin.internal.filters.SecurityContextProviderImpl;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 
@@ -35,6 +38,7 @@ public class RestServletManager {
    private HttpService httpService;
    private Log logger;
    private ExecutorAdmin executorAdmin;
+   private AuthorizationAdmin authorizationAdmin;
 
    private final AtomicReference<RestServletRegistry> registryRef = new AtomicReference<RestServletRegistry>();
    private final AtomicReference<Future<?>> futureRef = new AtomicReference<Future<?>>();
@@ -51,10 +55,16 @@ public class RestServletManager {
       this.executorAdmin = executorAdmin;
    }
 
-   public void start() throws Exception {
-      RestComponentFactory factory = new RestComponentFactory(logger);
-      RestServletRegistry newRegistry = new RestServletRegistry(logger, httpService, factory);
+   public void setAuthorizationAdmin(AuthorizationAdmin authorizationAdmin) {
+      this.authorizationAdmin = authorizationAdmin;
+   }
 
+   public void start() throws Exception {
+      SecurityContextProvider contextProvider = new SecurityContextProviderImpl(logger, authorizationAdmin);
+      SecurityContextFilter securityFilter = new SecurityContextFilter(contextProvider);
+
+      RestComponentFactory factory = new RestComponentFactory(logger, securityFilter);
+      RestServletRegistry newRegistry = new RestServletRegistry(logger, httpService, factory);
       RestServletRegistry registry = registryRef.getAndSet(newRegistry);
       if (registry != null) {
          registry.cleanUp();

@@ -15,9 +15,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.rest.admin.internal.filters.SecureResourceFilterFactory;
+import org.eclipse.osee.rest.admin.internal.filters.SecurityContextFilter;
 import org.eclipse.osee.rest.admin.internal.resources.ApplicationsResource;
 import org.osgi.framework.Bundle;
 import com.sun.jersey.api.core.DefaultResourceConfig;
+import com.sun.jersey.api.core.ResourceConfig;
+import com.sun.jersey.spi.container.ContainerRequestFilter;
+import com.sun.jersey.spi.container.ResourceFilterFactory;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 /**
@@ -25,10 +30,27 @@ import com.sun.jersey.spi.container.servlet.ServletContainer;
  */
 public class RestComponentFactory {
    private final Log logger;
-   private List<Object> defaultSingletonResources;
+   private final SecurityContextFilter securityContextFilter;
 
-   public RestComponentFactory(Log logger) {
+   private List<Object> defaultSingletonResources;
+   private List<ContainerRequestFilter> containerRequestFilters;
+
+   public RestComponentFactory(Log logger, SecurityContextFilter securityContextFilter) {
+      super();
       this.logger = logger;
+      this.securityContextFilter = securityContextFilter;
+   }
+
+   public List<ContainerRequestFilter> getRequestFilters() {
+      if (containerRequestFilters == null) {
+         containerRequestFilters = Collections.<ContainerRequestFilter> singletonList(securityContextFilter);
+      }
+      return containerRequestFilters;
+   }
+
+   public List<ResourceFilterFactory> getResourceFilterFactories() {
+      SecureResourceFilterFactory filterFactory = new SecureResourceFilterFactory(securityContextFilter);
+      return Collections.<ResourceFilterFactory> singletonList(filterFactory);
    }
 
    public List<Object> getResourceSingletons() {
@@ -48,6 +70,8 @@ public class RestComponentFactory {
 
       Map<String, Bundle> bundleMap = new ConcurrentHashMap<String, Bundle>();
       ObjectProvider<Iterable<Bundle>> provider = newBundleProvider(bundleMap);
+      config.getProperties().put(ResourceConfig.PROPERTY_CONTAINER_REQUEST_FILTERS, getRequestFilters());
+      config.getProperties().put(ResourceConfig.PROPERTY_RESOURCE_FILTER_FACTORIES, getResourceFilterFactories());
 
       BundleHttpContext bundleContext = new BundleHttpContext(provider);
       BundleWadlGeneratorConfig wadlGenerator = new BundleWadlGeneratorConfig(logger, provider);

@@ -19,5 +19,5 @@
     bind="addApplication" 
     unbind="removeApplication" />
    <reference bind="setExecutorAdmin" cardinality="1..1" interface="org.eclipse.osee.executor.admin.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
-    
+   <reference bind="setAuthorizationAdmin" cardinality="1..1" interface="org.eclipse.osee.authorization.admin.AuthorizationAdmin" name="AuthorizationAdmin" policy="static"/>
 </scr:component>
