@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.OpenPerspectiveNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateCommonItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateCommonItems;
@@ -31,6 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.operation.CreateNewUser;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.PopulateUserGroupBlam;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.user.OpenUsersInMassEditor;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 
 /**
@@ -54,7 +54,7 @@ public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateComm
 
    private synchronized void ensurePopulated() {
       if (!ensurePopulatedRanOnce) {
-         if (OseeUiActivator.areOSEEServicesAvailable().isFalse()) {
+         if (DbConnectionUtility.areOSEEServicesAvailable().isFalse()) {
             return;
          }
          this.ensurePopulatedRanOnce = true;

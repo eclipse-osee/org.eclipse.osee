@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.util;
 
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.swt.widgets.Composite;
 
@@ -41,18 +40,12 @@ public class DbConnectionExceptionComposite extends ExceptionComposite {
       return result.isTrue();
    }
 
-   public static Result dbConnectionIsOkResult() {
-      Result result = Result.TrueResult;
-      if (!OseeUiActivator.isApplicationServerAlive()) {
-         result = new Result("The OSEE Application Server is not available.\n\nDatabase capability disabled.");
-      } else {
-         result = OseeUiActivator.areOSEEServicesAvailable();
-      }
-      return result;
+   private static Result dbConnectionIsOkResult() {
+      return DbConnectionUtility.dbConnectionIsOkResult();
    }
 
    public static boolean dbConnectionIsOk() {
-      return dbConnectionIsOkResult().isTrue();
+      return DbConnectionUtility.dbConnectionIsOk();
    }
 
 }

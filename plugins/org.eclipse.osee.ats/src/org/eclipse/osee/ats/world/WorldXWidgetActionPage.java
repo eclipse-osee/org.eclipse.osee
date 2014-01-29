@@ -44,12 +44,12 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -98,7 +98,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       gd.widthHint = 200;
       parent.setLayoutData(gd);
 
-      Result result = OseeUiActivator.areOSEEServicesAvailable();
+      Result result = DbConnectionUtility.areOSEEServicesAvailable();
       if (result.isFalse()) {
          AWorkbench.popup("ERROR", "DB Relation Unavailable");
          return;

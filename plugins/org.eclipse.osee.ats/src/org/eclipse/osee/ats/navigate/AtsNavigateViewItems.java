@@ -83,7 +83,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.OpenPerspectiveNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IOperationFactory;
@@ -102,6 +101,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.MassEditDirtyArtifactOperat
 import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XViewerExample;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailUserGroups;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 import org.osgi.framework.Bundle;
@@ -127,7 +127,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
 
    private synchronized void ensurePopulated() {
       if (!ensurePopulatedRanOnce) {
-         if (OseeUiActivator.areOSEEServicesAvailable().isFalse()) {
+         if (DbConnectionUtility.areOSEEServicesAvailable().isFalse()) {
             return;
          }
          this.ensurePopulatedRanOnce = true;

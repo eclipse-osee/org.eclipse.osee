@@ -15,10 +15,10 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -30,7 +30,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
 
    public AtsNavigateComposite(XNavigateViewItems navigateViewItems, Composite parent, int style) {
       super(navigateViewItems, parent, style);
-      Result result = OseeUiActivator.areOSEEServicesAvailable();
+      Result result = DbConnectionUtility.areOSEEServicesAvailable();
       if (result.isFalse()) {
          new Label(parent, SWT.NONE).setText(result.getText());
          return;

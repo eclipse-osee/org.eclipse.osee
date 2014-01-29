@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 
 /**
  * @author Donald G. Dunne
@@ -41,7 +41,7 @@ public class AtsBulkLoad {
 
    public static List<IOperation> getConfigLoadingOperations() {
       List<IOperation> ops = new ArrayList<IOperation>();
-      if (atsTypeDataLoadedStarted.compareAndSet(false, true) && OseeUiActivator.isVersionSupported()) {
+      if (atsTypeDataLoadedStarted.compareAndSet(false, true) && DbConnectionUtility.isVersionSupported()) {
          IOperation op = new AbstractOperation("Re-load ATS Config", Activator.PLUGIN_ID) {
             @Override
             protected void doWork(IProgressMonitor monitor) throws Exception {

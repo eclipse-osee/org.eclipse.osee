@@ -26,13 +26,13 @@ import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.ats.world.search.ShowOpenWorkflowsByArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.OpenPerspectiveNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateCommonItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateCommonItems;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 
 /**
  * @author Donald G. Dunne
@@ -55,7 +55,7 @@ public class ReviewNavigateViewItems implements XNavigateViewItems, IXNavigateCo
 
    private synchronized void ensurePopulated() {
       if (!ensurePopulatedRanOnce) {
-         if (OseeUiActivator.areOSEEServicesAvailable().isFalse()) {
+         if (DbConnectionUtility.areOSEEServicesAvailable().isFalse()) {
             return;
          }
          this.ensurePopulatedRanOnce = true;

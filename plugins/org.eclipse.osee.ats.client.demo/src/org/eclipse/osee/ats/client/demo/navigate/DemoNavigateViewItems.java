@@ -37,12 +37,12 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateUrlItem;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 
 /**
  * Provides the ATS Navigator items for the sample XYZ company's teams
@@ -74,7 +74,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
    public List<XNavigateItem> getNavigateItems(XNavigateItem parentItem) throws OseeCoreException {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
-      if (OseeUiActivator.areOSEEServicesAvailable().isFalse()) {
+      if (DbConnectionUtility.areOSEEServicesAvailable().isFalse()) {
          return items;
       }
 

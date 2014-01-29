@@ -25,18 +25,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.PluginUtil;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 
 /**
  * @author Ryan D. Brooks
@@ -44,8 +38,6 @@ import org.osgi.framework.ServiceReference;
 public abstract class OseeUiActivator extends AbstractUIPlugin {
    private PluginUtil helper;
    private final String pluginId;
-   private static Boolean supported;
-   private static Boolean applicationServerAlive;
 
    protected OseeUiActivator(String pluginId) {
       super();
@@ -162,61 +154,14 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
     */
    public static Result areOSEEServicesAvailable() {
       Result toReturn = Result.FalseResult;
-      if (!isVersionSupported()) {
-         toReturn =
-            new Result(
-               "This OSEE client version [%s] is not supported by the current application server(s).\n\nDatabase capability disabled.",
-               OseeCodeVersion.getVersion());
-      } else {
-         StringBuffer message = new StringBuffer();
-         message.append("\nCLIENT VERSION: ");
-         message.append(OseeCodeVersion.getVersion());
-         message.append("\n\n");
-         message.append(OseeLog.getStatusReport());
-         boolean isStatusOk = OseeLog.isStatusOk();
-         toReturn = new Result(isStatusOk, message.toString());
-      }
+      StringBuffer message = new StringBuffer();
+      message.append("\nCLIENT VERSION: ");
+      message.append(OseeCodeVersion.getVersion());
+      message.append("\n\n");
+      message.append(OseeLog.getStatusReport());
+      boolean isStatusOk = OseeLog.isStatusOk();
+      toReturn = new Result(isStatusOk, message.toString());
       return toReturn;
-   }
-
-   public static boolean isApplicationServerAlive() {
-      if (applicationServerAlive == null) {
-         OseeClient client = getOseeClient();
-         if (client != null) {
-            applicationServerAlive = client.isApplicationServerAlive();
-         } else {
-            applicationServerAlive = false;
-         }
-      }
-      return applicationServerAlive;
-   }
-
-   public static boolean isVersionSupported() {
-      if (supported == null) {
-         OseeClient client = getOseeClient();
-         if (client != null) {
-            supported = client.isClientVersionSupportedByApplicationServer();
-         } else {
-            supported = false;
-         }
-      }
-      return supported;
-   }
-
-   private static <T> T getService(Class<T> clazz) throws OseeCoreException {
-      Bundle bundle = FrameworkUtil.getBundle(OseeUiActivator.class);
-      Conditions.checkNotNull(bundle, "bundle");
-      BundleContext context = bundle.getBundleContext();
-      Conditions.checkNotNull(context, "bundleContext");
-      ServiceReference<T> reference = context.getServiceReference(clazz);
-      Conditions.checkNotNull(reference, "serviceReference");
-      T service = context.getService(reference);
-      Conditions.checkNotNull(service, "service");
-      return service;
-   }
-
-   public static OseeClient getOseeClient() throws OseeCoreException {
-      return getService(OseeClient.class);
    }
 
    public ImageDescriptor getImageDescriptorForProgram(String extenstion) {

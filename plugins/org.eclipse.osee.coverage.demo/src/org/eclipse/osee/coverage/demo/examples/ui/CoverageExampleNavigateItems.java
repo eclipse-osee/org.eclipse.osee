@@ -30,8 +30,8 @@ import org.eclipse.osee.coverage.demo.examples.import11.CoveragePackage1Import11
 import org.eclipse.osee.coverage.demo.examples.import12.CoveragePackage1Import12;
 import org.eclipse.osee.coverage.demo.examples.import13.CoveragePackage1Import13;
 import org.eclipse.osee.coverage.navigate.ICoverageNavigateItem;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 
 /**
  * @author Donald G. Dunne
@@ -47,7 +47,7 @@ public class CoverageExampleNavigateItems implements ICoverageNavigateItem {
 
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
-      if (OseeUiActivator.areOSEEServicesAvailable().isFalse()) {
+      if (DbConnectionUtility.areOSEEServicesAvailable().isFalse()) {
          return items;
       }
       items.add(new CoveragePackage1(null));
