@@ -196,7 +196,7 @@ public final class TransactionManager {
       TransactionRecordFactory factory = ServiceUtil.getTransactionFactory();
       TransactionRecord transactionId =
          factory.createOrUpdate(getTransactionCache(), transactionNumber, BranchManager.getBranchId(branch), comment,
-            transactionTime, authorArtId, -1, txType, getBranchCache());
+            transactionTime, authorArtId, 0, txType, getBranchCache());
       return transactionId;
    }
 
