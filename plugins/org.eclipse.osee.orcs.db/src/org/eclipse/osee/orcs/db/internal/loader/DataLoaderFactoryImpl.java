@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -29,6 +28,7 @@ import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryContext;
+import org.eclipse.osee.orcs.db.internal.BranchIdProvider;
 import org.eclipse.osee.orcs.db.internal.loader.executors.AbstractLoadExecutor;
 import org.eclipse.osee.orcs.db.internal.loader.executors.ArtifactQueryContextLoadExecutor;
 import org.eclipse.osee.orcs.db.internal.loader.executors.QueryContextLoadExecutor;
@@ -43,14 +43,14 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
    private final Log logger;
    private final IOseeDatabaseService dbService;
    private final SqlObjectLoader loader;
-   private final BranchCache branchCache;
+   private final BranchIdProvider branchIdProvider;
 
-   public DataLoaderFactoryImpl(Log logger, IOseeDatabaseService dbService, SqlObjectLoader loader, BranchCache branchCache) {
+   public DataLoaderFactoryImpl(Log logger, IOseeDatabaseService dbService, SqlObjectLoader loader, BranchIdProvider branchIdProvider) {
       super();
       this.logger = logger;
       this.dbService = dbService;
       this.loader = loader;
-      this.branchCache = branchCache;
+      this.branchIdProvider = branchIdProvider;
    }
 
    @Override
@@ -100,7 +100,7 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
          executor = new QueryContextLoadExecutor(loader, dbService, sqlQueryContext);
       }
       Options options = OptionsUtil.createOptions();
-      return new DataLoaderImpl(logger, executor, options, null, null, branchCache, loader);
+      return new DataLoaderImpl(logger, executor, options, null, null, branchIdProvider, loader);
    }
 
    @Override
@@ -112,7 +112,7 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
    public DataLoader newDataLoaderFromIds(OrcsSession session, IOseeBranch branch, Collection<Integer> ids) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       Options options = OptionsUtil.createOptions();
-      return new DataLoaderImpl(logger, ids, options, session, branch, branchCache, loader);
+      return new DataLoaderImpl(logger, ids, options, session, branch, branchIdProvider, loader);
    }
 
    @Override
@@ -124,7 +124,7 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
    public DataLoader newDataLoaderFromGuids(OrcsSession session, IOseeBranch branch, Collection<String> guids) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       Options options = OptionsUtil.createOptions();
-      return new DataLoaderImpl(logger, options, session, branch, branchCache, loader, guids);
+      return new DataLoaderImpl(logger, options, session, branch, branchIdProvider, loader, guids);
    }
 
    @SuppressWarnings("unchecked")

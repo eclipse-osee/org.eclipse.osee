@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -21,6 +20,7 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.data.HasBranch;
+import org.eclipse.osee.orcs.db.internal.BranchIdProvider;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
@@ -39,17 +39,17 @@ import com.google.common.collect.Iterables;
 public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactory {
 
    private final Log logger;
-   private final BranchCache branchCache;
+   private final BranchIdProvider branchIdProvider;
    private final SqlHandlerFactory handlerFactory;
    private final SqlProvider sqlProvider;
    private final IOseeDatabaseService dbService;
 
-   public ArtifactQuerySqlContextFactoryImpl(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, BranchCache branchCache, SqlHandlerFactory handlerFactory) {
+   public ArtifactQuerySqlContextFactoryImpl(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, BranchIdProvider branchIdProvider, SqlHandlerFactory handlerFactory) {
       super();
       this.logger = logger;
       this.dbService = dbService;
       this.sqlProvider = sqlProvider;
-      this.branchCache = branchCache;
+      this.branchIdProvider = branchIdProvider;
       this.handlerFactory = handlerFactory;
    }
 
@@ -82,7 +82,7 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
       long branchId = -1;
       IOseeBranch branch = getBranchToSearch(queryData);
       if (branch != null) {
-         branchId = branchCache.getLocalId(branch);
+         branchId = branchIdProvider.getBranchId(branch);
       }
       return new ArtifactQuerySqlWriter(logger, dbService, sqlProvider, context, queryType, branchId);
    }

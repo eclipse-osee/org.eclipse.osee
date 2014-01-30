@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.CharJoinQuery;
@@ -25,6 +24,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
+import org.eclipse.osee.orcs.db.internal.BranchIdProvider;
 import org.eclipse.osee.orcs.db.internal.loader.LoadSqlContext;
 import org.eclipse.osee.orcs.db.internal.loader.LoadUtil;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
@@ -38,14 +38,14 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
    private static final String GUIDS_TO_IDS =
       "SELECT art.art_id FROM osee_join_char_id jid, osee_artifact art WHERE jid.query_id = ? AND jid.id = art.guid";
 
-   private final BranchCache branchCache;
+   private final BranchIdProvider branchIdProvider;
    private final OrcsSession session;
    private final IOseeBranch branch;
    private final Collection<String> artifactIds;
 
-   public UuidsLoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, BranchCache branchCache, OrcsSession session, IOseeBranch branch, Collection<String> artifactIds) {
+   public UuidsLoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, BranchIdProvider branchIdProvider, OrcsSession session, IOseeBranch branch, Collection<String> artifactIds) {
       super(loader, dbService);
-      this.branchCache = branchCache;
+      this.branchIdProvider = branchIdProvider;
       this.session = session;
       this.branch = branch;
       this.artifactIds = artifactIds;
@@ -73,7 +73,7 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
          }
          guidJoin.store();
 
-         long branchId = branchCache.getLocalId(branch);
+         long branchId = branchIdProvider.getBranchId(branch);
          Integer transactionId = OptionsUtil.getFromTransaction(options);
 
          IOseeStatement chStmt = null;

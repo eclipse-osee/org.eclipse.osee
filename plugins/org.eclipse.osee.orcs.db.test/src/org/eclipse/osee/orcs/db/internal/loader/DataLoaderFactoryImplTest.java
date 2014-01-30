@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
@@ -46,6 +45,7 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadDescription;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
+import org.eclipse.osee.orcs.db.internal.BranchIdProvider;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
@@ -78,7 +78,7 @@ public class DataLoaderFactoryImplTest {
    @Mock private LoadDataHandler builder;
    
    @Mock private OrcsObjectFactory rowDataFactory;
-   @Mock private BranchCache branchCache;
+   @Mock private BranchIdProvider branchIdProvider;
    @Mock private HasCancellation cancellation;
    
     @Captor private ArgumentCaptor<LoadSqlContext> contextCaptor;
@@ -108,9 +108,9 @@ public class DataLoaderFactoryImplTest {
       SqlObjectLoader loader = module.createSqlObjectLoader(rowDataFactory);
 
       spyLoader = spy(loader);
-      factory = module.createDataLoaderFactory(spyLoader, branchCache);
+      factory = module.createDataLoaderFactory(spyLoader, branchIdProvider);
 
-      when(branchCache.getLocalId(BRANCH)).thenReturn(EXPECTED_BRANCH_ID);
+      when(branchIdProvider.getBranchId(BRANCH)).thenReturn(EXPECTED_BRANCH_ID);
       when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");
 
       when(dbService.getStatement()).thenReturn(chStmt);

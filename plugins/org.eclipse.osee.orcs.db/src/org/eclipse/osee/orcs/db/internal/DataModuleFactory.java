@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal;
 
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
@@ -49,13 +48,14 @@ public class DataModuleFactory {
       this.adminModule = adminModule;
    }
 
-   public DataModule createDataModule(BranchCache branchCache, ArtifactTypes artifactTypes, AttributeTypes attributeTypes) {
+   public DataModule createDataModule(BranchIdProvider branchIdProvider, ArtifactTypes artifactTypes, AttributeTypes attributeTypes) {
       logger.debug("Creating DataModule");
       QueryEngineIndexer indexer = queryModule.getQueryIndexer();
       OrcsObjectFactory objectFactory = loaderModule.createOrcsObjectFactory(attributeTypes);
       final DataFactory dataFactory = loaderModule.createDataFactory(objectFactory, artifactTypes);
-      final DataLoaderFactory dataLoaderFactory = loaderModule.createDataLoaderFactory(objectFactory, branchCache);
-      final QueryEngine queryEngine = queryModule.createQueryEngine(dataLoaderFactory, branchCache, attributeTypes);
+      final DataLoaderFactory dataLoaderFactory = loaderModule.createDataLoaderFactory(objectFactory, branchIdProvider);
+      final QueryEngine queryEngine =
+         queryModule.createQueryEngine(dataLoaderFactory, branchIdProvider, attributeTypes);
       final BranchDataStore branchDataStore = branchModule.createBranchDataStore(dataLoaderFactory);
       final TxDataStore txDataStore = txModule.createTransactionStore(dataLoaderFactory, indexer, attributeTypes);
       final DataStoreAdmin dataStoreAdmin = adminModule.createDataStoreAdmin(branchDataStore);

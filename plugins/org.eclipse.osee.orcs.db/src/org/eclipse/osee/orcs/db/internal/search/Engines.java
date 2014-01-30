@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -29,6 +28,7 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandlerDecorator;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.db.internal.BranchIdProvider;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.engines.AbstractSimpleQueryCallableFactory;
@@ -65,11 +65,11 @@ public final class Engines {
       //
    }
 
-   public static ArtifactQueryCallableFactory newArtifactQueryEngine(Log logger, IOseeDatabaseService dbService, IdentityLocator idService, SqlProvider sqlProvider, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader, BranchCache branchCache, AttributeTypes attrTypes) {
+   public static ArtifactQueryCallableFactory newArtifactQueryEngine(Log logger, IOseeDatabaseService dbService, IdentityLocator idService, SqlProvider sqlProvider, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader, BranchIdProvider branchIdProvider, AttributeTypes attrTypes) {
       SqlHandlerFactory handlerFactory =
          createArtifactSqlHandlerFactory(logger, idService, taggingEngine.getTagProcessor());
       QuerySqlContextFactory sqlContextFactory =
-         new ArtifactQuerySqlContextFactoryImpl(logger, dbService, sqlProvider, branchCache, handlerFactory);
+         new ArtifactQuerySqlContextFactoryImpl(logger, dbService, sqlProvider, branchIdProvider, handlerFactory);
       AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine, attrTypes);
       QueryFilterFactoryImpl filterFactory = new QueryFilterFactoryImpl(logger, executorAdmin, matcher);
       return new ArtifactQueryCallableFactory(logger, objectLoader, sqlContextFactory, filterFactory);

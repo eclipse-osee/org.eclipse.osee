@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.db.internal.BranchIdProvider;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
@@ -53,13 +53,13 @@ public class LoaderModule {
       return new DataFactoryImpl(idFactory, factory, artifactTypes);
    }
 
-   public DataLoaderFactory createDataLoaderFactory(OrcsObjectFactory objectFactory, BranchCache branchCache) {
+   public DataLoaderFactory createDataLoaderFactory(OrcsObjectFactory objectFactory, BranchIdProvider branchIdProvider) {
       SqlObjectLoader createSqlObjectLoader = createSqlObjectLoader(objectFactory);
-      return createDataLoaderFactory(createSqlObjectLoader, branchCache);
+      return createDataLoaderFactory(createSqlObjectLoader, branchIdProvider);
    }
 
-   public DataLoaderFactory createDataLoaderFactory(SqlObjectLoader sqlObjectLoader, BranchCache branchCache) {
-      return new DataLoaderFactoryImpl(logger, dbService, sqlObjectLoader, branchCache);
+   public DataLoaderFactory createDataLoaderFactory(SqlObjectLoader sqlObjectLoader, BranchIdProvider branchIdProvider) {
+      return new DataLoaderFactoryImpl(logger, dbService, sqlObjectLoader, branchIdProvider);
    }
 
    protected SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory) {

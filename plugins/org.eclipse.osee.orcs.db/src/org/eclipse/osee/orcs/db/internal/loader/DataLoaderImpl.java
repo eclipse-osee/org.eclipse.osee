@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -30,6 +29,7 @@ import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
+import org.eclipse.osee.orcs.db.internal.BranchIdProvider;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
@@ -52,36 +52,36 @@ public class DataLoaderImpl implements DataLoader {
 
    private final OrcsSession session;
    private final IOseeBranch branch;
-   private final BranchCache branchCache;
+   private final BranchIdProvider branchIdProvider;
    private final SqlObjectLoader sqlLoader;
 
-   public DataLoaderImpl(Log logger, AbstractLoadExecutor loadExecutor, Options options, OrcsSession session, IOseeBranch branch, BranchCache branchCache, SqlObjectLoader sqlLoader) {
+   public DataLoaderImpl(Log logger, AbstractLoadExecutor loadExecutor, Options options, OrcsSession session, IOseeBranch branch, BranchIdProvider branchIdProvider, SqlObjectLoader sqlLoader) {
       this.logger = logger;
       this.loadExecutor = loadExecutor;
       this.options = options;
       this.session = session;
       this.branch = branch;
-      this.branchCache = branchCache;
+      this.branchIdProvider = branchIdProvider;
       this.sqlLoader = sqlLoader;
    }
 
-   public DataLoaderImpl(Log logger, Collection<Integer> artifactIds, Options options, OrcsSession session, IOseeBranch branch, BranchCache branchCache, SqlObjectLoader sqlLoader) {
+   public DataLoaderImpl(Log logger, Collection<Integer> artifactIds, Options options, OrcsSession session, IOseeBranch branch, BranchIdProvider branchIdProvider, SqlObjectLoader sqlLoader) {
       this.logger = logger;
       this.options = options;
       this.session = session;
       this.branch = branch;
-      this.branchCache = branchCache;
+      this.branchIdProvider = branchIdProvider;
       this.sqlLoader = sqlLoader;
 
       withArtifactIds(artifactIds);
    }
 
-   public DataLoaderImpl(Log logger, Options options, OrcsSession session, IOseeBranch branch, BranchCache branchCache, SqlObjectLoader sqlLoader, Collection<String> artifactIds) {
+   public DataLoaderImpl(Log logger, Options options, OrcsSession session, IOseeBranch branch, BranchIdProvider branchIdProvider, SqlObjectLoader sqlLoader, Collection<String> artifactIds) {
       this.logger = logger;
       this.options = options;
       this.session = session;
       this.branch = branch;
-      this.branchCache = branchCache;
+      this.branchIdProvider = branchIdProvider;
       this.sqlLoader = sqlLoader;
 
       withArtifactGuids(artifactIds);
@@ -192,13 +192,14 @@ public class DataLoaderImpl implements DataLoader {
 
    private DataLoader withArtifactIds(Collection<Integer> artifactIds) {
       loadExecutor =
-         new LoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), branchCache, session, branch, artifactIds);
+         new LoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), branchIdProvider, session, branch, artifactIds);
       return this;
    }
 
    private DataLoader withArtifactGuids(Collection<String> artifactGuids) {
       loadExecutor =
-         new UuidsLoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), branchCache, session, branch, artifactGuids);
+         new UuidsLoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), branchIdProvider, session, branch,
+            artifactGuids);
       return this;
    }
 

@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -53,6 +52,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranch;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
+import org.eclipse.osee.orcs.db.internal.BranchIdProvider;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
@@ -115,7 +115,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    @Mock private TagProcessor tagProcessor;
    
    @Mock private ExecutorAdmin executorAdmin;
-   @Mock private BranchCache branchCache;
+   @Mock private BranchIdProvider branchIdProvider;
    @Mock private AttributeTypeCache attributeTypeCache;
    @Mock private OrcsSession session;
    // @formatter:on
@@ -134,14 +134,15 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       when(session.getGuid()).thenReturn(sessionId);
 
       SqlHandlerFactory handlerFactory = createArtifactSqlHandlerFactory(logger, identityService, tagProcessor);
-      queryEngine = new ArtifactQuerySqlContextFactoryImpl(logger, dbService, sqlProvider, branchCache, handlerFactory);
+      queryEngine =
+         new ArtifactQuerySqlContextFactoryImpl(logger, dbService, sqlProvider, branchIdProvider, handlerFactory);
 
       CriteriaSet criteriaSet = new CriteriaSet();
       Options options = OptionsUtil.createOptions();
       criteriaSet.add(new CriteriaBranch(CoreBranches.COMMON));
       queryData = new QueryData(criteriaSet, options);
 
-      when(branchCache.getLocalId(CoreBranches.COMMON)).thenReturn(EXPECTED_BRANCH_ID);
+      when(branchIdProvider.getBranchId(CoreBranches.COMMON)).thenReturn(EXPECTED_BRANCH_ID);
       when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");
 
       doAnswer(new Answer<Void>() {
@@ -654,7 +655,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       "rel1.gamma_id = txs4.gamma_id AND txs4.tx_current = 1\n" + //
       " ORDER BY art1.art_id, txs1.branch_id";
 
-      when(branchCache.getLocalId(CoreBranches.COMMON)).thenReturn(0L);
+      when(branchIdProvider.getBranchId(CoreBranches.COMMON)).thenReturn(0L);
 
       queryData.addCriteria(GUIDS, TYPES, REL_TYPE_EXISTS, IDS, ATTR_TYPE_EXITS);
 
