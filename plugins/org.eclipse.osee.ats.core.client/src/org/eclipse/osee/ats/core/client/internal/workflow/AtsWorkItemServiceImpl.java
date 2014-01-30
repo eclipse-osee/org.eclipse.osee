@@ -123,7 +123,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public Collection<IAtsTask> getTasks(IAtsTeamWorkflow atsObject, IStateToken relatedToState) throws OseeCoreException {
       Artifact artifact = workItemArtifactProvider.get(atsObject);
       Conditions.checkNotNull(artifact, "workItem", "Can't Find Artifact matching [%s]", atsObject.toString());
-      return Collections.castAll(((TeamWorkFlowArtifact) atsObject).getTaskArtifacts());
+      return Collections.castAll(((TeamWorkFlowArtifact) atsObject).getTaskArtifacts(relatedToState));
    }
 
    @Override
@@ -131,6 +131,14 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       Artifact artifact = workItemArtifactProvider.get(atsObject);
       Conditions.checkNotNull(artifact, "workItem", "Can't Find Artifact matching [%s]", atsObject.toString());
       return Collections.castAll(ReviewManager.getReviews((TeamWorkFlowArtifact) atsObject));
+   }
+
+   @Override
+   public Collection<? extends IAtsTask> getTasks(IAtsWorkItem workItem, IStateToken state) {
+      if (workItem instanceof IAtsTeamWorkflow) {
+         return getTasks((IAtsTeamWorkflow) workItem, state);
+      }
+      return java.util.Collections.emptyList();
    }
 
    @Override

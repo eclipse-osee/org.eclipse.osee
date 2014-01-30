@@ -402,7 +402,7 @@ public class TransitionManager {
          }
          // Else, just check current state tasks
          else {
-            tasksToCheck.addAll(AtsCore.getWorkItemService().getTaskArtifacts(workItem));
+            tasksToCheck.addAll(AtsCore.getWorkItemService().getTasks(workItem, workItem.getStateDefinition()));
          }
          for (IAtsTask taskArt : tasksToCheck) {
             if (AtsCore.getWorkItemService().getWorkData(taskArt).isInWork()) {

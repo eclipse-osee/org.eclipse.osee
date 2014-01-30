@@ -99,13 +99,22 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf, IStateToken state) throws OseeCoreException {
       final List<IAtsTask> tasks = new ArrayList<IAtsTask>();
-      for (ArtifactReadable art : AtsServerService.get().getArtifact(teamWf).getRelated(AtsRelationTypes.TeamWfToTask_Task)) {
+      for (ArtifactReadable art : AtsServerService.get().getArtifact(teamWf).getRelated(
+         AtsRelationTypes.TeamWfToTask_Task)) {
          String relatedState = art.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "");
          if (state.getName().equals(relatedState)) {
             tasks.add(AtsServerService.get().getWorkItemFactory().getTask(art));
          }
       }
       return tasks;
+   }
+
+   @Override
+   public Collection<? extends IAtsTask> getTasks(IAtsWorkItem workItem, IStateToken state) {
+      if (workItem instanceof IAtsTeamWorkflow) {
+         return getTasks((IAtsTeamWorkflow) workItem, state);
+      }
+      return Collections.emptyList();
    }
 
    @Override
@@ -134,7 +143,8 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       final List<IAtsTask> tasks = new ArrayList<IAtsTask>();
-      for (ArtifactReadable art : AtsServerService.get().getArtifact(teamWf).getRelated(AtsRelationTypes.TeamWfToTask_Task)) {
+      for (ArtifactReadable art : AtsServerService.get().getArtifact(teamWf).getRelated(
+         AtsRelationTypes.TeamWfToTask_Task)) {
          tasks.add(AtsServerService.get().getWorkItemFactory().getTask(art));
       }
       return tasks;
