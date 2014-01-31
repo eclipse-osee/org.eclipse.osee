@@ -26,7 +26,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -206,7 +205,7 @@ public class XBranchWidget extends GenericXWidget {
 
    private void refreshServerBranchCache() {
       Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put("function", Function.RELOAD_BRANCH_CACHE.name());
+      parameters.put("function", "RELOAD_BRANCH_CACHE");
       HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, null, null, null);
    }
 

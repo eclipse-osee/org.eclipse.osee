@@ -23,8 +23,7 @@ public enum Function {
    PURGE_BRANCH,
    UPDATE_BRANCH_TYPE,
    UPDATE_BRANCH_STATE,
-   UPDATE_ARCHIVE_STATE,
-   RELOAD_BRANCH_CACHE;
+   UPDATE_ARCHIVE_STATE;
 
    public static Function fromString(String toMatch) throws OseeCoreException {
       for (Function function : Function.values()) {

@@ -100,9 +100,6 @@ public class BranchManagerServlet extends SecureOseeHttpServlet {
          case UPDATE_BRANCH_STATE:
             callable = new ChangeBranchStateCallable(applicationContext, req, resp, translationService, orcsApi);
             break;
-         case RELOAD_BRANCH_CACHE:
-            orcsApi.getBranchCache().reloadCache();
-            break;
          default:
             throw new UnsupportedOperationException();
       }
