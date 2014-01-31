@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
-import java.util.Collection;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -19,11 +18,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.search.BranchQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -46,10 +45,11 @@ public class BranchesResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
-      Collection<Branch> branches =
-         OrcsApplication.getOrcsApi().getBranchCache().getBranches(
-            new BranchFilter(BranchArchivedState.UNARCHIVED, BranchType.BASELINE, BranchType.WORKING));//getAll();
+      BranchQuery query = OrcsApplication.getOrcsApi().getQueryFactory(null).branchQuery();
+      ResultSet<BranchReadable> results =
+         query.andIsOfType(BranchType.BASELINE, BranchType.WORKING).getResults();
+
       HtmlWriter writer = new HtmlWriter(uriInfo);
-      return writer.toHtml(branches);
+      return writer.toHtml(results);
    }
 }

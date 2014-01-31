@@ -18,11 +18,11 @@ import java.util.Map.Entry;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -39,8 +39,8 @@ public class HtmlWriter {
       StringBuilder builder = new StringBuilder();
       builder.append("<html><body>");
       for (Object object : objects) {
-         if (object instanceof Branch) {
-            Branch branch = (Branch) object;
+         if (object instanceof BranchReadable) {
+            BranchReadable branch = (BranchReadable) object;
             addTable(builder, toData(branch));
          } else if (object instanceof ArtifactReadable) {
             ArtifactReadable artifact = (ArtifactReadable) object;
@@ -48,8 +48,8 @@ public class HtmlWriter {
          } else if (object instanceof AttributeReadable) {
             AttributeReadable<?> attribute = (AttributeReadable<?>) object;
             addTable(builder, toData(attribute));
-         } else if (object instanceof TransactionRecord) {
-            TransactionRecord tx = (TransactionRecord) object;
+         } else if (object instanceof TransactionReadable) {
+            TransactionReadable tx = (TransactionReadable) object;
             addTable(builder, toData(tx));
          } else {
             Map<String, Object> unhandled = new LinkedHashMap<String, Object>();
@@ -112,19 +112,19 @@ public class HtmlWriter {
       return data;
    }
 
-   public Map<String, Object> toData(Branch branch) throws OseeCoreException {
+   private Map<String, Object> toData(BranchReadable branch) throws OseeCoreException {
       Map<String, Object> data = new LinkedHashMap<String, Object>();
       data.put("Name", branch.getName());
       data.put("Uuid", branch.getGuid());
-      data.put("Local Id", branch.getId());
+      data.put("Local Id", branch.getLocalId());
       data.put("State", branch.getBranchState());
       data.put("Type", branch.getBranchType());
       data.put("Archived", branch.getArchiveState());
-      data.put("Short Name", branch.getShortName());
-      data.put("Storage", branch.getStorageState());
       if (branch.hasParentBranch()) {
          try {
-            IOseeBranch parent = branch.getParentBranch();
+            IOseeBranch parent =
+               OrcsApplication.getOrcsApi().getBranchOps(null).getBranchFromId(branch.getParentBranch());
+
             URI uri;
             if (isAtEndOfPath(uriInfo.getPath(), "branch")) {
                uri = uriInfo.getAbsolutePathBuilder().path("{uuid}").build(parent.getGuid());
@@ -147,21 +147,22 @@ public class HtmlWriter {
       return data;
    }
 
-   public Map<String, Object> toData(TransactionRecord txRecord) throws OseeCoreException {
+   public Map<String, Object> toData(TransactionReadable txRecord) throws OseeCoreException {
       Map<String, Object> data = new LinkedHashMap<String, Object>();
-      data.put("TxId", txRecord.getId());
+      data.put("TxId", txRecord.getLocalId());
       data.put("TxType", txRecord.getTxType());
-      data.put("Date", txRecord.getTimeStamp());
+      data.put("Date", txRecord.getDate());
       data.put("Comment", txRecord.getComment());
-      data.put("Author", txRecord.getAuthor());
-      IOseeBranch parent = txRecord.getBranch();
+      data.put("Author", txRecord.getAuthorId());
+      IOseeBranch branch = OrcsApplication.getOrcsApi().getBranchOps(null).getBranchFromId(txRecord.getBranchId());
+
       URI uri;
       if (isAtEndOfPath(uriInfo.getPath(), "branch")) {
-         uri = uriInfo.getAbsolutePathBuilder().path("{uuid}").build(parent.getGuid());
+         uri = uriInfo.getAbsolutePathBuilder().path("{uuid}").build(branch.getGuid());
       } else {
-         uri = uriInfo.getAbsolutePathBuilder().path("../{uuid}").build(parent.getGuid());
+         uri = uriInfo.getAbsolutePathBuilder().path("../{uuid}").build(branch.getGuid());
       }
-      data.put("Branch", asLink(uri.toASCIIString(), parent.getName()));
+      data.put("Branch", asLink(uri.toASCIIString(), branch.getName()));
       return data;
    }
 

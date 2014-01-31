@@ -19,11 +19,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.framework.core.enums.TransactionVersion;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.search.BranchQuery;
+import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.search.TransactionQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -52,13 +54,18 @@ public class TxsResource {
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
 
-      TransactionCache txCache = OrcsApplication.getOrcsApi().getTxsCache();
-      Branch branch = OrcsApplication.getOrcsApi().getBranchCache().getByGuid(branchUuid);
+      QueryFactory queryFactory = OrcsApplication.getOrcsApi().getQueryFactory(null);
+      BranchQuery query = queryFactory.branchQuery();
+      ResultSet<BranchReadable> results = query.andUuids(branchUuid).getResults();
+      BranchReadable branch = results.getExactlyOne();
 
-      TransactionRecord txBase = txCache.getTransaction(branch, TransactionVersion.BASE);
-      TransactionRecord txHead = txCache.getTransaction(branch, TransactionVersion.HEAD);
+      TransactionQuery query1 = queryFactory.transactionQuery();
+      TransactionReadable headTransaction = query1.andIsHead(branch).getResults().getExactlyOne();
+
+      TransactionQuery query2 = queryFactory.transactionQuery();
+      TransactionReadable baseTransaction = query2.andTxId(branch.getBaseTransaction()).getResults().getExactlyOne();
 
       HtmlWriter writer = new HtmlWriter(uriInfo);
-      return writer.toHtml(Arrays.asList(txBase, txHead));
+      return writer.toHtml(Arrays.asList(baseTransaction, headTransaction));
    }
 }

@@ -16,9 +16,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.search.TransactionQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -44,10 +45,11 @@ public class TxResource {
 
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
-      TransactionCache txCache = OrcsApplication.getOrcsApi().getTxsCache();
-      TransactionRecord txRecord = txCache.getOrLoad(txId);
+      QueryFactory queryFactory = OrcsApplication.getOrcsApi().getQueryFactory(null);
+      TransactionQuery query2 = queryFactory.transactionQuery();
+      TransactionReadable baseTransaction = query2.andTxId(txId).getResults().getExactlyOne();
       HtmlWriter writer = new HtmlWriter(uriInfo);
-      return writer.toHtml(Collections.singleton(txRecord));
+      return writer.toHtml(Collections.singleton(baseTransaction));
    }
 
 }

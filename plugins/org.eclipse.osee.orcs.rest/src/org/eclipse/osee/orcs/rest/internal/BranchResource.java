@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
-import java.util.Collections;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -18,10 +17,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.search.BranchQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -51,12 +50,16 @@ public class BranchResource {
       return new TxsResource(uriInfo, request, branchUuid);
    }
 
+   /**
+    * @return Html representation of branche(s) that match UUID. Although it's not expected, no exception thrown if
+    * multiple branches found.
+    */
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
-      IOseeBranch token = TokenFactory.createBranch(branchUuid, "");
-      Branch branch = OrcsApplication.getOrcsApi().getBranchCache().get(token);
+      BranchQuery query = OrcsApplication.getOrcsApi().getQueryFactory(null).branchQuery();
+      ResultSet<BranchReadable> results = query.andUuids(branchUuid).getResults();
       HtmlWriter writer = new HtmlWriter(uriInfo);
-      return writer.toHtml(Collections.singleton(branch));
+      return writer.toHtml(results);
    }
 }
