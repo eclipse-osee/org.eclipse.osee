@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -51,9 +50,12 @@ import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
+import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.search.TransactionQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.junit.Before;
@@ -135,10 +137,14 @@ public class OrcsTransactionTest {
       String expectedName = "Create A Folder";
       String expectedAnnotation = "Annotate It";
 
-      Branch branch = orcsApi.getBranchCache().get(CoreBranches.COMMON);
-      TransactionRecord previousTx = orcsApi.getTxsCache().getHeadTransaction(branch);
+      BranchQuery branchQuery = query.branchQuery();
+      org.eclipse.osee.orcs.data.BranchReadable branchReadable =
+         branchQuery.andIds(CoreBranches.COMMON).getResults().getExactlyOne();
 
-      TransactionBuilder tx = txFactory.createTransaction(branch, userArtifact, comment);
+      TransactionQuery transactionQuery = query.transactionQuery();
+      TransactionReadable previousTx = transactionQuery.andIsHead(branchReadable).getResults().getExactlyOne();
+
+      TransactionBuilder tx = txFactory.createTransaction(branchReadable, userArtifact, comment);
 
       ArtifactId artifactId = tx.createArtifact(CoreArtifactTypes.Folder, expectedName);
 
@@ -148,11 +154,12 @@ public class OrcsTransactionTest {
       TransactionRecord newTx = tx.commit();
       assertFalse(tx.isCommitInProgress());
 
-      TransactionRecord newHeadTx = orcsApi.getTxsCache().getHeadTransaction(branch);
+      TransactionReadable newHeadTx = transactionQuery.andIsHead(branchReadable).getResults().getExactlyOne();
 
-      assertEquals(newTx, newHeadTx);
+      assertEquals(newTx.getId(), newHeadTx.getLocalId().intValue());
 
-      checkTransaction(previousTx, newTx, branch, comment, userArtifact);
+      TransactionReadable newTxReadable = transactionQuery.andTxId(newTx.getId()).getResults().getExactlyOne();
+      checkTransaction(previousTx, newTxReadable, branchReadable, comment, userArtifact);
 
       ResultSet<ArtifactReadable> result = query.fromBranch(CoreBranches.COMMON).andIds(artifactId).getResults();
 
@@ -171,10 +178,14 @@ public class OrcsTransactionTest {
       String expectedAnnotation = "Annotate It";
       String expectedQualifaction = "Test";
 
-      Branch branch = orcsApi.getBranchCache().get(CoreBranches.COMMON);
-      TransactionRecord previousTx = orcsApi.getTxsCache().getHeadTransaction(branch);
+      BranchQuery branchQuery = query.branchQuery();
+      org.eclipse.osee.orcs.data.BranchReadable branchReadable =
+         branchQuery.andIds(CoreBranches.COMMON).getResults().getExactlyOne();
 
-      TransactionBuilder tx = txFactory.createTransaction(branch, userArtifact, comment);
+      TransactionQuery transactionQuery = query.transactionQuery();
+      TransactionReadable previousTx = transactionQuery.andIsHead(branchReadable).getResults().getExactlyOne();
+
+      TransactionBuilder tx = txFactory.createTransaction(branchReadable, userArtifact, comment);
 
       ArtifactId artifactId = tx.createArtifact(CoreArtifactTypes.SubsystemRequirementHTML, expectedName);
 
@@ -977,14 +988,14 @@ public class OrcsTransactionTest {
       return query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
    }
 
-   private void checkTransaction(TransactionRecord previousTx, TransactionRecord newTx, Branch branch, String comment, ArtifactReadable user) throws OseeCoreException {
-      assertTrue(previousTx.getId() < newTx.getId());
+   private void checkTransaction(TransactionReadable previousTx, TransactionReadable newTx, org.eclipse.osee.orcs.data.BranchReadable branch, String comment, ArtifactReadable user) throws OseeCoreException {
+      assertTrue(previousTx.getLocalId() < newTx.getLocalId());
       assertEquals(comment, newTx.getComment());
-      assertEquals(branch, newTx.getBranch());
+      assertEquals(branch.getLocalId().longValue(), newTx.getBranchId());
       assertEquals(TransactionDetailsType.NonBaselined, newTx.getTxType());
-      assertEquals(user.getLocalId().intValue(), newTx.getAuthor());
-      assertEquals(-1, newTx.getCommit());
-      assertTrue(previousTx.getTimeStamp().before(newTx.getTimeStamp()));
+      assertEquals(user.getLocalId().intValue(), newTx.getAuthorId());
+      assertEquals(0, newTx.getCommit());
+      assertTrue(previousTx.getDate().before(newTx.getDate()));
    }
 
 }
