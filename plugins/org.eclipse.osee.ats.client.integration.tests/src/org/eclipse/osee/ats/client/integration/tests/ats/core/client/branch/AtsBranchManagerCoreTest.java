@@ -35,6 +35,8 @@ import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mockito;
 
 /**
  * Test unit for {@AtsBranchManagerCore}
@@ -96,7 +98,8 @@ public class AtsBranchManagerCoreTest {
       teamDef.getVersions().clear();
       //Test TxRecords
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
-      BranchCache branchCache = BranchManager.getCache();
+      BranchCache branchCache = Mockito.mock(BranchCache.class);
+      Mockito.when(branchCache.getById(Matchers.anyLong())).thenReturn(branch);
       TransactionRecord txRecord =
          new TransactionRecord(1234, branch.getId(), "comment", new Date(), UserManager.getUser().getArtId(),
             UserManager.getUser().getArtId(), TransactionDetailsType.Baselined, branchCache);

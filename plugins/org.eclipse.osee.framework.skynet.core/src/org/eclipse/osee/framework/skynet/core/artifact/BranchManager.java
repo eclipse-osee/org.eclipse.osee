@@ -98,7 +98,7 @@ public class BranchManager {
       return instance;
    }
 
-   public static BranchCache getCache() throws OseeCoreException {
+   private static BranchCache getCache() throws OseeCoreException {
       return ServiceUtil.getOseeCacheService().getBranchCache();
    }
 
@@ -229,7 +229,7 @@ public class BranchManager {
    }
 
    public static Branch getBranchByGuid(String guid) throws OseeCoreException {
-      //      checkAndReload(guid);
+      checkAndReload(guid);
       Branch branch = getCache().getByGuid(guid);
       if (branch == null) {
          throw new BranchDoesNotExist("Branch with guid [%s] does not exist", guid);
@@ -302,6 +302,14 @@ public class BranchManager {
          throw new BranchDoesNotExist("Branch could not be acquired for branch id %d", branchId);
       }
       return branch;
+   }
+
+   public static void reloadBranch(Branch toReload) {
+      loadBranchToCache(toReload.getId());
+   }
+
+   public static Collection<Branch> getAll() {
+      return getCache().getAll();
    }
 
    /**

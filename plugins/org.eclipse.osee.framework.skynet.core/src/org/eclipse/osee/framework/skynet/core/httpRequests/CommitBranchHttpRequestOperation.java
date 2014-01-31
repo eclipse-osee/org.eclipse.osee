@@ -118,7 +118,8 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
          TransactionManager.cacheCommittedArtifactTransaction(BranchManager.getAssociatedArtifact(sourceBranch),
             newTransaction);
       }
-      BranchManager.getCache().reloadCache();
+
+      BranchManager.reloadBranch(sourceBranch);
 
       if (!skipChecksAndEvents) {
          Collection<Change> changes = new ArrayList<Change>();
