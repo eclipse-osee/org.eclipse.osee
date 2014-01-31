@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.actions.NewGoal;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.config.AtsConfig2ExampleNavigateItem;
 import org.eclipse.osee.ats.config.ValidateAtsConfiguration;
 import org.eclipse.osee.ats.config.editor.AtsConfigResultsEditorNavigateItem;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
@@ -214,6 +215,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", AtsArtifactTypes.Task));
          new CreateActionUsingAllActionableItems(adminItems);
 
+         new AtsConfig2ExampleNavigateItem(adminItems);
          new DoesNotWorkItemAts(adminItems);
 
          XNavigateItem healthItems = new XNavigateItemFolder(adminItems, "Health");

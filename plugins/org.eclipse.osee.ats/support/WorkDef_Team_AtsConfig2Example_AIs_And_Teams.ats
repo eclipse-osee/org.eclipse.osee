@@ -1,0 +1,38 @@
+userDefinition "Smith, Joe" GetOrCreate
+
+teamDefinition "AtsConfig2" GetOrCreate {
+   children {
+
+      teamDefinition "AtsConfig2 Software" {
+      	guid "AGZs2EW0tWRkIv3OqfAA"
+         lead named "Smith, Joe"
+         member named "Smith, Joe"
+         workDefinition "WorkDef_Team_AtsConfig2Example"
+      }
+      teamDefinition "AtsConfig2 Requirements" {
+      	guid "AGZs2EU1d3db9M57WJQA"
+         lead named "Smith, Joe"
+         member named "Smith, Joe"
+         workDefinition "WorkDef_Team_AtsConfig2Example"
+      }
+   }
+}
+
+actionableItem "AtsConfig2" GetOrCreate {
+   children {
+      actionableItem "AtsConfig2" GetOrCreate {
+         children {
+            actionableItem "AtsConfig2 Software" {
+            	team "AtsConfig2 Software"
+            }
+            actionableItem "AtsConfig2 Test" {
+            	team "AtsConfig2 Software"
+            }
+            actionableItem "AtsConfig2 Requirements" {
+            	team "AtsConfig2 Requirements"
+            }
+         }
+      }
+   }
+}
+
