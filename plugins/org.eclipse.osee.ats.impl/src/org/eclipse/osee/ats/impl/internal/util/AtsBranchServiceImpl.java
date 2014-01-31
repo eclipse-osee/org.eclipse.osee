@@ -13,14 +13,14 @@ package org.eclipse.osee.ats.impl.internal.util;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.search.BranchQuery;
 
 /**
  * @author Donald G. Dunne
@@ -36,8 +36,11 @@ public class AtsBranchServiceImpl implements IAtsBranchService {
    @Override
    public boolean isBranchInCommit(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       IOseeBranch branch = getBranch(teamWf);
-      Branch branch2 = orcsApi.getBranchCache().get(branch);
-      return branch2.getBranchState() == BranchState.COMMIT_IN_PROGRESS;
+
+      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+      BranchReadable branchReadable = query.andIds(branch).getResults().getExactlyOne();
+
+      return branchReadable.getBranchState() == BranchState.COMMIT_IN_PROGRESS;
    }
 
    @Override
@@ -45,9 +48,10 @@ public class AtsBranchServiceImpl implements IAtsBranchService {
       boolean inWork = false;
       IOseeBranch branch = getBranch(teamWf);
       if (branch != null) {
-         Branch branch2 = orcsApi.getBranchCache().get(branch);
-         if (branch2 != null) {
-            BranchState state = branch2.getBranchState();
+         BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+         BranchReadable branchReadable = query.andIds(branch).getResults().getExactlyOne();
+         if (branchReadable != null) {
+            BranchState state = branchReadable.getBranchState();
             inWork = state == BranchState.CREATED || state == BranchState.MODIFIED;
          }
       }
@@ -59,10 +63,13 @@ public class AtsBranchServiceImpl implements IAtsBranchService {
       IOseeBranch results = null;
       ArtifactReadable artifact =
          orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(teamWf.getGuid()).getResults().getExactlyOne();
-      for (Branch branch : orcsApi.getBranchCache().getBranches(
-         new BranchFilter(BranchArchivedState.UNARCHIVED, BranchType.WORKING))) {
+      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+      ResultSet<BranchReadable> branches = query.excludeArchived().andIsOfType(BranchType.WORKING).getResults();
+
+      for (BranchReadable branch : branches) {
          if (branch.getAssociatedArtifactId() == artifact.getLocalId()) {
             results = branch;
+            break;
          }
       }
       return results;
