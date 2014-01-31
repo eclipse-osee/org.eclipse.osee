@@ -12,21 +12,20 @@ package org.eclipse.osee.orcs.core.internal.console;
 
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.search.BranchQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -136,32 +135,26 @@ public final class BranchCommand implements ConsoleCommand {
          filter.setBranchStates(isStates);
          filter.setNegatedBranchStates(notStates);
 
-         List<Branch> branches = getOrcsApi().getBranchCache().getBranches(filter);
+         BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+         ResultSet<BranchReadable> branches = query.excludeArchived().andIsOfType(BranchType.WORKING).getResults();
 
-         java.util.Collections.sort(branches, new Comparator<Branch>() {
+         branches.sort(new Comparator<BranchReadable>() {
             @Override
-            public int compare(Branch o1, Branch o2) {
+            public int compare(BranchReadable o1, BranchReadable o2) {
                return 0;
             }
          });
          int count = 0;
-         for (Branch aBranch : branches) {
+         for (BranchReadable aBranch : branches) {
             console.writeln(
                "[%s] - id[%s] guid[%s] sTx[%s] bTx[%s] parent[%s] type[%s] state[%s] archive[%s] name[%s]", ++count,
-               aBranch.getId(), aBranch.getGuid(), aBranch.getName(), aBranch.getBranchType(),
-               aBranch.getBranchState(), aBranch.getArchiveState(), toId(aBranch.getSourceTransaction()),
-               toId(aBranch.getBaseTransaction()), toId(aBranch.getParentBranch()));
+               aBranch.getLocalId(), aBranch.getGuid(), aBranch.getName(), aBranch.getBranchType(),
+               aBranch.getBranchState(), aBranch.getArchiveState(), aBranch.getSourceTransaction(),
+               aBranch.getBaseTransaction(), aBranch.getParentBranch());
          }
          return Boolean.TRUE;
       }
 
-      private int toId(ITransaction item) {
-         return item != null ? item.getGuid() : -1;
-      }
-
-      private long toId(IOseeStorable item) {
-         return item != null ? item.getId() : -1;
-      }
    }
 
 }

@@ -20,13 +20,13 @@ import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.ImportOptions;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
+import org.eclipse.osee.orcs.search.BranchQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -75,24 +75,24 @@ public final class BranchImportCommand implements ConsoleCommand {
       options.put(ImportOptions.CLEAN_BEFORE_IMPORT.name(), params.getBoolean("clean"));
 
       OrcsBranch orcsBranch = getOrcsApi().getBranchOps(null);
-      return new ImportBranchDelegateCallable(console, orcsBranch, getOrcsApi().getBranchCache(), options, importFiles,
-         branchIds);
+      return new ImportBranchDelegateCallable(console, orcsBranch, getOrcsApi().getQueryFactory(null).branchQuery(),
+         options, importFiles, branchIds);
    }
 
    private static final class ImportBranchDelegateCallable extends CancellableCallable<Boolean> {
 
       private final Console console;
       private final OrcsBranch orcsBranch;
-      private final BranchCache branchCache;
+      private final BranchQuery branchQuery;
       private final PropertyStore options;
       private final List<String> importFiles;
       private final List<String> branchIds;
 
-      public ImportBranchDelegateCallable(Console console, OrcsBranch orcsBranch, BranchCache branchCache, PropertyStore options, List<String> importFiles, List<String> branchIds) {
+      public ImportBranchDelegateCallable(Console console, OrcsBranch orcsBranch, BranchQuery branchQuery, PropertyStore options, List<String> importFiles, List<String> branchIds) {
          super();
          this.console = console;
          this.orcsBranch = orcsBranch;
-         this.branchCache = branchCache;
+         this.branchQuery = branchQuery;
          this.options = options;
          this.importFiles = importFiles;
          this.branchIds = branchIds;
@@ -106,7 +106,7 @@ public final class BranchImportCommand implements ConsoleCommand {
 
          List<IOseeBranch> branches = new LinkedList<IOseeBranch>();
          for (String branchIdString : branchIds) {
-            IOseeBranch branch = branchCache.getById(Integer.parseInt(branchIdString));
+            IOseeBranch branch = branchQuery.andLocalId(Integer.valueOf(branchIdString)).getResults().getExactlyOne();
             branches.add(branch);
          }
 

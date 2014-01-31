@@ -20,17 +20,16 @@ import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
+import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.search.BranchQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -80,56 +79,61 @@ public final class BranchExportCommand implements ConsoleCommand {
       List<String> includeBranchIds = Arrays.asList(params.getArray("includeBranchIds"));
 
       OrcsBranch orcsBranch = getOrcsApi().getBranchOps(null);
-      return new ExportBranchCallable(console, orcsBranch, getOrcsApi().getBranchCache(), exportFileName, options,
-         includeArchivedBranches, includeBranchIds, excludeBranchIds);
+      return new ExportBranchCallable(console, orcsBranch, exportFileName, options, includeArchivedBranches,
+         includeBranchIds, excludeBranchIds, orcsApi);
    }
 
    private static class ExportBranchCallable extends CancellableCallable<URI> {
 
       private final Console console;
       private final OrcsBranch orcsBranch;
-      private final BranchCache branchCache;
       private final PropertyStore options;
       private final String exportFileName;
       private final boolean includeArchivedBranches;
 
       private final List<String> includeBranchIds;
       private final List<String> excludeBranchIds;
+      private final OrcsApi orcsApi;
 
-      public ExportBranchCallable(Console console, OrcsBranch orcsBranch, BranchCache branchCache, String exportFileName, PropertyStore options, boolean includeArchivedBranches, List<String> includeBranchIds, List<String> excludeBranchIds) {
+      public ExportBranchCallable(Console console, OrcsBranch orcsBranch, String exportFileName, PropertyStore options, boolean includeArchivedBranches, List<String> includeBranchIds, List<String> excludeBranchIds, OrcsApi orcsApi) {
          this.console = console;
          this.orcsBranch = orcsBranch;
-         this.branchCache = branchCache;
          this.options = options;
          this.exportFileName = exportFileName;
          this.includeArchivedBranches = includeArchivedBranches;
          this.includeBranchIds = includeBranchIds;
          this.excludeBranchIds = excludeBranchIds;
+         this.orcsApi = orcsApi;
       }
 
       private List<IOseeBranch> getBranchesToExport() throws OseeCoreException {
          List<IOseeBranch> branches = new LinkedList<IOseeBranch>();
+         BranchQuery branchQuery = orcsApi.getQueryFactory(null).branchQuery();
          if (includeBranchIds.isEmpty()) {
-            BranchFilter filter;
+            ResultSet<BranchReadable> branchReadables = null;
             if (includeArchivedBranches) {
-               filter = new BranchFilter(BranchArchivedState.ALL, BranchType.values());
+               branchQuery.includeArchived();
             } else {
-               filter = new BranchFilter(BranchArchivedState.UNARCHIVED, BranchType.values());
+               branchQuery.excludeArchived();
             }
-            for (Branch branch : branchCache.getBranches(filter)) {
+            branchReadables =
+               branchQuery.andIsOfType(BranchType.WORKING, BranchType.BASELINE, BranchType.MERGE, BranchType.PORT,
+                  BranchType.SYSTEM_ROOT).getResults();
+
+            for (BranchReadable branch : branchReadables) {
                branches.add(branch);
             }
          } else {
             for (String branchIdString : includeBranchIds) {
-               int branchId = Integer.parseInt(branchIdString);
-               branches.add(branchCache.getById(branchId));
+               branches.add(branchQuery.andLocalId(Integer.valueOf(branchIdString)).getResults().getExactlyOne());
             }
          }
 
+         branchQuery = orcsApi.getQueryFactory(null).branchQuery();
          if (!excludeBranchIds.isEmpty()) {
             for (String branchIdString : excludeBranchIds) {
-               int branchId = Integer.parseInt(branchIdString);
-               Branch toExclude = branchCache.getById(branchId);
+               BranchReadable toExclude =
+                  branchQuery.andLocalId(Integer.valueOf(branchIdString)).getResults().getExactlyOne();
                branches.remove(toExclude);
             }
          }
