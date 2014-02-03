@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -142,7 +143,8 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
       @Override
       public Collection<AttributeReadable<?>> getElements() throws OseeCoreException {
          Collection<AttributeReadable<?>> filtered = Lists.newLinkedList();
-         for (AttributeReadable<?> attribute : item.getAttributes()) {
+         // look at all attributes since search already filters on deletion flag
+         for (AttributeReadable<?> attribute : item.getAttributes(DeletionFlag.INCLUDE_DELETED)) {
             if (matches.containsKey(attribute.getLocalId())) {
                filtered.add(attribute);
             }
