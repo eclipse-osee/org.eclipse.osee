@@ -34,12 +34,6 @@ public class OseeApplicationServer {
       // private constructor
    }
 
-   public static void reset() {
-      applicationServer.resetStatus();
-
-      applicationServer.setServerInfo(null);
-   }
-
    public static String getOseeApplicationServer() throws OseeCoreException {
       checkAndUpdateStatus();
       String serverAddress = applicationServer.getServerAddress();
@@ -47,14 +41,8 @@ public class OseeApplicationServer {
       return serverAddress;
    }
 
-   public static boolean isApplicationServerAlive() {
-      checkAndUpdateStatus();
-      return applicationServer.isAlive();
-   }
-
    private synchronized static void checkAndUpdateStatus() {
       if (!applicationServer.isServerInfoValid()) {
-         applicationServer.resetStatus();
          OseeServerInfo serverInfo = null;
          String appServerUri = OseeClientProperties.getOseeApplicationServer();
          if (Strings.isValid(appServerUri)) {
@@ -69,7 +57,6 @@ public class OseeApplicationServer {
          }
          applicationServer.setServerInfo(serverInfo);
       }
-      applicationServer.checkAlive();
       applicationServer.report();
    }
 

@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 
 public abstract class OseeServer {
 
-   private boolean isAlive;
    private final String name;
    private IHealthStatus status;
 
@@ -35,19 +34,6 @@ public abstract class OseeServer {
 
    public String getName() {
       return name;
-   }
-
-   public void setAlive(boolean isServerAlive) {
-      this.isAlive = isServerAlive;
-   }
-
-   public void resetStatus() {
-      isAlive = false;
-      status = null;
-   }
-
-   public boolean isAlive() {
-      return isAlive;
    }
 
    public void report() {

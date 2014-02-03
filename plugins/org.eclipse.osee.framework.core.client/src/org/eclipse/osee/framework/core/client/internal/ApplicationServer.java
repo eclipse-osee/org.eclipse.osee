@@ -10,16 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.client.internal;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
-import org.eclipse.osee.framework.core.util.HttpProcessor;
 
 public class ApplicationServer extends OseeServer {
-   private static final DateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
-
    private OseeServerInfo serverInfo;
    private String serverAddress;
 
@@ -47,18 +40,4 @@ public class ApplicationServer extends OseeServer {
       return serverAddress;
    }
 
-   public void checkAlive() {
-      if (isServerInfoValid()) {
-         boolean alive = HttpProcessor.isAlive(serverInfo.getUri());
-         setAlive(alive);
-         if (alive) {
-            set(Level.INFO, null, "%s %s Running Since: %s", getServerAddress(),
-               Arrays.deepToString(serverInfo.getVersion()), format.format(serverInfo.getDateStarted()));
-         } else {
-            set(Level.SEVERE, null, "Unable to Connect to [%s]", getServerAddress());
-         }
-      } else {
-         setAlive(false);
-      }
-   }
 }

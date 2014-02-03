@@ -107,11 +107,7 @@ public class InternalClientSessionManager {
          clientInfo.getPort(), clientInfo.getVersion(), "N/A");
    }
 
-   public synchronized OseeClientSession authenticate(ICredentialProvider credentialProvider) throws OseeCoreException {
-      if (!OseeApplicationServer.isApplicationServerAlive()) {
-         OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.SEVERE, "Application Server not Available"));
-         return null;
-      }
+   public synchronized void authenticate(ICredentialProvider credentialProvider) throws OseeCoreException {
       if (!isSessionValid()) {
          try {
             OseeCredential credential = credentialProvider.getCredential();
@@ -128,7 +124,6 @@ public class InternalClientSessionManager {
          OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.INFO, "%s BuildType:[%s]", oseeSession,
             oseeSessionGrant.getClientBuildDesignation()));
       }
-      return oseeSession;
    }
 
    public void ensureSessionCreated() {
