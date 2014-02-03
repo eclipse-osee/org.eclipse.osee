@@ -590,8 +590,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      if (!storedParentActionId.equals(parentActionId)) {
                         String errorStr =
                            String.format(
-                              "Error: Duplicate Legacy PCR Ids in Different Actions: teamWf %s parentActionId[%s] != storedActionId [%s] ",
-                              teamWf.toStringWithId(), parentActionId, storedParentActionId);
+                              "Error: Duplicate Legacy PCR Ids [%s] in Different Actions: teamWf %s parentActionId[%s] != storedActionId [%s] ",
+                              legacyPcrId, teamWf.toStringWithId(), parentActionId, storedParentActionId);
                         results.log(artifact, "testArtifactIds", errorStr);
                      }
                   } else {
