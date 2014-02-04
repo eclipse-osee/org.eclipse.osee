@@ -27,7 +27,6 @@ Import-Package: com.google.common.io,
  org.osgi.framework,
  org.osgi.service.http
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Export-Package: org.eclipse.osee.rest.admin
 Require-Bundle: org.codehaus.jackson.core,
  org.codehaus.jackson.jaxrs,
  org.codehaus.jackson.mapper
