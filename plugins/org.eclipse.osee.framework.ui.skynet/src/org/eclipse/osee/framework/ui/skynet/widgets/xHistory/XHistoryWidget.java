@@ -21,21 +21,27 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialogWithBranchSelect;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -142,6 +148,27 @@ public class XHistoryWidget extends GenericXWidget {
       toolBar.setLayoutData(gd);
 
       ToolItem item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(ImageManager.getImage(FrameworkImage.OPEN));
+      item.setToolTipText("Load by GUID");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            EntryDialogWithBranchSelect dialog = new EntryDialogWithBranchSelect("Open by GUID", "Enter GUID");
+            if (dialog.open() == 0) {
+               String guid = dialog.getEntry();
+               Conditions.checkNotNullOrEmpty(guid, "GUID");
+               IOseeBranch branch = dialog.getBranch();
+               Conditions.checkNotNull(branch, "Branch");
+               Artifact art = ArtifactQuery.getArtifactFromId(guid, branch, DeletionFlag.EXCLUDE_DELETED);
+               if (art != null) {
+                  setInputData(art, true);
+                  onRefresh();
+               }
+            }
+         }
+      });
+
+      item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(ImageManager.getImage(PluginUiImage.REFRESH));
       item.setToolTipText("Refresh");
       item.addSelectionListener(new SelectionAdapter() {
