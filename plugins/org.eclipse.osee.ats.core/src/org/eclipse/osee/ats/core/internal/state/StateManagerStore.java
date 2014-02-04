@@ -34,7 +34,7 @@ public class StateManagerStore {
       StateManagerWriter writer = new StateManagerWriter(workItem, stateMgr, attrResolver, changes, workStateFactory);
       List<IAtsUser> assigneesAdded = stateMgr.getAssigneesAdded();
       writer.writeToStore();
-      changes.addExecuteListener(getPostPersistExecutionListener(assigneesAdded, workStateFactory));
+      changes.addExecuteListener(getPostPersistExecutionListener(workItem, assigneesAdded, workStateFactory));
    }
 
    public static void postPersistNotifyReset(IAtsWorkItem workItem, IAttributeResolver attrResolver, List<IAtsUser> assigneesAdded, IAtsWorkStateFactory workStateFactory) throws OseeCoreException {
@@ -42,20 +42,15 @@ public class StateManagerStore {
       load(workItem, workItem.getStateMgr(), attrResolver, workStateFactory);
    }
 
-   public static IExecuteListener getPostPersistExecutionListener(final List<IAtsUser> assigneesAdded, final IAtsWorkStateFactory workStateFactory) {
+   public static IExecuteListener getPostPersistExecutionListener(final IAtsWorkItem workItem, final List<IAtsUser> assigneesAdded, final IAtsWorkStateFactory workStateFactory) {
       return new IExecuteListener() {
 
          @Override
          public void changesStored(IAtsChangeSet changes) {
-            for (Object obj : changes.getObjects()) {
-               if (obj instanceof IAtsWorkItem) {
-                  try {
-                     postPersistNotifyReset((IAtsWorkItem) obj, AtsCore.getAttrResolver(), assigneesAdded,
-                        workStateFactory);
-                  } catch (OseeCoreException ex) {
-                     OseeLog.log(AtsCore.class, Level.SEVERE, ex);
-                  }
-               }
+            try {
+               postPersistNotifyReset(workItem, AtsCore.getAttrResolver(), assigneesAdded, workStateFactory);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsCore.class, Level.SEVERE, ex);
             }
          }
       };
