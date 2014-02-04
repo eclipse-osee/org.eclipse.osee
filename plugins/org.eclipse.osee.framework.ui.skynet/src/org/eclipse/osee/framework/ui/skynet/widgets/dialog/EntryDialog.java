@@ -24,6 +24,9 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.HyperLinkLabel;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
@@ -38,6 +41,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -157,6 +161,17 @@ public class EntryDialog extends MessageDialog {
          public void widgetSelected(SelectionEvent e) {
             super.widgetSelected(e);
             text.setText("");
+         }
+      });
+
+      Button copyButton = new Button(headerComp, SWT.PUSH);
+      copyButton.setText("Copy");
+      copyButton.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            Clipboard clipboard = new Clipboard(Display.getCurrent());
+            TextTransfer textTransfer = TextTransfer.getInstance();
+            clipboard.setContents(new Object[] {text.get()}, new Transfer[] {textTransfer});
          }
       });
 
