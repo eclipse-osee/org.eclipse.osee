@@ -13,7 +13,6 @@ package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.LinkedList;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -35,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpReques
 import org.eclipse.osee.framework.ui.skynet.dbHealth.LocalRelationLink;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.RelationIntegrityCheck;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -132,7 +132,7 @@ public class RelationIntegrityCheckTest {
             int gammaId =              chStmt.getInt("gamma_id");
             int transactionId =        chStmt.getInt("transaction_id");
             int relationId =           chStmt.getInt("rel_link_id");
-            int branchId =             chStmt.getInt("branch_id");
+            long branchId =             chStmt.getLong("branch_id");
             int a_sideArtifactId =     chStmt.getInt("a_art_id");
             int b_sideArtifactId =     chStmt.getInt("b_art_id");
             int deletedTransaction =   chStmt.getInt("deleted_tran");

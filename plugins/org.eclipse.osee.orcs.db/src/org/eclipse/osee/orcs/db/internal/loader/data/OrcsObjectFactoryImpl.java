@@ -44,7 +44,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public VersionData createVersion(int branchId, int txId, long gamma, boolean historical) {
+   public VersionData createVersion(long branchId, int txId, long gamma, boolean historical) {
       return createVersion(branchId, txId, gamma, historical, RelationalConstants.TRANSACTION_SENTINEL);
    }
 
@@ -179,7 +179,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public BranchData createBranchData(int localId, String guid, BranchType branchType, String name, long parentBranch, int baseTransaction, int sourceTransaction, BranchArchivedState archiveState, BranchState branchState, int associatedArtifactId) {
+   public BranchData createBranchData(long localId, String guid, BranchType branchType, String name, long parentBranch, int baseTransaction, int sourceTransaction, BranchArchivedState archiveState, BranchState branchState, int associatedArtifactId) {
       BranchData data = new BranchDataImpl();
       data.setArchiveState(archiveState);
       data.setAssociatedArtifactId(associatedArtifactId);
@@ -187,7 +187,8 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       data.setBranchState(branchState);
       data.setBranchType(branchType);
       data.setGuid(guid);
-      data.setLocalId(localId);
+      // this is bad and will be changed in the future when local ids are removed
+      data.setLocalId((int) localId);
       data.setName(name);
       data.setParentBranch(parentBranch);
       data.setSourceTransaction(sourceTransaction);

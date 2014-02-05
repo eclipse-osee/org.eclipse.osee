@@ -111,7 +111,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
             chStmt.runPreparedQuery(SELECT_DUPLICATES, gammaJoin.getQueryId(), TxChange.CURRENT.getValue(),
                TxChange.CURRENT.getValue());
             while (chStmt.next()) {
-               console.writeln("branch: " + chStmt.getInt("branch_id"), "gamma1: " + chStmt.getLong("gamma1"),
+               console.writeln("branch: " + chStmt.getLong("branch_id"), "gamma1: " + chStmt.getLong("gamma1"),
                   "gamma2: " + chStmt.getLong("gamma2"));
             }
          } finally {

@@ -212,10 +212,10 @@ public final class ArtifactLoader {
             chStmt.runPreparedQuery(fetchSize, sql, queryId);
 
             int previousArtId = -1;
-            int previousBranchId = -1;
+            long previousBranchId = -1;
             while (chStmt.next()) {
                int artId = chStmt.getInt("art_id");
-               int branchId = chStmt.getInt("branch_id");
+               long branchId = chStmt.getLong("branch_id");
                // assumption: sql is returning rows ordered by branch_id, art_id, transaction_id in descending order
                if (previousArtId != artId || previousBranchId != branchId) {
                   // assumption: sql is returning unwanted deleted artifacts only in the historical case

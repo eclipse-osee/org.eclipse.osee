@@ -19,9 +19,9 @@ import org.xml.sax.Attributes;
  * @author Roberto E. Escobar
  */
 public class V0_9_2BranchTransformer extends SaxTransformer {
-   private final Map<Integer, Integer> branchToBaseTx;
+   private final Map<Long, Integer> branchToBaseTx;
 
-   public V0_9_2BranchTransformer(Map<Integer, Integer> branchToBaseTx) {
+   public V0_9_2BranchTransformer(Map<Long, Integer> branchToBaseTx) {
       this.branchToBaseTx = branchToBaseTx;
    }
 
@@ -29,7 +29,7 @@ public class V0_9_2BranchTransformer extends SaxTransformer {
    public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws XMLStreamException {
       super.startElementFound(uri, localName, qName, attributes);
       if (localName.equals("entry")) {
-         Integer branchId = Integer.parseInt(attributes.getValue("branch_id"));
+         Long branchId = Long.parseLong(attributes.getValue("branch_id"));
          Integer baselineTransactionId = branchToBaseTx.get(branchId);
          writer.writeAttribute("baseline_transaction_id", String.valueOf(baselineTransactionId));
       }

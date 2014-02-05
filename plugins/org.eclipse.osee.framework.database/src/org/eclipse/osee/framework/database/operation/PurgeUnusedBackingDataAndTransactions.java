@@ -100,7 +100,7 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractDbTxOperation
       try {
          chStmt.runPreparedQuery(EMPTY_TRANSACTIONS);
          while (chStmt.next()) {
-            emptyTransactions.add(new Object[] {chStmt.getInt("branch_id"), chStmt.getInt("transaction_id")});
+            emptyTransactions.add(new Object[] {chStmt.getLong("branch_id"), chStmt.getInt("transaction_id")});
             log(String.valueOf(chStmt.getInt("transaction_id")));
          }
       } finally {

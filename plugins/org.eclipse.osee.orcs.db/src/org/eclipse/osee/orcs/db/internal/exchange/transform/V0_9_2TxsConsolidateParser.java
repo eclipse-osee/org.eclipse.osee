@@ -24,7 +24,7 @@ import org.xml.sax.Attributes;
  * @author Ryan D. Brooks
  */
 public class V0_9_2TxsConsolidateParser extends SaxTransformer {
-   private int targetBranchId;
+   private long targetBranchId;
    private String targetBranchIdStr;
    private final Map<Long, Long> artifactGammaToNetGammaId;
    private final HashCollection<Long, Address> addressMap;
@@ -36,7 +36,7 @@ public class V0_9_2TxsConsolidateParser extends SaxTransformer {
       this.addressMap = addressMap;
    }
 
-   public void setBranchId(int targetBranchId) {
+   public void setBranchId(long targetBranchId) {
       this.isWriteAllowed = false;
       this.targetBranchId = targetBranchId;
       this.targetBranchIdStr = String.valueOf(targetBranchId);

@@ -35,7 +35,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
    protected AttributeData createData(Object conditions, AttributeObjectFactory factory, IOseeStatement chStmt, Options options) throws OseeCoreException {
       AttributeData toReturn = null;
 
-      int branchId = chStmt.getInt("branch_id");
+      long branchId = chStmt.getLong("branch_id");
       int artId = chStmt.getInt("art_id");
       int attrId = chStmt.getInt("attr_id");
       long gammaId = chStmt.getInt("gamma_id");
@@ -86,16 +86,16 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
 
    private static final class CreateConditions {
       int previousArtId = -1;
-      int previousBranchId = -1;
+      long previousBranchId = -1;
       int previousAttrId = -1;
       long previousGammaId = -1;
       ModificationType previousModType = null;
 
-      boolean isSame(int branchId, int artifactId, int attrId) {
+      boolean isSame(long branchId, int artifactId, int attrId) {
          return previousBranchId == branchId && previousArtId == artifactId && previousAttrId == attrId;
       }
 
-      void saveConditions(int branchId, int artifactId, int attrId, long gammaId, ModificationType modType) {
+      void saveConditions(long branchId, int artifactId, int attrId, long gammaId, ModificationType modType) {
          previousBranchId = branchId;
          previousArtId = artifactId;
          previousAttrId = attrId;

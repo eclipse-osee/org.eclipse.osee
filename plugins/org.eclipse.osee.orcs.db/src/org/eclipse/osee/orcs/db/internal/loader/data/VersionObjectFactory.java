@@ -20,7 +20,7 @@ public interface VersionObjectFactory extends OrcsDataFactory {
 
    VersionData createDefaultVersionData();
 
-   VersionData createVersion(int branchId, int txId, long gamma, boolean historical) throws OseeCoreException;
+   VersionData createVersion(long branchId, int txId, long gamma, boolean historical) throws OseeCoreException;
 
    VersionData createCopy(VersionData other) throws OseeCoreException;
 

@@ -44,7 +44,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
    }
 
    private final List<IResourceLocator> transferredBinaryContent;
-   private final Set<Integer> branchesToImport;
+   private final Set<Long> branchesToImport;
    private final IOseeExchangeDataProvider exportDataProvider;
 
    private final IResourceManager resourceManager;
@@ -55,7 +55,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       super(logger, dbService, isCacheAll, cacheLimit);
       this.resourceManager = resourceManager;
       this.identityService = identityService;
-      this.branchesToImport = new HashSet<Integer>();
+      this.branchesToImport = new HashSet<Long>();
       this.transferredBinaryContent = new ArrayList<IResourceLocator>();
       this.exportDataProvider = exportDataProvider;
    }
@@ -68,10 +68,10 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       return identityService;
    }
 
-   public void setSelectedBranchIds(int... branchIds) {
+   public void setSelectedBranchIds(long... branchIds) {
       if (branchIds != null && branchIds.length > 0) {
          this.branchesToImport.clear();
-         for (int branchId : branchIds) {
+         for (long branchId : branchIds) {
             this.branchesToImport.add(branchId);
          }
       }

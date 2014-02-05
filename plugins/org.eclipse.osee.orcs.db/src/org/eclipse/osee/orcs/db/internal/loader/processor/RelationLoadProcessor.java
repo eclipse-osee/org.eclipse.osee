@@ -36,7 +36,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
    protected RelationData createData(Object conditions, RelationObjectFactory factory, IOseeStatement chStmt, Options options) throws OseeCoreException {
       RelationData toReturn = null;
 
-      int branchId = chStmt.getInt("branch_id");
+      long branchId = chStmt.getLong("branch_id");
       int aArtId = chStmt.getInt("a_art_id");
       int bArtId = chStmt.getInt("b_art_id");
       long typeId = chStmt.getLong("rel_link_type_id");
@@ -82,17 +82,17 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
    }
 
    private static final class CreateConditions {
-      int previousBranchId = -1;
+      long previousBranchId = -1;
       int previousArtIdA = -1;
       int previousArtIdB = -1;
       long previousTypeId = -1;
       long previousGammaId = -1;
 
-      boolean isSame(int branchId, int aArtId, int bArtId, long typeId) {
+      boolean isSame(long branchId, int aArtId, int bArtId, long typeId) {
          return previousBranchId == branchId && previousArtIdA == aArtId && previousArtIdB == bArtId && previousTypeId == typeId;
       }
 
-      void saveConditions(int branchId, int aArtId, int bArtId, long typeId, long gammaId) {
+      void saveConditions(long branchId, int aArtId, int bArtId, long typeId, long gammaId) {
          previousBranchId = branchId;
          previousArtIdA = aArtId;
          previousArtIdB = bArtId;

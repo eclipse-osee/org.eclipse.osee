@@ -92,7 +92,7 @@ public class AttributeLoader {
 
       public AttrData(IOseeStatement chStmt, boolean historical) throws OseeCoreException {
          artifactId = chStmt.getInt("art_id");
-         branchId = chStmt.getInt("branch_id");
+         branchId = chStmt.getLong("branch_id");
          attrId = chStmt.getInt("attr_id");
          gammaId = chStmt.getInt("gamma_id");
          modType = chStmt.getInt("mod_type");

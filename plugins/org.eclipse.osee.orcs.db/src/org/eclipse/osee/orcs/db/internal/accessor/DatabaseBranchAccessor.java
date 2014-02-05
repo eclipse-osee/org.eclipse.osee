@@ -115,7 +115,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<String, Branch>
          chStmt.runPreparedQuery(2000, SELECT_BRANCHES);
          while (chStmt.next()) {
             try {
-               int branchId = chStmt.getInt("branch_id");
+               long branchId = chStmt.getLong("branch_id");
 
                String branchName = chStmt.getString("branch_name");
                BranchState branchState = BranchState.getBranchState(chStmt.getInt("branch_state"));

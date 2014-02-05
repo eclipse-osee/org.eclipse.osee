@@ -19,9 +19,9 @@ import org.xml.sax.Attributes;
  * @author Roberto E. Escobar
  */
 public class V0_9_2TxDetailsHandler extends AbstractSaxHandler {
-   private final Map<Integer, Integer> branchToBaseTx;
+   private final Map<Long, Integer> branchToBaseTx;
 
-   public V0_9_2TxDetailsHandler(Map<Integer, Integer> branchToBaseTx) {
+   public V0_9_2TxDetailsHandler(Map<Long, Integer> branchToBaseTx) {
       this.branchToBaseTx = branchToBaseTx;
    }
 
@@ -36,7 +36,7 @@ public class V0_9_2TxDetailsHandler extends AbstractSaxHandler {
          int txType = Integer.parseInt(attributes.getValue("tx_type"));
          TransactionDetailsType detailsType = TransactionDetailsType.toEnum(txType);
          if (detailsType.isBaseline()) {
-            Integer branchId = Integer.parseInt(attributes.getValue("branch_id"));
+            Long branchId = Long.parseLong(attributes.getValue("branch_id"));
             Integer baseTransaction = Integer.parseInt(attributes.getValue("transaction_id"));
             branchToBaseTx.put(branchId, baseTransaction);
          }

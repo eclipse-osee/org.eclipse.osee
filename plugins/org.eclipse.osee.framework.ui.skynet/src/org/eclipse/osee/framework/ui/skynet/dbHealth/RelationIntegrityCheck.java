@@ -294,7 +294,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
             Integer.toString(relLink.relLinkId),
             Integer.toString(relLink.gammaId),
             Integer.toString(relLink.relTransId),
-            Integer.toString(relLink.branchId),
+            Long.toString(relLink.branchId),
             Integer.toString(relLink.aArtId),
             Integer.toString(relLink.bArtId),
             Integer.toString(relLink.transIdForArtifactDeletion)}));
@@ -317,7 +317,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
             int gamma_id =             chStmt.getInt("gamma_id");
             int transactionId =        chStmt.getInt("transaction_id");
             int relationId =           chStmt.getInt("rel_link_id");
-            int branchId =             chStmt.getInt("branch_id");
+            long branchId =            chStmt.getLong("branch_id");
             int a_sideArtifactId =     chStmt.getInt("a_art_id");
             int b_sideArtifactId =     chStmt.getInt("b_art_id");
             int deletedTransaction =   chStmt.getInt("deleted_tran");

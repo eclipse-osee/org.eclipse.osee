@@ -268,7 +268,7 @@ public final class TransactionManager {
             BranchCache branchCache = getBranchCache();
 
             transactionRecord =
-               factory.createOrUpdate(txCache, txId, chStmt.getInt("branch_id"), chStmt.getString("osee_comment"),
+               factory.createOrUpdate(txCache, txId, chStmt.getLong("branch_id"), chStmt.getString("osee_comment"),
                   chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType,
                   branchCache);
 

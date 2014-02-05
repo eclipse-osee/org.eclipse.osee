@@ -90,7 +90,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
          stmt.runPreparedQuery("SELECT * FROM branch_data");
          while (stmt.next()) {
             Integer id = stmt.getInt("id");
-            Integer branch_id = stmt.getInt("branch_id");
+            Long branch_id = stmt.getLong("branch_id");
             Integer result_id = stmt.getInt("result_id");
             Integer result_line = stmt.getInt("result_line");
             Boolean taken = stmt.getBoolean("taken");

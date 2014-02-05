@@ -37,9 +37,9 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       public int attributeId;
       public int gammaId;
       public int transactionId;
-      public int branchId;
+      public long branchId;
 
-      public LocalValues(int artId, int attributeId, int branchId, int gammaId, int relLinkId, int transactionId) {
+      public LocalValues(int artId, int attributeId, long branchId, int gammaId, int relLinkId, int transactionId) {
          super();
          this.artId = artId;
          this.attributeId = attributeId;
@@ -79,7 +79,7 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
          chStmt.runPreparedQuery(sql, txChange.getValue(), modificationType.getValue(), modificationType.getValue());
          while (chStmt.next()) {
             addressing.add(new LocalValues(chStmt.getInt("art_id"), chStmt.getInt("attr_id"),
-               chStmt.getInt("branch_id"), chStmt.getInt("gamma_id"), chStmt.getInt("rel_link_id"),
+               chStmt.getLong("branch_id"), chStmt.getInt("gamma_id"), chStmt.getInt("rel_link_id"),
                chStmt.getInt("transaction_id")));
          }
       } finally {
@@ -142,7 +142,7 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       sbFull.append(AHTML.endMultiColumnTable());
       XResultData rd = new XResultData();
       rd.addRaw(sbFull.toString());
-      XResultDataUI.report(rd,getVerifyTaskName(), Manipulations.RAW_HTML);
+      XResultDataUI.report(rd, getVerifyTaskName(), Manipulations.RAW_HTML);
       monitor.worked(calculateWork(0.10));
    }
 

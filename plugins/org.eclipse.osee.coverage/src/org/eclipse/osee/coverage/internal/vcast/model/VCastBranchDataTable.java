@@ -34,7 +34,7 @@ public class VCastBranchDataTable implements VCastTableData<VCastBranchData> {
    @Override
    public Object[] toRow(VCastBranchData data) {
       int id = data.getId();
-      Integer branchId = data.getBranchId();
+      Long branchId = data.getBranchId();
       Integer resultId = data.getResultId();
       Integer resultLine = data.getResultLine();
       Boolean taken = data.getTaken();

@@ -168,12 +168,12 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
    }
 
    private Collection<BranchData> getAllBranchData() throws OseeCoreException {
-      Map<Integer, BranchData> data = new HashMap<Integer, BranchData>();
+      Map<Long, BranchData> data = new HashMap<Long, BranchData>();
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery("select * from osee_branch");
          while (chStmt.next()) {
-            int branchId = chStmt.getInt("branch_id");
+            long branchId = chStmt.getLong("branch_id");
             int branchType = chStmt.getInt("branch_type");
             int branchState = chStmt.getInt("branch_state");
             boolean isArchived = chStmt.getInt("archived") == 1 ? true : false;
@@ -200,7 +200,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
       return data.values();
    }
    private final class BranchData {
-      private final int branchId;
+      private final long branchId;
       private final String branchName;
       private final BranchType branchType;
       private final BranchState originalBranchState;
@@ -210,7 +210,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
       private String reasonForChange;
       private boolean hasCommitTransactionId;
 
-      private BranchData(int branchId, String branchName, BranchType branchType, BranchState branchState, boolean isArchived, int numberOfTxs) {
+      private BranchData(long branchId, String branchName, BranchType branchType, BranchState branchState, boolean isArchived, int numberOfTxs) {
          super();
          this.branchId = branchId;
          this.branchName = branchName;
@@ -223,7 +223,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
          this.hasCommitTransactionId = false;
       }
 
-      public int getId() {
+      public long getId() {
          return branchId;
       }
 

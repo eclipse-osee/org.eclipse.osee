@@ -137,7 +137,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
          chStmt.runPreparedQuery(expectedCount, query, parameters);
          while (chStmt.next()) {
             count++;
-            int branchId = chStmt.getInt("branch_id");
+            long branchId = chStmt.getLong("branch_id");
             int transactionNumber = chStmt.getInt("transaction_id");
             String comment = chStmt.getString("osee_comment");
             Date timestamp = chStmt.getTimestamp("time");
@@ -156,7 +156,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       return record;
    }
 
-   private TransactionRecord prepareTransactionRecord(TransactionCache cache, int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
+   private TransactionRecord prepareTransactionRecord(TransactionCache cache, int transactionNumber, long branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
       TransactionRecord record =
          factory.createOrUpdate(cache, transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId,
             txType, branchCache);

@@ -85,7 +85,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    private MetaDataSaxHandler metadataHandler;
    private IOseeExchangeDataProvider exportDataProvider;
    private ExchangeDataProcessor exchangeDataProcessor;
-   private int[] branchesToImport;
+   private long[] branchesToImport;
 
    public ImportBranchDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, SystemPreferences preferences, IResourceManager resourceManager, IdentityLocator identityService, OrcsTypes orcsTypes, URI exchangeFile, List<IOseeBranch> selectedBranches, PropertyStore options) {
       super(logger, session, dbService);
@@ -123,17 +123,17 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
          savePointManager.setCurrentSetPointId("init_relational_objects");
          savePointManager.addCurrentSavePointToProcessed();
 
-         branchesToImport = new int[selectedBranches.size()];
+         branchesToImport = new long[selectedBranches.size()];
          int index = 0;
 
          if (!selectedBranches.isEmpty()) {
-            Map<String, Integer> branchGuidToLocalId = new HashMap<String, Integer>();
+            Map<String, Long> branchGuidToLocalId = new HashMap<String, Long>();
             IOseeStatement chStmt = getDatabaseService().getStatement();
             try {
                chStmt.runPreparedQuery("select branch_guid, branch_id from osee_branch");
                while (chStmt.next()) {
                   String guid = chStmt.getString("branch_guid");
-                  Integer localId = chStmt.getInt("branch_id");
+                  Long localId = chStmt.getLong("branch_id");
                   branchGuidToLocalId.put(guid, localId);
                }
             } finally {
@@ -215,7 +215,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       savePointManager.loadSavePoints(manifestHandler.getSourceDatabaseId(), manifestHandler.getSourceExportDate());
    }
 
-   private void processImportFiles(int[] branchesToImport, Collection<IExportItem> importItems) throws Exception {
+   private void processImportFiles(long[] branchesToImport, Collection<IExportItem> importItems) throws Exception {
       final DbTableSaxHandler handler =
          DbTableSaxHandler.createWithLimitedCache(getLogger(), getDatabaseService(), resourceManager, identityService,
             exportDataProvider, 50000);
@@ -368,14 +368,14 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       private final SavePointManager savePointManager;
       private final BranchDataSaxHandler branchHandler;
       private final IExportItem branchExportItem;
-      private int[] branchesStored;
+      private long[] branchesStored;
 
       public ImportBranchesTx(Log logger, OrcsSession session, IOseeDatabaseService dbService, SavePointManager savePointManager, IExportItem branchExportItem) {
          super(logger, session, dbService, "Import Branch Tx");
          this.savePointManager = savePointManager;
          this.branchExportItem = branchExportItem;
          branchHandler = BranchDataSaxHandler.createWithCacheAll(logger, dbService);
-         branchesStored = new int[0];
+         branchesStored = new long[0];
       }
 
       public void updateBaselineAndParentTransactionId() throws OseeCoreException {

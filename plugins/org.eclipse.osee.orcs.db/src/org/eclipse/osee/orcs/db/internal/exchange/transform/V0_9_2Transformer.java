@@ -60,7 +60,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
 
    @Override
    public Version applyTransform(ExchangeDataProcessor processor, OperationLogger logger) throws OseeCoreException {
-      List<Integer> branchIds = convertBranchTable(processor);
+      List<Long> branchIds = convertBranchTable(processor);
 
       Map<Long, Long> artifactGammaToNetGammaId = convertArtifactAndConflicts(processor);
       consolidateTxsAddressing(processor, ExportItem.OSEE_TXS_DATA, branchIds, artifactGammaToNetGammaId);
@@ -83,17 +83,15 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
 
    @Override
    public void finalizeTransform(IOseeDatabaseService dbService, ExchangeDataProcessor processor, OperationLogger logger) throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(TxCurrentsOpFactory.createTxCurrentsAndModTypesOp(dbService,
-         logger, false));
-      Operations.executeWorkAndCheckStatus(TxCurrentsOpFactory.createTxCurrentsAndModTypesOp(dbService,
-         logger, true));
+      Operations.executeWorkAndCheckStatus(TxCurrentsOpFactory.createTxCurrentsAndModTypesOp(dbService, logger, false));
+      Operations.executeWorkAndCheckStatus(TxCurrentsOpFactory.createTxCurrentsAndModTypesOp(dbService, logger, true));
    }
 
-   private List<Integer> convertBranchTable(ExchangeDataProcessor processor) throws OseeCoreException {
-      Map<Integer, Integer> branchToBaseTx = new HashMap<Integer, Integer>(10000);
+   private List<Long> convertBranchTable(ExchangeDataProcessor processor) throws OseeCoreException {
+      Map<Long, Integer> branchToBaseTx = new HashMap<Long, Integer>(10000);
       processor.parse(ExportItem.OSEE_TX_DETAILS_DATA, new V0_9_2TxDetailsHandler(branchToBaseTx));
       processor.transform(ExportItem.OSEE_BRANCH_DATA, new V0_9_2BranchTransformer(branchToBaseTx));
-      return new ArrayList<Integer>(branchToBaseTx.keySet());
+      return new ArrayList<Long>(branchToBaseTx.keySet());
    }
 
    private Map<Long, Long> convertArtifactAndConflicts(ExchangeDataProcessor processor) throws OseeCoreException {
@@ -108,7 +106,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
       return artifactGammaToNetGammaId;
    }
 
-   private void consolidateTxsAddressing(ExchangeDataProcessor processor, ExportItem exportItem, List<Integer> branchIds, Map<Long, Long> artifactGammaToNetGammaId) throws OseeCoreException {
+   private void consolidateTxsAddressing(ExchangeDataProcessor processor, ExportItem exportItem, List<Long> branchIds, Map<Long, Long> artifactGammaToNetGammaId) throws OseeCoreException {
       File targetFile = processor.getDataProvider().getFile(exportItem);
       File tempFile = new File(Lib.changeExtension(targetFile.getPath(), "temp"));
       Writer fileWriter = null;
@@ -118,7 +116,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
          fileWriter = processor.startTransform(targetFile, tempFile, transformer);
          ExchangeUtil.readExchange(tempFile, transformer);
 
-         for (int branchId : branchIds) {
+         for (long branchId : branchIds) {
             transformer.setBranchId(branchId);
             ExchangeUtil.readExchange(tempFile, transformer);
 

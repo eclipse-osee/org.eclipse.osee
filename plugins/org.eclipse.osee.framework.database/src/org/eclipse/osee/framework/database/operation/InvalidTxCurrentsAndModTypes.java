@@ -190,7 +190,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
             TxChange txCurrent = TxChange.getChangeType(chStmt.getInt("tx_current"));
             TransactionDetailsType type = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
             Address address =
-               new Address(type.isBaseline(), chStmt.getInt("branch_id"), chStmt.getInt(columnName),
+               new Address(type.isBaseline(), chStmt.getLong("branch_id"), chStmt.getInt(columnName),
                   chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id"), modType, txCurrent);
 
             if (!address.isSimilar(previousAddress)) {

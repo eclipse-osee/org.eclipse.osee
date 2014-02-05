@@ -202,7 +202,7 @@ public class BranchManager {
          chStmt = databaseService.getStatement();
          chStmt.runPreparedQuery(1, sql, id);
          if (chStmt.next()) {
-            int branchId = chStmt.getInt("branch_id");
+            long branchId = chStmt.getLong("branch_id");
             String branchName = chStmt.getString("branch_name");
             BranchState branchState = BranchState.getBranchState(chStmt.getInt("branch_state"));
             BranchType branchType = BranchType.valueOf(chStmt.getInt("branch_type"));

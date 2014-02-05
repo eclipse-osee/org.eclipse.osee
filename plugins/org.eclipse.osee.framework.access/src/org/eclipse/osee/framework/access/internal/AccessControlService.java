@@ -216,7 +216,7 @@ public class AccessControlService implements IAccessControlService {
          chStmt.runPreparedQuery(GET_ALL_BRANCH_ACCESS_CONTROL_LIST);
          while (chStmt.next()) {
             Integer subjectId = chStmt.getInt("privilege_entity_id");
-            Integer branchId = chStmt.getInt("branch_id");
+            Long branchId = chStmt.getLong("branch_id");
             Long subjectArtifactTypeId = chStmt.getLong("art_type_id");
             PermissionEnum permission = PermissionEnum.getPermission(chStmt.getInt("permission_id"));
             BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branchId);

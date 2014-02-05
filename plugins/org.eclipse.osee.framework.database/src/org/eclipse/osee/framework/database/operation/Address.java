@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.enums.TxChange;
  * @author Ryan D. Brooks
  */
 public final class Address implements Comparable<Address> {
-   private final int branchId;
+   private final long branchId;
    private final int itemId;
    private final int transactionId;
    private final long gammaId;
@@ -27,7 +27,7 @@ public final class Address implements Comparable<Address> {
    private TxChange correctedTxCurrent;
    private boolean purge;
 
-   public Address(boolean isBaseline, int branchId, int itemId, int transactionId, long gammaId, ModificationType modType, TxChange txCurrent) {
+   public Address(boolean isBaseline, long branchId, int itemId, int transactionId, long gammaId, ModificationType modType, TxChange txCurrent) {
       super();
       this.branchId = branchId;
       this.itemId = itemId;
@@ -91,7 +91,7 @@ public final class Address implements Comparable<Address> {
       this.purge = purge;
    }
 
-   public int getBranchId() {
+   public long getBranchId() {
       return branchId;
    }
 

@@ -74,11 +74,11 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return toReturn;
    }
 
-   public boolean areAvailable(int... branchIds) {
+   public boolean areAvailable(long... branchIds) {
       boolean toReturn = false;
       if (branchIds != null && branchIds.length > 0) {
-         Set<Integer> toCheck = new HashSet<Integer>();
-         for (int entry : branchIds) {
+         Set<Long> toCheck = new HashSet<Long>();
+         for (long entry : branchIds) {
             toCheck.add(entry);
          }
          toReturn = this.idToImportFileBranchData.keySet().containsAll(toCheck);
@@ -90,10 +90,10 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return this.idToImportFileBranchData.values();
    }
 
-   private List<BranchData> getSelectedBranchesToImport(int... branchesToImport) {
+   private List<BranchData> getSelectedBranchesToImport(long... branchesToImport) {
       List<BranchData> toReturn = new ArrayList<BranchData>();
       if (branchesToImport != null && branchesToImport.length > 0) {
-         for (int branchId : branchesToImport) {
+         for (long branchId : branchesToImport) {
             BranchData data = this.idToImportFileBranchData.get(branchId);
             if (data != null) {
                toReturn.add(data);
@@ -105,7 +105,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return toReturn;
    }
 
-   private void checkSelectedBranches(int... branchesToImport) throws OseeDataStoreException {
+   private void checkSelectedBranches(long... branchesToImport) throws OseeDataStoreException {
       if (branchesToImport != null && branchesToImport.length > 0) {
          if (!areAvailable(branchesToImport)) {
             throw new OseeDataStoreException(
@@ -115,12 +115,12 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   public int[] store(OseeConnection connection, boolean writeToDb, int... branchesToImport) throws OseeCoreException {
+   public long[] store(OseeConnection connection, boolean writeToDb, long... branchesToImport) throws OseeCoreException {
       checkSelectedBranches(branchesToImport);
       Collection<BranchData> branchesToStore = getSelectedBranchesToImport(branchesToImport);
 
       branchesToStore = checkTargetDbBranches(connection, branchesToStore);
-      int[] toReturn = new int[branchesToStore.size()];
+      long[] toReturn = new long[branchesToStore.size()];
       int index = 0;
       for (BranchData branchData : branchesToStore) {
          if (!getOptions().getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name()) && branchData.getBranchGuid().equals(
@@ -150,7 +150,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return toReturn;
    }
 
-   public void updateBaselineAndParentTransactionId(int[] branchesStored) throws OseeCoreException {
+   public void updateBaselineAndParentTransactionId(long[] branchesStored) throws OseeCoreException {
       List<BranchData> branches = getSelectedBranchesToImport(branchesStored);
       List<Object[]> data = new ArrayList<Object[]>();
       for (BranchData branchData : branches) {

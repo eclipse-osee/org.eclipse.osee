@@ -16,12 +16,12 @@ package org.eclipse.osee.coverage.internal.vcast.model;
 public class VCastBranchData {
 
    private final int id;
-   private final int branchId;
+   private final long branchId;
    private final int resultId;
    private final int resultLine;
    private final Boolean taken;
 
-   public VCastBranchData(int id, int branchId, int resultId, int resultLine, Boolean taken) {
+   public VCastBranchData(int id, long branchId, int resultId, int resultLine, Boolean taken) {
       super();
       this.id = id;
       this.branchId = branchId;
@@ -34,7 +34,7 @@ public class VCastBranchData {
       return id;
    }
 
-   public int getBranchId() {
+   public long getBranchId() {
       return branchId;
    }
 

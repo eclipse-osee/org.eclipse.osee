@@ -180,7 +180,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
                netModType = ModificationType.getMod(modType);
                netTxCurrent = txCurrent;
             } else {
-               addressingToDelete.add(new Object[] {chStmt.getInt("branch_id"), transactionId, obsoleteGammaId});
+               addressingToDelete.add(new Object[] {chStmt.getLong("branch_id"), transactionId, obsoleteGammaId});
                computeNetAddressing(ModificationType.getMod(modType), txCurrent);
             }
 

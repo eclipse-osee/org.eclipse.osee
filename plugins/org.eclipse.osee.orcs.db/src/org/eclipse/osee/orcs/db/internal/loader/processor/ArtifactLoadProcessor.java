@@ -33,7 +33,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
       ArtifactData toReturn = null;
 
       int artifactId = chStmt.getInt("art_id");
-      int branchId = chStmt.getInt("branch_id");
+      long branchId = chStmt.getLong("branch_id");
 
       CreateConditions onCreate = asConditions(conditions);
       if (!onCreate.isSame(branchId, artifactId)) {
@@ -71,13 +71,13 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
 
    private static final class CreateConditions {
       int previousArtId = -1;
-      int previousBranchId = -1;
+      long previousBranchId = -1;
 
-      boolean isSame(int branchId, int artifactId) {
+      boolean isSame(long branchId, int artifactId) {
          return previousBranchId == branchId && previousArtId == artifactId;
       }
 
-      void saveConditions(int branchId, int artifactId) {
+      void saveConditions(long branchId, int artifactId) {
          previousBranchId = branchId;
          previousArtId = artifactId;
       }

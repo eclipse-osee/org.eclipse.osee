@@ -72,7 +72,7 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
    private long netGamma;
    private IOseeStatement chStmt;
    private long previousNetGammaId;
-   private int previousBranchId;
+   private long previousBranchId;
    private int previuosTransactionId;
    private int updateTxsCounter;
    private int deleteTxsCounter;
@@ -118,7 +118,7 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
          chStmt.runPreparedQuery(MAX_FETCH, FIND_ARTIFACT_MODS, artifactJoinQuery.getQueryId());
          while (chStmt.next()) {
             int artifactId = chStmt.getInt("art_id");
-            int branchId = chStmt.getInt("branch_id");
+            long branchId = chStmt.getLong("branch_id");
 
             if (previousArtifactId != artifactId || previousBranchId != branchId) {
                if (!mods.isEmpty()) {
@@ -272,7 +272,7 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
          while (chStmt.next()) {
             long obsoleteGammaId = chStmt.getLong("gamma_id");
             int transactionId = chStmt.getInt("transaction_id");
-            int branchId = chStmt.getInt("branch_id");
+            long branchId = chStmt.getLong("branch_id");
             long netGammaId = chStmt.getLong("net_gamma_id");
             ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
             TxChange.getChangeType(chStmt.getInt("tx_current"));
@@ -315,7 +315,7 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
       }
    }
 
-   private boolean isNextArtifactGroup(long netGammaId, int branchId) {
+   private boolean isNextArtifactGroup(long netGammaId, long branchId) {
       return previousNetGammaId != netGammaId || previousBranchId != branchId;
    }
 

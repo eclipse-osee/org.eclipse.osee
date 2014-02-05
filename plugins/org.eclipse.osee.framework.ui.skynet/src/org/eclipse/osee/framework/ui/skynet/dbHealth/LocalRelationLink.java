@@ -11,10 +11,10 @@
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 public class LocalRelationLink {
-   public int relLinkId, gammaId, relTransId, branchId, aArtId, bArtId, transIdForArtifactDeletion, commitTrans,
-      modType;
+   public int relLinkId, gammaId, relTransId, aArtId, bArtId, transIdForArtifactDeletion, commitTrans, modType;
+   public long branchId;
 
-   public LocalRelationLink(int relLinkId, int gammaId, int transactionId, int branchId, int aArtId, int bArtId, int transIdForArtifactDeletion, int commitTrans, int modType) {
+   public LocalRelationLink(int relLinkId, int gammaId, int transactionId, long branchId, int aArtId, int bArtId, int transIdForArtifactDeletion, int commitTrans, int modType) {
       this.aArtId = aArtId;
       this.bArtId = bArtId;
       this.branchId = branchId;

@@ -58,7 +58,7 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastor
 
    @Override
    protected Void handleTxWork(OseeConnection connection) throws OseeCoreException {
-      List<Integer[]> gammasAndBranchIds = retrieveBranchAndGammaIds(connection, typesToPurge);
+      List<Long[]> gammasAndBranchIds = retrieveBranchAndGammaIds(connection, typesToPurge);
       List<Integer[]> gammas = retrieveGammaIds(connection, typesToPurge);
       processDeletes(connection, gammasAndBranchIds, gammas);
       return null;
@@ -88,8 +88,8 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastor
       return gammas;
    }
 
-   private List<Integer[]> retrieveBranchAndGammaIds(OseeConnection connection, Collection<? extends IAttributeType> types) throws OseeCoreException {
-      List<Integer[]> gammasAndBranchIds = new LinkedList<Integer[]>();
+   private List<Long[]> retrieveBranchAndGammaIds(OseeConnection connection, Collection<? extends IAttributeType> types) throws OseeCoreException {
+      List<Long[]> gammasAndBranchIds = new LinkedList<Long[]>();
       IOseeStatement chStmt = getDatabaseService().getStatement(connection);
       IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery();
       try {
@@ -102,7 +102,7 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastor
             chStmt.runPreparedQuery(RETRIEVE_GAMMAS_WITH_BRANCH_IDS_MULT_TYPES, joinQuery.getQueryId());
          }
          while (chStmt.next()) {
-            gammasAndBranchIds.add(new Integer[] {chStmt.getInt("gamma_id"), chStmt.getInt("branch_id")});
+            gammasAndBranchIds.add(new Long[] {chStmt.getLong("gamma_id"), chStmt.getLong("branch_id")});
          }
       } finally {
          chStmt.close();
@@ -111,7 +111,7 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastor
       return gammasAndBranchIds;
    }
 
-   private void processDeletes(OseeConnection connection, List<Integer[]> gammasAndBranchIds, List<Integer[]> gammas) throws OseeCoreException {
+   private void processDeletes(OseeConnection connection, List<Long[]> gammasAndBranchIds, List<Integer[]> gammas) throws OseeCoreException {
       getDatabaseService().runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS_AND_BRANCH, "osee_txs"),
          gammasAndBranchIds);
       getDatabaseService().runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS_AND_BRANCH, "osee_txs_archived"),
