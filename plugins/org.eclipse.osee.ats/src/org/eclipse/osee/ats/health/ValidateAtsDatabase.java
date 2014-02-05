@@ -1054,7 +1054,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   results.log(
                      artifact,
                      "testActionableItemToTeamDefinition",
-                     "Error: ActionableItem " + XResultDataUI.getHyperlink(artifact.getName(), artifact) + " has to related IAtsTeamDefinition and is set to Actionable");
+                     "Error: ActionableItem " + XResultDataUI.getHyperlink(artifact.getName(), artifact) + " has no related IAtsTeamDefinition and is set to Actionable");
                }
             }
          } catch (Exception ex) {
