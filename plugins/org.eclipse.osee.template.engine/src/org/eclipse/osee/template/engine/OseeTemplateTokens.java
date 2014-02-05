@@ -32,14 +32,14 @@ public final class OseeTemplateTokens {
    //js
    public static final ResourceToken OseeCoreJs = createToken(0x4000000000000002L, "oseeCore.js");
    // word xml
-   public static final ResourceToken WordXml = createToken(0x4000000000000003L, "WordDocument.xml");
-   public static final ResourceToken WordDeclarationXml = createToken(0x4000000000000004L, "WordDeclaration.xml");
-   public static final ResourceToken FontsXml = createToken(0x4000000000000005L, "WordFonts.xml");
-   public static final ResourceToken ListsXml = createToken(0x4000000000000006L, "WordLists.xml");
-   public static final ResourceToken StylesXml = createToken(0x4000000000000007L, "WordStyles.xml");
-   public static final ResourceToken DivsXml = createToken(0x4000000000000008L, "WordDivs.xml");
-   public static final ResourceToken ShapesXml = createToken(0x4000000000000009L, "WordShape.xml");
-   public static final ResourceToken DocPropXml = createToken(0x400000000000000AL, "WordDocPr.xml");
+   public static final ResourceToken WordXml = createToken(0x4100000000000003L, "WordDocument.xml");
+   public static final ResourceToken WordDeclarationXml = createToken(0x4100000000000004L, "WordDeclaration.xml");
+   public static final ResourceToken FontsXml = createToken(0x4100000000000005L, "WordFonts.xml");
+   public static final ResourceToken ListsXml = createToken(0x4100000000000006L, "WordLists.xml");
+   public static final ResourceToken StylesXml = createToken(0x4100000000000007L, "WordStyles.xml");
+   public static final ResourceToken DivsXml = createToken(0x4100000000000008L, "WordDivs.xml");
+   public static final ResourceToken ShapesXml = createToken(0x4100000000000009L, "WordShape.xml");
+   public static final ResourceToken DocPropXml = createToken(0x410000000000000AL, "WordDocPr.xml");
    
    // @formatter:on
 
