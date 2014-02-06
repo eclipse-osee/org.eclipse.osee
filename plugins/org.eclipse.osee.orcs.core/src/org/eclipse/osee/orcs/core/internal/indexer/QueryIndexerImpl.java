@@ -17,10 +17,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 

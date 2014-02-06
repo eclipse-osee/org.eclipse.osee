@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -25,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.Triplet;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
@@ -84,7 +84,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
 
       Set<Long> branchIds = new HashSet<Long>();
       for (BranchReadable branch : branches) {
-         branchIds.add(branch.getId());
+         branchIds.add((long) branch.getLocalId());
       }
 
       IdJoinQuery branchJoin = JoinUtility.createIdJoinQuery();

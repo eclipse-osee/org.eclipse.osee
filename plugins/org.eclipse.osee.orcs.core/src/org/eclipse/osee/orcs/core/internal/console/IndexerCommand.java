@@ -20,10 +20,9 @@ import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.model.BranchReadable;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.statistics.IndexerStatistics;
 
@@ -112,9 +111,8 @@ public class IndexerCommand implements ConsoleCommand {
          Set<BranchReadable> branches = new HashSet<BranchReadable>();
          String[] guids = params.getArray("branchGuids");
          if (guids != null & guids.length > 0) {
-            BranchCache branchCache = getOrcsApi().getBranchCache();
             for (String guid : guids) {
-               branches.add(branchCache.getByGuid(guid));
+               branches.add(getOrcsApi().getQueryFactory(null).branchQuery().andUuids(guid).getResults().getExactlyOne());
             }
          }
 

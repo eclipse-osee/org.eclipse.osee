@@ -17,9 +17,9 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
 /**
