@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs;
 
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -38,9 +37,6 @@ public interface OrcsApi {
    OrcsTypes getOrcsTypes(ApplicationContext context);
 
    IResourceRegistry getResourceRegistry();
-
-   // TODO remove this call
-   BranchCache getBranchCache();
 
    // TODO remove this call
    TransactionCache getTxsCache();

@@ -218,11 +218,6 @@ public class OrcsApiImpl implements OrcsApi {
    }
 
    @Override
-   public BranchCache getBranchCache() {
-      return cacheService.getBranchCache();
-   }
-
-   @Override
    public OrcsBranch getBranchOps(final ApplicationContext context) {
       OrcsSession session = getSession(context);
       LazyObject<ArtifactReadable> systemUser = new LazyObject<ArtifactReadable>() {
