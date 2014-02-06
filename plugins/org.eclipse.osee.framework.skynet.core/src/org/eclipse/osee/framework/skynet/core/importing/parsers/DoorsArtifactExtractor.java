@@ -422,28 +422,33 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   public void artifactCreated(Artifact theArtifact) {
+   public boolean artifactCreated(Artifact theArtifact) {
       String artifactGuid = theArtifact.getGuid();
+      boolean toReturn = false;
       if (postProcessGuids.contains(artifactGuid)) {
-         // need to modify the HTML so the image references the data stored
-         // in the
-         // artifact.
+         /**********************************************************
+          * need to modify the HTML so the image references the data stored in the artifact.
+          **************************************/
          try {
             List<Integer> Ids = theArtifact.getAttributeIds(CoreAttributeTypes.ImageContent);
             List<String> HTML = theArtifact.getAttributeValues(CoreAttributeTypes.HTMLContent);
-            theArtifact.deleteAttributes(CoreAttributeTypes.HTMLContent);
             for (String htmlVal : HTML) {
                int iCount = 0;
                for (Integer imageNumber : Ids) {
                   htmlVal = htmlVal.replaceAll(IMAGE_BASE_NAME + Integer.toString(iCount), imageNumber.toString());
                   iCount++;
                }
-               theArtifact.addAttribute(CoreAttributeTypes.HTMLContent, htmlVal);
+               if (iCount > 0 || toReturn) {
+                  theArtifact.deleteAttributes(CoreAttributeTypes.HTMLContent);
+                  theArtifact.addAttribute(CoreAttributeTypes.HTMLContent, htmlVal);
+                  toReturn = true;
+               }
             }
          } catch (OseeCoreException e) {
             // do nothing
          }
       }
+      return toReturn;
    }
 
    public void foundStartOfWorksheet(String sheetName) {

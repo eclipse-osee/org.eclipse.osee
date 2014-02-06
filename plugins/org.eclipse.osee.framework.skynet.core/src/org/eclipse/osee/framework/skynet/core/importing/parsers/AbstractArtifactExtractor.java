@@ -82,9 +82,11 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
     * Called after the rough artifact is converted to a real artifact
     * 
     * @param theArtifact The artifact that has been created
+    * @return true if theArtifact has been modified
     */
-   public void artifactCreated(Artifact theArtifact) {
-      // Allows option post processing if needed.  Default is do nothing
+   @Override
+   public boolean artifactCreated(Artifact theArtifact) {
+      return false;
    }
 
    private void connectCollectorParent(RoughArtifactCollector collector) {

@@ -105,8 +105,8 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
                realArtifact.addChild(importArtifactOrder, childArtifact);
             }
          }
-         if (extractor != null) {
-            extractor.artifactCreated(childArtifact);
+         if ((extractor != null) && (extractor.artifactCreated(childArtifact))) {
+            childArtifact.persist(transaction);
          }
       }
 

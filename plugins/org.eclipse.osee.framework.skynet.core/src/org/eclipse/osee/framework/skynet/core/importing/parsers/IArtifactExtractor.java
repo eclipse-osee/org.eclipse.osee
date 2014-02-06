@@ -39,6 +39,7 @@ public interface IArtifactExtractor {
 
    public boolean hasDelegate();
 
-   public void artifactCreated(Artifact theArtifact);
+   // return true if theArtifact has been modifed
+   public boolean artifactCreated(Artifact theArtifact);
 
 }
