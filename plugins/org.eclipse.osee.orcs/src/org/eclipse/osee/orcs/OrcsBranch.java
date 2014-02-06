@@ -70,7 +70,7 @@ public interface OrcsBranch {
 
    Callable<BranchReadable> archiveUnarchiveBranch(IOseeBranch branch, ArchiveOperation archiveOp);
 
-   Callable<List<BranchReadable>> purgeBranch(IOseeBranch branch, boolean recurse);
+   Callable<List<IOseeBranch>> purgeBranch(IOseeBranch branch, boolean recurse);
 
    Callable<TransactionRecord> commitBranch(ArtifactReadable committer, IOseeBranch source, IOseeBranch destination);
 

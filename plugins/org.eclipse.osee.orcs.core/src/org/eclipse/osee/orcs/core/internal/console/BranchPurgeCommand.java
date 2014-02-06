@@ -23,21 +23,19 @@ import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.BranchReadable;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.core.internal.branch.BranchUtil;
-import org.eclipse.osee.orcs.core.internal.branch.provider.BranchProvider;
-import org.eclipse.osee.orcs.core.internal.branch.provider.MultiBranchProvider;
+import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.search.BranchQuery;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -103,26 +101,26 @@ public final class BranchPurgeCommand implements ConsoleCommand {
       boolean runPurge = options.contains("P");
 
       OrcsBranch orcsBranch = getOrcsApi().getBranchOps(null);
-      return new PurgeBranchCallable(console, orcsBranch, getOrcsApi().getBranchCache(), branchGuids, recurse,
+      return new PurgeBranchCallable(console, orcsBranch, getOrcsApi().getQueryFactory(null), branchGuids, recurse,
          unArchived, unDeleted, baseline, runPurge);
    }
 
-   private static class PurgeBranchCallable extends CancellableCallable<List<BranchReadable>> {
+   private static class PurgeBranchCallable extends CancellableCallable<List<IOseeBranch>> {
 
       private final Console console;
       private final OrcsBranch orcsBranch;
-      private final BranchCache branchCache;
       private final List<String> branchGuids;
       private final boolean recurse;
       private final boolean includeUnarchived;
       private final boolean includeUndeleted;
       private final boolean includeBaseline;
       private final boolean runPurge;
+      private final QueryFactory queryFactory;
 
-      public PurgeBranchCallable(Console console, OrcsBranch orcsBranch, BranchCache branchCache, List<String> branchGuids, boolean recurse, boolean unArchived, boolean unDeleted, boolean baseline, boolean runPurge) {
+      public PurgeBranchCallable(Console console, OrcsBranch orcsBranch, QueryFactory queryFactory, List<String> branchGuids, boolean recurse, boolean unArchived, boolean unDeleted, boolean baseline, boolean runPurge) {
          this.console = console;
          this.orcsBranch = orcsBranch;
-         this.branchCache = branchCache;
+         this.queryFactory = queryFactory;
          this.branchGuids = branchGuids;
          this.recurse = recurse;
          this.includeUnarchived = unArchived;
@@ -131,36 +129,37 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          this.runPurge = runPurge;
       }
 
-      private boolean filterBranch(Branch branch) {
+      private boolean filterBranch(BranchReadable branch) {
          if (!includeBaseline && branch.getBranchType() == BranchType.BASELINE) {
             console.writeln(ERROR_STRING, branch, branch.getGuid(), branch.getBranchType());
             return true;
          } else if (!includeUnarchived && branch.getArchiveState() == BranchArchivedState.UNARCHIVED) {
             console.writeln(ERROR_STRING, branch, branch.getGuid(), branch.getArchiveState());
             return true;
-         } else if (!includeUndeleted && !branch.isDeleted()) {
+         } else if (!includeUndeleted && branch.getBranchState() != BranchState.DELETED) {
             console.writeln(ERROR_STRING, branch, branch.getGuid(), branch.getBranchState());
             return true;
          }
          return false;
       }
 
-      private Collection<Branch> getBranchesToPurge() throws OseeCoreException {
-         Set<Branch> specifiedBranches = new HashSet<Branch>();
+      private Collection<BranchReadable> getBranchesToPurge() throws OseeCoreException {
+         Set<BranchReadable> specifiedBranches = new HashSet<BranchReadable>();
          for (String guid : branchGuids) {
             if (!GUID.isValid(guid)) {
                console.write("GUID listed %s is not a valid GUID", guid);
             } else {
-               Branch cached = branchCache.getByGuid(guid);
+               BranchReadable cached = queryFactory.branchQuery().andUuids(guid).getResults().getExactlyOne();
                if (cached != null) {
                   specifiedBranches.add(cached);
                }
             }
          }
 
-         Collection<Branch> branchesToPurge = recurse ? getChildBranchesToPurge(specifiedBranches) : specifiedBranches;
+         Collection<BranchReadable> branchesToPurge =
+            recurse ? getChildBranchesToPurge(specifiedBranches) : specifiedBranches;
 
-         Iterator<Branch> iter = branchesToPurge.iterator();
+         Iterator<BranchReadable> iter = branchesToPurge.iterator();
          while (iter.hasNext()) {
             if (filterBranch(iter.next())) {
                iter.remove();
@@ -169,50 +168,64 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          return branchesToPurge;
       }
 
-      private Collection<Branch> getChildBranchesToPurge(Set<Branch> branches) throws OseeCoreException {
-         BranchFilter branchFilter;
-         if (includeUnarchived) {
-            branchFilter = new BranchFilter();
-         } else {
-            branchFilter = new BranchFilter(BranchArchivedState.ARCHIVED);
-         }
+      private Collection<BranchReadable> getChildBranchesToPurge(Iterable<BranchReadable> branches) throws OseeCoreException {
+
+         BranchQuery branchQuery = queryFactory.branchQuery();
+         branchQuery.includeArchived();
+         branchQuery.includeDeleted();
 
          if (includeBaseline) {
-            branchFilter.setNegatedBranchTypes(BranchType.SYSTEM_ROOT);
+            branchQuery.andIsOfType(BranchType.WORKING, BranchType.MERGE, BranchType.PORT, BranchType.BASELINE);
          } else {
-            branchFilter.setNegatedBranchTypes(BranchType.SYSTEM_ROOT, BranchType.BASELINE);
+            branchQuery.andIsOfType(BranchType.WORKING, BranchType.MERGE, BranchType.PORT);
          }
 
-         if (!includeUndeleted) {
-            branchFilter.setBranchStates(BranchState.DELETED);
+         if (includeUndeleted) {
+            branchQuery.andStateIs(BranchState.CREATED, BranchState.MODIFIED, BranchState.COMMITTED,
+               BranchState.REBASELINED, BranchState.DELETED, BranchState.REBASELINE_IN_PROGRESS,
+               BranchState.COMMIT_IN_PROGRESS, BranchState.CREATION_IN_PROGRESS, BranchState.DELETE_IN_PROGRESS,
+               BranchState.PURGE_IN_PROGRESS, BranchState.PURGED);
+         } else {
+            branchQuery.andStateIs(BranchState.DELETED);
          }
 
-         BranchProvider provider = new MultiBranchProvider(recurse, branches, branchFilter);
-         return provider.getBranches();
+         Set<BranchReadable> results = new HashSet<BranchReadable>();
+         for (BranchReadable parent : branches) {
+            for (BranchReadable branch : branchQuery.andIsChildOf(parent).getResults()) {
+               if (includeUnarchived || branch.getArchiveState() == BranchArchivedState.ARCHIVED) {
+                  results.add(branch);
+               }
+            }
+         }
+
+         if (recurse) {
+            results.addAll(getChildBranchesToPurge(new ArrayList<BranchReadable>(results)));
+         }
+         return results;
       }
 
       @Override
-      public List<BranchReadable> call() throws Exception {
-         Collection<Branch> branchesToPurge = getBranchesToPurge();
+      public List<IOseeBranch> call() throws Exception {
+         Collection<BranchReadable> branchesToPurge = getBranchesToPurge();
          branchesToPurge.addAll(getMergeBranches(branchesToPurge));
 
          Conditions.checkNotNull(branchesToPurge, "branchesToPurge");
          if (branchesToPurge.isEmpty()) {
             console.writeln("no branches matched specified criteria");
          } else {
-            List<Branch> orderedBranches = BranchUtil.orderByParent(branchesToPurge);
+            List<BranchReadable> orderedBranches = BranchUtil.orderByParentReadable(queryFactory, branchesToPurge);
 
-            for (Branch toPurge : orderedBranches) {
+            for (IOseeBranch toPurge : orderedBranches) {
                console.writeln("Branch [%s] guid [%s] will be purged!", toPurge.getName(), toPurge.getGuid());
             }
 
-            List<BranchReadable> purged = new LinkedList<BranchReadable>();
+            List<IOseeBranch> purged = new LinkedList<IOseeBranch>();
             if (runPurge) {
                int size = orderedBranches.size();
                int count = 0;
-               for (Branch aBranch : orderedBranches) {
+               for (IOseeBranch aBranch : orderedBranches) {
                   console.writeln("Purging Branch [%s of %s]: [%s]", ++count, size, aBranch);
-                  Callable<List<BranchReadable>> callable = orcsBranch.purgeBranch(aBranch, false);
+                  Callable<List<IOseeBranch>> callable = orcsBranch.purgeBranch(aBranch, false);
                   purged.addAll(callable.call());
                }
             }
@@ -221,10 +234,12 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          return null;
       }
 
-      private List<Branch> getMergeBranches(Collection<Branch> branches) throws OseeCoreException {
-         List<Branch> mergeBranches = new ArrayList<Branch>();
-         for (Branch branch : branches) {
-            branch.getChildBranches(mergeBranches, false, new BranchFilter(BranchType.MERGE));
+      private List<BranchReadable> getMergeBranches(Collection<BranchReadable> branches) throws OseeCoreException {
+         List<BranchReadable> mergeBranches = new ArrayList<BranchReadable>();
+         for (BranchReadable branch : branches) {
+            for (BranchReadable child : queryFactory.branchQuery().andIsChildOf(branch).andIsOfType(BranchType.MERGE).getResults()) {
+               mergeBranches.add(child);
+            }
          }
          return mergeBranches;
       }

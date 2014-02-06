@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 public class BranchUtil {
 
@@ -46,4 +48,31 @@ public class BranchUtil {
       }
       return list;
    }
+
+   public static List<BranchReadable> orderByParentReadable(QueryFactory queryFactory, Collection<BranchReadable> branches) throws OseeCoreException {
+      List<BranchReadable> list = new ArrayList<BranchReadable>(branches);
+      for (int i = 0; i < list.size(); i++) {
+         BranchReadable cur = list.get(i);
+         BranchReadable parent =
+            queryFactory.branchQuery().andLocalId((int) cur.getParentBranch()).getResults().getExactlyOne();
+
+         //this is the last element in the list
+         if (parent == null || !list.contains(parent)) {
+            BranchReadable last = list.get(list.size() - 1);
+            list.set(i, last);
+            list.set(list.size() - 1, cur);
+         } else {
+            int parentIdx = list.indexOf(parent);
+            //need to swap
+            if (parentIdx < i) {
+               list.set(i, parent);
+               list.set(parentIdx, cur);
+               //reset i
+               i--;
+            }
+         }
+      }
+      return list;
+   }
+
 }

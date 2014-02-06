@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -31,7 +30,7 @@ import org.eclipse.osee.orcs.core.internal.branch.provider.SingleBranchProvider;
 /**
  * @author Roberto E. Escobar
  */
-public class PurgeBranchCallable extends AbstractBranchCallable<List<BranchReadable>> {
+public class PurgeBranchCallable extends AbstractBranchCallable<List<IOseeBranch>> {
 
    private final BranchCache branchCache;
    private final IOseeBranch branchToken;
@@ -55,7 +54,7 @@ public class PurgeBranchCallable extends AbstractBranchCallable<List<BranchReada
    }
 
    @Override
-   protected List<BranchReadable> innerCall() throws Exception {
+   protected List<IOseeBranch> innerCall() throws Exception {
       Conditions.checkNotNull(branchCache, "branchCache");
       Conditions.checkNotNull(branchToken, "branchToPurge");
 
@@ -68,7 +67,7 @@ public class PurgeBranchCallable extends AbstractBranchCallable<List<BranchReada
       Collection<Branch> branches = provider.getBranches();
       Conditions.checkNotNull(branches, "branchesToPurge");
 
-      List<BranchReadable> purged = new LinkedList<BranchReadable>();
+      List<IOseeBranch> purged = new LinkedList<IOseeBranch>();
       List<Branch> orderedBranches = BranchUtil.orderByParent(branches);
       for (Branch aBranch : orderedBranches) {
          checkForCancelled();

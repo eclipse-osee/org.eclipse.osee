@@ -84,7 +84,7 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<List<BranchReadable>> purgeBranch(IOseeBranch branch, boolean recurse) {
+   public Callable<List<IOseeBranch>> purgeBranch(IOseeBranch branch, boolean recurse) {
       return new PurgeBranchCallable(logger, session, branchStore, branchCache, branch, recurse);
    }
 
