@@ -13,7 +13,7 @@
          point="org.eclipse.ui.editors">
          <editor
             class="org.eclipse.osee.ats.editor.SMAEditor"
-            icon="images/plan.gif"
+            icon="images/workflow.gif"
             default="false"            
             contributorClass="org.eclipse.osee.ats.editor.SMAEditorContributor"
             id="org.eclipse.osee.ats.editor.SMAEditor"
@@ -517,5 +517,14 @@
       <Operation
             className="org.eclipse.osee.ats.health.ValidateAtsIds">
       </Operation>
+   </extension>
+   <extension
+         id="org.eclipse.osee.ats.WEEditorInputFactory"
+         name="WEEditor Input Factory"
+         point="org.eclipse.ui.elementFactories">
+      <factory
+            class="org.eclipse.osee.ats.editor.WEEditorInputFactory"
+            id="org.eclipse.osee.ats.WEEditorInputFactory">
+      </factory>
    </extension>
 </plugin>

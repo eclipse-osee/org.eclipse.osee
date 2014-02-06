@@ -23,7 +23,7 @@ import org.eclipse.ui.IPersistableElement;
  * @author Roberto E. Escobar
  */
 public abstract class BaseArtifactEditorInput implements IEditorInput {
-   private final Artifact artifact;
+   private Artifact artifact;
 
    public BaseArtifactEditorInput(Artifact artifact) {
       this.artifact = artifact;
@@ -92,5 +92,9 @@ public abstract class BaseArtifactEditorInput implements IEditorInput {
    @Override
    public int hashCode() {
       return this.artifact.hashCode();
+   }
+
+   public void setArtifact(Artifact art) {
+      this.artifact = art;
    }
 }

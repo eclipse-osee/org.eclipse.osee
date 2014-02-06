@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.AccessControlAction;
 import org.eclipse.osee.ats.actions.DirtyReportAction;
 import org.eclipse.osee.ats.actions.IDirtyReportable;
@@ -104,47 +105,57 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
 
    @Override
    protected void addPages() {
+      SMAEditorInput input = getSMAEditorInput();
       try {
-         IEditorInput editorInput = getEditorInput();
-         if (editorInput instanceof SMAEditorInput) {
-            SMAEditorInput aei = (SMAEditorInput) editorInput;
-            if (aei.getArtifact() != null) {
-               if (aei.getArtifact() instanceof AbstractWorkflowArtifact) {
-                  awa = (AbstractWorkflowArtifact) aei.getArtifact();
-               } else {
-                  throw new OseeArgumentException("SMAEditorInput artifact must be StateMachineArtifact");
-               }
+         if (input.getArtifact() != null) {
+            if (input.getArtifact() instanceof AbstractWorkflowArtifact) {
+               awa = (AbstractWorkflowArtifact) input.getArtifact();
+            } else {
+               throw new OseeArgumentException("SMAEditorInput artifact must be StateMachineArtifact");
             }
-         } else {
-            throw new OseeArgumentException("Editor Input not SMAEditorInput");
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return;
       }
 
-      if (awa == null) {
+      if (!input.isReload() && awa == null) {
          MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Open Error",
             "Can't Find Action in DB");
          return;
       }
       try {
-         SMAEditorArtifactEventManager.add(this);
-         SMAEditorBranchEventManager.add(this);
+         if (input.isReload()) {
+            createReloadTab();
+         } else {
+            SMAEditorArtifactEventManager.add(this);
+            SMAEditorBranchEventManager.add(this);
 
+            setContentDescription(privilegedEditModeEnabled ? " PRIVILEGED EDIT MODE ENABLED" : "");
+
+            createMembersTab();
+            createWorkflowTab();
+            createTaskTab();
+            createAttributesTab();
+            createMetricsTab();
+         }
          updatePartName();
-         setContentDescription(privilegedEditModeEnabled ? " PRIVILEGED EDIT MODE ENABLED" : "");
-
-         createMembersTab();
-         createWorkflowTab();
-         createTaskTab();
-         createAttributesTab();
-         createMetricsTab();
 
          setActivePage(0);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
+   }
+
+   public SMAEditorInput getSMAEditorInput() {
+      SMAEditorInput aei = null;
+      IEditorInput editorInput = getEditorInput();
+      if (editorInput instanceof SMAEditorInput) {
+         aei = (SMAEditorInput) editorInput;
+      } else {
+         throw new OseeArgumentException("Editor Input not SMAEditorInput");
+      }
+      return aei;
    }
 
    @SuppressWarnings("rawtypes")
@@ -177,6 +188,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
       }
    }
 
+   private void createReloadTab() throws PartInitException {
+      addPage(new WEReloadTab(this));
+   }
+
    private void createMembersTab() throws PartInitException {
       if (awa instanceof GoalArtifact) {
          membersTab = new SMAMembersTab(this, (GoalArtifact) awa);
@@ -196,7 +211,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
    }
 
    public String getTitleStr() throws OseeCoreException {
-      return awa.getEditorTitle();
+      return getSMAEditorInput().getName();
    }
 
    @Override
@@ -280,7 +295,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
 
    @Override
    public Result isDirtyResult() {
-      if (awa.isDeleted()) {
+      if (getSMAEditorInput().isReload() || awa.isDeleted()) {
          return Result.FalseResult;
       }
       try {
@@ -660,7 +675,13 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
 
    @Override
    public Image getTitleImage() {
-      return ArtifactImageManager.getImage(awa);
+      Image image = null;
+      if (getSMAEditorInput().isReload()) {
+         image = ImageManager.getImage(AtsImage.TEAM_WORKFLOW);
+      } else {
+         image = ArtifactImageManager.getImage(awa);
+      }
+      return image;
    }
 
    @Override
