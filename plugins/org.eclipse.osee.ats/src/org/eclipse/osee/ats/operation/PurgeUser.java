@@ -104,7 +104,7 @@ public class PurgeUser extends AbstractBlam {
 
    private void confirmDeletionOfArtifact(final User fromUser) throws OseeCoreException {
       if (MessageDialog.openConfirm(Displays.getActiveShell(), "Persist Confirmation",
-         "Do you wish to delete the duplicate User: " + fromUser.getName() + "?")) {
+         "Do you wish to delete the User artifact: " + fromUser.getName() + "?")) {
          deleteArtifact(fromUser);
       }
    }
