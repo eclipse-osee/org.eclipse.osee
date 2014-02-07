@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author David W. Miller
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({TraceMatchTest.class})
+@Suite.SuiteClasses({TraceMatchTest.class, RequirementUtilTest.class})
 public class DefineReportInternalTestSuite {
    // Test Suite
 }

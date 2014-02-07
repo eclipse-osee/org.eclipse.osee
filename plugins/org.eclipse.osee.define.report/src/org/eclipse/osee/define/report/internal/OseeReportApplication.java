@@ -13,6 +13,7 @@ package org.eclipse.osee.define.report.internal;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.core.Application;
+import org.eclipse.osee.define.report.OseeDefineResourceTokens;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -27,7 +28,8 @@ public final class OseeReportApplication extends Application {
    }
 
    public void start() {
-      //stub
+      OseeDefineResourceTokens.register(orcsApi.getResourceRegistry());
+      singletons.add(new RequirementResource(orcsApi));
    }
 
    @Override

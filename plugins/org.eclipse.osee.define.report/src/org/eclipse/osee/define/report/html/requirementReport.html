@@ -1,0 +1,20 @@
+<?author?>Megumi Telles
+<?title?>Requirement Report
+<?usageAndDescription?>
+       <strong>Generates a Requirement Report</strong>
+       <ul>
+               <li>Selected Branch - provide the Branch to obtain the Requirement Report for</li>
+               <li>SRS Root Directory - provide the requirement folder to recurse into for files</li>
+               <li>Start Button - generates the report</li>
+       </ul>
+<?widgets?>
+      <label>Selected Branch</label> <input id="selected_branch" type="text" list="workingAndBaslineBranches" required/><br />
+      <label>Req Root Directory</label><input id="srs_root_dir" type="text"/><br />
+<?javaScript?>
+       function oseeAppStart(oseeAppParams) {
+
+           var branch = oseeAppParams["selected_branch"];
+           var rootDir = oseeAppParams["srs_root_dir"];
+           window.location.assign("../requirements?branch="+branch+"&srs_root="+rootDir);
+
+       }
