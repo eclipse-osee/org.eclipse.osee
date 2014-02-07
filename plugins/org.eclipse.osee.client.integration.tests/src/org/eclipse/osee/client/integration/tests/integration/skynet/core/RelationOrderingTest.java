@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.UserArtifactCheck;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.After;
@@ -86,11 +87,16 @@ public class RelationOrderingTest {
 
    @After
    public void cleanupArtifacts() throws Exception {
-      for (Artifact artifact : itemsToDelete) {
-         if (artifact != null) {
-            ArtifactCache.deCache(artifact);
-            artifact.deleteAndPersist();
+      try {
+         UserArtifactCheck.setEnabled(false);
+         for (Artifact artifact : itemsToDelete) {
+            if (artifact != null) {
+               ArtifactCache.deCache(artifact);
+               artifact.deleteAndPersist();
+            }
          }
+      } finally {
+         UserArtifactCheck.setEnabled(true);
       }
    }
 

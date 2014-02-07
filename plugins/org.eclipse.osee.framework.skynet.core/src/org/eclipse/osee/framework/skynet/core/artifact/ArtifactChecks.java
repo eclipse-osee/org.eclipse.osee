@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -22,11 +23,17 @@ public class ArtifactChecks {
    private static String ELEMENT_ID = "ArtifactCheck";
    private static String EXTENSION_ID = Activator.PLUGIN_ID + "." + ELEMENT_ID;
    private static String CLASS_NAME_ATTRIBUTE = "classname";
+   private static List<IArtifactCheck> checks = null;
 
    private static final ExtensionDefinedObjects<IArtifactCheck> artifactCheckObjects =
       new ExtensionDefinedObjects<IArtifactCheck>(EXTENSION_ID, ELEMENT_ID, CLASS_NAME_ATTRIBUTE, true);
 
    public static List<IArtifactCheck> getArtifactChecks() {
-      return artifactCheckObjects.getObjects();
+      if (checks == null) {
+         checks = new ArrayList<IArtifactCheck>();
+         checks.addAll(artifactCheckObjects.getObjects());
+         checks.add(new UserArtifactCheck());
+      }
+      return checks;
    }
 }
