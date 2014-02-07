@@ -74,6 +74,12 @@ public interface ArtifactReadable extends ArtifactId, HasLocalId, HasBranch, Has
 
    ArtifactReadable getParent() throws OseeCoreException;
 
+   List<ArtifactReadable> getDescendants() throws OseeCoreException;
+
+   void getDescendants(List<ArtifactReadable> descendants) throws OseeCoreException;
+
+   List<ArtifactReadable> getAncestors() throws OseeCoreException;
+
    ResultSet<ArtifactReadable> getChildren() throws OseeCoreException;
 
    ResultSet<ArtifactReadable> getRelated(IRelationTypeSide relationTypeSide) throws OseeCoreException;

@@ -289,4 +289,19 @@ public class MockArtifact implements ArtifactReadable {
       return null;
    }
 
+   @Override
+   public List<ArtifactReadable> getDescendants() throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public void getDescendants(List<ArtifactReadable> descendants) throws OseeCoreException {
+      //
+   }
+
+   @Override
+   public List<ArtifactReadable> getAncestors() throws OseeCoreException {
+      return null;
+   }
+
 }

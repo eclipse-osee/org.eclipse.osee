@@ -11,7 +11,9 @@
 package org.eclipse.osee.orcs.core.internal.proxy.impl;
 
 import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.asRelationType;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -208,6 +210,30 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    public ResultSet<ArtifactReadable> getChildren() throws OseeCoreException {
       ResultSet<Artifact> children = getRelationManager().getChildren(getSession(), getGraphData(), getProxiedObject());
       return getProxyManager().asExternalArtifacts(getSession(), children);
+   }
+
+   @Override
+   public List<ArtifactReadable> getDescendants() throws OseeCoreException {
+      List<ArtifactReadable> descendants = new LinkedList<ArtifactReadable>();
+      getDescendants(descendants);
+      return descendants;
+   }
+
+   @Override
+   public void getDescendants(List<ArtifactReadable> descendants) throws OseeCoreException {
+      for (ArtifactReadable child : getChildren()) {
+         descendants.add(child);
+         child.getDescendants(descendants);
+      }
+   }
+
+   @Override
+   public List<ArtifactReadable> getAncestors() throws OseeCoreException {
+      List<ArtifactReadable> ancestors = new ArrayList<ArtifactReadable>();
+      for (ArtifactReadable parent = getParent(); parent != null; parent = parent.getParent()) {
+         ancestors.add(parent);
+      }
+      return ancestors;
    }
 
    @Override
