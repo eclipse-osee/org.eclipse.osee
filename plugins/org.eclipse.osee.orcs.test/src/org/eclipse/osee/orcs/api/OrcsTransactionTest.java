@@ -982,7 +982,7 @@ public class OrcsTransactionTest {
       assertEquals(comment, newTx.getComment());
       assertEquals(branch, newTx.getBranch());
       assertEquals(TransactionDetailsType.NonBaselined, newTx.getTxType());
-      assertEquals(user.getLocalId(), newTx.getAuthor());
+      assertEquals(user.getLocalId().intValue(), newTx.getAuthor());
       assertEquals(-1, newTx.getCommit());
       assertTrue(previousTx.getTimeStamp().before(newTx.getTimeStamp()));
    }

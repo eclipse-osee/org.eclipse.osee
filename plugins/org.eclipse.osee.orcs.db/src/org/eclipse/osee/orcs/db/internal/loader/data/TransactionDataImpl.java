@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 /**
  * @author Roberto E. Escobar
  */
-public class TransactionDataImpl extends OrcsObjectImpl implements TxOrcsData {
+public class TransactionDataImpl extends OrcsObjectImpl<Integer> implements TxOrcsData {
 
    private int authorId = RelationalConstants.ART_ID_SENTINEL;
    private long branchId = RelationalConstants.BRANCH_SENTINEL;

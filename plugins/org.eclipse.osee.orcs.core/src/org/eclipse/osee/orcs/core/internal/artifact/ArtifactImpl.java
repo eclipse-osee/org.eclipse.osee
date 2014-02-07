@@ -74,7 +74,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public int getLocalId() {
+   public Integer getLocalId() {
       return getOrcsData().getLocalId();
    }
 

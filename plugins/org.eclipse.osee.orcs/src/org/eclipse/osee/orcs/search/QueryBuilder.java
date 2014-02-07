@@ -229,7 +229,7 @@ public interface QueryBuilder {
     * 
     * @return localIds search results
     */
-   ResultSet<HasLocalId> getResultsAsLocalIds() throws OseeCoreException;
+   ResultSet<HasLocalId<Integer>> getResultsAsLocalIds() throws OseeCoreException;
 
    /**
     * Count search results
@@ -260,6 +260,6 @@ public interface QueryBuilder {
     * 
     * @return localIds search results
     */
-   CancellableCallable<ResultSet<HasLocalId>> createSearchResultsAsLocalIds() throws OseeCoreException;
+   CancellableCallable<ResultSet<HasLocalId<Integer>>> createSearchResultsAsLocalIds() throws OseeCoreException;
 
 }

@@ -251,7 +251,7 @@ public class OrcsQueryTest {
       builder.and(CoreAttributeTypes.Name, "REQUIREMENTS", CaseType.IGNORE_CASE, TokenOrderType.MATCH_ORDER,
          TokenDelimiterMatch.ANY, MatchTokenCountType.IGNORE_TOKEN_COUNT);
 
-      ResultSet<HasLocalId> results = builder.getResultsAsLocalIds();
+      ResultSet<HasLocalId<Integer>> results = builder.getResultsAsLocalIds();
       assertEquals(7, results.size());
       assertEquals(7, builder.getCount());
    }

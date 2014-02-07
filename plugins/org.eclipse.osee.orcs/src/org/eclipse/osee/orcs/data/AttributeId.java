@@ -13,6 +13,6 @@ package org.eclipse.osee.orcs.data;
 /**
  * @author Megumi Telles
  */
-public interface AttributeId extends HasLocalId {
+public interface AttributeId extends HasLocalId<Integer> {
    //
 }

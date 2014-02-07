@@ -128,8 +128,8 @@ public class RelationTest {
       when(data.getArtIdOn(RelationSide.SIDE_A)).thenReturn(45);
       when(data.getArtIdOn(RelationSide.SIDE_B)).thenReturn(33);
 
-      assertEquals(45, relation.getLocalIdForSide(RelationSide.SIDE_A));
-      assertEquals(33, relation.getLocalIdForSide(RelationSide.SIDE_B));
+      assertEquals(45, relation.getLocalIdForSide(RelationSide.SIDE_A).intValue());
+      assertEquals(33, relation.getLocalIdForSide(RelationSide.SIDE_B).intValue());
    }
 
    @Test

@@ -56,6 +56,8 @@ public class BranchDataFactoryTest {
    public void init() {
       MockitoAnnotations.initMocks(this);
 
+      when(author.getLocalId()).thenReturn(55);
+      when(associatedArtifact.getLocalId()).thenReturn(66);
       factory = new BranchDataFactory(branchCache, txCache);
    }
 

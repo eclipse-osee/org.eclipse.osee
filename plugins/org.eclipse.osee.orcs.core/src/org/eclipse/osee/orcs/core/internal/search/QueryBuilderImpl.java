@@ -307,7 +307,7 @@ public class QueryBuilderImpl implements QueryBuilder {
    @Override
    public QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, Collection<? extends ArtifactReadable> artifacts) throws OseeCoreException {
       Set<Integer> ids = new HashSet<Integer>();
-      for (HasLocalId token : artifacts) {
+      for (HasLocalId<Integer> token : artifacts) {
          ids.add(token.getLocalId());
       }
       return andRelatedToLocalIds(relationTypeSide, ids);
@@ -362,8 +362,8 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public ResultSet<HasLocalId> getResultsAsLocalIds() throws OseeCoreException {
-      ResultSet<HasLocalId> result = null;
+   public ResultSet<HasLocalId<Integer>> getResultsAsLocalIds() throws OseeCoreException {
+      ResultSet<HasLocalId<Integer>> result = null;
       try {
          result = createSearchResultsAsLocalIds().call();
       } catch (Exception ex) {
@@ -383,7 +383,7 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public CancellableCallable<ResultSet<HasLocalId>> createSearchResultsAsLocalIds() throws OseeCoreException {
+   public CancellableCallable<ResultSet<HasLocalId<Integer>>> createSearchResultsAsLocalIds() throws OseeCoreException {
       return queryFactory.createLocalIdSearch(session, checkAndCloneQueryData());
    }
 

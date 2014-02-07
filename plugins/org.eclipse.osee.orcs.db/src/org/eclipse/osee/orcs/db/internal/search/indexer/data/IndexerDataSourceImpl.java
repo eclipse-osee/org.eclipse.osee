@@ -49,7 +49,7 @@ public class IndexerDataSourceImpl implements IndexedResource {
    }
 
    @Override
-   public int getLocalId() {
+   public Integer getLocalId() {
       return localId;
    }
 

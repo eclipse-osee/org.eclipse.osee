@@ -83,7 +83,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public ArtifactData createArtifactData(VersionData version, int localId, long typeUuid, ModificationType modType, String guid) throws OseeCoreException {
+   public ArtifactData createArtifactData(VersionData version, Integer localId, long typeUuid, ModificationType modType, String guid) throws OseeCoreException {
       return createArtifactFromRow(version, localId, typeUuid, modType, typeUuid, modType, guid);
    }
 
@@ -101,7 +101,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public AttributeData createAttributeData(VersionData version, int localId, long typeId, ModificationType modType, int artifactId, String value, String uri) throws OseeCoreException {
+   public AttributeData createAttributeData(VersionData version, Integer localId, long typeId, ModificationType modType, int artifactId, String value, String uri) throws OseeCoreException {
       DataProxy proxy = proxyFactory.createProxy(typeId, value, uri);
       return createAttributeFromRow(version, localId, typeId, modType, typeId, modType, artifactId, proxy);
    }
@@ -117,19 +117,19 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public AttributeData createAttributeData(VersionData version, int localId, IAttributeType type, ModificationType modType, int artId) throws OseeCoreException {
+   public AttributeData createAttributeData(VersionData version, Integer localId, IAttributeType type, ModificationType modType, int artId) throws OseeCoreException {
       long typeId = type.getGuid();
       DataProxy proxy = proxyFactory.createProxy(typeId, "", "");
       return createAttributeFromRow(version, localId, typeId, modType, typeId, modType, artId, proxy);
    }
 
    @Override
-   public RelationData createRelationData(VersionData version, int localId, long typeId, ModificationType modType, int aArtId, int bArtId, String rationale) throws OseeCoreException {
+   public RelationData createRelationData(VersionData version, Integer localId, long typeId, ModificationType modType, int aArtId, int bArtId, String rationale) throws OseeCoreException {
       return createRelationData(version, localId, typeId, modType, typeId, modType, aArtId, bArtId, rationale);
    }
 
    @Override
-   public RelationData createRelationData(VersionData version, int localId, IRelationType type, ModificationType modType, int aArtId, int bArtId, String rationale) {
+   public RelationData createRelationData(VersionData version, Integer localId, IRelationType type, ModificationType modType, int aArtId, int bArtId, String rationale) {
       long typeId = type.getGuid();
       return createRelationData(version, localId, typeId, modType, typeId, modType, aArtId, bArtId, rationale);
    }
@@ -179,7 +179,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public BranchData createBranchData(long localId, String guid, BranchType branchType, String name, long parentBranch, int baseTransaction, int sourceTransaction, BranchArchivedState archiveState, BranchState branchState, int associatedArtifactId) {
+   public BranchData createBranchData(Long localId, String guid, BranchType branchType, String name, long parentBranch, int baseTransaction, int sourceTransaction, BranchArchivedState archiveState, BranchState branchState, int associatedArtifactId) {
       BranchData data = new BranchDataImpl();
       data.setArchiveState(archiveState);
       data.setAssociatedArtifactId(associatedArtifactId);
@@ -187,8 +187,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       data.setBranchState(branchState);
       data.setBranchType(branchType);
       data.setGuid(guid);
-      // this is bad and will be changed in the future when local ids are removed
-      data.setLocalId((int) localId);
+      data.setLocalId(localId);
       data.setName(name);
       data.setParentBranch(parentBranch);
       data.setSourceTransaction(sourceTransaction);

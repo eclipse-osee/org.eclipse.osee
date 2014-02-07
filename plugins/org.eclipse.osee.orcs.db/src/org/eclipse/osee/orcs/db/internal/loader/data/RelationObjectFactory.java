@@ -21,9 +21,9 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
  */
 public interface RelationObjectFactory extends VersionObjectFactory {
 
-   RelationData createRelationData(VersionData version, int localId, long typeID, ModificationType modType, int aArtId, int bArtId, String rationale) throws OseeCoreException;
+   RelationData createRelationData(VersionData version, Integer localId, long typeID, ModificationType modType, int aArtId, int bArtId, String rationale) throws OseeCoreException;
 
-   RelationData createRelationData(VersionData version, int localId, IRelationType type, ModificationType modType, int aArtId, int bArtId, String rationale) throws OseeCoreException;
+   RelationData createRelationData(VersionData version, Integer localId, IRelationType type, ModificationType modType, int aArtId, int bArtId, String rationale) throws OseeCoreException;
 
    RelationData createCopy(RelationData source) throws OseeCoreException;
 }

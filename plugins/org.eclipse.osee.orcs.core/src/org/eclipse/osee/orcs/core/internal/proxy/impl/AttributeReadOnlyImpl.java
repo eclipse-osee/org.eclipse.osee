@@ -28,7 +28,7 @@ public class AttributeReadOnlyImpl<T> extends AbstractProxied<Attribute<T>> impl
    }
 
    @Override
-   public int getLocalId() {
+   public Integer getLocalId() {
       return getProxiedObject().getLocalId();
    }
 

@@ -51,7 +51,7 @@ public class CreateBranchData implements Identifiable<String> {
       return result;
    }
 
-   public int getUserArtifactId() {
+   public Integer getUserArtifactId() {
       int result = NULL_ARTIFACT_ID;
       if (userArtifact != null) {
          result = userArtifact.getLocalId();

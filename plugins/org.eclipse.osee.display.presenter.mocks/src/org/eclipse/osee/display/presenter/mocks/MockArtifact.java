@@ -107,7 +107,7 @@ public class MockArtifact implements ArtifactReadable {
    }
 
    @Override
-   public int getLocalId() {
+   public Integer getLocalId() {
       return 0;
    }
 

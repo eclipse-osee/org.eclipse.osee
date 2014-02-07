@@ -90,8 +90,8 @@ public class DataFactoryImpl implements DataFactory {
       VersionData version = objectFactory.createDefaultVersionData();
       version.setBranchId(parent.getVersion().getBranchId());
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
-      int attributeId = RelationalConstants.DEFAULT_ITEM_ID;
-      return objectFactory.createAttributeData(version, attributeId, attributeType, modType, parent.getLocalId());
+      Integer attributeid = RelationalConstants.DEFAULT_ITEM_ID;
+      return objectFactory.createAttributeData(version, attributeid, attributeType, modType, parent.getLocalId());
    }
 
    @Override
@@ -110,11 +110,11 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public RelationData createRelationData(IRelationType relationType, IOseeBranch branch, HasLocalId aArt, HasLocalId bArt, String rationale) throws OseeCoreException {
+   public RelationData createRelationData(IRelationType relationType, IOseeBranch branch, HasLocalId<Integer> aArt, HasLocalId<Integer> bArt, String rationale) throws OseeCoreException {
       VersionData version = objectFactory.createDefaultVersionData();
       version.setBranchId(idFactory.getLocalId(branch));
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
-      int relationId = RelationalConstants.DEFAULT_ITEM_ID;
+      Integer relationId = RelationalConstants.DEFAULT_ITEM_ID;
       return objectFactory.createRelationData(version, relationId, relationType, modType, aArt.getLocalId(),
          bArt.getLocalId(), rationale);
    }

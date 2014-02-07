@@ -25,7 +25,7 @@ public class AttributeIdWrapper implements AttributeId {
    }
 
    @Override
-   public int getLocalId() {
+   public Integer getLocalId() {
       return attribute.getId();
    }
 

@@ -48,13 +48,13 @@ public class GraphDataImpl implements GraphData {
    }
 
    @Override
-   public <T extends GraphNode> T getNode(HasLocalId data) {
+   public <T extends GraphNode> T getNode(HasLocalId<Integer> data) {
       return getNode(data.getLocalId());
    }
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T extends GraphNode> T getNode(int id) {
+   public <T extends GraphNode> T getNode(Integer id) {
       return (T) nodesById.get(id);
    }
 
@@ -75,47 +75,47 @@ public class GraphDataImpl implements GraphData {
    }
 
    @Override
-   public <T extends GraphNode> T removeNode(HasLocalId node) {
+   public <T extends GraphNode> T removeNode(HasLocalId<Integer> node) {
       return removeNode(node.getLocalId());
    }
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T extends GraphNode> T removeNode(int id) {
+   public <T extends GraphNode> T removeNode(Integer id) {
       T removed = (T) nodesById.remove(id);
       removeAdjacencies(id);
       return removed;
    }
 
    @Override
-   public <T extends GraphAdjacencies> T getAdjacencies(HasLocalId node) {
+   public <T extends GraphAdjacencies> T getAdjacencies(HasLocalId<Integer> node) {
       return getAdjacencies(node.getLocalId());
    }
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T extends GraphAdjacencies> T getAdjacencies(int id) {
+   public <T extends GraphAdjacencies> T getAdjacencies(Integer id) {
       return (T) adjacenciesById.get(id);
    }
 
    @Override
-   public void addAdjacencies(HasLocalId node, GraphAdjacencies adjacencies) {
+   public void addAdjacencies(HasLocalId<Integer> node, GraphAdjacencies adjacencies) {
       addAdjacencies(node.getLocalId(), adjacencies);
    }
 
    @Override
-   public void addAdjacencies(int id, GraphAdjacencies adjacencies) {
+   public void addAdjacencies(Integer id, GraphAdjacencies adjacencies) {
       adjacenciesById.put(id, adjacencies);
    }
 
    @Override
-   public <T extends GraphAdjacencies> T removeAdjacencies(HasLocalId node) {
+   public <T extends GraphAdjacencies> T removeAdjacencies(HasLocalId<Integer> node) {
       return removeAdjacencies(node.getLocalId());
    }
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T extends GraphAdjacencies> T removeAdjacencies(int id) {
+   public <T extends GraphAdjacencies> T removeAdjacencies(Integer id) {
       return (T) adjacenciesById.remove(id);
    }
 

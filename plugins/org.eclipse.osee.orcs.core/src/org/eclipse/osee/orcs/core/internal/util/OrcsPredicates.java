@@ -119,12 +119,12 @@ public final class OrcsPredicates {
       });
    }
 
-   public static Predicate<Attribute<?>> attributeId(final HasLocalId attributeId) {
+   public static Predicate<Attribute<?>> attributeId(final HasLocalId<Integer> attributeId) {
       return new Predicate<Attribute<?>>() {
 
          @Override
          public boolean apply(Attribute<?> input) {
-            return attributeId.getLocalId() == input.getLocalId();
+            return attributeId.getLocalId().equals(input.getLocalId());
          }
       };
    }
@@ -147,27 +147,27 @@ public final class OrcsPredicates {
       }
    }
 
-   public static Predicate<Relation> nodeIdOnSideEquals(final HasLocalId localId, final RelationSide side) {
+   public static Predicate<Relation> nodeIdOnSideEquals(final HasLocalId<Integer> localId, final RelationSide side) {
       return new Predicate<Relation>() {
 
          @Override
          public boolean apply(Relation relation) {
-            return relation.getLocalIdForSide(side) == localId.getLocalId();
+            return relation.getLocalIdForSide(side).equals(localId.getLocalId());
          }
       };
    }
 
-   public static Predicate<Relation> nodeIdsEquals(final HasLocalId aId, final HasLocalId bId) {
+   public static Predicate<Relation> nodeIdsEquals(final HasLocalId<Integer> aId, final HasLocalId<Integer> bId) {
       return nodeIdsEquals(aId.getLocalId(), bId.getLocalId());
    }
 
-   public static Predicate<Relation> nodeIdsEquals(final int aId, final int bId) {
+   public static Predicate<Relation> nodeIdsEquals(final Integer aId, final Integer bId) {
       return new Predicate<Relation>() {
 
          @Override
          public boolean apply(Relation relation) {
-            return aId == relation.getLocalIdForSide(RelationSide.SIDE_A) && //
-            bId == relation.getLocalIdForSide(RelationSide.SIDE_B);
+            return aId.equals(relation.getLocalIdForSide(RelationSide.SIDE_A)) && //
+            bId.equals(relation.getLocalIdForSide(RelationSide.SIDE_B));
          }
       };
    }

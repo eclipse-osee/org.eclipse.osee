@@ -126,7 +126,7 @@ public class AttributeDataMatcher {
       }
 
       @Override
-      public int getLocalId() {
+      public Integer getLocalId() {
          return attrData.getLocalId();
       }
 

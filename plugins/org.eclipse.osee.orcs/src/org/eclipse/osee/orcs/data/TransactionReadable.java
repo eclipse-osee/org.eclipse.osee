@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 /**
  * @author Roberto E. Escobar
  */
-public interface TransactionReadable extends HasLocalId {
+public interface TransactionReadable extends HasLocalId<Integer> {
 
    TransactionDetailsType getTxType();
 

@@ -13,9 +13,9 @@ package org.eclipse.osee.orcs.core.ds;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.orcs.data.HasLocalId;
 
-public interface OrcsData extends HasLocalId, HasVersion {
+public interface OrcsData extends HasLocalId<Integer>, HasVersion {
 
-   void setLocalId(int localId);
+   void setLocalId(Integer localId);
 
    long getTypeUuid();
 

@@ -269,7 +269,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
     * @return Returns the attrId.
     */
    @Override
-   public int getLocalId() {
+   public Integer getLocalId() {
       return getOrcsData().getLocalId();
    }
 

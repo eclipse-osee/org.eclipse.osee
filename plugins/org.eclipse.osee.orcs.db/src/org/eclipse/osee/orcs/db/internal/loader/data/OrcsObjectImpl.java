@@ -16,20 +16,21 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class OrcsObjectImpl implements HasLocalId {
+public abstract class OrcsObjectImpl<T extends Number> implements HasLocalId<T> {
 
-   private int localId = RelationalConstants.DEFAULT_ITEM_ID;
+   private T localId = null;
 
    protected OrcsObjectImpl() {
       super();
+      setLocalId((T) RelationalConstants.DEFAULT_ITEM_ID);
    }
 
    @Override
-   public int getLocalId() {
+   public T getLocalId() {
       return localId;
    }
 
-   public void setLocalId(int localId) {
+   public void setLocalId(T localId) {
       this.localId = localId;
    }
 
@@ -37,7 +38,7 @@ public abstract class OrcsObjectImpl implements HasLocalId {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + localId;
+      result = prime * result + localId.intValue();
       return result;
    }
 
@@ -53,7 +54,7 @@ public abstract class OrcsObjectImpl implements HasLocalId {
          return false;
       }
       OrcsObjectImpl other = (OrcsObjectImpl) obj;
-      if (localId != other.localId) {
+      if (localId.equals(other.localId)) {
          return false;
       }
       return true;

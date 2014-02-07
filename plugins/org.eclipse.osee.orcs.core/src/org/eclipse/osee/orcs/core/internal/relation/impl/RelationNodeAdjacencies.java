@@ -62,7 +62,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationTyp
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public List<Relation> getList(IRelationType type, DeletionFlag includeDeleted, HasLocalId localId, RelationSide side) throws OseeCoreException {
+   public List<Relation> getList(IRelationType type, DeletionFlag includeDeleted, HasLocalId<Integer> localId, RelationSide side) throws OseeCoreException {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       Predicate relIdOnSide = nodeIdOnSideEquals(localId, side);
       Predicate matcher = and(deletionFlagEquals, relIdOnSide);
@@ -76,7 +76,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationTyp
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public ResultSet<Relation> getResultSet(IRelationType type, DeletionFlag includeDeleted, HasLocalId localId, RelationSide side) throws OseeCoreException {
+   public ResultSet<Relation> getResultSet(IRelationType type, DeletionFlag includeDeleted, HasLocalId<Integer> localId, RelationSide side) throws OseeCoreException {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       Predicate relIdOnSide = nodeIdOnSideEquals(localId, side);
       Predicate matcher = and(deletionFlagEquals, relIdOnSide);

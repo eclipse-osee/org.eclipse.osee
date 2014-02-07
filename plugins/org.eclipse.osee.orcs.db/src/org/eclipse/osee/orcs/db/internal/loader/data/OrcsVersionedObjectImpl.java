@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class OrcsVersionedObjectImpl extends OrcsObjectImpl implements OrcsData {
+public abstract class OrcsVersionedObjectImpl extends OrcsObjectImpl<Integer> implements OrcsData {
 
    private long typeUuid = RelationalConstants.DEFAULT_TYPE_UUID;
    private long baseTypeUuid = RelationalConstants.DEFAULT_TYPE_UUID;

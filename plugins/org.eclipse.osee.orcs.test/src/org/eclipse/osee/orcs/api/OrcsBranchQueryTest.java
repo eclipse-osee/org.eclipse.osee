@@ -86,11 +86,11 @@ public class OrcsBranchQueryTest {
       BranchReadable branch5 = iterator.next();
 
       // actual, IOseeBranch, localId, type, state, isArchived, parentId, baseTx, sourceTx, assocArtId
-      assertBranch(branch1, SYS_ROOT, 1, SYSTEM_ROOT, MODIFIED, false, -1, 1, 1, -1);
-      assertBranch(branch2, COMMON, 2, BASELINE, MODIFIED, false, 1, 4, 3, -1);
-      assertBranch(branch3, SAW_Bld_1, 3, BASELINE, MODIFIED, false, 1, 15, 3, -1);
-      assertBranch(branch4, CIS_Bld_1, 4, BASELINE, MODIFIED, false, 1, 17, 3, -1);
-      assertBranch(branch5, SAW_Bld_2, 5, BASELINE, CREATED, false, 3, 23, 22, 9);
+      assertBranch(branch1, SYS_ROOT, 1L, SYSTEM_ROOT, MODIFIED, false, -1, 1, 1, -1);
+      assertBranch(branch2, COMMON, 2L, BASELINE, MODIFIED, false, 1, 4, 3, -1);
+      assertBranch(branch3, SAW_Bld_1, 3L, BASELINE, MODIFIED, false, 1, 15, 3, -1);
+      assertBranch(branch4, CIS_Bld_1, 4L, BASELINE, MODIFIED, false, 1, 17, 3, -1);
+      assertBranch(branch5, SAW_Bld_2, 5L, BASELINE, CREATED, false, 3, 23, 22, 9);
    }
 
    @Test
@@ -320,13 +320,13 @@ public class OrcsBranchQueryTest {
       return orcsApi.getBranchOps(null);
    }
 
-   private static void assertBranch(BranchReadable actual, IOseeBranch token, int localId, BranchType type, BranchState state, boolean isArchived, int parent, int baseTx, int sourceTx, int assocArtId) {
+   private static void assertBranch(BranchReadable actual, IOseeBranch token, Long localId, BranchType type, BranchState state, boolean isArchived, int parent, int baseTx, int sourceTx, int assocArtId) {
       assertEquals(token, actual);
       assertBranch(actual, token.getName(), token.getGuid(), localId, type, state, isArchived, parent, baseTx,
          sourceTx, assocArtId);
    }
 
-   private static void assertBranch(BranchReadable actual, String name, String guid, int localId, BranchType type, BranchState state, boolean isArchived, int parent, int baseTx, int sourceTx, int assocArtId) {
+   private static void assertBranch(BranchReadable actual, String name, String guid, Long localId, BranchType type, BranchState state, boolean isArchived, int parent, int baseTx, int sourceTx, int assocArtId) {
       assertEquals(guid, actual.getGuid());
       assertEquals(name, actual.getName());
       assertEquals(localId, actual.getLocalId());

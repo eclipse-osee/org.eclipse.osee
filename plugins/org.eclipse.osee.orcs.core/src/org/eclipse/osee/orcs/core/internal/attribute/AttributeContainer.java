@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.data.HasLocalId;
 /**
  * @author Roberto E. Escobar
  */
-public interface AttributeContainer extends Identifiable<String>, HasLocalId {
+public interface AttributeContainer extends Identifiable<String>, HasLocalId<Integer> {
 
    void add(IAttributeType type, Attribute<? extends Object> attribute);
 

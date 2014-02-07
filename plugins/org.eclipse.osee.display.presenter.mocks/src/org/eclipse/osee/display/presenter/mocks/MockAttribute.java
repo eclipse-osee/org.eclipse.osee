@@ -38,7 +38,7 @@ public class MockAttribute<T> implements AttributeReadable<T> {
    }
 
    @Override
-   public int getLocalId() {
+   public Integer getLocalId() {
       return 0;
    }
 

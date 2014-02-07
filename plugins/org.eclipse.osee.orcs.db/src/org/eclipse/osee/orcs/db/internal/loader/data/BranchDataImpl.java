@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 /**
  * @author Roberto E. Escobar
  */
-public class BranchDataImpl extends OrcsObjectImpl implements BranchData, BranchReadable {
+public class BranchDataImpl extends OrcsObjectImpl<Long> implements BranchData, BranchReadable {
 
    private String guid = RelationalConstants.DEFAULT_GUID;
    private String name = "";

@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
  */
 public interface ArtifactObjectFactory extends VersionObjectFactory {
 
-   ArtifactData createArtifactData(VersionData version, int localId, long typeID, ModificationType modType, String guid) throws OseeCoreException;
+   ArtifactData createArtifactData(VersionData version, Integer localId, long typeID, ModificationType modType, String guid) throws OseeCoreException;
 
    ArtifactData createArtifactData(VersionData version, int generateArtId, IArtifactType type, ModificationType modType, String guidToSet);
 

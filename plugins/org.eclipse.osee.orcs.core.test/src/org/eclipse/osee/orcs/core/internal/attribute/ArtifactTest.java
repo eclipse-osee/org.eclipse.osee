@@ -97,6 +97,7 @@ public class ArtifactTest {
       when(artifactData.getGuid()).thenReturn(guid);
       when(artifactData.getVersion()).thenReturn(version);
       when(artifactData.getTypeUuid()).thenReturn(artifactType.getGuid());
+      when(artifactData.getLocalId()).thenReturn(0);
       when(branchProvider.get()).thenReturn(branch);
 
       when(deleted.isDeleted()).thenReturn(true);

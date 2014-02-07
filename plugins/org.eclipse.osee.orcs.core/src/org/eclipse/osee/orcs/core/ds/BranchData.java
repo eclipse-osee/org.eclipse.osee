@@ -18,9 +18,9 @@ import org.eclipse.osee.orcs.data.HasLocalId;
 /**
  * @author Roberto E. Escobar
  */
-public interface BranchData extends HasLocalId {
+public interface BranchData extends HasLocalId<Long> {
 
-   void setLocalId(int id);
+   void setLocalId(Long id);
 
    String getGuid();
 

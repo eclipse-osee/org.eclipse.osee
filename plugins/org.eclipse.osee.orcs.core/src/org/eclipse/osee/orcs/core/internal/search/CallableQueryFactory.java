@@ -69,12 +69,12 @@ public class CallableQueryFactory {
       };
    }
 
-   public CancellableCallable<ResultSet<HasLocalId>> createLocalIdSearch(OrcsSession session, QueryData queryData) {
-      return new AbstractSearchCallable<ResultSet<HasLocalId>>(session, queryData) {
+   public CancellableCallable<ResultSet<HasLocalId<Integer>>> createLocalIdSearch(OrcsSession session, QueryData queryData) {
+      return new AbstractSearchCallable<ResultSet<HasLocalId<Integer>>>(session, queryData) {
 
          @Override
-         protected ResultSet<HasLocalId> innerCall() throws Exception {
-            final List<HasLocalId> results = new LinkedList<HasLocalId>();
+         protected ResultSet<HasLocalId<Integer>> innerCall() throws Exception {
+            final List<HasLocalId<Integer>> results = new LinkedList<HasLocalId<Integer>>();
             LoadDataHandlerAdapter handler = new LoadDataHandlerAdapter() {
                @Override
                public void onData(ArtifactData data) {

@@ -13,8 +13,8 @@ package org.eclipse.osee.orcs.data;
 /**
  * @author Roberto E. Escobar
  */
-public interface HasLocalId {
+public interface HasLocalId<T extends Number> {
 
-   int getLocalId();
+   T getLocalId();
 
 }

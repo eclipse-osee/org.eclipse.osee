@@ -24,26 +24,26 @@ public interface GraphData extends HasBranch, HasTransaction {
    @Override
    IOseeBranch getBranch();
 
-   <T extends GraphNode> T getNode(HasLocalId data);
+   <T extends GraphNode> T getNode(HasLocalId<Integer> data);
 
-   <T extends GraphNode> T getNode(int id);
+   <T extends GraphNode> T getNode(Integer id);
 
    void addNode(GraphNode node) throws OseeCoreException;
 
-   <T extends GraphNode> T removeNode(HasLocalId node);
+   <T extends GraphNode> T removeNode(HasLocalId<Integer> node);
 
-   <T extends GraphNode> T removeNode(int id);
+   <T extends GraphNode> T removeNode(Integer id);
 
-   <T extends GraphAdjacencies> T getAdjacencies(HasLocalId node);
+   <T extends GraphAdjacencies> T getAdjacencies(HasLocalId<Integer> node);
 
-   <T extends GraphAdjacencies> T getAdjacencies(int id);
+   <T extends GraphAdjacencies> T getAdjacencies(Integer id);
 
-   void addAdjacencies(HasLocalId node, GraphAdjacencies adjacencies);
+   void addAdjacencies(HasLocalId<Integer> node, GraphAdjacencies adjacencies);
 
-   void addAdjacencies(int id, GraphAdjacencies adjacencies);
+   void addAdjacencies(Integer id, GraphAdjacencies adjacencies);
 
-   <T extends GraphAdjacencies> T removeAdjacencies(HasLocalId node);
+   <T extends GraphAdjacencies> T removeAdjacencies(HasLocalId<Integer> node);
 
-   <T extends GraphAdjacencies> T removeAdjacencies(int id);
+   <T extends GraphAdjacencies> T removeAdjacencies(Integer id);
 
 }

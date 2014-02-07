@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface ArtifactReadable extends ArtifactId, HasLocalId, HasBranch, HasTransaction, OrcsReadable {
+public interface ArtifactReadable extends ArtifactId, HasLocalId<Integer>, HasBranch, HasTransaction, OrcsReadable {
 
    IArtifactType getArtifactType() throws OseeCoreException;
 

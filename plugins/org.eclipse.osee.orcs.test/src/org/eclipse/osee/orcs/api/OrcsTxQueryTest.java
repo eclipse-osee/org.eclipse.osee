@@ -636,7 +636,7 @@ public class OrcsTxQueryTest {
       //@formatter:on
    }
 
-   private static void assertTx(TransactionReadable actual, int localId, TransactionDetailsType type, String date, String comment, int branchId, int authorId, int commitId) {
+   private static void assertTx(TransactionReadable actual, Integer localId, TransactionDetailsType type, String date, String comment, int branchId, int authorId, int commitId) {
       assertEquals(localId, actual.getLocalId());
       assertEquals(type, actual.getTxType());
       assertEquals(date, DATE_FORMATTER.format(actual.getDate()));

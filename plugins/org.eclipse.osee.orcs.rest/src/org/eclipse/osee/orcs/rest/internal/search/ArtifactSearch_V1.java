@@ -141,7 +141,7 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
             result.setTotal(total);
             break;
          case IDS:
-            for (HasLocalId art : builder.getResultsAsLocalIds()) {
+            for (HasLocalId<Integer> art : builder.getResultsAsLocalIds()) {
                localIds.add(art.getLocalId());
             }
             result.setIds(localIds);

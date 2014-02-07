@@ -173,7 +173,7 @@ public class DataFactoryImplTest {
       assertEquals(false, actualVer.isHistorical());
       assertEquals(false, actualVer.isInStorage());
 
-      assertEquals(987, actual.getLocalId());
+      assertEquals(987, actual.getLocalId().intValue());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
       assertEquals(4536L, actual.getTypeUuid());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
@@ -202,7 +202,7 @@ public class DataFactoryImplTest {
       assertEquals(false, actualVer.isHistorical());
       assertEquals(false, actualVer.isInStorage());
 
-      assertEquals(987, actual.getLocalId());
+      assertEquals(987, actual.getLocalId().intValue());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
       assertEquals(4536L, actual.getTypeUuid());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
@@ -246,8 +246,8 @@ public class DataFactoryImplTest {
    @Test
    public void testCreateRelationData() throws OseeCoreException {
       IRelationType relationType = mock(IRelationType.class);
-      HasLocalId localId1 = mock(HasLocalId.class);
-      HasLocalId localId2 = mock(HasLocalId.class);
+      HasLocalId<Integer> localId1 = mock(HasLocalId.class);
+      HasLocalId<Integer> localId2 = mock(HasLocalId.class);
 
       when(relationType.getGuid()).thenReturn(2389L);
       when(localId1.getLocalId()).thenReturn(4562);
@@ -289,7 +289,7 @@ public class DataFactoryImplTest {
       assertEquals(false, actualVer.isHistorical());
       assertEquals(false, actualVer.isInStorage());
 
-      assertEquals(555, actual.getLocalId());
+      assertEquals(555, actual.getLocalId().intValue());
       assertEquals(ModificationType.INTRODUCED, actual.getModType());
       assertEquals(666L, actual.getTypeUuid());
       assertEquals(ModificationType.NEW, actual.getBaseModType());
@@ -311,7 +311,7 @@ public class DataFactoryImplTest {
       assertEquals(false, actualVer.isHistorical());
       assertEquals(false, actualVer.isInStorage());
 
-      assertEquals(555, actual.getLocalId());
+      assertEquals(555, actual.getLocalId().intValue());
       assertEquals(ModificationType.INTRODUCED, actual.getModType());
       assertEquals(666L, actual.getTypeUuid());
       assertEquals(ModificationType.NEW, actual.getBaseModType());
@@ -346,7 +346,7 @@ public class DataFactoryImplTest {
       assertEquals(false, actualVer.isHistorical());
       assertEquals(false, actualVer.isInStorage());
 
-      assertEquals(987, actual.getLocalId());
+      assertEquals(987, actual.getLocalId().intValue());
       assertEquals(ModificationType.NEW, actual.getModType());
       assertEquals(666L, actual.getTypeUuid());
       assertEquals(ModificationType.NEW, actual.getBaseModType());
@@ -399,7 +399,7 @@ public class DataFactoryImplTest {
       assertEquals(true, actualVer.isHistorical());
       assertEquals(true, actualVer.isInStorage());
 
-      assertEquals(555, actual.getLocalId());
+      assertEquals(555, actual.getLocalId().intValue());
       assertEquals(ModificationType.MODIFIED, actual.getModType());
       assertEquals(666L, actual.getTypeUuid());
       assertEquals(ModificationType.NEW, actual.getBaseModType());
@@ -424,7 +424,7 @@ public class DataFactoryImplTest {
       assertEquals(true, actualVer.isHistorical());
       assertEquals(true, actualVer.isInStorage());
 
-      assertEquals(555, actual.getLocalId());
+      assertEquals(555, actual.getLocalId().intValue());
       assertEquals(ModificationType.MODIFIED, actual.getModType());
       assertEquals(666L, actual.getTypeUuid());
       assertEquals(ModificationType.NEW, actual.getBaseModType());
@@ -455,7 +455,7 @@ public class DataFactoryImplTest {
       assertEquals(true, actualVer.isHistorical());
       assertEquals(true, actualVer.isInStorage());
 
-      assertEquals(555, actual.getLocalId());
+      assertEquals(555, actual.getLocalId().intValue());
       assertEquals(ModificationType.MODIFIED, actual.getModType());
       assertEquals(666L, actual.getTypeUuid());
       assertEquals(ModificationType.NEW, actual.getBaseModType());

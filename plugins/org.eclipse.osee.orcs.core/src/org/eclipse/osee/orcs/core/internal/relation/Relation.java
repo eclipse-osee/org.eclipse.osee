@@ -153,7 +153,7 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
       return true;
    }
 
-   public int getLocalIdForSide(RelationSide side) {
+   public Integer getLocalIdForSide(RelationSide side) {
       return getOrcsData().getArtIdOn(side);
    }
 
