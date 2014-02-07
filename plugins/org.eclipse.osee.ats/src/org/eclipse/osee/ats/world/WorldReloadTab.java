@@ -1,16 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013 Boeing.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Boeing - initial API and implementation
- *******************************************************************************/
-package org.eclipse.osee.ats.editor;
+package org.eclipse.osee.ats.world;
 
-import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -19,15 +8,11 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -47,20 +32,18 @@ import org.eclipse.ui.forms.editor.FormPage;
 /**
  * @author Donald G. Dunne
  */
-public class WEReloadTab extends FormPage {
+public class WorldReloadTab extends FormPage {
    private IManagedForm managedForm;
    private Composite bodyComp;
    private Composite atsBody;
-   public final static String ID = "ats.reload.tab";
-   private final SMAEditor editor;
-   private final String title;
-   private final String guid;
+   public final static String ID = "ats.world.reload.tab";
+   private final WorldEditor editor;
+   private final WorldEditorReloadProvider provider;
 
-   public WEReloadTab(SMAEditor editor) {
+   public WorldReloadTab(WorldEditor editor, WorldEditorReloadProvider provider) {
       super(editor, ID, "Reload");
       this.editor = editor;
-      this.guid = editor.getSMAEditorInput().getGuid();
-      this.title = editor.getSMAEditorInput().getTitle();
+      this.provider = provider;
    }
 
    @Override
@@ -104,10 +87,10 @@ public class WEReloadTab extends FormPage {
    }
 
    private void updateTitleBar() throws OseeCoreException {
-      String displayableTitle = Strings.escapeAmpersands(title);
+      String displayableTitle = Strings.escapeAmpersands(provider.getName());
       if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
          managedForm.getForm().setText(displayableTitle);
-         managedForm.getForm().setImage(ImageManager.getImage(AtsImage.TEAM_WORKFLOW));
+         managedForm.getForm().setImage(ImageManager.getImage(AtsImage.GLOBE));
       }
       setPartName(displayableTitle);
    }
@@ -129,19 +112,15 @@ public class WEReloadTab extends FormPage {
    }
 
    private void loadEditor(final FormPage page) {
-      LoadAndRefreshJob loadAndRefresh = new LoadAndRefreshJob(title);
+      LoadAndRefreshJob loadAndRefresh = new LoadAndRefreshJob(provider.getName());
       Jobs.startJob(loadAndRefresh, false, new JobChangeAdapter() {
 
          @Override
          public void done(IJobChangeEvent event) {
-            final Artifact artifact = ((LoadAndRefreshJob) event.getJob()).getArtifact();
             Displays.ensureInDisplayThread(new Runnable() {
 
                @Override
                public void run() {
-                  ((SMAEditorInput) editor.getEditorInput()).setArtifact(artifact);
-                  bodyComp.dispose();
-                  page.dispose();
                   editor.addPages();
                   editor.removePage(0);
                }
@@ -157,18 +136,12 @@ public class WEReloadTab extends FormPage {
          super(name);
       }
 
-      private Artifact artifact;
-
       @Override
       protected IStatus run(IProgressMonitor monitor) {
-         artifact = ArtifactQuery.getArtifactFromId(guid, AtsUtil.getAtsBranchToken());
-         AtsBulkLoad.bulkLoadArtifacts(Collections.singleton(artifact));
+         provider.searchAndLoad();
          return Status.OK_STATUS;
       }
 
-      public Artifact getArtifact() {
-         return artifact;
-      }
    };
 
 }

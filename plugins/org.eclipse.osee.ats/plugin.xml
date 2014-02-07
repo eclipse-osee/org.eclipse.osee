@@ -527,4 +527,13 @@
             id="org.eclipse.osee.ats.WEEditorInputFactory">
       </factory>
    </extension>
+   <extension
+         id="org.eclipse.osee.ats.world.WorldEditorInputFactory"
+         name="World Editor Input Factory"
+         point="org.eclipse.ui.elementFactories">
+      <factory
+            class="org.eclipse.osee.ats.world.WorldEditorInputFactory"
+            id="org.eclipse.osee.ats.WorldEditorInputFactory">
+      </factory>
+   </extension>
 </plugin>

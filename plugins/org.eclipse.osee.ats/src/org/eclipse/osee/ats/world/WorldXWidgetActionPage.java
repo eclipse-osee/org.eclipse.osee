@@ -73,6 +73,7 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
 
+   public static final String ID = "org.eclipse.osee.ats.actionPage";
    private final WorldEditor worldEditor;
    private WorldComposite worldComposite;
    private Action filterCompletedAction, filterMyAssigneeAction, selectionMetricsAction, toAction, toGoal, toReview,
@@ -86,7 +87,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    }
 
    public WorldXWidgetActionPage(WorldEditor worldEditor) {
-      super(worldEditor, "org.eclipse.osee.ats.actionPage", "Actions");
+      super(worldEditor, ID, "Actions");
       this.worldEditor = worldEditor;
    }
 

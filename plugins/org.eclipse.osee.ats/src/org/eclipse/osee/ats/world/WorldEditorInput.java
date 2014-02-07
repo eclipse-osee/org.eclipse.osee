@@ -10,20 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorldEditorInput implements IEditorInput {
+public class WorldEditorInput implements IEditorInput, IPersistableElement {
 
    IWorldEditorProvider iWorldEditorProvider;
+   WorldEditor editor;
 
    @Override
    public int hashCode() {
@@ -54,12 +60,22 @@ public class WorldEditorInput implements IEditorInput {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return null;
+      return ImageManager.getImageDescriptor(AtsImage.GLOBE);
    }
 
    @Override
    public IPersistableElement getPersistable() {
-      return null;
+      return this;
+   }
+
+   @Override
+   public void saveState(IMemento memento) {
+      WorldEditorInputFactory.saveState(memento, this);
+   }
+
+   @Override
+   public String getFactoryId() {
+      return WorldEditorInputFactory.ID;
    }
 
    @Override
@@ -86,5 +102,26 @@ public class WorldEditorInput implements IEditorInput {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "Exception getting name: " + ex.getLocalizedMessage();
       }
+   }
+
+   public List<String> getGuids() {
+      return Artifacts.toGuids(editor.getLoadedArtifacts());
+   }
+
+   public WorldEditor getEditor() {
+      return editor;
+   }
+
+   public void setEditor(WorldEditor editor) {
+      this.editor = editor;
+   }
+
+   public boolean isReload() {
+      boolean reload = false;
+      if (iWorldEditorProvider instanceof WorldEditorReloadProvider) {
+         WorldEditorReloadProvider worldEditorReloadProvider = (WorldEditorReloadProvider) iWorldEditorProvider;
+         reload = worldEditorReloadProvider.isReload();
+      }
+      return reload;
    }
 }

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.world;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -140,25 +141,28 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
 
    @Override
    protected void addPages() {
-
       try {
          OseeStatusContributionItemFactory.addTo(this, true);
 
          IWorldEditorProvider provider = getWorldEditorProvider();
-         if (provider instanceof IWorldEditorConsumer) {
-            ((IWorldEditorConsumer) provider).setWorldEditor(this);
+         setPartName(provider.getSelectedName(SearchType.Search));
+         if (getWorldEditorInput().isReload()) {
+            createReloadTab();
+            setActivePage(0);
+         } else {
+            if (provider instanceof IWorldEditorConsumer) {
+               ((IWorldEditorConsumer) provider).setWorldEditor(this);
+            }
+            createMainTab();
+            createMetricsTab();
+            setActivePage(WorldXWidgetActionPage.ID);
          }
 
-         createMainTab();
-         createMetricsTab();
-         setActivePage(0);
-
-         setPartName(provider.getSelectedName(SearchType.Search));
-
-         getSite().setSelectionProvider(getWorldComposite().getXViewer());
-
-         // Until WorldEditor has different help, just use WorldView's help
-         HelpUtil.setHelp(worldXWidgetActionPage.getWorldComposite().getControl(), AtsHelpContext.WORLD_VIEW);
+         if (!getWorldEditorInput().isReload()) {
+            getSite().setSelectionProvider(getWorldComposite().getXViewer());
+            // Until WorldEditor has different help, just use WorldView's help
+            HelpUtil.setHelp(worldXWidgetActionPage.getWorldComposite().getControl(), AtsHelpContext.WORLD_VIEW);
+         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -184,17 +188,26 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
 
    @Override
    public IWorldEditorProvider getWorldEditorProvider() throws OseeArgumentException {
+      WorldEditorInput worldEditorInput = getWorldEditorInput();
+      worldEditorInput.setEditor(this);
+      return worldEditorInput.getIWorldEditorProvider();
+   }
+
+   public WorldEditorInput getWorldEditorInput() {
       IEditorInput editorInput = getEditorInput();
       if (!(editorInput instanceof WorldEditorInput)) {
          throw new OseeArgumentException("Editor Input not WorldEditorInput");
       }
-      WorldEditorInput worldEditorInput = (WorldEditorInput) editorInput;
-      return worldEditorInput.getIWorldEditorProvider();
+      return (WorldEditorInput) editorInput;
    }
 
    @Override
    public void reSearch() throws OseeCoreException {
       worldXWidgetActionPage.reSearch();
+   }
+
+   private void createReloadTab() throws PartInitException {
+      addPage(new WorldReloadTab(this, (WorldEditorReloadProvider) getWorldEditorProvider()));
    }
 
    private void createMainTab() throws PartInitException {
@@ -210,6 +223,9 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    }
 
    public List<Artifact> getLoadedArtifacts() {
+      if (worldXWidgetActionPage == null || worldXWidgetActionPage.getWorldComposite() == null) {
+         return Collections.emptyList();
+      }
       return worldXWidgetActionPage.getWorldComposite().getLoadedArtifacts();
    }
 
