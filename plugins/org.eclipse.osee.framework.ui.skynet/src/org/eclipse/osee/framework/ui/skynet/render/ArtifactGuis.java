@@ -28,6 +28,8 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 
 public final class ArtifactGuis {
 
+   private static final int BRANCH_NAME_LENGTH = 50;
+
    private ArtifactGuis() {
       // this private empty constructor exists to prevent the default constructor from allowing public construction
    }
@@ -96,7 +98,7 @@ public final class ArtifactGuis {
 
                Attribute<?> attribute = artifact.getAttributeById(modifiedAttrId, false);
                if (attribute == null || attribute.getGammaId() != modifiedGammaId) {
-                  otherBranches.add(BranchManager.getBranch(modifiedOnBranchId).getShortName());
+                  otherBranches.add(BranchManager.getBranch(modifiedOnBranchId).getShortName(BRANCH_NAME_LENGTH));
                   wasModified = true;
                }
             }
