@@ -300,7 +300,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 		}
 		if (brokerService != null) {
 			try {
-				brokerService.stop();
+				brokerService.stopGracefully(".*", ".*", 10000, 500);
 			} catch (Exception ex) {
 				OseeLog.log(getClass(), Level.SEVERE, ex);
 			}
