@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OTE Model Manager (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.model.manager;singleton:=true
-Bundle-Version: 0.16.1.qualifier
+Bundle-Version: 0.16.2.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: org.eclipse.osee.framework.jdk.core.type,
