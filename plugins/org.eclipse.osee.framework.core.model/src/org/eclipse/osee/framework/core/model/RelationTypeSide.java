@@ -44,6 +44,11 @@ public class RelationTypeSide extends FullyNamedIdentity<Long> implements IRelat
    }
 
    @Override
+   public boolean isOfType(IRelationType type) {
+      return type.getGuid() == this.type.getGuid();
+   }
+
+   @Override
    public RelationSide getSide() {
       return side;
    }

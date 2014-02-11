@@ -16,4 +16,6 @@ public interface IRelationTypeSide extends IRelationType {
    RelationSide getSide();
 
    IRelationTypeSide getOpposite();
+
+   boolean isOfType(IRelationType type);
 }

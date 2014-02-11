@@ -11,14 +11,15 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.operation;
 
 import java.util.Arrays;
-import org.junit.Assert;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
+import org.eclipse.osee.ats.core.client.artifact.AtsArtifactChecks;
 import org.eclipse.osee.ats.core.client.operation.MoveTeamWorkflowsOperation;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
@@ -41,9 +42,14 @@ public class MoveTeamWorkflowsOperationTest {
       ActionArtifact actArt2 = AtsTestUtil.getActionArt2();
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
 
-      MoveTeamWorkflowsOperation operation =
-         new MoveTeamWorkflowsOperation("Move", teamWf, Arrays.asList(teamWf2), "new title");
-      Operations.executeWorkAndCheckStatus(operation);
+      try {
+         AtsArtifactChecks.setDeletionChecksEnabled(false);
+         MoveTeamWorkflowsOperation operation =
+            new MoveTeamWorkflowsOperation("Move", teamWf, Arrays.asList(teamWf2), "new title");
+         Operations.executeWorkAndCheckStatus(operation);
+      } finally {
+         AtsArtifactChecks.setDeletionChecksEnabled(false);
+      }
 
       Assert.assertEquals("Parent Actions should be same", teamWf.getParentActionArtifact(),
          teamWf.getParentActionArtifact());

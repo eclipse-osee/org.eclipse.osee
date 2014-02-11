@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -446,6 +447,7 @@ public class RelationManager {
       Conditions.checkNotNull(relation, "relationLink",
          "A relation link of type [%s] does exist in the cache between a artifact %d and b artifact %d", relationType,
          artifactA.getArtId(), artifactB.getArtId());
+      ArtifactPersistenceManager.performDeleteRelationChecks(artifactA, relationType);
       relation.delete(true);
 
       updateOrderListOnDelete(artifactA, relationType, RelationSide.SIDE_B,

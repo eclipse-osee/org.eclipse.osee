@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.util.Collection;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -29,6 +30,11 @@ public class ArtifactCheck implements IArtifactCheck {
 
    @Override
    public IStatus isRenamable(Collection<Artifact> artifacts) throws OseeCoreException {
+      return OK_STATUS;
+   }
+
+   @Override
+   public IStatus isDeleteableRelation(Artifact artifact, IRelationType relationType) throws OseeCoreException {
       return OK_STATUS;
    }
 }

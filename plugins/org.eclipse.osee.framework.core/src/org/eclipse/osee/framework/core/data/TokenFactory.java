@@ -208,6 +208,11 @@ public final class TokenFactory {
       }
 
       @Override
+      public boolean isOfType(IRelationType type) {
+         return type.getGuid() == getGuid();
+      }
+
+      @Override
       public int hashCode() {
          // Do not add relation side to hash code because it will violate the hash code contract
          return super.hashCode();

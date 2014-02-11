@@ -1309,11 +1309,13 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
 
    public final void deleteRelation(IRelationTypeSide relationTypeSide, Artifact artifact) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
+      ArtifactPersistenceManager.performDeleteRelationChecks(artifact, relationTypeSide);
       RelationManager.deleteRelation(relationTypeSide, sides.getFirst(), sides.getSecond());
    }
 
    public final void deleteRelations(IRelationTypeSide relationSide) throws OseeCoreException {
       for (Artifact art : getRelatedArtifacts(relationSide)) {
+         ArtifactPersistenceManager.performDeleteRelationChecks(art, relationSide);
          deleteRelation(relationSide, art);
       }
    }

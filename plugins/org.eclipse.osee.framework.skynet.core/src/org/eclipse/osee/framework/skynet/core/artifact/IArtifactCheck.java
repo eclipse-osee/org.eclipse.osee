@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.Collection;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -23,15 +24,22 @@ public interface IArtifactCheck {
    /**
     * Checks set of artifacts for validation prior to delete
     * 
-    * @return Result with description of which artifact and why can't delete
+    * @return IStatus with a description of which artifact and why it can not be deleted or Status.OK_STATUS
     */
-   public IStatus isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException;
+   IStatus isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException;
 
    /**
     * Checks set of artifacts for validation prior to rename
     * 
-    * @return Result with description of which artifact and why can't rename
+    * @return IStatus with a description of which artifact and why it can not be renamed or Status.OK_STATUS
     */
-   public IStatus isRenamable(Collection<Artifact> artifacts) throws OseeCoreException;
+   IStatus isRenamable(Collection<Artifact> artifacts) throws OseeCoreException;
+
+   /**
+    * Check that relation can be deleted from given artifact
+    * 
+    * @return IStatus with a description of which artifact and why relation can not be deleted or Status.OK_STATUS
+    */
+   IStatus isDeleteableRelation(Artifact artifact, IRelationType relationType) throws OseeCoreException;
 
 }

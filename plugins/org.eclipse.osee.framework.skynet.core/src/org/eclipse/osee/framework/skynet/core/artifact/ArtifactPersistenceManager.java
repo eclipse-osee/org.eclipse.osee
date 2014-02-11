@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -157,6 +158,16 @@ public class ArtifactPersistenceManager {
       // Confirm artifacts are fit to delete
       for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
          IStatus result = check.isDeleteable(artifacts);
+         if (!result.isOK()) {
+            throw new OseeStateException(result.getMessage());
+         }
+      }
+   }
+
+   public static void performDeleteRelationChecks(Artifact artifact, IRelationType relationType) throws OseeCoreException {
+      // Confirm relations are fit to delete
+      for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
+         IStatus result = check.isDeleteableRelation(artifact, relationType);
          if (!result.isOK()) {
             throw new OseeStateException(result.getMessage());
          }
