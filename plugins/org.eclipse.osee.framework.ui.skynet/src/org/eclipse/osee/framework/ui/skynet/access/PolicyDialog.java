@@ -175,7 +175,11 @@ public class PolicyDialog extends Dialog {
       boolean returnValue;
 
       try {
-         returnValue = AccessControlManager.hasPermission(accessControlledObject, PermissionEnum.WRITE);
+         if (policyTableViewer.getAccessControlList().size() > 0) {
+            returnValue = AccessControlManager.hasPermission(accessControlledObject, PermissionEnum.WRITE);
+         } else {
+            returnValue = true;
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          returnValue = false;

@@ -50,7 +50,7 @@ public class PolicyTableCellModifier implements ICellModifier {
       TreeItem item = (TreeItem) element;
       AccessControlData data = (AccessControlData) item.getData();
 
-      if (property.equals(PolicyTableColumns.delete.toString())) {
+      if (isEnabled() && property.equals(PolicyTableColumns.delete.toString())) {
          policyTableViewer.removeData(data);
       }
 
