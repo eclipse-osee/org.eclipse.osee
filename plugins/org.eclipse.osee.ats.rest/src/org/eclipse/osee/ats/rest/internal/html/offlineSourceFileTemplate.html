@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../built-editor.css"/>
+<script src="../built-editor.js"></script>
+<script>
+	require(["orion/editor/edit"], function(edit) {
+		edit({className: "editor"});
+	});
+</script>
+</head>
+<body>
+<pre class="editor" data-editor-lang="java" data-editor-readonly="true">
+<?fileContents?>
+</pre>
+</body>
+</html>		  

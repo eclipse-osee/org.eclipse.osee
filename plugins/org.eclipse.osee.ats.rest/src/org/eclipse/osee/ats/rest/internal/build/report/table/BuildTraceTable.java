@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.rest.internal.build.report.table;
 import java.io.OutputStream;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedSet;
@@ -44,6 +45,7 @@ public class BuildTraceTable {
    private Document document;
    private final OutputStream output;
    private final String changeReportUrlTemplate;
+   private final VerifierUriProvider uriProvider;
    private SortedSet<Pair<String, Table>> sortedRpcr;
 
    private static Comparator<Pair<String, Table>> PairCompare = new Comparator<Pair<String, Table>>() {
@@ -55,9 +57,16 @@ public class BuildTraceTable {
       }
    };
 
-   public BuildTraceTable(OutputStream output, String changeReportUrlTemplate) {
+   public static interface VerifierUriProvider {
+      List<Pair<String, String>> getBuildToUrlPairs(String verifierName);
+
+      int getColumnCount();
+   }
+
+   public BuildTraceTable(OutputStream output, String changeReportUrlTemplate, VerifierUriProvider uriProvider) {
       this.output = output;
       this.changeReportUrlTemplate = changeReportUrlTemplate;
+      this.uriProvider = uriProvider;
    }
 
    private void createTables() throws OseeCoreException {
@@ -141,7 +150,12 @@ public class BuildTraceTable {
          Iterator<String> treeItr = sortedList.iterator();
          while (treeItr.hasNext()) {
             try {
-               nestedTestScriptTable.addCell(treeItr.next());
+               String verifierName = treeItr.next();
+               nestedTestScriptTable.addCell(verifierName);
+               for (Pair<String, String> nameToUri : uriProvider.getBuildToUrlPairs(verifierName)) {
+                  Anchor toAdd = setHyperlink(nameToUri.getFirst(), nameToUri.getSecond());
+                  nestedTestScriptTable.addCell(toAdd);
+               }
             } catch (BadElementException ex) {
                OseeExceptions.wrapAndThrow(ex);
             }
@@ -152,13 +166,14 @@ public class BuildTraceTable {
    public void addRpcrToTable(String rpcr, Map<ArtifactReadable, Iterable<ArtifactReadable>> requirementsToTests) throws OseeCoreException {
       try {
          Table nestedRequirementTable = new Table(2);
-         nestedRequirementTable.setAutoFillEmptyCells(true);
+         //         nestedRequirementTable.setAutoFillEmptyCells(true);
          SortedSet<Pair<String, Table>> nestedRpcr = new TreeSet<Pair<String, Table>>(PairCompare);
 
          for (Entry<ArtifactReadable, Iterable<ArtifactReadable>> entry : requirementsToTests.entrySet()) {
             ArtifactReadable changedReq = entry.getKey();
             if (Conditions.notNull(changedReq)) {
-               Table nestedTestScriptTable = new Table(1);
+               Table nestedTestScriptTable = new Table(1 + uriProvider.getColumnCount());
+               nestedTestScriptTable.setAutoFillEmptyCells(true);
                addNewTestScriptTraceCells(nestedTestScriptTable, entry.getValue());
                // Store Requirement string and TestScriptTable for sorting
                Pair<String, Table> newPair = new Pair<String, Table>(changedReq.getName(), nestedTestScriptTable);

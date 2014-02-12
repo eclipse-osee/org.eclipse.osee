@@ -97,6 +97,7 @@ artifactType "Version" extends "ats.Ats Artifact" {
 	attribute "ats.Release Date"
 	attribute "ats.Released"
 	attribute "ats.Version Locked"
+	attribute "ats.TestRunToSourceLocator"
 }
 
 abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
@@ -1300,5 +1301,13 @@ attributeType "ats.Id" extends StringAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	defaultValue "0"
+	mediaType "text/plain"
+}
+
+attributeType "ats.TestRunToSourceLocator" extends StringAttribute {
+	uuid 0x01CFF7A4EBCA599C
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 	mediaType "text/plain"
 }

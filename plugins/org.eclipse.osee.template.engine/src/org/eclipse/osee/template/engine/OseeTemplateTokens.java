@@ -31,6 +31,7 @@ public final class OseeTemplateTokens {
    public static final ResourceToken ExceptionHtml = createToken(0x4000000000000001L, "exception.html");
    //js
    public static final ResourceToken OseeCoreJs = createToken(0x4000000000000002L, "oseeCore.js");
+   public static final ResourceToken BuiltEditorJs = createToken(0x012726B370EF084AL, "built-editor.js");
    // word xml
    public static final ResourceToken WordXml = createToken(0x4100000000000003L, "WordDocument.xml");
    public static final ResourceToken WordDeclarationXml = createToken(0x4100000000000004L, "WordDeclaration.xml");
@@ -40,6 +41,8 @@ public final class OseeTemplateTokens {
    public static final ResourceToken DivsXml = createToken(0x4100000000000008L, "WordDivs.xml");
    public static final ResourceToken ShapesXml = createToken(0x4100000000000009L, "WordShape.xml");
    public static final ResourceToken DocPropXml = createToken(0x410000000000000AL, "WordDocPr.xml");
+   // css
+   public static final ResourceToken BuiltEditorCss = createToken(0x72FE056AA9652856L, "built-editor.css");
    
    // @formatter:on
 

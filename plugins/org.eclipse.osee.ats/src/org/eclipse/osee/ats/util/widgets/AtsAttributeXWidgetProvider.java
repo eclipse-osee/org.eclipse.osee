@@ -48,7 +48,7 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.setXWidgetName("XTextFlatDam");
-      } else if (attributeType.getName().equals(AtsAttributeTypes.DslSheet.getName())) {
+      } else if (attributeType.getName().equals(AtsAttributeTypes.DslSheet.getName()) || attributeType.equals(AtsAttributeTypes.TestToSourceLocator)) {
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
