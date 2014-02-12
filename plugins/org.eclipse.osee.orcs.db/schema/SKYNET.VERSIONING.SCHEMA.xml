@@ -1,26 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TableConfig>
 
-
-	<!-- __________________________________________________________ -->
-	<!--              Type Tables 					                   -->
-	<!-- __________________________________________________________ -->
-	
-	<Table name="OSEE_TYPE_ID_MAP" schema="OSEE" tablespace="osee_data">
-		<Column id="LOCAL_ID" defaultValue="not null" type="BIGINT" />
-		<Column id="REMOTE_ID" defaultValue="not null" type="BIGINT" />
-		<Constraint schema="OSEE" id="OSEE_TYPE_ID_MAP_AT_L_PK" type="PRIMARY KEY" appliesTo="LOCAL_ID" />
-		<Index id="OSEE_TYPE_ID_MAP_R_IDX" type="UNIQUE" tablespace="osee_index">
-			<AppliesTo id="REMOTE_ID"/>
-		</Index>
-	</Table>
-	
-	<TableDescription referenceTable="OSEE_TYPE_ID_MAP">
-		<Note purpose="Mapping of remote_id to local_id for type token lookups"/>
-		<Column id="LOCAL_ID" description="" />
-		<Column id="REMOTE_ID" description="" />
-	</TableDescription>
-
 	<!-- _____________________________________________________ -->
 	<!--                                                       -->
 	<!--              MAIN ARTIFACT TABLES                     -->
@@ -33,10 +13,6 @@
 		<Column id="ART_TYPE_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="GUID" defaultValue="not null" limits="22" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_ART__G_A_PK" type="PRIMARY KEY" appliesTo="ART_ID, GAMMA_ID" />
-	 	<Constraint schema="OSEE" id="OSEE_ART__ART_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ART_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_TYPE_ID_MAP" column="LOCAL_ID" />
-		</Constraint>
-
 		<Index id="OSEE_ART__ART_ID_IDX" tablespace="osee_index">
 			<AppliesTo id="ART_ID"/>
 		</Index>
@@ -112,9 +88,6 @@
 		<Column id="B_ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="RATIONALE" limits="4000" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_RELATION__G_PK" type="PRIMARY KEY" appliesTo="GAMMA_ID" />	
-	 	<Constraint schema="OSEE" id="OSEE_RELATION__REL_TYPE_FK" type="FOREIGN KEY" appliesTo="REL_LINK_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_TYPE_ID_MAP" column="LOCAL_ID"  />
-		</Constraint>
 		<Index id="OSEE_RELATION__R_G_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="REL_LINK_ID"/>
 			<AppliesTo id="GAMMA_ID"/>
