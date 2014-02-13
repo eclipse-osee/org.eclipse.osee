@@ -46,6 +46,7 @@ public abstract class AbstractAtsArtifactReader<T extends IAtsConfigObject> impl
       IAtsActionableItem item = cache.getSoleByGuid(guid, IAtsActionableItem.class);
       if (item == null) {
          item = actionableItemFactory.createActionableItem(guid, artifact.getName());
+         item.setStoreObject(artifact);
          cache.cache(item);
       }
       return item;
@@ -57,6 +58,7 @@ public abstract class AbstractAtsArtifactReader<T extends IAtsConfigObject> impl
       IAtsTeamDefinition item = cache.getSoleByGuid(guid, IAtsTeamDefinition.class);
       if (item == null) {
          item = teamDefFactory.createTeamDefinition(guid, artifact.getName());
+         item.setStoreObject(artifact);
          cache.cache(item);
       }
       return item;
@@ -68,6 +70,7 @@ public abstract class AbstractAtsArtifactReader<T extends IAtsConfigObject> impl
       IAtsVersion item = cache.getSoleByGuid(guid, IAtsVersion.class);
       if (item == null) {
          item = versionFactory.createVersion(artifact.getName(), guid);
+         item.setStoreObject(artifact);
          cache.cache(item);
       }
       return item;
