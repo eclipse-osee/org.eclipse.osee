@@ -33,7 +33,6 @@ public final class OseeStatusContributionItemFactory {
       createItem(manager, OseeBuildTypeContributionItem.class);
       createItem(manager, ResServiceContributionItem.class);
       createItem(manager, AdminContributionItem.class);
-      createItem(manager, OseeServicesStatusContributionItem.class);
       createItem(manager, SessionContributionItem.class);
    }
 
@@ -54,8 +53,8 @@ public final class OseeStatusContributionItemFactory {
                object.dispose();
             }
          } catch (Exception ex) {
-            OseeLog.logf(Activator.class, Level.SEVERE,
-               ex, "Error creating status line contribution item [%s]", contribClazz);
+            OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error creating status line contribution item [%s]",
+               contribClazz);
          }
       }
    }

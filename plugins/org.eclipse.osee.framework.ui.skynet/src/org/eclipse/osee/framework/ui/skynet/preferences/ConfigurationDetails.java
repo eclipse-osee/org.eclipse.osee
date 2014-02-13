@@ -14,11 +14,11 @@ import java.util.logging.Level;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.IHealthStatus;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -91,7 +91,7 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
             try {
                generatePage();
             } catch (Exception ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       });
@@ -125,6 +125,13 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
          builder.append("<tr><td><b>OSEE Client Version</b></td><td colspan=2>" + OseeCodeVersion.getVersion() + "</td></tr>");
       } catch (NullPointerException ex) {
          builder.append("<tr><td><b>OSEE Client Installation</b></td><td colspan=2><font color=\"red\"><b>WARNING: OseeCodeVersion.getVersion() produced a null pointer exception.</b></font></td></tr>");
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+
+      try {
+         builder.append("<tr><td><b>OSEE Application Server</b></td><td colspan=2>" + OseeClientProperties.getOseeApplicationServer() + "</td></tr>");
+      } catch (NullPointerException ex) {
+         builder.append("<tr><td><b>OSEE Application Server</b></td><td colspan=2><font color=\"red\"><b>WARNING: " + ex.getLocalizedMessage() + "</b></font></td></tr>");
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
