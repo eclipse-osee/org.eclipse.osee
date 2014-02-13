@@ -221,29 +221,35 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
    }
 
-   private void refreshTables(TeamWorkFlowArtifact teamWf) {
-      if (teamWf == null) {
-         clearTables();
-      } else {
-         try {
-            wfTree.getViewer().setInput(teamWf);
-            Set<IAtsActionableItem> actionableItems = teamWf.getActionableItems();
-            wfTree.setInitalChecked(Arrays.asList(actionableItems.toArray()));
+   private void refreshTables(final TeamWorkFlowArtifact teamWf) {
+      Displays.ensureInDisplayThread(new Runnable() {
 
-            Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
-            for (TeamWorkFlowArtifact team : teamWf.getParentActionArtifact().getTeams()) {
-               if (!team.equals(teamWf)) {
-                  ais.addAll(team.getActionableItems());
+         @Override
+         public void run() {
+            if (teamWf == null) {
+               clearTables();
+            } else {
+               try {
+                  wfTree.getViewer().setInput(teamWf);
+                  Set<IAtsActionableItem> actionableItems = teamWf.getActionableItems();
+                  wfTree.setInitalChecked(Arrays.asList(actionableItems.toArray()));
+
+                  Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
+                  for (TeamWorkFlowArtifact team : teamWf.getParentActionArtifact().getTeams()) {
+                     if (!team.equals(teamWf)) {
+                        ais.addAll(team.getActionableItems());
+                     }
+                  }
+                  otherTree.getViewer().setInput(ais);
+
+                  newTree.getViewer().setInput(ActionableItems.getTopLevelActionableItems(Active.Active));
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
-            otherTree.getViewer().setInput(ais);
-
-            newTree.getViewer().setInput(ActionableItems.getTopLevelActionableItems(Active.Active));
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            refreshResultsArea(teamWf);
          }
-      }
-      refreshResultsArea(teamWf);
+      });
    }
 
    private void clearTables() {
