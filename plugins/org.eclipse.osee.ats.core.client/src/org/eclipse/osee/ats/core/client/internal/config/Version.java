@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
@@ -59,7 +59,7 @@ public class Version extends AtsObject implements IAtsVersion {
    }
 
    @Override
-   public void getParallelVersions(Set<ICommitConfigArtifact> configArts) {
+   public void getParallelVersions(Set<ICommitConfigItem> configArts) {
       configArts.add(this);
       for (IAtsVersion childArt : parallelVersions) {
          childArt.getParallelVersions(configArts);

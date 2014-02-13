@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -193,17 +193,17 @@ public class AtsBranchManagerCore {
       return null;
    }
 
-   public static TransactionRecord getCommitTransactionRecord(TeamWorkFlowArtifact teamArt, ICommitConfigArtifact configArt) throws OseeCoreException {
+   public static TransactionRecord getCommitTransactionRecord(TeamWorkFlowArtifact teamArt, ICommitConfigItem configArt) throws OseeCoreException {
       Branch branch = BranchManager.getBranchByGuid(configArt.getBaslineBranchGuid());
       return getCommitTransactionRecord(teamArt, branch);
    }
 
-   public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, ICommitConfigArtifact configArt) throws OseeCoreException {
+   public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, ICommitConfigItem configArt) throws OseeCoreException {
       Branch destinationBranch = BranchManager.getBranchByGuid(configArt.getBaslineBranchGuid());
       return getCommitStatus(teamArt, destinationBranch, null);
    }
 
-   public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, Branch destinationBranch, ICommitConfigArtifact configArt) throws OseeCoreException {
+   public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, Branch destinationBranch, ICommitConfigItem configArt) throws OseeCoreException {
       Branch workingBranch = teamArt.getWorkingBranch();
       if (workingBranch != null) {
          if (workingBranch.getBranchState().isRebaselineInProgress()) {
@@ -360,8 +360,8 @@ public class AtsBranchManagerCore {
       return getBranchesCommittedTo(teamArt).size() > 0;
    }
 
-   public static Collection<ICommitConfigArtifact> getConfigArtifactsConfiguredToCommitTo(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Set<ICommitConfigArtifact> configObjects = new HashSet<ICommitConfigArtifact>();
+   public static Collection<ICommitConfigItem> getConfigArtifactsConfiguredToCommitTo(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      Set<ICommitConfigItem> configObjects = new HashSet<ICommitConfigItem>();
       if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
          if (AtsVersionService.get().hasTargetedVersion(teamArt)) {
             AtsVersionService.get().getTargetedVersion(teamArt).getParallelVersions(configObjects);
@@ -374,7 +374,7 @@ public class AtsBranchManagerCore {
       return configObjects;
    }
 
-   public static ICommitConfigArtifact getParentBranchConfigArtifactConfiguredToCommitTo(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   public static ICommitConfigItem getParentBranchConfigArtifactConfiguredToCommitTo(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
          if (AtsVersionService.get().hasTargetedVersion(teamArt)) {
             return AtsVersionService.get().getTargetedVersion(teamArt);
@@ -391,8 +391,8 @@ public class AtsBranchManagerCore {
     * @return false if any object in parallel configuration is not configured with a valid branch
     */
    public static boolean isAllObjectsToCommitToConfigured(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Collection<ICommitConfigArtifact> configs = getConfigArtifactsConfiguredToCommitTo(teamArt);
-      for (ICommitConfigArtifact config : configs) {
+      Collection<ICommitConfigItem> configs = getConfigArtifactsConfiguredToCommitTo(teamArt);
+      for (ICommitConfigItem config : configs) {
          String guid = config.getBaslineBranchGuid();
          if (!Strings.isValid(guid)) {
             return false;
@@ -515,7 +515,7 @@ public class AtsBranchManagerCore {
     * from getConfigArtifactsConfiguredToCommitTo()
     */
    public static Collection<Object> getCommitTransactionsAndConfigItemsForTeamWf(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Collection<ICommitConfigArtifact> configArtSet = getConfigArtifactsConfiguredToCommitTo(teamArt);
+      Collection<ICommitConfigItem> configArtSet = getConfigArtifactsConfiguredToCommitTo(teamArt);
       Collection<TransactionRecord> commitTxs = getCommitTransactionsToUnarchivedBaslineBranchs(teamArt);
       Collection<Object> commitMgrInputObjs = combineCommitTransactionsAndConfigItems(configArtSet, commitTxs);
       return commitMgrInputObjs;
@@ -524,7 +524,7 @@ public class AtsBranchManagerCore {
    /**
     * This method was refactored from above so it could be tested independently
     */
-   public static Collection<Object> combineCommitTransactionsAndConfigItems(Collection<ICommitConfigArtifact> configArtSet, Collection<TransactionRecord> commitTxs) throws OseeCoreException {
+   public static Collection<Object> combineCommitTransactionsAndConfigItems(Collection<ICommitConfigItem> configArtSet, Collection<TransactionRecord> commitTxs) throws OseeCoreException {
       // commitMgrInputObjs will hold a union of all commits from configArtSet and commitTxs.
       // - first, we addAll configArtSet
       // - next, we loop through commitTxs and for any tx that has the same branch as ANY pre-existing commit
@@ -537,7 +537,7 @@ public class AtsBranchManagerCore {
          boolean isCommitAlreadyPresent = false;
          // ... compare the branch of the tx commit to all the parent branches in configArtSet and do NOT add the tx
          // commit if it is already represented.
-         for (ICommitConfigArtifact configArt : configArtSet) {
+         for (ICommitConfigItem configArt : configArtSet) {
             Branch configArtBranch = BranchManager.getBranchByGuid(configArt.getBaslineBranchGuid());
             if (txBranch == configArtBranch) {
                isCommitAlreadyPresent = true;

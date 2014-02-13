@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -118,7 +118,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
                teamArt.getTeamDefinition().getName());
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);
-         for (ICommitConfigArtifact commitConfigArt : AtsBranchManagerCore.getConfigArtifactsConfiguredToCommitTo(teamArt)) {
+         for (ICommitConfigItem commitConfigArt : AtsBranchManagerCore.getConfigArtifactsConfiguredToCommitTo(teamArt)) {
             processTeam(teamArt, BranchManager.getBranchByGuid(commitConfigArt.getBaslineBranchGuid()).getShortName(),
                attributeType, commitConfigArt, rd);
          }
@@ -131,7 +131,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
       rd.addRaw(AHTML.endMultiColumnTable());
    }
 
-   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, IAttributeType attributeType, ICommitConfigArtifact commitConfigArt, XResultData rd) throws OseeCoreException {
+   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, IAttributeType attributeType, ICommitConfigItem commitConfigArt, XResultData rd) throws OseeCoreException {
       String rpcrNum = teamArt.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
       ChangeData changeData = AtsBranchManager.getChangeData(teamArt, commitConfigArt);
       for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW, ModificationType.MODIFIED)) {

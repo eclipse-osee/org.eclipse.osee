@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
@@ -282,7 +282,7 @@ public final class AtsBranchManager {
     * 
     * @param commitConfigArt that configures commit or null
     */
-   public static ChangeData getChangeData(TeamWorkFlowArtifact teamArt, ICommitConfigArtifact commitConfigArt) throws OseeCoreException {
+   public static ChangeData getChangeData(TeamWorkFlowArtifact teamArt, ICommitConfigItem commitConfigArt) throws OseeCoreException {
       if (commitConfigArt != null && !Strings.isValid(commitConfigArt.getBaslineBranchGuid())) {
          throw new OseeArgumentException("Parent Branch not configured for [%s]", commitConfigArt);
       }

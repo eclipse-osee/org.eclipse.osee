@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.api.team;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.rule.IAtsRules;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommitConfigArtifact {
+public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommitConfigItem {
 
    /*****************************
     * Name, Full Name, Description

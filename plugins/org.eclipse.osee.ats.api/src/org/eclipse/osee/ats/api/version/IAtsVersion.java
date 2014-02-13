@@ -15,13 +15,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.framework.core.util.Result;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsVersion extends ICommitConfigArtifact, IAtsConfigObject {
+public interface IAtsVersion extends ICommitConfigItem, IAtsConfigObject {
 
    /*****************************
     * Name, Full Name, Description
@@ -47,7 +47,7 @@ public interface IAtsVersion extends ICommitConfigArtifact, IAtsConfigObject {
 
    public List<IAtsVersion> getParallelVersions();
 
-   void getParallelVersions(Set<ICommitConfigArtifact> configArts);
+   void getParallelVersions(Set<ICommitConfigItem> configArts);
 
    public void setParallelVersions(List<IAtsVersion> parallelVersions);
 

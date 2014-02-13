@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
@@ -205,7 +205,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
          TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) awa;
          try {
             // Retrieve all config to commit items for this team Wf, which will contain all parallel version artifacts
-            Collection<ICommitConfigArtifact> configArtifactsConfiguredToCommitTo =
+            Collection<ICommitConfigItem> configArtifactsConfiguredToCommitTo =
                AtsBranchManagerCore.getConfigArtifactsConfiguredToCommitTo(teamWf);
             for (Object obj : configArtifactsConfiguredToCommitTo) {
                if (obj instanceof IAtsVersion) {

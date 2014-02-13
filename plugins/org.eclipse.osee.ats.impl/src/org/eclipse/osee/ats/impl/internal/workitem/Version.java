@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.impl.internal.workitem;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.util.Result;
@@ -35,7 +35,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
    }
 
    @Override
-   public void getParallelVersions(Set<ICommitConfigArtifact> configArts) {
+   public void getParallelVersions(Set<ICommitConfigItem> configArts) {
    }
 
    @Override

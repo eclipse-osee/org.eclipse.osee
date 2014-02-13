@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Donald G. Dunne
  */
-public interface ICommitConfigArtifact {
+public interface ICommitConfigItem {
 
    public String getName() throws OseeCoreException;
 

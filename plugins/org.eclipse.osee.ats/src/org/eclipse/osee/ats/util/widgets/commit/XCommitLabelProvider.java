@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
-import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
@@ -47,8 +47,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       Branch branch = null;
-      if (element instanceof ICommitConfigArtifact) {
-         ICommitConfigArtifact configArt = (ICommitConfigArtifact) element;
+      if (element instanceof ICommitConfigItem) {
+         ICommitConfigItem configArt = (ICommitConfigItem) element;
          branch = BranchManager.getBranchByGuid(configArt.getBaslineBranchGuid());
       } else if (element instanceof TransactionRecord) {
          TransactionRecord txRecord = (TransactionRecord) element;
@@ -102,8 +102,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       Branch branch = null;
-      if (element instanceof ICommitConfigArtifact) {
-         ICommitConfigArtifact configArt = (ICommitConfigArtifact) element;
+      if (element instanceof ICommitConfigItem) {
+         ICommitConfigItem configArt = (ICommitConfigItem) element;
          String baslineBranchGuid = configArt.getBaslineBranchGuid();
          if (Strings.isValid(baslineBranchGuid)) {
             branch = BranchManager.getBranchByGuid(baslineBranchGuid);
@@ -140,16 +140,16 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    private String handleVersionColumn(Object element) throws OseeCoreException {
-      if (element instanceof ICommitConfigArtifact) {
-         return ((ICommitConfigArtifact) element).getName();
+      if (element instanceof ICommitConfigItem) {
+         return ((ICommitConfigItem) element).getName();
       } else {
          return "";
       }
    }
 
    private String handleArtifactTypeNameColumn(Object element) {
-      if (element instanceof ICommitConfigArtifact) {
-         return ((ICommitConfigArtifact) element).getTypeName();
+      if (element instanceof ICommitConfigItem) {
+         return ((ICommitConfigItem) element).getTypeName();
       } else {
          return "";
       }

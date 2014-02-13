@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
@@ -104,13 +104,13 @@ public class AtsBranchManagerCoreTest {
          new TransactionRecord(1234, branch.getId(), "comment", new Date(), UserManager.getUser().getArtId(),
             UserManager.getUser().getArtId(), TransactionDetailsType.Baselined, branchCache);
       Collection<TransactionRecord> commitTxs = new ArrayList<TransactionRecord>();
-      Collection<ICommitConfigArtifact> configArtSet = new HashSet<ICommitConfigArtifact>();
+      Collection<ICommitConfigItem> configArtSet = new HashSet<ICommitConfigItem>();
       commitTxs.add(txRecord);
       Collection<Object> commitObjs =
          AtsBranchManagerCore.combineCommitTransactionsAndConfigItems(configArtSet, commitTxs);
       assertTrue("commitObjs has wrong size", commitObjs.size() == 1);
 
-      Collection<ICommitConfigArtifact> configArtifactsConfiguredToCommitTo =
+      Collection<ICommitConfigItem> configArtifactsConfiguredToCommitTo =
          AtsBranchManagerCore.getConfigArtifactsConfiguredToCommitTo(teamArt);
       configArtSet.add(configArtifactsConfiguredToCommitTo.iterator().next());
       commitObjs = AtsBranchManagerCore.combineCommitTransactionsAndConfigItems(configArtSet, commitTxs);

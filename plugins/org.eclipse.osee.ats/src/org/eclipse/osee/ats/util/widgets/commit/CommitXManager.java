@@ -16,7 +16,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.osee.ats.api.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.branch.CommitStatus;
 import org.eclipse.osee.ats.internal.Activator;
@@ -88,9 +88,9 @@ public class CommitXManager extends XViewer {
          Object firstSelectedArt = getSelectedArtifacts().iterator().next();
          Branch branch = null;
          String displayName = "";
-         ICommitConfigArtifact configArt = null;
-         if (firstSelectedArt instanceof ICommitConfigArtifact) {
-            configArt = (ICommitConfigArtifact) firstSelectedArt;
+         ICommitConfigItem configArt = null;
+         if (firstSelectedArt instanceof ICommitConfigItem) {
+            configArt = (ICommitConfigItem) firstSelectedArt;
             String baslineBranchGuid = configArt.getBaslineBranchGuid();
             if (Strings.isValid(baslineBranchGuid)) {
                branch = BranchManager.getBranchByGuid(baslineBranchGuid);
