@@ -123,7 +123,8 @@ public class ActionManager {
          teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilClient.getAtsBranch());
       } else {
          teamArt =
-            (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilClient.getAtsBranch(), null, guid);
+            (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilClient.getAtsBranch(), null,
+               guid);
       }
 
       setArtifactIdentifyData(actionArt, teamArt);
@@ -171,7 +172,7 @@ public class ActionManager {
    /**
     * Auto-add actions to a goal configured with relations to the given ActionableItem or Team Definition
     */
-   private static void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, TeamWorkFlowArtifact teamArt, Collection<IAtsActionableItem> actionableItems, IAtsChangeSet changes) throws OseeCoreException {
+   public static void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, TeamWorkFlowArtifact teamArt, Collection<IAtsActionableItem> actionableItems, IAtsChangeSet changes) throws OseeCoreException {
       // Auto-add this team artifact to configured goals
       Artifact teamDefArt = AtsClientService.get().getConfigArtifact(teamDef);
       if (teamDefArt != null) {

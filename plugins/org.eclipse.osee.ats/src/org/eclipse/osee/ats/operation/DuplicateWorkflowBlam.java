@@ -173,6 +173,11 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
                changes.add(dupTaskArt);
             }
          }
+
+         // Auto-add actions to configured goals
+         ActionManager.addActionToConfiguredGoal(dupArt.getTeamDefinition(), dupArt, dupArt.getActionableItems(),
+            changes);
+
          newTeamArts.add(dupArt);
          // Notify all extension points that workflow is being duplicated in case they need to add, remove
          // attributes or relations
