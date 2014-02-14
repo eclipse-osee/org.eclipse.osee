@@ -15,16 +15,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeAndDescriptiveLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactCheckTreeDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -61,7 +60,8 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                }
 
                // Get all things user is directly assigned to
-               Collection<Artifact> assignedToArts = AtsUtil.getAssigned(AtsClientService.get().getUserAdmin().getUserFromOseeUser(fromUser));
+               Collection<Artifact> assignedToArts =
+                  AtsUtil.getAssigned(AtsClientService.get().getUserAdmin().getUserFromOseeUser(fromUser));
                Set<Artifact> atsArts = new HashSet<Artifact>();
                for (Artifact assignedArt : assignedToArts) {
                   if (assignedArt instanceof AbstractWorkflowArtifact) {
@@ -83,15 +83,18 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                }
                final Collection<Artifact> artsToReAssign = dialog.getSelection();
 
+               AtsChangeSet changes = new AtsChangeSet("ReAssign ATS Object to User");
                // Make the changes and persist
                for (Artifact artifact : artsToReAssign) {
                   if (artifact instanceof AbstractWorkflowArtifact) {
-                     ((AbstractWorkflowArtifact) artifact).getStateMgr().removeAssignee(AtsClientService.get().getUserAdmin().getUserFromOseeUser(fromUser));
-                     ((AbstractWorkflowArtifact) artifact).getStateMgr().addAssignee(AtsClientService.get().getUserAdmin().getUserFromOseeUser(toUser));
+                     AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+                     awa.getStateMgr().removeAssignee(
+                        AtsClientService.get().getUserAdmin().getUserFromOseeUser(fromUser));
+                     awa.getStateMgr().addAssignee(AtsClientService.get().getUserAdmin().getUserFromOseeUser(toUser));
+                     changes.add(awa);
                   }
                }
-               Artifacts.persistInTransaction("Re-Assign ATS Objects to User", artsToReAssign);
-               OseeNotificationManager.getInstance().sendNotifications();
+               changes.execute();
             } catch (Exception ex) {
                log(ex);
             }

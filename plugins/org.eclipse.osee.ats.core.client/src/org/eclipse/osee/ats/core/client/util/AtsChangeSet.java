@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 
 /**
  * @author Donald G. Dunne
@@ -93,6 +94,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       for (IExecuteListener listener : listeners) {
          listener.changesStored(this);
       }
+      OseeNotificationManager.getInstance().sendNotifications();
    }
 
    private void execute(AtsRelationChange relChange, SkynetTransaction transaction) {

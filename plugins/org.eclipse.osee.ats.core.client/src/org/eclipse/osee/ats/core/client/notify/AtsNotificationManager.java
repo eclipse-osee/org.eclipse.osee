@@ -61,7 +61,6 @@ public class AtsNotificationManager {
       if (isInTest() || !AtsUtilClient.isEmailEnabled() || !isProduction()) {
          return;
       }
-      boolean notificationAdded = false;
       try {
 
          Collection<IAtsUser> subscribedUsers = new HashSet<IAtsUser>();
@@ -69,7 +68,6 @@ public class AtsNotificationManager {
          IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
          subscribedUsers.addAll(teamDef.getSubscribed());
          if (subscribedUsers.size() > 0) {
-            notificationAdded = true;
             getNotificationManager().addNotificationEvent(
                new OseeNotificationEvent(
                   AtsClientService.get().getUserAdmin().getOseeUsers(subscribedUsers),
@@ -82,7 +80,6 @@ public class AtsNotificationManager {
          for (IAtsActionableItem aia : teamArt.getActionableItemsDam().getActionableItems()) {
             subscribedUsers = aia.getSubscribed();
             if (subscribedUsers.size() > 0) {
-               notificationAdded = true;
                getNotificationManager().addNotificationEvent(
                   new OseeNotificationEvent(
                      AtsClientService.get().getUserAdmin().getOseeUsers(subscribedUsers),
@@ -93,14 +90,6 @@ public class AtsNotificationManager {
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
-      } finally {
-         if (notificationAdded) {
-            try {
-               getNotificationManager().sendNotifications();
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-         }
       }
    }
 

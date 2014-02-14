@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 
 /**
  * @author Donald G. Dunne
@@ -90,7 +89,6 @@ public class NewActionJob extends Job {
          // Thus, if multiple teams were selected to create, don't popup on openAction or dialog
          // will exception out when it is killed at the end of this job.
          AtsUtil.openATSAction(actionArt, AtsOpenOption.OpenAll);
-         OseeNotificationManager.getInstance().sendNotifications();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getMessage(), ex);

@@ -61,7 +61,6 @@ import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -227,8 +226,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
             }
             onDirtied();
          }
-
-         OseeNotificationManager.getInstance().sendNotifications();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 
 /**
  * @author Donald G. Dunne
@@ -40,7 +39,6 @@ public class AtsNotificationTransitionListener implements ITransitionListener {
       AtsNotificationManager.notify((AbstractWorkflowArtifact) AtsClientService.get().getArtifact(workItem),
          AtsNotifyType.Subscribed, AtsNotifyType.Completed, AtsNotifyType.Cancelled);
 
-      OseeNotificationManager.getInstance().sendNotifications();
    }
 
 }
