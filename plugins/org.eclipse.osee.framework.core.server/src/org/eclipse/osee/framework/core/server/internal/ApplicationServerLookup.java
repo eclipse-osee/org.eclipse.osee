@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal;
 
-import java.util.ArrayList;
+import java.net.URI;
 import java.util.Collection;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
-import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -59,25 +59,21 @@ public class ApplicationServerLookup implements IApplicationServerLookup {
    }
 
    @Override
-   public Collection<OseeServerInfo> getAvailableServers() throws OseeCoreException {
+   public Collection<URI> getAvailableServerUris() throws OseeCoreException {
       Collection<? extends OseeServerInfo> infos = getDataStore().getAll();
       return getHealthyServers(infos);
    }
 
-   private Collection<OseeServerInfo> getHealthyServers(Collection<? extends OseeServerInfo> infos) {
-      List<OseeServerInfo> healthyServers = new ArrayList<OseeServerInfo>();
+   private Collection<URI> getHealthyServers(Collection<? extends OseeServerInfo> infos) {
+      Set<URI> healthyServers = new LinkedHashSet<URI>();
       for (OseeServerInfo info : infos) {
          if (info.isAcceptingRequests()) {
-            if (isServerAlive(info)) {
-               healthyServers.add(info);
+            if (info.isAcceptingRequests()) {
+               healthyServers.add(info.getUri());
             }
          }
       }
       return healthyServers;
-   }
-
-   private boolean isServerAlive(OseeServerInfo info) {
-      return HttpProcessor.isAlive(info.getUri());
    }
 
 }

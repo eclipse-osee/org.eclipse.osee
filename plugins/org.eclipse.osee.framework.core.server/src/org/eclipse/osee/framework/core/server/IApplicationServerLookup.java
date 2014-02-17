@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server;
 
+import java.net.URI;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -19,6 +19,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IApplicationServerLookup {
 
-   public Collection<OseeServerInfo> getAvailableServers() throws OseeCoreException;
+   public Collection<URI> getAvailableServerUris() throws OseeCoreException;
 
 }

@@ -51,8 +51,6 @@ public class OseeServerInfo extends BaseExchangeData {
     * @return the server uri
     */
 
-
-
    public URI getUri() {
       String serverUri = getString(SERVER_URI);
       return URI.create(serverUri);

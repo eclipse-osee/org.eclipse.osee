@@ -110,7 +110,7 @@ public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISt
       Map<String, Object> eventData = new HashMap<String, Object>();
       eventData.put(OrcsConstants.ORCS_BRANCH_EVENT_DATA, Collections.unmodifiableCollection(branches));
 
-      getEventService().postEvent(OrcsConstants.ORCS_BRANCH_MODIFIED_EVENT, eventData);
+      getEventService().sendEvent(OrcsConstants.ORCS_BRANCH_MODIFIED_EVENT, eventData);
       return Status.OK_STATUS;
    }
 

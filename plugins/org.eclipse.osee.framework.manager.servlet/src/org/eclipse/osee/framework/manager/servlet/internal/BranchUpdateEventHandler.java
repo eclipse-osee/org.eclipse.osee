@@ -16,9 +16,8 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.event.Event;
 import org.eclipse.osee.event.EventHandler;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.server.IApplicationServerLookup;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
@@ -34,6 +33,11 @@ public class BranchUpdateEventHandler implements EventHandler {
    private IDataTranslationService translationService;
    private IApplicationServerLookup lookupService;
    private IApplicationServerManager manager;
+   private ExecutorAdmin executor;
+
+   public void setExecutor(ExecutorAdmin executor) {
+      this.executor = executor;
+   }
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -66,9 +70,14 @@ public class BranchUpdateEventHandler implements EventHandler {
             }
          }
          if (!branchToUpdate.isEmpty()) {
-            IOperation operation =
-               new ServerBranchUpdateOperation(logger, translationService, manager, lookupService, branchToUpdate);
-            Operations.executeAsJob(operation, false);
+            ServerBranchUpdateNotifier notifier =
+               new ServerBranchUpdateNotifier(logger, translationService, manager, lookupService, branchToUpdate,
+                  executor);
+            try {
+               notifier.notifyServers();
+            } catch (Exception ex) {
+               logger.error(ex, "Error notifying other servers");
+            }
          }
       }
    }

@@ -9,4 +9,5 @@
    <reference bind="setServerLookup" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IApplicationServerLookup" name="IApplicationServerLookup" policy="static"/>
    <reference bind="setAppServerManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IApplicationServerManager" name="IApplicationServerManager" policy="static"/>
    <property name="event.topics" type="String" value="org/eclipse/osee/orcs/event/branch/MODIFIED"/>
+   <reference bind="setExecutor" cardinality="1..1" interface="org.eclipse.osee.executor.admin.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
 </scr:component>
