@@ -160,7 +160,7 @@ public class AttributeConflict extends Conflict {
     */
    public AttributeType getAttributeType() throws OseeCoreException {
       if (attributeType == null) {
-         attributeType = AttributeTypeManager.getType(attrTypeId);
+         attributeType = AttributeTypeManager.getTypeByGuid(attrTypeId);
       }
       return attributeType;
    }

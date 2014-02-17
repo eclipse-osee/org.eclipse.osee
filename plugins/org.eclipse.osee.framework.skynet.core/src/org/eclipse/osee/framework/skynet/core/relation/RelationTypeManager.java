@@ -81,14 +81,6 @@ public class RelationTypeManager {
       return getCache().getAll();
    }
 
-   public static RelationType getType(long relationTypeId) throws OseeCoreException {
-      RelationType relationType = getCache().getById(relationTypeId);
-      if (relationType == null) {
-         throw new OseeTypeDoesNotExist("The relation with type id[" + relationTypeId + "] does not exist");
-      }
-      return relationType;
-   }
-
    public static RelationType getTypeByGuid(Long guid) throws OseeCoreException {
       RelationType relationType = getCache().getByGuid(guid);
       if (relationType == null) {

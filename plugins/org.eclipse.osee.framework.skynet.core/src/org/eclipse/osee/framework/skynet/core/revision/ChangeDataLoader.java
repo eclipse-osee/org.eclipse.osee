@@ -209,7 +209,7 @@ public class ChangeDataLoader extends AbstractOperation {
                artifactDelta);
       } else if (item instanceof AttributeChangeItem) {
          String isValue = item.getCurrentVersion().getValue();
-         AttributeType attributeType = AttributeTypeManager.getType(item.getItemTypeId());
+         AttributeType attributeType = AttributeTypeManager.getTypeByGuid(item.getItemTypeId());
 
          String wasValue = "";
          if (!txDelta.areOnTheSameBranch()) {
@@ -236,7 +236,7 @@ public class ChangeDataLoader extends AbstractOperation {
 
       } else if (item instanceof RelationChangeItem) {
          RelationChangeItem relationItem = (RelationChangeItem) item;
-         RelationType relationType = RelationTypeManager.getType(relationItem.getItemTypeId());
+         RelationType relationType = RelationTypeManager.getTypeByGuid(relationItem.getItemTypeId());
 
          TransactionRecord transaction = txDelta.getStartTx();
          if (txDelta.areOnTheSameBranch()) {

@@ -164,7 +164,7 @@ public class AttributeLoader {
    }
 
    private static void loadAttribute(Artifact artifact, AttrData current, AttrData previous) throws OseeCoreException {
-      IAttributeType attributeType = AttributeTypeManager.getType(current.attrTypeId);
+      IAttributeType attributeType = AttributeTypeManager.getTypeByGuid(current.attrTypeId);
       String value = current.value;
       if (isEnumOrBoolean(attributeType)) {
          value = Strings.intern(value);

@@ -371,7 +371,7 @@ public final class ArtifactLoader {
 
       Artifact artifact = historical ? null : ArtifactCache.getActive(artifactId, branch);
       if (artifact == null) {
-         IArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getLong("art_type_id"));
+         IArtifactType artifactType = ArtifactTypeManager.getTypeByGuid(chStmt.getLong("art_type_id"));
          ArtifactFactory factory = ArtifactTypeManager.getFactory(artifactType);
 
          artifact =

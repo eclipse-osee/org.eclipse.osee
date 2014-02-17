@@ -48,7 +48,7 @@ class RelationLoader {
             int aArtifactId = chStmt.getInt("a_art_id");
             int bArtifactId = chStmt.getInt("b_art_id");
             Branch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
-            RelationType relationType = RelationTypeManager.getType(chStmt.getLong("rel_link_type_id"));
+            RelationType relationType = RelationTypeManager.getTypeByGuid(chStmt.getLong("rel_link_type_id"));
 
             int gammaId = chStmt.getInt("gamma_id");
             String rationale = chStmt.getString("rationale");

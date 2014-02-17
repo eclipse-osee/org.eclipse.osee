@@ -131,7 +131,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
                if (artModType == ModificationType.MODIFIED && !modifiedArtifacts.contains(artId)) {
 
                   ArtifactChangeBuilder artifactChangeBuilder =
-                     new ArtifactChangeBuilder(sourceBranch, ArtifactTypeManager.getType(artTypeId), -1, artId,
+                     new ArtifactChangeBuilder(sourceBranch, ArtifactTypeManager.getTypeByGuid(artTypeId), -1, artId,
                         txDelta, ModificationType.MODIFIED, !hasBranch);
 
                   changeBuilders.add(artifactChangeBuilder);
@@ -142,8 +142,8 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
                if (modificationType == ModificationType.MODIFIED && artModType != ModificationType.INTRODUCED) {
                   modificationType = ModificationType.NEW;
                }
-               IArtifactType artifactType = ArtifactTypeManager.getType(artTypeId);
-               AttributeType attributeType = AttributeTypeManager.getType(attrTypeId);
+               IArtifactType artifactType = ArtifactTypeManager.getTypeByGuid(artTypeId);
+               AttributeType attributeType = AttributeTypeManager.getTypeByGuid(attrTypeId);
                attributeChangeBuilder =
                   new AttributeChangeBuilder(sourceBranch, artifactType, sourceGamma, artId, txDelta, modificationType,
                      !hasBranch, isValue, "", attrId, attributeType, artModType);

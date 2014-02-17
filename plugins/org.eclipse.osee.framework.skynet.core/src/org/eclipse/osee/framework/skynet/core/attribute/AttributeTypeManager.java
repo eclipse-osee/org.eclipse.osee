@@ -107,18 +107,6 @@ public class AttributeTypeManager {
       return attributeType;
    }
 
-   /**
-    * Returns the attribute type with the given type id or throws an IllegalArgumentException if it does not exist.
-    */
-   public static AttributeType getType(long attrTypeId) throws OseeCoreException {
-      AttributeType attributeType = getCache().getById(attrTypeId);
-      if (attributeType == null) {
-         throw new OseeTypeDoesNotExist("Attribute type: %d is not available.", attrTypeId);
-      }
-
-      return attributeType;
-   }
-
    private static Set<String> getEnumerationValues(AttributeType attributeType) throws OseeCoreException {
       return attributeType.getOseeEnumType().valuesAsOrderedStringSet();
    }

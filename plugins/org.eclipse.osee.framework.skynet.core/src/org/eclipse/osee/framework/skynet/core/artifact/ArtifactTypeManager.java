@@ -129,17 +129,6 @@ public class ArtifactTypeManager {
       return getTypeByGuid(artifactType.getGuid());
    }
 
-   /**
-    * @return Returns the descriptor with a particular name, null if it does not exist.
-    */
-   public static ArtifactType getType(long artTypeId) throws OseeCoreException {
-      ArtifactType artifactType = getCache().getById(artTypeId);
-      if (artifactType == null) {
-         throw new OseeTypeDoesNotExist("Artifact type: %d is not available.", artTypeId);
-      }
-      return artifactType;
-   }
-
    public static boolean inheritsFrom(IArtifactType artifactType, IArtifactType... parentTypes) throws OseeCoreException {
       return getType(artifactType).inheritsFrom(parentTypes);
    }

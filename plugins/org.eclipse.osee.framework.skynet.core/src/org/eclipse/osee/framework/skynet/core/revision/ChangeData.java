@@ -106,7 +106,7 @@ public class ChangeData {
                      if (change instanceof AttributeChange) {
                         Integer id = artifact.getArtId();
                         long typeId = change.getItemTypeId();
-                        AttributeType attributeType = AttributeTypeManager.getType(typeId);
+                        AttributeType attributeType = AttributeTypeManager.getTypeByGuid(typeId);
                         if (excludeArtifact.containsKey(id)) {
                            if (!artifactTypesToIgnore.contains(attributeType)) {
                               if (excludeArtifact.get(id)) {
