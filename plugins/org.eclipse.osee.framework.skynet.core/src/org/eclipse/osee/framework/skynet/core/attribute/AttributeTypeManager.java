@@ -87,7 +87,11 @@ public class AttributeTypeManager {
       }
       AttributeType attributeType = getCache().getByGuid(guid);
       if (attributeType == null) {
-         throw new OseeTypeDoesNotExist("Attribute Type [%s] is not available.", guid);
+         getCache().reloadCache();
+         attributeType = getCache().getByGuid(guid);
+         if (attributeType == null) {
+            throw new OseeTypeDoesNotExist("Attribute Type [%s] is not available.", guid);
+         }
       }
       return attributeType;
    }
