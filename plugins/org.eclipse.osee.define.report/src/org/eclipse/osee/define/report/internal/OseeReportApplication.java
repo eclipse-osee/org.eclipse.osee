@@ -36,7 +36,6 @@ public final class OseeReportApplication extends Application {
 
    public void start(Map<String, Object> properties) {
       OseeDefineResourceTokens.register(orcsApi.getResourceRegistry());
-      singletons.add(new RequirementResource(orcsApi));
       logger.debug(">>>>> registered Requirement resource");
       singletons.add(new SystemSafetyResource(logger, orcsApi));
       logger.debug(">>>>> registered Safety resource");
