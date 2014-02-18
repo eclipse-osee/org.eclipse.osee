@@ -66,7 +66,7 @@ public class MoveTeamWorkflowsOperation extends AbstractOperation {
             teamArt.addRelation(AtsRelationTypes.ActionToWorkflow_Action, destTeamWorkflow.getParentActionArtifact());
             teamArt.persist(transaction);
             boolean allDeleted = true;
-            for (RelationLink link : parentAction.getRelations(AtsRelationTypes.ActionToWorkflow_Action)) {
+            for (RelationLink link : parentAction.getRelations(AtsRelationTypes.ActionToWorkflow_WorkFlow)) {
                if (!link.isDeleted()) {
                   allDeleted = false;
                }
