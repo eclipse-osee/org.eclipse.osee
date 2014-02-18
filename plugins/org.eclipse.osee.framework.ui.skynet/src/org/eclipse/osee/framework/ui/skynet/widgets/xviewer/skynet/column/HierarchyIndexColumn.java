@@ -93,7 +93,12 @@ public class HierarchyIndexColumn extends XViewerValueColumn {
                Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifact.getBranch());
 
                while (!artifactCursor.equals(root)) {
-                  Artifact parent = artifactCursor.getParent();
+                  Artifact parent = null;
+                  try {
+                     parent = artifactCursor.getParent();
+                  } catch (OseeCoreException ex) {
+                     return "Hierarchy Index unavailable: " + ex.getLocalizedMessage();
+                  }
                   if (parent == null) {
                      return "not connected to root";
                   }
