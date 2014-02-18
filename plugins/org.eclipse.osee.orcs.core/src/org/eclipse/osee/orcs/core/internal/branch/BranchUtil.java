@@ -25,54 +25,37 @@ public class BranchUtil {
    }
 
    public static List<Branch> orderByParent(Collection<Branch> branches) throws OseeCoreException {
-      List<Branch> list = new ArrayList<Branch>(branches);
-      for (int i = 0; i < list.size(); i++) {
-         Branch cur = list.get(i);
-         Branch parent = cur.getParentBranch();
 
-         //this is the last element in the list
-         if (parent == null || !list.contains(parent)) {
-            Branch last = list.get(list.size() - 1);
-            list.set(i, last);
-            list.set(list.size() - 1, cur);
-         } else {
-            int parentIdx = list.indexOf(parent);
-            //need to swap
-            if (parentIdx < i) {
-               list.set(i, parent);
-               list.set(parentIdx, cur);
-               //reset i
-               i--;
-            }
+      ArrayList<Branch> sorted = new ArrayList<Branch>(branches);
+      for (int i = 0; i < sorted.size(); i++) {
+         Branch current = sorted.get(i);
+         Branch parent = current.getParentBranch();
+         int parentIdx = sorted.indexOf(parent);
+         if (parentIdx >= 0 && parentIdx < i) {
+            sorted.set(i, parent);
+            sorted.set(parentIdx, current);
+            i = -1; // start over
          }
       }
-      return list;
+
+      return sorted;
    }
 
-   public static List<BranchReadable> orderByParentReadable(QueryFactory queryFactory, Collection<BranchReadable> branches) throws OseeCoreException {
-      List<BranchReadable> list = new ArrayList<BranchReadable>(branches);
-      for (int i = 0; i < list.size(); i++) {
-         BranchReadable cur = list.get(i);
+   public static List<BranchReadable> orderByParentReadable(final QueryFactory queryFactory, Collection<BranchReadable> branches) throws OseeCoreException {
+      List<BranchReadable> sorted = new ArrayList<BranchReadable>(branches);
+
+      for (int i = 0; i < sorted.size(); i++) {
+         BranchReadable current = sorted.get(i);
          BranchReadable parent =
-            queryFactory.branchQuery().andLocalId((int) cur.getParentBranch()).getResults().getExactlyOne();
+            queryFactory.branchQuery().andLocalId((int) current.getParentBranch()).getResults().getExactlyOne();
 
-         //this is the last element in the list
-         if (parent == null || !list.contains(parent)) {
-            BranchReadable last = list.get(list.size() - 1);
-            list.set(i, last);
-            list.set(list.size() - 1, cur);
-         } else {
-            int parentIdx = list.indexOf(parent);
-            //need to swap
-            if (parentIdx < i) {
-               list.set(i, parent);
-               list.set(parentIdx, cur);
-               //reset i
-               i--;
-            }
+         int parentIdx = sorted.indexOf(parent);
+         if (parentIdx >= 0 && parentIdx < i) {
+            sorted.set(i, parent);
+            sorted.set(parentIdx, current);
+            i = -1; // start over
          }
       }
-      return list;
+      return sorted;
    }
-
 }
