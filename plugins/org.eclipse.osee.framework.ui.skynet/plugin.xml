@@ -152,13 +152,6 @@
                 className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindArtifactsWithMinAttributeContraintProblems">
           </Operation>
        </extension>
-       <extension
-             id="ShowNextTypeRemoteIds"
-             point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-          <Operation
-                className="org.eclipse.osee.framework.ui.skynet.blam.operation.ShowNextTypeRemoteIds">
-          </Operation>
-       </extension>
        
        
 	<extension id="native" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">

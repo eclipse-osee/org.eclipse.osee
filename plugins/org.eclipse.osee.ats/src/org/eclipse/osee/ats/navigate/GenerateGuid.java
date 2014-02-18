@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
+import java.util.Random;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.framework.core.util.HexUtil;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -30,14 +32,23 @@ public class GenerateGuid extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       XResultData resultData = new XResultData();
-      for (int x = 0; x < 20; x++) {
+      for (int x = 0; x < 10; x++) {
          String guid = GUID.create();
          while (guid.contains("+")) {
             guid = GUID.create();
          }
          resultData.log(guid);
       }
+      resultData.log("");
+      Random r = new Random();
+      for (int i = 0; i < 10; i++) {
+         long next = r.nextLong();
+         if (next > 0) {
+            resultData.log(HexUtil.toString(next) + "\t =\t " + next);
+         } else {
+            --i;
+         }
+      }
       XResultDataUI.report(resultData, "GUIDs");
    }
-
 }
