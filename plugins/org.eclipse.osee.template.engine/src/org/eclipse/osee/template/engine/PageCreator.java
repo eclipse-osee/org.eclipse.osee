@@ -39,6 +39,7 @@ public final class PageCreator {
    private static final Pattern newlineEnd = Pattern.compile("\\r?\\n?\\z");
    private static final Pattern processingInstructionPath = Pattern.compile("path=\"([^ ]+)");
    private static final Pattern processingInstructionId = Pattern.compile("id=\"([^\"]+)");
+   private static final Pattern includeInstructionParseAttribute = Pattern.compile("parse=\"(.)+\"");
    private static final int NumOfCharsInTypicalSmallPage = 7000;
 
    private final IResourceRegistry registry;
@@ -120,23 +121,32 @@ public final class PageCreator {
    }
 
    public String realizePage(ResourceToken templateResource) {
-      StringBuilder page = new StringBuilder(NumOfCharsInTypicalSmallPage);
-      return realizePage(templateResource, page).toString();
+      return realizePage(templateResource, true);
    }
 
    public Appendable realizePage(ResourceToken templateResource, Appendable page) {
-      return realizePage(registry.getResource(templateResource.getGuid()), page);
+      return realizePage(templateResource, page, true);
    }
 
-   private Appendable realizePage(InputStream template, Appendable page) {
+   private String realizePage(ResourceToken templateResource, boolean processInstructions) {
+      StringBuilder page = new StringBuilder(NumOfCharsInTypicalSmallPage);
+      return realizePage(templateResource, page, processInstructions).toString();
+   }
+
+   private Appendable realizePage(ResourceToken templateResource, Appendable page, boolean processInstructions) {
+      return realizePage(registry.getResource(templateResource.getGuid()), page, processInstructions);
+   }
+
+   private Appendable realizePage(InputStream template, Appendable page, boolean processInstructions) {
       Scanner scanner = new Scanner(template, "UTF-8");
       try {
          scanner.useDelimiter(xmlProcessingInstructionStartOrEnd);
 
-         boolean isProcessingInstruction = scanner.findInLine(xmlProcessingInstructionStart) != null;
+         boolean isProcessingInstruction =
+            processInstructions ? scanner.findInLine(xmlProcessingInstructionStart) != null : false;
          while (scanner.hasNext()) {
             processToken(page, scanner.next(), isProcessingInstruction);
-            isProcessingInstruction = !isProcessingInstruction;
+            isProcessingInstruction = processInstructions ? !isProcessingInstruction : false;
          }
       } catch (IOException ex) {
          throw new OseeCoreException(ex);
@@ -196,8 +206,18 @@ public final class PageCreator {
       return beginIndex > endIndex ? "" : token.substring(beginIndex, endIndex);
    }
 
+   private boolean parseInclude(String token) {
+      boolean toReturn = true;
+      Matcher matcher = includeInstructionParseAttribute.matcher(token);
+      if (matcher.find()) {
+         toReturn = Boolean.parseBoolean(matcher.group(1));
+      }
+      return toReturn;
+   }
+
    private void appendInclude(Appendable page, String tokenStr) throws IOException {
       Long universalId = toUniversalId(tokenStr);
+      boolean parseInclude = parseInclude(tokenStr);
       ResourceToken token = registry.getResourceToken(universalId);
       String name = token.getName();
 
@@ -210,7 +230,8 @@ public final class PageCreator {
          page.append(name);
          page.append(" -->\n");
       }
-      page.append(realizePage(token));
+
+      page.append(realizePage(token, parseInclude));
    }
 
    @Override
