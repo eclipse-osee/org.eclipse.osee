@@ -748,13 +748,23 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
             try {
                Branch workingBranch = AtsBranchManagerCore.getWorkingBranch(teamArt);
-               if (workingBranch != null && workingBranch.getBranchState() != BranchState.COMMITTED && workingBranch.getBranchType() != BranchType.BASELINE) {
-                  Collection<Branch> branchesCommittedTo = AtsBranchManagerCore.getBranchesCommittedTo(teamArt);
-                  if (branchesCommittedTo.size() > 0) {
-                     results.log(
-                        artifact,
-                        "testAtsBranchManagerA",
-                        "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has committed branches but working branch [" + workingBranch.getGuid() + "] != COMMITTED");
+               if (workingBranch != null && workingBranch.getBranchType() != BranchType.BASELINE) {
+                  if (workingBranch.getBranchState() != BranchState.COMMITTED) {
+                     Collection<Branch> branchesCommittedTo = AtsBranchManagerCore.getBranchesCommittedTo(teamArt);
+                     if (branchesCommittedTo.size() > 0) {
+                        results.log(
+                           artifact,
+                           "testAtsBranchManagerA",
+                           "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has committed branches but working branch [" + workingBranch.getGuid() + "] != COMMITTED");
+                     }
+                  } else if (workingBranch.getBranchState() == BranchState.COMMITTED && !workingBranch.getArchiveState().isArchived()) {
+                     Collection<Branch> branchesLeftToCommit = AtsBranchManagerCore.getBranchesLeftToCommit(teamArt);
+                     if (branchesLeftToCommit.size() == 0) {
+                        results.log(
+                           artifact,
+                           "testAtsBranchManagerA",
+                           "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has committed all branches but working branch [" + workingBranch.getGuid() + "] != ARCHIVED");
+                     }
                   }
                }
             } catch (Exception ex) {
