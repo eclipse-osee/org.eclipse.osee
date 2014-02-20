@@ -104,6 +104,21 @@ public class AtsBranchManagerCore {
       return idToWorkingBranchCache.get(teamArt.getAtsId());
    }
 
+   public static Branch getCommittedWorkingBranch(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      BranchFilter branchFilter = new BranchFilter(BranchType.WORKING);
+      branchFilter.setBranchStates(BranchState.COMMITTED);
+      branchFilter.setAssociatedArtifact(teamArt);
+      List<Branch> branches = BranchManager.getBranches(branchFilter);
+      if (branches.isEmpty()) {
+         return null;
+      } else if (branches.size() > 1) {
+         throw new MultipleBranchesExist(
+            "Unexpected multiple associated un-deleted working branches found for workflow [%s]", teamArt.getAtsId());
+      } else {
+         return branches.get(0);
+      }
+   }
+
    /**
     * Return working branch associated with SMA, even if it's been archived; This data is cached across all workflows
     * with the cache being updated by local and remote events. Filters out rebaseline branches (which are working
