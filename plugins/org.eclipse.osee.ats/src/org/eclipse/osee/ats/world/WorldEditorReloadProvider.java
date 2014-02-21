@@ -12,12 +12,15 @@ package org.eclipse.osee.ats.world;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 
 /**
@@ -64,8 +67,23 @@ public class WorldEditorReloadProvider extends WorldEditorProvider {
    }
 
    public void searchAndLoad() {
-      artifacts = ArtifactQuery.getArtifactListFromIds(new ArrayList<String>(guids), AtsUtil.getAtsBranch());
-      AtsBulkLoad.bulkLoadArtifacts(artifacts);
+      List<String> validGuids = getValidGuids();
+      if (validGuids.isEmpty()) {
+         AWorkbench.popup("No valid guids to load");
+      } else {
+         artifacts = ArtifactQuery.getArtifactListFromIds(new ArrayList<String>(validGuids), AtsUtil.getAtsBranch());
+         AtsBulkLoad.bulkLoadArtifacts(artifacts);
+      }
       reload = false;
+   }
+
+   public List<String> getValidGuids() {
+      List<String> validGuids = new ArrayList<String>();
+      for (String guid : guids) {
+         if (GUID.isValid(guid)) {
+            validGuids.add(guid);
+         }
+      }
+      return validGuids;
    }
 }

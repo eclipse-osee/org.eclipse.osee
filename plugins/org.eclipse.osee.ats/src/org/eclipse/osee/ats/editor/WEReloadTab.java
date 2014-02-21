@@ -22,12 +22,15 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -139,11 +142,15 @@ public class WEReloadTab extends FormPage {
 
                @Override
                public void run() {
-                  ((SMAEditorInput) editor.getEditorInput()).setArtifact(artifact);
-                  bodyComp.dispose();
-                  page.dispose();
-                  editor.addPages();
-                  editor.removePage(0);
+                  if (artifact == null) {
+                     AWorkbench.popup("No valid id to reload.");
+                  } else {
+                     ((SMAEditorInput) editor.getEditorInput()).setArtifact(artifact);
+                     bodyComp.dispose();
+                     page.dispose();
+                     editor.addPages();
+                     editor.removePage(0);
+                  }
                }
             });
          }
@@ -161,8 +168,16 @@ public class WEReloadTab extends FormPage {
 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
-         artifact = ArtifactQuery.getArtifactFromId(guid, AtsUtil.getAtsBranchToken());
-         AtsBulkLoad.bulkLoadArtifacts(Collections.singleton(artifact));
+         if (GUID.isValid(guid)) {
+            try {
+               artifact = ArtifactQuery.getArtifactFromId(guid, AtsUtil.getAtsBranchToken());
+            } catch (ArtifactDoesNotExist ex) {
+               // do nothing
+            }
+         }
+         if (artifact != null) {
+            AtsBulkLoad.bulkLoadArtifacts(Collections.singleton(artifact));
+         }
          return Status.OK_STATUS;
       }
 

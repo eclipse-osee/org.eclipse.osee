@@ -13,6 +13,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -138,7 +139,11 @@ public class WorldReloadTab extends FormPage {
 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
-         provider.searchAndLoad();
+         if (provider.getValidGuids().isEmpty()) {
+            AWorkbench.popup("No valid ids to reload.");
+         } else {
+            provider.searchAndLoad();
+         }
          return Status.OK_STATUS;
       }
 
