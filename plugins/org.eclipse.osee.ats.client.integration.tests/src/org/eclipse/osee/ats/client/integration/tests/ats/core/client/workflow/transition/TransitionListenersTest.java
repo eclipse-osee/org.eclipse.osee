@@ -15,6 +15,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionAdapter;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -24,7 +25,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionListeners;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 
@@ -45,7 +46,7 @@ public class TransitionListenersTest {
             AtsTestUtil.getImplementStateDef().getName(),
             Arrays.asList(org.eclipse.osee.ats.client.integration.tests.AtsClientService.get().getUserAdmin().getCurrentUser()),
             null, new AtsChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      TransitionManager transMgr = new TransitionManager(helper);
+      IAtsTransitionManager transMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = new TransitionResults();
 
       // validate that can transition

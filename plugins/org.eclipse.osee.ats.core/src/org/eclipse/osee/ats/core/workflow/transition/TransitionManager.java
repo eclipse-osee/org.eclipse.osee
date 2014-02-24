@@ -21,17 +21,23 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
+import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
+import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
+import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
@@ -49,17 +55,28 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Donald G. Dunne
  */
-public class TransitionManager {
+public class TransitionManager implements IAtsTransitionManager {
 
    private final ITransitionHelper helper;
    private String completedCancellationReason = null;
    private Date transitionOnDate;
    private List<IAtsUser> toAssignees;
+   private final IAtsUserService userService;
+   private final IAtsReviewService reviewService;
+   private final IAtsWorkItemService workItemService;
+   private final IAtsWorkDefinitionService workDefService;
+   private final IAttributeResolver attrResolver;
 
-   public TransitionManager(ITransitionHelper helper) {
+   public TransitionManager(ITransitionHelper helper, IAtsUserService userService, IAtsReviewService reviewService, IAtsWorkItemService workItemService, IAtsWorkDefinitionService workDefService, IAttributeResolver attrResolver) {
       this.helper = helper;
+      this.userService = userService;
+      this.reviewService = reviewService;
+      this.workItemService = workItemService;
+      this.workDefService = workDefService;
+      this.attrResolver = attrResolver;
    }
 
+   @Override
    public TransitionResults handleAll() {
       TransitionResults results = new TransitionResults();
 
@@ -80,6 +97,7 @@ public class TransitionManager {
     * 
     * @return Result.isFalse if failure
     */
+   @Override
    public void handleTransitionValidation(TransitionResults results) {
       try {
          if (helper.getWorkItems().isEmpty()) {
@@ -129,7 +147,7 @@ public class TransitionManager {
                boolean stateIsEditable =
                   WorkflowManagerCore.isEditable(workItem, workItem.getStateDefinition(),
                      helper.isPrivilegedEditEnabled(), helper.getTransitionUser(),
-                     AtsCore.getUserService().isAtsAdmin(helper.getTransitionUser()));
+                     userService.isAtsAdmin(helper.getTransitionUser()));
                boolean currentlyUnAssigned =
                   workItem.getStateMgr().getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER);
                workItem.getStateMgr().validateNoBootstrapUser();
@@ -180,6 +198,7 @@ public class TransitionManager {
       }
    }
 
+   @Override
    public void isTransitionValidForExtensions(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) {
       // Check extension points for valid transition
       for (ITransitionListener listener : helper.getTransitionListeners()) {
@@ -221,6 +240,7 @@ public class TransitionManager {
     * 
     * @return Result.isFalse if failure or Result.isCancelled if canceled
     */
+   @Override
    public void handleTransitionUi(TransitionResults results) {
       Result result = helper.getCompleteOrCancellationReason();
       if (result.isCancelled()) {
@@ -243,6 +263,7 @@ public class TransitionManager {
     * 
     * @return Result.isFalse if failure
     */
+   @Override
    public void handleTransition(TransitionResults results) {
       try {
          for (IAtsWorkItem workItem : helper.getWorkItems()) {
@@ -256,13 +277,13 @@ public class TransitionManager {
                   IAtsUser transitionUser = getTransitionAsUser();
                   // Log transition
                   if (fromState.getStateType().isCancelledState()) {
-                     logWorkflowUnCancelledEvent(workItem, toState, helper.getChangeSet());
+                     logWorkflowUnCancelledEvent(workItem, toState, helper.getChangeSet(), attrResolver);
                   } else if (fromState.getStateType().isCompletedState()) {
-                     logWorkflowUnCompletedEvent(workItem, toState, helper.getChangeSet());
+                     logWorkflowUnCompletedEvent(workItem, toState, helper.getChangeSet(), attrResolver);
                   }
                   if (toState.getStateType().isCancelledState()) {
                      logWorkflowCancelledEvent(workItem, fromState, toState, completedCancellationReason,
-                        transitionDate, transitionUser, helper.getChangeSet());
+                        transitionDate, transitionUser, helper.getChangeSet(), attrResolver);
                   } else if (toState.getStateType().isCompletedState()) {
                      logWorkflowCompletedEvent(workItem, fromState, toState, completedCancellationReason,
                         transitionDate, transitionUser, helper.getChangeSet());
@@ -279,10 +300,10 @@ public class TransitionManager {
                      completedCancellationReason);
 
                   // Create validation review if in correct state and TeamWorkflow
-                  if (AtsCore.getReviewService().isValidationReviewRequired(workItem) && workItem.isTeamWorkflow()) {
+                  if (reviewService.isValidationReviewRequired(workItem) && workItem.isTeamWorkflow()) {
                      IAtsDecisionReview review =
-                        AtsCore.getReviewService().createValidateReview((IAtsTeamWorkflow) workItem, false,
-                           transitionDate, transitionUser, helper.getChangeSet());
+                        reviewService.createValidateReview((IAtsTeamWorkflow) workItem, false, transitionDate,
+                           transitionUser, helper.getChangeSet());
                      if (review != null) {
                         helper.getChangeSet().add(review);
                      }
@@ -293,7 +314,7 @@ public class TransitionManager {
                      listener.transitioned(workItem, fromState, toState, updatedAssigees, helper.getChangeSet());
                   }
                   if (toState.getStateType().isCompletedOrCancelledState()) {
-                     AtsCore.getWorkItemService().clearImplementersCache(workItem);
+                     workItemService.clearImplementersCache(workItem);
                   }
                   helper.getChangeSet().add(workItem);
                }
@@ -337,8 +358,7 @@ public class TransitionManager {
       } else if (!toStateDef.getStateType().isCancelledState() && !isOverrideAttributeValidationState) {
 
          // Validate XWidgets for transition
-         Collection<WidgetResult> widgetResults =
-            AtsCore.getWorkItemService().validateWidgetTransition(workItem, toStateDef);
+         Collection<WidgetResult> widgetResults = workItemService.validateWidgetTransition(workItem, toStateDef);
          for (WidgetResult widgetResult : widgetResults) {
             if (!widgetResult.isValid()) {
                results.addResult(workItem, widgetResult);
@@ -349,7 +369,7 @@ public class TransitionManager {
 
          // Don't transition without targeted version if so configured
          boolean teamDefRequiresTargetedVersion =
-            AtsCore.getWorkDefService().teamDefHasRule(workItem, RuleDefinitionOption.RequireTargetedVersion);
+            workDefService.teamDefHasRule(workItem, RuleDefinitionOption.RequireTargetedVersion);
          boolean pageRequiresTargetedVersion =
             workItem.getStateDefinition().hasRule(RuleDefinitionOption.RequireTargetedVersion.name());
 
@@ -362,9 +382,8 @@ public class TransitionManager {
 
          // Loop through this state's blocking reviews to confirm complete
          if (workItem.isTeamWorkflow()) {
-            for (IAtsAbstractReview review : AtsCore.getReviewService().getReviewsFromCurrentState(
-               (IAtsTeamWorkflow) workItem)) {
-               if (AtsCore.getReviewService().getReviewBlockType(review) == ReviewBlockType.Transition && !AtsCore.getWorkItemService().getWorkData(
+            for (IAtsAbstractReview review : reviewService.getReviewsFromCurrentState((IAtsTeamWorkflow) workItem)) {
+               if (reviewService.getReviewBlockType(review) == ReviewBlockType.Transition && !workItemService.getWorkData(
                   review).isCompletedOrCancelled()) {
                   results.addResult(workItem, TransitionResult.COMPLETE_BLOCKING_REVIEWS);
                }
@@ -375,9 +394,8 @@ public class TransitionManager {
 
    private void validateReviewsCancelled(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition toStateDef) throws OseeCoreException {
       if (workItem.isTeamWorkflow() && toStateDef.getStateType().isCancelledState()) {
-         for (IAtsAbstractReview review : AtsCore.getReviewService().getReviewsFromCurrentState(
-            (IAtsTeamWorkflow) workItem)) {
-            if (AtsCore.getReviewService().getReviewBlockType(review) == ReviewBlockType.Transition && !AtsCore.getWorkItemService().getWorkData(
+         for (IAtsAbstractReview review : reviewService.getReviewsFromCurrentState((IAtsTeamWorkflow) workItem)) {
+            if (reviewService.getReviewBlockType(review) == ReviewBlockType.Transition && !workItemService.getWorkData(
                workItem).isCompletedOrCancelled()) {
                results.addResult(workItem, TransitionResult.CANCEL_REVIEWS_BEFORE_CANCEL);
                break;
@@ -393,19 +411,18 @@ public class TransitionManager {
       if (workItem.getStateDefinition().hasRule(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion.name()) && toStateDef.getStateType().isWorkingState()) {
          checkTasksCompletedForState = false;
       }
-      if (checkTasksCompletedForState && workItem.isTeamWorkflow() && !AtsCore.getWorkItemService().getWorkData(
-         workItem).isCompletedOrCancelled()) {
+      if (checkTasksCompletedForState && workItem.isTeamWorkflow() && !workItemService.getWorkData(workItem).isCompletedOrCancelled()) {
          Set<IAtsTask> tasksToCheck = new HashSet<IAtsTask>();
          // If transitioning to completed/cancelled, all tasks must be completed/cancelled
          if (toStateDef.getStateType().isCompletedOrCancelledState()) {
-            tasksToCheck.addAll(AtsCore.getWorkItemService().getTaskArtifacts(workItem));
+            tasksToCheck.addAll(workItemService.getTaskArtifacts(workItem));
          }
          // Else, just check current state tasks
          else {
-            tasksToCheck.addAll(AtsCore.getWorkItemService().getTasks(workItem, workItem.getStateDefinition()));
+            tasksToCheck.addAll(workItemService.getTasks(workItem, workItem.getStateDefinition()));
          }
          for (IAtsTask taskArt : tasksToCheck) {
-            if (AtsCore.getWorkItemService().getWorkData(taskArt).isInWork()) {
+            if (workItemService.getWorkData(taskArt).isInWork()) {
                results.addResult(workItem, TransitionResult.TASKS_NOT_COMPLETED);
                break;
             }
@@ -413,25 +430,24 @@ public class TransitionManager {
       }
    }
 
-   public static void logWorkflowCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, String reason, Date cancelDate, IAtsUser cancelBy, IAtsChangeSet changes) throws OseeCoreException {
+   public static void logWorkflowCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, String reason, Date cancelDate, IAtsUser cancelBy, IAtsChangeSet changes, IAttributeResolver attrResolver) throws OseeCoreException {
       workItem.getLog().addLog(LogType.StateCancelled, fromState.getName(), reason, cancelDate, cancelBy.getUserId());
-      if (AtsCore.getAttrResolver().isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
-         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledBy, cancelBy.getUserId(),
+      if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
+         attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledBy, cancelBy.getUserId(), changes);
+         attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledDate, cancelDate, changes);
+         attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledReason, reason, changes);
+         attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledFromState, fromState.getName(),
             changes);
-         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledDate, cancelDate, changes);
-         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledReason, reason, changes);
-         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledFromState,
-            fromState.getName(), changes);
       }
       validateUpdatePercentComplete(workItem, toState, changes);
    }
 
-   public static void logWorkflowUnCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition toState, IAtsChangeSet changes) throws OseeCoreException {
-      if (AtsCore.getAttrResolver().isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
-         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledBy, changes);
-         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledDate, changes);
-         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledReason, changes);
-         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledFromState, changes);
+   public static void logWorkflowUnCancelledEvent(IAtsWorkItem workItem, IAtsStateDefinition toState, IAtsChangeSet changes, IAttributeResolver attrResolver) throws OseeCoreException {
+      if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
+         attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledBy, changes);
+         attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledDate, changes);
+         attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledReason, changes);
+         attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledFromState, changes);
       }
       validateUpdatePercentComplete(workItem, toState, changes);
    }
@@ -439,21 +455,20 @@ public class TransitionManager {
    private void logWorkflowCompletedEvent(IAtsWorkItem workItem, IAtsStateDefinition fromState, IAtsStateDefinition toState, String reason, Date cancelDate, IAtsUser cancelBy, IAtsChangeSet changes) throws OseeCoreException {
       workItem.getLog().addLog(LogType.StateComplete, fromState.getName(), Strings.isValid(reason) ? reason : "",
          cancelDate, cancelBy.getUserId());
-      if (AtsCore.getAttrResolver().isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
-         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedBy, cancelBy.getUserId(),
+      if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
+         attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedBy, cancelBy.getUserId(), changes);
+         attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedDate, cancelDate, changes);
+         attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedFromState, fromState.getName(),
             changes);
-         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedDate, cancelDate, changes);
-         AtsCore.getAttrResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedFromState,
-            fromState.getName(), changes);
       }
       validateUpdatePercentComplete(workItem, toState, changes);
    }
 
-   public static void logWorkflowUnCompletedEvent(IAtsWorkItem workItem, IAtsStateDefinition toState, IAtsChangeSet changes) throws OseeCoreException {
-      if (AtsCore.getAttrResolver().isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
-         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedBy, changes);
-         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedDate, changes);
-         AtsCore.getAttrResolver().deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedFromState, changes);
+   public static void logWorkflowUnCompletedEvent(IAtsWorkItem workItem, IAtsStateDefinition toState, IAtsChangeSet changes, IAttributeResolver attrResolver) throws OseeCoreException {
+      if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
+         attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedBy, changes);
+         attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedDate, changes);
+         attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedFromState, changes);
       }
       validateUpdatePercentComplete(workItem, toState, changes);
    }
@@ -486,10 +501,11 @@ public class TransitionManager {
     * Allow transition date to be used in log to be overridden for importing Actions from other systems and other
     * programatic transitions.
     */
+   @Override
    public IAtsUser getTransitionAsUser() throws OseeCoreException {
       IAtsUser user = helper.getTransitionUser();
       if (user == null) {
-         user = AtsCore.getUserService().getCurrentUser();
+         user = userService.getCurrentUser();
       }
       return user;
    }
@@ -498,6 +514,7 @@ public class TransitionManager {
     * Allow transition date to be used in log to be overridden for importing Actions from other systems and other
     * programatic transitions.
     */
+   @Override
    public Date getTransitionOnDate() {
       if (transitionOnDate == null) {
          return new Date();
@@ -505,6 +522,7 @@ public class TransitionManager {
       return transitionOnDate;
    }
 
+   @Override
    public void setTransitionOnDate(Date transitionOnDate) {
       this.transitionOnDate = transitionOnDate;
    }
@@ -513,6 +531,7 @@ public class TransitionManager {
     * Get transition to assignees. Verify that UnAssigned is not selected with another assignee. Ensure an assignee is
     * entered, else use current user or UnAssigneed if current user is SystemUser.
     */
+   @Override
    public List<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem, IAtsStateDefinition toState) throws OseeCoreException {
       if (toAssignees == null) {
          toAssignees = new ArrayList<IAtsUser>();
@@ -539,6 +558,7 @@ public class TransitionManager {
       return toAssignees;
    }
 
+   @Override
    public TransitionResults handleAllAndPersist() {
       TransitionResults result = handleAll();
       if (result.isEmpty()) {

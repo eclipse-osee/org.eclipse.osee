@@ -25,10 +25,11 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.action.ActionLoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -117,7 +118,7 @@ public final class StateResource {
             new TransitionHelper("Transition " + guid, Collections.singleton(workItem), toState,
                workItem.getAssignees(), reason, changes, TransitionOption.None);
          helper.setTransitionUser(transitionUser);
-         TransitionManager mgr = new TransitionManager(helper);
+         IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);
          TransitionResults results = mgr.handleAll();
          if (!results.isEmpty()) {
             throw new OseeArgumentException(results.toString());

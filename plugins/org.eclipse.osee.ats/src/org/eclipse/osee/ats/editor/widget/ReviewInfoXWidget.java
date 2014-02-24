@@ -20,6 +20,7 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
@@ -31,8 +32,8 @@ import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.internal.Activator;
@@ -318,7 +319,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      TransitionHelper helper =
                         new TransitionHelper("ATS Auto Complete Reviews", awas, TeamState.Completed.getName(), null,
                            null, changes, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
-                     TransitionManager transitionMgr = new TransitionManager(helper);
+                     IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
                      TransitionResults results = transitionMgr.handleAllAndPersist();
                      if (!results.isEmpty()) {
                         AWorkbench.popup(String.format("Transition Error %s", results.toString()));

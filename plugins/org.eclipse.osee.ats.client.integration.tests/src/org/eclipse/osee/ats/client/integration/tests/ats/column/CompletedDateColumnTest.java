@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.column;
 
 import java.util.Arrays;
 import java.util.Date;
+import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
@@ -21,8 +22,8 @@ import org.eclipse.osee.ats.column.CompletedDateColumn;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -61,7 +62,7 @@ public class CompletedDateColumnTest {
       TransitionHelper helper =
          new TransitionHelper("Transition to Completed", Arrays.asList(teamArt), TeamState.Completed.getName(), null,
             null, changes, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
-      TransitionManager transitionMgr = new TransitionManager(helper);
+      IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAllAndPersist();
       Assert.assertTrue(results.toString(), results.isEmpty());
 
@@ -76,7 +77,7 @@ public class CompletedDateColumnTest {
          new TransitionHelper("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getName(),
             Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null, changes,
             TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
-      transitionMgr = new TransitionManager(helper);
+      transitionMgr = TransitionFactory.getTransitionManager(helper);
       results = transitionMgr.handleAll();
       Assert.assertTrue(results.toString(), results.isEmpty());
       changes.execute();

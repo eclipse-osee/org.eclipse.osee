@@ -316,8 +316,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      if (stateDef.getStateType() == StateType.Working) {
                         awa.setSoleAttributeFromString(AtsAttributeTypes.CurrentStateType, StateType.Working.name());
                         AtsChangeSet changes = new AtsChangeSet(ValidateAtsDatabase.class.getSimpleName());
-                        TransitionManager.logWorkflowUnCompletedEvent(awa, stateDef, changes);
-                        TransitionManager.logWorkflowUnCancelledEvent(awa, stateDef, changes);
+                        TransitionManager.logWorkflowUnCompletedEvent(awa, stateDef, changes, AtsCore.getAttrResolver());
+                        TransitionManager.logWorkflowUnCancelledEvent(awa, stateDef, changes, AtsCore.getAttrResolver());
                         awa.persist(transaction);
                         results.log(artifact, "testCompletedCancelledStateAttributesSet", "FIXED");
                      } else {

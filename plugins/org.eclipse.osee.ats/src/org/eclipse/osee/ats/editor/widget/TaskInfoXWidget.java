@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
@@ -22,8 +23,8 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -135,9 +136,9 @@ public class TaskInfoXWidget extends XLabelValueBase {
                               }
                               TransitionHelper helper =
                                  new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),
-                                    TaskStates.Completed.getName(), null, null,
-                                    changes, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
-                              TransitionManager transitionMgr = new TransitionManager(helper);
+                                    TaskStates.Completed.getName(), null, null, changes,
+                                    TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
+                              IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
                               TransitionResults results = transitionMgr.handleAll();
                               if (!results.isEmpty()) {
                                  AWorkbench.popup(String.format("Transition Error %s", results.toString()));
