@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.core.util.AtsCore_Util_JT_Suite;
 import org.eclipse.osee.ats.core.validator.AtsCore_Validator_JT_Suite;
 import org.eclipse.osee.ats.core.workdef.AtsCore_WorkDef_JT_Suite;
 import org.eclipse.osee.ats.core.workflow.AtsCore_Workflow_JT_Suite;
+import org.eclipse.osee.ats.core.workflow.transition.AtsCore_Workflow_Transition_Suite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -31,6 +32,7 @@ import org.junit.runners.Suite;
    AtsCore_Column_JT_Suite.class,
    AtsTest_Internal_Log_Suite.class,
    AtsCore_Internal_State_Suite.class,
+   AtsCore_Workflow_Transition_Suite.class,
    AtsCore_InternalColumnEv_JT_Suite.class,
    AtsCore_ModelImpl_JT_Suite.class,
    AtsCore_Transition_JT_Suite.class,

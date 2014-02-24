@@ -36,21 +36,21 @@ public class TransitionStatusData {
       if (isPercentRequired()) {
          if (isPercentSet()) {
             if (percent < 0 || percent > 99) {
-               return new Result("Percent must be between 0 and 99.  Use Transition-To for completed.");
+               return TransitionStatusDataResult.INVALID__UNCOMPLETE_PERCENT;
             }
          } else {
-            return new Result("Percent must be entered.");
+            return TransitionStatusDataResult.INVALID__PERCENT_MUST_BE_ENTERED;
          }
       }
       if (!isHoursSet()) {
-         return new Result("Hours must be entered.");
+         return TransitionStatusDataResult.INVALID__HOURS_MUST_BE_SET;
       }
       if (workItems.size() > 1) {
          if (!splitHoursBetweenItems && !applyHoursToEachItem) {
-            return new Result("Either \"Split Hours Spent\" or \"Apply Hours Spent\" must be selected");
+            return TransitionStatusDataResult.INVALID__SELECT_EITHER_SPLIT_OR_APPLY;
          }
          if (splitHoursBetweenItems && applyHoursToEachItem) {
-            return new Result("Select only \"Split Hours Spent\" or \"Apply Hours Spent\"");
+            return TransitionStatusDataResult.INVALID__SELECT_ONLY_ONE_SPLIT_OR_APPLY;
          }
       }
       return Result.TrueResult;

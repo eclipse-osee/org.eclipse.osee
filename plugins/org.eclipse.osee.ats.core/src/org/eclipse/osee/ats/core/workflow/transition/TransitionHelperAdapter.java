@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.core.workflow.transition;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.core.AtsCore;
@@ -23,6 +25,18 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
  * @author Donald G. Dunne
  */
 public abstract class TransitionHelperAdapter implements ITransitionHelper {
+
+   private final IAtsUserService userService;
+   private final IAtsBranchService branchService;
+
+   public TransitionHelperAdapter(IAtsUserService userService, IAtsBranchService branchService) {
+      this.userService = userService;
+      this.branchService = branchService;
+   }
+
+   public TransitionHelperAdapter() {
+      this(AtsCore.getUserService(), AtsCore.getBranchService());
+   }
    IAtsUser transitionUser;
 
    @Override
@@ -42,12 +56,12 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
    @Override
    public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      return AtsCore.getBranchService().isWorkingBranchInWork(teamWf);
+      return branchService.isWorkingBranchInWork(teamWf);
    }
 
    @Override
    public boolean isBranchInCommit(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      return AtsCore.getBranchService().isBranchInCommit(teamWf);
+      return branchService.isBranchInCommit(teamWf);
    }
 
    @Override
@@ -70,7 +84,7 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    public IAtsUser getTransitionUser() throws OseeStateException, OseeCoreException {
       IAtsUser user = transitionUser;
       if (user == null) {
-         user = AtsCore.getUserService().getCurrentUser();
+         user = userService.getCurrentUser();
       }
       return user;
    }

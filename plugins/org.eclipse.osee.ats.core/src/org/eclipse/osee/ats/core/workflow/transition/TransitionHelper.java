@@ -15,7 +15,10 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
+import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.AtsCore;
@@ -39,15 +42,23 @@ public class TransitionHelper extends TransitionHelperAdapter {
    private String toStateName;
    private final IAtsChangeSet changes;
    private boolean executeChanges = false;
+   private final IAtsWorkItemService workItemService;
 
-   public TransitionHelper(String name, Collection<? extends IAtsWorkItem> awas, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, TransitionOption... transitionOption) {
+   public TransitionHelper(String name, Collection<? extends IAtsWorkItem> workItems, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, IAtsWorkItemService workItemService, IAtsUserService userService, IAtsBranchService branchService, TransitionOption... transitionOption) {
+      super(userService, branchService);
+      this.workItemService = workItemService;
       this.name = name;
-      this.workItems = awas;
+      this.workItems = workItems;
       this.toStateName = toStateName;
       this.toAssignees = toAssignees;
       this.cancellationReason = cancellationReason;
       this.changes = changes;
       this.transitionOption = transitionOption;
+   }
+
+   public TransitionHelper(String name, Collection<? extends IAtsWorkItem> workItems, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, TransitionOption... transitionOption) {
+      this(name, workItems, toStateName, toAssignees, cancellationReason, changes, AtsCore.getWorkItemService(),
+         AtsCore.getUserService(), AtsCore.getBranchService(), transitionOption);
    }
 
    @Override
@@ -135,7 +146,7 @@ public class TransitionHelper extends TransitionHelperAdapter {
    @Override
    public Collection<ITransitionListener> getTransitionListeners() {
       try {
-         return AtsCore.getWorkItemService().getTransitionListeners();
+         return workItemService.getTransitionListeners();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
