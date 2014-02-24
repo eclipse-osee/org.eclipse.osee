@@ -15,11 +15,13 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.internal.AccessControlHelper;
 import org.eclipse.osee.framework.access.internal.AccessControlService;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -106,6 +108,20 @@ public final class AccessControlManager {
 
    public static void setPermission(Artifact subject, Object object, PermissionEnum permission) throws OseeCoreException {
       getService().setPermission(subject, object, permission);
+   }
+
+   public static PermissionEnum getPermission(Object object) {
+      return getPermission(UserManager.getUser(), object);
+   }
+
+   public static PermissionEnum getPermission(User user, Object object) {
+      if (object instanceof IOseeBranch) {
+         return getService().getBranchPermission(user, (IOseeBranch) object);
+      } else if (object instanceof Artifact) {
+         return getService().getArtifactPermission(user, (Artifact) object);
+      } else {
+         return PermissionEnum.DENY;
+      }
    }
 
    public static AccessDataQuery getAccessData(Collection<?> objectsToCheck) throws OseeCoreException {

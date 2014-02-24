@@ -78,6 +78,7 @@ public class PolicyDialog extends Dialog {
       }
       addListeners();
       checkEnabled();
+      setMaxModificationLevel();
 
       return mainComposite;
    }
@@ -124,7 +125,7 @@ public class PolicyDialog extends Dialog {
 
             if (subject != null && permission != null) {
                try {
-                  policyTableViewer.addItem(subject, accessControlledObject, permission);
+                  policyTableViewer.addOrModifyItem(subject, accessControlledObject, permission);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
@@ -157,26 +158,58 @@ public class PolicyDialog extends Dialog {
       chkChildrenPermission.setText("Set permission for artifact's default hierarchy descendents.");
    }
 
+   private void setMaxModificationLevel() {
+      PermissionEnum permission = AccessControlManager.getPermission(accessControlledObject);
+      policyTableViewer.setMaxModificationLevel(permission);
+   }
+
    private void checkEnabled() {
-      boolean accessEnabled = getAccessEnabled();
+      boolean isAccessEnabled = isAddAccessEnabled();
+      boolean isModifyEnabled = isModifyAccessEnabled();
 
-      accessLabel.setText(accessEnabled ? "" : "You do not have permissions to modify access.");
+      String displayText = "";
+      if (!isAccessEnabled) {
+         displayText = "You do not have permissions to add/delete users";
+         if (!isModifyEnabled) {
+            displayText += " or modify access";
+         }
+      } else if (!isModifyEnabled) {
+         displayText = "You do not have permissions to modify access";
+      }
 
+      accessLabel.setText(displayText);
       boolean isArtifact = accessControlledObject instanceof Artifact;
 
-      cmbUsers.setEnabled(accessEnabled);
-      cmbPermissionLevel.setEnabled(accessEnabled);
-      btnAdd.setEnabled(accessEnabled);
-      policyTableViewer.allowTableModification(accessEnabled);
+      cmbUsers.setEnabled(isAccessEnabled);
+      cmbPermissionLevel.setEnabled(isAccessEnabled);
+      btnAdd.setEnabled(isAccessEnabled);
+      policyTableViewer.allowTableModification(isAccessEnabled);
       chkChildrenPermission.setEnabled(isArtifact);
    }
 
-   private boolean getAccessEnabled() {
+   private boolean isModifyAccessEnabled() {
       boolean returnValue;
 
       try {
          if (policyTableViewer.getAccessControlList().size() > 0) {
-            returnValue = AccessControlManager.hasPermission(accessControlledObject, PermissionEnum.WRITE);
+            returnValue = AccessControlManager.hasPermission(accessControlledObject, PermissionEnum.OWNER);
+         } else {
+            returnValue = true;
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         returnValue = false;
+      }
+
+      return returnValue;
+   }
+
+   private boolean isAddAccessEnabled() {
+      boolean returnValue;
+
+      try {
+         if (policyTableViewer.getAccessControlList().size() > 0) {
+            returnValue = AccessControlManager.hasPermission(accessControlledObject, PermissionEnum.FULLACCESS);
          } else {
             returnValue = true;
          }
@@ -196,6 +229,7 @@ public class PolicyDialog extends Dialog {
             AccessControlManager.persistPermission(data, isRecursionAllowed);
          }
       }
+      policyTableViewer.removeDataFromDB();
       super.okPressed();
    }
 

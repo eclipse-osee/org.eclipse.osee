@@ -22,11 +22,13 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 public class PolicyContentProvider implements ITreeContentProvider {
 
    private final Map<String, AccessControlData> accessControlList;
+   private final Collection<AccessControlData> deleteControlList;
    private final Object accessControlledObject;
 
-   public PolicyContentProvider(Map<String, AccessControlData> accessControlList, Object accessControlledObject) {
+   public PolicyContentProvider(Map<String, AccessControlData> accessControlList, Object accessControlledObject, Collection<AccessControlData> deleteControlList) {
       this.accessControlList = accessControlList;
       this.accessControlledObject = accessControlledObject;
+      this.deleteControlList = deleteControlList;
    }
 
    @Override
@@ -44,7 +46,7 @@ public class PolicyContentProvider implements ITreeContentProvider {
 
       Collection<AccessControlData> data = AccessControlManager.getAccessControlList(accessControlledObject);
       for (AccessControlData entry : data) {
-         if (isUniqueUnlockedEntry(entry)) {
+         if (isUniqueUnlockedEntry(entry) && !deleteControlList.contains(entry)) {
             accessControlList.put(entry.getSubject().getGuid(), entry);
          }
       }

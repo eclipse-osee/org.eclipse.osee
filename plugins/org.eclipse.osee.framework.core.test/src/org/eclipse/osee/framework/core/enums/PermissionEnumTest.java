@@ -19,7 +19,6 @@ import static org.eclipse.osee.framework.core.enums.PermissionEnum.WRITE;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.junit.Assert;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.junit.Test;
 
 /**
@@ -132,7 +131,7 @@ public class PermissionEnumTest {
 
    @Test
    public void testGetPermissionId() {
-      int[] expectedIds = new int[] {5, 10, 20, 30, 40, 65535};
+      int[] expectedIds = new int[] {5, 10, 20, 25, 30, 40, 65535};
       PermissionEnum[] permissions = PermissionEnum.values();
       Assert.assertEquals(expectedIds.length, permissions.length);
       for (int index = 0; index < expectedIds.length; index++) {
@@ -144,7 +143,7 @@ public class PermissionEnumTest {
 
    @Test
    public void testGetPermissionNames() {
-      String[] expectedNames = new String[] {"None", "Read", "Write", "Full Access", "Lock", "Deny"};
+      String[] expectedNames = new String[] {"None", "Read", "Write", "Owner", "Full Access", "Lock", "Deny"};
       String[] actualNames = PermissionEnum.getPermissionNames();
       PermissionEnum[] enums = PermissionEnum.values();
       Assert.assertEquals(expectedNames.length, actualNames.length);

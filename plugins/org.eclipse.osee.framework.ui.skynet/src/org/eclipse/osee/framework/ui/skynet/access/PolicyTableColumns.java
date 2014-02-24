@@ -17,7 +17,7 @@ public enum PolicyTableColumns {
    dummyColumn("---", 0, 1 << 14, true, SortDataType.String, false, ""),
    delete("", 25, 1 << 24, true, SortDataType.String, false, ""),
    userName("User Name", 160, 1 << 14, true, SortDataType.String, false, ""),
-   totalAccess("Total", 75, 1 << 14, true, SortDataType.String, false, ""),
+   totalAccess("Access Level", 75, 1 << 14, true, SortDataType.String, false, ""),
    branchAccess("Branch", 75, 1 << 14, true, SortDataType.String, false, ""),
    artifactType("Artifact Type", 75, 1 << 14, true, SortDataType.String, false, ""),
    artifact("Artifact", 75, 1 << 14, true, SortDataType.String, false, "");
@@ -41,7 +41,16 @@ public enum PolicyTableColumns {
    }
 
    public final XViewerColumn getXViewerColumn() {
-      return new XViewerColumn(this.toString(), label, width, SWT, show, sortType, multiColumnEditable, description);
+      XViewerColumn toReturn = null;
+      if (this.equals(PolicyTableColumns.totalAccess)) {
+         toReturn =
+            new XViewerColumn(this.toString(), label, width, SWT, show, sortType, multiColumnEditable, description);
+         toReturn.setMultiColumnEditable(true);
+      } else {
+         toReturn =
+            new XViewerColumn(this.toString(), label, width, SWT, show, sortType, multiColumnEditable, description);
+      }
+      return toReturn;
    }
 
    public static String[] getNames() {
@@ -52,5 +61,9 @@ public enum PolicyTableColumns {
       }
 
       return ret;
+   }
+
+   public String getLabel() {
+      return label;
    }
 }

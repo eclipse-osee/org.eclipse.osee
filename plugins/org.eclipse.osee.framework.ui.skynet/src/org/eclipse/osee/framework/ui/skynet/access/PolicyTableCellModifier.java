@@ -29,17 +29,16 @@ public class PolicyTableCellModifier implements ICellModifier {
 
    @Override
    public boolean canModify(Object element, String property) {
-      if (property.equals(PolicyTableColumns.delete.toString())) {
-         return true;
-      }
-      return false;
+      boolean toReturn =
+         property.equals(PolicyTableColumns.delete.toString()) || property.equals(PolicyTableColumns.totalAccess.toString());
+      return toReturn;
    }
 
    @Override
    public Object getValue(Object element, String property) {
       if (property.equals(PolicyTableColumns.delete.toString())) {
          return new Boolean(false);
-      } else if (property.equals(PolicyTableColumns.artifact.toString())) {
+      } else if (property.equals(PolicyTableColumns.artifact.toString()) || property.equals(PolicyTableColumns.totalAccess.toString()) || property.equals(PolicyTableColumns.branchAccess.toString())) {
          return ((AccessControlData) element).getPermission().ordinal();
       }
       return "";
@@ -50,14 +49,16 @@ public class PolicyTableCellModifier implements ICellModifier {
       TreeItem item = (TreeItem) element;
       AccessControlData data = (AccessControlData) item.getData();
 
-      if (isEnabled() && property.equals(PolicyTableColumns.delete.toString())) {
+      if (canDelete() && property.equals(PolicyTableColumns.delete.toString())) {
          policyTableViewer.removeData(data);
+      } else if (property.equals(PolicyTableColumns.totalAccess.toString())) {
+         item.setData(value);
       }
 
       policyTableViewer.refresh();
    }
 
-   public boolean isEnabled() {
+   public boolean canDelete() {
       return enabled;
    }
 
@@ -66,7 +67,7 @@ public class PolicyTableCellModifier implements ICellModifier {
     * 
     * @param enabled the enabled to set
     */
-   public void setEnabled(boolean enabled) {
+   public void setDeleteEnabled(boolean enabled) {
       this.enabled = enabled;
    }
 }

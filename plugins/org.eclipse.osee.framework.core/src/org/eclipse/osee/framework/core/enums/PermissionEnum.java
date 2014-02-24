@@ -18,6 +18,7 @@ public enum PermissionEnum {
    NONE(5, "None"),
    READ(10, "Read"),
    WRITE(20, "Write"),
+   OWNER(25, "Owner"),
    FULLACCESS(30, "Full Access"),
    LOCK(40, "Lock"),
    DENY(65535, "Deny");

@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.ui.skynet.access.PolicyTableColumns;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
- * @author Ryan Schmitt
+ * @author Marc Potter
  */
 public class PolicyTableXViewerFactory extends SkynetXViewerFactory {
    public static final String namespace = "osee.skynet.gui.branchAccessViewer";
