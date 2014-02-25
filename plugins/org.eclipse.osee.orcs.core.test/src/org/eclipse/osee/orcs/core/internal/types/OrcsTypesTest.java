@@ -39,8 +39,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
 import org.eclipse.osee.orcs.core.internal.types.impl.OrcsTypesImpl;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
@@ -615,34 +615,27 @@ public class OrcsTypesTest {
 
       EnumEntry[] values = enumType.values();
 
-      assertEnumEntry(values[0], "Completed -- Analysis in Work", "APt7j0WUEAIFUyyzVZgA", 1, "");
-      assertEnumEntry(values[1], "Completed -- Passed", "APt7j0YZq1AjCER1qzAA", 2, "");
-      assertEnumEntry(values[2], "Completed -- With Issues", "APt7j0aZWF2BJc_BqnQA", 3, "");
-      assertEnumEntry(values[3], "Completed -- With Issues Resolved", "APt7j0cv9B1ImjckeTAA", 4, "");
-      assertEnumEntry(values[4], "Not Performed", "APt7jzRPv2HBlrjQZXAA", 0, "it was not performed");
-      assertEnumEntry(values[5], "Partially Complete", "AAvULbOIbxhPUO_oDFQA", 5, "is a partial");
+      assertEnumEntry(values[0], "Completed -- Analysis in Work", 1, "");
+      assertEnumEntry(values[1], "Completed -- Passed", 2, "");
+      assertEnumEntry(values[2], "Completed -- With Issues", 3, "");
+      assertEnumEntry(values[3], "Completed -- With Issues Resolved", 4, "");
+      assertEnumEntry(values[4], "Not Performed", 0, "it was not performed");
+      assertEnumEntry(values[5], "Partially Complete", 5, "is a partial");
 
-      assertEnumEntry(enumType.valueOf(0), "Not Performed", "APt7jzRPv2HBlrjQZXAA", 0, "it was not performed");
-      assertEnumEntry(enumType.valueOf(1), "Completed -- Analysis in Work", "APt7j0WUEAIFUyyzVZgA", 1, "");
-      assertEnumEntry(enumType.valueOf(2), "Completed -- Passed", "APt7j0YZq1AjCER1qzAA", 2, "");
-      assertEnumEntry(enumType.valueOf(3), "Completed -- With Issues", "APt7j0aZWF2BJc_BqnQA", 3, "");
-      assertEnumEntry(enumType.valueOf(4), "Completed -- With Issues Resolved", "APt7j0cv9B1ImjckeTAA", 4, "");
-      assertEnumEntry(enumType.valueOf(5), "Partially Complete", "AAvULbOIbxhPUO_oDFQA", 5, "is a partial");
+      assertEnumEntry(enumType.valueOf(0), "Not Performed", 0, "it was not performed");
+      assertEnumEntry(enumType.valueOf(1), "Completed -- Analysis in Work", 1, "");
+      assertEnumEntry(enumType.valueOf(2), "Completed -- Passed", 2, "");
+      assertEnumEntry(enumType.valueOf(3), "Completed -- With Issues", 3, "");
+      assertEnumEntry(enumType.valueOf(4), "Completed -- With Issues Resolved", 4, "");
+      assertEnumEntry(enumType.valueOf(5), "Partially Complete", 5, "is a partial");
 
       //@formatter:off
-      assertEnumEntry(enumType.valueOf("Not Performed"), "Not Performed", "APt7jzRPv2HBlrjQZXAA", 0, "it was not performed");
-      assertEnumEntry(enumType.valueOf("Completed -- Analysis in Work"), "Completed -- Analysis in Work", "APt7j0WUEAIFUyyzVZgA", 1, "");
-      assertEnumEntry(enumType.valueOf("Completed -- Passed"), "Completed -- Passed", "APt7j0YZq1AjCER1qzAA", 2, "");
-      assertEnumEntry(enumType.valueOf("Completed -- With Issues"), "Completed -- With Issues", "APt7j0aZWF2BJc_BqnQA", 3, "");
-      assertEnumEntry(enumType.valueOf("Completed -- With Issues Resolved"), "Completed -- With Issues Resolved", "APt7j0cv9B1ImjckeTAA", 4, "");
-      assertEnumEntry(enumType.valueOf("Partially Complete"), "Partially Complete", "AAvULbOIbxhPUO_oDFQA", 5, "is a partial");
-    
-      assertEnumEntry(enumType.getEntryByGuid("APt7jzRPv2HBlrjQZXAA"), "Not Performed", "APt7jzRPv2HBlrjQZXAA", 0, "it was not performed");
-      assertEnumEntry(enumType.getEntryByGuid("APt7j0WUEAIFUyyzVZgA"), "Completed -- Analysis in Work", "APt7j0WUEAIFUyyzVZgA", 1, "");
-      assertEnumEntry(enumType.getEntryByGuid("APt7j0YZq1AjCER1qzAA"), "Completed -- Passed", "APt7j0YZq1AjCER1qzAA", 2, "");
-      assertEnumEntry(enumType.getEntryByGuid("APt7j0aZWF2BJc_BqnQA"), "Completed -- With Issues", "APt7j0aZWF2BJc_BqnQA", 3, "");
-      assertEnumEntry(enumType.getEntryByGuid("APt7j0cv9B1ImjckeTAA"), "Completed -- With Issues Resolved", "APt7j0cv9B1ImjckeTAA", 4, "");
-      assertEnumEntry(enumType.getEntryByGuid("AAvULbOIbxhPUO_oDFQA"), "Partially Complete", "AAvULbOIbxhPUO_oDFQA", 5, "is a partial");
+      assertEnumEntry(enumType.valueOf("Not Performed"), "Not Performed",  0, "it was not performed");
+      assertEnumEntry(enumType.valueOf("Completed -- Analysis in Work"), "Completed -- Analysis in Work",  1, "");
+      assertEnumEntry(enumType.valueOf("Completed -- Passed"), "Completed -- Passed",2, "");
+      assertEnumEntry(enumType.valueOf("Completed -- With Issues"), "Completed -- With Issues",  3, "");
+      assertEnumEntry(enumType.valueOf("Completed -- With Issues Resolved"), "Completed -- With Issues Resolved",  4, "");
+      assertEnumEntry(enumType.valueOf("Partially Complete"), "Partially Complete",  5, "is a partial");
       //@formatter:on
 
       Iterator<String> iterator = enumType.valuesAsOrderedStringSet().iterator();
@@ -654,9 +647,8 @@ public class OrcsTypesTest {
       assertEquals("Partially Complete", iterator.next());
    }
 
-   private void assertEnumEntry(EnumEntry actual, String name, String uuid, int ordinal, String description) {
+   private void assertEnumEntry(EnumEntry actual, String name, int ordinal, String description) {
       assertEquals(name, actual.getName());
-      assertEquals(uuid, actual.getGuid());
       assertEquals(ordinal, actual.ordinal());
       assertEquals(description, actual.getDescription());
    }
@@ -691,14 +683,14 @@ public class OrcsTypesTest {
 
       EnumEntry[] values = enumType.values();
 
-      assertEnumEntry(values[0], "Completed -- Analysis in Work", "APt7j0WUEAIFUyyzVZgA", 1, "");
-      assertEnumEntry(values[1], "Completed -- Passed", "APt7j0YZq1AjCER1qzAA", 2, "");
-      assertEnumEntry(values[2], "Completed -- With Issues Resolved", "APt7j0cv9B1ImjckeTAA", 3, "");
+      assertEnumEntry(values[0], "Completed -- Analysis in Work", 1, "");
+      assertEnumEntry(values[1], "Completed -- Passed", 2, "");
+      assertEnumEntry(values[2], "Completed -- With Issues Resolved", 3, "");
 
-      assertEnumEntry(values[3], "In Work", "CArJmMckZm_uUjBpStQA", 5, "this is in work");
+      assertEnumEntry(values[3], "In Work", 5, "this is in work");
 
-      assertEnumEntry(values[4], "Not Performed", "APt7jzRPv2HBlrjQZXAA", 0, "it was not performed");
-      assertEnumEntry(values[5], "Partially Complete", "AAvULbOIbxhPUO_oDFQA", 4, "is a partial");
+      assertEnumEntry(values[4], "Not Performed", 0, "it was not performed");
+      assertEnumEntry(values[5], "Partially Complete", 4, "is a partial");
    }
 
    @Test

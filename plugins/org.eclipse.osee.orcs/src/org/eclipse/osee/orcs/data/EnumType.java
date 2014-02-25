@@ -22,7 +22,7 @@ public interface EnumType extends Identifiable<Long>, FullyNamed {
 
    EnumEntry[] values();
 
-   EnumEntry getEntryByGuid(String entryGuid);
+   EnumEntry getEntryByName(String entryName);
 
    Set<String> valuesAsOrderedStringSet();
 

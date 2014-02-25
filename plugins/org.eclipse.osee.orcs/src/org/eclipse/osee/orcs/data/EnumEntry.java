@@ -12,12 +12,11 @@ package org.eclipse.osee.orcs.data;
 
 import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.jdk.core.type.HasDescription;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface EnumEntry extends Identifiable<String>, FullyNamed, HasDescription {
+public interface EnumEntry extends FullyNamed, HasDescription {
 
    int ordinal();
 

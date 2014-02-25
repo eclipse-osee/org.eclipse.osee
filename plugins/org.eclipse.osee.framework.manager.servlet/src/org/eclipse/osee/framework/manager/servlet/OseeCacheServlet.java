@@ -359,7 +359,6 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
          for (EnumEntry entry : type.values()) {
             enumEntryRows.add(new String[] {
                String.valueOf(type.getGuid()),
-               entry.getGuid(),
                entry.getName(),
                String.valueOf(entry.ordinal()),
                entry.getDescription()});

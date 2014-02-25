@@ -48,10 +48,10 @@ public final class EnumTypeImpl extends FullyNamedIdentity<Long> implements Enum
    }
 
    @Override
-   public EnumEntry getEntryByGuid(String entryGuid) {
+   public EnumEntry getEntryByName(String entryName) {
       EnumEntry toReturn = null;
       for (EnumEntry entry : getValues()) {
-         if (entry.getGuid().equals(entryGuid)) {
+         if (entry.getName().equals(entryName)) {
             toReturn = entry;
             break;
          }

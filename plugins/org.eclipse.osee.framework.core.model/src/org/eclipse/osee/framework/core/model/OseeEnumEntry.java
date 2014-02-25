@@ -10,39 +10,45 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model;
 
+import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
+import org.eclipse.osee.framework.jdk.core.type.HasDescription;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OseeEnumEntry extends AbstractOseeType<String> {
-   private final static String ENUM_ENTRY_ORDINAL_FIELD = "osee.enum.entry.ordinal.field";
-   private final static String ENUM_ENTRY_DESCRIPTION_FIELD = "osee.enum.entry.description.field";
+public class OseeEnumEntry implements FullyNamed, HasDescription {
 
-   public OseeEnumEntry(String guid, String name, int ordinal, String description) {
-      super(guid, name);
-      addField(ENUM_ENTRY_ORDINAL_FIELD, new OseeField<Integer>());
-      setOrdinal(ordinal);
-      addField(ENUM_ENTRY_DESCRIPTION_FIELD, new OseeField<String>());
-      setDescription(description);
+   private int ordinal;
+   private String description, name;
+
+   public OseeEnumEntry(String name, int ordinal, String description) {
+      this.name = name;
+      this.ordinal = ordinal;
+      this.description = description;
    }
 
    public int ordinal() {
-      return getFieldValueLogException(Integer.MIN_VALUE, ENUM_ENTRY_ORDINAL_FIELD);
+      return ordinal;
    }
 
    public void setOrdinal(int ordinal) {
-      setFieldLogException(ENUM_ENTRY_ORDINAL_FIELD, ordinal);
+      this.ordinal = ordinal;
    }
 
    public void setDescription(String description) {
-      setFieldLogException(ENUM_ENTRY_DESCRIPTION_FIELD, Strings.isValid(description) ? description : "");
+      this.description = description;
+   }
+
+   public void setName(String name) {
+      this.name = name;
    }
 
    @Override
    public String getDescription() {
-      return getFieldValueLogException("", ENUM_ENTRY_DESCRIPTION_FIELD);
+      return description;
    }
 
    public Pair<String, Integer> asPair() {
@@ -77,5 +83,28 @@ public class OseeEnumEntry extends AbstractOseeType<String> {
          description = " - " + getDescription();
       }
       return description;
+   }
+
+   @Override
+   public String getName() {
+      return name;
+   }
+
+   @Override
+   public int compareTo(Named o) {
+      if (o != null && o.getName() != null && getName() != null) {
+         return getName().compareTo(o.getName());
+      }
+      return -1;
+   }
+
+   @Override
+   public String getUnqualifiedName() {
+      String name = getName();
+      if (Strings.isValid(name)) {
+         int index = name.lastIndexOf('.');
+         name = name.substring(index + 1);
+      }
+      return name;
    }
 }

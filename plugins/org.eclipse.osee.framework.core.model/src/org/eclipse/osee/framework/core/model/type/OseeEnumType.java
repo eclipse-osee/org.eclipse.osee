@@ -60,10 +60,10 @@ public class OseeEnumType extends AbstractOseeType<Long> {
       return entries.toArray(new OseeEnumEntry[entries.size()]);
    }
 
-   public OseeEnumEntry getEntryByGuid(String entryGuid) throws OseeCoreException {
+   public OseeEnumEntry getEntryByName(String entryName) throws OseeCoreException {
       Collection<OseeEnumEntry> values = getFieldValue(OSEE_ENUM_TYPE_ENTRIES_FIELD);
       for (OseeEnumEntry entry : values) {
-         if (entry.getGuid().equals(entryGuid)) {
+         if (entry.getName().equals(entryName)) {
             return entry;
          }
       }

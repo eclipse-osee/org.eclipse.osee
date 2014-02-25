@@ -41,15 +41,12 @@ public class EnumEntryField extends CollectionField<OseeEnumEntry> {
 
          String nameToCheck = entry.getName();
          int ordinalToCheck = entry.ordinal();
-         String guidToCheck = entry.getGuid();
 
          for (OseeEnumEntry existingEntry : currentEntries) {
-            if (existingEntry.getGuid().equals(guidToCheck)) {
+            if (existingEntry.getName().equals(nameToCheck)) {
                wasFound = true;
                existingEntry.setName(nameToCheck);
                existingEntry.setOrdinal(ordinalToCheck);
-            } else if (existingEntry.getName().equals(nameToCheck)) {
-               wasFound = true;
             }
             if (wasFound) {
                toReturn.add(existingEntry);
@@ -89,25 +86,4 @@ public class EnumEntryField extends CollectionField<OseeEnumEntry> {
       }
    }
 
-   @Override
-   public void clearDirty() {
-      super.clearDirty();
-      for (OseeEnumEntry entry : get()) {
-         entry.clearDirty();
-      }
-   }
-
-   @Override
-   public boolean isDirty() {
-      boolean result = super.isDirty();
-      if (!result) {
-         for (OseeEnumEntry entry : get()) {
-            if (entry.isDirty()) {
-               result = true;
-               break;
-            }
-         }
-      }
-      return result;
-   }
 }

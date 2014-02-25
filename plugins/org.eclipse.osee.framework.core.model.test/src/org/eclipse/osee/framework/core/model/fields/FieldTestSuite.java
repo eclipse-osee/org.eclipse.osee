@@ -20,7 +20,6 @@ ArtifactSuperTypeFieldTest.class, //
    AssociatedArtifactFieldTest.class, //
    BranchAliasesFieldTest.class, //
    CollectionFieldTest.class, //
-   EnumEntryFieldTest.class, //
    OseeFieldMainTest.class, //
    UniqueIdFieldTest.class, //
 })

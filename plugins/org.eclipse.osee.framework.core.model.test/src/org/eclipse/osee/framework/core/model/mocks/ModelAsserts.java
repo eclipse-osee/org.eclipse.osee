@@ -186,7 +186,6 @@ public class ModelAsserts {
    public static void checkEnumEntry(String expectedName, int expectedOrdinal, OseeEnumType parent, OseeEnumEntry entry) {
       Assert.assertEquals(expectedName, entry.getName());
       Assert.assertEquals(expectedOrdinal, entry.ordinal());
-      Assert.assertEquals(parent.getId(), entry.getId());
       Assert.assertEquals(parent.getName(), entry.getName());
    }
 
@@ -203,7 +202,6 @@ public class ModelAsserts {
    public static void checkEnumEntry(OseeEnumEntry expected, OseeEnumEntry actual) {
       Assert.assertEquals(expected.getName(), actual.getName());
       Assert.assertEquals(expected.ordinal(), actual.ordinal());
-      Assert.assertEquals(expected.getGuid(), actual.getGuid());
    }
 
    public static void checkInheritance(AbstractOseeCache<Long, ArtifactType> artCache, Long artTypeGuid, Long... superTypeGuids) throws OseeCoreException {

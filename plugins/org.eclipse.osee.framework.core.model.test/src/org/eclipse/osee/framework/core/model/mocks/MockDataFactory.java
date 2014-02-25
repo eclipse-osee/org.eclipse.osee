@@ -101,7 +101,7 @@ public final class MockDataFactory {
    }
 
    public static OseeEnumEntry createEnumEntry(int index) {
-      return new OseeEnumEntry(GUID.create(), "entry_" + index, Math.abs(index * 37), "description");
+      return new OseeEnumEntry("entry_" + index, Math.abs(index * 37), "description");
    }
 
    public static OseeEnumType createEnumType(int index) {
