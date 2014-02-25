@@ -125,7 +125,7 @@ public class AtsServerImpl implements IAtsServer {
             attributeResolverService);
 
       atsLogFactory = AtsCoreFactory.newLogFactory();
-      atsStateFactory = AtsCoreFactory.newStateFactory(attributeResolverService, userService);
+      atsStateFactory = AtsCoreFactory.newStateFactory(attributeResolverService, userService, notifyService);
       atsStoreFactory = new AtsStoreFactoryImpl(this);
       workItemPage = new WorkItemPage(orcsApi, logger, this, orcsApi.getResourceRegistry());
 

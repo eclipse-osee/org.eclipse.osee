@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.internal.state;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
@@ -25,10 +26,12 @@ public class AtsStateFactory implements IAtsStateFactory {
 
    private final IAttributeResolver attrResolver;
    private final IAtsWorkStateFactory workStateFactory;
+   private final IAtsNotificationService notifyService;
 
-   public AtsStateFactory(IAttributeResolver attrResolver, IAtsWorkStateFactory workStateFactory) {
+   public AtsStateFactory(IAttributeResolver attrResolver, IAtsWorkStateFactory workStateFactory, IAtsNotificationService notifyService) {
       this.attrResolver = attrResolver;
       this.workStateFactory = workStateFactory;
+      this.notifyService = notifyService;
    }
 
    @Override
@@ -48,7 +51,8 @@ public class AtsStateFactory implements IAtsStateFactory {
 
    @Override
    public void writeToStore(IAtsWorkItem workItem, IAtsChangeSet changes) throws OseeCoreException {
-      (new StateManagerStore()).writeToStore(workItem, attrResolver, changes, workStateFactory);
+      StateManagerStore.writeToStore(workItem, (StateManager) workItem.getStateMgr(), attrResolver, changes,
+         workStateFactory, notifyService);
    }
 
    @Override

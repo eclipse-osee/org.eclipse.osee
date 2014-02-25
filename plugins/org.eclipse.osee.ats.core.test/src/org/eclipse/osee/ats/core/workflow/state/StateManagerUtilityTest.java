@@ -10,20 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow.state;
 
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -33,7 +29,6 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.internal.state.AtsWorkStateFactory;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
-import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.workflow.TestState;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -162,87 +157,6 @@ public class StateManagerUtilityTest {
       Assert.assertTrue(result.getText().contains(
          "StateManager: State [Implement] modified was [Implement;;;] is [Implement;;1.3;]"));
 
-   }
-
-   @Test
-   public void testWriteToStore() {
-      StateManager stateMgr = new StateManager(workItem);
-      TestState state = new TestState("Analyze", StateType.Working);
-      StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
-      Assert.assertEquals("Analyze", stateMgr.getCurrentStateName());
-      Assert.assertEquals(2, stateMgr.getAssignees().size());
-      when(workStateFactory.toStoreStr(stateMgr, "Analyze")).thenReturn("Analyze;<Joe><Kay>;;");
-      StateManagerUtility.writeToStore(workItem, stateMgr, attrResolver, changes, workStateFactory, notifyService);
-
-      verify(attrResolver).setSoleAttributeValue(eq(workItem), eq(AtsAttributeTypes.CurrentState),
-         eq("Analyze;<Joe><Kay>;;"), eq(changes));
-   }
-
-   @Test
-   public void testLoad() {
-      StateManager stateMgr = new StateManager(workItem);
-      stateMgr.setCurrentStateName("Analyze");
-      TestState state = new TestState("Analyze", StateType.Working);
-      StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
-      Assert.assertEquals("Analyze", stateMgr.getCurrentStateName());
-      Assert.assertEquals(2, stateMgr.getAssignees().size());
-      when(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "")).thenReturn(
-         "Analyze;<Joe><Kay>;;");
-      WorkState currentState = new WorkStateImpl("Analyze", Arrays.asList(Joe, Kay), 0, 0);
-      when(workStateFactory.fromStoreStr(eq("Analyze;<Joe><Kay>;;"))).thenReturn(currentState);
-
-      StateManagerUtility.load(workItem, stateMgr, attrResolver, workStateFactory);
-
-      verify(attrResolver).getSoleAttributeValue(eq(workItem), eq(AtsAttributeTypes.CurrentState), eq(""));
-   }
-
-   @Test
-   public void testPostPersistNotifyReset() {
-      StateManager stateMgr = new StateManager(workItem);
-      stateMgr.setCurrentStateName("Analyze");
-      TestState state = new TestState("Analyze", StateType.Working);
-      StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
-      Assert.assertEquals("Analyze", stateMgr.getCurrentStateName());
-      Assert.assertEquals(2, stateMgr.getAssignees().size());
-      when(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "")).thenReturn(
-         "Analyze;<Joe><Kay>;;");
-      WorkState currentState = new WorkStateImpl("Analyze", Arrays.asList(Joe, Kay), 0, 0);
-      when(workStateFactory.fromStoreStr(eq("Analyze;<Joe><Kay>;;"))).thenReturn(currentState);
-
-      StateManagerUtility.postPersistNotifyReset(workItem, stateMgr, attrResolver, workStateFactory, notifyService);
-
-      List<IAtsUser> assigneesAdded = Arrays.asList(Joe, Kay);
-      verify(notifyService).notify(workItem, assigneesAdded, AtsNotifyType.Assigned);
-   }
-
-   @Test
-   public void testGetPostPersistExecutionListener() {
-      StateManager stateMgr = new StateManager(workItem);
-      stateMgr.setCurrentStateName("Analyze");
-      TestState state = new TestState("Analyze", StateType.Working);
-      StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
-      Assert.assertEquals("Analyze", stateMgr.getCurrentStateName());
-      Assert.assertEquals(2, stateMgr.getAssignees().size());
-
-      when(workItem.getStateMgr()).thenReturn(stateMgr);
-      List<Object> objects = new ArrayList<Object>();
-      when(changes.getObjects()).thenReturn(objects);
-      IExecuteListener listener =
-         StateManagerUtility.getPostPersistExecutionListener(attrResolver, workStateFactory, notifyService);
-
-      when(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "")).thenReturn(
-         "Analyze;<Joe><Kay>;;");
-      WorkState currentState = new WorkStateImpl("Analyze", Arrays.asList(Joe, Kay), 0, 0);
-      when(workStateFactory.fromStoreStr(eq("Analyze;<Joe><Kay>;;"))).thenReturn(currentState);
-
-      objects.add(workItem);
-      objects.add("now");
-
-      listener = StateManagerUtility.getPostPersistExecutionListener(attrResolver, workStateFactory, notifyService);
-      listener.changesStored(changes);
-
-      List<IAtsUser> assigneesAdded = Arrays.asList(Joe, Kay);
-      verify(notifyService).notify(workItem, assigneesAdded, AtsNotifyType.Assigned);
    }
 
 }

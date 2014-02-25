@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.util;
 
+import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
@@ -27,8 +28,8 @@ public final class AtsCoreFactory {
       //
    }
 
-   public static IAtsStateFactory newStateFactory(IAttributeResolver attrResolver, IAtsUserService userService) {
-      return new AtsStateFactory(attrResolver, new AtsWorkStateFactory(userService));
+   public static IAtsStateFactory newStateFactory(IAttributeResolver attrResolver, IAtsUserService userService, IAtsNotificationService notifyService) {
+      return new AtsStateFactory(attrResolver, new AtsWorkStateFactory(userService), notifyService);
    }
 
    public static IAtsLogFactory newLogFactory() {

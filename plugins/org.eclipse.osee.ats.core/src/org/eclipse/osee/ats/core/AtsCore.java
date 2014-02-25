@@ -142,7 +142,7 @@ public class AtsCore {
 
    public static IAtsStateFactory getStateFactory() {
       if (stateFactory == null) {
-         stateFactory = new AtsStateFactory(attrResolver, getWorkStateFactory());
+         stateFactory = new AtsStateFactory(attrResolver, getWorkStateFactory(), getNotifyService());
       }
       return stateFactory;
    }
