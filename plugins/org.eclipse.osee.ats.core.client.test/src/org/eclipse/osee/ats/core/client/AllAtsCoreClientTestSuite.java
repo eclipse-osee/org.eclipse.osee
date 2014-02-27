@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.core.client;
 
 import org.eclipse.osee.ats.core.client.internal.config.InternalConfigTestSuite;
 import org.eclipse.osee.ats.core.client.internal.store.InternalStoreTestSuite;
-import org.eclipse.osee.ats.core.client.internal.workdef.InternalWorkDefTestSuite;
 import org.eclipse.osee.ats.core.client.review.ReviewTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -21,11 +20,7 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   InternalConfigTestSuite.class,
-   InternalStoreTestSuite.class,
-   InternalWorkDefTestSuite.class,
-   ReviewTestSuite.class})
+@Suite.SuiteClasses({InternalConfigTestSuite.class, InternalStoreTestSuite.class, ReviewTestSuite.class})
 public class AllAtsCoreClientTestSuite {
    // Test Suite
 }
