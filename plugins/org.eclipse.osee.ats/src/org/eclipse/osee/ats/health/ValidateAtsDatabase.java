@@ -184,6 +184,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       //      ids.add(new Integer(1070598));
       //      artIdLists.add(ids);
 
+      // Un-comment to load from guid list
+      //      artIdLists = getFromGuids();
+
       if (monitor != null) {
          monitor.beginTask(getName(), artIdLists.size());
       }
@@ -270,6 +273,16 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       if (monitor != null) {
          xResultData.log(monitor, "Completed processing " + count + " artifacts.");
       }
+   }
+
+   private List<Collection<Integer>> getFromGuids() {
+      List<String> guids = Arrays.asList("AD3zXUb9kkF08ltQPwQA", "AD3zWI5UrUmhDxwBekAA", "BPLQGf99g2qG_LoknEQA");
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(guids, AtsUtil.getAtsBranchToken());
+      List<Integer> artIds = new ArrayList<Integer>();
+      for (Artifact art : artifacts) {
+         artIds.add(art.getArtId());
+      }
+      return Arrays.asList((Collection<Integer>) artIds);
    }
 
    public void testCompletedCancelledStateAttributesSetWithPersist(Collection<Artifact> artifacts) {
