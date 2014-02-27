@@ -665,7 +665,10 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                   break;
 
                case PARAGRAPH_HEADING:
-                  if (!inHeaderRow) {
+                  String rowLower = rowValue.trim().toLowerCase();
+                  boolean emptyValue =
+                     (rowLower.equals("") || rowLower.equals("<br></br>") || rowLower.equals("<br>") || rowValue.equals("<br />"));
+                  if (!inHeaderRow && !emptyValue) {
                      paragraphName = rowValue.trim();
                   }
                   break;
