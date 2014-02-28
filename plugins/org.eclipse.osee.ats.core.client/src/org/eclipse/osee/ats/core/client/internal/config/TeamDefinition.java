@@ -75,7 +75,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
       if (!allowCreateBranch) {
          return new Result(false, "Branch creation disabled for Team Definition [" + this + "]");
       }
-      if (!Strings.isValid(getBaslineBranchGuid())) {
+      if (!Strings.isValid(getBaselineBranchGuid())) {
          return new Result(false, "Parent Branch not configured for Team Definition [" + this + "]");
       }
       return Result.TrueResult;
@@ -86,7 +86,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
       if (!allowCommitBranch) {
          return new Result(false, "Team Definition [" + this + "] not configured to allow branch commit.");
       }
-      if (!Strings.isValid(getBaslineBranchGuid())) {
+      if (!Strings.isValid(getBaselineBranchGuid())) {
          return new Result(false, "Parent Branch not configured for Team Definition [" + this + "]");
       }
       return Result.TrueResult;
@@ -270,7 +270,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
     */
    @Override
    public String getTeamBranchGuid() {
-      String guid = getBaslineBranchGuid();
+      String guid = getBaselineBranchGuid();
       if (GUID.isValid(guid)) {
          return guid;
       } else {
@@ -298,7 +298,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
    }
 
    @Override
-   public String getBaslineBranchGuid() {
+   public String getBaselineBranchGuid() {
       return baselineBranchGuid;
    }
 

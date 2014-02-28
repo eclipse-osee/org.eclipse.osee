@@ -4,7 +4,7 @@
     editorDirectory="/org.eclipse.osee.ats.dsl.editor/src" modelPluginID="org.eclipse.osee.ats.dsl"
     forceOverwrite="true" modelName="AtsDsl" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
     complianceLevel="5.0" copyrightFields="false" editPluginID="org.eclipse.osee.ats.dsl.edit"
-    editorPluginID="org.eclipse.osee.ats.dsl.editor" runtimeVersion="2.8">
+    editorPluginID="org.eclipse.osee.ats.dsl.editor" runtimeVersion="2.9">
   <genPackages prefix="AtsDsl" basePackage="org.eclipse.osee.ats.dsl" disposableProviderFactory="true"
       ecorePackage="AtsDsl.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="AtsDsl.ecore#//BooleanDef">

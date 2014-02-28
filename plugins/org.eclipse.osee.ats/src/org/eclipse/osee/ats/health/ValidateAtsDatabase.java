@@ -631,7 +631,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                AtsClientService.get().getAtsConfig().getSoleByGuid(artifact.getGuid(), IAtsVersion.class);
             if (version != null) {
                try {
-                  String parentBranchGuid = version.getBaslineBranchGuid();
+                  String parentBranchGuid = version.getBaselineBranchGuid();
                   if (Strings.isValid(parentBranchGuid)) {
                      validateBranchGuid(version, parentBranchGuid, results);
                   }
@@ -665,7 +665,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             for (IAtsVersion parallelVersion : version.getParallelVersions()) {
                if (parallelVersion != null) {
                   try {
-                     String parentBranchGuid = parallelVersion.getBaslineBranchGuid();
+                     String parentBranchGuid = parallelVersion.getBaselineBranchGuid();
                      if (!Strings.isValid(parentBranchGuid)) {
                         results.log(
                            artifact,
@@ -695,7 +695,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             IAtsTeamDefinition teamDef =
                AtsClientService.get().getAtsConfig().getSoleByGuid(art.getGuid(), IAtsTeamDefinition.class);
             try {
-               String parentBranchGuid = teamDef.getBaslineBranchGuid();
+               String parentBranchGuid = teamDef.getBaselineBranchGuid();
                if (Strings.isValid(parentBranchGuid)) {
                   validateBranchGuid(teamDef, parentBranchGuid, results);
                }
@@ -801,7 +801,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             results.log(
                "validateBranchGuid",
                String.format(
-                  "Error: [%s][%s][%s] has Parent Branch Id attribute [%s][%s] that is a [%s] branch; should be a BASLINE branch",
+                  "Error: [%s][%s][%s] has Parent Branch Id attribute [%s][%s] that is a [%s] branch; should be a BASELINE branch",
                   name.getName(), name.getGuid(), name, branch.getBranchType().name(), parentBranchGuid, branch));
          }
       } catch (BranchDoesNotExist ex) {

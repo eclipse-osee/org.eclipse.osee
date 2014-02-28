@@ -43,7 +43,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
    }
 
    @Override
-   public String getBaslineBranchGuid() {
+   public String getBaselineBranchGuid() {
       return null;
    }
 

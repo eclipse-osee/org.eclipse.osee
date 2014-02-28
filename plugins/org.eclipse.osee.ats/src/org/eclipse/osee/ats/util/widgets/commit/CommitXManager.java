@@ -91,9 +91,9 @@ public class CommitXManager extends XViewer {
          ICommitConfigItem configArt = null;
          if (firstSelectedArt instanceof ICommitConfigItem) {
             configArt = (ICommitConfigItem) firstSelectedArt;
-            String baslineBranchGuid = configArt.getBaslineBranchGuid();
-            if (Strings.isValid(baslineBranchGuid)) {
-               branch = BranchManager.getBranchByGuid(baslineBranchGuid);
+            String baselineBranchGuid = configArt.getBaselineBranchGuid();
+            if (Strings.isValid(baselineBranchGuid)) {
+               branch = BranchManager.getBranchByGuid(baselineBranchGuid);
             }
             displayName = configArt.toString();
          } else if (firstSelectedArt instanceof TransactionRecord) {

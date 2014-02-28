@@ -71,7 +71,7 @@ public class VersionArtifactStoreTest {
       Assert.assertFalse(version.isLocked());
       Assert.assertFalse(version.isReleased());
       Assert.assertFalse(version.isNextVersion());
-      Assert.assertEquals("", version.getBaslineBranchGuid());
+      Assert.assertEquals("", version.getBaselineBranchGuid());
       Assert.assertEquals("", version.getDescription());
       Assert.assertEquals("", version.getFullName());
       Assert.assertNull(version.getReleaseDate());
@@ -95,7 +95,7 @@ public class VersionArtifactStoreTest {
       Assert.assertTrue(version.isLocked());
       Assert.assertTrue(version.isReleased());
       Assert.assertTrue(version.isNextVersion());
-      Assert.assertEquals("guid1234", version.getBaslineBranchGuid());
+      Assert.assertEquals("guid1234", version.getBaselineBranchGuid());
       Assert.assertEquals("description", version.getDescription());
       Assert.assertEquals("this is full name", version.getFullName());
       Assert.assertEquals(releaseDate, version.getReleaseDate());

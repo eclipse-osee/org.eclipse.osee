@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2013 Boeing.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Boeing - initial API and implementation
- *******************************************************************************/
 package org.eclipse.osee.ats.dsl.ui.contentassist.antlr.internal; 
 
 import java.io.InputStream;
@@ -32,7 +22,7 @@ import java.util.ArrayList;
 @SuppressWarnings("all")
 public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_STRING", "RULE_INT", "RULE_ID", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'GetOrCreate'", "'None'", "'AsDefault'", "'OverrideAttributeValidation'", "'RequireStateHourSpentPrompt'", "'AddDecisionValidateBlockingReview'", "'AddDecisionValidateNonBlockingReview'", "'AllowTransitionWithWorkingBranch'", "'ForceAssigneesToTeamLeads'", "'RequireTargetedVersion'", "'AllowPrivilegedEditToTeamMember'", "'AllowPrivilegedEditToTeamMemberAndOriginator'", "'AllowPrivilegedEditToAll'", "'AllowEditToAll'", "'AllowAssigneeToAll'", "'AllowTransitionWithoutTaskCompletion'", "'REQUIRED_FOR_TRANSITION'", "'NOT_REQUIRED_FOR_TRANSITION'", "'REQUIRED_FOR_COMPLETION'", "'NOT_REQUIRED_FOR_COMPLETION'", "'ENABLED'", "'NOT_ENABLED'", "'EDITABLE'", "'NOT_EDITABLE'", "'FUTURE_DATE_REQUIRED'", "'NOT_FUTURE_DATE_REQUIRED'", "'MULTI_SELECT'", "'HORIZONTAL_LABEL'", "'VERTICAL_LABEL'", "'LABEL_AFTER'", "'LABEL_BEFORE'", "'NO_LABEL'", "'SORTED'", "'ADD_DEFAULT_VALUE'", "'NO_DEFAULT_VALUE'", "'BEGIN_COMPOSITE_4'", "'BEGIN_COMPOSITE_6'", "'BEGIN_COMPOSITE_8'", "'BEGIN_COMPOSITE_10'", "'END_COMPOSITE'", "'FILL_NONE'", "'FILL_HORIZONTALLY'", "'FILL_VERTICALLY'", "'ALIGN_LEFT'", "'ALIGN_RIGHT'", "'ALIGN_CENTER'", "'Working'", "'Completed'", "'Cancelled'", "'BLACK'", "'WHITE'", "'RED'", "'DARK_RED'", "'GREEN'", "'DARK_GREEN'", "'YELLOW'", "'DARK_YELLOW'", "'BLUE'", "'DARK_BLUE'", "'MAGENTA'", "'DARK_MAGENTA'", "'CYAN'", "'DARK_CYAN'", "'GRAY'", "'DARK_GRAY'", "'True'", "'False'", "'TransitionTo'", "'CreateBranch'", "'CommitBranch'", "'Transition'", "'Commit'", "'workDefinition'", "'userDefinition'", "'teamDefinition'", "'actionableItem'", "'{'", "'}'", "'active'", "'userId'", "'email'", "'isAdmin'", "'guid'", "'staticId'", "'lead'", "'member'", "'privileged'", "'relatedTaskWorkDefinition'", "'accessContextId'", "'version'", "'children'", "'actionable'", "'owner'", "'team'", "'next'", "'released'", "'allowCreateBranch'", "'allowCommitBranch'", "'baslineBranchGuid'", "'parallelVersion'", "'id'", "'startState'", "'widgetDefinition'", "'attributeName'", "'description'", "'xWidgetName'", "'defaultValue'", "'height'", "'option'", "'minConstraint'", "'maxConstraint'", "'widget'", "'attributeWidget'", "'with'", "'state'", "'type'", "'ordinal'", "'rule'", "'percentWeight'", "'recommendedPercentComplete'", "'color'", "'decisionReview'", "'decisionReviewDefinition'", "'title'", "'blockingType'", "'onEvent'", "'relatedToState'", "'assignee'", "'autoTransitionToDecision'", "'peerReview'", "'peerReviewDefinition'", "'location'", "'followup by'", "'named'", "'to'", "'layout'", "'layoutCopyFrom'", "'composite'", "'numColumns'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_STRING", "RULE_INT", "RULE_ID", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'GetOrCreate'", "'None'", "'AsDefault'", "'OverrideAttributeValidation'", "'RequireStateHourSpentPrompt'", "'AddDecisionValidateBlockingReview'", "'AddDecisionValidateNonBlockingReview'", "'AllowTransitionWithWorkingBranch'", "'ForceAssigneesToTeamLeads'", "'RequireTargetedVersion'", "'AllowPrivilegedEditToTeamMember'", "'AllowPrivilegedEditToTeamMemberAndOriginator'", "'AllowPrivilegedEditToAll'", "'AllowEditToAll'", "'AllowAssigneeToAll'", "'AllowTransitionWithoutTaskCompletion'", "'REQUIRED_FOR_TRANSITION'", "'NOT_REQUIRED_FOR_TRANSITION'", "'REQUIRED_FOR_COMPLETION'", "'NOT_REQUIRED_FOR_COMPLETION'", "'ENABLED'", "'NOT_ENABLED'", "'EDITABLE'", "'NOT_EDITABLE'", "'FUTURE_DATE_REQUIRED'", "'NOT_FUTURE_DATE_REQUIRED'", "'MULTI_SELECT'", "'HORIZONTAL_LABEL'", "'VERTICAL_LABEL'", "'LABEL_AFTER'", "'LABEL_BEFORE'", "'NO_LABEL'", "'SORTED'", "'ADD_DEFAULT_VALUE'", "'NO_DEFAULT_VALUE'", "'BEGIN_COMPOSITE_4'", "'BEGIN_COMPOSITE_6'", "'BEGIN_COMPOSITE_8'", "'BEGIN_COMPOSITE_10'", "'END_COMPOSITE'", "'FILL_NONE'", "'FILL_HORIZONTALLY'", "'FILL_VERTICALLY'", "'ALIGN_LEFT'", "'ALIGN_RIGHT'", "'ALIGN_CENTER'", "'Working'", "'Completed'", "'Cancelled'", "'BLACK'", "'WHITE'", "'RED'", "'DARK_RED'", "'GREEN'", "'DARK_GREEN'", "'YELLOW'", "'DARK_YELLOW'", "'BLUE'", "'DARK_BLUE'", "'MAGENTA'", "'DARK_MAGENTA'", "'CYAN'", "'DARK_CYAN'", "'GRAY'", "'DARK_GRAY'", "'True'", "'False'", "'TransitionTo'", "'CreateBranch'", "'CommitBranch'", "'Transition'", "'Commit'", "'workDefinition'", "'userDefinition'", "'teamDefinition'", "'actionableItem'", "'{'", "'}'", "'active'", "'userId'", "'email'", "'isAdmin'", "'guid'", "'staticId'", "'lead'", "'member'", "'privileged'", "'relatedTaskWorkDefinition'", "'accessContextId'", "'version'", "'children'", "'actionable'", "'owner'", "'team'", "'next'", "'released'", "'allowCreateBranch'", "'allowCommitBranch'", "'baselineBranchGuid'", "'parallelVersion'", "'id'", "'startState'", "'widgetDefinition'", "'attributeName'", "'description'", "'xWidgetName'", "'defaultValue'", "'height'", "'option'", "'minConstraint'", "'maxConstraint'", "'widget'", "'attributeWidget'", "'with'", "'state'", "'type'", "'ordinal'", "'rule'", "'percentWeight'", "'recommendedPercentComplete'", "'color'", "'decisionReview'", "'decisionReviewDefinition'", "'title'", "'blockingType'", "'onEvent'", "'relatedToState'", "'assignee'", "'autoTransitionToDecision'", "'peerReview'", "'peerReviewDefinition'", "'location'", "'followup by'", "'named'", "'to'", "'layout'", "'layoutCopyFrom'", "'composite'", "'numColumns'"
     };
     public static final int RULE_ID=6;
     public static final int T__29=29;
@@ -17652,21 +17642,21 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__VersionDef__Group_8__0__Impl"
-    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:6519:1: rule__VersionDef__Group_8__0__Impl : ( 'baslineBranchGuid' ) ;
+    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:6519:1: rule__VersionDef__Group_8__0__Impl : ( 'baselineBranchGuid' ) ;
     public final void rule__VersionDef__Group_8__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:6523:1: ( ( 'baslineBranchGuid' ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:6524:1: ( 'baslineBranchGuid' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:6523:1: ( ( 'baselineBranchGuid' ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:6524:1: ( 'baselineBranchGuid' )
             {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:6524:1: ( 'baslineBranchGuid' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:6525:1: 'baslineBranchGuid'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:6524:1: ( 'baselineBranchGuid' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:6525:1: 'baselineBranchGuid'
             {
-             before(grammarAccess.getVersionDefAccess().getBaslineBranchGuidKeyword_8_0()); 
+             before(grammarAccess.getVersionDefAccess().getBaselineBranchGuidKeyword_8_0()); 
             match(input,109,FOLLOW_109_in_rule__VersionDef__Group_8__0__Impl13413); 
-             after(grammarAccess.getVersionDefAccess().getBaslineBranchGuidKeyword_8_0()); 
+             after(grammarAccess.getVersionDefAccess().getBaselineBranchGuidKeyword_8_0()); 
 
             }
 

@@ -20,7 +20,7 @@ public interface ICommitConfigItem {
 
    public String getName() throws OseeCoreException;
 
-   public String getBaslineBranchGuid() throws OseeCoreException;
+   public String getBaselineBranchGuid() throws OseeCoreException;
 
    public Result isAllowCommitBranchInherited() throws OseeCoreException;
 

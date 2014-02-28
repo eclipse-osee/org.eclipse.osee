@@ -119,7 +119,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);
          for (ICommitConfigItem commitConfigArt : AtsBranchManagerCore.getConfigArtifactsConfiguredToCommitTo(teamArt)) {
-            processTeam(teamArt, BranchManager.getBranchByGuid(commitConfigArt.getBaslineBranchGuid()).getShortName(),
+            processTeam(teamArt, BranchManager.getBranchByGuid(commitConfigArt.getBaselineBranchGuid()).getShortName(),
                attributeType, commitConfigArt, rd);
          }
          x++;

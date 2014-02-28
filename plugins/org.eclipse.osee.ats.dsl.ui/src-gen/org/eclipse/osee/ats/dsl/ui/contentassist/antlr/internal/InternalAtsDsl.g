@@ -6522,11 +6522,11 @@ rule__VersionDef__Group_8__0__Impl
     }
 :
 (
-{ before(grammarAccess.getVersionDefAccess().getBaslineBranchGuidKeyword_8_0()); }
+{ before(grammarAccess.getVersionDefAccess().getBaselineBranchGuidKeyword_8_0()); }
 
-	'baslineBranchGuid' 
+	'baselineBranchGuid' 
 
-{ after(grammarAccess.getVersionDefAccess().getBaslineBranchGuidKeyword_8_0()); }
+{ after(grammarAccess.getVersionDefAccess().getBaselineBranchGuidKeyword_8_0()); }
 )
 
 ;

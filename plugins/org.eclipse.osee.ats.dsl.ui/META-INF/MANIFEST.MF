@@ -28,5 +28,6 @@ Import-Package: org.apache.commons.logging,
  org.eclipse.osee.framework.ui.skynet
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.ats.dsl.ui.contentassist.antlr,
- org.eclipse.osee.ats.dsl.ui.contentassist
+ org.eclipse.osee.ats.dsl.ui.contentassist,
+ org.eclipse.osee.ats.dsl.ui.quickfix
 Bundle-Activator: org.eclipse.osee.ats.dsl.ui.internal.AtsDslActivator

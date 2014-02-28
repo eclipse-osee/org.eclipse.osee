@@ -37,7 +37,7 @@ teamDefinition "Teams" GetOrCreate {
 			version "CIS_Bld_1" {
 				staticId "cis.teamDefHoldingVersions"
 				released True
-				baslineBranchGuid "AyH_f2sSKy3l07fIvDDD"
+				baselineBranchGuid "AyH_f2sSKy3l07fIvDDD"
 			}
 			version "CIS_Bld_2" {
 				staticId "cis.teamDefHoldingVersions"
@@ -50,7 +50,7 @@ teamDefinition "Teams" GetOrCreate {
 
 				teamDefinition "CIS Code" {
 					guid "At2WHxGo4A1nnGWYjgwA"
-					staticId "cis.code"
+					staticId "cis.code" 
 					lead named "Jason Michael"
 					member named "Jason Michael"
 					workDefinition "WorkDef_Team_Demo_Code"
@@ -123,13 +123,13 @@ teamDefinition "Teams" GetOrCreate {
 				guid "A8msa8LTDG36oWAnq3QA"
 				staticId "saw.teamDefHoldingVersions"
 				released True
-				baslineBranchGuid "AyH_f2sSKy3l07fIvAAA"
+				baselineBranchGuid "AyH_f2sSKy3l07fIvAAA"
 			}
 			version "SAW_Bld_2" {
 				guid "A8YqcqyKh3HCkcHfEVwA"
 				staticId "saw.teamDefHoldingVersions"
 				next True allowCreateBranch True allowCommitBranch True
-				baslineBranchGuid "AyH_f2sSKy3l07fIvBBB"
+				baselineBranchGuid "AyH_f2sSKy3l07fIvBBB"
 			}
 			version "SAW_Bld_3" {
 				guid "A8msa8LrcxhyrUTsbuwA"

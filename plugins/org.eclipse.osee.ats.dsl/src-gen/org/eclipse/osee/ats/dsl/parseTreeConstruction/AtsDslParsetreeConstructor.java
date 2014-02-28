@@ -6,14 +6,13 @@ package org.eclipse.osee.ats.dsl.parseTreeConstruction;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.*;
 import org.eclipse.xtext.parsetree.reconstr.IEObjectConsumer;
-import org.eclipse.xtext.parsetree.reconstr.impl.AbstractParseTreeConstructor;
 
 import org.eclipse.osee.ats.dsl.services.AtsDslGrammarAccess;
 
 import com.google.inject.Inject;
 
 @SuppressWarnings("all")
-public class AtsDslParsetreeConstructor extends AbstractParseTreeConstructor {
+public class AtsDslParsetreeConstructor extends org.eclipse.xtext.parsetree.reconstr.impl.AbstractParseTreeConstructor {
 		
 	@Inject
 	private AtsDslGrammarAccess grammarAccess;
@@ -65,15 +64,12 @@ protected class ThisRootNode extends RootToken {
 /************ begin Rule AtsDsl ****************
  *
  * AtsDsl:
- * 
  * 	("workDefinition" workDef=WorkDef)? ("userDefinition" userDef+=UserDef)* ("teamDefinition" teamDef+=TeamDef)*
- * 
  * 	("actionableItem" actionableItemDef+=ActionableItemDef)*;
  *
  **/
 
 // ("workDefinition" workDef=WorkDef)? ("userDefinition" userDef+=UserDef)* ("teamDefinition" teamDef+=TeamDef)*
-// 
 // ("actionableItem" actionableItemDef+=ActionableItemDef)*
 protected class AtsDsl_Group extends GroupToken {
 	
@@ -483,15 +479,12 @@ protected class AtsDsl_ActionableItemDefAssignment_3_1 extends AssignmentToken  
 /************ begin Rule UserDef ****************
  *
  * UserDef:
- * 
  * 	name=USER_DEF_REFERENCE userDefOption+=UserDefOption* ("{" ("active" active=BooleanDef)? ("userId" userId=STRING)?
- * 
  * 	("email" email=STRING)? ("isAdmin" admin=BooleanDef)? "}")?;
  *
  **/
 
 // name=USER_DEF_REFERENCE userDefOption+=UserDefOption* ("{" ("active" active=BooleanDef)? ("userId" userId=STRING)?
-// 
 // ("email" email=STRING)? ("isAdmin" admin=BooleanDef)? "}")?
 protected class UserDef_Group extends GroupToken {
 	
@@ -992,27 +985,18 @@ protected class UserDef_RightCurlyBracketKeyword_2_5 extends KeywordToken  {
 /************ begin Rule TeamDef ****************
  *
  * TeamDef:
- * 
  * 	name=TEAM_DEF_REFERENCE teamDefOption+=TeamDefOption* "{" ("guid" guid=STRING)? ("active" active=BooleanDef)?
- * 
  * 	("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)* ("privileged"
- * 
  * 	privileged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("relatedTaskWorkDefinition"
- * 
  * 	relatedTaskWorkDefinition=STRING)? ("accessContextId" accessContextId+=STRING)* ("version" version+=VersionDef)*
- * 
  * 	("children" "{" ("teamDefinition" children+=TeamDef)+ "}")? "}";
  *
  **/
 
 // name=TEAM_DEF_REFERENCE teamDefOption+=TeamDefOption* "{" ("guid" guid=STRING)? ("active" active=BooleanDef)?
-// 
 // ("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)* ("privileged" privileged+=UserRef)*
-// 
 // ("workDefinition" workDefinition=STRING)? ("relatedTaskWorkDefinition" relatedTaskWorkDefinition=STRING)?
-// 
 // ("accessContextId" accessContextId+=STRING)* ("version" version+=VersionDef)* ("children" "{" ("teamDefinition"
-// 
 // children+=TeamDef)+ "}")? "}"
 protected class TeamDef_Group extends GroupToken {
 	
@@ -2254,23 +2238,16 @@ protected class TeamDef_RightCurlyBracketKeyword_14 extends KeywordToken  {
 /************ begin Rule ActionableItemDef ****************
  *
  * ActionableItemDef:
- * 
  * 	name=AI_DEF_REFERENCE aiDefOption+=ActionableItemOption* ("{" ("guid" guid=STRING)? ("active" active=BooleanDef)?
- * 
  * 	("actionable" actionable=BooleanDef)? ("lead" lead+=UserRef)* ("owner" owner+=UserRef)* ("staticId"
- * 
  * 	staticId+=STRING)* ("team" teamDef=STRING)? ("accessContextId" accessContextId+=STRING)* ("children" "{"
- * 
  * 	("actionableItem" children+=ActionableItemDef)+ "}")? "}")?;
  *
  **/
 
 // name=AI_DEF_REFERENCE aiDefOption+=ActionableItemOption* ("{" ("guid" guid=STRING)? ("active" active=BooleanDef)?
-// 
 // ("actionable" actionable=BooleanDef)? ("lead" lead+=UserRef)* ("owner" owner+=UserRef)* ("staticId" staticId+=STRING)*
-// 
 // ("team" teamDef=STRING)? ("accessContextId" accessContextId+=STRING)* ("children" "{" ("actionableItem"
-// 
 // children+=ActionableItemDef)+ "}")? "}")?
 protected class ActionableItemDef_Group extends GroupToken {
 	
@@ -2371,9 +2348,7 @@ protected class ActionableItemDef_AiDefOptionAssignment_1 extends AssignmentToke
 }
 
 // ("{" ("guid" guid=STRING)? ("active" active=BooleanDef)? ("actionable" actionable=BooleanDef)? ("lead" lead+=UserRef)*
-// 
 // ("owner" owner+=UserRef)* ("staticId" staticId+=STRING)* ("team" teamDef=STRING)? ("accessContextId"
-// 
 // accessContextId+=STRING)* ("children" "{" ("actionableItem" children+=ActionableItemDef)+ "}")? "}")?
 protected class ActionableItemDef_Group_2 extends GroupToken {
 	
@@ -3335,23 +3310,16 @@ protected class ActionableItemDef_RightCurlyBracketKeyword_2_10 extends KeywordT
 /************ begin Rule VersionDef ****************
  *
  * VersionDef:
- * 
  * 	name=VERSION_DEF_REFERENCE "{" ("guid" guid=STRING)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)?
- * 
  * 	("released" released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
- * 
- * 	allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? ("parallelVersion"
- * 
+ * 	allowCommitBranch=BooleanDef)? ("baselineBranchGuid" baselineBranchGuid=STRING)? ("parallelVersion"
  * 	parallelVersion+=STRING)* "}";
  *
  **/
 
 // name=VERSION_DEF_REFERENCE "{" ("guid" guid=STRING)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)?
-// 
 // ("released" released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
-// 
-// allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? ("parallelVersion"
-// 
+// allowCommitBranch=BooleanDef)? ("baselineBranchGuid" baselineBranchGuid=STRING)? ("parallelVersion"
 // parallelVersion+=STRING)* "}"
 protected class VersionDef_Group extends GroupToken {
 	
@@ -3926,7 +3894,7 @@ protected class VersionDef_AllowCommitBranchAssignment_7_1 extends AssignmentTok
 }
 
 
-// ("baslineBranchGuid" baselineBranchGuid=STRING)?
+// ("baselineBranchGuid" baselineBranchGuid=STRING)?
 protected class VersionDef_Group_8 extends GroupToken {
 	
 	public VersionDef_Group_8(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -3948,16 +3916,16 @@ protected class VersionDef_Group_8 extends GroupToken {
 
 }
 
-// "baslineBranchGuid"
-protected class VersionDef_BaslineBranchGuidKeyword_8_0 extends KeywordToken  {
+// "baselineBranchGuid"
+protected class VersionDef_BaselineBranchGuidKeyword_8_0 extends KeywordToken  {
 	
-	public VersionDef_BaslineBranchGuidKeyword_8_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public VersionDef_BaselineBranchGuidKeyword_8_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getVersionDefAccess().getBaslineBranchGuidKeyword_8_0();
+		return grammarAccess.getVersionDefAccess().getBaselineBranchGuidKeyword_8_0();
 	}
 
     @Override
@@ -3991,7 +3959,7 @@ protected class VersionDef_BaselineBranchGuidAssignment_8_1 extends AssignmentTo
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new VersionDef_BaslineBranchGuidKeyword_8_0(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new VersionDef_BaselineBranchGuidKeyword_8_0(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -4135,15 +4103,12 @@ protected class VersionDef_RightCurlyBracketKeyword_10 extends KeywordToken  {
 /************ begin Rule WorkDef ****************
  *
  * WorkDef:
- * 
  * 	name=WORK_DEFINITION_NAME_REFERENCE "{" ("id" id+=STRING)+ ("startState" startState=[StateDef|STATE_NAME_REFERENCE])
- * 
  * 	widgetDefs+=WidgetDef* decisionReviewDefs+=DecisionReviewDef* peerReviewDefs+=PeerReviewDef* states+=StateDef+ "}";
  *
  **/
 
 // name=WORK_DEFINITION_NAME_REFERENCE "{" ("id" id+=STRING)+ ("startState" startState=[StateDef|STATE_NAME_REFERENCE])
-// 
 // widgetDefs+=WidgetDef* decisionReviewDefs+=DecisionReviewDef* peerReviewDefs+=PeerReviewDef* states+=StateDef+ "}"
 protected class WorkDef_Group extends GroupToken {
 	
@@ -4613,19 +4578,14 @@ protected class WorkDef_RightCurlyBracketKeyword_8 extends KeywordToken  {
 /************ begin Rule WidgetDef ****************
  *
  * WidgetDef:
- * 
  * 	"widgetDefinition" name=WIDGET_NAME_REFERENCE "{" ("attributeName" attributeName=STRING)? ("description"
- * 
  * 	description=STRING)? ("xWidgetName" xWidgetName=STRING)? ("defaultValue" defaultValue=STRING)? ("height" height=INT)?
- * 
  * 	("option" option+=WidgetOption)* ("minConstraint" minConstraint=STRING)? ("maxConstraint" maxConstraint=STRING)? "}";
  *
  **/
 
 // "widgetDefinition" name=WIDGET_NAME_REFERENCE "{" ("attributeName" attributeName=STRING)? ("description"
-// 
 // description=STRING)? ("xWidgetName" xWidgetName=STRING)? ("defaultValue" defaultValue=STRING)? ("height" height=INT)?
-// 
 // ("option" option+=WidgetOption)* ("minConstraint" minConstraint=STRING)? ("maxConstraint" maxConstraint=STRING)? "}"
 protected class WidgetDef_Group extends GroupToken {
 	
@@ -5430,7 +5390,6 @@ protected class WidgetDef_RightCurlyBracketKeyword_11 extends KeywordToken  {
 /************ begin Rule WidgetRef ****************
  *
  * WidgetRef:
- * 
  * 	"widget" widget=[WidgetDef|WIDGET_NAME_REFERENCE];
  *
  **/
@@ -5529,7 +5488,6 @@ protected class WidgetRef_WidgetAssignment_1 extends AssignmentToken  {
 /************ begin Rule AttrWidget ****************
  *
  * AttrWidget:
- * 
  * 	"attributeWidget" attributeName=STRING ("with" option+=WidgetOption)*;
  *
  **/
@@ -5706,23 +5664,16 @@ protected class AttrWidget_OptionAssignment_2_1 extends AssignmentToken  {
 /************ begin Rule StateDef ****************
  *
  * StateDef:
- * 
  * 	"state" name=STATE_NAME_REFERENCE "{" ("description" description=STRING)? "type" pageType=PageType "ordinal"
- * 
  * 	ordinal=INT transitionStates+=ToState* ("rule" rules+=Rule)* decisionReviews+=DecisionReviewRef*
- * 
  * 	peerReviews+=PeerReviewRef* ("percentWeight" percentWeight=INT)? ("recommendedPercentComplete"
- * 
  * 	recommendedPercentComplete=INT)? ("color" color=StateColor)? layout=LayoutType? "}";
  *
  **/
 
 // "state" name=STATE_NAME_REFERENCE "{" ("description" description=STRING)? "type" pageType=PageType "ordinal" ordinal=INT
-// 
 // transitionStates+=ToState* ("rule" rules+=Rule)* decisionReviews+=DecisionReviewRef* peerReviews+=PeerReviewRef*
-// 
 // ("percentWeight" percentWeight=INT)? ("recommendedPercentComplete" recommendedPercentComplete=INT)? ("color"
-// 
 // color=StateColor)? layout=LayoutType? "}"
 protected class StateDef_Group extends GroupToken {
 	
@@ -6590,7 +6541,6 @@ protected class StateDef_RightCurlyBracketKeyword_16 extends KeywordToken  {
 /************ begin Rule DecisionReviewRef ****************
  *
  * DecisionReviewRef:
- * 
  * 	"decisionReview" decisionReview=[DecisionReviewDef|DECISION_REVIEW_NAME_REFERENCE];
  *
  **/
@@ -6689,23 +6639,16 @@ protected class DecisionReviewRef_DecisionReviewAssignment_1 extends AssignmentT
 /************ begin Rule DecisionReviewDef ****************
  *
  * DecisionReviewDef:
- * 
  * 	"decisionReviewDefinition" name=DECISION_REVIEW_NAME_REFERENCE "{" "title" title=STRING "description"
- * 
  * 	description=STRING ("relatedToState" relatedToState=[StateDef|STATE_NAME_REFERENCE])? "blockingType"
- * 
  * 	blockingType=ReviewBlockingType "onEvent" stateEvent=WorkflowEventType ("assignee" assigneeRefs+=UserRef)*
- * 
  * 	("autoTransitionToDecision" autoTransitionToDecision=BooleanDef)? options+=DecisionReviewOpt+ "}";
  *
  **/
 
 // "decisionReviewDefinition" name=DECISION_REVIEW_NAME_REFERENCE "{" "title" title=STRING "description" description=STRING
-// 
 // ("relatedToState" relatedToState=[StateDef|STATE_NAME_REFERENCE])? "blockingType" blockingType=ReviewBlockingType
-// 
 // "onEvent" stateEvent=WorkflowEventType ("assignee" assigneeRefs+=UserRef)* ("autoTransitionToDecision"
-// 
 // autoTransitionToDecision=BooleanDef)? options+=DecisionReviewOpt+ "}"
 protected class DecisionReviewDef_Group extends GroupToken {
 	
@@ -7370,7 +7313,6 @@ protected class DecisionReviewDef_RightCurlyBracketKeyword_15 extends KeywordTok
 /************ begin Rule DecisionReviewOpt ****************
  *
  * DecisionReviewOpt:
- * 
  * 	"option" name=DECISION_REVIEW_OPT_REF followup=FollowupRef?;
  *
  **/
@@ -7513,7 +7455,6 @@ protected class DecisionReviewOpt_FollowupAssignment_2 extends AssignmentToken  
 /************ begin Rule PeerReviewRef ****************
  *
  * PeerReviewRef:
- * 
  * 	"peerReview" peerReview=[PeerReviewDef|PEER_REVIEW_NAME_REFERENCE];
  *
  **/
@@ -7612,19 +7553,14 @@ protected class PeerReviewRef_PeerReviewAssignment_1 extends AssignmentToken  {
 /************ begin Rule PeerReviewDef ****************
  *
  * PeerReviewDef:
- * 
  * 	"peerReviewDefinition" name=PEER_REVIEW_NAME_REFERENCE "{" ("title" title=STRING)? "description" description=STRING
- * 
  * 	("location" location=STRING)? ("relatedToState" relatedToState=[StateDef|STATE_NAME_REFERENCE])? "blockingType"
- * 
  * 	blockingType=ReviewBlockingType "onEvent" stateEvent=WorkflowEventType ("assignee" assigneeRefs+=UserRef)* "}";
  *
  **/
 
 // "peerReviewDefinition" name=PEER_REVIEW_NAME_REFERENCE "{" ("title" title=STRING)? "description" description=STRING
-// 
 // ("location" location=STRING)? ("relatedToState" relatedToState=[StateDef|STATE_NAME_REFERENCE])? "blockingType"
-// 
 // blockingType=ReviewBlockingType "onEvent" stateEvent=WorkflowEventType ("assignee" assigneeRefs+=UserRef)* "}"
 protected class PeerReviewDef_Group extends GroupToken {
 	
@@ -8265,7 +8201,6 @@ protected class PeerReviewDef_RightCurlyBracketKeyword_13 extends KeywordToken  
 /************ begin Rule FollowupRef ****************
  *
  * FollowupRef:
- * 
  * 	"followup by" ("assignee" assigneeRefs+=UserRef)+;
  *
  **/
@@ -8419,7 +8354,6 @@ protected class FollowupRef_AssigneeRefsAssignment_1_1 extends AssignmentToken  
 /************ begin Rule UserRef ****************
  *
  * UserRef:
- * 
  * 	UserByUserId | UserByName;
  *
  **/
@@ -8534,7 +8468,6 @@ protected class UserRef_UserByNameParserRuleCall_1 extends RuleCallToken {
 /************ begin Rule UserByUserId ****************
  *
  * UserByUserId:
- * 
  * 	"userId" userId=STRING;
  *
  **/
@@ -8630,7 +8563,6 @@ protected class UserByUserId_UserIdAssignment_1 extends AssignmentToken  {
 /************ begin Rule UserByName ****************
  *
  * UserByName:
- * 
  * 	"named" userName=STRING;
  *
  **/
@@ -8731,7 +8663,6 @@ protected class UserByName_UserNameAssignment_1 extends AssignmentToken  {
 /************ begin Rule ToState ****************
  *
  * ToState:
- * 
  * 	"to" state=[StateDef|STATE_NAME_REFERENCE] options+=TransitionOption*;
  *
  **/
@@ -8866,7 +8797,6 @@ protected class ToState_OptionsAssignment_2 extends AssignmentToken  {
 /************ begin Rule LayoutType ****************
  *
  * LayoutType:
- * 
  * 	LayoutDef | LayoutCopy;
  *
  **/
@@ -8981,7 +8911,6 @@ protected class LayoutType_LayoutCopyParserRuleCall_1 extends RuleCallToken {
 /************ begin Rule LayoutDef ****************
  *
  * LayoutDef:
- * 
  * 	"layout" "{" layoutItems+=LayoutItem+ "}";
  *
  **/
@@ -9134,7 +9063,6 @@ protected class LayoutDef_RightCurlyBracketKeyword_3 extends KeywordToken  {
 /************ begin Rule LayoutCopy ****************
  *
  * LayoutCopy:
- * 
  * 	"layoutCopyFrom" state=[StateDef|STATE_NAME_REFERENCE];
  *
  **/
@@ -9233,7 +9161,6 @@ protected class LayoutCopy_StateAssignment_1 extends AssignmentToken  {
 /************ begin Rule LayoutItem ****************
  *
  * LayoutItem:
- * 
  * 	WidgetRef | AttrWidget | Composite;
  *
  **/
@@ -9386,7 +9313,6 @@ protected class LayoutItem_CompositeParserRuleCall_2 extends RuleCallToken {
 /************ begin Rule Composite ****************
  *
  * Composite:
- * 
  * 	"composite" "{" "numColumns" numColumns=INT layoutItems+=LayoutItem+ ("option" options+=CompositeOption)* "}";
  *
  **/

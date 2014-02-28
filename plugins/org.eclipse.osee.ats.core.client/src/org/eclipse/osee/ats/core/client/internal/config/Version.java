@@ -105,7 +105,7 @@ public class Version extends AtsObject implements IAtsVersion {
       if (!createBranchAllowed) {
          return new Result(false, "Branch creation disabled for Version [" + this + "]");
       }
-      if (!Strings.isValid(getBaslineBranchGuid())) {
+      if (!Strings.isValid(getBaselineBranchGuid())) {
          return new Result(false, "Parent Branch not configured for Version [" + this + "]");
       }
       return Result.TrueResult;
@@ -116,14 +116,14 @@ public class Version extends AtsObject implements IAtsVersion {
       if (!commitBranchAllowed) {
          return new Result(false, "Version [" + this + "] not configured to allow branch commit.");
       }
-      if (!Strings.isValid(getBaslineBranchGuid())) {
+      if (!Strings.isValid(getBaselineBranchGuid())) {
          return new Result(false, "Parent Branch not configured for Version [" + this + "]");
       }
       return Result.TrueResult;
    }
 
    @Override
-   public String getBaslineBranchGuid() {
+   public String getBaselineBranchGuid() {
       return baselineBranchGuid;
    }
 

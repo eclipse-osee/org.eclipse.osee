@@ -418,7 +418,7 @@ public class PopulateSawBuild2Actions {
       }
       IOperation op =
          AtsBranchManager.commitWorkingBranch(reqTeam, false, true,
-            BranchManager.getBranchByGuid(AtsVersionService.get().getTargetedVersion(reqTeam).getBaslineBranchGuid()),
+            BranchManager.getBranchByGuid(AtsVersionService.get().getTargetedVersion(reqTeam).getBaselineBranchGuid()),
             true);
       Operations.executeWorkAndCheckStatus(op);
       if (DEBUG) {

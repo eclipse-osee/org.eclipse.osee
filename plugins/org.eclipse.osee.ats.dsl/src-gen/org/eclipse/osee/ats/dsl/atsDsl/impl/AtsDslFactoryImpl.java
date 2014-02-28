@@ -31,7 +31,7 @@ public class AtsDslFactoryImpl extends EFactoryImpl implements AtsDslFactory
   {
     try
     {
-      AtsDslFactory theAtsDslFactory = (AtsDslFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/osee/ats/dsl/AtsDsl"); 
+      AtsDslFactory theAtsDslFactory = (AtsDslFactory)EPackage.Registry.INSTANCE.getEFactory(AtsDslPackage.eNS_URI);
       if (theAtsDslFactory != null)
       {
         return theAtsDslFactory;

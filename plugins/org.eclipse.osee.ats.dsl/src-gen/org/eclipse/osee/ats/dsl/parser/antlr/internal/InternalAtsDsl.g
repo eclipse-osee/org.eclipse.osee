@@ -1200,9 +1200,9 @@ ruleVersionDef returns [EObject current=null]
 	    }
 
 )
-))?(	otherlv_14='baslineBranchGuid' 
+))?(	otherlv_14='baselineBranchGuid' 
     {
-    	newLeafNode(otherlv_14, grammarAccess.getVersionDefAccess().getBaslineBranchGuidKeyword_8_0());
+    	newLeafNode(otherlv_14, grammarAccess.getVersionDefAccess().getBaselineBranchGuidKeyword_8_0());
     }
 (
 (

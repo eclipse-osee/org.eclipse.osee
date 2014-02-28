@@ -57,7 +57,7 @@ public class OseeAppletPage {
       CompositeRule<BranchReadable> dataListsRule = new CompositeRule<BranchReadable>("dataLists");
       while (matcher.find()) {
          String listId = matcher.group(1);
-         if (listId.equals("baselineBranches") || listId.equals("workingAndBaslineBranches")) {
+         if (listId.equals("baselineBranches") || listId.equals("workingAndBaselineBranches")) {
             if (!dataListsRule.ruleExists(listId)) {
                Iterable<BranchReadable> options = getBranchOptions(query, listId);
                dataListsRule.addRule(new IdentifiableOptionsRule<BranchReadable>("", options, listId));

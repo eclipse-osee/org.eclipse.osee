@@ -58,7 +58,7 @@ public interface IAtsVersion extends ICommitConfigItem, IAtsConfigObject {
     * @return directly configured baseline branch guid or parentTeamDefinition's branch guid
     */
    @Override
-   String getBaslineBranchGuid();
+   String getBaselineBranchGuid();
 
    String getBaselineBranchGuidInherited();
 

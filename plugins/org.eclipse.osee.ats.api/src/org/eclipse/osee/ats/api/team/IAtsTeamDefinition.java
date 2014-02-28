@@ -110,7 +110,7 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
    void setBaselineBranchGuid(String parentBranchGuid);
 
    @Override
-   String getBaslineBranchGuid();
+   String getBaselineBranchGuid();
 
    String getTeamBranchGuid();
 

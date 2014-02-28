@@ -283,7 +283,7 @@ public final class AtsBranchManager {
     * @param commitConfigArt that configures commit or null
     */
    public static ChangeData getChangeData(TeamWorkFlowArtifact teamArt, ICommitConfigItem commitConfigArt) throws OseeCoreException {
-      if (commitConfigArt != null && !Strings.isValid(commitConfigArt.getBaslineBranchGuid())) {
+      if (commitConfigArt != null && !Strings.isValid(commitConfigArt.getBaselineBranchGuid())) {
          throw new OseeArgumentException("Parent Branch not configured for [%s]", commitConfigArt);
       }
       Collection<Change> changes = new ArrayList<Change>();
@@ -307,7 +307,7 @@ public final class AtsBranchManager {
                    * id's branch.
                    */
                   for (TransactionRecord transId : transIds) {
-                     if (transId.getBranch().getGuid().equals(commitConfigArt.getBaslineBranchGuid())) {
+                     if (transId.getBranch().getGuid().equals(commitConfigArt.getBaselineBranchGuid())) {
                         transactionId = transId;
                      }
                   }

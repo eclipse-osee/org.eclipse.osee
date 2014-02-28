@@ -49,7 +49,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       Branch branch = null;
       if (element instanceof ICommitConfigItem) {
          ICommitConfigItem configArt = (ICommitConfigItem) element;
-         branch = BranchManager.getBranchByGuid(configArt.getBaslineBranchGuid());
+         branch = BranchManager.getBranchByGuid(configArt.getBaselineBranchGuid());
       } else if (element instanceof TransactionRecord) {
          TransactionRecord txRecord = (TransactionRecord) element;
          branch = txRecord.getBranch();
@@ -104,9 +104,9 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       Branch branch = null;
       if (element instanceof ICommitConfigItem) {
          ICommitConfigItem configArt = (ICommitConfigItem) element;
-         String baslineBranchGuid = configArt.getBaslineBranchGuid();
-         if (Strings.isValid(baslineBranchGuid)) {
-            branch = BranchManager.getBranchByGuid(baslineBranchGuid);
+         String baselineBranchGuid = configArt.getBaselineBranchGuid();
+         if (Strings.isValid(baselineBranchGuid)) {
+            branch = BranchManager.getBranchByGuid(baselineBranchGuid);
          } else {
             return String.format("Branch not configured for [%s]", element);
          }
