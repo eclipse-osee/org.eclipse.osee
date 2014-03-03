@@ -39,9 +39,10 @@ import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
  */
 public final class PortPairsOperation extends AbstractOperation {
    private final List<Pair<String, String>> portPairs;
+   private final boolean useAtsID;
 
-   public PortPairsOperation(OperationLogger logger, String portPairs) throws OseeArgumentException {
-      this(logger, new ArrayList<Pair<String, String>>());
+   public PortPairsOperation(OperationLogger logger, String portPairs, boolean useAtsID) throws OseeArgumentException {
+      this(logger, new ArrayList<Pair<String, String>>(), useAtsID);
       for (String pair : portPairs.split("[\n\r]+")) {
          String[] pairLine = pair.split("[\\s,]+");
          if (pairLine.length != 2) {
@@ -51,9 +52,10 @@ public final class PortPairsOperation extends AbstractOperation {
       }
    }
 
-   public PortPairsOperation(OperationLogger logger, List<Pair<String, String>> portPairs) {
+   public PortPairsOperation(OperationLogger logger, List<Pair<String, String>> portPairs, boolean useAtsID) {
       super("Port Pair(s)", Activator.PLUGIN_ID, logger);
       this.portPairs = portPairs;
+      this.useAtsID = useAtsID;
    }
 
    @Override
@@ -83,16 +85,32 @@ public final class PortPairsOperation extends AbstractOperation {
     * <li>report conflicts and commit completions if commit completes, delete port branch.</li>
     */
    private void portPair(Pair<String, String> pair) throws OseeCoreException {
-      TeamWorkFlowArtifact sourceWorkflow = getWorkflowFromId(pair.getFirst());
-      TeamWorkFlowArtifact destinationWorkflow = getWorkflowFromId(pair.getSecond());
+      TeamWorkFlowArtifact sourceWorkflow;
+      TeamWorkFlowArtifact destinationWorkflow;
+      if (useAtsID) {
+         sourceWorkflow = getWorkflowFromAtsID(pair.getFirst());
+         destinationWorkflow = getWorkflowFromAtsID(pair.getSecond());
+
+      } else {
+         sourceWorkflow = getWorkflowFromRpcr(pair.getFirst());
+         destinationWorkflow = getWorkflowFromRpcr(pair.getSecond());
+      }
       doPortWork(sourceWorkflow, destinationWorkflow);
    }
 
-   private TeamWorkFlowArtifact getWorkflowFromId(String workflowId) throws OseeCoreException {
+   private TeamWorkFlowArtifact getWorkflowFromRpcr(String workflowId) throws OseeCoreException {
       IArtifactType LbaReqTeamWorkflow = TokenFactory.createArtifactType(0x0000BA000000000BL, "Lba Req Team Workflow");
 
       return (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndAttribute(LbaReqTeamWorkflow,
          AtsAttributeTypes.LegacyPcrId, workflowId, CoreBranches.COMMON);
+   }
+
+   private TeamWorkFlowArtifact getWorkflowFromAtsID(String atsID) throws OseeCoreException {
+      IArtifactType LbaSubSystemsTeamWorkflow =
+         TokenFactory.createArtifactType(0x0000BA0000000009L, "Lba SubSystems Team Workflow");
+
+      return (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndAttribute(LbaSubSystemsTeamWorkflow,
+         AtsAttributeTypes.AtsId, atsID, CoreBranches.COMMON);
    }
 
    private void doPortWork(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow) throws OseeCoreException {
