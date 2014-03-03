@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.Result;
@@ -43,11 +44,11 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class AtsBranchCommitOperation extends AbstractOperation {
    private final boolean commitPopup;
    private final boolean overrideStateValidation;
-   private final Branch destinationBranch;
+   private final IOseeBranch destinationBranch;
    private final boolean archiveWorkingBranch;
    private final TeamWorkFlowArtifact teamArt;
 
-   public AtsBranchCommitOperation(TeamWorkFlowArtifact teamArt, boolean commitPopup, boolean overrideStateValidation, Branch destinationBranch, boolean archiveWorkingBranch) {
+   public AtsBranchCommitOperation(TeamWorkFlowArtifact teamArt, boolean commitPopup, boolean overrideStateValidation, IOseeBranch destinationBranch, boolean archiveWorkingBranch) {
       super("Commit Branch", Activator.PLUGIN_ID);
       this.teamArt = teamArt;
       this.commitPopup = commitPopup;

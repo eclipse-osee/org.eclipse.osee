@@ -110,13 +110,13 @@ public final class AtsBranchManager {
       }
    }
 
-   public static void showMergeManager(TeamWorkFlowArtifact teamArt, Branch destinationBranch) throws OseeCoreException {
+   public static void showMergeManager(TeamWorkFlowArtifact teamArt, IOseeBranch destinationBranch) throws OseeCoreException {
       if (AtsBranchManagerCore.isWorkingBranchInWork(teamArt)) {
-         MergeView.openView((Branch) AtsBranchManagerCore.getWorkingBranch(teamArt), destinationBranch,
+         MergeView.openView((Branch)AtsBranchManagerCore.getWorkingBranch(teamArt), (Branch)destinationBranch,
             BranchManager.getBaseTransaction(AtsBranchManagerCore.getWorkingBranch(teamArt)));
       } else if (AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
          for (TransactionRecord transactionId : AtsBranchManagerCore.getTransactionIds(teamArt, true)) {
-            if (transactionId.getBranchId() == destinationBranch.getId()) {
+            if (transactionId.getBranchId() == destinationBranch.getUuid()) {
                MergeView.openView(transactionId);
             }
          }
@@ -249,7 +249,7 @@ public final class AtsBranchManager {
    /**
     * Grab the change report for the indicated branch
     */
-   public static void showChangeReportForBranch(TeamWorkFlowArtifact teamArt, Branch destinationBranch) {
+   public static void showChangeReportForBranch(TeamWorkFlowArtifact teamArt, IOseeBranch destinationBranch) {
       try {
          for (TransactionRecord transactionId : AtsBranchManagerCore.getTransactionIds(teamArt, false)) {
             if (transactionId.getBranch() == destinationBranch) {
@@ -266,7 +266,7 @@ public final class AtsBranchManager {
     * @param overrideStateValidation if true, don't do checks to see if commit can be performed. This should only be
     * used for developmental testing or automation
     */
-   public static IOperation commitWorkingBranch(final TeamWorkFlowArtifact teamArt, final boolean commitPopup, final boolean overrideStateValidation, Branch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
+   public static IOperation commitWorkingBranch(final TeamWorkFlowArtifact teamArt, final boolean commitPopup, final boolean overrideStateValidation, IOseeBranch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
       if (AtsBranchManagerCore.isBranchInCommit(teamArt)) {
          throw new OseeCoreException("Branch is currently being committed.");
       }
