@@ -251,7 +251,7 @@ public class BranchManager {
    /**
     * returns the merge branch for this source destination pair from the cache or null if not found
     */
-   public static MergeBranch getMergeBranch(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
+   public static MergeBranch getMergeBranch(IOseeBranch sourceBranch, IOseeBranch destinationBranch) throws OseeCoreException {
       MergeBranch mergeBranch = getCache().findMergeBranch(sourceBranch, destinationBranch);
       return mergeBranch;
    }
@@ -286,7 +286,7 @@ public class BranchManager {
    /**
     * returns whether a merge branch exists for a source and dest branch pair
     */
-   public static boolean doesMergeBranchExist(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
+   public static boolean doesMergeBranchExist(IOseeBranch sourceBranch, IOseeBranch destBranch) throws OseeCoreException {
       return getMergeBranch(sourceBranch, destBranch) != null;
    }
 
@@ -663,5 +663,25 @@ public class BranchManager {
 
    public static void invalidateBranches() throws OseeCoreException {
       getCache().invalidate();
+   }
+
+   public static Branch getParentBranch(IOseeBranch destinationBranch) {
+      return ((Branch) destinationBranch).getParentBranch();
+   }
+
+   public static TransactionRecord getBaseTransaction(IOseeBranch destinationBranch) {
+      return ((Branch) destinationBranch).getBaseTransaction();
+   }
+
+   public static BranchState getState(IOseeBranch branch) {
+      return ((Branch) branch).getBranchState();
+   }
+
+   public static boolean hasChanges(IOseeBranch branch) {
+      return hasChanges((Branch) branch);
+   }
+
+   public static BranchType getBranchType(IOseeBranch branch) {
+      return ((Branch) branch).getBranchType();
    }
 }

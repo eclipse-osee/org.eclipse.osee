@@ -61,6 +61,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
@@ -760,10 +761,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
             try {
-               Branch workingBranch = AtsBranchManagerCore.getWorkingBranch(teamArt);
+               Branch workingBranch = (Branch) AtsBranchManagerCore.getWorkingBranch(teamArt);
                if (workingBranch != null && workingBranch.getBranchType() != BranchType.BASELINE) {
                   if (workingBranch.getBranchState() != BranchState.COMMITTED) {
-                     Collection<Branch> branchesCommittedTo = AtsBranchManagerCore.getBranchesCommittedTo(teamArt);
+                     Collection<IOseeBranch> branchesCommittedTo = AtsBranchManagerCore.getBranchesCommittedTo(teamArt);
                      if (branchesCommittedTo.size() > 0) {
                         results.log(
                            artifact,
@@ -771,7 +772,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                            "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has committed branches but working branch [" + workingBranch.getGuid() + "] != COMMITTED");
                      }
                   } else if (workingBranch.getBranchState() == BranchState.COMMITTED && !workingBranch.getArchiveState().isArchived()) {
-                     Collection<Branch> branchesLeftToCommit = AtsBranchManagerCore.getBranchesLeftToCommit(teamArt);
+                     Collection<IOseeBranch> branchesLeftToCommit =
+                        AtsBranchManagerCore.getBranchesLeftToCommit(teamArt);
                      if (branchesLeftToCommit.size() == 0) {
                         results.log(
                            artifact,

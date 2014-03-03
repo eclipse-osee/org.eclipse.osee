@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.MultipleBranchSelectionDialog;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -50,7 +51,7 @@ public class XWorkingBranchDeleteMerge extends XWorkingBranchButtonAbstract {
                Branch workingBranch = getTeamArt().getWorkingBranch();
                if (isWorkingBranchCommitWithMergeInProgress()) {
                   List<Branch> selectedBranches = new ArrayList<Branch>();
-                  Collection<Branch> branchesAlreadyCommitted =
+                  Collection<IOseeBranch> branchesAlreadyCommitted =
                      AtsBranchManagerCore.getBranchesCommittedTo(getTeamArt());
                   List<MergeBranch> mergeBranches = BranchManager.getMergeBranches(workingBranch);
 
@@ -96,7 +97,7 @@ public class XWorkingBranchDeleteMerge extends XWorkingBranchButtonAbstract {
       try {
          if (isWorkingBranchCommitWithMergeInProgress()) {
             List<MergeBranch> mergeBranches = BranchManager.getMergeBranches(getWorkingBranch());
-            Collection<Branch> committedBranches = AtsBranchManagerCore.getBranchesCommittedTo(getTeamArt());
+            Collection<IOseeBranch> committedBranches = AtsBranchManagerCore.getBranchesCommittedTo(getTeamArt());
             List<MergeBranch> remainingMergeBranches = new ArrayList<MergeBranch>();
 
             for (MergeBranch mergeBranch : mergeBranches) {

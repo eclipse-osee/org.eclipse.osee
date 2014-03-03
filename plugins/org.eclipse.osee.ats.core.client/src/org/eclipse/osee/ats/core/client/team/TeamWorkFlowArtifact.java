@@ -236,11 +236,11 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    }
 
    public Branch getWorkingBranchForceCacheUpdate() throws OseeCoreException {
-      return AtsBranchManagerCore.getWorkingBranch(this, true);
+      return (Branch) AtsBranchManagerCore.getWorkingBranch(this, true);
    }
 
    public Branch getWorkingBranch() throws OseeCoreException {
-      return AtsBranchManagerCore.getWorkingBranch(this);
+      return (Branch) AtsBranchManagerCore.getWorkingBranch(this);
    }
 
    public String getBranchName() {

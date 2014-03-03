@@ -18,9 +18,9 @@ import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -59,7 +59,7 @@ public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements Attrib
             if (derivedArt != null && derivedArt instanceof TeamWorkFlowArtifact) {
                TeamWorkFlowArtifact derivedTeamWf = (TeamWorkFlowArtifact) derivedArt;
                // First, attempt to get from Working Branch if still exists
-               Branch workingBranch = AtsBranchManagerCore.getWorkingBranch(derivedTeamWf);
+               IOseeBranch workingBranch = AtsBranchManagerCore.getWorkingBranch(derivedTeamWf);
                if (workingBranch != null) {
                   retArt = ArtifactQuery.getArtifactFromId(guid, workingBranch, DeletionFlag.EXCLUDE_DELETED);
                } else {

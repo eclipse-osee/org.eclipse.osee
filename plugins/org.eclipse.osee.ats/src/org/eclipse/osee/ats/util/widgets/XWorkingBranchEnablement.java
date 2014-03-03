@@ -140,7 +140,7 @@ public class XWorkingBranchEnablement {
             public BranchEnablementData call() throws Exception {
                BranchEnablementData enablementData = new BranchEnablementData(teamArt);
                if (teamArt != null) {
-                  Branch workingBranch = AtsBranchManagerCore.getWorkingBranch(teamArt, true);
+                  Branch workingBranch = (Branch) AtsBranchManagerCore.getWorkingBranch(teamArt, true);
                   enablementData.setWorkingBranch(workingBranch);
 
                   enablementData.setWorkingBranchInWork(AtsBranchManagerCore.isWorkingBranchInWork(teamArt));

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -39,7 +40,7 @@ public class BranchCache extends AbstractOseeCache<String, Branch> {
       return get(CoreBranches.COMMON);
    }
 
-   public MergeBranch findMergeBranch(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
+   public MergeBranch findMergeBranch(IOseeBranch sourceBranch, IOseeBranch destinationBranch) throws OseeCoreException {
       Conditions.checkNotNull(sourceBranch, "source branch");
       Conditions.checkNotNull(destinationBranch, "destination branch");
       MergeBranch toReturn = null;

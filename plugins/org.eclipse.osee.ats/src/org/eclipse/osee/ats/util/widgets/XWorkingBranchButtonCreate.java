@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.util.widgets;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -49,7 +49,7 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
                return;
             }
             try {
-               Branch parentBranch = AtsBranchManagerCore.getConfiguredBranchForWorkflow(getTeamArt());
+               IOseeBranch parentBranch = AtsBranchManagerCore.getConfiguredBranchForWorkflow(getTeamArt());
                // Retrieve parent branch to create working branch from
                if (!MessageDialog.openConfirm(
                   Displays.getActiveShell(),

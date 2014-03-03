@@ -24,8 +24,8 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -87,7 +87,7 @@ public class AtsBranchAccessManagerTest {
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertNotNull(teamArt);
 
-      Branch branch = AtsBranchManagerCore.getWorkingBranch(teamArt);
+      IOseeBranch branch = AtsBranchManagerCore.getWorkingBranch(teamArt);
       Assert.assertNotNull(branch);
 
       Assert.assertTrue(mgr.isApplicable(branch));

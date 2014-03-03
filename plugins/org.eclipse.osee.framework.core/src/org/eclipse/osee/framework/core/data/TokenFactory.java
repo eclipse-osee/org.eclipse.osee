@@ -114,6 +114,7 @@ public final class TokenFactory {
       public long getUuid() {
          return uuid;
       }
+
    }
 
    private final static class AttributeTypeToken extends FullyNamedIdentity<Long> implements IAttributeType {

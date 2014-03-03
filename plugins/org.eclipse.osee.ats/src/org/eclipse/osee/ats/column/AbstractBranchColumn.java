@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -47,7 +48,7 @@ public abstract class AbstractBranchColumn extends XViewerAtsColumn implements I
             TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();
             if (teamArt != null) {
                try {
-                  Branch workingBranch = null;
+                  IOseeBranch workingBranch = null;
                   if (AtsBranchManagerCore.isWorkingBranchInWork(teamArt)) {
                      workingBranch = AtsBranchManagerCore.getWorkingBranch(teamArt);
                   }
@@ -55,7 +56,7 @@ public abstract class AbstractBranchColumn extends XViewerAtsColumn implements I
                      workingBranch = AtsBranchManagerCore.getCommittedWorkingBranch(teamArt);
                   }
                   if (workingBranch != null) {
-                     result = getColumnText(workingBranch);
+                     result = getColumnText((Branch) workingBranch);
                   }
                } catch (Exception ex) {
                   result = "Exception: " + ex.getLocalizedMessage();

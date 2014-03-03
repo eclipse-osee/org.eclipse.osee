@@ -28,8 +28,8 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -95,8 +96,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
          Set<Integer> artIds = new HashSet<Integer>();
          Collection<Change> changes = computeChanges(workflow, monitor, artIds);
          if (!changes.isEmpty() && changes.size() < 4000) {
-            String id =
-               workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, workflow.getAtsId());
+            String id = workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, workflow.getAtsId());
             String prefix = "/" + id;
             if (writeChangeReports) {
 
@@ -144,8 +144,8 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       if (AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
          operation = ChangeManager.comparedToPreviousTx(pickTransaction(workflow), changes);
       } else {
-         Branch workingBranch = AtsBranchManagerCore.getWorkingBranch(teamArt);
-         if (workingBranch != null && !workingBranch.getBranchType().isBaselineBranch()) {
+         IOseeBranch workingBranch = AtsBranchManagerCore.getWorkingBranch(teamArt);
+         if (workingBranch != null && !BranchManager.getBranchType(workingBranch).isBaselineBranch()) {
             operation = ChangeManager.comparedToParent(workingBranch, changes);
          }
       }

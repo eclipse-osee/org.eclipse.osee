@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -97,7 +97,7 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
                case Committed:
                   if (awa instanceof TeamWorkFlowArtifact) {
                      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) awa;
-                     Branch assocBranch = AtsBranchManagerCore.getWorkingBranch(teamArt);
+                     IOseeBranch assocBranch = AtsBranchManagerCore.getWorkingBranch(teamArt);
                      if (assocBranch != null && assocBranch.getGuid().equals(branchEventType.getGuid())) {
                         Displays.ensureInDisplayThread(new Runnable() {
                            @Override

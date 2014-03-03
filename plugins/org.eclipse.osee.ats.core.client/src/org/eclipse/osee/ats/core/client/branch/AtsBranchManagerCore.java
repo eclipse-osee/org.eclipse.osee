@@ -72,15 +72,15 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public class AtsBranchManagerCore {
 
-   private static Map<String, Branch> idToWorkingBranchCache = new HashMap<String, Branch>();
+   private static Map<String, IOseeBranch> idToWorkingBranchCache = new HashMap<String, IOseeBranch>();
    private static Map<String, Long> idToWorkingBranchCacheUpdated = new HashMap<String, Long>(50);
-   public static Set<Branch> branchesInCommit = new HashSet<Branch>();
+   public static Set<IOseeBranch> branchesInCommit = new HashSet<IOseeBranch>();
 
    /**
     * Return working branch associated with SMA whether it is committed or not; This data is cached across all workflows
     * with the cache being updated by local and remote events.
     */
-   public static Branch getWorkingBranch(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   public static IOseeBranch getWorkingBranch(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       return getWorkingBranch(teamArt, false);
    }
 
@@ -90,7 +90,7 @@ public class AtsBranchManagerCore {
     * 
     * @param force == true does not used cached value
     */
-   public static Branch getWorkingBranch(TeamWorkFlowArtifact teamArt, boolean force) throws OseeCoreException {
+   public static IOseeBranch getWorkingBranch(TeamWorkFlowArtifact teamArt, boolean force) throws OseeCoreException {
       long now = new Date().getTime();
       boolean notSet = idToWorkingBranchCacheUpdated.get(teamArt.getAtsId()) == null;
       if (notSet || force || (now - idToWorkingBranchCacheUpdated.get(teamArt.getAtsId()) > 1000)) {
@@ -104,7 +104,7 @@ public class AtsBranchManagerCore {
       return idToWorkingBranchCache.get(teamArt.getAtsId());
    }
 
-   public static Branch getCommittedWorkingBranch(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   public static IOseeBranch getCommittedWorkingBranch(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       BranchFilter branchFilter = new BranchFilter(BranchType.WORKING);
       branchFilter.setBranchStates(BranchState.COMMITTED);
       branchFilter.setAssociatedArtifact(teamArt);
@@ -124,7 +124,7 @@ public class AtsBranchManagerCore {
     * with the cache being updated by local and remote events. Filters out rebaseline branches (which are working
     * branches also).
     */
-   public static Branch getWorkingBranchExcludeStates(TeamWorkFlowArtifact teamArt, BranchState... negatedBranchStates) throws OseeCoreException {
+   public static IOseeBranch getWorkingBranchExcludeStates(TeamWorkFlowArtifact teamArt, BranchState... negatedBranchStates) throws OseeCoreException {
       BranchFilter branchFilter = new BranchFilter(BranchType.WORKING, BranchType.BASELINE);
       branchFilter.setNegatedBranchStates(negatedBranchStates);
       branchFilter.setAssociatedArtifact(teamArt);
@@ -146,19 +146,19 @@ public class AtsBranchManagerCore {
     */
    public static boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(teamWf);
-      Branch branch = getWorkingBranch(teamArt);
-      return branch != null && !branch.getBranchState().isCommitted();
+      IOseeBranch branch = getWorkingBranch(teamArt);
+      return branch != null && !BranchManager.getState(branch).isCommitted();
    }
 
    public static boolean isWorkingBranchInWork(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Branch branch = getWorkingBranch(teamArt);
-      return branch != null && !branch.getBranchState().isCommitted();
+      IOseeBranch branch = getWorkingBranch(teamArt);
+      return branch != null && !BranchManager.getState(branch).isCommitted();
    }
 
    /**
     * Return true if merge branch exists in DB (whether archived or not)
     */
-   public static boolean isMergeBranchExists(TeamWorkFlowArtifact teamArt, Branch destinationBranch) throws OseeCoreException {
+   public static boolean isMergeBranchExists(TeamWorkFlowArtifact teamArt, IOseeBranch destinationBranch) throws OseeCoreException {
       return isMergeBranchExists(teamArt, getWorkingBranch(teamArt), destinationBranch);
    }
 
@@ -166,27 +166,27 @@ public class AtsBranchManagerCore {
     * Method available for optimized checking of merge branches so don't have to re-acquire working branch if already
     * have
     */
-   public static boolean isMergeBranchExists(TeamWorkFlowArtifact teamArt, Branch workingBranch, Branch destinationBranch) throws OseeCoreException {
+   public static boolean isMergeBranchExists(TeamWorkFlowArtifact teamArt, IOseeBranch workingBranch, IOseeBranch destinationBranch) throws OseeCoreException {
       if (workingBranch == null) {
          return false;
       }
       return BranchManager.doesMergeBranchExist(workingBranch, destinationBranch);
    }
 
-   public static boolean isMergeCompleted(TeamWorkFlowArtifact teamArt, Branch destinationBranch) throws OseeCoreException {
+   public static boolean isMergeCompleted(TeamWorkFlowArtifact teamArt, IOseeBranch destinationBranch) throws OseeCoreException {
       ConflictManagerExternal conflictManager =
          new ConflictManagerExternal(destinationBranch, getWorkingBranch(teamArt));
       return !conflictManager.remainingConflictsExist();
    }
 
-   public static TransactionRecord getCommitTransactionRecord(TeamWorkFlowArtifact teamArt, Branch branch) throws OseeCoreException {
+   public static TransactionRecord getCommitTransactionRecord(TeamWorkFlowArtifact teamArt, IOseeBranch branch) throws OseeCoreException {
       if (branch == null) {
          return null;
       }
 
       Collection<TransactionRecord> transactions = TransactionManager.getCommittedArtifactTransactionIds(teamArt);
       for (TransactionRecord transId : transactions) {
-         if (transId.getBranchId() == branch.getId()) {
+         if (transId.getBranchId() == branch.getUuid()) {
             return transId;
          }
       }
@@ -203,7 +203,7 @@ public class AtsBranchManagerCore {
       return getCommitStatus(teamArt, destinationBranch, null);
    }
 
-   public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, Branch destinationBranch, ICommitConfigItem configArt) throws OseeCoreException {
+   public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, IOseeBranch destinationBranch, ICommitConfigItem configArt) throws OseeCoreException {
       Branch workingBranch = teamArt.getWorkingBranch();
       if (workingBranch != null) {
          if (workingBranch.getBranchState().isRebaselineInProgress()) {
@@ -252,13 +252,13 @@ public class AtsBranchManagerCore {
       return CommitStatus.Commit_Needed;
    }
 
-   public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, Branch destinationBranch) throws OseeCoreException {
+   public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, IOseeBranch destinationBranch) throws OseeCoreException {
       CommitStatus commitStatus = getCommitStatus(teamArt, destinationBranch, null);
       return commitStatus;
    }
 
-   private static boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(TeamWorkFlowArtifact teamArt, Branch destinationBranch, Collection<TransactionRecord> commitTransactionIds) throws OseeCoreException {
-      Branch destinationBranchParent = destinationBranch.getParentBranch();
+   private static boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(TeamWorkFlowArtifact teamArt, IOseeBranch destinationBranch, Collection<TransactionRecord> commitTransactionIds) throws OseeCoreException {
+      Branch destinationBranchParent = BranchManager.getParentBranch(destinationBranch);
       if (destinationBranchParent.getBranchType() == BranchType.SYSTEM_ROOT) {
          return false;
       }
@@ -271,7 +271,8 @@ public class AtsBranchManagerCore {
          }
       }
       if (committedToParentTransRecord != null) {
-         if (destinationBranch.getBaseTransaction().getTimeStamp().after(committedToParentTransRecord.getTimeStamp())) {
+         if (BranchManager.getBaseTransaction(destinationBranch).getTimeStamp().after(
+            committedToParentTransRecord.getTimeStamp())) {
             return true;
          }
       }
@@ -403,10 +404,10 @@ public class AtsBranchManagerCore {
       return true;
    }
 
-   public static Collection<Branch> getBranchesLeftToCommit(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Set<Branch> branchesLeft = new HashSet<Branch>();
-      Collection<Branch> committedTo = getBranchesCommittedTo(teamArt);
-      for (Branch branchToCommit : getBranchesToCommitTo(teamArt)) {
+   public static Collection<IOseeBranch> getBranchesLeftToCommit(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      Set<IOseeBranch> branchesLeft = new HashSet<IOseeBranch>();
+      Collection<IOseeBranch> committedTo = getBranchesCommittedTo(teamArt);
+      for (IOseeBranch branchToCommit : getBranchesToCommitTo(teamArt)) {
          if (!committedTo.contains(branchToCommit) && !isNoCommitNeeded(teamArt, branchToCommit)) {
             branchesLeft.add(branchToCommit);
          }
@@ -414,8 +415,8 @@ public class AtsBranchManagerCore {
       return branchesLeft;
    }
 
-   public static Collection<Branch> getBranchesToCommitTo(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Set<Branch> branches = new HashSet<Branch>();
+   public static Collection<IOseeBranch> getBranchesToCommitTo(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      Set<IOseeBranch> branches = new HashSet<IOseeBranch>();
       for (Object obj : getConfigArtifactsConfiguredToCommitTo(teamArt)) {
          if (obj instanceof IAtsVersion && Strings.isValid(((IAtsVersion) obj).getBaselineBranchGuid())) {
             branches.add(BranchManager.getBranchByGuid(((IAtsVersion) obj).getBaselineBranchGuid()));
@@ -426,8 +427,8 @@ public class AtsBranchManagerCore {
       return branches;
    }
 
-   public static Collection<Branch> getBranchesCommittedTo(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Set<Branch> branches = new HashSet<Branch>();
+   public static Collection<IOseeBranch> getBranchesCommittedTo(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      Set<IOseeBranch> branches = new HashSet<IOseeBranch>();
       for (TransactionRecord transId : getTransactionIds(teamArt, false)) {
          branches.add(transId.getBranch());
       }
@@ -441,7 +442,7 @@ public class AtsBranchManagerCore {
       return !getBranchesCommittedTo(teamArt).isEmpty();
    }
 
-   public static boolean isNoCommitNeeded(TeamWorkFlowArtifact teamArt, Branch destinationBranch) throws OseeCoreException {
+   public static boolean isNoCommitNeeded(TeamWorkFlowArtifact teamArt, IOseeBranch destinationBranch) throws OseeCoreException {
       return getCommitStatus(teamArt, destinationBranch) == CommitStatus.No_Commit_Needed;
    }
 
@@ -449,8 +450,8 @@ public class AtsBranchManagerCore {
     * Return true if all commit destination branches are configured and have been committed to
     */
    public static boolean isBranchesAllCommitted(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Collection<Branch> committedTo = getBranchesCommittedTo(teamArt);
-      for (Branch destBranch : getBranchesToCommitTo(teamArt)) {
+      Collection<IOseeBranch> committedTo = getBranchesCommittedTo(teamArt);
+      for (IOseeBranch destBranch : getBranchesToCommitTo(teamArt)) {
          if (!committedTo.contains(destBranch) && !isNoCommitNeeded(teamArt, destBranch)) {
             return false;
          }
@@ -458,9 +459,9 @@ public class AtsBranchManagerCore {
       return true;
    }
 
-   public static boolean isBranchesAllCommittedExcept(TeamWorkFlowArtifact teamArt, Branch branchToExclude) throws OseeCoreException {
-      Collection<Branch> committedTo = getBranchesCommittedTo(teamArt);
-      for (Branch destBranch : getBranchesToCommitTo(teamArt)) {
+   public static boolean isBranchesAllCommittedExcept(TeamWorkFlowArtifact teamArt, IOseeBranch branchToExclude) throws OseeCoreException {
+      Collection<IOseeBranch> committedTo = getBranchesCommittedTo(teamArt);
+      for (IOseeBranch destBranch : getBranchesToCommitTo(teamArt)) {
          if (!destBranch.equals(branchToExclude) && !committedTo.contains(destBranch) && !isNoCommitNeeded(teamArt,
             destBranch)) {
             return false;
@@ -472,8 +473,8 @@ public class AtsBranchManagerCore {
    /**
     * @return Branch that is the configured branch to create working branch from.
     */
-   public static Branch getConfiguredBranchForWorkflow(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Branch parentBranch = null;
+   public static IOseeBranch getConfiguredBranchForWorkflow(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      IOseeBranch parentBranch = null;
 
       // Check for parent branch id in Version artifact
       if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
@@ -500,11 +501,11 @@ public class AtsBranchManagerCore {
    }
 
    public static Long getId(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Branch branch = getWorkingBranch(teamArt);
+      IOseeBranch branch = getWorkingBranch(teamArt);
       if (branch == null) {
          return null;
       }
-      return branch.getId();
+      return branch.getUuid();
    }
 
    /**
@@ -571,7 +572,7 @@ public class AtsBranchManagerCore {
     */
    public static Collection<TransactionRecord> getTransactionIds(TeamWorkFlowArtifact teamArt, boolean forMergeBranches) throws OseeCoreException {
       if (forMergeBranches) {
-         Branch workingBranch = getWorkingBranch(teamArt);
+         IOseeBranch workingBranch = getWorkingBranch(teamArt);
          // grab only the transaction that had merge conflicts
          Collection<TransactionRecord> transactionIds = new ArrayList<TransactionRecord>();
          for (TransactionRecord transactionId : getCommitTransactionsToUnarchivedBaselineBranchs(teamArt)) {
@@ -613,7 +614,7 @@ public class AtsBranchManagerCore {
             return new Result(
                "Committed branch already exists. Can not create another working branch once changes have been committed.");
          }
-         Branch parentBranch = AtsBranchManagerCore.getConfiguredBranchForWorkflow(teamArt);
+         IOseeBranch parentBranch = AtsBranchManagerCore.getConfiguredBranchForWorkflow(teamArt);
          if (parentBranch == null) {
             return new Result(
                "Parent Branch can not be determined.\n\nPlease specify " + "parent branch through Version Artifact or Team Definition Artifact.\n\n" + "Contact your team lead to configure this.");
@@ -642,7 +643,7 @@ public class AtsBranchManagerCore {
     * except in test cases or automated tools. Use createWorkingBranchWithPopups
     */
    public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, boolean pend) throws OseeCoreException {
-      final Branch parentBranch = AtsBranchManagerCore.getConfiguredBranchForWorkflow(teamArt);
+      final IOseeBranch parentBranch = AtsBranchManagerCore.getConfiguredBranchForWorkflow(teamArt);
       return createWorkingBranch_Create(teamArt, parentBranch, pend);
    }
 
@@ -739,7 +740,7 @@ public class AtsBranchManagerCore {
    }
 
    public static Result deleteWorkingBranch(TeamWorkFlowArtifact teamArt, boolean pend) throws OseeCoreException {
-      Branch branch = AtsBranchManagerCore.getWorkingBranch(teamArt);
+      IOseeBranch branch = AtsBranchManagerCore.getWorkingBranch(teamArt);
       if (branch != null) {
          IStatus status = null;
          if (pend) {

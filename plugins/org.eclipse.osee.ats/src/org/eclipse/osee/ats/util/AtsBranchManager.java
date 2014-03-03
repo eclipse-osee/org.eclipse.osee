@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.widgets.dialog.SingleItemSelecitonDialog;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -111,8 +112,8 @@ public final class AtsBranchManager {
 
    public static void showMergeManager(TeamWorkFlowArtifact teamArt, Branch destinationBranch) throws OseeCoreException {
       if (AtsBranchManagerCore.isWorkingBranchInWork(teamArt)) {
-         MergeView.openView(AtsBranchManagerCore.getWorkingBranch(teamArt), destinationBranch,
-            AtsBranchManagerCore.getWorkingBranch(teamArt).getBaseTransaction());
+         MergeView.openView((Branch) AtsBranchManagerCore.getWorkingBranch(teamArt), destinationBranch,
+            BranchManager.getBaseTransaction(AtsBranchManagerCore.getWorkingBranch(teamArt)));
       } else if (AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
          for (TransactionRecord transactionId : AtsBranchManagerCore.getTransactionIds(teamArt, true)) {
             if (transactionId.getBranchId() == destinationBranch.getId()) {
@@ -131,7 +132,7 @@ public final class AtsBranchManager {
             AWorkbench.popup("ERROR", "No Current Working Branch");
             return;
          }
-         BranchView.revealBranch(AtsBranchManagerCore.getWorkingBranch(teamArt));
+         BranchView.revealBranch((Branch) AtsBranchManagerCore.getWorkingBranch(teamArt));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -143,7 +144,7 @@ public final class AtsBranchManager {
    public static void deleteWorkingBranch(TeamWorkFlowArtifact teamArt, boolean promptUser) {
       boolean isExecutionAllowed = !promptUser;
       try {
-         Branch branch = AtsBranchManagerCore.getWorkingBranch(teamArt);
+         IOseeBranch branch = AtsBranchManagerCore.getWorkingBranch(teamArt);
          if (promptUser) {
             StringBuilder message = new StringBuilder();
             if (BranchManager.hasChanges(branch)) {

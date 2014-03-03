@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
@@ -159,7 +160,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
                return;
             }
             try {
-               Branch parentBranch = AtsBranchManagerCore.getConfiguredBranchForWorkflow(teamArt);
+               IOseeBranch parentBranch = AtsBranchManagerCore.getConfiguredBranchForWorkflow(teamArt);
                // Retrieve parent branch to create working branch from
                if (!MessageDialog.openConfirm(
                   Displays.getActiveShell(),
@@ -268,8 +269,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    private void markWorkingBranchAsFavorite() {
       try {
          User user =
-            AtsClientService.get().getUserAdmin().getOseeUser(
-               AtsClientService.get().getUserAdmin().getCurrentUser());
+            AtsClientService.get().getUserAdmin().getOseeUser(AtsClientService.get().getUserAdmin().getCurrentUser());
          if (user.isSystemUser()) {
             AWorkbench.popup("Can't set preference as System User = " + user);
             return;
