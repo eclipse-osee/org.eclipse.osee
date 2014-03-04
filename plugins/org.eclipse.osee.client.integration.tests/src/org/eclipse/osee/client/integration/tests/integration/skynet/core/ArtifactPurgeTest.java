@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
@@ -67,7 +66,7 @@ public class ArtifactPurgeTest {
 
    @Before
    public void setup() throws OseeCoreException {
-      workingBranch = TokenFactory.createBranch(GUID.create(), method.getQualifiedTestName());
+      workingBranch = TokenFactory.createBranch(method.getQualifiedTestName());
       BranchManager.createWorkingBranch(DemoBranches.SAW_Bld_2, workingBranch);
    }
 

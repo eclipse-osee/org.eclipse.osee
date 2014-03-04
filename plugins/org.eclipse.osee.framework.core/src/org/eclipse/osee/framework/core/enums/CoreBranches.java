@@ -18,9 +18,9 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
  */
 public final class CoreBranches {
 
-   public static final IOseeBranch COMMON = TokenFactory.createBranch("AyH_fDpMERA+zDfML4gA", "Common");
-   public static final IOseeBranch SYSTEM_ROOT =
-      TokenFactory.createBranch("AyH_fDnM2RFEhyybolQA", "System Root Branch");
+   public static final IOseeBranch COMMON = TokenFactory.createBranch("AyH_fDpMERA+zDfML4gA", 570, "Common");
+   public static final IOseeBranch SYSTEM_ROOT = TokenFactory.createBranch("AyH_fDnM2RFEhyybolQA", 1,
+      "System Root Branch");
 
    public CoreBranches() {
       // Constants

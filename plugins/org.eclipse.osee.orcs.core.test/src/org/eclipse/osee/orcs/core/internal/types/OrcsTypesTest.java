@@ -93,9 +93,9 @@ public class OrcsTypesTest {
 
    private static final IOseeBranch BRANCH_A = TokenFactory.createBranch("AU2FErW1QwSXWPiP4cwA", "Branch A");
    private static final IOseeBranch BRANCH_B = TokenFactory.createBranch("AU2JKsKQAQAvzkTkk+gA", "Branch B");
-   private static final IOseeBranch BRANCH_C = TokenFactory.createBranch(GUID.create(), "Branch C");
-   private static final IOseeBranch BRANCH_D = TokenFactory.createBranch(GUID.create(), "Branch D");
-   private static final IOseeBranch BRANCH_E = TokenFactory.createBranch(GUID.create(), "Branch E");
+   private static final IOseeBranch BRANCH_C = TokenFactory.createBranch( "Branch C");
+   private static final IOseeBranch BRANCH_D = TokenFactory.createBranch( "Branch D");
+   private static final IOseeBranch BRANCH_E = TokenFactory.createBranch( "Branch E");
    
    @Mock private Log logger;
    @Mock private OrcsTypesDataStore dataStore;

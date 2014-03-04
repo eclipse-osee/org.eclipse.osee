@@ -14,7 +14,6 @@ import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -33,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 
@@ -189,7 +189,7 @@ public class ArtifactEventFiltersTest {
 
       // Reset event filters to only send OTHER branch events
       eventFilters = new ArrayList<IEventFilter>();
-      eventFilters.add(new BranchGuidEventFilter(TokenFactory.createBranch(GUID.create(), "Other Test Branch")));
+      eventFilters.add(new BranchGuidEventFilter(TokenFactory.createBranch("Other Test Branch")));
       eventFilters.add(new ArtifactTypeEventFilter(CoreArtifactTypes.GeneralDocument));
       resultArtifactEvent = null;
       resultSender = null;

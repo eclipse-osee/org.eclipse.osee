@@ -10,13 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import java.util.Random;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 public final class TokenFactory {
+
+   private static Random random;
 
    private TokenFactory() {
       // Utility Class
@@ -54,8 +58,16 @@ public final class TokenFactory {
       return new UserToken(guid, name, userId, active, admin, email, creationRequired);
    }
 
+   public static IOseeBranch createBranch(String name) {
+      return new BranchToken(GUID.create(), getNextLong(), name);
+   }
+
    public static IOseeBranch createBranch(String guid, String name) {
-      return new BranchToken(guid, name);
+      return new BranchToken(guid, getNextLong(), name);
+   }
+
+   public static IOseeBranch createBranch(String guid, long uuid, String name) {
+      return new BranchToken(guid, uuid, name);
    }
 
    public static IRelationSorterId createSorterId(String guid, String name) {
@@ -91,9 +103,24 @@ public final class TokenFactory {
    }
 
    private static final class BranchToken extends NamedIdentity<String> implements IOseeBranch {
-      public BranchToken(String guid, String name) {
+      private final long uuid;
+
+      public BranchToken(String guid, long uuid, String name) {
          super(guid, name);
+         this.uuid = uuid;
       }
+
+      @Override
+      public long getUuid() {
+         return uuid;
+      }
+   }
+
+   private static long getNextLong() {
+      if (random == null) {
+         random = new Random();
+      }
+      return random.nextLong();
    }
 
    private final static class AttributeTypeToken extends FullyNamedIdentity<Long> implements IAttributeType {

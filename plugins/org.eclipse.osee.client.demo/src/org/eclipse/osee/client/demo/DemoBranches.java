@@ -18,13 +18,13 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
  */
 public final class DemoBranches {
 
-   public static final IOseeBranch SAW_Bld_1 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvAAA", "SAW_Bld_1");
-   public static final IOseeBranch SAW_Bld_2 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvBBB", "SAW_Bld_2");
-   public static final IOseeBranch SAW_Bld_3 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvCCC", "SAW_Bld_3");
+   public static final IOseeBranch SAW_Bld_1 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvAAA", 2000, "SAW_Bld_1");
+   public static final IOseeBranch SAW_Bld_2 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvBBB", 2001, "SAW_Bld_2");
+   public static final IOseeBranch SAW_Bld_3 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvCCC", 2002, "SAW_Bld_3");
 
-   public static final IOseeBranch CIS_Bld_1 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvDDD", "CIS_Bld_1");
-   public static final IOseeBranch CIS_Bld_2 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvEEE", "CIS_Bld_2");
-   public static final IOseeBranch CIS_Bld_3 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvFFF", "CIS_Bld_3");
+   public static final IOseeBranch CIS_Bld_1 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvDDD", 1000, "CIS_Bld_1");
+   public static final IOseeBranch CIS_Bld_2 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvEEE", 1001, "CIS_Bld_2");
+   public static final IOseeBranch CIS_Bld_3 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvFFF", 1002, "CIS_Bld_3");
 
    private DemoBranches() {
       // Constants

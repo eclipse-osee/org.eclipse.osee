@@ -61,7 +61,7 @@ public class BranchEventFiltersTest {
 
       Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
-      branch = TokenFactory.createBranch(GUID.create(), method.getQualifiedTestName());
+      branch = TokenFactory.createBranch(method.getQualifiedTestName());
 
       event = new BranchEvent(BranchEventType.Renamed, branch.getGuid());
 

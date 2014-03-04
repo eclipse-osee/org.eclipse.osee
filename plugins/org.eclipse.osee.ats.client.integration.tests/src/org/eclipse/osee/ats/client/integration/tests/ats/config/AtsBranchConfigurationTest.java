@@ -71,9 +71,9 @@ import org.junit.Before;
  */
 public class AtsBranchConfigurationTest {
 
-   public static final IOseeBranch BRANCH_VIA_TEAM_DEFINITION = TokenFactory.createBranch("AyH_e6damwQgvDhKfAAA",
+   public static final IOseeBranch BRANCH_VIA_TEAM_DEFINITION = TokenFactory.createBranch("AyH_e6damwQgvDhKfAAA", 8881,
       "BranchViaTeamDef");
-   public static final IOseeBranch BRANCH_VIA_VERSIONS = TokenFactory.createBranch("AyH_e6damwQgvDhKfBBB",
+   public static final IOseeBranch BRANCH_VIA_VERSIONS = TokenFactory.createBranch("AyH_e6damwQgvDhKfBBB", 8882,
       "BranchViaVersions");
    private final boolean DEBUG = false;
 

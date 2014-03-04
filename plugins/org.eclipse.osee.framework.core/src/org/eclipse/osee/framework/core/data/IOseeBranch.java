@@ -16,5 +16,6 @@ import org.eclipse.osee.framework.jdk.core.type.Identifiable;
  * @author Ryan D. Brooks
  */
 public interface IOseeBranch extends Identifiable<String> {
-   // composition interface requires no additional methods,fields 
+
+   long getUuid();
 }

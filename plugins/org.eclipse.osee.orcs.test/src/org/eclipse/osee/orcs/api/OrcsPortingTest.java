@@ -133,7 +133,7 @@ public class OrcsPortingTest {
 
    private TransactionRecord createBaselineBranchAndArtifacts(String artifactGuid) throws Exception {
       // set up the main branch
-      IOseeBranch branch = TokenFactory.createBranch(GUID.create(), "MainFromBranch");
+      IOseeBranch branch = TokenFactory.createBranch("MainFromBranch");
       branchApi.createTopLevelBranch(branch, author).call();
 
       // baseline branch - set up artifacts on the main branch, and on the child branch
@@ -160,7 +160,7 @@ public class OrcsPortingTest {
    private TransactionRecord createWorkingBranchChanges(IOseeBranch parentBranch, String artifactToModifyGuid) throws Exception {
       // set up the child branch to copy to
 
-      IOseeBranch childBranch = TokenFactory.createBranch(GUID.create(), "childBranch");
+      IOseeBranch childBranch = TokenFactory.createBranch( "childBranch");
       branchApi.createWorkingBranch(childBranch, author, parentBranch, null).call();
 
       TransactionBuilder tx3 = txFactory.createTransaction(childBranch, author, "update second requirement");
@@ -193,7 +193,7 @@ public class OrcsPortingTest {
 
    private IOseeBranch createCopyFromTransactionBranch(TransactionRecord transactionToCopy, String assocArtifactGuid) throws Exception {
       // create the branch with the copied transaction
-      IOseeBranch branch = TokenFactory.createBranch(GUID.create(), branchString);
+      IOseeBranch branch = TokenFactory.createBranch(branchString);
 
       // get the setup associated artifact - this is for a later test to make sure the branch is not duplicated
       // there should only be one port branch per associated artifact
@@ -206,7 +206,7 @@ public class OrcsPortingTest {
    }
 
    private TransactionRecord commitToDestinationBranch(IOseeBranch copyTxBranch) throws Exception {
-      IOseeBranch destinationBranch = TokenFactory.createBranch(GUID.create(), "IndepToBranch");
+      IOseeBranch destinationBranch = TokenFactory.createBranch("IndepToBranch");
       branchApi.createTopLevelBranch(destinationBranch, author).call();
       return branchApi.commitBranch(author, copyTxBranch, destinationBranch).call();
    }

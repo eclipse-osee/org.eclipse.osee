@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
@@ -70,7 +69,7 @@ public class BranchPurgeTest {
 
    @Before
    public void setup() {
-      workingBranch = TokenFactory.createBranch(GUID.create(), method.getQualifiedTestName());
+      workingBranch = TokenFactory.createBranch(method.getQualifiedTestName());
    }
 
    @After

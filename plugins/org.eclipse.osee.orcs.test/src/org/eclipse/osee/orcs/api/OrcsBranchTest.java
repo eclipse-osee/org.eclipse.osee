@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
@@ -74,7 +73,7 @@ public class OrcsBranchTest {
       int CHANGED_TX_ID = 8; // Transaction containing tested change
 
       // set up the initial branch
-      IOseeBranch branch = TokenFactory.createBranch(GUID.create(), "PriorBranch");
+      IOseeBranch branch = TokenFactory.createBranch("PriorBranch");
 
       ArtifactReadable author = getSystemUser();
 
@@ -100,7 +99,7 @@ public class OrcsBranchTest {
       // user Joe Smith, so if the code is correct, and the copy includes the final 
       // transaction, then this will produce the same result as the query of the common branch
       // create the branch with the copied transaction
-      IOseeBranch postbranch = TokenFactory.createBranch(GUID.create(), "PostBranch");
+      IOseeBranch postbranch = TokenFactory.createBranch("PostBranch");
 
       ITransaction tx1 = TokenFactory.createTransaction(CHANGED_TX_ID);
       Callable<BranchReadable> postCallable = branchInterface.createCopyTxBranch(postbranch, author, tx1, null);
@@ -126,7 +125,7 @@ public class OrcsBranchTest {
       List<ChangeItem> priorItems = callable.call();
 
       // create the branch with the copied transaction
-      IOseeBranch branch = TokenFactory.createBranch(GUID.create(), "CopiedBranch");
+      IOseeBranch branch = TokenFactory.createBranch("CopiedBranch");
 
       ArtifactReadable author = getSystemUser();
 
@@ -146,7 +145,7 @@ public class OrcsBranchTest {
       ArtifactReadable author =
          query.fromBranch(CoreBranches.COMMON).andNameEquals("OSEE System").getResults().getExactlyOne();
       // set up the initial branch
-      IOseeBranch branch = TokenFactory.createBranch(GUID.create(), "BaseBranch");
+      IOseeBranch branch = TokenFactory.createBranch("BaseBranch");
 
       Callable<BranchReadable> callableBranch = branchInterface.createTopLevelBranch(branch, author);
       BranchReadable base = callableBranch.call();
@@ -157,7 +156,7 @@ public class OrcsBranchTest {
 
       // create working branch off of base to make some changes
       // set up the child branch
-      IOseeBranch branchName = TokenFactory.createBranch(GUID.create(), "ChildBranch");
+      IOseeBranch branchName = TokenFactory.createBranch("ChildBranch");
       Callable<BranchReadable> callableChildBranch =
          branchInterface.createWorkingBranch(branchName, author, base, null);
 
@@ -177,7 +176,7 @@ public class OrcsBranchTest {
 
       // create a disjoint working branch from common
 
-      IOseeBranch commonName = TokenFactory.createBranch(GUID.create(), "ChildFromCommonBranch");
+      IOseeBranch commonName = TokenFactory.createBranch("ChildFromCommonBranch");
       Callable<BranchReadable> callableBranchFromCommon =
          branchInterface.createWorkingBranch(commonName, author, CoreBranches.COMMON, null);
       BranchReadable commonChildBranch = callableBranchFromCommon.call();

@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -557,7 +556,7 @@ public class BranchManager {
    }
 
    public static Branch createTopLevelBranch(final String branchName) throws OseeCoreException {
-      IOseeBranch branchToken = TokenFactory.createBranch(GUID.create(), branchName);
+      IOseeBranch branchToken = TokenFactory.createBranch(branchName);
       return createTopLevelBranch(branchToken);
    }
 

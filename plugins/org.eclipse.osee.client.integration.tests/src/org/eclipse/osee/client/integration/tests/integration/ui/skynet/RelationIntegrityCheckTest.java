@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -70,7 +69,7 @@ public class RelationIntegrityCheckTest {
       art_A.persist(getClass().getSimpleName());
       BranchManager.persist(parentBranch);
 
-      workingBranch = BranchManager.createWorkingBranch(parentBranch, TokenFactory.createBranch(GUID.create(), "2"));
+      workingBranch = BranchManager.createWorkingBranch(parentBranch, TokenFactory.createBranch("2"));
 
       art_A.deleteAndPersist();
 

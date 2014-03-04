@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -81,7 +80,7 @@ public class WordTemplateProcessorTest {
 
    @Before
    public void setUp() throws Exception {
-      branch = TokenFactory.createBranch(GUID.create(), method.getQualifiedTestName());
+      branch = TokenFactory.createBranch(method.getQualifiedTestName());
 
       BranchManager.createWorkingBranch(SAW_Bld_1, branch);
       myRootArtifact =

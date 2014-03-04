@@ -163,4 +163,9 @@ public class BranchDataImpl extends OrcsObjectImpl<Long> implements BranchData, 
       return false;
    }
 
+   @Override
+   public long getUuid() {
+      return getLocalId();
+   }
+
 }

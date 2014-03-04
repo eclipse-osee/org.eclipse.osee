@@ -327,7 +327,7 @@ public class OrcsQueryTest {
 
    private BranchReadable setupNameEqualsArtifacts() throws Exception {
       author = factory.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
-      IOseeBranch branchToken = TokenFactory.createBranch(GUID.create(), "TestAndNameEquals");
+      IOseeBranch branchToken = TokenFactory.createBranch( "TestAndNameEquals");
       BranchReadable branch = branchApi.createTopLevelBranch(branchToken, author).call();
       TransactionBuilder tx = txFactory.createTransaction(branch, author, "add folders");
       tx.createArtifact(CoreArtifactTypes.Folder, "First Folder");

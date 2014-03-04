@@ -59,6 +59,11 @@ public class OseeClientQueryTest {
       public String getName() {
          return "SAW_Bld_1";
       }
+
+      @Override
+      public long getUuid() {
+         return 2000;
+      }
    };
 
    @Rule

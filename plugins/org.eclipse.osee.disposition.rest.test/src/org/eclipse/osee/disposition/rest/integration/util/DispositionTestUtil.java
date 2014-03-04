@@ -14,6 +14,7 @@ import org.eclipse.osee.disposition.rest.DispoConstants;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+
 /**
  * @author Angel Avila
  */
@@ -25,8 +26,8 @@ public class DispositionTestUtil {
    public static final IArtifactToken DISPO_ITEM_DEMO_ONE = TokenFactory.createArtifactToken("BJEiNETyAGTDpW4ZnrAA", "Dispo Item Demo One", DispoConstants.DispoItem);
    
    public static final IOseeBranch SAW_Bld_1_FOR_DISPO =
-      TokenFactory.createBranch("AyH_f2sSKy3l07fIvAVV", "SAW_Bld_1 - FOR_DISPOSITION");
-   public static final IOseeBranch SAW_Bld_1 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvAAA", "SAW_Bld_1");
+      TokenFactory.createBranch("AyH_f2sSKy3l07fIvAVV", 2323, "SAW_Bld_1 - FOR_DISPOSITION");
+   public static final IOseeBranch SAW_Bld_1 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvAAA", 2000, "SAW_Bld_1");
    // @formatter:on
 
 }

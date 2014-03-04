@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
  */
 public final class CoverageBranches {
 
-   public static final IOseeBranch COVERAGE_TEST_BRANCH = TokenFactory.createBranch("BbH4f2sSKy3l07fIfAAA",
+   public static final IOseeBranch COVERAGE_TEST_BRANCH = TokenFactory.createBranch("BbH4f2sSKy3l07fIfAAA", 8883,
       "Coverage Test Branch");
 
    private CoverageBranches() {

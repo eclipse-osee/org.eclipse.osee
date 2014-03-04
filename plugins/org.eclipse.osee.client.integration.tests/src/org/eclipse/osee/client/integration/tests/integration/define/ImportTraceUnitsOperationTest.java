@@ -77,7 +77,7 @@ public final class ImportTraceUnitsOperationTest {
 
    @Before
    public void setup() throws Exception {
-      branch = TokenFactory.createBranch(GUID.create(), testInfo.getQualifiedTestName());
+      branch = TokenFactory.createBranch( testInfo.getQualifiedTestName());
       importToBranch = BranchManager.createWorkingBranch(SAW_Bld_1, branch);
    }
 

@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
@@ -247,7 +246,7 @@ public class OrcsBranchQueryTest {
 
    @Test
    public void testGetIncludeArchived() throws Exception {
-      IOseeBranch child = TokenFactory.createBranch(GUID.create(), testName.getMethodName());
+      IOseeBranch child = TokenFactory.createBranch(testName.getMethodName());
 
       BranchQuery query = factory.branchQuery();
       query.andIds(CIS_Bld_1);
@@ -269,7 +268,7 @@ public class OrcsBranchQueryTest {
 
    @Test
    public void testGetIncludeDeleted() throws Exception {
-      IOseeBranch child = TokenFactory.createBranch(GUID.create(), testName.getMethodName());
+      IOseeBranch child = TokenFactory.createBranch(testName.getMethodName());
 
       BranchQuery query = factory.branchQuery();
       query.andIds(CIS_Bld_1);
@@ -295,7 +294,7 @@ public class OrcsBranchQueryTest {
 
    @Test
    public void testGetWithMultipleConditions1() throws Exception {
-      IOseeBranch child = TokenFactory.createBranch(GUID.create(), testName.getMethodName());
+      IOseeBranch child = TokenFactory.createBranch(testName.getMethodName());
 
       IOseeBranch actual = createBranch(SAW_Bld_2, child);
 

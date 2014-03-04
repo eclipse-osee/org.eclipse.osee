@@ -291,4 +291,9 @@ public class Branch extends AbstractOseeType<String> implements WriteableBranch,
       return String.format("[%s][%s]", getGuid(), getName());
    }
 
+   @Override
+   public long getUuid() {
+      return getId();
+   }
+
 }
