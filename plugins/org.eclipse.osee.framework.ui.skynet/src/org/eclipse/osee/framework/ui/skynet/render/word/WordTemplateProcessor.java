@@ -18,6 +18,7 @@ import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVI
 import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -308,8 +309,16 @@ public class WordTemplateProcessor {
       }
 
       String artifactName = renderer.getStringOption("Name");
+      String artifactId = renderer.getStringOption("Id");
       Branch branch = renderer.getBranchOption("Branch");
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(artifactName, branch, EXCLUDE_DELETED);
+      List<Artifact> artifacts = null;
+
+      if (Strings.isValid(artifactId)) {
+         artifacts =
+            ArtifactQuery.getArtifactListFromIds(Arrays.asList(Integer.valueOf(artifactId)), branch, EXCLUDE_DELETED);
+      } else if (Strings.isValid(artifactName)) {
+         artifacts = ArtifactQuery.getArtifactListFromName(artifactName, branch, EXCLUDE_DELETED);
+      }
 
       String subDocFileName = subdocumentName + ".xml";
 

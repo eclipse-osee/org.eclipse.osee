@@ -80,6 +80,8 @@ public class WordTemplateRendererTest {
    private static String SINGLE_TEMPLATE_WITH_ATTRIBUTES_STRING;
 
    private static String MASTER_TEMPLATE_STRING;
+   private static String MASTER_TEMPLATE_STRING_IDONLY;
+   private static String MASTER_TEMPLATE_STRING_IDANDNAME;
    private static String SLAVE_TEMPLATE_STRING;
 
    private IOseeBranch rootBranch;
@@ -91,6 +93,8 @@ public class WordTemplateRendererTest {
    private Artifact singleTemplate;
    private Artifact singleTemplateAttrib;
    private Artifact masterTemplate;
+   private Artifact masterTemplate_idOnly;
+   private Artifact masterTemplate_idAndName;
    private Artifact slaveTemplate;
 
    private final WordTemplateRenderer renderer = new WordTemplateRenderer();
@@ -102,6 +106,8 @@ public class WordTemplateRendererTest {
       SINGLE_TEMPLATE_STRING = getResourceData("wordrenderer_single.xml");
       SINGLE_TEMPLATE_WITH_ATTRIBUTES_STRING = getResourceData("wordrenderer_single_attrib.xml");
       MASTER_TEMPLATE_STRING = getResourceData("wordrenderer_master.xml");
+      MASTER_TEMPLATE_STRING_IDONLY = getResourceData("wordrenderer_master-idonly.xml");
+      MASTER_TEMPLATE_STRING_IDANDNAME = getResourceData("wordrenderer_master-idandname.xml");
       SLAVE_TEMPLATE_STRING = getResourceData("wordrenderer_slave.xml");
    }
 
@@ -428,6 +434,68 @@ public class WordTemplateRendererTest {
    }
 
    @Test
+   public void testPublishUsingIds() throws OseeCoreException {
+      modifyOption("Publish As Diff", false);
+      List<Artifact> artifacts = new ArrayList<Artifact>();
+      artifacts.add(swReqFolder);
+      renderer.publish(masterTemplate_idOnly, slaveTemplate, artifacts, options);
+
+      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
+         null);
+      String contents;
+      try {
+         contents = getFileAsString(resultPath);
+         Matcher m = findHlinks.matcher(contents);
+         int counter = 0;
+         int indx = resultPath.lastIndexOf(File.separator);
+         String justPath = resultPath.substring(0, indx + 1);
+         while (m.find()) {
+            String hfile = m.group();
+            hfile = hfile.substring(17, (hfile.length() - 1));
+            File testFile = new File(justPath + hfile);
+            Assert.assertTrue(String.format("File does not exist %s", testFile), testFile.exists());
+            counter++;
+         }
+         Assert.assertTrue("Did not find links to 3 files.", (counter == 3));
+
+      } catch (IOException ex) {
+         // Do nothing - test failed
+      }
+   }
+
+   @Test
+   public void testPublishUsingIdAndName() throws OseeCoreException {
+      modifyOption("Publish As Diff", false);
+      List<Artifact> artifacts = new ArrayList<Artifact>();
+      artifacts.add(swReqFolder);
+      renderer.publish(masterTemplate_idAndName, slaveTemplate, artifacts, options);
+
+      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
+         null);
+      String contents;
+      try {
+         contents = getFileAsString(resultPath);
+         Matcher m = findHlinks.matcher(contents);
+         int counter = 0;
+         int indx = resultPath.lastIndexOf(File.separator);
+         String justPath = resultPath.substring(0, indx + 1);
+         while (m.find()) {
+            String hfile = m.group();
+            hfile = hfile.substring(17, (hfile.length() - 1));
+            File testFile = new File(justPath + hfile);
+            Assert.assertTrue(String.format("File does not exist %s", testFile), testFile.exists());
+            counter++;
+         }
+         Assert.assertTrue("Did not find links to 3 files.", (counter == 3));
+
+      } catch (IOException ex) {
+         // Do nothing - test failed
+      }
+   }
+
+   @Test
    public void testPublishDiffWithFieldCodes() throws OseeCoreException {
       modifyOption("Publish As Diff", true);
       List<Artifact> artifacts = new ArrayList<Artifact>();
@@ -496,6 +564,15 @@ public class WordTemplateRendererTest {
       masterTemplate =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "srsMaster Template");
       masterTemplate.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent, MASTER_TEMPLATE_STRING);
+      masterTemplate_idOnly =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "srsMaster Template ID only");
+      masterTemplate_idOnly.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent,
+         MASTER_TEMPLATE_STRING_IDONLY);
+      masterTemplate_idAndName =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "srsMaster Template ID and name");
+      masterTemplate_idAndName.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent,
+         MASTER_TEMPLATE_STRING_IDANDNAME);
+
       slaveTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "srsSlave Template");
       slaveTemplate.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent, SLAVE_TEMPLATE_STRING);
 
@@ -503,6 +580,8 @@ public class WordTemplateRendererTest {
       folder.addChild(singleTemplate);
       folder.addChild(singleTemplateAttrib);
       folder.addChild(masterTemplate);
+      folder.addChild(masterTemplate_idOnly);
+      folder.addChild(masterTemplate_idAndName);
       folder.addChild(slaveTemplate);
    }
 
