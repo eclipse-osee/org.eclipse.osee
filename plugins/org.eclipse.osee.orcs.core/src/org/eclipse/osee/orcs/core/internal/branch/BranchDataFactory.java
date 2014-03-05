@@ -76,8 +76,7 @@ public class BranchDataFactory {
       IOseeBranch parent = fromTx.getBranch();
 
       String creationComment =
-         String.format("Transaction %d ported from %s to create Branch %s", value, parent.getName(),
-            branch.getName());
+         String.format("Transaction %d ported from %s to create Branch %s", value, parent.getName(), branch.getName());
       return createBranchData(branch, BranchType.PORT, creationComment, fromTx, author, associatedArtifact, true);
    }
 
@@ -85,6 +84,9 @@ public class BranchDataFactory {
       CreateBranchData createData = new CreateBranchData();
       createData.setGuid(branch.getGuid());
       createData.setName(branch.getName());
+      if (branch.getUuid() > 0) {
+         createData.setUuid(branch.getUuid());
+      }
       createData.setBranchType(branchType);
       createData.setCreationComment(creationComment);
       createData.setFromTransaction(fromTx);

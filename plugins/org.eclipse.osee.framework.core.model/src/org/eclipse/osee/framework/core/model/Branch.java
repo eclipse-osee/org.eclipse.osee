@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.model.internal.fields.AssociatedArtifactField;
 import org.eclipse.osee.framework.core.model.internal.fields.CollectionField;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -44,6 +45,14 @@ public class Branch extends AbstractOseeType<String> implements WriteableBranch,
       setFieldLogException(BranchField.BRANCH_TYPE_FIELD_KEY, branchType);
       setFieldLogException(BranchField.BRANCH_STATE_FIELD_KEY, branchState);
       setFieldLogException(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, BranchArchivedState.fromBoolean(isArchived));
+   }
+
+   public Branch(String guid, long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived) {
+      this(guid, name, branchType, branchState, isArchived);
+      if (uuid <= 0) {
+         throw new OseeStateException("uuid [%d] must be > 0", uuid);
+      }
+      setField(UNIQUE_ID_FIELD_KEY, uuid);
    }
 
    protected void initializeFields() {

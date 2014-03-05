@@ -98,10 +98,9 @@ public class RenderingUtilTest {
       return URLEncoder.encode(guid, "UTF-8");
    }
 
-   private static Branch createBranch(AbstractOseeCache<String, Branch> cache, String guid, String name, int id) throws OseeCoreException {
-      Branch branch = new BranchFactory().create(guid, name, BranchType.WORKING, BranchState.MODIFIED, false);
+   private static Branch createBranch(AbstractOseeCache<String, Branch> cache, String guid, String name, long uuid) throws OseeCoreException {
+      Branch branch = new BranchFactory().create(guid, uuid, name, BranchType.WORKING, BranchState.MODIFIED, false);
       Assert.assertNotNull(branch);
-      branch.setId(id);
       return branch;
    }
 }

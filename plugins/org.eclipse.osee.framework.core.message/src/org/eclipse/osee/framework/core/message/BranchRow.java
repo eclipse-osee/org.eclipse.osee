@@ -82,7 +82,7 @@ public final class BranchRow {
    public static BranchRow fromArray(String[] data) {
       BranchArchivedState archived = BranchArchivedState.valueOf(data[0]);
       String branchGuid = data[1];
-      int branchId = Integer.valueOf(data[2]);
+      long branchId = Long.valueOf(data[2]);
       String branchName = data[3];
       BranchState branchState = BranchState.valueOf(data[4]);
       BranchType branchType = BranchType.valueOf(data[5]);

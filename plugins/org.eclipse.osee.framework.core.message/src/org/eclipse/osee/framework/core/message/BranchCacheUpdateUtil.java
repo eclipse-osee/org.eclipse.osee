@@ -63,9 +63,9 @@ public final class BranchCacheUpdateUtil {
       for (BranchRow srcItem : cacheMessage.getBranchRows()) {
          long branchId = srcItem.getBranchId();
          Branch updated =
-            factory.createOrUpdate(cache, srcItem.getBranchId(), srcItem.getStorageState(), srcItem.getBranchGuid(),
-               srcItem.getBranchName(), srcItem.getBranchType(), srcItem.getBranchState(),
-               srcItem.getBranchArchived().isArchived());
+            factory.createOrUpdate(cache, srcItem.getBranchGuid(), srcItem.getBranchId(), srcItem.getBranchName(),
+               srcItem.getBranchType(), srcItem.getBranchState(), srcItem.getBranchArchived().isArchived(),
+               srcItem.getStorageState());
          updatedItems.add(updated);
 
          Integer artifactId = branchToAssocArt.get(branchId);

@@ -179,8 +179,8 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
                         boolean isArchived = BranchArchivedState.valueOf(chStmt.getInt("archived")).isArchived();
                         String branchGuid = chStmt.getString("branch_guid");
                         Branch created =
-                           modelFactory.getBranchFactory().createOrUpdate(branchCache, localId, StorageState.LOADED,
-                              branchGuid, branchName, branchType, branchState, isArchived);
+                           modelFactory.getBranchFactory().createOrUpdate(branchCache, branchGuid, localId,
+                              branchName, branchType, branchState, isArchived, StorageState.LOADED);
 
                         Integer parentBranchId = chStmt.getInt("parent_branch_id");
                         if (parentBranchId != -1) {

@@ -17,8 +17,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
@@ -141,17 +139,6 @@ public class ModelAsserts {
          new RelationType(guid, name, name + "_A", name + "_B", type1, type2, multiplicity, "");
       Assert.assertNotNull(relationType);
       return relationType;
-   }
-
-   public static Branch createBranch(String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) {
-      Branch branch;
-      if (branchType.isMergeBranch()) {
-         branch = new MergeBranch(guid, name, branchType, branchState, isArchived);
-      } else {
-         branch = new Branch(guid, name, branchType, branchState, isArchived);
-      }
-      Assert.assertNotNull(branch);
-      return branch;
    }
 
    public static AttributeType createAttributeType(Long guid, String name) {

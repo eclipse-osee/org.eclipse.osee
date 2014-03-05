@@ -76,7 +76,6 @@ public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISt
          if (isDataDirty(branch)) {
             switch (branch.getStorageState()) {
                case CREATED:
-                  branch.setId(getDatabaseService().getSequence().getNextBranchId());
                   insertData.add(toInsertValues(branch));
                   break;
                case MODIFIED:

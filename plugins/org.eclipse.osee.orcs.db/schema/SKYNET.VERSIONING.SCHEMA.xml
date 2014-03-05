@@ -114,9 +114,9 @@
 	
 	<Table name="OSEE_BRANCH" schema="OSEE" tablespace="osee_data">
 		<Column id="BRANCH_GUID"  defaultValue="not null" limits="28" type="VARCHAR" />
-		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="BRANCH_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="BRANCH_NAME" defaultValue="not null" limits="200" type="VARCHAR" />		
-		<Column id="PARENT_BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="PARENT_BRANCH_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="PARENT_TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ARCHIVED" defaultValue="not null" type="smallint" />
 		<Column id="BRANCH_STATE" defaultValue="not null" type="smallint" />
@@ -146,7 +146,7 @@
 	</TableDescription>
 
 	<Table name="OSEE_TXS" schema="OSEE" tablespace="osee_data">
-		<Column id="BRANCH_ID" type="INTEGER" defaultValue="not null" />
+		<Column id="BRANCH_ID" type="BIGINT" defaultValue="not null" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="TX_CURRENT" defaultValue="not null" type="smallint" />
@@ -164,7 +164,7 @@
 	</TableDescription>
 
 	<Table name="OSEE_TXS_ARCHIVED" schema="OSEE" tablespace="osee_archive_data">
-		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="BRANCH_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="TX_CURRENT" defaultValue="not null" type="smallint" />
@@ -188,7 +188,7 @@
 	<Table name="OSEE_TX_DETAILS" schema="OSEE" tablespace="osee_data">
 		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="TX_TYPE" defaultValue="not null" type="smallint" />
-		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="BRANCH_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="OSEE_COMMENT" limits="1000" type="VARCHAR" />
 		<Column id="TIME" defaultValue="not null" type="TIMESTAMP"/>
 	   <Column id="AUTHOR" defaultValue="not null" type="INTEGER"/>
@@ -225,7 +225,7 @@
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="PRIVILEGE_ENTITY_ID" defaultValue="not null" type="INTEGER" />
-	   <Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+	   <Column id="BRANCH_ID" defaultValue="not null" type="BIGINT" />
 		<Constraint schema="OSEE" id="OSEE_ARTIFACT_ACL_A_P_B_PK" type="PRIMARY KEY" appliesTo="ART_ID, PRIVILEGE_ENTITY_ID, BRANCH_ID" />
 		<Constraint schema="OSEE" id="ARTIFACT_ACL_PERM_FK" type="FOREIGN KEY" appliesTo="PERMISSION_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_PERMISSION" column="PERMISSION_ID"  />
@@ -233,7 +233,7 @@
    </Table>
    
    <Table name="OSEE_BRANCH_ACL" schema="OSEE" tablespace="osee_data">
-		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="BRANCH_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="PRIVILEGE_ENTITY_ID" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_BRANCH_ACL_B_P_PK" type="PRIMARY KEY" appliesTo="BRANCH_ID, PRIVILEGE_ENTITY_ID" />
@@ -348,9 +348,9 @@
 	<!-- __________________________________________________________ -->
 	
 	<Table name="OSEE_MERGE" schema="OSEE" tablespace="osee_data">
-		<Column id="SOURCE_BRANCH_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="DEST_BRANCH_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="MERGE_BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="SOURCE_BRANCH_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="DEST_BRANCH_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="MERGE_BRANCH_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="COMMIT_TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_MERGE__PK" type="PRIMARY KEY" appliesTo="MERGE_BRANCH_ID" />
 		<Constraint schema="OSEE" id="OSEE_MERGE__MBI_FK" type="FOREIGN KEY" appliesTo="MERGE_BRANCH_ID">
@@ -372,7 +372,7 @@
 
    <Table name="OSEE_CONFLICT" schema="OSEE" tablespace="osee_data">
 		<Column id="CONFLICT_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="MERGE_BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="MERGE_BRANCH_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="CONFLICT_TYPE" defaultValue="not null" type="smallint" />
 		<Column id="SOURCE_GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="DEST_GAMMA_ID" defaultValue="not null" type="BIGINT" />
@@ -517,7 +517,7 @@
 	<Table name="OSEE_JOIN_ARTIFACT" schema="OSEE" tablespace="osee_data">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="BRANCH_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="TRANSACTION_ID" type="INTEGER" />
 		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
 		<Index id="OSEE_JOIN_ART__Q_A_IDX" tablespace="osee_index">
@@ -590,7 +590,7 @@
 		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
-		<Column id="BRANCH_ID" type="INTEGER" />
+		<Column id="BRANCH_ID" type="BIGINT" />
 		<Index id="OSEE_JOIN_TRANSACTION_Q_IDX" tablespace="osee_index">
 			<AppliesTo id="QUERY_ID"/>
 		</Index>

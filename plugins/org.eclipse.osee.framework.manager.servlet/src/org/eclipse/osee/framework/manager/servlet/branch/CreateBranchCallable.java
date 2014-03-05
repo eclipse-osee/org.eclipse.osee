@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.CreateBranchData;
 
 /**
  * @author Roberto E. Escobar
@@ -40,6 +40,9 @@ public class CreateBranchCallable extends AbstractBranchCallable<BranchCreationR
 
       createData.setGuid(request.getBranchGuid());
       createData.setName(request.getBranchName());
+      if (Long.valueOf(request.getBranchUuid()) > 0) {
+         createData.setUuid(request.getBranchUuid());
+      }
       createData.setBranchType(request.getBranchType());
       createData.setCreationComment(request.getCreationComment());
 
@@ -60,8 +63,7 @@ public class CreateBranchCallable extends AbstractBranchCallable<BranchCreationR
 
       BranchReadable newBranch = callAndCheckForCancel(callable);
 
-      BranchCreationResponse creationResponse = new BranchCreationResponse(-1);
-      creationResponse.setBranchId(newBranch.getId());
+      BranchCreationResponse creationResponse = new BranchCreationResponse(newBranch.getId());
       return creationResponse;
    }
 

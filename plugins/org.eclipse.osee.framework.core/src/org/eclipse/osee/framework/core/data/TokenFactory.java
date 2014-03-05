@@ -10,17 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import java.util.Random;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 public final class TokenFactory {
 
-   private static Random random;
+   private static long UNPERSISTED_VALUE = Short.MIN_VALUE;
 
    private TokenFactory() {
       // Utility Class
@@ -59,11 +59,11 @@ public final class TokenFactory {
    }
 
    public static IOseeBranch createBranch(String name) {
-      return new BranchToken(GUID.create(), getNextLong(), name);
+      return createBranch(GUID.create(), Lib.generateUuid(), name);
    }
 
    public static IOseeBranch createBranch(String guid, String name) {
-      return new BranchToken(guid, getNextLong(), name);
+      return createBranch(guid, Lib.generateUuid(), name);
    }
 
    public static IOseeBranch createBranch(String guid, long uuid, String name) {
@@ -114,13 +114,6 @@ public final class TokenFactory {
       public long getUuid() {
          return uuid;
       }
-   }
-
-   private static long getNextLong() {
-      if (random == null) {
-         random = new Random();
-      }
-      return random.nextLong();
    }
 
    private final static class AttributeTypeToken extends FullyNamedIdentity<Long> implements IAttributeType {

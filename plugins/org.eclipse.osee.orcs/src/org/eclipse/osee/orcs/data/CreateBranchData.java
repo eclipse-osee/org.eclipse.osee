@@ -14,6 +14,8 @@ import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Roberto E. Escobar
@@ -24,8 +26,9 @@ public class CreateBranchData implements Identifiable<String> {
    private final long MERGE_DESTINATION_BRANCH_ID = -1; // only used on merge branches
    private final int MERGE_ADDRESSING_QUERY_ID = -1; // only used on merge branches
 
-   private String branchUuid;
+   private String branchGuid;
    private String branchName;
+   private long branchUuid;
    private BranchType branchType;
    private String creationComment;
    private ITransaction fromTransaction;
@@ -38,9 +41,17 @@ public class CreateBranchData implements Identifiable<String> {
 
    private boolean txCopyBranchType = false;
 
+   public CreateBranchData() {
+      this(Lib.generateUuid());
+   }
+
+   public CreateBranchData(long uuid) {
+      branchUuid = uuid;
+   }
+
    @Override
    public String getGuid() {
-      return branchUuid;
+      return branchGuid;
    }
 
    public int getAssociatedArtifactId() {
@@ -60,7 +71,7 @@ public class CreateBranchData implements Identifiable<String> {
    }
 
    public void setGuid(String branchUuid) {
-      this.branchUuid = branchUuid;
+      this.branchGuid = branchUuid;
    }
 
    @Override
@@ -161,7 +172,18 @@ public class CreateBranchData implements Identifiable<String> {
 
    @Override
    public String toString() {
-      return "CreateBranchData [branchUuid=" + branchUuid + ", branchName=" + branchName + ", branchType=" + branchType + ", creationComment=" + creationComment + ", fromTransaction=" + fromTransaction + ", associatedArtifact=" + associatedArtifact + ", userArtifact=" + userArtifact + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", destinationBranchId=" + mergeDestinationBranchId + "]";
+      return "CreateBranchData [branchUuid=" + branchGuid + ", branchName=" + branchName + ", branchType=" + branchType + ", creationComment=" + creationComment + ", fromTransaction=" + fromTransaction + ", associatedArtifact=" + associatedArtifact + ", userArtifact=" + userArtifact + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", destinationBranchId=" + mergeDestinationBranchId + "]";
+   }
+
+   public long getUuid() {
+      return branchUuid;
+   }
+
+   public void setUuid(long uuid) {
+      if (uuid <= 0) {
+         throw new OseeStateException("uuid [%d] must be > 0", uuid);
+      }
+      this.branchUuid = uuid;
    }
 
 }

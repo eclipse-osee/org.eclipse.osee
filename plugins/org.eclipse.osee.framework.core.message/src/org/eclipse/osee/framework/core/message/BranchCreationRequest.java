@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.message;
 
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * @author Roberto E. Escobar
@@ -30,10 +31,15 @@ public class BranchCreationRequest {
    private final int mergeAddressingQueryId;
    private final long mergeDestinationBranchId;
    private boolean isTxCopyBranchType;
+   private final long branchUuid;
 
-   public BranchCreationRequest(BranchType branchType, int sourceTransactionId, long parentBranchId, String branchGuid, String branchName, int associatedArtifactId, int authorId, String creationComment, int mergeAddressingQueryId, long destinationBranchId) {
+   public BranchCreationRequest(BranchType branchType, int sourceTransactionId, long parentBranchId, String branchGuid, String branchName, long branchUuid, int associatedArtifactId, int authorId, String creationComment, int mergeAddressingQueryId, long destinationBranchId) {
       this.parentBranchId = parentBranchId;
       this.branchName = branchName;
+      if (branchUuid <= 0) {
+         throw new OseeArgumentException("branchUuid [%d] uuid must be > 0", branchUuid);
+      }
+      this.branchUuid = branchUuid;
       this.associatedArtifactId = associatedArtifactId;
       this.branchType = branchType;
       this.sourceTransactionId = sourceTransactionId;
@@ -96,5 +102,9 @@ public class BranchCreationRequest {
    @Override
    public String toString() {
       return "Branch [associatedArtifactId=" + associatedArtifactId + ", branchGuid=" + branchGuid + ", branchType=" + branchType + ", name=" + branchName + ", parentBranchId=" + parentBranchId + ", parentTransactionId=" + sourceTransactionId + "]";
+   }
+
+   public long getBranchUuid() {
+      return branchUuid;
    }
 }

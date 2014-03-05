@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public class BranchFactory implements IOseeTypeFactory {
 
-   public Branch create(String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
+   public Branch create(String guid, long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(name, "branch name");
       Conditions.checkNotNull(branchType, "branch type");
       Conditions.checkNotNull(branchState, "branch state");
@@ -32,18 +32,18 @@ public class BranchFactory implements IOseeTypeFactory {
 
       Branch toReturn;
       if (branchType.isMergeBranch()) {
-         toReturn = new MergeBranch(checkedGuid, name, branchType, branchState, isArchived);
+         toReturn = new MergeBranch(checkedGuid, uuid, name, branchType, branchState, isArchived);
       } else {
-         toReturn = new Branch(checkedGuid, name, branchType, branchState, isArchived);
+         toReturn = new Branch(checkedGuid, uuid, name, branchType, branchState, isArchived);
       }
       return toReturn;
    }
 
-   public Branch createOrUpdate(AbstractOseeCache<String, Branch> cache, String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
+   public Branch createOrUpdate(AbstractOseeCache<String, Branch> cache, String guid, long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
       Conditions.checkNotNull(cache, "BranchCache");
       Branch branch = cache.getByGuid(guid);
       if (branch == null) {
-         branch = create(guid, name, branchType, branchState, isArchived);
+         branch = create(guid, uuid, name, branchType, branchState, isArchived);
          cache.cache(branch);
       } else {
          branch.setName(name);
@@ -54,12 +54,11 @@ public class BranchFactory implements IOseeTypeFactory {
       return branch;
    }
 
-   public Branch createOrUpdate(IOseeCache<String, Branch> cache, long uniqueId, StorageState storageState, String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
+   public Branch createOrUpdate(IOseeCache<String, Branch> cache, String guid, long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, StorageState storageState) throws OseeCoreException {
       Conditions.checkNotNull(cache, "BranchCache");
-      Branch branch = cache.getById(uniqueId);
+      Branch branch = cache.getById(uuid);
       if (branch == null) {
-         branch = create(guid, name, branchType, branchState, isArchived);
-         branch.setId(uniqueId);
+         branch = create(guid, uuid, name, branchType, branchState, isArchived);
          branch.setStorageState(storageState);
          cache.cache(branch);
       } else {

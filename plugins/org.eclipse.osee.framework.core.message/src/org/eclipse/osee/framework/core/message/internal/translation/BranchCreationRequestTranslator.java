@@ -28,6 +28,7 @@ public class BranchCreationRequestTranslator implements ITranslator<BranchCreati
       BRANCH_TYPE,
       SOURCE_TX_ID,
       BRANCH_GUID,
+      BRANCH_UUID,
 
       AUTHOR_ID,
 
@@ -55,9 +56,10 @@ public class BranchCreationRequestTranslator implements ITranslator<BranchCreati
 
       int mergeAddressingQueryId = store.getInt(Fields.MERGE_ADDRESSING_QUERY_ID.name());
       int destinationBranchId = store.getInt(Fields.MERGE_DESTINATION_BRANCH_ID.name());
+      long branchUuid = store.getLong(Fields.BRANCH_UUID.name());
 
       BranchCreationRequest branchCreationRequest =
-         new BranchCreationRequest(branchType, sourceTransactionId, parentBranchId, branchGuid, branchName,
+         new BranchCreationRequest(branchType, sourceTransactionId, parentBranchId, branchGuid, branchName, branchUuid,
             associatedArtifactId, authorId, creationComment, mergeAddressingQueryId, destinationBranchId);
 
       branchCreationRequest.setTxIsCopied(isTxCopy);
@@ -74,6 +76,7 @@ public class BranchCreationRequestTranslator implements ITranslator<BranchCreati
       store.put(Fields.BRANCH_TYPE.name(), object.getBranchType().name());
       store.put(Fields.SOURCE_TX_ID.name(), object.getSourceTransactionId());
       store.put(Fields.BRANCH_GUID.name(), object.getBranchGuid());
+      store.put(Fields.BRANCH_UUID.name(), object.getBranchUuid());
       store.put(Fields.AUTHOR_ID.name(), object.getAuthorId());
       store.put(Fields.CREATION_COMMENT.name(), object.getCreationComment());
 

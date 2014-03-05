@@ -51,6 +51,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.jar.Attributes;
@@ -1687,4 +1688,16 @@ public final class Lib {
       NumberFormat format = NumberFormat.getInstance();
       return String.format("%s MBytes", format.format(valInBytes / 1024.0 / 1024.0));
    }
+
+   /**
+    * @return unique > 0 long
+    */
+   public static long generateUuid() {
+      long next = 0;
+      while (next <= 0) {
+         next = new Random().nextLong();
+      }
+      return next;
+   }
+
 }

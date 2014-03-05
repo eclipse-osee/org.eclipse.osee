@@ -81,6 +81,7 @@ public final class MockRequestFactory {
       int associatedArtifactId = index * 3;
       int sourceTransactionId = index * 7;
       String branchGuid = GUID.create();
+      long branchUuid = 0;
 
       int authorId = index * 7;
 
@@ -90,7 +91,7 @@ public final class MockRequestFactory {
       int destinationBranchId = -1;
 
       return new BranchCreationRequest(branchType, sourceTransactionId, parentBranchId, branchGuid, branchName,
-         associatedArtifactId, authorId, creationComment, mergeFromAddressingQueryId, destinationBranchId);
+         branchUuid, associatedArtifactId, authorId, creationComment, mergeFromAddressingQueryId, destinationBranchId);
    }
 
    public static Object createBranchCreateResponse(int index) {

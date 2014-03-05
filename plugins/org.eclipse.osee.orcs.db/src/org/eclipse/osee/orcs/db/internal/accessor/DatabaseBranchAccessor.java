@@ -123,8 +123,8 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<String, Branch>
                boolean isArchived = BranchArchivedState.valueOf(chStmt.getInt("archived")).isArchived();
                String branchGuid = chStmt.getString("branch_guid");
                Branch branch =
-                  branchFactory.createOrUpdate(cache, branchId, StorageState.LOADED, branchGuid, branchName,
-                     branchType, branchState, isArchived);
+                  branchFactory.createOrUpdate(cache, branchGuid, branchId, branchName, branchType,
+                     branchState, isArchived, StorageState.LOADED);
 
                Integer parentBranchId = chStmt.getInt("parent_branch_id");
                if (parentBranchId != NULL_PARENT_BRANCH_ID) {

@@ -172,11 +172,12 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       if (!GUID.isValid(guid)) {
          guid = GUID.create();
       }
+      long uuid = newBranchData.getUuid();
 
       final String truncatedName = Strings.truncate(newBranchData.getName(), 195, true);
       branch =
-         branchFactory.create(guid, truncatedName, newBranchData.getBranchType(), BranchState.CREATION_IN_PROGRESS,
-            false);
+         branchFactory.create(guid, uuid, truncatedName, newBranchData.getBranchType(),
+            BranchState.CREATION_IN_PROGRESS, false);
 
       branch.setParentBranch(parentBranch);
       branch.setAssociatedArtifactId(newBranchData.getAssociatedArtifactId());
@@ -186,7 +187,7 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
       if (branch.getBranchType().isSystemRootBranch()) {
          TransactionRecord systemTx =
-            txFactory.create(nextTransactionId, branch.getId(), newBranchData.getCreationComment(), timestamp,
+            txFactory.create(nextTransactionId, uuid, newBranchData.getCreationComment(), timestamp,
                newBranchData.getUserArtifactId(), -1, TransactionDetailsType.Baselined, branchCache);
          branch.setSourceTransaction(systemTx);
       } else {

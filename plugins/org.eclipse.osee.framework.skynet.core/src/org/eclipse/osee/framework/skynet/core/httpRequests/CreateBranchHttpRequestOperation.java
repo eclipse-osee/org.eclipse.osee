@@ -49,13 +49,15 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
    private final long destinationBranchId;
    private Branch newBranch;
    private boolean txCopyBranchType;
+   private final long branchUuid;
 
-   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionRecord parentTransaction, String branchName, String branchGuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, long destinationBranchId) {
+   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionRecord parentTransaction, String branchName, String branchGuid, long branchUuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, long destinationBranchId) {
       super("Create branch " + branchName, Activator.PLUGIN_ID);
       this.branchType = branchType;
       this.parentTransaction = parentTransaction;
       this.branchName = branchName;
       this.branchGuid = branchGuid;
+      this.branchUuid = branchUuid;
       this.associatedArtifact = associatedArtifact;
       this.creationComment = creationComment;
       this.mergeAddressingQueryId = mergeAddressingQueryId;
@@ -70,7 +72,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
 
       BranchCreationRequest request =
          new BranchCreationRequest(branchType, parentTransaction.getId(), parentTransaction.getBranchId(), branchGuid,
-            branchName, getAssociatedArtifactId(associatedArtifact), getAuthorId(), creationComment,
+            branchName, branchUuid, getAssociatedArtifactId(associatedArtifact), getAuthorId(), creationComment,
             mergeAddressingQueryId, destinationBranchId);
 
       request.setTxIsCopied(isTxCopyBranchType());
