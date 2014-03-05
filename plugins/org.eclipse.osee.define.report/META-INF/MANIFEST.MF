@@ -9,20 +9,17 @@ Import-Package: com.google.common.base,
  com.google.common.collect,
  javax.ws.rs,
  javax.ws.rs.core,
- org.eclipse.core.resources,
  org.eclipse.osee.app,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
- org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.io.xml,
+ org.eclipse.osee.logger,
  org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,
- org.eclipse.osee.template.engine,
- org.osgi.framework
+ org.eclipse.osee.template.engine
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.define.report
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.osee.logger
