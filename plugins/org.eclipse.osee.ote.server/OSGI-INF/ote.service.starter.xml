@@ -5,7 +5,6 @@
       <provide interface="org.eclipse.osee.ote.server.OteServiceStarter"/>
    </service>
    <reference unbind="unbindIRuntimeLibraryManager" bind="bindIRuntimeLibraryManager" cardinality="1..1" interface="org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager" name="IRuntimeLibraryManager" policy="static"/>
-   <reference unbind="unbindRemoteServiceRegistrar" bind="bindRemoteServiceRegistrar" cardinality="1..1" interface="org.eclipse.osee.framework.messaging.services.RemoteServiceRegistrar" name="RemoteServiceRegistrar" policy="static"/>
    <reference unbind="unbindMessageService" bind="bindMessageService" cardinality="1..1" interface="org.eclipse.osee.framework.messaging.MessageService" name="MessageService" policy="static"/>
    <reference unbind="unbindIConnectionService" bind="bindIConnectionService" cardinality="1..1" interface="org.eclipse.osee.connection.service.IConnectionService" name="IConnectionService" policy="static"/>
    <reference unbind="unbindPackageAdmin" bind="bindPackageAdmin" cardinality="1..1" interface="org.osgi.service.packageadmin.PackageAdmin" name="PackageAdmin" policy="static"/>

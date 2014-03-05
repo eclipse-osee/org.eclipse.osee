@@ -20,15 +20,11 @@ import org.osgi.framework.BundleContext;
 public class Activator implements BundleActivator {
 
    private ConnectionServiceTracker connectionServiceTracker;
-   private ExportClassLoaderCreationTracker exportClassLoaderCreationTracker;
 
    @Override
    public void start(BundleContext context) throws Exception {
       connectionServiceTracker = new ConnectionServiceTracker(context);
       connectionServiceTracker.open(true);
-
-      exportClassLoaderCreationTracker = new ExportClassLoaderCreationTracker(context);
-      exportClassLoaderCreationTracker.open(true);
    }
 
    @Override
@@ -36,7 +32,6 @@ public class Activator implements BundleActivator {
 
       // close the service tracker
       connectionServiceTracker.close();
-      exportClassLoaderCreationTracker.close();
       connectionServiceTracker = null;
 
    }

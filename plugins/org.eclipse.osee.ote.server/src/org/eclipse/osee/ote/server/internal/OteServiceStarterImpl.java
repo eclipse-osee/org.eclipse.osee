@@ -42,8 +42,6 @@ import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
-import org.eclipse.osee.framework.messaging.services.RegisteredServiceReference;
-import org.eclipse.osee.framework.messaging.services.RemoteServiceRegistrar;
 import org.eclipse.osee.framework.messaging.services.ServiceInfoPopulator;
 import org.eclipse.osee.framework.messaging.services.messages.ServiceDescriptionPair;
 import org.eclipse.osee.ote.core.OTESessionManager;
@@ -67,7 +65,6 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 	private PackageAdmin packageAdmin;
 	private IRuntimeLibraryManager runtimeLibraryManager;
 	private IConnectionService connectionService;
-	private RemoteServiceRegistrar remoteServiceRegistrar;
 	private MessageService messageService;
 
 	private BrokerService brokerService;
@@ -116,14 +113,6 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 	public void unbindIRuntimeLibraryManager(IRuntimeLibraryManager runtimeLibraryManager){
       this.runtimeLibraryManager = null;
    } 
-	
-	public void bindRemoteServiceRegistrar(RemoteServiceRegistrar remoteServiceRegistrar){
-	   this.remoteServiceRegistrar = remoteServiceRegistrar;
-	}
-	
-	public void unbindRemoteServiceRegistrar(RemoteServiceRegistrar remoteServiceRegistrar){
-      this.remoteServiceRegistrar = null;
-   }
 	
 	public void bindMessageService(MessageService messageService){
 	   this.messageService = messageService;
@@ -233,9 +222,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 			      OseeLog.log(getClass(), Level.SEVERE, th);
 			   }
 			} else { //user old lookup
-			   messageService.get(nodeInfo).subscribe(OteBaseMessages.RequestOteHost, listenForHostRequest, this);
-	         RegisteredServiceReference ref = remoteServiceRegistrar.registerService("osee.ote.server", "1.0", service.getServiceID().toString(), uri, this, 60 * 3);
-	         service.set(ref);
+				OseeLog.log(getClass(), Level.SEVERE, "'ote.master.uri' was not set.  You must use direct connect from the client.");
 			}
 			
 		} else {
@@ -291,7 +278,6 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 		if (service != null) {
 			try {
 				service.updateDynamicInfo();
-				remoteServiceRegistrar.unregisterService("osee.ote.server", "1.0", service.getServiceID().toString());
 				service.kill();
 				service = null;
 			} catch (Exception ex) {

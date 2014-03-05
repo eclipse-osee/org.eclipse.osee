@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
@@ -40,10 +41,6 @@ public class EventToJmsComponent extends OseeMessagingListener implements EventH
 	}
 
 	void start(){
-		
-	}
-	
-	void stop(){
 		
 	}
 	

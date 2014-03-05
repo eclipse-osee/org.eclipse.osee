@@ -29,7 +29,6 @@
 		<module>../../plugins/org.eclipse.osee.ote.rest</module>
 		<module>../../plugins/org.eclipse.osee.ote.rest.client</module>
 		<module>../../plugins/org.eclipse.osee.ote.rest.model</module>
-		<module>../../plugins/org.eclipse.osee.ote.discovery</module>
 		<module>../../plugins/org.eclipse.osee.ote.client</module>
 		<module>../../plugins/org.eclipse.osee.ote.client.msg</module>
 		<module>../../plugins/org.eclipse.osee.ote.connection.jini</module>

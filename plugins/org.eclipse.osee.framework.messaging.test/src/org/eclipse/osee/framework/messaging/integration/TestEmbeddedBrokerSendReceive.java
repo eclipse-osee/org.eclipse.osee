@@ -10,18 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.integration;
 
-import static junit.framework.Assert.*;
-import static org.eclipse.osee.framework.messaging.data.DefaultNodeInfos.*;
-import static org.eclipse.osee.framework.messaging.data.TestMessages.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static junit.framework.Assert.assertEquals;
+import static org.eclipse.osee.framework.messaging.data.DefaultNodeInfos.OSEE_JMS_BROKER_URI;
+import static org.eclipse.osee.framework.messaging.data.DefaultNodeInfos.OSEE_JMS_NODE;
+import static org.eclipse.osee.framework.messaging.data.TestMessages.JMS_TOPIC;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
@@ -32,16 +33,12 @@ import org.eclipse.osee.framework.messaging.data.TestMessage;
 import org.eclipse.osee.framework.messaging.data.TestMessageListener;
 import org.eclipse.osee.framework.messaging.data.TestMessageListener.Data;
 import org.eclipse.osee.framework.messaging.data.TestMessages;
-import org.eclipse.osee.framework.messaging.data.TestServiceNotification;
 import org.eclipse.osee.framework.messaging.internal.MessageServiceController.BrokerType;
 import org.eclipse.osee.framework.messaging.rules.MessageBroker;
 import org.eclipse.osee.framework.messaging.rules.MessageConnection;
 import org.eclipse.osee.framework.messaging.services.ServiceInfoPopulator;
 import org.eclipse.osee.framework.messaging.services.internal.OseeMessagingStatusImpl;
-import org.eclipse.osee.framework.messaging.services.internal.RemoteServiceLookupImpl;
-import org.eclipse.osee.framework.messaging.services.internal.RemoteServiceRegistrarImpl;
 import org.eclipse.osee.framework.messaging.services.messages.ServiceDescriptionPair;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -169,155 +166,6 @@ public class TestEmbeddedBrokerSendReceive {
             assertEquals(1, listener.getTotalReceived());
          }
       }
-   }
-
-   @Ignore("Intermittent failures")
-   @Test
-   public void testServiceUpClientComesUp() throws Exception {
-      final int TIMEOUT_MONITOR = 4; // seconds
-      final int REFRESH_RATE = 1; // seconds
-
-      ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
-
-      RemoteServiceRegistrarImpl registrar = new RemoteServiceRegistrarImpl(connection, executor);
-      registrar.start();
-
-      RemoteServiceLookupImpl lookup =
-         new RemoteServiceLookupImpl(connection, executor, TIMEOUT_MONITOR, TimeUnit.SECONDS);
-      lookup.start();
-
-      registrar.registerService(SERVICE_NAME, SERVICE_VERSION, SERVICE_ID, asURI(SERVICE_URL), info(), REFRESH_RATE);
-
-      TestServiceNotification notifier = new TestServiceNotification();
-
-      // Register
-      lookup.register(SERVICE_NAME, SERVICE_VERSION, notifier);
-      if (!notifier.wasOnServiceUpdateReceived()) {
-         synchronized (notifier) {
-            notifier.wait(toMillis(REFRESH_RATE));
-         }
-      }
-      assertTrue(notifier.wasOnServiceUpdateReceived());
-      assertFalse(notifier.wasOnServiceGoneReceived());
-      assertEquals(0, notifier.getServiceAwayCount());
-      assertTrue(notifier.getServiceUpdatesCount() >= 1);
-
-      //Unregister
-      notifier.reset();
-      boolean unregistered = registrar.unregisterService(SERVICE_NAME, SERVICE_VERSION, SERVICE_ID);
-      notifier.setServiceGone(true);
-      if (!notifier.wasOnServiceGoneReceived()) {
-         synchronized (notifier) {
-            notifier.wait(toMillis(REFRESH_RATE * 2));
-         }
-      }
-      assertTrue(unregistered);
-      assertTrue(notifier.wasOnServiceGoneReceived());
-      assertEquals(1, notifier.getServiceAwayCount());
-
-      // Time-out check
-      if (notifier.getServiceAwayCount() < 2) {
-         synchronized (notifier) {
-            notifier.wait(toMillis(TIMEOUT_MONITOR * 7));
-         }
-      }
-      assertEquals(2, notifier.getServiceAwayCount()); //service renewal timeout
-      Assert.assertTrue(lookup.unregister(SERVICE_NAME, SERVICE_VERSION, notifier));
-      registrar.stop();
-      lookup.stop();
-   }
-
-   @Test
-   public void testClientUpServiceComesUp() throws Exception {
-      final int TIMEOUT_MONITOR = 4; // seconds
-      final int REFRESH_RATE = 1; // seconds
-      ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
-
-      RemoteServiceRegistrarImpl registrar = new RemoteServiceRegistrarImpl(connection, executor);
-      registrar.start();
-
-      RemoteServiceLookupImpl lookup =
-         new RemoteServiceLookupImpl(connection, executor, TIMEOUT_MONITOR, TimeUnit.SECONDS);
-      lookup.start();
-
-      TestServiceNotification notifier = new TestServiceNotification();
-      lookup.register(SERVICE_NAME, SERVICE_VERSION, notifier);
-
-      // Register
-
-      registrar.registerService(SERVICE_NAME, SERVICE_VERSION, SERVICE_ID, asURI(SERVICE_URL), info(), REFRESH_RATE);
-      if (!notifier.wasOnServiceUpdateReceived()) {
-         synchronized (notifier) {
-            notifier.wait(toMillis(REFRESH_RATE));
-         }
-      }
-      assertTrue(notifier.wasOnServiceUpdateReceived());
-      assertFalse(notifier.wasOnServiceGoneReceived());
-      assertEquals(0, notifier.getServiceAwayCount());
-      assertTrue(notifier.getServiceUpdatesCount() >= 1);
-
-      // Wait for Updates
-      notifier.reset();
-      if (!notifier.wasOnServiceUpdateReceived()) {
-         synchronized (notifier) {
-            notifier.wait(toMillis(REFRESH_RATE * 2));
-         }
-      }
-      assertTrue(notifier.wasOnServiceUpdateReceived());
-      assertFalse(notifier.wasOnServiceGoneReceived());
-      assertTrue(notifier.getServiceUpdatesCount() >= 1);
-      assertEquals(0, notifier.getServiceAwayCount());
-
-      //Unregister
-      notifier.reset();
-      notifier.setServiceGone(true);
-      registrar.unregisterService(SERVICE_NAME, SERVICE_VERSION, SERVICE_ID);
-      if (!notifier.wasOnServiceGoneReceived()) {
-         synchronized (notifier) {
-            notifier.wait(toMillis(REFRESH_RATE * 2));
-         }
-      }
-      assertTrue(notifier.wasOnServiceGoneReceived());
-      Assert.assertTrue(notifier.getServiceAwayCount() >= 1);
-
-      Assert.assertTrue(lookup.unregister(SERVICE_NAME, SERVICE_VERSION, notifier));
-      registrar.stop();
-      lookup.stop();
-   }
-
-   @Test
-   public void testServiceComesUpClientGetsReply() throws Exception {
-      final int TIMEOUT_MONITOR = 4; // seconds
-      final int REFRESH_RATE = 1; // seconds
-
-      ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
-
-      RemoteServiceRegistrarImpl registrar = new RemoteServiceRegistrarImpl(connection, executor);
-      registrar.start();
-
-      registrar.registerService(SERVICE_NAME, SERVICE_VERSION, SERVICE_ID, asURI(SERVICE_URL), info(), REFRESH_RATE);
-
-      RemoteServiceLookupImpl lookup =
-         new RemoteServiceLookupImpl(connection, executor, TIMEOUT_MONITOR, TimeUnit.SECONDS);
-      lookup.start();
-
-      TestServiceNotification notifier = new TestServiceNotification();
-      lookup.register(SERVICE_NAME, SERVICE_VERSION, notifier);
-      if (!notifier.wasOnServiceUpdateReceived()) {
-         synchronized (notifier) {
-            notifier.wait(toMillis(REFRESH_RATE));
-         }
-      }
-      assertTrue(notifier.wasOnServiceUpdateReceived());
-      assertFalse(notifier.wasOnServiceGoneReceived());
-      assertEquals(0, notifier.getServiceAwayCount());
-      assertTrue(notifier.getServiceUpdatesCount() >= 1);
-
-      assertTrue(lookup.unregister(SERVICE_NAME, SERVICE_VERSION, notifier));
-      assertTrue(registrar.unregisterService(SERVICE_NAME, SERVICE_VERSION, SERVICE_ID));
-
-      registrar.stop();
-      lookup.stop();
    }
 
    @Test

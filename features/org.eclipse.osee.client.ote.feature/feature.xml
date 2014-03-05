@@ -194,13 +194,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.ote.discovery"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.ote.master.rest.client"
          download-size="0"
          install-size="0"
