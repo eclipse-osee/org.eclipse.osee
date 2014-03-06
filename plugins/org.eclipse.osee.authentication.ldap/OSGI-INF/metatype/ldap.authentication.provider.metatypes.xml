@@ -37,7 +37,7 @@
 			<Option label="Subtree" value="SUBTREE_SCOPE" />
 		</AD>
 
-		<AD name="LDAP Accounts Search Pattern" id="ldap.account.search.base" required="false" type="String" />
+		<AD name="LDAP Accounts Search Pattern" id="ldap.account.search.pattern" required="false" type="String" />
 		<AD name="LDAP Accounts Search User Name Variable" id="ldap.account.username.bind.variable" required="false" type="String" />
 		<AD name="LDAP Accounts Search User Name Pattern" id="ldap.account.username.pattern" required="false" type="String" />
 		<AD name="LDAP Accounts Search Display Name Pattern" id="ldap.account.display.name" required="false" type="String" />
