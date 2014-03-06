@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0">
+	<OCD name="config.manager.metatypes" description="Configuration Manager component config" id="config.manager.metatypes"
+		localization="org.eclipse.osee.config.admin.internal.ConfigManagerConfiguration">
+		<AD name="CM Config File" id="cm.config.file" required="true" type="String" />
+		<AD name="CM Poll Time" id="cm.poll.time" required="true" type="Long" default="3" />
+		<AD name="CM Poll Time Unit" id="cm.poll.time.unit" required="true" type="String" default="SECONDS">
+			<Option label="Days" value="DAYS" />
+			<Option label="Hours" value="HOURS" />
+			<Option label="Micro Seconds" value="MICROSECONDS" />
+			<Option label="Milli Seconds" value="MILLISECONDS" />
+			<Option label="Minutes" value="MINUTES" />
+			<Option label="Nano Seconds" value="NANOSECONDS" />
+			<Option label="Seconds" value="SECONDS" />
+		</AD>
+	</OCD>
+	<Designate pid="org.eclipse.osee.config.admin.internal.ConfigManagerImpl">
+		<Object ocdref="config.manager.metatypes" />
+	</Designate>
+</metatype:MetaData>
