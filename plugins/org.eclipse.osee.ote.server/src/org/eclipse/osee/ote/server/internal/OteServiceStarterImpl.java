@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
 import org.eclipse.osee.framework.messaging.ReplyConnection;
 import org.eclipse.osee.framework.messaging.services.ServiceInfoPopulator;
 import org.eclipse.osee.framework.messaging.services.messages.ServiceDescriptionPair;
+import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.ote.core.OTESessionManager;
 import org.eclipse.osee.ote.core.OteBaseMessages;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
@@ -182,6 +183,8 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 			OseeLog.log(getClass(), Level.SEVERE, "could acquire a TCP address", e);
 			strUri = "vm://localhost?broker.persistent=false";
 		}
+		//necessary for rmi/jini classloading
+		Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
 		
 		brokerService.setEnableStatistics(false);
 		brokerService.setBrokerName("OTEServer");
@@ -206,6 +209,8 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 
 		serviceSideConnector.init(service);
 
+		
+		
 		if (propertyParameter.isLocalConnector() || propertyParameter.useJiniLookup()) {
 			connectionService.addConnector(serviceSideConnector);
 		}

@@ -166,7 +166,10 @@ public class OTEBundleLoader implements IRuntimeLibraryManager{
 
       for (Bundle bundle : runningBundles) {
          try {
-            bundle.stop();
+            String entry = bundle.getHeaders().get("Fragment-Host");
+        	if (entry == null) {
+        	   bundle.stop();
+        	}
             bundle.uninstall();
          } catch (BundleException ex) {
             result = false;
