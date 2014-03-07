@@ -351,7 +351,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
          return "";
       }
       StringBuilder builder = new StringBuilder();
-      builder.append(" Name: " + getTitle());
+      builder.append(" Name: " + artifact.getName());
       builder.append("\n Type: " + artifact.getArtifactTypeName());
       if (artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
