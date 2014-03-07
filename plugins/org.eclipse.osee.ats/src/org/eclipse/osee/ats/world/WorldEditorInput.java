@@ -105,7 +105,12 @@ public class WorldEditorInput implements IEditorInput, IPersistableElement {
    }
 
    public List<String> getGuids() {
-      return Artifacts.toGuids(editor.getLoadedArtifacts());
+      if (editor.isReloadTabShown() && (iWorldEditorProvider instanceof WorldEditorReloadProvider)) {
+         WorldEditorReloadProvider provider = (WorldEditorReloadProvider) iWorldEditorProvider;
+         return provider.getValidGuids();
+      } else {
+         return Artifacts.toGuids(editor.getLoadedArtifacts());
+      }
    }
 
    public WorldEditor getEditor() {

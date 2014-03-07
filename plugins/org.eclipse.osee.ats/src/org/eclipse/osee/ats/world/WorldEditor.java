@@ -206,6 +206,10 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
       worldXWidgetActionPage.reSearch();
    }
 
+   public boolean isReloadTabShown() {
+      return getActivePageInstance() instanceof WorldReloadTab;
+   }
+
    private void createReloadTab() throws PartInitException {
       addPage(new WorldReloadTab(this, (WorldEditorReloadProvider) getWorldEditorProvider()));
    }

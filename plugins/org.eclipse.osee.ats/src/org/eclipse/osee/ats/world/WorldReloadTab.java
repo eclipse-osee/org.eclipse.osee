@@ -59,18 +59,22 @@ public class WorldReloadTab extends FormPage {
          bodyComp.setLayout(new GridLayout(1, false));
          bodyComp.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, true, false));
 
-         Button reloadButton = new Button(bodyComp, SWT.PUSH);
-         reloadButton.setText("Reload");
-         reloadButton.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
-         final FormPage page = this;
-         reloadButton.addSelectionListener(new SelectionAdapter() {
+         if (provider.getValidGuids().isEmpty()) {
+            managedForm.getToolkit().createLabel(bodyComp, "Nothing to reload.");
+         } else {
+            Button reloadButton = new Button(bodyComp, SWT.PUSH);
+            reloadButton.setText("Reload");
+            reloadButton.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
+            final FormPage page = this;
+            reloadButton.addSelectionListener(new SelectionAdapter() {
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               loadEditor(page);
-            }
+               @Override
+               public void widgetSelected(SelectionEvent e) {
+                  loadEditor(page);
+               }
 
-         });
+            });
+         }
 
          FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
       } catch (Exception ex) {
