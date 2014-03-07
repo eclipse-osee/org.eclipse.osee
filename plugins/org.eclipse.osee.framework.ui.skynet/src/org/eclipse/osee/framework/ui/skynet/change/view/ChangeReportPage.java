@@ -249,7 +249,7 @@ public class ChangeReportPage extends FormPage {
                   getEditor().refresh();
                   getEditor().getActionBarContributor().getReloadAction().setEnabled(true);
                   getEditor().getActionBarContributor().getOpenAssociatedArtifactAction().updateEnablement();
-                  getManagedForm().getForm().getBody().layout(true);
+                  getManagedForm().getForm().getBody().layout(true, true);
                   getManagedForm().getForm().reflow(true);
                   getManagedForm().refresh();
                   showBusy(false);

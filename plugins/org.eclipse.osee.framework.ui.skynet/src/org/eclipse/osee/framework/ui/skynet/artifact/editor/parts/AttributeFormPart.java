@@ -93,7 +93,7 @@ public class AttributeFormPart extends AbstractFormPart {
    public void refresh() {
       super.refresh();//<--This method resets the dirty bits on all widgets, but does not implicitly revert their values. (see below)
       decorator.refresh();
-      getManagedForm().getForm().getBody().layout(true);
+      getManagedForm().getForm().getBody().layout(true, true);
 
       //Revert any unsaved changes in the widgets.
       List<XWidget> widgets = XWidgetUtility.findXWidgetsInControl(composite);
