@@ -113,7 +113,7 @@ public class WorldReloadTab extends FormPage {
    }
 
    private void loadEditor(final FormPage page) {
-      LoadAndRefreshJob loadAndRefresh = new LoadAndRefreshJob(provider.getName());
+      final LoadAndRefreshJob loadAndRefresh = new LoadAndRefreshJob(provider.getName());
       Jobs.startJob(loadAndRefresh, false, new JobChangeAdapter() {
 
          @Override
@@ -122,8 +122,10 @@ public class WorldReloadTab extends FormPage {
 
                @Override
                public void run() {
-                  editor.addPages();
-                  editor.removePage(0);
+                  if (loadAndRefresh.isSuccess()) {
+                     editor.addPages();
+                     editor.removePage(0);
+                  }
                }
             });
          }
@@ -133,6 +135,12 @@ public class WorldReloadTab extends FormPage {
 
    private class LoadAndRefreshJob extends Job {
 
+      boolean success = true;
+
+      public boolean isSuccess() {
+         return success;
+      }
+
       public LoadAndRefreshJob(String name) {
          super(name);
       }
@@ -141,8 +149,9 @@ public class WorldReloadTab extends FormPage {
       protected IStatus run(IProgressMonitor monitor) {
          if (provider.getValidGuids().isEmpty()) {
             AWorkbench.popup("No valid ids to reload.");
+            success = false;
          } else {
-            provider.searchAndLoad();
+            success = provider.searchAndLoad();
          }
          return Status.OK_STATUS;
       }

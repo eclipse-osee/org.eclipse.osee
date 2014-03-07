@@ -66,7 +66,7 @@ public class WorldEditorReloadProvider extends WorldEditorProvider {
       return reload;
    }
 
-   public void searchAndLoad() {
+   public boolean searchAndLoad() {
       List<String> validGuids = getValidGuids();
       if (validGuids.isEmpty()) {
          AWorkbench.popup("No valid guids to load");
@@ -75,6 +75,7 @@ public class WorldEditorReloadProvider extends WorldEditorProvider {
          AtsBulkLoad.bulkLoadArtifacts(artifacts);
       }
       reload = false;
+      return artifacts.size() > 0;
    }
 
    public List<String> getValidGuids() {
