@@ -435,10 +435,10 @@ public class AtsBranchManagerCore {
    }
 
    /**
-    * @return true if configuration is valid and there is at least one destination branch committed to
+    * @return true if at least one destination branch committed to
     */
    public static boolean isCommittedBranchExists(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      return isAllObjectsToCommitToConfigured(teamArt) && !getBranchesCommittedTo(teamArt).isEmpty();
+      return !getBranchesCommittedTo(teamArt).isEmpty();
    }
 
    public static boolean isNoCommitNeeded(TeamWorkFlowArtifact teamArt, Branch destinationBranch) throws OseeCoreException {
