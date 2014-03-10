@@ -17,6 +17,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -43,9 +44,21 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
 
+/**
+ * When starting bundles users can specify an OTE-StartLevel: <int value> in the manifest of a bundle, if there are issues 
+ * with the order in which bundles need to be started.  The list of bundles to start will simply be sorted by that value, 
+ * the default value is 0.  This was implemented to work around a deadlock issue that can happen when you call Bundle.start()
+ * and there is a conflict with 'component resolving thread'.  By waiting till the end to load the bundles that can cause the issue
+ * we avoid the deadlock issue which has a default 5 second time limit.
+ * 
+ * @author Andrew M. Finkbeiner
+ *
+ */
 public class OTEBundleLoader implements IRuntimeLibraryManager{
 
-   private final Collection<Bundle> installedBundles;
+   public static final String MANIFEST_ENTRY_OTE_STARTLEVEL = "OTE-StartLevel";
+   
+   private final List<Bundle> installedBundles;
    private final Collection<Bundle> runningBundles;
    private final Map<String, String> bundleNameToMd5Map;
    private final BundleContext context;
@@ -129,13 +142,17 @@ public class OTEBundleLoader implements IRuntimeLibraryManager{
    @Override
    public boolean start(OTEStatusCallback<ConfigurationStatus> statusCallback) {
       boolean pass = true;
+      sortBundles(installedBundles);
       Iterator<Bundle> iter = installedBundles.iterator();
       while (iter.hasNext()) {
          Bundle bundle = iter.next();
          try {
             String entry = bundle.getHeaders().get("Fragment-Host");
             if (entry == null) {
-               bundle.start();
+               int bundleState = bundle.getState();
+               if(bundleState != Bundle.ACTIVE) {
+                  bundle.start();
+               } 
             }
             // We got here because bundle.start did not exception
             runningBundles.add(bundle);
@@ -149,6 +166,30 @@ public class OTEBundleLoader implements IRuntimeLibraryManager{
          }
       }
       return pass;
+   }
+
+   private void sortBundles(List<Bundle> installedBundles2) {
+	   Collections.sort(installedBundles, new Comparator<Bundle>() {
+			@Override
+			public int compare(Bundle arg0, Bundle arg1) {
+				int startLevel0 = getStartLevel(arg0);
+				int startLevel1 = getStartLevel(arg1);
+				return startLevel0 - startLevel1;
+			}
+			
+			private int getStartLevel(Bundle arg0) {
+				String level = arg0.getHeaders().get(MANIFEST_ENTRY_OTE_STARTLEVEL);
+				if(level == null){
+					return 0;
+				} else {
+					try {
+						return Integer.parseInt(level);
+					} catch (NumberFormatException ex) {
+						return 0;
+					}
+				}
+			}
+		});
    }
 
    @Override
