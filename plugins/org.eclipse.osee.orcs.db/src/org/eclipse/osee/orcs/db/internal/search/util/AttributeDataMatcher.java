@@ -84,7 +84,7 @@ public class AttributeDataMatcher {
       }
    }
 
-   private void matchTokenizedValue(HasCancellation cancellation, AttributeDataMatchHandler handler, AttributeData data, String toMatch, Collection<? extends IAttributeType> typesFilter, QueryOption... options) throws Exception {
+   private void matchTokenizedValue(HasCancellation cancellation, AttributeDataMatchHandler handler, AttributeData data, String toMatch, Collection<? extends IAttributeType> typesFilter, QueryOption... options) {
       AttributeIndexedResource source = adapt(data);
       IAttributeType attrType = attrTypes.getByUuid(source.getTypeUuid());
       if (typesFilter.contains(attrType)) {
@@ -93,10 +93,15 @@ public class AttributeDataMatcher {
          Tagger tagger = getTagger(taggerId);
          if (tagger != null) {
             checkCancelled(cancellation);
-            List<MatchLocation> matched = tagger.find(source, toMatch, true, options);
-            for (MatchLocation matchLocation : matched) {
-               checkCancelled(cancellation);
-               handler.onData(data, matchLocation);
+            try {
+               List<MatchLocation> matched = tagger.find(source, toMatch, true, options);
+               for (MatchLocation matchLocation : matched) {
+                  checkCancelled(cancellation);
+                  handler.onData(data, matchLocation);
+               }
+            } catch (Exception ex) {
+               logger.error(ex, "Error searching attrId [%d] gamma [%d]", data.getLocalId(),
+                  data.getVersion().getGammaId());
             }
          }
       }
