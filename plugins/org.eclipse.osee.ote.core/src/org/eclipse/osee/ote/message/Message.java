@@ -24,8 +24,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -1056,6 +1058,16 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    public void addPostMemSourceChangeListener(IMemSourceChangeListener listener) {
       checkState();
       postMemSourceChangeListeners.add(listener);
+   }
+   
+   public void removePreMemSourceChangeListener(IMemSourceChangeListener listener) {
+      checkState();
+      preMemSourceChangeListeners.remove(listener);
+   }
+
+   public void removePostMemSourceChangeListener(IMemSourceChangeListener listener) {
+      checkState();
+      postMemSourceChangeListeners.remove(listener);
    }
 
    public void addPreMessageDisposeListener(IMessageDisposeListener listener) {
