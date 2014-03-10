@@ -108,17 +108,21 @@ public class SessionManagementServlet extends UnsecuredOseeHttpServlet {
       // TODO Decrypt credential info
       OseeCredential credential = OseeCredential.fromXml(new ByteArrayInputStream(bytes));
       OseeSessionGrant oseeSessionGrant = sessionManager.createSession(credential);
+      if (oseeSessionGrant != null) {
+         response.setStatus(HttpServletResponse.SC_ACCEPTED);
+         ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+         oseeSessionGrant.write(byteOutputStream);
 
-      response.setStatus(HttpServletResponse.SC_ACCEPTED);
-      ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-      oseeSessionGrant.write(byteOutputStream);
-
-      // TODO after encrypted these will need to change
-      response.setContentType("application/xml");
-      response.setCharacterEncoding("UTF-8");
-      response.setContentLength(byteOutputStream.size());
-      Lib.inputStreamToOutputStream(new ByteArrayInputStream(byteOutputStream.toByteArray()),
-         response.getOutputStream());
+         // TODO after encrypted these will need to change
+         response.setContentType("application/xml");
+         response.setCharacterEncoding("UTF-8");
+         response.setContentLength(byteOutputStream.size());
+         Lib.inputStreamToOutputStream(new ByteArrayInputStream(byteOutputStream.toByteArray()),
+            response.getOutputStream());
+      } else {
+         // session could not be created due to version or invalid user
+         response.sendError(HttpServletResponse.SC_FORBIDDEN, "Unable to create session");
+      }
    }
 
    private void releaseSession(HttpServletRequest request, HttpServletResponse response) throws Exception {
