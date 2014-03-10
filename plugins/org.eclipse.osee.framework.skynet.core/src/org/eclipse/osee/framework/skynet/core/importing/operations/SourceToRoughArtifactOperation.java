@@ -43,11 +43,7 @@ public class SourceToRoughArtifactOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       File[] files;
-      if (sourceFile.isDirectory()) {
-         files = sourceFile.listFiles(extractor.getFileFilter());
-      } else {
-         files = new File[] {sourceFile};
-      }
+      files = new File[] {sourceFile};
       double workPercentage = 1.0 / files.length;
       extractArtifacts(monitor, workPercentage, files, collector, collector.getParentRoughArtifact());
    }
