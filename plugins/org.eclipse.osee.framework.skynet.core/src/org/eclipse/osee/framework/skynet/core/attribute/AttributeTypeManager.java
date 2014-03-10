@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
@@ -154,5 +155,22 @@ public class AttributeTypeManager {
 
    public static Class<? extends IAttributeDataProvider> getAttributeProviderClass(AttributeType attributeType) throws OseeCoreException {
       return AttributeExtensionManager.getAttributeProviderClassFor(attributeType.getAttributeProviderId());
+   }
+
+   public static boolean checkIfRemovalAllowed(IAttributeType attributeType, Collection<? extends Artifact> artifacts) {
+      boolean removalAllowed = false;
+      if (getType(attributeType).getMinOccurrences() == 0) {
+         removalAllowed = true;
+      }
+      // if there is any artifact that allows the type, then removal is not allowed
+      boolean notAllowed = false;
+      for (Artifact art : artifacts) {
+         notAllowed = art.isAttributeTypeValid(attributeType);
+         if (notAllowed) {
+            break;
+         }
+      }
+
+      return removalAllowed || !notAllowed;
    }
 }

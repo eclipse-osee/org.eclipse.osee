@@ -58,7 +58,7 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
       try {
          options = AttributeTypeManager.getEnumerationValues(attributeType);
          isSingletonAttribute = AttributeTypeManager.getMaxOccurrences(attributeType) == 1;
-         isRemoveAllAllowed = AttributeTypeManager.getMinOccurrences(attributeType) == 0;
+         isRemoveAllAllowed = AttributeTypeManager.checkIfRemovalAllowed(attributeType, artifacts);
          if (isSingletonAttribute) {
             selected = Selection.ReplaceAll;
          }
