@@ -119,7 +119,7 @@ public final class SessionManagerImpl implements ISessionManager {
       try {
          session = sessionCache.get(sessionId);
       } catch (Exception e) {
-         OseeExceptions.wrapAndThrow(e);
+         session = null;
       }
       return session;
    }
