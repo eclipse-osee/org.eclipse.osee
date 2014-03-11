@@ -273,11 +273,42 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
       new Label(attributeControls, SWT.NONE); // spacerLabelSoTheNextOneWillBeInColumnTwo
 
-      Label wildLabel = new Label(attributeControls, SWT.NONE);
-      wildLabel.setText("(* = any string, \\* = literal *)");
-
       ATTRIBUTE_VALUE_FILTER = new AttributeValueFilter(attributeControls, attributeTypeList, attributeValue);
       addToSearchTypeList(ATTRIBUTE_VALUE_FILTER);
+   }
+
+   private void createAttributeExistsControls(Composite optionsComposite) {
+      Composite attributeControls = new Composite(optionsComposite, SWT.NONE);
+      attributeControls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      attributeControls.setLayout(new GridLayout(2, false));
+
+      Label typeLabel = new Label(attributeControls, SWT.HORIZONTAL);
+      typeLabel.setText("Attribute Type:");
+
+      final ComboViewer attributeTypeList = new ComboViewer(attributeControls, SWT.DROP_DOWN | SWT.READ_ONLY);
+      attributeTypeList.setContentProvider(new SearchContentProvider());
+      attributeTypeList.setLabelProvider(new SearchLabelProvider());
+      attributeTypeList.setSorter(new SearchSorter());
+
+      try {
+         for (IAttributeType type : AttributeTypeManager.getValidAttributeTypes(getSelectedBranch())) {
+            attributeTypeList.add(type);
+            attributeTypeList.setData(type.getName(), type);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
+            "Error encountered while getting list of attribute types", ex);
+      }
+      attributeTypeList.getCombo().setVisibleItemCount(Math.min(attributeTypeList.getCombo().getItemCount(), 15));
+      attributeTypeList.getCombo().select(lastAttributeTypeListSelected);
+      attributeTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
+         @Override
+         public void selectionChanged(SelectionChangedEvent event) {
+            lastAttributeTypeListSelected = attributeTypeList.getCombo().getSelectionIndex();
+         }
+      });
+
+      addToSearchTypeList(new AttributeExistsFilter(attributeControls, attributeTypeList));
    }
 
    private void addFilterControls(Composite mainComposite) {
@@ -303,6 +334,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
       optionsComposite.setLayout(selectionLayout);
       createAttributeSearchControls(optionsComposite);
+      createAttributeExistsControls(optionsComposite);
       createArtifactTypeSearchControls(optionsComposite);
       createRelationSearchControls(optionsComposite);
 
