@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelationReorder;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -127,13 +127,12 @@ public class RelationOrderData {
             relationOrderModType = RelationOrderModType.Absolute;
          }
          IOseeBranch branch = getIArtifact().getBranch();
-         String branchGuid = branch.getGuid();
          DefaultBasicGuidArtifact guidArtifact =
-            new DefaultBasicGuidArtifact(branchGuid, getIArtifact().getArtifactType().getGuid(),
+            new DefaultBasicGuidArtifact(branch.getUuid(), getIArtifact().getArtifactType().getGuid(),
                getIArtifact().getGuid());
 
-         DefaultBasicGuidRelationReorder reorder =
-            new DefaultBasicGuidRelationReorder(relationOrderModType, branchGuid, type.getGuid(), guidArtifact);
+         DefaultBasicUuidRelationReorder reorder =
+            new DefaultBasicUuidRelationReorder(relationOrderModType, branch.getUuid(), type.getGuid(), guidArtifact);
 
          accessor.store(getIArtifact(), this, reorder);
       }

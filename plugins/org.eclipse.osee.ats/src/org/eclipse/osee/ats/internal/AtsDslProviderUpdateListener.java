@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.filter.BranchGuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -34,7 +34,7 @@ public final class AtsDslProviderUpdateListener implements IArtifactEventListene
    private final List<? extends IEventFilter> eventFilters =
       Arrays.asList(
          new ArtifactTypeEventFilter(CoreArtifactTypes.AccessControlModel),
-         new BranchGuidEventFilter(AtsUtilCore.getAtsBranch())
+         new BranchUuidEventFilter(AtsUtilCore.getAtsBranch())
          );
    //@formatter:on
 

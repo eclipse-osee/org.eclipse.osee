@@ -79,11 +79,11 @@ public class ArtifactQuery {
    }
 
    public static Artifact getArtifactFromToken(EventBasicGuidArtifact guidArt) throws OseeCoreException {
-      return getArtifactFromId(guidArt.getGuid(), BranchManager.getBranchByGuid(guidArt.getBranchGuid()));
+      return getArtifactFromId(guidArt.getGuid(), BranchManager.getBranchByUuid(guidArt.getBranchUuid()));
    }
 
    public static Artifact getArtifactFromToken(IBasicGuidArtifact guidArt) throws OseeCoreException {
-      return getArtifactFromId(guidArt.getGuid(), BranchManager.getBranchByGuid(guidArt.getBranchGuid()));
+      return getArtifactFromId(guidArt.getGuid(), BranchManager.getBranchByUuid(guidArt.getBranchUuid()));
    }
 
    /**

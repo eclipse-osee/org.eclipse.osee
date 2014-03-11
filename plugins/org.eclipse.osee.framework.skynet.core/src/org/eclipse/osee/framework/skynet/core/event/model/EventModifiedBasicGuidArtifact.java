@@ -19,14 +19,14 @@ public class EventModifiedBasicGuidArtifact extends EventBasicGuidArtifact {
 
    private final Collection<AttributeChange> attributeChanges;
 
-   public EventModifiedBasicGuidArtifact(String branchGuid, Long artTypeGuid, String guid, Collection<AttributeChange> attributeChanges) {
-      super(EventModType.Modified, branchGuid, artTypeGuid, guid);
+   public EventModifiedBasicGuidArtifact(Long branchUuid, Long artTypeGuid, String guid, Collection<AttributeChange> attributeChanges) {
+      super(EventModType.Modified, branchUuid, artTypeGuid, guid);
       this.attributeChanges = attributeChanges;
    }
 
    @Override
    public String toString() {
-      return String.format("[%s - G:%s - B:%s - A:%s - %s]", EventModType.Modified.name(), getGuid(), getBranchGuid(),
+      return String.format("[%s - G:%s - B:%s - A:%s - %s]", EventModType.Modified.name(), getGuid(), getBranchUuid(),
          getArtTypeGuid(), attributeChanges);
    }
 

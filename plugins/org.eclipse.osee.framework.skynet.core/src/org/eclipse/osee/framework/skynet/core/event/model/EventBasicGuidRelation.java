@@ -11,26 +11,26 @@
 package org.eclipse.osee.framework.skynet.core.event.model;
 
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelation;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 
 /**
  * @author Donald G. Dunne
  */
-public class EventBasicGuidRelation extends DefaultBasicGuidRelation {
+public class EventBasicGuidRelation extends DefaultBasicUuidRelation {
 
    private final RelationEventType relationEventType;
    private final int artAId;
    private final int artBId;
    private String rationale;
 
-   public EventBasicGuidRelation(RelationEventType relationEventType, int artAId, int artBId, DefaultBasicGuidRelation guidRel) {
-      this(relationEventType, guidRel.getBranchGuid(), guidRel.getRelTypeGuid(), guidRel.getRelationId(),
+   public EventBasicGuidRelation(RelationEventType relationEventType, int artAId, int artBId, DefaultBasicUuidRelation guidRel) {
+      this(relationEventType, guidRel.getBranchUuid(), guidRel.getRelTypeGuid(), guidRel.getRelationId(),
          guidRel.getGammaId(), artAId, guidRel.getArtA(), artBId, guidRel.getArtB());
    }
 
-   public EventBasicGuidRelation(RelationEventType relationEventType, String branchGuid, Long relTypeGuid, int relationId, int gammaId, int artAId, DefaultBasicGuidArtifact artA, int artBId, DefaultBasicGuidArtifact artB) {
-      super(branchGuid, relTypeGuid, relationId, gammaId, artA, artB);
+   public EventBasicGuidRelation(RelationEventType relationEventType, Long branchUuid, Long relTypeGuid, int relationId, int gammaId, int artAId, DefaultBasicGuidArtifact artA, int artBId, DefaultBasicGuidArtifact artB) {
+      super(branchUuid, relTypeGuid, relationId, gammaId, artA, artB);
       this.relationEventType = relationEventType;
       this.artAId = artAId;
       this.artBId = artBId;
@@ -42,8 +42,8 @@ public class EventBasicGuidRelation extends DefaultBasicGuidRelation {
 
    @Override
    public String toString() {
-      return String.format("[%s - B:%s - TG:%s - GI:%d - RI:%d - A:%s - B:%s]", relationEventType, getBranchGuid(),
-         getBranchGuid(), getGammaId(), getRelationId(), getArtA(), getArtB());
+      return String.format("[%s - B:%s - TG:%s - GI:%d - RI:%d - A:%s - B:%s]", relationEventType, getBranchUuid(),
+         getBranchUuid(), getGammaId(), getRelationId(), getArtA(), getArtB());
    }
 
    @Override

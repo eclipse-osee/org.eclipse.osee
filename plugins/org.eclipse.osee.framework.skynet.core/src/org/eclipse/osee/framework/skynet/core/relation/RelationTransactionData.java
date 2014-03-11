@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelation;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -81,8 +81,8 @@ public class RelationTransactionData extends BaseTransactionData {
    @Override
    protected void internalAddToEvents(ArtifactEvent artifactEvent) throws OseeCoreException {
       //      try {
-      DefaultBasicGuidRelation defaultBasicGuidRelation =
-         new DefaultBasicGuidRelation(relation.getBranch().getGuid(), relation.getRelationType().getGuid(),
+      DefaultBasicUuidRelation defaultBasicGuidRelation =
+         new DefaultBasicUuidRelation(relation.getBranch().getUuid(), relation.getRelationType().getGuid(),
             relation.getId(), relation.getGammaId(), relation.getArtifactA().getBasicGuidArtifact(),
             relation.getArtifactB().getBasicGuidArtifact());
       EventBasicGuidRelation event =

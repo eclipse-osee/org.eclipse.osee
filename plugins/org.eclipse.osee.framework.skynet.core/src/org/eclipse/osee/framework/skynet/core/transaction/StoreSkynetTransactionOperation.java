@@ -202,7 +202,7 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
       for (Artifact artifact : artifactReferences) {
          if (artifact.hasDirtyAttributes()) {
             EventModifiedBasicGuidArtifact guidArt =
-               new EventModifiedBasicGuidArtifact(artifact.getBranch().getGuid(), artifact.getArtifactType().getGuid(),
+               new EventModifiedBasicGuidArtifact(artifact.getBranch().getUuid(), artifact.getArtifactType().getGuid(),
                   artifact.getGuid(), artifact.getDirtyFrameworkAttributeChanges());
             artifactEvent.getArtifacts().add(guidArt);
 

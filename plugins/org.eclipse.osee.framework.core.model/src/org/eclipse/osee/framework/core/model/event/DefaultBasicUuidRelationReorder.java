@@ -15,17 +15,17 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 /**
  * @author Donald G. Dunne
  */
-public class DefaultBasicGuidRelationReorder implements IBasicRelationReorder {
+public class DefaultBasicUuidRelationReorder implements IBasicRelationReorder {
 
    private DefaultBasicGuidArtifact parentArt;
-   private String branchGuid;
-   private Long relTypeGuid;
+   private Long branchUuid;
+   private Long relTypeUuid;
    private RelationOrderModType modType;
 
-   public DefaultBasicGuidRelationReorder(RelationOrderModType modType, String branchGuid, Long relTypeGuid, DefaultBasicGuidArtifact artA) {
+   public DefaultBasicUuidRelationReorder(RelationOrderModType modType, Long branchUuid, Long relTypeUuid, DefaultBasicGuidArtifact artA) {
       this.modType = modType;
-      this.branchGuid = branchGuid;
-      this.relTypeGuid = relTypeGuid;
+      this.branchUuid = branchUuid;
+      this.relTypeUuid = relTypeUuid;
       this.parentArt = artA;
    }
 
@@ -35,25 +35,25 @@ public class DefaultBasicGuidRelationReorder implements IBasicRelationReorder {
    }
 
    @Override
-   public String getBranchGuid() {
-      return branchGuid;
+   public Long getBranchUuid() {
+      return branchUuid;
    }
 
    @Override
    public Long getRelTypeGuid() {
-      return relTypeGuid;
+      return relTypeUuid;
    }
 
    public void setArtA(DefaultBasicGuidArtifact artA) {
       this.parentArt = artA;
    }
 
-   public void setBranchGuid(String branchGuid) {
-      this.branchGuid = branchGuid;
+   public void setBranchGuid(Long branchUuid) {
+      this.branchUuid = branchUuid;
    }
 
    public void setRelTypeGuid(Long relTypeGuid) {
-      this.relTypeGuid = relTypeGuid;
+      this.relTypeUuid = relTypeGuid;
    }
 
    @Override
@@ -61,8 +61,8 @@ public class DefaultBasicGuidRelationReorder implements IBasicRelationReorder {
       final int prime = 31;
       int result = 1;
       result = prime * result + (parentArt == null ? 0 : parentArt.hashCode());
-      result = prime * result + (branchGuid == null ? 0 : branchGuid.hashCode());
-      result = prime * result + (relTypeGuid == null ? 0 : relTypeGuid.hashCode());
+      result = prime * result + (branchUuid == null ? 0 : branchUuid.hashCode());
+      result = prime * result + (relTypeUuid == null ? 0 : relTypeUuid.hashCode());
       return result;
    }
 
@@ -85,18 +85,18 @@ public class DefaultBasicGuidRelationReorder implements IBasicRelationReorder {
       } else if (!parentArt.equals(other.getParentArt())) {
          return false;
       }
-      if (branchGuid == null) {
-         if (other.getBranchGuid() != null) {
+      if (branchUuid == null) {
+         if (other.getBranchUuid() != null) {
             return false;
          }
-      } else if (!branchGuid.equals(other.getBranchGuid())) {
+      } else if (!branchUuid.equals(other.getBranchUuid())) {
          return false;
       }
-      if (relTypeGuid == null) {
+      if (relTypeUuid == null) {
          if (other.getRelTypeGuid() != null) {
             return false;
          }
-      } else if (!relTypeGuid.equals(other.getRelTypeGuid())) {
+      } else if (!relTypeUuid.equals(other.getRelTypeGuid())) {
          return false;
       }
       return true;

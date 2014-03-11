@@ -18,21 +18,21 @@ import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 /**
  * @author Donald G. Dunne
  */
-public class BranchGuidEventFilter implements IEventFilter {
+public class BranchUuidEventFilter implements IEventFilter {
 
    private final IOseeBranch branchToken;
 
    /**
     * Provide branch of events that should be passed through. All other branches will be ignored.
     */
-   public BranchGuidEventFilter(IOseeBranch branchToken) {
+   public BranchUuidEventFilter(IOseeBranch branchToken) {
       this.branchToken = branchToken;
    }
 
    @Override
-   public boolean isMatch(String branchGuid) {
+   public boolean isMatch(Long branchUuid) {
       if (branchToken != null) {
-         if (branchToken.getGuid().equals(branchGuid)) {
+         if (branchUuid.equals(branchToken.getUuid())) {
             return true;
          }
       }
@@ -45,7 +45,7 @@ public class BranchGuidEventFilter implements IEventFilter {
          return true;
       }
       for (IBasicGuidArtifact guidArt : guidArts) {
-         if (branchToken.getGuid().equals(guidArt.getBranchGuid())) {
+         if (guidArt.getBranchUuid().equals(branchToken.getUuid())) {
             return true;
          }
       }
@@ -58,9 +58,9 @@ public class BranchGuidEventFilter implements IEventFilter {
          return true;
       }
       for (IBasicGuidRelation rel : relations) {
-         if (branchToken.getGuid().equals(rel.getArtA().getBranchGuid()) ||
+         if (rel.getArtA().getBranchUuid().equals(branchToken.getUuid()) ||
          //
-         branchToken.getGuid().equals(rel.getArtB().getBranchGuid())) {
+         rel.getArtB().getBranchUuid().equals(branchToken.getUuid())) {
             return true;
          }
       }

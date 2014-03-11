@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Boeing.
+ * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,21 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.model.event;
+package org.eclipse.osee.framework.skynet.core.artifact;
 
-/**
- * @author Donald G. Dunne
- */
-public interface IBasicGuidRelation {
+import org.eclipse.osee.framework.core.data.IArtifactType;
 
-   DefaultBasicGuidArtifact getArtA();
+public interface IArtifactTypeProvider {
 
-   DefaultBasicGuidArtifact getArtB();
+   IArtifactType getTypeByGuid(Long artTypeGuid);
 
-   Long getRelTypeGuid();
-
-   Long getBranchUuid();
-
-   int getGammaId();
+   boolean inheritsFrom(IArtifactType artifactType, IArtifactType... parentTypes);
 
 }

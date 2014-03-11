@@ -20,8 +20,8 @@ public class EventChangeTypeBasicGuidArtifact extends EventBasicGuidArtifact {
 
    private final Long fromArtTypeGuid;
 
-   public EventChangeTypeBasicGuidArtifact(String branchGuid, Long fromArtTypeGuid, Long artTypeGuid, String guid) {
-      super(EventModType.ChangeType, branchGuid, artTypeGuid, guid);
+   public EventChangeTypeBasicGuidArtifact(Long branchUuid, Long fromArtTypeGuid, Long artTypeGuid, String guid) {
+      super(EventModType.ChangeType, branchUuid, artTypeGuid, guid);
       this.fromArtTypeGuid = fromArtTypeGuid;
    }
 

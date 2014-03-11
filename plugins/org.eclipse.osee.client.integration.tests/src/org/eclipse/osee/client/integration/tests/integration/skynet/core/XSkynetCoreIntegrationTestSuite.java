@@ -16,7 +16,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    ArtifactCacheQueryTest.class,
-   ArtifactEventFiltersTest.class,
    ArtifactEventLoopbackTest.class,
    ArtifactEventTest.class,
    ArtifactGetLastModifiedTest.class,
@@ -27,7 +26,6 @@ import org.junit.runners.Suite;
    ArtifactTest.class,
    ArtifactTypeInheritanceTest.class,
    AttributePurgeTest.class,
-   BranchEventFiltersTest.class,
    BranchEventLoopbackTest.class,
    BranchEventTest.class,
    BranchManagerTest.class,

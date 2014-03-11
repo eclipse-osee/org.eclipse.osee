@@ -15,20 +15,20 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.event.filter.BranchGuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class EventUtil {
-   private static BranchGuidEventFilter commonBranchGuidEvenFilter = new BranchGuidEventFilter(CoreBranches.COMMON);
+   private static BranchUuidEventFilter commonBranchGuidEvenFilter = new BranchUuidEventFilter(CoreBranches.COMMON);
 
    private EventUtil() {
       // Utility Class
    }
 
-   public static BranchGuidEventFilter getCommonBranchFilter() {
+   public static BranchUuidEventFilter getCommonBranchFilter() {
       return EventUtil.commonBranchGuidEvenFilter;
    }
 

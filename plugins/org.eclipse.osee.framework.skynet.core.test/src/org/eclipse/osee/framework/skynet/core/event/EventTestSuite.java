@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
+import org.eclipse.osee.framework.skynet.core.event.filter.EventFilterTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   EventFilterTestSuite.class,
    EventBasicGuidArtifactTest.class,
    EventBasicGuidArtifactTest.class,
    EventChangeTypeBasicGuidArtifactTest.class})

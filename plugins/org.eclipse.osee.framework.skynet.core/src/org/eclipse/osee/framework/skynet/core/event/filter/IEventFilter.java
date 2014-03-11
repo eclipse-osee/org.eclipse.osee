@@ -22,7 +22,7 @@ public interface IEventFilter {
    /**
     * return true if events for this branch should be passed through to listeners
     */
-   public boolean isMatch(String branchGuid);
+   public boolean isMatch(Long branchUuid);
 
    /**
     * return true if events for this this guid artifact should be passed through to listeners

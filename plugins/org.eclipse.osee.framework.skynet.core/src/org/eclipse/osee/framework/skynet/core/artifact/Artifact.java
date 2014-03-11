@@ -51,7 +51,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelationReorder;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -98,8 +98,8 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
 
    private final HashCollection<IAttributeType, Attribute<?>> attributes =
       new HashCollection<IAttributeType, Attribute<?>>(false, LinkedList.class, 12);
-   private final Set<DefaultBasicGuidRelationReorder> relationOrderRecords =
-      new HashSet<DefaultBasicGuidRelationReorder>();
+   private final Set<DefaultBasicUuidRelationReorder> relationOrderRecords =
+      new HashSet<DefaultBasicUuidRelationReorder>();
    private final IOseeBranch branch;
    private ArtifactType artifactType;
    private int transactionId = TRANSACTION_SENTINEL;
@@ -1582,8 +1582,8 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
          IBasicGuidArtifact other = (IBasicGuidArtifact) obj;
          boolean result = getGuid().equals(other.getGuid());
          if (result) {
-            if (getBranchGuid() != null && other.getBranchGuid() != null) {
-               result = getBranchGuid().equals(other.getBranchGuid());
+            if (getBranchUuid() != null && other.getBranchUuid() != null) {
+               result = getBranchUuid().equals(other.getBranchUuid());
             }
          }
          return result;
@@ -1718,7 +1718,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
    }
 
    public final DefaultBasicGuidArtifact getBasicGuidArtifact() {
-      return new DefaultBasicGuidArtifact(getBranch().getGuid(), getArtifactType().getGuid(), getGuid());
+      return new DefaultBasicGuidArtifact(getBranch().getUuid(), getArtifactType().getGuid(), getGuid());
    }
 
    @Override
@@ -1727,11 +1727,11 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
    }
 
    @Override
-   public final String getBranchGuid() {
-      return getBranch().getGuid();
+   public final Long getBranchUuid() {
+      return getBranch().getUuid();
    }
 
-   public final Set<DefaultBasicGuidRelationReorder> getRelationOrderRecords() {
+   public final Set<DefaultBasicUuidRelationReorder> getRelationOrderRecords() {
       return relationOrderRecords;
    }
 

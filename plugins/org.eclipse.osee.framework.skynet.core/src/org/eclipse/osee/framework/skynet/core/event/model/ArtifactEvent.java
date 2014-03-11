@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelationReorder;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -41,8 +41,8 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    private NetworkSender networkSender;
    private final List<EventBasicGuidArtifact> artifacts = new ArrayList<EventBasicGuidArtifact>();
    private final List<EventBasicGuidRelation> relations = new ArrayList<EventBasicGuidRelation>();
-   private final Set<DefaultBasicGuidRelationReorder> relationReorderRecords =
-      new HashSet<DefaultBasicGuidRelationReorder>();
+   private final Set<DefaultBasicUuidRelationReorder> relationReorderRecords =
+      new HashSet<DefaultBasicUuidRelationReorder>();
    private final ArtifactEventType reloadEvent;
 
    public ArtifactEvent(IOseeBranch branch) {
@@ -66,7 +66,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return branchGuid;
    }
 
-   public Set<DefaultBasicGuidRelationReorder> getRelationOrderRecords() {
+   public Set<DefaultBasicUuidRelationReorder> getRelationOrderRecords() {
       return relationReorderRecords;
    }
 
@@ -159,7 +159,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
 
    private Collection<DefaultBasicGuidArtifact> getRelOrderChangedArtifacts(IRelationType... relationTypes) {
       Set<DefaultBasicGuidArtifact> guidArts = new HashSet<DefaultBasicGuidArtifact>();
-      for (DefaultBasicGuidRelationReorder record : relationReorderRecords) {
+      for (DefaultBasicUuidRelationReorder record : relationReorderRecords) {
          if (relationTypes == null) {
             guidArts.add(record.getParentArt());
          } else {

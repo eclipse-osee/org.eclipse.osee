@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelationReorder;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -38,7 +38,7 @@ public class ArtifactRelationOrderAccessor implements IRelationOrderAccessor {
    }
 
    @Override
-   public void store(IArtifact artifact, RelationOrderData orderData, DefaultBasicGuidRelationReorder relationOrderRecord) throws OseeCoreException {
+   public void store(IArtifact artifact, RelationOrderData orderData, DefaultBasicUuidRelationReorder relationOrderRecord) throws OseeCoreException {
       Artifact fullArtifact = artifact.getFullArtifact();
       fullArtifact.getRelationOrderRecords().add(relationOrderRecord);
       if (orderData.hasEntries() && !fullArtifact.isDeleted()) {

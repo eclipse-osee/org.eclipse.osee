@@ -34,7 +34,8 @@ public class BranchEventHandler implements EventHandlerLocal<IBranchEventListene
       List<? extends IEventFilter> filters = ((IEventFilteredListener) listener).getEventFilters();
       if (filters != null) {
          for (IEventFilter eventFilter : filters) {
-            if (!eventFilter.isMatch(event.getBranchGuid()) && !eventFilter.isMatch(event.getDestinationBranchGuid())) {
+            long branchUuid = BranchManager.getBranchIdLegacy(event.getBranchGuid());
+            if (!eventFilter.isMatch(branchUuid) && !eventFilter.isMatch(BranchManager.getBranchIdLegacy(event.getDestinationBranchGuid()))) {
                return;
             }
          }

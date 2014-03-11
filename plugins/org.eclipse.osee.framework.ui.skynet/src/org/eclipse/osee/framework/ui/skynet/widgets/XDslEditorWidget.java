@@ -236,7 +236,7 @@ public class XDslEditorWidget extends XLabel implements IAttributeWidget {
          OseeExceptions.wrapAndThrow(ex);
       }
       String uriString =
-         String.format("branch/%s/artifact/%s/%s.%s", artifact.getBranchGuid(), artifact.getGuid(), encodedName,
+         String.format("branch/%s/artifact/%d/%s.%s", artifact.getBranchUuid(), artifact.getGuid(), encodedName,
             extension);
       return URI.createURI(uriString);
    }

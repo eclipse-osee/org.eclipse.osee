@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelationReorder;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -219,11 +219,11 @@ public class ArtifactEventTest {
       } else {
          Assert.assertTrue(listener.getSender().isLocal());
       }
-      DefaultBasicGuidRelationReorder guidReorder = listener.getReorders().iterator().next();
+      DefaultBasicUuidRelationReorder guidReorder = listener.getReorders().iterator().next();
       Assert.assertEquals(RelationOrderModType.Absolute, guidReorder.getModType());
       Assert.assertEquals(newArt.getGuid(), guidReorder.getParentArt().getGuid());
       Assert.assertEquals(newArt.getArtTypeGuid(), guidReorder.getParentArt().getArtTypeGuid());
-      Assert.assertEquals(newArt.getBranchGuid(), guidReorder.getParentArt().getBranchGuid());
+      Assert.assertEquals(newArt.getBranchUuid(), guidReorder.getParentArt().getBranchUuid());
       Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidReorder.getRelTypeGuid());
 
       List<Artifact> newOrderedChildren = newArt.getChildren();
@@ -261,7 +261,7 @@ public class ArtifactEventTest {
       }
       Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
       Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
-      Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());
+      Assert.assertEquals(newArt.getBranchUuid(), guidArt.getBranchUuid());
    }
 
    @Test
@@ -293,7 +293,7 @@ public class ArtifactEventTest {
          Assert.assertTrue(listener.getSender().isLocal());
          Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
          Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
-         Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());
+         Assert.assertEquals(newArt.getBranchUuid(), guidArt.getBranchUuid());
       }
    }
 
@@ -324,7 +324,7 @@ public class ArtifactEventTest {
          Assert.assertTrue(listener.getSender().isLocal());
       }
       Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
-      Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());
+      Assert.assertEquals(newArt.getBranchUuid(), guidArt.getBranchUuid());
       Assert.assertEquals(CoreArtifactTypes.HeadingMSWord.getGuid(), guidArt.getArtTypeGuid());
       Assert.assertEquals(CoreArtifactTypes.GeneralData.getGuid(), guidArt.getFromArtTypeGuid());
       // Reload artifact; since artifact cache cleared, it should be loaded as new artifact type
@@ -398,7 +398,7 @@ public class ArtifactEventTest {
          }
          Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
          Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
-         Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());
+         Assert.assertEquals(newArt.getBranchUuid(), guidArt.getBranchUuid());
       }
       Assert.assertTrue(addedFound);
       Assert.assertTrue(modifiedFound);
@@ -449,7 +449,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(EventModType.Modified, guidArt.getModType());
       Assert.assertEquals(newArt.getGuid(), guidArt.getGuid());
       Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
-      Assert.assertEquals(newArt.getBranch().getGuid(), guidArt.getBranchGuid());
+      Assert.assertEquals(newArt.getBranchUuid(), guidArt.getBranchUuid());
       Assert.assertFalse(newArt.isDirty());
    }
 
@@ -505,7 +505,7 @@ public class ArtifactEventTest {
          }
          Assert.assertEquals(newArt.getGuid(), guidArt1.getGuid());
          Assert.assertEquals(newArt.getArtifactType().getGuid(), guidArt1.getArtTypeGuid());
-         Assert.assertEquals(newArt.getBranch().getGuid(), guidArt1.getBranchGuid());
+         Assert.assertEquals(newArt.getBranchUuid(), guidArt1.getBranchUuid());
       }
       Assert.assertTrue(deletedFound);
       Assert.assertTrue(modifiedFound);
@@ -541,7 +541,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(rootArt, guidRel.getArtA());
       Assert.assertEquals(injectArt, guidRel.getArtB());
       Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidRel.getRelTypeGuid());
-      Assert.assertEquals(injectArt.getBranch().getGuid(), guidRel.getBranchGuid());
+      Assert.assertEquals(injectArt.getBranchUuid(), guidRel.getBranchUuid());
 
       Assert.assertEquals(1, injectArt.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent).size());
       RelationLink relLink = injectArt.getRelations(CoreRelationTypes.Default_Hierarchical__Parent).iterator().next();
@@ -575,7 +575,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(rootArt, guidRel.getArtA());
       Assert.assertEquals(injectArt, guidRel.getArtB());
       Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidRel.getRelTypeGuid());
-      Assert.assertEquals(injectArt.getBranch().getGuid(), guidRel.getBranchGuid());
+      Assert.assertEquals(injectArt.getBranchUuid(), guidRel.getBranchUuid());
 
       Assert.assertEquals(0, injectArt.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent).size());
       Assert.assertFalse(injectArt.isDirty());
@@ -617,13 +617,13 @@ public class ArtifactEventTest {
       Assert.assertEquals("No relations events should be sent", 0, listener.getRelations().size());
       Assert.assertEquals("1 reorder events should be sent", 1, listener.getReorders().size());
       Assert.assertTrue(listener.getSender().isRemote());
-      DefaultBasicGuidRelationReorder guidReorder = listener.getReorders().iterator().next();
+      DefaultBasicUuidRelationReorder guidReorder = listener.getReorders().iterator().next();
       Assert.assertEquals(RelationOrderModType.Absolute, guidReorder.getModType());
       Assert.assertEquals(parentRemGuidArt.getArtGuid(), guidReorder.getParentArt().getGuid());
       Assert.assertEquals(parentRemGuidArt.getArtTypeGuid(), (long) guidReorder.getParentArt().getArtTypeGuid());
-      Assert.assertEquals(parentRemGuidArt.getBranchGuid(), guidReorder.getParentArt().getBranchGuid());
+      Assert.assertEquals((Long) BranchManager.getCommonBranch().getUuid(), guidReorder.getParentArt().getBranchUuid());
       Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidReorder.getRelTypeGuid());
-      Assert.assertEquals(injectArt.getBranch().getGuid(), guidReorder.getBranchGuid());
+      Assert.assertEquals(injectArt.getBranchUuid(), guidReorder.getBranchUuid());
 
       return injectArt;
    }
@@ -653,7 +653,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(rootArt, guidRel.getArtA());
       Assert.assertEquals(injectArt, guidRel.getArtB());
       Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidRel.getRelTypeGuid());
-      Assert.assertEquals(injectArt.getBranch().getGuid(), guidRel.getBranchGuid());
+      Assert.assertEquals(injectArt.getBranchUuid(), guidRel.getBranchUuid());
 
       Assert.assertEquals(1, injectArt.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent).size());
       RelationLink relLink = injectArt.getRelations(CoreRelationTypes.Default_Hierarchical__Parent).iterator().next();
@@ -691,7 +691,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(rootArt, guidRel.getArtA());
       Assert.assertEquals(injectArt, guidRel.getArtB());
       Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidRel.getRelTypeGuid());
-      Assert.assertEquals(injectArt.getBranch().getGuid(), guidRel.getBranchGuid());
+      Assert.assertEquals(injectArt.getBranchUuid(), guidRel.getBranchUuid());
 
       Assert.assertEquals(1, injectArt.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Parent).size());
       relLink = injectArt.getRelations(CoreRelationTypes.Default_Hierarchical__Parent).iterator().next();
@@ -744,7 +744,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(EventModType.Modified, guidArt.getModType());
       Assert.assertEquals(injectArt.getGuid(), guidArt.getGuid());
       Assert.assertEquals(injectArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
-      Assert.assertEquals(injectArt.getBranch().getGuid(), guidArt.getBranchGuid());
+      Assert.assertEquals(injectArt.getBranchUuid(), guidArt.getBranchUuid());
       Assert.assertEquals(1, guidArt.getAttributeChanges().size());
 
       // Validate attribute change in event message
@@ -795,7 +795,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(EventModType.Modified, guidArt.getModType());
       Assert.assertEquals(injectArt.getGuid(), guidArt.getGuid());
       Assert.assertEquals(injectArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
-      Assert.assertEquals(injectArt.getBranch().getGuid(), guidArt.getBranchGuid());
+      Assert.assertEquals(injectArt.getBranchUuid(), guidArt.getBranchUuid());
       Assert.assertEquals(1, guidArt.getAttributeChanges().size());
 
       // Validate attribute change in event message
@@ -845,7 +845,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(EventModType.Modified, guidArt.getModType());
       Assert.assertEquals(injectArt.getGuid(), guidArt.getGuid());
       Assert.assertEquals(injectArt.getArtifactType().getGuid(), guidArt.getArtTypeGuid());
-      Assert.assertEquals(injectArt.getBranch().getGuid(), guidArt.getBranchGuid());
+      Assert.assertEquals(injectArt.getBranchUuid(), guidArt.getBranchUuid());
       Assert.assertEquals(1, guidArt.getAttributeChanges().size());
 
       // Validate attribute change in event message
@@ -875,8 +875,8 @@ public class ArtifactEventTest {
 
       private final Set<EventBasicGuidArtifact> resultEventArtifacts = new HashSet<EventBasicGuidArtifact>();
       private final Set<EventBasicGuidRelation> resultEventRelations = new HashSet<EventBasicGuidRelation>();
-      private final Set<DefaultBasicGuidRelationReorder> resultEventReorders =
-         new HashSet<DefaultBasicGuidRelationReorder>();
+      private final Set<DefaultBasicUuidRelationReorder> resultEventReorders =
+         new HashSet<DefaultBasicUuidRelationReorder>();
 
       private Sender resultSender;
 
@@ -908,7 +908,7 @@ public class ArtifactEventTest {
          return resultEventRelations;
       }
 
-      public Set<DefaultBasicGuidRelationReorder> getReorders() {
+      public Set<DefaultBasicUuidRelationReorder> getReorders() {
          return resultEventReorders;
       }
 

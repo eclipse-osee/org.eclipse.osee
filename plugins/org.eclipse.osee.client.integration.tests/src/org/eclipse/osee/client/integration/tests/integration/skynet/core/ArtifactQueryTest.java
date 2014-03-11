@@ -123,13 +123,13 @@ public class ArtifactQueryTest {
       Assert.assertTrue("No artifacts found", searchedArtifacts.size() > 0);
 
       //check to see if there are multiple branches found
-      String firstGuid = "";
+      Long firstGuid = 0L;
       Boolean pass = false;
       for (Artifact a : searchedArtifacts) {
-         if ("" == firstGuid) {
-            firstGuid = a.getBranchGuid();
+         if (0L == firstGuid) {
+            firstGuid = a.getBranchUuid();
          } else {
-            if (firstGuid != a.getBranchGuid()) {
+            if (firstGuid != a.getBranchUuid()) {
                pass = true;
                break;
             }

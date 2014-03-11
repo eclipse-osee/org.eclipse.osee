@@ -15,17 +15,17 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 /**
  * @author Donald G. Dunne
  */
-public class DefaultBasicGuidRelation implements IBasicGuidRelation {
+public class DefaultBasicUuidRelation implements IBasicGuidRelation {
 
    DefaultBasicGuidArtifact artA, artB;
-   String branchGuid;
-   Long relTypeGuid;
+   Long branchUuid;
+   Long relTypeUuid;
    int gammaId;
    int relationId;
 
-   public DefaultBasicGuidRelation(String branchGuid, Long relTypeGuid, int relationId, int gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB) {
-      this.branchGuid = branchGuid;
-      this.relTypeGuid = relTypeGuid;
+   public DefaultBasicUuidRelation(Long branchUuid, Long relTypeUuid, int relationId, int gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB) {
+      this.branchUuid = branchUuid;
+      this.relTypeUuid = relTypeUuid;
       this.relationId = relationId;
       this.gammaId = gammaId;
       this.artA = artA;
@@ -43,8 +43,8 @@ public class DefaultBasicGuidRelation implements IBasicGuidRelation {
    }
 
    @Override
-   public String getBranchGuid() {
-      return branchGuid;
+   public Long getBranchUuid() {
+      return branchUuid;
    }
 
    @Override
@@ -54,7 +54,7 @@ public class DefaultBasicGuidRelation implements IBasicGuidRelation {
 
    @Override
    public Long getRelTypeGuid() {
-      return relTypeGuid;
+      return relTypeUuid;
    }
 
    public void setArtA(DefaultBasicGuidArtifact artA) {
@@ -65,12 +65,12 @@ public class DefaultBasicGuidRelation implements IBasicGuidRelation {
       this.artB = artB;
    }
 
-   public void setBranchGuid(String branchGuid) {
-      this.branchGuid = branchGuid;
+   public void setBranchUuid(Long branchUuid) {
+      this.branchUuid = branchUuid;
    }
 
    public void setRelTypeGuid(Long relTypeGuid) {
-      this.relTypeGuid = relTypeGuid;
+      this.relTypeUuid = relTypeGuid;
    }
 
    public void setGammaId(int gammaId) {
@@ -83,9 +83,9 @@ public class DefaultBasicGuidRelation implements IBasicGuidRelation {
       int result = 1;
       result = prime * result + (artA == null ? 0 : artA.hashCode());
       result = prime * result + (artB == null ? 0 : artB.hashCode());
-      result = prime * result + (branchGuid == null ? 0 : branchGuid.hashCode());
+      result = prime * result + (branchUuid == null ? 0 : branchUuid.hashCode());
       result = prime * result + gammaId;
-      result = prime * result + (relTypeGuid == null ? 0 : relTypeGuid.hashCode());
+      result = prime * result + (relTypeUuid == null ? 0 : relTypeUuid.hashCode());
       return result;
    }
 
@@ -115,21 +115,21 @@ public class DefaultBasicGuidRelation implements IBasicGuidRelation {
       } else if (!artB.equals(other.getArtB())) {
          return false;
       }
-      if (branchGuid == null) {
-         if (other.getBranchGuid() != null) {
+      if (branchUuid == null) {
+         if (other.getBranchUuid() != null) {
             return false;
          }
-      } else if (!branchGuid.equals(other.getBranchGuid())) {
+      } else if (!branchUuid.equals(other.getBranchUuid())) {
          return false;
       }
       if (gammaId != other.getGammaId()) {
          return false;
       }
-      if (relTypeGuid == null) {
+      if (relTypeUuid == null) {
          if (other.getRelTypeGuid() != null) {
             return false;
          }
-      } else if (!relTypeGuid.equals(other.getRelTypeGuid())) {
+      } else if (!relTypeUuid.equals(other.getRelTypeGuid())) {
          return false;
       }
       return true;

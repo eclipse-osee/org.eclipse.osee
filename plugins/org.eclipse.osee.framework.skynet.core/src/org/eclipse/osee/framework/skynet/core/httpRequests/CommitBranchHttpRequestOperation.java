@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.core.message.BranchCommitRequest;
 import org.eclipse.osee.framework.core.message.BranchCommitResponse;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelation;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -150,8 +150,8 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                RelationEventType relationEventType =
                   change.getModificationType().isDeleted() ? RelationEventType.Deleted : change.getModificationType().isUnDeleted() ? RelationEventType.Undeleted : RelationEventType.Added;
 
-               DefaultBasicGuidRelation defaultBasicGuidRelation =
-                  new DefaultBasicGuidRelation(relChange.getBranch().getGuid(), relChange.getRelationType().getGuid(),
+               DefaultBasicUuidRelation defaultBasicGuidRelation =
+                  new DefaultBasicUuidRelation(relChange.getBranch().getUuid(), relChange.getRelationType().getGuid(),
                      relChange.getItemId(), (int) relChange.getGamma(),
                      relChange.getChangeArtifact().getBasicGuidArtifact(),
                      relChange.getEndTxBArtifact().getBasicGuidArtifact());
@@ -175,7 +175,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                   EventModifiedBasicGuidArtifact artEvent = artEventMap.get(artifactId);
                   if (artEvent == null) {
                      artEvent =
-                        new EventModifiedBasicGuidArtifact(newTransaction.getBranch().getGuid(),
+                        new EventModifiedBasicGuidArtifact(newTransaction.getBranch().getUuid(),
                            change.getArtifactType().getGuid(), changedArtifact.getGuid(),
                            new ArrayList<org.eclipse.osee.framework.skynet.core.event.model.AttributeChange>());
                      artifactEvent.getArtifacts().add(artEvent);

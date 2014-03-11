@@ -17,18 +17,18 @@ import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
  * @author Donald G. Dunne
  */
 public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IBasicGuidArtifact {
-   private final String branchGuid;
+   private final Long branchUuid;
    private Long artTypeGuid;
 
-   public DefaultBasicGuidArtifact(String branchGuid, Long artTypeGuid, String artGuid) {
+   public DefaultBasicGuidArtifact(Long branchUuid, Long artTypeGuid, String artGuid) {
       super(artGuid);
-      this.branchGuid = branchGuid;
+      this.branchUuid = branchUuid;
       this.artTypeGuid = artTypeGuid;
    }
 
    @Override
-   public String getBranchGuid() {
-      return branchGuid;
+   public Long getBranchUuid() {
+      return branchUuid;
    }
 
    @Override
@@ -63,10 +63,10 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IB
          }
          equals = artTypeGuid.equals(other.getArtTypeGuid());
 
-         if (equals && branchGuid == null || other.getBranchGuid() == null) {
+         if (equals && branchUuid == null || other.getBranchUuid() == null) {
             equals = false;
          } else if (equals) {
-            equals = branchGuid.equals(other.getBranchGuid());
+            equals = branchUuid.equals(other.getBranchUuid());
          }
 
          if (equals && getGuid() == null || other.getGuid() == null) {

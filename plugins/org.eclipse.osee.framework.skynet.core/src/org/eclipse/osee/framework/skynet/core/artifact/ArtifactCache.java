@@ -114,7 +114,7 @@ public final class ArtifactCache {
 
    public static Artifact getActive(IBasicGuidArtifact basicGuidArtifact) throws OseeCoreException {
       return ACTIVE_CACHE.getByGuid(basicGuidArtifact.getGuid(),
-         BranchManager.getBranchByGuid(basicGuidArtifact.getBranchGuid()).getId());
+         BranchManager.getBranchByGuid(BranchManager.getBranchGuidLegacy(basicGuidArtifact.getBranchUuid())).getId());
    }
 
    public static Collection<Artifact> getActive(Collection<? extends IBasicGuidArtifact> basicGuidArtifacts) throws OseeCoreException {

@@ -62,7 +62,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
       for (EventBasicGuidArtifact guidArt : artifacts) {
          EventUtil.eventLog(String.format("REM: updateArtifact -> [%s]", guidArt));
          EventModType eventModType = guidArt.getModType();
-         if (BranchManager.branchExists(guidArt.getBranchGuid())) {
+         if (BranchManager.branchExists(guidArt.getBranchUuid())) {
             switch (eventModType) {
                case Added:
                   // Handle Added Artifacts

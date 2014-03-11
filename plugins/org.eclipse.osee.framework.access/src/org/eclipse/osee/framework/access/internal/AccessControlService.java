@@ -68,7 +68,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.filter.BranchGuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -349,7 +349,7 @@ public class AccessControlService implements IAccessControlService {
          if (o instanceof Branch) {
             key.add(((Branch) o).getGuid());
          } else if (o instanceof Artifact) {
-            key.add(((Artifact) o).getGuid() + ((Artifact) o).getBranchGuid());
+            key.add(((Artifact) o).getGuid() + ((Artifact) o).getBranchUuid());
          } else {
             key.add(GUID.create());
          }
@@ -785,13 +785,13 @@ public class AccessControlService implements IAccessControlService {
 
       public AccessControlUpdateListener() {
          eventFilters =
-            Arrays.asList(new ArtifactTypeEventFilter(CoreArtifactTypes.AccessControlModel), new BranchGuidEventFilter(
+            Arrays.asList(new ArtifactTypeEventFilter(CoreArtifactTypes.AccessControlModel), new BranchUuidEventFilter(
                CoreBranches.COMMON));
       }
 
       public AccessControlUpdateListener(Artifact artifact) {
          eventFilters =
-            Arrays.asList(new ArtifactEventFilter(artifact), new BranchGuidEventFilter(artifact.getBranch()));
+            Arrays.asList(new ArtifactEventFilter(artifact), new BranchUuidEventFilter(artifact.getBranch()));
       }
 
       @Override

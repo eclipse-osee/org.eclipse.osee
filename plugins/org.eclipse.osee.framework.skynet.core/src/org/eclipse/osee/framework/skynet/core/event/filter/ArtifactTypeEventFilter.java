@@ -17,10 +17,10 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeProvider;
+import org.eclipse.osee.framework.skynet.core.artifact.IArtifactTypeProvider;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -29,11 +29,17 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class ArtifactTypeEventFilter implements IEventFilter {
 
    private final Collection<IArtifactType> artifactTypes;
+   private final IArtifactTypeProvider typeProvider;
 
    /**
     * Provide artifact types of events to be passed through. All others will be ignored.
     */
    public ArtifactTypeEventFilter(IArtifactType... artifactTypes) {
+      this(new ArtifactTypeProvider(), artifactTypes);
+   }
+
+   public ArtifactTypeEventFilter(IArtifactTypeProvider typeProvider, IArtifactType... artifactTypes) {
+      this.typeProvider = typeProvider;
       this.artifactTypes = Collections.getAggregate(artifactTypes);
    }
 
@@ -44,9 +50,9 @@ public class ArtifactTypeEventFilter implements IEventFilter {
    public boolean isMatchArtifacts(List<? extends IBasicGuidArtifact> guidArts) {
       try {
          for (IBasicGuidArtifact guidArt : guidArts) {
-            ArtifactType artType = ArtifactTypeManager.getTypeByGuid(guidArt.getArtTypeGuid());
+            IArtifactType artType = typeProvider.getTypeByGuid(guidArt.getArtTypeGuid());
             for (IArtifactType artifactType : artifactTypes) {
-               if (artType.inheritsFrom(artifactType)) {
+               if (typeProvider.inheritsFrom(artType, artifactType)) {
                   return true;
                }
                for (IArtifactType matchArtType : artifactTypes) {
@@ -77,7 +83,7 @@ public class ArtifactTypeEventFilter implements IEventFilter {
    }
 
    @Override
-   public boolean isMatch(String branchGuid) {
+   public boolean isMatch(Long branchUuid) {
       return true;
    }
 

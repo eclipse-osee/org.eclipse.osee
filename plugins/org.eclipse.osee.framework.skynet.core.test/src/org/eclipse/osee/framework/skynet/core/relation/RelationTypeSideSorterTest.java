@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelationReorder;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -320,7 +320,7 @@ public class RelationTypeSideSorterTest {
       }
 
       @Override
-      public void store(IArtifact artifact, RelationOrderData orderData, DefaultBasicGuidRelationReorder reorderRecord) {
+      public void store(IArtifact artifact, RelationOrderData orderData, DefaultBasicUuidRelationReorder reorderRecord) {
          // do nothing
       }
    }

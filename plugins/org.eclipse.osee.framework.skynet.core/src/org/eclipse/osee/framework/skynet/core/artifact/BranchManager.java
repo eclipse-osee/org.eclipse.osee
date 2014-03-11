@@ -15,8 +15,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -140,7 +142,7 @@ public class BranchManager {
    }
 
    public static Branch getBranch(DefaultBasicGuidArtifact guidArt) throws OseeCoreException {
-      return BranchManager.getBranchByGuid(guidArt.getBranchGuid());
+      return BranchManager.getBranchByUuid(guidArt.getBranchUuid());
    }
 
    public static Branch getBranch(String branchName) throws OseeCoreException {
@@ -681,7 +683,49 @@ public class BranchManager {
       return hasChanges((Branch) branch);
    }
 
+   private static final String SELECT_BRANCH_GUID_BY_ID = "select branch_guid from osee_branch where branch_id = ?";
+   // Temporary cache till all code uses branch uuid. Remove after 0.17.0
+   private static final Map<Long, String> longToGuidCache = new HashMap<Long, String>(50);
+
+   /**
+    * Temporary method till all code uses branch uuid. Remove after 0.17.0
+    */
+   public static String getBranchGuidLegacy(long branchUuid) {
+      String guid = longToGuidCache.get(branchUuid);
+      if (!Strings.isValid(guid)) {
+         guid =
+            ServiceUtil.getOseeDatabaseService().runPreparedQueryFetchObject("", SELECT_BRANCH_GUID_BY_ID, branchUuid);
+         Conditions.checkExpressionFailOnTrue(!Strings.isValid(guid), "Error getting branch_guid for branch: [%d]",
+            branchUuid);
+         longToGuidCache.put(branchUuid, guid);
+      }
+      return guid;
+   }
+
+   private static final String SELECT_BRANCH_ID_BY_GUID = "select branch_id from osee_branch where branch_guid = ?";
+   // Temporary cache till all code uses branch uuid. Remove after 0.17.0
+   private static final Map<String, Long> guidToLongCache = new HashMap<String, Long>(50);
+
+   /**
+    * Temporary method till all code uses branch uuid. Remove after 0.17.0
+    */
+   public static long getBranchIdLegacy(String branchGuid) {
+      Long longId = guidToLongCache.get(branchGuid);
+      if (longId == null) {
+         longId =
+            ServiceUtil.getOseeDatabaseService().runPreparedQueryFetchObject(0L, SELECT_BRANCH_ID_BY_GUID, branchGuid);
+         Conditions.checkExpressionFailOnTrue(longId <= 0, "Error getting branch_id for branch: [%s]", branchGuid);
+         guidToLongCache.put(branchGuid, longId);
+      }
+      return longId;
+   }
+
    public static BranchType getBranchType(IOseeBranch branch) {
       return ((Branch) branch).getBranchType();
    }
+
+   public static Branch getBranchByUuid(Long branchUuid) {
+      return getBranchByGuid(BranchManager.getBranchGuidLegacy(branchUuid));
+   }
+
 }
