@@ -1695,7 +1695,7 @@ public final class Lib {
    public static long generateUuid() {
       long next = 0;
       while (next <= 0) {
-         next = new Random().nextLong();
+         next = new Random().nextInt();
       }
       return next;
    }
