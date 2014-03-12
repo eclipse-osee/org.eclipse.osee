@@ -35,6 +35,7 @@ public class OseeProperties {
    private static final String OSEE_PROXY_BYPASS_ENABLED = "osee.proxy.bypass.enabled";
    private static final String OSEE_DB_CONNECTION_POOL_SIZE = "osee.db.connection.pool.size";
    private static final String OSEE_DB_CONNECTION_POOL_CONFIG_URI = "osee.db.connection.pool.config.uri";
+   public static final String OSEE_USING_LEGACY_BRANCH_GUID_FOR_EVENTS = "osee.using.legacy.branch.guid.for.events";
 
    protected OseeProperties() {
       // Utility Class

@@ -18,7 +18,9 @@ import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
+import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAccessControlEvent1;
@@ -257,7 +259,7 @@ public final class FrameworkEventUtil {
    public static DefaultBasicUuidRelationReorder getDefaultBasicGuidRelationReorder(RemoteBasicGuidRelationReorder1 guidRelOrder) {
       DefaultBasicUuidRelationReorder guidArt =
          new DefaultBasicUuidRelationReorder(RelationOrderModType.getType(guidRelOrder.getModTypeGuid()),
-            BranchManager.getBranchIdLegacy(guidRelOrder.getBranchGuid()), guidRelOrder.getRelTypeGuid(),
+            getBranchUuidFromRemoteEvent(guidRelOrder.getBranchGuid()), guidRelOrder.getRelTypeGuid(),
             getBasicGuidArtifact(guidRelOrder.getParentArt()));
       return guidArt;
    }
@@ -265,7 +267,7 @@ public final class FrameworkEventUtil {
    public static RemoteBasicGuidRelation1 getRemoteBasicGuidRelation1(EventBasicGuidRelation guidRel) {
       RemoteBasicGuidRelation1 remEvent = new RemoteBasicGuidRelation1();
       remEvent.setGammaId(guidRel.getGammaId());
-      remEvent.setBranchGuid(BranchManager.getBranchGuidLegacy(guidRel.getBranchUuid()));
+      remEvent.setBranchGuid(getBranchGuidStringForRemoteEvent(guidRel.getBranchUuid()));
       remEvent.setRelTypeGuid(guidRel.getRelTypeGuid());
       remEvent.setRelationId(guidRel.getRelationId());
       remEvent.setArtAId(guidRel.getArtAId());
@@ -279,7 +281,7 @@ public final class FrameworkEventUtil {
 
    public static RemoteBasicGuidArtifact1 getRemoteBasicGuidArtifact(DefaultBasicGuidArtifact guidArt) {
       RemoteBasicGuidArtifact1 event = new RemoteBasicGuidArtifact1();
-      event.setBranchGuid(BranchManager.getBranchGuidLegacy(guidArt.getBranchUuid()));
+      event.setBranchGuid(getBranchGuidStringForRemoteEvent(guidArt.getBranchUuid()));
       event.setArtTypeGuid(guidArt.getArtTypeGuid());
       event.setArtGuid(guidArt.getGuid());
       return event;
@@ -287,11 +289,35 @@ public final class FrameworkEventUtil {
 
    public static RemoteBasicGuidRelationReorder1 getRemoteBasicGuidRelationReorder1(DefaultBasicUuidRelationReorder guidOrderRel) {
       RemoteBasicGuidRelationReorder1 event = new RemoteBasicGuidRelationReorder1();
-      event.setBranchGuid(BranchManager.getBranchGuidLegacy(guidOrderRel.getBranchUuid()));
+      event.setBranchGuid(getBranchGuidStringForRemoteEvent(guidOrderRel.getBranchUuid()));
       event.setRelTypeGuid(guidOrderRel.getRelTypeGuid());
       event.setModTypeGuid(guidOrderRel.getModType().getGuid());
       event.setParentArt(getRemoteBasicGuidArtifact(guidOrderRel.getParentArt()));
       return event;
+   }
+
+   /**
+    * Before 0.17.0, events pass string branch guid for events. After 0.17.0, events will pass long branch uuid for
+    * events.
+    */
+   private static String getBranchGuidStringForRemoteEvent(long branchUuid) {
+      // After 0.17.0, remove this if check and leave return below
+      if (OseeInfo.isBooleanUsingCache(OseeProperties.OSEE_USING_LEGACY_BRANCH_GUID_FOR_EVENTS)) {
+         return BranchManager.getBranchGuidLegacy(branchUuid);
+      }
+      return String.valueOf(branchUuid);
+   }
+
+   /**
+    * Before 0.17.0, events pass string branch guid for events. After 0.17.0, events will pass long branch uuid for
+    * events.
+    */
+   public static long getBranchUuidFromRemoteEvent(String remoteBranchGuid) {
+      // After 0.17.0, remove this if check and leave return below
+      if (OseeInfo.isBooleanUsingCache(OseeProperties.OSEE_USING_LEGACY_BRANCH_GUID_FOR_EVENTS)) {
+         return BranchManager.getBranchIdLegacy(remoteBranchGuid);
+      }
+      return Long.valueOf(remoteBranchGuid);
    }
 
    public static EventBasicGuidRelation getEventBasicGuidRelation(RemoteBasicGuidRelation1 guidRel) {
@@ -301,7 +327,7 @@ public final class FrameworkEventUtil {
             "Can't determine RelationEventType from guid " + guidRel.getModTypeGuid());
       }
       EventBasicGuidRelation event =
-         new EventBasicGuidRelation(eventType, BranchManager.getBranchIdLegacy(guidRel.getBranchGuid()),
+         new EventBasicGuidRelation(eventType, getBranchUuidFromRemoteEvent(guidRel.getBranchGuid()),
             guidRel.getRelTypeGuid(), guidRel.getRelationId(), guidRel.getGammaId(), guidRel.getArtAId(),
             getBasicGuidArtifact(guidRel.getArtA()), guidRel.getArtBId(), getBasicGuidArtifact(guidRel.getArtB()));
       if (eventType == RelationEventType.ModifiedRationale || eventType == RelationEventType.Added) {
@@ -311,12 +337,12 @@ public final class FrameworkEventUtil {
    }
 
    public static EventBasicGuidArtifact getEventBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt) {
-      return new EventBasicGuidArtifact(modType, BranchManager.getBranchIdLegacy(remGuidArt.getBranchGuid()),
+      return new EventBasicGuidArtifact(modType, getBranchUuidFromRemoteEvent(remGuidArt.getBranchGuid()),
          remGuidArt.getArtTypeGuid(), remGuidArt.getArtGuid());
    }
 
    public static EventChangeTypeBasicGuidArtifact getEventChangeTypeBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt) {
-      return new EventChangeTypeBasicGuidArtifact(BranchManager.getBranchIdLegacy(remGuidArt.getBranchGuid()),
+      return new EventChangeTypeBasicGuidArtifact(getBranchUuidFromRemoteEvent(remGuidArt.getBranchGuid()),
          remGuidArt.getArtTypeGuid(), remGuidArt.getToArtTypeGuid(), remGuidArt.getArtGuid());
    }
 
@@ -325,19 +351,19 @@ public final class FrameworkEventUtil {
       for (RemoteAttributeChange1 remAttrChg : remGuidArt.getAttributes()) {
          attributeChanges.add(getAttributeChange(remAttrChg));
       }
-      return new EventModifiedBasicGuidArtifact(BranchManager.getBranchIdLegacy(remGuidArt.getBranchGuid()),
+      return new EventModifiedBasicGuidArtifact(getBranchUuidFromRemoteEvent(remGuidArt.getBranchGuid()),
          remGuidArt.getArtTypeGuid(), remGuidArt.getArtGuid(), attributeChanges);
    }
 
    public static DefaultBasicGuidArtifact getBasicGuidArtifact(RemoteBasicGuidArtifact1 remGuidArt) {
-      return new DefaultBasicGuidArtifact(BranchManager.getBranchIdLegacy(remGuidArt.getBranchGuid()),
+      return new DefaultBasicGuidArtifact(getBranchUuidFromRemoteEvent(remGuidArt.getBranchGuid()),
          remGuidArt.getArtTypeGuid(), remGuidArt.getArtGuid());
    }
 
    public static RemoteBasicGuidArtifact1 getRemoteBasicGuidArtifact(String modTypeGuid, DefaultBasicGuidArtifact guidArt, Collection<AttributeChange> attributeChanges) {
       RemoteBasicGuidArtifact1 remoteGuidArt = new RemoteBasicGuidArtifact1();
       remoteGuidArt.setArtGuid(guidArt.getGuid());
-      remoteGuidArt.setBranchGuid(BranchManager.getBranchGuidLegacy(guidArt.getBranchUuid()));
+      remoteGuidArt.setBranchGuid(getBranchGuidStringForRemoteEvent(guidArt.getBranchUuid()));
       remoteGuidArt.setArtTypeGuid(guidArt.getArtTypeGuid());
       remoteGuidArt.setModTypeGuid(modTypeGuid);
       if (attributeChanges != null) {

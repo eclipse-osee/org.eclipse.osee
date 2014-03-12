@@ -75,6 +75,7 @@ public class InitializeDatastoreCallable extends AbstractDatastoreCallable<DataS
       Lib.deleteDir(new File(attributeDataPath));
 
       preferences.putValue(DataStoreConstants.DATASTORE_ID_KEY, GUID.create());
+      preferences.putValue("osee.using.legacy.branch.guid.for.events", "true");
 
       addDefaultPermissions();
 

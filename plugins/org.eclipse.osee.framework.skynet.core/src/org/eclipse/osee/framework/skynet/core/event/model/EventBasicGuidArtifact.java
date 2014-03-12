@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 
 /**
  * @author Donald G. Dunne
@@ -68,7 +68,8 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
       Set<EventBasicGuidArtifact> eventArts = new HashSet<EventBasicGuidArtifact>();
       for (RemoteBasicGuidArtifact1 guidArt : basicGuidArtifacts) {
          eventArts.add(new EventBasicGuidArtifact(eventModType,
-            BranchManager.getBranchIdLegacy(guidArt.getBranchGuid()), guidArt.getArtTypeGuid(), guidArt.getArtGuid()));
+            FrameworkEventUtil.getBranchUuidFromRemoteEvent(guidArt.getBranchGuid()), guidArt.getArtTypeGuid(),
+            guidArt.getArtGuid()));
       }
       return eventArts;
    }
