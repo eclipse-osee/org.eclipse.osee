@@ -55,7 +55,7 @@ public class BranchCreationRequestTranslator implements ITranslator<BranchCreati
       boolean isTxCopy = store.getBoolean(Fields.TX_COPY_BRANCH_TYPE.name());
 
       int mergeAddressingQueryId = store.getInt(Fields.MERGE_ADDRESSING_QUERY_ID.name());
-      int destinationBranchId = store.getInt(Fields.MERGE_DESTINATION_BRANCH_ID.name());
+      long destinationBranchId = store.getLong(Fields.MERGE_DESTINATION_BRANCH_ID.name());
       long branchUuid = store.getLong(Fields.BRANCH_UUID.name());
 
       BranchCreationRequest branchCreationRequest =

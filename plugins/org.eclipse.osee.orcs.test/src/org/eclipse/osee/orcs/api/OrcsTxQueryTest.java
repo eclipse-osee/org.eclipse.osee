@@ -79,17 +79,17 @@ public class OrcsTxQueryTest {
       assertTx(it.next(), 1,  Baselined,    "2013-05-06 14:18:02.530", "System Root Branch Creation", 1, -1, 0);
       assertTx(it.next(), 2,  NonBaselined, "2013-05-06 14:18:05.205", "AddCommonBranchForClientDemo", 1, 0, 0);
       assertTx(it.next(), 3,  NonBaselined, "2013-05-06 14:18:05.393", "AddCommonBranchForClientDemo", 1, 0, 0);
-      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 2, -1, 0);
-      assertTx(it.next(), 5,  NonBaselined, "2013-05-06 14:18:05.487", "Add Types to Common Branch", 2, 0, 0);
-      assertTx(it.next(), 6,  NonBaselined, "2013-05-06 14:18:06.454", "Add Common Branch", 2, 0, 0);
-      assertTx(it.next(), 7,  NonBaselined, "2013-05-06 14:18:06.517", "Add Framework Access Model", 2, 0, 0);
-      assertTx(it.next(), 8,  NonBaselined, "2013-05-06 14:18:06.720", "Add Dev Users", 2, 0, 0);
-      assertTx(it.next(), 9,  NonBaselined, "2013-05-06 14:18:06.798", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 10, NonBaselined, "2013-05-06 14:18:06.860", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 11, NonBaselined, "2013-05-06 14:18:06.954", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 12, NonBaselined, "2013-05-06 14:18:07.032", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 13, NonBaselined, "2013-05-06 14:18:07.110", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 14, NonBaselined, "2013-05-06 14:18:07.204", "SimpleTemplateProviderTask", 2, 0, 0);
+      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 570, -1, 0);
+      assertTx(it.next(), 5,  NonBaselined, "2013-05-06 14:18:05.487", "Add Types to Common Branch", 570, 0, 0);
+      assertTx(it.next(), 6,  NonBaselined, "2013-05-06 14:18:06.454", "Add Common Branch", 570, 0, 0);
+      assertTx(it.next(), 7,  NonBaselined, "2013-05-06 14:18:06.517", "Add Framework Access Model", 570, 0, 0);
+      assertTx(it.next(), 8,  NonBaselined, "2013-05-06 14:18:06.720", "Add Dev Users", 570, 0, 0);
+      assertTx(it.next(), 9,  NonBaselined, "2013-05-06 14:18:06.798", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 10, NonBaselined, "2013-05-06 14:18:06.860", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 11, NonBaselined, "2013-05-06 14:18:06.954", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 12, NonBaselined, "2013-05-06 14:18:07.032", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 13, NonBaselined, "2013-05-06 14:18:07.110", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 14, NonBaselined, "2013-05-06 14:18:07.204", "SimpleTemplateProviderTask", 570, 0, 0);
       assertTx(it.next(), 15, Baselined,    "2013-05-06 14:18:07.235", "Branch Creation for SAW_Bld_1", 3, -1, 0);
       assertTx(it.next(), 16, NonBaselined, "2013-05-06 14:18:07.360", "AddSawBranch", 3, 0, 0);
       assertTx(it.next(), 17, Baselined,    "2013-05-06 14:18:07.516", "Branch Creation for CIS_Bld_1", 4, -1, 0);
@@ -99,7 +99,7 @@ public class OrcsTxQueryTest {
       assertTx(it.next(), 21, NonBaselined, "2013-05-06 14:18:10.163", "ArtifactImportOperationFactory: Artifact Import Wizard transaction", 3, 0, 0);
       assertTx(it.next(), 22, NonBaselined, "2013-05-06 14:18:11.564", "Populate Demo DB - Create Traceability", 3, 0, 0);
       assertTx(it.next(), 23, Baselined,    "2013-05-06 14:18:11.659", "Branch Creation for SAW_Bld_2", 5, -1, 0);
-      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 2, 17, 0);
+      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 570, 17, 0);
       //@formatter:on
    }
 
@@ -129,7 +129,7 @@ public class OrcsTxQueryTest {
       TransactionReadable actual = query.getResults().getExactlyOne();
 
       assertEquals(1, query.getCount());
-      assertTx(actual, 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 2, 17, 0);
+      assertTx(actual, 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 570, 17, 0);
       assertEquals(Integer.valueOf(24), query.getResultsAsIds().getExactlyOne());
    }
 
@@ -144,7 +144,7 @@ public class OrcsTxQueryTest {
 
       Iterator<TransactionReadable> it = results.iterator();
       //@formatter:off
-      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 2, -1, 0);
+      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 570, -1, 0);
       assertTx(it.next(), 15, Baselined,    "2013-05-06 14:18:07.235", "Branch Creation for SAW_Bld_1", 3, -1, 0);
       assertTx(it.next(), 17, Baselined,    "2013-05-06 14:18:07.516", "Branch Creation for CIS_Bld_1", 4, -1, 0);
       assertTx(it.next(), 23, Baselined,    "2013-05-06 14:18:11.659", "Branch Creation for SAW_Bld_2", 5, -1, 0);      
@@ -170,7 +170,7 @@ public class OrcsTxQueryTest {
       Iterator<TransactionReadable> it = results.iterator();
       //@formatter:off
       assertTx(it.next(), 1,  Baselined,    "2013-05-06 14:18:02.530", "System Root Branch Creation", 1, -1, 0);
-      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 2, -1, 0);
+      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 570, -1, 0);
       assertTx(it.next(), 15, Baselined,    "2013-05-06 14:18:07.235", "Branch Creation for SAW_Bld_1", 3, -1, 0);
       assertTx(it.next(), 17, Baselined,    "2013-05-06 14:18:07.516", "Branch Creation for CIS_Bld_1", 4, -1, 0);
       assertTx(it.next(), 23, Baselined,    "2013-05-06 14:18:11.659", "Branch Creation for SAW_Bld_2", 5, -1, 0);
@@ -274,7 +274,7 @@ public class OrcsTxQueryTest {
       assertTx(it.next(), 22, NonBaselined, "2013-05-06 14:18:11.564", "Populate Demo DB - Create Traceability", 3, 0,
          0);
       assertTx(it.next(), 23, Baselined, "2013-05-06 14:18:11.659", "Branch Creation for SAW_Bld_2", 5, -1, 0);
-      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 2, 17, 0);
+      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 570, 17, 0);
 
       query = factory.transactionQuery();
       query.andTxId(Operator.GREATER_THAN, 21);
@@ -286,7 +286,7 @@ public class OrcsTxQueryTest {
       assertTx(it.next(), 22, NonBaselined, "2013-05-06 14:18:11.564", "Populate Demo DB - Create Traceability", 3, 0,
          0);
       assertTx(it.next(), 23, Baselined, "2013-05-06 14:18:11.659", "Branch Creation for SAW_Bld_2", 5, -1, 0);
-      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 2, 17, 0);
+      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 570, 17, 0);
 
    }
 
@@ -313,16 +313,16 @@ public class OrcsTxQueryTest {
       assertTx(it.next(), 1,  Baselined,    "2013-05-06 14:18:02.530", "System Root Branch Creation", 1, -1, 0);
       assertTx(it.next(), 2,  NonBaselined, "2013-05-06 14:18:05.205", "AddCommonBranchForClientDemo", 1, 0, 0);
       assertTx(it.next(), 3,  NonBaselined, "2013-05-06 14:18:05.393", "AddCommonBranchForClientDemo", 1, 0, 0);
-      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 2, -1, 0);
-      assertTx(it.next(), 5,  NonBaselined, "2013-05-06 14:18:05.487", "Add Types to Common Branch", 2, 0, 0);
-      assertTx(it.next(), 6,  NonBaselined, "2013-05-06 14:18:06.454", "Add Common Branch", 2, 0, 0);
-      assertTx(it.next(), 7,  NonBaselined, "2013-05-06 14:18:06.517", "Add Framework Access Model", 2, 0, 0);
-      assertTx(it.next(), 8,  NonBaselined, "2013-05-06 14:18:06.720", "Add Dev Users", 2, 0, 0);
-      assertTx(it.next(), 9,  NonBaselined, "2013-05-06 14:18:06.798", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 11, NonBaselined, "2013-05-06 14:18:06.954", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 12, NonBaselined, "2013-05-06 14:18:07.032", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 13, NonBaselined, "2013-05-06 14:18:07.110", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 14, NonBaselined, "2013-05-06 14:18:07.204", "SimpleTemplateProviderTask", 2, 0, 0);
+      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 570, -1, 0);
+      assertTx(it.next(), 5,  NonBaselined, "2013-05-06 14:18:05.487", "Add Types to Common Branch", 570, 0, 0);
+      assertTx(it.next(), 6,  NonBaselined, "2013-05-06 14:18:06.454", "Add Common Branch", 570, 0, 0);
+      assertTx(it.next(), 7,  NonBaselined, "2013-05-06 14:18:06.517", "Add Framework Access Model", 570, 0, 0);
+      assertTx(it.next(), 8,  NonBaselined, "2013-05-06 14:18:06.720", "Add Dev Users", 570, 0, 0);
+      assertTx(it.next(), 9,  NonBaselined, "2013-05-06 14:18:06.798", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 11, NonBaselined, "2013-05-06 14:18:06.954", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 12, NonBaselined, "2013-05-06 14:18:07.032", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 13, NonBaselined, "2013-05-06 14:18:07.110", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 14, NonBaselined, "2013-05-06 14:18:07.204", "SimpleTemplateProviderTask", 570, 0, 0);
       assertTx(it.next(), 15, Baselined,    "2013-05-06 14:18:07.235", "Branch Creation for SAW_Bld_1", 3, -1, 0);
       assertTx(it.next(), 16, NonBaselined, "2013-05-06 14:18:07.360", "AddSawBranch", 3, 0, 0);
       assertTx(it.next(), 17, Baselined,    "2013-05-06 14:18:07.516", "Branch Creation for CIS_Bld_1", 4, -1, 0);
@@ -332,7 +332,7 @@ public class OrcsTxQueryTest {
       assertTx(it.next(), 21, NonBaselined, "2013-05-06 14:18:10.163", "ArtifactImportOperationFactory: Artifact Import Wizard transaction", 3, 0, 0);
       assertTx(it.next(), 22, NonBaselined, "2013-05-06 14:18:11.564", "Populate Demo DB - Create Traceability", 3, 0, 0);
       assertTx(it.next(), 23, Baselined,    "2013-05-06 14:18:11.659", "Branch Creation for SAW_Bld_2", 5, -1, 0);
-      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 2, 17, 0);
+      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 570, 17, 0);
       //@formatter:on
    }
 
@@ -374,7 +374,7 @@ public class OrcsTxQueryTest {
 
       Iterator<TransactionReadable> it = results.iterator();
       assertTx(it.next(), 23, Baselined, "2013-05-06 14:18:11.659", "Branch Creation for SAW_Bld_2", 5, -1, 0);
-      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 2, 17, 0);
+      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 570, 17, 0);
 
       query = factory.transactionQuery();
       query.andDate(Operator.LESS_THAN, date);
@@ -387,17 +387,17 @@ public class OrcsTxQueryTest {
       assertTx(it.next(), 1,  Baselined,    "2013-05-06 14:18:02.530", "System Root Branch Creation", 1, -1, 0);
       assertTx(it.next(), 2,  NonBaselined, "2013-05-06 14:18:05.205", "AddCommonBranchForClientDemo", 1, 0, 0);
       assertTx(it.next(), 3,  NonBaselined, "2013-05-06 14:18:05.393", "AddCommonBranchForClientDemo", 1, 0, 0);
-      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 2, -1, 0);
-      assertTx(it.next(), 5,  NonBaselined, "2013-05-06 14:18:05.487", "Add Types to Common Branch", 2, 0, 0);
-      assertTx(it.next(), 6,  NonBaselined, "2013-05-06 14:18:06.454", "Add Common Branch", 2, 0, 0);
-      assertTx(it.next(), 7,  NonBaselined, "2013-05-06 14:18:06.517", "Add Framework Access Model", 2, 0, 0);
-      assertTx(it.next(), 8,  NonBaselined, "2013-05-06 14:18:06.720", "Add Dev Users", 2, 0, 0);
-      assertTx(it.next(), 9,  NonBaselined, "2013-05-06 14:18:06.798", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 10, NonBaselined, "2013-05-06 14:18:06.860", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 11, NonBaselined, "2013-05-06 14:18:06.954", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 12, NonBaselined, "2013-05-06 14:18:07.032", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 13, NonBaselined, "2013-05-06 14:18:07.110", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 14, NonBaselined, "2013-05-06 14:18:07.204", "SimpleTemplateProviderTask", 2, 0, 0);
+      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 570, -1, 0);
+      assertTx(it.next(), 5,  NonBaselined, "2013-05-06 14:18:05.487", "Add Types to Common Branch", 570, 0, 0);
+      assertTx(it.next(), 6,  NonBaselined, "2013-05-06 14:18:06.454", "Add Common Branch", 570, 0, 0);
+      assertTx(it.next(), 7,  NonBaselined, "2013-05-06 14:18:06.517", "Add Framework Access Model", 570, 0, 0);
+      assertTx(it.next(), 8,  NonBaselined, "2013-05-06 14:18:06.720", "Add Dev Users", 570, 0, 0);
+      assertTx(it.next(), 9,  NonBaselined, "2013-05-06 14:18:06.798", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 10, NonBaselined, "2013-05-06 14:18:06.860", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 11, NonBaselined, "2013-05-06 14:18:06.954", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 12, NonBaselined, "2013-05-06 14:18:07.032", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 13, NonBaselined, "2013-05-06 14:18:07.110", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 14, NonBaselined, "2013-05-06 14:18:07.204", "SimpleTemplateProviderTask", 570, 0, 0);
       assertTx(it.next(), 15, Baselined,    "2013-05-06 14:18:07.235", "Branch Creation for SAW_Bld_1", 3, -1, 0);
       assertTx(it.next(), 16, NonBaselined, "2013-05-06 14:18:07.360", "AddSawBranch", 3, 0, 0);
       assertTx(it.next(), 17, Baselined,    "2013-05-06 14:18:07.516", "Branch Creation for CIS_Bld_1", 4, -1, 0);
@@ -421,8 +421,8 @@ public class OrcsTxQueryTest {
 
       Iterator<TransactionReadable> it = results.iterator();
       //@formatter:off
-      assertTx(it.next(), 13, NonBaselined, "2013-05-06 14:18:07.110", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 14, NonBaselined, "2013-05-06 14:18:07.204", "SimpleTemplateProviderTask", 2, 0, 0);
+      assertTx(it.next(), 13, NonBaselined, "2013-05-06 14:18:07.110", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 14, NonBaselined, "2013-05-06 14:18:07.204", "SimpleTemplateProviderTask", 570, 0, 0);
       assertTx(it.next(), 15, Baselined,    "2013-05-06 14:18:07.235", "Branch Creation for SAW_Bld_1", 3, -1, 0);
       assertTx(it.next(), 16, NonBaselined, "2013-05-06 14:18:07.360", "AddSawBranch", 3, 0, 0);
       assertTx(it.next(), 17, Baselined,    "2013-05-06 14:18:07.516", "Branch Creation for CIS_Bld_1", 4, -1, 0);
@@ -446,7 +446,7 @@ public class OrcsTxQueryTest {
       Iterator<TransactionReadable> it = results.iterator();
       //@formatter:off
       assertTx(it.next(), 1,  Baselined,    "2013-05-06 14:18:02.530", "System Root Branch Creation", 1, -1, 0);
-      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 2, -1, 0);
+      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 570, -1, 0);
       assertTx(it.next(), 15, Baselined,    "2013-05-06 14:18:07.235", "Branch Creation for SAW_Bld_1", 3, -1, 0);
       assertTx(it.next(), 17, Baselined,    "2013-05-06 14:18:07.516", "Branch Creation for CIS_Bld_1", 4, -1, 0);
       assertTx(it.next(), 23, Baselined,    "2013-05-06 14:18:11.659", "Branch Creation for SAW_Bld_2", 5, -1, 0);
@@ -461,11 +461,11 @@ public class OrcsTxQueryTest {
       it = results.iterator();
       //@formatter:off
       assertTx(it.next(), 1,  Baselined,    "2013-05-06 14:18:02.530", "System Root Branch Creation", 1, -1, 0);
-      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 2, -1, 0);
+      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 570, -1, 0);
       assertTx(it.next(), 15, Baselined,    "2013-05-06 14:18:07.235", "Branch Creation for SAW_Bld_1", 3, -1, 0);
       assertTx(it.next(), 17, Baselined,    "2013-05-06 14:18:07.516", "Branch Creation for CIS_Bld_1", 4, -1, 0);
       assertTx(it.next(), 23, Baselined,    "2013-05-06 14:18:11.659", "Branch Creation for SAW_Bld_2", 5, -1, 0);
-      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 2, 17, 0);
+      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 570, 17, 0);
       //@formatter:on
 
       query = factory.transactionQuery();
@@ -480,11 +480,11 @@ public class OrcsTxQueryTest {
       it = results.iterator();
       //@formatter:off
       assertTx(it.next(), 1,  Baselined,    "2013-05-06 14:18:02.530", "System Root Branch Creation", 1, -1, 0);
-      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 2, -1, 0);
+      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 570, -1, 0);
       assertTx(it.next(), 15, Baselined,    "2013-05-06 14:18:07.235", "Branch Creation for SAW_Bld_1", 3, -1, 0);
       assertTx(it.next(), 17, Baselined,    "2013-05-06 14:18:07.516", "Branch Creation for CIS_Bld_1", 4, -1, 0);
       assertTx(it.next(), 23, Baselined,    "2013-05-06 14:18:11.659", "Branch Creation for SAW_Bld_2", 5, -1, 0);
-      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 2, 17, 0);
+      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 570, 17, 0);
       //@formatter:on
 
    }
@@ -502,17 +502,17 @@ public class OrcsTxQueryTest {
       assertTx(it.next(), 1,  Baselined,    "2013-05-06 14:18:02.530", "System Root Branch Creation", 1, -1, 0);
       assertTx(it.next(), 2,  NonBaselined, "2013-05-06 14:18:05.205", "AddCommonBranchForClientDemo", 1, 0, 0);
       assertTx(it.next(), 3,  NonBaselined, "2013-05-06 14:18:05.393", "AddCommonBranchForClientDemo", 1, 0, 0);
-      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 2, -1, 0);
-      assertTx(it.next(), 5,  NonBaselined, "2013-05-06 14:18:05.487", "Add Types to Common Branch", 2, 0, 0);
-      assertTx(it.next(), 6,  NonBaselined, "2013-05-06 14:18:06.454", "Add Common Branch", 2, 0, 0);
-      assertTx(it.next(), 7,  NonBaselined, "2013-05-06 14:18:06.517", "Add Framework Access Model", 2, 0, 0);
-      assertTx(it.next(), 8,  NonBaselined, "2013-05-06 14:18:06.720", "Add Dev Users", 2, 0, 0);
-      assertTx(it.next(), 9,  NonBaselined, "2013-05-06 14:18:06.798", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 10, NonBaselined, "2013-05-06 14:18:06.860", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 11, NonBaselined, "2013-05-06 14:18:06.954", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 12, NonBaselined, "2013-05-06 14:18:07.032", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 13, NonBaselined, "2013-05-06 14:18:07.110", "SimpleTemplateProviderTask", 2, 0, 0);
-      assertTx(it.next(), 14, NonBaselined, "2013-05-06 14:18:07.204", "SimpleTemplateProviderTask", 2, 0, 0);
+      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 570, -1, 0);
+      assertTx(it.next(), 5,  NonBaselined, "2013-05-06 14:18:05.487", "Add Types to Common Branch", 570, 0, 0);
+      assertTx(it.next(), 6,  NonBaselined, "2013-05-06 14:18:06.454", "Add Common Branch", 570, 0, 0);
+      assertTx(it.next(), 7,  NonBaselined, "2013-05-06 14:18:06.517", "Add Framework Access Model", 570, 0, 0);
+      assertTx(it.next(), 8,  NonBaselined, "2013-05-06 14:18:06.720", "Add Dev Users", 570, 0, 0);
+      assertTx(it.next(), 9,  NonBaselined, "2013-05-06 14:18:06.798", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 10, NonBaselined, "2013-05-06 14:18:06.860", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 11, NonBaselined, "2013-05-06 14:18:06.954", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 12, NonBaselined, "2013-05-06 14:18:07.032", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 13, NonBaselined, "2013-05-06 14:18:07.110", "SimpleTemplateProviderTask", 570, 0, 0);
+      assertTx(it.next(), 14, NonBaselined, "2013-05-06 14:18:07.204", "SimpleTemplateProviderTask", 570, 0, 0);
       assertTx(it.next(), 15, Baselined,    "2013-05-06 14:18:07.235", "Branch Creation for SAW_Bld_1", 3, -1, 0);
       assertTx(it.next(), 16, NonBaselined, "2013-05-06 14:18:07.360", "AddSawBranch", 3, 0, 0);
       assertTx(it.next(), 17, Baselined,    "2013-05-06 14:18:07.516", "Branch Creation for CIS_Bld_1", 4, -1, 0);
@@ -522,7 +522,7 @@ public class OrcsTxQueryTest {
       assertTx(it.next(), 21, NonBaselined, "2013-05-06 14:18:10.163", "ArtifactImportOperationFactory: Artifact Import Wizard transaction", 3, 0, 0);
       assertTx(it.next(), 22, NonBaselined, "2013-05-06 14:18:11.564", "Populate Demo DB - Create Traceability", 3, 0, 0);
       assertTx(it.next(), 23, Baselined,    "2013-05-06 14:18:11.659", "Branch Creation for SAW_Bld_2", 5, -1, 0);
-      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 2, 17, 0);
+      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 570, 17, 0);
       //@formatter:on
 
       query = factory.transactionQuery();
@@ -574,7 +574,7 @@ public class OrcsTxQueryTest {
 
       Iterator<TransactionReadable> it = results.iterator();
       //@formatter:off
-      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 2, 17, 0);
+      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 570, 17, 0);
       //@formatter:on
    }
 
@@ -599,7 +599,7 @@ public class OrcsTxQueryTest {
 
       Iterator<TransactionReadable> it = results.iterator();
       //@formatter:off
-      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 2, 17, 0);
+      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 570, 17, 0);
       //@formatter:on
 
       /**********************************************************
@@ -613,7 +613,7 @@ public class OrcsTxQueryTest {
 
       it = results.iterator();
       //@formatter:off
-      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 2, 17, 0);
+      assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 570, 17, 0);
       //@formatter:on  
    }
 
@@ -629,7 +629,7 @@ public class OrcsTxQueryTest {
 
       Iterator<TransactionReadable> it = results.iterator();
       //@formatter:off
-      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 2, -1, 0);
+      assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 570, -1, 0);
       assertTx(it.next(), 15, Baselined,    "2013-05-06 14:18:07.235", "Branch Creation for SAW_Bld_1", 3, -1, 0);
       assertTx(it.next(), 17, Baselined,    "2013-05-06 14:18:07.516", "Branch Creation for CIS_Bld_1", 4, -1, 0);
       assertTx(it.next(), 23, Baselined,    "2013-05-06 14:18:11.659", "Branch Creation for SAW_Bld_2", 5, -1, 0);

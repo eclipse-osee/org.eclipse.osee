@@ -27,7 +27,7 @@ public final class BranchChangeTypeRequestTranslator implements ITranslator<Chan
 
    @Override
    public ChangeBranchTypeRequest convert(PropertyStore propertyStore) {
-      int branchId = propertyStore.getInt(Entry.BRANCH_ID.name());
+      long branchId = propertyStore.getLong(Entry.BRANCH_ID.name());
       BranchType type = BranchType.valueOf(propertyStore.get(Entry.BRANCH_TYPE.name()));
       ChangeBranchTypeRequest data = new ChangeBranchTypeRequest(branchId, type);
       return data;

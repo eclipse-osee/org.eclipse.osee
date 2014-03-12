@@ -86,10 +86,10 @@ public class OrcsBranchQueryTest {
 
       // actual, IOseeBranch, localId, type, state, isArchived, parentId, baseTx, sourceTx, assocArtId
       assertBranch(branch1, SYS_ROOT, 1L, SYSTEM_ROOT, MODIFIED, false, -1, 1, 1, -1);
-      assertBranch(branch2, COMMON, 2L, BASELINE, MODIFIED, false, 1, 4, 3, -1);
-      assertBranch(branch3, SAW_Bld_1, 3L, BASELINE, MODIFIED, false, 1, 15, 3, -1);
-      assertBranch(branch4, CIS_Bld_1, 4L, BASELINE, MODIFIED, false, 1, 17, 3, -1);
-      assertBranch(branch5, SAW_Bld_2, 5L, BASELINE, CREATED, false, 3, 23, 22, 9);
+      assertBranch(branch2, SAW_Bld_1, 3L, BASELINE, MODIFIED, false, 1, 15, 3, -1);
+      assertBranch(branch3, CIS_Bld_1, 4L, BASELINE, MODIFIED, false, 1, 17, 3, -1);
+      assertBranch(branch4, SAW_Bld_2, 5L, BASELINE, CREATED, false, 3, 23, 22, 9);
+      assertBranch(branch5, COMMON, 570L, BASELINE, MODIFIED, false, 1, 4, 3, -1);
    }
 
    @Test
@@ -113,10 +113,10 @@ public class OrcsBranchQueryTest {
       BranchReadable branch3 = iterator.next();
       BranchReadable branch4 = iterator.next();
 
-      assertEquals(COMMON, branch1);
-      assertEquals(SAW_Bld_1, branch2);
-      assertEquals(CIS_Bld_1, branch3);
-      assertEquals(SAW_Bld_2, branch4);
+      assertEquals(SAW_Bld_1, branch1);
+      assertEquals(CIS_Bld_1, branch2);
+      assertEquals(SAW_Bld_2, branch3);
+      assertEquals(COMMON, branch4);
    }
 
    @Test
@@ -132,8 +132,9 @@ public class OrcsBranchQueryTest {
       BranchReadable branch1 = iterator.next();
       BranchReadable branch2 = iterator.next();
 
-      assertEquals(COMMON, branch1);
-      assertEquals(SAW_Bld_2, branch2);
+      assertEquals(SAW_Bld_2, branch1);
+      assertEquals(COMMON, branch2);
+
    }
 
    @Test
@@ -209,10 +210,10 @@ public class OrcsBranchQueryTest {
       BranchReadable branch3 = iterator.next();
       BranchReadable branch4 = iterator.next();
 
-      assertEquals(COMMON, branch1);
-      assertEquals(SAW_Bld_1, branch2);
-      assertEquals(CIS_Bld_1, branch3);
-      assertEquals(SAW_Bld_2, branch4);
+      assertEquals(SAW_Bld_1, branch1);
+      assertEquals(CIS_Bld_1, branch2);
+      assertEquals(SAW_Bld_2, branch3);
+      assertEquals(COMMON, branch4);
    }
 
    @Test

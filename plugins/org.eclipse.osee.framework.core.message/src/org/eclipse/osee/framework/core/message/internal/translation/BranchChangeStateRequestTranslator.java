@@ -27,7 +27,7 @@ public final class BranchChangeStateRequestTranslator implements ITranslator<Cha
 
    @Override
    public ChangeBranchStateRequest convert(PropertyStore propertyStore) {
-      int branchId = propertyStore.getInt(Entry.BRANCH_ID.name());
+      long branchId = propertyStore.getLong(Entry.BRANCH_ID.name());
       BranchState state = BranchState.valueOf(propertyStore.get(Entry.BRANCH_STATE.name()));
       ChangeBranchStateRequest data = new ChangeBranchStateRequest(branchId, state);
       return data;

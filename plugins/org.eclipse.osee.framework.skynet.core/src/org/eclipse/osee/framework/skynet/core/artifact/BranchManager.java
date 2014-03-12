@@ -442,8 +442,8 @@ public class BranchManager {
                destBranch.getName());
          String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
          mergeBranch =
-            (MergeBranch) createBranch(BranchType.MERGE, sourceBranch.getBaseTransaction(), branchName, null, 0,
-               UserManager.getUser(), creationComment, mergeAddressingQueryId, destBranch.getId());
+            (MergeBranch) createBranch(BranchType.MERGE, sourceBranch.getBaseTransaction(), branchName, null,
+               Lib.generateUuid(), UserManager.getUser(), creationComment, mergeAddressingQueryId, destBranch.getId());
          mergeBranch.setSourceBranch(sourceBranch);
          mergeBranch.setDestinationBranch(destBranch);
       } finally {

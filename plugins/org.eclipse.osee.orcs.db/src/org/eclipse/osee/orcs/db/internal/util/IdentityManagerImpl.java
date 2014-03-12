@@ -84,7 +84,7 @@ public class IdentityManagerImpl implements IdentityManager {
 
    @Override
    public long getLocalId(IOseeBranch branch) throws OseeCoreException {
-      int toReturn = dbService.runPreparedQueryFetchObject(-1, SELECT_BRANCH_ID_BY_GUID, branch.getGuid());
+      long toReturn = dbService.runPreparedQueryFetchObject((long) -1, SELECT_BRANCH_ID_BY_GUID, branch.getGuid());
       Conditions.checkExpressionFailOnTrue(toReturn < 0, "Error getting branch_id for branch: [%s]", branch);
       return toReturn;
    }
