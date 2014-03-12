@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
+import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -24,4 +27,13 @@ public interface IAtsBranchService {
 
    IOseeBranch getBranch(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
+   IOseeBranch getBranch(IAtsConfigObject configObject);
+
+   IOseeBranch getBranch(ICommitConfigItem configObject);
+
+   String getBranchShortName(ICommitConfigItem commitConfigArt);
+
+   boolean isBranchValid(ICommitConfigItem configArt);
+
+   IOseeBranch getBranchInherited(IAtsVersion version);
 }

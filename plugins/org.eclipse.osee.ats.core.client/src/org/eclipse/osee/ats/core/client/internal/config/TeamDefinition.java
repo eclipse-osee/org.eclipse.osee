@@ -23,12 +23,12 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.config.RuleManager;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -40,7 +40,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
    private boolean allowCreateBranch = false;
    private boolean allowCommitBranch = false;
 
-   private String baselineBranchGuid = null;
+   private long baselineBranchUuid = 0;
    private String description = null;
    private String fullName = null;
    private String workflowDefinitionName;
@@ -75,7 +75,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
       if (!allowCreateBranch) {
          return new Result(false, "Branch creation disabled for Team Definition [" + this + "]");
       }
-      if (!Strings.isValid(getBaselineBranchGuid())) {
+      if (!AtsClientService.get().getBranchService().isBranchValid(this)) {
          return new Result(false, "Parent Branch not configured for Team Definition [" + this + "]");
       }
       return Result.TrueResult;
@@ -86,7 +86,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
       if (!allowCommitBranch) {
          return new Result(false, "Team Definition [" + this + "] not configured to allow branch commit.");
       }
-      if (!Strings.isValid(getBaselineBranchGuid())) {
+      if (!AtsClientService.get().getBranchService().isBranchValid(this)) {
          return new Result(false, "Parent Branch not configured for Team Definition [" + this + "]");
       }
       return Result.TrueResult;
@@ -269,17 +269,17 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
     * If no branch is associated then null will be returned.
     */
    @Override
-   public String getTeamBranchGuid() {
-      String guid = getBaselineBranchGuid();
-      if (GUID.isValid(guid)) {
-         return guid;
+   public long getTeamBranchUuid() {
+      long uuid = getBaselineBranchUuid();
+      if (uuid > 0) {
+         return uuid;
       } else {
          IAtsTeamDefinition parentTeamDef = getParentTeamDef();
          if (parentTeamDef instanceof TeamDefinition) {
-            return parentTeamDef.getTeamBranchGuid();
+            return parentTeamDef.getTeamBranchUuid();
          }
       }
-      return null;
+      return 0;
    }
 
    @Override
@@ -295,16 +295,6 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
    @Override
    public void setAllowCreateBranch(boolean allowCreateBranch) {
       this.allowCreateBranch = allowCreateBranch;
-   }
-
-   @Override
-   public String getBaselineBranchGuid() {
-      return baselineBranchGuid;
-   }
-
-   @Override
-   public void setBaselineBranchGuid(String baselineBranchGuid) {
-      this.baselineBranchGuid = baselineBranchGuid;
    }
 
    @Override
@@ -438,4 +428,20 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
       this.relatedPeerWorkflowDefinition = relatedPeerWorkflowDefinition;
    }
 
+   @Override
+   public long getBaselineBranchUuid() {
+      return baselineBranchUuid;
+   }
+
+   @Override
+   public void setBaselineBranchUuid(long uuid) {
+      this.baselineBranchUuid = uuid;
+   }
+
+   @Override
+   public void setBaselineBranchUuid(String uuid) {
+      if (Strings.isValid(uuid)) {
+         this.baselineBranchUuid = Long.valueOf(uuid);
+      }
+   }
 }

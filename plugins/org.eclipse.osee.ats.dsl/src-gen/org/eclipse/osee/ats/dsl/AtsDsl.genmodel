@@ -72,6 +72,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/allowCreateBranch"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/allowCommitBranch"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/baselineBranchGuid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/baselineBranchUuid"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/parallelVersion"/>
     </genClasses>
     <genClasses ecoreClass="AtsDsl.ecore#//WorkDef">

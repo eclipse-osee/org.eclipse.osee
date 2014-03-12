@@ -10,13 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.util;
 
-import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -25,7 +31,7 @@ import org.eclipse.osee.orcs.search.BranchQuery;
 /**
  * @author Donald G. Dunne
  */
-public class AtsBranchServiceImpl implements IAtsBranchService {
+public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    private final OrcsApi orcsApi;
 
@@ -73,6 +79,43 @@ public class AtsBranchServiceImpl implements IAtsBranchService {
          }
       }
       return results;
+   }
+
+   @Override
+   public IOseeBranch getBranch(IAtsConfigObject configObject) {
+      IOseeBranch branch = null;
+      ArtifactReadable artifact =
+         orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(configObject.getGuid()).getResults().getExactlyOne();
+      if (artifact != null) {
+         String branchUuid = artifact.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid, "");
+         if (Strings.isValid(branchUuid)) {
+            BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+            ResultSet<BranchReadable> branches = query.andLocalId(Integer.valueOf(branchUuid)).getResults();
+            if (!branches.isEmpty()) {
+               branch = branches.iterator().next();
+            }
+         }
+      }
+      return branch;
+   }
+
+   @Override
+   public String getBranchShortName(ICommitConfigItem commitConfigArt) {
+      return ((Branch) getBranch(commitConfigArt)).getShortName();
+   }
+
+   @Override
+   public IOseeBranch getBranchInherited(IAtsVersion version) {
+      IOseeBranch branch = null;
+      long branchUuid = version.getBaselineBranchUuidInherited();
+      if (branchUuid > 0) {
+         BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+         ResultSet<BranchReadable> branches = query.andLocalId((int) branchUuid).getResults();
+         if (!branches.isEmpty()) {
+            branch = branches.iterator().next();
+         }
+      }
+      return branch;
    }
 
 }

@@ -52,10 +52,7 @@ public class TeamDefinitionArtifactReader extends AbstractAtsArtifactReader<IAts
       teamDef.setActionable(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Actionable, false));
       teamDef.setAllowCommitBranch(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, false));
       teamDef.setAllowCreateBranch(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false));
-      String baselineBranchGuid = teamDefArt.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, "");
-      if (Strings.isValid(baselineBranchGuid)) {
-         teamDef.setBaselineBranchGuid(baselineBranchGuid);
-      }
+      teamDef.setBaselineBranchUuid(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid, ""));
       String workflowDefinition = teamDefArt.getSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, "");
       if (Strings.isValid(workflowDefinition)) {
          teamDef.setWorkflowDefinition(workflowDefinition);

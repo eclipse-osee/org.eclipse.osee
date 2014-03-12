@@ -107,12 +107,14 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
    @Override
    Result isAllowCreateBranchInherited();
 
-   void setBaselineBranchGuid(String parentBranchGuid);
+   void setBaselineBranchUuid(long uuid);
+
+   void setBaselineBranchUuid(String uuid);
 
    @Override
-   String getBaselineBranchGuid();
+   long getBaselineBranchUuid();
 
-   String getTeamBranchGuid();
+   long getTeamBranchUuid();
 
    @Override
    String getCommitFullDisplayName();

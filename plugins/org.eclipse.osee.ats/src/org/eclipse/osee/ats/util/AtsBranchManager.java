@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -112,7 +111,7 @@ public final class AtsBranchManager {
 
    public static void showMergeManager(TeamWorkFlowArtifact teamArt, IOseeBranch destinationBranch) throws OseeCoreException {
       if (AtsBranchManagerCore.isWorkingBranchInWork(teamArt)) {
-         MergeView.openView((Branch)AtsBranchManagerCore.getWorkingBranch(teamArt), (Branch)destinationBranch,
+         MergeView.openView((Branch) AtsBranchManagerCore.getWorkingBranch(teamArt), (Branch) destinationBranch,
             BranchManager.getBaseTransaction(AtsBranchManagerCore.getWorkingBranch(teamArt)));
       } else if (AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
          for (TransactionRecord transactionId : AtsBranchManagerCore.getTransactionIds(teamArt, true)) {
@@ -284,7 +283,7 @@ public final class AtsBranchManager {
     * @param commitConfigArt that configures commit or null
     */
    public static ChangeData getChangeData(TeamWorkFlowArtifact teamArt, ICommitConfigItem commitConfigArt) throws OseeCoreException {
-      if (commitConfigArt != null && !Strings.isValid(commitConfigArt.getBaselineBranchGuid())) {
+      if (commitConfigArt != null && isBaselinBranchConfigured(commitConfigArt)) {
          throw new OseeArgumentException("Parent Branch not configured for [%s]", commitConfigArt);
       }
       Collection<Change> changes = new ArrayList<Change>();
@@ -308,7 +307,7 @@ public final class AtsBranchManager {
                    * id's branch.
                    */
                   for (TransactionRecord transId : transIds) {
-                     if (transId.getBranch().getGuid().equals(commitConfigArt.getBaselineBranchGuid())) {
+                     if (transId.getBranch().getUuid() == commitConfigArt.getBaselineBranchUuid()) {
                         transactionId = transId;
                      }
                   }
@@ -336,5 +335,9 @@ public final class AtsBranchManager {
          }
       }
       return new ChangeData(changes);
+   }
+
+   private static boolean isBaselinBranchConfigured(ICommitConfigItem commitConfigArt) {
+      return commitConfigArt.getBaselineBranchUuid() > 0;
    }
 }

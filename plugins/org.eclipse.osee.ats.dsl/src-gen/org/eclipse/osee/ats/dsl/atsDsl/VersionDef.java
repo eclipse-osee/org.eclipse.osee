@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getAllowCreateBranch <em>Allow Create Branch</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getAllowCommitBranch <em>Allow Commit Branch</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getBaselineBranchGuid <em>Baseline Branch Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getBaselineBranchUuid <em>Baseline Branch Uuid</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getParallelVersion <em>Parallel Version</em>}</li>
  * </ul>
  * </p>
@@ -241,6 +242,32 @@ public interface VersionDef extends EObject
    * @generated
    */
   void setBaselineBranchGuid(String value);
+
+  /**
+   * Returns the value of the '<em><b>Baseline Branch Uuid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Baseline Branch Uuid</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Baseline Branch Uuid</em>' attribute.
+   * @see #setBaselineBranchUuid(String)
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getVersionDef_BaselineBranchUuid()
+   * @model
+   * @generated
+   */
+  String getBaselineBranchUuid();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getBaselineBranchUuid <em>Baseline Branch Uuid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Baseline Branch Uuid</em>' attribute.
+   * @see #getBaselineBranchUuid()
+   * @generated
+   */
+  void setBaselineBranchUuid(String value);
 
   /**
    * Returns the value of the '<em><b>Parallel Version</b></em>' attribute list.

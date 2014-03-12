@@ -199,8 +199,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
          newVer.setSoleAttributeValue(AtsAttributeTypes.NextVersion, BooleanDefUtil.get(dslVersionDef.getNext(), false));
          newVer.setSoleAttributeValue(AtsAttributeTypes.Released,
             BooleanDefUtil.get(dslVersionDef.getReleased(), false));
-         if (Strings.isValid(dslVersionDef.getBaselineBranchGuid())) {
-            newVer.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, dslVersionDef.getBaselineBranchGuid());
+         if (Strings.isValid(dslVersionDef.getBaselineBranchUuid())) {
+            newVer.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid, dslVersionDef.getBaselineBranchUuid());
          }
          for (String staticId : dslVersionDef.getStaticId()) {
             newVer.setSingletonAttributeValue(CoreAttributeTypes.StaticId, staticId);

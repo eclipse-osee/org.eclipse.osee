@@ -59,8 +59,9 @@ public class TeamDefinitionArtifactWriter extends AbstractAtsArtifactWriter<IAts
       if (allowCreateBranch != teamDef.isAllowCreateBranch()) {
          artifact.setSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, teamDef.isAllowCreateBranch());
       }
-      if (Strings.isValid(teamDef.getBaselineBranchGuid())) {
-         artifact.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, teamDef.getBaselineBranchGuid());
+      if (teamDef.getBaselineBranchUuid() > 0) {
+         artifact.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid,
+            String.valueOf(teamDef.getBaselineBranchUuid()));
       }
       if (Strings.isValid(teamDef.getWorkflowDefinition())) {
          artifact.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, teamDef.getWorkflowDefinition());

@@ -80,18 +80,18 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
          return;
       }
 
-      String branchGuid;
+      Long branchUuid;
       try {
-         branchGuid = atsArtifactProvider.getBaselineBranchGuid(params.getBuild().getGuid());
+         branchUuid = atsArtifactProvider.getBaselineBranchUuid(params.getBuild().getGuid());
       } catch (Exception ex) {
          setErrorMessage(searchHeaderComponent, "Error in initSearchResults", ex);
          return;
       }
 
-      if (branchGuid == null) {
+      if (branchUuid == null) {
          setErrorMessage(resultsComponent, "Could not find baseline branch guid for selected build/program", null);
       } else {
-         String newUrl = encode(url, params, branchGuid);
+         String newUrl = encode(url, params, String.valueOf(branchUuid));
          super.initSearchResults(newUrl, searchHeaderComponent, resultsComponent, optionsComponent);
       }
    }

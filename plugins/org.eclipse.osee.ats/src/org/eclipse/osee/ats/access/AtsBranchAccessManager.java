@@ -244,7 +244,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
    /**
     * Since multiple events of same artifact type can come through, only clear cache every one second
     */
-   private synchronized void clearCache() {
+   public synchronized void clearCache() {
       long now = new Date().getTime();
       if (now - cacheUpdated > 1000) {
          branchGuidToContextIdCache.clear();

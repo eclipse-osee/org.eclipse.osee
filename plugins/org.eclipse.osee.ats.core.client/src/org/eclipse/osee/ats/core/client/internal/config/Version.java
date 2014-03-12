@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -41,7 +42,7 @@ public class Version extends AtsObject implements IAtsVersion {
 
    private boolean createBranchAllowed = false;
    private boolean commitBranchAllowed = false;
-   private String baselineBranchGuid = null;
+   private long baselineBranchUuid = 0;
 
    private String description = null;
    private String fullName = null;
@@ -105,7 +106,7 @@ public class Version extends AtsObject implements IAtsVersion {
       if (!createBranchAllowed) {
          return new Result(false, "Branch creation disabled for Version [" + this + "]");
       }
-      if (!Strings.isValid(getBaselineBranchGuid())) {
+      if (!AtsClientService.get().getBranchService().isBranchValid(this)) {
          return new Result(false, "Parent Branch not configured for Version [" + this + "]");
       }
       return Result.TrueResult;
@@ -116,37 +117,44 @@ public class Version extends AtsObject implements IAtsVersion {
       if (!commitBranchAllowed) {
          return new Result(false, "Version [" + this + "] not configured to allow branch commit.");
       }
-      if (!Strings.isValid(getBaselineBranchGuid())) {
+      if (!AtsClientService.get().getBranchService().isBranchValid(this)) {
          return new Result(false, "Parent Branch not configured for Version [" + this + "]");
       }
       return Result.TrueResult;
    }
 
    @Override
-   public String getBaselineBranchGuid() {
-      return baselineBranchGuid;
+   public long getBaselineBranchUuid() {
+      return baselineBranchUuid;
    }
 
    @Override
-   public void setBaselineBranchGuid(String baselineBranchGuid) {
-      this.baselineBranchGuid = baselineBranchGuid;
+   public void setBaselineBranchUuid(long baselineBranchUuid) {
+      this.baselineBranchUuid = baselineBranchUuid;
    }
 
    @Override
-   public String getBaselineBranchGuidInherited() {
-      if (Strings.isValid(baselineBranchGuid)) {
-         return baselineBranchGuid;
+   public void setBaselineBranchUuid(String baselineBranchUuid) {
+      if (Strings.isValid(baselineBranchUuid)) {
+         this.baselineBranchUuid = Long.valueOf(baselineBranchUuid);
+      }
+   }
+
+   @Override
+   public long getBaselineBranchUuidInherited() {
+      if (baselineBranchUuid > 0) {
+         return baselineBranchUuid;
       } else {
          try {
             IAtsTeamDefinition teamDef = versionService.getTeamDefinition(this);
             if (teamDef != null) {
-               return teamDef.getTeamBranchGuid();
+               return teamDef.getTeamBranchUuid();
             } else {
-               return null;
+               return 0;
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
-            return null;
+            return 0;
          }
       }
    }

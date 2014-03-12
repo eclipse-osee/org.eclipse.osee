@@ -70,7 +70,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -144,11 +143,10 @@ public class DetailedTestStatusOld extends AbstractBlam {
             (IStructuredSelection) event.getSelectionProvider().getSelection();
          Iterator<?> iter = versionArtifactSelection.iterator();
          if (iter.hasNext()) {
-            IAtsVersion versionArtifact = (IAtsVersion) iter.next();
+            IAtsVersion version = (IAtsVersion) iter.next();
 
             try {
-               selectedBranch = BranchManager.getBranchByGuid(versionArtifact.getBaselineBranchGuidInherited());
-
+               selectedBranch = AtsClientService.get().getBranchService().getBranchInherited(version);
                requirementsBranchWidget.setSelection(selectedBranch);
                testProcedureBranchWidget.setSelection(selectedBranch);
             } catch (OseeCoreException ex) {

@@ -633,11 +633,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                AtsClientService.get().getAtsConfig().getSoleByGuid(artifact.getGuid(), IAtsVersion.class);
             if (version != null) {
                try {
-                  String parentBranchGuid = version.getBaselineBranchGuid();
-                  if (Strings.isValid(parentBranchGuid)) {
-                     validateBranchGuid(version, parentBranchGuid, results);
+                  long parentBranchUuid = version.getBaselineBranchUuid();
+                  if (parentBranchUuid > 0) {
+                     validateBranchUuid(version, parentBranchUuid, results);
                   }
-
                   if (AtsVersionService.get().getTeamDefinition(version) == null) {
                      results.log(artifact, "testVersionArtifacts",
                         "Error: " + version.toStringWithId() + " not related to Team Definition");
@@ -664,21 +663,22 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
             IAtsVersion version =
                AtsClientService.get().getAtsConfig().getSoleByGuid(artifact.getGuid(), IAtsVersion.class);
-            for (IAtsVersion parallelVersion : version.getParallelVersions()) {
-               if (parallelVersion != null) {
-                  try {
-                     String parentBranchGuid = parallelVersion.getBaselineBranchGuid();
-                     if (!Strings.isValid(parentBranchGuid)) {
+            if (version != null) {
+               for (IAtsVersion parallelVersion : version.getParallelVersions()) {
+                  if (parallelVersion != null) {
+                     try {
+                        if (!AtsClientService.get().getBranchService().isBranchValid(parallelVersion)) {
+                           results.log(
+                              artifact,
+                              "testParallelConfig",
+                              "Error: [" + parallelVersion.toStringWithId() + "] in parallel config without parent branch guid");
+                        }
+                     } catch (Exception ex) {
                         results.log(
                            artifact,
                            "testParallelConfig",
-                           "Error: [" + parallelVersion.toStringWithId() + "] in parallel config without parent branch guid");
+                           "Error: " + version.getName() + " exception testing testVersionArtifacts: " + ex.getLocalizedMessage());
                      }
-                  } catch (Exception ex) {
-                     results.log(
-                        artifact,
-                        "testParallelConfig",
-                        "Error: " + version.getName() + " exception testing testVersionArtifacts: " + ex.getLocalizedMessage());
                   }
                }
             }
@@ -697,9 +697,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             IAtsTeamDefinition teamDef =
                AtsClientService.get().getAtsConfig().getSoleByGuid(art.getGuid(), IAtsTeamDefinition.class);
             try {
-               String parentBranchGuid = teamDef.getBaselineBranchGuid();
-               if (Strings.isValid(parentBranchGuid)) {
-                  validateBranchGuid(teamDef, parentBranchGuid, results);
+               long parentBranchUuid = teamDef.getBaselineBranchUuid();
+               if (parentBranchUuid > 0) {
+                  validateBranchUuid(teamDef, parentBranchUuid, results);
                }
             } catch (Exception ex) {
                results.log("testTeamDefinitionss",
@@ -816,6 +816,32 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             "Error: " + name.getName() + " [" + name.toStringWithId() + "] exception: " + ex.getLocalizedMessage());
       }
       results.logTestTimeSpent(date, "validateBranchGuid");
+   }
+
+   public static void validateBranchUuid(IAtsConfigObject name, long parentBranchUuid, ValidateResults results) {
+      Date date = new Date();
+      try {
+         Branch branch = BranchManager.getBranchByUuid(parentBranchUuid);
+         if (branch.getArchiveState().isArchived()) {
+            results.log("validateBranchUuid", String.format(
+               "Error: [%s][%s][%s] has Parent Branch Id attribute set to Archived Branch [%s] named [%s]",
+               name.getName(), name.getGuid(), name, parentBranchUuid, branch));
+         } else if (!branch.getBranchType().isBaselineBranch()) {
+            results.log(
+               "validateBranchUuid",
+               String.format(
+                  "Error: [%s][%s][%s] has Parent Branch Id attribute [%s][%s] that is a [%s] branch; should be a BASELINE branch",
+                  name.getName(), name.getGuid(), name, branch.getBranchType().name(), parentBranchUuid, branch));
+         }
+      } catch (BranchDoesNotExist ex) {
+         results.log("validateBranchUuid", String.format(
+            "Error: [%s][%s][%s] has Parent Branch Id attribute [%s] that references a non-existant", name.getName(),
+            name.getGuid(), name, parentBranchUuid));
+      } catch (Exception ex) {
+         results.log("validateBranchUuid",
+            "Error: " + name.getName() + " [" + name.toStringWithId() + "] exception: " + ex.getLocalizedMessage());
+      }
+      results.logTestTimeSpent(date, "validateBranchUuid");
    }
 
    public static List<Collection<Integer>> loadAtsBranchArtifactIds(XResultData xResultData, IProgressMonitor monitor) throws OseeCoreException {

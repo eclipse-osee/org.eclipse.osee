@@ -20,17 +20,16 @@ import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.branch.CommitStatus;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.RebaselineInProgressHandler;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -86,15 +85,12 @@ public class CommitXManager extends XViewer {
    public void handleDoubleClick() {
       try {
          Object firstSelectedArt = getSelectedArtifacts().iterator().next();
-         Branch branch = null;
+         IOseeBranch branch = null;
          String displayName = "";
          ICommitConfigItem configArt = null;
          if (firstSelectedArt instanceof ICommitConfigItem) {
             configArt = (ICommitConfigItem) firstSelectedArt;
-            String baselineBranchGuid = configArt.getBaselineBranchGuid();
-            if (Strings.isValid(baselineBranchGuid)) {
-               branch = BranchManager.getBranchByGuid(baselineBranchGuid);
-            }
+            branch = AtsClientService.get().getBranchService().getBranch(configArt);
             displayName = configArt.toString();
          } else if (firstSelectedArt instanceof TransactionRecord) {
             TransactionRecord txRecord = (TransactionRecord) firstSelectedArt;
@@ -134,7 +130,7 @@ public class CommitXManager extends XViewer {
       }
    }
 
-   private void handleCommittedWithMerge(Branch branch) throws OseeCoreException {
+   private void handleCommittedWithMerge(IOseeBranch branch) throws OseeCoreException {
       MessageDialog dialog =
          new MessageDialog(Displays.getActiveShell(), "Select Report", null,
             "Both Change Report and Merge Manager exist.\n\nSelect to open.", MessageDialog.QUESTION, new String[] {

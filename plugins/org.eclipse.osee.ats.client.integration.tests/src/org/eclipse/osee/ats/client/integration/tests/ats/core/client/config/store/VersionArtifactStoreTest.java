@@ -71,7 +71,7 @@ public class VersionArtifactStoreTest {
       Assert.assertFalse(version.isLocked());
       Assert.assertFalse(version.isReleased());
       Assert.assertFalse(version.isNextVersion());
-      Assert.assertEquals("", version.getBaselineBranchGuid());
+      Assert.assertEquals(0L, version.getBaselineBranchUuid());
       Assert.assertEquals("", version.getDescription());
       Assert.assertEquals("", version.getFullName());
       Assert.assertNull(version.getReleaseDate());
@@ -81,7 +81,7 @@ public class VersionArtifactStoreTest {
       verArt.setSoleAttributeValue(AtsAttributeTypes.NextVersion, true);
       verArt.setSoleAttributeValue(AtsAttributeTypes.Released, true);
       verArt.setSoleAttributeValue(AtsAttributeTypes.VersionLocked, true);
-      verArt.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, "guid1234");
+      verArt.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid, "1234");
       verArt.setSoleAttributeValue(AtsAttributeTypes.Description, "description");
       verArt.setSoleAttributeValue(AtsAttributeTypes.FullName, "this is full name");
       Date releaseDate = new Date();
@@ -95,7 +95,7 @@ public class VersionArtifactStoreTest {
       Assert.assertTrue(version.isLocked());
       Assert.assertTrue(version.isReleased());
       Assert.assertTrue(version.isNextVersion());
-      Assert.assertEquals("guid1234", version.getBaselineBranchGuid());
+      Assert.assertEquals(1234, version.getBaselineBranchUuid());
       Assert.assertEquals("description", version.getDescription());
       Assert.assertEquals("this is full name", version.getFullName());
       Assert.assertEquals(releaseDate, version.getReleaseDate());
@@ -122,7 +122,7 @@ public class VersionArtifactStoreTest {
       Date releaseDate = new Date();
       version.setReleaseDate(releaseDate);
       version.setVersionLocked(true);
-      version.setBaselineBranchGuid("guid3456");
+      version.setBaselineBranchUuid(3456L);
       version.setDescription("description");
       version.setFullName("full name");
 
@@ -137,7 +137,7 @@ public class VersionArtifactStoreTest {
       Assert.assertTrue(saveArt.getSoleAttributeValue(AtsAttributeTypes.VersionLocked, true));
       Assert.assertTrue(saveArt.getSoleAttributeValue(AtsAttributeTypes.Released, true));
       Assert.assertTrue(saveArt.getSoleAttributeValue(AtsAttributeTypes.NextVersion, true));
-      Assert.assertEquals("guid3456", saveArt.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, ""));
+      Assert.assertEquals("3456", saveArt.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid, ""));
       Assert.assertEquals("description", saveArt.getSoleAttributeValue(AtsAttributeTypes.Description, ""));
       Assert.assertEquals("full name", saveArt.getSoleAttributeValue(AtsAttributeTypes.FullName, ""));
       Assert.assertEquals(releaseDate, saveArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null));

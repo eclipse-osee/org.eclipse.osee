@@ -144,7 +144,7 @@ public class AtsBranchConfigurationTest {
             version2Guid = vArt.getGuid();
          }
       }
-      versionToTarget.setBaselineBranchGuid(viaTeamDefBranch.getGuid());
+      versionToTarget.setBaselineBranchUuid(viaTeamDefBranch.getUuid());
       versionToTarget.setAllowCommitBranch(true);
       versionToTarget.setAllowCreateBranch(true);
 
@@ -257,7 +257,7 @@ public class AtsBranchConfigurationTest {
             "Configuring team def to use branch and allow create/commit");
       }
       IAtsTeamDefinition teamDef = operation.getTeamDefinition();
-      teamDef.setBaselineBranchGuid(viaTeamDefBranch.getGuid());
+      teamDef.setBaselineBranchUuid(viaTeamDefBranch.getUuid());
       // setup team def to allow create/commit of branch
       teamDef.setAllowCommitBranch(true);
       teamDef.setAllowCreateBranch(true);

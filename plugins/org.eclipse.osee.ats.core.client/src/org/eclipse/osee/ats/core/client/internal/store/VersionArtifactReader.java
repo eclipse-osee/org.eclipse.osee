@@ -49,7 +49,7 @@ public class VersionArtifactReader extends AbstractAtsArtifactReader<IAtsVersion
       version.setNextVersion(artifact.getSoleAttributeValue(AtsAttributeTypes.NextVersion, false));
       version.setAllowCommitBranch(artifact.getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, false));
       version.setAllowCreateBranch(artifact.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false));
-      version.setBaselineBranchGuid(artifact.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, ""));
+      version.setBaselineBranchUuid(artifact.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid, ""));
       version.setDescription(artifact.getSoleAttributeValue(AtsAttributeTypes.Description, ""));
       version.setFullName(artifact.getSoleAttributeValue(AtsAttributeTypes.FullName, ""));
       List<Artifact> teamDefArts =

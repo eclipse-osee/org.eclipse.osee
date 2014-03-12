@@ -23,8 +23,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -46,7 +46,6 @@ import org.eclipse.osee.ats.core.client.workflow.stateitem.IAtsStateItemCore;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
@@ -194,12 +193,12 @@ public class AtsBranchManagerCore {
    }
 
    public static TransactionRecord getCommitTransactionRecord(TeamWorkFlowArtifact teamArt, ICommitConfigItem configArt) throws OseeCoreException {
-      Branch branch = BranchManager.getBranchByGuid(configArt.getBaselineBranchGuid());
+      IOseeBranch branch = AtsClientService.get().getBranchService().getBranch(configArt);
       return getCommitTransactionRecord(teamArt, branch);
    }
 
    public static CommitStatus getCommitStatus(TeamWorkFlowArtifact teamArt, ICommitConfigItem configArt) throws OseeCoreException {
-      Branch destinationBranch = BranchManager.getBranchByGuid(configArt.getBaselineBranchGuid());
+      IOseeBranch destinationBranch = AtsClientService.get().getBranchService().getBranch(configArt);
       return getCommitStatus(teamArt, destinationBranch, null);
    }
 
@@ -288,14 +287,14 @@ public class AtsBranchManagerCore {
          if (!AtsVersionService.get().hasTargetedVersion(teamArt)) {
             return new Result(false, "Workflow not targeted for Version");
          }
-         Result result = AtsVersionService.get().getTargetedVersion(teamArt).isAllowCommitBranchInherited();
+         IAtsVersion targetedVersion = AtsVersionService.get().getTargetedVersion(teamArt);
+         Result result = targetedVersion.isAllowCommitBranchInherited();
          if (result.isFalse()) {
             return result;
          }
 
-         if (!Strings.isValid(AtsVersionService.get().getTargetedVersion(teamArt).getBaselineBranchGuid())) {
-            return new Result(false,
-               "Parent Branch not configured for Version [" + AtsVersionService.get().getTargetedVersion(teamArt) + "]");
+         if (!AtsClientService.get().getBranchService().isBranchValid(targetedVersion)) {
+            return new Result(false, "Parent Branch not configured for Version [" + targetedVersion + "]");
          }
          return Result.TrueResult;
 
@@ -305,7 +304,7 @@ public class AtsBranchManagerCore {
             return result;
          }
 
-         if (!Strings.isValid(teamArt.getTeamDefinition().getBaselineBranchGuid())) {
+         if (!AtsClientService.get().getBranchService().isBranchValid(teamArt.getTeamDefinition())) {
             return new Result(false,
                "Parent Branch not configured for Team Definition [" + teamArt.getTeamDefinition() + "]");
          }
@@ -322,16 +321,18 @@ public class AtsBranchManagerCore {
          if (!AtsVersionService.get().hasTargetedVersion(teamArt)) {
             return new Result(false, "Workflow not targeted for Version");
          }
-         Result result = AtsVersionService.get().getTargetedVersion(teamArt).isAllowCreateBranchInherited();
+         IAtsVersion targetedVersion = AtsVersionService.get().getTargetedVersion(teamArt);
+         Result result = targetedVersion.isAllowCreateBranchInherited();
          if (result.isFalse()) {
             return result;
          }
 
-         if (!Strings.isValid(AtsVersionService.get().getTargetedVersion(teamArt).getBaselineBranchGuid())) {
-            return new Result(false,
-               "Parent Branch not configured for Version [" + AtsVersionService.get().getTargetedVersion(teamArt) + "]");
+         if (!AtsClientService.get().getBranchService().isBranchValid(targetedVersion)) {
+            return new Result(false, "Parent Branch not configured for Version [" + targetedVersion + "]");
          }
-         if (!BranchManager.getBranchByGuid(AtsVersionService.get().getTargetedVersion(teamArt).getBaselineBranchGuid()).getBranchType().isBaselineBranch()) {
+         IOseeBranch baselineBranch =
+            AtsClientService.get().getBranchService().getBranch((IAtsConfigObject) targetedVersion);
+         if (!BranchManager.getBranchType(baselineBranch).isBaselineBranch()) {
             return new Result(false, "Parent Branch must be of Baseline branch type.  See Admin for configuration.");
          }
          return Result.TrueResult;
@@ -342,11 +343,13 @@ public class AtsBranchManagerCore {
             return result;
          }
 
-         if (!Strings.isValid(teamArt.getTeamDefinition().getBaselineBranchGuid())) {
+         if (!AtsClientService.get().getBranchService().isBranchValid(teamArt.getTeamDefinition())) {
             return new Result(false,
                "Parent Branch not configured for Team Definition [" + teamArt.getTeamDefinition() + "]");
          }
-         if (!BranchManager.getBranchByGuid(teamArt.getTeamDefinition().getBaselineBranchGuid()).getBranchType().isBaselineBranch()) {
+         IOseeBranch baselineBranch =
+            AtsClientService.get().getBranchService().getBranch((IAtsConfigObject) teamArt.getTeamDefinition());
+         if (!BranchManager.getBranchType(baselineBranch).isBaselineBranch()) {
             return new Result(false, "Parent Branch must be of Baseline branch type.  See Admin for configuration.");
          }
          return Result.TrueResult;
@@ -368,7 +371,8 @@ public class AtsBranchManagerCore {
             AtsVersionService.get().getTargetedVersion(teamArt).getParallelVersions(configObjects);
          }
       } else {
-         if (teamArt.isTeamWorkflow() && Strings.isValid(teamArt.getTeamDefinition().getBaselineBranchGuid())) {
+         if (teamArt.isTeamWorkflow() && AtsClientService.get().getBranchService().isBranchValid(
+            teamArt.getTeamDefinition())) {
             configObjects.add(teamArt.getTeamDefinition());
          }
       }
@@ -381,7 +385,8 @@ public class AtsBranchManagerCore {
             return AtsVersionService.get().getTargetedVersion(teamArt);
          }
       } else {
-         if (teamArt.isTeamWorkflow() && Strings.isValid(teamArt.getTeamDefinition().getBaselineBranchGuid())) {
+         if (teamArt.isTeamWorkflow() && AtsClientService.get().getBranchService().isBranchValid(
+            teamArt.getTeamDefinition())) {
             return teamArt.getTeamDefinition();
          }
       }
@@ -394,10 +399,10 @@ public class AtsBranchManagerCore {
    public static boolean isAllObjectsToCommitToConfigured(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       Collection<ICommitConfigItem> configs = getConfigArtifactsConfiguredToCommitTo(teamArt);
       for (ICommitConfigItem config : configs) {
-         String guid = config.getBaselineBranchGuid();
-         if (!Strings.isValid(guid)) {
+         if (!AtsClientService.get().getBranchService().isBranchValid(config)) {
             return false;
-         } else if (!BranchManager.branchExists(TokenFactory.createBranch(guid, Strings.EMPTY_STRING))) {
+         }
+         if (!BranchManager.branchExists(config.getBaselineBranchUuid())) {
             return false;
          }
       }
@@ -417,11 +422,9 @@ public class AtsBranchManagerCore {
 
    public static Collection<IOseeBranch> getBranchesToCommitTo(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       Set<IOseeBranch> branches = new HashSet<IOseeBranch>();
-      for (Object obj : getConfigArtifactsConfiguredToCommitTo(teamArt)) {
-         if (obj instanceof IAtsVersion && Strings.isValid(((IAtsVersion) obj).getBaselineBranchGuid())) {
-            branches.add(BranchManager.getBranchByGuid(((IAtsVersion) obj).getBaselineBranchGuid()));
-         } else if (obj instanceof IAtsTeamDefinition && Strings.isValid(((IAtsTeamDefinition) obj).getBaselineBranchGuid())) {
-            branches.add(BranchManager.getBranchByGuid(((IAtsTeamDefinition) obj).getBaselineBranchGuid()));
+      for (ICommitConfigItem obj : getConfigArtifactsConfiguredToCommitTo(teamArt)) {
+         if (AtsClientService.get().getBranchService().isBranchValid(obj)) {
+            branches.add(AtsClientService.get().getBranchService().getBranch(obj));
          }
       }
       return branches;
@@ -479,14 +482,16 @@ public class AtsBranchManagerCore {
       // Check for parent branch id in Version artifact
       if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
          IAtsVersion verArt = AtsVersionService.get().getTargetedVersion(teamArt);
-         if (verArt != null && Strings.isValid(verArt.getBaselineBranchGuid())) {
-            parentBranch = BranchManager.getBranchByGuid(verArt.getBaselineBranchGuid());
+         if (verArt != null) {
+            parentBranch = AtsClientService.get().getBranchService().getBranch((IAtsConfigObject) verArt);
          }
       }
 
       // If not defined in version, check for parent branch from team definition
-      if (parentBranch == null && teamArt.isTeamWorkflow() && Strings.isValid(teamArt.getTeamDefinition().getBaselineBranchGuid())) {
-         parentBranch = BranchManager.getBranchByGuid(teamArt.getTeamDefinition().getBaselineBranchGuid());
+      if (parentBranch == null && teamArt.isTeamWorkflow() && AtsClientService.get().getBranchService().isBranchValid(
+         teamArt.getTeamDefinition())) {
+         parentBranch =
+            AtsClientService.get().getBranchService().getBranch((IAtsConfigObject) teamArt.getTeamDefinition());
       }
 
       // If not defined, return null
@@ -539,7 +544,7 @@ public class AtsBranchManagerCore {
          // ... compare the branch of the tx commit to all the parent branches in configArtSet and do NOT add the tx
          // commit if it is already represented.
          for (ICommitConfigItem configArt : configArtSet) {
-            Branch configArtBranch = BranchManager.getBranchByGuid(configArt.getBaselineBranchGuid());
+            IOseeBranch configArtBranch = AtsClientService.get().getBranchService().getBranch(configArt);
             if (txBranch == configArtBranch) {
                isCommitAlreadyPresent = true;
                break;

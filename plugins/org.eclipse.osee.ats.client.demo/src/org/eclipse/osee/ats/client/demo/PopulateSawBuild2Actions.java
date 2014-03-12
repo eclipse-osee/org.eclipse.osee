@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.client.demo;
 import java.util.Collection;
 import java.util.Date;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -49,7 +50,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -417,9 +417,12 @@ public class PopulateSawBuild2Actions {
          OseeLog.log(Activator.class, Level.INFO, "Committing branch");
       }
       IOperation op =
-         AtsBranchManager.commitWorkingBranch(reqTeam, false, true,
-            BranchManager.getBranchByGuid(AtsVersionService.get().getTargetedVersion(reqTeam).getBaselineBranchGuid()),
-            true);
+         AtsBranchManager.commitWorkingBranch(
+            reqTeam,
+            false,
+            true,
+            AtsClientService.get().getBranchService().getBranch(
+               (IAtsConfigObject) AtsVersionService.get().getTargetedVersion(reqTeam)), true);
       Operations.executeWorkAndCheckStatus(op);
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Completing Action");

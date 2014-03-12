@@ -783,9 +783,19 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionDef_ParallelVersion()
+  public EAttribute getVersionDef_BaselineBranchUuid()
   {
     return (EAttribute)versionDefEClass.getEStructuralFeatures().get(8);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getVersionDef_ParallelVersion()
+  {
+    return (EAttribute)versionDefEClass.getEStructuralFeatures().get(9);
   }
 
   /**
@@ -1719,6 +1729,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     createEAttribute(versionDefEClass, VERSION_DEF__ALLOW_CREATE_BRANCH);
     createEAttribute(versionDefEClass, VERSION_DEF__ALLOW_COMMIT_BRANCH);
     createEAttribute(versionDefEClass, VERSION_DEF__BASELINE_BRANCH_GUID);
+    createEAttribute(versionDefEClass, VERSION_DEF__BASELINE_BRANCH_UUID);
     createEAttribute(versionDefEClass, VERSION_DEF__PARALLEL_VERSION);
 
     workDefEClass = createEClass(WORK_DEF);
@@ -1918,6 +1929,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEAttribute(getVersionDef_AllowCreateBranch(), this.getBooleanDef(), "allowCreateBranch", null, 0, 1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getVersionDef_AllowCommitBranch(), this.getBooleanDef(), "allowCommitBranch", null, 0, 1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getVersionDef_BaselineBranchGuid(), ecorePackage.getEString(), "baselineBranchGuid", null, 0, 1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getVersionDef_BaselineBranchUuid(), ecorePackage.getEString(), "baselineBranchUuid", null, 0, 1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getVersionDef_ParallelVersion(), ecorePackage.getEString(), "parallelVersion", null, 0, -1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(workDefEClass, WorkDef.class, "WorkDef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

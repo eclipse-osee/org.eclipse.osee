@@ -75,6 +75,7 @@ VersionDef:
 		('allowCreateBranch' allowCreateBranch=BooleanDef)?
 		('allowCommitBranch' allowCommitBranch=BooleanDef)?
 		('baselineBranchGuid' baselineBranchGuid=STRING)?
+		('baselineBranchUuid' baselineBranchUuid=STRING)?
 		('parallelVersion' parallelVersion+=STRING)*
 	'}';
 

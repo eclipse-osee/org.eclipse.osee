@@ -255,7 +255,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       }
       // duplicate all but baseline branch guid
       Artifact newTeamDef =
-         fromArtifact.duplicate(AtsUtilCore.getAtsBranch(), Arrays.asList(AtsAttributeTypes.BaselineBranchGuid));
+         fromArtifact.duplicate(AtsUtilCore.getAtsBranch(), Arrays.asList(AtsAttributeTypes.BaselineBranchUuid));
       newTeamDef.setName(newName);
       changes.add(newTeamDef);
       resultData.log("Creating new " + newTeamDef.getArtifactTypeName() + ": " + newTeamDef);
@@ -270,5 +270,4 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       newArtifacts.add(newTeamDef);
       return newTeamDef;
    }
-
 }

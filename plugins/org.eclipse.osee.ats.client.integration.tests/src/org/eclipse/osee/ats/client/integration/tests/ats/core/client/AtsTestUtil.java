@@ -725,7 +725,7 @@ public class AtsTestUtil {
       IAtsVersion verArt = getVerArt1();
       verArt.setAllowCreateBranch(true);
       verArt.setAllowCommitBranch(true);
-      verArt.setBaselineBranchGuid(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1).getGuid());
+      verArt.setBaselineBranchUuid(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1).getUuid());
       if (!AtsVersionService.get().hasTargetedVersion(getTeamWf())) {
          AtsVersionService.get().setTargetedVersion(getTeamWf(), getVerArt1());
          getTeamWf().persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");

@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -27,5 +28,7 @@ public interface IAtsVersionAdmin extends IAtsVersionService {
    void invalidateVersionCache();
 
    void invalidateVersionCache(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+
+   Branch getBranch(IAtsVersion version);
 
 }

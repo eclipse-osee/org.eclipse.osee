@@ -55,14 +55,16 @@ public interface IAtsVersion extends ICommitConfigItem, IAtsConfigObject {
     * Branching Data
     ******************************/
    /**
-    * @return directly configured baseline branch guid or parentTeamDefinition's branch guid
+    * @return directly configured baseline branch uuid or parentTeamDefinition's branch uuid
     */
    @Override
-   String getBaselineBranchGuid();
+   long getBaselineBranchUuid();
 
-   String getBaselineBranchGuidInherited();
+   long getBaselineBranchUuidInherited();
 
-   public void setBaselineBranchGuid(String parentBranchGuid);
+   public void setBaselineBranchUuid(long uuid);
+
+   public void setBaselineBranchUuid(String uuid);
 
    @Override
    String getCommitFullDisplayName();

@@ -43,20 +43,6 @@ public class Version extends AtsConfigObject implements IAtsVersion {
    }
 
    @Override
-   public String getBaselineBranchGuid() {
-      return null;
-   }
-
-   @Override
-   public String getBaselineBranchGuidInherited() {
-      return null;
-   }
-
-   @Override
-   public void setBaselineBranchGuid(String parentBranchGuid) {
-   }
-
-   @Override
    public String getCommitFullDisplayName() {
       return null;
    }
@@ -150,6 +136,24 @@ public class Version extends AtsConfigObject implements IAtsVersion {
    @Override
    public String getTypeName() {
       return null;
+   }
+
+   @Override
+   public long getBaselineBranchUuid() {
+      return 0;
+   }
+
+   @Override
+   public long getBaselineBranchUuidInherited() {
+      return 0;
+   }
+
+   @Override
+   public void setBaselineBranchUuid(long uuid) {
+   }
+
+   @Override
+   public void setBaselineBranchUuid(String uuid) {
    }
 
 }

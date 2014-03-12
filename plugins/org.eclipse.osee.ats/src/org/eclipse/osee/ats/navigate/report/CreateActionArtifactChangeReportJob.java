@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -35,7 +36,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
@@ -119,7 +119,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);
          for (ICommitConfigItem commitConfigArt : AtsBranchManagerCore.getConfigArtifactsConfiguredToCommitTo(teamArt)) {
-            processTeam(teamArt, BranchManager.getBranchByGuid(commitConfigArt.getBaselineBranchGuid()).getShortName(),
+            processTeam(teamArt, AtsClientService.get().getBranchService().getBranchShortName(commitConfigArt),
                attributeType, commitConfigArt, rd);
          }
          x++;

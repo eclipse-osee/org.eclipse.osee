@@ -1222,15 +1222,37 @@ ruleVersionDef returns [EObject current=null]
 	    }
 
 )
-))?(	otherlv_16='parallelVersion' 
+))?(	otherlv_16='baselineBranchUuid' 
     {
-    	newLeafNode(otherlv_16, grammarAccess.getVersionDefAccess().getParallelVersionKeyword_9_0());
+    	newLeafNode(otherlv_16, grammarAccess.getVersionDefAccess().getBaselineBranchUuidKeyword_9_0());
     }
 (
 (
-		lv_parallelVersion_17_0=RULE_STRING
+		lv_baselineBranchUuid_17_0=RULE_STRING
 		{
-			newLeafNode(lv_parallelVersion_17_0, grammarAccess.getVersionDefAccess().getParallelVersionSTRINGTerminalRuleCall_9_1_0()); 
+			newLeafNode(lv_baselineBranchUuid_17_0, grammarAccess.getVersionDefAccess().getBaselineBranchUuidSTRINGTerminalRuleCall_9_1_0()); 
+		}
+		{
+	        if ($current==null) {
+	            $current = createModelElement(grammarAccess.getVersionDefRule());
+	        }
+       		setWithLastConsumed(
+       			$current, 
+       			"baselineBranchUuid",
+        		lv_baselineBranchUuid_17_0, 
+        		"STRING");
+	    }
+
+)
+))?(	otherlv_18='parallelVersion' 
+    {
+    	newLeafNode(otherlv_18, grammarAccess.getVersionDefAccess().getParallelVersionKeyword_10_0());
+    }
+(
+(
+		lv_parallelVersion_19_0=RULE_STRING
+		{
+			newLeafNode(lv_parallelVersion_19_0, grammarAccess.getVersionDefAccess().getParallelVersionSTRINGTerminalRuleCall_10_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1239,14 +1261,14 @@ ruleVersionDef returns [EObject current=null]
        		addWithLastConsumed(
        			$current, 
        			"parallelVersion",
-        		lv_parallelVersion_17_0, 
+        		lv_parallelVersion_19_0, 
         		"STRING");
 	    }
 
 )
-))*	otherlv_18='}' 
+))*	otherlv_20='}' 
     {
-    	newLeafNode(otherlv_18, grammarAccess.getVersionDefAccess().getRightCurlyBracketKeyword_10());
+    	newLeafNode(otherlv_20, grammarAccess.getVersionDefAccess().getRightCurlyBracketKeyword_11());
     }
 )
 ;

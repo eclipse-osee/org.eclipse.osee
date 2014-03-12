@@ -148,8 +148,8 @@ public class ConvertAIsAndTeamsToAtsDsl {
       if (verArt.isAllowCreateBranchInherited().isTrue()) {
          dslVerDef.setAllowCreateBranch(BooleanDef.TRUE);
       }
-      if (verArt.getBaselineBranchGuidInherited() != null) {
-         dslVerDef.setBaselineBranchGuid(verArt.getBaselineBranchGuidInherited());
+      if (verArt.getBaselineBranchUuid() > 0) {
+         dslVerDef.setBaselineBranchUuid(String.valueOf(verArt.getBaselineBranchUuid()));
       }
       dslTeamDef.getVersion().add(dslVerDef);
    }

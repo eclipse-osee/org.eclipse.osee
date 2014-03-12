@@ -58,8 +58,9 @@ public class VersionArtifactWriter extends AbstractAtsArtifactWriter<IAtsVersion
       if (versionLocked != version.isLocked()) {
          artifact.setSoleAttributeValue(AtsAttributeTypes.VersionLocked, version.isLocked());
       }
-      if (Strings.isValid(version.getBaselineBranchGuid())) {
-         artifact.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, version.getBaselineBranchGuid());
+      if (version.getBaselineBranchUuid() > 0) {
+         artifact.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid,
+            String.valueOf(version.getBaselineBranchUuid()));
       }
       Date releaseDate = artifact.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
       if (releaseDate != version.getReleaseDate()) {

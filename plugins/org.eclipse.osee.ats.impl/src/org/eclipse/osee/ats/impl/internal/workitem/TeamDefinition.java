@@ -28,8 +28,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -140,7 +138,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       if (!isAllowCommitBranch()) {
          return new Result(false, "Team Definition [" + this + "] not configured to allow branch commit.");
       }
-      if (!Strings.isValid(getBaselineBranchGuid())) {
+      if (getBaselineBranchUuid() <= 0) {
          return new Result(false, "Parent Branch not configured for Team Definition [" + this + "]");
       }
       return Result.TrueResult;
@@ -167,34 +165,39 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       if (!isAllowCreateBranch()) {
          return new Result(false, "Branch creation disabled for Team Definition [" + this + "]");
       }
-      if (!Strings.isValid(getBaselineBranchGuid())) {
+      if (getBaselineBranchUuid() <= 0) {
          return new Result(false, "Parent Branch not configured for Team Definition [" + this + "]");
       }
       return Result.TrueResult;
    }
 
    @Override
-   public void setBaselineBranchGuid(String parentBranchGuid) {
-      getLogger().error("TeamDefinition.setBaselineBranchGuid not implemented");
+   public void setBaselineBranchUuid(long uuid) {
+      getLogger().error("TeamDefinition.setBaselineBranchUuid not implemented");
    }
 
    @Override
-   public String getBaselineBranchGuid() {
-      return getAttributeValue(AtsAttributeTypes.BaselineBranchGuid, false);
+   public void setBaselineBranchUuid(String uuid) {
+      getLogger().error("TeamDefinition.setBaselineBranchUuid not implemented");
    }
 
    @Override
-   public String getTeamBranchGuid() {
-      String guid = getBaselineBranchGuid();
-      if (GUID.isValid(guid)) {
-         return guid;
+   public long getBaselineBranchUuid() {
+      return Long.valueOf((String) getAttributeValue(AtsAttributeTypes.BaselineBranchUuid, "0"));
+   }
+
+   @Override
+   public long getTeamBranchUuid() {
+      long uuid = getBaselineBranchUuid();
+      if (uuid > 0) {
+         return uuid;
       } else {
          IAtsTeamDefinition parentTeamDef = getParentTeamDef();
          if (parentTeamDef instanceof TeamDefinition) {
-            return parentTeamDef.getTeamBranchGuid();
+            return parentTeamDef.getTeamBranchUuid();
          }
       }
-      return null;
+      return 0;
    }
 
    @Override

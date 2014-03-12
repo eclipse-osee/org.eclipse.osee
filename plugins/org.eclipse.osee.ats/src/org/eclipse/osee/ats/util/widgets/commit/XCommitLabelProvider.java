@@ -20,14 +20,14 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.branch.CommitStatus;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -46,10 +46,10 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      Branch branch = null;
+      IOseeBranch branch = null;
       if (element instanceof ICommitConfigItem) {
          ICommitConfigItem configArt = (ICommitConfigItem) element;
-         branch = BranchManager.getBranchByGuid(configArt.getBaselineBranchGuid());
+         branch = AtsClientService.get().getBranchService().getBranch(configArt);
       } else if (element instanceof TransactionRecord) {
          TransactionRecord txRecord = (TransactionRecord) element;
          branch = txRecord.getBranch();
@@ -104,10 +104,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       Branch branch = null;
       if (element instanceof ICommitConfigItem) {
          ICommitConfigItem configArt = (ICommitConfigItem) element;
-         String baselineBranchGuid = configArt.getBaselineBranchGuid();
-         if (Strings.isValid(baselineBranchGuid)) {
-            branch = BranchManager.getBranchByGuid(baselineBranchGuid);
-         } else {
+         if (!AtsClientService.get().getBranchService().isBranchValid(configArt)) {
             return String.format("Branch not configured for [%s]", element);
          }
       } else if (element instanceof TransactionRecord) {

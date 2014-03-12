@@ -67,7 +67,7 @@ public class AtsBranchManagerCoreTest {
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
       // clear versions to config item is from teamDef
       teamDef.getVersions().clear();
-      teamDef.setBaselineBranchGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
+      teamDef.setBaselineBranchUuid(DemoSawBuilds.SAW_Bld_1.getUuid());
       Collection<Object> commitObjs = AtsBranchManagerCore.getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
       assertTrue("commitObjs has wrong size", commitObjs.size() == 1);
       assertTrue("commitObjs is missing teamDef", commitObjs.contains(teamDef));
@@ -93,7 +93,7 @@ public class AtsBranchManagerCoreTest {
       AtsTestUtil.cleanupAndReset(AtsBranchManagerCoreTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeam_txRecords");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
-      teamDef.setBaselineBranchGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
+      teamDef.setBaselineBranchUuid(DemoSawBuilds.SAW_Bld_1.getUuid());
       // clear versions to config item is from teamDef
       teamDef.getVersions().clear();
       //Test TxRecords

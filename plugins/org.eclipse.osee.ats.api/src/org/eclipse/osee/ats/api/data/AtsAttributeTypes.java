@@ -33,7 +33,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType ArtifactReference = createType(0x1000BA00000000F9L, "Artifact Reference");
    public static final IAttributeType AtsId = createType(0x1000000000000385L, "ATS Id", "ATS Generated Id");
    public static final IAttributeType TaskToChangedArtifactReference = createType(0x1000BA00000000FAL, "Task To Changed Artifact Reference");
-   public static final IAttributeType BaselineBranchGuid = createType(0x10000000000000A9L, "Baseline Branch Guid", "Baseline branch associated with ATS object.");
+   public static final IAttributeType BaselineBranchUuid = createType(0x10000990000000A9L, "Baseline Branch Uuid", "Baseline branch associated with ATS object.");
 
    public static final IAttributeType Category1 = createType(0x10000000000000ECL, "Category", "Open field for user to be able to enter text to use for categorizing/sorting.");
    public static final IAttributeType Category2 = createType(0x10000000000000F1L, "Category2", Category1.getDescription());

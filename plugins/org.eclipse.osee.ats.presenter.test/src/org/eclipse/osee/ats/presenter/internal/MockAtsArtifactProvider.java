@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.ui.api.search.AtsArtifactProvider;
 import org.eclipse.osee.display.presenter.mocks.MockArtifact;
 import org.eclipse.osee.display.presenter.mocks.MockArtifactProvider;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -65,8 +66,8 @@ public class MockAtsArtifactProvider extends MockArtifactProvider implements Ats
    }
 
    @Override
-   public String getBaselineBranchGuid(String buildArtGuid) {
-      return buildArtGuid + "_branch";
+   public long getBaselineBranchUuid(String buildArtGuid) throws OseeCoreException {
+      return buildArtGuid.hashCode();
    }
 
 }

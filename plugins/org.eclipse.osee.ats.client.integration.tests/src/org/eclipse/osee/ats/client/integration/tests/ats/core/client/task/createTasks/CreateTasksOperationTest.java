@@ -244,7 +244,7 @@ public class CreateTasksOperationTest {
          AtsVersionService.get().setTargetedVersion(destTeamWf3_TasksWithoutChanges, ver3_TasksWithoutChanges);
 
          IAtsVersion verArt4 = AtsTestUtil.getVerArt4();
-         verArt4.setBaselineBranchGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
+         verArt4.setBaselineBranchUuid(DemoSawBuilds.SAW_Bld_1.getUuid());
          verArt4.setAllowCreateBranch(true);
 
          reqTeamWf = AtsTestUtil.getTeamWf4();

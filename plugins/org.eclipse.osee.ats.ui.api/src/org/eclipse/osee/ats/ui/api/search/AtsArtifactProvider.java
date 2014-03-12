@@ -23,5 +23,6 @@ public interface AtsArtifactProvider extends ArtifactProvider {
 
    Iterable<ArtifactReadable> getBuilds(String programGuid) throws OseeCoreException;
 
-   String getBaselineBranchGuid(String buildArtGuid) throws OseeCoreException;
+   long getBaselineBranchUuid(String buildArtUuid) throws OseeCoreException;
+
 }

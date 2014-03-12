@@ -164,11 +164,11 @@ public class BuildTraceReport {
    private IOseeBranch getBaselineBranch(String buildId, QueryFactory queryFactory) {
       QueryBuilder builder = queryFactory.fromBranch(AtsUtilCore.getAtsBranch());
       ArtifactReadable buildArt = builder.andGuid(buildId).getResults().getExactlyOne();
-      ResultSet<? extends AttributeReadable<String>> branchGuids =
-         buildArt.getAttributes(AtsAttributeTypes.BaselineBranchGuid);
-      Conditions.checkNotNull(branchGuids, "branchGuid");
-      String baselineBranchGuid = branchGuids.getExactlyOne().getValue();
-      IOseeBranch branch = TokenFactory.createBranch(baselineBranchGuid, "TraceReport Branch");
+      ResultSet<? extends AttributeReadable<String>> branchUuids =
+         buildArt.getAttributes(AtsAttributeTypes.BaselineBranchUuid);
+      Conditions.checkNotNull(branchUuids, "branchUuids");
+      String baselineBranchUuid = branchUuids.getExactlyOne().getValue();
+      IOseeBranch branch = TokenFactory.createBranch(baselineBranchUuid, "TraceReport Branch");
       return branch;
    }
 

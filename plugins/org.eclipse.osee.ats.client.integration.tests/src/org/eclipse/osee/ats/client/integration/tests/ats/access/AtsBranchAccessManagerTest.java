@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.access;
 
-import static java.lang.Thread.sleep;
 import java.util.Arrays;
 import org.eclipse.osee.ats.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -134,7 +133,7 @@ public class AtsBranchAccessManagerTest {
          Arrays.asList(teamDefContextId1, teamDefContextId2));
       teamDefArt.persist(getClass().getSimpleName());
 
-      sleep(1000);
+      mgr.clearCache();
 
       Assert.assertEquals(2, mgr.getContextId(teamArt.getWorkingBranch()).size());
 
@@ -145,7 +144,7 @@ public class AtsBranchAccessManagerTest {
       aiArt.setAttributeValues(CoreAttributeTypes.AccessContextId, Arrays.asList(aiContextId));
       aiArt.persist(getClass().getSimpleName());
 
-      sleep(1000);
+      mgr.clearCache();
 
       Assert.assertEquals(1, mgr.getContextId(teamArt.getWorkingBranch()).size());
 
@@ -156,7 +155,7 @@ public class AtsBranchAccessManagerTest {
          Arrays.asList(teamContextId1, teamContextId2, teamContextId3));
       teamArt.persist(getClass().getSimpleName());
 
-      sleep(1000);
+      mgr.clearCache();
 
       Assert.assertEquals(3, mgr.getContextId(teamArt.getWorkingBranch()).size());
 
@@ -180,7 +179,7 @@ public class AtsBranchAccessManagerTest {
       teamDefArt.setAttributeValues(CoreAttributeTypes.AccessContextId, Arrays.asList(teamDefContextId1));
       teamDefArt.persist(getClass().getSimpleName());
 
-      sleep(2000);
+      mgr.clearCache();
 
       Assert.assertEquals(1, mgr.getContextId(teamArt.getWorkingBranch()).size());
       IAccessContextId contextId = mgr.getContextId(teamArt.getWorkingBranch()).iterator().next();

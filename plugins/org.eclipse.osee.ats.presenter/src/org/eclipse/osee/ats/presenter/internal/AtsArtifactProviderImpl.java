@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -80,8 +81,8 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
          Iterator<ArtifactReadable> iterator = relatedArtifacts.iterator();
          while (iterator.hasNext()) {
             ArtifactReadable art = iterator.next();
-            String baselineBranchGuid = art.getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchGuid, null);
-            if (baselineBranchGuid == null) {
+            String baselineBranchUuid = art.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid, "");
+            if (!Strings.isValid(baselineBranchUuid)) {
                iterator.remove();
             }
          }
@@ -93,13 +94,13 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
    }
 
    @Override
-   public String getBaselineBranchGuid(String buildArtGuid) throws OseeCoreException {
-      String guid = null;
+   public long getBaselineBranchUuid(String buildArtGuid) throws OseeCoreException {
+      long uuid = 0;
       ArtifactReadable buildArtifact = getArtifactByGuid(AtsUtilCore.getAtsBranch(), buildArtGuid);
       if (buildArtifact != null) {
-         guid = buildArtifact.getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchGuid, null);
+         uuid = buildArtifact.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid, 0L);
       }
-      return guid;
+      return uuid;
    }
 
 }

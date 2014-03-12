@@ -40,7 +40,7 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
    @Override
    public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException {
       List<XWidgetRendererItem> layouts = new ArrayList<XWidgetRendererItem>();
-      if (attributeType.equals(AtsAttributeTypes.BaselineBranchGuid)) {
+      if (attributeType.equals(AtsAttributeTypes.BaselineBranchUuid)) {
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.setXWidgetName("XBranchSelectWidgetDam");

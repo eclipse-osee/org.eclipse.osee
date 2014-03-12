@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -30,11 +31,13 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.CacheProvider;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -249,6 +252,19 @@ public class AtsVersionServiceImpl implements IAtsVersionAdmin {
    @Override
    public void invalidateVersionCache(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       versionCache.deCache(teamWf);
+   }
+
+   @Override
+   public Branch getBranch(IAtsVersion version) {
+      Artifact artifact = cacheProvider.get().getArtifact(version);
+      Branch branch = null;
+      if (artifact != null) {
+         long branchUuid = Long.valueOf(artifact.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid, "0"));
+         if (branchUuid > 0) {
+            branch = BranchManager.getBranch(branchUuid);
+         }
+      }
+      return branch;
    }
 
 }

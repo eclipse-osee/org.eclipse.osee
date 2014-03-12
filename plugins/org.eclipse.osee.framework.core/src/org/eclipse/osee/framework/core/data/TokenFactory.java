@@ -20,8 +20,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 public final class TokenFactory {
 
-   private static long UNPERSISTED_VALUE = Short.MIN_VALUE;
-
    private TokenFactory() {
       // Utility Class
    }
