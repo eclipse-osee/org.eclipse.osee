@@ -92,7 +92,6 @@ public final class TransactionManager {
       return transactions;
    }
 
-   @SuppressWarnings("unchecked")
    public static void setTransactionComment(TransactionRecord transaction, String comment) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(UPDATE_TRANSACTION_COMMENTS, comment, transaction.getId());
    }
@@ -200,7 +199,6 @@ public final class TransactionManager {
       return transactionId;
    }
 
-   @SuppressWarnings("unchecked")
    public static synchronized void internalPersist(OseeConnection connection, TransactionRecord transactionRecord) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_TRANSACTION_DETAIL, transactionRecord.getId(),
          transactionRecord.getComment(), transactionRecord.getTimeStamp(), transactionRecord.getAuthor(),
@@ -285,4 +283,5 @@ public final class TransactionManager {
       TransactionCache txCache = getTransactionCache();
       return txCache.getPriorTransaction(transactionId);
    }
+
 }

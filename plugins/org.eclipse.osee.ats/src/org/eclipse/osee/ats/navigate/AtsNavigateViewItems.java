@@ -98,7 +98,9 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemOperation;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.CompareTwoStringsAction;
+import org.eclipse.osee.framework.ui.skynet.action.PurgeTransactionAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.MassEditDirtyArtifactOperation;
+import org.eclipse.osee.framework.ui.skynet.change.OpenChangeReportByTransactionIdAction;
 import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XViewerExample;
@@ -217,6 +219,8 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
 
          new AtsConfig2ExampleNavigateItem(adminItems);
          new DoesNotWorkItemAts(adminItems);
+         new XNavigateItemAction(adminItems, new OpenChangeReportByTransactionIdAction(), FrameworkImage.BRANCH_CHANGE);
+         new XNavigateItemAction(adminItems, new PurgeTransactionAction(), FrameworkImage.PURGE);
 
          XNavigateItem healthItems = new XNavigateItemFolder(adminItems, "Health");
          new ValidateAtsDatabase(healthItems);
