@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.search.UserRelatedToAtsObjectSearch;
@@ -94,12 +95,20 @@ public class AtsArtifactChecks extends ArtifactCheck {
 
    private IStatus checkActions(boolean isAtsAdmin, Collection<Artifact> artifacts) {
       for (Artifact art : artifacts) {
-         if (!isAtsAdmin && ((art instanceof AbstractWorkflowArtifact) || (art instanceof IAtsAction))) {
+         if (!isAtsAdmin && isWorkflowOrAction(art) && !isTask(art)) {
             return createStatus(String.format("Deletion of [%s] is only permitted by ATS Admin",
                art.getArtifactTypeName()));
          }
       }
       return Status.OK_STATUS;
+   }
+
+   private boolean isWorkflowOrAction(Artifact art) {
+      return (art instanceof AbstractWorkflowArtifact) || (art instanceof IAtsAction);
+   }
+
+   private boolean isTask(Artifact art) {
+      return art instanceof IAtsTask;
    }
 
    private IStatus createStatus(String message) {
