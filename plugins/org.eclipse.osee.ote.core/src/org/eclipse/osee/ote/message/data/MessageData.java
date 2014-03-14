@@ -75,7 +75,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    private long sentCount;
    private int currentLength;
    private boolean isScheduled = false;
-   private long time = 0;
+   private long time = -1;
 
    public MessageData(String typeName, String name, int dataByteSize, int offset, DataType memType) {
       mem = new MemoryResource(new byte[dataByteSize], offset, dataByteSize - offset);
