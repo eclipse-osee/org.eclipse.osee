@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 
@@ -29,8 +28,6 @@ public class IdentityManagerImpl implements IdentityManager {
 
    private static final String SELECT_BRANCH_TOKEN_BY_ID =
       "select branch_guid, branch_name from osee_branch where branch_id = ?";
-
-   private static final String SELECT_BRANCH_ID_BY_GUID = "select branch_id from osee_branch where branch_guid = ?";
 
    private final IOseeDatabaseService dbService;
 
@@ -80,13 +77,6 @@ public class IdentityManagerImpl implements IdentityManager {
    @Override
    public void invalidateIds() throws OseeDataStoreException {
       getSequence().clear();
-   }
-
-   @Override
-   public long getLocalId(IOseeBranch branch) throws OseeCoreException {
-      long toReturn = dbService.runPreparedQueryFetchObject((long) -1, SELECT_BRANCH_ID_BY_GUID, branch.getGuid());
-      Conditions.checkExpressionFailOnTrue(toReturn < 0, "Error getting branch_id for branch: [%s]", branch);
-      return toReturn;
    }
 
    @Override

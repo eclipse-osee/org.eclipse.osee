@@ -30,7 +30,6 @@ import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
@@ -41,7 +40,6 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
  */
 public final class CommitTransactionDatabaseTxCallable extends AbstractDatastoreTxCallable<TransactionResult> {
 
-   private final IdentityLocator identityService;
    private final BranchCache branchCache;
    private final TransactionRecordFactory factory;
    private final TransactionCache transactionCache;
@@ -50,10 +48,9 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
    private final TransactionProcessorProvider provider;
    private final TransactionWriter writer;
 
-   public CommitTransactionDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, BranchCache branchCache, IdentityLocator identityService, TransactionCache transactionCache, TransactionRecordFactory factory, TransactionProcessorProvider provider, TransactionWriter writer, TransactionData transactionData) {
+   public CommitTransactionDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, BranchCache branchCache, TransactionCache transactionCache, TransactionRecordFactory factory, TransactionProcessorProvider provider, TransactionWriter writer, TransactionData transactionData) {
       super(logger, session, dbService, String.format("Committing Transaction: [%s] for branch [%s]",
          transactionData.getComment(), transactionData.getBranch()));
-      this.identityService = identityService;
       this.branchCache = branchCache;
       this.factory = factory;
       this.transactionCache = transactionCache;
@@ -119,8 +116,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
 
-      long branchId = identityService.getLocalId(branch);
-      return factory.create(transactionNumber, branchId, comment, transactionTime, authorArtId,
+      return factory.create(transactionNumber, branch, comment, transactionTime, authorArtId,
          RelationalConstants.ART_ID_SENTINEL, txType, branchCache);
    }
 

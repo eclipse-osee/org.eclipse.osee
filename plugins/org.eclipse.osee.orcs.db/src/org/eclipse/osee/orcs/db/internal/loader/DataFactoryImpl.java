@@ -58,10 +58,8 @@ public class DataFactoryImpl implements DataFactory {
       Conditions.checkExpressionFailOnTrue(!GUID.isValid(guidToSet),
          "Invalid guid [%s] during artifact creation [type: %s]", guidToSet, token);
 
-      long branchId = idFactory.getLocalId(branch);
-
       VersionData version = objectFactory.createDefaultVersionData();
-      version.setBranchId(branchId);
+      version.setBranchId(branch.getUuid());
 
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       int artifactId = idFactory.getNextArtifactId();
@@ -112,7 +110,7 @@ public class DataFactoryImpl implements DataFactory {
    @Override
    public RelationData createRelationData(IRelationType relationType, IOseeBranch branch, HasLocalId<Integer> aArt, HasLocalId<Integer> bArt, String rationale) throws OseeCoreException {
       VersionData version = objectFactory.createDefaultVersionData();
-      version.setBranchId(idFactory.getLocalId(branch));
+      version.setBranchId(branch.getUuid());
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       Integer relationId = RelationalConstants.DEFAULT_ITEM_ID;
       return objectFactory.createRelationData(version, relationId, relationType, modType, aArt.getLocalId(),
@@ -136,7 +134,7 @@ public class DataFactoryImpl implements DataFactory {
 
    private void updateDataForCopy(IOseeBranch destination, OrcsData data) throws OseeCoreException {
       VersionData version = data.getVersion();
-      version.setBranchId(idFactory.getLocalId(destination));
+      version.setBranchId(destination.getUuid());
       version.setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
       version.setStripeId(RelationalConstants.TRANSACTION_SENTINEL);
       version.setHistorical(false);
@@ -147,7 +145,7 @@ public class DataFactoryImpl implements DataFactory {
 
    private void updateDataForIntroduce(IOseeBranch destination, OrcsData data) throws OseeCoreException {
       VersionData version = data.getVersion();
-      version.setBranchId(idFactory.getLocalId(destination));
+      version.setBranchId(destination.getUuid());
       version.setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
       version.setStripeId(RelationalConstants.TRANSACTION_SENTINEL);
       version.setHistorical(false);

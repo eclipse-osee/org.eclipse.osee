@@ -60,8 +60,8 @@ public class TxModule {
             TxSqlBuilderImpl builder = new TxSqlBuilderImpl(dbService, idManager);
             TransactionWriter writer = new TransactionWriter(logger, dbService, builder);
             return new CommitTransactionDatabaseTxCallable(logger, session, dbService, cachingService.getBranchCache(),
-               idManager, cachingService.getTransactionCache(), modelFactory.getTransactionFactory(), processors,
-               writer, data);
+               cachingService.getTransactionCache(), modelFactory.getTransactionFactory(), processors, writer,
+               data);
          }
 
          @Override

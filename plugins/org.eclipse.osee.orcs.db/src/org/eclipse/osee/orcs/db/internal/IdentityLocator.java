@@ -18,8 +18,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IdentityLocator {
 
-   long getLocalId(IOseeBranch branch) throws OseeCoreException;
-
    Long parseToLocalId(String value) throws OseeCoreException;
 
    IOseeBranch getBranch(long branchId) throws OseeCoreException;
