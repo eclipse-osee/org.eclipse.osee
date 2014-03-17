@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.config.copy;
 
-import org.junit.Assert;
 import org.eclipse.osee.ats.config.copy.ConfigData;
 import org.eclipse.osee.ats.config.copy.CopyAtsUtil;
+import org.junit.Assert;
 
 /**
  * Test case for {@link CopyAtsUtil}

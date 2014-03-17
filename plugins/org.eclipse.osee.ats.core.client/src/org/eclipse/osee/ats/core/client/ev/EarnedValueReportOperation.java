@@ -71,7 +71,7 @@ public class EarnedValueReportOperation extends AbstractOperation {
       for (IAtsWorkPackage workPkg : workPackages) {
          checkForCancelledStatus(monitor);
          for (Artifact art : ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.WorkPackageGuid,
-            workPkg.getGuid(), AtsUtilCore.getAtsBranchToken(), QueryOptions.EXACT_MATCH_OPTIONS)) {
+            workPkg.getGuid(), AtsUtilCore.getAtsBranch(), QueryOptions.EXACT_MATCH_OPTIONS)) {
             checkForCancelledStatus(monitor);
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
             EarnedValueReportResult result = new EarnedValueReportResult(workPkg, art);

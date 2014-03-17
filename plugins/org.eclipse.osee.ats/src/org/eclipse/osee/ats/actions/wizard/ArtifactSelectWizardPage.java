@@ -23,9 +23,9 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -83,14 +83,14 @@ public class ArtifactSelectWizardPage extends WizardPage {
          gridData1.heightHint = 300;
          gridData1.widthHint = 200;
          artTypeList.getControl().setLayoutData(gridData1);
-         artTypeList.setInput(ArtifactTypeManager.getValidArtifactTypes(AtsUtil.getAtsBranch()));
+         artTypeList.setInput(ArtifactTypeManager.getValidArtifactTypes(AtsUtilCore.getAtsBranch()));
          artTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                IArtifactType desc = (IArtifactType) selection.getFirstElement();
                try {
-                  artList.setInput(ArtifactQuery.getArtifactListFromType(desc, AtsUtil.getAtsBranch()));
+                  artList.setInput(ArtifactQuery.getArtifactListFromType(desc, AtsUtilCore.getAtsBranch()));
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }

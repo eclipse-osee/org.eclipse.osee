@@ -17,8 +17,8 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.SMAPrint;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -42,7 +42,7 @@ public class SMAPrintTest {
 
       TeamWorkFlowArtifact teamArt =
          (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndName(DemoArtifactTypes.DemoCodeTeamWorkflow,
-            "SAW (uncommitted) More Reqt Changes for Diagram View", AtsUtil.getAtsBranch());
+            "SAW (uncommitted) More Reqt Changes for Diagram View", AtsUtilCore.getAtsBranch());
       Assert.assertNotNull(teamArt);
 
       SMAPrint smaPrint = new SMAPrint(teamArt);
@@ -75,7 +75,7 @@ public class SMAPrintTest {
 
       teamArt =
          (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
-            "Button S doesn't work on help", AtsUtil.getAtsBranch());
+            "Button S doesn't work on help", AtsUtilCore.getAtsBranch());
       Assert.assertNotNull(teamArt);
       DecisionReviewArtifact decArt = (DecisionReviewArtifact) ReviewManager.getReviews(teamArt).iterator().next();
       smaPrint = new SMAPrint(decArt);

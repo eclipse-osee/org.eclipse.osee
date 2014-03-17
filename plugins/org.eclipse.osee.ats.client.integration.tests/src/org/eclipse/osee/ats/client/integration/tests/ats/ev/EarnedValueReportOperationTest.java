@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.core.client.ev.EarnedValueReportOperation;
 import org.eclipse.osee.ats.core.client.ev.EarnedValueReportResult;
 import org.eclipse.osee.ats.core.client.ev.SearchWorkPackageOperation;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -59,7 +59,7 @@ public class EarnedValueReportOperationTest {
 
       // Setup TeamWfs to have selected Work Pacakges
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), getClass().getSimpleName());
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       TeamWorkFlowArtifact commWf = DemoUtil.getSawCodeCommittedWf();
       commWf.setSoleAttributeValue(AtsAttributeTypes.WorkPackageGuid,
          DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getGuid());

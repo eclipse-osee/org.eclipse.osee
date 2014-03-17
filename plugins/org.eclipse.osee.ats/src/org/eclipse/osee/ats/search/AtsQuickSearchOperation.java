@@ -16,8 +16,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.IWorldEditorConsumer;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorOperationProvider;
@@ -63,7 +63,7 @@ class AtsQuickSearchOperation extends AbstractOperation implements IWorldEditorC
             // do nothing
          }
       }
-      for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(),
+      for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtilCore.getAtsBranch(),
          data.getSearchStr(), false, EXCLUDE_DELETED, false)) {
          // only ATS Artifacts
          if (art instanceof AbstractWorkflowArtifact) {

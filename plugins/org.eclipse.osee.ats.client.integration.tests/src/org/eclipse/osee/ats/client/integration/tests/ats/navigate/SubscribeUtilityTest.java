@@ -16,8 +16,8 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.client.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.navigate.SubscribeUtility;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -50,8 +50,8 @@ public class SubscribeUtilityTest {
 
       // Subscribe to 2 team definitions
       Artifact cisCodeTeam =
-         ArtifactQuery.getArtifactFromToken(DemoArtifactToken.CIS_Code, AtsUtil.getAtsBranchToken());
-      Artifact cisSwTeam = ArtifactQuery.getArtifactFromToken(DemoArtifactToken.CIS_SW, AtsUtil.getAtsBranchToken());
+         ArtifactQuery.getArtifactFromToken(DemoArtifactToken.CIS_Code, AtsUtilCore.getAtsBranch());
+      Artifact cisSwTeam = ArtifactQuery.getArtifactFromToken(DemoArtifactToken.CIS_SW, AtsUtilCore.getAtsBranch());
 
       SubscribeUtility.setSubcriptionsAndPersist(alexUserArt, CoreRelationTypes.Users_Artifact,
          Arrays.asList(cisCodeTeam, cisSwTeam), AtsArtifactTypes.TeamDefinition, getClass().getSimpleName());
@@ -62,7 +62,7 @@ public class SubscribeUtilityTest {
 
       // Remove one, add another
       Artifact cisTestTeam =
-         ArtifactQuery.getArtifactFromToken(DemoArtifactToken.CIS_Test, AtsUtil.getAtsBranchToken());
+         ArtifactQuery.getArtifactFromToken(DemoArtifactToken.CIS_Test, AtsUtilCore.getAtsBranch());
 
       SubscribeUtility.setSubcriptionsAndPersist(alexUserArt, CoreRelationTypes.Users_Artifact,
          Arrays.asList(cisCodeTeam, cisTestTeam), AtsArtifactTypes.TeamDefinition, getClass().getSimpleName());
@@ -81,7 +81,7 @@ public class SubscribeUtilityTest {
    }
 
    private static Artifact getAlexUserArtifact() throws OseeCoreException {
-      return ArtifactQuery.getArtifactFromToken(DemoUsers.Alex_Kay, AtsUtil.getAtsBranchToken());
+      return ArtifactQuery.getArtifactFromToken(DemoUsers.Alex_Kay, AtsUtilCore.getAtsBranch());
    }
 
 }

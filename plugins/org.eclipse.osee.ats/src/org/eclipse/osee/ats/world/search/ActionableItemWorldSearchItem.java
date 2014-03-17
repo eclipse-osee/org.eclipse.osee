@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionActionableItemListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -106,7 +106,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
          TeamWorldSearchItem.addIncludeCompletedCancelledCriteria(criteria, false, false);
       }
       Collection<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);
+         ArtifactQuery.getArtifactListFromCriteria(AtsUtilCore.getAtsBranch(), 1000, criteria);
       // show as actions
       if (selectedShowAction) {
          Set<Artifact> arts = new HashSet<Artifact>();

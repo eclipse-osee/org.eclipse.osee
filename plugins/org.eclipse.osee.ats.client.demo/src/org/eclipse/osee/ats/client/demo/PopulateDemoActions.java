@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.FavoritesManager;
@@ -183,7 +184,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             OseeLog.log(Activator.class, Level.INFO, "Add Favorites");
          }
          for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(DemoArtifactTypes.DemoCodeTeamWorkflow,
-            "Diagram View", AtsUtil.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
+            "Diagram View", AtsUtilCore.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
             new FavoritesManager((AbstractWorkflowArtifact) art).toggleFavorite(false);
          }
 
@@ -192,7 +193,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             OseeLog.log(Activator.class, Level.INFO, "Add Subscribed");
          }
          for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(DemoArtifactTypes.DemoCodeTeamWorkflow,
-            "Even", AtsUtil.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
+            "Even", AtsUtilCore.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
             new SubscribeManagerUI((AbstractWorkflowArtifact) art).toggleSubscribe(false);
          }
 

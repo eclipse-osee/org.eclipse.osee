@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.internal;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.ats.access.AtsBranchAccessManager;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
@@ -38,7 +38,7 @@ public class AtsCmAccessControl implements CmAccessControl {
    public boolean isApplicable(IBasicArtifact<?> user, Object object) {
       boolean result = false;
       if (object != null) {
-         if (object instanceof Artifact && !((Artifact) object).getBranch().equals(AtsUtil.getAtsBranchToken())) {
+         if (object instanceof Artifact && !((Artifact) object).getBranch().equals(AtsUtilCore.getAtsBranch())) {
             result = atsBranchAccessManager.isApplicable(((Artifact) object).getBranch());
          }
          if (object instanceof IOseeBranch) {
@@ -51,7 +51,7 @@ public class AtsCmAccessControl implements CmAccessControl {
    @Override
    public Collection<? extends IAccessContextId> getContextId(IBasicArtifact<?> user, Object object) {
       if (object != null) {
-         if (object instanceof Artifact && !((Artifact) object).getBranch().equals(AtsUtil.getAtsBranchToken())) {
+         if (object instanceof Artifact && !((Artifact) object).getBranch().equals(AtsUtilCore.getAtsBranch())) {
             return atsBranchAccessManager.getContextId(((Artifact) object).getBranch());
          }
          if (object instanceof IOseeBranch) {

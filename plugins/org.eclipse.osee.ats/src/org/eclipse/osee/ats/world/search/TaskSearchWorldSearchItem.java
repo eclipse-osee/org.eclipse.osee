@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.Versions;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.task.ITaskEditorProvider;
@@ -122,7 +123,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
             // Note: Don't need to do this for Originator, Subscribed or Favorites, cause it does completed canceled in it's own searches
             userTaskArts.addAll(Collections.castMatching(TaskArtifact.class,
                ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.Task, AtsAttributeTypes.State,
-                  "<" + user.getUserId() + ">", AtsUtil.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)));
+                  "<" + user.getUserId() + ">", AtsUtilCore.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)));
          }
          Set<TaskArtifact> removeTaskArts = new HashSet<TaskArtifact>();
          for (TaskArtifact taskArt : userTaskArts) {

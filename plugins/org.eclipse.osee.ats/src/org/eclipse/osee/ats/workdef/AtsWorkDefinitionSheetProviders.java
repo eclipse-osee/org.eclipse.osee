@@ -27,11 +27,11 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.config.AtsArtifactToken;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.config.ImportAIsAndTeamDefinitionsToDb;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionImporter;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -64,7 +64,7 @@ public final class AtsWorkDefinitionSheetProviders {
    public static void initializeDatabase(XResultData resultData) throws OseeCoreException {
       AtsChangeSet changes = new AtsChangeSet("Import ATS Work Definitions, Teams and AIs");
       Artifact folder =
-         OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.WorkDefinitionsFolder, AtsUtil.getAtsBranch());
+         OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.WorkDefinitionsFolder, AtsUtilCore.getAtsBranch());
       if (folder.isDirty()) {
          changes.add(folder);
       }
@@ -87,7 +87,7 @@ public final class AtsWorkDefinitionSheetProviders {
             try {
                artifact =
                   ArtifactQuery.getArtifactFromToken(
-                     org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names, AtsUtil.getAtsBranchToken());
+                     org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names, AtsUtilCore.getAtsBranch());
             } catch (ArtifactDoesNotExist ex) {
                // do nothing
             }
@@ -114,7 +114,7 @@ public final class AtsWorkDefinitionSheetProviders {
    public static void updateStateNameArtifact(Set<String> stateNames, Artifact folder, SkynetTransaction trans) throws OseeCoreException {
       Artifact stateNameArt =
          ArtifactQuery.getArtifactFromToken(org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names,
-            AtsUtil.getAtsBranchToken());
+            AtsUtilCore.getAtsBranch());
       Collection<? extends String> currentStateNames = getAllValidStateNames();
       Set<String> newStateNames = new HashSet<String>();
       newStateNames.addAll(currentStateNames);
@@ -131,7 +131,7 @@ public final class AtsWorkDefinitionSheetProviders {
    private static Artifact createStateNameArtifact(Set<String> stateNames, Artifact folder, IAtsChangeSet changes) throws OseeCoreException {
       Artifact stateNameArt =
          ArtifactTypeManager.addArtifact(org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names,
-            AtsUtil.getAtsBranchToken());
+            AtsUtilCore.getAtsBranch());
       stateNameArt.addAttribute(CoreAttributeTypes.GeneralStringData,
          org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", stateNames));
       changes.add(stateNameArt);

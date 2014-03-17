@@ -104,7 +104,7 @@ public class ExcelAtsActionArtifactExtractor {
                try {
                   Collection<IAtsActionableItem> aias = new ArrayList<IAtsActionableItem>();
                   for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
-                     actionableItemName, AtsUtilCore.getAtsBranchToken())) {
+                     actionableItemName, AtsUtilCore.getAtsBranch())) {
                      IAtsActionableItem ai =
                         AtsClientService.get().getAtsConfig().getSoleByGuid(aiaArt.getGuid(), IAtsActionableItem.class);
                      if (ai != null) {

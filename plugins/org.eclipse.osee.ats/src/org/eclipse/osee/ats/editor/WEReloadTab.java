@@ -20,8 +20,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -170,7 +170,7 @@ public class WEReloadTab extends FormPage {
       protected IStatus run(IProgressMonitor monitor) {
          if (GUID.isValid(guid)) {
             try {
-               artifact = ArtifactQuery.getArtifactFromId(guid, AtsUtil.getAtsBranchToken());
+               artifact = ArtifactQuery.getArtifactFromId(guid, AtsUtilCore.getAtsBranch());
             } catch (ArtifactDoesNotExist ex) {
                // do nothing
             }

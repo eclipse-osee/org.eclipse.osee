@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -197,7 +198,7 @@ public class AtsOseeCmService implements IOseeCmService {
 
    @Override
    public IOseeBranch getCmBranchToken() {
-      return AtsUtil.getAtsBranchToken();
+      return AtsUtilCore.getAtsBranch();
    }
 
    @Override

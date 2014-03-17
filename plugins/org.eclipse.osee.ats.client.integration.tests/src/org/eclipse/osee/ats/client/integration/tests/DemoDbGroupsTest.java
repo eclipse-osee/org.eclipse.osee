@@ -15,7 +15,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.client.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.client.demo.DemoGroups;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -40,7 +40,7 @@ public class DemoDbGroupsTest {
    public void testCreateGroups() throws OseeCoreException {
       Artifact groupArt =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.UniversalGroup, DemoGroups.TEST_GROUP_NAME,
-            AtsUtil.getAtsBranchToken());
+            AtsUtilCore.getAtsBranch());
       Assert.assertNotNull(groupArt);
 
       Collection<Artifact> members = groupArt.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members);

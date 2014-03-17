@@ -36,7 +36,7 @@ import org.eclipse.osee.ats.core.client.review.role.Role;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -99,7 +99,7 @@ public class DemoDbReviews {
       if (reviewTestArts == null) {
          reviewTestArts = new ArrayList<TeamWorkFlowArtifact>();
          for (String actionName : new String[] {"Button W doesn't work on", "Diagram Tree"}) {
-            for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsUtil.getAtsBranch(),
+            for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsUtilCore.getAtsBranch(),
                EXCLUDE_DELETED, QueryOptions.CONTAINS_MATCH_OPTIONS)) {
                if (art.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow)) {
                   reviewTestArts.add((TeamWorkFlowArtifact) art);

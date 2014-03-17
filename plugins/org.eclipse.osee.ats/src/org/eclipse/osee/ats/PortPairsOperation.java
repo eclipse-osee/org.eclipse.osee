@@ -18,10 +18,10 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -102,7 +102,7 @@ public final class PortPairsOperation extends AbstractOperation {
       IArtifactType LbaReqTeamWorkflow = TokenFactory.createArtifactType(0x0000BA000000000BL, "Lba Req Team Workflow");
 
       return (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndAttribute(LbaReqTeamWorkflow,
-         AtsAttributeTypes.LegacyPcrId, workflowId, CoreBranches.COMMON);
+         AtsAttributeTypes.LegacyPcrId, workflowId, AtsUtilCore.getAtsBranch());
    }
 
    private TeamWorkFlowArtifact getWorkflowFromAtsID(String atsID) throws OseeCoreException {
@@ -110,7 +110,7 @@ public final class PortPairsOperation extends AbstractOperation {
          TokenFactory.createArtifactType(0x0000BA0000000009L, "Lba SubSystems Team Workflow");
 
       return (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndAttribute(LbaSubSystemsTeamWorkflow,
-         AtsAttributeTypes.AtsId, atsID, CoreBranches.COMMON);
+         AtsAttributeTypes.AtsId, atsID, AtsUtilCore.getAtsBranch());
    }
 
    private void doPortWork(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow) throws OseeCoreException {

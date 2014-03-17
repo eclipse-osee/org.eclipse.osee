@@ -31,8 +31,8 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectValidator;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -330,7 +330,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
          ed.setFillVertically(true);
          if (ed.open() == 0) {
             SkynetTransaction transaction =
-               TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Import Review Defects");
+               TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Import Review Defects");
             for (String str : ed.getEntry().split("\n")) {
                str = str.replaceAll("\r", "");
                if (!str.equals("")) {
@@ -363,7 +363,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
       if (delete) {
          try {
             SkynetTransaction transaction =
-               TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Review Defects");
+               TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Delete Review Defects");
             deleteDefectHelper(items, persist, transaction);
             transaction.execute();
          } catch (Exception ex) {
@@ -391,7 +391,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
       if (ed.open() == 0) {
          try {
             SkynetTransaction transaction =
-               TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Add Review Defect");
+               TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Add Review Defect");
             ReviewDefectItem item = new ReviewDefectItem();
             item.setDescription(ed.getEntry());
             if (ed.getSeverity() != null) {

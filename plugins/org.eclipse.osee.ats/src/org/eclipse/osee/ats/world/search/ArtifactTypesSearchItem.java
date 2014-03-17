@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.world.search;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Collection;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -40,7 +40,7 @@ public class ArtifactTypesSearchItem extends WorldUISearchItem {
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(artifactTypes, getName());
-      return ArtifactQuery.getArtifactListFromTypes(artifactTypes, AtsUtil.getAtsBranch(), EXCLUDE_DELETED);
+      return ArtifactQuery.getArtifactListFromTypes(artifactTypes, AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED);
    }
 
    @Override

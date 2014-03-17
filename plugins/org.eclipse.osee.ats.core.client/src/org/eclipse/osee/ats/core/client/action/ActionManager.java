@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -56,7 +57,7 @@ public class ActionManager {
          monitor.subTask("Creating Action");
       }
       ActionArtifact actionArt =
-         (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtilClient.getAtsBranch());
+         (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtilCore.getAtsBranch());
       setArtifactIdentifyData(actionArt, title, desc, changeType, priority, validationRequired, needByDate);
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
@@ -120,10 +121,11 @@ public class ActionManager {
 
       TeamWorkFlowArtifact teamArt = null;
       if (guid == null) {
-         teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilClient.getAtsBranch());
+         teamArt =
+            (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch());
       } else {
          teamArt =
-            (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilClient.getAtsBranch(), null,
+            (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), null,
                guid);
       }
 

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.config.copy;
 
-import org.junit.Assert;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.client.demo.DemoActionableItems;
@@ -20,6 +19,7 @@ import org.eclipse.osee.ats.config.copy.ConfigData;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.junit.Assert;
 
 /**
  * Test case for {@link ConfigData}

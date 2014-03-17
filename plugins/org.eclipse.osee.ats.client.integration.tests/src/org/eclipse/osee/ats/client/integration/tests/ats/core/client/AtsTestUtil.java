@@ -50,9 +50,9 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.state.StateTypeAdapter;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
@@ -506,7 +506,7 @@ public class AtsTestUtil {
    public static void cleanupSimpleTest(Collection<String> titles) throws Exception {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       for (String title : titles) {
-         artifacts.addAll(ArtifactQuery.getArtifactListFromName(title, AtsUtilClient.getAtsBranch(), EXCLUDE_DELETED,
+         artifacts.addAll(ArtifactQuery.getArtifactListFromName(title, AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED,
             QueryOptions.CONTAINS_MATCH_OPTIONS));
       }
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));

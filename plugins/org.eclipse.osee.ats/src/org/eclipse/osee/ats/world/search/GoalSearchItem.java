@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -89,7 +89,7 @@ public class GoalSearchItem extends WorldUISearchItem {
       }
 
       List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromTypeAnd(AtsArtifactTypes.Goal, AtsUtil.getAtsBranch(), 1000, criteria);
+         ArtifactQuery.getArtifactListFromTypeAnd(AtsArtifactTypes.Goal, AtsUtilCore.getAtsBranch(), 1000, criteria);
 
       Set<Artifact> resultGoalArtifacts = new HashSet<Artifact>();
       for (Artifact art : artifacts) {

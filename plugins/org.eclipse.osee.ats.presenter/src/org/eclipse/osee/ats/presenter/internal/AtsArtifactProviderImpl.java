@@ -16,12 +16,12 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.ui.api.search.AtsArtifactProvider;
 import org.eclipse.osee.display.presenter.ArtifactProviderImpl;
 import org.eclipse.osee.display.presenter.Utility;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -45,7 +45,7 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
    public Iterable<ArtifactReadable> getPrograms() throws OseeCoreException {
       ResultSet<ArtifactReadable> programs = null;
       ArtifactReadable webProgramsArtifact =
-         getArtifactByArtifactToken(CoreBranches.COMMON, AtsArtifactToken.WebPrograms);
+         getArtifactByArtifactToken(AtsUtilCore.getAtsBranch(), AtsArtifactToken.WebPrograms);
 
       if (webProgramsArtifact != null) {
          programs = getRelatedArtifacts(webProgramsArtifact, CoreRelationTypes.Universal_Grouping__Members);
@@ -68,7 +68,7 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
    @Override
    public Iterable<ArtifactReadable> getBuilds(String programGuid) throws OseeCoreException {
       ArtifactReadable teamDef = null;
-      ArtifactReadable programArtifact = getArtifactByGuid(CoreBranches.COMMON, programGuid);
+      ArtifactReadable programArtifact = getArtifactByGuid(AtsUtilCore.getAtsBranch(), programGuid);
       if (programArtifact != null) {
          teamDef = getRelatedArtifact(programArtifact, CoreRelationTypes.SupportingInfo_SupportingInfo);
       }
@@ -95,7 +95,7 @@ public class AtsArtifactProviderImpl extends ArtifactProviderImpl implements Ats
    @Override
    public String getBaselineBranchGuid(String buildArtGuid) throws OseeCoreException {
       String guid = null;
-      ArtifactReadable buildArtifact = getArtifactByGuid(CoreBranches.COMMON, buildArtGuid);
+      ArtifactReadable buildArtifact = getArtifactByGuid(AtsUtilCore.getAtsBranch(), buildArtGuid);
       if (buildArtifact != null) {
          guid = buildArtifact.getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchGuid, null);
       }

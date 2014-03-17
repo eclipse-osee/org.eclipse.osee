@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -80,7 +80,7 @@ public class AtsBranchAccessManagerTest {
    @Test
    public void testIsApplicable() throws OseeCoreException {
       AtsBranchAccessManager mgr = new AtsBranchAccessManager(getEventService());
-      Assert.assertFalse(mgr.isApplicable(AtsUtil.getAtsBranch()));
+      Assert.assertFalse(mgr.isApplicable(AtsUtilCore.getAtsBranch()));
       Assert.assertFalse(mgr.isApplicable(DemoSawBuilds.SAW_Bld_1));
 
       TeamWorkFlowArtifact teamArt =
@@ -99,7 +99,7 @@ public class AtsBranchAccessManagerTest {
       TeamWorkFlowArtifact teamArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "testGetContextIdArtifact cleanup");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "testGetContextIdArtifact cleanup");
       Artifact teamDefArt = AtsClientService.get().getConfigArtifact(teamArt.getTeamDefinition());
       teamDefArt.deleteAttributes(CoreAttributeTypes.AccessContextId);
       teamDefArt.persist(transaction);

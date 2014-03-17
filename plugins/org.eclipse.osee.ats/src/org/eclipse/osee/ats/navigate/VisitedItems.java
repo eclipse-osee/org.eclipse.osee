@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -36,7 +36,7 @@ public class VisitedItems extends XNavigateItemAction {
    public static List<Artifact> getReverseVisited() throws OseeCoreException {
       // Search artifacts and hold on to references so don't get garbage collected
       Map<String, Artifact> artifacts = new HashMap<String, Artifact>();
-      for (Artifact art : ArtifactQuery.getArtifactListFromIds(visitedGuids, AtsUtil.getAtsBranch())) {
+      for (Artifact art : ArtifactQuery.getArtifactListFromIds(visitedGuids, AtsUtilCore.getAtsBranch())) {
          artifacts.put(art.getGuid(), art);
       }
       List<Artifact> revArts = new ArrayList<Artifact>();
@@ -67,7 +67,7 @@ public class VisitedItems extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(visitedGuids, AtsUtil.getAtsBranch());
+      Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(visitedGuids, AtsUtilCore.getAtsBranch());
       WorldEditor.open(new WorldEditorSimpleProvider(getName(), artifacts, null, tableLoadOptions));
    }
 }

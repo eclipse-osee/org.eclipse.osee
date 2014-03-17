@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -48,8 +48,8 @@ public class AutoAddActionToGoalTest {
       AtsTestUtil.cleanup();
 
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), "AutoAddActionToGoalTest - cleanup");
-      for (Artifact art : ArtifactQuery.getArtifactListFromName("AutoAddActionToGoalTest", AtsUtil.getAtsBranchToken(),
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "AutoAddActionToGoalTest - cleanup");
+      for (Artifact art : ArtifactQuery.getArtifactListFromName("AutoAddActionToGoalTest", AtsUtilCore.getAtsBranch(),
          DeletionFlag.EXCLUDE_DELETED, QueryOptions.CONTAINS_MATCH_OPTIONS)) {
          art.deleteAndPersist(transaction);
       }
@@ -183,7 +183,7 @@ public class AutoAddActionToGoalTest {
       IAtsActionableItem actionItem2 = AtsTestUtil.getTestAi2();
       IAtsActionableItem actionItem3 = AtsTestUtil.getTestAi3();
 
-      TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), getClass().getSimpleName());
+      TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
       AtsClientService.get().storeConfigObject(actionItem2, changes);
       AtsClientService.get().storeConfigObject(actionItem3, changes);
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();

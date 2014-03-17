@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.client.demo;
 
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -71,7 +71,7 @@ public class DemoUtil {
 
    public static TeamWorkFlowArtifact getCodeTeamWorkflowNamed(String name) throws OseeCoreException {
       TeamWorkFlowArtifact result = null;
-      for (Artifact art : ArtifactQuery.getArtifactListFromName(name, AtsUtil.getAtsBranchToken(),
+      for (Artifact art : ArtifactQuery.getArtifactListFromName(name, AtsUtilCore.getAtsBranch(),
          DeletionFlag.EXCLUDE_DELETED, QueryOptions.EXACT_MATCH_OPTIONS)) {
          if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
             result = (TeamWorkFlowArtifact) art;

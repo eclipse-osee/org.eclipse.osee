@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.health.ValidateResults;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
@@ -54,8 +53,8 @@ public class ValidateAtsConfiguration extends XNavigateItemAction {
          List<Artifact> configArts =
             ArtifactQuery.getArtifactListFromType(
                Arrays.asList(AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Version),
-               AtsUtilCore.getAtsBranchToken(), DeletionFlag.EXCLUDE_DELETED);
-         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranchToken(), getName());
+               AtsUtilCore.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED);
+         SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getName());
 
          ValidateResults results = new ValidateResults();
 

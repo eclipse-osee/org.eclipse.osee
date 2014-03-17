@@ -24,6 +24,7 @@ import java.util.zip.ZipOutputStream;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.internal.build.report.model.AtsElementData;
 import org.eclipse.osee.ats.rest.internal.build.report.model.AtsWorkflowData;
 import org.eclipse.osee.ats.rest.internal.build.report.parser.ArtIdParser;
@@ -35,7 +36,6 @@ import org.eclipse.osee.ats.rest.internal.build.report.table.BuildTraceTable.Ver
 import org.eclipse.osee.ats.rest.internal.build.report.util.InputFilesUtil;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -162,7 +162,7 @@ public class BuildTraceReport {
    }
 
    private IOseeBranch getBaselineBranch(String buildId, QueryFactory queryFactory) {
-      QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = queryFactory.fromBranch(AtsUtilCore.getAtsBranch());
       ArtifactReadable buildArt = builder.andGuid(buildId).getResults().getExactlyOne();
       ResultSet<? extends AttributeReadable<String>> branchGuids =
          buildArt.getAttributes(AtsAttributeTypes.BaselineBranchGuid);
@@ -174,7 +174,7 @@ public class BuildTraceReport {
 
    private List<Pair<String, String>> getBuildNameUrlPairs(String buildId, QueryFactory queryFactory) {
       List<Pair<String, String>> toReturn = new LinkedList<Pair<String, String>>();
-      QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = queryFactory.fromBranch(AtsUtilCore.getAtsBranch());
       ArtifactReadable buildArt = builder.andGuid(buildId).getResults().getExactlyOne();
       String buildToUrlPairs = buildArt.getSoleAttributeAsString(AtsAttributeTypes.TestToSourceLocator, "");
       if (Strings.isValid(buildToUrlPairs)) {

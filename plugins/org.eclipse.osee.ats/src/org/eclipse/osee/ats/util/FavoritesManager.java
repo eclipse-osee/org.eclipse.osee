@@ -18,6 +18,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -60,7 +61,7 @@ public class FavoritesManager {
             }
             if (result) {
                SkynetTransaction transaction =
-                  TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Toggle Favorites");
+                  TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Toggle Favorites");
                for (AbstractWorkflowArtifact awa : awas) {
                   removeFavorite(awa, AtsClientService.get().getUserAdmin().getCurrentUser(), transaction);
                }
@@ -75,7 +76,7 @@ public class FavoritesManager {
             }
             if (result) {
                SkynetTransaction transaction =
-                  TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Toggle Favorites");
+                  TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Toggle Favorites");
                for (AbstractWorkflowArtifact awa : awas) {
                   addFavorite(awa, AtsClientService.get().getUserAdmin().getCurrentUser(), transaction);
                }

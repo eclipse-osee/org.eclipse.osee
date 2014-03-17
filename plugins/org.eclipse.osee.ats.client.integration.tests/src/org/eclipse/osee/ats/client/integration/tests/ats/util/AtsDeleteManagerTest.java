@@ -33,10 +33,10 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.util.AtsDeleteManager;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.Named;
@@ -177,7 +177,7 @@ public class AtsDeleteManagerTest {
 
    private void verifyExists(TestNames testName, int expectedNumActions, int expectedNumCodeWorkflows, int expectedNumReqWorkflows, int expectedNumTasks, int expectedNumReviews) throws OseeCoreException {
       List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromName(testName.toString(), AtsUtil.getAtsBranch(), EXCLUDE_DELETED,
+         ArtifactQuery.getArtifactListFromName(testName.toString(), AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED,
             QueryOptions.CONTAINS_MATCH_OPTIONS);
       CountingMap<IArtifactType> countMap = new CountingMap<IArtifactType>();
       for (Artifact artifact : artifacts) {

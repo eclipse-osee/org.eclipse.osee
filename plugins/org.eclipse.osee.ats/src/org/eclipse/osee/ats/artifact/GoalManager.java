@@ -26,10 +26,10 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.goal.GoalLabelProvider;
 import org.eclipse.osee.ats.goal.GoalViewerSorter;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -175,7 +175,7 @@ public final class GoalManager {
 
    public static GoalArtifact createGoal(String title, IAtsChangeSet changes) throws OseeCoreException {
       GoalArtifact goalArt =
-         (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal, AtsUtil.getAtsBranch(), title);
+         (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal, AtsUtilCore.getAtsBranch(), title);
 
       // Initialize state machine
       goalArt.initializeNewStateMachine(Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()),

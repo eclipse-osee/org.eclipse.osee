@@ -401,7 +401,7 @@ public class AtsNotificationManagerTest {
       changes.execute();
 
       SkynetTransaction transaction2 =
-         TransactionManager.createTransaction(AtsUtilClient.getAtsBranch(), getClass().getSimpleName());
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
 
       actionArt.getTeams().iterator().next().deleteAndPersist(transaction2);
       actionArt.deleteAndPersist(transaction2);
@@ -452,7 +452,7 @@ public class AtsNotificationManagerTest {
       changes.execute();
 
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranchToken(), getClass().getSimpleName());
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getClass().getSimpleName());
 
       actionArt.getTeams().iterator().next().deleteAndPersist(transaction);
       actionArt.deleteAndPersist(transaction);

@@ -29,8 +29,8 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -80,7 +80,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
          }
       }
       try {
-         if (!artifactEvent.isForBranch(AtsUtil.getAtsBranch())) {
+         if (!artifactEvent.isForBranch(AtsUtilCore.getAtsBranch())) {
             return;
          }
       } catch (OseeCoreException ex) {

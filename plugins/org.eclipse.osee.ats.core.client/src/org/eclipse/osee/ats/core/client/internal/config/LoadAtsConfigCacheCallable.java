@@ -43,7 +43,7 @@ public class LoadAtsConfigCacheCallable implements Callable<AtsArtifactConfigCac
 
       List<IArtifactType> typesToLoad = getTypesToLoad();
       List<Artifact> artifactListFromType =
-         ArtifactQuery.getArtifactListFromType(typesToLoad, AtsUtilCore.getAtsBranchToken(),
+         ArtifactQuery.getArtifactListFromType(typesToLoad, AtsUtilCore.getAtsBranch(),
             DeletionFlag.EXCLUDE_DELETED);
 
       for (Artifact artifact : artifactListFromType) {

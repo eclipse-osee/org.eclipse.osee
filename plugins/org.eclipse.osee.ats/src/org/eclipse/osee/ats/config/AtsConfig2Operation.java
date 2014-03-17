@@ -15,9 +15,9 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -89,11 +89,11 @@ public class AtsConfig2Operation extends AbstractOperation {
       Artifact result = null;
       result =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "Work Definitions",
-            AtsUtil.getAtsBranchToken());
+            AtsUtilCore.getAtsBranch());
       if (result == null) {
          result =
             ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "Action Tracking System",
-               AtsUtil.getAtsBranchToken());
+               AtsUtilCore.getAtsBranch());
       }
       return result;
    }

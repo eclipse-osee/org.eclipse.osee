@@ -52,7 +52,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (objects.isEmpty() && deleteObjects.isEmpty()) {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");
       }
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranchToken(), comment);
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), comment);
       // First, create or update any artifacts that changed
       for (Object obj : new CopyOnWriteArrayList<Object>(objects)) {
          if (obj instanceof IAtsWorkItem) {
@@ -133,7 +133,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
             art = getArtifact(storeObject);
          }
          if (art == null) {
-            art = ArtifactQuery.getArtifactFromId(atsObject.getGuid(), AtsUtilClient.getAtsBranch());
+            art = ArtifactQuery.getArtifactFromId(atsObject.getGuid(), AtsUtilCore.getAtsBranch());
          }
       }
       return art;

@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -40,9 +41,7 @@ import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.ats.world.WorldEditorUISearchItemProvider;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -96,14 +95,6 @@ public final class AtsUtil {
 
    public static long daysTillToday(Date date) {
       return (date.getTime() - today.getTime()) / MILLISECS_PER_DAY;
-   }
-
-   public static Branch getAtsBranch() throws OseeCoreException {
-      return BranchManager.getCommonBranch();
-   }
-
-   public static IOseeBranch getAtsBranchToken() {
-      return CoreBranches.COMMON;
    }
 
    public static boolean isInTest() {
@@ -355,7 +346,7 @@ public final class AtsUtil {
    public static Set<Artifact> getAssigned(String userId, Class<?> clazz) throws OseeCoreException {
       Set<Artifact> assigned = new HashSet<Artifact>();
       for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.CurrentState,
-         "<" + userId + ">", AtsUtil.getAtsBranchToken(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
+         "<" + userId + ">", AtsUtilCore.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
          if (clazz == null || clazz.isInstance(artifact)) {
             assigned.add(artifact);
          }

@@ -20,12 +20,10 @@ import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
@@ -97,10 +95,6 @@ public class AtsUtilClient {
       }
    }
 
-   public static Branch getAtsBranch() throws OseeCoreException {
-      return BranchManager.getCommonBranch();
-   }
-
    public static String getAtsId(Artifact art) throws OseeCoreException {
       String toReturn = art.getSoleAttributeValueAsString(AtsAttributeTypes.AtsId, DEFAULT_ATS_ID_VALUE);
       if (DEFAULT_ATS_ID_VALUE.equals(toReturn)) {
@@ -112,7 +106,7 @@ public class AtsUtilClient {
    public static Artifact getFromToken(IArtifactToken token) {
       Artifact toReturn = null;
       try {
-         toReturn = ArtifactQuery.getArtifactFromToken(token, AtsUtilCore.getAtsBranchToken());
+         toReturn = ArtifactQuery.getArtifactFromToken(token, AtsUtilCore.getAtsBranch());
       } catch (OseeCoreException ex) {
          // Do Nothing;
       }

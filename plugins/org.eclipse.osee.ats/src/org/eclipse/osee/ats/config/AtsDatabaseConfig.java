@@ -17,11 +17,11 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.core.client.config.AtsArtifactToken;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -42,7 +42,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
       // load top team into cache
       Artifact topTeamDefArt =
-         ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopTeamDefinition, AtsUtil.getAtsBranchToken());
+         ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopTeamDefinition, AtsUtilCore.getAtsBranch());
       IAtsTeamDefinition teamDef = AtsClientService.get().getConfigObject(topTeamDefArt);
       teamDef.setWorkflowDefinition(IAtsWorkDefinitionAdmin.TeamWorkflowDefaultDefinitionId);
       AtsChangeSet changes = new AtsChangeSet("Set Top Team Work Definition");
@@ -51,7 +51,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
       // load top ai into cache
       Artifact topAiArt =
-         ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopActionableItem, AtsUtil.getAtsBranchToken());
+         ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopActionableItem, AtsUtilCore.getAtsBranch());
       IAtsActionableItem aia = AtsClientService.get().getConfigObject(topAiArt);
       aia.setActionable(false);
       changes.reset("Set Top AI to Non Actionable");
@@ -65,7 +65,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
    }
 
    public static void createAtsFolders() throws OseeCoreException {
-      Branch atsBranch = AtsUtil.getAtsBranch();
+      IOseeBranch atsBranch = AtsUtilCore.getAtsBranch();
       SkynetTransaction transaction = TransactionManager.createTransaction(atsBranch, "Create ATS Folders");
 
       Artifact headingArt = OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.HeadingFolder, atsBranch);

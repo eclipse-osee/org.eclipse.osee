@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -78,7 +79,7 @@ public class UserWorldSearchItem {
          // Note: Don't need to do this for Originator, Subscribed or Favorites, cause it does completed canceled in it's own searches
          if (options.contains(UserSearchOption.IncludeCancelled) || options.contains(UserSearchOption.IncludeCompleted)) {
             searchArts.addAll(WorkflowManager.getAwas(ArtifactQuery.getArtifactListFromAttribute(
-               AtsAttributeTypes.State, "<" + user.getUserId() + ">", AtsUtil.getAtsBranch(),
+               AtsAttributeTypes.State, "<" + user.getUserId() + ">", AtsUtilCore.getAtsBranch(),
                QueryOptions.CONTAINS_MATCH_OPTIONS)));
          }
       }
@@ -126,7 +127,7 @@ public class UserWorldSearchItem {
 
    private Collection<AbstractWorkflowArtifact> getOriginatorArtifacts() throws OseeCoreException {
       return Collections.castAll(ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.CreatedBy,
-         user.getUserId(), AtsUtil.getAtsBranch()));
+         user.getUserId(), AtsUtilCore.getAtsBranch()));
    }
 
    private Collection<AbstractWorkflowArtifact> getSubscribedArtifacts() throws OseeCoreException {

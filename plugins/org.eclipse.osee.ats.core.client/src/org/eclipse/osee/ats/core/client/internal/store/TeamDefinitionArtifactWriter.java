@@ -105,7 +105,7 @@ public class TeamDefinitionArtifactWriter extends AbstractAtsArtifactWriter<IAts
             }
             // if not persisted yet, it should be in artifact cache
             if (newArt == null) {
-               newArt = ArtifactCache.getActive(newGuid, AtsUtilCore.getAtsBranchToken());
+               newArt = ArtifactCache.getActive(newGuid, AtsUtilCore.getAtsBranch());
             }
             artifact.addRelation(CoreRelationTypes.Default_Hierarchical__Child, newArt);
          }

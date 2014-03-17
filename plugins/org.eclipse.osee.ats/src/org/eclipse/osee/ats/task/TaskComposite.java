@@ -35,10 +35,10 @@ import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
 import org.eclipse.osee.ats.world.WorldContentProvider;
 import org.eclipse.osee.ats.world.WorldLabelProvider;
@@ -182,7 +182,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
       if (delete) {
          try {
             SkynetTransaction transaction =
-               TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Delete Tasks");
+               TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Delete Tasks");
             // Done for concurrent modification purposes
             ArrayList<TaskArtifact> delItems = new ArrayList<TaskArtifact>();
             ArrayList<TaskArtifact> tasksNotInDb = new ArrayList<TaskArtifact>();

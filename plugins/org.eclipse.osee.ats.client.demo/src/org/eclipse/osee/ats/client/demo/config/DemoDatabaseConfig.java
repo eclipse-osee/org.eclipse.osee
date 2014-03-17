@@ -64,10 +64,10 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
 
    private void createWorkPackages() throws OseeCoreException {
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranchToken(), "Create Work Packages");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Create Work Packages");
 
       Artifact codeTeamArt =
-         ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Code, AtsUtilCore.getAtsBranchToken());
+         ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Code, AtsUtilCore.getAtsBranch());
 
       Artifact workPkg1 = createWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01, "ASDHFA443");
       workPkg1.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, codeTeamArt);
@@ -83,7 +83,7 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
       workPkg3.persist(transaction);
 
       Artifact testTeamArt =
-         ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Test_AI, AtsUtilCore.getAtsBranchToken());
+         ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Test_AI, AtsUtilCore.getAtsBranch());
 
       Artifact workPkg11 = createWorkPackage(DemoArtifactToken.SAW_Test_AI_WorkPackage_0A, "AHESSH3");
       workPkg11.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, testTeamArt);
@@ -102,7 +102,7 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
    }
 
    private Artifact createWorkPackage(IArtifactToken workPackageToken, String activityId) throws OseeCoreException {
-      Artifact workPkg1 = ArtifactTypeManager.addArtifact(workPackageToken, AtsUtilCore.getAtsBranchToken());
+      Artifact workPkg1 = ArtifactTypeManager.addArtifact(workPackageToken, AtsUtilCore.getAtsBranch());
       char charAt = workPackageToken.getName().charAt(workPackageToken.getName().length() - 1);
       workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageId, "WP_0" + charAt);
       workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageProgram, "Program A");

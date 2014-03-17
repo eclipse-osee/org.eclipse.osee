@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.dsl.ModelUtil;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
@@ -94,7 +94,7 @@ public class AtsWorkDefinitionImporter {
       try {
          artifact =
             ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheetName,
-               AtsUtilClient.getAtsBranch());
+               AtsUtilCore.getAtsBranch());
       } catch (ArtifactDoesNotExist ex) {
          // do nothing; this is what we want
       }
@@ -111,7 +111,7 @@ public class AtsWorkDefinitionImporter {
       } else {
          resultData.log(String.format("Imported new WorkDefinition [%s]", workDefName));
          artifact =
-            ArtifactTypeManager.addArtifact(AtsArtifactTypes.WorkDefinition, AtsUtilClient.getAtsBranch(), sheetName);
+            ArtifactTypeManager.addArtifact(AtsArtifactTypes.WorkDefinition, AtsUtilCore.getAtsBranch(), sheetName);
       }
       artifact.setSoleAttributeValue(AtsAttributeTypes.DslSheet, workDefXml);
       changes.add(artifact);

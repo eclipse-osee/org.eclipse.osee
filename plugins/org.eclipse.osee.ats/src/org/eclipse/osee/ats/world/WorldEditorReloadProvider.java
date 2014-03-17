@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -71,7 +71,7 @@ public class WorldEditorReloadProvider extends WorldEditorProvider {
       if (validGuids.isEmpty()) {
          AWorkbench.popup("No valid guids to load");
       } else {
-         artifacts = ArtifactQuery.getArtifactListFromIds(new ArrayList<String>(validGuids), AtsUtil.getAtsBranch());
+         artifacts = ArtifactQuery.getArtifactListFromIds(new ArrayList<String>(validGuids), AtsUtilCore.getAtsBranch());
          AtsBulkLoad.bulkLoadArtifacts(artifacts);
       }
       reload = false;

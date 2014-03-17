@@ -54,12 +54,12 @@ import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -206,7 +206,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             //               new ElapsedTime(String.format("ValidateAtsDatabase - load Artifact set %d/%d", artSetNum++,
             //                  artIdLists.size()));
             Date date = new Date();
-            Collection<Artifact> allArtifacts = ArtifactQuery.getArtifactListFromIds(artIdList, AtsUtil.getAtsBranch());
+            Collection<Artifact> allArtifacts =
+               ArtifactQuery.getArtifactListFromIds(artIdList, AtsUtilCore.getAtsBranch());
             results.logTestTimeSpent(date, "ArtifactQuery.getArtifactListFromIds");
             //            elapsedTime.end();
 
@@ -278,7 +279,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    private List<Collection<Integer>> getFromGuids() {
       List<String> guids = Arrays.asList("AD3zXUb9kkF08ltQPwQA", "AD3zWI5UrUmhDxwBekAA", "BPLQGf99g2qG_LoknEQA");
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(guids, AtsUtil.getAtsBranchToken());
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(guids, AtsUtilCore.getAtsBranch());
       List<Integer> artIds = new ArrayList<Integer>();
       for (Artifact art : artifacts) {
          artIds.add(art.getArtId());
@@ -289,7 +290,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    public void testCompletedCancelledStateAttributesSetWithPersist(Collection<Artifact> artifacts) {
       try {
          SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
+            TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Validate ATS Database");
          testCompletedCancelledStateAttributesSet(artifacts, transaction, results);
          transaction.execute();
       } catch (Exception ex) {
@@ -362,7 +363,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       Date date = new Date();
       try {
          SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
+            TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Validate ATS Database");
          for (Artifact artifact : artifacts) {
             try {
                if (artifact instanceof AbstractWorkflowArtifact) {
@@ -451,7 +452,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    private void testStateAttributeDuplications(Collection<Artifact> artifacts) throws OseeCoreException {
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Validate ATS Database");
       Date date = new Date();
       for (Artifact artifact : artifacts) {
          try {
@@ -528,7 +529,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    public void testAtsAttributevaluesWithPersist(Collection<Artifact> artifacts) {
       try {
          SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
+            TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Validate ATS Database");
          testAtsAttributeValues(transaction, results, fixAttributeValues, artifacts);
          transaction.execute();
       } catch (Exception ex) {
@@ -823,7 +824,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
       xResultData.log(monitor, "testLoadAllCommonArtifactIds - Started " + DateUtil.getMMDDYYHHMM());
       List<Integer> artIds = getCommonArtifactIds();
-      // ArtifactQuery.selectArtifactListFromBranch(AtsUtil.getAtsBranch(), EXCLUDE_DELETED);
+      // ArtifactQuery.selectArtifactListFromBranch(AtsUtilCore.getAtsBranchToken(), EXCLUDE_DELETED);
 
       if (artIds.isEmpty()) {
          xResultData.logError("Error: Artifact load returned 0 artifacts to check");
@@ -838,7 +839,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       List<Integer> artIds = new ArrayList<Integer>();
       ElapsedTime time = new ElapsedTime("getCommonArtifactIds");
       try {
-         chStmt.runPreparedQuery(SELECT_COMMON_ART_IDS, new Object[] {AtsUtil.getAtsBranch().getId()});
+         chStmt.runPreparedQuery(SELECT_COMMON_ART_IDS, new Object[] {AtsUtilCore.getAtsBranch().getUuid()});
          while (chStmt.next()) {
             artIds.add(chStmt.getInt(1));
          }

@@ -32,10 +32,10 @@ public class AtsArtifactQuery {
       List<Artifact> artifacts = new LinkedList<Artifact>();
 
       if (GUID.isValid(guidOrAtsId)) {
-         artifacts.add(ArtifactQuery.getArtifactFromId(guidOrAtsId, AtsUtilCore.getAtsBranchToken()));
+         artifacts.add(ArtifactQuery.getArtifactFromId(guidOrAtsId, AtsUtilCore.getAtsBranch()));
       } else {
          artifacts.addAll(ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.AtsId,
-            Collections.singleton(guidOrAtsId), AtsUtilCore.getAtsBranchToken(), 1));
+            Collections.singleton(guidOrAtsId), AtsUtilCore.getAtsBranch(), 1));
       }
 
       if (artifacts.isEmpty()) {
@@ -60,14 +60,14 @@ public class AtsArtifactQuery {
       }
 
       if (!guids.isEmpty()) {
-         List<Artifact> fromIds = ArtifactQuery.getArtifactListFromIds(guids, AtsUtilCore.getAtsBranchToken());
+         List<Artifact> fromIds = ArtifactQuery.getArtifactListFromIds(guids, AtsUtilCore.getAtsBranch());
          toReturn.addAll(fromIds);
       }
 
       if (!atsIds.isEmpty()) {
          List<Artifact> fromIds =
             ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.AtsId, atsIds,
-               AtsUtilCore.getAtsBranchToken(), atsIds.size());
+               AtsUtilCore.getAtsBranch(), atsIds.size());
          toReturn.addAll(fromIds);
       }
 

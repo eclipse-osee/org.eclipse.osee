@@ -41,14 +41,14 @@ public class VersionArtifactStoreTest {
    @AfterClass
    public static void cleanup() throws OseeCoreException {
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranchToken(),
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
             VersionArtifactStoreTest.class.getSimpleName() + " - cleanup");
 
       IAtsConfig config = AtsClientService.get().getAtsConfig();
       for (String name : Arrays.asList("VersionArtifactStoreTest - version 1", "VersionArtifactStoreTest - version 2",
          "VersionArtifactStoreTest - version 3")) {
          for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.Version, name,
-            AtsUtilCore.getAtsBranchToken())) {
+            AtsUtilCore.getAtsBranch())) {
             art.deleteAndPersist(transaction);
 
             IAtsConfigObject soleByGuid = config.getSoleByGuid(art.getGuid());
@@ -60,7 +60,7 @@ public class VersionArtifactStoreTest {
 
    @Test
    public void testLoadFromArtifact() throws OseeCoreException {
-      Artifact verArt = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtilCore.getAtsBranchToken());
+      Artifact verArt = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtilCore.getAtsBranch());
       verArt.setName("VersionArtifactStoreTest - version 1");
       verArt.persist(getClass().getSimpleName());
 
@@ -103,12 +103,12 @@ public class VersionArtifactStoreTest {
 
    @Test
    public void testSaveToArtifact() throws OseeCoreException {
-      Artifact verArt = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtilCore.getAtsBranchToken());
+      Artifact verArt = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtilCore.getAtsBranch());
       verArt.setName("VersionArtifactStoreTest - version 2");
 
       Artifact teamDef =
          ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition, "SAW SW",
-            AtsUtilCore.getAtsBranchToken());
+            AtsUtilCore.getAtsBranch());
       verArt.addRelation(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, teamDef);
       verArt.persist(getClass().getSimpleName());
 

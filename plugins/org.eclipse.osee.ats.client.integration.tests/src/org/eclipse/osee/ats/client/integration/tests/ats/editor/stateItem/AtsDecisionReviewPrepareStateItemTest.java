@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewPrepareStateItem;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -49,7 +50,7 @@ public class AtsDecisionReviewPrepareStateItemTest {
          // setup fake review artifact with decision options set
          decRevArt =
             (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
-               AtsUtil.getAtsBranch());
+               AtsUtilCore.getAtsBranch());
          decRevArt.setName(getClass().getSimpleName());
          decRevArt.persist(getClass().getSimpleName());
       }

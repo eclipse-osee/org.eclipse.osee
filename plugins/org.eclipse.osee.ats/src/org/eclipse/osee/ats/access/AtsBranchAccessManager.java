@@ -24,9 +24,9 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.access.AtsBranchAccessContextId;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -98,7 +98,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
       Artifact toReturn = null;
       int artId = BranchManager.getBranch(branch).getAssociatedArtifactId();
       if (artId > 0) {
-         toReturn = ArtifactQuery.getArtifactFromId(artId, AtsUtil.getAtsBranchToken());
+         toReturn = ArtifactQuery.getArtifactFromId(artId, AtsUtilCore.getAtsBranch());
       } else {
          toReturn = UserManager.getUser(SystemUser.OseeSystem);
       }
@@ -111,7 +111,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
    public boolean isApplicable(IOseeBranch objectBranch) {
       boolean result = false;
       try {
-         if (!AtsUtil.getAtsBranchToken().equals(objectBranch)) {
+         if (!AtsUtilCore.getAtsBranch().equals(objectBranch)) {
             ArtifactType assocArtType = getAssociatedArtifact(objectBranch).getArtifactType();
             if (assocArtType != null) {
                result = assocArtType.inheritsFrom(AtsArtifactTypes.AtsArtifact);
@@ -132,7 +132,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
       branchGuidToContextIdCache.put(branch.getGuid(), contextIds);
       try {
          // don't access control common branch artifacts...yet
-         if (!AtsUtil.getAtsBranchToken().equals(branch)) {
+         if (!AtsUtilCore.getAtsBranch().equals(branch)) {
             // do this check first since role will supersede others
             if (roleContextProvider != null) {
                contextIds.addAll(roleContextProvider.getContextId(UserManager.getUser()));

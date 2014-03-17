@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsBranchManager;
@@ -327,10 +328,10 @@ public class AtsBranchConfigurationTest {
       String namespace = "org.branchTest." + branch.getName().toLowerCase();
       Artifact aArt =
          ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.Action, branch.getName() + " Req Changes",
-            AtsUtil.getAtsBranch());
+            AtsUtilCore.getAtsBranch());
       if (aArt != null) {
          SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+            TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Branch Configuration Test");
          for (TeamWorkFlowArtifact teamArt : ActionManager.getTeams(aArt)) {
             SMAEditor.close(Collections.singleton(teamArt), false);
             teamArt.deleteAndPersist(transaction, true);
@@ -341,7 +342,7 @@ public class AtsBranchConfigurationTest {
 
       // Delete VersionArtifacts
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Branch Configuration Test");
       for (IAtsVersion version : AtsClientService.get().getAtsConfig().get(IAtsVersion.class)) {
          if (version.getName().contains(branch.getName())) {
             Artifact artifact = AtsClientService.get().getConfigArtifact(version);
@@ -354,9 +355,9 @@ public class AtsBranchConfigurationTest {
       transaction.execute();
 
       // Delete Team Definitions
-      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+      transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Branch Configuration Test");
       for (Artifact teamDefArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamDefinition,
-         branch.getName(), AtsUtil.getAtsBranchToken())) {
+         branch.getName(), AtsUtilCore.getAtsBranch())) {
          teamDefArt.deleteAndPersist(transaction, false);
          AtsClientService.get().getAtsConfig().invalidate(
             AtsClientService.get().getAtsConfig().getSoleByGuid(teamDefArt.getGuid(), IAtsTeamDefinition.class));
@@ -364,9 +365,9 @@ public class AtsBranchConfigurationTest {
       transaction.execute();
 
       // Delete AIs
-      transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+      transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Branch Configuration Test");
       for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
-         branch.getName(), AtsUtil.getAtsBranchToken())) {
+         branch.getName(), AtsUtilCore.getAtsBranch())) {
          for (Artifact childArt : aiaArt.getChildren()) {
             childArt.deleteAndPersist(transaction, false);
             AtsClientService.get().getAtsConfig().invalidate(
@@ -379,9 +380,9 @@ public class AtsBranchConfigurationTest {
 
       // Work Definition
       Collection<Artifact> arts =
-         ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.WorkDefinition, AtsUtil.getAtsBranch());
+         ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.WorkDefinition, AtsUtilCore.getAtsBranch());
       if (arts.size() > 0) {
-         transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
+         transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Branch Configuration Test");
          for (Artifact workArt : arts) {
             if (workArt.getName().startsWith(namespace)) {
                workArt.deleteAndPersist(transaction, true);

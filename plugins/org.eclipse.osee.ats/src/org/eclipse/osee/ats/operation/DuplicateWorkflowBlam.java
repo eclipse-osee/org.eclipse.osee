@@ -33,10 +33,10 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -156,7 +156,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       AtsChangeSet changes = new AtsChangeSet("Duplicate Workflow");
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          TeamWorkFlowArtifact dupArt =
-            (TeamWorkFlowArtifact) teamArt.duplicate(AtsUtil.getAtsBranch(), Arrays.asList(AtsAttributeTypes.AtsId));
+            (TeamWorkFlowArtifact) teamArt.duplicate(AtsUtilCore.getAtsBranch(), Arrays.asList(AtsAttributeTypes.AtsId));
          if (Strings.isValid(title)) {
             dupArt.setName(title);
          }
@@ -166,7 +166,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          changes.add(dupArt);
          if (duplicateTasks) {
             for (TaskArtifact taskArt : teamArt.getTaskArtifacts()) {
-               TaskArtifact dupTaskArt = (TaskArtifact) taskArt.duplicate(AtsUtil.getAtsBranch());
+               TaskArtifact dupTaskArt = (TaskArtifact) taskArt.duplicate(AtsUtilCore.getAtsBranch());
                dupTaskArt.getLog().addLog(LogType.Note, null, "Task duplicated from " + taskArt.getAtsId(),
                   AtsCore.getUserService().getCurrentUser().getUserId());
                dupArt.addRelation(AtsRelationTypes.TeamWfToTask_Task, dupTaskArt);

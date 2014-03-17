@@ -30,9 +30,9 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -140,7 +140,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          criteria.add(new AttributeCriteria(AtsAttributeTypes.ChangeType, changeType.name()));
       }
 
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromCriteria(AtsUtilCore.getAtsBranch(), 1000, criteria);
 
       Set<Artifact> resultSet = new HashSet<Artifact>();
       for (Artifact art : artifacts) {

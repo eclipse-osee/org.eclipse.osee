@@ -22,10 +22,10 @@ import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.NavigateTestUtil;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskXViewer;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.TaskSearchWorldSearchItem;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -112,7 +112,7 @@ public class AtsNavigateItemsToTaskEditorTest {
    public void runGeneralTaskSearchOnCompletedCancelledTest(XNavigateItem item, boolean selected, int expectedNum) throws Exception {
       Artifact groupArt =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.UniversalGroup, "Test Group",
-            AtsUtil.getAtsBranch());
+            AtsUtilCore.getAtsBranch());
       Set<Artifact> selectedUsers = new HashSet<Artifact>();
       TaskEditor editor = getSingleEditorOrFail();
       ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setIncludeCompletedCheckbox(selected);

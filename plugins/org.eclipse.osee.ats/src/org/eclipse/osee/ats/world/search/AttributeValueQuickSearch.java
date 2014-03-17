@@ -14,7 +14,7 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -47,7 +47,7 @@ public class AttributeValueQuickSearch {
       if (values != null && values.size() > 0) {
          for (String value : values) {
             List<Artifact> searchResult =
-               ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(), value, false,
+               ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtilCore.getAtsBranch(), value, false,
                   EXCLUDE_DELETED, false, attributeType);
             // Since quick search is tokenized, re-validate if exactMatch is desired
             if (exactMatch) {

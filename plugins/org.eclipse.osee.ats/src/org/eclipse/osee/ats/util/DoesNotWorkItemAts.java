@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.health.ValidateResults;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -70,7 +71,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
          }
          ValidateResults results = new ValidateResults();
          SkynetTransaction transaction =
-            TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Fix Working attributes.");
+            TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Fix Working attributes.");
          ValidateAtsDatabase.testCompletedCancelledStateAttributesSet(artifacts, transaction, results);
 
          XResultData xResultData = new XResultData();

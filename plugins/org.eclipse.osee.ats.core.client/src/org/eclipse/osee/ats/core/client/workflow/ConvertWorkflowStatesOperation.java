@@ -63,7 +63,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       SkynetTransaction transaction = null;
       if (persist) {
-         transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranchToken(), getName());
+         transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getName());
       }
       if (fromStateToStateMap.isEmpty()) {
          rd.logError("Must enter FromToState pairs");

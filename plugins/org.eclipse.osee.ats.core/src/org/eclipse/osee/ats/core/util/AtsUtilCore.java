@@ -24,7 +24,7 @@ public class AtsUtilCore {
 
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
 
-   public static IOseeBranch getAtsBranchToken() {
+   public static IOseeBranch getAtsBranch() {
       return CoreBranches.COMMON;
    }
 

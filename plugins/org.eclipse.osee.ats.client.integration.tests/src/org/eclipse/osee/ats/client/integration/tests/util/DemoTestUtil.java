@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IUserToken;
@@ -152,7 +153,7 @@ public class DemoTestUtil {
    public static TeamWorkFlowArtifact getToolsTeamWorkflow() throws OseeCoreException {
       if (toolsTeamWorkflow == null) {
          for (Artifact art : ArtifactQuery.getArtifactListFromName("Button S doesn't work on help",
-            AtsUtil.getAtsBranch(), EXCLUDE_DELETED)) {
+            AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED)) {
             if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                toolsTeamWorkflow = (TeamWorkFlowArtifact) art;
             }
@@ -165,7 +166,7 @@ public class DemoTestUtil {
       if (unCommittedWorkflows == null) {
          unCommittedWorkflows = new HashMap<DemoWorkType, Artifact>();
          for (Artifact art : ArtifactQuery.getArtifactListFromName(
-            "SAW (uncommitted) More Reqt Changes for Diagram View", AtsUtil.getAtsBranch(), EXCLUDE_DELETED)) {
+            "SAW (uncommitted) More Reqt Changes for Diagram View", AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED)) {
             if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
                unCommittedWorkflows.put(DemoWorkType.Code, art);
             } else if (art.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow)) {
@@ -184,7 +185,7 @@ public class DemoTestUtil {
       if (committedWorkflows == null) {
          committedWorkflows = new HashMap<DemoWorkType, Artifact>();
          for (Artifact art : ArtifactQuery.getArtifactListFromName("SAW (committed) Reqt Changes for Diagram View",
-            AtsUtil.getAtsBranch(), EXCLUDE_DELETED)) {
+            AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED)) {
             if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
                committedWorkflows.put(DemoWorkType.Code, art);
             } else if (art.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow)) {

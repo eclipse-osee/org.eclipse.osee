@@ -17,9 +17,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsIdProvider;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -94,18 +94,18 @@ public class ValidateAtsIds extends AbstractBlam {
 
    private void checkArtifactType(IArtifactType toCheck, boolean persist, int partitionSize, int startNumber) throws OseeCoreException {
       SkynetTransaction tx = null;
-      QueryBuilderArtifact builder = ArtifactQuery.createQueryBuilder(CoreBranches.COMMON);
+      QueryBuilderArtifact builder = ArtifactQuery.createQueryBuilder(AtsUtilCore.getAtsBranch());
       builder.andIsOfType(toCheck);
       List<Integer> result = builder.getIds();
       for (int i = startNumber; i < result.size(); i += partitionSize) {
          if (persist) {
-            tx = TransactionManager.createTransaction(CoreBranches.COMMON, "Update AtsId Attribute");
+            tx = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Update AtsId Attribute");
          }
          int toIdx = Math.min(result.size(), i + partitionSize);
          List<Integer> subList = result.subList(i, toIdx);
          List<Artifact> artifactListFromIds = null;
          try {
-            artifactListFromIds = ArtifactQuery.getArtifactListFromIds(subList, CoreBranches.COMMON);
+            artifactListFromIds = ArtifactQuery.getArtifactListFromIds(subList, AtsUtilCore.getAtsBranch());
             for (Artifact art : artifactListFromIds) {
                String atsId = art.getSoleAttributeValueAsString(AtsAttributeTypes.AtsId, "");
                if (!Strings.isValid(atsId) && persist) {

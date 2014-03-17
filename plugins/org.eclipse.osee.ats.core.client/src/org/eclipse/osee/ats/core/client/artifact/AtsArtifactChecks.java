@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.search.UserRelatedToAtsObjectSearch;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -120,7 +119,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       if (!aiaGuids.isEmpty()) {
          List<Artifact> teamWfsRelatedToAis =
             ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.TeamWorkflow,
-               AtsAttributeTypes.ActionableItem, aiaGuids, AtsUtilClient.getAtsBranch(), 10);
+               AtsAttributeTypes.ActionableItem, aiaGuids, AtsUtilCore.getAtsBranch(), 10);
          if (!teamWfsRelatedToAis.isEmpty()) {
             return createStatus(String.format(
                "Actionable Items (or children AIs) [%s] selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.",
@@ -160,7 +159,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       if (!guids.isEmpty()) {
          List<Artifact> artifactListFromIds =
             ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.TeamDefinition, guids,
-               AtsUtilClient.getAtsBranch(), 5);
+               AtsUtilCore.getAtsBranch(), 5);
          if (artifactListFromIds.size() > 0) {
             return createStatus(String.format(
                "Team Definition (or children Team Definitions) [%s] selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.",
@@ -178,7 +177,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
          if (art.isOfType(AtsArtifactTypes.WorkDefinition)) {
             List<Artifact> artifactListFromTypeAndAttribute =
                ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.WorkDefinition,
-                  AtsAttributeTypes.WorkflowDefinition, art.getName(), AtsUtilCore.getAtsBranchToken());
+                  AtsAttributeTypes.WorkflowDefinition, art.getName(), AtsUtilCore.getAtsBranch());
             if (artifactListFromTypeAndAttribute.size() > 0) {
                return createStatus(String.format(
                   "ATS WorkDefinition [%s] selected to delete has ats.WorkDefinition attributes set to it's name in %d artifact.  These must be changed first.",

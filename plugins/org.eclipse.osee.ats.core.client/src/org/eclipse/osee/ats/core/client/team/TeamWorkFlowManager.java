@@ -336,7 +336,7 @@ public class TeamWorkFlowManager {
    }
 
    public static TeamWorkFlowArtifact getTeamWorkflowArt(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      return (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromId(teamWf.getGuid(), AtsUtilCore.getAtsBranchToken());
+      return (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromId(teamWf.getGuid(), AtsUtilCore.getAtsBranch());
    }
 
 }

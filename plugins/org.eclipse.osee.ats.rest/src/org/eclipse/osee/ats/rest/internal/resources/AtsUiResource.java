@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.resources;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,6 +19,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -80,7 +80,8 @@ public final class AtsUiResource {
    };
 
    private ResultSet<ArtifactReadable> getAis() throws OseeCoreException {
-      return orcsApi.getQueryFactory(null).fromBranch(COMMON).andIsOfType(AtsArtifactTypes.ActionableItem).getResults();
+      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
+         AtsArtifactTypes.ActionableItem).getResults();
    }
 
    /**

@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam.ImportOption;
@@ -59,7 +60,7 @@ public class ImportActionsViaSpreadsheetTest {
       assertFalse(AtsUtil.isProductionDb());
 
       for (String title : ActionTitles) {
-         List<Artifact> arts = ArtifactQuery.getArtifactListFromName(title, AtsUtil.getAtsBranch(), EXCLUDE_DELETED);
+         List<Artifact> arts = ArtifactQuery.getArtifactListFromName(title, AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED);
          Assert.assertEquals(String.format("Action [%s] should have been purged before test start.", title), 0,
             arts.size());
       }
@@ -76,7 +77,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertEquals("No errors should be reported", "", rd.toString());
 
       List<Artifact> arts =
-         ArtifactQuery.getArtifactListFromName(FIRST_ACTION_TITLE, AtsUtil.getAtsBranch(), EXCLUDE_DELETED);
+         ArtifactQuery.getArtifactListFromName(FIRST_ACTION_TITLE, AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED);
       Assert.assertEquals("One Action and 3 Team Workflows should be created", 4, arts.size());
       int codeCount = 0, testCount = 0;
       TeamWorkFlowArtifact testWf = null;

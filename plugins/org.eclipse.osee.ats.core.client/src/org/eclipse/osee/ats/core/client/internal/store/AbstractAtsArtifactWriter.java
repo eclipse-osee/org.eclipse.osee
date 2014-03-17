@@ -52,7 +52,7 @@ public abstract class AbstractAtsArtifactWriter<T extends IAtsConfigObject> impl
       Artifact artifact = cache.getArtifact(atsObject);
       if (artifact == null) {
          artifact =
-            ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranchToken(), atsObject.getName(),
+            ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), atsObject.getName(),
                atsObject.getGuid());
          changes.add(artifact);
       }

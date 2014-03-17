@@ -21,8 +21,7 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -46,10 +45,10 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
    public static void cleanup() throws Exception {
       AtsTestUtil.cleanup();
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilClient.getAtsBranch(),
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
             PeerToPeerReviewManagerTest.class.getSimpleName());
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.PeerToPeerReview,
-         "PeerToPeerReviewManagerTest", AtsUtil.getAtsBranchToken(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
+         "PeerToPeerReviewManagerTest", AtsUtilCore.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
          if (art.getName().contains("StandAlone")) {
             art.deleteAndPersist(transaction);
          }

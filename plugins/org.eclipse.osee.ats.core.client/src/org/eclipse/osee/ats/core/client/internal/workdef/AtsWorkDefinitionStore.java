@@ -33,7 +33,7 @@ public class AtsWorkDefinitionStore implements IAtsWorkDefinitionStore {
    public List<Pair<String, String>> getWorkDefinitionStrings() throws OseeCoreException {
       List<Pair<String, String>> nameToWorkDefStr = new ArrayList<Pair<String, String>>(15);
       for (Artifact workDefArt : ArtifactQuery.getArtifactListFromType(Arrays.asList(AtsArtifactTypes.WorkDefinition),
-         AtsUtilCore.getAtsBranchToken(), DeletionFlag.EXCLUDE_DELETED)) {
+         AtsUtilCore.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED)) {
          nameToWorkDefStr.add(new Pair<String, String>(workDefArt.getName(), loadWorkDefinitionFromArtifact(workDefArt)));
       }
       return nameToWorkDefStr;

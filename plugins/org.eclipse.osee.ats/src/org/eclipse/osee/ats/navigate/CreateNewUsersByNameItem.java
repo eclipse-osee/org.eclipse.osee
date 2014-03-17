@@ -14,9 +14,9 @@ package org.eclipse.osee.ats.navigate;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
@@ -83,7 +83,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
          }
          try {
             SkynetTransaction transaction =
-               TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Create New User(s)");
+               TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Create New User(s)");
             Set<Artifact> newUsers = createNewUserItemTx(transaction, newUserNames);
             transaction.execute();
 
@@ -102,7 +102,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
    private Set<Artifact> createNewUserItemTx(SkynetTransaction transaction, Set<String> userNames) throws OseeCoreException {
       Set<Artifact> newVersions = new HashSet<Artifact>();
       for (String userName : userNames) {
-         Artifact userArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, AtsUtil.getAtsBranch(), userName);
+         Artifact userArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, AtsUtilCore.getAtsBranch(), userName);
          userArt.setSoleAttributeValue(CoreAttributeTypes.UserId, GUID.create());
          userArt.persist(transaction);
          newVersions.add(userArt);

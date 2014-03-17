@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.client.integration.tests.util.WorldEditorUtil;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
@@ -47,7 +48,6 @@ import org.eclipse.osee.ats.navigate.UserSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
@@ -403,7 +403,7 @@ public class AtsNavigateItemsToWorldViewTest {
       WorldEditor.closeAll();
       Artifact groupArt =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.UniversalGroup, "Test Group",
-            AtsUtil.getAtsBranch());
+            AtsUtilCore.getAtsBranch());
       assertTrue(groupArt != null);
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Group Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof GroupWorldSearchItem);
@@ -643,7 +643,7 @@ public class AtsNavigateItemsToWorldViewTest {
       Map<Artifact, Object> attributeValues = new HashMap<Artifact, Object>();
       handleTableCustomization();
       getXViewer().expandAll(); // necessary after table customization for linux cause customization change collapsesAll
-      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Navigate Test");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Navigate Test");
       // select a workflow artifact; get its attributes; delete an attribute
       for (Artifact art : arts) {
          attributeValues.put(art, art.getSoleAttributeValue(attributeTypeToDelete));
@@ -654,7 +654,7 @@ public class AtsNavigateItemsToWorldViewTest {
       try {
          runGeneralXColTest(20, true, attributeTypeToDelete, false);
       } finally {
-         transaction = TransactionManager.createTransaction(AtsUtil.getAtsBranch(), "Navigate Test");
+         transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Navigate Test");
          // restore the attribute to leave the demo db back in its original state
          for (Artifact art : arts) {
             art.setSoleAttributeValue(attributeTypeToDelete, attributeValues.get(art));

@@ -17,15 +17,15 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.internal.util.AtsUtilServer;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -58,7 +58,7 @@ public class AtsUserServiceImpl implements IAtsUserService {
       IAtsUser atsUser = null;
       if (Strings.isValid(userId)) {
          ResultSet<ArtifactReadable> results =
-            orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(CoreBranches.COMMON).andIsOfType(
+            orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
                CoreArtifactTypes.User).and(CoreAttributeTypes.UserId,
                org.eclipse.osee.framework.core.enums.Operator.EQUAL, userId).getResults();
          if (!results.isEmpty()) {
@@ -86,7 +86,7 @@ public class AtsUserServiceImpl implements IAtsUserService {
       IAtsUser atsUser = null;
       if (Strings.isValid(name)) {
          ArtifactReadable userArt =
-            orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(CoreBranches.COMMON).andIsOfType(
+            orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
                CoreArtifactTypes.User).and(CoreAttributeTypes.Name,
                org.eclipse.osee.framework.core.enums.Operator.EQUAL, name).getResults().getExactlyOne();
          if (userArt != null) {
@@ -138,7 +138,7 @@ public class AtsUserServiceImpl implements IAtsUserService {
 
    public static ArtifactReadable getCurrentUserArt() throws OseeCoreException {
       // TODO Switch to real user
-      return orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(CoreBranches.COMMON).andIsOfType(
+      return orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
          CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, org.eclipse.osee.framework.core.enums.Operator.EQUAL,
          SystemUser.OseeSystem.getUserId()).getResults().getExactlyOne();
    }

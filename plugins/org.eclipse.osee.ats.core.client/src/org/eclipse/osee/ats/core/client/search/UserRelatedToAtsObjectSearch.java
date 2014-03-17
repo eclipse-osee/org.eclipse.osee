@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -43,10 +43,10 @@ public class UserRelatedToAtsObjectSearch {
       List<Artifact> arts = new ArrayList<Artifact>();
 
       if (activeObjectsOnly) {
-         arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtilClient.getAtsBranch(),
+         arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtilCore.getAtsBranch(),
             atsUser.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState));
       } else {
-         arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtilClient.getAtsBranch(),
+         arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtilCore.getAtsBranch(),
             atsUser.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState,
             AtsAttributeTypes.State, AtsAttributeTypes.Log));
       }

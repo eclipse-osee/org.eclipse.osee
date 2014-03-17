@@ -32,11 +32,11 @@ import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -79,7 +79,7 @@ public class WorkflowManager {
       for (IArtifactType artType : TeamWorkFlowManager.getTeamWorkflowArtifactTypes()) {
          List<TeamWorkFlowArtifact> teamArts =
             org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactListFromType(artType,
-               AtsUtil.getAtsBranch()));
+               AtsUtilCore.getAtsBranch()));
          result.addAll(teamArts);
       }
       return result;

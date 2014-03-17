@@ -45,10 +45,10 @@ public class ConvertWorkflowStatesOperationTest {
    @AfterClass
    public static void cleanup() throws OseeCoreException {
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranchToken(),
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
             "ConvertWorkflowStatesOperationTest.cleanup");
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
-         "ConvertWorkflowStatesOperationTest", AtsUtilCore.getAtsBranchToken(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
+         "ConvertWorkflowStatesOperationTest", AtsUtilCore.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
          art.deleteAndPersist(transaction);
       }
       transaction.execute();
@@ -89,7 +89,7 @@ public class ConvertWorkflowStatesOperationTest {
 
       List<AbstractWorkflowArtifact> workflows = new ArrayList<AbstractWorkflowArtifact>();
       Artifact teamWf =
-         ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamWorkflow, AtsUtilCore.getAtsBranchToken(),
+         ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamWorkflow, AtsUtilCore.getAtsBranch(),
             "ConvertWorkflowStatesOperationTest.testDoWork");
       teamWf.addAttribute(AtsAttributeTypes.CurrentState, "Endorse;");
       teamWf.addAttribute(AtsAttributeTypes.State, "Analyze;");
@@ -129,7 +129,7 @@ public class ConvertWorkflowStatesOperationTest {
 
       List<AbstractWorkflowArtifact> workflows = new ArrayList<AbstractWorkflowArtifact>();
       Artifact teamWf =
-         ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamWorkflow, AtsUtilCore.getAtsBranchToken(),
+         ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamWorkflow, AtsUtilCore.getAtsBranch(),
             "ConvertWorkflowStatesOperationTest.testDoWork_persist");
       teamWf.addAttribute(AtsAttributeTypes.CurrentState, "Endorse;");
       workflows.add((AbstractWorkflowArtifact) teamWf);

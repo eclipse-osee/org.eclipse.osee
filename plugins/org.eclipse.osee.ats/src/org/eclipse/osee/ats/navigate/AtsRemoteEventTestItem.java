@@ -109,7 +109,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    private static Set<IAtsActionableItem> getActionableItemsByToken(Collection<IArtifactToken> aiArtifactTokens) throws OseeCoreException {
       Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
       for (IArtifactToken token : aiArtifactTokens) {
-         Artifact aiArt = ArtifactQuery.getArtifactFromId(token.getGuid(), AtsUtilCore.getAtsBranchToken());
+         Artifact aiArt = ArtifactQuery.getArtifactFromId(token.getGuid(), AtsUtilCore.getAtsBranch());
 
          if (aiArt != null) {
             IAtsActionableItem item = AtsClientService.get().getConfigObject(aiArt);
@@ -323,7 +323,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("Running " + title);
 
       Artifact actionArt =
-         ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle, AtsUtil.getAtsBranch());
+         ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle, AtsUtilCore.getAtsBranch());
 
       if (actionArt == null) {
          resultData.logError(String.format("Couldn't load Action named [%s]", actionTitle));
@@ -341,7 +341,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("Running " + title);
 
       Artifact actionArt =
-         ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle, AtsUtil.getAtsBranch());
+         ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle, AtsUtilCore.getAtsBranch());
 
       if (actionArt == null) {
          resultData.logError(String.format("Couldn't load Action named [%s]", actionTitle));

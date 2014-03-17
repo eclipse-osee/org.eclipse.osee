@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.util.SubscribeManager;
 import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
@@ -82,9 +83,9 @@ public class AtsNotifyUsersTest {
 
    private static void cleanUpAction() throws OseeCoreException {
       SkynetTransaction changes =
-         TransactionManager.createTransaction(AtsUtilClient.getAtsBranch(), AtsNotifyUsersTest.class.getSimpleName());
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), AtsNotifyUsersTest.class.getSimpleName());
       for (Artifact art : ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.Name,
-         AtsNotifyUsersTest.class.getSimpleName(), AtsUtilClient.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
+         AtsNotifyUsersTest.class.getSimpleName(), AtsUtilCore.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)) {
          art.deleteAndPersist(changes);
       }
       changes.execute();

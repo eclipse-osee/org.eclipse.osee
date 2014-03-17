@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewPrepareStateItem;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -52,7 +53,7 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
          // setup fake review artifact with decision options set
          peerRevArt =
             (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.PeerToPeerReview,
-               AtsUtil.getAtsBranch());
+               AtsUtilCore.getAtsBranch());
          peerRevArt.setName(getClass().getSimpleName());
          // Setup actionable item so don't get error that there is no parent team workflow
          peerRevArt.getActionableItemsDam().addActionableItem(

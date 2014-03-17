@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.util.widgets.dialog.UserCommunityListDialog;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -73,7 +73,7 @@ public class UserCommunitySearchItem extends WorldUISearchItem {
       }
 
       return ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.TeamWorkflow,
-         AtsAttributeTypes.UserCommunity, getSearchUserComm(), AtsUtil.getAtsBranch());
+         AtsAttributeTypes.UserCommunity, getSearchUserComm(), AtsUtilCore.getAtsBranch());
    }
 
    @Override

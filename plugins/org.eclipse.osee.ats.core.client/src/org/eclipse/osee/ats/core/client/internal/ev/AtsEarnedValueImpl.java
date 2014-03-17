@@ -47,7 +47,7 @@ public class AtsEarnedValueImpl implements IAtsEarnedValueService {
          AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
          String workPackageGuid = awa.getSoleAttributeValue(AtsAttributeTypes.WorkPackageGuid, null);
          if (Strings.isValid(workPackageGuid)) {
-            Artifact workPkgArt = ArtifactQuery.getArtifactFromId(workPackageGuid, AtsUtilCore.getAtsBranchToken());
+            Artifact workPkgArt = ArtifactQuery.getArtifactFromId(workPackageGuid, AtsUtilCore.getAtsBranch());
             wpa = new WorkPackageArtifact(workPkgArt);
          }
       }

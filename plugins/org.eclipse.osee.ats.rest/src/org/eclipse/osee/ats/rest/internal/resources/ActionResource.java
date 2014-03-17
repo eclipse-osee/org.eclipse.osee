@@ -149,7 +149,7 @@ public final class ActionResource {
       if (!Strings.isValid(results)) {
          for (IAttributeType attrType : Arrays.asList(AtsAttributeTypes.AtsId, AtsAttributeTypes.LegacyPcrId)) {
             ResultSet<ArtifactReadable> legacyQueryResults =
-               orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranchToken()).and(attrType,
+               orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).and(attrType,
                   org.eclipse.osee.framework.core.enums.Operator.EQUAL, searchId).getResults();
             if (legacyQueryResults.size() == 1) {
                results =

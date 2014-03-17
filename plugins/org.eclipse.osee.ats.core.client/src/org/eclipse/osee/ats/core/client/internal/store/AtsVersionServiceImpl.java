@@ -122,7 +122,7 @@ public class AtsVersionServiceImpl implements IAtsVersionAdmin {
    }
 
    private IAtsTeamWorkflow setTargetedVersionLink(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException {
-      Artifact versionArt = ArtifactQuery.checkArtifactFromId(version.getGuid(), AtsUtilCore.getAtsBranchToken());
+      Artifact versionArt = ArtifactQuery.checkArtifactFromId(version.getGuid(), AtsUtilCore.getAtsBranch());
       if (versionArt != null) {
          TeamWorkFlowArtifact teamArt = TeamWorkFlowManager.getTeamWorkflowArt(teamWf);
          if (teamArt != null) {
@@ -172,11 +172,11 @@ public class AtsVersionServiceImpl implements IAtsVersionAdmin {
 
    @Override
    public void setTeamDefinition(IAtsVersion version, IAtsTeamDefinition teamDef) throws OseeCoreException {
-      Artifact verArt = ArtifactQuery.getArtifactFromId(version.getGuid(), AtsUtilCore.getAtsBranchToken());
+      Artifact verArt = ArtifactQuery.getArtifactFromId(version.getGuid(), AtsUtilCore.getAtsBranch());
       if (verArt == null) {
          throw new OseeStateException("Version [%s] does not exist.", version);
       }
-      Artifact teamDefArt = ArtifactQuery.getArtifactFromId(teamDef.getGuid(), AtsUtilCore.getAtsBranchToken());
+      Artifact teamDefArt = ArtifactQuery.getArtifactFromId(teamDef.getGuid(), AtsUtilCore.getAtsBranch());
       if (teamDefArt == null) {
          throw new OseeStateException("Team Definition [%s] does not exist.", teamDef);
       }
@@ -188,7 +188,7 @@ public class AtsVersionServiceImpl implements IAtsVersionAdmin {
    @Override
    public IAtsTeamDefinition getTeamDefinition(IAtsVersion version) throws OseeCoreException {
       IAtsTeamDefinition result = null;
-      Artifact verArt = ArtifactQuery.getArtifactFromId(version.getGuid(), AtsUtilCore.getAtsBranchToken());
+      Artifact verArt = ArtifactQuery.getArtifactFromId(version.getGuid(), AtsUtilCore.getAtsBranch());
       if (verArt != null) {
          Artifact teamDefArt = null;
          try {
@@ -209,7 +209,7 @@ public class AtsVersionServiceImpl implements IAtsVersionAdmin {
    @Override
    public IAtsVersion getById(Identity<String> id) throws OseeCoreException {
       IAtsVersion version = null;
-      Artifact verArt = ArtifactQuery.getArtifactFromId(id.getGuid(), AtsUtilCore.getAtsBranchToken());
+      Artifact verArt = ArtifactQuery.getArtifactFromId(id.getGuid(), AtsUtilCore.getAtsBranch());
       if (verArt != null) {
          version = loadFromStore(verArt);
       }

@@ -58,7 +58,7 @@ public class ValidateWorkspaceToDatabaseWorkDefinitions extends XNavigateItemAct
          try {
             workDefArt =
                ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheet.getName(),
-                  AtsUtilCore.getAtsBranchToken());
+                  AtsUtilCore.getAtsBranch());
          } catch (ArtifactDoesNotExist ex) {
             // do nothing;
          }

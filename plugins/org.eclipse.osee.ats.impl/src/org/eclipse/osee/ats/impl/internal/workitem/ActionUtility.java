@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.workitem;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,10 +20,10 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -67,7 +66,8 @@ public class ActionUtility {
 
       TransactionFactory txFactory = orcsApi.getTransactionFactory(null);
       TransactionBuilder tx =
-         txFactory.createTransaction(COMMON, (ArtifactReadable) user.getStoreObject(), "Create ATS Action");
+         txFactory.createTransaction(AtsUtilCore.getAtsBranch(), (ArtifactReadable) user.getStoreObject(),
+            "Create ATS Action");
       ArtifactId action = tx.createArtifact(AtsArtifactTypes.Action, title);
       tx.setSoleAttributeFromString(action, AtsAttributeTypes.Description, description);
       tx.setSoleAttributeFromString(action, AtsAttributeTypes.ChangeType, changeType);
@@ -127,8 +127,8 @@ public class ActionUtility {
 
    private ArtifactReadable getActionableItem(OrcsApi orcsApi, String actionableItemName) throws OseeCoreException {
       ResultSet<ArtifactReadable> results =
-         orcsApi.getQueryFactory(null).fromBranch(COMMON).andIsOfType(AtsArtifactTypes.ActionableItem).andNameEquals(
-            actionableItemName).getResults();
+         orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
+            AtsArtifactTypes.ActionableItem).andNameEquals(actionableItemName).getResults();
       if (results.isEmpty()) {
          throw new OseeStateException("No Actionable Item found named [%s]", actionableItemName);
       }
@@ -147,8 +147,8 @@ public class ActionUtility {
    }
 
    private ArtifactReadable getWorkDefinition(OrcsApi orcsApi, String workDefinitionName) throws OseeCoreException {
-      return orcsApi.getQueryFactory(null).fromBranch(CoreBranches.COMMON).andIsOfType(AtsArtifactTypes.WorkDefinition).andNameEquals(
-         workDefinitionName).getResults().getExactlyOne();
+      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
+         AtsArtifactTypes.WorkDefinition).andNameEquals(workDefinitionName).getResults().getExactlyOne();
    }
 
    private String getWorkDefinitionName(ArtifactReadable teamDef) throws OseeCoreException {

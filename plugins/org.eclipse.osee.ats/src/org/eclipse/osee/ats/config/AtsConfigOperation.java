@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -218,7 +219,7 @@ public class AtsConfigOperation extends AbstractOperation {
                      AtsUtil.openATSAction(AtsClientService.get().getConfigArtifact(aia), AtsOpenOption.OpenAll);
                   }
                   RendererManager.open(ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
-                     workDefinition.getName(), AtsUtil.getAtsBranch()), PresentationType.SPECIALIZED_EDIT, monitor);
+                     workDefinition.getName(), AtsUtilCore.getAtsBranch()), PresentationType.SPECIALIZED_EDIT, monitor);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }

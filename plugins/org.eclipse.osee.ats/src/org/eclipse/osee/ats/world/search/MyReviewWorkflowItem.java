@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -63,7 +64,7 @@ public class MyReviewWorkflowItem extends UserSearchItem {
          artifacts.addAll(RelationManager.getRelatedArtifacts(assigned, 1, AtsRelationTypes.TeamWfToTask_TeamWf));
       } else {
          artifacts.addAll(ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.State,
-            "<" + user.getUserId() + ">", AtsUtil.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS));
+            "<" + user.getUserId() + ">", AtsUtilCore.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS));
       }
 
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(artifacts.size());

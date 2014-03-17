@@ -32,9 +32,9 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.WorldUISearchItem;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -119,7 +119,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
 
       addIncludeCompletedCancelledCriteria(criteria, includeCompleted, includeCancelled);
 
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromCriteria(AtsUtilCore.getAtsBranch(), 1000, criteria);
 
       Set<Artifact> resultSet = new HashSet<Artifact>();
       for (Artifact art : artifacts) {

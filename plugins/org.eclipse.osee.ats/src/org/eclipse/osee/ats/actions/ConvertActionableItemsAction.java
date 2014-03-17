@@ -26,12 +26,12 @@ import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -154,7 +154,7 @@ public class ConvertActionableItemsAction extends Action {
          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Confirm Convert", sb.toString())) {
             Set<IAtsActionableItem> toProcess = new HashSet<IAtsActionableItem>();
             toProcess.add(selectedAia);
-            toReturn = actionableItemsTx(teamArt, AtsUtil.getAtsBranch(), toProcess, newTeamDef);
+            toReturn = actionableItemsTx(teamArt, AtsUtilCore.getAtsBranch(), toProcess, newTeamDef);
          }
 
       } else {
@@ -175,7 +175,7 @@ public class ConvertActionableItemsAction extends Action {
       return Result.TrueResult;
    }
 
-   private Result actionableItemsTx(TeamWorkFlowArtifact teamArt, Branch branch, Set<IAtsActionableItem> selectedAlias, IAtsTeamDefinition teamDef) throws OseeCoreException {
+   private Result actionableItemsTx(TeamWorkFlowArtifact teamArt, IOseeBranch branch, Set<IAtsActionableItem> selectedAlias, IAtsTeamDefinition teamDef) throws OseeCoreException {
       Result workResult = teamArt.getActionableItemsDam().setActionableItems(selectedAlias);
       if (workResult.isTrue()) {
          if (teamDef != null) {
