@@ -11,6 +11,7 @@
 package org.eclipse.osee.disposition.rest.internal;
 
 import org.eclipse.osee.disposition.model.DispoItem;
+import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -27,19 +28,19 @@ public interface DispoQuery {
 
    ArtifactReadable findUnassignedUser();
 
-   boolean isUniqueSetName(String programId, String name);
+   boolean isUniqueSetName(DispoProgram program, String name);
 
-   boolean isUniqueItemName(String programId, String setId, String name);
+   boolean isUniqueItemName(DispoProgram program, String setId, String name);
 
-   ResultSet<DispoSet> findDispoSets(String programId);
+   ResultSet<DispoSet> findDispoSets(DispoProgram program);
 
-   DispoSet findDispoSetsById(String programId, String id);
+   DispoSet findDispoSetsById(DispoProgram program, String id);
 
-   ResultSet<DispoItem> findDipoItems(String programId, String setId);
+   ResultSet<DispoItem> findDipoItems(DispoProgram program, String setId);
 
-   DispoItem findDispoItemById(String programId, String itemId);
+   DispoItem findDispoItemById(DispoProgram program, String itemId);
 
    ResultSet<? extends IOseeBranch> findBaselineBranches();
 
-   IOseeBranch findProgramId(String programID);
+   IOseeBranch findProgramId(DispoProgram program);
 }

@@ -12,8 +12,10 @@ package org.eclipse.osee.disposition.rest;
 
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItemData;
+import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
+import org.eclipse.osee.disposition.rest.util.DispoFactory;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -25,46 +27,48 @@ public interface DispoApi {
 
    // Queries
 
-   IOseeBranch getDispoProgramById(String programId);
+   IOseeBranch getDispoProgramById(DispoProgram program);
 
    ResultSet<IOseeBranch> getDispoPrograms();
 
-   ResultSet<DispoSetData> getDispoSets(String programId);
+   ResultSet<DispoSetData> getDispoSets(DispoProgram program);
 
-   DispoSetData getDispoSetById(String programId, String dispoSetId);
+   DispoSetData getDispoSetById(DispoProgram program, String dispoSetId);
 
-   ResultSet<DispoItemData> getDispoItems(String programId, String dispoSetId);
+   ResultSet<DispoItemData> getDispoItems(DispoProgram program, String dispoSetId);
 
-   DispoItemData getDispoItemById(String programId, String itemId);
+   DispoItemData getDispoItemById(DispoProgram program, String itemId);
 
-   ResultSet<DispoAnnotationData> getDispoAnnotations(String programId, String itemId);
+   ResultSet<DispoAnnotationData> getDispoAnnotations(DispoProgram program, String itemId);
 
-   DispoAnnotationData getDispoAnnotationByIndex(String programId, String itemId, String annotationId);
+   DispoAnnotationData getDispoAnnotationByIndex(DispoProgram program, String itemId, String annotationId);
 
    // Writes
-   Identifiable<String> createDispoSet(String programId, DispoSetDescriptorData descriptor);
+   Identifiable<String> createDispoSet(DispoProgram program, DispoSetDescriptorData descriptor);
 
-   Identifiable<String> createDispoItem(String programId, String setId, DispoItemData dispoItem);
+   Identifiable<String> createDispoItem(DispoProgram program, String setId, DispoItemData dispoItem);
 
-   String createDispoAnnotation(String programId, String itemId, DispoAnnotationData annotation);
+   String createDispoAnnotation(DispoProgram program, String itemId, DispoAnnotationData annotation);
 
-   boolean editDispoSet(String programId, String dispoSetId, DispoSetData newDispoSet);
+   boolean editDispoSet(DispoProgram program, String dispoSetId, DispoSetData newDispoSet);
 
-   boolean editDispoItem(String programId, String itemId, DispoItemData newDispoItem);
+   boolean editDispoItem(DispoProgram program, String itemId, DispoItemData newDispoItem);
 
-   boolean editDispoAnnotation(String programId, String itemId, String annotationId, DispoAnnotationData newAnnotation);
+   boolean editDispoAnnotation(DispoProgram program, String itemId, String annotationId, DispoAnnotationData newAnnotation);
 
    // Deletes
 
-   boolean deleteDispoSet(String programId, String dispoSetId);
+   boolean deleteDispoSet(DispoProgram program, String dispoSetId);
 
-   boolean deleteDispoItem(String programId, String itemId);
+   boolean deleteDispoItem(DispoProgram program, String itemId);
 
-   boolean deleteDispoAnnotation(String programId, String itemId, String annotationId);
+   boolean deleteDispoAnnotation(DispoProgram program, String itemId, String annotationId);
 
    // Utilities
-   boolean isUniqueSetName(String programId, String setName);
+   boolean isUniqueSetName(DispoProgram program, String setName);
 
-   boolean isUniqueItemName(String programId, String setId, String itemName);
+   boolean isUniqueItemName(DispoProgram program, String setId, String itemName);
+
+   DispoFactory getDispoFactory();
 
 }

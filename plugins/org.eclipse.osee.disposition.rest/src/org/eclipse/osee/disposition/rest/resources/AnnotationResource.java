@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoMessages;
+import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.util.HtmlWriter;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -33,12 +34,12 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 public class AnnotationResource {
    private final DispoApi dispoApi;
    private final HtmlWriter writer;
-   private final String branchId;
+   private final DispoProgram program;
    private final String itemId;
 
-   public AnnotationResource(DispoApi dispoApi, HtmlWriter writer, String branchUid, String setUuid, String dispResourceId) {
+   public AnnotationResource(DispoApi dispoApi, HtmlWriter writer, DispoProgram program, String setUuid, String dispResourceId) {
       this.dispoApi = dispoApi;
-      this.branchId = branchUid;
+      this.program = program;
       this.itemId = dispResourceId;
       this.writer = writer;
    }
@@ -57,10 +58,10 @@ public class AnnotationResource {
       Response.Status status;
       Response response;
       if (!annotation.getLocationRefs().isEmpty()) {
-         String createdAnnotationId = dispoApi.createDispoAnnotation(branchId, itemId, annotation);
+         String createdAnnotationId = dispoApi.createDispoAnnotation(program, itemId, annotation);
          status = Status.CREATED;
          DispoAnnotationData createdAnnotation =
-            dispoApi.getDispoAnnotationByIndex(branchId, itemId, createdAnnotationId);
+            dispoApi.getDispoAnnotationByIndex(program, itemId, createdAnnotationId);
          response = Response.status(status).entity(createdAnnotation).build();
       } else {
          status = Status.BAD_REQUEST;
@@ -82,7 +83,7 @@ public class AnnotationResource {
    public Response getAllDispoAnnotations() {
       Response.Status status;
       String html;
-      ResultSet<DispoAnnotationData> dispositionAnnotations = dispoApi.getDispoAnnotations(branchId, itemId);
+      ResultSet<DispoAnnotationData> dispositionAnnotations = dispoApi.getDispoAnnotations(program, itemId);
 
       if (dispositionAnnotations.isEmpty()) {
          status = Status.NOT_FOUND;
@@ -107,7 +108,7 @@ public class AnnotationResource {
    @Produces(MediaType.APPLICATION_JSON)
    public Response getAnnotationByIdJson(@PathParam("annotationId") String annotationId) {
       Response response;
-      DispoAnnotationData result = dispoApi.getDispoAnnotationByIndex(branchId, itemId, annotationId);
+      DispoAnnotationData result = dispoApi.getDispoAnnotationByIndex(program, itemId, annotationId);
       if (result == null) {
          response = Response.status(Response.Status.NOT_FOUND).entity(DispoMessages.Annotation_NotFound).build();
       } else {
@@ -130,7 +131,7 @@ public class AnnotationResource {
    public Response getAnnotationByIdHtml(@PathParam("annotationId") String annotationId) {
       Response.Status status;
       String html;
-      DispoAnnotationData dispositionAnnotation = dispoApi.getDispoAnnotationByIndex(branchId, itemId, annotationId);
+      DispoAnnotationData dispositionAnnotation = dispoApi.getDispoAnnotationByIndex(program, itemId, annotationId);
       if (dispositionAnnotation == null) {
          status = Status.NOT_FOUND;
          html = DispoMessages.Annotation_NotFound;
@@ -156,7 +157,7 @@ public class AnnotationResource {
    @Consumes(MediaType.APPLICATION_JSON)
    public Response putDispoAnnotation(@PathParam("annotationId") String annotationId, DispoAnnotationData newAnnotation) {
       Response response;
-      boolean wasEdited = dispoApi.editDispoAnnotation(branchId, itemId, annotationId, newAnnotation);
+      boolean wasEdited = dispoApi.editDispoAnnotation(program, itemId, annotationId, newAnnotation);
       if (wasEdited) {
          response = Response.status(Response.Status.OK).build();
       } else {
@@ -177,7 +178,7 @@ public class AnnotationResource {
    @DELETE
    public Response deleteDispoAnnotation(@PathParam("annotationId") String annotationId) {
       Response response;
-      boolean wasEdited = dispoApi.deleteDispoAnnotation(branchId, itemId, annotationId);
+      boolean wasEdited = dispoApi.deleteDispoAnnotation(program, itemId, annotationId);
       if (wasEdited) {
          response = Response.status(Response.Status.OK).build();
       } else {

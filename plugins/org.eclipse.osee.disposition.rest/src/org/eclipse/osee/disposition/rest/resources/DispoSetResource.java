@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.disposition.model.DispoMessages;
+import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
@@ -36,12 +37,12 @@ public class DispoSetResource {
 
    private final DispoApi dispoApi;
    private final HtmlWriter writer;
-   private final String programId;
+   private final DispoProgram program;
 
-   public DispoSetResource(DispoApi dispoApi, HtmlWriter writer, String programId) {
+   public DispoSetResource(DispoApi dispoApi, HtmlWriter writer, DispoProgram program) {
       this.dispoApi = dispoApi;
       this.writer = writer;
-      this.programId = programId;
+      this.program = program;
    }
 
    /**
@@ -63,10 +64,10 @@ public class DispoSetResource {
       String importPath = descriptor.getImportPath();
 
       if (!name.isEmpty() && !importPath.isEmpty()) {
-         boolean isUniqueSetName = dispoApi.isUniqueSetName(programId, name);
+         boolean isUniqueSetName = dispoApi.isUniqueSetName(program, name);
          if (isUniqueSetName) {
-            String createdSetId = dispoApi.createDispoSet(programId, descriptor).getGuid();
-            DispoSetData createdSet = dispoApi.getDispoSetById(programId, createdSetId);
+            String createdSetId = dispoApi.createDispoSet(program, descriptor).getGuid();
+            DispoSetData createdSet = dispoApi.getDispoSetById(program, createdSetId);
             status = Status.CREATED;
             response = Response.status(status).entity(createdSet).build();
          } else {
@@ -90,7 +91,7 @@ public class DispoSetResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public Response getAllDispoSets() {
-      ResultSet<DispoSetData> allDispoSets = dispoApi.getDispoSets(programId);
+      ResultSet<DispoSetData> allDispoSets = dispoApi.getDispoSets(program);
       Response.Status status;
       String html;
       if (allDispoSets.isEmpty()) {
@@ -116,7 +117,7 @@ public class DispoSetResource {
    @Produces(MediaType.APPLICATION_JSON)
    public Response getDispoSetByIdJson(@PathParam("setId") String setId) {
       Response response;
-      DispoSet result = dispoApi.getDispoSetById(programId, setId);
+      DispoSet result = dispoApi.getDispoSetById(program, setId);
       if (result == null) {
          response = Response.status(Response.Status.NOT_FOUND).entity(DispoMessages.Set_NotFound).build();
       } else {
@@ -139,7 +140,7 @@ public class DispoSetResource {
    public Response getDispoSetByIdHtml(@PathParam("setId") String setId) {
       Response.Status status;
       String html;
-      DispoSet dispoSetArt = dispoApi.getDispoSetById(programId, setId);
+      DispoSet dispoSetArt = dispoApi.getDispoSetById(program, setId);
       if (dispoSetArt == null) {
          status = Status.NOT_FOUND;
          html = DispoMessages.Set_NotFound;
@@ -167,7 +168,7 @@ public class DispoSetResource {
    @Consumes(MediaType.APPLICATION_JSON)
    public Response putDispoSet(@PathParam("setId") String setId, DispoSetData newDispositionSet) {
       Response.Status status;
-      boolean wasEdited = dispoApi.editDispoSet(programId, setId, newDispositionSet);
+      boolean wasEdited = dispoApi.editDispoSet(program, setId, newDispositionSet);
       if (wasEdited) {
          status = Status.OK;
       } else {
@@ -188,7 +189,7 @@ public class DispoSetResource {
    @DELETE
    public Response deleteDispoSet(@PathParam("setId") String setId) {
       Response.Status status = Status.NOT_FOUND;
-      boolean wasDeleted = dispoApi.deleteDispoSet(programId, setId);
+      boolean wasDeleted = dispoApi.deleteDispoSet(program, setId);
       if (wasDeleted) {
          status = Status.OK;
       } else {
@@ -199,6 +200,6 @@ public class DispoSetResource {
 
    @Path("{setId}/item")
    public DispoItemResource getDispositionableItems(@PathParam("setId") String setId) {
-      return new DispoItemResource(dispoApi, writer, programId, setId);
+      return new DispoItemResource(dispoApi, writer, program, setId);
    }
 }

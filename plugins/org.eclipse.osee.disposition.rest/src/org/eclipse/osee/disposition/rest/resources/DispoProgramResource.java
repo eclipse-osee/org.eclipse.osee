@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.rest.DispoApi;
+import org.eclipse.osee.disposition.rest.util.DispoFactory;
 import org.eclipse.osee.disposition.rest.util.HtmlWriter;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -31,10 +32,12 @@ public class DispoProgramResource {
 
    private final DispoApi dispoApi;
    private final HtmlWriter writer;
+   private final DispoFactory dispoFactory;
 
-   public DispoProgramResource(DispoApi dispoApi, HtmlWriter writer) {
+   public DispoProgramResource(DispoApi dispoApi, HtmlWriter writer, DispoFactory factory) {
       this.dispoApi = dispoApi;
       this.writer = writer;
+      this.dispoFactory = factory;
    }
 
    /**
@@ -72,7 +75,7 @@ public class DispoProgramResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public Response getProgramById(@PathParam("programId") String programId) {
-      IOseeBranch dispoBranch = dispoApi.getDispoProgramById(programId);
+      IOseeBranch dispoBranch = dispoApi.getDispoProgramById(dispoFactory.createProgram(programId));
       Response.Status status;
       String html;
       if (dispoBranch == null) {
@@ -90,6 +93,6 @@ public class DispoProgramResource {
 
    @Path("{programId}/set")
    public DispoSetResource getAnnotation(@PathParam("programId") String programId) {
-      return new DispoSetResource(dispoApi, writer, programId);
+      return new DispoSetResource(dispoApi, writer, dispoFactory.createProgram(programId));
    }
 }

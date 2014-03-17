@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.disposition.model.DispoItem;
+import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.rest.DispoConstants;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -142,8 +143,8 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public boolean isUniqueSetName(String branchId, String name) {
-      IOseeBranch branch = TokenFactory.createBranch(branchId, "");
+   public boolean isUniqueSetName(DispoProgram program, String name) {
+      IOseeBranch branch = getProgramBranch(program);
       ResultSet<ArtifactReadable> results = getQuery()//
       .fromBranch(branch)//
       .andTypeEquals(DispoConstants.DispoSet)//
@@ -153,9 +154,13 @@ public class OrcsStorageImpl implements Storage {
       return results.isEmpty();
    }
 
+   private IOseeBranch getProgramBranch(DispoProgram program) {
+      return TokenFactory.createBranch(program.getGuid(), program.getUuid(), program.getName());
+   }
+
    @Override
-   public boolean isUniqueItemName(String branchId, String setId, String name) {
-      IOseeBranch branch = TokenFactory.createBranch(branchId, "");
+   public boolean isUniqueItemName(DispoProgram program, String setId, String name) {
+      IOseeBranch branch = getProgramBranch(program);
       ArtifactReadable setArt = findDispoArtifact(branch, setId, DispoConstants.DispoSet);
       ResultSet<ArtifactReadable> results = getQuery()//
       .fromBranch(branch)//
@@ -168,8 +173,8 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public ResultSet<DispoSet> findDispoSets(String branchId) {
-      IOseeBranch branch = TokenFactory.createBranch(branchId, "");
+   public ResultSet<DispoSet> findDispoSets(DispoProgram program) {
+      IOseeBranch branch = getProgramBranch(program);
       ResultSet<ArtifactReadable> results = getQuery()//
       .fromBranch(branch)//
       .andTypeEquals(DispoConstants.DispoSet)//
@@ -183,8 +188,8 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public DispoSet findDispoSetsById(String branchId, String setId) {
-      IOseeBranch branch = TokenFactory.createBranch(branchId, "");
+   public DispoSet findDispoSetsById(DispoProgram program, String setId) {
+      IOseeBranch branch = getProgramBranch(program);
       ArtifactReadable result = findDispoArtifact(branch, setId, DispoConstants.DispoSet);
       return new DispoSetArtifact(result);
    }
@@ -198,8 +203,8 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public ResultSet<DispoItem> findDipoItems(String branchId, String setId) {
-      IOseeBranch branch = TokenFactory.createBranch(branchId, "");
+   public ResultSet<DispoItem> findDipoItems(DispoProgram program, String setId) {
+      IOseeBranch branch = getProgramBranch(program);
       ArtifactReadable setArt = findDispoArtifact(branch, setId, DispoConstants.DispoSet);
       ResultSet<ArtifactReadable> results = setArt.getRelated(CoreRelationTypes.Default_Hierarchical__Child);
 
@@ -211,9 +216,9 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public DispoItem findDispoItemById(String branchId, String itemId) {
+   public DispoItem findDispoItemById(DispoProgram program, String itemId) {
       DispoItem toReturn = null;
-      IOseeBranch branch = TokenFactory.createBranch(branchId, "");
+      IOseeBranch branch = getProgramBranch(program);
       ArtifactReadable dispoArtifact = findDispoArtifact(branch, itemId, DispoConstants.DispoItem);
       if (dispoArtifact != null) {
          toReturn = new DispoItemArtifact(dispoArtifact);
@@ -222,8 +227,8 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public Identifiable<String> createDispoSet(ArtifactReadable author, String branchId, DispoSet descriptor) {
-      IOseeBranch branch = TokenFactory.createBranch(branchId, "");
+   public Identifiable<String> createDispoSet(ArtifactReadable author, DispoProgram program, DispoSet descriptor) {
+      IOseeBranch branch = getProgramBranch(program);
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Create Dispo Set");
       ArtifactId creatdArtId = tx.createArtifact(DispoConstants.DispoSet, descriptor.getName());
       tx.setSoleAttributeFromString(creatdArtId, DispoConstants.ImportPath, descriptor.getImportPath());
@@ -235,18 +240,18 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public boolean deleteDispoItem(ArtifactReadable author, String programId, String itemId) {
-      return deleteDispoEntityArtifact(author, programId, itemId, DispoConstants.DispoItem);
+   public boolean deleteDispoItem(ArtifactReadable author, DispoProgram program, String itemId) {
+      return deleteDispoEntityArtifact(author, program, itemId, DispoConstants.DispoItem);
    }
 
    @Override
-   public boolean deleteDispoSet(ArtifactReadable author, String programId, String setId) {
-      return deleteDispoEntityArtifact(author, programId, setId, DispoConstants.DispoSet);
+   public boolean deleteDispoSet(ArtifactReadable author, DispoProgram program, String setId) {
+      return deleteDispoEntityArtifact(author, program, setId, DispoConstants.DispoSet);
    }
 
-   private boolean deleteDispoEntityArtifact(ArtifactReadable author, String programId, String entityId, IArtifactType type) {
+   private boolean deleteDispoEntityArtifact(ArtifactReadable author, DispoProgram program, String entityId, IArtifactType type) {
       boolean toReturn = false;
-      IOseeBranch branch = TokenFactory.createBranch(programId, "");
+      IOseeBranch branch = getProgramBranch(program);
       ArtifactReadable dispoArtifact = findDispoArtifact(branch, entityId, type);
       if (dispoArtifact != null) {
          TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Delete Dispo Artifact");
@@ -259,8 +264,8 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public void updateDispoSet(ArtifactReadable author, String branchId, String setId, DispoSet newData) {
-      IOseeBranch branch = TokenFactory.createBranch(branchId, "");
+   public void updateDispoSet(ArtifactReadable author, DispoProgram program, String setId, DispoSet newData) {
+      IOseeBranch branch = getProgramBranch(program);
       ArtifactReadable dispoSet = findDispoArtifact(branch, setId, DispoConstants.DispoSet);
 
       String name = newData.getName();
@@ -286,8 +291,8 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public Identifiable<String> createDispoItem(ArtifactReadable author, String branchId, DispoSet parentSet, DispoItem data, ArtifactReadable assignee) {
-      IOseeBranch branch = TokenFactory.createBranch(branchId, "");
+   public Identifiable<String> createDispoItem(ArtifactReadable author, DispoProgram program, DispoSet parentSet, DispoItem data, ArtifactReadable assignee) {
+      IOseeBranch branch = getProgramBranch(program);
       ArtifactReadable parentSetArt = findDispoArtifact(branch, parentSet.getGuid(), DispoConstants.DispoSet);
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Create Dispoable Item");
       ArtifactId createdItem = tx.createArtifact(DispoConstants.DispoItem, data.getName());
@@ -308,8 +313,8 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public void createAnnotation(ArtifactReadable author, String branchId, ArtifactId disposition, String annotationsJson) {
-      IOseeBranch branch = TokenFactory.createBranch(branchId, "");
+   public void createAnnotation(ArtifactReadable author, DispoProgram program, ArtifactId disposition, String annotationsJson) {
+      IOseeBranch branch = getProgramBranch(program);
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Create Dispo Annotation");
 
       tx.setSoleAttributeFromString(disposition, DispoConstants.DispoAnnotationsJson, annotationsJson);
@@ -317,9 +322,9 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public void updateDispoItem(ArtifactReadable author, String branchId, String dispoItemId, DispoItem data) {
+   public void updateDispoItem(ArtifactReadable author, DispoProgram program, String dispoItemId, DispoItem data) {
       boolean wasEdited = false;
-      IOseeBranch branch = TokenFactory.createBranch(branchId, "");
+      IOseeBranch branch = getProgramBranch(program);
       ArtifactId dispoItemArt = findDispoArtifact(branch, dispoItemId, DispoConstants.DispoItem);
       String assigneeId = data.getAssignee();
 
@@ -357,7 +362,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public IOseeBranch findProgramId(String branchId) {
+   public IOseeBranch findProgramId(DispoProgram program) {
       IOseeBranch toReturn = null;
       BranchReadable branchRead = getQuery().branchQuery().andIds(CoreBranches.COMMON).getResults().getExactlyOne();
 
@@ -366,14 +371,24 @@ public class OrcsStorageImpl implements Storage {
 
       String configContents = configArt.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
 
-      Pattern regex = Pattern.compile(branchId + "\\s*:\\s*.*");
+      Pattern regex = Pattern.compile(program.getGuid() + "\\s*:\\s*.*");
       Matcher matcher = regex.matcher(configContents);
+      String guid = null;
       if (matcher.find()) {
          String match = matcher.group();
          String[] split = match.split(":");
-         toReturn = TokenFactory.createBranch(split[1], "");
+         guid = split[1];
       }
 
+      regex = Pattern.compile(program.getUuid() + "\\s*:\\s*.*");
+      matcher = regex.matcher(configContents);
+      Long uuid = null;
+      if (matcher.find()) {
+         String match = matcher.group();
+         String[] split = match.split(":");
+         uuid = Long.valueOf(split[1]);
+      }
+      toReturn = TokenFactory.createBranch(guid, uuid, "");
       return toReturn;
    }
 

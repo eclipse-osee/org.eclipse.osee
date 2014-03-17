@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoItemData;
+import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.LocationRange;
@@ -71,25 +72,31 @@ public class DispositionInitializer {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory(null).createTransaction(CoreBranches.COMMON, oseeSystem, "Create Dispo Config");
       ArtifactId createArtifact = tx.createArtifact(CoreArtifactTypes.GeneralData, DispoStrings.Dispo_Config_Art);
-      tx.createAttributeFromString(createArtifact, CoreAttributeTypes.GeneralStringData,
-         SAW_Bld_1.getGuid() + ":" + SAW_Bld_1_FOR_DISPO.getGuid());
+      StringBuffer sb = new StringBuffer(SAW_Bld_1.getGuid());
+      sb.append(":");
+      sb.append(SAW_Bld_1_FOR_DISPO.getGuid());
+      sb.append("\n");
+      sb.append(SAW_Bld_1.getUuid());
+      sb.append(":");
+      sb.append(SAW_Bld_1_FOR_DISPO.getUuid());
+      tx.createAttributeFromString(createArtifact, CoreAttributeTypes.GeneralStringData, sb.toString());
       tx.commit();
 
       // Creat Set and Item Arts
       DispoSetDescriptorData descriptor = new DispoSetDescriptorData();
       descriptor.setName("DEMO SET");
       descriptor.setImportPath("c:");
-      Identifiable<String> devSet = dispoApi.createDispoSet(SAW_Bld_1_FOR_DISPO.getGuid(), descriptor);
+      DispoProgram program = dispoApi.getDispoFactory().createProgram(SAW_Bld_1_FOR_DISPO);
+      Identifiable<String> devSet = dispoApi.createDispoSet(program, descriptor);
 
       DispoItemData dispoItem = new DispoItemData();
       dispoItem.setName("Item One");
-      Identifiable<String> itemOne =
-         dispoApi.createDispoItem(SAW_Bld_1_FOR_DISPO.getGuid(), devSet.getGuid(), dispoItem);
+      Identifiable<String> itemOne = dispoApi.createDispoItem(program, devSet.getGuid(), dispoItem);
 
-      createDiscrepancies(SAW_Bld_1_FOR_DISPO.getGuid(), itemOne.getGuid());
+      createDiscrepancies(program, itemOne.getGuid());
    }
 
-   private void createDiscrepancies(String branchGuid, String itemId) {
+   private void createDiscrepancies(DispoProgram program, String itemId) {
       List<JSONObject> discrepanciesToInit = new ArrayList<JSONObject>();
       Discrepancy one = new Discrepancy();
       one.setId(0);
@@ -129,7 +136,7 @@ public class DispositionInitializer {
       JSONArray array = new JSONArray(discrepanciesToInit);
       DispoItemData item = new DispoItemData();
       item.setDiscrepanciesList(array);
-      dispoApi.editDispoItem(branchGuid, itemId, item);
+      dispoApi.editDispoItem(program, itemId, item);
    }
 
    @SuppressWarnings("unchecked")

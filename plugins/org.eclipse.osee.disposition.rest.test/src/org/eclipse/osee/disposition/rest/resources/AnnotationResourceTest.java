@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoMessages;
+import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.util.HtmlWriter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
@@ -39,6 +40,8 @@ public class AnnotationResourceTest {
    private Identifiable<String> id1;
    @Mock
    private Identifiable<String> id2;
+   @Mock
+   private DispoProgram program;
    String mockId = "annotationID";
 
    private AnnotationResource resource;
@@ -46,7 +49,7 @@ public class AnnotationResourceTest {
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-      resource = new AnnotationResource(dispositionApi, htmlWriter, "branchId", "setId", "itemId");
+      resource = new AnnotationResource(dispositionApi, htmlWriter, program, "setId", "itemId");
       when(id1.getGuid()).thenReturn("abcdef");
       when(id2.getGuid()).thenReturn("fedcba");
    }
@@ -57,13 +60,13 @@ public class AnnotationResourceTest {
       annotationToCreate.setLocationRefs("1-10");
       annotationToCreate.setId(mockId);
 
-      when(dispositionApi.createDispoAnnotation("branchId", "itemId", annotationToCreate)).thenReturn(mockId);
-      when(dispositionApi.getDispoAnnotationByIndex("branchId", "itemId", mockId)).thenReturn(annotationToCreate);
+      when(dispositionApi.createDispoAnnotation(program, "itemId", annotationToCreate)).thenReturn(mockId);
+      when(dispositionApi.getDispoAnnotationByIndex(program, "itemId", mockId)).thenReturn(annotationToCreate);
 
       DispoAnnotationData expectedAnnotation = new DispoAnnotationData();
       expectedAnnotation.setLocationRefs(annotationToCreate.getLocationRefs());
       expectedAnnotation.setId(mockId);
-      when(dispositionApi.getDispoAnnotationByIndex("branchId", id1.getGuid(), mockId)).thenReturn(expectedAnnotation);
+      when(dispositionApi.getDispoAnnotationByIndex(program, id1.getGuid(), mockId)).thenReturn(expectedAnnotation);
 
       Response postResponse = resource.postDispoAnnotation(annotationToCreate);
       DispoAnnotationData returnedEntity = (DispoAnnotationData) postResponse.getEntity();
@@ -87,7 +90,7 @@ public class AnnotationResourceTest {
    public void testGetAllAsHtml() {
       // No Annotations3
       ResultSet<DispoAnnotationData> emptyResultSet = ResultSets.emptyResultSet();
-      when(dispositionApi.getDispoAnnotations("branchId", "itemId")).thenReturn(emptyResultSet);
+      when(dispositionApi.getDispoAnnotations(program, "itemId")).thenReturn(emptyResultSet);
       Response noAnnotationsReponse = resource.getAllDispoAnnotations();
       String messageActual = (String) noAnnotationsReponse.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noAnnotationsReponse.getStatus());
@@ -98,7 +101,7 @@ public class AnnotationResourceTest {
       annotation.setLocationRefs("1-10");
       ResultSet<DispoAnnotationData> resultSet = ResultSets.singleton(annotation);
 
-      when(dispositionApi.getDispoAnnotations("branchId", "itemId")).thenReturn(resultSet);
+      when(dispositionApi.getDispoAnnotations(program, "itemId")).thenReturn(resultSet);
       when(htmlWriter.createDispositionPage("Annotations", "annotation/", resultSet)).thenReturn("htmlFromWriter");
       Response oneSetResponse = resource.getAllDispoAnnotations();
       String html = (String) oneSetResponse.getEntity();
@@ -109,7 +112,7 @@ public class AnnotationResourceTest {
    @Test
    public void testGetSingleAsJson() {
       // No items
-      when(dispositionApi.getDispoAnnotationByIndex("branchId", "itemId", mockId)).thenReturn(null);
+      when(dispositionApi.getDispoAnnotationByIndex(program, "itemId", mockId)).thenReturn(null);
       Response noAnnotationsResponse = resource.getAnnotationByIdJson(mockId);
       String messageActual = (String) noAnnotationsResponse.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noAnnotationsResponse.getStatus());
@@ -118,7 +121,7 @@ public class AnnotationResourceTest {
       DispoAnnotationData expectedAnnotation = new DispoAnnotationData();
       expectedAnnotation.setId(mockId);
       expectedAnnotation.setLocationRefs("1-10");
-      when(dispositionApi.getDispoAnnotationByIndex("branchId", "itemId", expectedAnnotation.getId())).thenReturn(
+      when(dispositionApi.getDispoAnnotationByIndex(program, "itemId", expectedAnnotation.getId())).thenReturn(
          expectedAnnotation);
       Response oneSetResponse = resource.getAnnotationByIdJson(expectedAnnotation.getId());
       DispoAnnotationData returnedItem = (DispoAnnotationData) oneSetResponse.getEntity();
@@ -129,7 +132,7 @@ public class AnnotationResourceTest {
    @Test
    public void testGetSingleAsHtml() {
       // No Items
-      when(dispositionApi.getDispoAnnotationByIndex("branchId", "itemId", mockId)).thenReturn(null);
+      when(dispositionApi.getDispoAnnotationByIndex(program, "itemId", mockId)).thenReturn(null);
       Response noItemsResponse = resource.getAnnotationByIdHtml(mockId);
       String messageActual = (String) noItemsResponse.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noItemsResponse.getStatus());
@@ -140,7 +143,7 @@ public class AnnotationResourceTest {
       expectedAnnotation.setLocationRefs("1-10");
       JSONArray notes = new JSONArray();
       expectedAnnotation.setNotesList(notes);
-      when(dispositionApi.getDispoAnnotationByIndex("branchId", "itemId", expectedAnnotation.getId())).thenReturn(
+      when(dispositionApi.getDispoAnnotationByIndex(program, "itemId", expectedAnnotation.getId())).thenReturn(
          expectedAnnotation);
       when(htmlWriter.createDispoPage(expectedAnnotation.getName(), "", "", "[]")).thenReturn("htmlFromWriter");
       Response response = resource.getAnnotationByIdHtml(expectedAnnotation.getId());
@@ -155,12 +158,12 @@ public class AnnotationResourceTest {
       newAnnotation.setLocationRefs("2-11");
       DispoAnnotationData annotationToEdit = new DispoAnnotationData();
       annotationToEdit.setId(mockId);
-      when(dispositionApi.editDispoAnnotation("branchId", "itemId", annotationToEdit.getId(), newAnnotation)).thenReturn(
+      when(dispositionApi.editDispoAnnotation(program, "itemId", annotationToEdit.getId(), newAnnotation)).thenReturn(
          true);
       Response response = resource.putDispoAnnotation(annotationToEdit.getId(), newAnnotation);
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      when(dispositionApi.editDispoAnnotation("branchId", "itemId", annotationToEdit.getId(), newAnnotation)).thenReturn(
+      when(dispositionApi.editDispoAnnotation(program, "itemId", annotationToEdit.getId(), newAnnotation)).thenReturn(
          false);
       response = resource.putDispoAnnotation(annotationToEdit.getId(), newAnnotation);
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
@@ -170,11 +173,11 @@ public class AnnotationResourceTest {
    public void testDelete() {
       DispoAnnotationData annotationToEdit = new DispoAnnotationData();
       annotationToEdit.setId(mockId);
-      when(dispositionApi.deleteDispoAnnotation("branchId", "itemId", annotationToEdit.getId())).thenReturn(true);
+      when(dispositionApi.deleteDispoAnnotation(program, "itemId", annotationToEdit.getId())).thenReturn(true);
       Response response = resource.deleteDispoAnnotation(annotationToEdit.getId());
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      when(dispositionApi.deleteDispoAnnotation("branchId", "itemId", annotationToEdit.getId())).thenReturn(false);
+      when(dispositionApi.deleteDispoAnnotation(program, "itemId", annotationToEdit.getId())).thenReturn(false);
       response = resource.deleteDispoAnnotation(annotationToEdit.getId());
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
    }

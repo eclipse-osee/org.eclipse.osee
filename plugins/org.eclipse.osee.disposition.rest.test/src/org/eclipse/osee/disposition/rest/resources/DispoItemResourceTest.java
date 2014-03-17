@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoMessages;
+import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.util.HtmlWriter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
@@ -42,13 +43,15 @@ public class DispoItemResourceTest {
    private Identifiable<String> id2;
    @Mock
    private ArtifactReadable setArt;
+   @Mock
+   private DispoProgram program;
 
    private DispoItemResource resource;
 
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-      resource = new DispoItemResource(dispositionApi, htmlWriter, "branchId", "setId");
+      resource = new DispoItemResource(dispositionApi, htmlWriter, program, "setId");
       when(id1.getGuid()).thenReturn("abcdef");
       when(id2.getGuid()).thenReturn("fedcba");
       when(setArt.getGuid()).thenReturn("setId");
@@ -58,7 +61,7 @@ public class DispoItemResourceTest {
    public void testGetAllAsHtml() {
       // No Items
       ResultSet<DispoItemData> emptyResultSet = ResultSets.emptyResultSet();
-      when(dispositionApi.getDispoItems("branchId", "setId")).thenReturn(emptyResultSet);
+      when(dispositionApi.getDispoItems(program, "setId")).thenReturn(emptyResultSet);
       Response noItemsResponse = resource.getAllDispoItems();
       String messageActual = (String) noItemsResponse.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noItemsResponse.getStatus());
@@ -69,7 +72,7 @@ public class DispoItemResourceTest {
       item.setName("Item");
       ResultSet<DispoItemData> resultSet = ResultSets.singleton(item);
 
-      when(dispositionApi.getDispoItems("branchId", "setId")).thenReturn(resultSet);
+      when(dispositionApi.getDispoItems(program, "setId")).thenReturn(resultSet);
       when(htmlWriter.createDispositionPage("Dispositionable Items", "item/", resultSet)).thenReturn("htmlFromWriter");
       Response oneSetResponse = resource.getAllDispoItems();
       String html = (String) oneSetResponse.getEntity();
@@ -80,7 +83,7 @@ public class DispoItemResourceTest {
    @Test
    public void testGetSingleSetAsJson() {
       // No items
-      when(dispositionApi.getDispoItemById("branchId", id2.getGuid())).thenReturn(null);
+      when(dispositionApi.getDispoItemById(program, id2.getGuid())).thenReturn(null);
       Response noItemsResponse = resource.getDispoItemsByIdJson(id2.getGuid());
       String messageActual = (String) noItemsResponse.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noItemsResponse.getStatus());
@@ -89,7 +92,7 @@ public class DispoItemResourceTest {
       DispoItemData expectedItem = new DispoItemData();
       expectedItem.setGuid(id1.getGuid());
       expectedItem.setName("Item");
-      when(dispositionApi.getDispoItemById("branchId", expectedItem.getGuid())).thenReturn(expectedItem);
+      when(dispositionApi.getDispoItemById(program, expectedItem.getGuid())).thenReturn(expectedItem);
       Response oneSetResponse = resource.getDispoItemsByIdJson(expectedItem.getGuid());
       DispoItemData returnedItem = (DispoItemData) oneSetResponse.getEntity();
       assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());
@@ -99,7 +102,7 @@ public class DispoItemResourceTest {
    @Test
    public void testGetSingleSetAsHtml() {
       // No Items
-      when(dispositionApi.getDispoItemById("branchId", id2.getGuid())).thenReturn(null);
+      when(dispositionApi.getDispoItemById(program, id2.getGuid())).thenReturn(null);
       Response noItemsResponse = resource.getDispoItemsByIdHtml(id2.getGuid());
       String messageActual = (String) noItemsResponse.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noItemsResponse.getStatus());
@@ -110,8 +113,8 @@ public class DispoItemResourceTest {
       item.setName("item");
       ResultSet<DispoAnnotationData> emptyResultSet = ResultSets.emptyResultSet();
       ResultSet<DispoAnnotationData> resultAnnotations = emptyResultSet;
-      when(dispositionApi.getDispoItemById("branchId", item.getGuid())).thenReturn(item);
-      when(dispositionApi.getDispoAnnotations("branchId", id1.getGuid())).thenReturn(resultAnnotations);
+      when(dispositionApi.getDispoItemById(program, item.getGuid())).thenReturn(item);
+      when(dispositionApi.getDispoAnnotations(program, id1.getGuid())).thenReturn(resultAnnotations);
       String prefixPath = item.getGuid() + "/annotation";
       String subTitle = "Annotations";
       when(htmlWriter.createDispoPage(item.getName(), prefixPath, subTitle, "[]")).thenReturn("htmlFromWriter");
@@ -126,11 +129,11 @@ public class DispoItemResourceTest {
       DispoItemData newItem = new DispoItemData();
       DispoItemData itemToEdt = new DispoItemData();
       itemToEdt.setGuid(id1.getGuid());
-      when(dispositionApi.editDispoItem("branchId", id1.getGuid(), newItem)).thenReturn(true);
+      when(dispositionApi.editDispoItem(program, id1.getGuid(), newItem)).thenReturn(true);
       Response response = resource.putDispoItem(id1.getGuid(), newItem);
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      when(dispositionApi.editDispoItem("branchId", id1.getGuid(), newItem)).thenReturn(false);
+      when(dispositionApi.editDispoItem(program, id1.getGuid(), newItem)).thenReturn(false);
       response = resource.putDispoItem(id1.getGuid(), newItem);
       String returnedMessage = (String) response.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
@@ -141,11 +144,11 @@ public class DispoItemResourceTest {
    public void testDelete() {
       DispoItemData itemToEdt = new DispoItemData();
       itemToEdt.setGuid(id1.getGuid());
-      when(dispositionApi.deleteDispoItem("branchId", id1.getGuid())).thenReturn(true);
+      when(dispositionApi.deleteDispoItem(program, id1.getGuid())).thenReturn(true);
       Response response = resource.deleteDispoItem(id1.getGuid());
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      when(dispositionApi.deleteDispoItem("branchId", id1.getGuid())).thenReturn(false);
+      when(dispositionApi.deleteDispoItem(program, id1.getGuid())).thenReturn(false);
       response = resource.deleteDispoItem(id1.getGuid());
       String returnedMessage = (String) response.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());

@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItemData;
+import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.rest.DispoApi;
@@ -53,14 +54,15 @@ public class DispositionApiTest {
    public void testDispositionApi() {
       // We have one item with discrepancies: 1-10, 12-20, 23, 25, 32-90
 
-      IOseeBranch dispoProgramBranch = dispoApi.getDispoProgramById(SAW_Bld_1.getGuid());
-      String programId = dispoProgramBranch.getGuid();
+      DispoProgram sawProgram = dispoApi.getDispoFactory().createProgram(SAW_Bld_1);
+      IOseeBranch dispoProgramBranch = dispoApi.getDispoProgramById(sawProgram);
+      DispoProgram program = dispoApi.getDispoFactory().createProgram(dispoProgramBranch);
 
-      ResultSet<DispoSetData> dispoSets = dispoApi.getDispoSets(programId);
+      ResultSet<DispoSetData> dispoSets = dispoApi.getDispoSets(program);
       DispoSetData devSet = dispoSets.getExactlyOne();
       String devSetId = devSet.getGuid();
 
-      ResultSet<DispoItemData> dispoItems = dispoApi.getDispoItems(programId, devSetId);
+      ResultSet<DispoItemData> dispoItems = dispoApi.getDispoItems(program, devSetId);
       DispoItemData itemOne = dispoItems.getExactlyOne();
       String itemOneId = itemOne.getGuid();
 
@@ -71,37 +73,37 @@ public class DispositionApiTest {
       DispoAnnotationData annotationOne = new DispoAnnotationData();
       annotationOne.setLocationRefs("1-10");
       annotationOne.setResolution("VALID");
-      String createdOneId = dispoApi.createDispoAnnotation(programId, itemOneId, annotationOne);
+      String createdOneId = dispoApi.createDispoAnnotation(program, itemOneId, annotationOne);
 
       DispoAnnotationData annotationTwo = new DispoAnnotationData();
       annotationTwo.setLocationRefs("12-20");
       annotationTwo.setResolution("VALID");
-      String createdTwoId = dispoApi.createDispoAnnotation(programId, itemOneId, annotationTwo);
+      String createdTwoId = dispoApi.createDispoAnnotation(program, itemOneId, annotationTwo);
 
       DispoAnnotationData annotationThree = new DispoAnnotationData();
       annotationThree.setLocationRefs("23,25,32-90");
       annotationThree.setResolution("VALID");
-      String createdThreeId = dispoApi.createDispoAnnotation(programId, itemOneId, annotationThree);
+      String createdThreeId = dispoApi.createDispoAnnotation(program, itemOneId, annotationThree);
 
-      itemOne = dispoApi.getDispoItemById(programId, itemOneId);
+      itemOne = dispoApi.getDispoItemById(program, itemOneId);
 
       assertEquals(DispoStrings.Item_Complete, itemOne.getStatus());
       assertEquals(5, itemOne.getDiscrepanciesList().length());
       assertEquals(3, itemOne.getAnnotationsList().length());
       assertTrue(itemOne.getLastUpdate().after(itemOne.getCreationDate()));
 
-      dispoApi.deleteDispoAnnotation(programId, itemOneId, createdTwoId);
+      dispoApi.deleteDispoAnnotation(program, itemOneId, createdTwoId);
 
-      itemOne = dispoApi.getDispoItemById(programId, itemOneId);
+      itemOne = dispoApi.getDispoItemById(program, itemOneId);
 
       assertEquals(DispoStrings.Item_Complete, itemOne.getStatus());
       assertEquals(5, itemOne.getDiscrepanciesList().length());
       assertEquals(2, itemOne.getAnnotationsList().length());
 
-      DispoAnnotationData actualAnnotation = dispoApi.getDispoAnnotationByIndex(programId, itemOneId, createdThreeId);
+      DispoAnnotationData actualAnnotation = dispoApi.getDispoAnnotationByIndex(program, itemOneId, createdThreeId);
       assertEquals("23,25,32-90", actualAnnotation.getLocationRefs());
 
-      actualAnnotation = dispoApi.getDispoAnnotationByIndex(programId, itemOneId, createdOneId);
+      actualAnnotation = dispoApi.getDispoAnnotationByIndex(program, itemOneId, createdOneId);
       assertEquals("1-10", actualAnnotation.getLocationRefs());
    }
 

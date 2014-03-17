@@ -30,12 +30,9 @@ public final class DispoApplication extends Application {
 
    private DispoApi dispoApi;
 
-   public void setDispoApi(DispoApi dispoApi) {
-      this.dispoApi = dispoApi;
-   }
-
    @Override
    public Set<Object> getSingletons() {
+
       Set<Object> singletons = new HashSet<Object>();
       singletons.add(new DispoSetMessageReader());
       singletons.add(new DispoSetMessageWriter());
@@ -45,7 +42,11 @@ public final class DispoApplication extends Application {
       singletons.add(new DispoAnnotationMessageWriter());
 
       HtmlWriter writer = new HtmlWriter(TemplateRegistry.newRegistry());
-      singletons.add(new DispoProgramResource(dispoApi, writer));
+      singletons.add(new DispoProgramResource(dispoApi, writer, dispoApi.getDispoFactory()));
       return singletons;
+   }
+
+   public void setDispoApi(DispoApi dispoApi) {
+      this.dispoApi = dispoApi;
    }
 }

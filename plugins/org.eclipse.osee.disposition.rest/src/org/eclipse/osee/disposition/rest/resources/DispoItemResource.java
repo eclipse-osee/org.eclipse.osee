@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoMessages;
+import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.util.HtmlWriter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
@@ -35,19 +36,19 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 public class DispoItemResource {
    private final DispoApi dispoApi;
    private final HtmlWriter writer;
-   private final String branchGuid;
+   private final DispoProgram program;
    private final String setId;
 
-   public DispoItemResource(DispoApi dispoApi, HtmlWriter writer, String branchGuid, String setId) {
+   public DispoItemResource(DispoApi dispoApi, HtmlWriter writer, DispoProgram program, String setId) {
       this.dispoApi = dispoApi;
-      this.branchGuid = branchGuid;
+      this.program = program;
       this.setId = setId;
       this.writer = writer;
    }
 
    @POST
    public Response postDispoItem(DispoItemData dispoItem) {
-      Identifiable<String> createDispoItem = dispoApi.createDispoItem(branchGuid, setId, dispoItem);
+      Identifiable<String> createDispoItem = dispoApi.createDispoItem(program, setId, dispoItem);
       return Response.status(Status.OK).entity(createDispoItem.getGuid()).build();
    }
 
@@ -61,7 +62,7 @@ public class DispoItemResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public Response getAllDispoItems() {
-      ResultSet<DispoItemData> dispoItems = dispoApi.getDispoItems(branchGuid, setId);
+      ResultSet<DispoItemData> dispoItems = dispoApi.getDispoItems(program, setId);
       Response.Status status;
       String html;
       if (dispoItems.isEmpty()) {
@@ -87,7 +88,7 @@ public class DispoItemResource {
    @Produces(MediaType.APPLICATION_JSON)
    public Response getDispoItemsByIdJson(@PathParam("itemId") String itemId) {
       Response response;
-      DispoItem result = dispoApi.getDispoItemById(branchGuid, itemId);
+      DispoItem result = dispoApi.getDispoItemById(program, itemId);
       if (result == null) {
          response = Response.status(Response.Status.NOT_FOUND).entity(DispoMessages.Item_NotFound).build();
       } else {
@@ -110,7 +111,7 @@ public class DispoItemResource {
    public Response getDispoItemsByIdHtml(@PathParam("itemId") String itemId) {
       String html;
       Response.Status status;
-      DispoItem dispoItem = dispoApi.getDispoItemById(branchGuid, itemId);
+      DispoItem dispoItem = dispoApi.getDispoItemById(program, itemId);
       if (dispoItem == null) {
          status = Status.NOT_FOUND;
          html = DispoMessages.Item_NotFound;
@@ -137,7 +138,7 @@ public class DispoItemResource {
    @Consumes(MediaType.APPLICATION_JSON)
    public Response putDispoItem(@PathParam("itemId") String itemId, DispoItemData newDispoItem) {
       Response response;
-      boolean wasEdited = dispoApi.editDispoItem(branchGuid, itemId, newDispoItem);
+      boolean wasEdited = dispoApi.editDispoItem(program, itemId, newDispoItem);
       if (wasEdited) {
          response = Response.status(Response.Status.OK).build();
       } else {
@@ -158,7 +159,7 @@ public class DispoItemResource {
    @DELETE
    public Response deleteDispoItem(@PathParam("itemId") String itemId) {
       Response response;
-      boolean wasEdited = dispoApi.deleteDispoItem(branchGuid, itemId);
+      boolean wasEdited = dispoApi.deleteDispoItem(program, itemId);
       if (wasEdited) {
          response = Response.status(Response.Status.OK).build();
       } else {
@@ -169,6 +170,6 @@ public class DispoItemResource {
 
    @Path("{itemId}/annotation/")
    public AnnotationResource getAnnotation(@PathParam("itemId") String itemId) {
-      return new AnnotationResource(dispoApi, writer, branchGuid, setId, itemId);
+      return new AnnotationResource(dispoApi, writer, program, setId, itemId);
    }
 }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.disposition.rest.internal;
 
 import org.eclipse.osee.disposition.model.DispoItem;
+import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.orcs.data.ArtifactId;
@@ -21,17 +22,17 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public interface DispoWriter {
 
-   Identifiable<String> createDispoSet(ArtifactReadable author, String programId, DispoSet descriptor);
+   Identifiable<String> createDispoSet(ArtifactReadable author, DispoProgram program, DispoSet descriptor);
 
-   void updateDispoSet(ArtifactReadable author, String programId, String dispoSetId, DispoSet data);
+   void updateDispoSet(ArtifactReadable author, DispoProgram program, String dispoSetId, DispoSet data);
 
-   boolean deleteDispoSet(ArtifactReadable author, String programId, String setId);
+   boolean deleteDispoSet(ArtifactReadable author, DispoProgram program, String setId);
 
-   Identifiable<String> createDispoItem(ArtifactReadable author, String programId, DispoSet parentSet, DispoItem itemToCreate, ArtifactReadable assigneeId);
+   Identifiable<String> createDispoItem(ArtifactReadable author, DispoProgram program, DispoSet parentSet, DispoItem itemToCreate, ArtifactReadable assigneeId);
 
-   void updateDispoItem(ArtifactReadable author, String programId, String itemToEditId, DispoItem itemToCreate);
+   void updateDispoItem(ArtifactReadable author, DispoProgram program, String itemToEditId, DispoItem itemToCreate);
 
-   boolean deleteDispoItem(ArtifactReadable author, String programId, String itemId);
+   boolean deleteDispoItem(ArtifactReadable author, DispoProgram program, String itemId);
 
-   void createAnnotation(ArtifactReadable author, String programId, ArtifactId dispoItem, String annotationsJson);
+   void createAnnotation(ArtifactReadable author, DispoProgram program, ArtifactId dispoItem, String annotationsJson);
 }

@@ -18,10 +18,12 @@ import java.util.List;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
+import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.rest.DispoApi;
+import org.eclipse.osee.disposition.rest.util.DispoFactory;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
@@ -44,6 +46,7 @@ public class DispoApiImpl implements DispoApi {
    private StorageProvider storageProvider;
    private DispoDataFactory dataFactory;
    private DispoConnector dispoConnector;
+   private DispoFactory dispoFactory;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -63,6 +66,7 @@ public class DispoApiImpl implements DispoApi {
 
    public void start() {
       logger.trace("Starting DispoApiImpl...");
+      dispoFactory = new DispoFactoryImpl();
    }
 
    public void stop() {
@@ -78,29 +82,29 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public Identifiable<String> createDispoSet(String programId, DispoSetDescriptorData descriptor) {
+   public Identifiable<String> createDispoSet(DispoProgram program, DispoSetDescriptorData descriptor) {
       DispoSetData newSet = dataFactory.creteSetDataFromDescriptor(descriptor);
       ArtifactReadable author = getQuery().findUser();
-      return getWriter().createDispoSet(author, programId, newSet);
+      return getWriter().createDispoSet(author, program, newSet);
    }
 
    @Override
-   public Identifiable<String> createDispoItem(String programId, String setId, DispoItemData dispoItem) {
-      DispoSet parentSet = getQuery().findDispoSetsById(programId, setId);
+   public Identifiable<String> createDispoItem(DispoProgram program, String setId, DispoItemData dispoItem) {
+      DispoSet parentSet = getQuery().findDispoSetsById(program, setId);
       Identifiable<String> itemId = null;
       if (parentSet != null) {
          ArtifactReadable author = getQuery().findUser();
          ArtifactReadable unassignedUser = getQuery().findUnassignedUser();
          dataFactory.initDispoItem(dispoItem);
-         itemId = getWriter().createDispoItem(author, programId, parentSet, dispoItem, unassignedUser);
+         itemId = getWriter().createDispoItem(author, program, parentSet, dispoItem, unassignedUser);
       }
       return itemId;
    }
 
    @Override
-   public String createDispoAnnotation(String programId, String itemId, DispoAnnotationData annotationToCreate) {
+   public String createDispoAnnotation(DispoProgram program, String itemId, DispoAnnotationData annotationToCreate) {
       String idOfNewAnnotation = "";
-      DispoItem dispoItem = getQuery().findDispoItemById(programId, itemId);
+      DispoItem dispoItem = getQuery().findDispoItemById(program, itemId);
       if (dispoItem != null) {
          dataFactory.initAnnotation(annotationToCreate);
          idOfNewAnnotation = dataFactory.getNewId();
@@ -131,15 +135,15 @@ public class DispoApiImpl implements DispoApi {
          }
          DispoItem updatedItem = dataFactory.createUpdatedItem(annotationsList, discrepanciesList, updateStatus);
          ArtifactReadable author = getQuery().findUser();
-         getWriter().updateDispoItem(author, programId, dispoItem.getGuid(), updatedItem);
+         getWriter().updateDispoItem(author, program, dispoItem.getGuid(), updatedItem);
       }
       return idOfNewAnnotation;
    }
 
    @Override
-   public boolean editDispoSet(String programId, String setId, DispoSetData newSet) throws OseeCoreException {
+   public boolean editDispoSet(DispoProgram program, String setId, DispoSetData newSet) throws OseeCoreException {
       boolean wasUpdated = false;
-      DispoSet dispSetToEdit = getQuery().findDispoSetsById(programId, setId);
+      DispoSet dispSetToEdit = getQuery().findDispoSetsById(program, setId);
       if (dispSetToEdit != null) {
          if (newSet.getNotesList() != null) {
             JSONArray mergedNotesList =
@@ -152,22 +156,22 @@ public class DispoApiImpl implements DispoApi {
          }
 
          ArtifactReadable author = getQuery().findUser();
-         getWriter().updateDispoSet(author, programId, dispSetToEdit.getGuid(), newSet);
+         getWriter().updateDispoSet(author, program, dispSetToEdit.getGuid(), newSet);
          wasUpdated = true;
       }
       return wasUpdated;
    }
 
    @Override
-   public boolean deleteDispoSet(String programId, String setId) {
+   public boolean deleteDispoSet(DispoProgram program, String setId) {
       ArtifactReadable author = getQuery().findUser();
-      return getWriter().deleteDispoSet(author, programId, setId);
+      return getWriter().deleteDispoSet(author, program, setId);
    }
 
    @Override
-   public boolean editDispoItem(String programId, String itemId, DispoItemData newDispoItem) {
+   public boolean editDispoItem(DispoProgram program, String itemId, DispoItemData newDispoItem) {
       boolean wasUpdated = false;
-      DispoItem dispoItemToEdit = getQuery().findDispoItemById(programId, itemId);
+      DispoItem dispoItemToEdit = getQuery().findDispoItemById(program, itemId);
 
       if (dispoItemToEdit != null && newDispoItem.getAnnotationsList() == null) { // We will not allow them to do mass edit of Annotations
          // Check to see if we are editing the discrepancies
@@ -179,22 +183,22 @@ public class DispoApiImpl implements DispoApi {
          }
 
          ArtifactReadable author = getQuery().findUser();
-         getWriter().updateDispoItem(author, programId, dispoItemToEdit.getGuid(), newDispoItem);
+         getWriter().updateDispoItem(author, program, dispoItemToEdit.getGuid(), newDispoItem);
          wasUpdated = true;
       }
       return wasUpdated;
    }
 
    @Override
-   public boolean deleteDispoItem(String programId, String itemId) {
+   public boolean deleteDispoItem(DispoProgram program, String itemId) {
       ArtifactReadable author = getQuery().findUser();
-      return getWriter().deleteDispoItem(author, programId, itemId);
+      return getWriter().deleteDispoItem(author, program, itemId);
    }
 
    @Override
-   public boolean editDispoAnnotation(String programId, String itemId, String annotationId, DispoAnnotationData newAnnotation) {
+   public boolean editDispoAnnotation(DispoProgram program, String itemId, String annotationId, DispoAnnotationData newAnnotation) {
       boolean wasUpdated = false;
-      DispoItem dispoItem = getQuery().findDispoItemById(programId, itemId);
+      DispoItem dispoItem = getQuery().findDispoItemById(program, itemId);
       if (dispoItem != null) {
          JSONObject annotationsList = dispoItem.getAnnotationsList();
          JSONArray discrepanciesList = dispoItem.getDiscrepanciesList();
@@ -233,7 +237,7 @@ public class DispoApiImpl implements DispoApi {
 
             DispoItem updatedItem = dataFactory.createUpdatedItem(annotationsList, discrepanciesList, true);
             ArtifactReadable author = getQuery().findUser();
-            getWriter().updateDispoItem(author, programId, dispoItem.getGuid(), updatedItem);
+            getWriter().updateDispoItem(author, program, dispoItem.getGuid(), updatedItem);
             wasUpdated = true;
          } catch (JSONException ex) {
             throw new OseeCoreException(ex);
@@ -243,9 +247,9 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public boolean deleteDispoAnnotation(String programId, String itemId, String annotationId) {
+   public boolean deleteDispoAnnotation(DispoProgram program, String itemId, String annotationId) {
       boolean wasUpdated = false;
-      DispoItem dispoItem = getQuery().findDispoItemById(programId, itemId);
+      DispoItem dispoItem = getQuery().findDispoItemById(program, itemId);
       if (dispoItem != null) {
          JSONObject annotationsList = dispoItem.getAnnotationsList();
          JSONArray discrepanciesList = dispoItem.getDiscrepanciesList();
@@ -263,7 +267,7 @@ public class DispoApiImpl implements DispoApi {
             DispoItem updatedItem = dataFactory.createUpdatedItem(annotationsList, discrepanciesList, updateStatus);
 
             ArtifactReadable author = getQuery().findUser();
-            getWriter().updateDispoItem(author, programId, dispoItem.getGuid(), updatedItem);
+            getWriter().updateDispoItem(author, program, dispoItem.getGuid(), updatedItem);
             wasUpdated = true;
          } catch (JSONException ex) {
             throw new OseeCoreException(ex);
@@ -283,29 +287,29 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public IOseeBranch getDispoProgramById(String programId) {
-      return getQuery().findProgramId(programId);
+   public IOseeBranch getDispoProgramById(DispoProgram program) {
+      return getQuery().findProgramId(program);
    }
 
    @Override
-   public ResultSet<DispoSetData> getDispoSets(String programId) throws OseeCoreException {
-      return translateAllToDispoSetData(getQuery().findDispoSets(programId));
+   public ResultSet<DispoSetData> getDispoSets(DispoProgram program) throws OseeCoreException {
+      return translateAllToDispoSetData(getQuery().findDispoSets(program));
    }
 
    @Override
-   public DispoSetData getDispoSetById(String programId, String setId) throws OseeCoreException {
-      return DispoUtil.setArtToSetData(getQuery().findDispoSetsById(programId, setId));
+   public DispoSetData getDispoSetById(DispoProgram program, String setId) throws OseeCoreException {
+      return DispoUtil.setArtToSetData(getQuery().findDispoSetsById(program, setId));
    }
 
    @Override
-   public ResultSet<DispoItemData> getDispoItems(String programId, String setArtId) {
-      return translateAllToDispoItemData(getQuery().findDipoItems(programId, setArtId));
+   public ResultSet<DispoItemData> getDispoItems(DispoProgram program, String setArtId) {
+      return translateAllToDispoItemData(getQuery().findDipoItems(program, setArtId));
    }
 
    @Override
-   public DispoItemData getDispoItemById(String programId, String itemId) {
+   public DispoItemData getDispoItemById(DispoProgram program, String itemId) {
       DispoItemData dispositionableItem;
-      DispoItem result = getQuery().findDispoItemById(programId, itemId);
+      DispoItem result = getQuery().findDispoItemById(program, itemId);
       if (result != null) {
          dispositionableItem = DispoUtil.itemArtToItemData(result);
       } else {
@@ -315,9 +319,9 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public ResultSet<DispoAnnotationData> getDispoAnnotations(String programId, String itemId) {
+   public ResultSet<DispoAnnotationData> getDispoAnnotations(DispoProgram program, String itemId) {
       List<DispoAnnotationData> toReturn = new ArrayList<DispoAnnotationData>();
-      DispoItem dispoItem = getQuery().findDispoItemById(programId, itemId);
+      DispoItem dispoItem = getQuery().findDispoItemById(program, itemId);
       JSONObject annotationsList = dispoItem.getAnnotationsList();
       @SuppressWarnings("unchecked")
       Iterator<String> keys = annotationsList.keys();
@@ -332,9 +336,9 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public DispoAnnotationData getDispoAnnotationByIndex(String programId, String itemId, String annotationId) {
+   public DispoAnnotationData getDispoAnnotationByIndex(DispoProgram program, String itemId, String annotationId) {
       DispoAnnotationData toReturn = new DispoAnnotationData();
-      DispoItem dispoItem = getQuery().findDispoItemById(programId, itemId);
+      DispoItem dispoItem = getQuery().findDispoItemById(program, itemId);
       JSONObject annotationsList = dispoItem.getAnnotationsList();
       if (annotationsList.has(annotationId)) {
          try {
@@ -349,13 +353,13 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public boolean isUniqueSetName(String programId, String name) {
-      return getQuery().isUniqueSetName(programId, name);
+   public boolean isUniqueSetName(DispoProgram program, String name) {
+      return getQuery().isUniqueSetName(program, name);
    }
 
    @Override
-   public boolean isUniqueItemName(String programId, String setId, String name) {
-      return getQuery().isUniqueItemName(programId, setId, name);
+   public boolean isUniqueItemName(DispoProgram program, String setId, String name) {
+      return getQuery().isUniqueItemName(program, setId, name);
    }
 
    private ResultSet<DispoItemData> translateAllToDispoItemData(ResultSet<DispoItem> list) {
@@ -383,5 +387,10 @@ public class DispoApiImpl implements DispoApi {
    private boolean validateResolution(String resolution) {
       return resolution.equals("VALID");
       // Add PCR validation Functionality here
+   }
+
+   @Override
+   public DispoFactory getDispoFactory() {
+      return dispoFactory;
    }
 }

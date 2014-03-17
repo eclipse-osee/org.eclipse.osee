@@ -1,0 +1,37 @@
+/*******************************************************************************
+ * Copyright (c) 2013 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.disposition.rest.internal;
+
+import org.eclipse.osee.disposition.model.DispoProgram;
+import org.eclipse.osee.disposition.model.DispoProgramImpl;
+import org.eclipse.osee.disposition.rest.util.DispoFactory;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+
+/**
+ * @author Donald G. Dunne
+ */
+public class DispoFactoryImpl implements DispoFactory {
+
+   @Override
+   public DispoProgram createProgram(String name) {
+      return createProgram(name, name, new Long(name.hashCode()));
+   }
+
+   @Override
+   public DispoProgram createProgram(String name, String guid, Long uuid) {
+      return new DispoProgramImpl(name, guid, uuid);
+   }
+
+   @Override
+   public DispoProgram createProgram(IOseeBranch branch) {
+      return new DispoProgramImpl(branch.getName(), branch.getGuid(), branch.getUuid());
+   }
+}
