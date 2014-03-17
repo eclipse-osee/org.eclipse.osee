@@ -150,7 +150,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    }
 
    private void refreshStateCombo() throws OseeStateException {
-      if (stateCombo != null) {
+      if (stateCombo != null && taskableStateMachineArtifact != null) {
          List<String> names =
             RelatedToStateColumn.getValidInWorkStates((TeamWorkFlowArtifact) taskableStateMachineArtifact);
          stateCombo.setDataStrings(names.toArray(new String[names.size()]));
