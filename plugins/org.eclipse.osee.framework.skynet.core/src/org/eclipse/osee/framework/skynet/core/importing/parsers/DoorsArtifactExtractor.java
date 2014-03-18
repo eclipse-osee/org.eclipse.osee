@@ -96,6 +96,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    private boolean publishInLine;
    private boolean inHeaderRow;
    private String subsystem;
+   private String effectivity;
    private String documentApplicability = "";
    private DataTypeEnum lastDataType = DataTypeEnum.OTHER;
    private final static String REQUIREMENT_SUBSTRING = "Req";
@@ -117,6 +118,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       OBJECT_NUMBER("Object Number"),
       IS_REQ("Req?"),
       PARENT_ID("Parent ID"),
+      EFFECTIVITY("Effectivity"),
       PARAGRAPH_HEADING("Paragraph Heading"),
       DOCUMENT_APPLICABILITY("Document Applicability"),
       VERIFICATION_CRITERIA("Verification Criteria"),
@@ -398,6 +400,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       publishInLine = false;
       inHeaderRow = false;
       subsystem = "";
+      effectivity = "";
       headerArtifact = null;
       firstRequirement = null;
       numberRequirements = 0;
@@ -602,6 +605,10 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                   /**************
                    * TODO: Requirements trace GUID<-->GUID pair. Need an example
                    */
+                  break;
+
+               case EFFECTIVITY:
+                  effectivity = rowValue.trim();
                   break;
 
                case GUID:
@@ -1188,6 +1195,13 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                break;
 
             case DOCUMENT_APPLICABILITY:
+               break;
+
+            case EFFECTIVITY:
+               if (Strings.isValid(effectivity) && !effectivity.equalsIgnoreCase("<br></br>")) {
+                  roughArtifact.addAttribute(CoreAttributeTypes.Effectivity, effectivity);
+               }
+               effectivity = "";
                break;
 
             case VERIFICATION_CRITERIA:
