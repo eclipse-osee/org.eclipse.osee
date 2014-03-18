@@ -139,7 +139,7 @@
 										<property name="xserver-log-output" value="${xserver-data}/server-output.log" />
 
 										<mkdir dir="${xserver-data}" />
-										<ant antfile="osee-application-server.xml" target="run"
+										<ant antfile="${osee-application-server-launch-ant}" target="run"
 											inheritRefs="true" output="${xserver-log-output}" />
 									</target>
 								</configuration>
@@ -162,7 +162,7 @@
 										<property name="xserver-port" value="${osee-server-port}" />
 										<property name="xserver-telnet-port" value="${osee-server-telnet-port}" />
 
-										<ant antfile="osee-application-server.xml" target="stopServer"
+										<ant antfile="${osee-application-server-launch-ant}" target="stopServer"
 											inheritRefs="true" />
 									</target>
 								</configuration>

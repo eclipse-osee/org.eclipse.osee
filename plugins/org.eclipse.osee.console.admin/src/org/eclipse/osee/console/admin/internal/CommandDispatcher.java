@@ -61,13 +61,13 @@ public class CommandDispatcher {
       }
    }
 
-   public void dispatch(Console console, ConsoleParameters params) throws Exception {
+   public Future<?> dispatch(Console console, ConsoleParameters params) throws Exception {
       String cmdId = getCommandId(params);
       ConsoleCommand command = getCommandById(cmdId);
 
       ConsoleAdminUtils.checkNotNull(command, "command", "Unable to find command for [%s]", cmdId);
       Callable<?> callable = createCallable(command, console, params);
-      execute(cmdId, callable);
+      return execute(cmdId, callable);
    }
 
    private Callable<?> createCallable(final ConsoleCommand command, final Console console, final ConsoleParameters params) {
@@ -83,10 +83,10 @@ public class CommandDispatcher {
       return wrapped;
    }
 
-   private <T> void execute(final String cmdId, final Callable<T> callable) throws Exception {
+   private <T> Future<T> execute(final String cmdId, final Callable<T> callable) throws Exception {
 
       final String guid = GUID.create();
-      Future<?> future = getExecutorAdmin().schedule(CONSOLE_EXECUTOR_ID, callable, new ExecutionCallback<T>() {
+      Future<T> future = getExecutorAdmin().schedule(CONSOLE_EXECUTOR_ID, callable, new ExecutionCallback<T>() {
 
          @Override
          public void onCancelled() {
@@ -118,6 +118,7 @@ public class CommandDispatcher {
          futures.put(cmdId, items);
       }
       items.put(guid, future);
+      return future;
    }
 
    public void cancelAllTasksFor(String cmdId) {

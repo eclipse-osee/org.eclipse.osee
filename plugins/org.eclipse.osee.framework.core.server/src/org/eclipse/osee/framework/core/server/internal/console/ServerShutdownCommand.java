@@ -11,12 +11,12 @@
 package org.eclipse.osee.framework.core.server.internal.console;
 
 import java.util.concurrent.Callable;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -68,9 +68,6 @@ public class ServerShutdownCommand implements ConsoleCommand {
 
       @Override
       public Boolean call() throws Exception {
-         Bundle equinoxHttpBundle = Platform.getBundle("org.eclipse.equinox.http.jetty");
-         equinoxHttpBundle.stop();
-
          manager.setServletRequestsAllowed(false);
 
          while (!manager.isSystemIdle()) {
@@ -85,8 +82,10 @@ public class ServerShutdownCommand implements ConsoleCommand {
          if (parameters.getBoolean("oseeOnly")) {
             console.writeln("Osee Shutdown Complete");
          } else {
-            // Call Close on OSGI
-            console.execute("close");
+            // Stop OSGI
+            Bundle thisBundle = FrameworkUtil.getBundle(getClass());
+            Bundle frameworkBundle = thisBundle.getBundleContext().getBundle(0);
+            frameworkBundle.stop();
          }
          return Boolean.TRUE;
       }

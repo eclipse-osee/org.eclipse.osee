@@ -12,6 +12,7 @@ package org.eclipse.osee.console.admin.internal;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Future;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
@@ -47,14 +48,17 @@ public class CommandProviderImpl implements CommandProvider {
       return new ConsoleImpl(ci);
    }
 
-   public void _osee(CommandInterpreter ci) throws Exception {
+   public Future<?> _osee(CommandInterpreter ci) throws Exception {
       ConsoleParameters parameters = getParameters(ci);
       Console console = getConsole(ci);
+
+      Future<?> toReturn = null;
       if (HELP_COMMAND.equalsIgnoreCase(parameters.getCommandName())) {
          help(console, parameters);
       } else {
-         getDispatcher().dispatch(console, parameters);
+         toReturn = getDispatcher().dispatch(console, parameters);
       }
+      return toReturn;
    }
 
    private String getHelpSubCommand(ConsoleParameters parameters) {

@@ -59,6 +59,8 @@
 
 		<osee-create-help-docs>true</osee-create-help-docs>
 		<rest-output-directory>${project.build.directory}/../REST-INF</rest-output-directory>
+		
+		<osee-application-server-launch-ant>../../plugins/org.eclipse.osee.parent/tools/osee-application-server.xml</osee-application-server-launch-ant>
 	</properties>
 
 	<licenses>

@@ -11,7 +11,7 @@
    $xserver-db-address=127.0.0.1 \
    $xserver-db-port=1623 \
    $xserver-db-web-port=1623 \
-   $xserver-db-type=HSQL,PGSQL \
+   $xserver-db-type=H2,PGSQL \
    
    ${xserver-authentication} 
 	${xserver-data}
@@ -33,17 +33,23 @@
 			</sequential>
 		</for>
 
-		<property name="osee.app.server.connectionFile" value="${xserver-data}/test.osee.client.db.connection.xml" />
-		<property name="osee.app.server.connectionId" value="test.osee.client.db.connection.id" />
+		<property name="osee.app.server.connectionFile" value="${xserver-data}/test.osee.performance.db.connection.xml" />
+		<property name="osee.app.server.connectionId" value="hsql" />
+		<property name="osee.application.server.data" value="${xserver-project}/target/server/demo/binary_data" />
+
+		<echo message="Server Connection File: [${osee.app.server.connectionFile}]" />
+		<echo message="Server Data Directory:  [${osee.application.server.data}]" />
 
 		<echo message="Osee Application Server Home: [${xserver-home}]" />
 		<echo message="Osee Application Server Port: [${xserver-port}]" />
 		<echo message="Osee Application Server Telnet Port: [${xserver-telnet-port}]" />
 		<echo message="Osee Application Server Db Type: [${xserver-db-type}]" />
+		<echo message="Osee Application Server Db Address: [${xserver-db-address}:${xserver-db-port}]" />
+		<echo message="Osee Application Server Db Web Port: [${xserver-db-web-port}]" />
 	</target>
 
 	<target name="writeHsqlConnectionFile" depends="init">
-			<writeConnectionFile dbType="hsql" dbHome="${xserver-db-home}" dbPrefix="jdbc:hsqldb:hsql" dbDriver="hsql.db.connection" dbName="${xserver-db-name}" dbUser="${xserver-db-username}" dbPasswd="${xserver-db-password}" dbAddress="${xserver-db-address}" dbPort="${xserver-db-port}" connectionFilePath="${osee.app.server.connectionFile}" connectionid="${osee.app.server.connectionId}" />
+		<writeConnectionFile dbType="hsql" dbHome="${xserver-db-home}" dbPrefix="jdbc:hsqldb:hsql" dbDriver="hsql.db.connection" dbName="${xserver-db-name}" dbUser="${xserver-db-username}" dbPasswd="${xserver-db-password}" dbAddress="${xserver-db-address}" dbPort="${xserver-db-port}" connectionFilePath="${osee.app.server.connectionFile}" connectionid="${osee.app.server.connectionId}" />
 	</target>
 
 	<target name="run" depends="init,writeHsqlConnectionFile,startServer" />
@@ -62,7 +68,7 @@
 		<forget daemon="false">
 			<echo message="Launching Osee Application Server..." />
 			<!-- Test Should Complete in 30 mins (timeout vale) - currently, they only take ~13 mins -->
-			<java taskname="int-test-server" failonerror="true" maxmemory="1024m" timeout="1800000" jar="${launcherJarPath}" fork="true">
+			<java taskname="int-test-server" failonerror="true" maxmemory="1024m" timeout="1800000" jar="${launcherJarPath}" fork="yes">
 				<classpath>
 					<fileset dir="${xserver-home}/plugins" includes="org.eclipse.equinox.launcher_*.jar" />
 					<pathelement location="${xserver-home}/plugins" />
@@ -73,13 +79,12 @@
 				<sysproperty key="org.osgi.service.http.port" value="${xserver-port}" />
 				<sysproperty key="osee.db.connection.id" value="${osee.app.server.connectionId}" />
 				<sysproperty key="osee.connection.info.uri" value="${osee.app.server.connectionFile}" />
-				<sysproperty key="osee.application.server.data" value="${xserver-data}" />
+				<sysproperty key="osee.application.server.data" value="${osee.application.server.data}" />
 				<sysproperty key="osee.authentication.protocol" value="${xserver-authentication}" />
-				<sysproperty key="osee.connection.info.uri" value="${osee.app.server.connectionFile}" />
 				<sysproperty key="osee.db.embedded.server" value="${xserver-db-address}:${xserver-db-port}" />
 				<sysproperty key="osee.db.embedded.web.server.port" value="${xserver-db-web-port}" />
 				<sysproperty key="logback.configurationFile" value="${xserver-log-config}" />
-				<sysproperty key="osgi.configuration.area" value="${xserver-data}/configuration" />
+				<sysproperty key="osgi.configuration.area" value="${xserver-project}/configuration" />
 
 				<jvmarg line="${additionalJvmArgs}" />
 				<arg line=" -console ${xserver-telnet-port} -consoleLog -configuration &quot;${xserver-home}/configuration&quot;" />
@@ -92,17 +97,19 @@
 	</target>
 
 	<target name="stopServer">
-		<echo message="Osee Application Server Telnet Port: [${xserver-telnet-port}]" />
+		<!--<echo message="Osee Application Server Telnet Port: [${xserver-telnet-port}]" />
 		<telnet server="localhost" port="${xserver-telnet-port}" initialCR="yes" timeout="1000">
 			<read>osgi&gt;</read>
-			<write>shutdown</write>
+			<write>exit</write>
+			<read>Really want to stop Equinox? (y/n; default=y)</read>
+			<write>y</write>
 		</telnet>
-		<sleep milliseconds="500" />
+		<sleep milliseconds="500" />-->
 
-		<!--		<echo message="Osee Application Server Port: [${xserver-port}]" />	
-	<post to="http://127.0.0.1:${xserver-port}/osee/console?cmd=osee&amp;args=server_shutdown" verbose="true" wantresponse="true" property="shutdownOutput" />
+		<echo message="Osee Application Server Port: [${xserver-port}]" />
+		<post to="http://127.0.0.1:${xserver-port}/osee/console?cmd=osee&amp;args=server_shutdown" verbose="true" wantresponse="true" property="shutdownOutput" />
 		<echo message="${shutdownOutput}" />
-      -->
+		<sleep milliseconds="10000" />
 	</target>
 
 	<macrodef name="writeConnectionFile">
@@ -131,7 +138,12 @@
 					&lt;Host key=&quot;#HOST#&quot; value=&quot;@AvailableDbServices.hostAddress&quot; /&gt;${line.separator}
 					&lt;Port key=&quot;#PORT#&quot; value=&quot;@AvailableDbServices.port&quot; /&gt;${line.separator}
 				&lt;/DatabaseInfo&gt;${line.separator}
-				${line.separator}	
+				${line.separator}
+				&lt;ConnectionDescription id=&quot;h2.db.connection&quot;&gt;${line.separator}
+					&lt;Driver&gt;org.h2.Driver&lt;/Driver&gt;${line.separator}
+					&lt;Url&gt;#PREFIX#:tcp://#HOST#:#PORT#/#DBHOME##DBNAME#;IGNORECASE=TRUE;SCHEMA_SEARCH_PATH=@{dbUser}, PUBLIC;MVCC=TRUE&lt;/Url&gt;${line.separator}
+				&lt;/ConnectionDescription&gt;${line.separator}
+				${line.separator}				
 				&lt;ConnectionDescription id=&quot;postgresql.db.connection&quot;&gt;${line.separator}
 					&lt;Driver&gt;org.postgresql.Driver&lt;/Driver&gt;${line.separator}
 					&lt;Url&gt;#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#&lt;/Url&gt;${line.separator}

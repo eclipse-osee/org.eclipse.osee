@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.core.runtime.IStatus;
@@ -84,7 +85,15 @@ public class AdminServlet extends UnsecuredOseeHttpServlet {
          } catch (InterruptedException ex) {
             interpreter.print(ex);
          }
+      } else if (object instanceof Future<?>) {
+         Future<?> future = (Future<?>) object;
+         try {
+            future.get();
+         } catch (Exception ex) {
+            interpreter.print(ex);
+         }
       }
+
    }
 
    private static String commandKey(String rawCommand) {
