@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.ats.rest.internal.build.report.resources.BuildTraceReportResource;
 import org.eclipse.osee.ats.rest.internal.resources.ActionResource;
+import org.eclipse.osee.ats.rest.internal.resources.ConvertResource;
 import org.eclipse.osee.ats.rest.internal.util.JaxRsExceptionMapper;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.logger.Log;
@@ -58,6 +59,7 @@ public class AtsApplication extends Application {
       singletons.add(new BuildTraceReportResource(logger, orcsApi));
 
       singletons.add(new ActionResource(atsServer, orcsApi));
+      singletons.add(new ConvertResource(orcsApi));
       System.out.println("ATS - AtsApplication started");
    }
 

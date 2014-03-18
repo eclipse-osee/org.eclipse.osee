@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -42,7 +41,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeMultiChoiceSelect;
 import org.eclipse.osee.framework.ui.skynet.widgets.XAttributeTypeComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XAttributeTypeMultiChoiceSelect;
-import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectByUuidWidgetDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidgetDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidgetWithSave;
@@ -360,13 +358,7 @@ public final class FrameworkXWidgetProvider {
             artifactList.setMultiSelect(xWidgetLayoutData.getXOptionHandler().contains(XOption.MULTI_SELECT));
             xWidget = artifactList;
          } else if (xWidgetName.equals(XBranchSelectWidgetDam.WIDGET_ID)) {
-            if (OseeInfo.isBooleanUsingCache("isBranchGuid")) {
-               xWidget = new XBranchSelectWidgetDam();
-            } else {
-               xWidget = new XBranchSelectByUuidWidgetDam();
-            }
-         } else if (xWidgetName.equals(XBranchSelectByUuidWidgetDam.WIDGET_ID)) {
-            xWidget = new XBranchSelectByUuidWidgetDam();
+            xWidget = new XBranchSelectWidgetDam();
          } else if (xWidgetName.startsWith(XBranchSelectWidget.WIDGET_ID)) {
             XBranchSelectWidget widget = null;
 

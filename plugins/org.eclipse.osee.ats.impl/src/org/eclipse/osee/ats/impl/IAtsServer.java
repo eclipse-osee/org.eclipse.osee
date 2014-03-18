@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl;
 
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.notify.IAtsNotificationServiceProvider;
@@ -18,6 +19,7 @@ import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactoryProvider;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsStoreFactory;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionServiceProvider;
@@ -66,5 +68,7 @@ public interface IAtsServer extends IAtsConfigItemFactoryProvider, IAtsConfigPro
    IAtsLogFactory getLogFactory();
 
    IWorkItemPage getWorkItemPage();
+
+   List<IAtsDatabaseConversion> getDatabaseConversions();
 
 }

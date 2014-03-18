@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal;
 
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsStoreFactory;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
@@ -29,6 +31,7 @@ import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.action.IWorkItemPage;
+import org.eclipse.osee.ats.impl.internal.convert.AtsDatabaseConversions;
 import org.eclipse.osee.ats.impl.internal.util.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.impl.internal.util.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsBranchServiceImpl;
@@ -232,6 +235,11 @@ public class AtsServerImpl implements IAtsServer {
    @Override
    public IWorkItemPage getWorkItemPage() {
       return workItemPage;
+   }
+
+   @Override
+   public List<IAtsDatabaseConversion> getDatabaseConversions() {
+      return AtsDatabaseConversions.getConversions(getOrcsApi());
    }
 
 }

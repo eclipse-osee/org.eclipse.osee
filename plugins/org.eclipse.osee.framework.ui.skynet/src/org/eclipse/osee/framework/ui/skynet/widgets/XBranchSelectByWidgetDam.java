@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
@@ -23,23 +22,23 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
  * 
  * @author Donald G. Dunne
  */
-public class XBranchSelectByUuidWidgetDam extends XBranchSelectWidget implements IAttributeWidget {
-   public static final String WIDGET_ID = XBranchSelectByUuidWidgetDam.class.getSimpleName();
+public class XBranchSelectByWidgetDam extends XBranchSelectWidget implements IAttributeWidget {
+   public static final String WIDGET_ID = XBranchSelectByWidgetDam.class.getSimpleName();
 
    private Artifact artifact;
    private IAttributeType attributeType;
 
-   public XBranchSelectByUuidWidgetDam() {
+   public XBranchSelectByWidgetDam() {
       this("Branch");
    }
 
-   public XBranchSelectByUuidWidgetDam(String label) {
+   public XBranchSelectByWidgetDam(String label) {
       super(label);
       addXModifiedListener(new DirtyListener());
    }
 
-   public String getStoredGuid() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(attributeType, "");
+   public Long getStoredUuid() throws OseeCoreException {
+      return Long.valueOf(artifact.getSoleAttributeValue(attributeType, ""));
    }
 
    @Override
@@ -53,7 +52,7 @@ public class XBranchSelectByUuidWidgetDam extends XBranchSelectWidget implements
       if (selection == null) {
          artifact.deleteAttributes(attributeType);
       } else {
-         artifact.setSoleAttributeValue(attributeType, selection.getGuid());
+         artifact.setSoleAttributeValue(attributeType, String.valueOf(selection.getUuid()));
       }
    }
 
@@ -66,10 +65,10 @@ public class XBranchSelectByUuidWidgetDam extends XBranchSelectWidget implements
    public Result isDirty() {
       if (isEditable()) {
          try {
-            String storedGuid = getStoredGuid();
+            Long storedUuid = getStoredUuid();
             IOseeBranch widgetInput = getSelection();
-            String widgetGuid = widgetInput == null ? "" : widgetInput.getGuid();
-            if (!storedGuid.equals(widgetGuid)) {
+            Long widgetUuid = widgetInput == null ? 0L : widgetInput.getUuid();
+            if (!storedUuid.equals(widgetUuid)) {
                return new Result(true, getAttributeType() + " is dirty");
             }
          } catch (OseeCoreException ex) {
@@ -84,9 +83,9 @@ public class XBranchSelectByUuidWidgetDam extends XBranchSelectWidget implements
       setLabel(attributeTypeName.getUnqualifiedName());
       this.artifact = artifact;
       this.attributeType = attributeTypeName;
-      String storedGuid = getStoredGuid();
-      if (Strings.isValid(storedGuid)) {
-         IOseeBranch branch = BranchManager.getBranchByGuid(storedGuid);
+      Long storedUuid = getStoredUuid();
+      if (storedUuid != null && getStoredUuid() > 0L) {
+         IOseeBranch branch = BranchManager.getBranchByUuid(storedUuid);
          if (branch != null) {
             setSelection(branch);
          }

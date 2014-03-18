@@ -1,0 +1,103 @@
+/*******************************************************************************
+ * Copyright (c) 2013 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.ats.rest.internal.resources;
+
+import java.util.Arrays;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
+import org.eclipse.osee.ats.rest.internal.AtsRestTemplateTokens;
+import org.eclipse.osee.ats.rest.internal.AtsServerService;
+import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.template.engine.PageFactory;
+
+/**
+ * Allows for the conversion of ATS database from Build to Build
+ * 
+ * @author Donald G. Dunne
+ */
+@Path("convert")
+public final class ConvertResource {
+
+   private final OrcsApi orcsApi;
+
+   public ConvertResource(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
+   }
+
+   /**
+    * @return html representation of ATS Convert Resource
+    */
+   @GET
+   @Produces(MediaType.TEXT_HTML)
+   public String getStates() throws Exception {
+      StringBuffer sb = new StringBuffer();
+      sb.append(AHTML.beginMultiColumnTable(98, 1));
+      sb.append(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Name", "Report", "Run", "Description")));
+      for (IAtsDatabaseConversion convert : AtsServerService.get().getDatabaseConversions()) {
+         sb.append(AHTML.addRowMultiColumnTable(convert.getName(), getForm(convert.getName(), "report", "REPORT-ONLY"),
+            getForm(convert.getName(), "run", "RUN"), AHTML.textToHtml(convert.getDescription())));
+      }
+      sb.append(AHTML.endMultiColumnTable());
+      return PageFactory.realizePage(orcsApi.getResourceRegistry(), AtsRestTemplateTokens.AtsConvertHtml,
+         AtsRestTemplateTokens.AtsValuesHtml, "title", "OSEE ATS Convert", "conversionTable", sb.toString());
+   }
+
+   private String getForm(String convertName, String operation, String buttonLabel) {
+      StringBuffer sb = new StringBuffer();
+      sb.append("<form method=\"post\" action=\"/ats/convert\" >");
+      sb.append("<input type=\"hidden\" name=\"convertName\" value=\"" + convertName + "\"/>");
+      sb.append("<input type=\"hidden\" name=\"operation\" value=\"" + operation + "\"/>");
+      sb.append("<input type=\"submit\" value=\"" + buttonLabel + "\" /></form>");
+      return sb.toString();
+   }
+
+   /**
+    * @param convertName - conversion name to perform. eg: BaselineBranchGuidToUuid
+    * @param operation - run if conversion should run, report for report without persist
+    * @return Html results of conversion
+    */
+   @POST
+   @Consumes("application/x-www-form-urlencoded")
+   public Response createAction(MultivaluedMap<String, String> form, @Context UriInfo uriInfo) throws Exception {
+
+      String convertName = form.getFirst("convertName");
+      String operation = form.getFirst("operation");
+      boolean reportOnly = !operation.equals("run");
+      XResultData results = new XResultData(false);
+      results.logWithFormat("Converting %s ...\n", convertName);
+      for (IAtsDatabaseConversion convert : AtsServerService.get().getDatabaseConversions()) {
+         if (convert.getName().equals(convertName)) {
+            convert.run(results, reportOnly);
+         }
+      }
+      if (results.isErrors()) {
+         throw new OseeCoreException(results.toString());
+      }
+
+      String htmlStr =
+         PageFactory.realizePage(orcsApi.getResourceRegistry(), AtsRestTemplateTokens.SimplePageHtml,
+            AtsRestTemplateTokens.AtsValuesHtml, "title", convertName, "message", results.toString());
+
+      return Response.status(200).entity(htmlStr).build();
+   }
+}

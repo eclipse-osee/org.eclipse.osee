@@ -27,6 +27,10 @@ public class AtsRestTemplateTokens {
    //html 92F3EF9156EE83E
    public static final ResourceToken SourceFileTemplateHtml = createToken(0x4AE7E67876678979L, "sourceFileTemplate.html");
    public static final ResourceToken OfflineSourceFileTemplateHtml = createToken(0x92F3EF9156EE83EL, "offlineSourceFileTemplate.html");
+   public static final ResourceToken AtsConvertHtml = createToken(0x49000000000001L, "AtsConvert.html");
+   public static final ResourceToken AtsHeaderIncludeHtml = createToken(0x49000000000002L, "AtsHeaderInclude.html");
+   public static final ResourceToken AtsValuesHtml = createToken(0x49000000000003L, "AtsValues.html");
+   public static final ResourceToken SimplePageHtml = createToken(0x49000000000004L, "SimplePage.html");
    // @formatter:on
 
    private static ResourceToken createToken(Long uuid, String name) {
