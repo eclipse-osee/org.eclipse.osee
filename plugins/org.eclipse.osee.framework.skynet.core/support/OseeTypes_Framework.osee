@@ -840,7 +840,7 @@ attributeType "Legacy Id" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
-	description "SLATE unique identifier (caution: not guaranteed to be immutable)"
+	description "unique identifier from an external system"
 	mediaType "text/plain"
 }
 
