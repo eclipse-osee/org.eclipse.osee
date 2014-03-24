@@ -12,13 +12,22 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 
 import java.util.ArrayList;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonSubTypes;
+import org.eclipse.osee.ote.core.testPoint.CheckGroup;
+import org.eclipse.osee.ote.core.testPoint.RetryGroup;
+
 /**
- * The TestPoint interface should be implemented by objects that store pass/fail data.
+ * The TestPoint interface should be implemented by objects that store pass/fail
+ * data.
  * 
  * @author Robert A. Fisher
  */
+@JsonSubTypes({ @JsonSubTypes.Type(value = CheckGroup.class), //
+		@JsonSubTypes.Type(value = RetryGroup.class) })
 public interface ITestGroup extends ITestPoint {
-   public int size();
-
-   public ArrayList<ITestPoint> getTestPoints();
+	public int size();
+	
+	@JsonProperty
+	public ArrayList<ITestPoint> getTestPoints();
 }

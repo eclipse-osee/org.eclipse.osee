@@ -27,6 +27,7 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
@@ -281,26 +282,30 @@ public class OTEBundleLoader implements IRuntimeLibraryManager{
 
    @Override
    public void toXml(XMLStreamWriter writer) throws XMLStreamException {
-      Bundle[] bundles = ServiceUtility.getContext().getBundles();
-      List<String> versions = new ArrayList<String>();
-      for(Bundle bundle: bundles ){
-         String version = (String) bundle.getHeaders().get("Bundle-Version");
-         String implVersion = (String) bundle.getHeaders().get("Implementation-Version");
-         if (version != null && implVersion != null) {
-            versions.add(String.format("%s_%s_%s", bundle.getSymbolicName(), version, implVersion));
-         } else if (version != null){
-            versions.add(String.format("%s_%s", bundle.getSymbolicName(), version));
-         } else {
-            versions.add(String.format("%s", bundle.getSymbolicName()));
-         }
-      }
-      Collections.sort(versions);
-      
       writer.writeStartElement("RuntimeVersions");
-      for (String bundleVersion : versions) {
+      for (String bundleVersion : getBundleVersions()) {
          XMLStreamWriterUtil.writeElement(writer, "Version", bundleVersion);
       }
       writer.writeEndElement();
+   }
+
+   @JsonProperty
+   public List<String> getBundleVersions() {
+       Bundle[] bundles = ServiceUtility.getContext().getBundles();
+       List<String> versions = new ArrayList<String>();
+       for(Bundle bundle: bundles ){
+           String version = (String) bundle.getHeaders().get("Bundle-Version");
+           String implVersion = (String) bundle.getHeaders().get("Implementation-Version");
+           if (version != null && implVersion != null) {
+               versions.add(String.format("%s_%s_%s", bundle.getSymbolicName(), version, implVersion));
+           } else if (version != null){
+               versions.add(String.format("%s_%s", bundle.getSymbolicName(), version));
+           } else {
+               versions.add(String.format("%s", bundle.getSymbolicName()));
+           }
+       }
+       Collections.sort(versions);
+       return versions;
    }
 
 }

@@ -11,8 +11,11 @@
 package org.eclipse.osee.ote.core.testPoint;
 
 import java.util.ArrayList;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestGroup;
@@ -52,15 +55,18 @@ public class CheckGroup implements ITestGroup {
       return this;
    }
 
+   @JsonProperty
    @Override
    public ArrayList<ITestPoint> getTestPoints() {
       return testPoints;
    }
 
+   @JsonProperty
    public Operation getOperation() {
       return operation;
    }
 
+   @JsonProperty
    public String getGroupName() {
       return groupName;
    }

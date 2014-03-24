@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.core;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -25,60 +26,67 @@ import org.w3c.dom.Element;
  * @author Robert A. Fisher
  */
 public class ReturnFormatter implements Xmlizable, XmlizableStream {
-   private String variableValue;
 
-   public ReturnFormatter() {
-   }
+    private String returnValue;
 
-   public void set(float value) {
-      variableValue = Double.toString(value);
-   }
+    public void set(float value) {
+        returnValue = Double.toString(value);
+    }
 
-   public void add(double value) {
-      variableValue = Double.toString(value);
-   }
+    public void add(double value) {
+        returnValue = Double.toString(value);
+    }
 
-   public void add(byte value) {
-      variableValue = Double.toString(value);
-   }
+    public void add(byte value) {
+        returnValue = Double.toString(value);
+    }
 
-   public void add(short value) {
-      variableValue = Double.toString(value);
-   }
+    public void add(short value) {
+        returnValue = Double.toString(value);
+    }
 
-   public void add(int value) {
-      variableValue = Integer.toString(value);
-   }
+    public void add(int value) {
+        returnValue = Integer.toString(value);
+    }
 
-   public void add(long value) {
-      variableValue = Double.toString(value);
-   }
+    public void add(long value) {
+        returnValue = Double.toString(value);
+    }
 
-   public void add(char value) {
-      variableValue = Integer.toString(value);
-   }
+    public void add(char value) {
+        returnValue = Integer.toString(value);
+    }
 
-   public void add(boolean value) {
-      variableValue = Boolean.toString(value);
-   }
+    public void add(boolean value) {
+        returnValue = Boolean.toString(value);
+    }
 
-   public void add(Object value) {
-      variableValue = value.toString();
-   }
+    public void add(Object value) {
+        returnValue = value.toString();
+    }
 
-   @Override
-   public String toString() {
-      return variableValue;
-   }
+    @Override
+    public String toString() {
+        return returnValue;
+    }
 
-   @Override
-   public Element toXml(Document doc) {
-      return Jaxp.createElement(doc, "ReturnValue", variableValue);
-   }
+    @Override
+    public Element toXml(Document doc) {
+        return Jaxp.createElement(doc, "ReturnValue", returnValue);
+    }
 
-   @Override
-   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
-	  String toLog = variableValue != null ? XmlSupport.format(variableValue) : "null";
-      XMLStreamWriterUtil.writeElement(writer, "ReturnValue", toLog);
-   }
+    @Override
+    public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+        String toLog = returnValue != null ? XmlSupport.format(returnValue) : "null";
+        XMLStreamWriterUtil.writeElement(writer, "ReturnValue", toLog);
+    }
+
+    public String getValue() {
+        return returnValue;
+    }
+    
+    @JsonProperty
+    public String getReturnValue() {
+        return returnValue;
+    }
 }

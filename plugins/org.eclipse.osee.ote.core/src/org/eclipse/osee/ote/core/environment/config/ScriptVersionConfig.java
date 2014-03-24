@@ -11,8 +11,11 @@
 package org.eclipse.osee.ote.core.environment.config;
 
 import java.io.Serializable;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.ote.core.test.tags.BaseTestTags;
@@ -50,6 +53,7 @@ public class ScriptVersionConfig implements Xmlizable, XmlizableStream, Serializ
    /**
     * @return the location
     */
+   @JsonProperty
    public String getLocation() {
       return location;
    }
@@ -64,6 +68,7 @@ public class ScriptVersionConfig implements Xmlizable, XmlizableStream, Serializ
    /**
     * @return the repositoryType
     */
+   @JsonProperty
    public String getRepositoryType() {
       return repositoryType;
    }
@@ -78,6 +83,7 @@ public class ScriptVersionConfig implements Xmlizable, XmlizableStream, Serializ
    /**
     * @return the revision
     */
+   @JsonProperty
    public String getLastChangedRevision() {
       return lastChangedRevision;
    }
@@ -92,6 +98,7 @@ public class ScriptVersionConfig implements Xmlizable, XmlizableStream, Serializ
    /**
     * @return the lastAuthor
     */
+   @JsonProperty
    public String getLastAuthor() {
       return lastAuthor;
    }
@@ -106,6 +113,7 @@ public class ScriptVersionConfig implements Xmlizable, XmlizableStream, Serializ
    /**
     * @return the lastDateModified
     */
+   @JsonProperty
    public String getLastModificationDate() {
       return lastModificationDate;
    }
@@ -120,6 +128,7 @@ public class ScriptVersionConfig implements Xmlizable, XmlizableStream, Serializ
    /**
     * @return the modifiedFlag
     */
+   @JsonProperty
    public String getModifiedFlag() {
       return modifiedFlag;
    }

@@ -11,8 +11,11 @@
 package org.eclipse.osee.ote.core.log.record;
 
 import java.util.logging.Level;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
@@ -26,40 +29,49 @@ import org.w3c.dom.Element;
  * @author Andrew M. Finkbeiner
  */
 public class TestCaseRecord extends TestRecord {
-   private static final long serialVersionUID = -5049608072548003705L;
-   private final TestCase testCase;
+    private static final long serialVersionUID = -5049608072548003705L;
+    private final TestCase testCase;
 
-   /**
-    * TestCaseRecorded Constructor. Sets up a test case log message.
-    * 
-    * @param source The object requesting the logging.
-    * @param testCase The current test case to be logged.
-    */
-   public TestCaseRecord(ITestEnvironmentAccessor source, TestCase testCase) {
-      super(source, TestLevel.TEST_POINT, "Test Case " + testCase.getTestCaseNumber() + " began.", true);
-      this.testCase = testCase;
-      if (testCase.getTestEnvironment() == null) {
-         OseeLog.log(TestEnvironment.class, Level.INFO, "env null");
-      }
-      /*
-       * else if (testCase.getTestEnvironment().getStatusBoard() == null) OseeLog.log(Activator.class, Level.INFO,
-       * "nullstatus board");
-       * testCase.getTestEnvironment().getStatusBoard().setCurrentScriptCurrentTestCase(testCase.getTestCaseNumber());
-       */
-   }
+    /**
+     * TestCaseRecorded Constructor. Sets up a test case log message.
+     * 
+     * @param source
+     *            The object requesting the logging.
+     * @param testCase
+     *            The current test case to be logged.
+     */
+    public TestCaseRecord(ITestEnvironmentAccessor source, TestCase testCase) {
+        super(source, TestLevel.TEST_POINT, "Test Case " + testCase.getTestCaseNumber() + " began.", true);
+        this.testCase = testCase;
+        if (testCase.getTestEnvironment() == null) {
+            OseeLog.log(TestEnvironment.class, Level.INFO, "env null");
+        }
+        /*
+         * else if (testCase.getTestEnvironment().getStatusBoard() == null)
+         * OseeLog.log(Activator.class, Level.INFO, "nullstatus board");
+         * testCase
+         * .getTestEnvironment().getStatusBoard().setCurrentScriptCurrentTestCase
+         * (testCase.getTestCaseNumber());
+         */
+    }
 
-   /**
-    * Convert an element to XML format.
-    * 
-    * @return XML formated element.
-    */
-   @Override
-   public Element toXml(Document doc) {
-      return testCase.toXml(doc);
-   }
+    /**
+     * Convert an element to XML format.
+     * 
+     * @return XML formated element.
+     */
+    @Override
+    public Element toXml(Document doc) {
+        return testCase.toXml(doc);
+    }
 
-   @Override
-   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
-      testCase.toXml(writer);
-   }
+    @Override
+    public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+        testCase.toXml(writer);
+    }
+    
+    @JsonProperty
+    public TestCase getTestCase() {
+        return testCase;
+    }
 }

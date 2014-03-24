@@ -10,14 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.environment.interfaces;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonSubTypes;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
+import org.eclipse.osee.ote.core.testPoint.CheckPoint;
 
 /**
- * The TestPoint interface should be implemented by objects that store pass/fail data.
+ * The TestPoint interface should be implemented by objects that store pass/fail
+ * data.
  * 
  * @author Robert A. Fisher
  */
 public interface ITestPoint extends Xmlizable, XmlizableStream {
-   public boolean isPass();
+	@JsonProperty
+	public boolean isPass();
 }

@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -61,6 +62,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    private static volatile AtomicLong constructed = new AtomicLong(0);
    private static volatile AtomicLong finalized = new AtomicLong(0);
    private final HashMap<String, Element> elementMap;
+   @JsonProperty
    private final String name;
    private final MessageSystemListener listenerHandler;
    protected final ArrayList<IMessageScheduleChangeListener> schedulingChangeListeners =
@@ -755,6 +757,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       writer.writeEndElement();
    }
 
+   @JsonProperty
+   public String getType() {
+       return getMemType().name();
+   }
+   
    public void zeroize() {
       checkState();
       for (DataType memType : memToDataMap.keySet()) {
@@ -762,11 +769,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
             el.zeroize();
          }
       }
-      //		for (ArrayList<T> list : memToDataMap.values()) {
-      //		for (T md : list) {
-      //		md.zeroize();
-      //		}
-      //		}
    }
 
    /**

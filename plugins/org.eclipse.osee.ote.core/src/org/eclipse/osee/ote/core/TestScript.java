@@ -22,8 +22,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.eclipse.osee.connection.service.IServiceConnector;
-import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.logging.ILoggerFilter;
 import org.eclipse.osee.framework.logging.ILoggerListener;
@@ -450,7 +450,7 @@ public abstract class TestScript implements ITimeout {
    public void addScriptSummary(XmlizableStream xml) {
 	   sciprtResultRecord.addChildElement((XmlizableStream) xml);
    }
-
+   
    /**
     * Add a single test case to selective run list.
     */
@@ -698,9 +698,9 @@ public abstract class TestScript implements ITimeout {
       return fail;
    }
 
-   @Deprecated
+   @JsonProperty
    public ScriptResultRecord getScriptResultRecord() {
-      return this.sciprtResultRecord;
+      return sciprtResultRecord;
    }
 
    public void setAborted(boolean aborted) {

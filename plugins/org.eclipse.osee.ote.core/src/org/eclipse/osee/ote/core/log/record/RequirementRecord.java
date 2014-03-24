@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.log.record;
 
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.log.TestLevel;
 
@@ -39,5 +40,10 @@ public class RequirementRecord extends TestRecord {
     */
    public RequirementRecord(ITestEnvironmentAccessor source, String msg) {
       this(source, msg, true);
+   }
+   
+   @JsonProperty
+   public String getRequirement() {
+	   return getMessage();
    }
 }

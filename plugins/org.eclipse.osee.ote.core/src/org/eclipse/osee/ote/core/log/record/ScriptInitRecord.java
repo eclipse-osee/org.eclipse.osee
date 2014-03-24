@@ -10,8 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.log.record;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.LogRecord;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.log.TestLevel;
 import org.w3c.dom.Document;
@@ -71,4 +77,8 @@ public class ScriptInitRecord extends TestRecord {
       writer.writeStartElement("ScriptInit");
    }
 
+   @JsonProperty("Script")
+   public String getMessage() {
+	   return super.getMessage();
+   }
 }

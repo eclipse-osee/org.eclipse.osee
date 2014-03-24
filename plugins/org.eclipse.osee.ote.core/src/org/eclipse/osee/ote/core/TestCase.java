@@ -12,10 +12,14 @@ package org.eclipse.osee.ote.core;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -95,10 +99,11 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
    protected ITestLogger logger;
    private final ITestEnvironmentAccessor environment;
    private final boolean standAlone;
-   public int testCaseNumber;
    private final WeakReference<TestScript> testScript;
    private final TestDescriptionRecord testDescription;
-   protected ArrayList<RequirementRecord> scriptTraceability;
+   @JsonProperty
+   public int number;
+   protected List<RequirementRecord> traceability = new ArrayList<RequirementRecord>();
 
    /**
     * TestCase Constructor.
@@ -120,14 +125,9 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
    protected TestCase(TestScript testScript, boolean standAlone, boolean addToRunList) {
       super();
       this.testDescription = new TestDescriptionRecord(testScript.getTestEnvironment());
-      // TODO we have two different traceability tags here.... we need to combine these or get rid
-      // of them all together since define and the artifact framework specifies traceability
-      // this.tracability = new ArrayList();
-      this.scriptTraceability = new ArrayList<RequirementRecord>();
-
       this.standAlone = standAlone;
       if (addToRunList) {
-         this.testCaseNumber = testScript.addTestCase(this);
+         this.number = testScript.addTestCase(this);
       }
       this.testScript = new WeakReference<TestScript>(testScript);
       this.environment = testScript.getTestEnvironment();
@@ -140,11 +140,11 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
       // TODO we have two different traceability tags here.... we need to combine these or get rid
       // of them all together since define and the artifact framework specifies traceability
       // this.tracability = new ArrayList();
-      this.scriptTraceability = new ArrayList<RequirementRecord>();
+      this.traceability = new ArrayList<RequirementRecord>();
 
       this.standAlone = false;
       ;
-      this.testCaseNumber = 1;
+      this.number = 1;
       this.testScript = null;
       this.environment = accessor;
 
@@ -158,11 +158,11 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
    public abstract void doTestCase(ITestEnvironmentAccessor environment, ITestLogger logger) throws InterruptedException;
 
    public Element getTastCaseNumberXml(Document doc) {
-      return Jaxp.createElement(doc, "Number", String.valueOf(testCaseNumber));
+      return Jaxp.createElement(doc, "Number", String.valueOf(number));
    }
 
    public void writeTestCaseNumber(XMLStreamWriter writer) throws XMLStreamException {
-      XMLStreamWriterUtil.writeElement(writer, "Number", String.valueOf(testCaseNumber));
+      XMLStreamWriterUtil.writeElement(writer, "Number", String.valueOf(number));
    }
 
    public void writeTestCaseClassName(XMLStreamWriter writer) throws XMLStreamException {
@@ -172,10 +172,15 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
       }
       XMLStreamWriterUtil.writeElement(writer, "Name", name);
    }
+   
+   @JsonProperty
+   public String getName() {
+       return this.getClass().getName();
+   }
 
    public void writeTracability(XMLStreamWriter writer) throws XMLStreamException {
       writer.writeStartElement("Tracability");
-      for (RequirementRecord record : scriptTraceability) {
+      for (RequirementRecord record : traceability) {
          record.toXml(writer);
       }
       writer.writeEndElement();
@@ -188,6 +193,10 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
       }
       return Jaxp.createElement(doc, "Name", name);
    }
+   
+   public String getTestCaseClassName() {
+	   return this.getClass().getName();
+   }
 
    public TestCase getTestCase() {
       return this;
@@ -197,7 +206,7 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
     * @return Returns the testCaseNumber.
     */
    public int getTestCaseNumber() {
-      return testCaseNumber;
+      return number;
    }
 
    public ITestEnvironmentAccessor getTestEnvironment() {
@@ -218,7 +227,7 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
 
    public Element getTracabilityXml(Document doc) {
       Element traceElement = doc.createElement("Tracability");
-      for (RequirementRecord record : scriptTraceability) {
+      for (RequirementRecord record : traceability) {
          traceElement.appendChild(record.toXml(doc));
 
       }
@@ -273,9 +282,9 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
 
    @Override
    public String toString() {
-      String description = getTestScript().getClass().getName() + "Test Case " + testCaseNumber + ":";
-      if (scriptTraceability != null) {
-         for (RequirementRecord record : scriptTraceability) {
+      String description = getTestScript().getClass().getName() + "Test Case " + number + ":";
+      if (traceability != null) {
+         for (RequirementRecord record : traceability) {
             description += "\n\t" + record;
          }
       }
@@ -414,12 +423,12 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
       testDescription.setPostCondition(postCondition);
    }
 
-   public ArrayList<RequirementRecord> getScriptReqRecordTraceability() {
-      return scriptTraceability;
+   public List<RequirementRecord> getScriptReqRecordTraceability() {
+      return traceability;
    }
 
    public void addTraceability(String description) {
-      this.scriptTraceability.add(new RequirementRecord(this.getTestEnvironment(), description));
+      this.traceability.add(new RequirementRecord(this.getTestEnvironment(), description));
    }
 
    public void writeToConsole(String message) {
@@ -440,5 +449,13 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
    public void abortTestScript(Throwable t) {
       testScript.get().abortDueToThrowable(t);
    }
-
+   
+   @JsonProperty
+   public List<RequirementRecord> getTraceability() {
+       if (traceability.isEmpty()) {
+           return null;
+       } else {
+           return traceability;
+       }
+   }
 }

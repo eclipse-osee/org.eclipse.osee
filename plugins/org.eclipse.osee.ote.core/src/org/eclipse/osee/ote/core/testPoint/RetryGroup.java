@@ -16,6 +16,7 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.w3c.dom.Document;
@@ -26,6 +27,7 @@ import org.w3c.dom.Element;
  */
 public class RetryGroup extends CheckGroup {
    ArrayList<Xmlizable> childElements;
+   @JsonProperty("ChildRecords")
    ArrayList<XmlizableStream> childStreamElements;
 
    public RetryGroup(String groupName) {
@@ -43,7 +45,7 @@ public class RetryGroup extends CheckGroup {
       }
       return retVal;
    }
-
+   
    @Override
    public void toXml(XMLStreamWriter writer) throws XMLStreamException {
       buildXml(writer, "RetryGroup");

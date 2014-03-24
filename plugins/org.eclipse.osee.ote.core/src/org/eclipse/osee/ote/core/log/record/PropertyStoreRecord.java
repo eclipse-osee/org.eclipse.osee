@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.log.record;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 
 public class PropertyStoreRecord extends TestRecord {
@@ -41,5 +45,24 @@ public class PropertyStoreRecord extends TestRecord {
 		}
 		writer.writeEndElement();
 	}
-
+	
+	@JsonProperty
+	public Map<String, String> getProperties() {
+		Map<String, String> result = new HashMap<String, String>();
+		if (store != null && !store.isEmpty()) {
+			for (String key : store.keySet()) {
+				if (nonEmptyString(store.get(key)) != null) {
+					result.put(key, store.get(key));
+				}
+			}
+			return result;
+		} else {
+			return null;
+		}
+	}
+	
+	@JsonIgnore
+	public String getMessage() {
+		return super.getMessage();
+	}
 }

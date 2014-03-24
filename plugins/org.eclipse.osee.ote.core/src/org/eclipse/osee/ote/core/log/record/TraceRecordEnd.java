@@ -11,8 +11,13 @@
 package org.eclipse.osee.ote.core.log.record;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.ote.core.ReturnFormatter;
@@ -79,5 +84,20 @@ public class TraceRecordEnd extends TestRecord implements Xmlizable {
          }
       }
       writer.writeEndElement();
+   }
+   
+   @JsonProperty
+   public ReturnFormatter getReturnValue() {
+    return returnFormatter;
+}
+
+@JsonIgnore
+   public List<String> getLocation() {
+	   return null;
+   }
+   
+   @JsonProperty
+   public List<?> getAdditionalInfo() {
+       return nonEmptyList(additionalStreamElements);
    }
 }
