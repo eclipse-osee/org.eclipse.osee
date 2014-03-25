@@ -13,6 +13,7 @@ package org.eclipse.osee.rest.admin.internal;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.logger.Log;
@@ -25,6 +26,7 @@ import org.eclipse.osee.rest.model.OseeWebApplicationException;
 @Provider
 public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
 
+   private static final String SEE_HTTP_STATUS_CODES = "See HTTP Status codes";
    private static final String INTERNAL_SERVER_ERROR_TYPE = "Internal Server Error";
    private static final String APPLICATION_EXCEPTION_TYPE = "Web Application Exception";
    private static final String OSEE_APPLICATION_EXCEPTION_TYPE = "Osee Web Application Exception";
@@ -51,7 +53,12 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
          Response response = webAppException.getResponse();
          int statusCode = response.getStatus();
          String message = webAppException.getMessage();
-         exception = new OseeWebApplicationException(throwable, Status.fromStatusCode(statusCode), message);
+
+         javax.ws.rs.core.Response.StatusType status = Status.fromStatusCode(statusCode);
+         if (status == null) {
+            status = newStatusType(statusCode, Family.SERVER_ERROR, SEE_HTTP_STATUS_CODES);
+         }
+         exception = new OseeWebApplicationException(throwable, status, message);
       } else {
          isError = true;
          logMessage = INTERNAL_SERVER_ERROR_TYPE;
@@ -67,4 +74,24 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
       return exception.getResponse();
    }
 
+   private javax.ws.rs.core.Response.StatusType newStatusType(final int code, final Family family, final String reason) {
+      return new javax.ws.rs.core.Response.StatusType() {
+
+         @Override
+         public int getStatusCode() {
+            return code;
+         }
+
+         @Override
+         public Family getFamily() {
+            return family;
+         }
+
+         @Override
+         public String getReasonPhrase() {
+            return reason;
+         }
+
+      };
+   }
 }

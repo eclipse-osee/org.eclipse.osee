@@ -14,6 +14,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response.StatusType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
@@ -28,7 +29,7 @@ public class OseeWebApplicationException extends WebApplicationException {
    private static final String DEFAULT_ERROR_MESSAGE =
       "Exception message unavaliable - both exception and message were null";
 
-   private final Status errorStatus;
+   private final StatusType errorStatus;
    private final String errorMessage;
    private final ErrorResponse errorResponse;
 
@@ -44,8 +45,8 @@ public class OseeWebApplicationException extends WebApplicationException {
       this(cause, status, null);
    }
 
-   public OseeWebApplicationException(Throwable cause, Status status, String message, Object... args) {
-      super(cause, status);
+   public OseeWebApplicationException(Throwable cause, StatusType status, String message, Object... args) {
+      super(cause, status.getStatusCode());
       this.errorStatus = status;
       if (message != null) {
          this.errorMessage = formatMessage(message, args);
@@ -60,7 +61,7 @@ public class OseeWebApplicationException extends WebApplicationException {
       return Response.status(getErrorStatus()).type(MediaType.APPLICATION_JSON_TYPE).entity(getErrorResponse()).build();
    }
 
-   public Status getErrorStatus() {
+   public StatusType getErrorStatus() {
       return errorStatus;
    }
 
@@ -72,7 +73,7 @@ public class OseeWebApplicationException extends WebApplicationException {
       return errorResponse;
    }
 
-   private static ErrorResponse newErrorResponse(Throwable throwable, Status errorStatus, String errorMsg) {
+   private static ErrorResponse newErrorResponse(Throwable throwable, StatusType errorStatus, String errorMsg) {
       ErrorResponse response = new ErrorResponse();
 
       String exceptionMsg = throwable != null ? Lib.exceptionToString(throwable) : EXCEPTION_NOT_AVAILABLE;
@@ -84,7 +85,7 @@ public class OseeWebApplicationException extends WebApplicationException {
       }
       response.setErrorMessage(errorMsgToSet);
 
-      Status status = errorStatus != null ? errorStatus : Status.INTERNAL_SERVER_ERROR;
+      StatusType status = errorStatus != null ? errorStatus : Status.INTERNAL_SERVER_ERROR;
       response.setErrorCode(status.getStatusCode());
       response.setErrorReason(status.getReasonPhrase());
       response.setErrorType(status.getFamily().toString());
