@@ -12,6 +12,8 @@ package org.eclipse.osee.rest.admin.internal.filters;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.rest.model.NoSecurityFilter;
 import com.sun.jersey.api.container.filter.servlet.RolesAllowedResourceFilterFactory;
 import com.sun.jersey.api.model.AbstractMethod;
 import com.sun.jersey.spi.container.ResourceFilter;
@@ -23,21 +25,37 @@ import com.sun.jersey.spi.container.ResourceFilter;
  */
 public class SecureResourceFilterFactory extends RolesAllowedResourceFilterFactory {
 
+   private static final String SECURE = "SECURE";
+   private static final String INSECURE = "SKIPPED";
+
+   private final Log logger;
    private final SecurityContextFilter securityContextFilter;
 
-   public SecureResourceFilterFactory(SecurityContextFilter securityContextFilter) {
+   public SecureResourceFilterFactory(Log logger, SecurityContextFilter securityContextFilter) {
       super();
+      this.logger = logger;
       this.securityContextFilter = securityContextFilter;
    }
 
    @Override
    public List<ResourceFilter> create(AbstractMethod am) {
-      List<ResourceFilter> filters = super.create(am);
-      if (filters == null) {
-         filters = new ArrayList<ResourceFilter>();
+      List<ResourceFilter> securityFilters = super.create(am);
+      if (securityFilters == null) {
+         securityFilters = new ArrayList<ResourceFilter>();
+      } else {
+         securityFilters = new ArrayList<ResourceFilter>(securityFilters);
       }
-      List<ResourceFilter> securityFilters = new ArrayList<ResourceFilter>(filters);
-      securityFilters.add(0, securityContextFilter);
+
+      boolean secure = isSecured(am);
+      if (secure) {
+         securityFilters.add(0, securityContextFilter);
+      }
+      logger.info("REST Security Filter: [%s] [%s]", secure ? SECURE : INSECURE, am);
       return securityFilters;
+   }
+
+   private boolean isSecured(AbstractMethod am) {
+      return !am.isAnnotationPresent(NoSecurityFilter.class) && // 
+      !am.getResource().isAnnotationPresent(NoSecurityFilter.class);
    }
 }

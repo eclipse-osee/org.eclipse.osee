@@ -21,7 +21,6 @@ import org.eclipse.osee.rest.admin.internal.resources.ApplicationsResource;
 import org.osgi.framework.Bundle;
 import com.sun.jersey.api.core.DefaultResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
-import com.sun.jersey.spi.container.ContainerRequestFilter;
 import com.sun.jersey.spi.container.ResourceFilterFactory;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 
@@ -33,7 +32,6 @@ public class RestComponentFactory {
    private final SecurityContextFilter securityContextFilter;
 
    private List<Object> defaultSingletonResources;
-   private List<ContainerRequestFilter> containerRequestFilters;
 
    public RestComponentFactory(Log logger, SecurityContextFilter securityContextFilter) {
       super();
@@ -41,15 +39,8 @@ public class RestComponentFactory {
       this.securityContextFilter = securityContextFilter;
    }
 
-   public List<ContainerRequestFilter> getRequestFilters() {
-      if (containerRequestFilters == null) {
-         containerRequestFilters = Collections.<ContainerRequestFilter> singletonList(securityContextFilter);
-      }
-      return containerRequestFilters;
-   }
-
    public List<ResourceFilterFactory> getResourceFilterFactories() {
-      SecureResourceFilterFactory filterFactory = new SecureResourceFilterFactory(securityContextFilter);
+      SecureResourceFilterFactory filterFactory = new SecureResourceFilterFactory(logger, securityContextFilter);
       return Collections.<ResourceFilterFactory> singletonList(filterFactory);
    }
 
@@ -70,7 +61,6 @@ public class RestComponentFactory {
 
       Map<String, Bundle> bundleMap = new ConcurrentHashMap<String, Bundle>();
       ObjectProvider<Iterable<Bundle>> provider = newBundleProvider(bundleMap);
-      config.getProperties().put(ResourceConfig.PROPERTY_CONTAINER_REQUEST_FILTERS, getRequestFilters());
       config.getProperties().put(ResourceConfig.PROPERTY_RESOURCE_FILTER_FACTORIES, getResourceFilterFactories());
 
       BundleHttpContext bundleContext = new BundleHttpContext(provider);
