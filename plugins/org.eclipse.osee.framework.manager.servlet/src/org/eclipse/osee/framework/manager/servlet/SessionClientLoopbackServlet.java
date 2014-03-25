@@ -18,7 +18,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,12 +25,8 @@ import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar
@@ -50,18 +45,18 @@ public class SessionClientLoopbackServlet extends UnsecuredOseeHttpServlet {
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       try {
-         int remotePort = getSessionPort(request);
-         response.setContentType("text/plain");
+         ISession session = getSessionFromRequest(request);
          String url = null;
-         if (remotePort > -1) {
+         if (session != null) {
             // Session found - redirect to client.
-            url = String.format("http://%s:%s/%s", request.getRemoteAddr(), remotePort, getLoopbackPostfix(request));
+            url = String.format("%s%s", getRemoteHostUrl(session), getLoopbackPostfix(request));
          } else {
             // No session found - redirect to web browser request handler.
             url =
                String.format("http://%s:%s/%s?%s", getNormalizedAddress(request.getLocalAddr()),
                   request.getLocalPort(), OseeServerContext.ARTIFACT_CONTEXT, request.getQueryString());
          }
+         response.setContentType("text/plain");
          response.sendRedirect(url);
       } catch (Exception ex) {
          response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
@@ -153,36 +148,15 @@ public class SessionClientLoopbackServlet extends UnsecuredOseeHttpServlet {
       return result;
    }
 
-   private int getSessionPort(HttpServletRequest request) throws UnknownHostException, OseeCoreException {
-      String remoteAddress = getNormalizedAddress(request.getRemoteAddr());
+   private ISession getSessionFromRequest(HttpServletRequest request) {
+      ISession session = null;
       final String sessionId = request.getParameter("sessionId");
-
-      Iterable<? extends ISession> filteredByAddress = getSessionsByClientAddress(remoteAddress);
-
-      ISession sessionData = null;
       if (Strings.isValid(sessionId)) {
-         Optional<? extends ISession> data = Iterables.tryFind(filteredByAddress, new Predicate<ISession>() {
-            @Override
-            public boolean apply(ISession session) {
-               return sessionId.equals(session.getGuid());
-            }
-         });
-         if (data.isPresent()) {
-            if (isSessionValid(data.get())) {
-               sessionData = data.get();
-            }
+         session = sessionManager.getSessionById(sessionId);
+         if (!isSessionValid(session)) {
+            session = null;
          }
       }
-      return sessionData != null ? sessionData.getClientPort() : -1;
-   }
-
-   private Iterable<? extends ISession> getSessionsByClientAddress(final String remoteAddress) throws OseeCoreException {
-      Collection<? extends ISession> allSessions = sessionManager.getAllSessions();
-      return Iterables.filter(allSessions, new Predicate<ISession>() {
-         @Override
-         public boolean apply(ISession session) {
-            return remoteAddress.equals(session.getClientAddress());
-         }
-      });
+      return session;
    }
 }
