@@ -27,4 +27,6 @@ public interface AuthenticationAdmin {
 
    Iterable<String> getAvailableSchemes();
 
+   String getDefaultScheme();
+
 }

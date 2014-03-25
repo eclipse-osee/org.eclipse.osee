@@ -58,20 +58,34 @@ public class AuthenticationConfigurationBuilderTest {
    }
 
    @Test
+   public void testDefaultScheme() {
+      builder.defaultScheme(SCHEME_2);
+
+      AuthenticationConfiguration actual = builder.build();
+
+      assertEquals(SCHEME_2, actual.getDefaultScheme());
+   }
+
+   @Test
    public void testConfigProperties() {
       Map<String, Object> properties = new HashMap<String, Object>();
-      properties.put(AuthenticationConstants.AUTHENTICATION_SCHEME_ALLOWED, SCHEME_2);
+      properties.put(AuthenticationConstants.AUTHENTICATION_SCHEME_ALLOWED, SCHEME_1 + "," + SCHEME_2);
+      properties.put(AuthenticationConstants.AUTHENTICATION_SCHEME_ALLOWED_DEFAULT, SCHEME_2);
       builder.properties(properties);
 
       AuthenticationConfiguration actual = builder.build();
 
       Iterator<String> iterator = actual.getAllowedSchemes().iterator();
+      assertEquals(SCHEME_1, iterator.next());
       assertEquals(SCHEME_2, iterator.next());
+
+      assertEquals(SCHEME_2, actual.getDefaultScheme());
    }
 
    @Test
    public void testNoChangeAfterBuild() {
       builder.scheme(SCHEME_1);
+      builder.defaultScheme(SCHEME_1);
 
       AuthenticationConfiguration actual = builder.build();
 
@@ -79,10 +93,15 @@ public class AuthenticationConfigurationBuilderTest {
       assertEquals(SCHEME_1, iterator.next());
       assertEquals(false, iterator.hasNext());
 
+      assertEquals(SCHEME_1, actual.getDefaultScheme());
+
       builder.scheme(SCHEME_2);
+      builder.defaultScheme(SCHEME_2);
 
       iterator = actual.getAllowedSchemes().iterator();
       assertEquals(SCHEME_1, iterator.next());
       assertEquals(false, iterator.hasNext());
+
+      assertEquals(SCHEME_1, actual.getDefaultScheme());
    }
 }

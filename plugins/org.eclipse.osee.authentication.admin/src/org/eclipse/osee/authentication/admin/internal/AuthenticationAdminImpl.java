@@ -11,6 +11,7 @@
 package org.eclipse.osee.authentication.admin.internal;
 
 import static org.eclipse.osee.authentication.admin.internal.AuthenticationUtil.normalize;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.authentication.admin.AuthenticatedUser;
@@ -78,6 +79,16 @@ public class AuthenticationAdminImpl implements AuthenticationAdmin {
       return config.getAllowedSchemes();
    }
 
+   @Override
+   public String getDefaultScheme() {
+      String toReturn = config.getDefaultScheme();
+      if (!Strings.isValid(toReturn)) {
+         Iterator<String> iterator = getAllowedSchemes().iterator();
+         toReturn = iterator.hasNext() ? iterator.next() : "";
+      }
+      return toReturn;
+   }
+
    private AuthenticationProvider getAuthenticator(String schemeType) {
       String toMatch = normalize(schemeType);
       return authenticationProviders.get(toMatch);
@@ -86,6 +97,9 @@ public class AuthenticationAdminImpl implements AuthenticationAdmin {
    @Override
    public AuthenticatedUser authenticate(AuthenticationRequest authenticationRequest) {
       String schemeType = authenticationRequest.getScheme();
+      if (!Strings.isValid(schemeType)) {
+         schemeType = getDefaultScheme();
+      }
       checkSchemeAllowed(schemeType);
 
       AuthenticationProvider provider = getAuthenticator(schemeType);

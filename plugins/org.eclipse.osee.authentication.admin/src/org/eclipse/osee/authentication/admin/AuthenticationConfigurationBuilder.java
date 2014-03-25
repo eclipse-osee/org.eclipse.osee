@@ -11,7 +11,9 @@
 package org.eclipse.osee.authentication.admin;
 
 import static org.eclipse.osee.authentication.admin.AuthenticationConstants.AUTHENTICATION_SCHEME_ALLOWED;
+import static org.eclipse.osee.authentication.admin.AuthenticationConstants.AUTHENTICATION_SCHEME_ALLOWED_DEFAULT;
 import static org.eclipse.osee.authentication.admin.AuthenticationConstants.DEFAULT_AUTHENTICATION_SCHEME;
+import static org.eclipse.osee.authentication.admin.AuthenticationConstants.DEFAULT_AUTHENTICATION_SCHEME_ALLOWED_DEFAULT;
 import static org.eclipse.osee.authentication.admin.internal.AuthenticationUtil.normalize;
 import java.util.Collection;
 import java.util.HashSet;
@@ -45,6 +47,11 @@ public class AuthenticationConfigurationBuilder {
       return this;
    }
 
+   public AuthenticationConfigurationBuilder defaultScheme(String scheme) {
+      config.setDefaultScheme(scheme);
+      return this;
+   }
+
    public AuthenticationConfiguration build() {
       return config.clone();
    }
@@ -52,6 +59,7 @@ public class AuthenticationConfigurationBuilder {
    private static final class AuthenticationConfigurationImpl implements AuthenticationConfiguration, Cloneable {
 
       private final Set<String> schemes = new HashSet<String>();
+      private String defaultScheme;
 
       @Override
       public Iterable<String> getAllowedSchemes() {
@@ -71,15 +79,27 @@ public class AuthenticationConfigurationBuilder {
       }
 
       @Override
+      public String getDefaultScheme() {
+         return defaultScheme;
+      }
+
+      public void setDefaultScheme(String defaultScheme) {
+         this.defaultScheme = defaultScheme;
+      }
+
+      @Override
       public synchronized AuthenticationConfigurationImpl clone() {
          AuthenticationConfigurationImpl cloned = new AuthenticationConfigurationImpl();
          cloned.addSchemes(this.schemes);
+         cloned.setDefaultScheme(this.getDefaultScheme());
          return cloned;
       }
 
       public void loadProperties(Map<String, Object> props) {
          if (props != null && !props.isEmpty()) {
             addSchemes(getSet(props, AUTHENTICATION_SCHEME_ALLOWED, DEFAULT_AUTHENTICATION_SCHEME));
+            setDefaultScheme(get(props, AUTHENTICATION_SCHEME_ALLOWED_DEFAULT,
+               DEFAULT_AUTHENTICATION_SCHEME_ALLOWED_DEFAULT));
          }
       }
 
@@ -108,5 +128,6 @@ public class AuthenticationConfigurationBuilder {
          }
          return toReturn;
       }
+
    }
 }

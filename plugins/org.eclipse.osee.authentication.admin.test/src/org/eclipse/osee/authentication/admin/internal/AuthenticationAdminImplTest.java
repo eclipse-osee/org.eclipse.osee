@@ -260,4 +260,58 @@ public class AuthenticationAdminImplTest {
       assertEquals(SCHEME_2, iterator.next());
    }
 
+   @Test
+   public void testDefaultSchemeAllowed() {
+      admin.addAuthenticationProvider(provider1);
+      admin.addAuthenticationProvider(provider2);
+
+      Iterable<String> iterable = admin.getAvailableSchemes();
+      Iterator<String> iterator = iterable.iterator();
+      assertEquals(SCHEME_1, iterator.next());
+      assertEquals(SCHEME_2, iterator.next());
+
+      assertEquals("", admin.getDefaultScheme());
+
+      boolean actual = admin.isSchemeAllowed(SCHEME_1);
+      assertEquals(false, actual);
+
+      actual = admin.isSchemeAllowed(SCHEME_2);
+      assertEquals(false, actual);
+
+      Map<String, Object> properties = new HashMap<String, Object>();
+      properties.put(AuthenticationConstants.AUTHENTICATION_SCHEME_ALLOWED, SCHEME_1);
+      admin.update(properties);
+
+      assertEquals(SCHEME_1, admin.getDefaultScheme());
+
+      actual = admin.isSchemeAllowed(SCHEME_1);
+      assertEquals(true, actual);
+
+      actual = admin.isSchemeAllowed(SCHEME_2);
+      assertEquals(false, actual);
+
+      properties.put(AuthenticationConstants.AUTHENTICATION_SCHEME_ALLOWED, SCHEME_1 + "," + SCHEME_2);
+      admin.update(properties);
+
+      actual = admin.isSchemeAllowed(SCHEME_1);
+      assertEquals(true, actual);
+
+      actual = admin.isSchemeAllowed(SCHEME_2);
+      assertEquals(true, actual);
+
+      assertEquals(SCHEME_1, admin.getDefaultScheme());
+
+      properties.put(AuthenticationConstants.AUTHENTICATION_SCHEME_ALLOWED, SCHEME_1 + "," + SCHEME_2);
+      properties.put(AuthenticationConstants.AUTHENTICATION_SCHEME_ALLOWED_DEFAULT, SCHEME_2);
+      admin.update(properties);
+
+      actual = admin.isSchemeAllowed(SCHEME_1);
+      assertEquals(true, actual);
+
+      actual = admin.isSchemeAllowed(SCHEME_2);
+      assertEquals(true, actual);
+
+      assertEquals(SCHEME_2, admin.getDefaultScheme());
+   }
+
 }

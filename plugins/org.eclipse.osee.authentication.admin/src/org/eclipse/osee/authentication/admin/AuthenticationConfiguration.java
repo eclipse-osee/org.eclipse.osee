@@ -17,4 +17,6 @@ public interface AuthenticationConfiguration {
 
    Iterable<String> getAllowedSchemes();
 
+   String getDefaultScheme();
+
 }

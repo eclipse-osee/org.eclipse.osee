@@ -28,7 +28,9 @@ public final class AuthenticationConstants {
    public static final String NO_AUTHENTICATION = "None";
 
    public static final String DEFAULT_AUTHENTICATION_SCHEME = NO_AUTHENTICATION;
+   public static final String DEFAULT_AUTHENTICATION_SCHEME_ALLOWED_DEFAULT = "";
 
    public static final String AUTHENTICATION_SCHEME_ALLOWED = qualify("scheme.allowed");
+   public static final String AUTHENTICATION_SCHEME_ALLOWED_DEFAULT = qualify("scheme.allowed.default");
 
 }
