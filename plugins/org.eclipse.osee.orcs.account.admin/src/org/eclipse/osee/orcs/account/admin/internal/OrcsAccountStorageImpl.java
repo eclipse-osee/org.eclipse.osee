@@ -14,7 +14,6 @@ import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.eclipse.osee.account.admin.AccessDetails;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountAccess;
 import org.eclipse.osee.account.admin.AccountPreferences;
@@ -266,9 +265,8 @@ public class OrcsAccountStorageImpl implements AccountStorage {
    }
 
    @Override
-   public AccountAccess createAccountAccess(String accessToken, Account account, AccessDetails details) {
-      AccountAccess access =
-         factory.newAccountAccess(account.getId(), accessToken, details.getRemoteAddress(), details.getAccessDetails());
+   public AccountAccess createAccountAccess(String accessToken, Account account, String remoteAddress, String accessDetails) {
+      AccountAccess access = factory.newAccountAccess(account.getId(), accessToken, remoteAddress, accessDetails);
       try {
          accessStore.createAccountAccess(Collections.singleton(access)).call();
          return access;

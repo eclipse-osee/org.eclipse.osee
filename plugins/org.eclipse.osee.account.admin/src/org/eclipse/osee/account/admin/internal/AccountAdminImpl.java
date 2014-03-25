@@ -13,11 +13,13 @@ package org.eclipse.osee.account.admin.internal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import org.eclipse.osee.account.admin.AccessDetails;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountAccess;
 import org.eclipse.osee.account.admin.AccountAdmin;
 import org.eclipse.osee.account.admin.AccountAdminConfiguration;
 import org.eclipse.osee.account.admin.AccountAdminConfigurationBuilder;
+import org.eclipse.osee.account.admin.AccountConstants;
 import org.eclipse.osee.account.admin.AccountField;
 import org.eclipse.osee.account.admin.AccountLoginException;
 import org.eclipse.osee.account.admin.AccountLoginRequest;
@@ -33,6 +35,7 @@ import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -300,19 +303,26 @@ public class AccountAdminImpl implements AccountAdmin {
       return modified;
    }
 
+   private String notAvailableWhenNullorEmpty(String value) {
+      return Strings.isValid(value) ? value : AccountConstants.NOT_AVAILABLE;
+   }
+
    @Override
    public AccountAccess login(AccountLoginRequest request) {
-      String username = request.getUserName();
       String id = authenticate(request);
       ResultSet<Account> result = getAccountByUniqueField(id);
       Account account = result.getAtMostOneOrNull();
       if (account == null) {
          throw new AccountLoginException(
             "Login Error - Unable to find account for username[%s] using authentication scheme[%s] and userId[%s]",
-            username, request.getScheme(), id);
+            request.getUserName(), request.getScheme(), id);
       }
       String accessToken = UUID.randomUUID().toString();
-      return storage.createAccountAccess(accessToken, account, request.getDetails());
+
+      AccessDetails details = request.getDetails();
+      String remoteAddress = notAvailableWhenNullorEmpty(details.getRemoteAddress());
+      String accessDetails = notAvailableWhenNullorEmpty(details.getAccessDetails());
+      return storage.createAccountAccess(accessToken, account, remoteAddress, accessDetails);
    }
 
    @Override

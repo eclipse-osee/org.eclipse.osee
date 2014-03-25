@@ -28,7 +28,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.account.admin.AccessDetails;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountAccess;
 import org.eclipse.osee.account.admin.AccountField;
@@ -85,7 +84,6 @@ public class AccountAdminImplTest {
    @Mock private AuthenticatedUser authenticatedUser;
    @Captor private ArgumentCaptor<Map<String, String>> newPrefsCaptor;
    @Captor private ArgumentCaptor<String> tokenCaptor;
-   @Captor private ArgumentCaptor<AccessDetails> accessDetailsCaptor;
    @Captor private ArgumentCaptor<AuthenticationRequest> authenticationRequestCaptor;
    // @formatter:on
 
@@ -635,7 +633,7 @@ public class AccountAdminImplTest {
       thrown.expectMessage("Login Error - Unable to find account for username[" + userName + "] using authentication scheme[" + scheme + "] and userId[" + userName + "]");
       accountAdmin.login(request);
 
-      verify(storage, times(0)).createAccountAccess(anyString(), any(Account.class), any(AccessDetails.class));
+      verify(storage, times(0)).createAccountAccess(anyString(), any(Account.class), anyString(), anyString());
 
       verify(authenticationAdmin).authenticate(authenticationRequestCaptor.capture());
 
@@ -657,7 +655,7 @@ public class AccountAdminImplTest {
       AccountAccess access = Mockito.mock(AccountAccess.class);
 
       when(storage.getAccountByEmail(EMAIL)).thenReturn(resultSet);
-      when(storage.createAccountAccess(anyString(), eq(account), any(AccessDetails.class))).thenReturn(access);
+      when(storage.createAccountAccess(anyString(), eq(account), anyString(), anyString())).thenReturn(access);
       when(authenticationAdmin.authenticate(any(AuthenticationRequest.class))).thenReturn(authenticatedUser);
       when(authenticatedUser.getName()).thenReturn(EMAIL);
 
@@ -672,12 +670,8 @@ public class AccountAdminImplTest {
       AccountAccess actual = accountAdmin.login(request);
       assertEquals(access, actual);
 
-      verify(storage).createAccountAccess(tokenCaptor.capture(), eq(account), accessDetailsCaptor.capture());
+      verify(storage).createAccountAccess(tokenCaptor.capture(), eq(account), eq(remoteAddress), eq(accessDetails));
       assertNotNull(tokenCaptor.getValue());
-
-      AccessDetails actualDetails = accessDetailsCaptor.getValue();
-      assertEquals(remoteAddress, actualDetails.getRemoteAddress());
-      assertEquals(accessDetails, actualDetails.getAccessDetails());
 
       verify(authenticationAdmin).authenticate(authenticationRequestCaptor.capture());
 

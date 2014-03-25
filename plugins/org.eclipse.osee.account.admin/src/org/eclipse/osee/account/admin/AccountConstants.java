@@ -25,6 +25,8 @@ public final class AccountConstants {
       return String.format("%s.%s", NAMESPACE, value);
    }
 
+   public static final String NOT_AVAILABLE = "N/A";
+
    public static final String DEFAULT_USERNAME_VALIDATION_PATTERN = null;
    public static final String DEFAULT_EMAIL_VALIDATION_PATTERN = null;
    public static final String DEFAULT_DISPLAY_NAME_VALIDATION_PATTERN = null;

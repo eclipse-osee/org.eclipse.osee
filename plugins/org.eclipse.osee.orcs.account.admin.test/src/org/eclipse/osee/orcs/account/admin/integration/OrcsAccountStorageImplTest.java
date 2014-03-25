@@ -18,7 +18,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.account.admin.AccessDetails;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountAccess;
 import org.eclipse.osee.account.admin.AccountAdmin;
@@ -38,7 +37,6 @@ import org.junit.rules.ExpectedException;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 
 /**
  * Test Case for {@link AccountAdmin} using {@link OrcsAccountStorageImpl}
@@ -208,13 +206,9 @@ public class OrcsAccountStorageImplTest {
       String address = "myAddress";
       String details = "myDetails";
 
-      AccessDetails accessDetails = Mockito.mock(AccessDetails.class);
-      when(accessDetails.getAccessDetails()).thenReturn(details);
-      when(accessDetails.getRemoteAddress()).thenReturn(address);
-
       Account account = storage.getAccountByUuid(newAccount.getGuid()).getExactlyOne();
 
-      AccountAccess actual = storage.createAccountAccess(token, account, accessDetails);
+      AccountAccess actual = storage.createAccountAccess(token, account, address, details);
       assertEquals(details, actual.getAccessDetails());
       assertEquals(address, actual.getAccessedFrom());
       assertEquals(token, actual.getAccessToken());

@@ -11,7 +11,6 @@
 package org.eclipse.osee.account.admin.ds;
 
 import java.util.Map;
-import org.eclipse.osee.account.admin.AccessDetails;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountAccess;
 import org.eclipse.osee.account.admin.AccountPreferences;
@@ -59,7 +58,7 @@ public interface AccountStorage {
 
    ResultSet<AccountAccess> getAccountAccessByAccessToken(String accessToken);
 
-   AccountAccess createAccountAccess(String accessToken, Account account, AccessDetails details);
+   AccountAccess createAccountAccess(String accessToken, Account account, String accessDetails, String remoteAddress);
 
    void deleteAccountAccessByAccessToken(String accessToken);
 
