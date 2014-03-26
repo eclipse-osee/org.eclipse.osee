@@ -21,24 +21,24 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.OverrideOption;
 public class OverrideOptionImpl extends MinimalEObjectImpl.Container implements OverrideOption
 {
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   protected OverrideOptionImpl()
   {
-      super();
-   }
+    super();
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   protected EClass eStaticClass()
   {
-      return OseeDslPackage.Literals.OVERRIDE_OPTION;
-   }
+    return OseeDslPackage.Literals.OVERRIDE_OPTION;
+  }
 
 } //OverrideOptionImpl

@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.BinaryBackedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -240,6 +241,14 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
             xInteger.setText(initialInput);
          }
          xWidget = xInteger;
+      } else if (AttributeTypeManager.isBaseTypeCompatible(LongAttribute.class, attributeType)) {
+         XLong xLong = new XLong("");
+         xLong.setFillHorizontally(true);
+         xLong.createWidgets(getManagedForm(), parent, 2);
+         if (Strings.isValid(initialInput)) {
+            xLong.setText(initialInput);
+         }
+         xWidget = xLong;
       } else if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
          XDate xDate = new XDate("");
          xDate.setFillHorizontally(true);

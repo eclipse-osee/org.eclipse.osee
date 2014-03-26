@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -41,6 +42,9 @@ public class EmbededAttributeEditorFactory {
             return new EmbeddedStringAttributeEditor(VALID_FLOAT_REG_EX, attributeHolder, displayName, attributeType,
                persist);
          } else if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
+            return new EmbeddedStringAttributeEditor(VALID_INTEGER_REG_EX, attributeHolder, displayName, attributeType,
+               persist);
+         } else if (AttributeTypeManager.isBaseTypeCompatible(LongAttribute.class, attributeType)) {
             return new EmbeddedStringAttributeEditor(VALID_INTEGER_REG_EX, attributeHolder, displayName, attributeType,
                persist);
          } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {

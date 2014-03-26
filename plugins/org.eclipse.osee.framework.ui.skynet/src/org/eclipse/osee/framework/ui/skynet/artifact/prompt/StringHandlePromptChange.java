@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 
@@ -89,6 +90,8 @@ public class StringHandlePromptChange implements IHandlePromptChange {
       if (format != null) {
          try {
             if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
+               toReturn = String.valueOf(format.parse(value).intValue());
+            } else if (AttributeTypeManager.isBaseTypeCompatible(LongAttribute.class, attributeType)) {
                toReturn = String.valueOf(format.parse(value).intValue());
             } else {
                toReturn = String.valueOf(format.parse(value).doubleValue()); // TODO check for dot in integers

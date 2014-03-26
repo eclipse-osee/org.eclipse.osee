@@ -69,6 +69,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewWithSave;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.XLong;
+import org.eclipse.osee.framework.ui.skynet.widgets.XLongDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
@@ -155,6 +157,8 @@ public final class FrameworkXWidgetProvider {
             xWidget = multiBranchSelect;
          } else if (xWidgetName.equals("XInteger")) {
             xWidget = new XInteger(name);
+         } else if (xWidgetName.equals("XLong")) {
+            xWidget = new XLong(name);
          } else if (xWidgetName.equals("XTextDam")) {
             xWidget = new XTextDam(name);
          } else if (xWidgetName.equals("XButton")) {
@@ -217,6 +221,8 @@ public final class FrameworkXWidgetProvider {
             xWidget = new XFloatDam(name);
          } else if (xWidgetName.equals("XIntegerDam")) {
             xWidget = new XIntegerDam(name);
+         } else if (xWidgetName.equals("XLongDam")) {
+            xWidget = new XLongDam(name);
          } else if (xWidgetName.equals("XFileTextWithSelectionDialog")) {
             xWidget = new XFileTextWithSelectionDialog(name);
          } else if (xWidgetName.equals("XLabel")) {

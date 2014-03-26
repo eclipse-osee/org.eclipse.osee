@@ -86,6 +86,14 @@
          </CharacterBackedAttributeType>
       </extension>                        
       <extension
+            id="LongAttribute"
+            name="LongAttribute"
+            point="org.eclipse.osee.framework.skynet.core.AttributeType">
+         <CharacterBackedAttributeType
+               class="org.eclipse.osee.framework.skynet.core.attribute.LongAttribute">
+         </CharacterBackedAttributeType>
+      </extension>                        
+      <extension
             id="StringAttribute"
             name="StringAttribute"
             point="org.eclipse.osee.framework.skynet.core.AttributeType">

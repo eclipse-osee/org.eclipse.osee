@@ -53,7 +53,7 @@ XAttributeType:
 
 AttributeBaseType:
 	'BooleanAttribute' | 'CompressedContentAttribute' | 'DateAttribute' | 'EnumeratedAttribute' |
-	'FloatingPointAttribute' | 'IntegerAttribute' | 'JavaObjectAttribute' | 'StringAttribute' |
+	'FloatingPointAttribute' | 'IntegerAttribute' | 'LongAttribute' | 'JavaObjectAttribute' | 'StringAttribute' |
 	'ArtifactReferenceAttribute' | 'BranchReferenceAttribute' | 'WordAttribute' | 'OutlineNumberAttribute' |
 	QUALIFIED_NAME;
 

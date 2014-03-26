@@ -41,258 +41,266 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeArtifactTypeOverride;
 public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container implements XOseeArtifactTypeOverride
 {
   /**
-    * The cached value of the '{@link #getOverridenArtifactType() <em>Overriden Artifact Type</em>}' reference.
-    * <!-- begin-user-doc -->
+   * The cached value of the '{@link #getOverridenArtifactType() <em>Overriden Artifact Type</em>}' reference.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @see #getOverridenArtifactType()
-    * @generated
-    * @ordered
-    */
+   * @see #getOverridenArtifactType()
+   * @generated
+   * @ordered
+   */
   protected XArtifactType overridenArtifactType;
 
   /**
-    * The default value of the '{@link #isInheritAll() <em>Inherit All</em>}' attribute.
-    * <!-- begin-user-doc -->
+   * The default value of the '{@link #isInheritAll() <em>Inherit All</em>}' attribute.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @see #isInheritAll()
-    * @generated
-    * @ordered
-    */
+   * @see #isInheritAll()
+   * @generated
+   * @ordered
+   */
   protected static final boolean INHERIT_ALL_EDEFAULT = false;
 
   /**
-    * The cached value of the '{@link #isInheritAll() <em>Inherit All</em>}' attribute.
-    * <!-- begin-user-doc -->
+   * The cached value of the '{@link #isInheritAll() <em>Inherit All</em>}' attribute.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @see #isInheritAll()
-    * @generated
-    * @ordered
-    */
+   * @see #isInheritAll()
+   * @generated
+   * @ordered
+   */
   protected boolean inheritAll = INHERIT_ALL_EDEFAULT;
 
   /**
-    * The cached value of the '{@link #getOverrideOptions() <em>Override Options</em>}' containment reference list.
-    * <!-- begin-user-doc -->
+   * The cached value of the '{@link #getOverrideOptions() <em>Override Options</em>}' containment reference list.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @see #getOverrideOptions()
-    * @generated
-    * @ordered
-    */
+   * @see #getOverrideOptions()
+   * @generated
+   * @ordered
+   */
   protected EList<AttributeOverrideOption> overrideOptions;
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   protected XOseeArtifactTypeOverrideImpl()
   {
-      super();
-   }
+    super();
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   protected EClass eStaticClass()
   {
-      return OseeDslPackage.Literals.XOSEE_ARTIFACT_TYPE_OVERRIDE;
-   }
+    return OseeDslPackage.Literals.XOSEE_ARTIFACT_TYPE_OVERRIDE;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public XArtifactType getOverridenArtifactType()
   {
-      if (overridenArtifactType != null && overridenArtifactType.eIsProxy()) {
-         InternalEObject oldOverridenArtifactType = (InternalEObject)overridenArtifactType;
-         overridenArtifactType = (XArtifactType)eResolveProxy(oldOverridenArtifactType);
-         if (overridenArtifactType != oldOverridenArtifactType) {
-            if (eNotificationRequired())
-               eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDEN_ARTIFACT_TYPE, oldOverridenArtifactType, overridenArtifactType));
-         }
+    if (overridenArtifactType != null && overridenArtifactType.eIsProxy())
+    {
+      InternalEObject oldOverridenArtifactType = (InternalEObject)overridenArtifactType;
+      overridenArtifactType = (XArtifactType)eResolveProxy(oldOverridenArtifactType);
+      if (overridenArtifactType != oldOverridenArtifactType)
+      {
+        if (eNotificationRequired())
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDEN_ARTIFACT_TYPE, oldOverridenArtifactType, overridenArtifactType));
       }
-      return overridenArtifactType;
-   }
+    }
+    return overridenArtifactType;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public XArtifactType basicGetOverridenArtifactType()
   {
-      return overridenArtifactType;
-   }
+    return overridenArtifactType;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public void setOverridenArtifactType(XArtifactType newOverridenArtifactType)
   {
-      XArtifactType oldOverridenArtifactType = overridenArtifactType;
-      overridenArtifactType = newOverridenArtifactType;
-      if (eNotificationRequired())
-         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDEN_ARTIFACT_TYPE, oldOverridenArtifactType, overridenArtifactType));
-   }
+    XArtifactType oldOverridenArtifactType = overridenArtifactType;
+    overridenArtifactType = newOverridenArtifactType;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDEN_ARTIFACT_TYPE, oldOverridenArtifactType, overridenArtifactType));
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public boolean isInheritAll()
   {
-      return inheritAll;
-   }
+    return inheritAll;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public void setInheritAll(boolean newInheritAll)
   {
-      boolean oldInheritAll = inheritAll;
-      inheritAll = newInheritAll;
-      if (eNotificationRequired())
-         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__INHERIT_ALL, oldInheritAll, inheritAll));
-   }
+    boolean oldInheritAll = inheritAll;
+    inheritAll = newInheritAll;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__INHERIT_ALL, oldInheritAll, inheritAll));
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public EList<AttributeOverrideOption> getOverrideOptions()
   {
-      if (overrideOptions == null) {
-         overrideOptions = new EObjectContainmentEList<AttributeOverrideOption>(AttributeOverrideOption.class, this, OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDE_OPTIONS);
-      }
-      return overrideOptions;
-   }
+    if (overrideOptions == null)
+    {
+      overrideOptions = new EObjectContainmentEList<AttributeOverrideOption>(AttributeOverrideOption.class, this, OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDE_OPTIONS);
+    }
+    return overrideOptions;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
-      switch (featureID) {
-         case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDE_OPTIONS:
-            return ((InternalEList<?>)getOverrideOptions()).basicRemove(otherEnd, msgs);
-      }
-      return super.eInverseRemove(otherEnd, featureID, msgs);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDE_OPTIONS:
+        return ((InternalEList<?>)getOverrideOptions()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
-      switch (featureID) {
-         case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDEN_ARTIFACT_TYPE:
-            if (resolve) return getOverridenArtifactType();
-            return basicGetOverridenArtifactType();
-         case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__INHERIT_ALL:
-            return isInheritAll();
-         case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDE_OPTIONS:
-            return getOverrideOptions();
-      }
-      return super.eGet(featureID, resolve, coreType);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDEN_ARTIFACT_TYPE:
+        if (resolve) return getOverridenArtifactType();
+        return basicGetOverridenArtifactType();
+      case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__INHERIT_ALL:
+        return isInheritAll();
+      case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDE_OPTIONS:
+        return getOverrideOptions();
+    }
+    return super.eGet(featureID, resolve, coreType);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
-      switch (featureID) {
-         case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDEN_ARTIFACT_TYPE:
-            setOverridenArtifactType((XArtifactType)newValue);
-            return;
-         case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__INHERIT_ALL:
-            setInheritAll((Boolean)newValue);
-            return;
-         case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDE_OPTIONS:
-            getOverrideOptions().clear();
-            getOverrideOptions().addAll((Collection<? extends AttributeOverrideOption>)newValue);
-            return;
-      }
-      super.eSet(featureID, newValue);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDEN_ARTIFACT_TYPE:
+        setOverridenArtifactType((XArtifactType)newValue);
+        return;
+      case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__INHERIT_ALL:
+        setInheritAll((Boolean)newValue);
+        return;
+      case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDE_OPTIONS:
+        getOverrideOptions().clear();
+        getOverrideOptions().addAll((Collection<? extends AttributeOverrideOption>)newValue);
+        return;
+    }
+    super.eSet(featureID, newValue);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public void eUnset(int featureID)
   {
-      switch (featureID) {
-         case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDEN_ARTIFACT_TYPE:
-            setOverridenArtifactType((XArtifactType)null);
-            return;
-         case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__INHERIT_ALL:
-            setInheritAll(INHERIT_ALL_EDEFAULT);
-            return;
-         case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDE_OPTIONS:
-            getOverrideOptions().clear();
-            return;
-      }
-      super.eUnset(featureID);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDEN_ARTIFACT_TYPE:
+        setOverridenArtifactType((XArtifactType)null);
+        return;
+      case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__INHERIT_ALL:
+        setInheritAll(INHERIT_ALL_EDEFAULT);
+        return;
+      case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDE_OPTIONS:
+        getOverrideOptions().clear();
+        return;
+    }
+    super.eUnset(featureID);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public boolean eIsSet(int featureID)
   {
-      switch (featureID) {
-         case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDEN_ARTIFACT_TYPE:
-            return overridenArtifactType != null;
-         case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__INHERIT_ALL:
-            return inheritAll != INHERIT_ALL_EDEFAULT;
-         case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDE_OPTIONS:
-            return overrideOptions != null && !overrideOptions.isEmpty();
-      }
-      return super.eIsSet(featureID);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDEN_ARTIFACT_TYPE:
+        return overridenArtifactType != null;
+      case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__INHERIT_ALL:
+        return inheritAll != INHERIT_ALL_EDEFAULT;
+      case OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDE_OPTIONS:
+        return overrideOptions != null && !overrideOptions.isEmpty();
+    }
+    return super.eIsSet(featureID);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public String toString()
   {
-      if (eIsProxy()) return super.toString();
+    if (eIsProxy()) return super.toString();
 
-      StringBuffer result = new StringBuffer(super.toString());
-      result.append(" (inheritAll: ");
-      result.append(inheritAll);
-      result.append(')');
-      return result.toString();
-   }
+    StringBuffer result = new StringBuffer(super.toString());
+    result.append(" (inheritAll: ");
+    result.append(inheritAll);
+    result.append(')');
+    return result.toString();
+  }
 
 } //XOseeArtifactTypeOverrideImpl

@@ -34,126 +34,132 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
 public class XOseeEnumTypeImpl extends OseeTypeImpl implements XOseeEnumType
 {
   /**
-    * The cached value of the '{@link #getEnumEntries() <em>Enum Entries</em>}' containment reference list.
-    * <!-- begin-user-doc -->
+   * The cached value of the '{@link #getEnumEntries() <em>Enum Entries</em>}' containment reference list.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @see #getEnumEntries()
-    * @generated
-    * @ordered
-    */
+   * @see #getEnumEntries()
+   * @generated
+   * @ordered
+   */
   protected EList<XOseeEnumEntry> enumEntries;
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   protected XOseeEnumTypeImpl()
   {
-      super();
-   }
+    super();
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   protected EClass eStaticClass()
   {
-      return OseeDslPackage.Literals.XOSEE_ENUM_TYPE;
-   }
+    return OseeDslPackage.Literals.XOSEE_ENUM_TYPE;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public EList<XOseeEnumEntry> getEnumEntries()
   {
-      if (enumEntries == null) {
-         enumEntries = new EObjectContainmentEList<XOseeEnumEntry>(XOseeEnumEntry.class, this, OseeDslPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES);
-      }
-      return enumEntries;
-   }
+    if (enumEntries == null)
+    {
+      enumEntries = new EObjectContainmentEList<XOseeEnumEntry>(XOseeEnumEntry.class, this, OseeDslPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES);
+    }
+    return enumEntries;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
-      switch (featureID) {
-         case OseeDslPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES:
-            return ((InternalEList<?>)getEnumEntries()).basicRemove(otherEnd, msgs);
-      }
-      return super.eInverseRemove(otherEnd, featureID, msgs);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES:
+        return ((InternalEList<?>)getEnumEntries()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
-      switch (featureID) {
-         case OseeDslPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES:
-            return getEnumEntries();
-      }
-      return super.eGet(featureID, resolve, coreType);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES:
+        return getEnumEntries();
+    }
+    return super.eGet(featureID, resolve, coreType);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
-      switch (featureID) {
-         case OseeDslPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES:
-            getEnumEntries().clear();
-            getEnumEntries().addAll((Collection<? extends XOseeEnumEntry>)newValue);
-            return;
-      }
-      super.eSet(featureID, newValue);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES:
+        getEnumEntries().clear();
+        getEnumEntries().addAll((Collection<? extends XOseeEnumEntry>)newValue);
+        return;
+    }
+    super.eSet(featureID, newValue);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public void eUnset(int featureID)
   {
-      switch (featureID) {
-         case OseeDslPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES:
-            getEnumEntries().clear();
-            return;
-      }
-      super.eUnset(featureID);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES:
+        getEnumEntries().clear();
+        return;
+    }
+    super.eUnset(featureID);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public boolean eIsSet(int featureID)
   {
-      switch (featureID) {
-         case OseeDslPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES:
-            return enumEntries != null && !enumEntries.isEmpty();
-      }
-      return super.eIsSet(featureID);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES:
+        return enumEntries != null && !enumEntries.isEmpty();
+    }
+    return super.eIsSet(featureID);
+  }
 
 } //XOseeEnumTypeImpl

@@ -40,258 +40,266 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
 public class XOseeEnumOverrideImpl extends OseeElementImpl implements XOseeEnumOverride
 {
   /**
-    * The cached value of the '{@link #getOverridenEnumType() <em>Overriden Enum Type</em>}' reference.
-    * <!-- begin-user-doc -->
+   * The cached value of the '{@link #getOverridenEnumType() <em>Overriden Enum Type</em>}' reference.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @see #getOverridenEnumType()
-    * @generated
-    * @ordered
-    */
+   * @see #getOverridenEnumType()
+   * @generated
+   * @ordered
+   */
   protected XOseeEnumType overridenEnumType;
 
   /**
-    * The default value of the '{@link #isInheritAll() <em>Inherit All</em>}' attribute.
-    * <!-- begin-user-doc -->
+   * The default value of the '{@link #isInheritAll() <em>Inherit All</em>}' attribute.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @see #isInheritAll()
-    * @generated
-    * @ordered
-    */
+   * @see #isInheritAll()
+   * @generated
+   * @ordered
+   */
   protected static final boolean INHERIT_ALL_EDEFAULT = false;
 
   /**
-    * The cached value of the '{@link #isInheritAll() <em>Inherit All</em>}' attribute.
-    * <!-- begin-user-doc -->
+   * The cached value of the '{@link #isInheritAll() <em>Inherit All</em>}' attribute.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @see #isInheritAll()
-    * @generated
-    * @ordered
-    */
+   * @see #isInheritAll()
+   * @generated
+   * @ordered
+   */
   protected boolean inheritAll = INHERIT_ALL_EDEFAULT;
 
   /**
-    * The cached value of the '{@link #getOverrideOptions() <em>Override Options</em>}' containment reference list.
-    * <!-- begin-user-doc -->
+   * The cached value of the '{@link #getOverrideOptions() <em>Override Options</em>}' containment reference list.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @see #getOverrideOptions()
-    * @generated
-    * @ordered
-    */
+   * @see #getOverrideOptions()
+   * @generated
+   * @ordered
+   */
   protected EList<OverrideOption> overrideOptions;
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   protected XOseeEnumOverrideImpl()
   {
-      super();
-   }
+    super();
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   protected EClass eStaticClass()
   {
-      return OseeDslPackage.Literals.XOSEE_ENUM_OVERRIDE;
-   }
+    return OseeDslPackage.Literals.XOSEE_ENUM_OVERRIDE;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public XOseeEnumType getOverridenEnumType()
   {
-      if (overridenEnumType != null && overridenEnumType.eIsProxy()) {
-         InternalEObject oldOverridenEnumType = (InternalEObject)overridenEnumType;
-         overridenEnumType = (XOseeEnumType)eResolveProxy(oldOverridenEnumType);
-         if (overridenEnumType != oldOverridenEnumType) {
-            if (eNotificationRequired())
-               eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE, oldOverridenEnumType, overridenEnumType));
-         }
+    if (overridenEnumType != null && overridenEnumType.eIsProxy())
+    {
+      InternalEObject oldOverridenEnumType = (InternalEObject)overridenEnumType;
+      overridenEnumType = (XOseeEnumType)eResolveProxy(oldOverridenEnumType);
+      if (overridenEnumType != oldOverridenEnumType)
+      {
+        if (eNotificationRequired())
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE, oldOverridenEnumType, overridenEnumType));
       }
-      return overridenEnumType;
-   }
+    }
+    return overridenEnumType;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public XOseeEnumType basicGetOverridenEnumType()
   {
-      return overridenEnumType;
-   }
+    return overridenEnumType;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public void setOverridenEnumType(XOseeEnumType newOverridenEnumType)
   {
-      XOseeEnumType oldOverridenEnumType = overridenEnumType;
-      overridenEnumType = newOverridenEnumType;
-      if (eNotificationRequired())
-         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE, oldOverridenEnumType, overridenEnumType));
-   }
+    XOseeEnumType oldOverridenEnumType = overridenEnumType;
+    overridenEnumType = newOverridenEnumType;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE, oldOverridenEnumType, overridenEnumType));
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public boolean isInheritAll()
   {
-      return inheritAll;
-   }
+    return inheritAll;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public void setInheritAll(boolean newInheritAll)
   {
-      boolean oldInheritAll = inheritAll;
-      inheritAll = newInheritAll;
-      if (eNotificationRequired())
-         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XOSEE_ENUM_OVERRIDE__INHERIT_ALL, oldInheritAll, inheritAll));
-   }
+    boolean oldInheritAll = inheritAll;
+    inheritAll = newInheritAll;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XOSEE_ENUM_OVERRIDE__INHERIT_ALL, oldInheritAll, inheritAll));
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public EList<OverrideOption> getOverrideOptions()
   {
-      if (overrideOptions == null) {
-         overrideOptions = new EObjectContainmentEList<OverrideOption>(OverrideOption.class, this, OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS);
-      }
-      return overrideOptions;
-   }
+    if (overrideOptions == null)
+    {
+      overrideOptions = new EObjectContainmentEList<OverrideOption>(OverrideOption.class, this, OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS);
+    }
+    return overrideOptions;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
-      switch (featureID) {
-         case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
-            return ((InternalEList<?>)getOverrideOptions()).basicRemove(otherEnd, msgs);
-      }
-      return super.eInverseRemove(otherEnd, featureID, msgs);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
+        return ((InternalEList<?>)getOverrideOptions()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
-      switch (featureID) {
-         case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE:
-            if (resolve) return getOverridenEnumType();
-            return basicGetOverridenEnumType();
-         case OseeDslPackage.XOSEE_ENUM_OVERRIDE__INHERIT_ALL:
-            return isInheritAll();
-         case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
-            return getOverrideOptions();
-      }
-      return super.eGet(featureID, resolve, coreType);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE:
+        if (resolve) return getOverridenEnumType();
+        return basicGetOverridenEnumType();
+      case OseeDslPackage.XOSEE_ENUM_OVERRIDE__INHERIT_ALL:
+        return isInheritAll();
+      case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
+        return getOverrideOptions();
+    }
+    return super.eGet(featureID, resolve, coreType);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
-      switch (featureID) {
-         case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE:
-            setOverridenEnumType((XOseeEnumType)newValue);
-            return;
-         case OseeDslPackage.XOSEE_ENUM_OVERRIDE__INHERIT_ALL:
-            setInheritAll((Boolean)newValue);
-            return;
-         case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
-            getOverrideOptions().clear();
-            getOverrideOptions().addAll((Collection<? extends OverrideOption>)newValue);
-            return;
-      }
-      super.eSet(featureID, newValue);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE:
+        setOverridenEnumType((XOseeEnumType)newValue);
+        return;
+      case OseeDslPackage.XOSEE_ENUM_OVERRIDE__INHERIT_ALL:
+        setInheritAll((Boolean)newValue);
+        return;
+      case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
+        getOverrideOptions().clear();
+        getOverrideOptions().addAll((Collection<? extends OverrideOption>)newValue);
+        return;
+    }
+    super.eSet(featureID, newValue);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public void eUnset(int featureID)
   {
-      switch (featureID) {
-         case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE:
-            setOverridenEnumType((XOseeEnumType)null);
-            return;
-         case OseeDslPackage.XOSEE_ENUM_OVERRIDE__INHERIT_ALL:
-            setInheritAll(INHERIT_ALL_EDEFAULT);
-            return;
-         case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
-            getOverrideOptions().clear();
-            return;
-      }
-      super.eUnset(featureID);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE:
+        setOverridenEnumType((XOseeEnumType)null);
+        return;
+      case OseeDslPackage.XOSEE_ENUM_OVERRIDE__INHERIT_ALL:
+        setInheritAll(INHERIT_ALL_EDEFAULT);
+        return;
+      case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
+        getOverrideOptions().clear();
+        return;
+    }
+    super.eUnset(featureID);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public boolean eIsSet(int featureID)
   {
-      switch (featureID) {
-         case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE:
-            return overridenEnumType != null;
-         case OseeDslPackage.XOSEE_ENUM_OVERRIDE__INHERIT_ALL:
-            return inheritAll != INHERIT_ALL_EDEFAULT;
-         case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
-            return overrideOptions != null && !overrideOptions.isEmpty();
-      }
-      return super.eIsSet(featureID);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE:
+        return overridenEnumType != null;
+      case OseeDslPackage.XOSEE_ENUM_OVERRIDE__INHERIT_ALL:
+        return inheritAll != INHERIT_ALL_EDEFAULT;
+      case OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
+        return overrideOptions != null && !overrideOptions.isEmpty();
+    }
+    return super.eIsSet(featureID);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public String toString()
   {
-      if (eIsProxy()) return super.toString();
+    if (eIsProxy()) return super.toString();
 
-      StringBuffer result = new StringBuffer(super.toString());
-      result.append(" (inheritAll: ");
-      result.append(inheritAll);
-      result.append(')');
-      return result.toString();
-   }
+    StringBuffer result = new StringBuffer(super.toString());
+    result.append(" (inheritAll: ");
+    result.append(inheritAll);
+    result.append(')');
+    return result.toString();
+  }
 
 } //XOseeEnumOverrideImpl

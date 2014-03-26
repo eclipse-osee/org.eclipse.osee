@@ -378,6 +378,15 @@ public class XText extends XWidget {
       return true;
    }
 
+   public boolean isLong() {
+      try {
+         new Long(text);
+      } catch (NumberFormatException e) {
+         return false;
+      }
+      return true;
+   }
+
    public boolean isFloat() {
       try {
          NumberFormat.getInstance().parse(text);
@@ -395,6 +404,16 @@ public class XText extends XWidget {
          return 0;
       }
       return num.intValue();
+   }
+
+   public long getLong() {
+      Long num;
+      try {
+         num = Long.valueOf(text);
+      } catch (NumberFormatException e) {
+         return 0;
+      }
+      return num;
    }
 
    public double getFloat() {

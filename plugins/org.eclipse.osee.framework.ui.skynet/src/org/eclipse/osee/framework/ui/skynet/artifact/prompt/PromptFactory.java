@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 
 /**
@@ -43,6 +44,10 @@ public final class PromptFactory implements IPromptFactory {
          promptChange =
             new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
                NumberFormat.getIntegerInstance(), false);
+      } else if (AttributeTypeManager.isBaseTypeCompatible(LongAttribute.class, attributeType)) {
+         promptChange =
+            new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
+               NumberFormat.getNumberInstance(), false);
       } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
          promptChange = new BooleanHandlePromptChange(artifacts, attributeType, displayName, persist, null);
       } else if (AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType)) {

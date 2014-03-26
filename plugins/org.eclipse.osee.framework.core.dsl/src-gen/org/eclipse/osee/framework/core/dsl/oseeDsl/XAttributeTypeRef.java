@@ -24,55 +24,55 @@ import org.eclipse.emf.ecore.EObject;
 public interface XAttributeTypeRef extends EObject
 {
   /**
-    * Returns the value of the '<em><b>Valid Attribute Type</b></em>' reference.
-    * <!-- begin-user-doc -->
+   * Returns the value of the '<em><b>Valid Attribute Type</b></em>' reference.
+   * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Valid Attribute Type</em>' reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-    * @return the value of the '<em>Valid Attribute Type</em>' reference.
-    * @see #setValidAttributeType(XAttributeType)
-    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXAttributeTypeRef_ValidAttributeType()
-    * @model
-    * @generated
-    */
+   * @return the value of the '<em>Valid Attribute Type</em>' reference.
+   * @see #setValidAttributeType(XAttributeType)
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXAttributeTypeRef_ValidAttributeType()
+   * @model
+   * @generated
+   */
   XAttributeType getValidAttributeType();
 
   /**
-    * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef#getValidAttributeType <em>Valid Attribute Type</em>}' reference.
-    * <!-- begin-user-doc -->
+   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef#getValidAttributeType <em>Valid Attribute Type</em>}' reference.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @param value the new value of the '<em>Valid Attribute Type</em>' reference.
-    * @see #getValidAttributeType()
-    * @generated
-    */
+   * @param value the new value of the '<em>Valid Attribute Type</em>' reference.
+   * @see #getValidAttributeType()
+   * @generated
+   */
   void setValidAttributeType(XAttributeType value);
 
   /**
-    * Returns the value of the '<em><b>Branch Guid</b></em>' attribute.
-    * <!-- begin-user-doc -->
+   * Returns the value of the '<em><b>Branch Guid</b></em>' attribute.
+   * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Branch Guid</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-    * @return the value of the '<em>Branch Guid</em>' attribute.
-    * @see #setBranchGuid(String)
-    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXAttributeTypeRef_BranchGuid()
-    * @model
-    * @generated
-    */
+   * @return the value of the '<em>Branch Guid</em>' attribute.
+   * @see #setBranchGuid(String)
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXAttributeTypeRef_BranchGuid()
+   * @model
+   * @generated
+   */
   String getBranchGuid();
 
   /**
-    * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef#getBranchGuid <em>Branch Guid</em>}' attribute.
-    * <!-- begin-user-doc -->
+   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef#getBranchGuid <em>Branch Guid</em>}' attribute.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @param value the new value of the '<em>Branch Guid</em>' attribute.
-    * @see #getBranchGuid()
-    * @generated
-    */
+   * @param value the new value of the '<em>Branch Guid</em>' attribute.
+   * @see #getBranchGuid()
+   * @generated
+   */
   void setBranchGuid(String value);
 
 } // XAttributeTypeRef

@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -667,6 +668,12 @@ public class ConflictTestManager {
             return Integer.valueOf(0);
          }
          return new Integer(value);
+      }
+      if (clas.equals(LongAttribute.class)) {
+         if (value.equals("")) {
+            return Long.valueOf(0);
+         }
+         return new Long(value);
       }
       if (clas.equals(DateAttribute.class)) {
          if (value.equals("")) {

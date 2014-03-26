@@ -20,198 +20,204 @@ import org.eclipse.emf.common.util.Enumerator;
 public enum CompareOp implements Enumerator
 {
   /**
-    * The '<em><b>EQ</b></em>' literal object.
-    * <!-- begin-user-doc -->
+   * The '<em><b>EQ</b></em>' literal object.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @see #EQ_VALUE
-    * @generated
-    * @ordered
-    */
+   * @see #EQ_VALUE
+   * @generated
+   * @ordered
+   */
   EQ(0, "EQ", "EQ"),
 
   /**
-    * The '<em><b>LIKE</b></em>' literal object.
-    * <!-- begin-user-doc -->
+   * The '<em><b>LIKE</b></em>' literal object.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @see #LIKE_VALUE
-    * @generated
-    * @ordered
-    */
+   * @see #LIKE_VALUE
+   * @generated
+   * @ordered
+   */
   LIKE(1, "LIKE", "LIKE");
 
   /**
-    * The '<em><b>EQ</b></em>' literal value.
-    * <!-- begin-user-doc -->
+   * The '<em><b>EQ</b></em>' literal value.
+   * <!-- begin-user-doc -->
    * <p>
    * If the meaning of '<em><b>EQ</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-    * @see #EQ
-    * @model
-    * @generated
-    * @ordered
-    */
+   * @see #EQ
+   * @model
+   * @generated
+   * @ordered
+   */
   public static final int EQ_VALUE = 0;
 
   /**
-    * The '<em><b>LIKE</b></em>' literal value.
-    * <!-- begin-user-doc -->
+   * The '<em><b>LIKE</b></em>' literal value.
+   * <!-- begin-user-doc -->
    * <p>
    * If the meaning of '<em><b>LIKE</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-    * @see #LIKE
-    * @model
-    * @generated
-    * @ordered
-    */
+   * @see #LIKE
+   * @model
+   * @generated
+   * @ordered
+   */
   public static final int LIKE_VALUE = 1;
 
   /**
-    * An array of all the '<em><b>Compare Op</b></em>' enumerators.
-    * <!-- begin-user-doc -->
+   * An array of all the '<em><b>Compare Op</b></em>' enumerators.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   private static final CompareOp[] VALUES_ARRAY =
-    new CompareOp[] {
-         EQ,
-         LIKE,
-      };
+    new CompareOp[]
+    {
+      EQ,
+      LIKE,
+    };
 
   /**
-    * A public read-only list of all the '<em><b>Compare Op</b></em>' enumerators.
-    * <!-- begin-user-doc -->
+   * A public read-only list of all the '<em><b>Compare Op</b></em>' enumerators.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public static final List<CompareOp> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
   /**
-    * Returns the '<em><b>Compare Op</b></em>' literal with the specified literal value.
-    * <!-- begin-user-doc -->
+   * Returns the '<em><b>Compare Op</b></em>' literal with the specified literal value.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public static CompareOp get(String literal)
   {
-      for (int i = 0; i < VALUES_ARRAY.length; ++i) {
-         CompareOp result = VALUES_ARRAY[i];
-         if (result.toString().equals(literal)) {
-            return result;
-         }
+    for (int i = 0; i < VALUES_ARRAY.length; ++i)
+    {
+      CompareOp result = VALUES_ARRAY[i];
+      if (result.toString().equals(literal))
+      {
+        return result;
       }
-      return null;
-   }
+    }
+    return null;
+  }
 
   /**
-    * Returns the '<em><b>Compare Op</b></em>' literal with the specified name.
-    * <!-- begin-user-doc -->
+   * Returns the '<em><b>Compare Op</b></em>' literal with the specified name.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public static CompareOp getByName(String name)
   {
-      for (int i = 0; i < VALUES_ARRAY.length; ++i) {
-         CompareOp result = VALUES_ARRAY[i];
-         if (result.getName().equals(name)) {
-            return result;
-         }
+    for (int i = 0; i < VALUES_ARRAY.length; ++i)
+    {
+      CompareOp result = VALUES_ARRAY[i];
+      if (result.getName().equals(name))
+      {
+        return result;
       }
-      return null;
-   }
+    }
+    return null;
+  }
 
   /**
-    * Returns the '<em><b>Compare Op</b></em>' literal with the specified integer value.
-    * <!-- begin-user-doc -->
+   * Returns the '<em><b>Compare Op</b></em>' literal with the specified integer value.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public static CompareOp get(int value)
   {
-      switch (value) {
-         case EQ_VALUE: return EQ;
-         case LIKE_VALUE: return LIKE;
-      }
-      return null;
-   }
+    switch (value)
+    {
+      case EQ_VALUE: return EQ;
+      case LIKE_VALUE: return LIKE;
+    }
+    return null;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   private final int value;
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   private final String name;
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   private final String literal;
 
   /**
-    * Only this class can construct instances.
-    * <!-- begin-user-doc -->
+   * Only this class can construct instances.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   private CompareOp(int value, String name, String literal)
   {
-      this.value = value;
-      this.name = name;
-      this.literal = literal;
-   }
+    this.value = value;
+    this.name = name;
+    this.literal = literal;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public int getValue()
   {
-     return value;
-   }
+    return value;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public String getName()
   {
-     return name;
-   }
+    return name;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public String getLiteral()
   {
-     return literal;
-   }
+    return literal;
+  }
 
   /**
-    * Returns the literal value of the enumerator, which is its string representation.
-    * <!-- begin-user-doc -->
+   * Returns the literal value of the enumerator, which is its string representation.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public String toString()
   {
-      return literal;
-   }
+    return literal;
+  }
   
 } //CompareOp

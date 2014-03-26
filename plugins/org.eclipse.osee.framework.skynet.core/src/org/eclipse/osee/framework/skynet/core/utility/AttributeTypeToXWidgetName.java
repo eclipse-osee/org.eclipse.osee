@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 
@@ -58,6 +59,8 @@ public class AttributeTypeToXWidgetName {
          xWidgetName = "XDateDam";
       } else if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
          xWidgetName = "XIntegerDam";
+      } else if (AttributeTypeManager.isBaseTypeCompatible(LongAttribute.class, attributeType)) {
+         xWidgetName = "XLongDam";
       } else if (AttributeTypeManager.isBaseTypeCompatible(FloatingPointAttribute.class, attributeType)) {
          xWidgetName = "XFloatDam";
       } else if (AttributeTypeManager.isBaseTypeCompatible(BinaryAttribute.class, attributeType)) {

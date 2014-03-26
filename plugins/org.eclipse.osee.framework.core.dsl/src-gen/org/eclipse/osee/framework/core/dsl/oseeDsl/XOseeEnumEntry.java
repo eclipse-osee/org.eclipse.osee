@@ -26,107 +26,107 @@ import org.eclipse.emf.ecore.EObject;
 public interface XOseeEnumEntry extends EObject
 {
   /**
-    * Returns the value of the '<em><b>Name</b></em>' attribute.
-    * <!-- begin-user-doc -->
+   * Returns the value of the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Name</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-    * @return the value of the '<em>Name</em>' attribute.
-    * @see #setName(String)
-    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXOseeEnumEntry_Name()
-    * @model
-    * @generated
-    */
+   * @return the value of the '<em>Name</em>' attribute.
+   * @see #setName(String)
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXOseeEnumEntry_Name()
+   * @model
+   * @generated
+   */
   String getName();
 
   /**
-    * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry#getName <em>Name</em>}' attribute.
-    * <!-- begin-user-doc -->
+   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry#getName <em>Name</em>}' attribute.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @param value the new value of the '<em>Name</em>' attribute.
-    * @see #getName()
-    * @generated
-    */
+   * @param value the new value of the '<em>Name</em>' attribute.
+   * @see #getName()
+   * @generated
+   */
   void setName(String value);
 
   /**
-    * Returns the value of the '<em><b>Ordinal</b></em>' attribute.
-    * <!-- begin-user-doc -->
+   * Returns the value of the '<em><b>Ordinal</b></em>' attribute.
+   * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Ordinal</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-    * @return the value of the '<em>Ordinal</em>' attribute.
-    * @see #setOrdinal(String)
-    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXOseeEnumEntry_Ordinal()
-    * @model
-    * @generated
-    */
+   * @return the value of the '<em>Ordinal</em>' attribute.
+   * @see #setOrdinal(String)
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXOseeEnumEntry_Ordinal()
+   * @model
+   * @generated
+   */
   String getOrdinal();
 
   /**
-    * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry#getOrdinal <em>Ordinal</em>}' attribute.
-    * <!-- begin-user-doc -->
+   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry#getOrdinal <em>Ordinal</em>}' attribute.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @param value the new value of the '<em>Ordinal</em>' attribute.
-    * @see #getOrdinal()
-    * @generated
-    */
+   * @param value the new value of the '<em>Ordinal</em>' attribute.
+   * @see #getOrdinal()
+   * @generated
+   */
   void setOrdinal(String value);
 
   /**
-    * Returns the value of the '<em><b>Entry Guid</b></em>' attribute.
-    * <!-- begin-user-doc -->
+   * Returns the value of the '<em><b>Entry Guid</b></em>' attribute.
+   * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Entry Guid</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-    * @return the value of the '<em>Entry Guid</em>' attribute.
-    * @see #setEntryGuid(String)
-    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXOseeEnumEntry_EntryGuid()
-    * @model
-    * @generated
-    */
+   * @return the value of the '<em>Entry Guid</em>' attribute.
+   * @see #setEntryGuid(String)
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXOseeEnumEntry_EntryGuid()
+   * @model
+   * @generated
+   */
   String getEntryGuid();
 
   /**
-    * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry#getEntryGuid <em>Entry Guid</em>}' attribute.
-    * <!-- begin-user-doc -->
+   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry#getEntryGuid <em>Entry Guid</em>}' attribute.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @param value the new value of the '<em>Entry Guid</em>' attribute.
-    * @see #getEntryGuid()
-    * @generated
-    */
+   * @param value the new value of the '<em>Entry Guid</em>' attribute.
+   * @see #getEntryGuid()
+   * @generated
+   */
   void setEntryGuid(String value);
 
   /**
-    * Returns the value of the '<em><b>Description</b></em>' attribute.
-    * <!-- begin-user-doc -->
+   * Returns the value of the '<em><b>Description</b></em>' attribute.
+   * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Description</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-    * @return the value of the '<em>Description</em>' attribute.
-    * @see #setDescription(String)
-    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXOseeEnumEntry_Description()
-    * @model
-    * @generated
-    */
+   * @return the value of the '<em>Description</em>' attribute.
+   * @see #setDescription(String)
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXOseeEnumEntry_Description()
+   * @model
+   * @generated
+   */
   String getDescription();
 
   /**
-    * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry#getDescription <em>Description</em>}' attribute.
-    * <!-- begin-user-doc -->
+   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry#getDescription <em>Description</em>}' attribute.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @param value the new value of the '<em>Description</em>' attribute.
-    * @see #getDescription()
-    * @generated
-    */
+   * @param value the new value of the '<em>Description</em>' attribute.
+   * @see #getDescription()
+   * @generated
+   */
   void setDescription(String value);
 
 } // XOseeEnumEntry

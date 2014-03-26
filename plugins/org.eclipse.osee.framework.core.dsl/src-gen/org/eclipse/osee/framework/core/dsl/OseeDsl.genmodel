@@ -4,7 +4,7 @@
     editorDirectory="/org.eclipse.osee.framework.core.dsl.editor/src" modelPluginID="org.eclipse.osee.framework.core.dsl"
     forceOverwrite="true" modelName="OseeDsl" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
     complianceLevel="5.0" copyrightFields="false" editPluginID="org.eclipse.osee.framework.core.dsl.edit"
-    editorPluginID="org.eclipse.osee.framework.core.dsl.editor" runtimeVersion="2.8">
+    editorPluginID="org.eclipse.osee.framework.core.dsl.editor" runtimeVersion="2.9">
   <genPackages prefix="OseeDsl" basePackage="org.eclipse.osee.framework.core.dsl"
       disposableProviderFactory="true" ecorePackage="OseeDsl.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="OseeDsl.ecore#//RelationMultiplicityEnum">

@@ -40,230 +40,237 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef;
 public class XArtifactTypeImpl extends OseeTypeImpl implements XArtifactType
 {
   /**
-    * The default value of the '{@link #isAbstract() <em>Abstract</em>}' attribute.
-    * <!-- begin-user-doc -->
+   * The default value of the '{@link #isAbstract() <em>Abstract</em>}' attribute.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @see #isAbstract()
-    * @generated
-    * @ordered
-    */
+   * @see #isAbstract()
+   * @generated
+   * @ordered
+   */
   protected static final boolean ABSTRACT_EDEFAULT = false;
 
   /**
-    * The cached value of the '{@link #isAbstract() <em>Abstract</em>}' attribute.
-    * <!-- begin-user-doc -->
+   * The cached value of the '{@link #isAbstract() <em>Abstract</em>}' attribute.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @see #isAbstract()
-    * @generated
-    * @ordered
-    */
+   * @see #isAbstract()
+   * @generated
+   * @ordered
+   */
   protected boolean abstract_ = ABSTRACT_EDEFAULT;
 
   /**
-    * The cached value of the '{@link #getSuperArtifactTypes() <em>Super Artifact Types</em>}' reference list.
-    * <!-- begin-user-doc -->
+   * The cached value of the '{@link #getSuperArtifactTypes() <em>Super Artifact Types</em>}' reference list.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @see #getSuperArtifactTypes()
-    * @generated
-    * @ordered
-    */
+   * @see #getSuperArtifactTypes()
+   * @generated
+   * @ordered
+   */
   protected EList<XArtifactType> superArtifactTypes;
 
   /**
-    * The cached value of the '{@link #getValidAttributeTypes() <em>Valid Attribute Types</em>}' containment reference list.
-    * <!-- begin-user-doc -->
+   * The cached value of the '{@link #getValidAttributeTypes() <em>Valid Attribute Types</em>}' containment reference list.
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @see #getValidAttributeTypes()
-    * @generated
-    * @ordered
-    */
+   * @see #getValidAttributeTypes()
+   * @generated
+   * @ordered
+   */
   protected EList<XAttributeTypeRef> validAttributeTypes;
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   protected XArtifactTypeImpl()
   {
-      super();
-   }
+    super();
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   protected EClass eStaticClass()
   {
-      return OseeDslPackage.Literals.XARTIFACT_TYPE;
-   }
+    return OseeDslPackage.Literals.XARTIFACT_TYPE;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public boolean isAbstract()
   {
-      return abstract_;
-   }
+    return abstract_;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public void setAbstract(boolean newAbstract)
   {
-      boolean oldAbstract = abstract_;
-      abstract_ = newAbstract;
-      if (eNotificationRequired())
-         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XARTIFACT_TYPE__ABSTRACT, oldAbstract, abstract_));
-   }
+    boolean oldAbstract = abstract_;
+    abstract_ = newAbstract;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XARTIFACT_TYPE__ABSTRACT, oldAbstract, abstract_));
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public EList<XArtifactType> getSuperArtifactTypes()
   {
-      if (superArtifactTypes == null) {
-         superArtifactTypes = new EObjectResolvingEList<XArtifactType>(XArtifactType.class, this, OseeDslPackage.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES);
-      }
-      return superArtifactTypes;
-   }
+    if (superArtifactTypes == null)
+    {
+      superArtifactTypes = new EObjectResolvingEList<XArtifactType>(XArtifactType.class, this, OseeDslPackage.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES);
+    }
+    return superArtifactTypes;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   public EList<XAttributeTypeRef> getValidAttributeTypes()
   {
-      if (validAttributeTypes == null) {
-         validAttributeTypes = new EObjectContainmentEList<XAttributeTypeRef>(XAttributeTypeRef.class, this, OseeDslPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES);
-      }
-      return validAttributeTypes;
-   }
+    if (validAttributeTypes == null)
+    {
+      validAttributeTypes = new EObjectContainmentEList<XAttributeTypeRef>(XAttributeTypeRef.class, this, OseeDslPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES);
+    }
+    return validAttributeTypes;
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
-      switch (featureID) {
-         case OseeDslPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
-            return ((InternalEList<?>)getValidAttributeTypes()).basicRemove(otherEnd, msgs);
-      }
-      return super.eInverseRemove(otherEnd, featureID, msgs);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
+        return ((InternalEList<?>)getValidAttributeTypes()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
-      switch (featureID) {
-         case OseeDslPackage.XARTIFACT_TYPE__ABSTRACT:
-            return isAbstract();
-         case OseeDslPackage.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
-            return getSuperArtifactTypes();
-         case OseeDslPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
-            return getValidAttributeTypes();
-      }
-      return super.eGet(featureID, resolve, coreType);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XARTIFACT_TYPE__ABSTRACT:
+        return isAbstract();
+      case OseeDslPackage.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
+        return getSuperArtifactTypes();
+      case OseeDslPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
+        return getValidAttributeTypes();
+    }
+    return super.eGet(featureID, resolve, coreType);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
-      switch (featureID) {
-         case OseeDslPackage.XARTIFACT_TYPE__ABSTRACT:
-            setAbstract((Boolean)newValue);
-            return;
-         case OseeDslPackage.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
-            getSuperArtifactTypes().clear();
-            getSuperArtifactTypes().addAll((Collection<? extends XArtifactType>)newValue);
-            return;
-         case OseeDslPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
-            getValidAttributeTypes().clear();
-            getValidAttributeTypes().addAll((Collection<? extends XAttributeTypeRef>)newValue);
-            return;
-      }
-      super.eSet(featureID, newValue);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XARTIFACT_TYPE__ABSTRACT:
+        setAbstract((Boolean)newValue);
+        return;
+      case OseeDslPackage.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
+        getSuperArtifactTypes().clear();
+        getSuperArtifactTypes().addAll((Collection<? extends XArtifactType>)newValue);
+        return;
+      case OseeDslPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
+        getValidAttributeTypes().clear();
+        getValidAttributeTypes().addAll((Collection<? extends XAttributeTypeRef>)newValue);
+        return;
+    }
+    super.eSet(featureID, newValue);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public void eUnset(int featureID)
   {
-      switch (featureID) {
-         case OseeDslPackage.XARTIFACT_TYPE__ABSTRACT:
-            setAbstract(ABSTRACT_EDEFAULT);
-            return;
-         case OseeDslPackage.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
-            getSuperArtifactTypes().clear();
-            return;
-         case OseeDslPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
-            getValidAttributeTypes().clear();
-            return;
-      }
-      super.eUnset(featureID);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XARTIFACT_TYPE__ABSTRACT:
+        setAbstract(ABSTRACT_EDEFAULT);
+        return;
+      case OseeDslPackage.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
+        getSuperArtifactTypes().clear();
+        return;
+      case OseeDslPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
+        getValidAttributeTypes().clear();
+        return;
+    }
+    super.eUnset(featureID);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public boolean eIsSet(int featureID)
   {
-      switch (featureID) {
-         case OseeDslPackage.XARTIFACT_TYPE__ABSTRACT:
-            return abstract_ != ABSTRACT_EDEFAULT;
-         case OseeDslPackage.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
-            return superArtifactTypes != null && !superArtifactTypes.isEmpty();
-         case OseeDslPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
-            return validAttributeTypes != null && !validAttributeTypes.isEmpty();
-      }
-      return super.eIsSet(featureID);
-   }
+    switch (featureID)
+    {
+      case OseeDslPackage.XARTIFACT_TYPE__ABSTRACT:
+        return abstract_ != ABSTRACT_EDEFAULT;
+      case OseeDslPackage.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
+        return superArtifactTypes != null && !superArtifactTypes.isEmpty();
+      case OseeDslPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
+        return validAttributeTypes != null && !validAttributeTypes.isEmpty();
+    }
+    return super.eIsSet(featureID);
+  }
 
   /**
-    * <!-- begin-user-doc -->
+   * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-    * @generated
-    */
+   * @generated
+   */
   @Override
   public String toString()
   {
-      if (eIsProxy()) return super.toString();
+    if (eIsProxy()) return super.toString();
 
-      StringBuffer result = new StringBuffer(super.toString());
-      result.append(" (abstract: ");
-      result.append(abstract_);
-      result.append(')');
-      return result.toString();
-   }
+    StringBuffer result = new StringBuffer(super.toString());
+    result.append(" (abstract: ");
+    result.append(abstract_);
+    result.append(')');
+    return result.toString();
+  }
 
 } //XArtifactTypeImpl

@@ -23,19 +23,19 @@ import org.eclipse.emf.common.util.EList;
 public interface XOseeEnumType extends OseeType
 {
   /**
-    * Returns the value of the '<em><b>Enum Entries</b></em>' containment reference list.
-    * The list contents are of type {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry}.
-    * <!-- begin-user-doc -->
+   * Returns the value of the '<em><b>Enum Entries</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry}.
+   * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Enum Entries</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-    * @return the value of the '<em>Enum Entries</em>' containment reference list.
-    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXOseeEnumType_EnumEntries()
-    * @model containment="true"
-    * @generated
-    */
+   * @return the value of the '<em>Enum Entries</em>' containment reference list.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXOseeEnumType_EnumEntries()
+   * @model containment="true"
+   * @generated
+   */
   EList<XOseeEnumEntry> getEnumEntries();
 
 } // XOseeEnumType
