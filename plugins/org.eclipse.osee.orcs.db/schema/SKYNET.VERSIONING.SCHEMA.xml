@@ -238,7 +238,7 @@
 		<Column id="PRIVILEGE_ENTITY_ID" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_BRANCH_ACL_B_P_PK" type="PRIMARY KEY" appliesTo="BRANCH_ID, PRIVILEGE_ENTITY_ID" />
 		<Constraint schema="OSEE" id="BRANCH_ACL_FK" type="FOREIGN KEY" appliesTo="BRANCH_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_BRANCH" column="BRANCH_ID"  />
+			<References schema="OSEE" table="OSEE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
 		</Constraint>
 		<Constraint schema="OSEE" id="BRANCH_ACL_PERM_FK" type="FOREIGN KEY" appliesTo="PERMISSION_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_PERMISSION" column="PERMISSION_ID"  />
