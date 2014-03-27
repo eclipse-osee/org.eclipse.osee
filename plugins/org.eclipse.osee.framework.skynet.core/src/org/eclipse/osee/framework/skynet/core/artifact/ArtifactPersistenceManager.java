@@ -17,8 +17,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -31,12 +29,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  * @author Robert A. Fisher
  */
 public class ArtifactPersistenceManager {
-   private static final String ARTIFACT_NEW_ON_BRANCH =
-      "SELECT count(1) FROM osee_artifact art, osee_txs txs WHERE art.art_id = ? and art.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id = ?";
-
-   private static final String RELATION_NEW_ON_BRANCH =
-      "SELECT count(1) FROM osee_relation_link rel, osee_txs txs WHERE rel.a_art_id = ? and rel.b_art_id = ? and rel.rel_link_type_id = ? and rel.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id = ?";
-
    /**
     * @param transaction if the transaction is null then persist is not called
     * @param overrideDeleteCheck if <b>true</b> deletes without checking preconditions
@@ -115,18 +107,5 @@ public class ArtifactPersistenceManager {
             throw ex;
          }
       }
-   }
-
-   public static boolean isArtifactNewOnBranch(Artifact artifact) throws OseeCoreException {
-      Branch branch = BranchManager.getBranch(artifact.getBranch());
-      return ConnectionHandler.runPreparedQueryFetchInt(0, ARTIFACT_NEW_ON_BRANCH, artifact.getArtId(), branch.getId(),
-         branch.getBaseTransaction().getId()) == 0;
-   }
-
-   public static boolean isRelationNewOnBranch(RelationLink relation) throws OseeCoreException {
-      Branch branch = BranchManager.getBranch(relation.getBranch());
-      return ConnectionHandler.runPreparedQueryFetchInt(-1, RELATION_NEW_ON_BRANCH, relation.getAArtifactId(),
-         relation.getBArtifactId(), relation.getRelationType().getId(), branch.getId(),
-         branch.getBaseTransaction().getId()) == 0;
    }
 }
