@@ -11,6 +11,8 @@
 
 package org.eclipse.osee.framework.jdk.core.type;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 /**
@@ -23,4 +25,12 @@ public abstract class ResourceToken extends NamedIdentity<Long> {
    }
 
    public abstract URL getUrl();
+
+   public InputStream getInputStream() {
+      try {
+         return getUrl().openStream();
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex);
+      }
+   }
 }

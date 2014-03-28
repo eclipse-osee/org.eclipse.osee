@@ -79,9 +79,8 @@ public final class PageCreator {
       return null;
    }
 
-   public void readKeyValuePairs(ResourceToken valuesResource) {
-      InputStream keyValueStream = registry.getResource(valuesResource.getGuid());
-      readKeyValuePairs(keyValueStream);
+   public void readKeyValuePairs(ResourceToken keyValueResource) {
+      readKeyValuePairs(keyValueResource.getInputStream());
    }
 
    public void readKeyValuePairs(InputStream keyValueStream) {
@@ -134,7 +133,7 @@ public final class PageCreator {
    }
 
    private Appendable realizePage(ResourceToken templateResource, Appendable page, boolean processInstructions) {
-      return realizePage(registry.getResource(templateResource.getGuid()), page, processInstructions);
+      return realizePage(templateResource.getInputStream(), page, processInstructions);
    }
 
    private Appendable realizePage(InputStream template, Appendable page, boolean processInstructions) {
