@@ -611,15 +611,15 @@ ruleXAttributeTypeRef returns [EObject current=null]
 	}
 
 )
-)(	otherlv_2='branchGuid' 
+)(	otherlv_2='branchUuid' 
     {
-    	newLeafNode(otherlv_2, grammarAccess.getXAttributeTypeRefAccess().getBranchGuidKeyword_2_0());
+    	newLeafNode(otherlv_2, grammarAccess.getXAttributeTypeRefAccess().getBranchUuidKeyword_2_0());
     }
 (
 (
-		lv_branchGuid_3_0=RULE_STRING
+		lv_branchUuid_3_0=RULE_WHOLE_NUM_STR
 		{
-			newLeafNode(lv_branchGuid_3_0, grammarAccess.getXAttributeTypeRefAccess().getBranchGuidSTRINGTerminalRuleCall_2_1_0()); 
+			newLeafNode(lv_branchUuid_3_0, grammarAccess.getXAttributeTypeRefAccess().getBranchUuidWHOLE_NUM_STRTerminalRuleCall_2_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -627,9 +627,9 @@ ruleXAttributeTypeRef returns [EObject current=null]
 	        }
        		setWithLastConsumed(
        			$current, 
-       			"branchGuid",
-        		lv_branchGuid_3_0, 
-        		"STRING");
+       			"branchUuid",
+        		lv_branchUuid_3_0, 
+        		"WHOLE_NUM_STR");
 	    }
 
 )
@@ -3538,10 +3538,10 @@ ruleMatchField returns [Enumerator current=null]
         newLeafNode(enumLiteral_2, grammarAccess.getMatchFieldAccess().getBranchNameEnumLiteralDeclaration_2()); 
     }
 )
-    |(	enumLiteral_3='branchGuid' 
+    |(	enumLiteral_3='branchUuid' 
 	{
-        $current = grammarAccess.getMatchFieldAccess().getBranchGuidEnumLiteralDeclaration_3().getEnumLiteral().getInstance();
-        newLeafNode(enumLiteral_3, grammarAccess.getMatchFieldAccess().getBranchGuidEnumLiteralDeclaration_3()); 
+        $current = grammarAccess.getMatchFieldAccess().getBranchUuidEnumLiteralDeclaration_3().getEnumLiteral().getInstance();
+        newLeafNode(enumLiteral_3, grammarAccess.getMatchFieldAccess().getBranchUuidEnumLiteralDeclaration_3()); 
     }
 ));
 

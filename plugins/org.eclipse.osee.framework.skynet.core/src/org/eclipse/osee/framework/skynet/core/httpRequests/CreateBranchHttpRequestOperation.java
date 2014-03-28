@@ -42,7 +42,6 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
    private final BranchType branchType;
    private final TransactionRecord parentTransaction;
    private final String branchName;
-   private final String branchGuid;
    private final Artifact associatedArtifact;
    private final String creationComment;
    private final int mergeAddressingQueryId;
@@ -51,12 +50,11 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
    private boolean txCopyBranchType;
    private final long branchUuid;
 
-   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionRecord parentTransaction, String branchName, String branchGuid, long branchUuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, long destinationBranchId) {
+   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionRecord parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, long destinationBranchId) {
       super("Create branch " + branchName, Activator.PLUGIN_ID);
       this.branchType = branchType;
       this.parentTransaction = parentTransaction;
       this.branchName = branchName;
-      this.branchGuid = branchGuid;
       this.branchUuid = branchUuid;
       this.associatedArtifact = associatedArtifact;
       this.creationComment = creationComment;
@@ -71,7 +69,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       parameters.put("function", Function.CREATE_BRANCH.name());
 
       BranchCreationRequest request =
-         new BranchCreationRequest(branchType, parentTransaction.getId(), parentTransaction.getBranchId(), branchGuid,
+         new BranchCreationRequest(branchType, parentTransaction.getId(), parentTransaction.getBranchId(),
             branchName, branchUuid, getAssociatedArtifactId(associatedArtifact), getAuthorId(), creationComment,
             mergeAddressingQueryId, destinationBranchId);
 

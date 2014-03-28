@@ -70,14 +70,14 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
       }
       for (final ISMAEditorEventHandler handler : handlers) {
          try {
-            safelyProcessHandler(branchEvent.getEventType(), branchEvent.getBranchGuid());
+            safelyProcessHandler(branchEvent.getEventType(), branchEvent.getBranchUuid());
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, "Error processing event handler - " + handler, ex);
          }
       }
    }
 
-   private void safelyProcessHandler(BranchEventType branchEventType, String branchGuid) {
+   private void safelyProcessHandler(BranchEventType branchEventType, Long branchUuid) {
       for (final ISMAEditorEventHandler handler : handlers) {
          if (handler.isDisposed()) {
             OseeLog.log(Activator.class, Level.SEVERE, "Unexpected handler disposed but not unregistered.");

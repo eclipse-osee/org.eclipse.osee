@@ -44,7 +44,7 @@ artifactType "Demo Code Team Workflow" extends "Team Workflow" {
    attribute "demo.code.DP Effectivity"
    attribute "demo.code.SP Effectivity"
    attribute "demo.code.WP Effectivity"
-   attribute "Partition" branchGuid "AyH_f2sSKy3l07fIvAAA"
+   attribute "Partition" branchUuid 3
 }
 
 artifactType "Demo Req Team Workflow" extends "Team Workflow" {

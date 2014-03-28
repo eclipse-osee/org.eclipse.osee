@@ -37,7 +37,7 @@ public class ArtifactTypeCacheUpdateResponseTranslator implements ITranslator<Ar
    public ArtifactTypeCacheUpdateResponse convert(PropertyStore store) {
       List<ArtifactTypeRow> rows = new ArrayList<ArtifactTypeRow>();
       Map<Long, Long[]> baseToSuper = new HashMap<Long, Long[]>();
-      List<Triplet<Long, String, Long>> artAttrs = new ArrayList<Triplet<Long, String, Long>>();
+      List<Triplet<Long, Long, Long>> artAttrs = new ArrayList<Triplet<Long, Long, Long>>();
 
       int rowCount = store.getInt(Fields.ITEM_COUNT.name());
       for (int index = 0; index < rowCount; index++) {

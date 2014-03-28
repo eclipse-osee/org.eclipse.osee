@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.mocks.DataFactory;
 import org.eclipse.osee.framework.skynet.core.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
@@ -270,7 +271,8 @@ public class RelationOrderDataTest {
 
    private static IArtifact createArtifact(String name, String guid) {
       int uniqueId = randomGenerator.nextInt();
-      Branch branch = new Branch(GUID.create(), name + " - branch", BranchType.WORKING, BranchState.MODIFIED, false);
+      Branch branch =
+         new Branch(Lib.generateUuid(), name + " - branch", BranchType.WORKING, BranchState.MODIFIED, false);
       return DataFactory.createArtifact(uniqueId, name, guid, branch);
    }
 

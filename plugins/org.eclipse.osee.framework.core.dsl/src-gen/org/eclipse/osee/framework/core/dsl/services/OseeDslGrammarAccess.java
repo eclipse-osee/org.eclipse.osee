@@ -355,15 +355,15 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final CrossReference cValidAttributeTypeXAttributeTypeCrossReference_1_0 = (CrossReference)cValidAttributeTypeAssignment_1.eContents().get(0);
 		private final RuleCall cValidAttributeTypeXAttributeTypeSTRINGTerminalRuleCall_1_0_1 = (RuleCall)cValidAttributeTypeXAttributeTypeCrossReference_1_0.eContents().get(1);
 		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
-		private final Keyword cBranchGuidKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
-		private final Assignment cBranchGuidAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
-		private final RuleCall cBranchGuidSTRINGTerminalRuleCall_2_1_0 = (RuleCall)cBranchGuidAssignment_2_1.eContents().get(0);
+		private final Keyword cBranchUuidKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cBranchUuidAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cBranchUuidWHOLE_NUM_STRTerminalRuleCall_2_1_0 = (RuleCall)cBranchUuidAssignment_2_1.eContents().get(0);
 		
 		//XAttributeTypeRef:
-		//	"attribute" validAttributeType=[XAttributeType|STRING] ("branchGuid" branchGuid=STRING)?;
+		//	"attribute" validAttributeType=[XAttributeType|STRING] ("branchUuid" branchUuid=WHOLE_NUM_STR)?;
 		public ParserRule getRule() { return rule; }
 
-		//"attribute" validAttributeType=[XAttributeType|STRING] ("branchGuid" branchGuid=STRING)?
+		//"attribute" validAttributeType=[XAttributeType|STRING] ("branchUuid" branchUuid=WHOLE_NUM_STR)?
 		public Group getGroup() { return cGroup; }
 
 		//"attribute"
@@ -378,17 +378,17 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//STRING
 		public RuleCall getValidAttributeTypeXAttributeTypeSTRINGTerminalRuleCall_1_0_1() { return cValidAttributeTypeXAttributeTypeSTRINGTerminalRuleCall_1_0_1; }
 
-		//("branchGuid" branchGuid=STRING)?
+		//("branchUuid" branchUuid=WHOLE_NUM_STR)?
 		public Group getGroup_2() { return cGroup_2; }
 
-		//"branchGuid"
-		public Keyword getBranchGuidKeyword_2_0() { return cBranchGuidKeyword_2_0; }
+		//"branchUuid"
+		public Keyword getBranchUuidKeyword_2_0() { return cBranchUuidKeyword_2_0; }
 
-		//branchGuid=STRING
-		public Assignment getBranchGuidAssignment_2_1() { return cBranchGuidAssignment_2_1; }
+		//branchUuid=WHOLE_NUM_STR
+		public Assignment getBranchUuidAssignment_2_1() { return cBranchUuidAssignment_2_1; }
 
-		//STRING
-		public RuleCall getBranchGuidSTRINGTerminalRuleCall_2_1_0() { return cBranchGuidSTRINGTerminalRuleCall_2_1_0; }
+		//WHOLE_NUM_STR
+		public RuleCall getBranchUuidWHOLE_NUM_STRTerminalRuleCall_2_1_0() { return cBranchUuidWHOLE_NUM_STRTerminalRuleCall_2_1_0; }
 	}
 
 	public class XAttributeTypeElements extends AbstractParserRuleElementFinder {
@@ -2346,14 +2346,14 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cArtifactGuidArtifactGuidKeyword_1_0 = (Keyword)cArtifactGuidEnumLiteralDeclaration_1.eContents().get(0);
 		private final EnumLiteralDeclaration cBranchNameEnumLiteralDeclaration_2 = (EnumLiteralDeclaration)cAlternatives.eContents().get(2);
 		private final Keyword cBranchNameBranchNameKeyword_2_0 = (Keyword)cBranchNameEnumLiteralDeclaration_2.eContents().get(0);
-		private final EnumLiteralDeclaration cBranchGuidEnumLiteralDeclaration_3 = (EnumLiteralDeclaration)cAlternatives.eContents().get(3);
-		private final Keyword cBranchGuidBranchGuidKeyword_3_0 = (Keyword)cBranchGuidEnumLiteralDeclaration_3.eContents().get(0);
+		private final EnumLiteralDeclaration cBranchUuidEnumLiteralDeclaration_3 = (EnumLiteralDeclaration)cAlternatives.eContents().get(3);
+		private final Keyword cBranchUuidBranchUuidKeyword_3_0 = (Keyword)cBranchUuidEnumLiteralDeclaration_3.eContents().get(0);
 		
 		//enum MatchField:
-		//	artifactName | artifactGuid | branchName | branchGuid;
+		//	artifactName | artifactGuid | branchName | branchUuid;
 		public EnumRule getRule() { return rule; }
 
-		//artifactName | artifactGuid | branchName | branchGuid
+		//artifactName | artifactGuid | branchName | branchUuid
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//artifactName
@@ -2374,11 +2374,11 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"branchName"
 		public Keyword getBranchNameBranchNameKeyword_2_0() { return cBranchNameBranchNameKeyword_2_0; }
 
-		//branchGuid
-		public EnumLiteralDeclaration getBranchGuidEnumLiteralDeclaration_3() { return cBranchGuidEnumLiteralDeclaration_3; }
+		//branchUuid
+		public EnumLiteralDeclaration getBranchUuidEnumLiteralDeclaration_3() { return cBranchUuidEnumLiteralDeclaration_3; }
 
-		//"branchGuid"
-		public Keyword getBranchGuidBranchGuidKeyword_3_0() { return cBranchGuidBranchGuidKeyword_3_0; }
+		//"branchUuid"
+		public Keyword getBranchUuidBranchUuidKeyword_3_0() { return cBranchUuidBranchUuidKeyword_3_0; }
 	}
 
 	public class AccessPermissionEnumElements extends AbstractEnumRuleElementFinder {
@@ -2638,7 +2638,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XAttributeTypeRef:
-	//	"attribute" validAttributeType=[XAttributeType|STRING] ("branchGuid" branchGuid=STRING)?;
+	//	"attribute" validAttributeType=[XAttributeType|STRING] ("branchUuid" branchUuid=WHOLE_NUM_STR)?;
 	public XAttributeTypeRefElements getXAttributeTypeRefAccess() {
 		return (pXAttributeTypeRef != null) ? pXAttributeTypeRef : (pXAttributeTypeRef = new XAttributeTypeRefElements());
 	}
@@ -2855,7 +2855,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//enum MatchField:
-	//	artifactName | artifactGuid | branchName | branchGuid;
+	//	artifactName | artifactGuid | branchName | branchUuid;
 	public MatchFieldElements getMatchFieldAccess() {
 		return (unknownRuleMatchField != null) ? unknownRuleMatchField : (unknownRuleMatchField = new MatchFieldElements());
 	}

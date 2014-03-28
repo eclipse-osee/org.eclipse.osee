@@ -37,9 +37,9 @@ public class ArtifactsResource {
    @Context
    private final Request request;
 
-   private final String branchUuid;
+   private final Long branchUuid;
 
-   public ArtifactsResource(UriInfo uriInfo, Request request, String branchUuid) {
+   public ArtifactsResource(UriInfo uriInfo, Request request, Long branchUuid) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;

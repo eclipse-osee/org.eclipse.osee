@@ -179,15 +179,14 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public BranchData createBranchData(Long localId, String guid, BranchType branchType, String name, long parentBranch, int baseTransaction, int sourceTransaction, BranchArchivedState archiveState, BranchState branchState, int associatedArtifactId) {
+   public BranchData createBranchData(Long branchUuid, BranchType branchType, String name, long parentBranch, int baseTransaction, int sourceTransaction, BranchArchivedState archiveState, BranchState branchState, int associatedArtifactId) {
       BranchData data = new BranchDataImpl();
       data.setArchiveState(archiveState);
       data.setAssociatedArtifactId(associatedArtifactId);
       data.setBaseTransaction(baseTransaction);
       data.setBranchState(branchState);
       data.setBranchType(branchType);
-      data.setGuid(guid);
-      data.setLocalId(localId);
+      data.setUuid(branchUuid);
       data.setName(name);
       data.setParentBranch(parentBranch);
       data.setSourceTransaction(sourceTransaction);
@@ -196,9 +195,9 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
 
    @Override
    public BranchData createCopy(BranchData source) {
-      return createBranchData(source.getLocalId(), source.getGuid(), source.getBranchType(), source.getName(),
-         source.getParentBranch(), source.getBaseTransaction(), source.getSourceTransaction(),
-         source.getArchiveState(), source.getBranchState(), source.getAssociatedArtifactId());
+      return createBranchData(source.getLocalId(), source.getBranchType(), source.getName(), source.getParentBranch(),
+         source.getBaseTransaction(), source.getSourceTransaction(), source.getArchiveState(), source.getBranchState(),
+         source.getAssociatedArtifactId());
    }
 
    @Override

@@ -38,11 +38,11 @@ import org.eclipse.osee.framework.jdk.core.type.Triplet;
 public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Long, ArtifactType> {
 
    private final AbstractOseeCache<Long, AttributeType> attrCache;
-   private final AbstractOseeCache<String, Branch> branchCache;
+   private final AbstractOseeCache<Long, Branch> branchCache;
 
    private final ArtifactTypeFactory artifactTypeFactory;
 
-   public ClientArtifactTypeAccessor(ArtifactTypeFactory artifactTypeFactory, AbstractOseeCache<Long, AttributeType> attrCache, AbstractOseeCache<String, Branch> branchCache) {
+   public ClientArtifactTypeAccessor(ArtifactTypeFactory artifactTypeFactory, AbstractOseeCache<Long, AttributeType> attrCache, AbstractOseeCache<Long, Branch> branchCache) {
       this.artifactTypeFactory = artifactTypeFactory;
       this.attrCache = attrCache;
       this.branchCache = branchCache;
@@ -89,12 +89,12 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Long,
       CompositeKeyHashMap<ArtifactType, IOseeBranch, Collection<AttributeType>> attrs =
          new CompositeKeyHashMap<ArtifactType, IOseeBranch, Collection<AttributeType>>();
 
-      for (Triplet<Long, String, Long> entry : response.getAttributeTypes()) {
+      for (Triplet<Long, Long, Long> entry : response.getAttributeTypes()) {
          ArtifactType key1 = cache.getByGuid(entry.getFirst());
-         String branchGuid = entry.getSecond();
+         Long branchGuid = entry.getSecond();
          IOseeBranch branchToken = branchCache.getByGuid(branchGuid);
          if (branchToken == null) {
-            branchToken = TokenFactory.createBranch(branchGuid, branchGuid);
+            branchToken = TokenFactory.createBranch(branchGuid, String.valueOf(branchGuid));
          }
          Collection<AttributeType> types = attrs.get(key1, branchToken);
          if (types == null) {

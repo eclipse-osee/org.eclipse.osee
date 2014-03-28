@@ -23,7 +23,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
  */
 public class BranchDataImpl extends OrcsObjectImpl<Long> implements BranchData, BranchReadable {
 
-   private String guid = RelationalConstants.DEFAULT_GUID;
+   private long uuid = RelationalConstants.DEFAULT_UUID;
    private String name = "";
    private int associatedArtifactId = RelationalConstants.ART_ID_SENTINEL;
    private int baseTransaction = RelationalConstants.TRANSACTION_SENTINEL;
@@ -38,13 +38,8 @@ public class BranchDataImpl extends OrcsObjectImpl<Long> implements BranchData, 
    }
 
    @Override
-   public String getGuid() {
-      return guid;
-   }
-
-   @Override
-   public void setGuid(String guid) {
-      this.guid = guid;
+   public Long getGuid() {
+      return getUuid();
    }
 
    @Override
@@ -136,21 +131,23 @@ public class BranchDataImpl extends OrcsObjectImpl<Long> implements BranchData, 
    public int hashCode() {
       final int prime = 31;
       int result = super.hashCode();
-      result = prime * result + ((guid == null) ? 0 : guid.hashCode());
+      result = prime * result + (int) (uuid ^ (uuid >>> 32));
       return result;
    }
 
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof Identity) {
-         return getGuid().equals(((Identity<?>) obj).getGuid());
+         Identity<?> id = (Identity<?>) obj;
+         return id.equals(this);
       }
       return false;
+
    }
 
    @Override
    public String toString() {
-      return "BranchData [guid=" + guid + super.toString() + "]";
+      return "BranchData [uuid=" + uuid + ", " + super.toString() + "]";
    }
 
    @Override
@@ -165,7 +162,12 @@ public class BranchDataImpl extends OrcsObjectImpl<Long> implements BranchData, 
 
    @Override
    public long getUuid() {
-      return getLocalId();
+      return uuid;
+   }
+
+   @Override
+   public void setUuid(Long uuid) {
+      this.uuid = uuid;
    }
 
 }

@@ -60,9 +60,9 @@ public class DataServlet extends UnsecuredOseeHttpServlet {
    public static void handleUriRequest(IResourceManager resourceManager, String urlRequest, HttpServletResponse response, BranchCache branchCache) throws OseeCoreException {
       UrlParser parser = new UrlParser();
       parser.parse(urlRequest);
-      String branchGuid = parser.getAttribute("branch");
+      Long branchUuid = Long.valueOf(parser.getAttribute("branch"));
       String artifactGuid = parser.getAttribute("artifact");
-      String uri = ArtifactUtil.getUri(artifactGuid, branchCache.getByGuid(branchGuid));
+      String uri = ArtifactUtil.getUri(artifactGuid, branchCache.getByGuid(branchUuid));
       ArtifactFileServlet.handleArtifactUri(resourceManager, urlRequest, uri, response);
    }
 

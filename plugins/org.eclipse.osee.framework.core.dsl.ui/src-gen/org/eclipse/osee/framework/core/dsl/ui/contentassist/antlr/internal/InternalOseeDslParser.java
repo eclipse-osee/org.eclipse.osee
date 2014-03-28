@@ -22,7 +22,7 @@ import java.util.ArrayList;
 @SuppressWarnings("all")
 public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_WHOLE_NUM_STR", "RULE_ID", "RULE_STRING", "RULE_HEX_INT", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'ALL'", "'DefaultAttributeDataProvider'", "'UriAttributeDataProvider'", "'unlimited'", "'DefaultAttributeTaggerProvider'", "'BooleanAttribute'", "'CompressedContentAttribute'", "'DateAttribute'", "'EnumeratedAttribute'", "'FloatingPointAttribute'", "'IntegerAttribute'", "'LongAttribute'", "'JavaObjectAttribute'", "'StringAttribute'", "'ArtifactReferenceAttribute'", "'BranchReferenceAttribute'", "'WordAttribute'", "'OutlineNumberAttribute'", "'Lexicographical_Ascending'", "'Lexicographical_Descending'", "'Unordered'", "'ONE_TO_ONE'", "'ONE_TO_MANY'", "'MANY_TO_ONE'", "'MANY_TO_MANY'", "'EQ'", "'LIKE'", "'AND'", "'OR'", "'artifactName'", "'artifactGuid'", "'branchName'", "'branchGuid'", "'ALLOW'", "'DENY'", "'SIDE_A'", "'SIDE_B'", "'BOTH'", "'import'", "'.'", "'artifactType'", "'{'", "'uuid'", "'}'", "'extends'", "','", "'guid'", "'attribute'", "'attributeType'", "'dataProvider'", "'min'", "'max'", "'overrides'", "'taggerId'", "'enumType'", "'description'", "'defaultValue'", "'fileExtension'", "'mediaType'", "'oseeEnumType'", "'entry'", "'entryGuid'", "'overrides enum'", "'add'", "'remove'", "'overrides artifactType'", "'update'", "'relationType'", "'sideAName'", "'sideAArtifactType'", "'sideBName'", "'sideBArtifactType'", "'defaultOrderType'", "'multiplicity'", "'('", "')'", "'artifactMatcher'", "'where'", "';'", "'role'", "'accessContext'", "'childrenOf'", "'artifact'", "'edit'", "'of'", "'abstract'", "'inheritAll'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_WHOLE_NUM_STR", "RULE_ID", "RULE_STRING", "RULE_HEX_INT", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'ALL'", "'DefaultAttributeDataProvider'", "'UriAttributeDataProvider'", "'unlimited'", "'DefaultAttributeTaggerProvider'", "'BooleanAttribute'", "'CompressedContentAttribute'", "'DateAttribute'", "'EnumeratedAttribute'", "'FloatingPointAttribute'", "'IntegerAttribute'", "'LongAttribute'", "'JavaObjectAttribute'", "'StringAttribute'", "'ArtifactReferenceAttribute'", "'BranchReferenceAttribute'", "'WordAttribute'", "'OutlineNumberAttribute'", "'Lexicographical_Ascending'", "'Lexicographical_Descending'", "'Unordered'", "'ONE_TO_ONE'", "'ONE_TO_MANY'", "'MANY_TO_ONE'", "'MANY_TO_MANY'", "'EQ'", "'LIKE'", "'AND'", "'OR'", "'artifactName'", "'artifactGuid'", "'branchName'", "'branchUuid'", "'ALLOW'", "'DENY'", "'SIDE_A'", "'SIDE_B'", "'BOTH'", "'import'", "'.'", "'artifactType'", "'{'", "'uuid'", "'}'", "'extends'", "','", "'guid'", "'attribute'", "'attributeType'", "'dataProvider'", "'min'", "'max'", "'overrides'", "'taggerId'", "'enumType'", "'description'", "'defaultValue'", "'fileExtension'", "'mediaType'", "'oseeEnumType'", "'entry'", "'entryGuid'", "'overrides enum'", "'add'", "'remove'", "'overrides artifactType'", "'update'", "'relationType'", "'sideAName'", "'sideAArtifactType'", "'sideBName'", "'sideBArtifactType'", "'defaultOrderType'", "'multiplicity'", "'('", "')'", "'artifactMatcher'", "'where'", "';'", "'role'", "'accessContext'", "'childrenOf'", "'artifact'", "'edit'", "'of'", "'abstract'", "'inheritAll'"
     };
     public static final int RULE_ID=5;
     public static final int T__29=29;
@@ -5676,13 +5676,13 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__MatchField__Alternatives"
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1894:1: rule__MatchField__Alternatives : ( ( ( 'artifactName' ) ) | ( ( 'artifactGuid' ) ) | ( ( 'branchName' ) ) | ( ( 'branchGuid' ) ) );
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1894:1: rule__MatchField__Alternatives : ( ( ( 'artifactName' ) ) | ( ( 'artifactGuid' ) ) | ( ( 'branchName' ) ) | ( ( 'branchUuid' ) ) );
     public final void rule__MatchField__Alternatives() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1898:1: ( ( ( 'artifactName' ) ) | ( ( 'artifactGuid' ) ) | ( ( 'branchName' ) ) | ( ( 'branchGuid' ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1898:1: ( ( ( 'artifactName' ) ) | ( ( 'artifactGuid' ) ) | ( ( 'branchName' ) ) | ( ( 'branchUuid' ) ) )
             int alt20=4;
             switch ( input.LA(1) ) {
             case 42:
@@ -5777,20 +5777,20 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
                     }
                     break;
                 case 4 :
-                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1920:6: ( ( 'branchGuid' ) )
+                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1920:6: ( ( 'branchUuid' ) )
                     {
-                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1920:6: ( ( 'branchGuid' ) )
-                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1921:1: ( 'branchGuid' )
+                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1920:6: ( ( 'branchUuid' ) )
+                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1921:1: ( 'branchUuid' )
                     {
-                     before(grammarAccess.getMatchFieldAccess().getBranchGuidEnumLiteralDeclaration_3()); 
-                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1922:1: ( 'branchGuid' )
-                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1922:3: 'branchGuid'
+                     before(grammarAccess.getMatchFieldAccess().getBranchUuidEnumLiteralDeclaration_3()); 
+                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1922:1: ( 'branchUuid' )
+                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1922:3: 'branchUuid'
                     {
                     match(input,45,FOLLOW_45_in_rule__MatchField__Alternatives4174); 
 
                     }
 
-                     after(grammarAccess.getMatchFieldAccess().getBranchGuidEnumLiteralDeclaration_3()); 
+                     after(grammarAccess.getMatchFieldAccess().getBranchUuidEnumLiteralDeclaration_3()); 
 
                     }
 
@@ -8501,21 +8501,21 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeTypeRef__Group_2__0__Impl"
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2911:1: rule__XAttributeTypeRef__Group_2__0__Impl : ( 'branchGuid' ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2911:1: rule__XAttributeTypeRef__Group_2__0__Impl : ( 'branchUuid' ) ;
     public final void rule__XAttributeTypeRef__Group_2__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2915:1: ( ( 'branchGuid' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2916:1: ( 'branchGuid' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2915:1: ( ( 'branchUuid' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2916:1: ( 'branchUuid' )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2916:1: ( 'branchGuid' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2917:1: 'branchGuid'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2916:1: ( 'branchUuid' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2917:1: 'branchUuid'
             {
-             before(grammarAccess.getXAttributeTypeRefAccess().getBranchGuidKeyword_2_0()); 
+             before(grammarAccess.getXAttributeTypeRefAccess().getBranchUuidKeyword_2_0()); 
             match(input,45,FOLLOW_45_in_rule__XAttributeTypeRef__Group_2__0__Impl6172); 
-             after(grammarAccess.getXAttributeTypeRefAccess().getBranchGuidKeyword_2_0()); 
+             after(grammarAccess.getXAttributeTypeRefAccess().getBranchUuidKeyword_2_0()); 
 
             }
 
@@ -8571,31 +8571,31 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__XAttributeTypeRef__Group_2__1__Impl"
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2941:1: rule__XAttributeTypeRef__Group_2__1__Impl : ( ( rule__XAttributeTypeRef__BranchGuidAssignment_2_1 ) ) ;
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2941:1: rule__XAttributeTypeRef__Group_2__1__Impl : ( ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 ) ) ;
     public final void rule__XAttributeTypeRef__Group_2__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2945:1: ( ( ( rule__XAttributeTypeRef__BranchGuidAssignment_2_1 ) ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2946:1: ( ( rule__XAttributeTypeRef__BranchGuidAssignment_2_1 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2945:1: ( ( ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 ) ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2946:1: ( ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 ) )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2946:1: ( ( rule__XAttributeTypeRef__BranchGuidAssignment_2_1 ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2947:1: ( rule__XAttributeTypeRef__BranchGuidAssignment_2_1 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2946:1: ( ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2947:1: ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 )
             {
-             before(grammarAccess.getXAttributeTypeRefAccess().getBranchGuidAssignment_2_1()); 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2948:1: ( rule__XAttributeTypeRef__BranchGuidAssignment_2_1 )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2948:2: rule__XAttributeTypeRef__BranchGuidAssignment_2_1
+             before(grammarAccess.getXAttributeTypeRefAccess().getBranchUuidAssignment_2_1()); 
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2948:1: ( rule__XAttributeTypeRef__BranchUuidAssignment_2_1 )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:2948:2: rule__XAttributeTypeRef__BranchUuidAssignment_2_1
             {
-            pushFollow(FOLLOW_rule__XAttributeTypeRef__BranchGuidAssignment_2_1_in_rule__XAttributeTypeRef__Group_2__1__Impl6230);
-            rule__XAttributeTypeRef__BranchGuidAssignment_2_1();
+            pushFollow(FOLLOW_rule__XAttributeTypeRef__BranchUuidAssignment_2_1_in_rule__XAttributeTypeRef__Group_2__1__Impl6230);
+            rule__XAttributeTypeRef__BranchUuidAssignment_2_1();
 
             state._fsp--;
 
 
             }
 
-             after(grammarAccess.getXAttributeTypeRefAccess().getBranchGuidAssignment_2_1()); 
+             after(grammarAccess.getXAttributeTypeRefAccess().getBranchUuidAssignment_2_1()); 
 
             }
 
@@ -24920,22 +24920,22 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     // $ANTLR end "rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1"
 
 
-    // $ANTLR start "rule__XAttributeTypeRef__BranchGuidAssignment_2_1"
-    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:9269:1: rule__XAttributeTypeRef__BranchGuidAssignment_2_1 : ( RULE_STRING ) ;
-    public final void rule__XAttributeTypeRef__BranchGuidAssignment_2_1() throws RecognitionException {
+    // $ANTLR start "rule__XAttributeTypeRef__BranchUuidAssignment_2_1"
+    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:9269:1: rule__XAttributeTypeRef__BranchUuidAssignment_2_1 : ( RULE_WHOLE_NUM_STR ) ;
+    public final void rule__XAttributeTypeRef__BranchUuidAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:9273:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:9274:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:9273:1: ( ( RULE_WHOLE_NUM_STR ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:9274:1: ( RULE_WHOLE_NUM_STR )
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:9274:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:9275:1: RULE_STRING
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:9274:1: ( RULE_WHOLE_NUM_STR )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:9275:1: RULE_WHOLE_NUM_STR
             {
-             before(grammarAccess.getXAttributeTypeRefAccess().getBranchGuidSTRINGTerminalRuleCall_2_1_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__XAttributeTypeRef__BranchGuidAssignment_2_119039); 
-             after(grammarAccess.getXAttributeTypeRefAccess().getBranchGuidSTRINGTerminalRuleCall_2_1_0()); 
+             before(grammarAccess.getXAttributeTypeRefAccess().getBranchUuidWHOLE_NUM_STRTerminalRuleCall_2_1_0()); 
+            match(input,RULE_WHOLE_NUM_STR,FOLLOW_RULE_WHOLE_NUM_STR_in_rule__XAttributeTypeRef__BranchUuidAssignment_2_119039); 
+             after(grammarAccess.getXAttributeTypeRefAccess().getBranchUuidWHOLE_NUM_STRTerminalRuleCall_2_1_0()); 
 
             }
 
@@ -24954,7 +24954,7 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__XAttributeTypeRef__BranchGuidAssignment_2_1"
+    // $ANTLR end "rule__XAttributeTypeRef__BranchUuidAssignment_2_1"
 
 
     // $ANTLR start "rule__XAttributeType__NameAssignment_1"
@@ -28570,11 +28570,11 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1_in_rule__XAttributeTypeRef__Group__1__Impl6047 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__XAttributeTypeRef__Group__2__Impl_in_rule__XAttributeTypeRef__Group__26077 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__XAttributeTypeRef__Group_2__0_in_rule__XAttributeTypeRef__Group__2__Impl6104 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__XAttributeTypeRef__Group_2__0__Impl_in_rule__XAttributeTypeRef__Group_2__06141 = new BitSet(new long[]{0x0000000000000040L});
+    public static final BitSet FOLLOW_rule__XAttributeTypeRef__Group_2__0__Impl_in_rule__XAttributeTypeRef__Group_2__06141 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_rule__XAttributeTypeRef__Group_2__1_in_rule__XAttributeTypeRef__Group_2__06144 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_45_in_rule__XAttributeTypeRef__Group_2__0__Impl6172 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__XAttributeTypeRef__Group_2__1__Impl_in_rule__XAttributeTypeRef__Group_2__16203 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__XAttributeTypeRef__BranchGuidAssignment_2_1_in_rule__XAttributeTypeRef__Group_2__1__Impl6230 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__XAttributeTypeRef__BranchUuidAssignment_2_1_in_rule__XAttributeTypeRef__Group_2__1__Impl6230 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__XAttributeType__Group__0__Impl_in_rule__XAttributeType__Group__06264 = new BitSet(new long[]{0x0000000000000040L});
     public static final BitSet FOLLOW_rule__XAttributeType__Group__1_in_rule__XAttributeType__Group__06267 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_61_in_rule__XAttributeType__Group__0__Impl6295 = new BitSet(new long[]{0x0000000000000002L});
@@ -29115,7 +29115,7 @@ public class InternalOseeDslParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_RULE_HEX_INT_in_rule__XArtifactType__UuidAssignment_718938 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleXAttributeTypeRef_in_rule__XArtifactType__ValidAttributeTypesAssignment_818969 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_RULE_STRING_in_rule__XAttributeTypeRef__ValidAttributeTypeAssignment_119004 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__XAttributeTypeRef__BranchGuidAssignment_2_119039 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_WHOLE_NUM_STR_in_rule__XAttributeTypeRef__BranchUuidAssignment_2_119039 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_RULE_STRING_in_rule__XAttributeType__NameAssignment_119070 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleAttributeBaseType_in_rule__XAttributeType__BaseAttributeTypeAssignment_2_119101 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_RULE_STRING_in_rule__XAttributeType__OverrideAssignment_3_119136 = new BitSet(new long[]{0x0000000000000002L});

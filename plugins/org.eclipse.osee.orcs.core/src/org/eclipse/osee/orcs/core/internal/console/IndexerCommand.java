@@ -109,10 +109,10 @@ public class IndexerCommand implements ConsoleCommand {
          boolean indexOnlyMissingitems = false;
 
          Set<BranchReadable> branches = new HashSet<BranchReadable>();
-         String[] guids = params.getArray("branchGuids");
-         if (guids != null & guids.length > 0) {
-            for (String guid : guids) {
-               branches.add(getOrcsApi().getQueryFactory(null).branchQuery().andUuids(guid).getResults().getExactlyOne());
+         String[] uuids = params.getArray("branchUuids");
+         if (uuids != null & uuids.length > 0) {
+            for (String uuid : uuids) {
+               branches.add(getOrcsApi().getQueryFactory(null).branchQuery().andUuids(Long.valueOf(uuid)).getResults().getExactlyOne());
             }
          }
 

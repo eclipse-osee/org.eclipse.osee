@@ -29,7 +29,7 @@ public class BranchCriteriaFactory {
       return new CriteriaBranchIds(ids);
    }
 
-   public Criteria createBranchUuidsCriteria(Collection<String> ids) {
+   public Criteria createBranchUuidsCriteria(Collection<Long> ids) {
       return new CriteriaBranchUuids(ids);
    }
 

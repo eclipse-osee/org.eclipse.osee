@@ -25,7 +25,7 @@
       <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//MatchField/artifactName"/>
       <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//MatchField/artifactGuid"/>
       <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//MatchField/branchName"/>
-      <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//MatchField/branchGuid"/>
+      <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//MatchField/branchUuid"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="OseeDsl.ecore#//AccessPermissionEnum">
       <genEnumLiterals ecoreEnumLiteral="OseeDsl.ecore#//AccessPermissionEnum/ALLOW"/>
@@ -67,7 +67,7 @@
     </genClasses>
     <genClasses ecoreClass="OseeDsl.ecore#//XAttributeTypeRef">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeDsl.ecore#//XAttributeTypeRef/validAttributeType"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//XAttributeTypeRef/branchGuid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//XAttributeTypeRef/branchUuid"/>
     </genClasses>
     <genClasses ecoreClass="OseeDsl.ecore#//XAttributeType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeDsl.ecore#//XAttributeType/baseAttributeType"/>

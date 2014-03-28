@@ -38,7 +38,7 @@ public class BranchesResource {
    Request request;
 
    @Path("{uuid}")
-   public BranchResource getBranch(@PathParam("uuid") String id) {
+   public BranchResource getBranch(@PathParam("uuid") Long id) {
       return new BranchResource(uriInfo, request, id);
    }
 
@@ -46,8 +46,7 @@ public class BranchesResource {
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
       BranchQuery query = OrcsApplication.getOrcsApi().getQueryFactory(null).branchQuery();
-      ResultSet<BranchReadable> results =
-         query.andIsOfType(BranchType.BASELINE, BranchType.WORKING).getResults();
+      ResultSet<BranchReadable> results = query.andIsOfType(BranchType.BASELINE, BranchType.WORKING).getResults();
 
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(results);

@@ -12,8 +12,6 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -135,22 +133,6 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
       } else {
          throw new OseeCoreException("Invalid query context type [%s] - expected [%s]",
             queryContext.getClass().getName(), clazz.getName());
-      }
-      return toReturn;
-   }
-
-   private static Collection<String> toCollection(String... ids) {
-      Set<String> toReturn = new HashSet<String>();
-      for (String id : ids) {
-         toReturn.add(id);
-      }
-      return toReturn;
-   }
-
-   private static Collection<Integer> toCollection(int... ids) {
-      Set<Integer> toReturn = new HashSet<Integer>();
-      for (Integer id : ids) {
-         toReturn.add(id);
       }
       return toReturn;
    }

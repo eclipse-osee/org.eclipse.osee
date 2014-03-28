@@ -18,7 +18,7 @@ import java.util.List;
  */
 public interface SearchParameters {
 
-   String getBranchUuid();
+   Long getBranchUuid();
 
    List<Predicate> getPredicates();
 

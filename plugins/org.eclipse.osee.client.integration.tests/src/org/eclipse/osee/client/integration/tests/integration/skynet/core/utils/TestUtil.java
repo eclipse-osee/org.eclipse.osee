@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -80,11 +79,11 @@ public final class TestUtil {
       return ConnectionHandler.runPreparedQueryFetchInt(0, "SELECT count(1) FROM " + tableName);
    }
 
-   public static Branch createBranch(int index) {
+   public static Branch createBranch(int index, long branchUuid) {
       BranchState branchState = BranchState.values()[Math.abs(index % BranchState.values().length)];
       BranchType branchType = BranchType.values()[Math.abs(index % BranchType.values().length)];
       boolean isArchived = index % 2 == 0 ? true : false;
-      return new Branch(GUID.create(), "branch_" + index, branchType, branchState, isArchived);
+      return new Branch(branchUuid, "branch_" + index, branchType, branchState, isArchived);
    }
 
    public static RelationLink createRelationLink(int relationId, int artA, int artB, Branch branch, RelationType relationType) {

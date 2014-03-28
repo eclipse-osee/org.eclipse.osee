@@ -78,7 +78,7 @@ public final class DataAsserts {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
-         assertEquals((AbstractOseeType<String>) expected, (AbstractOseeType<String>) actual);
+         assertEquals((AbstractOseeType<Long>) expected, (AbstractOseeType<Long>) actual);
          Assert.assertEquals(expected.getShortName(), actual.getShortName());
          Assert.assertEquals(expected.getAccessControlBranch(), actual.getAccessControlBranch());
          Assert.assertEquals(expected.getAncestors(), actual.getAncestors());
@@ -175,7 +175,7 @@ public final class DataAsserts {
       } else {
          Assert.assertEquals(expected.getAssociatedArtifactId(), actual.getAssociatedArtifactId());
          Assert.assertEquals(expected.getAuthorId(), actual.getAuthorId());
-         Assert.assertEquals(expected.getBranchGuid(), actual.getBranchGuid());
+         Assert.assertEquals(expected.getBranchUuid(), actual.getBranchUuid());
          Assert.assertEquals(expected.getBranchName(), actual.getBranchName());
          Assert.assertEquals(expected.getCreationComment(), actual.getCreationComment());
          Assert.assertEquals(expected.getMergeDestinationBranchId(), actual.getMergeDestinationBranchId());

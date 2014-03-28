@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
@@ -82,6 +83,7 @@ public class OrcsTypesIndexer {
       InputStream inputStream = null;
       try {
          inputStream = source.getContent();
+         inputStream = upConvertTo17(inputStream);
          resource = OseeDslResourceUtil.loadModel(source.getLocation().toASCIIString(), inputStream);
       } finally {
          Lib.close(inputStream);
@@ -128,6 +130,14 @@ public class OrcsTypesIndexer {
          stopwatch.stop();
       }
       return index;
+   }
+
+   private InputStream upConvertTo17(InputStream inputStream) throws Exception {
+      String typesStr = Lib.inputStreamToString(inputStream);
+      typesStr = typesStr.replaceAll("branchGuid \"AyH_fAj8lhQGmQw2iBAA\"", "branchUuid 423");
+      typesStr = typesStr.replaceAll("branchGuid \"AyH_e5wAblOqTdLkxqQA\"", "branchUuid 714");
+      typesStr = typesStr.replaceAll("branchGuid \"GyoL_rFqqBYbOcuGYzQA\"", "branchUuid 4312");
+      return new ByteArrayInputStream(typesStr.getBytes("UTF-8"));
    }
 
    private void indexSuperTypes(ArtifactTypeIndex artifactTypeIndex, IArtifactType token, XArtifactType dslType) throws OseeCoreException {
@@ -228,9 +238,11 @@ public class OrcsTypesIndexer {
 
    private IOseeBranch getAttributeBranch(XAttributeTypeRef xAttributeTypeRef) {
       IOseeBranch branchToken = CoreBranches.SYSTEM_ROOT;
-      String branchGuid = xAttributeTypeRef.getBranchGuid();
-      if (branchGuid != null) {
-         branchToken = TokenFactory.createBranch(branchGuid, branchGuid);
+      if (Strings.isValid(xAttributeTypeRef.getBranchUuid())) {
+         long branchUuid = Long.valueOf(xAttributeTypeRef.getBranchUuid());
+         if (branchUuid > 0) {
+            branchToken = TokenFactory.createBranch(branchUuid, String.valueOf(branchUuid));
+         }
       }
       return branchToken;
    }

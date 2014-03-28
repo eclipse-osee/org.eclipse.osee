@@ -47,7 +47,7 @@ public class TransactionRecordTranslatorTest extends BaseTranslatorTest<Transact
 
    @Parameters
    public static Collection<Object[]> data() {
-      BranchCache branchCache = new BranchCache(new MockOseeDataAccessor<String, Branch>());
+      BranchCache branchCache = new BranchCache(new MockOseeDataAccessor<Long, Branch>());
       ITranslator<TransactionRecord> translator =
          new TransactionRecordTranslator(new TransactionRecordFactory(), branchCache);
       List<Object[]> data = new ArrayList<Object[]>();

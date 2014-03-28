@@ -42,12 +42,12 @@ public class BranchAncestorOfSqlHandler extends SqlHandler<CriteriaBranchAncesto
       withAlias = writer.getNextAlias(ANCESTOR_OF_ENTRY);
       final StringBuilder body = new StringBuilder();
       body.append(" SELECT anch_br1.parent_branch_id, 0 as branch_level FROM osee_branch anch_br1\n");
-      body.append("   WHERE anch_br1.branch_guid = ?");
+      body.append("   WHERE anch_br1.branch_id = ?");
       body.append("\n  UNION ALL \n");
       body.append("  SELECT parent_branch_id, branch_level - 1 FROM ").append(withAlias);
       body.append(" recurse, osee_branch br");
       body.append(" WHERE br.branch_id = recurse.parent_id\n");
-      writer.addParameter(criteria.getChild().getGuid());
+      writer.addParameter(criteria.getChild().getUuid());
       writer.addWithClause(newRecursiveWithClause(withAlias, "(parent_id, branch_level)", body.toString()));
       writer.addTable(withAlias);
    }

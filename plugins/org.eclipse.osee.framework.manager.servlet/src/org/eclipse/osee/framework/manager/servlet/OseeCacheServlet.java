@@ -266,7 +266,7 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
    private ArtifactTypeCacheUpdateResponse createArtifactTypeCacheUpdateResponse(OrcsTypes orcsTypes) throws OseeCoreException {
       List<ArtifactTypeRow> rows = new ArrayList<ArtifactTypeRow>();
       Map<Long, Long[]> baseToSuper = new HashMap<Long, Long[]>();
-      List<Triplet<Long, String, Long>> artAttrs = new ArrayList<Triplet<Long, String, Long>>();
+      List<Triplet<Long, Long, Long>> artAttrs = new ArrayList<Triplet<Long, Long, Long>>();
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
       for (IArtifactType artType : artTypes.getAll()) {
          long artTypeId = artType.getGuid();
@@ -289,7 +289,7 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
             IOseeBranch branch = entry.getKey();
             Collection<IAttributeType> attrTypes = entry.getValue();
             for (IAttributeType type : attrTypes) {
-               artAttrs.add(new Triplet<Long, String, Long>(artType.getGuid(), branch.getGuid(), type.getGuid()));
+               artAttrs.add(new Triplet<Long, Long, Long>(artType.getGuid(), branch.getGuid(), type.getGuid()));
             }
 
          }

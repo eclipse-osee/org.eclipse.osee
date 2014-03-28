@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.db.internal.loader.data.OrcsDataFactory;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class LoadProcessor<D extends HasLocalId, F extends OrcsDataFactory> {
+public abstract class LoadProcessor<D extends HasLocalId<?>, F extends OrcsDataFactory> {
 
    private final F factory;
 

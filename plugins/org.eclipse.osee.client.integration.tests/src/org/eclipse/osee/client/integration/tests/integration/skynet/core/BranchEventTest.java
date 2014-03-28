@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -131,12 +130,11 @@ public class BranchEventTest {
       branchEventListener.reset();
 
       Assert.assertNotNull(committedBranch);
-      final String guid = committedBranch.getGuid();
+      final Long uuid = committedBranch.getGuid();
       Assert.assertEquals(BranchArchivedState.ARCHIVED, committedBranch.getArchiveState());
-      BranchManager.updateBranchArchivedState(null, committedBranch.getId(), committedBranch.getGuid(),
-         BranchArchivedState.UNARCHIVED);
+      BranchManager.updateBranchArchivedState(null, committedBranch.getId(), BranchArchivedState.UNARCHIVED);
 
-      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.ArchiveStateUpdated, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.ArchiveStateUpdated, uuid);
 
       Assert.assertEquals(BranchArchivedState.UNARCHIVED, committedBranch.getArchiveState());
       Assert.assertFalse(committedBranch.isEditable());
@@ -149,7 +147,7 @@ public class BranchEventTest {
 
       Assert.assertNotNull(workingBranch);
 
-      final String guid = workingBranch.getGuid();
+      final Long uuid = workingBranch.getUuid();
       Assert.assertNotNull(workingBranch);
       Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, workingBranch);
       newArt.persist(getClass().getSimpleName());
@@ -157,8 +155,8 @@ public class BranchEventTest {
       branchEventListener.reset();
       BranchManager.commitBranch(null, conflictManager, true, true);
 
-      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Committing, guid);
-      verifyReceivedBranchStatesEvent(branchEventListener.getSecondResults(), BranchEventType.Committed, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Committing, uuid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getSecondResults(), BranchEventType.Committed, uuid);
 
       Assert.assertEquals(BranchState.COMMITTED, workingBranch.getBranchState());
       Assert.assertFalse(workingBranch.isEditable());
@@ -171,32 +169,32 @@ public class BranchEventTest {
 
       Assert.assertNotNull(workingBranch);
 
-      final String guid = workingBranch.getGuid();
+      final Long uuid = workingBranch.getGuid();
       Assert.assertNotNull(workingBranch);
 
       branchEventListener.reset();
       Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(workingBranch, false));
 
-      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Purging, guid);
-      verifyReceivedBranchStatesEvent(branchEventListener.getSecondResults(), BranchEventType.Purged, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Purging, uuid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getSecondResults(), BranchEventType.Purged, uuid);
 
       Assert.assertEquals(BranchState.PURGED, workingBranch.getBranchState());
       Assert.assertEquals(StorageState.PURGED, workingBranch.getStorageState());
       Assert.assertFalse(workingBranch.isEditable());
-      Assert.assertFalse("Branch should not exist", BranchManager.branchExists(guid));
+      Assert.assertFalse("Branch should not exist", BranchManager.branchExists(uuid));
       return workingBranch;
    }
 
    private Branch testEvents__deleted(Branch workingBranch) throws Exception {
-      final String guid = workingBranch.getGuid();
+      final Long uuid = workingBranch.getGuid();
       Assert.assertNotNull(workingBranch);
       Assert.assertNotSame(BranchState.DELETED, workingBranch.getBranchState());
 
       branchEventListener.reset();
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch));
 
-      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Deleting, guid);
-      verifyReceivedBranchStatesEvent(branchEventListener.getSecondResults(), BranchEventType.Deleted, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Deleting, uuid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getSecondResults(), BranchEventType.Deleted, uuid);
 
       Assert.assertEquals(BranchState.DELETED, workingBranch.getBranchState());
       return workingBranch;
@@ -205,12 +203,12 @@ public class BranchEventTest {
    private Branch testEvents__stateChange(Branch workingBranch) throws Exception {
       branchEventListener.reset();
 
-      final String guid = workingBranch.getGuid();
+      final Long uuid = workingBranch.getUuid();
       Assert.assertNotNull(workingBranch);
       Assert.assertEquals(BranchState.CREATED, workingBranch.getBranchState());
-      BranchManager.updateBranchState(null, workingBranch.getId(), workingBranch.getGuid(), BranchState.MODIFIED);
+      BranchManager.updateBranchState(null, workingBranch.getId(), BranchState.MODIFIED);
 
-      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.StateUpdated, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.StateUpdated, uuid);
 
       Assert.assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
       return workingBranch;
@@ -218,12 +216,12 @@ public class BranchEventTest {
 
    private Branch testEvents__typeChange(Branch workingBranch) throws Exception {
       branchEventListener.reset();
-      final String guid = workingBranch.getGuid();
+      final Long uuid = workingBranch.getUuid();
       Assert.assertNotNull(workingBranch);
       Assert.assertEquals(BranchType.WORKING, workingBranch.getBranchType());
-      BranchManager.updateBranchType(null, workingBranch.getId(), workingBranch.getGuid(), BranchType.BASELINE);
+      BranchManager.updateBranchType(null, workingBranch.getId(), BranchType.BASELINE);
 
-      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.TypeUpdated, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.TypeUpdated, uuid);
 
       Assert.assertEquals(BranchType.BASELINE, workingBranch.getBranchType());
       return workingBranch;
@@ -232,13 +230,13 @@ public class BranchEventTest {
    private Branch testEvents__workingRenamed(Branch workingBranch) throws Exception {
       branchEventListener.reset();
 
-      final String guid = workingBranch.getGuid();
+      final Long uuid = workingBranch.getUuid();
       Assert.assertNotNull(workingBranch);
       String newName = method.getQualifiedTestName() + " - working renamed";
       workingBranch.setName(newName);
       BranchManager.persist(workingBranch);
 
-      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Renamed, guid);
+      verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Renamed, uuid);
 
       Assert.assertEquals(newName, workingBranch.getName());
       Assert.assertNotNull(BranchManager.getBranchesByName(newName));
@@ -268,7 +266,7 @@ public class BranchEventTest {
       return branch;
    }
 
-   private void verifyReceivedBranchStatesEvent(Pair<Sender, BranchEvent> eventPair, BranchEventType expectedEnumState, String expectedBranchGuid) {
+   private void verifyReceivedBranchStatesEvent(Pair<Sender, BranchEvent> eventPair, BranchEventType expectedEnumState, Long expectedBranchUuid) {
       Sender receivedSender = eventPair.getFirst();
       BranchEvent receivedBranchEvent = eventPair.getSecond();
 
@@ -279,8 +277,8 @@ public class BranchEventTest {
          Assert.assertTrue(receivedSender.isLocal());
       }
 
-      if (Strings.isValid(expectedBranchGuid)) {
-         Assert.assertEquals(expectedBranchGuid, receivedBranchEvent.getBranchGuid());
+      if (expectedBranchUuid != null) {
+         Assert.assertEquals(expectedBranchUuid, Long.valueOf(receivedBranchEvent.getBranchUuid()));
       }
    }
 

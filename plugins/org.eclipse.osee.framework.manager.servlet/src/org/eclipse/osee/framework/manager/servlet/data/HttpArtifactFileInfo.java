@@ -19,20 +19,21 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class HttpArtifactFileInfo {
    private static final String GUID_KEY = "guid";
    private static final String BRANCH_NAME_KEY = "branch";
-   private static final String BRANCH_GUID_KEY = "branchGuid";
+   private static final String BRANCH_UUID_KEY = "branchUuid";
 
    private final String guid;
    private final String branchName;
-   private final String branchGuid;
+   private final Long branchUuid;
 
-   public HttpArtifactFileInfo(String guid, String branchName, String branchGuid) {
+   public HttpArtifactFileInfo(String guid, String branchName, Long branchUuid) {
       this.guid = guid;
       this.branchName = branchName;
-      this.branchGuid = branchGuid;
+      this.branchUuid = branchUuid;
    }
 
    public HttpArtifactFileInfo(HttpServletRequest request) {
-      this(request.getParameter(GUID_KEY), request.getParameter(BRANCH_NAME_KEY), request.getParameter(BRANCH_GUID_KEY));
+      this(request.getParameter(GUID_KEY), request.getParameter(BRANCH_NAME_KEY),
+         Long.valueOf(request.getParameter(BRANCH_UUID_KEY)));
    }
 
    public String getGuid() {
@@ -47,12 +48,12 @@ public class HttpArtifactFileInfo {
       return branchName;
    }
 
-   public String getBranchGuid() {
-      return branchGuid;
+   public Long getBranchGuid() {
+      return branchUuid;
    }
 
    public boolean isBranchGuidValid() {
-      return Strings.isValid(branchGuid);
+      return branchUuid != null && branchUuid > 0;
    }
 
 }

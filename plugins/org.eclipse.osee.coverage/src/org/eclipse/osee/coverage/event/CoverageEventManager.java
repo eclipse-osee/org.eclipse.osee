@@ -155,7 +155,7 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       for (CoverageEditor editor : new CopyOnWriteArrayList<CoverageEditor>(editors)) {
          try {
-            if (ServiceProvider.getOseeCmService().getCmBranchToken().getGuid().equals(artifactEvent.getBranchGuid())) {
+            if (ServiceProvider.getOseeCmService().getCmBranchToken().getGuid().equals(artifactEvent.getBranchUuid())) {
                boolean updatedWorkProductTab = false;
                for (EventBasicGuidArtifact eventArt : artifactEvent.getArtifacts()) {
                   if (!updatedWorkProductTab) {
@@ -163,7 +163,7 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
                   }
                }
             }
-            if (!editor.getBranch().getGuid().equals(artifactEvent.getBranchGuid())) {
+            if (!editor.getBranch().getGuid().equals(artifactEvent.getBranchUuid())) {
                return;
             }
             boolean updatedWorkProductCache = false;

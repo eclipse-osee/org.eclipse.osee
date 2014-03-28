@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.mocks.DataFactory;
 import org.eclipse.osee.framework.skynet.core.mocks.MockIArtifact;
 import org.eclipse.osee.framework.skynet.core.mocks.MockOseeDataAccessor;
@@ -239,7 +240,8 @@ public class RelationTypeSideSorterTest {
 
    private static IArtifact createArtifact(String name, String guid) {
       int uniqueId = randomGenerator.nextInt();
-      Branch branch = new Branch(GUID.create(), name + " - branch", BranchType.WORKING, BranchState.MODIFIED, false);
+      Branch branch =
+         new Branch(Lib.generateUuid(), name + " - branch", BranchType.WORKING, BranchState.MODIFIED, false);
       return new MockArtifactWithRelations(uniqueId, name, guid, branch, CoreArtifactTypes.Artifact);
    }
 

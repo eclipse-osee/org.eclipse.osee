@@ -36,7 +36,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       UPDATE_ARTIFACTS;
    }
 
-   private final String branchGuid;
+   private final Long branchUuid;
    private int transactionId;
    private NetworkSender networkSender;
    private final List<EventBasicGuidArtifact> artifacts = new ArrayList<EventBasicGuidArtifact>();
@@ -49,21 +49,21 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       this(branch.getGuid());
    }
 
-   public ArtifactEvent(String branchGuid) {
-      this(branchGuid, ArtifactEventType.UPDATE_ARTIFACTS);
+   public ArtifactEvent(Long branchUuid) {
+      this(branchUuid, ArtifactEventType.UPDATE_ARTIFACTS);
    }
 
-   public ArtifactEvent(String branchGuid, ArtifactEventType reloadEvent) {
+   public ArtifactEvent(Long branchUuid, ArtifactEventType reloadEvent) {
       this.reloadEvent = reloadEvent;
-      this.branchGuid = branchGuid;
+      this.branchUuid = branchUuid;
    }
 
    public boolean isReloadEvent() {
       return ArtifactEventType.RELOAD_ARTIFACTS == reloadEvent;
    }
 
-   public String getBranchGuid() {
-      return branchGuid;
+   public Long getBranchUuid() {
+      return branchUuid;
    }
 
    public Set<DefaultBasicUuidRelationReorder> getRelationOrderRecords() {
@@ -71,7 +71,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    }
 
    public boolean isForBranch(IOseeBranch branch) {
-      return getBranchGuid().equals(branch.getGuid());
+      return getBranchUuid().equals(branch.getGuid());
    }
 
    public int getTransactionId() {
@@ -263,7 +263,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    @Override
    public String toString() {
       try {
-         return String.format("ArtifactEvent: BG[%s] TrId[%d] ARTS[%s] RELS[%s] Sender[%s]", branchGuid, transactionId,
+         return String.format("ArtifactEvent: BG[%s] TrId[%d] ARTS[%s] RELS[%s] Sender[%s]", branchUuid, transactionId,
             getArtifactsString(artifacts), getRelationsString(relations), networkSender);
       } catch (Exception ex) {
          return String.format("ArtifactEvent exception: " + ex.getLocalizedMessage());
@@ -287,7 +287,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    }
 
    private boolean isOnCachedBranch() {
-      return BranchManager.branchExists(getBranchGuid());
+      return BranchManager.branchExists(getBranchUuid());
    }
 
 }

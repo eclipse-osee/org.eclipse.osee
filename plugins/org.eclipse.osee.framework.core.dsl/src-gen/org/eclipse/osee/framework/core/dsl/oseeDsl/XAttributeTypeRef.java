@@ -13,7 +13,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef#getValidAttributeType <em>Valid Attribute Type</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef#getBranchGuid <em>Branch Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef#getBranchUuid <em>Branch Uuid</em>}</li>
  * </ul>
  * </p>
  *
@@ -50,29 +50,29 @@ public interface XAttributeTypeRef extends EObject
   void setValidAttributeType(XAttributeType value);
 
   /**
-   * Returns the value of the '<em><b>Branch Guid</b></em>' attribute.
+   * Returns the value of the '<em><b>Branch Uuid</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Branch Guid</em>' attribute isn't clear,
+   * If the meaning of the '<em>Branch Uuid</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Branch Guid</em>' attribute.
-   * @see #setBranchGuid(String)
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXAttributeTypeRef_BranchGuid()
+   * @return the value of the '<em>Branch Uuid</em>' attribute.
+   * @see #setBranchUuid(String)
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getXAttributeTypeRef_BranchUuid()
    * @model
    * @generated
    */
-  String getBranchGuid();
+  String getBranchUuid();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef#getBranchGuid <em>Branch Guid</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef#getBranchUuid <em>Branch Uuid</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Branch Guid</em>' attribute.
-   * @see #getBranchGuid()
+   * @param value the new value of the '<em>Branch Uuid</em>' attribute.
+   * @see #getBranchUuid()
    * @generated
    */
-  void setBranchGuid(String value);
+  void setBranchUuid(String value);
 
 } // XAttributeTypeRef

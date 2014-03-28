@@ -72,7 +72,7 @@ public class DispositionInitializer {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory(null).createTransaction(CoreBranches.COMMON, oseeSystem, "Create Dispo Config");
       ArtifactId createArtifact = tx.createArtifact(CoreArtifactTypes.GeneralData, DispoStrings.Dispo_Config_Art);
-      StringBuffer sb = new StringBuffer(SAW_Bld_1.getGuid());
+      StringBuffer sb = new StringBuffer(String.valueOf(SAW_Bld_1.getUuid()));
       sb.append(":");
       sb.append(SAW_Bld_1_FOR_DISPO.getGuid());
       sb.append("\n");

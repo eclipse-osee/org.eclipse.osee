@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.core.internal.branch.BranchUtil;
@@ -68,7 +67,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
    public String getUsage() {
       // includeChildren excludes baseline branches
       StringBuilder sb = new StringBuilder();
-      sb.append("Usage: branch_purge [-R] [-D] [-A] [-B] [-P] branchGuids=<BRANCH_GUID,..>\n");
+      sb.append("Usage: branch_purge [-R] [-D] [-A] [-B] [-P] branchUuids=<BRANCH_UUID,..>\n");
       sb.append("Synopsis:\n");
       sb.append("\tCAUTION: This command will permanently remove branches from the datastore!\n");
       sb.append("\tThis command has no effect unless the [P] option is specified, otherwise it\n");
@@ -87,9 +86,10 @@ public final class BranchPurgeCommand implements ConsoleCommand {
 
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
-      List<String> branchGuids = Arrays.asList(params.getArray("branchGuids"));
+      List<Long> branchUuids = new ArrayList<Long>();
+      Arrays.asList(params.getArray("branchUuids"));
 
-      if (branchGuids.isEmpty()) {
+      if (branchUuids.isEmpty()) {
          console.writeln("No branch guids where specified");
       }
 
@@ -101,7 +101,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
       boolean runPurge = options.contains("P");
 
       OrcsBranch orcsBranch = getOrcsApi().getBranchOps(null);
-      return new PurgeBranchCallable(console, orcsBranch, getOrcsApi().getQueryFactory(null), branchGuids, recurse,
+      return new PurgeBranchCallable(console, orcsBranch, getOrcsApi().getQueryFactory(null), branchUuids, recurse,
          unArchived, unDeleted, baseline, runPurge);
    }
 
@@ -109,7 +109,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
 
       private final Console console;
       private final OrcsBranch orcsBranch;
-      private final List<String> branchGuids;
+      private final List<Long> branchUuids;
       private final boolean recurse;
       private final boolean includeUnarchived;
       private final boolean includeUndeleted;
@@ -117,11 +117,11 @@ public final class BranchPurgeCommand implements ConsoleCommand {
       private final boolean runPurge;
       private final QueryFactory queryFactory;
 
-      public PurgeBranchCallable(Console console, OrcsBranch orcsBranch, QueryFactory queryFactory, List<String> branchGuids, boolean recurse, boolean unArchived, boolean unDeleted, boolean baseline, boolean runPurge) {
+      public PurgeBranchCallable(Console console, OrcsBranch orcsBranch, QueryFactory queryFactory, List<Long> branchUuids, boolean recurse, boolean unArchived, boolean unDeleted, boolean baseline, boolean runPurge) {
          this.console = console;
          this.orcsBranch = orcsBranch;
          this.queryFactory = queryFactory;
-         this.branchGuids = branchGuids;
+         this.branchUuids = branchUuids;
          this.recurse = recurse;
          this.includeUnarchived = unArchived;
          this.includeUndeleted = unDeleted;
@@ -145,11 +145,11 @@ public final class BranchPurgeCommand implements ConsoleCommand {
 
       private Collection<BranchReadable> getBranchesToPurge() throws OseeCoreException {
          Set<BranchReadable> specifiedBranches = new HashSet<BranchReadable>();
-         for (String guid : branchGuids) {
-            if (!GUID.isValid(guid)) {
-               console.write("GUID listed %s is not a valid GUID", guid);
+         for (Long uuid : branchUuids) {
+            if (uuid > 0) {
+               console.write("UUID listed %s is not a valid UUID", uuid);
             } else {
-               BranchReadable cached = queryFactory.branchQuery().andUuids(guid).getResults().getExactlyOne();
+               BranchReadable cached = queryFactory.branchQuery().andUuids(uuid).getResults().getExactlyOne();
                if (cached != null) {
                   specifiedBranches.add(cached);
                }

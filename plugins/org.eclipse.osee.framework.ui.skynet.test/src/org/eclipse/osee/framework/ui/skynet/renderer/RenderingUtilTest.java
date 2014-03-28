@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -30,13 +29,13 @@ import org.junit.Test;
  */
 public class RenderingUtilTest {
 
-   private static AbstractOseeCache<String, Branch> cache;
+   private static AbstractOseeCache<Long, Branch> cache;
    private static Branch branch;
 
    @BeforeClass
    public static void setUpOnce() throws OseeCoreException {
-      cache = new BranchCache(new MockOseeDataAccessor<String, Branch>());
-      branch = createBranch(cache, GUID.create(), "Test 1", 1);
+      cache = new BranchCache(new MockOseeDataAccessor<Long, Branch>());
+      branch = createBranch(cache, "Test 1", 1);
    }
 
    @Test
@@ -98,8 +97,8 @@ public class RenderingUtilTest {
       return URLEncoder.encode(guid, "UTF-8");
    }
 
-   private static Branch createBranch(AbstractOseeCache<String, Branch> cache, String guid, String name, long uuid) throws OseeCoreException {
-      Branch branch = new BranchFactory().create(guid, uuid, name, BranchType.WORKING, BranchState.MODIFIED, false);
+   private static Branch createBranch(AbstractOseeCache<Long, Branch> cache, String name, long uuid) throws OseeCoreException {
+      Branch branch = new BranchFactory().create(uuid, name, BranchType.WORKING, BranchState.MODIFIED, false);
       Assert.assertNotNull(branch);
       return branch;
    }

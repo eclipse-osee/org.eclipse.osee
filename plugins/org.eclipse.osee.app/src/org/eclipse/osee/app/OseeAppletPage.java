@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.template.engine.CompositeRule;
-import org.eclipse.osee.template.engine.IdentifiableOptionsRule;
+import org.eclipse.osee.template.engine.IdentifiableLongOptionsRule;
 import org.eclipse.osee.template.engine.PageCreator;
 import org.eclipse.osee.template.engine.PageFactory;
 
@@ -60,7 +60,7 @@ public class OseeAppletPage {
          if (listId.equals("baselineBranches") || listId.equals("workingAndBaselineBranches")) {
             if (!dataListsRule.ruleExists(listId)) {
                Iterable<BranchReadable> options = getBranchOptions(query, listId);
-               dataListsRule.addRule(new IdentifiableOptionsRule<BranchReadable>("", options, listId));
+               dataListsRule.addRule(new IdentifiableLongOptionsRule<BranchReadable>("", options, listId));
             }
          }
       }

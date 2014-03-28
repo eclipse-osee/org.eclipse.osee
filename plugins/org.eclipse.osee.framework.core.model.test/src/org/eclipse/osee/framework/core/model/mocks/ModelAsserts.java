@@ -70,34 +70,28 @@ public class ModelAsserts {
       type.clearDirty();
    }
 
-   public static void createAlias(BranchCache cache, String branchGuid, String... aliases) throws OseeCoreException {
-      Branch branch = cache.getByGuid(branchGuid);
-      Assert.assertNotNull(branch);
-      //      cache.setAliases(branch, Arrays.asList(aliases));
-   }
-
-   public static void checkMergeBranch(BranchCache cache, String expectedMergeBranchGuid, String sourceBranchGuid, String destinationBranchGuid) throws OseeCoreException {
-      Branch sourceBranch = cache.getByGuid(sourceBranchGuid);
+   public static void checkMergeBranch(BranchCache cache, Long expectedMergeBranchUuid, Long sourceBranchUuid, Long destinationBranchUuid) throws OseeCoreException {
+      Branch sourceBranch = cache.getByGuid(sourceBranchUuid);
       Assert.assertNotNull(sourceBranch);
-      Branch destionationBranch = cache.getByGuid(destinationBranchGuid);
+      Branch destionationBranch = cache.getByGuid(destinationBranchUuid);
       Assert.assertNotNull(destionationBranch);
 
       Branch actualMergeBranch = cache.findMergeBranch(sourceBranch, destionationBranch);
-      if (expectedMergeBranchGuid == null) {
+      if (expectedMergeBranchUuid == null) {
          Assert.assertNull(actualMergeBranch);
       } else {
-         Branch mergeBranch = cache.getByGuid(expectedMergeBranchGuid);
+         Branch mergeBranch = cache.getByGuid(expectedMergeBranchUuid);
          Assert.assertNotNull(mergeBranch);
          Assert.assertEquals(mergeBranch, actualMergeBranch);
       }
    }
 
-   public static void createMergeBranch(BranchCache cache, String mergeBranchGuid, String sourceBranchGuid, String destinationBranchGuid) throws OseeCoreException {
-      Branch mergeBranch = cache.getByGuid(mergeBranchGuid);
+   public static void createMergeBranch(BranchCache cache, Long mergeBranchUuid, Long sourceBranchUuid, Long destinationBranchUuid) throws OseeCoreException {
+      Branch mergeBranch = cache.getByGuid(mergeBranchUuid);
       Assert.assertNotNull(mergeBranch);
-      Branch sourceBranch = cache.getByGuid(sourceBranchGuid);
+      Branch sourceBranch = cache.getByGuid(sourceBranchUuid);
       Assert.assertNotNull(sourceBranch);
-      Branch destionationBranch = cache.getByGuid(destinationBranchGuid);
+      Branch destionationBranch = cache.getByGuid(destinationBranchUuid);
       Assert.assertNotNull(destionationBranch);
       Assert.assertTrue(mergeBranch instanceof MergeBranch);
       MergeBranch mBranch = (MergeBranch) mergeBranch;
@@ -105,8 +99,8 @@ public class ModelAsserts {
       mBranch.setDestinationBranch(destionationBranch);
    }
 
-   public static void checkHierarchy(BranchCache cache, String parentGuid, String... expected) throws OseeCoreException {
-      Branch parentBranch = cache.getByGuid(parentGuid);
+   public static void checkHierarchy(BranchCache cache, Long parentUuid, Long... expected) throws OseeCoreException {
+      Branch parentBranch = cache.getByGuid(parentUuid);
       Assert.assertNotNull(parentBranch);
       Collection<Branch> children = parentBranch.getChildren();
       Assert.assertEquals(expected.length, children.size());
@@ -120,12 +114,12 @@ public class ModelAsserts {
       }
    }
 
-   public static void createBranchHierarchy(BranchCache cache, String parentGuid, String... childrenGuids) throws OseeCoreException {
-      Branch parentBranch = cache.getByGuid(parentGuid);
+   public static void createBranchHierarchy(BranchCache cache, Long parentUuid, Long... childrenUuids) throws OseeCoreException {
+      Branch parentBranch = cache.getByGuid(parentUuid);
       Assert.assertNotNull(parentBranch);
-      Assert.assertNotNull(childrenGuids);
-      Assert.assertTrue(childrenGuids.length > 0);
-      for (String childGuid : childrenGuids) {
+      Assert.assertNotNull(childrenUuids);
+      Assert.assertTrue(childrenUuids.length > 0);
+      for (Long childGuid : childrenUuids) {
          Branch childBranch = cache.getByGuid(childGuid);
          Assert.assertNotNull(childBranch);
          childBranch.setParentBranch(parentBranch);

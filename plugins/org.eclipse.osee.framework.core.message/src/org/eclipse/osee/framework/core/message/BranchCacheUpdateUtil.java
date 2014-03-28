@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Megumi Telles
@@ -53,7 +52,7 @@ public final class BranchCacheUpdateUtil {
       this.txCache = txCache;
    }
 
-   public Collection<Branch> updateCache(AbstractBranchCacheMessage cacheMessage, IOseeCache<String, Branch> cache) throws OseeCoreException {
+   public Collection<Branch> updateCache(AbstractBranchCacheMessage cacheMessage, IOseeCache<Long, Branch> cache) throws OseeCoreException {
       List<Branch> updatedItems = new ArrayList<Branch>();
 
       Map<Long, Integer> branchToAssocArt = cacheMessage.getBranchToAssocArt();
@@ -63,9 +62,8 @@ public final class BranchCacheUpdateUtil {
       for (BranchRow srcItem : cacheMessage.getBranchRows()) {
          long branchId = srcItem.getBranchId();
          Branch updated =
-            factory.createOrUpdate(cache, srcItem.getBranchGuid(), srcItem.getBranchId(), srcItem.getBranchName(),
-               srcItem.getBranchType(), srcItem.getBranchState(), srcItem.getBranchArchived().isArchived(),
-               srcItem.getStorageState());
+            factory.createOrUpdate(cache, branchId, srcItem.getBranchName(), srcItem.getBranchType(),
+               srcItem.getBranchState(), srcItem.getBranchArchived().isArchived(), srcItem.getStorageState());
          updatedItems.add(updated);
 
          Integer artifactId = branchToAssocArt.get(branchId);
@@ -86,9 +84,9 @@ public final class BranchCacheUpdateUtil {
             }
          }
       }
-      for (Triplet<String, String, String> entry : cacheMessage.getMergeBranches()) {
-         IOseeBranch sourceBranch = Strings.isValid(entry.getFirst()) ? cache.getByGuid(entry.getFirst()) : null;
-         IOseeBranch destinationBranch = Strings.isValid(entry.getSecond()) ? cache.getByGuid(entry.getSecond()) : null;
+      for (Triplet<Long, Long, Long> entry : cacheMessage.getMergeBranches()) {
+         IOseeBranch sourceBranch = entry.getFirst() > 0 ? cache.getByGuid(entry.getFirst()) : null;
+         IOseeBranch destinationBranch = entry.getSecond() > 0 ? cache.getByGuid(entry.getSecond()) : null;
 
          Branch branch = cache.getByGuid(entry.getThird());
          MergeBranch mergeBranch = null;
@@ -132,8 +130,8 @@ public final class BranchCacheUpdateUtil {
       for (Branch br : types) {
          Long branchId = br.getId();
          message.getBranchRows().add(
-            new BranchRow(br.getId(), br.getGuid(), br.getName(), br.getBranchType(), br.getBranchState(),
-               br.getArchiveState(), br.getStorageState()));
+            new BranchRow(br.getId(), br.getName(), br.getBranchType(), br.getBranchState(), br.getArchiveState(),
+               br.getStorageState()));
          if (br.hasParentBranch()) {
             message.getChildToParent().put(branchId, br.getParentBranch().getId());
          }
@@ -154,11 +152,11 @@ public final class BranchCacheUpdateUtil {
       }
    }
 
-   private static void addMergeBranches(List<Triplet<String, String, String>> srcDestMerge, MergeBranch mergeBranch) throws OseeCoreException {
-      String src = mergeBranch.getSourceBranch() != null ? mergeBranch.getSourceBranch().getGuid() : null;
-      String dest = mergeBranch.getDestinationBranch() != null ? mergeBranch.getDestinationBranch().getGuid() : null;
-      String merge = mergeBranch.getGuid();
-      srcDestMerge.add(new Triplet<String, String, String>(src, dest, merge));
+   private static void addMergeBranches(List<Triplet<Long, Long, Long>> srcDestMerge, MergeBranch mergeBranch) throws OseeCoreException {
+      Long src = mergeBranch.getSourceBranch() != null ? mergeBranch.getSourceBranch().getGuid() : null;
+      Long dest = mergeBranch.getDestinationBranch() != null ? mergeBranch.getDestinationBranch().getGuid() : null;
+      Long merge = mergeBranch.getGuid();
+      srcDestMerge.add(new Triplet<Long, Long, Long>(src, dest, merge));
    }
 
    private static void addTxRecord(Map<Long, Integer> map, Long branchId, TransactionRecord toAdd) {

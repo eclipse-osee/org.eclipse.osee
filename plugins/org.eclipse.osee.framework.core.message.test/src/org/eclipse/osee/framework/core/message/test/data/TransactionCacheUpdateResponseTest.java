@@ -53,7 +53,7 @@ public class TransactionCacheUpdateResponseTest {
       }
 
       TransactionRecordFactory factory = new TransactionRecordFactory();
-      BranchCache branchCache = new BranchCache(new MockOseeDataAccessor<String, Branch>());
+      BranchCache branchCache = new BranchCache(new MockOseeDataAccessor<Long, Branch>());
       TransactionCacheUpdateResponse response = TransactionCacheUpdateResponse.fromCache(factory, data, branchCache);
       List<TransactionRecord> actual = response.getTxRows();
       Assert.assertEquals(data.size(), actual.size());

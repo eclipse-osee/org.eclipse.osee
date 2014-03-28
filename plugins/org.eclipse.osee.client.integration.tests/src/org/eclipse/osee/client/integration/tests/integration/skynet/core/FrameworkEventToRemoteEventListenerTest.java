@@ -113,10 +113,10 @@ public class FrameworkEventToRemoteEventListenerTest {
    private RemotePersistEvent1 createRemoteEvent(Artifact modifiedArt) {
       RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       remoteEvent.setNetworkSender(networkSender);
-      remoteEvent.setBranchGuid(BRANCH.getGuid());
+      remoteEvent.setBranchGuid(String.valueOf(BRANCH.getGuid()));
       RemoteBasicGuidArtifact1 remGuidArt = new RemoteBasicGuidArtifact1();
       remGuidArt.setModTypeGuid(EventModType.Modified.getGuid());
-      remGuidArt.setBranchGuid(BRANCH.getGuid());
+      remGuidArt.setBranchGuid(String.valueOf(BRANCH.getGuid()));
       remGuidArt.setArtTypeGuid(modifiedArt.getArtTypeGuid());
       remGuidArt.setArtGuid(modifiedArt.getGuid());
 

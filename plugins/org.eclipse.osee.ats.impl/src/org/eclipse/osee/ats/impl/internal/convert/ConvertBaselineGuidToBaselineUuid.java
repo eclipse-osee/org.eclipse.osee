@@ -20,6 +20,8 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -37,8 +39,10 @@ public class ConvertBaselineGuidToBaselineUuid implements IAtsDatabaseConversion
    // Leave this attribute definition and conversion for other OSEE sites to convert
    public static final IAttributeType BaselineBranchGuid = TokenFactory.createAttributeType(0x10000000000000A9L,
       "ats.Baseline Branch Guid");
+   private final IOseeDatabaseService dbService;
 
-   public ConvertBaselineGuidToBaselineUuid(OrcsApi orcsApi) {
+   public ConvertBaselineGuidToBaselineUuid(IOseeDatabaseService dbService, OrcsApi orcsApi) {
+      this.dbService = dbService;
       this.orcsApi = orcsApi;
    }
 
@@ -62,7 +66,8 @@ public class ConvertBaselineGuidToBaselineUuid implements IAtsDatabaseConversion
          for (String guid : attributeValues) {
             BranchReadable branch = null;
             try {
-               branch = orcsApi.getQueryFactory(null).branchQuery().andUuids(guid).getResults().getExactlyOne();
+               branch =
+                  orcsApi.getQueryFactory(null).branchQuery().andUuids(getBranchIdLegacy(guid)).getResults().getExactlyOne();
             } catch (Exception ex) {
                // do nothing
             }
@@ -94,6 +99,17 @@ public class ConvertBaselineGuidToBaselineUuid implements IAtsDatabaseConversion
       } else {
          data.log("\n" + numChanges + " Need to be Changed");
       }
+   }
+
+   private final String SELECT_BRANCH_ID_BY_GUID = "select branch_id from osee_branch where branch_guid = ?";
+
+   /**
+    * Temporary method till all code uses branch uuid. Remove after 0.17.0
+    */
+   public long getBranchIdLegacy(String branchGuid) {
+      Long longId = dbService.runPreparedQueryFetchObject(0L, SELECT_BRANCH_ID_BY_GUID, branchGuid);
+      Conditions.checkExpressionFailOnTrue(longId <= 0, "Error getting branch_id for branch: [%s]", branchGuid);
+      return longId;
    }
 
    @Override

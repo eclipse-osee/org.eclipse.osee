@@ -57,7 +57,7 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
 
          String servletPath = request.getServletPath();
          if (!Strings.isValid(servletPath) || "/".equals(servletPath) || "/index".equals(servletPath)) {
-            Pair<String, String> defaultArtifact = DefaultOseeArtifact.get();
+            Pair<String, Long> defaultArtifact = DefaultOseeArtifact.get();
             if (defaultArtifact != null) {
                artifactFileInfo =
                   new HttpArtifactFileInfo(defaultArtifact.getFirst(), null, defaultArtifact.getSecond());

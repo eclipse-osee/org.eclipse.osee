@@ -22,8 +22,8 @@ public final class TestBranches {
       // Constants class
    }
 
-   public static final IOseeBranch SAW_Bld_1 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvAAA", 3, "SAW_Bld_1");
-   public static final IOseeBranch SAW_Bld_2 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvBBB", 5, "SAW_Bld_2");
+   public static final IOseeBranch SAW_Bld_1 = TokenFactory.createBranch(3, "SAW_Bld_1");
+   public static final IOseeBranch SAW_Bld_2 = TokenFactory.createBranch(5, "SAW_Bld_2");
 
-   public static final IOseeBranch CIS_Bld_1 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvDDD", 4, "CIS_Bld_1");
+   public static final IOseeBranch CIS_Bld_1 = TokenFactory.createBranch(4, "CIS_Bld_1");
 }

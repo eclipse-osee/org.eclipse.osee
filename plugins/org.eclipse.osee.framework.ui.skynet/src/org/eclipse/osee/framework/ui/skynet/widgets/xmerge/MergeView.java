@@ -269,11 +269,11 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       showConflicts = show;
    }
 
-   private boolean isApplicableEvent(String branchGuid, Branch mergeBranch) {
-      return Conditions.in(branchGuid, mergeBranch.getGuid()) || isApplicableSourceOrDestEvent(branchGuid);
+   private boolean isApplicableEvent(Long branchUuid, Branch mergeBranch) {
+      return Conditions.in(branchUuid, mergeBranch.getGuid()) || isApplicableSourceOrDestEvent(branchUuid);
    }
 
-   private boolean isApplicableSourceOrDestEvent(String branchGuid) {
+   private boolean isApplicableSourceOrDestEvent(Long branchGuid) {
       return Conditions.notNull(sourceBranch, destBranch) && Conditions.in(branchGuid, sourceBranch.getGuid(),
          destBranch.getGuid());
    }
@@ -295,16 +295,16 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                case Deleted:
                   break;
                case Purged:
-                  if (mergeBranch.getGuid().equals(branchEvent.getBranchGuid())) {
+                  if (mergeBranch.getGuid().equals(branchEvent.getBranchUuid())) {
                      close();
                   }
                case Committed:
-                  if (isApplicableSourceOrDestEvent(branchEvent.getBranchGuid())) {
+                  if (isApplicableSourceOrDestEvent(branchEvent.getBranchUuid())) {
                      getSite().getPage().hideView(MergeView.this);
                   }
                   break;
                default:
-                  if (isApplicableSourceOrDestEvent(branchEvent.getBranchGuid()) && mergeXWidget != null && Widgets.isAccessible(mergeXWidget.getXViewer().getTree())) {
+                  if (isApplicableSourceOrDestEvent(branchEvent.getBranchUuid()) && mergeXWidget != null && Widgets.isAccessible(mergeXWidget.getXViewer().getTree())) {
                      mergeXWidget.refresh();
                   }
                   break;
@@ -345,10 +345,10 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       Branch mergeBranch = null;
       try {
          mergeBranch = BranchManager.getMergeBranch(sourceBranch, destBranch);
-         if (mergeBranch == null || !mergeBranch.getGuid().equals(artifactEvent.getBranchGuid())) {
+         if (mergeBranch == null || !mergeBranch.getGuid().equals(artifactEvent.getBranchUuid())) {
             return;
          }
-         if (!isApplicableEvent(artifactEvent.getBranchGuid(), mergeBranch)) {
+         if (!isApplicableEvent(artifactEvent.getBranchUuid(), mergeBranch)) {
             return;
          }
       } catch (OseeCoreException ex1) {

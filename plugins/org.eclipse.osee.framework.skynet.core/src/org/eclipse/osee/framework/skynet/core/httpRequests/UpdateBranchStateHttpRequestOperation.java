@@ -33,14 +33,12 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Ryan D. Brooks
  */
 public class UpdateBranchStateHttpRequestOperation extends AbstractOperation {
-   private final long branchId;
-   private final String branchGuid;
+   private final long branchUuid;
    private final BranchState branchState;
 
-   public UpdateBranchStateHttpRequestOperation(long branchId, String branchGuid, BranchState branchState) {
-      super("Update branch state " + branchGuid, Activator.PLUGIN_ID);
-      this.branchId = branchId;
-      this.branchGuid = branchGuid;
+   public UpdateBranchStateHttpRequestOperation(long branchUuid, BranchState branchState) {
+      super("Update branch state " + branchUuid, Activator.PLUGIN_ID);
+      this.branchUuid = branchUuid;
       this.branchState = branchState;
    }
 
@@ -49,14 +47,14 @@ public class UpdateBranchStateHttpRequestOperation extends AbstractOperation {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", Function.UPDATE_BRANCH_STATE.name());
 
-      ChangeBranchStateRequest requestData = new ChangeBranchStateRequest(branchId, branchState);
+      ChangeBranchStateRequest requestData = new ChangeBranchStateRequest(branchUuid, branchState);
       AcquireResult response =
          HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.CHANGE_BRANCH_STATE,
             requestData, null);
 
       if (response.wasSuccessful()) {
          BranchManager.refreshBranches();
-         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.StateUpdated, branchGuid));
+         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.StateUpdated, branchUuid));
       }
    }
 }

@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -176,16 +175,12 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       checkPreconditions(parentBranch, destinationBranch);
       passedPreConditions = true;
 
-      String guid = newBranchData.getGuid();
-      if (!GUID.isValid(guid)) {
-         guid = GUID.create();
-      }
       long uuid = newBranchData.getUuid();
 
       final String truncatedName = Strings.truncate(newBranchData.getName(), 195, true);
       branch =
-         branchFactory.create(guid, uuid, truncatedName, newBranchData.getBranchType(),
-            BranchState.CREATION_IN_PROGRESS, false);
+         branchFactory.create(uuid, truncatedName, newBranchData.getBranchType(), BranchState.CREATION_IN_PROGRESS,
+            false);
 
       branch.setParentBranch(parentBranch);
       branch.setAssociatedArtifactId(newBranchData.getAssociatedArtifactId());

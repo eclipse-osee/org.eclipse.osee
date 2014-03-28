@@ -27,11 +27,11 @@ public class VersionResource {
    @Context
    Request request;
 
-   String branchUuid;
+   Long branchUuid;
    String artifactUuid;
    int transactionId;
 
-   public VersionResource(UriInfo uriInfo, Request request, String branchUuid, String artifactUuid, int transactionId) {
+   public VersionResource(UriInfo uriInfo, Request request, Long branchUuid, String artifactUuid, int transactionId) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;
@@ -42,6 +42,6 @@ public class VersionResource {
    @GET
    @Produces(MediaType.TEXT_PLAIN)
    public String getAsText() {
-      return String.format("BranchUuid [%s] ArtifactUuid [%s] Version [%s]", branchUuid, artifactUuid, transactionId);
+      return String.format("BranchUuid [%s] ArtifactUuid [%d] Version [%s]", branchUuid, artifactUuid, transactionId);
    }
 }

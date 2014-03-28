@@ -33,14 +33,12 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Ryan D. Brooks
  */
 public final class UpdateBranchTypeHttpRequestOperation extends AbstractOperation {
-   private final long branchId;
-   private final String branchGuid;
+   private final long branchUuid;
    private final BranchType type;
 
-   public UpdateBranchTypeHttpRequestOperation(long branchId, String branchGuid, BranchType type) {
-      super("Update branch type" + branchGuid, Activator.PLUGIN_ID);
-      this.branchId = branchId;
-      this.branchGuid = branchGuid;
+   public UpdateBranchTypeHttpRequestOperation(long branchUuid, BranchType type) {
+      super("Update branch type" + branchUuid, Activator.PLUGIN_ID);
+      this.branchUuid = branchUuid;
       this.type = type;
    }
 
@@ -49,14 +47,14 @@ public final class UpdateBranchTypeHttpRequestOperation extends AbstractOperatio
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", Function.UPDATE_BRANCH_TYPE.name());
 
-      ChangeBranchTypeRequest requestData = new ChangeBranchTypeRequest(branchId, type);
+      ChangeBranchTypeRequest requestData = new ChangeBranchTypeRequest(branchUuid, type);
       AcquireResult response =
          HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.CHANGE_BRANCH_TYPE,
             requestData, null);
 
       if (response.wasSuccessful()) {
          BranchManager.refreshBranches();
-         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.TypeUpdated, branchGuid));
+         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.TypeUpdated, branchUuid));
       }
    }
 }

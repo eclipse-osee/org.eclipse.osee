@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -57,21 +56,13 @@ public class BranchAccessObject extends AccessObject {
       return getBranchAccessObject(BranchManager.getBranchId(branch));
    }
 
-   public static BranchAccessObject getBranchAccessObject(String branchGuid) throws OseeCoreException {
-      if (BranchManager.branchExists(branchGuid)) {
-         Branch branch = BranchManager.getBranchByGuid(branchGuid);
-         return getBranchAccessObject(branch);
-      }
-      return null;
-   }
-
-   public static BranchAccessObject getBranchAccessObject(long branchId) {
+   public static BranchAccessObject getBranchAccessObject(long branchUuid) {
       BranchAccessObject branchAccessObject;
-      if (cache.containsKey(branchId)) {
-         branchAccessObject = cache.get(branchId);
+      if (cache.containsKey(branchUuid)) {
+         branchAccessObject = cache.get(branchUuid);
       } else {
-         branchAccessObject = new BranchAccessObject(branchId);
-         cache.put(branchId, branchAccessObject);
+         branchAccessObject = new BranchAccessObject(branchUuid);
+         cache.put(branchUuid, branchAccessObject);
       }
       return branchAccessObject;
    }

@@ -28,9 +28,9 @@ public class ArtifactSearchResource {
    @Context
    Request request;
 
-   String branchUuid;
+   Long branchUuid;
 
-   public ArtifactSearchResource(UriInfo uriInfo, Request request, String branchUuid) {
+   public ArtifactSearchResource(UriInfo uriInfo, Request request, Long branchUuid) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;

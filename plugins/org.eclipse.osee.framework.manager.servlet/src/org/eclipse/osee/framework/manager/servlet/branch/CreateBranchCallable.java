@@ -38,7 +38,7 @@ public class CreateBranchCallable extends AbstractBranchCallable<BranchCreationR
    protected BranchCreationResponse executeCall(BranchCreationRequest request) throws Exception {
       CreateBranchData createData = new CreateBranchData();
 
-      createData.setGuid(request.getBranchGuid());
+      createData.setUuid(request.getBranchUuid());
       createData.setName(request.getBranchName());
       if (Long.valueOf(request.getBranchUuid()) > 0) {
          createData.setUuid(request.getBranchUuid());

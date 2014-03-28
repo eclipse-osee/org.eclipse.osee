@@ -20,11 +20,9 @@ import org.eclipse.osee.orcs.data.HasLocalId;
  */
 public interface BranchData extends HasLocalId<Long> {
 
-   void setLocalId(Long id);
+   void setUuid(Long id);
 
-   String getGuid();
-
-   void setGuid(String guid);
+   long getUuid();
 
    String getName();
 

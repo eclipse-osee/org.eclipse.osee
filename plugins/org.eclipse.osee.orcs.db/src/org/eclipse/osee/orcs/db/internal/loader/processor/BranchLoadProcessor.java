@@ -36,14 +36,13 @@ public class BranchLoadProcessor extends LoadProcessor<BranchData, BranchObjectF
       BranchState branchState = BranchState.getBranchState(chStmt.getInt("branch_state"));
       BranchType branchType = BranchType.valueOf(chStmt.getInt("branch_type"));
       BranchArchivedState archiveState = BranchArchivedState.valueOf(chStmt.getInt("archived"));
-      String branchGuid = chStmt.getString("branch_guid");
 
       int parentBranchId = chStmt.getInt("parent_branch_id");
       int sourceTx = chStmt.getInt("parent_transaction_id");
       int baseTx = chStmt.getInt("baseline_transaction_id");
       int assocArtId = chStmt.getInt("associated_art_id");
 
-      return factory.createBranchData(branchId, branchGuid, branchType, branchName, parentBranchId, baseTx, sourceTx,
-         archiveState, branchState, assocArtId);
+      return factory.createBranchData(branchId, branchType, branchName, parentBranchId, baseTx, sourceTx, archiveState,
+         branchState, assocArtId);
    }
 }

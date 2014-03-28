@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 /**
  * @author Roberto E. Escobar
  */
-public class ClientBranchAccessor extends AbstractClientDataAccessor<String, Branch> {
+public class ClientBranchAccessor extends AbstractClientDataAccessor<Long, Branch> {
 
    private final TransactionCache transactionCache;
    private BranchCache branchCache;
@@ -58,13 +58,13 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<String, Bra
    }
 
    @Override
-   public void load(IOseeCache<String, Branch> cache) throws OseeCoreException {
+   public void load(IOseeCache<Long, Branch> cache) throws OseeCoreException {
       transactionCache.ensurePopulated();
       super.load(cache);
    }
 
    @Override
-   protected Collection<Branch> updateCache(IOseeCache<String, Branch> cache) throws OseeCoreException {
+   protected Collection<Branch> updateCache(IOseeCache<Long, Branch> cache) throws OseeCoreException {
       BranchCacheUpdateResponse response = requestUpdateMessage(cache, CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE);
       return new BranchCacheUpdateUtil(getFactory(), transactionCache).updateCache(response, cache);
    }
@@ -74,7 +74,7 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<String, Bra
       store(branchCache, types);
    }
 
-   public void store(IOseeCache<String, Branch> cache, Collection<Branch> branches) throws OseeCoreException {
+   public void store(IOseeCache<Long, Branch> cache, Collection<Branch> branches) throws OseeCoreException {
 
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", CacheOperation.STORE.name());

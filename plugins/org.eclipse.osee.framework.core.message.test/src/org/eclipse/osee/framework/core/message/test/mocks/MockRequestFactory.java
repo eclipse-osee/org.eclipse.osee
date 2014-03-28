@@ -91,8 +91,8 @@ public final class MockRequestFactory {
       int mergeFromAddressingQueryId = -1;
       int destinationBranchId = -1;
 
-      return new BranchCreationRequest(branchType, sourceTransactionId, parentBranchId, branchGuid, branchName,
-         branchUuid, associatedArtifactId, authorId, creationComment, mergeFromAddressingQueryId, destinationBranchId);
+      return new BranchCreationRequest(branchType, sourceTransactionId, parentBranchId, branchName, branchUuid,
+         associatedArtifactId, authorId, creationComment, mergeFromAddressingQueryId, destinationBranchId);
    }
 
    public static Object createBranchCreateResponse(int index) {

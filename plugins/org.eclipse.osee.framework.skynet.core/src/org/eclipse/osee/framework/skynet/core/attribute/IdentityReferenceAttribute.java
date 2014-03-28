@@ -16,16 +16,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.service.AttributeAdapterService;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
-public abstract class IdentityReferenceAttribute<T extends Identity<String>> extends CharacterBackedAttribute<T> {
+public abstract class IdentityReferenceAttribute<T extends Identity<?>> extends CharacterBackedAttribute<T> {
 
    @Override
    public T getValue() throws OseeCoreException {
       return convertStringToValue(getAttributeDataProvider().getValueAsString());
-   }
-
-   @Override
-   protected boolean subClassSetValue(T value) throws OseeCoreException {
-      return getAttributeDataProvider().setValue(value == null ? "" : value.getGuid());
    }
 
    @Override

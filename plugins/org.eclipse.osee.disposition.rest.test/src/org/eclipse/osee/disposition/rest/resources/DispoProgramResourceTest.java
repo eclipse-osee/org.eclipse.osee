@@ -49,9 +49,7 @@ public class DispoProgramResourceTest {
    public void setUp() {
       MockitoAnnotations.initMocks(this);
       resource = new DispoProgramResource(dispoApi, htmlWriter, dispoFactory);
-      when(id1.getGuid()).thenReturn("abcdef");
       when(id1.getUuid()).thenReturn(23L);
-      when(id2.getGuid()).thenReturn("fedcba");
       when(id2.getUuid()).thenReturn(25L);
    }
 
@@ -65,7 +63,7 @@ public class DispoProgramResourceTest {
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noProgramsResponse.getStatus());
       assertEquals(DispoMessages.Program_NoneFound, messageActual);
 
-      IOseeBranch branch = TokenFactory.createBranch(id1.getGuid(), "testBranch");
+      IOseeBranch branch = TokenFactory.createBranch(id1.getUuid(), "testBranch");
       ResultSet<IOseeBranch> branchList = ResultSets.singleton(branch);
 
       when(dispoApi.getDispoPrograms()).thenReturn(branchList);
@@ -85,7 +83,7 @@ public class DispoProgramResourceTest {
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noSetsResponse.getStatus());
       assertEquals(DispoMessages.Program_NotFound, messageActual);
 
-      IOseeBranch testBranch = TokenFactory.createBranch(id1.getGuid(), id1.getUuid(), "testBranch");
+      IOseeBranch testBranch = TokenFactory.createBranch(id1.getUuid(), "testBranch");
       when(dispoFactory.createProgram(String.valueOf(id1.getUuid()))).thenReturn(id1);
       when(dispoApi.getDispoProgramById(id1)).thenReturn(testBranch);
       String prefixPath = testBranch.getUuid() + "/set";

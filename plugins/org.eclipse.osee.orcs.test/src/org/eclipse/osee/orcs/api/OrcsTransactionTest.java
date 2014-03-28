@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -219,7 +218,7 @@ public class OrcsTransactionTest {
       assertEquals(SystemUser.Guest.getName(), guestUserDup.getName());
 
       // duplicate on different branch
-      IOseeBranch branchToken = TokenFactory.createBranch( "DuplicateArtifact tests");
+      IOseeBranch branchToken = TokenFactory.createBranch("DuplicateArtifact tests");
       Callable<BranchReadable> callableBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact);
 
       BranchReadable topLevelBranch = callableBranch.call();
@@ -239,7 +238,7 @@ public class OrcsTransactionTest {
       ArtifactReadable guestUser =
          query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
 
-      IOseeBranch branchToken = TokenFactory.createBranch( "IntroduceArtifact tests");
+      IOseeBranch branchToken = TokenFactory.createBranch("IntroduceArtifact tests");
       BranchReadable topLevelBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact).call();
 
       TransactionBuilder transaction =
@@ -991,7 +990,7 @@ public class OrcsTransactionTest {
    private void checkTransaction(TransactionReadable previousTx, TransactionReadable newTx, org.eclipse.osee.orcs.data.BranchReadable branch, String comment, ArtifactReadable user) throws OseeCoreException {
       assertTrue(previousTx.getLocalId() < newTx.getLocalId());
       assertEquals(comment, newTx.getComment());
-      assertEquals(branch.getLocalId().longValue(), newTx.getBranchId());
+      assertEquals(branch.getUuid(), newTx.getBranchId());
       assertEquals(TransactionDetailsType.NonBaselined, newTx.getTxType());
       assertEquals(user.getLocalId().intValue(), newTx.getAuthorId());
       assertEquals(0, newTx.getCommit());

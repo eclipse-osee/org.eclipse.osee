@@ -14,20 +14,13 @@ import java.util.Collection;
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
-import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -160,49 +153,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
 
          @Override
          public long getBranchId(IOseeBranch branch) {
-            BranchCache branchCache = cacheService.getBranchCache();
-            Branch cached = branchCache.get(branch);
-            long localId = -1;
-            if (cached != null) {
-               localId = cached.getId();
-            } else {
-               IOseeStatement chStmt = dbService.getStatement();
-               try {
-                  chStmt.runPreparedQuery(1, "select * from osee_branch where branch_guid = ?", branch.getGuid());
-                  if (chStmt.next()) {
-                     try {
-                        localId = chStmt.getLong("branch_id");
-
-                        String branchName = chStmt.getString("branch_name");
-                        BranchState branchState = BranchState.getBranchState(chStmt.getInt("branch_state"));
-                        BranchType branchType = BranchType.valueOf(chStmt.getInt("branch_type"));
-                        boolean isArchived = BranchArchivedState.valueOf(chStmt.getInt("archived")).isArchived();
-                        String branchGuid = chStmt.getString("branch_guid");
-                        Branch created =
-                           modelFactory.getBranchFactory().createOrUpdate(branchCache, branchGuid, localId,
-                              branchName, branchType, branchState, isArchived, StorageState.LOADED);
-
-                        Integer parentBranchId = chStmt.getInt("parent_branch_id");
-                        if (parentBranchId != -1) {
-                           created.setParentBranch(branchCache.getById(parentBranchId));
-                        }
-
-                        TransactionCache txCache = cacheService.getTransactionCache();
-                        TransactionRecord parentTx = txCache.getOrLoad(chStmt.getInt("parent_transaction_id"));
-                        created.setSourceTransaction(parentTx);
-                        TransactionRecord baseTx = txCache.getOrLoad(chStmt.getInt("baseline_transaction_id"));
-                        created.setBaseTransaction(baseTx);
-                        created.setAssociatedArtifactId(chStmt.getInt("associated_art_id"));
-                     } catch (OseeCoreException ex) {
-                        logger.error(ex, "Error loading branch with guid [%s] and name [%s]", branch.getGuid(),
-                           branch.getName());
-                     }
-                  }
-               } finally {
-                  chStmt.close();
-               }
-            }
-            return localId;
+            return branch.getUuid();
          }
       };
       return dataModuleFactory.createDataModule(branchIdProvider, artifactTypes, attributeTypes);

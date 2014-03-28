@@ -3,7 +3,7 @@ import
 
 artifactType "Demo Artifact With Selective Partition" extends "Artifact" {
 	uuid 0x0000000000000056
-	attribute "Partition" branchGuid "AyH_f2sSKy3l07fIvAAA"
+	attribute "Partition" branchUuid 3
 }
 
 artifactType "Demo DSL Artifact" extends "Artifact" {

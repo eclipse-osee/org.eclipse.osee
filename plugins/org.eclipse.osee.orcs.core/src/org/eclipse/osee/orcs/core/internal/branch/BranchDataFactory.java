@@ -82,7 +82,7 @@ public class BranchDataFactory {
 
    private CreateBranchData createBranchData(IOseeBranch branch, BranchType branchType, String creationComment, ITransaction fromTx, ArtifactReadable author, ArtifactReadable associatedArtifact, boolean bCopyTx) {
       CreateBranchData createData = new CreateBranchData();
-      createData.setGuid(branch.getGuid());
+      createData.setUuid(branch.getGuid());
       createData.setName(branch.getName());
       if (branch.getUuid() > 0) {
          createData.setUuid(branch.getUuid());

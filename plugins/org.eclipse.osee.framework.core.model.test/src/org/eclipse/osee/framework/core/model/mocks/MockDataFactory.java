@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
 
 /**
@@ -81,10 +82,14 @@ public final class MockDataFactory {
    }
 
    public static Branch createBranch(int index) {
+      return createBranch(Lib.generateUuid(), index);
+   }
+
+   public static Branch createBranch(long uuid, int index) {
       BranchState branchState = BranchState.values()[Math.abs(index % BranchState.values().length)];
       BranchType branchType = BranchType.values()[Math.abs(index % BranchType.values().length)];
       boolean isArchived = index % 2 == 0 ? true : false;
-      return new Branch(GUID.create(), "branch_" + index, branchType, branchState, isArchived);
+      return new Branch(uuid, "branch_" + index, branchType, branchState, isArchived);
    }
 
    public static TransactionRecord createTransaction(int index, int branchId) {
@@ -94,7 +99,7 @@ public final class MockDataFactory {
       if (value == 0) {
          value++;
       }
-      MockOseeDataAccessor<String, Branch> accessor = new MockOseeDataAccessor<String, Branch>();
+      MockOseeDataAccessor<Long, Branch> accessor = new MockOseeDataAccessor<Long, Branch>();
       BranchCache cache = new BranchCache(accessor);
       return new TransactionRecord(value * 47, branchId, "comment_" + value, new Date(), value * 37, value * 42, type,
          cache);

@@ -1586,11 +1586,11 @@ protected class XArtifactType_RightCurlyBracketKeyword_9 extends KeywordToken  {
 /************ begin Rule XAttributeTypeRef ****************
  *
  * XAttributeTypeRef:
- * 	"attribute" validAttributeType=[XAttributeType|STRING] ("branchGuid" branchGuid=STRING)?;
+ * 	"attribute" validAttributeType=[XAttributeType|STRING] ("branchUuid" branchUuid=WHOLE_NUM_STR)?;
  *
  **/
 
-// "attribute" validAttributeType=[XAttributeType|STRING] ("branchGuid" branchGuid=STRING)?
+// "attribute" validAttributeType=[XAttributeType|STRING] ("branchUuid" branchUuid=WHOLE_NUM_STR)?
 protected class XAttributeTypeRef_Group extends GroupToken {
 	
 	public XAttributeTypeRef_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -1678,7 +1678,7 @@ protected class XAttributeTypeRef_ValidAttributeTypeAssignment_1 extends Assignm
 
 }
 
-// ("branchGuid" branchGuid=STRING)?
+// ("branchUuid" branchUuid=WHOLE_NUM_STR)?
 protected class XAttributeTypeRef_Group_2 extends GroupToken {
 	
 	public XAttributeTypeRef_Group_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -1693,23 +1693,23 @@ protected class XAttributeTypeRef_Group_2 extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new XAttributeTypeRef_BranchGuidAssignment_2_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new XAttributeTypeRef_BranchUuidAssignment_2_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
 }
 
-// "branchGuid"
-protected class XAttributeTypeRef_BranchGuidKeyword_2_0 extends KeywordToken  {
+// "branchUuid"
+protected class XAttributeTypeRef_BranchUuidKeyword_2_0 extends KeywordToken  {
 	
-	public XAttributeTypeRef_BranchGuidKeyword_2_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public XAttributeTypeRef_BranchUuidKeyword_2_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getXAttributeTypeRefAccess().getBranchGuidKeyword_2_0();
+		return grammarAccess.getXAttributeTypeRefAccess().getBranchUuidKeyword_2_0();
 	}
 
     @Override
@@ -1722,33 +1722,33 @@ protected class XAttributeTypeRef_BranchGuidKeyword_2_0 extends KeywordToken  {
 
 }
 
-// branchGuid=STRING
-protected class XAttributeTypeRef_BranchGuidAssignment_2_1 extends AssignmentToken  {
+// branchUuid=WHOLE_NUM_STR
+protected class XAttributeTypeRef_BranchUuidAssignment_2_1 extends AssignmentToken  {
 	
-	public XAttributeTypeRef_BranchGuidAssignment_2_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public XAttributeTypeRef_BranchUuidAssignment_2_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getXAttributeTypeRefAccess().getBranchGuidAssignment_2_1();
+		return grammarAccess.getXAttributeTypeRefAccess().getBranchUuidAssignment_2_1();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new XAttributeTypeRef_BranchGuidKeyword_2_0(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new XAttributeTypeRef_BranchUuidKeyword_2_0(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
     @Override	
 	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("branchGuid",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("branchGuid");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getXAttributeTypeRefAccess().getBranchGuidSTRINGTerminalRuleCall_2_1_0(), value, null)) {
+		if((value = eObjectConsumer.getConsumable("branchUuid",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("branchUuid");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getXAttributeTypeRefAccess().getBranchUuidWHOLE_NUM_STRTerminalRuleCall_2_1_0(), value, null)) {
 			type = AssignmentType.TERMINAL_RULE_CALL;
-			element = grammarAccess.getXAttributeTypeRefAccess().getBranchGuidSTRINGTerminalRuleCall_2_1_0();
+			element = grammarAccess.getXAttributeTypeRefAccess().getBranchUuidWHOLE_NUM_STRTerminalRuleCall_2_1_0();
 			return obj;
 		}
 		return null;

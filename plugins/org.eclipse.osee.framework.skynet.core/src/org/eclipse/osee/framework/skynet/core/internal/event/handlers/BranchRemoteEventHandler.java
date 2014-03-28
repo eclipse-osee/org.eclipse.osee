@@ -42,7 +42,7 @@ public class BranchRemoteEventHandler implements EventHandlerRemote<RemoteBranch
 
    private void updateBranches(Sender sender, BranchEvent branchEvent) {
       BranchEventType eventType = branchEvent.getEventType();
-      String branchGuid = branchEvent.getBranchGuid();
+      Long branchGuid = branchEvent.getBranchUuid();
       try {
          if (BranchManager.branchExists(branchGuid)) {
             Branch branch = BranchManager.getBranchByGuid(branchGuid);

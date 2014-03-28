@@ -50,14 +50,14 @@ public enum MatchField implements Enumerator
   BRANCH_NAME(2, "branchName", "branchName"),
 
   /**
-   * The '<em><b>Branch Guid</b></em>' literal object.
+   * The '<em><b>Branch Uuid</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #BRANCH_GUID_VALUE
+   * @see #BRANCH_UUID_VALUE
    * @generated
    * @ordered
    */
-  BRANCH_GUID(3, "branchGuid", "branchGuid");
+  BRANCH_UUID(3, "branchUuid", "branchUuid");
 
   /**
    * The '<em><b>Artifact Name</b></em>' literal value.
@@ -105,19 +105,19 @@ public enum MatchField implements Enumerator
   public static final int BRANCH_NAME_VALUE = 2;
 
   /**
-   * The '<em><b>Branch Guid</b></em>' literal value.
+   * The '<em><b>Branch Uuid</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>Branch Guid</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>Branch Uuid</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @see #BRANCH_GUID
-   * @model name="branchGuid"
+   * @see #BRANCH_UUID
+   * @model name="branchUuid"
    * @generated
    * @ordered
    */
-  public static final int BRANCH_GUID_VALUE = 3;
+  public static final int BRANCH_UUID_VALUE = 3;
 
   /**
    * An array of all the '<em><b>Match Field</b></em>' enumerators.
@@ -131,7 +131,7 @@ public enum MatchField implements Enumerator
       ARTIFACT_NAME,
       ARTIFACT_GUID,
       BRANCH_NAME,
-      BRANCH_GUID,
+      BRANCH_UUID,
     };
 
   /**
@@ -193,7 +193,7 @@ public enum MatchField implements Enumerator
       case ARTIFACT_NAME_VALUE: return ARTIFACT_NAME;
       case ARTIFACT_GUID_VALUE: return ARTIFACT_GUID;
       case BRANCH_NAME_VALUE: return BRANCH_NAME;
-      case BRANCH_GUID_VALUE: return BRANCH_GUID;
+      case BRANCH_UUID_VALUE: return BRANCH_UUID;
     }
     return null;
   }

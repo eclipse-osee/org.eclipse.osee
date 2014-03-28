@@ -42,7 +42,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="XAttributeTypeRef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="validAttributeType" eType="#//XAttributeType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="branchGuid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="branchUuid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="XAttributeType" eSuperTypes="#//OseeType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="baseAttributeType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -128,7 +128,7 @@
     <eLiterals name="artifactName" literal="artifactName"/>
     <eLiterals name="artifactGuid" value="1" literal="artifactGuid"/>
     <eLiterals name="branchName" value="2" literal="branchName"/>
-    <eLiterals name="branchGuid" value="3" literal="branchGuid"/>
+    <eLiterals name="branchUuid" value="3" literal="branchUuid"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Condition"/>
   <eClassifiers xsi:type="ecore:EClass" name="SimpleCondition" eSuperTypes="#//Condition">

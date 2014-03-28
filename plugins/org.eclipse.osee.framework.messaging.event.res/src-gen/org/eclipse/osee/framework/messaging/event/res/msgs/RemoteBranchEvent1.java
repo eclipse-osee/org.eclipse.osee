@@ -109,6 +109,7 @@ public class RemoteBranchEvent1 extends RemoteEvent {
     * 
     * @return possible object is {@link RemoteNetworkSender1 }
     */
+   @Override
    public RemoteNetworkSender1 getNetworkSender() {
       return networkSender;
    }

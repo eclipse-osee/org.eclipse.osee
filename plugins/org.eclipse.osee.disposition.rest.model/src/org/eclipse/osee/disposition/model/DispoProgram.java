@@ -15,8 +15,6 @@ package org.eclipse.osee.disposition.model;
  */
 public interface DispoProgram {
 
-   public String getGuid();
-
    public Long getUuid();
 
    public String getName();

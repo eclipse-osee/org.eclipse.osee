@@ -22,9 +22,9 @@ public class ArtifactTypeCacheUpdateResponse {
 
    private final List<ArtifactTypeRow> rows;
    private final Map<Long, Long[]> baseToSuper;
-   private final List<Triplet<Long, String, Long>> artAttrs;
+   private final List<Triplet<Long, Long, Long>> artAttrs;
 
-   public ArtifactTypeCacheUpdateResponse(List<ArtifactTypeRow> rows, Map<Long, Long[]> baseToSuper, List<Triplet<Long, String, Long>> artAttrs) {
+   public ArtifactTypeCacheUpdateResponse(List<ArtifactTypeRow> rows, Map<Long, Long[]> baseToSuper, List<Triplet<Long, Long, Long>> artAttrs) {
       this.rows = rows;
       this.baseToSuper = baseToSuper;
       this.artAttrs = artAttrs;
@@ -38,7 +38,7 @@ public class ArtifactTypeCacheUpdateResponse {
       return baseToSuper;
    }
 
-   public List<Triplet<Long, String, Long>> getAttributeTypes() {
+   public List<Triplet<Long, Long, Long>> getAttributeTypes() {
       return artAttrs;
    }
 
@@ -49,7 +49,7 @@ public class ArtifactTypeCacheUpdateResponse {
       private final boolean isAbstract;
       private StorageState storageState;
 
-      public ArtifactTypeRow(long id, Long guid, String name, boolean isAbstract, StorageState storageState) {
+      public ArtifactTypeRow(long id, long guid, String name, boolean isAbstract, StorageState storageState) {
          this.id = id;
          this.guid = guid;
          this.name = name;

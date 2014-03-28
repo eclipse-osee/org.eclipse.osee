@@ -20,13 +20,12 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 /**
  * @author Roberto E. Escobar
  */
-public class CreateBranchData implements Identifiable<String> {
+public class CreateBranchData implements Identifiable<Long> {
 
    private static final int NULL_ARTIFACT_ID = -1;
    private final long MERGE_DESTINATION_BRANCH_ID = -1; // only used on merge branches
    private final int MERGE_ADDRESSING_QUERY_ID = -1; // only used on merge branches
 
-   private String branchGuid;
    private String branchName;
    private long branchUuid;
    private BranchType branchType;
@@ -50,8 +49,8 @@ public class CreateBranchData implements Identifiable<String> {
    }
 
    @Override
-   public String getGuid() {
-      return branchGuid;
+   public Long getGuid() {
+      return branchUuid;
    }
 
    public int getAssociatedArtifactId() {
@@ -68,10 +67,6 @@ public class CreateBranchData implements Identifiable<String> {
          result = userArtifact.getLocalId();
       }
       return result;
-   }
-
-   public void setGuid(String branchUuid) {
-      this.branchGuid = branchUuid;
    }
 
    @Override
@@ -172,7 +167,7 @@ public class CreateBranchData implements Identifiable<String> {
 
    @Override
    public String toString() {
-      return "CreateBranchData [branchUuid=" + branchGuid + ", branchName=" + branchName + ", branchType=" + branchType + ", creationComment=" + creationComment + ", fromTransaction=" + fromTransaction + ", associatedArtifact=" + associatedArtifact + ", userArtifact=" + userArtifact + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", destinationBranchId=" + mergeDestinationBranchId + "]";
+      return "CreateBranchData [branchUuid=" + branchUuid + ", branchName=" + branchName + ", branchType=" + branchType + ", creationComment=" + creationComment + ", fromTransaction=" + fromTransaction + ", associatedArtifact=" + associatedArtifact + ", userArtifact=" + userArtifact + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", destinationBranchId=" + mergeDestinationBranchId + "]";
    }
 
    public long getUuid() {

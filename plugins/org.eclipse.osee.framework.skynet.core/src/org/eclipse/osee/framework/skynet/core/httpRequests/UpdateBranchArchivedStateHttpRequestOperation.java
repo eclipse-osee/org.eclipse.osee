@@ -33,14 +33,12 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Ryan D. Brooks
  */
 public final class UpdateBranchArchivedStateHttpRequestOperation extends AbstractOperation {
-   private final long branchId;
-   private final String branchGuid;
+   private final long branchUuid;
    private final BranchArchivedState branchState;
 
-   public UpdateBranchArchivedStateHttpRequestOperation(long branchId, String branchGuid, BranchArchivedState branchState) {
-      super("Update branch archived state " + branchGuid, Activator.PLUGIN_ID);
-      this.branchId = branchId;
-      this.branchGuid = branchGuid;
+   public UpdateBranchArchivedStateHttpRequestOperation(long branchUuid, BranchArchivedState branchState) {
+      super("Update branch archived state " + branchUuid, Activator.PLUGIN_ID);
+      this.branchUuid = branchUuid;
       this.branchState = branchState;
    }
 
@@ -49,14 +47,14 @@ public final class UpdateBranchArchivedStateHttpRequestOperation extends Abstrac
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", Function.UPDATE_ARCHIVE_STATE.name());
 
-      ChangeBranchArchiveStateRequest requestData = new ChangeBranchArchiveStateRequest(branchId, branchState);
+      ChangeBranchArchiveStateRequest requestData = new ChangeBranchArchiveStateRequest(branchUuid, branchState);
       AcquireResult response =
          HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters,
             CoreTranslatorId.CHANGE_BRANCH_ARCHIVE_STATE, requestData, null);
 
       if (response.wasSuccessful()) {
          BranchManager.refreshBranches();
-         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.ArchiveStateUpdated, branchGuid));
+         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.ArchiveStateUpdated, branchUuid));
       }
    }
 }

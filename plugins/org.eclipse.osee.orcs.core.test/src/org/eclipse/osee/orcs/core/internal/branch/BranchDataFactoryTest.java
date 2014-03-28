@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.junit.Before;
@@ -64,9 +64,9 @@ public class BranchDataFactoryTest {
    @Test
    public void testDataForTopLevelBranch() throws OseeCoreException {
       String branchName = "testDataForTopLevelBranch";
-      String guid = GUID.create();
+      Long branchUuid = Lib.generateUuid();
       when(branch.getName()).thenReturn(branchName);
-      when(branch.getGuid()).thenReturn(guid);
+      when(branch.getGuid()).thenReturn(branchUuid);
 
       when(branchCache.getSystemRootBranch()).thenReturn(parent);
       when(txCache.getHeadTransaction(parent)).thenReturn(txRecord);
@@ -77,15 +77,15 @@ public class BranchDataFactoryTest {
       verify(txCache).getHeadTransaction(parent);
 
       String comment = "Branch Creation for " + branchName;
-      assertData(result, branchName, guid, BranchType.BASELINE, comment, txRecord, author, null, false);
+      assertData(result, branchName, branchUuid, BranchType.BASELINE, comment, txRecord, author, null, false);
    }
 
    @Test
    public void testDataForBaselineBranch() throws OseeCoreException {
       String branchName = "testDataForBaselineBranch";
-      String guid = GUID.create();
+      Long branchUuid = Lib.generateUuid();
       when(branch.getName()).thenReturn(branchName);
-      when(branch.getGuid()).thenReturn(guid);
+      when(branch.getGuid()).thenReturn(branchUuid);
 
       when(branchCache.get(parentToken)).thenReturn(parent);
       when(txCache.getHeadTransaction(parent)).thenReturn(txRecord);
@@ -96,16 +96,17 @@ public class BranchDataFactoryTest {
       verify(txCache).getHeadTransaction(parent);
 
       String comment = "Branch Creation for " + branchName;
-      assertData(result, branchName, guid, BranchType.BASELINE, comment, txRecord, author, associatedArtifact, false);
+      assertData(result, branchName, branchUuid, BranchType.BASELINE, comment, txRecord, author, associatedArtifact,
+         false);
    }
 
    @Test
    public void testDataForWorkingBranch() throws OseeCoreException {
       String branchName = "testDataForWorkingBranch";
       String parentName = "testParentBranchName";
-      String guid = GUID.create();
+      Long branchUuid = Lib.generateUuid();
       when(branch.getName()).thenReturn(branchName);
-      when(branch.getGuid()).thenReturn(guid);
+      when(branch.getGuid()).thenReturn(branchUuid);
 
       when(parent.getName()).thenReturn(parentName);
 
@@ -118,16 +119,17 @@ public class BranchDataFactoryTest {
       verify(txCache).getHeadTransaction(parent);
 
       String comment = String.format("New Branch from %s (%s)", parentName, txRecord.getId());
-      assertData(result, branchName, guid, BranchType.WORKING, comment, txRecord, author, associatedArtifact, false);
+      assertData(result, branchName, branchUuid, BranchType.WORKING, comment, txRecord, author, associatedArtifact,
+         false);
    }
 
    @Test
    public void testDataForCopyTxBranch() throws OseeCoreException {
       String branchName = "testDataForCopyTxBranch";
       String parentName = "testParentBranchName";
-      String guid = GUID.create();
+      Long branchUuid = Lib.generateUuid();
       when(branch.getName()).thenReturn(branchName);
-      when(branch.getGuid()).thenReturn(guid);
+      when(branch.getGuid()).thenReturn(branchUuid);
 
       when(parent.getName()).thenReturn(parentName);
 
@@ -142,16 +144,16 @@ public class BranchDataFactoryTest {
       verify(txRecord).getBranch();
 
       String comment = String.format("Transaction %d copied from %s to create Branch %s", 99, parentName, branchName);
-      assertData(result, branchName, guid, BranchType.WORKING, comment, txRecord, author, null, true);
+      assertData(result, branchName, branchUuid, BranchType.WORKING, comment, txRecord, author, null, true);
    }
 
    @Test
    public void testDataForPortBranch() throws OseeCoreException {
       String branchName = "testDataForPortBranch";
       String parentName = "testParentBranchName";
-      String guid = GUID.create();
+      Long branchUuid = Lib.generateUuid();
       when(branch.getName()).thenReturn(branchName);
-      when(branch.getGuid()).thenReturn(guid);
+      when(branch.getGuid()).thenReturn(branchUuid);
 
       when(parent.getName()).thenReturn(parentName);
 
@@ -166,12 +168,12 @@ public class BranchDataFactoryTest {
       verify(txRecord).getBranch();
 
       String comment = String.format("Transaction %d ported from %s to create Branch %s", 99, parentName, branchName);
-      assertData(result, branchName, guid, BranchType.PORT, comment, txRecord, author, null, true);
+      assertData(result, branchName, branchUuid, BranchType.PORT, comment, txRecord, author, null, true);
    }
 
-   private static void assertData(CreateBranchData actual, String branchName, String branchGuid, BranchType type, String comment, TransactionRecord fromTx, ArtifactReadable author, ArtifactReadable associatedArtifact, boolean isCopyFromTx) {
+   private static void assertData(CreateBranchData actual, String branchName, Long branchUuid, BranchType type, String comment, TransactionRecord fromTx, ArtifactReadable author, ArtifactReadable associatedArtifact, boolean isCopyFromTx) {
       assertEquals(branchName, actual.getName());
-      assertEquals(branchGuid, actual.getGuid());
+      assertEquals(branchUuid, actual.getGuid());
 
       assertEquals(type, actual.getBranchType());
       assertEquals(comment, actual.getCreationComment());

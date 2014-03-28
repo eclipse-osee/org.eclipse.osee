@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -91,11 +90,13 @@ public class OrcsTypesTest {
    private static final IRelationType REQUIREMENT_REL = TokenFactory.createRelationType(0x2000000000000157L, "Requirement Relation");
    private static final IRelationType ANOTHER_REL = TokenFactory.createRelationType(0x2000000000000158L, "Another Relation");
 
-   private static final IOseeBranch BRANCH_A = TokenFactory.createBranch("AU2FErW1QwSXWPiP4cwA", "Branch A");
-   private static final IOseeBranch BRANCH_B = TokenFactory.createBranch("AU2JKsKQAQAvzkTkk+gA", "Branch B");
-   private static final IOseeBranch BRANCH_C = TokenFactory.createBranch( "Branch C");
-   private static final IOseeBranch BRANCH_D = TokenFactory.createBranch( "Branch D");
-   private static final IOseeBranch BRANCH_E = TokenFactory.createBranch( "Branch E");
+   static long BRANCH_A_UUID = 3458234234L;
+   static long BRANCH_B_UUID = 9993245332L;
+   private static final IOseeBranch BRANCH_A = TokenFactory.createBranch(BRANCH_A_UUID, "Branch A");
+   private static final IOseeBranch BRANCH_B = TokenFactory.createBranch(BRANCH_B_UUID, "Branch B");
+   private static final IOseeBranch BRANCH_C = TokenFactory.createBranch("Branch C");
+   private static final IOseeBranch BRANCH_D = TokenFactory.createBranch("Branch D");
+   private static final IOseeBranch BRANCH_E = TokenFactory.createBranch("Branch E");
    
    @Mock private Log logger;
    @Mock private OrcsTypesDataStore dataStore;
@@ -412,7 +413,7 @@ public class OrcsTypesTest {
       String overrideArtTypes = 
          "\n overrides artifactType \"Artifact\" {\n" +
          "      inheritAll \n" +
-         "      update attribute \"Annotation\" branchGuid \"AU2FErW1QwSXWPiP4cwA\"\n" + 
+         "      update attribute \"Annotation\" branchUuid "+BRANCH_A_UUID+"\n" + 
          "}\n" +
          "\n overrides artifactType \"Other Artifact\" {\n" +
          "      inheritAll \n" +

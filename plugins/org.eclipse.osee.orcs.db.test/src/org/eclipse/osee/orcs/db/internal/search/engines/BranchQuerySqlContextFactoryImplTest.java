@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -64,7 +65,7 @@ import org.mockito.MockitoAnnotations;
  */
 public class BranchQuerySqlContextFactoryImplTest {
 
-   private static final Criteria GUIDS = uuid(GUID.create(), GUID.create());
+   private static final Criteria UUIDS = uuid(Lib.generateUuid(), Lib.generateUuid());
    private static final Criteria IDS = id(1, 2, 3, 4, 5);
    private static final Criteria TYPES = type(WORKING, SYSTEM_ROOT);
 
@@ -110,11 +111,11 @@ public class BranchQuerySqlContextFactoryImplTest {
       " WHERE \n" + //
       "br1.branch_id = jid1.id AND jid1.query_id = ?\n" + //
       " AND \n" + //
-      "br1.branch_guid = jch1.id AND jch1.query_id = ?\n" + //
+      "br1.branch_id = jch1.id AND jch1.query_id = ?\n" + //
       " AND \n" + //
       "br1.branch_type = jid2.id AND jid2.query_id = ?";
 
-      queryData.addCriteria(GUIDS, IDS, TYPES);
+      queryData.addCriteria(UUIDS, IDS, TYPES);
 
       QuerySqlContext context = queryEngine.createCountContext(session, queryData);
 
@@ -142,12 +143,12 @@ public class BranchQuerySqlContextFactoryImplTest {
       " WHERE \n" + //
       "br1.branch_id = jid1.id AND jid1.query_id = ?\n" + //
       " AND \n" + //
-      "br1.branch_guid = jch1.id AND jch1.query_id = ?\n" + //
+      "br1.branch_id = jch1.id AND jch1.query_id = ?\n" + //
       " AND \n" + //
       "br1.branch_type = jid2.id AND jid2.query_id = ?\n" + //
       " ORDER BY br1.branch_id";
 
-      queryData.addCriteria(GUIDS, IDS, TYPES);
+      queryData.addCriteria(UUIDS, IDS, TYPES);
 
       QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
 
@@ -194,12 +195,12 @@ public class BranchQuerySqlContextFactoryImplTest {
       " WHERE \n" + //
       "br1.branch_id = ?\n" + //
       " AND \n" + //
-      "br1.branch_guid = ?\n" + //
+      "br1.branch_id = ?\n" + //
       " AND \n" + //
       "br1.branch_type = ?\n" + //
       " ORDER BY br1.branch_id";
 
-      queryData.addCriteria(uuid("12313123"), id(2), type(SYSTEM_ROOT));
+      queryData.addCriteria(uuid(12313123L), id(2), type(SYSTEM_ROOT));
 
       QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
 
@@ -212,7 +213,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
       Iterator<Object> iterator = parameters.iterator();
       assertEquals(2, iterator.next());
-      assertEquals("12313123", iterator.next());
+      assertEquals(12313123L, iterator.next());
       assertEquals(SYSTEM_ROOT.getValue(), iterator.next());
    }
 
@@ -325,7 +326,7 @@ public class BranchQuerySqlContextFactoryImplTest {
    public void testQueryChildOf() throws OseeCoreException {
       String expected =
          "WITH chof1 (child_id, branch_level) AS ( SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n" + //
-         "   WHERE anch_br1.parent_branch_id = anch_br2.branch_id AND anch_br2.branch_guid = ?\n" + //
+         "   WHERE anch_br1.parent_branch_id = anch_br2.branch_id AND anch_br2.branch_id = ?\n" + //
          "  UNION ALL \n" + //
          "  SELECT branch_id, branch_level + 1 FROM chof1 recurse, osee_branch br WHERE recurse.child_id = br.parent_branch_id\n" + //
          ")\n" + //
@@ -355,7 +356,7 @@ public class BranchQuerySqlContextFactoryImplTest {
    public void testQueryAncestorOf() throws OseeCoreException {
       String expected =
          "WITH anstrof1 (parent_id, branch_level) AS ( SELECT anch_br1.parent_branch_id, 0 as branch_level FROM osee_branch anch_br1\n" + //
-         "   WHERE anch_br1.branch_guid = ?\n" + //
+         "   WHERE anch_br1.branch_id = ?\n" + //
          "  UNION ALL \n" + //
          "  SELECT parent_branch_id, branch_level - 1 FROM anstrof1 recurse, osee_branch br WHERE br.branch_id = recurse.parent_id\n" + //
          ")\n" + //
@@ -385,7 +386,7 @@ public class BranchQuerySqlContextFactoryImplTest {
    public void testMultiples() throws OseeCoreException {
       String expected =
          "WITH chof1 (child_id, branch_level) AS ( SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n" + //
-         "   WHERE anch_br1.parent_branch_id = anch_br2.branch_id AND anch_br2.branch_guid = ?\n" + //
+         "   WHERE anch_br1.parent_branch_id = anch_br2.branch_id AND anch_br2.branch_id = ?\n" + //
          "  UNION ALL \n" + //
          "  SELECT branch_id, branch_level + 1 FROM chof1 recurse, osee_branch br WHERE recurse.child_id = br.parent_branch_id\n" + //
          ")\n" + //
@@ -435,7 +436,7 @@ public class BranchQuerySqlContextFactoryImplTest {
       return new CriteriaBranchChildOf(parent);
    }
 
-   private static Criteria uuid(String... values) {
+   private static Criteria uuid(Long... values) {
       return new CriteriaBranchUuids(Arrays.asList(values));
    }
 

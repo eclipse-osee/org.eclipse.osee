@@ -33,10 +33,10 @@ public class TxResource {
    @Context
    Request request;
 
-   String branchUuid;
+   Long branchUuid;
    int txId;
 
-   public TxResource(UriInfo uriInfo2, Request request2, String branchUuid, int txId) {
+   public TxResource(UriInfo uriInfo2, Request request2, Long branchUuid, int txId) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;

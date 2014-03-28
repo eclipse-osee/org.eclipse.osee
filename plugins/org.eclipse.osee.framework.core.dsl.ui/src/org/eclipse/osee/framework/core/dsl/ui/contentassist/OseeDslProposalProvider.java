@@ -35,8 +35,8 @@ public class OseeDslProposalProvider extends AbstractOseeDslProposalProvider {
    }
 
    @Override
-   public void completeXAttributeTypeRef_BranchGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-      super.completeXAttributeTypeRef_BranchGuid(model, assignment, context, acceptor);
+   public void completeXAttributeTypeRef_BranchUuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeXAttributeTypeRef_BranchUuid(model, assignment, context, acceptor);
       completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
    }
 

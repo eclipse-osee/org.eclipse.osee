@@ -46,7 +46,7 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
 
    private final SearchQueryBuilder searchQueryBuilder;
 
-   public ArtifactSearch_V1(UriInfo uriInfo, Request request, String branchUuid) {
+   public ArtifactSearch_V1(UriInfo uriInfo, Request request, Long branchUuid) {
       super(uriInfo, request, branchUuid);
       searchQueryBuilder = DslFactory.createQueryBuilder();
    }

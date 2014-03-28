@@ -681,7 +681,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getXAttributeTypeRef_BranchGuid()
+  public EAttribute getXAttributeTypeRef_BranchUuid()
   {
     return (EAttribute)xAttributeTypeRefEClass.getEStructuralFeatures().get(1);
   }
@@ -1845,7 +1845,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
 
     xAttributeTypeRefEClass = createEClass(XATTRIBUTE_TYPE_REF);
     createEReference(xAttributeTypeRefEClass, XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE);
-    createEAttribute(xAttributeTypeRefEClass, XATTRIBUTE_TYPE_REF__BRANCH_GUID);
+    createEAttribute(xAttributeTypeRefEClass, XATTRIBUTE_TYPE_REF__BRANCH_UUID);
 
     xAttributeTypeEClass = createEClass(XATTRIBUTE_TYPE);
     createEAttribute(xAttributeTypeEClass, XATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE);
@@ -2070,7 +2070,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
 
     initEClass(xAttributeTypeRefEClass, XAttributeTypeRef.class, "XAttributeTypeRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getXAttributeTypeRef_ValidAttributeType(), this.getXAttributeType(), null, "validAttributeType", null, 0, 1, XAttributeTypeRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getXAttributeTypeRef_BranchGuid(), ecorePackage.getEString(), "branchGuid", null, 0, 1, XAttributeTypeRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getXAttributeTypeRef_BranchUuid(), ecorePackage.getEString(), "branchUuid", null, 0, 1, XAttributeTypeRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(xAttributeTypeEClass, XAttributeType.class, "XAttributeType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getXAttributeType_BaseAttributeType(), ecorePackage.getEString(), "baseAttributeType", null, 0, 1, XAttributeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2225,7 +2225,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     addEEnumLiteral(matchFieldEEnum, MatchField.ARTIFACT_NAME);
     addEEnumLiteral(matchFieldEEnum, MatchField.ARTIFACT_GUID);
     addEEnumLiteral(matchFieldEEnum, MatchField.BRANCH_NAME);
-    addEEnumLiteral(matchFieldEEnum, MatchField.BRANCH_GUID);
+    addEEnumLiteral(matchFieldEEnum, MatchField.BRANCH_UUID);
 
     initEEnum(accessPermissionEnumEEnum, AccessPermissionEnum.class, "AccessPermissionEnum");
     addEEnumLiteral(accessPermissionEnumEEnum, AccessPermissionEnum.ALLOW);

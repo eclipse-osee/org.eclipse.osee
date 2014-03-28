@@ -129,11 +129,11 @@ artifactType "Other Artifact" extends "Artifact" {
 artifactType "SubSystem Requirement" extends "Requirement" , "Other Artifact" {
 	guid "BOnBhJ1XAFGKcrku3LgA"
 	uuid 0x000000000000001D
-	attribute "Field 1" branchGuid "AU2FErW1QwSXWPiP4cwA"
+	attribute "Field 1" branchUuid 3458234234
 }
 
 abstract artifactType "Last Artifact" extends "SubSystem Requirement" {
 	guid "AUqqRktDXW9r6YXq0WQA"
 	uuid 0x0000000000000021
-	attribute "Field 2" branchGuid "AU2JKsKQAQAvzkTkk+gA"
+	attribute "Field 2" branchUuid 9993245332
 }

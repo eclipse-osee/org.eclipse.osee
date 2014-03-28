@@ -51,11 +51,12 @@ public class BranchGuidSqlHandler extends SqlHandler<CriteriaBranchUuids> {
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
-      Collection<String> ids = criteria.getIds();
+
+      Collection<Long> ids = criteria.getIds();
       if (ids.size() > 1) {
-         joinQuery = writer.writeCharJoin(ids);
+         joinQuery = writer.writeIdJoin(ids);
          writer.write(brAlias);
-         writer.write(".branch_guid = ");
+         writer.write(".branch_id = ");
          writer.write(jguidAlias);
          writer.write(".id AND ");
          writer.write(jguidAlias);
@@ -63,7 +64,7 @@ public class BranchGuidSqlHandler extends SqlHandler<CriteriaBranchUuids> {
          writer.addParameter(joinQuery.getQueryId());
       } else {
          writer.write(brAlias);
-         writer.write(".branch_guid = ?");
+         writer.write(".branch_id = ?");
          writer.addParameter(ids.iterator().next());
       }
       return true;

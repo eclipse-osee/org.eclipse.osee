@@ -33,22 +33,18 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Roberto E. Escobar
  */
-public class Branch extends AbstractOseeType<String> implements WriteableBranch, IAdaptable {
+public class Branch extends AbstractOseeType<Long> implements WriteableBranch, IAdaptable {
 
    private static final int SHORT_NAME_LIMIT = 35;
 
    private final Collection<Branch> childBranches = new HashSet<Branch>();
 
-   public Branch(String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) {
-      super(guid, name);
+   public Branch(Long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived) {
+      super(uuid, name);
       initializeFields();
       setFieldLogException(BranchField.BRANCH_TYPE_FIELD_KEY, branchType);
       setFieldLogException(BranchField.BRANCH_STATE_FIELD_KEY, branchState);
       setFieldLogException(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, BranchArchivedState.fromBoolean(isArchived));
-   }
-
-   public Branch(String guid, long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived) {
-      this(guid, name, branchType, branchState, isArchived);
       if (uuid <= 0) {
          throw new OseeStateException("uuid [%d] must be > 0", uuid);
       }

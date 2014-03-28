@@ -46,8 +46,8 @@ public class OseeClientQueryTest {
    private static final IOseeBranch SAW_1 = new IOseeBranch() {
 
       @Override
-      public String getGuid() {
-         return "AyH_f2sSKy3l07fIvAAA";
+      public Long getGuid() {
+         return 3L;
       }
 
       @Override

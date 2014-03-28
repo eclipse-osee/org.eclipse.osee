@@ -71,11 +71,8 @@ public class RelationCacheTest {
 
    @Before
    public void setup() throws Exception {
-      branch1 = TestUtil.createBranch(100);
-      branch1.setId(100);
-
-      branch2 = TestUtil.createBranch(200);
-      branch2.setId(200);
+      branch1 = TestUtil.createBranch(100, 100);
+      branch2 = TestUtil.createBranch(200, 200);
 
       artfact1 = createArtifact(111, branch1);
       artfact2 = createArtifact(222, branch2);
@@ -365,8 +362,7 @@ public class RelationCacheTest {
    @Test
    public void testDeCache() throws OseeCoreException {
       RelationCache relCache = new RelationCache();
-      Branch testBranch = TestUtil.createBranch(777);
-      testBranch.setId(777);
+      Branch testBranch = TestUtil.createBranch(777, 777);
 
       IArtifact artifactA = createArtifact(54, testBranch);
       IArtifact artifactB = createArtifact(55, testBranch);

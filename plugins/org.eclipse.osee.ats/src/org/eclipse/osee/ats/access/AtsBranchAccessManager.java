@@ -68,8 +68,8 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 public class AtsBranchAccessManager implements IArtifactEventListener, IAccessControlEventListener {
 
    // Cache to store artifact guid to context id list so don't have to re-compute
-   private final Map<String, Collection<IAccessContextId>> branchGuidToContextIdCache =
-      new HashMap<String, Collection<IAccessContextId>>(50);
+   private final Map<Long, Collection<IAccessContextId>> branchUuidToContextIdCache =
+      new HashMap<Long, Collection<IAccessContextId>>(50);
 
    private static final List<Long> atsConfigArtifactTypes = Arrays.asList(AtsArtifactTypes.ActionableItem.getGuid(),
       AtsArtifactTypes.TeamDefinition.getGuid());
@@ -124,12 +124,12 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
    }
 
    public Collection<IAccessContextId> getContextId(IOseeBranch branch) {
-      if (branchGuidToContextIdCache.containsKey(branch.getGuid())) {
-         return branchGuidToContextIdCache.get(branch.getGuid());
+      if (branchUuidToContextIdCache.containsKey(branch.getGuid())) {
+         return branchUuidToContextIdCache.get(branch.getGuid());
       }
 
       Collection<IAccessContextId> contextIds = new ArrayList<IAccessContextId>();
-      branchGuidToContextIdCache.put(branch.getGuid(), contextIds);
+      branchUuidToContextIdCache.put(branch.getGuid(), contextIds);
       try {
          // don't access control common branch artifacts...yet
          if (!AtsUtilCore.getAtsBranch().equals(branch)) {
@@ -247,7 +247,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
    public synchronized void clearCache() {
       long now = new Date().getTime();
       if (now - cacheUpdated > 1000) {
-         branchGuidToContextIdCache.clear();
+         branchUuidToContextIdCache.clear();
       }
    }
 
@@ -269,7 +269,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
             if (ArtifactTypeManager.getType(guidArt).inheritsFrom(AtsArtifactTypes.TeamWorkflow)) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) ArtifactCache.getActive(guidArt);
                if (teamArt != null && teamArt.getWorkingBranch() != null) {
-                  branchGuidToContextIdCache.remove(teamArt.getWorkingBranch().getGuid());
+                  branchUuidToContextIdCache.remove(teamArt.getWorkingBranch().getGuid());
                }
             }
          } catch (OseeCoreException ex) {

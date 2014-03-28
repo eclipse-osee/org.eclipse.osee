@@ -47,7 +47,7 @@ import org.eclipse.osee.orcs.db.internal.callable.StoreBranchDatabaseCallable;
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseBranchAccessor implements IOseeDataAccessor<String, Branch> {
+public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
    private static final int NULL_PARENT_BRANCH_ID = -1;
 
    private static final String SELECT_BRANCHES = "SELECT * FROM osee_branch";
@@ -89,7 +89,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<String, Branch>
    }
 
    @Override
-   public void load(IOseeCache<String, Branch> cache) throws OseeCoreException {
+   public void load(IOseeCache<Long, Branch> cache) throws OseeCoreException {
       long startTime = System.currentTimeMillis();
       Map<Branch, Integer> childToParent = new HashMap<Branch, Integer>();
       Map<Branch, Integer> branchToBaseTx = new HashMap<Branch, Integer>();
@@ -123,8 +123,8 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<String, Branch>
                boolean isArchived = BranchArchivedState.valueOf(chStmt.getInt("archived")).isArchived();
                String branchGuid = chStmt.getString("branch_guid");
                Branch branch =
-                  branchFactory.createOrUpdate(cache, branchGuid, branchId, branchName, branchType,
-                     branchState, isArchived, StorageState.LOADED);
+                  branchFactory.createOrUpdate(cache, branchId, branchName, branchType, branchState, isArchived,
+                     StorageState.LOADED);
 
                Integer parentBranchId = chStmt.getInt("parent_branch_id");
                if (parentBranchId != NULL_PARENT_BRANCH_ID) {

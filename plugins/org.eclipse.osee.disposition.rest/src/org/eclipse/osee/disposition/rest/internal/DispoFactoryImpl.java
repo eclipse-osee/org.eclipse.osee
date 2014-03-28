@@ -22,16 +22,16 @@ public class DispoFactoryImpl implements DispoFactory {
 
    @Override
    public DispoProgram createProgram(String name) {
-      return createProgram(name, name, new Long(name.hashCode()));
+      return createProgram(name, new Long(name.hashCode()));
    }
 
    @Override
-   public DispoProgram createProgram(String name, String guid, Long uuid) {
-      return new DispoProgramImpl(name, guid, uuid);
+   public DispoProgram createProgram(String name, Long uuid) {
+      return new DispoProgramImpl(name, uuid);
    }
 
    @Override
    public DispoProgram createProgram(IOseeBranch branch) {
-      return new DispoProgramImpl(branch.getName(), branch.getGuid(), branch.getUuid());
+      return new DispoProgramImpl(branch.getName(), branch.getUuid());
    }
 }

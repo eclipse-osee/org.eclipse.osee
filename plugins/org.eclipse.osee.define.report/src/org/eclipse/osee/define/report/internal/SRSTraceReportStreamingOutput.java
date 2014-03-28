@@ -62,10 +62,10 @@ public final class SRSTraceReportStreamingOutput implements StreamingOutput {
    private static final IArtifactType WCAFE = TokenFactory.createArtifactType(0x0000BA000000001FL, "WCAFE");
    private final Log logger;
 
-   public SRSTraceReportStreamingOutput(Log logger, OrcsApi orcsApi, String branchGuid, String codeRoot, TraceAccumulator traceAccumulator, String csci, String traceType) {
+   public SRSTraceReportStreamingOutput(Log logger, OrcsApi orcsApi, long branchUuid, String codeRoot, TraceAccumulator traceAccumulator, String csci, String traceType) {
       this.queryFactory = orcsApi.getQueryFactory(null);
       BranchQuery branchQuery = orcsApi.getQueryFactory(null).branchQuery();
-      this.branch = branchQuery.andUuids(branchGuid).getResults().getExactlyOne();
+      this.branch = branchQuery.andUuids(branchUuid).getResults().getExactlyOne();
       this.codeRoot = codeRoot.trim();
       this.traceAccumulator = traceAccumulator;
       this.csci = csci;

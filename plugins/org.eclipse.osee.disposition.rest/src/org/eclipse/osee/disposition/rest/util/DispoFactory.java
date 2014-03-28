@@ -20,7 +20,7 @@ public interface DispoFactory {
 
    public DispoProgram createProgram(String name);
 
-   public DispoProgram createProgram(String name, String guid, Long uuid);
+   public DispoProgram createProgram(String name, Long uuid);
 
    public DispoProgram createProgram(IOseeBranch branch);
 

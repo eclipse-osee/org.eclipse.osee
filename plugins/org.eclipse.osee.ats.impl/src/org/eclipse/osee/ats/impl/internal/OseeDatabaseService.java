@@ -8,36 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.disposition.model;
+package org.eclipse.osee.ats.impl.internal;
+
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 
 /**
  * @author Donald G. Dunne
  */
-public class DispoProgramImpl implements DispoProgram {
+public class OseeDatabaseService {
 
-   private String name;
-   private Long uuid;
+   private static IOseeDatabaseService dbService;
 
-   public DispoProgramImpl(String name, Long uuid) {
-      this.name = name;
-      this.uuid = uuid;
+   public static IOseeDatabaseService getDbService() {
+      return dbService;
    }
 
-   @Override
-   public String getName() {
-      return name;
+   public void setDatabaseService(IOseeDatabaseService dbService) {
+      OseeDatabaseService.dbService = dbService;
    }
 
-   public void setName(String name) {
-      this.name = name;
-   }
-
-   @Override
-   public Long getUuid() {
-      return uuid;
-   }
-
-   public void setUuid(Long uuid) {
-      this.uuid = uuid;
-   }
 }

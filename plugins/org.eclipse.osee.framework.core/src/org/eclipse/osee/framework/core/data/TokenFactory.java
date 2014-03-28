@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 public final class TokenFactory {
@@ -57,19 +56,19 @@ public final class TokenFactory {
    }
 
    public static IOseeBranch createBranch(String name) {
-      return createBranch(GUID.create(), Lib.generateUuid(), name);
+      return createBranch(Lib.generateUuid(), name);
    }
 
    public static IOseeBranch createBranch(String guid, String name) {
-      return createBranch(guid, Lib.generateUuid(), name);
+      return createBranch(Lib.generateUuid(), name);
    }
 
    public static IOseeBranch createBranch(Long uuid, String name) {
-      return createBranch(GUID.create(), uuid, name);
+      return new BranchToken(uuid, name);
    }
 
-   public static IOseeBranch createBranch(String guid, long uuid, String name) {
-      return new BranchToken(guid, uuid, name);
+   public static IOseeBranch createBranch(long uuid, String name) {
+      return new BranchToken(uuid, name);
    }
 
    public static IRelationSorterId createSorterId(String guid, String name) {
@@ -104,17 +103,15 @@ public final class TokenFactory {
       }
    }
 
-   private static final class BranchToken extends NamedIdentity<String> implements IOseeBranch {
-      private final long uuid;
+   private static final class BranchToken extends NamedIdentity<Long> implements IOseeBranch {
 
-      public BranchToken(String guid, long uuid, String name) {
-         super(guid, name);
-         this.uuid = uuid;
+      public BranchToken(long uuid, String name) {
+         super(uuid, name);
       }
 
       @Override
       public long getUuid() {
-         return uuid;
+         return getGuid();
       }
 
    }

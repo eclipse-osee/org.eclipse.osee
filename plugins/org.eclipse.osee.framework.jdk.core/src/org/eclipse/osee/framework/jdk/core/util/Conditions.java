@@ -135,14 +135,6 @@ public final class Conditions {
       }
    }
 
-   public static String checkGuidCreateIfNeeded(String guid) {
-      String toReturn = guid;
-      if (guid == null) {
-         toReturn = GUID.create();
-      }
-      return toReturn;
-   }
-
    public static void checkDoesNotContainNulls(Object object, String message, Object... data) throws OseeCoreException {
       checkNotNull(object, message);
       Collection<?> toCheck = null;

@@ -34,10 +34,10 @@ public class ArtifactResource {
    @Context
    Request request;
 
-   String branchUuid;
+   Long branchUuid;
    String artifactUuid;
 
-   public ArtifactResource(UriInfo uriInfo, Request request, String branchUuid, String artifactUuid) {
+   public ArtifactResource(UriInfo uriInfo, Request request, Long branchUuid, String artifactUuid) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;

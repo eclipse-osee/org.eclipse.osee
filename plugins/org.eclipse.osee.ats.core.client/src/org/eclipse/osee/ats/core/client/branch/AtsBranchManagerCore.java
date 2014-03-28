@@ -673,7 +673,7 @@ public class AtsBranchManagerCore {
          @Override
          public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
             teamArt.setWorkingBranchCreationInProgress(true);
-            BranchManager.createWorkingBranch(parentTransactionId, branchName, null, teamArt);
+            BranchManager.createWorkingBranch(parentTransactionId, branchName, teamArt);
             teamArt.setWorkingBranchCreationInProgress(false);
             performPostBranchCreationTasks(teamArt);
             return Status.OK_STATUS;

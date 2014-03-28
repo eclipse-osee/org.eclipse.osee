@@ -10,8 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public class ArtifactReferenceAttribute extends IdentityReferenceAttribute<Artifact> {
-   //
+
+   @Override
+   protected boolean subClassSetValue(Artifact value) throws OseeCoreException {
+      return getAttributeDataProvider().setValue(value == null ? "" : value.getGuid());
+   }
+
 }

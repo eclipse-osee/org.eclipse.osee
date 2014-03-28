@@ -90,17 +90,17 @@ public class User extends Artifact {
    }
 
    public void toggleFavoriteBranch(Branch favoriteBranch) throws OseeCoreException {
-      HashSet<String> branchGuids = new HashSet<String>();
+      HashSet<Long> branchUuids = new HashSet<Long>();
       for (Branch branch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING,
          BranchType.BASELINE)) {
-         branchGuids.add(branch.getGuid());
+         branchUuids.add(branch.getGuid());
       }
 
       boolean found = false;
       Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FavoriteBranch);
       for (Attribute<String> attribute : attributes) {
          // Remove attributes that are no longer valid
-         if (!branchGuids.contains(attribute.getValue())) {
+         if (!branchUuids.contains(attribute.getValue())) {
             attribute.delete();
          } else if (favoriteBranch.getGuid().equals(attribute.getValue())) {
             attribute.delete();
@@ -135,6 +135,12 @@ public class User extends Artifact {
    }
 
    public void setSetting(String key, String value) throws OseeCoreException {
+      ensureUserSettingsAreLoaded();
+      userSettings.put(key, value);
+
+   }
+
+   public void setSetting(String key, Long value) throws OseeCoreException {
       ensureUserSettingsAreLoaded();
       userSettings.put(key, value);
 

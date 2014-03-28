@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -316,7 +317,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       memento = memento.createChild(INPUT);
       if (artifact != null) {
          memento.putString(ART_GUID, artifact.getGuid());
-         memento.putString(BRANCH_ID, artifact.getBranch().getGuid());
+         memento.putString(BRANCH_ID, String.valueOf(artifact.getBranch().getGuid()));
          SkynetViews.addDatabaseSourceId(memento);
       }
    }
@@ -330,9 +331,12 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
             if (memento != null) {
                if (SkynetViews.isSourceValid(memento)) {
                   String guid = memento.getString(ART_GUID);
-                  String branchId = memento.getString(BRANCH_ID);
-                  Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranchByGuid(branchId));
-                  openViewUpon(artifact, false);
+                  String branchIdStr = memento.getString(BRANCH_ID);
+                  if (Strings.isValid(branchIdStr)) {
+                     Long branchId = Long.valueOf(branchIdStr);
+                     Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranchByUuid(branchId));
+                     openViewUpon(artifact, false);
+                  }
                } else {
                   closeView();
                }

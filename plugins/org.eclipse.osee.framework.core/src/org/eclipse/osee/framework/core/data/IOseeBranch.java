@@ -15,10 +15,7 @@ import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 /**
  * @author Ryan D. Brooks
  */
-public interface IOseeBranch extends Identifiable<String> {
-
-   @Override
-   String getGuid();
+public interface IOseeBranch extends Identifiable<Long> {
 
    long getUuid();
 }

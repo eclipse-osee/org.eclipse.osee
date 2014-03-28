@@ -56,7 +56,7 @@ public final class SRSTraceReportResource {
    /**
     * Produce the SRS Trace Report
     * 
-    * @param branch The Branch to run the SRS Trace Report on.
+    * @param branch The Branch uuid to run the SRS Trace Report on.
     * @param codeRoot The root directory accessible on the server for the code traces.
     * @param csci The desired CSCI.
     * @param traceType The desired trace type.
@@ -65,7 +65,7 @@ public final class SRSTraceReportResource {
    @Path("gen")
    @GET
    @Produces(MediaType.APPLICATION_XML)
-   public Response getStdStpReport(@QueryParam("branch") String branchGuid, @QueryParam("code_root") String codeRoot, @QueryParam("csci") String csci, @QueryParam("traceType") String traceType) {
+   public Response getStdStpReport(@QueryParam("branch") String branchUuid, @QueryParam("code_root") String codeRoot, @QueryParam("csci") String csci, @QueryParam("traceType") String traceType) {
       traceType = traceType.replace(' ', '_');
       csci = csci.toUpperCase();
 
@@ -73,7 +73,8 @@ public final class SRSTraceReportResource {
          new TraceAccumulator(".*\\.(java|ada|ads|adb|c|h)", getTraceMatchers(traceType));
 
       StreamingOutput streamingOutput =
-         new SRSTraceReportStreamingOutput(logger, orcsApi, branchGuid, codeRoot, traceAccumulator, csci, traceType);
+         new SRSTraceReportStreamingOutput(logger, orcsApi, Long.valueOf(branchUuid), codeRoot, traceAccumulator, csci,
+            traceType);
 
       ResponseBuilder builder = Response.ok(streamingOutput);
       String fileName = csci + "_" + traceType.replace(' ', '_') + "_SRS_Trace_Report.xml";

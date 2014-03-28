@@ -273,7 +273,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
    }
 
    protected ViewArtifact convertToViewArtifact(ArtifactReadable artifact, boolean addAncestry) throws OseeCoreException {
-      ViewId branch = new ViewId(artifact.getBranch().getGuid(), artifact.getBranch().getName());
+      ViewId branch = new ViewId(String.valueOf(artifact.getBranch().getGuid()), artifact.getBranch().getName());
       List<ViewArtifact> ancestry = addAncestry ? getAncestry(artifact) : null;
       ViewArtifact toReturn =
          new ViewArtifact(artifact.getGuid(), artifact.getName(), artifact.getArtifactType().getName(), ancestry,

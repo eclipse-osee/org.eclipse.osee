@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XAttributeTypeRefImpl#getValidAttributeType <em>Valid Attribute Type</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XAttributeTypeRefImpl#getBranchGuid <em>Branch Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XAttributeTypeRefImpl#getBranchUuid <em>Branch Uuid</em>}</li>
  * </ul>
  * </p>
  *
@@ -41,24 +41,24 @@ public class XAttributeTypeRefImpl extends MinimalEObjectImpl.Container implemen
   protected XAttributeType validAttributeType;
 
   /**
-   * The default value of the '{@link #getBranchGuid() <em>Branch Guid</em>}' attribute.
+   * The default value of the '{@link #getBranchUuid() <em>Branch Uuid</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getBranchGuid()
+   * @see #getBranchUuid()
    * @generated
    * @ordered
    */
-  protected static final String BRANCH_GUID_EDEFAULT = null;
+  protected static final String BRANCH_UUID_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getBranchGuid() <em>Branch Guid</em>}' attribute.
+   * The cached value of the '{@link #getBranchUuid() <em>Branch Uuid</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getBranchGuid()
+   * @see #getBranchUuid()
    * @generated
    * @ordered
    */
-  protected String branchGuid = BRANCH_GUID_EDEFAULT;
+  protected String branchUuid = BRANCH_UUID_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -129,9 +129,9 @@ public class XAttributeTypeRefImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getBranchGuid()
+  public String getBranchUuid()
   {
-    return branchGuid;
+    return branchUuid;
   }
 
   /**
@@ -139,12 +139,12 @@ public class XAttributeTypeRefImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setBranchGuid(String newBranchGuid)
+  public void setBranchUuid(String newBranchUuid)
   {
-    String oldBranchGuid = branchGuid;
-    branchGuid = newBranchGuid;
+    String oldBranchUuid = branchUuid;
+    branchUuid = newBranchUuid;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID, oldBranchGuid, branchGuid));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_UUID, oldBranchUuid, branchUuid));
   }
 
   /**
@@ -160,8 +160,8 @@ public class XAttributeTypeRefImpl extends MinimalEObjectImpl.Container implemen
       case OseeDslPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
         if (resolve) return getValidAttributeType();
         return basicGetValidAttributeType();
-      case OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID:
-        return getBranchGuid();
+      case OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_UUID:
+        return getBranchUuid();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -179,8 +179,8 @@ public class XAttributeTypeRefImpl extends MinimalEObjectImpl.Container implemen
       case OseeDslPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
         setValidAttributeType((XAttributeType)newValue);
         return;
-      case OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID:
-        setBranchGuid((String)newValue);
+      case OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_UUID:
+        setBranchUuid((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -199,8 +199,8 @@ public class XAttributeTypeRefImpl extends MinimalEObjectImpl.Container implemen
       case OseeDslPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
         setValidAttributeType((XAttributeType)null);
         return;
-      case OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID:
-        setBranchGuid(BRANCH_GUID_EDEFAULT);
+      case OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_UUID:
+        setBranchUuid(BRANCH_UUID_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -218,8 +218,8 @@ public class XAttributeTypeRefImpl extends MinimalEObjectImpl.Container implemen
     {
       case OseeDslPackage.XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
         return validAttributeType != null;
-      case OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_GUID:
-        return BRANCH_GUID_EDEFAULT == null ? branchGuid != null : !BRANCH_GUID_EDEFAULT.equals(branchGuid);
+      case OseeDslPackage.XATTRIBUTE_TYPE_REF__BRANCH_UUID:
+        return BRANCH_UUID_EDEFAULT == null ? branchUuid != null : !BRANCH_UUID_EDEFAULT.equals(branchUuid);
     }
     return super.eIsSet(featureID);
   }
@@ -235,8 +235,8 @@ public class XAttributeTypeRefImpl extends MinimalEObjectImpl.Container implemen
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (branchGuid: ");
-    result.append(branchGuid);
+    result.append(" (branchUuid: ");
+    result.append(branchUuid);
     result.append(')');
     return result.toString();
   }

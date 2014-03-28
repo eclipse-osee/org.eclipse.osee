@@ -53,7 +53,7 @@ public class TransactionCacheUpdateResponseTranslatorTest extends BaseTranslator
 
    @Parameters
    public static Collection<Object[]> data() {
-      BranchCache branchCache = new BranchCache(new MockOseeDataAccessor<String, Branch>());
+      BranchCache branchCache = new BranchCache(new MockOseeDataAccessor<Long, Branch>());
       ITranslator<TransactionCacheUpdateResponse> translator =
          new TransactionCacheUpdateResponseTranslator(new TransactionRecordFactory(), branchCache);
 

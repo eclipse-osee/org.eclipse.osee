@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -102,11 +101,6 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Bran
          internalBranch = callable.call();
          // TODO figure out if this call is "stackable", is the data passed in above
          // still valid after the branch creation, or do I need to get it all from the new branch???
-
-         String guid = branchData.getGuid();
-         if (!GUID.isValid(guid)) {
-            guid = GUID.create();
-         }
 
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
          int nextTransactionId = getDatabaseService().getSequence().getNextTransactionId();

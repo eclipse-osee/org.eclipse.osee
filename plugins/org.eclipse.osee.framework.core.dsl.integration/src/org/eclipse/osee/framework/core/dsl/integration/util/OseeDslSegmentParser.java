@@ -68,7 +68,7 @@ public class OseeDslSegmentParser {
    }
 
    private void processData(Collection<OseeDslSegment> segments, TagLocation startSeg, TagLocation stopSeg) {
-      String branchGuid = startSeg.getBranchGuid();
+      Long branchGuid = startSeg.getBranchUuid();
       String artifactGuid = startSeg.getArtifactGuid();
       int startAt = startSeg.end();
       int endAt = stopSeg.start();
@@ -76,7 +76,7 @@ public class OseeDslSegmentParser {
    }
 
    private boolean matches(TagLocation seg1, TagLocation seg2) {
-      return seg1.getBranchGuid().equals(seg2.getBranchGuid()) && seg1.getArtifactGuid().equals(seg2.getArtifactGuid());
+      return seg1.getBranchUuid() == seg2.getBranchUuid() && seg1.getArtifactGuid().equals(seg2.getArtifactGuid());
    }
 
    public Collection<TagLocation> getTagLocations(String source) throws OseeCoreException {
@@ -85,7 +85,7 @@ public class OseeDslSegmentParser {
       Pattern pattern = Pattern.compile("\\s?//@(.*?)_artifact\\s+branch/(.*?)/artifact/(.*?)/\\s+\\(.*?\\)");
       Matcher matcher = pattern.matcher(source);
 
-      String branchGuid = null;
+      Long branchUuid = null;
       String artifactGuid = null;
       String tag = null;
       int tagStart = -1;
@@ -95,11 +95,11 @@ public class OseeDslSegmentParser {
          tagEnd = matcher.end();
 
          tag = matcher.group(1);
-         branchGuid = matcher.group(2);
+         branchUuid = Long.valueOf(matcher.group(2));
          artifactGuid = matcher.group(3);
-         if (Strings.isValid(tag) && Strings.isValid(branchGuid) && Strings.isValid(artifactGuid)) {
+         if (Strings.isValid(tag) && branchUuid > 0 && Strings.isValid(artifactGuid)) {
             boolean isStartTag = tag.equalsIgnoreCase("start");
-            segments.add(new TagLocation(isStartTag, branchGuid, artifactGuid, tagStart, tagEnd));
+            segments.add(new TagLocation(isStartTag, branchUuid, artifactGuid, tagStart, tagEnd));
          }
       }
       return segments;
@@ -108,15 +108,15 @@ public class OseeDslSegmentParser {
    public static final class TagLocation {
 
       private final boolean isStartTag;
-      private final String branchGuid;
+      private final Long branchUuid;
       private final String artifactGuid;
       private final int start;
       private final int end;
 
-      public TagLocation(boolean isStartTag, String branchGuid, String artifactGuid, int start, int end) {
+      public TagLocation(boolean isStartTag, Long branchUuid, String artifactGuid, int start, int end) {
          super();
          this.isStartTag = isStartTag;
-         this.branchGuid = branchGuid;
+         this.branchUuid = branchUuid;
          this.artifactGuid = artifactGuid;
          this.start = start;
          this.end = end;
@@ -126,8 +126,8 @@ public class OseeDslSegmentParser {
          return isStartTag;
       }
 
-      public String getBranchGuid() {
-         return branchGuid;
+      public long getBranchUuid() {
+         return branchUuid;
       }
 
       public String getArtifactGuid() {
@@ -144,28 +144,28 @@ public class OseeDslSegmentParser {
 
       @Override
       public String toString() {
-         return "OseeDslSegment [isStartTag=" + isStartTag + ", branchGuid=" + branchGuid + ", artifactGuid=" + artifactGuid + ", start=" + start + ", end=" + end + "]";
+         return "OseeDslSegment [isStartTag=" + isStartTag + ", branchUuid=" + branchUuid + ", artifactGuid=" + artifactGuid + ", start=" + start + ", end=" + end + "]";
       }
 
    }
 
    public static final class OseeDslSegment {
 
-      private final String branchGuid;
+      private final Long branchUuid;
       private final String artifactGuid;
       private final int start;
       private final int end;
 
-      public OseeDslSegment(String branchGuid, String artifactGuid, int start, int end) {
+      public OseeDslSegment(Long branchUuid, String artifactGuid, int start, int end) {
          super();
-         this.branchGuid = branchGuid;
+         this.branchUuid = branchUuid;
          this.artifactGuid = artifactGuid;
          this.start = start;
          this.end = end;
       }
 
-      public String getBranchGuid() {
-         return branchGuid;
+      public Long getBranchUuid() {
+         return branchUuid;
       }
 
       public String getArtifactGuid() {
@@ -185,7 +185,7 @@ public class OseeDslSegmentParser {
          final int prime = 31;
          int result = 1;
          result = prime * result + (artifactGuid == null ? 0 : artifactGuid.hashCode());
-         result = prime * result + (branchGuid == null ? 0 : branchGuid.hashCode());
+         result = prime * result + (branchUuid == null ? 0 : branchUuid.hashCode());
          result = prime * result + end;
          result = prime * result + start;
          return result;
@@ -210,11 +210,11 @@ public class OseeDslSegmentParser {
          } else if (!artifactGuid.equals(other.artifactGuid)) {
             return false;
          }
-         if (branchGuid == null) {
-            if (other.branchGuid != null) {
+         if (branchUuid == null) {
+            if (other.branchUuid != null) {
                return false;
             }
-         } else if (!branchGuid.equals(other.branchGuid)) {
+         } else if (!branchUuid.equals(other.branchUuid)) {
             return false;
          }
          if (end != other.end) {
@@ -228,7 +228,7 @@ public class OseeDslSegmentParser {
 
       @Override
       public String toString() {
-         return "OseeDslSegment [branchGuid=" + branchGuid + ", artifactGuid=" + artifactGuid + ", start=" + start + ", end=" + end + "]";
+         return "OseeDslSegment [branchGuid=" + branchUuid + ", artifactUuid=" + artifactGuid + ", start=" + start + ", end=" + end + "]";
       }
 
    }

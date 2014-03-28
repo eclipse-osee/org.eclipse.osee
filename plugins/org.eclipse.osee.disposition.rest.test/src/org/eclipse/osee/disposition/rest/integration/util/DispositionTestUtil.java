@@ -26,8 +26,8 @@ public class DispositionTestUtil {
    public static final IArtifactToken DISPO_ITEM_DEMO_ONE = TokenFactory.createArtifactToken("BJEiNETyAGTDpW4ZnrAA", "Dispo Item Demo One", DispoConstants.DispoItem);
    
    public static final IOseeBranch SAW_Bld_1_FOR_DISPO =
-      TokenFactory.createBranch("AyH_f2sSKy3l07fIvAVV", 2323, "SAW_Bld_1 - FOR_DISPOSITION");
-   public static final IOseeBranch SAW_Bld_1 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvAAA", 3, "SAW_Bld_1");
+      TokenFactory.createBranch(2323, "SAW_Bld_1 - FOR_DISPOSITION");
+   public static final IOseeBranch SAW_Bld_1 = TokenFactory.createBranch(3, "SAW_Bld_1");
    // @formatter:on
 
 }

@@ -209,9 +209,9 @@ public class SqlObjectLoader {
    }
 
    protected int loadHeadTransactionId(IOseeBranch branch) throws OseeCoreException {
-      String sql = sqlProvider.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX_WITH_BRANCH_GUID);
+      String sql = sqlProvider.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX);
       return getDatabaseService().runPreparedQueryFetchObject(RelationalConstants.TRANSACTION_SENTINEL, sql,
-         branch.getGuid());
+         branch.getUuid());
    }
 
    protected <D extends HasLocalId, F extends OrcsDataFactory> void load(LoadProcessor<D, F> processor, OrcsDataHandler<D> handler, SqlContext loadContext, int fetchSize) throws OseeCoreException {

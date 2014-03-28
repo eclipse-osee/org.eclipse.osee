@@ -12,19 +12,19 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 
 public class BranchEvent implements FrameworkEvent, HasNetworkSender {
 
-   private String branchGuid;
-   private String destinationBranchGuid;
+   private long branchUuid;
+   private long destinationBranchUuid;
    private BranchEventType eventType;
    private NetworkSender networkSender;
 
-   public BranchEvent(BranchEventType branchEventType, String branchGuid) {
-      this.branchGuid = branchGuid;
+   public BranchEvent(BranchEventType branchEventType, long branchGuid) {
+      this.branchUuid = branchGuid;
       this.eventType = branchEventType;
    }
 
-   public BranchEvent(BranchEventType branchEventType, String sourceBranchGuid, String destinationBranchGuid) {
-      this.branchGuid = sourceBranchGuid;
-      this.destinationBranchGuid = destinationBranchGuid;
+   public BranchEvent(BranchEventType branchEventType, long sourceBranchUuid, long destinationBranchUuid) {
+      this.branchUuid = sourceBranchUuid;
+      this.destinationBranchUuid = destinationBranchUuid;
       this.eventType = branchEventType;
    }
 
@@ -33,8 +33,8 @@ public class BranchEvent implements FrameworkEvent, HasNetworkSender {
     * 
     * @return possible object is {@link String }
     */
-   public String getBranchGuid() {
-      return branchGuid;
+   public long getBranchUuid() {
+      return branchUuid;
    }
 
    // TODO: add comment to describe purpose of destinationBranch
@@ -43,8 +43,8 @@ public class BranchEvent implements FrameworkEvent, HasNetworkSender {
     * 
     * @return possible object is {@link String }
     */
-   public String getDestinationBranchGuid() {
-      return destinationBranchGuid;
+   public long getDestinationBranchUuid() {
+      return destinationBranchUuid;
    }
 
    /**
@@ -52,8 +52,8 @@ public class BranchEvent implements FrameworkEvent, HasNetworkSender {
     * 
     * @param value allowed object is {@link String }
     */
-   public void setBranchGuid(String value) {
-      this.branchGuid = value;
+   public void setBranchUuid(long value) {
+      this.branchUuid = value;
    }
 
    /**
@@ -61,8 +61,8 @@ public class BranchEvent implements FrameworkEvent, HasNetworkSender {
     * 
     * @param value allowed object is {@link String }
     */
-   public void setDestinationBranchGuid(String value) {
-      this.destinationBranchGuid = value;
+   public void setDestinationBranchUuid(long value) {
+      this.destinationBranchUuid = value;
    }
 
    /**

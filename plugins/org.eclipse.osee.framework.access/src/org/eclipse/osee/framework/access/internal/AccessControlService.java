@@ -347,7 +347,7 @@ public class AccessControlService implements IAccessControlService {
       List<String> key = new LinkedList<String>();
       for (Object o : objectsToCheck) {
          if (o instanceof Branch) {
-            key.add(((Branch) o).getGuid());
+            key.add(String.valueOf(((Branch) o).getGuid()));
          } else if (o instanceof Artifact) {
             key.add(((Artifact) o).getGuid() + ((Artifact) o).getBranchUuid());
          } else {

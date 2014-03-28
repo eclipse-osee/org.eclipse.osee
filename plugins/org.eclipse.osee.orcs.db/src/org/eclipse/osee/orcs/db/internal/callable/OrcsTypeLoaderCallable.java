@@ -40,7 +40,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource> {
 
    private static final String LOAD_OSEE_TYPE_DEF_URIS =
-      "select attr.uri from osee_branch br, osee_txs txs1, osee_artifact art, osee_attribute attr, osee_txs txs2 where br.branch_guid = ? and txs1.branch_id = br.branch_id and txs1.tx_current = ? and txs1.gamma_id = art.gamma_id and txs2.branch_id = br.branch_id and txs2.tx_current = ? and txs2.gamma_id = attr.gamma_id and art.art_type_id = ? and art.art_id = attr.art_id and attr.attr_type_id = ?";
+      "select attr.uri from osee_branch br, osee_txs txs1, osee_artifact art, osee_attribute attr, osee_txs txs2 where br.branch_id = ? and txs1.branch_id = br.branch_id and txs1.tx_current = ? and txs1.gamma_id = art.gamma_id and txs2.branch_id = br.branch_id and txs2.tx_current = ? and txs2.gamma_id = attr.gamma_id and art.art_type_id = ? and art.art_id = attr.art_id and attr.attr_type_id = ?";
 
    private final IResourceManager resourceManager;
 
@@ -69,7 +69,7 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
       try {
          chStmt = getDatabaseService().getStatement();
 
-         chStmt.runPreparedQuery(LOAD_OSEE_TYPE_DEF_URIS, CoreBranches.COMMON.getGuid(), TxChange.CURRENT.getValue(),
+         chStmt.runPreparedQuery(LOAD_OSEE_TYPE_DEF_URIS, CoreBranches.COMMON.getUuid(), TxChange.CURRENT.getValue(),
             TxChange.CURRENT.getValue(), artifactTypeId, attributeTypeId);
          while (chStmt.next()) {
             String uri = chStmt.getString("uri");

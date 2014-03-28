@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.internal.event.handlers;
 
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -36,7 +35,7 @@ public class ArtifactEventHandler implements EventHandlerLocal<IArtifactEventLis
       if (filters != null) {
          for (IEventFilter eventFilter : filters) {
             // If this branch doesn't match, don't pass events through
-            if (!eventFilter.isMatch(BranchManager.getBranchIdLegacy(event.getBranchGuid()))) {
+            if (!eventFilter.isMatch(event.getBranchUuid())) {
                return;
             }
             // Process artifacts and relations only if there were any in this ArtifactEvent

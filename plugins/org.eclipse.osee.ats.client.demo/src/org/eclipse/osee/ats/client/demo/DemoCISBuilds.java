@@ -17,9 +17,9 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
  * @author Donald G. Dunne
  */
 public final class DemoCISBuilds {
-   public static final IOseeBranch CIS_Bld_1 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvDDD", 4, "CIS_Bld_1");
-   public static final IOseeBranch CIS_Bld_2 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvEEE", 1001, "CIS_Bld_2");
-   public static final IOseeBranch CIS_Bld_3 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvFFF", 1002, "CIS_Bld_3");
+   public static final IOseeBranch CIS_Bld_1 = TokenFactory.createBranch(4, "CIS_Bld_1");
+   public static final IOseeBranch CIS_Bld_2 = TokenFactory.createBranch(1001, "CIS_Bld_2");
+   public static final IOseeBranch CIS_Bld_3 = TokenFactory.createBranch(1002, "CIS_Bld_3");
 
    private DemoCISBuilds() {
       // Constants

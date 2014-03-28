@@ -1918,10 +1918,10 @@ rule__MatchField__Alternatives
 )
 
     |(
-{ before(grammarAccess.getMatchFieldAccess().getBranchGuidEnumLiteralDeclaration_3()); }
-(	'branchGuid' 
+{ before(grammarAccess.getMatchFieldAccess().getBranchUuidEnumLiteralDeclaration_3()); }
+(	'branchUuid' 
 )
-{ after(grammarAccess.getMatchFieldAccess().getBranchGuidEnumLiteralDeclaration_3()); }
+{ after(grammarAccess.getMatchFieldAccess().getBranchUuidEnumLiteralDeclaration_3()); }
 )
 
 ;
@@ -2914,11 +2914,11 @@ rule__XAttributeTypeRef__Group_2__0__Impl
     }
 :
 (
-{ before(grammarAccess.getXAttributeTypeRefAccess().getBranchGuidKeyword_2_0()); }
+{ before(grammarAccess.getXAttributeTypeRefAccess().getBranchUuidKeyword_2_0()); }
 
-	'branchGuid' 
+	'branchUuid' 
 
-{ after(grammarAccess.getXAttributeTypeRefAccess().getBranchGuidKeyword_2_0()); }
+{ after(grammarAccess.getXAttributeTypeRefAccess().getBranchUuidKeyword_2_0()); }
 )
 
 ;
@@ -2944,9 +2944,9 @@ rule__XAttributeTypeRef__Group_2__1__Impl
     }
 :
 (
-{ before(grammarAccess.getXAttributeTypeRefAccess().getBranchGuidAssignment_2_1()); }
-(rule__XAttributeTypeRef__BranchGuidAssignment_2_1)
-{ after(grammarAccess.getXAttributeTypeRefAccess().getBranchGuidAssignment_2_1()); }
+{ before(grammarAccess.getXAttributeTypeRefAccess().getBranchUuidAssignment_2_1()); }
+(rule__XAttributeTypeRef__BranchUuidAssignment_2_1)
+{ after(grammarAccess.getXAttributeTypeRefAccess().getBranchUuidAssignment_2_1()); }
 )
 
 ;
@@ -9266,14 +9266,14 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__XAttributeTypeRef__BranchGuidAssignment_2_1
+rule__XAttributeTypeRef__BranchUuidAssignment_2_1
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getXAttributeTypeRefAccess().getBranchGuidSTRINGTerminalRuleCall_2_1_0()); }
-	RULE_STRING{ after(grammarAccess.getXAttributeTypeRefAccess().getBranchGuidSTRINGTerminalRuleCall_2_1_0()); }
+{ before(grammarAccess.getXAttributeTypeRefAccess().getBranchUuidWHOLE_NUM_STRTerminalRuleCall_2_1_0()); }
+	RULE_WHOLE_NUM_STR{ after(grammarAccess.getXAttributeTypeRefAccess().getBranchUuidWHOLE_NUM_STRTerminalRuleCall_2_1_0()); }
 )
 
 ;

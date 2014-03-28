@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.enums.StorageState;
 
 public final class BranchRow {
    private final long branchId;
-   private final String branchGuid;
 
    private final String branchName;
    private final BranchType branchType;
@@ -30,9 +29,8 @@ public final class BranchRow {
       this.storageState = storageState;
    }
 
-   public BranchRow(long branchId, String branchGuid, String branchName, BranchType branchType, BranchState branchState, BranchArchivedState branchArchived, StorageState storageState) {
+   public BranchRow(long branchId, String branchName, BranchType branchType, BranchState branchState, BranchArchivedState branchArchived, StorageState storageState) {
       this.branchId = branchId;
-      this.branchGuid = branchGuid;
       this.branchName = branchName;
       this.branchType = branchType;
       this.branchState = branchState;
@@ -42,10 +40,6 @@ public final class BranchRow {
 
    public long getBranchId() {
       return branchId;
-   }
-
-   public String getBranchGuid() {
-      return branchGuid;
    }
 
    public String getBranchName() {
@@ -71,7 +65,6 @@ public final class BranchRow {
    public String[] toArray() {
       return new String[] {
          getBranchArchived().name(),
-         getBranchGuid(),
          String.valueOf(getBranchId()),
          getBranchName(),
          getBranchState().name(),
@@ -81,12 +74,11 @@ public final class BranchRow {
 
    public static BranchRow fromArray(String[] data) {
       BranchArchivedState archived = BranchArchivedState.valueOf(data[0]);
-      String branchGuid = data[1];
-      long branchId = Long.valueOf(data[2]);
-      String branchName = data[3];
-      BranchState branchState = BranchState.valueOf(data[4]);
-      BranchType branchType = BranchType.valueOf(data[5]);
-      StorageState storageState = StorageState.valueOf(data[6]);
-      return new BranchRow(branchId, branchGuid, branchName, branchType, branchState, archived, storageState);
+      long branchId = Long.valueOf(data[1]);
+      String branchName = data[2];
+      BranchState branchState = BranchState.valueOf(data[3]);
+      BranchType branchType = BranchType.valueOf(data[4]);
+      StorageState storageState = StorageState.valueOf(data[5]);
+      return new BranchRow(branchId, branchName, branchType, branchState, archived, storageState);
    }
 }

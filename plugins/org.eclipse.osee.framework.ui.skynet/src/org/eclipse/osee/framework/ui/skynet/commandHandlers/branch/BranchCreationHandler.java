@@ -72,7 +72,7 @@ public class BranchCreationHandler extends CommandHandler {
                   if (dialog.isChecked()) {
                      BranchManager.createWorkingBranchFromTx(parentTransactionId, dialog.getEntry(), null);
                   } else {
-                     BranchManager.createWorkingBranch(parentTransactionId, dialog.getEntry(), null, null);
+                     BranchManager.createWorkingBranch(parentTransactionId, dialog.getEntry(), null);
                   }
 
                }

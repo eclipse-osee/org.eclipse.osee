@@ -48,7 +48,7 @@ public class RelationFilterUtilTest {
 
    @Before
    public void setUp() {
-      branch1 = TestUtil.createBranch(100);
+      branch1 = TestUtil.createBranch(100, 100);
       relationType = TestUtil.createRelationType(5);
    }
 

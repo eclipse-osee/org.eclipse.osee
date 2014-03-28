@@ -120,7 +120,11 @@ public class TransactionQueryImpl implements TransactionQuery {
 
    @Override
    public TransactionQuery andBranch(Collection<? extends IOseeBranch> ids) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.newTxBranchUuidCriteria(ids);
+      Set<Long> values = new LinkedHashSet<Long>();
+      for (IOseeBranch value : ids) {
+         values.add(value.getUuid());
+      }
+      Criteria criteria = criteriaFactory.newTxBranchIdCriteria(values);
       addAndCheck(queryData, criteria);
       return this;
    }
@@ -252,13 +256,11 @@ public class TransactionQueryImpl implements TransactionQuery {
 
    @Override
    public TransactionQuery andIsHead(IOseeBranch branch) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.newGetHead(branch);
-      addAndCheck(queryData, criteria);
-      return this;
+      return andIsHead(branch.getUuid());
    }
 
    @Override
-   public TransactionQuery andIsHead(int branchId) throws OseeCoreException {
+   public TransactionQuery andIsHead(long branchId) throws OseeCoreException {
       Criteria criteria = criteriaFactory.newGetHead(branchId);
       addAndCheck(queryData, criteria);
       return this;

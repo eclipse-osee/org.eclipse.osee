@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,17 +24,17 @@ import org.junit.Test;
  */
 public class BranchUtilBranchTest {
 
-   private final Branch one = new Branch(GUID.create(), "one", BranchType.WORKING, BranchState.COMMITTED, true);
-   private final Branch two = new Branch(GUID.create(), "two", BranchType.WORKING, BranchState.COMMITTED, true);
-   private final Branch three = new Branch(GUID.create(), "three", BranchType.WORKING, BranchState.COMMITTED, true);
-   private final Branch four = new Branch(GUID.create(), "four", BranchType.WORKING, BranchState.COMMITTED, true);
-   private final Branch five = new Branch(GUID.create(), "five", BranchType.WORKING, BranchState.COMMITTED, true);
-   private final Branch six = new Branch(GUID.create(), "six", BranchType.WORKING, BranchState.COMMITTED, true);
-   private final Branch seven = new Branch(GUID.create(), "seven", BranchType.WORKING, BranchState.COMMITTED, true);
-   private final Branch eight = new Branch(GUID.create(), "eight", BranchType.WORKING, BranchState.COMMITTED, true);
-   private final Branch nine = new Branch(GUID.create(), "nine", BranchType.WORKING, BranchState.COMMITTED, true);
-   private final Branch ten = new Branch(GUID.create(), "ten", BranchType.WORKING, BranchState.COMMITTED, true);
-   private final Branch outside = new Branch(GUID.create(), "outside", BranchType.WORKING, BranchState.COMMITTED, true);
+   private final Branch one = new Branch(Lib.generateUuid(), "one", BranchType.WORKING, BranchState.COMMITTED, true);
+   private final Branch two = new Branch(Lib.generateUuid(), "two", BranchType.WORKING, BranchState.COMMITTED, true);
+   private final Branch three = new Branch(Lib.generateUuid(), "three", BranchType.WORKING, BranchState.COMMITTED, true);
+   private final Branch four = new Branch(Lib.generateUuid(), "four", BranchType.WORKING, BranchState.COMMITTED, true);
+   private final Branch five = new Branch(Lib.generateUuid(), "five", BranchType.WORKING, BranchState.COMMITTED, true);
+   private final Branch six = new Branch(Lib.generateUuid(), "six", BranchType.WORKING, BranchState.COMMITTED, true);
+   private final Branch seven = new Branch(Lib.generateUuid(), "seven", BranchType.WORKING, BranchState.COMMITTED, true);
+   private final Branch eight = new Branch(Lib.generateUuid(), "eight", BranchType.WORKING, BranchState.COMMITTED, true);
+   private final Branch nine = new Branch(Lib.generateUuid(), "nine", BranchType.WORKING, BranchState.COMMITTED, true);
+   private final Branch ten = new Branch(Lib.generateUuid(), "ten", BranchType.WORKING, BranchState.COMMITTED, true);
+   private final Branch outside = new Branch(Lib.generateUuid(), "outside", BranchType.WORKING, BranchState.COMMITTED, true);
 
    private void initBranchParentageList() {
       two.setParentBranch(one);

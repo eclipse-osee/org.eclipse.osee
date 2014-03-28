@@ -21,9 +21,9 @@ public abstract class ArtifactSearch {
 
    private final UriInfo uriInfo;
    private final Request request;
-   private final String branchUuid;
+   private final Long branchUuid;
 
-   public ArtifactSearch(UriInfo uriInfo, Request request, String branchUuid) {
+   public ArtifactSearch(UriInfo uriInfo, Request request, Long branchUuid) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;
@@ -37,7 +37,7 @@ public abstract class ArtifactSearch {
       return request;
    }
 
-   public String getBranchUuid() {
+   public Long getBranchUuid() {
       return branchUuid;
    }
 

@@ -137,7 +137,7 @@ public class OseeDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getXArtifactTypeAccess().getUuidAssignment_7(), "rule__XArtifactType__UuidAssignment_7");
 					put(grammarAccess.getXArtifactTypeAccess().getValidAttributeTypesAssignment_8(), "rule__XArtifactType__ValidAttributeTypesAssignment_8");
 					put(grammarAccess.getXAttributeTypeRefAccess().getValidAttributeTypeAssignment_1(), "rule__XAttributeTypeRef__ValidAttributeTypeAssignment_1");
-					put(grammarAccess.getXAttributeTypeRefAccess().getBranchGuidAssignment_2_1(), "rule__XAttributeTypeRef__BranchGuidAssignment_2_1");
+					put(grammarAccess.getXAttributeTypeRefAccess().getBranchUuidAssignment_2_1(), "rule__XAttributeTypeRef__BranchUuidAssignment_2_1");
 					put(grammarAccess.getXAttributeTypeAccess().getNameAssignment_1(), "rule__XAttributeType__NameAssignment_1");
 					put(grammarAccess.getXAttributeTypeAccess().getBaseAttributeTypeAssignment_2_1(), "rule__XAttributeType__BaseAttributeTypeAssignment_2_1");
 					put(grammarAccess.getXAttributeTypeAccess().getOverrideAssignment_3_1(), "rule__XAttributeType__OverrideAssignment_3_1");

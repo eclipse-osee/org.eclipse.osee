@@ -71,19 +71,19 @@ public class OseeDslSegmentParserTest {
       final String artifactGuid = GUID.create();
       final String artifactName = "artifactTest";
       final String branchName = branch.getName();
-      final String branchGuid = branch.getGuid();
+      final Long branchUuid = branch.getUuid();
 
       IBasicArtifact<?> artifact = new MockArtifact(artifactGuid, artifactName, branch, CoreArtifactTypes.Artifact, 45);
 
       String actual = parser.getStartTag(artifact);
       String expected =
-         String.format("//@start_artifact branch/%s/artifact/%s/ (%s:%s)", branchGuid, artifactGuid, branchName,
+         String.format("//@start_artifact branch/%d/artifact/%s/ (%s:%s)", branchUuid, artifactGuid, branchName,
             artifactName);
       Assert.assertEquals(expected, actual);
 
       actual = parser.getEndTag(artifact);
       expected =
-         String.format("//@end_artifact branch/%s/artifact/%s/ (%s:%s)", branchGuid, artifactGuid, branchName,
+         String.format("//@end_artifact branch/%d/artifact/%s/ (%s:%s)", branchUuid, artifactGuid, branchName,
             artifactName);
       Assert.assertEquals(expected, actual);
    }
@@ -96,16 +96,16 @@ public class OseeDslSegmentParserTest {
    @Test
    public void testGetLocations() throws OseeCoreException {
       final String artifactGuid = GUID.create();
-      final String branchGuid = CoreBranches.COMMON.getGuid();
+      final Long branchUuid = CoreBranches.COMMON.getUuid();
       String data = null;
 
-      data = String.format("//@start_artifact branch/%s/artifact/%s/ ()", branchGuid, artifactGuid);
-      checkGetTagLocations(data, new TagLocation(true, branchGuid, artifactGuid, 0, data.length()));
+      data = String.format("//@start_artifact branch/%d/artifact/%s/ ()", branchUuid, artifactGuid);
+      checkGetTagLocations(data, new TagLocation(true, branchUuid, artifactGuid, 0, data.length()));
 
-      data = String.format("//@end_artifact branch/%s/artifact/%s/ ()", branchGuid, artifactGuid);
-      checkGetTagLocations(data, new TagLocation(false, branchGuid, artifactGuid, 0, data.length()));
+      data = String.format("//@end_artifact branch/%d/artifact/%s/ ()", branchUuid, artifactGuid);
+      checkGetTagLocations(data, new TagLocation(false, branchUuid, artifactGuid, 0, data.length()));
 
-      data = String.format("//@end_artifact branch/%s/artifact/%s/", branchGuid, artifactGuid);
+      data = String.format("//@end_artifact branch/%d/artifact/%s/", branchUuid, artifactGuid);
       checkGetTagLocations(data);
 
       data = "//@end_artifact branch//artifact/";
@@ -124,8 +124,8 @@ public class OseeDslSegmentParserTest {
 
    @Test(expected = OseeStateException.class)
    public void testGetSegmentsUnMatched() throws OseeCoreException {
-      TagLocation start = new TagLocation(true, "1", "2", 0, 2);
-      TagLocation end = new TagLocation(false, "1", "2", 0, 2);
+      TagLocation start = new TagLocation(true, 1L, "2", 0, 2);
+      TagLocation end = new TagLocation(false, 1L, "2", 0, 2);
 
       Collection<TagLocation> locations = Arrays.asList(start, start, end);
       parser.getSegments(locations);
@@ -133,16 +133,16 @@ public class OseeDslSegmentParserTest {
 
    @Test
    public void testOrderedSegments() throws OseeCoreException {
-      TagLocation start1 = new TagLocation(true, "branch_1", "art_1", 0, 6);
-      TagLocation end1 = new TagLocation(false, "branch_1", "art_1", 10, 12);
+      TagLocation start1 = new TagLocation(true, 1L, "art_1", 0, 6);
+      TagLocation end1 = new TagLocation(false, 1L, "art_1", 10, 12);
 
-      TagLocation start2 = new TagLocation(true, "branch_2", "art_2", 13, 56);
-      TagLocation end2 = new TagLocation(false, "branch_2", "art_2", 79, 80);
+      TagLocation start2 = new TagLocation(true, 2L, "art_2", 13, 56);
+      TagLocation end2 = new TagLocation(false, 2L, "art_2", 79, 80);
 
       // Segments should capture in-between data
 
-      OseeDslSegment segment1 = new OseeDslSegment("branch_1", "art_1", 6, 10);
-      OseeDslSegment segment2 = new OseeDslSegment("branch_2", "art_2", 56, 79);
+      OseeDslSegment segment1 = new OseeDslSegment(1L, "art_1", 6, 10);
+      OseeDslSegment segment2 = new OseeDslSegment(2L, "art_2", 56, 79);
 
       Collection<TagLocation> locations = Arrays.asList(start1, end1, start2, end2);
       Collection<OseeDslSegment> segments = parser.getSegments(locations);
@@ -195,7 +195,7 @@ public class OseeDslSegmentParserTest {
          Assert.assertNull(actual);
       } else {
          Assert.assertEquals("isStartTag - " + index, expected.isStartTag(), actual.isStartTag());
-         Assert.assertEquals("branchguid  - " + index, expected.getBranchGuid(), actual.getBranchGuid());
+         Assert.assertEquals("branchguid  - " + index, expected.getBranchUuid(), actual.getBranchUuid());
          Assert.assertEquals("artguid - " + index, expected.getArtifactGuid(), actual.getArtifactGuid());
          Assert.assertEquals("start - " + index, expected.start(), actual.start());
          Assert.assertEquals("end - " + index, expected.end(), actual.end());
@@ -206,7 +206,7 @@ public class OseeDslSegmentParserTest {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
-         Assert.assertEquals("branchguid  - " + index, expected.getBranchGuid(), actual.getBranchGuid());
+         Assert.assertEquals("branchguid  - " + index, expected.getBranchUuid(), actual.getBranchUuid());
          Assert.assertEquals("artguid - " + index, expected.getArtifactGuid(), actual.getArtifactGuid());
          Assert.assertEquals("start - " + index, expected.start(), actual.start());
          Assert.assertEquals("end - " + index, expected.end(), actual.end());

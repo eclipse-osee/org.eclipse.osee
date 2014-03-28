@@ -54,7 +54,7 @@ public class BranchCommitResponseTranslatorTest extends BaseTranslatorTest<Branc
 
       List<Object[]> data = new ArrayList<Object[]>();
       IDataTranslationService service = new DataTranslationService();
-      BranchCache branchCache = new BranchCache(new MockOseeDataAccessor<String, Branch>());
+      BranchCache branchCache = new BranchCache(new MockOseeDataAccessor<Long, Branch>());
       service.addTranslator(new TransactionRecordTranslator(new TransactionRecordFactory(), branchCache),
          CoreTranslatorId.TRANSACTION_RECORD);
 

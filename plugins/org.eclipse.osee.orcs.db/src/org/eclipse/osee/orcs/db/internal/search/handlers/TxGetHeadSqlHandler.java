@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxGetHead;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -46,24 +45,14 @@ public class TxGetHeadSqlHandler extends SqlHandler<CriteriaTxGetHead> {
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
       writer.write(txdAlias);
       writer.write(".transaction_id = ");
-      if (criteria.hasBranchToken()) {
-         IOseeBranch branch = criteria.getBranch();
-         writer.write("(SELECT max(txdi.transaction_id) FROM ");
-         writer.write(TableEnum.BRANCH_TABLE.getName());
-         writer.write(" obi, ");
-         writer.write(TableEnum.TX_DETAILS_TABLE.getName());
-         writer.write(" txdi WHERE ");
-         writer.write("obi.branch_id = txdi.branch_id AND ");
-         writer.write("obi.branch_guid = ?)");
-         writer.addParameter(branch.getGuid());
-      } else {
-         int branch = criteria.getBranchid();
-         writer.write("(SELECT max(transaction_id) FROM ");
-         writer.write(TableEnum.TX_DETAILS_TABLE.getName());
-         writer.write(" WHERE ");
-         writer.write("branch_id = ?)");
-         writer.addParameter(branch);
-      }
+
+      writer.write("(SELECT max(transaction_id) FROM ");
+      writer.write(TableEnum.TX_DETAILS_TABLE.getName());
+      writer.write(" WHERE ");
+      writer.write("branch_id = ?)");
+
+      long branch = criteria.getBranchid();
+      writer.addParameter(branch);
       return true;
    }
 

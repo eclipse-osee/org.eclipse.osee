@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.core.internal.search;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllTxs;
@@ -23,7 +22,6 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxBranchIds;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxBranchUuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxComment;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxGetHead;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIdWithOperator;
@@ -58,10 +56,6 @@ public class TransactionCriteriaFactory {
       return new CriteriaTxBranchIds(ids);
    }
 
-   public Criteria newTxBranchUuidCriteria(Collection<? extends IOseeBranch> ids) {
-      return new CriteriaTxBranchUuids(ids);
-   }
-
    public Criteria newByIdWithOperator(Operator op, int id) {
       return new CriteriaTxIdWithOperator(op, id);
    }
@@ -94,12 +88,8 @@ public class TransactionCriteriaFactory {
       return new CriteriaCommitIds(ids);
    }
 
-   public Criteria newGetHead(int branchId) {
+   public Criteria newGetHead(long branchId) {
       return new CriteriaTxGetHead(branchId);
-   }
-
-   public Criteria newGetHead(IOseeBranch branch) {
-      return new CriteriaTxGetHead(branch);
    }
 
 }

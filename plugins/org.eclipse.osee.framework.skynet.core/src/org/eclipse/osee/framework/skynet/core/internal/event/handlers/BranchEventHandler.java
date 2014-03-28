@@ -34,15 +34,15 @@ public class BranchEventHandler implements EventHandlerLocal<IBranchEventListene
       List<? extends IEventFilter> filters = ((IEventFilteredListener) listener).getEventFilters();
       if (filters != null) {
          for (IEventFilter eventFilter : filters) {
-            long branchUuid = BranchManager.getBranchIdLegacy(event.getBranchGuid());
-            if (!eventFilter.isMatch(branchUuid) && !eventFilter.isMatch(BranchManager.getBranchIdLegacy(event.getDestinationBranchGuid()))) {
+            long branchUuid = event.getBranchUuid();
+            if (!eventFilter.isMatch(branchUuid) && !eventFilter.isMatch(event.getDestinationBranchUuid())) {
                return;
             }
          }
       }
       if (event.getEventType() == BranchEventType.Added) {
          try {
-            BranchManager.checkAndReload(event.getBranchGuid());
+            BranchManager.checkAndReload(event.getBranchUuid());
          } catch (OseeCoreException ex) {
             EventUtil.eventLog("IEM: updateBranches", ex);
          }

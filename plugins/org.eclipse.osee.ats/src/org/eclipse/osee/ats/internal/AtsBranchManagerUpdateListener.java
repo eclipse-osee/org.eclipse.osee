@@ -48,7 +48,7 @@ public class AtsBranchManagerUpdateListener implements IBranchEventListener {
       try {
          Branch branch = null;
          try {
-            branch = BranchManager.getBranchByGuid(branchEvent.getBranchGuid());
+            branch = BranchManager.getBranchByGuid(branchEvent.getBranchUuid());
          } catch (BranchDoesNotExist ex) {
             return;
          }

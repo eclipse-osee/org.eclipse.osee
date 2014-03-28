@@ -155,7 +155,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    private IOseeBranch getProgramBranch(DispoProgram program) {
-      return TokenFactory.createBranch(program.getGuid(), program.getUuid(), program.getName());
+      return TokenFactory.createBranch(program.getUuid(), program.getName());
    }
 
    @Override
@@ -371,7 +371,7 @@ public class OrcsStorageImpl implements Storage {
 
       String configContents = configArt.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
 
-      Pattern regex = Pattern.compile(program.getGuid() + "\\s*:\\s*.*");
+      Pattern regex = Pattern.compile(program.getUuid() + "\\s*:\\s*.*");
       Matcher matcher = regex.matcher(configContents);
       String guid = null;
       if (matcher.find()) {
@@ -388,7 +388,7 @@ public class OrcsStorageImpl implements Storage {
          String[] split = match.split(":");
          uuid = Long.valueOf(split[1]);
       }
-      toReturn = TokenFactory.createBranch(guid, uuid, "");
+      toReturn = TokenFactory.createBranch(uuid, "");
       return toReturn;
    }
 

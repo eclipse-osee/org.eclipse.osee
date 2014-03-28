@@ -45,9 +45,9 @@ public interface BranchQuery {
 
    BranchQuery andLocalIds(Collection<Integer> ids) throws OseeCoreException;
 
-   BranchQuery andUuids(String... ids) throws OseeCoreException;
+   BranchQuery andUuids(Long... ids) throws OseeCoreException;
 
-   BranchQuery andUuids(Collection<String> ids) throws OseeCoreException;
+   BranchQuery andUuids(Collection<Long> ids) throws OseeCoreException;
 
    BranchQuery andIds(Collection<? extends IOseeBranch> ids) throws OseeCoreException;
 

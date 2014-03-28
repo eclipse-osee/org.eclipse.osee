@@ -67,12 +67,12 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
    /**
     * @return true if branch is not null, matches the branch for the event and is not deleted or purged
     */
-   private boolean isArtifactExplorerValidForEvents(ArtifactExplorer artifactExplorer, String branchGuidFromEvent) {
+   private boolean isArtifactExplorerValidForEvents(ArtifactExplorer artifactExplorer, Long branchUuidFromEvent) {
       boolean toReturn = false;
       if (artifactExplorer != null) {
          Branch branch = artifactExplorer.getBranch();
          toReturn =
-            branch != null && branch.getGuid().equals(branchGuidFromEvent) && !branch.isDeleted() && !branch.isPurged();
+            branch != null && branchUuidFromEvent.equals(branch.getUuid()) && !branch.isDeleted() && !branch.isPurged();
       }
       return toReturn;
    }
@@ -89,7 +89,7 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
       for (IArtifactExplorerEventHandler handler : new CopyOnWriteArrayList<IArtifactExplorerEventHandler>(handlers)) {
          if (handler.isDisposed()) {
             handlers.remove(handler);
-         } else if (isArtifactExplorerValidForEvents(handler.getArtifactExplorer(), artifactEvent.getBranchGuid())) {
+         } else if (isArtifactExplorerValidForEvents(handler.getArtifactExplorer(), artifactEvent.getBranchUuid())) {
             handlersToProcess.add(handler);
          }
       }

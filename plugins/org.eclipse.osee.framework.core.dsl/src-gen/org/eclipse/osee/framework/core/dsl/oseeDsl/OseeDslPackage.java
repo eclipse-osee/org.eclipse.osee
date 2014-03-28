@@ -352,13 +352,13 @@ public interface OseeDslPackage extends EPackage
   int XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE = 0;
 
   /**
-   * The feature id for the '<em><b>Branch Guid</b></em>' attribute.
+   * The feature id for the '<em><b>Branch Uuid</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int XATTRIBUTE_TYPE_REF__BRANCH_GUID = 1;
+  int XATTRIBUTE_TYPE_REF__BRANCH_UUID = 1;
 
   /**
    * The number of structural features of the '<em>XAttribute Type Ref</em>' class.
@@ -2053,15 +2053,15 @@ public interface OseeDslPackage extends EPackage
   EReference getXAttributeTypeRef_ValidAttributeType();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef#getBranchGuid <em>Branch Guid</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef#getBranchUuid <em>Branch Uuid</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Branch Guid</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef#getBranchGuid()
+   * @return the meta object for the attribute '<em>Branch Uuid</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef#getBranchUuid()
    * @see #getXAttributeTypeRef()
    * @generated
    */
-  EAttribute getXAttributeTypeRef_BranchGuid();
+  EAttribute getXAttributeTypeRef_BranchUuid();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType <em>XAttribute Type</em>}'.
@@ -3463,12 +3463,12 @@ public interface OseeDslPackage extends EPackage
     EReference XATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE = eINSTANCE.getXAttributeTypeRef_ValidAttributeType();
 
     /**
-     * The meta object literal for the '<em><b>Branch Guid</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Branch Uuid</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute XATTRIBUTE_TYPE_REF__BRANCH_GUID = eINSTANCE.getXAttributeTypeRef_BranchGuid();
+    EAttribute XATTRIBUTE_TYPE_REF__BRANCH_UUID = eINSTANCE.getXAttributeTypeRef_BranchUuid();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XAttributeTypeImpl <em>XAttribute Type</em>}' class.

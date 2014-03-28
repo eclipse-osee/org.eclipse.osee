@@ -40,7 +40,7 @@ public class WorkingBranchGuidColumn extends AbstractBranchColumn {
 
    @Override
    String getColumnText(Branch branch) {
-      return branch.getGuid();
+      return String.valueOf(branch.getGuid());
    }
 
 }

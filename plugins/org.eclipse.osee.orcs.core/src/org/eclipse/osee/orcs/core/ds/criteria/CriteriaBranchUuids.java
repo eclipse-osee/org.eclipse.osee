@@ -21,14 +21,14 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public class CriteriaBranchUuids extends Criteria {
 
-   private final Collection<String> ids;
+   private final Collection<Long> ids;
 
-   public CriteriaBranchUuids(Collection<String> ids) {
+   public CriteriaBranchUuids(Collection<Long> ids) {
       super();
       this.ids = ids;
    }
 
-   public Collection<String> getIds() {
+   public Collection<Long> getIds() {
       return ids;
    }
 

@@ -23,7 +23,6 @@ public class BranchCreationRequest {
 
    private final BranchType branchType;
    private final int sourceTransactionId;
-   private final String branchGuid;
 
    private final int authorId;
 
@@ -33,7 +32,7 @@ public class BranchCreationRequest {
    private boolean isTxCopyBranchType;
    private final long branchUuid;
 
-   public BranchCreationRequest(BranchType branchType, int sourceTransactionId, long parentBranchId, String branchGuid, String branchName, long branchUuid, int associatedArtifactId, int authorId, String creationComment, int mergeAddressingQueryId, long destinationBranchId) {
+   public BranchCreationRequest(BranchType branchType, int sourceTransactionId, long parentBranchId, String branchName, long branchUuid, int associatedArtifactId, int authorId, String creationComment, int mergeAddressingQueryId, long destinationBranchId) {
       this.parentBranchId = parentBranchId;
       this.branchName = branchName;
       if (branchUuid <= 0) {
@@ -43,7 +42,6 @@ public class BranchCreationRequest {
       this.associatedArtifactId = associatedArtifactId;
       this.branchType = branchType;
       this.sourceTransactionId = sourceTransactionId;
-      this.branchGuid = branchGuid;
       this.authorId = authorId;
       this.creationComment = creationComment;
       this.mergeAddressingQueryId = mergeAddressingQueryId;
@@ -69,10 +67,6 @@ public class BranchCreationRequest {
 
    public int getSourceTransactionId() {
       return sourceTransactionId;
-   }
-
-   public String getBranchGuid() {
-      return branchGuid;
    }
 
    public int getAuthorId() {
@@ -101,7 +95,7 @@ public class BranchCreationRequest {
 
    @Override
    public String toString() {
-      return "Branch [associatedArtifactId=" + associatedArtifactId + ", branchGuid=" + branchGuid + ", branchType=" + branchType + ", name=" + branchName + ", parentBranchId=" + parentBranchId + ", parentTransactionId=" + sourceTransactionId + "]";
+      return "Branch [associatedArtifactId=" + associatedArtifactId + ", branchUuid=" + branchUuid + ", branchType=" + branchType + ", name=" + branchName + ", parentBranchId=" + parentBranchId + ", parentTransactionId=" + sourceTransactionId + "]";
    }
 
    public long getBranchUuid() {

@@ -90,7 +90,7 @@ public class BranchCallableQueryFactory {
 
                @Override
                public IOseeBranch createBranch(BranchData data) {
-                  return TokenFactory.createBranch(data.getGuid(), data.getName());
+                  return TokenFactory.createBranch(data.getUuid(), data.getName());
                }
 
             };
@@ -105,13 +105,13 @@ public class BranchCallableQueryFactory {
 
    private abstract class BranchBuilder<T extends IOseeBranch> extends LoadDataHandlerAdapter {
 
-      private Map<String, T> branchMap;
+      private Map<Long, T> branchMap;
       private List<T> results;
 
       @Override
       public void onLoadStart() throws OseeCoreException {
          super.onLoadStart();
-         branchMap = new LinkedHashMap<String, T>();
+         branchMap = new LinkedHashMap<Long, T>();
       }
 
       @Override
@@ -123,7 +123,7 @@ public class BranchCallableQueryFactory {
 
       @Override
       public void onData(BranchData data) throws OseeCoreException {
-         String key = data.getGuid();
+         Long key = data.getUuid();
          T branch = branchMap.get(key);
          if (branch == null) {
             branch = createBranch(data);

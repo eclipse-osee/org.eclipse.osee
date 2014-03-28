@@ -41,7 +41,7 @@ XArtifactType:
 	(validAttributeTypes+=XAttributeTypeRef)* '}';
 
 XAttributeTypeRef:
-	'attribute' validAttributeType=[XAttributeType|STRING] ('branchGuid' branchGuid=STRING)?;
+	'attribute' validAttributeType=[XAttributeType|STRING] ('branchUuid' branchUuid=WHOLE_NUM_STR)?;
 
 XAttributeType:
 	'attributeType' name=STRING ('extends' baseAttributeType=AttributeBaseType) ('overrides'
@@ -119,7 +119,7 @@ CONDITION_VALUE:
 	WHOLE_NUM_STR | STRING;
 
 enum MatchField:
-	artifactName | artifactGuid | branchName | branchGuid;
+	artifactName | artifactGuid | branchName | branchUuid;
 
 Condition:
 	SimpleCondition | CompoundCondition;

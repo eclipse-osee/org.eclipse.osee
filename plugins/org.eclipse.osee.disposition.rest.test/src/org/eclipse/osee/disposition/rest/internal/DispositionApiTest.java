@@ -93,7 +93,6 @@ public class DispositionApiTest {
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-      when(program.getGuid()).thenReturn("abcdef");
       when(program.getUuid()).thenReturn(23L);
       when(setId.getGuid()).thenReturn("ghijkl");
       when(itemId.getGuid()).thenReturn("mnopqr");

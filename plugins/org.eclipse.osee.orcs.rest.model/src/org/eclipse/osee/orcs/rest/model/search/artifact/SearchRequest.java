@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement(name = "SearchRequest")
 public class SearchRequest implements SearchParameters {
 
-   private String branchUuid;
+   private Long branchUuid;
    private String alt;
    private String fields;
    private int fromTx;
@@ -36,7 +36,7 @@ public class SearchRequest implements SearchParameters {
       super();
    }
 
-   public SearchRequest(String branchUuid, List<Predicate> predicates, String alt, String fields, int fromTx, boolean includeDeleted) {
+   public SearchRequest(Long branchUuid, List<Predicate> predicates, String alt, String fields, int fromTx, boolean includeDeleted) {
       super();
       this.branchUuid = branchUuid;
       this.predicates = predicates;
@@ -47,7 +47,7 @@ public class SearchRequest implements SearchParameters {
    }
 
    @Override
-   public String getBranchUuid() {
+   public Long getBranchUuid() {
       return branchUuid;
    }
 
@@ -68,7 +68,7 @@ public class SearchRequest implements SearchParameters {
       return fields;
    }
 
-   public void setBranchUuid(String uuid) {
+   public void setBranchUuid(Long uuid) {
       this.branchUuid = uuid;
    }
 

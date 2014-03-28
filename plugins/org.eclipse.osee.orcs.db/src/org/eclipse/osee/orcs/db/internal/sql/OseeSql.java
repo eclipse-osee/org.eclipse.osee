@@ -21,7 +21,6 @@ public enum OseeSql {
 
    TX_GET_ALL_TRANSACTIONS("SELECT * FROM osee_tx_details WHERE transaction_id = ?"),
    TX_GET_MAX_AS_LARGEST_TX("SELECT max(transaction_id) as largest_transaction_id FROM osee_tx_details WHERE branch_id = ?"),
-   TX_GET_MAX_AS_LARGEST_TX_WITH_BRANCH_GUID("SELECT max(txd.transaction_id) as largest_transaction_id FROM osee_tx_details txd, osee_branch ob WHERE ob.branch_guid = ? AND txd.branch_id = ob.branch_id"),
 
    MERGE_GET_ARTIFACTS_FOR_BRANCH("SELECT art.art_id FROM osee_txs txs, osee_artifact art WHERE txs.branch_id = ? and txs.gamma_id = art.gamma_id"),
    MERGE_GET_ATTRIBUTES_FOR_BRANCH("SELECT atr.art_id, atr.attr_id FROM osee_txs txs, osee_attribute atr WHERE txs.branch_id = ? and txs.gamma_id = atr.gamma_id"),

@@ -239,12 +239,14 @@ public class AccessDataTest {
       data.add(branchToCheck1, detail1);
       data.add(branchToCheck2, detail2);
 
-      String message =
-         "accessData [\n" + //
-         "\tCommon - AccessDetail [permission=WRITE, scope=/scope_2, accessObject=RelationTypeSide [type=[sideA_2]<-[relType_2]->[sideB_2], side=SIDE_A], reason=item 2 - write],\n" + //
-         "\tSystem Root Branch - AccessDetail [permission=DENY, scope=/scope_1, accessObject=RelationTypeSide [type=[sideA_2]<-[relType_2]->[sideB_2], side=SIDE_A], reason=item 1 - deny],\n" + //
-         "]";
-      Assert.assertEquals(message, data.toString());
+      String branch1 =
+         "System Root Branch - AccessDetail [permission=DENY, scope=/scope_1, accessObject=RelationTypeSide [type=[sideA_2]<-[relType_2]->[sideB_2], side=SIDE_A], reason=item 1 - deny]";
+      String branch2 =
+         "Common - AccessDetail [permission=WRITE, scope=/scope_2, accessObject=RelationTypeSide [type=[sideA_2]<-[relType_2]->[sideB_2], side=SIDE_A], reason=item 2 - write]";
+      String message = "accessData [\n\t%s,\n\t%s,\n]";
+      String forward = String.format(message, branch1, branch2);
+      String backward = String.format(message, branch2, branch1);
+      Assert.assertTrue(data.toString().equals(forward) || data.toString().equals(backward));
    }
 
    private static AccessDetail<?> findObject(AccessDetail<?> item, Collection<AccessDetail<?>> details) {

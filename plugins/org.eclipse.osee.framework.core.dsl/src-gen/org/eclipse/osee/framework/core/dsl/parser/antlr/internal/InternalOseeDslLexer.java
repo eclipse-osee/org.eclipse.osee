@@ -355,10 +355,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__24;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:22:7: ( 'branchGuid' )
-            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:22:9: 'branchGuid'
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:22:7: ( 'branchUuid' )
+            // ../org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.g:22:9: 'branchUuid'
             {
-            match("branchGuid"); 
+            match("branchUuid"); 
 
 
             }
@@ -3328,7 +3328,7 @@ public class InternalOseeDslLexer extends Lexer {
         "\1\162\1\170\1\141\1\150\1\uffff\1\145\1\162\1\151\1\145\1\164\1"+
         "\157\1\uffff\1\142\1\147\1\101\1\141\1\60\1\164\1\156\1\117\1\145"+
         "\1\151\1\uffff\2\101\1\60\1\162\1\124\1\60\1\164\2\143\1\165\1\103"+
-        "\1\163\1\160\1\165\1\uffff\1\164\1\60\1\107\1\144\1\165\1\157\1"+
+        "\1\163\1\160\1\165\1\uffff\1\164\1\60\1\116\1\144\1\165\1\157\1"+
         "\160\3\164\2\162\1\171\1\154\1\111\1\164\1\156\1\122\1\163\1\141"+
         "\1\156\1\162\1\164\1\147\1\152\1\101\2\60\1\143\1\uffff\1\164\1"+
         "\145\1\137\1\60\1\157\1\141\1\162\1\141\1\162\1\uffff\1\145\1\117"+
@@ -3400,7 +3400,7 @@ public class InternalOseeDslLexer extends Lexer {
         "\145\1\162\1\151\1\145\1\164\1\157\1\uffff\1\142\1\147\1\102\1\141"+
         "\1\172\1\164\1\156\1\117\1\145\1\151\1\uffff\2\116\1\172\1\162\1"+
         "\124\1\172\1\164\2\143\1\165\1\103\1\163\1\160\1\165\1\uffff\1\164"+
-        "\1\172\1\116\1\144\1\165\1\157\1\160\3\164\2\162\1\171\1\154\1\111"+
+        "\1\172\1\125\1\144\1\165\1\157\1\160\3\164\2\162\1\171\1\154\1\111"+
         "\1\164\1\156\1\122\1\163\1\141\1\156\1\162\1\164\1\147\1\152\1\101"+
         "\2\172\1\143\1\uffff\1\164\1\145\1\137\1\172\1\157\1\141\1\162\1"+
         "\141\1\162\1\uffff\1\145\1\117\1\uffff\1\101\3\164\1\157\1\172\1"+
@@ -3782,7 +3782,7 @@ public class InternalOseeDslLexer extends Lexer {
             "",
             "\1\u0163",
             "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
-            "\1\u0165\6\uffff\1\u0166",
+            "\1\u0166\6\uffff\1\u0165",
             "\1\u0167",
             "\1\u0168",
             "\1\u0169",

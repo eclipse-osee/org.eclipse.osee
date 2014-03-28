@@ -102,7 +102,7 @@ public class InitializeDatastoreCallable extends AbstractDatastoreCallable<DataS
    private CreateBranchData getSystemRootData() {
       CreateBranchData data = new CreateBranchData();
 
-      data.setGuid(CoreBranches.SYSTEM_ROOT.getGuid());
+      data.setUuid(CoreBranches.SYSTEM_ROOT.getGuid());
       data.setName(CoreBranches.SYSTEM_ROOT.getName());
       data.setUuid(CoreBranches.SYSTEM_ROOT.getUuid());
       data.setBranchType(BranchType.SYSTEM_ROOT);

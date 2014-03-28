@@ -36,11 +36,11 @@ public class AttributeResource {
    @Context
    private final Request request;
 
-   private final String branchUuid;
+   private final Long branchUuid;
    private final String artifactUuid;
    private final int attrId;
 
-   public AttributeResource(UriInfo uriInfo, Request request, String branchUuid, String artifactUuid, int attrId) {
+   public AttributeResource(UriInfo uriInfo, Request request, Long branchUuid, String artifactUuid, int attrId) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;

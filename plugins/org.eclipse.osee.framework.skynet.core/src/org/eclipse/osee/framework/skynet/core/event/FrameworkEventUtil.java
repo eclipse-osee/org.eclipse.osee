@@ -130,8 +130,8 @@ public final class FrameworkEventUtil {
    public static RemoteBranchEvent1 getRemoteBranchEvent(BranchEvent branchEvent) {
       RemoteBranchEvent1 event = new RemoteBranchEvent1();
       event.setEventTypeGuid(branchEvent.getEventType().getGuid());
-      event.setBranchGuid(branchEvent.getBranchGuid());
-      event.setDestinationBranchGuid(branchEvent.getDestinationBranchGuid());
+      event.setBranchGuid(String.valueOf(branchEvent.getBranchUuid()));
+      event.setDestinationBranchGuid(String.valueOf(branchEvent.getDestinationBranchUuid()));
       event.setNetworkSender(getRemoteNetworkSender(branchEvent.getNetworkSender()));
       return event;
    }
@@ -140,7 +140,8 @@ public final class FrameworkEventUtil {
       BranchEventType branchEventType = BranchEventType.getByGuid(branchEvent.getEventTypeGuid());
       if (branchEventType != null) {
          BranchEvent event =
-            new BranchEvent(branchEventType, branchEvent.getBranchGuid(), branchEvent.getDestinationBranchGuid());
+            new BranchEvent(branchEventType, Long.valueOf(branchEvent.getBranchGuid()),
+               Long.valueOf(branchEvent.getDestinationBranchGuid()));
          event.setNetworkSender(getNetworkSender(branchEvent.getNetworkSender()));
          return event;
       } else {
@@ -186,7 +187,7 @@ public final class FrameworkEventUtil {
    public static RemotePersistEvent1 getRemotePersistEvent(ArtifactEvent transEvent) {
       RemotePersistEvent1 event = new RemotePersistEvent1();
       event.setNetworkSender(getRemoteNetworkSender(transEvent.getNetworkSender()));
-      event.setBranchGuid(transEvent.getBranchGuid());
+      event.setBranchGuid(String.valueOf(transEvent.getBranchUuid()));
       event.setTransactionId(transEvent.getTransactionId());
       for (EventBasicGuidArtifact guidArt : transEvent.getArtifacts()) {
          if (guidArt.getModType() == EventModType.Modified) {
@@ -215,7 +216,7 @@ public final class FrameworkEventUtil {
    }
 
    public static ArtifactEvent getPersistEvent(RemotePersistEvent1 remEvent) {
-      ArtifactEvent event = new ArtifactEvent(remEvent.getBranchGuid());
+      ArtifactEvent event = new ArtifactEvent(Long.valueOf(remEvent.getBranchGuid()));
       event.setNetworkSender(getNetworkSender(remEvent.getNetworkSender()));
       event.setTransactionId(remEvent.getTransactionId());
       for (RemoteBasicGuidArtifact1 remGuidArt : remEvent.getArtifacts()) {
