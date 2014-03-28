@@ -77,6 +77,8 @@
 		<module>../../plugins/org.eclipse.osee.account.rest.test</module>		
 		<module>../../plugins/org.eclipse.osee.account.rest.client</module>
 		
+		<module>../../plugins/org.eclipse.osee.web</module>
+		
 		<module>../../features/org.eclipse.osee.x.core.external.feature</module>
 		<module>../../features/org.eclipse.osee.x.core.feature</module>
 

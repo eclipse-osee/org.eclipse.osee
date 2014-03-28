@@ -1,0 +1,7 @@
+@CHARSET "ISO-8859-1";
+
+.branch-table-div {  
+    height: 200px !important;
+    overflow: auto;
+}
+​
