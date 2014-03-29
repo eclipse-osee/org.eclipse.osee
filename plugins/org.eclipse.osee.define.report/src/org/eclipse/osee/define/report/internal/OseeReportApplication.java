@@ -16,7 +16,6 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.app.OseeAppResourceTokens;
-import org.eclipse.osee.define.report.OseeDefineResourceTokens;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.eclipse.osee.logger.Log;
@@ -40,14 +39,12 @@ public final class OseeReportApplication extends Application {
    }
 
    public void start(Map<String, Object> properties) {
-      IResourceRegistry registry = new ResourceRegistry();
-      OseeDefineResourceTokens.register(registry);
-      OseeAppResourceTokens.register(registry);
-      
+      IResourceRegistry resourceRegistry = new ResourceRegistry();
+      OseeAppResourceTokens.register(resourceRegistry);
       logger.debug(">>>>> registered Requirement resource");
-      singletons.add(new SystemSafetyResource(logger, registry, orcsApi));
+      singletons.add(new SystemSafetyResource(logger, resourceRegistry, orcsApi));
       logger.debug(">>>>> registered Safety resource");
-      singletons.add(new SRSTraceReportResource(logger, registry, orcsApi, properties));
+      singletons.add(new SRSTraceReportResource(logger, resourceRegistry, orcsApi, properties));
       logger.debug(">>>>> registered SRS Trace resource");
    }
 

@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.core.enums.BranchType.WORKING;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -40,13 +41,18 @@ public class OseeAppletPage {
       this.query = query;
    }
 
-   public String realizeApplet(IResourceRegistry registry, ResourceToken valuesResource) {
-      PageCreator page = PageFactory.newPageCreator(registry);
-      return realizeApplet(valuesResource, page);
+   public String realizeApplet(String name, Class<?> clazz) {
+      ResourceToken valuesToken = new ClassBasedResourceToken(name, clazz);
+      return realizeApplet(null, valuesToken);
    }
 
-   public String realizeApplet(ResourceToken valuesResource, PageCreator page) {
-      page.readKeyValuePairs(valuesResource);
+   public String realizeApplet(IResourceRegistry registry, String name, Class<?> clazz) {
+      ResourceToken valuesToken = new ClassBasedResourceToken(name, clazz);
+      return realizeApplet(registry, valuesToken);
+   }
+
+   public String realizeApplet(IResourceRegistry registry, ResourceToken valuesToken) {
+      PageCreator page = PageFactory.newPageCreator(registry, valuesToken);
       return realizeApplet(page);
    }
 

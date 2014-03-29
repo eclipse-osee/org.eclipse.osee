@@ -19,7 +19,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.app.OseeAppletPage;
-import org.eclipse.osee.define.report.OseeDefineResourceTokens;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -67,6 +66,6 @@ public final class SystemSafetyResource {
    @Produces(MediaType.TEXT_HTML)
    public String getApplet() {
       OseeAppletPage pageUtil = new OseeAppletPage(orcsApi.getQueryFactory(null).branchQuery());
-      return pageUtil.realizeApplet(resourceRegistry, OseeDefineResourceTokens.SystemSafetyReportHtml);
+      return pageUtil.realizeApplet(resourceRegistry, "systemSafetyReport.html", getClass());
    }
 }

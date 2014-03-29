@@ -6,6 +6,7 @@ Bundle-Version: 0.18.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,
  org.eclipse.osee.template.engine
