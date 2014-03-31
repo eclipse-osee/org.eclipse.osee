@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.internal.search;
+package org.eclipse.osee.orcs.rest.internal.search.artifact;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,13 +27,13 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.rest.internal.OrcsApplication;
-import org.eclipse.osee.orcs.rest.internal.search.dsl.DslFactory;
-import org.eclipse.osee.orcs.rest.internal.search.dsl.DslTranslator;
-import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchQueryBuilder;
-import org.eclipse.osee.orcs.rest.model.search.RequestType;
-import org.eclipse.osee.orcs.rest.model.search.SearchMatch;
-import org.eclipse.osee.orcs.rest.model.search.SearchRequest;
-import org.eclipse.osee.orcs.rest.model.search.SearchResponse;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.DslFactory;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.DslTranslator;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.SearchQueryBuilder;
+import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMatch;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;

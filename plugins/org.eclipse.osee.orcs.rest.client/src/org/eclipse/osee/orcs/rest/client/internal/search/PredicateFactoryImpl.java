@@ -27,10 +27,10 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
-import org.eclipse.osee.orcs.rest.model.search.Predicate;
-import org.eclipse.osee.orcs.rest.model.search.SearchFlag;
-import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
-import org.eclipse.osee.orcs.rest.model.search.SearchOp;
+import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchFlag;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchOp;
 
 /**
  * @author John Misinco

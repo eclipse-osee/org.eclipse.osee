@@ -22,5 +22,5 @@ Import-Package: com.google.common.base,
  org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.rest.model,
- org.eclipse.osee.orcs.rest.model.search,
+ org.eclipse.osee.orcs.rest.model.search.artifact,
  org.eclipse.osee.orcs.search

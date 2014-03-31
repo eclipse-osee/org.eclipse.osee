@@ -8,18 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.internal.search.dsl;
+package org.eclipse.osee.orcs.rest.internal.search.artifact.dsl;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.orcs.rest.internal.search.PredicateHandler;
-import org.eclipse.osee.orcs.rest.internal.search.predicate.AttributeTypePredicateHandler;
-import org.eclipse.osee.orcs.rest.internal.search.predicate.ExistsTypePredicateHandler;
-import org.eclipse.osee.orcs.rest.internal.search.predicate.GuidsPredicateHandler;
-import org.eclipse.osee.orcs.rest.internal.search.predicate.IdsPredicateHandler;
-import org.eclipse.osee.orcs.rest.internal.search.predicate.IsOfTypePredicateHandler;
-import org.eclipse.osee.orcs.rest.internal.search.predicate.TypeEqualsPredicateHandler;
-import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.PredicateHandler;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.AttributeTypePredicateHandler;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.ExistsTypePredicateHandler;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.GuidsPredicateHandler;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.IdsPredicateHandler;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.IsOfTypePredicateHandler;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.TypeEqualsPredicateHandler;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
 
 /**
  * @author John R. Misinco

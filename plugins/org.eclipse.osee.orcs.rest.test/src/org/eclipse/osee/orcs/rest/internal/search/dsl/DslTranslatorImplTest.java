@@ -15,10 +15,11 @@ import java.util.Random;
 import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.orcs.rest.model.search.Predicate;
-import org.eclipse.osee.orcs.rest.model.search.SearchFlag;
-import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
-import org.eclipse.osee.orcs.rest.model.search.SearchOp;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.DslTranslatorImpl_V1;
+import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchFlag;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchOp;
 import org.junit.Assert;
 import org.junit.Test;
 

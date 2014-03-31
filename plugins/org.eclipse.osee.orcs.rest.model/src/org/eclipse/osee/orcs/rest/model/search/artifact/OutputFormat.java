@@ -8,26 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.model.search;
-
-import java.util.List;
+package org.eclipse.osee.orcs.rest.model.search.artifact;
 
 /**
  * @author John R. Misinco
- * @author Roberto E. Escobar
  */
-public interface SearchResult {
-
-   int getTotal();
-
-   long getSearchTime();
-
-   String getVersion();
-
-   SearchParameters getSearchParameters();
-
-   List<Integer> getIds();
-
-   List<SearchMatch> getSearchMatches();
-
+public enum OutputFormat {
+   XML
 }

@@ -77,7 +77,7 @@ Import-Package: org.apache.commons.lang;version="2.4.0",
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.plugin.core.util,
  org.eclipse.osee.orcs.rest.client,
- org.eclipse.osee.orcs.rest.model.search
+ org.eclipse.osee.orcs.rest.model.search.artifact
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/*.xml

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.internal.search.predicate;
+package org.eclipse.osee.orcs.rest.internal.search.artifact.predicate;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -18,9 +18,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.orcs.rest.internal.search.PredicateHandler;
-import org.eclipse.osee.orcs.rest.model.search.Predicate;
-import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.PredicateHandler;
+import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**

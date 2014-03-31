@@ -44,8 +44,8 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
-import org.eclipse.osee.orcs.rest.model.search.SearchResponse;
-import org.eclipse.osee.orcs.rest.model.search.SearchResult;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
 
 /**
  * @author Ryan D. Brooks

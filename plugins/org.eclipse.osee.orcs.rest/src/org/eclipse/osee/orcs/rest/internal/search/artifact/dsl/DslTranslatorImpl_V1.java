@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.internal.search.dsl;
+package org.eclipse.osee.orcs.rest.internal.search.artifact.dsl;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -19,10 +19,10 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.rest.model.search.Predicate;
-import org.eclipse.osee.orcs.rest.model.search.SearchFlag;
-import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
-import org.eclipse.osee.orcs.rest.model.search.SearchOp;
+import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchFlag;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchOp;
 
 /**
  * @author John R. Misinco

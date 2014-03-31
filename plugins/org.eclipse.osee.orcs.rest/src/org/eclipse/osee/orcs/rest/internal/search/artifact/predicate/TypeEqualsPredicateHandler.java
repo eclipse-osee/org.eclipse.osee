@@ -8,34 +8,34 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.internal.search.predicate;
+package org.eclipse.osee.orcs.rest.internal.search.artifact.predicate;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.orcs.rest.internal.search.PredicateHandler;
-import org.eclipse.osee.orcs.rest.model.search.Predicate;
-import org.eclipse.osee.orcs.rest.model.search.SearchMethod;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.PredicateHandler;
+import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author John R. Misinco
  * @author Roberto E. Escobar
  */
-public class IsOfTypePredicateHandler implements PredicateHandler {
+public class TypeEqualsPredicateHandler implements PredicateHandler {
 
    @Override
    public QueryBuilder handle(QueryBuilder builder, Predicate predicate) throws OseeCoreException {
-      if (predicate.getType() != SearchMethod.IS_OF_TYPE) {
-         throw new OseeArgumentException("This predicate handler only supports [%s]", SearchMethod.IS_OF_TYPE);
+      if (predicate.getType() != SearchMethod.TYPE_EQUALS) {
+         throw new OseeArgumentException("This predicate handler only supports [%s]", SearchMethod.TYPE_EQUALS);
       }
       Collection<String> values = predicate.getValues();
       Conditions.checkNotNull(values, "values");
       Collection<IArtifactType> artTypes = PredicateHandlerUtil.getIArtifactTypes(values);
       if (!artTypes.isEmpty()) {
-         builder.andIsOfType(artTypes);
+         builder.andTypeEquals(artTypes);
       }
       return builder;
    }

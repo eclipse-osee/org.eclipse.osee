@@ -26,7 +26,7 @@ import org.eclipse.osee.orcs.rest.client.internal.search.QueryBuilderImpl;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutorV1;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
 import org.eclipse.osee.orcs.rest.model.Client;
-import org.eclipse.osee.orcs.rest.model.search.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.rest.client.WebClientProvider;
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.UniformInterfaceException;

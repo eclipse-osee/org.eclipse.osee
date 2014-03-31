@@ -8,13 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.model.search;
+package org.eclipse.osee.orcs.rest.internal.search.artifact.dsl;
+
+import java.util.List;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 
 /**
  * @author John R. Misinco
  */
-public enum RequestType {
-   COUNT,
-   IDS,
-   MATCHES;
+public interface DslTranslator {
+
+   List<Predicate> translate(String rawString) throws OseeCoreException;
+
 }

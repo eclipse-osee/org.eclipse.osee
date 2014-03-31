@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.orcs.rest.model.search.RequestType;
-import org.eclipse.osee.orcs.rest.model.search.SearchResult;
+import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
 
 /**
  * @author Ryan D. Brooks

@@ -8,11 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.model.search;
+package org.eclipse.osee.orcs.rest.internal.search.artifact;
+
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author John R. Misinco
+ * @author Roberto E. Escobar
  */
-public enum OutputFormat {
-   XML
+public interface PredicateHandler {
+   QueryBuilder handle(QueryBuilder builder, Predicate predicate) throws OseeCoreException;
 }

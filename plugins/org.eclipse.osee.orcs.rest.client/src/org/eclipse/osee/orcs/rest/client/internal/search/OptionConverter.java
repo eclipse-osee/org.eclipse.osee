@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.orcs.rest.client.internal.search.PredicateFactoryImpl.RestSearchOptions;
-import org.eclipse.osee.orcs.rest.model.search.SearchFlag;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchFlag;
 
 /**
  * @author Roberto E. Escobar

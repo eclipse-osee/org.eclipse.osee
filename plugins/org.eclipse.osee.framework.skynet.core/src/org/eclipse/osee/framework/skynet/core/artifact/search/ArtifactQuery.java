@@ -64,10 +64,10 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
-import org.eclipse.osee.orcs.rest.model.search.RequestType;
-import org.eclipse.osee.orcs.rest.model.search.SearchMatch;
-import org.eclipse.osee.orcs.rest.model.search.SearchParameters;
-import org.eclipse.osee.orcs.rest.model.search.SearchResult;
+import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMatch;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchParameters;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
 
 /**
  * @author Ryan D. Brooks

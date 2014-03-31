@@ -8,16 +8,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.internal.search;
+package org.eclipse.osee.orcs.rest.model.search.artifact;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.orcs.rest.model.search.Predicate;
-import org.eclipse.osee.orcs.search.QueryBuilder;
+import java.util.List;
 
 /**
  * @author John R. Misinco
  * @author Roberto E. Escobar
  */
-public interface PredicateHandler {
-   QueryBuilder handle(QueryBuilder builder, Predicate predicate) throws OseeCoreException;
+public interface SearchResult {
+
+   int getTotal();
+
+   long getSearchTime();
+
+   String getVersion();
+
+   SearchParameters getSearchParameters();
+
+   List<Integer> getIds();
+
+   List<SearchMatch> getSearchMatches();
+
 }

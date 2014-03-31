@@ -62,4 +62,5 @@ public class BranchResource {
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(results);
    }
+
 }

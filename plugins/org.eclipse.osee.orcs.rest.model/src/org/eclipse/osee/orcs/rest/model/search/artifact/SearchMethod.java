@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.model.search;
+package org.eclipse.osee.orcs.rest.model.search.artifact;
 
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -17,14 +17,18 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  * @author John R. Misinco
  * @author Roberto E. Escobar
  */
-public enum SearchFlag {
-   MATCH_CASE("mc"),
-   MATCH_TOKEN_COUNT("mtc"),
-   MATCH_TOKEN_ORDER("mto");
+public enum SearchMethod {
+   IDS("ids"),
+   GUIDS("guids"),
+   IS_OF_TYPE("isOfType"),
+   TYPE_EQUALS("typeEquals"),
+   EXISTS_TYPE("exists"),
+   ATTRIBUTE_TYPE("attrType"),
+   RELATED_TO("related");
 
    private final String token;
 
-   private SearchFlag(String token) {
+   private SearchMethod(String token) {
       this.token = token;
    }
 
@@ -32,15 +36,14 @@ public enum SearchFlag {
       return token;
    }
 
-   public static SearchFlag fromString(String value) throws OseeCoreException {
-      SearchFlag toReturn = null;
-      for (SearchFlag op : SearchFlag.values()) {
+   public static SearchMethod fromString(String value) throws OseeCoreException {
+      SearchMethod toReturn = null;
+      for (SearchMethod op : SearchMethod.values()) {
          if (op.getToken().equals(value)) {
             toReturn = op;
-            break;
          }
       }
-      Conditions.checkNotNull(toReturn, "SearchFlag", "Invalid flag [%s]", value);
+      Conditions.checkNotNull(toReturn, "SearchMethod", "Invalid type [%s]", value);
       return toReturn;
    }
 }

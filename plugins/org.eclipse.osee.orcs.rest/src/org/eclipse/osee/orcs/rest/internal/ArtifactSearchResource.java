@@ -15,8 +15,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.orcs.rest.internal.search.ArtifactSearch;
-import org.eclipse.osee.orcs.rest.internal.search.ArtifactSearch_V1;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.ArtifactSearch;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.ArtifactSearch_V1;
 
 /**
  * @author Roberto E. Escobar

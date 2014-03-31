@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.model.search;
+package org.eclipse.osee.orcs.rest.model.search.artifact;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.internal.search;
+package org.eclipse.osee.orcs.rest.internal.search.artifact;
 
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;

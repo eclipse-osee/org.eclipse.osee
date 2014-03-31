@@ -14,7 +14,7 @@ Import-Package: com.sun.jersey.api.client,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.orcs.rest.model,
- org.eclipse.osee.orcs.rest.model.search,
+ org.eclipse.osee.orcs.rest.model.search.artifact,
  org.eclipse.osee.rest.client
 Export-Package: org.eclipse.osee.orcs.rest.client
 Bundle-ActivationPolicy: lazy
