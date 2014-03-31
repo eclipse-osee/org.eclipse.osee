@@ -7,8 +7,6 @@ Bundle-Activator: org.eclipse.osee.framework.jini.JiniPlugin
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.framework.jini,
  org.eclipse.osee.framework.jini.discovery,
- org.eclipse.osee.framework.jini.event,
- org.eclipse.osee.framework.jini.event.old,
  org.eclipse.osee.framework.jini.lease,
  org.eclipse.osee.framework.jini.service.core,
  org.eclipse.osee.framework.jini.service.directory.service,
