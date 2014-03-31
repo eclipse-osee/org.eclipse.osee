@@ -11,6 +11,7 @@
 package org.eclipse.osee.disposition.rest.util;
 
 import java.util.ArrayList;
+
 import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
@@ -24,7 +25,12 @@ public final class TemplateRegistry {
    private static final ArrayList<ResourceToken> tokens = new ArrayList<ResourceToken>();
 
    // @formatter:off
-   public static final ResourceToken DispositionHtml = createToken(0x4000000000000FFL, "disposition.html");
+   public static final ResourceToken DispositionHtml = createToken(0x4000000000000FFL, "dispositionOld.html");
+   public static final ResourceToken DispositionUserHtml = createToken(0x4000000000001FAL, "dispo.html");
+   public static final ResourceToken DispositionAdminHtml = createToken(0x4000000000002EAL, "dispoAdmin.html");
+   public static final ResourceToken dispoStyles = createToken(0x4000000000000019L, "dispoStyles.css");
+   public static final ResourceToken dispoAdminStyles = createToken(0x4000000000000029L, "dispoAdminStyles.css");
+   public static final ResourceToken dispoScript = createToken(0x4000000000000020L, "dispoScript.js");
    // @formatter:on
 
    private static ResourceToken createToken(Long uuid, String name) {

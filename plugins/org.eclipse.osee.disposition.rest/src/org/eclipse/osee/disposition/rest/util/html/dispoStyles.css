@@ -1,0 +1,210 @@
+body{
+	background-color: #DCDCDC;
+}
+#waitBlanket {
+	background-color: rgba(45, 45, 51, 0.61);
+	position: absolute;
+	z-index: 9001;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+}
+#waitText {
+	background-color: #FFF;
+	width: 200px;
+	height: 50px;
+	font-size: 30px;
+	text-align: center;
+	margin: 10% 0% 0% 50%;
+	position: relative;
+}
+#all {
+	width: 1500px;
+	position: relative;
+}
+#topSection {
+}
+#selectDiv {
+    height: 100px;
+}
+#programSelectDiv {
+    height: 100px;
+    width: 35%;
+    float: left;
+}
+#programSelect {
+    width: 250px;
+    margin:-20px 0px 0px 0px;
+    background-color: rgb(145, 198, 200);
+}
+#programSelectPrompt {
+    margin:0px;
+}
+#setSelectDiv {
+	width: 65%;
+	height: 100px;
+	float: right;
+}
+#statusSelect {
+	height: 100%;
+	width: 100%;
+	border: none;
+	background-color: grey;
+	font-weight: bolder;
+}
+#pocSelect {
+	height: 100%;
+	width: 75%;
+	border: none;
+	background-color: grey;
+	font-weight: bolder;
+}
+#setSelect {
+	width: 250px;
+	margin: -30px 10px;
+    background-color: rgb(145, 198, 200);
+}
+#setSelect2 {
+    width: 250px;
+    margin:-10px 0px 0px 10px;
+    background-color: rgb(145, 198, 200);
+}
+#setSelectPrompt {
+	margin: 0px 10px;
+}
+#compareText {
+	width: 110px;
+	margin: 0px 0px 0px 75px;
+	border-style: solid;
+	border-width: 1px;
+	text-align: center;
+	background-color: #B0E0E6;
+}
+#dispoTable {
+    background-color: white;
+    border: 5px solid black;
+}
+th {
+    background-color: #969AA0;
+}
+
+.subTable {
+	border-spacing: 1px;
+	background-color: #FFF;
+	border: 1px solid #000;
+}
+
+td {
+   border: 1px solid black;
+}
+
+.itemData {
+   overflow: hidden;
+   white-space: nowrap;
+   max-width:50px;
+	height:30px;
+   background-color: white;
+}
+.itemDataFail {
+   overflow: hidden;
+   white-space: nowrap;
+   max-width:50px;
+	height:30px;
+   background-color: yellow;
+}
+
+.itemData:active {
+	overflow: visible;
+	white-space: pre-line;
+}
+
+input:disabled {
+    background-color: #D3DFE0;	
+}
+.spacer {
+    background-color: white;
+}
+.emptyCell {
+    height:30px;
+    background-color: rgb(200, 200, 200);
+}
+.annotationData {
+    background-color: #9AEAF5;
+}
+.emptyAnnotation {
+    height:20px;
+    background-color: #9AEAF5;
+}
+textarea {
+	resize: none;
+}
+.annotationInput {
+    border: none;
+    height: 28px;
+    width: 100%;
+    -webkit-box-sizing: border-box; /* <=iOS4, <= Android  2.3 */
+       -moz-box-sizing: border-box; /* FF1+ */
+            box-sizing: border-box; /* Chrome, IE8, Opera, Safari 5.1*/
+	background-color: #9AEAF5;
+}
+.annotationInputInvalid {
+    height: 28px;
+    width: 100%;
+    -webkit-box-sizing: border-box; /* <=iOS4, <= Android  2.3 */
+       -moz-box-sizing: border-box; /* FF1+ */
+            box-sizing: border-box; /* Chrome, IE8, Opera, Safari 5.1*/
+	background-color: #9AEAF5;
+	border: 4px solid red;
+}
+.annotationInputError {
+    border: none;
+    height: 28px;
+    width: 100%;
+    -webkit-box-sizing: border-box; /* <=iOS4, <= Android  2.3 */
+       -moz-box-sizing: border-box; /* FF1+ */
+            box-sizing: border-box; /* Chrome, IE8, Opera, Safari 5.1*/
+	background-color: red;
+}
+.annotationInput:disabled {
+    background-color: #D3DFE0;	
+}
+.annotationInputDisabled {
+    border: none;
+    height: 28px;
+    width: 100%;
+    -webkit-box-sizing: border-box; /* <=iOS4, <= Android  2.3 */
+       -moz-box-sizing: border-box; /* FF1+ */
+            box-sizing: border-box; /* Chrome, IE8, Opera, Safari 5.1*/
+    background-color: #D3DFE0;	
+}
+.annotationInputDisabled:focus {
+	outline: 0px none rgba(0, 0, 0, 0);
+}
+.annotationInput:focus {
+	border: 2px dashed green;
+}
+.annotationInputInvalid:focus {
+	border: 2px dashed red;
+}
+.annotationInputDetails {
+    width:98%;
+    height: 200px;
+    background-color: red;
+	overflow: visible;
+	white-space: pre-line;
+}
+.annotationInputInvalidDetails {
+    width:98%;
+    background-color: #DD9AF5;
+	overflow: visible;
+	white-space: pre-line;
+}
+.annotationDelete {
+	 height:20px;
+	 font-weight:bold;
+}
+
+.annotationDelete:disabled {
+	 background-color: #CC7A7A;
+}

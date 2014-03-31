@@ -1,0 +1,386 @@
+<?include path="4000000000000000 pageDeclaration.html" ?>
+    
+    <head>
+        <base href="http://<?serverPort?>/dispo/init" target="_self"></base>
+        <style>
+            <?include path="4000000000000029 dispoAdminStyles.css"?>
+        </style>
+    </head>
+
+<body onload="setUpUndoCatch(); getPrograms();">
+	<div id="blanket" style="display:none"></div>
+		<div id="waitBlanket" style="display:none"><div id="waitText">Please Wait...</div></div>
+	<div id="setCreateDiv" style="display:none;">
+			Set Name: <input id="setNameInput" type="text" name="setName" value=""><br>
+			Set Path: <input id="setPathInput" type="text" name="path" value=""><br>
+			<button id="submitCreateSet" value="Submit" onclick="setCreateSubmit();">Submit</button>
+			<button id="cancelCreateSet" value="Cancel" onclick="setCreateClose();">Cancel</button>
+	</div>
+    <div id="all">
+        <div id="choices">
+            <ul style="list-style-type: none;">
+                <li> <a href="">Admin</a>
+ <a href="init">User</a>
+
+                </li>
+            </ul>
+        </div>
+        <div id="userInput">
+            <div id="programSelectDiv">
+                <p id="programSelectPrompt">Select ATS Version</p>
+                <select id="programSelect" onchange="getProgramDetails(this);">
+                       <option selected disabled>Choose one</option>
+                </select>
+            </div>
+            <div id="setControls">
+                <div id="setOperationContainer">
+                    <button disabled="true" id="setOperation" onclick="doImport()">Import</button>
+                </div>
+                <div id="setManageContainer">
+                    <div id="createSetContainer">
+                        <button disabled="true" id="setCreate" onclick="bringUpNamePrompt();">Create New Set</button>
+                    </div>
+                    <div id="setsTableContainer">
+                        <table class="emptySetsTable" id="setsTable">
+                            <tbody>
+                                <tr id="headerRow">
+                                    <th>Name</th>
+                                    <th>Summary</th>
+                                </tr>
+                            </tbody>
+                            <tbody id="setsTableBody">
+                                <tr>
+                                    <td class="setsTableData"></td>
+                                    <td class="setsTableData"></td>
+                                </tr>
+                                <tr>
+                                    <td class="setsTableData"></td>
+                                    <td class="setsTableData"></td>
+                                </tr>
+                                <tr>
+                                    <td class="setsTableData"></td>
+                                    <td class="setsTableData"></td>
+                                </tr>
+                                <tr>
+                                    <td class="setsTableData"></td>
+                                    <td class="setsTableData"></td>
+                                </tr>
+                                <tr>
+                                    <td class="setsTableData"></td>
+                                    <td class="setsTableData"></td>
+                                </tr>
+                                <tr>
+                                    <td class="setsTableData"></td>
+                                    <td class="setsTableData"></td>
+                                </tr>
+                                <tr>
+                                    <td class="setsTableData"></td>
+                                    <td class="setsTableData"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+       var programSelect = document.getElementById("programSelect");
+    	 var createSetDiv = document.getElementById("setCreateDiv");
+       var waitBlanket = document.getElementById("waitBlanket");
+       var lastFocusedSet = "";
+       var path = "http://<?serverPort?>/dispo/program/";
+    </script>
+    <script>
+  		function setUpUndoCatch() {
+  		    document.onkeydown = keyPress;
+  		}
+    </script> 
+   <script>
+    	 function setFocused(element) {
+			 if(lastFocusedSet == "") {
+			 	lastFocusedSet = element;
+			 } else {
+			 	 lastFocusedSet.className = "setsTableDataInput";
+			 	 lastFocusedSet = element;
+			 }
+			 lastFocusedSet.className = "setsTableDataInputFocused";
+    	 }
+    </script>
+    <script>
+    	 function doImport() {
+    	 	var focuesedRow = document.activeElement;
+    	 	var lastFocusedRow = lastFocusedSet.parentNode.parentNode;
+			 var setToImportId = lastFocusedRow.id;
+			 
+			 if(setToImportId != "") {
+    	 	     var operationKey = "operation";
+
+				  var jsonObject  = {};
+			     jsonObject[operationKey] = "Re_Import";
+			     		     
+              var jsonStringParam = JSON.stringify(jsonObject);
+              
+              var programSelect = document.getElementById("programSelect");
+              var selectedProgramIndex = programSelect.selectedIndex;
+              var programId = programSelect.options[selectedProgramIndex].value;
+
+              var fullPath = path.concat(programId, "/set/", setToImportId);
+              
+              put(fullPath, jsonStringParam, putSetStatusHandler, lastFocusedRow);			 		
+			 }		 
+    	 }
+    </script>
+    <script>
+    function getPrograms() {
+        if (programSelect.length < 2) {
+            get(path, getAllProgramsStatusHandler, programSelect);
+        }
+    }
+</script>
+<script>
+    function getProgramDetails(programSelect) {
+        var selectedIndex = programSelect.selectedIndex;
+        var programId = programSelect.options[selectedIndex].value;
+
+        var fullPath = path.concat(programId, "/set/admin");
+        get(fullPath, getProgramAdminStatusHandler, programSelect);
+    }
+</script>
+    <script>
+        function setCreateClose() {
+            var blanketEl = document.getElementById("blanket");
+            blanketEl.removeChild(createSetDiv);
+				blanketEl.style.display = 'none';
+            createSetDiv.style.display = 'none';
+        }
+    </script>
+    <script>
+        function bringUpNamePrompt() {
+            var blanketEl = document.getElementById("blanket");
+            blanketEl.appendChild(createSetDiv);
+				blanketEl.style.display = 'block';
+            createSetDiv.style.display = 'block';
+            
+           var setName = document.getElementById("setNameInput");
+    	 	  var setPath = document.getElementById("setPathInput");
+    	 	  
+    	 	  setName.value = "";
+    	 	  setPath.value = "";
+        }
+    </script>
+    <script>
+    	 function setCreateSubmit() {
+    	 	  var setName = document.getElementById("setNameInput").value;
+    	 	  var setPath = document.getElementById("setPathInput").value;
+    	 	  
+    	 	  if(setName == "" || setPath == "") {
+    	 	  
+    	 	  }
+    	 	  else {
+    	 	  	  setCreateClose();
+    	 	     var nameKey = "name";
+    	 	     var pathKey = "importPath";
+
+				  var jsonObject  = {};
+			     jsonObject[nameKey] = setName;
+			     jsonObject[pathKey] = setPath;	
+			     		     
+              var jsonStringParam = JSON.stringify(jsonObject);
+              
+              var programSelect = document.getElementById("programSelect");
+              var selectedProgramIndex = programSelect.selectedIndex;
+              var programId = programSelect.options[selectedProgramIndex].value;
+
+              var fullPath = path.concat(programId, "/set/");
+              
+              post(fullPath, jsonStringParam, postSetStatusHandler, "");
+    	 	  }
+    	 }
+    </script>
+    <script>
+    function getProgramAdminStatusHandler(setSelectEl) {
+        return function() {
+        		if(this.readyState == 1) {
+        		     waitBlanket.style.display = 'block';
+        		}
+            if (this.readyState == 4) {
+                waitBlanket.style.display = 'none';
+                
+                var responseHTML = this.responseText;
+                var setsTableBody = document.getElementById("setsTableBody");
+                setsTableBody.innerHTML = responseHTML;
+                
+                // check to see if there are any sets, if so change the class from emptySetsTable
+                var setsTable = document.getElementById("setsTable");
+                if(setsTableBody.rows[0].id != "") {
+                	setsTable.className = "setsTable";
+                } else {
+                  setsTable.className = "emptySetsTable";
+                }
+                
+                // Enable create set and import buttons
+                var setCreateButton = document.getElementById("setCreate");
+                setCreateButton.disabled=false;
+                var setOperationButton = document.getElementById("setOperation");
+                setOperationButton.disabled=false;
+            }
+        };
+    }
+	</script>
+    <script>
+        function postSetStatusHandler(noParam) {
+            return function() {
+        		if(this.readyState == 1) {
+        		     waitBlanket.style.display = 'block';
+        		}            
+             if (this.readyState == 4) {
+                 waitBlanket.style.display = 'none';
+                 
+                var setsTable = document.getElementById("setsTable");
+                setsTable.className = "setsTable";
+                
+                
+             	  var setObject = eval('(' + this.responseText + ')');
+             	  
+                 var rows = setsTable.rows;
+                 var index = 1;
+                 var nextFreeRow = -1;
+                 while(index < rows.length && nextFreeRow == -1) {
+                 		var cell = rows[index].cells[0];
+                 		if(cell.innerHTML == "") {
+                 			nextFreeRow = index;
+                 		} 
+                 		index++;
+                 }
+                 
+                 if(nextFreeRow == -1) {
+             			var newRow = setsTable.insertRow(rows.length);
+             			newRow.id = setObject.guid;
+             			var nameCell = newRow.insertCell(0);
+							var summaryCell = newRow.insertCell(1);
+							
+							var nameInput = document.createElement("input");
+							nameInput.className = "setsTableDataInput";
+							nameInput.value = setObject.name;
+	          			nameInput.setAttribute('onclick', 'setFocused(this)');
+							nameCell.appendChild(nameInput);
+							nameCell.className = "setsTableData";
+							
+							summaryCell.innerHTML = "No Import";	// change to summary field
+							summaryCell.className = "setsTableData";
+							
+							setFocused(nameInput);
+							
+                 } else {
+                 	  var nameInput = document.createElement("input");
+                 	  nameInput.value = setObject.name;
+                 	  nameInput.className = "setsTableDataInput";
+                 	  nameInput.setAttribute('onclick', 'setFocused(this)');
+	                 rows[nextFreeRow].cells[0].appendChild(nameInput);
+	                 rows[nextFreeRow].cells[1].innerHTML = "No Import";
+	                 rows[nextFreeRow].id = setObject.guid;
+	                 setFocused(nameInput);
+	              }
+             }
+         };
+        }
+    </script>
+<script>
+	function putSetStatusHandler(rowImported) {
+		return function() {
+				var selectedInput = rowImported.cells[0].firstChild;
+		      if(this.readyState == 1) {
+						selectedInput.className = "setsTableDataInputImporting";
+						selectedInput.setAttribute('onclick', '');
+						rowImported.cells[1].innerHTML = "...IMPORTING...";
+        		} 
+        		if(this.readyState == 4) {	
+        			 selectedInput.className = "setsTableDataInput";
+        			 selectedInput.setAttribute('onclick', 'setFocused(this)');
+					 getSet(rowImported);
+        		}
+        	};
+	}
+</script>
+    
+    <script>
+     		function keyPress(e) {
+     			   var evtobj = window.event? event : e
+   				if (evtobj.keyCode == 90 && evtobj.ctrlKey)  {
+   					alert("Ctrl+z");
+   				}
+     		}
+     </script>
+    <script>
+    		function getSet(setRow) {
+    		     var programSelect = document.getElementById("programSelect");
+              var selectedProgramIndex = programSelect.selectedIndex;
+              var programId = programSelect.options[selectedProgramIndex].value;
+
+              var fullPath = path.concat(programId, "/set/", setRow.id);
+              
+              get(fullPath, getSetStatusHandler, setRow);
+    		}
+    </script>
+    
+    <script>
+	    function getSetStatusHandler(setRow) {
+	        return function() {
+	            if (this.readyState == 4 && this.status==200) {
+	                var setObject = eval('(' + this.responseText + ')');
+	                
+	                var summary = "".concat(setObject.itemsIncomplete, " left");
+	                setRow.cells[1].innerHTML = summary;
+	            }
+	        };
+	    }
+	</script>
+   <script>
+    function getAllProgramsStatusHandler(unusedParam) {
+        return function() {
+            if (this.readyState == 4) {
+                var responseHTML = this.responseText;
+                programSelect.innerHTML = responseHTML;
+            }
+        };
+    }
+</script>
+<script>
+    function put(url, params, statusHandler, callbackParam) {
+        httpRequestWithParams("PUT", url, params, statusHandler, callbackParam);
+    }
+</script>
+    <script>
+    function get(url, statusHandler, callbackParam) {
+        httpRequest("GET", url, statusHandler, callbackParam);
+    }
+</script>
+    <script>
+        function post(url, params, statusHandler, callbackParam) {
+            httpRequestWithParams("POST", url, params, statusHandler, callbackParam);
+        }
+    </script>
+    <script>
+        function httpRequestWithParams(httpVerb, url, params, statusHandler, callbackParam) {
+            var httpRequest = new XMLHttpRequest()
+            httpRequest.prevDataLength = 0;
+            httpRequest.onreadystatechange = statusHandler(callbackParam);
+            httpRequest.open(httpVerb, url);
+            //Send the proper header information along with the request
+            httpRequest.setRequestHeader("Content-type", "application/json");
+
+            httpRequest.send(params);
+        }
+    </script>
+    <script>
+    function httpRequest(httpVerb, url, statusHandler, callbackParam) {
+        var httpRequest = new XMLHttpRequest()
+        httpRequest.prevDataLength = 0;
+        httpRequest.onreadystatechange = statusHandler(callbackParam);
+        httpRequest.open(httpVerb, url);
+        httpRequest.send();
+    }
+</script>
+    
+</body>

@@ -1,0 +1,44 @@
+<?include path="4000000000000000 pageDeclaration.html"?>
+   <head>
+      <title><?title?></title>
+	<style>
+		<?include path="4000000000000019 dispoStyles.css"?>
+	</style>
+   </head>
+   <body>
+      <div id="all">
+         <div id="choices">
+            <ul style= "list-style-type: none;">
+               <li>
+                  <a href="">Admin</a>
+                  <a href="/user/">User</a>
+               </li>
+            </ul>
+         </div>
+         <div id="userSection">
+            <center>
+               <h2>Disposition</h2>
+            </center>
+            <p align="right"><?notes?></p>
+            <div id ="dispoSection" style="width:1000px;overflow:auto;">
+               <table id="dispoTable" width="1000" border="5">
+                  <tr>
+                     <th width="300" style="background-color: #969AA0">Script Name</th>
+                     <th width="120" style="background-color: #969AA0">Status</th>
+                     <th width="100" style="background-color: #969AA0">Total Points</th>
+                     <th width="100" style="background-color: #969AA0">Failures</th>
+                     <th width="600" style="background-color: #969AA0">Points</th>
+                     <th width="200" style="background-color: #969AA0">POC</th>
+                     <th width="150" style="background-color: #969AA0">Version</th>
+                  </tr>
+                  <?tableData?>
+               </table>
+            </div>
+         </div>
+      </div>
+     	<script type="text/javascript">
+     			<?javaScript?>
+		<?include path="4000000000000002 OseeCore.js"?>
+	</script>
+   </body>
+</html>

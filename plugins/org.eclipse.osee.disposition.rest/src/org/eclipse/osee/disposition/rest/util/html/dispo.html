@@ -1,0 +1,821 @@
+<?include path="4000000000000000 pageDeclaration.html" ?>
+    
+    <head>
+    	  <base href="http://<?serverPort?>/dispo/init" target="_self"></base>
+        <style>
+            <?include path="4000000000000019 dispoStyles.css"?>
+        </style>
+    </head>
+    
+    <body onload="setUpUndoCatch(); getPrograms();">
+    			<div id="waitBlanket" style="display:none"><div id="waitText">Please Wait...</div></div>
+        <div id="all">
+            <div id="choices">
+                <ul style="list-style-type: none;">
+                    <li> 
+                    		 <a href="admin">Admin</a>
+ 								 <a href="">User</a>
+                    </li>
+                </ul>
+            </div>
+            <div id="userSection">
+                <div id="topSection">
+                    <div id="selectDiv">
+                        <div id="programSelectDiv">
+                            <p id="programSelectPrompt">Please Select ATS Version</p>
+                            <select id="programSelect" onfocus="getPrograms(this)" onchange="getProgramDetails(this)">
+                                <option selected disabled>Choose one</option>
+                            </select>
+                        </div>
+                        <div id="setSelectDiv">
+                            <p id="setSelectPrompt">Please Select a Set</p>
+                            <select id="setSelect" onchange="getSetTable(this)">
+                                <option selected disabled>Choose one</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="dispoSection">
+                    <table id="dispoTable">
+                        <tr>
+                            <th width="400" style="background-color: #969AA0">Script Name</th>
+									 <th width="130" style="background-color: #969AA0">
+									 		<select id="statusSelect" onchange="getItemsFiltered(this)">
+									 				<option selected="" disabled="">Status</option>
+									 				<option>COMPLETE</option>
+									 				<option>INCOMPLETE</option>
+									 				<option>PASS</option>
+									 				<option>ALL</option>
+									 		</select></th>
+                            <th width="75" style="background-color: #969AA0">Total</th>
+                            <th width="75" style="background-color: #969AA0">Failures</th>
+                            <th width="600" style="background-color: #969AA0">Points</th>
+									 <th width="200" style="background-color: #969AA0">POC:
+									 		<input id="pocSelect" onchange="getPocFiltered(this)"></select></th>
+                            <th width="150" style="background-color: #969AA0">Version</th>
+                        </tr>
+                        <tbody id="dispoTableBody">
+                            <tr class="itemRow">
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                            </tr>
+                            <tr class="itemRow">
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                            </tr>
+                            <tr class="itemRow">
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                            </tr>
+                            <tr class="itemRow">
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                            </tr>
+                            <tr class="itemRow">
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                            </tr>
+                            <tr class="itemRow">
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                            </tr>
+                            <tr>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                            </tr>
+                            <tr>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <script>
+        			 var userName = "";
+        	       var programSelect = document.getElementById("programSelect");
+        	       var setSelect = document.getElementById("setSelect");
+        	       var path = "http://<?serverPort?>/dispo/program/";
+        	       var cellsToValueSubTable = ["locationRefs", "resolution", "notes"];
+        	       var cellsToValueMainTable = ["itemName", "status", "totalPoints", "failures", "discrepancyLocations", "POC", "version"];
+        	       var dispoTableBody = document.getElementById("dispoTableBody");
+        	       var dispoTable = document.getElementById("dispoTable");
+        	       var waitBlanket = document.getElementById("waitBlanket");
+        	       var pocSelect = document.getElementById("pocSelect");
+        	       var statusSelect = document.getElementById("statusSelect");
+        </script>
+        <script>
+        		function setUpUndoCatch() {
+        		    document.onkeydown = keyPress;
+        		}
+        </script>
+        <script>
+            function getSetTable(setSelect) {
+                var selectedSetIndex = setSelect.selectedIndex;
+                var setId = setSelect.options[selectedSetIndex].value;
+
+                var selectedProgramIndex = programSelect.selectedIndex;
+                var programId = programSelect.options[selectedProgramIndex].value;
+
+                var fullPath = path.concat(programId, "/set/", setId, "/item/");
+                get(fullPath, setTableStatusHandler, "");
+            }
+        </script>
+        <script>
+            function getPrograms() {
+                if (programSelect.length < 2) {
+                    get(path, getAllProgramsStatusHandler, programSelect);
+                }
+            }
+        </script>
+        <script>
+            function getProgramDetails(programSelect) {
+                var selectedIndex = programSelect.selectedIndex;
+                var programId = programSelect.options[selectedIndex].value;
+
+                var fullPath = path.concat(programId, "/set/");
+                get(fullPath, getProgramStatusHandler, programSelect);
+            }
+        </script>
+        <script>
+        		function getItemsFiltered() {
+                var filterSelectedIndex = statusSelect.selectedIndex;
+                var filterValue = statusSelect.options[filterSelectedIndex].value;
+                
+                //get(fullPath, setTableStatusHandler, programSelect);
+                doFilter();
+        		}
+        </script>
+        <script>
+        		function getPocFiltered() {
+        			 //first get all available choices
+                var filterValue = pocSelect.value;
+                
+                //get(fullPath, setTableStatusHandler, programSelect);
+                doFilter();
+        		}
+        </script>
+        <script>
+            function showAnnotations(currentRow) {
+					if(userName =="") {
+							var nameEnter=prompt("Please enter your name","Angel Avila");
+							userName = nameEnter;
+					}
+					
+            	var pocCell = currentRow.cells[5];
+            	var currentAssigned = pocCell.innerHTML; 
+	            if(userName == currentAssigned) {
+	                var currentRowIndex = currentRow.rowIndex;
+	                var nextRow = dispoTable.rows[currentRowIndex + 1];
+	
+						 if (nextRow === undefined) {
+						 	nextRow = dispoTable.insertRow(currentRowIndex + 1);
+						 }
+	                if (nextRow.className == "containerRow") {
+	                    if (nextRow.style.display == "none") {
+	                        nextRow.style.display = "";
+	                    } else {
+	                        nextRow.style.display = "none";
+	                    }
+	                } else {
+	                    var itemId = currentRow.id;
+	                    getSubTableHTML(currentRow, itemId);
+	                }
+	            } else {
+	            		changePOC(currentRow, currentAssigned);
+	            }
+            }
+        </script>
+        <script>
+            function changePOC(currentRow, currentAssigned) {
+            
+            	var confirmSteal=confirm("Are you sure you want to steal this Item from user " + currentAssigned);
+            	
+            	if(confirmSteal) {
+	                var selectedProgramIndex = programSelect.selectedIndex;
+	                var programId = programSelect.options[selectedProgramIndex].value;
+	
+	                var selectedSetIndex = setSelect.selectedIndex;
+	                var setId = setSelect.options[selectedSetIndex].value;
+	
+	                var itemId = currentRow.id;
+	
+	                var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId);
+	                
+	                var jsonObject = {};
+	                jsonObject["assignee"] = userName;
+	                var params = JSON.stringify(jsonObject);
+	
+	                put(fullPath, params, putItemStatusHandler, currentRow);
+	            }          		
+            }
+        </script>
+        <script>
+            function getSubTableHTML(currentRow, itemId) {
+                var selectedProgramIndex = programSelect.selectedIndex;
+                var programId = programSelect.options[selectedProgramIndex].value;
+
+                var selectedSetIndex = setSelect.selectedIndex;
+                var setId = setSelect.options[selectedSetIndex].value;
+
+                var itemId = currentRow.id;
+                var currentRowIndex = currentRow.rowIndex;
+
+                var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId, "/annotation/");
+
+                get(fullPath, subTableStatusHandler, currentRowIndex);
+            }
+        </script>
+        <script>
+            function submitAnnotationData(selectedElement) {
+                var selectedElementCell = selectedElement.parentNode;
+                var annotationRow = selectedElementCell.parentNode;
+
+                var isValidInput = true;
+
+                if (selectedElementCell.cellIndex == 0) {
+                    var input = selectedElement.value;
+                    var regEx = new RegExp("^\\s*(\\d+|\\d+\\s*-\\s*\\d+)(\\s*,\\s*(\\d+|\\s*\\d+\\s*-\\s*\\d+))*\\s*$");
+                    isValidInput = regEx.test(input)
+                }
+
+                if (isValidInput) {
+                    if (annotationRow.id == "") {
+                        postAnnotation(selectedElement);
+                    } else {
+                        putAnnotation(selectedElement, annotationRow.id);
+                    }
+                }
+            }
+        </script>
+        <script>
+            function postAnnotation(selectedElement) {
+                var locRef = selectedElement.value;
+                var annotationJson = {
+                    "locationRefs": locRef
+                };
+
+                var params = JSON.stringify(annotationJson);
+
+                var selectedProgramIndex = programSelect.selectedIndex;
+                var programId = programSelect.options[selectedProgramIndex].value;
+
+                var selectedSetIndex = setSelect.selectedIndex;
+                var setId = setSelect.options[selectedSetIndex].value;
+
+                var containerRow = selectedElement.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+                var itemRow = dispoTable.rows[containerRow.rowIndex - 1];
+                var itemId = itemRow.id;
+
+                var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId, "/annotation/");
+
+                post(fullPath, params, postAnnotationStatusHandler, selectedElement);
+            }
+        </script>
+        <script>
+            function putAnnotation(selectedElement, annotationId) {
+                var cellIndex = selectedElement.parentNode.cellIndex;
+                var value = selectedElement.value;
+                var key = cellsToValueSubTable[cellIndex];
+
+                var jsonObject = {};
+                jsonObject[key] = value;
+
+                var params = JSON.stringify(jsonObject);
+
+                var selectedProgramIndex = programSelect.selectedIndex;
+                var programId = programSelect.options[selectedProgramIndex].value;
+
+                var selectedSetIndex = setSelect.selectedIndex;
+                var setId = setSelect.options[selectedSetIndex].value;
+
+                var containerRow = selectedElement.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+                var itemRow = dispoTable.rows[containerRow.rowIndex - 1];
+                var itemId = itemRow.id;
+
+                var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId, "/annotation/", annotationId);
+
+                put(fullPath, params, putAnnotationStatusHandler, selectedElement);
+            }
+        </script>
+        <script>
+            function deleteAnnotation(button) {
+                var selectedProgramIndex = programSelect.selectedIndex;
+                var programId = programSelect.options[selectedProgramIndex].value;
+
+                var selectedSetIndex = setSelect.selectedIndex;
+                var setId = setSelect.options[selectedSetIndex].value;
+
+                var containerRow = button.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+                var itemRow = dispoTable.rows[containerRow.rowIndex - 1];
+                var itemId = itemRow.id;
+
+                var annotationId = button.parentNode.parentNode.id;
+
+                var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId, "/annotation/", annotationId);
+                doDelete(fullPath, delAnnotationStatusHandler, button);
+            }
+        </script>
+        <script>
+            function getAnnotation(annotationRow) {
+                var selectedProgramIndex = programSelect.selectedIndex;
+                var programId = programSelect.options[selectedProgramIndex].value;
+
+                var selectedSetIndex = setSelect.selectedIndex;
+                var setId = setSelect.options[selectedSetIndex].value;
+
+                var containerRow = annotationRow.parentNode.parentNode.parentNode.parentNode;
+                var itemRow = dispoTable.rows[containerRow.rowIndex - 1];
+                var itemId = itemRow.id;
+
+                var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId, "/annotation/", annotationRow.id);
+                get(fullPath, getAnnotationStatuHandler, annotationRow);
+            }
+        </script>
+        <script>
+        		function getItemStatus(itemRow) {
+        			 var selectedProgramIndex = programSelect.selectedIndex;
+                var programId = programSelect.options[selectedProgramIndex].value;
+
+                var selectedSetIndex = setSelect.selectedIndex;
+                var setId = setSelect.options[selectedSetIndex].value;
+
+                var itemId = itemRow.id;
+                
+                var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId);
+                get(fullPath, getItemStatusHandler, itemRow);
+        		}
+        </script>
+        
+        
+        
+        <script>
+            function getAllProgramsStatusHandler(programSelectEl) {
+                return function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var responseHTML = this.responseText;
+                        programSelect.innerHTML = responseHTML;
+                    }
+                };
+            }
+        </script>
+        <script>
+            function getProgramStatusHandler(setSelectEl) {
+                return function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var responseHTML = this.responseText;
+                        setSelect.innerHTML = responseHTML;
+                    } 
+                };
+            }
+        </script>
+        <script>
+            function putItemStatusHandler(currentRow) {
+                return function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                    		currentRow.cells[5].innerHTML = userName;
+								showAnnotations(currentRow);
+                    } 
+                };
+            }
+        </script>        
+        <script>
+            function setTableStatusHandler(unusedParam) {
+                return function() {
+                if(this.readyState == 1) {
+                		waitBlanket.style.display = 'block';
+                }
+                if(this.readyState == 3) {
+                    //var responseHTML = this.responseText;
+                    //dispoTableBody.innerHTML = responseHTML;
+                }
+                    if (this.readyState == 4 && this.status == 200) {
+                        waitBlanket.style.display = 'none';
+                        var responseHTML = this.responseText;
+                        dispoTableBody.innerHTML = responseHTML;
+                    } else if(this.status == 404) {
+                    		dispoTableBody.innerHTML = "NO ITEMS FOUND FOR THIS SET";
+                    }
+                };
+            }
+        </script>
+        <script>
+            function subTableStatusHandler(currentRowIndex) {
+                return function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var responseHTML = this.responseText;
+                        addContainerRow(currentRowIndex, responseHTML);
+                    }
+                };
+            }
+        </script>
+        <script>
+            function getItemStatusHandler(itemRow) {
+                return function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var itemObject = eval('(' + this.responseText + ')');
+                        
+                        var statusCell = itemRow.cells[1];
+                        if(statusCell.innerHTML != itemObject.status) {
+                        	 
+                        }
+                        
+                        statusCell.innerHTML = itemObject.status;
+                        
+                        if (itemObject.status == "COMPLETE") {
+                            statusCell.className = "itemData";
+                        } else {
+                            statusCell.className = "itemDataFail";
+                        }
+                    }
+                };
+            }
+        </script>
+        <script>
+            function getAnnotationStatuHandler(annotationRow) {
+                return function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var annotationObject = eval('(' + this.responseText + ')');
+
+                        if (!annotationObject.isConnected) {
+                            annotationRow.cells[0].firstChild.className = "annotationInputInvalid";
+                        } else {
+                            annotationRow.cells[0].firstChild.className = "annotationInput";
+                        }
+                        if (!annotationObject.isResolutionValid) {
+                            annotationRow.cells[1].firstChild.className = "annotationInputInvalid";
+                            annotationRow.cells[2].firstChild.className = "annotationInputInvalid";
+                        } else {
+                            annotationRow.cells[1].firstChild.className = "annotationInput";
+                            annotationRow.cells[2].firstChild.className = "annotationInput";
+                        }
+                    }
+                }
+            }
+        </script>
+        <script>
+            function postAnnotationStatusHandler(annotationCell) {
+                return function() {
+                    if (this.readyState == 4 && this.status == 201) {
+                        var annotationRow = annotationCell.parentNode.parentNode;
+                        enableRow(annotationRow);
+                        var annotationObject = eval('(' + this.responseText + ')');
+
+                        annotationRow.id = annotationObject.id;
+
+                        if (!annotationObject.isConnected) {
+                            annotationCell.className = "annotationInputInvalid";
+                        }
+                        addNewRow(annotationRow);
+                        
+                        var containerRow = annotationRow.parentNode.parentNode.parentNode.parentNode;
+                        var containerRowIndex = containerRow.rowIndex;
+                        var itemRow = dispoTableBody.rows[containerRowIndex - 2];
+                        getItemStatus(itemRow);
+                    }
+                };
+            }
+        </script>
+        <script>
+            function putAnnotationStatusHandler(annotationCell) {
+                return function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var containerRow = annotationCell.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+                        var containerRowIndex = containerRow.rowIndex;
+                        var itemRow = dispoTableBody.rows[containerRowIndex - 2];
+
+								getItemStatus(itemRow);
+                        getAnnotation(annotationCell.parentNode.parentNode);
+                    }
+                };
+            }
+        </script>
+        <script>
+            function delAnnotationStatusHandler(buttonEl) {
+                return function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var rowToDelete = buttonEl.parentNode.parentNode;
+                        var rowToDeleteIndex = rowToDelete.rowIndex;
+                        var subTable = rowToDelete.parentNode.parentNode;
+                        subTable.deleteRow(rowToDeleteIndex);
+
+                        var containerRow = subTable.parentNode.parentNode;
+                        var containerRowIndex = containerRow.rowIndex;
+                        var itemRow = dispoTableBody.rows[containerRowIndex - 2];
+
+                        if (this.responseText == "COMPLETE") {
+                            itemRow.cells[1].className = "itemData";
+                        } else {
+                            itemRow.cells[1].className = "itemDataFail";
+                        }
+                        itemRow.cells[1].innerHTML = this.responseText;
+                    }
+                };
+            }
+        </script>
+        <script>
+        		function keyPress(e) {
+        			   var evtobj = window.event? event : e
+      				if (evtobj.keyCode == 90 && evtobj.ctrlKey)  {
+      					alert("Ctrl+z");
+      				}
+        		}
+        </script>
+
+
+        <script>
+            function addContainerRow(currentRowIndex, htmlToAdd) {
+                var newRow = dispoTable.insertRow(currentRowIndex + 1);
+                newRow.className = "containerRow";
+                newRow.innerHTML = htmlToAdd;
+            }
+        </script>
+        <script>
+            function annotationDblClick(annotationInput) {
+                var newClass;
+                switch (annotationInput.className) {
+                    case "annotationInput":
+                        newClass = "annotationInputDetails";
+                        break;
+                    case "annotationInputInvalid":
+                        newClass = "annotationInputInvalidDetails";
+                        break;
+                    case "annotationInputDetails":
+                        newClass = "annotationInput";
+                        break;
+                    case "annotationInputInvalidDetails":
+                        newClass = "annotationInputInvalid";
+                        break;
+                    default:
+                        newClass = "";
+                }
+
+                if (newClass != "") {
+                    changeClassForRow(annotationInput.parentNode.parentNode, newClass);
+                }
+            }
+        </script>
+        <script>
+            function changeClassForRow(rowEl, newClass) {
+                var cells = rowEl.cells;
+                var cellsLength = cells.length;
+                for (index = 0; index < cellsLength - 1; index++) {
+                    cells[index].firstChild.className = newClass;
+                }
+            }
+        </script>
+        <script>
+            function addDeleteButton(newRow, cellsLength) {
+                var deleteCell = newRow.insertCell(cellsLength - 1);
+                var newButton = document.createElement("button");
+                deleteCell.appendChild(newButton);
+                newButton.className = "annotationDelete";
+                newButton.disabled = true;
+                newButton.innerHTML = "X";
+                newButton.setAttribute('onclick', 'deleteAnnotation(this)');
+            }
+        </script>
+        <script>
+            function addAnnotationCell(rowElement, index) {
+                var newCell = rowElement.insertCell(index);
+                newCell.className = "annotationData";
+                var newTextArea = document.createElement("textarea");
+                newCell.appendChild(newTextArea);
+                if (index != 0) {
+                    newTextArea.readOnly = true;
+                    newTextArea.className = "annotationInputDisabled";
+
+                } else {
+                    newTextArea.className = "annotationInput";
+                }
+
+                newTextArea.setAttribute('ondblclick', 'annotationDblClick(this);');
+                newTextArea.setAttribute('onchange', 'submitAnnotationData(this);');
+            }
+        </script>
+        <script>
+            function addNewRow(currentRow) {
+                var subTable = currentRow.parentNode.parentNode;
+                var newRow = subTable.insertRow(currentRow.rowIndex + 1);
+
+                // increase rowSpan for spacer 
+                var spacerCol = subTable.rows[0].cells[0];
+                spacerCol.rowSpan = spacerCol.rowSpan + 1;
+
+                var cellsLength = currentRow.cells.length;
+                for (index = 0; index < cellsLength - 1; index++) {
+                    addAnnotationCell(newRow, index);
+                }
+
+                addDeleteButton(newRow, cellsLength);
+            }
+        </script>        
+        <script>
+            function enableRow(row) {
+                var annotationCells = row.cells;
+                var cellsLength = annotationCells.length;
+                for (index = 0; index < cellsLength - 1; index++) {
+                    var inputEl = annotationCells[index].firstChild;
+                    inputEl.readOnly = false;
+                    inputEl.className = "annotationInput";
+                }
+                annotationCells[cellsLength - 1].firstChild.disabled = false; // enable Delete Button
+            }
+        </script>
+        
+        
+        
+        <script>
+            function get(url, statusHandler, callbackParam) {
+                httpRequest("GET", url, statusHandler, callbackParam);
+            }
+        </script>
+        <script>
+            function post(url, params, statusHandler, callbackParam) {
+                httpRequestWithParams("POST", url, params, statusHandler, callbackParam);
+            }
+        </script>
+        <script>
+            function put(url, params, statusHandler, callbackParam) {
+                httpRequestWithParams("PUT", url, params, statusHandler, callbackParam);
+            }
+        </script>
+        <script>
+            function doDelete(url, statusHandler, callbackParam) {
+                httpRequest("DELETE", url, statusHandler, callbackParam);
+            }
+        </script>
+        <script>
+            function httpRequestWithParams(httpVerb, url, params, statusHandler, callbackParam) {
+                var httpRequest = new XMLHttpRequest()
+                httpRequest.prevDataLength = 0;
+                httpRequest.onreadystatechange = statusHandler(callbackParam);
+                httpRequest.open(httpVerb, url);
+                //Send the proper header information along with the request
+                httpRequest.setRequestHeader("Content-type", "application/json");
+
+                httpRequest.send(params);
+            }
+        </script>
+        <script>
+            function httpRequest(httpVerb, url, statusHandler, callbackParam) {
+                var httpRequest = new XMLHttpRequest()
+                httpRequest.prevDataLength = 0;
+                httpRequest.onreadystatechange = statusHandler(callbackParam);
+                httpRequest.open(httpVerb, url);
+                httpRequest.send();
+            }
+        </script>
+        
+        
+        <script>
+            function doFilterByStatus(filterValue) {
+                var rows = dispoTableBody.rows;
+                
+                var rowsLength = rows.length;
+                var i = 0;
+                while(i < rowsLength) {
+                	  var row = rows[i];
+                	  // hide row and possibly container row
+                	  if(filterValue != "ALL" && row.cells[1].innerHTML != filterValue) {
+                	  		row.style.display = "none";
+                	  		
+                	  		i++;
+                	  		if(i < rowsLength) {
+	                	  		var nextRow = rows[i];
+	                	  		if(nextRow.className == "containerRow") {
+	                	  		    nextRow.style.display = "none";
+	                	  		    i++;
+	                	  		}
+	                	  	}
+                	  } else {
+                	  		row.style.display = "";
+                	  		
+                	  		i++;
+                	  		if(i < rowsLength) {
+	                	  		var nextRow = rows[i];
+	                	  		if(nextRow.className == "containerRow") {
+	                	  		    //nextRow.style.display = "";
+	                	  		    i++;
+	                	  		}
+	                	  	}                	  	  
+                	  }
+                }
+            }
+        </script>
+        <script>
+            function doFilterByPOC(filterValue) {
+                var rows = dispoTableBody.rows;
+                
+                var rowsLength = rows.length;
+                var i = 0;
+                while(i < rowsLength) {
+                	  var row = rows[i];
+                	  // hide row and possibly container row
+                	  if(filterValue != "ALL" && row.cells[5].innerHTML != filterValue) {
+                	  		row.style.display = "none";
+                	  		
+                	  		i++;
+                	  		if(i < rowsLength) {
+	                	  		var nextRow = rows[i];
+	                	  		if(nextRow.className == "containerRow") {
+	                	  		    nextRow.style.display = "none";
+	                	  		    i++;
+	                	  		}
+	                	  	}
+                	  } else {
+                	  		row.style.display = "";
+                	  		
+                	  		i++;
+                	  		if(i < rowsLength) {
+	                	  		var nextRow = rows[i];
+	                	  		if(nextRow.className == "containerRow") {
+	                	  		    //nextRow.style.display = "";
+	                	  		    i++;
+	                	  		}
+	                	  	}                	  	  
+                	  }
+                }
+            }
+        </script>
+        <script>
+            function doFilter() {
+                var filterSelectedIndex = statusSelect.selectedIndex;
+                var statusFilter = statusSelect.options[filterSelectedIndex].value;
+                var pocFilter = pocSelect.value;
+                
+                var rows = dispoTableBody.rows;
+                
+                var rowsLength = rows.length;
+                var i = 0;
+                while(i < rowsLength) {
+                	  var row = rows[i];
+                	  // hide row and possibly container row
+                	  if((statusFilter == "ALL" || statusFilter == "Status" ||statusFilter == row.cells[1].innerHTML) && (pocFilter == "" || pocFilter == row.cells[5].innerHTML)) {
+								row.style.display = "";
+                	  		
+                	  		i++;
+                	  		if(i < rowsLength) {
+	                	  		var nextRow = rows[i];
+	                	  		if(nextRow.className == "containerRow") {
+	                	  		    //nextRow.style.display = "";
+	                	  		    i++;
+	                	  		}
+	                	  	}    
+                	  } else {
+                	  		row.style.display = "none";
+                	  		
+                	  		i++;
+                	  		if(i < rowsLength) {
+	                	  		var nextRow = rows[i];
+	                	  		if(nextRow.className == "containerRow") {
+	                	  		    nextRow.style.display = "none";
+	                	  		    i++;
+	                	  		}
+	                	  	}
+	                 }
+                }	
+            }
+        </script>
+    </body>

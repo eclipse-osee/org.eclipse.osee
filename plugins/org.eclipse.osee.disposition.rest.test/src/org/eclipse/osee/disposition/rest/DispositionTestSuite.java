@@ -13,7 +13,6 @@ package org.eclipse.osee.disposition.rest;
 import org.eclipse.osee.disposition.rest.integration.DispositionOsgiTestSuite;
 import org.eclipse.osee.disposition.rest.internal.InternalTestSuite;
 import org.eclipse.osee.disposition.rest.resources.ResourcesTestSuite;
-import org.eclipse.osee.disposition.rest.util.UtilTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -21,11 +20,7 @@ import org.junit.runners.Suite;
  * @author Angel Avila
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   ResourcesTestSuite.class,
-   InternalTestSuite.class,
-   UtilTestSuite.class,
-   DispositionOsgiTestSuite.class})
+@Suite.SuiteClasses({ResourcesTestSuite.class, InternalTestSuite.class, DispositionOsgiTestSuite.class})
 public class DispositionTestSuite {
-   // Test Suite
+	// Test Suite
 }

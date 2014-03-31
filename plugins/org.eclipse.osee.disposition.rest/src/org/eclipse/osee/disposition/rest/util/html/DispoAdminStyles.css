@@ -1,0 +1,148 @@
+body{
+	background-color: #DCDCDC;
+}
+#blanket {
+	background-color: rgba(45, 45, 51, 0.61);
+	position: absolute;
+	z-index: 9001;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+}
+#waitBlanket {
+	background-color: rgba(45, 45, 51, 0.61);
+	position: absolute;
+	z-index: 9001;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+}
+#waitText {
+	background-color: #FFF;
+	width: 200px;
+	height: 50px;
+	font-size: 30px;
+	text-align: center;
+	margin: 10% 0% 0% 50%;
+	position: relative;
+}
+#programSelect {
+    width: 250px;
+    margin:-20px 0px 0px 0px;
+    background-color: rgb(145, 198, 200);
+}
+th {
+    border: 2px solid;
+}
+#setCreateDiv {
+	border: 4px solid;
+	margin: 150px 0 0px 800px;
+	background-color: #F8F8FF;
+	width: 400px;
+	height: 110px;
+}
+#submitCreateSet {
+    height: 30px;
+    width: 70px;
+    float: left;
+	 margin-left: 120px;
+}
+#cancelCreateSet {
+    height: 30px;  width: 70px;  float: left;  margin-left: 10px;
+}
+#setNameInput {
+	margin-top: 20px;
+	width: 300px;
+}
+#setPathInput {
+    width: 300px;
+    margin-left: 10px;
+}
+#userInput {
+    height: 300px;
+}
+#programSelectPrompt {
+    margin: 0px;
+}
+#programSelectDiv {
+	 margin-left: 120px;
+    width: 400px;
+    float: left;
+}
+#all {
+    width: 1800px;
+}
+#setControls {
+    max-height: 300px;
+    float: right;
+    height: 100%;
+    width: 70%;
+}
+#setOperation {
+    margin-top: 60px;
+    width: 200px;
+    height: 51px;
+}
+#setCreate {
+    margin-top: 10px;
+    width: 200px;
+    height: 30px;
+}
+#setOperationContainer {
+    margin-left: 40px;
+    float: left;
+}
+#setManageContainer {
+    float: right;
+    width: 1000px;
+}
+.emptySetsTable {
+    width: 600px;
+    overflow: scroll;
+    background-color: #C0C0C0;
+}
+.setsTable {
+    width: 600px;
+    overflow: scroll;
+    background-color: white;
+}
+.setsTableDataInput {
+	height: 100%;
+	width: 100%;
+	border: none;
+}
+.setsTableDataInputFocused {
+	height: 100%;
+	width: 100%;
+	border: none;
+	background-color: cyan;
+}
+.setsTableDataInputImporting {
+	height: 100%;
+	width: 100%;
+	border: none;
+	background-color: green;
+}
+th {
+    min-height: 20px;
+    max-height: 20px;
+    width: 50px;
+}
+tr {
+    height: 20px;
+    width: 20px;
+}
+.setsTableData {
+	height: 18px;
+	border: 2px solid #000;
+}
+tbody {
+    max-height: 400px;
+}
+#setsTableContainer {
+    max-height: 200px;
+    overflow: auto;
+    width: 615px;
+}
