@@ -39,15 +39,15 @@ public final class SystemSafetyResource {
    /**
     * Produce the System Safety Report
     * 
-    * @param branchGuid The Branch to run the System Safety Report on.
+    * @param branchUuid The Branch to run the System Safety Report on.
     * @param codeRoot The root directory accessible on the server for the code traces.
     * @return Produces a streaming xml file containing the System Safety Report
     */
    @Path("safety")
    @GET
    @Produces(MediaType.APPLICATION_XML)
-   public Response getSystemSafetyReport(@QueryParam("branch") String branchGuid, @QueryParam("code_root") String codeRoot) {
-      StreamingOutput streamingOutput = new SafetyStreamingOutput(logger, orcsApi, branchGuid, codeRoot);
+   public Response getSystemSafetyReport(@QueryParam("branch") Long branchUuid, @QueryParam("code_root") String codeRoot) {
+      StreamingOutput streamingOutput = new SafetyStreamingOutput(logger, orcsApi, branchUuid, codeRoot);
       ResponseBuilder builder = Response.ok(streamingOutput);
       builder.header("Content-Disposition", "attachment; filename=" + "Safety_Report.xml");
       return builder.build();

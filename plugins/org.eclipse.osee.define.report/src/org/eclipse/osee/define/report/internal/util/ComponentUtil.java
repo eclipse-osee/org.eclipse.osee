@@ -21,15 +21,15 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  * @author Ryan D. Brooks
  */
 public class ComponentUtil {
-   private final String branchGuid;
+   private final long branchUuid;
    private final OrcsApi orcsApi;
    private ArtifactReadable mpCsci;
    private Collection<ArtifactReadable> mpComponents;
    private boolean wasLoaded;
 
-   public ComponentUtil(String branchGuid, OrcsApi providedOrcs) {
+   public ComponentUtil(long branchUuid, OrcsApi providedOrcs) {
       super();
-      this.branchGuid = branchGuid;
+      this.branchUuid = branchUuid;
       this.mpComponents = null;
       this.wasLoaded = false;
       this.mpCsci = null;
@@ -39,7 +39,7 @@ public class ComponentUtil {
    private synchronized void load() {
       wasLoaded = true;
       mpCsci =
-         orcsApi.getQueryFactory(null).fromBranch(branchGuid).andIsOfType(CoreArtifactTypes.Component).andNameEquals(
+         orcsApi.getQueryFactory(null).fromBranch(branchUuid).andIsOfType(CoreArtifactTypes.Component).andNameEquals(
             "MP CSCI").getResults().getExactlyOne();
       mpComponents = mpCsci.getDescendants();
    }

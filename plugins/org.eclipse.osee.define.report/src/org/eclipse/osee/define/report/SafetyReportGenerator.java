@@ -34,7 +34,7 @@ public class SafetyReportGenerator {
    private ComponentUtil componentUtil;
    private final TraceMatch match = new TraceMatch("\\^SRS\\s*([^;]+);?", "\\[?(\\{[^\\}]+\\})(.*)");
    private final TraceAccumulator traces = new TraceAccumulator(".*\\.(java|ada|ads|adb|c|h)", match);
-   private String branchGuid;
+   private long branchUuid;
    private final Log logger;
 
    public static int SYSTEM_REQUIREMENT_INDEX = 3;
@@ -66,17 +66,17 @@ public class SafetyReportGenerator {
       this.logger = logger;
    }
 
-   private void init(OrcsApi orcsApi, String branchGuid, ISheetWriter writer) {
+   private void init(OrcsApi orcsApi, long branchUuid, ISheetWriter writer) {
       accumulator = new SafetyInformationAccumulator(this, writer);
       queryFactory = orcsApi.getQueryFactory(null);
-      this.branchGuid = branchGuid;
-      componentUtil = new ComponentUtil(branchGuid, orcsApi);
+      this.branchUuid = branchUuid;
+      componentUtil = new ComponentUtil(branchUuid, orcsApi);
    }
 
-   public void runOperation(OrcsApi providedOrcs, String branchName, String codeRoot, Writer providedWriter) throws IOException {
+   public void runOperation(OrcsApi providedOrcs, long branchUuid, String codeRoot, Writer providedWriter) throws IOException {
       ISheetWriter writer = new ExcelXmlWriter(providedWriter);
 
-      init(providedOrcs, branchName, writer);
+      init(providedOrcs, branchUuid, writer);
 
       boolean doTracability = false;
       if (codeRoot != null && codeRoot.isEmpty() != true) {
@@ -88,7 +88,7 @@ public class SafetyReportGenerator {
          traces.extractTraces(root);
       }
       ArtifactReadable functionsFolder =
-         queryFactory.fromBranch(branchGuid).andIsOfType(CoreArtifactTypes.Folder).andNameEquals("System Functions").getResults().getExactlyOne();
+         queryFactory.fromBranch(branchUuid).andIsOfType(CoreArtifactTypes.Folder).andNameEquals("System Functions").getResults().getExactlyOne();
       processSystemFunctions(functionsFolder, writer);
 
       writer.endWorkbook();

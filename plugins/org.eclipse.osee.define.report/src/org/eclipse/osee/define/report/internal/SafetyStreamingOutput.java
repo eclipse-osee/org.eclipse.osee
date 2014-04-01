@@ -25,14 +25,14 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 public final class SafetyStreamingOutput implements StreamingOutput {
    private final OrcsApi orcsApi;
-   private final String branchGuid;
+   private final long branchUuid;
    private final String codeRoot;
    private final Log logger;
 
-   public SafetyStreamingOutput(Log logger, OrcsApi orcsApi, String branchGuid, String codeRoot) {
+   public SafetyStreamingOutput(Log logger, OrcsApi orcsApi, long branchUuid, String codeRoot) {
       this.logger = logger;
       this.orcsApi = orcsApi;
-      this.branchGuid = branchGuid;
+      this.branchUuid = branchUuid;
       this.codeRoot = codeRoot;
    }
 
@@ -41,7 +41,7 @@ public final class SafetyStreamingOutput implements StreamingOutput {
       try {
          Writer writer = new OutputStreamWriter(output);
          SafetyReportGenerator safetyReport = new SafetyReportGenerator(logger);
-         safetyReport.runOperation(orcsApi, branchGuid, codeRoot, writer);
+         safetyReport.runOperation(orcsApi, branchUuid, codeRoot, writer);
       } catch (Exception ex) {
          throw new WebApplicationException(ex);
       }
