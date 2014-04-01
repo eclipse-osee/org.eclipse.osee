@@ -17,26 +17,26 @@ import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 
 public class TransactionChange implements FrameworkEvent {
 
-   private String branchGuid;
+   private long branchUuid;
    private int transactionId;
    private final Set<DefaultBasicGuidArtifact> artifacts = new HashSet<DefaultBasicGuidArtifact>();
 
    /**
-    * Gets the value of the branchGuid property.
+    * Gets the value of the branchUuid property.
     * 
     * @return possible object is {@link String }
     */
-   public String getBranchGuid() {
-      return branchGuid;
+   public long getBranchUuid() {
+      return branchUuid;
    }
 
    /**
-    * Sets the value of the branchGuid property.
+    * Sets the value of the branchUuid property.
     * 
     * @param value allowed object is {@link String }
     */
-   public void setBranchGuid(String value) {
-      this.branchGuid = value;
+   public void setBranchUuid(long value) {
+      this.branchUuid = value;
    }
 
    /**

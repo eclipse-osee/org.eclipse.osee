@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReord
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAccessControlEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAttributeChange1;
@@ -130,8 +131,8 @@ public final class FrameworkEventUtil {
    public static RemoteBranchEvent1 getRemoteBranchEvent(BranchEvent branchEvent) {
       RemoteBranchEvent1 event = new RemoteBranchEvent1();
       event.setEventTypeGuid(branchEvent.getEventType().getGuid());
-      event.setBranchGuid(String.valueOf(branchEvent.getBranchUuid()));
-      event.setDestinationBranchGuid(String.valueOf(branchEvent.getDestinationBranchUuid()));
+      event.setBranchGuid(getBranchGuidStringForRemoteEvent(branchEvent.getBranchUuid()));
+      event.setDestinationBranchGuid(getBranchGuidStringForRemoteEvent(branchEvent.getDestinationBranchUuid()));
       event.setNetworkSender(getRemoteNetworkSender(branchEvent.getNetworkSender()));
       return event;
    }
@@ -140,8 +141,8 @@ public final class FrameworkEventUtil {
       BranchEventType branchEventType = BranchEventType.getByGuid(branchEvent.getEventTypeGuid());
       if (branchEventType != null) {
          BranchEvent event =
-            new BranchEvent(branchEventType, Long.valueOf(branchEvent.getBranchGuid()),
-               Long.valueOf(branchEvent.getDestinationBranchGuid()));
+            new BranchEvent(branchEventType, getBranchUuidFromRemoteEvent(branchEvent.getBranchGuid()),
+               getBranchUuidFromRemoteEvent(branchEvent.getDestinationBranchGuid()));
          event.setNetworkSender(getNetworkSender(branchEvent.getNetworkSender()));
          return event;
       } else {
@@ -156,7 +157,7 @@ public final class FrameworkEventUtil {
       event.setEventTypeGuid(transEvent.getEventType().getGuid());
       for (TransactionChange change : transEvent.getTransactionChanges()) {
          RemoteTransactionChange1 remChange = new RemoteTransactionChange1();
-         remChange.setBranchGuid(change.getBranchGuid());
+         remChange.setBranchGuid(getBranchGuidStringForRemoteEvent(change.getBranchUuid()));
          remChange.setTransactionId(change.getTransactionId());
          List<RemoteBasicGuidArtifact1> remChangeArts = remChange.getArtifacts();
          for (DefaultBasicGuidArtifact guidArt : change.getArtifacts()) {
@@ -173,7 +174,7 @@ public final class FrameworkEventUtil {
       event.setEventType(TransactionEventType.getByGuid(remEvent.getEventTypeGuid()));
       for (RemoteTransactionChange1 remChange : remEvent.getTransactions()) {
          TransactionChange change = new TransactionChange();
-         change.setBranchGuid(remChange.getBranchGuid());
+         change.setBranchUuid(getBranchUuidFromRemoteEvent(remChange.getBranchGuid()));
          change.setTransactionId(remChange.getTransactionId());
          Collection<DefaultBasicGuidArtifact> eventArts = change.getArtifacts();
          for (RemoteBasicGuidArtifact1 remGuidArt : remChange.getArtifacts()) {
@@ -187,7 +188,7 @@ public final class FrameworkEventUtil {
    public static RemotePersistEvent1 getRemotePersistEvent(ArtifactEvent transEvent) {
       RemotePersistEvent1 event = new RemotePersistEvent1();
       event.setNetworkSender(getRemoteNetworkSender(transEvent.getNetworkSender()));
-      event.setBranchGuid(String.valueOf(transEvent.getBranchUuid()));
+      event.setBranchGuid(getBranchGuidStringForRemoteEvent(transEvent.getBranchUuid()));
       event.setTransactionId(transEvent.getTransactionId());
       for (EventBasicGuidArtifact guidArt : transEvent.getArtifacts()) {
          if (guidArt.getModType() == EventModType.Modified) {
@@ -294,11 +295,16 @@ public final class FrameworkEventUtil {
     * events.
     */
    private static String getBranchGuidStringForRemoteEvent(long branchUuid) {
-      // After 0.17.0, remove this if check and leave return below
-      if (OseeInfo.isBooleanUsingCache(OseeProperties.OSEE_USING_LEGACY_BRANCH_GUID_FOR_EVENTS)) {
-         return BranchManager.getBranchGuidLegacy(branchUuid);
+      String result = "";
+      if (branchUuid > 0) {
+         // After 0.17.0, remove this if check and leave return below
+         if (OseeInfo.isBooleanUsingCache(OseeProperties.OSEE_USING_LEGACY_BRANCH_GUID_FOR_EVENTS)) {
+            result = BranchManager.getBranchGuidLegacy(branchUuid);
+         } else {
+            result = String.valueOf(branchUuid);
+         }
       }
-      return String.valueOf(branchUuid);
+      return result;
    }
 
    /**
@@ -306,11 +312,16 @@ public final class FrameworkEventUtil {
     * events.
     */
    public static long getBranchUuidFromRemoteEvent(String remoteBranchGuid) {
-      // After 0.17.0, remove this if check and leave return below
-      if (OseeInfo.isBooleanUsingCache(OseeProperties.OSEE_USING_LEGACY_BRANCH_GUID_FOR_EVENTS)) {
-         return BranchManager.getBranchIdLegacy(remoteBranchGuid);
+      long result = 0;
+      if (Strings.isValid(remoteBranchGuid)) {
+         // After 0.17.0, remove this if check and leave return below
+         if (OseeInfo.isBooleanUsingCache(OseeProperties.OSEE_USING_LEGACY_BRANCH_GUID_FOR_EVENTS)) {
+            result = BranchManager.getBranchIdLegacy(remoteBranchGuid);
+         } else {
+            result = Long.valueOf(remoteBranchGuid);
+         }
       }
-      return Long.valueOf(remoteBranchGuid);
+      return result;
    }
 
    public static EventBasicGuidRelation getEventBasicGuidRelation(RemoteBasicGuidRelation1 guidRel) {

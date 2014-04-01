@@ -18,12 +18,15 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
@@ -113,10 +116,18 @@ public class FrameworkEventToRemoteEventListenerTest {
    private RemotePersistEvent1 createRemoteEvent(Artifact modifiedArt) {
       RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       remoteEvent.setNetworkSender(networkSender);
-      remoteEvent.setBranchGuid(String.valueOf(BRANCH.getGuid()));
+      if (OseeInfo.isBooleanUsingCache(OseeProperties.OSEE_USING_LEGACY_BRANCH_GUID_FOR_EVENTS)) {
+         remoteEvent.setBranchGuid(String.valueOf(BranchManager.getBranchGuidLegacy(BRANCH.getUuid())));
+      } else {
+         remoteEvent.setBranchGuid(String.valueOf(BRANCH.getUuid()));
+      }
       RemoteBasicGuidArtifact1 remGuidArt = new RemoteBasicGuidArtifact1();
       remGuidArt.setModTypeGuid(EventModType.Modified.getGuid());
-      remGuidArt.setBranchGuid(String.valueOf(BRANCH.getGuid()));
+      if (OseeInfo.isBooleanUsingCache(OseeProperties.OSEE_USING_LEGACY_BRANCH_GUID_FOR_EVENTS)) {
+         remGuidArt.setBranchGuid(String.valueOf(BranchManager.getBranchGuidLegacy(BRANCH.getUuid())));
+      } else {
+         remGuidArt.setBranchGuid(String.valueOf(BRANCH.getUuid()));
+      }
       remGuidArt.setArtTypeGuid(modifiedArt.getArtTypeGuid());
       remGuidArt.setArtGuid(modifiedArt.getGuid());
 
