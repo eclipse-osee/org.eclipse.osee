@@ -46,7 +46,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    private final ArtifactEventType reloadEvent;
 
    public ArtifactEvent(IOseeBranch branch) {
-      this(branch.getGuid());
+      this(branch.getUuid());
    }
 
    public ArtifactEvent(Long branchUuid) {
@@ -71,7 +71,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    }
 
    public boolean isForBranch(IOseeBranch branch) {
-      return getBranchUuid().equals(branch.getGuid());
+      return getBranchUuid().equals(branch.getUuid());
    }
 
    public int getTransactionId() {

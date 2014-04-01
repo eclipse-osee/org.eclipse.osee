@@ -69,13 +69,13 @@ public class SearchDslTest {
          new Predicate(SearchMethod.ATTRIBUTE_TYPE, Arrays.asList("1000000000000070"), SearchOp.EQUALS, null, null,
             Arrays.asList("AtsAdmin"));
       SearchRequest params =
-         new SearchRequest(BRANCH.getGuid(), Arrays.asList(predicate), Strings.EMPTY_STRING, Strings.EMPTY_STRING, 0,
+         new SearchRequest(BRANCH.getUuid(), Arrays.asList(predicate), Strings.EMPTY_STRING, Strings.EMPTY_STRING, 0,
             false);
 
       dsl.build(queryFactory, params);
 
       verify(queryFactory).fromBranch(fromBranch.capture());
-      Assert.assertEquals(BRANCH.getGuid(), fromBranch.getValue().getGuid());
+      Assert.assertEquals(BRANCH.getUuid(), fromBranch.getValue().getUuid());
       verify(handler).handle(builder, predicate);
    }
 }

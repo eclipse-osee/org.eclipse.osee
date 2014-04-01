@@ -96,7 +96,7 @@ public class QuickSearchView extends GenericViewPart {
             memento.putString(LAST_QUERY_KEY_ID, attrSearchComposite.getQuery());
             IOseeBranch branch = branchSelect.getData();
             if (branch != null) {
-               memento.putString(LAST_BRANCH_UUID, String.valueOf(branch.getGuid()));
+               memento.putString(LAST_BRANCH_UUID, String.valueOf(branch.getUuid()));
             }
             StringBuilder builder = new StringBuilder();
             String[] queries = attrSearchComposite.getQueryHistory();

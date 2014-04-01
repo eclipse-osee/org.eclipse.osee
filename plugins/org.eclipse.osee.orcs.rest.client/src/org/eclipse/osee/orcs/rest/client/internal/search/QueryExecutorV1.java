@@ -65,12 +65,12 @@ public class QueryExecutorV1 implements QueryExecutor {
       }
 
       SearchRequest params =
-         new SearchRequest(branch.getGuid(), predicates, outputFormat.name().toLowerCase(),
+         new SearchRequest(branch.getUuid(), predicates, outputFormat.name().toLowerCase(),
             requestType.name().toLowerCase(), fromTx, includeDeleted);
 
       UriBuilder path =
          UriBuilder.fromUri(uriProvider.getApplicationServerURI()).path("oseex/branch/{branch-uuid}/artifact/search/v1");
-      URI uri = path.build(branch.getGuid());
+      URI uri = path.build(branch.getUuid());
 
       WebResource resource = clientProvider.createResource(uri);
       SearchResponse searchResult = null;

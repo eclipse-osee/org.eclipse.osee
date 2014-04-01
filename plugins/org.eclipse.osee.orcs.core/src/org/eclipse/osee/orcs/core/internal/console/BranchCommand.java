@@ -148,7 +148,7 @@ public final class BranchCommand implements ConsoleCommand {
          for (BranchReadable aBranch : branches) {
             console.writeln(
                "[%s] - id[%s] guid[%s] sTx[%s] bTx[%s] parent[%s] type[%s] state[%s] archive[%s] name[%s]", ++count,
-               aBranch.getLocalId(), aBranch.getGuid(), aBranch.getName(), aBranch.getBranchType(),
+               aBranch.getLocalId(), aBranch.getUuid(), aBranch.getName(), aBranch.getBranchType(),
                aBranch.getBranchState(), aBranch.getArchiveState(), aBranch.getSourceTransaction(),
                aBranch.getBaseTransaction(), aBranch.getParentBranch());
          }

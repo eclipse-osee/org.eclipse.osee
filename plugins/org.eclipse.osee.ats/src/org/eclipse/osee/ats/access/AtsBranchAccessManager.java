@@ -124,12 +124,12 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
    }
 
    public Collection<IAccessContextId> getContextId(IOseeBranch branch) {
-      if (branchUuidToContextIdCache.containsKey(branch.getGuid())) {
-         return branchUuidToContextIdCache.get(branch.getGuid());
+      if (branchUuidToContextIdCache.containsKey(branch.getUuid())) {
+         return branchUuidToContextIdCache.get(branch.getUuid());
       }
 
       Collection<IAccessContextId> contextIds = new ArrayList<IAccessContextId>();
-      branchUuidToContextIdCache.put(branch.getGuid(), contextIds);
+      branchUuidToContextIdCache.put(branch.getUuid(), contextIds);
       try {
          // don't access control common branch artifacts...yet
          if (!AtsUtilCore.getAtsBranch().equals(branch)) {

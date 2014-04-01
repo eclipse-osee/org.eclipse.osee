@@ -121,7 +121,7 @@ public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISt
 
       return new Object[] {
          branch.getId(),
-         branch.getGuid(),
+         branch.getUuid(),
          branch.getName(),
          parentBranchId,
          branch.getSourceTransaction().getId(),

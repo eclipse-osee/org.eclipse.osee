@@ -42,7 +42,7 @@ public class SearchParameters {
    public boolean equals(Object obj) {
       if (obj instanceof SearchParameters) {
          SearchParameters sObj = (SearchParameters) obj;
-         return sObj.getBranch().getGuid().equals(branch.getGuid()) && sObj.isNameOnly() == nameOnly && sObj.getSearchPhrase().equals(
+         return sObj.getBranch().getGuid().equals(branch.getUuid()) && sObj.isNameOnly() == nameOnly && sObj.getSearchPhrase().equals(
             searchPhrase);
       }
       return false;

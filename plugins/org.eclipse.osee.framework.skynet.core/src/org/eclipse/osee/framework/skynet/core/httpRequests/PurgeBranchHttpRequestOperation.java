@@ -60,7 +60,7 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
 
       branch.setBranchState(BranchState.PURGE_IN_PROGRESS);
       branch.setArchived(true);
-      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purging, branch.getGuid()));
+      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purging, branch.getUuid()));
 
       AcquireResult response = null;
       try {
@@ -73,7 +73,7 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
             branch.setBranchState(currentState);
             branch.setArchived(archivedState.isArchived());
             OseeEventManager.kickBranchEvent(getClass(),
-               new BranchEvent(BranchEventType.StateUpdated, branch.getGuid()));
+               new BranchEvent(BranchEventType.StateUpdated, branch.getUuid()));
          } catch (Exception ex2) {
             log(ex2);
          }
@@ -85,7 +85,7 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
          branch.setBranchState(BranchState.PURGED);
          branch.setArchived(true);
          BranchManager.decache(branch);
-         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purged, branch.getGuid()));
+         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purged, branch.getUuid()));
       }
    }
 }

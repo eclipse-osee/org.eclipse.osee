@@ -85,7 +85,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       sourceBranch.setBranchState(BranchState.COMMIT_IN_PROGRESS);
 
       BranchEvent branchEvent =
-         new BranchEvent(BranchEventType.Committing, sourceBranch.getGuid(), destinationBranch.getGuid());
+         new BranchEvent(BranchEventType.Committing, sourceBranch.getUuid(), destinationBranch.getUuid());
       OseeEventManager.kickBranchEvent(getClass(), branchEvent);
 
       BranchCommitRequest requestData =
@@ -99,7 +99,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       } catch (OseeCoreException ex) {
          sourceBranch.setBranchState(currentState);
          OseeEventManager.kickBranchEvent(getClass(),
-            new BranchEvent(BranchEventType.CommitFailed, sourceBranch.getGuid()));
+            new BranchEvent(BranchEventType.CommitFailed, sourceBranch.getUuid()));
          throw ex;
       }
 
@@ -128,8 +128,8 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
          handleArtifactEvents(newTransaction, changes);
       }
 
-      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Committed, sourceBranch.getGuid(),
-         destinationBranch.getGuid()));
+      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Committed, sourceBranch.getUuid(),
+         destinationBranch.getUuid()));
    }
 
    private void handleArtifactEvents(TransactionRecord newTransaction, Collection<Change> changes) throws OseeCoreException {

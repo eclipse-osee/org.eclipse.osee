@@ -554,7 +554,7 @@ public class BranchManager {
       } catch (Exception ex) {
          try {
             lastBranch = getDefaultInitialBranch();
-            UserManager.setSetting(LAST_DEFAULT_BRANCH, lastBranch.getGuid());
+            UserManager.setSetting(LAST_DEFAULT_BRANCH, lastBranch.getUuid());
          } catch (OseeCoreException ex1) {
             OseeLog.log(Activator.class, Level.SEVERE, ex1);
          }

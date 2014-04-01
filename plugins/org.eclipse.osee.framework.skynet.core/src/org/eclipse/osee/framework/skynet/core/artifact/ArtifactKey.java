@@ -44,7 +44,7 @@ public final class ArtifactKey {
       final int prime = 31;
       int result = 1;
       result = prime * result + artId;
-      result = prime * result + branch.getGuid().hashCode();
+      result = prime * result + String.valueOf(branch.getUuid()).hashCode();
       return result;
    }
 

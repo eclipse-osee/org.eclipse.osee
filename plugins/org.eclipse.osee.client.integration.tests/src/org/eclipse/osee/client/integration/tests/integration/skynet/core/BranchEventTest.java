@@ -130,7 +130,7 @@ public class BranchEventTest {
       branchEventListener.reset();
 
       Assert.assertNotNull(committedBranch);
-      final Long uuid = committedBranch.getGuid();
+      final Long uuid = committedBranch.getUuid();
       Assert.assertEquals(BranchArchivedState.ARCHIVED, committedBranch.getArchiveState());
       BranchManager.updateBranchArchivedState(null, committedBranch.getId(), BranchArchivedState.UNARCHIVED);
 
@@ -169,7 +169,7 @@ public class BranchEventTest {
 
       Assert.assertNotNull(workingBranch);
 
-      final Long uuid = workingBranch.getGuid();
+      final Long uuid = workingBranch.getUuid();
       Assert.assertNotNull(workingBranch);
 
       branchEventListener.reset();
@@ -186,7 +186,7 @@ public class BranchEventTest {
    }
 
    private Branch testEvents__deleted(Branch workingBranch) throws Exception {
-      final Long uuid = workingBranch.getGuid();
+      final Long uuid = workingBranch.getUuid();
       Assert.assertNotNull(workingBranch);
       Assert.assertNotSame(BranchState.DELETED, workingBranch.getBranchState());
 
@@ -261,7 +261,7 @@ public class BranchEventTest {
       Assert.assertNotNull(branch);
 
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Added,
-         mainBranch.getGuid());
+         mainBranch.getUuid());
 
       return branch;
    }

@@ -39,7 +39,7 @@ public class OseeDslSegmentParser {
       Conditions.checkNotNull(artifact, "artifact");
       IOseeBranch branch = artifact.getBranch();
       Conditions.checkNotNull(branch, "branch");
-      return String.format("//@%s_artifact branch/%s/artifact/%s/ (%s:%s)", tagPrefix, branch.getGuid(),
+      return String.format("//@%s_artifact branch/%s/artifact/%s/ (%s:%s)", tagPrefix, branch.getUuid(),
          artifact.getGuid(), branch.getName(), artifact.getName());
    }
 

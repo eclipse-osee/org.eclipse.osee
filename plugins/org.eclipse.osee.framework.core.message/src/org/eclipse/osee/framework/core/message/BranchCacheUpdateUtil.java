@@ -157,7 +157,7 @@ public final class BranchCacheUpdateUtil {
       Long src = mergeBranch.getSourceBranch() != null ? mergeBranch.getSourceBranch().getGuid() : DEFAULT_UUID;
       Long dest =
          mergeBranch.getDestinationBranch() != null ? mergeBranch.getDestinationBranch().getGuid() : DEFAULT_UUID;
-      Long merge = mergeBranch.getGuid();
+      Long merge = mergeBranch.getUuid();
       srcDestMerge.add(new Triplet<Long, Long, Long>(src, dest, merge));
    }
 

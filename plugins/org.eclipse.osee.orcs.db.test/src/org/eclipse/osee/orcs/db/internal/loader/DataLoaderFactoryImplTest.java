@@ -114,7 +114,7 @@ public class DataLoaderFactoryImplTest {
       when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");
 
       when(dbService.getStatement()).thenReturn(chStmt);
-      when(dbService.runPreparedQueryFetchObject(eq(-1), Matchers.anyString(), eq(BRANCH.getGuid()))).thenReturn(
+      when(dbService.runPreparedQueryFetchObject(eq(-1), Matchers.anyString(), eq(BRANCH.getUuid()))).thenReturn(
          EXPECTED_HEAD_TX_ID);
    }
 

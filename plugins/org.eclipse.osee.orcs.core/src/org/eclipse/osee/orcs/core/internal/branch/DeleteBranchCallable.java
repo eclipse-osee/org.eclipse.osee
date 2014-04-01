@@ -49,7 +49,7 @@ public class DeleteBranchCallable extends AbstractBranchCallable<BranchReadable>
          branch.setArchived(originalArchivedState.isArchived());
          throw ex;
       } finally {
-         //         OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleting, branch.getGuid()),
+         //         OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleting, branch.getUuid()),
          //            branch.getId());
          // TODO Event ?
       }

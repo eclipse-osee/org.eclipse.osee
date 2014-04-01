@@ -348,7 +348,7 @@ public class ArtifactQueryBuilder {
          message.append("\"");
       }
       message.append(" on branch \"");
-      message.append(branch.getGuid());
+      message.append(branch.getUuid());
       message.append("\"");
       return message.toString();
    }

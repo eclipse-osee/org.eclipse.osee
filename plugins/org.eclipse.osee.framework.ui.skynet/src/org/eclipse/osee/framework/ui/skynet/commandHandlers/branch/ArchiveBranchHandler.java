@@ -49,7 +49,7 @@ public class ArchiveBranchHandler extends CommandHandler {
       BranchManager.persist(branches);
 
       for (Branch branch : branches) {
-         OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Committed, branch.getGuid()));
+         OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Committed, branch.getUuid()));
       }
       return null;
    }

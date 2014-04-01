@@ -289,7 +289,7 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
             IOseeBranch branch = entry.getKey();
             Collection<IAttributeType> attrTypes = entry.getValue();
             for (IAttributeType type : attrTypes) {
-               artAttrs.add(new Triplet<Long, Long, Long>(artType.getGuid(), branch.getGuid(), type.getGuid()));
+               artAttrs.add(new Triplet<Long, Long, Long>(artType.getGuid(), branch.getUuid(), type.getGuid()));
             }
 
          }

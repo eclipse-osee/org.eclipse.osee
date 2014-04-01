@@ -96,7 +96,7 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Long, Branc
       for (Branch branch : branches) {
          if (branch.getBranchState().isDeleted()) {
             try {
-               OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleted, branch.getGuid()));
+               OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleted, branch.getUuid()));
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -104,7 +104,7 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Long, Branc
 
          try {
             if (branch.isFieldDirty(AbstractOseeType.NAME_FIELD_KEY)) {
-               OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Renamed, branch.getGuid()));
+               OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Renamed, branch.getUuid()));
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

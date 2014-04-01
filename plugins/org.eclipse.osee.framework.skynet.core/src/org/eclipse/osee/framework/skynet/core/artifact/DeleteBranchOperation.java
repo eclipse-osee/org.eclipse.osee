@@ -45,7 +45,7 @@ public class DeleteBranchOperation extends AbstractOperation {
       try {
          branch.setBranchState(BranchState.DELETE_IN_PROGRESS);
          branch.setArchived(true);
-         OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleting, branch.getGuid()));
+         OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleting, branch.getUuid()));
          BranchManager.persist(branch);
 
          branch.setBranchState(BranchState.DELETED);
@@ -54,7 +54,7 @@ public class DeleteBranchOperation extends AbstractOperation {
          try {
             branch.setBranchState(originalState);
             branch.setArchived(originalArchivedState.isArchived());
-            OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.StateUpdated, branch.getGuid()));
+            OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.StateUpdated, branch.getUuid()));
             BranchManager.persist(branch);
          } catch (Exception ex2) {
             log(ex2);

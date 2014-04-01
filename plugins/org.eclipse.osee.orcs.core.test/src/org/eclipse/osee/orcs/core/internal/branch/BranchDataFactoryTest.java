@@ -66,7 +66,7 @@ public class BranchDataFactoryTest {
       String branchName = "testDataForTopLevelBranch";
       Long branchUuid = Lib.generateUuid();
       when(branch.getName()).thenReturn(branchName);
-      when(branch.getGuid()).thenReturn(branchUuid);
+      when(branch.getUuid()).thenReturn(branchUuid);
 
       when(branchCache.getSystemRootBranch()).thenReturn(parent);
       when(txCache.getHeadTransaction(parent)).thenReturn(txRecord);
@@ -85,7 +85,7 @@ public class BranchDataFactoryTest {
       String branchName = "testDataForBaselineBranch";
       Long branchUuid = Lib.generateUuid();
       when(branch.getName()).thenReturn(branchName);
-      when(branch.getGuid()).thenReturn(branchUuid);
+      when(branch.getUuid()).thenReturn(branchUuid);
 
       when(branchCache.get(parentToken)).thenReturn(parent);
       when(txCache.getHeadTransaction(parent)).thenReturn(txRecord);
@@ -106,7 +106,7 @@ public class BranchDataFactoryTest {
       String parentName = "testParentBranchName";
       Long branchUuid = Lib.generateUuid();
       when(branch.getName()).thenReturn(branchName);
-      when(branch.getGuid()).thenReturn(branchUuid);
+      when(branch.getUuid()).thenReturn(branchUuid);
 
       when(parent.getName()).thenReturn(parentName);
 
@@ -129,7 +129,7 @@ public class BranchDataFactoryTest {
       String parentName = "testParentBranchName";
       Long branchUuid = Lib.generateUuid();
       when(branch.getName()).thenReturn(branchName);
-      when(branch.getGuid()).thenReturn(branchUuid);
+      when(branch.getUuid()).thenReturn(branchUuid);
 
       when(parent.getName()).thenReturn(parentName);
 
@@ -153,7 +153,7 @@ public class BranchDataFactoryTest {
       String parentName = "testParentBranchName";
       Long branchUuid = Lib.generateUuid();
       when(branch.getName()).thenReturn(branchName);
-      when(branch.getGuid()).thenReturn(branchUuid);
+      when(branch.getUuid()).thenReturn(branchUuid);
 
       when(parent.getName()).thenReturn(parentName);
 

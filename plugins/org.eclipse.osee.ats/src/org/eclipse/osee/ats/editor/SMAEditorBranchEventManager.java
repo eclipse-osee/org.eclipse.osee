@@ -98,7 +98,7 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
                   if (awa instanceof TeamWorkFlowArtifact) {
                      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) awa;
                      IOseeBranch assocBranch = AtsBranchManagerCore.getWorkingBranch(teamArt);
-                     if (assocBranch != null && assocBranch.getGuid().equals(branchEventType.getGuid())) {
+                     if (assocBranch != null && branchUuid.equals(assocBranch.getUuid())) {
                         Displays.ensureInDisplayThread(new Runnable() {
                            @Override
                            public void run() {
@@ -123,5 +123,4 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
          }
       }
    }
-
 }

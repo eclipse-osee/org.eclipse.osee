@@ -80,7 +80,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
             request, CoreTranslatorId.BRANCH_CREATION_RESPONSE);
 
       newBranch = BranchManager.getBranch(response.getBranchId());
-      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Added, newBranch.getGuid()));
+      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Added, newBranch.getUuid()));
    }
 
    private static int getAssociatedArtifactId(Artifact associatedArtifact) throws OseeCoreException {

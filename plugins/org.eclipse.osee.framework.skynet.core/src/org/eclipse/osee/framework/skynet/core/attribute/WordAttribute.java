@@ -62,7 +62,7 @@ public class WordAttribute extends StringAttribute {
             } else {
                throw new OseeCoreException(String.format(
                   "Artifact %s (%s), Branch %s (%s) contains track changes. Please remove them and save again.",
-                  art.getName(), art.getArtId(), fullBranch.getName(), fullBranch.getGuid()));
+                  art.getName(), art.getArtId(), fullBranch.getName(), fullBranch.getUuid()));
             }
          } catch (CoreException ex) {
             OseeExceptions.wrapAndThrow(ex);

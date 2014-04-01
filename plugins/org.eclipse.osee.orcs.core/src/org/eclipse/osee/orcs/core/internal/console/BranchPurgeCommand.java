@@ -131,13 +131,13 @@ public final class BranchPurgeCommand implements ConsoleCommand {
 
       private boolean filterBranch(BranchReadable branch) {
          if (!includeBaseline && branch.getBranchType() == BranchType.BASELINE) {
-            console.writeln(ERROR_STRING, branch, branch.getGuid(), branch.getBranchType());
+            console.writeln(ERROR_STRING, branch, branch.getUuid(), branch.getBranchType());
             return true;
          } else if (!includeUnarchived && branch.getArchiveState() == BranchArchivedState.UNARCHIVED) {
-            console.writeln(ERROR_STRING, branch, branch.getGuid(), branch.getArchiveState());
+            console.writeln(ERROR_STRING, branch, branch.getUuid(), branch.getArchiveState());
             return true;
          } else if (!includeUndeleted && branch.getBranchState() != BranchState.DELETED) {
-            console.writeln(ERROR_STRING, branch, branch.getGuid(), branch.getBranchState());
+            console.writeln(ERROR_STRING, branch, branch.getUuid(), branch.getBranchState());
             return true;
          }
          return false;
