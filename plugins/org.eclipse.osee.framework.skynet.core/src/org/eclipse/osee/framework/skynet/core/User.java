@@ -23,8 +23,12 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -90,19 +94,29 @@ public class User extends Artifact {
    }
 
    public void toggleFavoriteBranch(Branch favoriteBranch) throws OseeCoreException {
+      if (OseeInfo.isBooleanUsingCache(OseeProperties.OSEE_USING_LEGACY_BRANCH_GUID_FOR_EVENTS)) {
+         throw new OseeStateException(
+            "Toggle Favorite Branch is disabled for this version till DB Branches are converted to Uuid");
+      }
       HashSet<Long> branchUuids = new HashSet<Long>();
       for (Branch branch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING,
          BranchType.BASELINE)) {
-         branchUuids.add(branch.getGuid());
+         branchUuids.add(branch.getUuid());
       }
 
       boolean found = false;
       Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FavoriteBranch);
       for (Attribute<String> attribute : attributes) {
          // Remove attributes that are no longer valid
-         if (!branchUuids.contains(attribute.getValue())) {
+         Long uuid = 0L;
+         try {
+            uuid = Long.valueOf(attribute.getValue());
+         } catch (Exception ex) {
+            // do nothing
+         }
+         if (!branchUuids.contains(uuid)) {
             attribute.delete();
-         } else if (favoriteBranch.getGuid().equals(attribute.getValue())) {
+         } else if (favoriteBranch.getUuid() == uuid) {
             attribute.delete();
             found = true;
             break;
@@ -110,17 +124,36 @@ public class User extends Artifact {
       }
 
       if (!found) {
-         addAttribute(CoreAttributeTypes.FavoriteBranch, favoriteBranch.getGuid());
+         addAttribute(CoreAttributeTypes.FavoriteBranch, String.valueOf(favoriteBranch.getUuid()));
       }
-      setSetting(CoreAttributeTypes.FavoriteBranch.getName(), favoriteBranch.getGuid());
+      setSetting(CoreAttributeTypes.FavoriteBranch.getName(), String.valueOf(favoriteBranch.getUuid()));
    }
 
    public boolean isFavoriteBranch(IOseeBranch branch) throws OseeCoreException {
       Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FavoriteBranch);
       for (Attribute<String> attribute : attributes) {
-         if (branch.getGuid().equals(attribute.getValue())) {
-            return true;
+         String value = attribute.getValue();
+         if (OseeInfo.isBooleanUsingCache(OseeProperties.OSEE_USING_LEGACY_BRANCH_GUID_FOR_EVENTS)) {
+            if (branch.getGuid().equals(attribute.getValue())) {
+               return true;
+            }
+         } else {
+            // Backward compatibility until db is converted
+            if (GUID.isValid(value)) {
+               if (branch.getGuid().equals(value)) {
+                  return true;
+               }
+            } else {
+               try {
+                  if (Long.valueOf(value).equals(branch.getUuid())) {
+                     return true;
+                  }
+               } catch (Exception ex) {
+                  // do nothing
+               }
+            }
          }
+
       }
       return false;
    }
