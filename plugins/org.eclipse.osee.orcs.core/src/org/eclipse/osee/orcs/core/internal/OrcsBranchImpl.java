@@ -118,7 +118,7 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    @Override
    public BranchReadable getBranchFromId(long id) throws OseeCoreException {
-      return branchCache.getById(id);
+      return branchCache.getByUuid(id);
    }
 
    @Override

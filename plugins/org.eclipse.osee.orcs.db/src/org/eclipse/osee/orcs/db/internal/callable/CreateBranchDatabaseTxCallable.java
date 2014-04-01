@@ -168,8 +168,8 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    @SuppressWarnings("unchecked")
    @Override
    protected Branch handleTxWork(OseeConnection connection) throws OseeCoreException {
-      Branch parentBranch = branchCache.getById(IdUtil.getParentBranchId(newBranchData, txCache));
-      Branch destinationBranch = branchCache.getById(newBranchData.getMergeDestinationBranchId());
+      Branch parentBranch = branchCache.getByUuid(IdUtil.getParentBranchId(newBranchData, txCache));
+      Branch destinationBranch = branchCache.getByUuid(newBranchData.getMergeDestinationBranchId());
 
       passedPreConditions = false;
       checkPreconditions(parentBranch, destinationBranch);

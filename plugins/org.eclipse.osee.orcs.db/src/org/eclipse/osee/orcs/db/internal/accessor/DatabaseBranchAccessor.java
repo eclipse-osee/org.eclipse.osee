@@ -173,7 +173,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
    private void loadBranchHierarchy(BranchCache branchCache, Map<Branch, Integer> childToParent) throws OseeCoreException {
       for (Entry<Branch, Integer> entry : childToParent.entrySet()) {
          Branch childBranch = entry.getKey();
-         Branch parentBranch = branchCache.getById(entry.getValue());
+         Branch parentBranch = branchCache.getByUuid(entry.getValue());
          if (parentBranch == null) {
             throw new BranchDoesNotExist("Parent Branch id:[%s] does not exist for child branch [%s]",
                entry.getValue(), entry.getKey());
@@ -187,10 +187,10 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
       try {
          chStmt.runPreparedQuery(1000, SELECT_MERGE_BRANCHES);
          while (chStmt.next()) {
-            Branch sourceBranch = branchCache.getById(chStmt.getInt("source_branch_id"));
-            Branch destBranch = branchCache.getById(chStmt.getInt("dest_branch_id"));
+            Branch sourceBranch = branchCache.getByUuid(chStmt.getInt("source_branch_id"));
+            Branch destBranch = branchCache.getByUuid(chStmt.getInt("dest_branch_id"));
 
-            MergeBranch mergeBranch = (MergeBranch) branchCache.getById(chStmt.getInt("merge_branch_id"));
+            MergeBranch mergeBranch = (MergeBranch) branchCache.getByUuid(chStmt.getInt("merge_branch_id"));
             mergeBranch.setSourceBranch(sourceBranch);
             mergeBranch.setDestinationBranch(destBranch);
          }

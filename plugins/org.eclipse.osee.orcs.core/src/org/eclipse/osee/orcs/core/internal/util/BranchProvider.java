@@ -29,6 +29,6 @@ public class BranchProvider extends OrcsLazyObject<Branch, OrcsData> implements 
 
    @Override
    protected Branch instance() throws OseeCoreException {
-      return branchCache.getById(getOrcsData().getVersion().getBranchId());
+      return branchCache.getByUuid(getOrcsData().getVersion().getBranchId());
    }
 }

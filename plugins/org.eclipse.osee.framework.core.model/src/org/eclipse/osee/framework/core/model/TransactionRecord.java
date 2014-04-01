@@ -60,7 +60,7 @@ public class TransactionRecord extends BaseIdentity<Integer> implements ITransac
 
    public Branch getBranch() throws OseeCoreException {
       Conditions.checkNotNull(branchCache, "BranchCache was not set after construction");
-      return branchCache.getById(getBranchId());
+      return branchCache.getByUuid(getBranchId());
    }
 
    public int getId() {

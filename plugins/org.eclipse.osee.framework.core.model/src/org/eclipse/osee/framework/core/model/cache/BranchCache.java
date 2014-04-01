@@ -95,4 +95,8 @@ public class BranchCache extends AbstractOseeCache<Long, Branch> {
       }
       return branches;
    }
+
+   public Branch getByUuid(long uuid) throws OseeCoreException {
+      return super.getById(uuid);
+   }
 }

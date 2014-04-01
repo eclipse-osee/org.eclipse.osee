@@ -99,7 +99,7 @@ public class AtsBranchManagerCoreTest {
       //Test TxRecords
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
       BranchCache branchCache = Mockito.mock(BranchCache.class);
-      Mockito.when(branchCache.getById(Matchers.anyLong())).thenReturn(branch);
+      Mockito.when(branchCache.getByUuid(Matchers.anyLong())).thenReturn(branch);
       TransactionRecord txRecord =
          new TransactionRecord(1234, branch.getId(), "comment", new Date(), UserManager.getUser().getArtId(),
             UserManager.getUser().getArtId(), TransactionDetailsType.Baselined, branchCache);
