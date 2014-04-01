@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent.ArtifactEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.BroadcastEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
@@ -107,11 +106,6 @@ public final class OseeEventManager {
    // Kick LOCAL remote-event event
    public static void kickLocalRemEvent(Object source, RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
       getEventService().send(source, remoteEventServiceEventType);
-   }
-
-   // Kick LOCAL and REMOTE broadcast event
-   public static void kickBroadcastEvent(Object source, BroadcastEvent broadcastEvent) throws OseeCoreException {
-      getEventService().send(source, broadcastEvent);
    }
 
    //Kick LOCAL and REMOTE branch events

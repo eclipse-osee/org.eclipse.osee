@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.BroadcastEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.FrameworkEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
@@ -50,8 +49,6 @@ import org.eclipse.osee.framework.skynet.core.internal.event.handlers.ArtifactEv
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.ArtifactRemoteEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.BranchEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.BranchRemoteEventHandler;
-import org.eclipse.osee.framework.skynet.core.internal.event.handlers.BroadcastEventHandler;
-import org.eclipse.osee.framework.skynet.core.internal.event.handlers.BroadcastRemoteEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.RemoteServiceEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.TransactionEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.TransactionRemoteEventHandler;
@@ -203,14 +200,12 @@ public class OseeEventServiceImpl implements OseeEventService {
       handlers.addLocalHandler(AccessControlEvent.class, new AccessControlEventHandler());
       handlers.addLocalHandler(ArtifactEvent.class, new ArtifactEventHandler());
       handlers.addLocalHandler(BranchEvent.class, new BranchEventHandler());
-      handlers.addLocalHandler(BroadcastEvent.class, new BroadcastEventHandler());
       handlers.addLocalHandler(RemoteEventServiceEventType.class, new RemoteServiceEventHandler());
       handlers.addLocalHandler(TransactionEvent.class, new TransactionEventHandler());
 
       handlers.addRemoteHandler(RemoteAccessControlEvent1.class, new AccessControlRemoteEventHandler());
       handlers.addRemoteHandler(RemotePersistEvent1.class, new ArtifactRemoteEventHandler());
       handlers.addRemoteHandler(RemoteBranchEvent1.class, new BranchRemoteEventHandler());
-      handlers.addRemoteHandler(RemoteBroadcastEvent1.class, new BroadcastRemoteEventHandler());
       handlers.addRemoteHandler(RemoteTransactionEvent1.class, new TransactionRemoteEventHandler());
    }
 
@@ -218,7 +213,6 @@ public class OseeEventServiceImpl implements OseeEventService {
       handlers.removeLocalHandler(AccessControlEvent.class);
       handlers.removeLocalHandler(ArtifactEvent.class);
       handlers.removeLocalHandler(BranchEvent.class);
-      handlers.removeLocalHandler(BroadcastEvent.class);
       handlers.removeLocalHandler(RemoteEventServiceEventType.class);
       handlers.removeLocalHandler(TransactionEvent.class);
 

@@ -76,16 +76,9 @@
       <import plugin="org.eclipse.osee.framework.core.dsl.integration"/>
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="com.google.guava" version="11.0.0" match="greaterOrEqual"/>  
+      <import plugin="com.google.guava" version="11.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.core"/>
    </requires>
-
-   <plugin
-         id="org.eclipse.osee.framework.ui.admin"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.eclipse.osee.framework.ui.product"
