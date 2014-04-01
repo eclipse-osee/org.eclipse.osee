@@ -91,10 +91,10 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Long,
 
       for (Triplet<Long, Long, Long> entry : response.getAttributeTypes()) {
          ArtifactType key1 = cache.getByGuid(entry.getFirst());
-         Long branchGuid = entry.getSecond();
-         IOseeBranch branchToken = branchCache.getByGuid(branchGuid);
+         Long branchUuid = entry.getSecond();
+         IOseeBranch branchToken = branchCache.getByGuid(branchUuid);
          if (branchToken == null) {
-            branchToken = TokenFactory.createBranch(branchGuid, String.valueOf(branchGuid));
+            branchToken = TokenFactory.createBranch(branchUuid, String.valueOf(branchUuid));
          }
          Collection<AttributeType> types = attrs.get(key1, branchToken);
          if (types == null) {

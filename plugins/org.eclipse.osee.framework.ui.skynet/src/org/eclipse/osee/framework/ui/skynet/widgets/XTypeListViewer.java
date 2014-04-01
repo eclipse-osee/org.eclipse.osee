@@ -14,7 +14,6 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -31,13 +30,9 @@ public abstract class XTypeListViewer extends XListViewer {
       setSorter(new ViewerSorter());
    }
 
-   public IOseeBranch resolveBranch(String branchGuid) {
+   public IOseeBranch resolveBranch(long branchUuid) {
       try {
-         if (GUID.isValid(branchGuid)) {
-            return BranchManager.getBranchByGuid(branchGuid);
-         } else if (branchGuid != null) {
-            return BranchManager.getBranch(branchGuid);
-         }
+         return BranchManager.getBranchByUuid(branchUuid);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

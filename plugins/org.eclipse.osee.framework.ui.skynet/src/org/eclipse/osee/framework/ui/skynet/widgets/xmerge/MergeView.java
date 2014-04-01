@@ -273,9 +273,9 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       return Conditions.in(branchUuid, mergeBranch.getGuid()) || isApplicableSourceOrDestEvent(branchUuid);
    }
 
-   private boolean isApplicableSourceOrDestEvent(Long branchGuid) {
-      return Conditions.notNull(sourceBranch, destBranch) && Conditions.in(branchGuid, sourceBranch.getGuid(),
-         destBranch.getGuid());
+   private boolean isApplicableSourceOrDestEvent(Long branchUuid) {
+      return Conditions.notNull(sourceBranch, destBranch) && Conditions.in(branchUuid, sourceBranch.getUuid(),
+         destBranch.getUuid());
    }
 
    protected MergeBranch getMergeBranchForView() {

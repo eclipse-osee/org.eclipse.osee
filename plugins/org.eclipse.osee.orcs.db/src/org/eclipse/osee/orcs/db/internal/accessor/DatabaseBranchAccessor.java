@@ -115,15 +115,13 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
          chStmt.runPreparedQuery(2000, SELECT_BRANCHES);
          while (chStmt.next()) {
             try {
-               long branchId = chStmt.getLong("branch_id");
-
                String branchName = chStmt.getString("branch_name");
                BranchState branchState = BranchState.getBranchState(chStmt.getInt("branch_state"));
                BranchType branchType = BranchType.valueOf(chStmt.getInt("branch_type"));
                boolean isArchived = BranchArchivedState.valueOf(chStmt.getInt("archived")).isArchived();
-               String branchGuid = chStmt.getString("branch_guid");
+               long branchUuid = chStmt.getLong("branch_id");
                Branch branch =
-                  branchFactory.createOrUpdate(cache, branchId, branchName, branchType, branchState, isArchived,
+                  branchFactory.createOrUpdate(cache, branchUuid, branchName, branchType, branchState, isArchived,
                      StorageState.LOADED);
 
                Integer parentBranchId = chStmt.getInt("parent_branch_id");

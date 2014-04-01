@@ -792,32 +792,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       results.logTestTimeSpent(date, "testAtsBranchManager");
    }
 
-   public static void validateBranchGuid(IAtsConfigObject name, String parentBranchGuid, ValidateResults results) {
-      Date date = new Date();
-      try {
-         Branch branch = BranchManager.getBranchByGuid(parentBranchGuid);
-         if (branch.getArchiveState().isArchived()) {
-            results.log("validateBranchGuid", String.format(
-               "Error: [%s][%s][%s] has Parent Branch Id attribute set to Archived Branch [%s] named [%s]",
-               name.getName(), name.getGuid(), name, parentBranchGuid, branch));
-         } else if (!branch.getBranchType().isBaselineBranch()) {
-            results.log(
-               "validateBranchGuid",
-               String.format(
-                  "Error: [%s][%s][%s] has Parent Branch Id attribute [%s][%s] that is a [%s] branch; should be a BASELINE branch",
-                  name.getName(), name.getGuid(), name, branch.getBranchType().name(), parentBranchGuid, branch));
-         }
-      } catch (BranchDoesNotExist ex) {
-         results.log("validateBranchGuid", String.format(
-            "Error: [%s][%s][%s] has Parent Branch Id attribute [%s] that references a non-existant", name.getName(),
-            name.getGuid(), name, parentBranchGuid));
-      } catch (Exception ex) {
-         results.log("validateBranchGuid",
-            "Error: " + name.getName() + " [" + name.toStringWithId() + "] exception: " + ex.getLocalizedMessage());
-      }
-      results.logTestTimeSpent(date, "validateBranchGuid");
-   }
-
    public static void validateBranchUuid(IAtsConfigObject name, long parentBranchUuid, ValidateResults results) {
       Date date = new Date();
       try {

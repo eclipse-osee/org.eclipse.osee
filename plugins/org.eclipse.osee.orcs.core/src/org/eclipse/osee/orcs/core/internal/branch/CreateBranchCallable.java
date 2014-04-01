@@ -33,7 +33,7 @@ public class CreateBranchCallable extends AbstractBranchCallable<BranchReadable>
    protected BranchReadable innerCall() throws Exception {
       Conditions.checkNotNull(branchData, "branchData");
 
-      Conditions.checkNotNull(branchData.getGuid(), "branchGuid");
+      Conditions.checkNotNull(branchData.getUuid(), "branchUuid");
       Conditions.checkNotNull(branchData.getName(), "branchName");
       Conditions.checkNotNull(branchData.getBranchType(), "branchType");
 

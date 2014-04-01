@@ -17,8 +17,8 @@ public class BranchEvent implements FrameworkEvent, HasNetworkSender {
    private BranchEventType eventType;
    private NetworkSender networkSender;
 
-   public BranchEvent(BranchEventType branchEventType, long branchGuid) {
-      this.branchUuid = branchGuid;
+   public BranchEvent(BranchEventType branchEventType, long branchUuid) {
+      this.branchUuid = branchUuid;
       this.eventType = branchEventType;
    }
 
@@ -29,7 +29,7 @@ public class BranchEvent implements FrameworkEvent, HasNetworkSender {
    }
 
    /**
-    * Gets the value of the branchGuid property.
+    * Gets the value of the branchUuid property.
     * 
     * @return possible object is {@link String }
     */
@@ -39,7 +39,7 @@ public class BranchEvent implements FrameworkEvent, HasNetworkSender {
 
    // TODO: add comment to describe purpose of destinationBranch
    /**
-    * Gets the value of the destinationBranchGuid property.
+    * Gets the value of the destinationBranchUuid property.
     * 
     * @return possible object is {@link String }
     */
@@ -48,7 +48,7 @@ public class BranchEvent implements FrameworkEvent, HasNetworkSender {
    }
 
    /**
-    * Sets the value of the BranchGuid property.
+    * Sets the value of the BranchUuid property.
     * 
     * @param value allowed object is {@link String }
     */
@@ -57,7 +57,7 @@ public class BranchEvent implements FrameworkEvent, HasNetworkSender {
    }
 
    /**
-    * Sets the value of the destinationBranchGuid property.
+    * Sets the value of the destinationBranchUuid property.
     * 
     * @param value allowed object is {@link String }
     */

@@ -48,7 +48,7 @@ public class DefaultBasicUuidRelationReorder implements IBasicRelationReorder {
       this.parentArt = artA;
    }
 
-   public void setBranchGuid(Long branchUuid) {
+   public void setBranchUuid(Long branchUuid) {
       this.branchUuid = branchUuid;
    }
 

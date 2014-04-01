@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
 import org.eclipse.osee.framework.core.model.type.RelationTypeFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 public final class MockRequestFactory {
@@ -81,7 +80,6 @@ public final class MockRequestFactory {
       int parentBranchId = index;
       int associatedArtifactId = index * 3;
       int sourceTransactionId = index * 7;
-      String branchGuid = GUID.create();
       long branchUuid = Lib.generateUuid();
 
       int authorId = index * 7;

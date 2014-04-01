@@ -54,7 +54,7 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Bra
       if (branch.getStorageState() != StorageState.PURGED) {
          if (!branch.getAllChildBranches(false).isEmpty()) {
             throw new OseeArgumentException(
-               "Unable to purge a branch containing children: branchGuid[%s] branchType[%s]", branch.getGuid(),
+               "Unable to purge a branch containing children: branchUuid[%s] branchType[%s]", branch.getUuid(),
                branch.getBranchType());
          }
 

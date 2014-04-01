@@ -19,14 +19,11 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -125,24 +122,8 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
 
          branchesToImport = new long[selectedBranches.size()];
          int index = 0;
-
-         if (!selectedBranches.isEmpty()) {
-            Map<String, Long> branchGuidToLocalId = new HashMap<String, Long>();
-            IOseeStatement chStmt = getDatabaseService().getStatement();
-            try {
-               chStmt.runPreparedQuery("select branch_guid, branch_id from osee_branch");
-               while (chStmt.next()) {
-                  String guid = chStmt.getString("branch_guid");
-                  Long localId = chStmt.getLong("branch_id");
-                  branchGuidToLocalId.put(guid, localId);
-               }
-            } finally {
-               chStmt.close();
-            }
-
-            for (IOseeBranch branch : selectedBranches) {
-               branchesToImport[index++] = branchGuidToLocalId.get(branch.getGuid());
-            }
+         for (IOseeBranch branch : selectedBranches) {
+            branchesToImport[index++] = branch.getUuid();
          }
 
          processImportFiles(branchesToImport, manifestHandler.getImportFiles());

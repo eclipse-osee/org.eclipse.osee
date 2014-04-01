@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 /**
  * @author Roberto E. Escobar
  */
-public class BranchGuidSqlHandler extends SqlHandler<CriteriaBranchUuids> {
+public class BranchUuidSqlHandler extends SqlHandler<CriteriaBranchUuids> {
 
    private CriteriaBranchUuids criteria;
 

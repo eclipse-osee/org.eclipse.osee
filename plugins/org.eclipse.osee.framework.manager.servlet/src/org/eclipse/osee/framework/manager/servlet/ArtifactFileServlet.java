@@ -71,8 +71,8 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
             Branch branch = null;
             if (artifactFileInfo.isBranchNameValid()) {
                branch = branchCache.getBySoleName(artifactFileInfo.getBranchName());
-            } else if (artifactFileInfo.isBranchGuidValid()) {
-               branch = branchCache.getByGuid(artifactFileInfo.getBranchGuid());
+            } else if (artifactFileInfo.isBranchUuidValid()) {
+               branch = branchCache.getByGuid(artifactFileInfo.getBranchUuid());
             }
             Conditions.checkNotNull(branch, "branch", "Unable to determine branch");
             uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), branch);

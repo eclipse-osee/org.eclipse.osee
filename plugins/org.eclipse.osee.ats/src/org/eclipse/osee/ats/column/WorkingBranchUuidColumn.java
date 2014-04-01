@@ -15,16 +15,16 @@ import org.eclipse.osee.framework.core.model.Branch;
 /**
  * @author Donald G. Dunne
  */
-public class WorkingBranchGuidColumn extends AbstractBranchColumn {
+public class WorkingBranchUuidColumn extends AbstractBranchColumn {
 
-   public static WorkingBranchGuidColumn instance = new WorkingBranchGuidColumn();
+   public static WorkingBranchUuidColumn instance = new WorkingBranchUuidColumn();
 
-   public static WorkingBranchGuidColumn getInstance() {
+   public static WorkingBranchUuidColumn getInstance() {
       return instance;
    }
 
-   private WorkingBranchGuidColumn() {
-      super(".workBranchGuid", "Working Branch Guid");
+   private WorkingBranchUuidColumn() {
+      super(".workBranchUuid", "Working Branch Uuid");
    }
 
    /**
@@ -32,8 +32,8 @@ public class WorkingBranchGuidColumn extends AbstractBranchColumn {
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public WorkingBranchGuidColumn copy() {
-      WorkingBranchGuidColumn newXCol = new WorkingBranchGuidColumn();
+   public WorkingBranchUuidColumn copy() {
+      WorkingBranchUuidColumn newXCol = new WorkingBranchUuidColumn();
       super.copy(this, newXCol);
       return newXCol;
    }

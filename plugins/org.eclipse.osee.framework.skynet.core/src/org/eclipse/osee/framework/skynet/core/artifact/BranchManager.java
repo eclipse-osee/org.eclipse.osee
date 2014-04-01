@@ -198,8 +198,6 @@ public class BranchManager {
             BranchState branchState = BranchState.getBranchState(chStmt.getInt("branch_state"));
             BranchType branchType = BranchType.valueOf(chStmt.getInt("branch_type"));
             BranchArchivedState archiveState = BranchArchivedState.valueOf(chStmt.getInt("archived"));
-            String branchGuid = chStmt.getString("branch_guid");
-
             long parentBranchId = chStmt.getLong("parent_branch_id");
             int sourceTx = chStmt.getInt("parent_transaction_id");
             int baseTx = chStmt.getInt("baseline_transaction_id");
@@ -551,8 +549,8 @@ public class BranchManager {
 
    private void initializeLastBranchValue() {
       try {
-         Long branchGuid = Long.valueOf(UserManager.getSetting(LAST_DEFAULT_BRANCH));
-         lastBranch = getBranchByGuid(branchGuid);
+         Long branchUuid = Long.valueOf(UserManager.getSetting(LAST_DEFAULT_BRANCH));
+         lastBranch = getBranchByUuid(branchUuid);
       } catch (Exception ex) {
          try {
             lastBranch = getDefaultInitialBranch();

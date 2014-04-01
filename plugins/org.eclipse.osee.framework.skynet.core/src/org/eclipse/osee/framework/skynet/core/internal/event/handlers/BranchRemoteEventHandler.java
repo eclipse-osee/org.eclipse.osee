@@ -42,10 +42,10 @@ public class BranchRemoteEventHandler implements EventHandlerRemote<RemoteBranch
 
    private void updateBranches(Sender sender, BranchEvent branchEvent) {
       BranchEventType eventType = branchEvent.getEventType();
-      Long branchGuid = branchEvent.getBranchUuid();
+      Long branchUuid = branchEvent.getBranchUuid();
       try {
-         if (BranchManager.branchExists(branchGuid)) {
-            Branch branch = BranchManager.getBranchByGuid(branchGuid);
+         if (BranchManager.branchExists(branchUuid)) {
+            Branch branch = BranchManager.getBranchByUuid(branchUuid);
             if (eventType == Committed) {
                Artifact artifact = BranchManager.getAssociatedArtifact(branch);
                TransactionManager.clearCommitArtifactCacheForAssociatedArtifact(artifact);

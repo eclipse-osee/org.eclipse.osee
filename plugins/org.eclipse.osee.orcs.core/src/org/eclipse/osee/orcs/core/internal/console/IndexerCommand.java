@@ -75,7 +75,7 @@ public class IndexerCommand implements ConsoleCommand {
          }
          cnt++;
       }
-      builder.append("> [branchGuids=<BRANCH_GUID,..>]\n");
+      builder.append("> [branchUuids=<BRANCH_UUID,..>]\n");
       builder.append("op=ITEM_IDS ids=<GAMMA_IDS,..> debug=<TRUE|FALSE>");
       return builder.toString();
    }

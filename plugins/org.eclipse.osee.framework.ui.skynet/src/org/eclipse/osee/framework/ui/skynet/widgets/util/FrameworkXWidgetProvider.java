@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -376,9 +375,14 @@ public final class FrameworkXWidgetProvider {
 
             widget.setToolTip(xWidgetLayoutData.getToolTip());
             try {
-               String branchGuid = xWidgetLayoutData.getDefaultValue();
-               if (GUID.isValid(branchGuid)) {
-                  widget.setSelection(BranchManager.getBranchByGuid(branchGuid));
+               String branchUuid = xWidgetLayoutData.getDefaultValue();
+               if (Strings.isValid(branchUuid)) {
+                  try {
+                     Long uuid = Long.valueOf(branchUuid);
+                     widget.setSelection(BranchManager.getBranchByUuid(uuid));
+                  } catch (Exception ex) {
+                     // do nothing
+                  }
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

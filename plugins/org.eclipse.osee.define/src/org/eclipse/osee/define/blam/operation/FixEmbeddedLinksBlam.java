@@ -42,7 +42,7 @@ public class FixEmbeddedLinksBlam extends AbstractBlam {
 
    @Override
    public String getDescriptionUsage() {
-      return "For a given branch, locate all WholeWordContent attributes and replace branchGuids with that of the selected branch";
+      return "For a given branch, locate all WholeWordContent attributes and replace branchUuids with that of the selected branch";
    }
 
    @Override

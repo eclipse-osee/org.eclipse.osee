@@ -88,7 +88,7 @@ public final class SqlHandlerFactoryUtil {
          new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
 
       handleMap.put(CriteriaBranchArchived.class, BranchArchivedSqlHandler.class);
-      handleMap.put(CriteriaBranchUuids.class, BranchGuidSqlHandler.class);
+      handleMap.put(CriteriaBranchUuids.class, BranchUuidSqlHandler.class);
       handleMap.put(CriteriaBranchIds.class, BranchIdsSqlHandler.class);
       handleMap.put(CriteriaBranchName.class, BranchNameSqlHandler.class);
       handleMap.put(CriteriaBranchState.class, BranchStateSqlHandler.class);

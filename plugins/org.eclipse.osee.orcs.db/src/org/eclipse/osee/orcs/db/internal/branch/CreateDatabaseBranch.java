@@ -22,7 +22,7 @@ public class CreateDatabaseBranch {
 
    private final BranchType branchType;
    private final int sourceTransactionId;
-   private final String branchGuid;
+   private final long branchUuid;
 
    private final int authorId;
 
@@ -30,13 +30,13 @@ public class CreateDatabaseBranch {
    private final int mergeAddressingQueryId;
    private final int mergeDestinationBranchId;
 
-   public CreateDatabaseBranch(BranchType branchType, int sourceTransactionId, int parentBranchId, String branchGuid, String branchName, int associatedArtifactId, int authorId, String creationComment, int mergeAddressingQueryId, int mergeDestinationBranchId) {
+   public CreateDatabaseBranch(BranchType branchType, int sourceTransactionId, int parentBranchId, long branchUuid, String branchName, int associatedArtifactId, int authorId, String creationComment, int mergeAddressingQueryId, int mergeDestinationBranchId) {
       this.parentBranchId = parentBranchId;
       this.branchName = branchName;
       this.associatedArtifactId = associatedArtifactId;
       this.branchType = branchType;
       this.sourceTransactionId = sourceTransactionId;
-      this.branchGuid = branchGuid;
+      this.branchUuid = branchUuid;
       this.authorId = authorId;
       this.creationComment = creationComment;
       this.mergeAddressingQueryId = mergeAddressingQueryId;
@@ -63,8 +63,8 @@ public class CreateDatabaseBranch {
       return sourceTransactionId;
    }
 
-   public String getBranchGuid() {
-      return branchGuid;
+   public long getBranchUuid() {
+      return branchUuid;
    }
 
    public int getAuthorId() {
@@ -85,6 +85,6 @@ public class CreateDatabaseBranch {
 
    @Override
    public String toString() {
-      return "Branch [associatedArtifactId=" + associatedArtifactId + ", branchGuid=" + branchGuid + ", branchType=" + branchType + ", name=" + branchName + ", parentBranchId=" + parentBranchId + ", parentTransactionId=" + sourceTransactionId + "]";
+      return "Branch [associatedArtifactId=" + associatedArtifactId + ", branchUuid=" + branchUuid + ", branchType=" + branchType + ", name=" + branchName + ", parentBranchId=" + parentBranchId + ", parentTransactionId=" + sourceTransactionId + "]";
    }
 }

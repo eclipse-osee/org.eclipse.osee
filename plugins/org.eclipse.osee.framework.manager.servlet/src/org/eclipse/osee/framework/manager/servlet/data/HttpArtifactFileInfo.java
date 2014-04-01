@@ -48,11 +48,11 @@ public class HttpArtifactFileInfo {
       return branchName;
    }
 
-   public Long getBranchGuid() {
+   public Long getBranchUuid() {
       return branchUuid;
    }
 
-   public boolean isBranchGuidValid() {
+   public boolean isBranchUuidValid() {
       return branchUuid != null && branchUuid > 0;
    }
 

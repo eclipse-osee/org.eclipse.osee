@@ -103,7 +103,7 @@ import org.eclipse.osee.ats.column.WeeklyBenefitHrsColumn;
 import org.eclipse.osee.ats.column.WorkDaysNeededColumn;
 import org.eclipse.osee.ats.column.WorkPackageColumn;
 import org.eclipse.osee.ats.column.WorkingBranchArchivedColumn;
-import org.eclipse.osee.ats.column.WorkingBranchGuidColumn;
+import org.eclipse.osee.ats.column.WorkingBranchUuidColumn;
 import org.eclipse.osee.ats.column.WorkingBranchStateColumn;
 import org.eclipse.osee.ats.column.WorkingBranchTypeColumn;
 import org.eclipse.osee.ats.column.ev.ActivityIdColumnUI;
@@ -160,7 +160,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       EstimatedCompletionDateColumn.getInstance(),
       ReleaseDateColumn.getInstance(),
       WorkPackageColumn.getInstance(),
-      WorkingBranchGuidColumn.getInstance(),
+      WorkingBranchUuidColumn.getInstance(),
       WorkingBranchArchivedColumn.getInstance(),
       WorkingBranchStateColumn.getInstance(),
       WorkingBranchTypeColumn.getInstance(),

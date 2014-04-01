@@ -113,15 +113,15 @@ public final class ArtifactTest {
          new DefaultBasicGuidArtifact(Lib.generateUuid(), CoreArtifactTypes.GeneralData.getGuid(), art.getGuid());
       Assert.assertEquals(art.hashCode(), equalGuidArtType.hashCode());
 
-      DefaultBasicGuidArtifact equalGuidArtTypeBranchGuid =
+      DefaultBasicGuidArtifact equalGuidArtTypeBranchUuid =
          new DefaultBasicGuidArtifact(BranchManager.getCommonBranch().getUuid(),
             CoreArtifactTypes.GeneralData.getGuid(), art.getGuid());
-      Assert.assertEquals(art.hashCode(), equalGuidArtTypeBranchGuid.hashCode());
+      Assert.assertEquals(art.hashCode(), equalGuidArtTypeBranchUuid.hashCode());
 
-      DefaultBasicGuidArtifact equalArtTypeBranchGuidNotGuid =
+      DefaultBasicGuidArtifact equalArtTypeBranchUuidNotGuid =
          new DefaultBasicGuidArtifact(BranchManager.getCommonBranch().getUuid(),
             CoreArtifactTypes.GeneralData.getGuid(), GUID.create());
-      Assert.assertNotSame(art.hashCode(), equalArtTypeBranchGuidNotGuid.hashCode());
+      Assert.assertNotSame(art.hashCode(), equalArtTypeBranchUuidNotGuid.hashCode());
    }
 
    @Test
@@ -139,15 +139,15 @@ public final class ArtifactTest {
          new DefaultBasicGuidArtifact(Lib.generateUuid(), CoreArtifactTypes.GeneralData.getGuid(), art.getGuid());
       Assert.assertNotSame(art, equalGuidArtType);
 
-      DefaultBasicGuidArtifact equalGuidArtTypeBranchGuid =
+      DefaultBasicGuidArtifact equalGuidArtTypeBranchUuid =
          new DefaultBasicGuidArtifact(BranchManager.getCommonBranch().getUuid(),
             CoreArtifactTypes.GeneralData.getGuid(), art.getGuid());
-      Assert.assertEquals(art, equalGuidArtTypeBranchGuid);
+      Assert.assertEquals(art, equalGuidArtTypeBranchUuid);
 
-      DefaultBasicGuidArtifact equalArtTypeBranchGuidNotGuid =
+      DefaultBasicGuidArtifact equalArtTypeBranchUuidNotGuid =
          new DefaultBasicGuidArtifact(BranchManager.getCommonBranch().getUuid(),
             CoreArtifactTypes.GeneralData.getGuid(), GUID.create());
-      Assert.assertNotSame(art, equalArtTypeBranchGuidNotGuid);
+      Assert.assertNotSame(art, equalArtTypeBranchUuidNotGuid);
    }
 
 }
