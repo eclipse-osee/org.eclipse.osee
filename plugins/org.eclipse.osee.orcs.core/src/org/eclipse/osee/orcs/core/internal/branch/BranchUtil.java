@@ -47,7 +47,7 @@ public class BranchUtil {
       for (int i = 0; i < sorted.size(); i++) {
          BranchReadable current = sorted.get(i);
          BranchReadable parent =
-            queryFactory.branchQuery().andLocalId((int) current.getParentBranch()).getResults().getExactlyOne();
+            queryFactory.branchQuery().andUuids(current.getParentBranch()).getResults().getExactlyOne();
 
          int parentIdx = sorted.indexOf(parent);
          if (parentIdx >= 0 && parentIdx < i) {

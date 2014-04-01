@@ -90,7 +90,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
          String branchUuid = artifact.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid, "");
          if (Strings.isValid(branchUuid)) {
             BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
-            ResultSet<BranchReadable> branches = query.andLocalId(Integer.valueOf(branchUuid)).getResults();
+            ResultSet<BranchReadable> branches = query.andUuids(Long.valueOf(branchUuid)).getResults();
             if (!branches.isEmpty()) {
                branch = branches.iterator().next();
             }
@@ -110,7 +110,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       long branchUuid = version.getBaselineBranchUuidInherited();
       if (branchUuid > 0) {
          BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
-         ResultSet<BranchReadable> branches = query.andLocalId((int) branchUuid).getResults();
+         ResultSet<BranchReadable> branches = query.andUuids(branchUuid).getResults();
          if (!branches.isEmpty()) {
             branch = branches.iterator().next();
          }

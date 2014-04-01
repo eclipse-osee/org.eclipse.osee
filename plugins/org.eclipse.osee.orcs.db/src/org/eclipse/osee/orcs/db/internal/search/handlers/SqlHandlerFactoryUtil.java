@@ -31,7 +31,6 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaCommitIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
@@ -88,7 +87,6 @@ public final class SqlHandlerFactoryUtil {
          new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
 
       handleMap.put(CriteriaBranchArchived.class, BranchArchivedSqlHandler.class);
-      handleMap.put(CriteriaBranchUuids.class, BranchUuidSqlHandler.class);
       handleMap.put(CriteriaBranchIds.class, BranchIdsSqlHandler.class);
       handleMap.put(CriteriaBranchName.class, BranchNameSqlHandler.class);
       handleMap.put(CriteriaBranchState.class, BranchStateSqlHandler.class);

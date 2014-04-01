@@ -106,7 +106,7 @@ public final class BranchImportCommand implements ConsoleCommand {
 
          List<IOseeBranch> branches = new LinkedList<IOseeBranch>();
          for (String branchIdString : branchIds) {
-            IOseeBranch branch = branchQuery.andLocalId(Integer.valueOf(branchIdString)).getResults().getExactlyOne();
+            IOseeBranch branch = branchQuery.andUuids(Long.valueOf(branchIdString)).getResults().getExactlyOne();
             branches.add(branch);
          }
 

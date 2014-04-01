@@ -125,7 +125,7 @@ public final class BranchExportCommand implements ConsoleCommand {
             }
          } else {
             for (String branchIdString : includeBranchIds) {
-               branches.add(branchQuery.andLocalId(Integer.valueOf(branchIdString)).getResults().getExactlyOne());
+               branches.add(branchQuery.andUuids(Long.valueOf(branchIdString)).getResults().getExactlyOne());
             }
          }
 
@@ -133,7 +133,7 @@ public final class BranchExportCommand implements ConsoleCommand {
          if (!excludeBranchIds.isEmpty()) {
             for (String branchIdString : excludeBranchIds) {
                BranchReadable toExclude =
-                  branchQuery.andLocalId(Integer.valueOf(branchIdString)).getResults().getExactlyOne();
+                  branchQuery.andUuids(Long.valueOf(branchIdString)).getResults().getExactlyOne();
                branches.remove(toExclude);
             }
          }

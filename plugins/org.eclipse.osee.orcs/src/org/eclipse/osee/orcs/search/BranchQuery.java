@@ -41,13 +41,9 @@ public interface BranchQuery {
 
    boolean areArchivedIncluded();
 
-   BranchQuery andLocalId(int... id) throws OseeCoreException;
+   BranchQuery andUuids(long... uuids) throws OseeCoreException;
 
-   BranchQuery andLocalIds(Collection<Integer> ids) throws OseeCoreException;
-
-   BranchQuery andUuids(Long... ids) throws OseeCoreException;
-
-   BranchQuery andUuids(Collection<Long> ids) throws OseeCoreException;
+   BranchQuery andUuids(Collection<Long> uuids) throws OseeCoreException;
 
    BranchQuery andIds(Collection<? extends IOseeBranch> ids) throws OseeCoreException;
 

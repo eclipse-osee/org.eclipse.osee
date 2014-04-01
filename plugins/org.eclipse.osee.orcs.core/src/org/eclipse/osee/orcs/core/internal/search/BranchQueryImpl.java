@@ -110,28 +110,17 @@ public class BranchQueryImpl implements BranchQuery {
    }
 
    @Override
-   public BranchQuery andLocalId(int... ids) throws OseeCoreException {
-      Set<Integer> allIds = new HashSet<Integer>();
-      for (Integer id : ids) {
-         allIds.add(id);
+   public BranchQuery andUuids(long... uuids) throws OseeCoreException {
+      Set<Long> allUuids = new HashSet<Long>();
+      for (Long uuid : uuids) {
+         allUuids.add(uuid);
       }
-      return andLocalIds(allIds);
+      return andUuids(allUuids);
    }
 
    @Override
-   public BranchQuery andLocalIds(Collection<Integer> ids) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.createBranchIdsCriteria(ids);
-      return addAndCheck(getQueryData(), criteria);
-   }
-
-   @Override
-   public BranchQuery andUuids(Long... ids) throws OseeCoreException {
-      return andUuids(Arrays.asList(ids));
-   }
-
-   @Override
-   public BranchQuery andUuids(Collection<Long> ids) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.createBranchUuidsCriteria(ids);
+   public BranchQuery andUuids(Collection<Long> uuids) throws OseeCoreException {
+      Criteria criteria = criteriaFactory.createBranchIdsCriteria(uuids);
       return addAndCheck(getQueryData(), criteria);
    }
 
@@ -144,9 +133,9 @@ public class BranchQueryImpl implements BranchQuery {
    public BranchQuery andIds(Collection<? extends IOseeBranch> ids) throws OseeCoreException {
       Set<Long> allIds = new HashSet<Long>();
       for (IOseeBranch token : ids) {
-         allIds.add(token.getGuid());
+         allIds.add(token.getUuid());
       }
-      Criteria criteria = criteriaFactory.createBranchUuidsCriteria(allIds);
+      Criteria criteria = criteriaFactory.createBranchIdsCriteria(allIds);
       return addAndCheck(getQueryData(), criteria);
    }
 

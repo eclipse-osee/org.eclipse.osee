@@ -146,18 +146,18 @@ public class BranchUtilBranchReadableTest {
 
    private void initBranchQueryElements() {
       when(queryFactory.branchQuery()).thenReturn(branchQuery);
-      when(branchQuery.andLocalId(-1)).thenReturn(bqout);
+      when(branchQuery.andUuids(-1L)).thenReturn(bqout);
       when(bqout.getResults()).thenReturn(makeResults(outside));
 
-      when(branchQuery.andLocalId(1)).thenReturn(bq1);
-      when(branchQuery.andLocalId(2)).thenReturn(bq2);
-      when(branchQuery.andLocalId(3)).thenReturn(bq3);
-      when(branchQuery.andLocalId(4)).thenReturn(bq4);
-      when(branchQuery.andLocalId(5)).thenReturn(bq5);
-      when(branchQuery.andLocalId(6)).thenReturn(bq6);
-      when(branchQuery.andLocalId(7)).thenReturn(bq7);
-      when(branchQuery.andLocalId(8)).thenReturn(bq8);
-      when(branchQuery.andLocalId(9)).thenReturn(bq9);
+      when(branchQuery.andUuids(1L)).thenReturn(bq1);
+      when(branchQuery.andUuids(2L)).thenReturn(bq2);
+      when(branchQuery.andUuids(3L)).thenReturn(bq3);
+      when(branchQuery.andUuids(4L)).thenReturn(bq4);
+      when(branchQuery.andUuids(5L)).thenReturn(bq5);
+      when(branchQuery.andUuids(6L)).thenReturn(bq6);
+      when(branchQuery.andUuids(7L)).thenReturn(bq7);
+      when(branchQuery.andUuids(8L)).thenReturn(bq8);
+      when(branchQuery.andUuids(9L)).thenReturn(bq9);
 
       when(bq1.getResults()).thenReturn(makeResults(one));
       when(bq2.getResults()).thenReturn(makeResults(two));

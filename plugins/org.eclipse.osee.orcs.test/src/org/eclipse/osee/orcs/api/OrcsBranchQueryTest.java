@@ -122,7 +122,7 @@ public class OrcsBranchQueryTest {
    @Test
    public void testGetByUuid() throws OseeCoreException {
       BranchQuery query = factory.branchQuery();
-      query.andLocalId(5, 3);
+      query.andUuids(5, 3);
 
       ResultSet<BranchReadable> results = query.getResults();
       assertEquals(2, results.size());

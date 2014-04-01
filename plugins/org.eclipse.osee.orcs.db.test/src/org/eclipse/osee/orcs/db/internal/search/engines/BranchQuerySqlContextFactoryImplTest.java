@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -46,7 +45,6 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.Engines;
@@ -65,8 +63,7 @@ import org.mockito.MockitoAnnotations;
  */
 public class BranchQuerySqlContextFactoryImplTest {
 
-   private static final Criteria UUIDS = uuid(Lib.generateUuid(), Lib.generateUuid());
-   private static final Criteria IDS = id(1, 2, 3, 4, 5);
+   private static final Criteria UUIDS = uuid(1L, 2L, 3L, 4L, 5L);
    private static final Criteria TYPES = type(WORKING, SYSTEM_ROOT);
 
    private static final Criteria IS_ARCHIVED = archive(ARCHIVED);
@@ -107,65 +104,57 @@ public class BranchQuerySqlContextFactoryImplTest {
    public void testCount() throws Exception {
       String expected = "SELECT/*+ ordered */ count(br1.branch_id)\n" + // 
       " FROM \n" + //
-      "osee_join_id jid1, osee_branch br1, osee_join_char_id jch1, osee_join_id jid2\n" + //
+      "osee_join_id jid1, osee_branch br1, osee_join_id jid2\n" + //
       " WHERE \n" + //
       "br1.branch_id = jid1.id AND jid1.query_id = ?\n" + //
       " AND \n" + //
-      "br1.branch_id = jch1.id AND jch1.query_id = ?\n" + //
-      " AND \n" + //
       "br1.branch_type = jid2.id AND jid2.query_id = ?";
 
-      queryData.addCriteria(UUIDS, IDS, TYPES);
+      queryData.addCriteria(UUIDS, TYPES);
 
       QuerySqlContext context = queryEngine.createCountContext(session, queryData);
 
       assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
-      assertEquals(3, parameters.size());
+      assertEquals(2, parameters.size());
       List<AbstractJoinQuery> joins = context.getJoins();
-      assertEquals(3, joins.size());
+      assertEquals(2, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
       assertEquals(iterator.next(), joins.get(0).getQueryId());
       assertEquals(5, joins.get(0).size());
       assertEquals(iterator.next(), joins.get(1).getQueryId());
       assertEquals(2, joins.get(1).size());
-      assertEquals(iterator.next(), joins.get(2).getQueryId());
-      assertEquals(2, joins.get(2).size());
    }
 
    @Test
    public void testQueryUuidIdsTypes() throws Exception {
       String expected = "SELECT/*+ ordered */ br1.*\n" + // 
       " FROM \n" + //
-      "osee_join_id jid1, osee_branch br1, osee_join_char_id jch1, osee_join_id jid2\n" + //
+      "osee_join_id jid1, osee_branch br1, osee_join_id jid2\n" + //
       " WHERE \n" + //
       "br1.branch_id = jid1.id AND jid1.query_id = ?\n" + //
-      " AND \n" + //
-      "br1.branch_id = jch1.id AND jch1.query_id = ?\n" + //
       " AND \n" + //
       "br1.branch_type = jid2.id AND jid2.query_id = ?\n" + //
       " ORDER BY br1.branch_id";
 
-      queryData.addCriteria(UUIDS, IDS, TYPES);
+      queryData.addCriteria(UUIDS, TYPES);
 
       QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
 
       assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
-      assertEquals(3, parameters.size());
+      assertEquals(2, parameters.size());
       List<AbstractJoinQuery> joins = context.getJoins();
-      assertEquals(3, joins.size());
+      assertEquals(2, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
       assertEquals(iterator.next(), joins.get(0).getQueryId());
       assertEquals(5, joins.get(0).size());
       assertEquals(iterator.next(), joins.get(1).getQueryId());
       assertEquals(2, joins.get(1).size());
-      assertEquals(iterator.next(), joins.get(2).getQueryId());
-      assertEquals(2, joins.get(2).size());
    }
 
    @Test
@@ -195,25 +184,22 @@ public class BranchQuerySqlContextFactoryImplTest {
       " WHERE \n" + //
       "br1.branch_id = ?\n" + //
       " AND \n" + //
-      "br1.branch_id = ?\n" + //
-      " AND \n" + //
       "br1.branch_type = ?\n" + //
       " ORDER BY br1.branch_id";
 
-      queryData.addCriteria(uuid(12313123L), id(2), type(SYSTEM_ROOT));
+      queryData.addCriteria(uuid(2L), type(SYSTEM_ROOT));
 
       QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
 
       assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
-      assertEquals(3, parameters.size());
+      assertEquals(2, parameters.size());
       List<AbstractJoinQuery> joins = context.getJoins();
       assertEquals(0, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      assertEquals(2, iterator.next());
-      assertEquals(12313123L, iterator.next());
+      assertEquals(2L, iterator.next());
       assertEquals(SYSTEM_ROOT.getValue(), iterator.next());
    }
 
@@ -437,10 +423,10 @@ public class BranchQuerySqlContextFactoryImplTest {
    }
 
    private static Criteria uuid(Long... values) {
-      return new CriteriaBranchUuids(Arrays.asList(values));
+      return new CriteriaBranchIds(Arrays.asList(values));
    }
 
-   private static Criteria id(Integer... values) {
+   private static Criteria id(Long... values) {
       return new CriteriaBranchIds(Arrays.asList(values));
    }
 

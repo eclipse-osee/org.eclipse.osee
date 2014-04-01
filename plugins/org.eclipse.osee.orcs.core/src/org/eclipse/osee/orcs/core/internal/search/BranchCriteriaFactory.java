@@ -14,7 +14,6 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
 
 /**
  * @author Roberto E. Escobar
@@ -25,12 +24,8 @@ public class BranchCriteriaFactory {
       return new CriteriaAllBranches();
    }
 
-   public Criteria createBranchIdsCriteria(Collection<Integer> ids) {
+   public Criteria createBranchIdsCriteria(Collection<Long> ids) {
       return new CriteriaBranchIds(ids);
-   }
-
-   public Criteria createBranchUuidsCriteria(Collection<Long> ids) {
-      return new CriteriaBranchUuids(ids);
    }
 
    public Criteria createBranchTypeCriteria(Collection<BranchType> types) {
