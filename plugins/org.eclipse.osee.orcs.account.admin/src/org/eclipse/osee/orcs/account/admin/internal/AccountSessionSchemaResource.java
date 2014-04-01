@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Roberto E. Escobar
  */
-public class AccountAccessSchemaResource implements SchemaResource {
+public class AccountSessionSchemaResource implements SchemaResource {
 
    private static final String SCHEMA_PATH = "schema/ACCOUNT.DS.SCHEMA.xml";
 

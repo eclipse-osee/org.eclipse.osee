@@ -26,12 +26,12 @@ import javax.ws.rs.core.HttpHeaders;
 import org.apache.commons.lang.math.RandomUtils;
 import org.eclipse.osee.account.admin.AccessDetails;
 import org.eclipse.osee.account.admin.Account;
-import org.eclipse.osee.account.admin.AccountAccess;
+import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.AccountAdmin;
 import org.eclipse.osee.account.admin.AccountLoginRequest;
 import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
-import org.eclipse.osee.account.rest.model.AccountAccessData;
+import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.AccountActiveData;
 import org.eclipse.osee.account.rest.model.AccountDetailsData;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
@@ -139,7 +139,7 @@ public class AccountOpsTest {
 
       Date d1 = newRandomDate();
       Date d2 = newRandomDate();
-      AccountAccess access = mockAccess(789L, "t3", d1, d2, ipAddress, userAgent);
+      AccountSession access = mockAccess(789L, "t3", d1, d2, ipAddress, userAgent);
       ArgumentCaptor<AccountLoginRequest> captor = ArgumentCaptor.forClass(AccountLoginRequest.class);
 
       when(accountAdmin.login(any(AccountLoginRequest.class))).thenReturn(access);
@@ -203,9 +203,9 @@ public class AccountOpsTest {
       Date d1 = newRandomDate();
       Date d2 = newRandomDate();
 
-      AccountAccess access = mockAccess(789L, "t3", d1, d2, "f3", "d3");
+      AccountSession access = mockAccess(789L, "t3", d1, d2, "f3", "d3");
 
-      AccountAccessData actual = ops.asAccountAccessData(access);
+      AccountSessionDetailsData actual = ops.asAccountAccessData(access);
 
       assertAccess(actual, 789L, d1, d2, "f3", "d3");
    }
@@ -214,7 +214,7 @@ public class AccountOpsTest {
    public void testAsSessionData() {
       Date d1 = newRandomDate();
       Date d2 = newRandomDate();
-      AccountAccess access = mockAccess(123L, "t1", d1, d2, "f1", "d1");
+      AccountSession access = mockAccess(123L, "t1", d1, d2, "f1", "d1");
 
       AccountSessionData actual = ops.asSessionData(access);
 
@@ -231,22 +231,22 @@ public class AccountOpsTest {
       Date d5 = newRandomDate();
       Date d6 = newRandomDate();
 
-      AccountAccess access1 = mockAccess(123L, "t1", d1, d2, "f1", "d1");
-      AccountAccess access2 = mockAccess(456L, "t2", d3, d4, "f2", "d2");
-      AccountAccess access3 = mockAccess(789L, "t3", d5, d6, "f3", "d3");
+      AccountSession access1 = mockAccess(123L, "t1", d1, d2, "f1", "d1");
+      AccountSession access2 = mockAccess(456L, "t2", d3, d4, "f2", "d2");
+      AccountSession access3 = mockAccess(789L, "t3", d5, d6, "f3", "d3");
 
-      ResultSet<AccountAccess> result = ResultSets.newResultSet(access1, access2, access3);
-      when(accountAdmin.getAccountAccessByUniqueField(ACCOUNT_UID)).thenReturn(result);
+      ResultSet<AccountSession> result = ResultSets.newResultSet(access1, access2, access3);
+      when(accountAdmin.getAccountSessionByUniqueField(ACCOUNT_UID)).thenReturn(result);
 
-      List<AccountAccessData> actual = ops.getAccountAccessById(ACCOUNT_UID);
+      List<AccountSessionDetailsData> actual = ops.getAccountSessionById(ACCOUNT_UID);
 
       assertEquals(3, actual.size());
-      Iterator<AccountAccessData> iterator = actual.iterator();
+      Iterator<AccountSessionDetailsData> iterator = actual.iterator();
       assertAccess(iterator.next(), 123L, d1, d2, "f1", "d1");
       assertAccess(iterator.next(), 456L, d3, d4, "f2", "d2");
       assertAccess(iterator.next(), 789L, d5, d6, "f3", "d3");
 
-      verify(accountAdmin).getAccountAccessByUniqueField(ACCOUNT_UID);
+      verify(accountAdmin).getAccountSessionByUniqueField(ACCOUNT_UID);
    }
 
    @Test
@@ -395,10 +395,10 @@ public class AccountOpsTest {
       return new Date(Math.abs(System.currentTimeMillis() - RandomUtils.nextLong()));
    }
 
-   private static AccountAccess mockAccess(long id, String token, Date created, Date accessed, String accessFrom, String accessDetails) {
-      AccountAccess access = Mockito.mock(AccountAccess.class);
+   private static AccountSession mockAccess(long id, String token, Date created, Date accessed, String accessFrom, String accessDetails) {
+      AccountSession access = Mockito.mock(AccountSession.class);
       when(access.getAccountId()).thenReturn(id);
-      when(access.getAccessToken()).thenReturn(token);
+      when(access.getSessionToken()).thenReturn(token);
       when(access.getCreatedOn()).thenReturn(created);
       when(access.getLastAccessedOn()).thenReturn(accessed);
       when(access.getAccessedFrom()).thenReturn(accessFrom);
@@ -406,7 +406,7 @@ public class AccountOpsTest {
       return access;
    }
 
-   private static void assertAccess(AccountAccessData actual, long id, Date created, Date accessed, String accessFrom, String accessDetails) {
+   private static void assertAccess(AccountSessionDetailsData actual, long id, Date created, Date accessed, String accessFrom, String accessDetails) {
       assertEquals(accessDetails, actual.getAccessDetails());
       assertEquals(accessFrom, actual.getAccessedFrom());
       assertEquals(id, actual.getAccountId());

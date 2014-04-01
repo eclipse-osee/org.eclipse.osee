@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.lang.math.RandomUtils;
 import org.eclipse.osee.account.rest.client.AccountClient;
-import org.eclipse.osee.account.rest.model.AccountAccessData;
+import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.AccountDetailsData;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
 import org.eclipse.osee.account.rest.model.AccountInput;
@@ -104,7 +104,7 @@ public class AccountClientTest {
       assertEquals(accountId, session1.getAccountId());
       assertNotNull(session1.getToken());
 
-      AccountAccessData access = client.getAccountAccessDataByUniqueField(email).getExactlyOne();
+      AccountSessionDetailsData access = client.getAccountSessionDataByUniqueField(email).getExactlyOne();
 
       assertEquals(accountId, access.getAccountId());
       assertNotNull(access.getAccessDetails());
@@ -118,18 +118,18 @@ public class AccountClientTest {
 
       assertEquals(false, session1.getToken().equals(session2.getToken()));
 
-      ResultSet<AccountAccessData> result = client.getAccountAccessDataByUniqueField(email);
+      ResultSet<AccountSessionDetailsData> result = client.getAccountSessionDataByUniqueField(email);
       assertEquals(2, result.size());
-      Iterator<AccountAccessData> iterator = result.iterator();
-      AccountAccessData access1 = iterator.next();
-      AccountAccessData access2 = iterator.next();
+      Iterator<AccountSessionDetailsData> iterator = result.iterator();
+      AccountSessionDetailsData access1 = iterator.next();
+      AccountSessionDetailsData access2 = iterator.next();
       assertEquals(accountId, access1.getAccountId());
       assertEquals(accountId, access2.getAccountId());
 
       assertEquals(true, client.logout(session1));
       assertEquals(true, client.logout(session2));
 
-      ResultSet<AccountAccessData> result2 = client.getAccountAccessDataByUniqueField(email);
+      ResultSet<AccountSessionDetailsData> result2 = client.getAccountSessionDataByUniqueField(email);
       assertEquals(true, result2.isEmpty());
    }
 

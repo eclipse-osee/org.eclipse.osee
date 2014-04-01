@@ -12,8 +12,8 @@ package org.eclipse.osee.account.admin.ds;
 
 import java.util.Map;
 import org.eclipse.osee.account.admin.Account;
-import org.eclipse.osee.account.admin.AccountAccess;
 import org.eclipse.osee.account.admin.AccountPreferences;
+import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
@@ -54,12 +54,12 @@ public interface AccountStorage {
 
    boolean displayNameExists(String displayName);
 
-   ResultSet<AccountAccess> getAccountAccessById(long accountId);
+   ResultSet<AccountSession> getAccountSessionById(long accountId);
 
-   ResultSet<AccountAccess> getAccountAccessByAccessToken(String accessToken);
+   ResultSet<AccountSession> getAccountSessionBySessionToken(String sessionToken);
 
-   AccountAccess createAccountAccess(String accessToken, Account account, String accessDetails, String remoteAddress);
+   AccountSession createAccountSession(String sessionToken, Account account, String accessDetails, String remoteAddress);
 
-   void deleteAccountAccessByAccessToken(String accessToken);
+   void deleteAccountSessionBySessionToken(String sessionToken);
 
 }

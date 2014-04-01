@@ -29,12 +29,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.account.admin.Account;
-import org.eclipse.osee.account.admin.AccountAccess;
 import org.eclipse.osee.account.admin.AccountField;
 import org.eclipse.osee.account.admin.AccountLoginException;
 import org.eclipse.osee.account.admin.AccountLoginRequest;
 import org.eclipse.osee.account.admin.AccountLoginRequestBuilder;
 import org.eclipse.osee.account.admin.AccountPreferences;
+import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
 import org.eclipse.osee.authentication.admin.AuthenticatedUser;
@@ -78,7 +78,7 @@ public class AccountAdminImplTest {
    
    @Mock private CreateAccountRequest request;
    @Mock private Account account;
-   @Mock private AccountAccess accountAccess;
+   @Mock private AccountSession accountSession;
    @Mock private AccountPreferences preferences;
    @Mock private Identifiable<String> newAccount;
    @Mock private AuthenticatedUser authenticatedUser;
@@ -633,7 +633,7 @@ public class AccountAdminImplTest {
       thrown.expectMessage("Login Error - Unable to find account for username[" + userName + "] using authentication scheme[" + scheme + "] and userId[" + userName + "]");
       accountAdmin.login(request);
 
-      verify(storage, times(0)).createAccountAccess(anyString(), any(Account.class), anyString(), anyString());
+      verify(storage, times(0)).createAccountSession(anyString(), any(Account.class), anyString(), anyString());
 
       verify(authenticationAdmin).authenticate(authenticationRequestCaptor.capture());
 
@@ -652,10 +652,10 @@ public class AccountAdminImplTest {
       String remoteAddress = "blah";
 
       ResultSet<Account> resultSet = ResultSets.singleton(account);
-      AccountAccess access = Mockito.mock(AccountAccess.class);
+      AccountSession session = Mockito.mock(AccountSession.class);
 
       when(storage.getAccountByEmail(EMAIL)).thenReturn(resultSet);
-      when(storage.createAccountAccess(anyString(), eq(account), anyString(), anyString())).thenReturn(access);
+      when(storage.createAccountSession(anyString(), eq(account), anyString(), anyString())).thenReturn(session);
       when(authenticationAdmin.authenticate(any(AuthenticationRequest.class))).thenReturn(authenticatedUser);
       when(authenticatedUser.getName()).thenReturn(EMAIL);
 
@@ -667,10 +667,10 @@ public class AccountAdminImplTest {
       .accessedBy(accessDetails)//
       .build();
 
-      AccountAccess actual = accountAdmin.login(request);
-      assertEquals(access, actual);
+      AccountSession actual = accountAdmin.login(request);
+      assertEquals(session, actual);
 
-      verify(storage).createAccountAccess(tokenCaptor.capture(), eq(account), eq(remoteAddress), eq(accessDetails));
+      verify(storage).createAccountSession(tokenCaptor.capture(), eq(account), eq(remoteAddress), eq(accessDetails));
       assertNotNull(tokenCaptor.getValue());
 
       verify(authenticationAdmin).authenticate(authenticationRequestCaptor.capture());
@@ -684,65 +684,65 @@ public class AccountAdminImplTest {
    @Test
    public void testGetAccountAccessByAccessTokenException() {
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("account access token cannot be null");
-      accountAdmin.getAccountAccessByAccessToken(null);
+      thrown.expectMessage("account session token cannot be null");
+      accountAdmin.getAccountSessionBySessionToken(null);
    }
 
    @Test
    public void testGetAccountAccessByAccessToken() {
-      String accessToken = "myToken";
+      String sessionToken = "myToken";
 
-      ResultSet<AccountAccess> resultSet = ResultSets.singleton(accountAccess);
-      when(storage.getAccountAccessByAccessToken(accessToken)).thenReturn(resultSet);
+      ResultSet<AccountSession> resultSet = ResultSets.singleton(accountSession);
+      when(storage.getAccountSessionBySessionToken(sessionToken)).thenReturn(resultSet);
 
-      ResultSet<AccountAccess> actual = accountAdmin.getAccountAccessByAccessToken(accessToken);
+      ResultSet<AccountSession> actual = accountAdmin.getAccountSessionBySessionToken(sessionToken);
       assertEquals(resultSet, actual);
 
-      verify(storage).getAccountAccessByAccessToken(accessToken);
+      verify(storage).getAccountSessionBySessionToken(sessionToken);
    }
 
    @Test
    public void testLogoutModified() {
-      String accessToken = "myToken";
+      String sessionToken = "myToken";
 
-      ResultSet<AccountAccess> resultSet = ResultSets.singleton(accountAccess);
-      when(storage.getAccountAccessByAccessToken(accessToken)).thenReturn(resultSet);
+      ResultSet<AccountSession> resultSet = ResultSets.singleton(accountSession);
+      when(storage.getAccountSessionBySessionToken(sessionToken)).thenReturn(resultSet);
 
-      boolean actual = accountAdmin.logout(accessToken);
+      boolean actual = accountAdmin.logout(sessionToken);
       assertEquals(true, actual);
 
-      verify(storage).getAccountAccessByAccessToken(accessToken);
-      verify(storage).deleteAccountAccessByAccessToken(accessToken);
+      verify(storage).getAccountSessionBySessionToken(sessionToken);
+      verify(storage).deleteAccountSessionBySessionToken(sessionToken);
    }
 
    @Test
    public void testLogoutNotModified() {
-      String accessToken = "myToken";
+      String sessionToken = "myToken";
 
-      ResultSet<AccountAccess> resultSet = ResultSets.emptyResultSet();
-      when(storage.getAccountAccessByAccessToken(accessToken)).thenReturn(resultSet);
+      ResultSet<AccountSession> resultSet = ResultSets.emptyResultSet();
+      when(storage.getAccountSessionBySessionToken(sessionToken)).thenReturn(resultSet);
 
-      boolean actual = accountAdmin.logout(accessToken);
+      boolean actual = accountAdmin.logout(sessionToken);
       assertEquals(false, actual);
 
-      verify(storage).getAccountAccessByAccessToken(accessToken);
-      verify(storage, times(0)).deleteAccountAccessByAccessToken(accessToken);
+      verify(storage).getAccountSessionBySessionToken(sessionToken);
+      verify(storage, times(0)).deleteAccountSessionBySessionToken(sessionToken);
    }
 
    @Test
    public void testGetAccountAccessByUniqueField() {
       ResultSet<Account> resultSet = ResultSets.singleton(account);
-      ResultSet<AccountAccess> resultSet2 = ResultSets.singleton(accountAccess);
+      ResultSet<AccountSession> resultSet2 = ResultSets.singleton(accountSession);
 
       when(storage.getAccountByEmail(EMAIL)).thenReturn(resultSet);
       when(account.getId()).thenReturn(ID);
-      when(storage.getAccountAccessById(ID)).thenReturn(resultSet2);
+      when(storage.getAccountSessionById(ID)).thenReturn(resultSet2);
 
-      ResultSet<AccountAccess> actual = accountAdmin.getAccountAccessByUniqueField(EMAIL);
+      ResultSet<AccountSession> actual = accountAdmin.getAccountSessionByUniqueField(EMAIL);
       assertEquals(resultSet2, actual);
 
       verify(account).getId();
-      verify(storage).getAccountAccessById(ID);
+      verify(storage).getAccountSessionById(ID);
    }
 
    @Test

@@ -65,13 +65,13 @@ public interface AccountAdmin {
 
    boolean deleteAccountPreference(String uniqueField, String key);
 
-   AccountAccess login(AccountLoginRequest request);
+   AccountSession login(AccountLoginRequest request);
 
    boolean logout(String token);
 
-   ResultSet<AccountAccess> getAccountAccessByAccessToken(String token);
+   ResultSet<AccountSession> getAccountSessionBySessionToken(String token);
 
-   ResultSet<AccountAccess> getAccountAccessByUniqueField(String uniqueField);
+   ResultSet<AccountSession> getAccountSessionByUniqueField(String uniqueField);
 
    AccountField getAccountFieldType(String value);
 

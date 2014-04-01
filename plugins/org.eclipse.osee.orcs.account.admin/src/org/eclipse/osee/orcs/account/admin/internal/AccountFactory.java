@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.account.admin.internal;
 
 import java.util.Date;
 import org.eclipse.osee.account.admin.Account;
-import org.eclipse.osee.account.admin.AccountAccess;
 import org.eclipse.osee.account.admin.AccountPreferences;
+import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSetTransform.Function;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -61,15 +61,15 @@ public class AccountFactory {
       }
    }
 
-   public AccountAccess newAccountAccess(long accountId, String accessToken, String accessedFrom, String accessDetails) {
+   public AccountSession newAccountSession(long accountId, String sessionToken, String accessedFrom, String accessDetails) {
       Date currentDate = new Date();
-      return newAccountAccess(accountId, accessToken, currentDate, currentDate, accessedFrom, accessDetails);
+      return newAccountSession(accountId, sessionToken, currentDate, currentDate, accessedFrom, accessDetails);
    }
 
-   public AccountAccess newAccountAccess(long accountId, String accessToken, Date createdOn, Date lastAccessedOn, String accessedFrom, String accessDetails) {
-      AccountAccessImpl session = new AccountAccessImpl();
+   public AccountSession newAccountSession(long accountId, String sessionToken, Date createdOn, Date lastAccessedOn, String accessedFrom, String accessDetails) {
+      AccountSessionImpl session = new AccountSessionImpl();
       session.setAccountId(accountId);
-      session.setAccessToken(accessToken);
+      session.setSessionToken(sessionToken);
       session.setCreatedOn(createdOn);
       session.setLastAccessedOn(lastAccessedOn);
       session.setAccessDetails(accessDetails);

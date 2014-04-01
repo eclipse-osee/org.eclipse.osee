@@ -11,15 +11,15 @@
 package org.eclipse.osee.orcs.account.admin.internal;
 
 import java.util.Date;
-import org.eclipse.osee.account.admin.AccountAccess;
+import org.eclipse.osee.account.admin.AccountSession;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AccountAccessImpl implements AccountAccess {
+public class AccountSessionImpl implements AccountSession {
 
    private long accountId;
-   private String accessToken;
+   private String sessionToken;
    private Date createdOn;
    private Date lastAccessedOn;
    private String accessedFrom;
@@ -31,8 +31,8 @@ public class AccountAccessImpl implements AccountAccess {
    }
 
    @Override
-   public String getAccessToken() {
-      return accessToken;
+   public String getSessionToken() {
+      return sessionToken;
    }
 
    @Override
@@ -59,8 +59,8 @@ public class AccountAccessImpl implements AccountAccess {
       this.accountId = accountId;
    }
 
-   public void setAccessToken(String accessToken) {
-      this.accessToken = accessToken;
+   public void setSessionToken(String sessionToken) {
+      this.sessionToken = sessionToken;
    }
 
    public void setCreatedOn(Date createdOn) {
@@ -83,7 +83,7 @@ public class AccountAccessImpl implements AccountAccess {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((accessToken == null) ? 0 : accessToken.hashCode());
+      result = prime * result + ((sessionToken == null) ? 0 : sessionToken.hashCode());
       result = prime * result + (int) (accountId ^ (accountId >>> 32));
       return result;
    }
@@ -99,12 +99,12 @@ public class AccountAccessImpl implements AccountAccess {
       if (getClass() != obj.getClass()) {
          return false;
       }
-      AccountAccessImpl other = (AccountAccessImpl) obj;
-      if (accessToken == null) {
-         if (other.accessToken != null) {
+      AccountSessionImpl other = (AccountSessionImpl) obj;
+      if (sessionToken == null) {
+         if (other.sessionToken != null) {
             return false;
          }
-      } else if (!accessToken.equals(other.accessToken)) {
+      } else if (!sessionToken.equals(other.sessionToken)) {
          return false;
       }
       if (accountId != other.accountId) {
@@ -115,7 +115,7 @@ public class AccountAccessImpl implements AccountAccess {
 
    @Override
    public String toString() {
-      return "AccountSessionImpl [accountId=" + accountId + ", accessToken=" + accessToken + ", createdOn=" + createdOn + ", lastAccessedOn=" + lastAccessedOn + ", accessedFrom=" + accessedFrom + ", accessDetails=" + accessDetails + "]";
+      return "AccountSessionImpl [accountId=" + accountId + ", sessionToken=" + sessionToken + ", createdOn=" + createdOn + ", lastAccessedOn=" + lastAccessedOn + ", accessedFrom=" + accessedFrom + ", accessDetails=" + accessDetails + "]";
    }
 
 }

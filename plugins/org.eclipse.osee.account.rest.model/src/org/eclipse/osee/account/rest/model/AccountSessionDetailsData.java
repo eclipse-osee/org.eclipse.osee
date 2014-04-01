@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Roberto E. Escobar
  */
 @XmlRootElement
-public class AccountAccessData {
+public class AccountSessionDetailsData {
 
    private long accountId;
    private Date createdOn;

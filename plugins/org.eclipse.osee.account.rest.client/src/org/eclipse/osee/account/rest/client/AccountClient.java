@@ -11,7 +11,7 @@
 package org.eclipse.osee.account.rest.client;
 
 import java.util.Map;
-import org.eclipse.osee.account.rest.model.AccountAccessData;
+import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.AccountDetailsData;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
 import org.eclipse.osee.account.rest.model.AccountInput;
@@ -41,7 +41,7 @@ public interface AccountClient {
 
    boolean deleteAccount(String uuid);
 
-   ResultSet<AccountAccessData> getAccountAccessDataByUniqueField(String accountId);
+   ResultSet<AccountSessionDetailsData> getAccountSessionDataByUniqueField(String accountId);
 
    ResultSet<AccountInfoData> getAllAccounts();
 

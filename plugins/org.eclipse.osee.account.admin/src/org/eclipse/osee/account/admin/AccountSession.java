@@ -15,11 +15,11 @@ import java.util.Date;
 /**
  * @author Roberto E. Escobar
  */
-public interface AccountAccess {
+public interface AccountSession {
 
    long getAccountId();
 
-   String getAccessToken();
+   String getSessionToken();
 
    Date getCreatedOn();
 

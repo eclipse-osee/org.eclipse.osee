@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.account.admin.Account;
-import org.eclipse.osee.account.admin.AccountAccess;
+import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
@@ -54,7 +54,7 @@ public class OrcsAccountStorageImpl implements AccountStorage {
    private AccountFactory factory;
    private IOseeBranch storageBranch;
    private ApplicationContext context;
-   private AccountAccessStorage accessStore;
+   private AccountSessionStorage sessionStore;
 
    public void setDatabaseService(IOseeDatabaseService dbService) {
       this.dbService = dbService;
@@ -76,7 +76,7 @@ public class OrcsAccountStorageImpl implements AccountStorage {
       String sessionId = SystemUser.OseeSystem.getGuid();
       context = newApplicationContext(sessionId);
 
-      accessStore = new AccountAccessDatabaseStore(logger, dbService, factory);
+      sessionStore = new AccountSessionDatabaseStore(logger, dbService, factory);
    }
 
    public void stop() {
@@ -247,38 +247,38 @@ public class OrcsAccountStorageImpl implements AccountStorage {
    }
 
    @Override
-   public ResultSet<AccountAccess> getAccountAccessById(long accountId) {
+   public ResultSet<AccountSession> getAccountSessionById(long accountId) {
       try {
-         return accessStore.getAccountAccessByAccountId(accountId).call();
+         return sessionStore.getAccountSessionByAccountId(accountId).call();
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
       }
    }
 
    @Override
-   public ResultSet<AccountAccess> getAccountAccessByAccessToken(String accessToken) {
+   public ResultSet<AccountSession> getAccountSessionBySessionToken(String sessionToken) {
       try {
-         return accessStore.getAccountAccessByAccessToken(accessToken).call();
+         return sessionStore.getAccountSessionBySessionToken(sessionToken).call();
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
       }
    }
 
    @Override
-   public AccountAccess createAccountAccess(String accessToken, Account account, String remoteAddress, String accessDetails) {
-      AccountAccess access = factory.newAccountAccess(account.getId(), accessToken, remoteAddress, accessDetails);
+   public AccountSession createAccountSession(String sessionToken, Account account, String remoteAddress, String accessDetails) {
+      AccountSession session = factory.newAccountSession(account.getId(), sessionToken, remoteAddress, accessDetails);
       try {
-         accessStore.createAccountAccess(Collections.singleton(access)).call();
-         return access;
+         sessionStore.createAccountSession(Collections.singleton(session)).call();
+         return session;
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
       }
    }
 
    @Override
-   public void deleteAccountAccessByAccessToken(String accessToken) {
+   public void deleteAccountSessionBySessionToken(String sessionToken) {
       try {
-         accessStore.deleteAccountAccessByAccessToken(accessToken).call();
+         sessionStore.deleteAccountSessionBySessionToken(sessionToken).call();
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
       }

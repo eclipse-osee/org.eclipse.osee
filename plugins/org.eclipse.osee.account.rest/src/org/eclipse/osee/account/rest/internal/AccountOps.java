@@ -14,14 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.eclipse.osee.account.admin.Account;
-import org.eclipse.osee.account.admin.AccountAccess;
 import org.eclipse.osee.account.admin.AccountAdmin;
 import org.eclipse.osee.account.admin.AccountLoginRequest;
 import org.eclipse.osee.account.admin.AccountLoginRequestBuilder;
 import org.eclipse.osee.account.admin.AccountPreferences;
+import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.CreateAccountRequestBuilder;
-import org.eclipse.osee.account.rest.model.AccountAccessData;
+import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.AccountActiveData;
 import org.eclipse.osee.account.rest.model.AccountDetailsData;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
@@ -63,22 +63,22 @@ public class AccountOps {
       };
    }
 
-   public List<AccountAccessData> getAccountAccessById(String accountId) {
-      ResultSet<AccountAccess> result = accountAdmin.getAccountAccessByUniqueField(accountId);
-      List<AccountAccessData> toReturn = new ArrayList<AccountAccessData>();
-      for (AccountAccess access : result) {
-         toReturn.add(asAccountAccessData(access));
+   public List<AccountSessionDetailsData> getAccountSessionById(String accountId) {
+      ResultSet<AccountSession> result = accountAdmin.getAccountSessionByUniqueField(accountId);
+      List<AccountSessionDetailsData> toReturn = new ArrayList<AccountSessionDetailsData>();
+      for (AccountSession session : result) {
+         toReturn.add(asAccountAccessData(session));
       }
       return toReturn;
    }
 
-   public AccountAccessData asAccountAccessData(AccountAccess access) {
-      AccountAccessData data = new AccountAccessData();
-      data.setAccountId(access.getAccountId());
-      data.setAccessDetails(access.getAccessDetails());
-      data.setAccessedFrom(access.getAccessedFrom());
-      data.setCreatedOn(access.getCreatedOn());
-      data.setLastAccessedOn(access.getLastAccessedOn());
+   public AccountSessionDetailsData asAccountAccessData(AccountSession session) {
+      AccountSessionDetailsData data = new AccountSessionDetailsData();
+      data.setAccountId(session.getAccountId());
+      data.setAccessDetails(session.getAccessDetails());
+      data.setAccessedFrom(session.getAccessedFrom());
+      data.setCreatedOn(session.getCreatedOn());
+      data.setLastAccessedOn(session.getLastAccessedOn());
       return data;
    }
 
@@ -91,7 +91,7 @@ public class AccountOps {
       .accessedBy(info.getDetails())//
       .remoteAddress(info.getRemoteIpAddress()) //
       .build();
-      AccountAccess session = accountAdmin.login(request);
+      AccountSession session = accountAdmin.login(request);
       return asSessionData(session);
    }
 
@@ -99,10 +99,10 @@ public class AccountOps {
       return accountAdmin.logout(token);
    }
 
-   public AccountSessionData asSessionData(AccountAccess session) {
+   public AccountSessionData asSessionData(AccountSession session) {
       AccountSessionData data = new AccountSessionData();
       data.setAccountId(session.getAccountId());
-      data.setToken(session.getAccessToken());
+      data.setToken(session.getSessionToken());
       return data;
    }
 

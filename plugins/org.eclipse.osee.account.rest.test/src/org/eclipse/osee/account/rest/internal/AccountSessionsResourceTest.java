@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.account.rest.model.AccountAccessData;
+import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -45,12 +45,12 @@ public class AccountSessionsResourceTest {
 
    @Test
    public void testGetAccountSessions() {
-      List<AccountAccessData> accesses = new ArrayList<AccountAccessData>();
-      when(accountOps.getAccountAccessById(ACCOUNT_ID)).thenReturn(accesses);
+      List<AccountSessionDetailsData> accesses = new ArrayList<AccountSessionDetailsData>();
+      when(accountOps.getAccountSessionById(ACCOUNT_ID)).thenReturn(accesses);
 
-      List<AccountAccessData> actual = resource.getAccountSessions();
+      List<AccountSessionDetailsData> actual = resource.getAccountSessions();
 
       assertEquals(accesses, actual);
-      verify(accountOps).getAccountAccessById(ACCOUNT_ID);
+      verify(accountOps).getAccountSessionById(ACCOUNT_ID);
    }
 }

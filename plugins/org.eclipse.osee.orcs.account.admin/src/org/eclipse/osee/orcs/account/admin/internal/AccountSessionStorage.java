@@ -11,22 +11,22 @@
 package org.eclipse.osee.orcs.account.admin.internal;
 
 import java.util.concurrent.Callable;
-import org.eclipse.osee.account.admin.AccountAccess;
+import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface AccountAccessStorage {
+public interface AccountSessionStorage {
 
-   Callable<ResultSet<AccountAccess>> getAccountAccessByAccountId(long accountId);
+   Callable<ResultSet<AccountSession>> getAccountSessionByAccountId(long accountId);
 
-   Callable<ResultSet<AccountAccess>> getAccountAccessByAccessToken(String accessToken);
+   Callable<ResultSet<AccountSession>> getAccountSessionBySessionToken(String sessionToken);
 
-   Callable<Integer> createAccountAccess(Iterable<AccountAccess> datas);
+   Callable<Integer> createAccountSession(Iterable<AccountSession> datas);
 
-   Callable<Integer> updateAccountAccess(Iterable<AccountAccess> datas);
+   Callable<Integer> updateAccountSession(Iterable<AccountSession> datas);
 
-   Callable<Integer> deleteAccountAccessByAccessToken(String accessToken);
+   Callable<Integer> deleteAccountSessionBySessionToken(String sessionToken);
 
 }

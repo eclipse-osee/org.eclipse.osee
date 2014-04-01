@@ -117,7 +117,7 @@ public class AccountResourceTest {
 
       // Ensure resource constructed correctly;
       actual.getAccountSessions();
-      verify(accountOps).getAccountAccessById(ACCOUNT_ID);
+      verify(accountOps).getAccountSessionById(ACCOUNT_ID);
    }
 
 }

@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.UUID;
 import org.eclipse.osee.account.admin.AccessDetails;
 import org.eclipse.osee.account.admin.Account;
-import org.eclipse.osee.account.admin.AccountAccess;
 import org.eclipse.osee.account.admin.AccountAdmin;
 import org.eclipse.osee.account.admin.AccountAdminConfiguration;
 import org.eclipse.osee.account.admin.AccountAdminConfigurationBuilder;
@@ -24,6 +23,7 @@ import org.eclipse.osee.account.admin.AccountField;
 import org.eclipse.osee.account.admin.AccountLoginException;
 import org.eclipse.osee.account.admin.AccountLoginRequest;
 import org.eclipse.osee.account.admin.AccountPreferences;
+import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
 import org.eclipse.osee.account.admin.internal.validator.FieldValidator;
@@ -308,7 +308,7 @@ public class AccountAdminImpl implements AccountAdmin {
    }
 
    @Override
-   public AccountAccess login(AccountLoginRequest request) {
+   public AccountSession login(AccountLoginRequest request) {
       String id = authenticate(request);
       ResultSet<Account> result = getAccountByUniqueField(id);
       Account account = result.getAtMostOneOrNull();
@@ -317,18 +317,18 @@ public class AccountAdminImpl implements AccountAdmin {
             "Login Error - Unable to find account for username[%s] using authentication scheme[%s] and userId[%s]",
             request.getUserName(), request.getScheme(), id);
       }
-      String accessToken = UUID.randomUUID().toString();
+      String sessionToken = UUID.randomUUID().toString();
 
       AccessDetails details = request.getDetails();
       String remoteAddress = notAvailableWhenNullorEmpty(details.getRemoteAddress());
       String accessDetails = notAvailableWhenNullorEmpty(details.getAccessDetails());
-      return storage.createAccountAccess(accessToken, account, remoteAddress, accessDetails);
+      return storage.createAccountSession(sessionToken, account, remoteAddress, accessDetails);
    }
 
    @Override
-   public ResultSet<AccountAccess> getAccountAccessByAccessToken(String accessToken) {
-      Conditions.checkNotNull(accessToken, "account access token");
-      return storage.getAccountAccessByAccessToken(accessToken);
+   public ResultSet<AccountSession> getAccountSessionBySessionToken(String sessionToken) {
+      Conditions.checkNotNull(sessionToken, "account session token");
+      return storage.getAccountSessionBySessionToken(sessionToken);
    }
 
    private String authenticate(AccountLoginRequest login) {
@@ -343,19 +343,19 @@ public class AccountAdminImpl implements AccountAdmin {
    }
 
    @Override
-   public ResultSet<AccountAccess> getAccountAccessByUniqueField(String uniqueField) {
+   public ResultSet<AccountSession> getAccountSessionByUniqueField(String uniqueField) {
       ResultSet<Account> result = getAccountByUniqueField(uniqueField);
       Account account = result.getExactlyOne();
-      return storage.getAccountAccessById(account.getId());
+      return storage.getAccountSessionById(account.getId());
    }
 
    @Override
-   public boolean logout(String accessToken) {
+   public boolean logout(String sessionToken) {
       boolean modified = false;
-      ResultSet<AccountAccess> result = getAccountAccessByAccessToken(accessToken);
-      AccountAccess account = result.getOneOrNull();
+      ResultSet<AccountSession> result = getAccountSessionBySessionToken(sessionToken);
+      AccountSession account = result.getOneOrNull();
       if (account != null) {
-         storage.deleteAccountAccessByAccessToken(accessToken);
+         storage.deleteAccountSessionBySessionToken(sessionToken);
          modified = true;
       }
       return modified;

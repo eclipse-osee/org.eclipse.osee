@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.account.rest.client.AccountClient;
-import org.eclipse.osee.account.rest.model.AccountAccessData;
+import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.AccountActiveData;
 import org.eclipse.osee.account.rest.model.AccountContexts;
 import org.eclipse.osee.account.rest.model.AccountDetailsData;
@@ -153,13 +153,13 @@ public class AccountClientImpl implements AccountClient {
    }
 
    @Override
-   public ResultSet<AccountAccessData> getAccountAccessDataByUniqueField(String accountId) {
+   public ResultSet<AccountSessionDetailsData> getAccountSessionDataByUniqueField(String accountId) {
       URI uri = newBuilder()//
       .path(AccountContexts.ACCOUNTS)//
       .path(AccountContexts.ACCOUNT_ID_TEMPLATE) //
       .path(AccountContexts.ACCOUNT_SESSSIONS)//
       .build(accountId);
-      AccountAccessData[] data = get(uri, AccountAccessData[].class);
+      AccountSessionDetailsData[] data = get(uri, AccountSessionDetailsData[].class);
       return ResultSets.newResultSet(data);
    }
 

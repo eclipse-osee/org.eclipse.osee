@@ -19,7 +19,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.account.admin.Account;
-import org.eclipse.osee.account.admin.AccountAccess;
+import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.AccountAdmin;
 import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
@@ -208,21 +208,21 @@ public class OrcsAccountStorageImplTest {
 
       Account account = storage.getAccountByUuid(newAccount.getGuid()).getExactlyOne();
 
-      AccountAccess actual = storage.createAccountAccess(token, account, address, details);
+      AccountSession actual = storage.createAccountSession(token, account, address, details);
       assertEquals(details, actual.getAccessDetails());
       assertEquals(address, actual.getAccessedFrom());
-      assertEquals(token, actual.getAccessToken());
+      assertEquals(token, actual.getSessionToken());
       assertEquals(account.getId(), actual.getAccountId());
       assertNotNull(actual.getCreatedOn());
       assertNotNull(actual.getLastAccessedOn());
 
       //      
-      ResultSet<AccountAccess> result = storage.getAccountAccessByAccessToken(token);
-      AccountAccess actualAccess = result.getExactlyOne();
+      ResultSet<AccountSession> result = storage.getAccountSessionBySessionToken(token);
+      AccountSession actualAccess = result.getExactlyOne();
       assertEquals(actual, actualAccess);
 
-      storage.deleteAccountAccessByAccessToken(token);
-      assertEquals(true, storage.getAccountAccessByAccessToken(token).isEmpty());
+      storage.deleteAccountSessionBySessionToken(token);
+      assertEquals(true, storage.getAccountSessionBySessionToken(token).isEmpty());
    }
 
    private static void assertPrefs(AccountPreferences expected, String uuid, long accountId, Map<String, String> prefs) {
