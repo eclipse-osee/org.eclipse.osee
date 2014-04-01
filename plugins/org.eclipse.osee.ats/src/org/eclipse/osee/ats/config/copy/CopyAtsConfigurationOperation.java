@@ -253,7 +253,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       if (newName.equals(fromArtifact.getName())) {
          throw new OseeArgumentException("Could not get new name from name conversion.");
       }
-      // duplicate all but baseline branch guid
+      // duplicate all but baseline branch uuid
       Artifact newTeamDef =
          fromArtifact.duplicate(AtsUtilCore.getAtsBranch(), Arrays.asList(AtsAttributeTypes.BaselineBranchUuid));
       newTeamDef.setName(newName);

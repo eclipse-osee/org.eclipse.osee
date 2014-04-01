@@ -1570,7 +1570,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
 
    /**
     * Note: Artifact class does not implement the hashCode, but instead uses the one implemented by Identity. It can not
-    * use the branch guid due to the need for IArtifactTokens to match Artifact instances. In addition, the event system
+    * use the branch uuid due to the need for IArtifactTokens to match Artifact instances. In addition, the event system
     * requires that the DefaultBasicGuidArtifact and Artifact hashcode matches.
     * 
     * @param obj the reference object with which to compare.

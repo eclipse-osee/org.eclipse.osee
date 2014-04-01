@@ -89,7 +89,7 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
       }
 
       if (branchUuid == null) {
-         setErrorMessage(resultsComponent, "Could not find baseline branch guid for selected build/program", null);
+         setErrorMessage(resultsComponent, "Could not find baseline branch uuid for selected build/program", null);
       } else {
          String newUrl = encode(url, params, String.valueOf(branchUuid));
          super.initSearchResults(newUrl, searchHeaderComponent, resultsComponent, optionsComponent);

@@ -671,7 +671,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                            results.log(
                               artifact,
                               "testParallelConfig",
-                              "Error: [" + parallelVersion.toStringWithId() + "] in parallel config without parent branch guid");
+                              "Error: [" + parallelVersion.toStringWithId() + "] in parallel config without parent branch uuid");
                         }
                      } catch (Exception ex) {
                         results.log(

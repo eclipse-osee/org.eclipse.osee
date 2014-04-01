@@ -49,7 +49,7 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IB
 
    /**
     * Note: DefaultBasicGuidArtifact class does not implement the hashCode, but instead uses the one implemented by
-    * Identity. It can not use the branch guid due to the need for IArtifactTokens to match Artifact instances. In
+    * Identity. It can not use the branch uuid due to the need for IArtifactTokens to match Artifact instances. In
     * addition, the event system requires that the DefaultBasicGuidArtifact and Artifact hashcode matches.
     */
    @Override

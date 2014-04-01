@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
- * Branch Selection with branch guid storage as String
+ * Branch Selection with branch uuid storage as String
  * 
  * @author Donald G. Dunne
  */

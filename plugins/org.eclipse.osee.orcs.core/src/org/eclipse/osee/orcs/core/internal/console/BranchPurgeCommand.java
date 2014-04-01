@@ -90,7 +90,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
       Arrays.asList(params.getArray("branchUuids"));
 
       if (branchUuids.isEmpty()) {
-         console.writeln("No branch guids where specified");
+         console.writeln("No branch uuids where specified");
       }
 
       Collection<String> options = params.getOptions();
