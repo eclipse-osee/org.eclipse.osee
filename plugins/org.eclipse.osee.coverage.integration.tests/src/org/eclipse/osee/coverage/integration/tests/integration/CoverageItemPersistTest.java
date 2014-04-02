@@ -40,6 +40,7 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runners.MethodSorters;
 
 /**
@@ -56,6 +57,8 @@ public class CoverageItemPersistTest {
    public static TestUnitCache testUnitCache;
    public static boolean initOnce = false;
 
+   @Rule
+   public TemporaryFolder tempFolder = new TemporaryFolder();
    @Rule
    public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_COVERAGE_DEMO);
    @Rule
@@ -79,7 +82,7 @@ public class CoverageItemPersistTest {
             ArtifactQuery.getOrCreate(ArtifactTestUnitStore.READ_ONLY_GUID, CoreArtifactTypes.GeneralData,
                CoverageTestUtil.getTestBranch());
          readOnlyTestUnitNames.setSoleAttributeFromString(CoreAttributeTypes.GeneralStringData, "");
-         parentCu = CoverageUnitFactory.createCoverageUnit(null, "Top", "C:/UserData/", null);
+         parentCu = CoverageUnitFactory.createCoverageUnit(null, "Top", tempFolder.getRoot().toString(), null);
          parentGuid = parentCu.getGuid();
          ArtifactTestUnitStore testUnitStore = new ArtifactTestUnitStore(null, readOnlyTestUnitNames);
 

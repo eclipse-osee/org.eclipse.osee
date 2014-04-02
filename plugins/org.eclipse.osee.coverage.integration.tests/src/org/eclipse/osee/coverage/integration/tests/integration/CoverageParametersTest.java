@@ -36,11 +36,15 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * @author Donald G. Dunne
  */
 public class CoverageParametersTest {
+
+   @Rule
+   public TemporaryFolder tempFolder = new TemporaryFolder();
 
    @Rule
    public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_COVERAGE_DEMO);
@@ -56,7 +60,7 @@ public class CoverageParametersTest {
    @Test
    public void testIsAssigneeMatch() throws Exception {
       CoverageParameters coverageParameters = new CoverageParameters(new CoverageImport("test"));
-      CoverageUnit unit = CoverageUnitFactory.createCoverageUnit(null, "Quark", "C:/UserData", null);
+      CoverageUnit unit = CoverageUnitFactory.createCoverageUnit(null, "Quark", tempFolder.getRoot().toString(), null);
       CoverageItem item = new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
 
       // Will match both unit and item cause assignee search not specified

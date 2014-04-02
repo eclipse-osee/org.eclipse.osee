@@ -42,6 +42,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * @author John R. Misinco
@@ -56,12 +57,14 @@ public class ArtifactTestUnitStoreTest {
    private Branch testWorkingBranch;
 
    @Rule
+   public TemporaryFolder tempFolder = new TemporaryFolder();
+   @Rule
    public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_COVERAGE_DEMO);
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    private CoverageItem createCoverageItem(ITestUnitProvider tc) throws OseeCoreException {
-      CoverageUnit parent = CoverageUnitFactory.createCoverageUnit(null, "Top", "C:/UserData/", null);
+      CoverageUnit parent = CoverageUnitFactory.createCoverageUnit(null, "Top", tempFolder.getRoot().toString(), null);
       CoverageItem ci1 = new CoverageItem(parent, CoverageOptionManager.Deactivated_Code, "1");
       ci1.setName("this is text");
       return CoverageItem.createCoverageItem(parent, ci1.toXml(), CoverageOptionManagerDefault.instance(), tc);
