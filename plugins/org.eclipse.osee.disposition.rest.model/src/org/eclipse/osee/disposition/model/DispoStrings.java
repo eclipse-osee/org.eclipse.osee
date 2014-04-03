@@ -45,7 +45,7 @@ public class DispoStrings {
    public static final String Item_InComplete = "INCOMPLETE";
 
    public static final String Operation_NewImport = "New_Import";
-   public static final String Operation_ReImport = "Re_Import";
+   public static final String Operation_Import = "Re_Import";
 
    public static final String DeletedDiscrepancy = "Deleted Discrepancy";
 

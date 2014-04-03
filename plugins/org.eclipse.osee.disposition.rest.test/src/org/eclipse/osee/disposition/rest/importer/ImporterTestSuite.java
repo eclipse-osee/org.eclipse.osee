@@ -8,11 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.disposition.rest;
+package org.eclipse.osee.disposition.rest.importer;
 
-import org.eclipse.osee.disposition.rest.importer.ImporterTestSuite;
-import org.eclipse.osee.disposition.rest.internal.InternalTestSuite;
-import org.eclipse.osee.disposition.rest.resources.ResourcesTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -20,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Angel Avila
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ResourcesTestSuite.class, InternalTestSuite.class, ImporterTestSuite.class})
-public class DispositionTestSuite {
+@Suite.SuiteClasses({DispoImporterTest.class})
+public class ImporterTestSuite {
    // Test Suite
 }

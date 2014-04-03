@@ -13,6 +13,7 @@ package org.eclipse.osee.disposition.rest.internal;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
 import org.eclipse.osee.disposition.model.LocationRange;
 
 /**

@@ -8,6 +8,7 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
 Import-Package: 
  com.google.common.collect,
+ com.google.common.io,
  javax.ws.rs,
  javax.ws.rs.core,
  javax.ws.rs.ext,

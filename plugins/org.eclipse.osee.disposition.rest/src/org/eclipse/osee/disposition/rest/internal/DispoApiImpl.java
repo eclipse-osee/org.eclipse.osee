@@ -11,6 +11,9 @@
 package org.eclipse.osee.disposition.rest.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
@@ -19,7 +22,10 @@ import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
+import org.eclipse.osee.disposition.model.DispoStrings;
+import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.rest.DispoApi;
+import org.eclipse.osee.disposition.rest.internal.importer.DispoImporter;
 import org.eclipse.osee.disposition.rest.util.DispoFactory;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
@@ -109,6 +115,15 @@ public class DispoApiImpl implements DispoApi {
       return itemId;
    }
 
+   private void createDispoItems(DispoProgram program, String setId, List<DispoItem> dispoItems) {
+      DispoSet parentSet = getQuery().findDispoSetsById(program, setId);
+      if (parentSet != null) {
+         ArtifactReadable author = getQuery().findUser();
+
+         getWriter().createDispoItems(author, program, parentSet, dispoItems, "UnAssigned");
+      }
+   }
+
    @Override
    public String createDispoAnnotation(DispoProgram program, String itemId, DispoAnnotationData annotationToCreate) {
       String idOfNewAnnotation = "";
@@ -184,6 +199,24 @@ public class DispoApiImpl implements DispoApi {
          getWriter().updateDispoItem(author, program, dispoItemToEdit.getGuid(), newDispoItem);
          wasUpdated = true;
       }
+      return wasUpdated;
+   }
+
+   private boolean editDispoItems(DispoProgram program, String itemId, List<DispoItem> dispoItems) {
+      boolean wasUpdated = false;
+      DispoItem dispoItemToEdit = getQuery().findDispoItemById(program, itemId);
+
+      for (DispoItem dispoItem : dispoItems) {
+         try {
+            ((DispoItemData) dispoItem).setStatus(dispoConnector.allDiscrepanciesAnnotated(dispoItem));
+         } catch (JSONException ex) {
+            throw new OseeCoreException(ex);
+         }
+      }
+
+      ArtifactReadable author = getQuery().findUser();
+      getWriter().updateDispoItems(author, program, dispoItemToEdit.getGuid(), dispoItems);
+      wasUpdated = true;
       return wasUpdated;
    }
 
@@ -334,7 +367,60 @@ public class DispoApiImpl implements DispoApi {
    }
 
    private void runOperation(DispoProgram program, DispoSet setToEdit, DispoSetData newSet) {
-      //do nothing
+      String operation = newSet.getOperation();
+      if (operation.equals(DispoStrings.Operation_Import)) {
+         try {
+            HashMap<String, DispoItem> nameToItemMap = getItemsMap(program, setToEdit);
+            List<DispoItem> itemsFromParse =
+               DispoImporter.importDirectory(nameToItemMap, setToEdit.getImportPath(), dataFactory, executor);
+
+            List<DispoItem> itemsToCreate = new ArrayList<DispoItem>();
+            List<DispoItem> itemsToEdit = new ArrayList<DispoItem>();
+
+            for (DispoItem item : itemsFromParse) {
+               // if the ID is non-empty then we are updating an item instead of creating a new one
+               if (item.getGuid() == null) {
+                  itemsToCreate.add(item);
+               } else {
+                  itemsToEdit.add(item);
+               }
+            }
+
+            if (itemsToCreate.size() > 0) {
+               createDispoItems(program, setToEdit.getGuid(), itemsToCreate);
+            }
+            if (itemsToEdit.size() > 0) {
+               editDispoItems(program, setToEdit.getGuid(), itemsToEdit);
+            }
+
+         } catch (Exception ex) {
+            throw new OseeCoreException(ex);
+         }
+      }
+
+      // Create the Note to document the Operation
+      JSONArray oldNotes = setToEdit.getNotesList();
+      JSONArray newNotes = dataFactory.mergeJsonArrays(oldNotes, generateOperationNotes(operation));
+      newSet.setNotesList(newNotes);
+   }
+
+   private HashMap<String, DispoItem> getItemsMap(DispoProgram program, DispoSet set) {
+      HashMap<String, DispoItem> toReturn = new HashMap<String, DispoItem>();
+      List<DispoItem> dispoItems = getDispoItems(program, set.getGuid());
+      for (DispoItem item : dispoItems) {
+         toReturn.put(item.getName(), item);
+      }
+      return toReturn;
+   }
+
+   private JSONArray generateOperationNotes(String operation) {
+      Note operationNote = new Note();
+      Date date = new Date();
+      operationNote.setDateString(date.toString());
+      operationNote.setType("SYSTEM");
+      operationNote.setContent(operation);
+      JSONObject operationNoteAsJson = new JSONObject(operationNote);
+      return new JSONArray(Collections.singleton(operationNoteAsJson));
    }
 
    private JSONArray collapseList(JSONArray oldList, int indexRemoved) throws JSONException {

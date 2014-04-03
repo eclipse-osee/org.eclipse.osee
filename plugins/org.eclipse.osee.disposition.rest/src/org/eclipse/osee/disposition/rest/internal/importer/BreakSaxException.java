@@ -8,19 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.disposition.rest;
+package org.eclipse.osee.disposition.rest.internal.importer;
 
-import org.eclipse.osee.disposition.rest.importer.ImporterTestSuite;
-import org.eclipse.osee.disposition.rest.internal.InternalTestSuite;
-import org.eclipse.osee.disposition.rest.resources.ResourcesTestSuite;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.xml.sax.SAXException;
 
 /**
  * @author Angel Avila
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ResourcesTestSuite.class, InternalTestSuite.class, ImporterTestSuite.class})
-public class DispositionTestSuite {
-   // Test Suite
+public class BreakSaxException extends SAXException {
+
+   public BreakSaxException(String string) {
+      super(string);
+   }
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 220103479218259961L;
+
 }
