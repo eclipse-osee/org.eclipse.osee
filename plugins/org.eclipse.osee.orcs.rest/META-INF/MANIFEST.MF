@@ -8,6 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/*.xml
 Import-Package: com.google.common.base,
  com.google.common.collect,
+ com.google.gson,
  javax.ws.rs,
  javax.ws.rs.core,
  javax.ws.rs.ext,
@@ -23,4 +24,5 @@ Import-Package: com.google.common.base,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.rest.model,
  org.eclipse.osee.orcs.rest.model.search.artifact,
+ org.eclipse.osee.orcs.rest.model.search.branch,
  org.eclipse.osee.orcs.search

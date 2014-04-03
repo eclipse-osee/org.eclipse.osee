@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.rest.internal.search.branch.BranchQueryResource;
 
 /**
  * Get application.wadl at this context to get rest documentation
@@ -36,6 +37,7 @@ public class OrcsApplication extends Application {
 
    public void start() {
       classes.add(BranchesResource.class);
+      resources.add(new BranchQueryResource(orcsApi));
    }
 
    public void stop() {
