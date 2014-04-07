@@ -25,10 +25,11 @@ import org.eclipse.osee.orcs.db.internal.loader.data.AttributeObjectFactory;
  */
 public class AttributeLoadProcessor extends LoadProcessor<AttributeData, AttributeObjectFactory> {
 
-   private Log logger;
+   private final Log logger;
 
    public AttributeLoadProcessor(Log logger, AttributeObjectFactory factory) {
       super(factory);
+      this.logger = logger;
    }
 
    @Override
@@ -58,10 +59,6 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
 
          String value = chStmt.getString("value");
          String uri = chStmt.getString("uri");
-         if (typeId == 167) {
-            System.err.println(String.format("Loading artId[%s] attrTypeId[%s]  value[%s]", artId, typeId, value));
-            System.out.println("here");
-         }
 
          toReturn = factory.createAttributeData(version, attrId, typeId, modType, artId, value, uri);
 
