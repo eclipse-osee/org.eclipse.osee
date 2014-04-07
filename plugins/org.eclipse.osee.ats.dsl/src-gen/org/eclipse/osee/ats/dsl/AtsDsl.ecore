@@ -2,14 +2,14 @@
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="atsDsl" nsURI="http://www.eclipse.org/osee/ats/dsl/AtsDsl" nsPrefix="atsDsl">
   <eClassifiers xsi:type="ecore:EClass" name="AtsDsl">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="workDef" eType="#//WorkDef"
-        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="userDef" upperBound="-1"
         eType="#//UserDef" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="teamDef" upperBound="-1"
         eType="#//TeamDef" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="actionableItemDef" upperBound="-1"
         eType="#//ActionableItemDef" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="workDef" upperBound="-1"
+        eType="#//WorkDef" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="UserDef">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

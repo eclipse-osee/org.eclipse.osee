@@ -22,7 +22,7 @@ import java.util.ArrayList;
 @SuppressWarnings("all")
 public class InternalAtsDslParser extends AbstractInternalAntlrParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_STRING", "RULE_INT", "RULE_ID", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'workDefinition'", "'userDefinition'", "'teamDefinition'", "'actionableItem'", "'{'", "'active'", "'userId'", "'email'", "'isAdmin'", "'}'", "'guid'", "'staticId'", "'lead'", "'member'", "'privileged'", "'relatedTaskWorkDefinition'", "'accessContextId'", "'version'", "'children'", "'actionable'", "'owner'", "'team'", "'next'", "'released'", "'allowCreateBranch'", "'allowCommitBranch'", "'baselineBranchGuid'", "'baselineBranchUuid'", "'parallelVersion'", "'id'", "'startState'", "'widgetDefinition'", "'attributeName'", "'description'", "'xWidgetName'", "'defaultValue'", "'height'", "'option'", "'minConstraint'", "'maxConstraint'", "'widget'", "'attributeWidget'", "'with'", "'state'", "'type'", "'ordinal'", "'rule'", "'percentWeight'", "'recommendedPercentComplete'", "'color'", "'decisionReview'", "'decisionReviewDefinition'", "'title'", "'relatedToState'", "'blockingType'", "'onEvent'", "'assignee'", "'autoTransitionToDecision'", "'peerReview'", "'peerReviewDefinition'", "'location'", "'followup by'", "'named'", "'to'", "'layout'", "'layoutCopyFrom'", "'composite'", "'numColumns'", "'GetOrCreate'", "'None'", "'AsDefault'", "'OverrideAttributeValidation'", "'RequireStateHourSpentPrompt'", "'AddDecisionValidateBlockingReview'", "'AddDecisionValidateNonBlockingReview'", "'AllowTransitionWithWorkingBranch'", "'ForceAssigneesToTeamLeads'", "'RequireTargetedVersion'", "'AllowPrivilegedEditToTeamMember'", "'AllowPrivilegedEditToTeamMemberAndOriginator'", "'AllowPrivilegedEditToAll'", "'AllowEditToAll'", "'AllowAssigneeToAll'", "'AllowTransitionWithoutTaskCompletion'", "'REQUIRED_FOR_TRANSITION'", "'NOT_REQUIRED_FOR_TRANSITION'", "'REQUIRED_FOR_COMPLETION'", "'NOT_REQUIRED_FOR_COMPLETION'", "'ENABLED'", "'NOT_ENABLED'", "'EDITABLE'", "'NOT_EDITABLE'", "'FUTURE_DATE_REQUIRED'", "'NOT_FUTURE_DATE_REQUIRED'", "'MULTI_SELECT'", "'HORIZONTAL_LABEL'", "'VERTICAL_LABEL'", "'LABEL_AFTER'", "'LABEL_BEFORE'", "'NO_LABEL'", "'SORTED'", "'ADD_DEFAULT_VALUE'", "'NO_DEFAULT_VALUE'", "'BEGIN_COMPOSITE_4'", "'BEGIN_COMPOSITE_6'", "'BEGIN_COMPOSITE_8'", "'BEGIN_COMPOSITE_10'", "'END_COMPOSITE'", "'FILL_NONE'", "'FILL_HORIZONTALLY'", "'FILL_VERTICALLY'", "'ALIGN_LEFT'", "'ALIGN_RIGHT'", "'ALIGN_CENTER'", "'Working'", "'Completed'", "'Cancelled'", "'BLACK'", "'WHITE'", "'RED'", "'DARK_RED'", "'GREEN'", "'DARK_GREEN'", "'YELLOW'", "'DARK_YELLOW'", "'BLUE'", "'DARK_BLUE'", "'MAGENTA'", "'DARK_MAGENTA'", "'CYAN'", "'DARK_CYAN'", "'GRAY'", "'DARK_GRAY'", "'True'", "'False'", "'TransitionTo'", "'CreateBranch'", "'CommitBranch'", "'Transition'", "'Commit'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_STRING", "RULE_INT", "RULE_ID", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'userDefinition'", "'teamDefinition'", "'actionableItem'", "'workDefinition'", "'{'", "'active'", "'userId'", "'email'", "'isAdmin'", "'}'", "'guid'", "'staticId'", "'lead'", "'member'", "'privileged'", "'relatedTaskWorkDefinition'", "'accessContextId'", "'version'", "'children'", "'actionable'", "'owner'", "'team'", "'next'", "'released'", "'allowCreateBranch'", "'allowCommitBranch'", "'baselineBranchGuid'", "'baselineBranchUuid'", "'parallelVersion'", "'id'", "'startState'", "'widgetDefinition'", "'attributeName'", "'description'", "'xWidgetName'", "'defaultValue'", "'height'", "'option'", "'minConstraint'", "'maxConstraint'", "'widget'", "'attributeWidget'", "'with'", "'state'", "'type'", "'ordinal'", "'rule'", "'percentWeight'", "'recommendedPercentComplete'", "'color'", "'decisionReview'", "'decisionReviewDefinition'", "'title'", "'relatedToState'", "'blockingType'", "'onEvent'", "'assignee'", "'autoTransitionToDecision'", "'peerReview'", "'peerReviewDefinition'", "'location'", "'followup by'", "'named'", "'to'", "'layout'", "'layoutCopyFrom'", "'composite'", "'numColumns'", "'GetOrCreate'", "'None'", "'AsDefault'", "'OverrideAttributeValidation'", "'RequireStateHourSpentPrompt'", "'AddDecisionValidateBlockingReview'", "'AddDecisionValidateNonBlockingReview'", "'AllowTransitionWithWorkingBranch'", "'ForceAssigneesToTeamLeads'", "'RequireTargetedVersion'", "'AllowPrivilegedEditToTeamMember'", "'AllowPrivilegedEditToTeamMemberAndOriginator'", "'AllowPrivilegedEditToAll'", "'AllowEditToAll'", "'AllowAssigneeToAll'", "'AllowTransitionWithoutTaskCompletion'", "'REQUIRED_FOR_TRANSITION'", "'NOT_REQUIRED_FOR_TRANSITION'", "'REQUIRED_FOR_COMPLETION'", "'NOT_REQUIRED_FOR_COMPLETION'", "'ENABLED'", "'NOT_ENABLED'", "'EDITABLE'", "'NOT_EDITABLE'", "'FUTURE_DATE_REQUIRED'", "'NOT_FUTURE_DATE_REQUIRED'", "'MULTI_SELECT'", "'HORIZONTAL_LABEL'", "'VERTICAL_LABEL'", "'LABEL_AFTER'", "'LABEL_BEFORE'", "'NO_LABEL'", "'SORTED'", "'ADD_DEFAULT_VALUE'", "'NO_DEFAULT_VALUE'", "'BEGIN_COMPOSITE_4'", "'BEGIN_COMPOSITE_6'", "'BEGIN_COMPOSITE_8'", "'BEGIN_COMPOSITE_10'", "'END_COMPOSITE'", "'FILL_NONE'", "'FILL_HORIZONTALLY'", "'FILL_VERTICALLY'", "'ALIGN_LEFT'", "'ALIGN_RIGHT'", "'ALIGN_CENTER'", "'Working'", "'Completed'", "'Cancelled'", "'BLACK'", "'WHITE'", "'RED'", "'DARK_RED'", "'GREEN'", "'DARK_GREEN'", "'YELLOW'", "'DARK_YELLOW'", "'BLUE'", "'DARK_BLUE'", "'MAGENTA'", "'DARK_MAGENTA'", "'CYAN'", "'DARK_CYAN'", "'GRAY'", "'DARK_GRAY'", "'True'", "'False'", "'TransitionTo'", "'CreateBranch'", "'CommitBranch'", "'Transition'", "'Commit'"
     };
     public static final int RULE_ID=6;
     public static final int T__29=29;
@@ -248,7 +248,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
 
     // $ANTLR start "ruleAtsDsl"
-    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:77:1: ruleAtsDsl returns [EObject current=null] : ( (otherlv_0= 'workDefinition' ( (lv_workDef_1_0= ruleWorkDef ) ) )? (otherlv_2= 'userDefinition' ( (lv_userDef_3_0= ruleUserDef ) ) )* (otherlv_4= 'teamDefinition' ( (lv_teamDef_5_0= ruleTeamDef ) ) )* (otherlv_6= 'actionableItem' ( (lv_actionableItemDef_7_0= ruleActionableItemDef ) ) )* ) ;
+    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:77:1: ruleAtsDsl returns [EObject current=null] : ( (otherlv_0= 'userDefinition' ( (lv_userDef_1_0= ruleUserDef ) ) )* (otherlv_2= 'teamDefinition' ( (lv_teamDef_3_0= ruleTeamDef ) ) )* (otherlv_4= 'actionableItem' ( (lv_actionableItemDef_5_0= ruleActionableItemDef ) ) )* (otherlv_6= 'workDefinition' ( (lv_workDef_7_0= ruleWorkDef ) ) )* ) ;
     public final EObject ruleAtsDsl() throws RecognitionException {
         EObject current = null;
 
@@ -256,77 +256,84 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
         Token otherlv_2=null;
         Token otherlv_4=null;
         Token otherlv_6=null;
-        EObject lv_workDef_1_0 = null;
+        EObject lv_userDef_1_0 = null;
 
-        EObject lv_userDef_3_0 = null;
+        EObject lv_teamDef_3_0 = null;
 
-        EObject lv_teamDef_5_0 = null;
+        EObject lv_actionableItemDef_5_0 = null;
 
-        EObject lv_actionableItemDef_7_0 = null;
+        EObject lv_workDef_7_0 = null;
 
 
          enterRule(); 
             
         try {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:80:28: ( ( (otherlv_0= 'workDefinition' ( (lv_workDef_1_0= ruleWorkDef ) ) )? (otherlv_2= 'userDefinition' ( (lv_userDef_3_0= ruleUserDef ) ) )* (otherlv_4= 'teamDefinition' ( (lv_teamDef_5_0= ruleTeamDef ) ) )* (otherlv_6= 'actionableItem' ( (lv_actionableItemDef_7_0= ruleActionableItemDef ) ) )* ) )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:81:1: ( (otherlv_0= 'workDefinition' ( (lv_workDef_1_0= ruleWorkDef ) ) )? (otherlv_2= 'userDefinition' ( (lv_userDef_3_0= ruleUserDef ) ) )* (otherlv_4= 'teamDefinition' ( (lv_teamDef_5_0= ruleTeamDef ) ) )* (otherlv_6= 'actionableItem' ( (lv_actionableItemDef_7_0= ruleActionableItemDef ) ) )* )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:80:28: ( ( (otherlv_0= 'userDefinition' ( (lv_userDef_1_0= ruleUserDef ) ) )* (otherlv_2= 'teamDefinition' ( (lv_teamDef_3_0= ruleTeamDef ) ) )* (otherlv_4= 'actionableItem' ( (lv_actionableItemDef_5_0= ruleActionableItemDef ) ) )* (otherlv_6= 'workDefinition' ( (lv_workDef_7_0= ruleWorkDef ) ) )* ) )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:81:1: ( (otherlv_0= 'userDefinition' ( (lv_userDef_1_0= ruleUserDef ) ) )* (otherlv_2= 'teamDefinition' ( (lv_teamDef_3_0= ruleTeamDef ) ) )* (otherlv_4= 'actionableItem' ( (lv_actionableItemDef_5_0= ruleActionableItemDef ) ) )* (otherlv_6= 'workDefinition' ( (lv_workDef_7_0= ruleWorkDef ) ) )* )
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:81:1: ( (otherlv_0= 'workDefinition' ( (lv_workDef_1_0= ruleWorkDef ) ) )? (otherlv_2= 'userDefinition' ( (lv_userDef_3_0= ruleUserDef ) ) )* (otherlv_4= 'teamDefinition' ( (lv_teamDef_5_0= ruleTeamDef ) ) )* (otherlv_6= 'actionableItem' ( (lv_actionableItemDef_7_0= ruleActionableItemDef ) ) )* )
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:81:2: (otherlv_0= 'workDefinition' ( (lv_workDef_1_0= ruleWorkDef ) ) )? (otherlv_2= 'userDefinition' ( (lv_userDef_3_0= ruleUserDef ) ) )* (otherlv_4= 'teamDefinition' ( (lv_teamDef_5_0= ruleTeamDef ) ) )* (otherlv_6= 'actionableItem' ( (lv_actionableItemDef_7_0= ruleActionableItemDef ) ) )*
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:81:1: ( (otherlv_0= 'userDefinition' ( (lv_userDef_1_0= ruleUserDef ) ) )* (otherlv_2= 'teamDefinition' ( (lv_teamDef_3_0= ruleTeamDef ) ) )* (otherlv_4= 'actionableItem' ( (lv_actionableItemDef_5_0= ruleActionableItemDef ) ) )* (otherlv_6= 'workDefinition' ( (lv_workDef_7_0= ruleWorkDef ) ) )* )
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:81:2: (otherlv_0= 'userDefinition' ( (lv_userDef_1_0= ruleUserDef ) ) )* (otherlv_2= 'teamDefinition' ( (lv_teamDef_3_0= ruleTeamDef ) ) )* (otherlv_4= 'actionableItem' ( (lv_actionableItemDef_5_0= ruleActionableItemDef ) ) )* (otherlv_6= 'workDefinition' ( (lv_workDef_7_0= ruleWorkDef ) ) )*
             {
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:81:2: (otherlv_0= 'workDefinition' ( (lv_workDef_1_0= ruleWorkDef ) ) )?
-            int alt1=2;
-            int LA1_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:81:2: (otherlv_0= 'userDefinition' ( (lv_userDef_1_0= ruleUserDef ) ) )*
+            loop1:
+            do {
+                int alt1=2;
+                int LA1_0 = input.LA(1);
 
-            if ( (LA1_0==11) ) {
-                alt1=1;
-            }
-            switch (alt1) {
-                case 1 :
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:81:4: otherlv_0= 'workDefinition' ( (lv_workDef_1_0= ruleWorkDef ) )
-                    {
-                    otherlv_0=(Token)match(input,11,FOLLOW_11_in_ruleAtsDsl123); 
-
-                        	newLeafNode(otherlv_0, grammarAccess.getAtsDslAccess().getWorkDefinitionKeyword_0_0());
-                        
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:85:1: ( (lv_workDef_1_0= ruleWorkDef ) )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:86:1: (lv_workDef_1_0= ruleWorkDef )
-                    {
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:86:1: (lv_workDef_1_0= ruleWorkDef )
-                    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:87:3: lv_workDef_1_0= ruleWorkDef
-                    {
-                     
-                    	        newCompositeNode(grammarAccess.getAtsDslAccess().getWorkDefWorkDefParserRuleCall_0_1_0()); 
-                    	    
-                    pushFollow(FOLLOW_ruleWorkDef_in_ruleAtsDsl144);
-                    lv_workDef_1_0=ruleWorkDef();
-
-                    state._fsp--;
+                if ( (LA1_0==11) ) {
+                    alt1=1;
+                }
 
 
-                    	        if (current==null) {
-                    	            current = createModelElementForParent(grammarAccess.getAtsDslRule());
-                    	        }
-                           		set(
-                           			current, 
-                           			"workDef",
-                            		lv_workDef_1_0, 
-                            		"WorkDef");
-                    	        afterParserOrEnumRuleCall();
-                    	    
+                switch (alt1) {
+            	case 1 :
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:81:4: otherlv_0= 'userDefinition' ( (lv_userDef_1_0= ruleUserDef ) )
+            	    {
+            	    otherlv_0=(Token)match(input,11,FOLLOW_11_in_ruleAtsDsl123); 
 
-                    }
+            	        	newLeafNode(otherlv_0, grammarAccess.getAtsDslAccess().getUserDefinitionKeyword_0_0());
+            	        
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:85:1: ( (lv_userDef_1_0= ruleUserDef ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:86:1: (lv_userDef_1_0= ruleUserDef )
+            	    {
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:86:1: (lv_userDef_1_0= ruleUserDef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:87:3: lv_userDef_1_0= ruleUserDef
+            	    {
+            	     
+            	    	        newCompositeNode(grammarAccess.getAtsDslAccess().getUserDefUserDefParserRuleCall_0_1_0()); 
+            	    	    
+            	    pushFollow(FOLLOW_ruleUserDef_in_ruleAtsDsl144);
+            	    lv_userDef_1_0=ruleUserDef();
+
+            	    state._fsp--;
 
 
-                    }
+            	    	        if (current==null) {
+            	    	            current = createModelElementForParent(grammarAccess.getAtsDslRule());
+            	    	        }
+            	           		add(
+            	           			current, 
+            	           			"userDef",
+            	            		lv_userDef_1_0, 
+            	            		"UserDef");
+            	    	        afterParserOrEnumRuleCall();
+            	    	    
+
+            	    }
 
 
-                    }
-                    break;
+            	    }
 
-            }
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:103:4: (otherlv_2= 'userDefinition' ( (lv_userDef_3_0= ruleUserDef ) ) )*
+            	    }
+            	    break;
+
+            	default :
+            	    break loop1;
+                }
+            } while (true);
+
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:103:4: (otherlv_2= 'teamDefinition' ( (lv_teamDef_3_0= ruleTeamDef ) ) )*
             loop2:
             do {
                 int alt2=2;
@@ -339,23 +346,23 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt2) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:103:6: otherlv_2= 'userDefinition' ( (lv_userDef_3_0= ruleUserDef ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:103:6: otherlv_2= 'teamDefinition' ( (lv_teamDef_3_0= ruleTeamDef ) )
             	    {
             	    otherlv_2=(Token)match(input,12,FOLLOW_12_in_ruleAtsDsl159); 
 
-            	        	newLeafNode(otherlv_2, grammarAccess.getAtsDslAccess().getUserDefinitionKeyword_1_0());
+            	        	newLeafNode(otherlv_2, grammarAccess.getAtsDslAccess().getTeamDefinitionKeyword_1_0());
             	        
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:107:1: ( (lv_userDef_3_0= ruleUserDef ) )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:108:1: (lv_userDef_3_0= ruleUserDef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:107:1: ( (lv_teamDef_3_0= ruleTeamDef ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:108:1: (lv_teamDef_3_0= ruleTeamDef )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:108:1: (lv_userDef_3_0= ruleUserDef )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:109:3: lv_userDef_3_0= ruleUserDef
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:108:1: (lv_teamDef_3_0= ruleTeamDef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:109:3: lv_teamDef_3_0= ruleTeamDef
             	    {
             	     
-            	    	        newCompositeNode(grammarAccess.getAtsDslAccess().getUserDefUserDefParserRuleCall_1_1_0()); 
+            	    	        newCompositeNode(grammarAccess.getAtsDslAccess().getTeamDefTeamDefParserRuleCall_1_1_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleUserDef_in_ruleAtsDsl180);
-            	    lv_userDef_3_0=ruleUserDef();
+            	    pushFollow(FOLLOW_ruleTeamDef_in_ruleAtsDsl180);
+            	    lv_teamDef_3_0=ruleTeamDef();
 
             	    state._fsp--;
 
@@ -365,9 +372,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    	        }
             	           		add(
             	           			current, 
-            	           			"userDef",
-            	            		lv_userDef_3_0, 
-            	            		"UserDef");
+            	           			"teamDef",
+            	            		lv_teamDef_3_0, 
+            	            		"TeamDef");
             	    	        afterParserOrEnumRuleCall();
             	    	    
 
@@ -385,7 +392,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                 }
             } while (true);
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:125:4: (otherlv_4= 'teamDefinition' ( (lv_teamDef_5_0= ruleTeamDef ) ) )*
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:125:4: (otherlv_4= 'actionableItem' ( (lv_actionableItemDef_5_0= ruleActionableItemDef ) ) )*
             loop3:
             do {
                 int alt3=2;
@@ -398,23 +405,23 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt3) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:125:6: otherlv_4= 'teamDefinition' ( (lv_teamDef_5_0= ruleTeamDef ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:125:6: otherlv_4= 'actionableItem' ( (lv_actionableItemDef_5_0= ruleActionableItemDef ) )
             	    {
             	    otherlv_4=(Token)match(input,13,FOLLOW_13_in_ruleAtsDsl195); 
 
-            	        	newLeafNode(otherlv_4, grammarAccess.getAtsDslAccess().getTeamDefinitionKeyword_2_0());
+            	        	newLeafNode(otherlv_4, grammarAccess.getAtsDslAccess().getActionableItemKeyword_2_0());
             	        
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:129:1: ( (lv_teamDef_5_0= ruleTeamDef ) )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:130:1: (lv_teamDef_5_0= ruleTeamDef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:129:1: ( (lv_actionableItemDef_5_0= ruleActionableItemDef ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:130:1: (lv_actionableItemDef_5_0= ruleActionableItemDef )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:130:1: (lv_teamDef_5_0= ruleTeamDef )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:131:3: lv_teamDef_5_0= ruleTeamDef
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:130:1: (lv_actionableItemDef_5_0= ruleActionableItemDef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:131:3: lv_actionableItemDef_5_0= ruleActionableItemDef
             	    {
             	     
-            	    	        newCompositeNode(grammarAccess.getAtsDslAccess().getTeamDefTeamDefParserRuleCall_2_1_0()); 
+            	    	        newCompositeNode(grammarAccess.getAtsDslAccess().getActionableItemDefActionableItemDefParserRuleCall_2_1_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleTeamDef_in_ruleAtsDsl216);
-            	    lv_teamDef_5_0=ruleTeamDef();
+            	    pushFollow(FOLLOW_ruleActionableItemDef_in_ruleAtsDsl216);
+            	    lv_actionableItemDef_5_0=ruleActionableItemDef();
 
             	    state._fsp--;
 
@@ -424,9 +431,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    	        }
             	           		add(
             	           			current, 
-            	           			"teamDef",
-            	            		lv_teamDef_5_0, 
-            	            		"TeamDef");
+            	           			"actionableItemDef",
+            	            		lv_actionableItemDef_5_0, 
+            	            		"ActionableItemDef");
             	    	        afterParserOrEnumRuleCall();
             	    	    
 
@@ -444,7 +451,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                 }
             } while (true);
 
-            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:147:4: (otherlv_6= 'actionableItem' ( (lv_actionableItemDef_7_0= ruleActionableItemDef ) ) )*
+            // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:147:4: (otherlv_6= 'workDefinition' ( (lv_workDef_7_0= ruleWorkDef ) ) )*
             loop4:
             do {
                 int alt4=2;
@@ -457,23 +464,23 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
 
                 switch (alt4) {
             	case 1 :
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:147:6: otherlv_6= 'actionableItem' ( (lv_actionableItemDef_7_0= ruleActionableItemDef ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:147:6: otherlv_6= 'workDefinition' ( (lv_workDef_7_0= ruleWorkDef ) )
             	    {
             	    otherlv_6=(Token)match(input,14,FOLLOW_14_in_ruleAtsDsl231); 
 
-            	        	newLeafNode(otherlv_6, grammarAccess.getAtsDslAccess().getActionableItemKeyword_3_0());
+            	        	newLeafNode(otherlv_6, grammarAccess.getAtsDslAccess().getWorkDefinitionKeyword_3_0());
             	        
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:151:1: ( (lv_actionableItemDef_7_0= ruleActionableItemDef ) )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:152:1: (lv_actionableItemDef_7_0= ruleActionableItemDef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:151:1: ( (lv_workDef_7_0= ruleWorkDef ) )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:152:1: (lv_workDef_7_0= ruleWorkDef )
             	    {
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:152:1: (lv_actionableItemDef_7_0= ruleActionableItemDef )
-            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:153:3: lv_actionableItemDef_7_0= ruleActionableItemDef
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:152:1: (lv_workDef_7_0= ruleWorkDef )
+            	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:153:3: lv_workDef_7_0= ruleWorkDef
             	    {
             	     
-            	    	        newCompositeNode(grammarAccess.getAtsDslAccess().getActionableItemDefActionableItemDefParserRuleCall_3_1_0()); 
+            	    	        newCompositeNode(grammarAccess.getAtsDslAccess().getWorkDefWorkDefParserRuleCall_3_1_0()); 
             	    	    
-            	    pushFollow(FOLLOW_ruleActionableItemDef_in_ruleAtsDsl252);
-            	    lv_actionableItemDef_7_0=ruleActionableItemDef();
+            	    pushFollow(FOLLOW_ruleWorkDef_in_ruleAtsDsl252);
+            	    lv_workDef_7_0=ruleWorkDef();
 
             	    state._fsp--;
 
@@ -483,9 +490,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             	    	        }
             	           		add(
             	           			current, 
-            	           			"actionableItemDef",
-            	            		lv_actionableItemDef_7_0, 
-            	            		"ActionableItemDef");
+            	           			"workDef",
+            	            		lv_workDef_7_0, 
+            	            		"WorkDef");
             	    	        afterParserOrEnumRuleCall();
             	    	    
 
@@ -1565,14 +1572,14 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
             int alt18=2;
             int LA18_0 = input.LA(1);
 
-            if ( (LA18_0==11) ) {
+            if ( (LA18_0==14) ) {
                 alt18=1;
             }
             switch (alt18) {
                 case 1 :
                     // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:571:6: otherlv_15= 'workDefinition' ( (lv_workDefinition_16_0= RULE_STRING ) )
                     {
-                    otherlv_15=(Token)match(input,11,FOLLOW_11_in_ruleTeamDef1088); 
+                    otherlv_15=(Token)match(input,14,FOLLOW_14_in_ruleTeamDef1088); 
 
                         	newLeafNode(otherlv_15, grammarAccess.getTeamDefAccess().getWorkDefinitionKeyword_9_0());
                         
@@ -1794,7 +1801,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                         int alt22=2;
                         int LA22_0 = input.LA(1);
 
-                        if ( (LA22_0==13) ) {
+                        if ( (LA22_0==12) ) {
                             alt22=1;
                         }
 
@@ -1803,7 +1810,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                     	case 1 :
                     	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:667:3: otherlv_25= 'teamDefinition' ( (lv_children_26_0= ruleTeamDef ) )
                     	    {
-                    	    otherlv_25=(Token)match(input,13,FOLLOW_13_in_ruleTeamDef1260); 
+                    	    otherlv_25=(Token)match(input,12,FOLLOW_12_in_ruleTeamDef1260); 
 
                     	        	newLeafNode(otherlv_25, grammarAccess.getTeamDefAccess().getTeamDefinitionKeyword_13_2_0());
                     	        
@@ -2586,7 +2593,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                                 int alt33=2;
                                 int LA33_0 = input.LA(1);
 
-                                if ( (LA33_0==14) ) {
+                                if ( (LA33_0==13) ) {
                                     alt33=1;
                                 }
 
@@ -2595,7 +2602,7 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
                             	case 1 :
                             	    // ../org.eclipse.osee.ats.dsl/src-gen/org/eclipse/osee/ats/dsl/parser/antlr/internal/InternalAtsDsl.g:970:3: otherlv_21= 'actionableItem' ( (lv_children_22_0= ruleActionableItemDef ) )
                             	    {
-                            	    otherlv_21=(Token)match(input,14,FOLLOW_14_in_ruleActionableItemDef1861); 
+                            	    otherlv_21=(Token)match(input,13,FOLLOW_13_in_ruleActionableItemDef1861); 
 
                             	        	newLeafNode(otherlv_21, grammarAccess.getActionableItemDefAccess().getActionableItemKeyword_2_9_2_0());
                             	        
@@ -11312,13 +11319,13 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
     public static final BitSet FOLLOW_ruleAtsDsl_in_entryRuleAtsDsl75 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_entryRuleAtsDsl85 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_11_in_ruleAtsDsl123 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleWorkDef_in_ruleAtsDsl144 = new BitSet(new long[]{0x0000000000007002L});
+    public static final BitSet FOLLOW_ruleUserDef_in_ruleAtsDsl144 = new BitSet(new long[]{0x0000000000007802L});
     public static final BitSet FOLLOW_12_in_ruleAtsDsl159 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleUserDef_in_ruleAtsDsl180 = new BitSet(new long[]{0x0000000000007002L});
+    public static final BitSet FOLLOW_ruleTeamDef_in_ruleAtsDsl180 = new BitSet(new long[]{0x0000000000007002L});
     public static final BitSet FOLLOW_13_in_ruleAtsDsl195 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleTeamDef_in_ruleAtsDsl216 = new BitSet(new long[]{0x0000000000006002L});
+    public static final BitSet FOLLOW_ruleActionableItemDef_in_ruleAtsDsl216 = new BitSet(new long[]{0x0000000000006002L});
     public static final BitSet FOLLOW_14_in_ruleAtsDsl231 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleActionableItemDef_in_ruleAtsDsl252 = new BitSet(new long[]{0x0000000000004002L});
+    public static final BitSet FOLLOW_ruleWorkDef_in_ruleAtsDsl252 = new BitSet(new long[]{0x0000000000004002L});
     public static final BitSet FOLLOW_ruleUSER_DEF_REFERENCE_in_entryRuleUSER_DEF_REFERENCE291 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_entryRuleUSER_DEF_REFERENCE302 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_RULE_STRING_in_ruleUSER_DEF_REFERENCE341 = new BitSet(new long[]{0x0000000000000002L});
@@ -11343,20 +11350,20 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
     public static final BitSet FOLLOW_EOF_in_entryRuleTeamDef777 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleTEAM_DEF_REFERENCE_in_ruleTeamDef823 = new BitSet(new long[]{0x0000000000008010L,0x0000000000008000L});
     public static final BitSet FOLLOW_ruleTeamDefOption_in_ruleTeamDef844 = new BitSet(new long[]{0x0000000000008010L,0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_ruleTeamDef857 = new BitSet(new long[]{0x000000003FF10800L});
+    public static final BitSet FOLLOW_15_in_ruleTeamDef857 = new BitSet(new long[]{0x000000003FF14000L});
     public static final BitSet FOLLOW_21_in_ruleTeamDef870 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleTeamDef887 = new BitSet(new long[]{0x000000003FD10800L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleTeamDef887 = new BitSet(new long[]{0x000000003FD14000L});
     public static final BitSet FOLLOW_16_in_ruleTeamDef907 = new BitSet(new long[]{0x0000000000000000L,0x0000000000010000L,0x0000000000030000L});
-    public static final BitSet FOLLOW_ruleBooleanDef_in_ruleTeamDef928 = new BitSet(new long[]{0x000000003FD00800L});
+    public static final BitSet FOLLOW_ruleBooleanDef_in_ruleTeamDef928 = new BitSet(new long[]{0x000000003FD04000L});
     public static final BitSet FOLLOW_22_in_ruleTeamDef943 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_RULE_STRING_in_ruleTeamDef960 = new BitSet(new long[]{0x000000003FD00800L});
+    public static final BitSet FOLLOW_RULE_STRING_in_ruleTeamDef960 = new BitSet(new long[]{0x000000003FD04000L});
     public static final BitSet FOLLOW_23_in_ruleTeamDef980 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000200L});
-    public static final BitSet FOLLOW_ruleUserRef_in_ruleTeamDef1001 = new BitSet(new long[]{0x000000003F900800L});
+    public static final BitSet FOLLOW_ruleUserRef_in_ruleTeamDef1001 = new BitSet(new long[]{0x000000003F904000L});
     public static final BitSet FOLLOW_24_in_ruleTeamDef1016 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000200L});
-    public static final BitSet FOLLOW_ruleUserRef_in_ruleTeamDef1037 = new BitSet(new long[]{0x000000003F100800L});
+    public static final BitSet FOLLOW_ruleUserRef_in_ruleTeamDef1037 = new BitSet(new long[]{0x000000003F104000L});
     public static final BitSet FOLLOW_25_in_ruleTeamDef1052 = new BitSet(new long[]{0x0000000000020000L,0x0000000000000200L});
-    public static final BitSet FOLLOW_ruleUserRef_in_ruleTeamDef1073 = new BitSet(new long[]{0x000000003E100800L});
-    public static final BitSet FOLLOW_11_in_ruleTeamDef1088 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_ruleUserRef_in_ruleTeamDef1073 = new BitSet(new long[]{0x000000003E104000L});
+    public static final BitSet FOLLOW_14_in_ruleTeamDef1088 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_RULE_STRING_in_ruleTeamDef1105 = new BitSet(new long[]{0x000000003C100000L});
     public static final BitSet FOLLOW_26_in_ruleTeamDef1125 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_RULE_STRING_in_ruleTeamDef1142 = new BitSet(new long[]{0x0000000038100000L});
@@ -11365,9 +11372,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
     public static final BitSet FOLLOW_28_in_ruleTeamDef1199 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_ruleVersionDef_in_ruleTeamDef1220 = new BitSet(new long[]{0x0000000030100000L});
     public static final BitSet FOLLOW_29_in_ruleTeamDef1235 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_ruleTeamDef1247 = new BitSet(new long[]{0x0000000000002000L});
-    public static final BitSet FOLLOW_13_in_ruleTeamDef1260 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleTeamDef_in_ruleTeamDef1281 = new BitSet(new long[]{0x0000000000102000L});
+    public static final BitSet FOLLOW_15_in_ruleTeamDef1247 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_12_in_ruleTeamDef1260 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_ruleTeamDef_in_ruleTeamDef1281 = new BitSet(new long[]{0x0000000000101000L});
     public static final BitSet FOLLOW_20_in_ruleTeamDef1295 = new BitSet(new long[]{0x0000000000100000L});
     public static final BitSet FOLLOW_20_in_ruleTeamDef1309 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleAI_DEF_REFERENCE_in_entryRuleAI_DEF_REFERENCE1346 = new BitSet(new long[]{0x0000000000000000L});
@@ -11395,9 +11402,9 @@ public class InternalAtsDslParser extends AbstractInternalAntlrParser {
     public static final BitSet FOLLOW_27_in_ruleActionableItemDef1799 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_RULE_STRING_in_ruleActionableItemDef1816 = new BitSet(new long[]{0x0000000028100000L});
     public static final BitSet FOLLOW_29_in_ruleActionableItemDef1836 = new BitSet(new long[]{0x0000000000008000L});
-    public static final BitSet FOLLOW_15_in_ruleActionableItemDef1848 = new BitSet(new long[]{0x0000000000004000L});
-    public static final BitSet FOLLOW_14_in_ruleActionableItemDef1861 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_ruleActionableItemDef_in_ruleActionableItemDef1882 = new BitSet(new long[]{0x0000000000104000L});
+    public static final BitSet FOLLOW_15_in_ruleActionableItemDef1848 = new BitSet(new long[]{0x0000000000002000L});
+    public static final BitSet FOLLOW_13_in_ruleActionableItemDef1861 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_ruleActionableItemDef_in_ruleActionableItemDef1882 = new BitSet(new long[]{0x0000000000102000L});
     public static final BitSet FOLLOW_20_in_ruleActionableItemDef1896 = new BitSet(new long[]{0x0000000000100000L});
     public static final BitSet FOLLOW_20_in_ruleActionableItemDef1910 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleVERSION_DEF_REFERENCE_in_entryRuleVERSION_DEF_REFERENCE1949 = new BitSet(new long[]{0x0000000000000000L});

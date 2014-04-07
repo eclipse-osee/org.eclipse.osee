@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.impl.internal.workdef;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
@@ -33,7 +32,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.WidgetDef;
 import org.eclipse.osee.ats.dsl.atsDsl.WorkflowEventType;
 import org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslFactoryImpl;
 import org.eclipse.osee.ats.impl.internal.AtsWorkDefinitionServiceImpl;
-import org.eclipse.osee.ats.impl.internal.workdef.ConvertWorkDefinitionToAtsDsl;
 import org.eclipse.osee.ats.impl.internal.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.impl.internal.workdef.model.DecisionReviewDefinition;
 import org.eclipse.osee.ats.impl.internal.workdef.model.DecisionReviewOption;
@@ -43,6 +41,7 @@ import org.eclipse.osee.ats.impl.internal.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.impl.internal.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.impl.internal.workdef.model.WorkDefinition;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -66,7 +65,7 @@ public class ConvertWorkDefinitionToAtsDslTest {
 
       ConvertWorkDefinitionToAtsDsl convert = new ConvertWorkDefinitionToAtsDsl(resultData);
       AtsDsl dsl = convert.convert("this", workDef);
-      Assert.assertEquals(null, dsl.getWorkDef().getStates().iterator().next().getDescription());
+      Assert.assertEquals(null, dsl.getWorkDef().iterator().next().getStates().iterator().next().getDescription());
       dsl = convert.convert("this", workDef);
    }
 
@@ -91,9 +90,9 @@ public class ConvertWorkDefinitionToAtsDslTest {
       ConvertWorkDefinitionToAtsDsl convert = new ConvertWorkDefinitionToAtsDsl(resultData);
       AtsDsl dsl = convert.convert("this", workDef);
 
-      StateDef endorseDef = dsl.getWorkDef().getStates().get(0);
+      StateDef endorseDef = dsl.getWorkDef().iterator().next().getStates().get(0);
       if (endorseDef.getName().equals("analyze")) {
-         endorseDef = dsl.getWorkDef().getStates().get(1);
+         endorseDef = dsl.getWorkDef().iterator().next().getStates().get(1);
       }
       // only one transition to state should exist; analyze
       Assert.assertEquals(1, endorseDef.getTransitionStates().size());

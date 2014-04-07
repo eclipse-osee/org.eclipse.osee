@@ -164,7 +164,7 @@ public class ConvertWorkDefinitionToAtsDsl {
       }
 
       resultData.log("Complete");
-      atsDsl.setWorkDef(dslWorkDef);
+      atsDsl.getWorkDef().add(dslWorkDef);
       return atsDsl;
    }
 

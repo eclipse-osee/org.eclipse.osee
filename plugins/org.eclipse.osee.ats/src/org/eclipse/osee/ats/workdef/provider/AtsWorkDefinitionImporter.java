@@ -25,10 +25,12 @@ import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.dsl.ModelUtil;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.StateDef;
+import org.eclipse.osee.ats.dsl.atsDsl.WorkDef;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.AtsDslUtil;
 import org.eclipse.osee.ats.workdef.config.ImportAIsAndTeamDefinitionsToDb;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -76,25 +78,32 @@ public class AtsWorkDefinitionImporter {
          // Use original xml to store in artifact so no conversion happens
          String workDefXml = AtsDslUtil.getString(sheet);
          Artifact artifact =
-            importWorkDefinitionToDb(workDefXml, sheet.getName(), sheet.getName(), resultData, changes);
+            importWorkDefinitionToDb(workDefXml, sheet.getName(), sheet.getName(), sheet.getToken(), resultData,
+               changes);
          if (resultData.getNumErrors() > 0) {
             throw new OseeStateException("Error importing WorkDefinitionSheet [%s] into database [%s]",
                sheet.getName(), resultData.toString());
          }
-         for (StateDef state : atsDsl.getWorkDef().getStates()) {
-            stateNames.add(Strings.unquote(state.getName()));
+         for (WorkDef workDef : atsDsl.getWorkDef()) {
+            for (StateDef state : workDef.getStates()) {
+               stateNames.add(Strings.unquote(state.getName()));
+            }
          }
          return artifact;
       }
       return null;
    }
 
-   public Artifact importWorkDefinitionToDb(String workDefXml, String workDefName, String sheetName, XResultData resultData, IAtsChangeSet changes) throws OseeCoreException {
+   public Artifact importWorkDefinitionToDb(String workDefXml, String workDefName, String sheetName, IArtifactToken token, XResultData resultData, IAtsChangeSet changes) throws OseeCoreException {
       Artifact artifact = null;
       try {
-         artifact =
-            ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheetName,
-               AtsUtilCore.getAtsBranch());
+         if (token != null) {
+            artifact = ArtifactQuery.getArtifactFromToken(token, AtsUtilCore.getAtsBranch());
+         } else {
+            artifact =
+               ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheetName,
+                  AtsUtilCore.getAtsBranch());
+         }
       } catch (ArtifactDoesNotExist ex) {
          // do nothing; this is what we want
       }

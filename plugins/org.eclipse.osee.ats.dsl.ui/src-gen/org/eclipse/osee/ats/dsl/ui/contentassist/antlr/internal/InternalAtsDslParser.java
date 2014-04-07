@@ -22,7 +22,7 @@ import java.util.ArrayList;
 @SuppressWarnings("all")
 public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_STRING", "RULE_INT", "RULE_ID", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'GetOrCreate'", "'None'", "'AsDefault'", "'OverrideAttributeValidation'", "'RequireStateHourSpentPrompt'", "'AddDecisionValidateBlockingReview'", "'AddDecisionValidateNonBlockingReview'", "'AllowTransitionWithWorkingBranch'", "'ForceAssigneesToTeamLeads'", "'RequireTargetedVersion'", "'AllowPrivilegedEditToTeamMember'", "'AllowPrivilegedEditToTeamMemberAndOriginator'", "'AllowPrivilegedEditToAll'", "'AllowEditToAll'", "'AllowAssigneeToAll'", "'AllowTransitionWithoutTaskCompletion'", "'REQUIRED_FOR_TRANSITION'", "'NOT_REQUIRED_FOR_TRANSITION'", "'REQUIRED_FOR_COMPLETION'", "'NOT_REQUIRED_FOR_COMPLETION'", "'ENABLED'", "'NOT_ENABLED'", "'EDITABLE'", "'NOT_EDITABLE'", "'FUTURE_DATE_REQUIRED'", "'NOT_FUTURE_DATE_REQUIRED'", "'MULTI_SELECT'", "'HORIZONTAL_LABEL'", "'VERTICAL_LABEL'", "'LABEL_AFTER'", "'LABEL_BEFORE'", "'NO_LABEL'", "'SORTED'", "'ADD_DEFAULT_VALUE'", "'NO_DEFAULT_VALUE'", "'BEGIN_COMPOSITE_4'", "'BEGIN_COMPOSITE_6'", "'BEGIN_COMPOSITE_8'", "'BEGIN_COMPOSITE_10'", "'END_COMPOSITE'", "'FILL_NONE'", "'FILL_HORIZONTALLY'", "'FILL_VERTICALLY'", "'ALIGN_LEFT'", "'ALIGN_RIGHT'", "'ALIGN_CENTER'", "'Working'", "'Completed'", "'Cancelled'", "'BLACK'", "'WHITE'", "'RED'", "'DARK_RED'", "'GREEN'", "'DARK_GREEN'", "'YELLOW'", "'DARK_YELLOW'", "'BLUE'", "'DARK_BLUE'", "'MAGENTA'", "'DARK_MAGENTA'", "'CYAN'", "'DARK_CYAN'", "'GRAY'", "'DARK_GRAY'", "'True'", "'False'", "'TransitionTo'", "'CreateBranch'", "'CommitBranch'", "'Transition'", "'Commit'", "'workDefinition'", "'userDefinition'", "'teamDefinition'", "'actionableItem'", "'{'", "'}'", "'active'", "'userId'", "'email'", "'isAdmin'", "'guid'", "'staticId'", "'lead'", "'member'", "'privileged'", "'relatedTaskWorkDefinition'", "'accessContextId'", "'version'", "'children'", "'actionable'", "'owner'", "'team'", "'next'", "'released'", "'allowCreateBranch'", "'allowCommitBranch'", "'baselineBranchGuid'", "'baselineBranchUuid'", "'parallelVersion'", "'id'", "'startState'", "'widgetDefinition'", "'attributeName'", "'description'", "'xWidgetName'", "'defaultValue'", "'height'", "'option'", "'minConstraint'", "'maxConstraint'", "'widget'", "'attributeWidget'", "'with'", "'state'", "'type'", "'ordinal'", "'rule'", "'percentWeight'", "'recommendedPercentComplete'", "'color'", "'decisionReview'", "'decisionReviewDefinition'", "'title'", "'blockingType'", "'onEvent'", "'relatedToState'", "'assignee'", "'autoTransitionToDecision'", "'peerReview'", "'peerReviewDefinition'", "'location'", "'followup by'", "'named'", "'to'", "'layout'", "'layoutCopyFrom'", "'composite'", "'numColumns'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_STRING", "RULE_INT", "RULE_ID", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'GetOrCreate'", "'None'", "'AsDefault'", "'OverrideAttributeValidation'", "'RequireStateHourSpentPrompt'", "'AddDecisionValidateBlockingReview'", "'AddDecisionValidateNonBlockingReview'", "'AllowTransitionWithWorkingBranch'", "'ForceAssigneesToTeamLeads'", "'RequireTargetedVersion'", "'AllowPrivilegedEditToTeamMember'", "'AllowPrivilegedEditToTeamMemberAndOriginator'", "'AllowPrivilegedEditToAll'", "'AllowEditToAll'", "'AllowAssigneeToAll'", "'AllowTransitionWithoutTaskCompletion'", "'REQUIRED_FOR_TRANSITION'", "'NOT_REQUIRED_FOR_TRANSITION'", "'REQUIRED_FOR_COMPLETION'", "'NOT_REQUIRED_FOR_COMPLETION'", "'ENABLED'", "'NOT_ENABLED'", "'EDITABLE'", "'NOT_EDITABLE'", "'FUTURE_DATE_REQUIRED'", "'NOT_FUTURE_DATE_REQUIRED'", "'MULTI_SELECT'", "'HORIZONTAL_LABEL'", "'VERTICAL_LABEL'", "'LABEL_AFTER'", "'LABEL_BEFORE'", "'NO_LABEL'", "'SORTED'", "'ADD_DEFAULT_VALUE'", "'NO_DEFAULT_VALUE'", "'BEGIN_COMPOSITE_4'", "'BEGIN_COMPOSITE_6'", "'BEGIN_COMPOSITE_8'", "'BEGIN_COMPOSITE_10'", "'END_COMPOSITE'", "'FILL_NONE'", "'FILL_HORIZONTALLY'", "'FILL_VERTICALLY'", "'ALIGN_LEFT'", "'ALIGN_RIGHT'", "'ALIGN_CENTER'", "'Working'", "'Completed'", "'Cancelled'", "'BLACK'", "'WHITE'", "'RED'", "'DARK_RED'", "'GREEN'", "'DARK_GREEN'", "'YELLOW'", "'DARK_YELLOW'", "'BLUE'", "'DARK_BLUE'", "'MAGENTA'", "'DARK_MAGENTA'", "'CYAN'", "'DARK_CYAN'", "'GRAY'", "'DARK_GRAY'", "'True'", "'False'", "'TransitionTo'", "'CreateBranch'", "'CommitBranch'", "'Transition'", "'Commit'", "'userDefinition'", "'teamDefinition'", "'actionableItem'", "'workDefinition'", "'{'", "'}'", "'active'", "'userId'", "'email'", "'isAdmin'", "'guid'", "'staticId'", "'lead'", "'member'", "'privileged'", "'relatedTaskWorkDefinition'", "'accessContextId'", "'version'", "'children'", "'actionable'", "'owner'", "'team'", "'next'", "'released'", "'allowCreateBranch'", "'allowCommitBranch'", "'baselineBranchGuid'", "'baselineBranchUuid'", "'parallelVersion'", "'id'", "'startState'", "'widgetDefinition'", "'attributeName'", "'description'", "'xWidgetName'", "'defaultValue'", "'height'", "'option'", "'minConstraint'", "'maxConstraint'", "'widget'", "'attributeWidget'", "'with'", "'state'", "'type'", "'ordinal'", "'rule'", "'percentWeight'", "'recommendedPercentComplete'", "'color'", "'decisionReview'", "'decisionReviewDefinition'", "'title'", "'blockingType'", "'onEvent'", "'relatedToState'", "'assignee'", "'autoTransitionToDecision'", "'peerReview'", "'peerReviewDefinition'", "'location'", "'followup by'", "'named'", "'to'", "'layout'", "'layoutCopyFrom'", "'composite'", "'numColumns'"
     };
     public static final int RULE_ID=6;
     public static final int T__29=29;
@@ -6710,40 +6710,47 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AtsDsl__Group__0__Impl"
-    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2453:1: rule__AtsDsl__Group__0__Impl : ( ( rule__AtsDsl__Group_0__0 )? ) ;
+    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2453:1: rule__AtsDsl__Group__0__Impl : ( ( rule__AtsDsl__Group_0__0 )* ) ;
     public final void rule__AtsDsl__Group__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2457:1: ( ( ( rule__AtsDsl__Group_0__0 )? ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2458:1: ( ( rule__AtsDsl__Group_0__0 )? )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2457:1: ( ( ( rule__AtsDsl__Group_0__0 )* ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2458:1: ( ( rule__AtsDsl__Group_0__0 )* )
             {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2458:1: ( ( rule__AtsDsl__Group_0__0 )? )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2459:1: ( rule__AtsDsl__Group_0__0 )?
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2458:1: ( ( rule__AtsDsl__Group_0__0 )* )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2459:1: ( rule__AtsDsl__Group_0__0 )*
             {
              before(grammarAccess.getAtsDslAccess().getGroup_0()); 
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2460:1: ( rule__AtsDsl__Group_0__0 )?
-            int alt16=2;
-            int LA16_0 = input.LA(1);
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2460:1: ( rule__AtsDsl__Group_0__0 )*
+            loop16:
+            do {
+                int alt16=2;
+                int LA16_0 = input.LA(1);
 
-            if ( (LA16_0==83) ) {
-                alt16=1;
-            }
-            switch (alt16) {
-                case 1 :
-                    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2460:2: rule__AtsDsl__Group_0__0
-                    {
-                    pushFollow(FOLLOW_rule__AtsDsl__Group_0__0_in_rule__AtsDsl__Group__0__Impl5372);
-                    rule__AtsDsl__Group_0__0();
-
-                    state._fsp--;
+                if ( (LA16_0==83) ) {
+                    alt16=1;
+                }
 
 
-                    }
-                    break;
+                switch (alt16) {
+            	case 1 :
+            	    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2460:2: rule__AtsDsl__Group_0__0
+            	    {
+            	    pushFollow(FOLLOW_rule__AtsDsl__Group_0__0_in_rule__AtsDsl__Group__0__Impl5372);
+            	    rule__AtsDsl__Group_0__0();
 
-            }
+            	    state._fsp--;
+
+
+            	    }
+            	    break;
+
+            	default :
+            	    break loop16;
+                }
+            } while (true);
 
              after(grammarAccess.getAtsDslAccess().getGroup_0()); 
 
@@ -7110,21 +7117,21 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AtsDsl__Group_0__0__Impl"
-    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2576:1: rule__AtsDsl__Group_0__0__Impl : ( 'workDefinition' ) ;
+    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2576:1: rule__AtsDsl__Group_0__0__Impl : ( 'userDefinition' ) ;
     public final void rule__AtsDsl__Group_0__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2580:1: ( ( 'workDefinition' ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2581:1: ( 'workDefinition' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2580:1: ( ( 'userDefinition' ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2581:1: ( 'userDefinition' )
             {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2581:1: ( 'workDefinition' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2582:1: 'workDefinition'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2581:1: ( 'userDefinition' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2582:1: 'userDefinition'
             {
-             before(grammarAccess.getAtsDslAccess().getWorkDefinitionKeyword_0_0()); 
+             before(grammarAccess.getAtsDslAccess().getUserDefinitionKeyword_0_0()); 
             match(input,83,FOLLOW_83_in_rule__AtsDsl__Group_0__0__Impl5622); 
-             after(grammarAccess.getAtsDslAccess().getWorkDefinitionKeyword_0_0()); 
+             after(grammarAccess.getAtsDslAccess().getUserDefinitionKeyword_0_0()); 
 
             }
 
@@ -7180,31 +7187,31 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AtsDsl__Group_0__1__Impl"
-    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2606:1: rule__AtsDsl__Group_0__1__Impl : ( ( rule__AtsDsl__WorkDefAssignment_0_1 ) ) ;
+    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2606:1: rule__AtsDsl__Group_0__1__Impl : ( ( rule__AtsDsl__UserDefAssignment_0_1 ) ) ;
     public final void rule__AtsDsl__Group_0__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2610:1: ( ( ( rule__AtsDsl__WorkDefAssignment_0_1 ) ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2611:1: ( ( rule__AtsDsl__WorkDefAssignment_0_1 ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2610:1: ( ( ( rule__AtsDsl__UserDefAssignment_0_1 ) ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2611:1: ( ( rule__AtsDsl__UserDefAssignment_0_1 ) )
             {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2611:1: ( ( rule__AtsDsl__WorkDefAssignment_0_1 ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2612:1: ( rule__AtsDsl__WorkDefAssignment_0_1 )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2611:1: ( ( rule__AtsDsl__UserDefAssignment_0_1 ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2612:1: ( rule__AtsDsl__UserDefAssignment_0_1 )
             {
-             before(grammarAccess.getAtsDslAccess().getWorkDefAssignment_0_1()); 
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2613:1: ( rule__AtsDsl__WorkDefAssignment_0_1 )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2613:2: rule__AtsDsl__WorkDefAssignment_0_1
+             before(grammarAccess.getAtsDslAccess().getUserDefAssignment_0_1()); 
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2613:1: ( rule__AtsDsl__UserDefAssignment_0_1 )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2613:2: rule__AtsDsl__UserDefAssignment_0_1
             {
-            pushFollow(FOLLOW_rule__AtsDsl__WorkDefAssignment_0_1_in_rule__AtsDsl__Group_0__1__Impl5680);
-            rule__AtsDsl__WorkDefAssignment_0_1();
+            pushFollow(FOLLOW_rule__AtsDsl__UserDefAssignment_0_1_in_rule__AtsDsl__Group_0__1__Impl5680);
+            rule__AtsDsl__UserDefAssignment_0_1();
 
             state._fsp--;
 
 
             }
 
-             after(grammarAccess.getAtsDslAccess().getWorkDefAssignment_0_1()); 
+             after(grammarAccess.getAtsDslAccess().getUserDefAssignment_0_1()); 
 
             }
 
@@ -7265,21 +7272,21 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AtsDsl__Group_1__0__Impl"
-    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2639:1: rule__AtsDsl__Group_1__0__Impl : ( 'userDefinition' ) ;
+    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2639:1: rule__AtsDsl__Group_1__0__Impl : ( 'teamDefinition' ) ;
     public final void rule__AtsDsl__Group_1__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2643:1: ( ( 'userDefinition' ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2644:1: ( 'userDefinition' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2643:1: ( ( 'teamDefinition' ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2644:1: ( 'teamDefinition' )
             {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2644:1: ( 'userDefinition' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2645:1: 'userDefinition'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2644:1: ( 'teamDefinition' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2645:1: 'teamDefinition'
             {
-             before(grammarAccess.getAtsDslAccess().getUserDefinitionKeyword_1_0()); 
+             before(grammarAccess.getAtsDslAccess().getTeamDefinitionKeyword_1_0()); 
             match(input,84,FOLLOW_84_in_rule__AtsDsl__Group_1__0__Impl5745); 
-             after(grammarAccess.getAtsDslAccess().getUserDefinitionKeyword_1_0()); 
+             after(grammarAccess.getAtsDslAccess().getTeamDefinitionKeyword_1_0()); 
 
             }
 
@@ -7335,31 +7342,31 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AtsDsl__Group_1__1__Impl"
-    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2669:1: rule__AtsDsl__Group_1__1__Impl : ( ( rule__AtsDsl__UserDefAssignment_1_1 ) ) ;
+    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2669:1: rule__AtsDsl__Group_1__1__Impl : ( ( rule__AtsDsl__TeamDefAssignment_1_1 ) ) ;
     public final void rule__AtsDsl__Group_1__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2673:1: ( ( ( rule__AtsDsl__UserDefAssignment_1_1 ) ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2674:1: ( ( rule__AtsDsl__UserDefAssignment_1_1 ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2673:1: ( ( ( rule__AtsDsl__TeamDefAssignment_1_1 ) ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2674:1: ( ( rule__AtsDsl__TeamDefAssignment_1_1 ) )
             {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2674:1: ( ( rule__AtsDsl__UserDefAssignment_1_1 ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2675:1: ( rule__AtsDsl__UserDefAssignment_1_1 )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2674:1: ( ( rule__AtsDsl__TeamDefAssignment_1_1 ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2675:1: ( rule__AtsDsl__TeamDefAssignment_1_1 )
             {
-             before(grammarAccess.getAtsDslAccess().getUserDefAssignment_1_1()); 
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2676:1: ( rule__AtsDsl__UserDefAssignment_1_1 )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2676:2: rule__AtsDsl__UserDefAssignment_1_1
+             before(grammarAccess.getAtsDslAccess().getTeamDefAssignment_1_1()); 
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2676:1: ( rule__AtsDsl__TeamDefAssignment_1_1 )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2676:2: rule__AtsDsl__TeamDefAssignment_1_1
             {
-            pushFollow(FOLLOW_rule__AtsDsl__UserDefAssignment_1_1_in_rule__AtsDsl__Group_1__1__Impl5803);
-            rule__AtsDsl__UserDefAssignment_1_1();
+            pushFollow(FOLLOW_rule__AtsDsl__TeamDefAssignment_1_1_in_rule__AtsDsl__Group_1__1__Impl5803);
+            rule__AtsDsl__TeamDefAssignment_1_1();
 
             state._fsp--;
 
 
             }
 
-             after(grammarAccess.getAtsDslAccess().getUserDefAssignment_1_1()); 
+             after(grammarAccess.getAtsDslAccess().getTeamDefAssignment_1_1()); 
 
             }
 
@@ -7420,21 +7427,21 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AtsDsl__Group_2__0__Impl"
-    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2702:1: rule__AtsDsl__Group_2__0__Impl : ( 'teamDefinition' ) ;
+    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2702:1: rule__AtsDsl__Group_2__0__Impl : ( 'actionableItem' ) ;
     public final void rule__AtsDsl__Group_2__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2706:1: ( ( 'teamDefinition' ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2707:1: ( 'teamDefinition' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2706:1: ( ( 'actionableItem' ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2707:1: ( 'actionableItem' )
             {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2707:1: ( 'teamDefinition' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2708:1: 'teamDefinition'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2707:1: ( 'actionableItem' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2708:1: 'actionableItem'
             {
-             before(grammarAccess.getAtsDslAccess().getTeamDefinitionKeyword_2_0()); 
+             before(grammarAccess.getAtsDslAccess().getActionableItemKeyword_2_0()); 
             match(input,85,FOLLOW_85_in_rule__AtsDsl__Group_2__0__Impl5868); 
-             after(grammarAccess.getAtsDslAccess().getTeamDefinitionKeyword_2_0()); 
+             after(grammarAccess.getAtsDslAccess().getActionableItemKeyword_2_0()); 
 
             }
 
@@ -7490,31 +7497,31 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AtsDsl__Group_2__1__Impl"
-    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2732:1: rule__AtsDsl__Group_2__1__Impl : ( ( rule__AtsDsl__TeamDefAssignment_2_1 ) ) ;
+    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2732:1: rule__AtsDsl__Group_2__1__Impl : ( ( rule__AtsDsl__ActionableItemDefAssignment_2_1 ) ) ;
     public final void rule__AtsDsl__Group_2__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2736:1: ( ( ( rule__AtsDsl__TeamDefAssignment_2_1 ) ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2737:1: ( ( rule__AtsDsl__TeamDefAssignment_2_1 ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2736:1: ( ( ( rule__AtsDsl__ActionableItemDefAssignment_2_1 ) ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2737:1: ( ( rule__AtsDsl__ActionableItemDefAssignment_2_1 ) )
             {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2737:1: ( ( rule__AtsDsl__TeamDefAssignment_2_1 ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2738:1: ( rule__AtsDsl__TeamDefAssignment_2_1 )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2737:1: ( ( rule__AtsDsl__ActionableItemDefAssignment_2_1 ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2738:1: ( rule__AtsDsl__ActionableItemDefAssignment_2_1 )
             {
-             before(grammarAccess.getAtsDslAccess().getTeamDefAssignment_2_1()); 
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2739:1: ( rule__AtsDsl__TeamDefAssignment_2_1 )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2739:2: rule__AtsDsl__TeamDefAssignment_2_1
+             before(grammarAccess.getAtsDslAccess().getActionableItemDefAssignment_2_1()); 
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2739:1: ( rule__AtsDsl__ActionableItemDefAssignment_2_1 )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2739:2: rule__AtsDsl__ActionableItemDefAssignment_2_1
             {
-            pushFollow(FOLLOW_rule__AtsDsl__TeamDefAssignment_2_1_in_rule__AtsDsl__Group_2__1__Impl5926);
-            rule__AtsDsl__TeamDefAssignment_2_1();
+            pushFollow(FOLLOW_rule__AtsDsl__ActionableItemDefAssignment_2_1_in_rule__AtsDsl__Group_2__1__Impl5926);
+            rule__AtsDsl__ActionableItemDefAssignment_2_1();
 
             state._fsp--;
 
 
             }
 
-             after(grammarAccess.getAtsDslAccess().getTeamDefAssignment_2_1()); 
+             after(grammarAccess.getAtsDslAccess().getActionableItemDefAssignment_2_1()); 
 
             }
 
@@ -7575,21 +7582,21 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AtsDsl__Group_3__0__Impl"
-    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2765:1: rule__AtsDsl__Group_3__0__Impl : ( 'actionableItem' ) ;
+    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2765:1: rule__AtsDsl__Group_3__0__Impl : ( 'workDefinition' ) ;
     public final void rule__AtsDsl__Group_3__0__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2769:1: ( ( 'actionableItem' ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2770:1: ( 'actionableItem' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2769:1: ( ( 'workDefinition' ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2770:1: ( 'workDefinition' )
             {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2770:1: ( 'actionableItem' )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2771:1: 'actionableItem'
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2770:1: ( 'workDefinition' )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2771:1: 'workDefinition'
             {
-             before(grammarAccess.getAtsDslAccess().getActionableItemKeyword_3_0()); 
+             before(grammarAccess.getAtsDslAccess().getWorkDefinitionKeyword_3_0()); 
             match(input,86,FOLLOW_86_in_rule__AtsDsl__Group_3__0__Impl5991); 
-             after(grammarAccess.getAtsDslAccess().getActionableItemKeyword_3_0()); 
+             after(grammarAccess.getAtsDslAccess().getWorkDefinitionKeyword_3_0()); 
 
             }
 
@@ -7645,31 +7652,31 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
 
 
     // $ANTLR start "rule__AtsDsl__Group_3__1__Impl"
-    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2795:1: rule__AtsDsl__Group_3__1__Impl : ( ( rule__AtsDsl__ActionableItemDefAssignment_3_1 ) ) ;
+    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2795:1: rule__AtsDsl__Group_3__1__Impl : ( ( rule__AtsDsl__WorkDefAssignment_3_1 ) ) ;
     public final void rule__AtsDsl__Group_3__1__Impl() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2799:1: ( ( ( rule__AtsDsl__ActionableItemDefAssignment_3_1 ) ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2800:1: ( ( rule__AtsDsl__ActionableItemDefAssignment_3_1 ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2799:1: ( ( ( rule__AtsDsl__WorkDefAssignment_3_1 ) ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2800:1: ( ( rule__AtsDsl__WorkDefAssignment_3_1 ) )
             {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2800:1: ( ( rule__AtsDsl__ActionableItemDefAssignment_3_1 ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2801:1: ( rule__AtsDsl__ActionableItemDefAssignment_3_1 )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2800:1: ( ( rule__AtsDsl__WorkDefAssignment_3_1 ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2801:1: ( rule__AtsDsl__WorkDefAssignment_3_1 )
             {
-             before(grammarAccess.getAtsDslAccess().getActionableItemDefAssignment_3_1()); 
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2802:1: ( rule__AtsDsl__ActionableItemDefAssignment_3_1 )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2802:2: rule__AtsDsl__ActionableItemDefAssignment_3_1
+             before(grammarAccess.getAtsDslAccess().getWorkDefAssignment_3_1()); 
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2802:1: ( rule__AtsDsl__WorkDefAssignment_3_1 )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:2802:2: rule__AtsDsl__WorkDefAssignment_3_1
             {
-            pushFollow(FOLLOW_rule__AtsDsl__ActionableItemDefAssignment_3_1_in_rule__AtsDsl__Group_3__1__Impl6049);
-            rule__AtsDsl__ActionableItemDefAssignment_3_1();
+            pushFollow(FOLLOW_rule__AtsDsl__WorkDefAssignment_3_1_in_rule__AtsDsl__Group_3__1__Impl6049);
+            rule__AtsDsl__WorkDefAssignment_3_1();
 
             state._fsp--;
 
 
             }
 
-             after(grammarAccess.getAtsDslAccess().getActionableItemDefAssignment_3_1()); 
+             after(grammarAccess.getAtsDslAccess().getWorkDefAssignment_3_1()); 
 
             }
 
@@ -10042,7 +10049,7 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
             int alt33=2;
             int LA33_0 = input.LA(1);
 
-            if ( (LA33_0==83) ) {
+            if ( (LA33_0==86) ) {
                 alt33=1;
             }
             switch (alt33) {
@@ -11532,7 +11539,7 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
             // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:4213:1: 'workDefinition'
             {
              before(grammarAccess.getTeamDefAccess().getWorkDefinitionKeyword_9_0()); 
-            match(input,83,FOLLOW_83_in_rule__TeamDef__Group_9__0__Impl8849); 
+            match(input,86,FOLLOW_86_in_rule__TeamDef__Group_9__0__Impl8849); 
              after(grammarAccess.getTeamDefAccess().getWorkDefinitionKeyword_9_0()); 
 
             }
@@ -12330,7 +12337,7 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
                 int alt38=2;
                 int LA38_0 = input.LA(1);
 
-                if ( (LA38_0==85) ) {
+                if ( (LA38_0==84) ) {
                     alt38=1;
                 }
 
@@ -12500,7 +12507,7 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
             // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:4601:1: 'teamDefinition'
             {
              before(grammarAccess.getTeamDefAccess().getTeamDefinitionKeyword_13_2_0()); 
-            match(input,85,FOLLOW_85_in_rule__TeamDef__Group_13_2__0__Impl9609); 
+            match(input,84,FOLLOW_84_in_rule__TeamDef__Group_13_2__0__Impl9609); 
              after(grammarAccess.getTeamDefAccess().getTeamDefinitionKeyword_13_2_0()); 
 
             }
@@ -15389,7 +15396,7 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
                 int alt50=2;
                 int LA50_0 = input.LA(1);
 
-                if ( (LA50_0==86) ) {
+                if ( (LA50_0==85) ) {
                     alt50=1;
                 }
 
@@ -15559,7 +15566,7 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
             // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:5740:1: 'actionableItem'
             {
              before(grammarAccess.getActionableItemDefAccess().getActionableItemKeyword_2_9_2_0()); 
-            match(input,86,FOLLOW_86_in_rule__ActionableItemDef__Group_2_9_2__0__Impl11861); 
+            match(input,85,FOLLOW_85_in_rule__ActionableItemDef__Group_2_9_2__0__Impl11861); 
              after(grammarAccess.getActionableItemDefAccess().getActionableItemKeyword_2_9_2_0()); 
 
             }
@@ -30915,67 +30922,26 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
     // $ANTLR end "rule__Composite__Group_5__1__Impl"
 
 
-    // $ANTLR start "rule__AtsDsl__WorkDefAssignment_0_1"
-    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11570:1: rule__AtsDsl__WorkDefAssignment_0_1 : ( ruleWorkDef ) ;
-    public final void rule__AtsDsl__WorkDefAssignment_0_1() throws RecognitionException {
+    // $ANTLR start "rule__AtsDsl__UserDefAssignment_0_1"
+    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11570:1: rule__AtsDsl__UserDefAssignment_0_1 : ( ruleUserDef ) ;
+    public final void rule__AtsDsl__UserDefAssignment_0_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11574:1: ( ( ruleWorkDef ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11575:1: ( ruleWorkDef )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11574:1: ( ( ruleUserDef ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11575:1: ( ruleUserDef )
             {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11575:1: ( ruleWorkDef )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11576:1: ruleWorkDef
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11575:1: ( ruleUserDef )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11576:1: ruleUserDef
             {
-             before(grammarAccess.getAtsDslAccess().getWorkDefWorkDefParserRuleCall_0_1_0()); 
-            pushFollow(FOLLOW_ruleWorkDef_in_rule__AtsDsl__WorkDefAssignment_0_123380);
-            ruleWorkDef();
-
-            state._fsp--;
-
-             after(grammarAccess.getAtsDslAccess().getWorkDefWorkDefParserRuleCall_0_1_0()); 
-
-            }
-
-
-            }
-
-        }
-        catch (RecognitionException re) {
-            reportError(re);
-            recover(input,re);
-        }
-        finally {
-
-            	restoreStackSize(stackSize);
-
-        }
-        return ;
-    }
-    // $ANTLR end "rule__AtsDsl__WorkDefAssignment_0_1"
-
-
-    // $ANTLR start "rule__AtsDsl__UserDefAssignment_1_1"
-    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11585:1: rule__AtsDsl__UserDefAssignment_1_1 : ( ruleUserDef ) ;
-    public final void rule__AtsDsl__UserDefAssignment_1_1() throws RecognitionException {
-
-        		int stackSize = keepStackSize();
-            
-        try {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11589:1: ( ( ruleUserDef ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11590:1: ( ruleUserDef )
-            {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11590:1: ( ruleUserDef )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11591:1: ruleUserDef
-            {
-             before(grammarAccess.getAtsDslAccess().getUserDefUserDefParserRuleCall_1_1_0()); 
-            pushFollow(FOLLOW_ruleUserDef_in_rule__AtsDsl__UserDefAssignment_1_123411);
+             before(grammarAccess.getAtsDslAccess().getUserDefUserDefParserRuleCall_0_1_0()); 
+            pushFollow(FOLLOW_ruleUserDef_in_rule__AtsDsl__UserDefAssignment_0_123380);
             ruleUserDef();
 
             state._fsp--;
 
-             after(grammarAccess.getAtsDslAccess().getUserDefUserDefParserRuleCall_1_1_0()); 
+             after(grammarAccess.getAtsDslAccess().getUserDefUserDefParserRuleCall_0_1_0()); 
 
             }
 
@@ -30994,29 +30960,29 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__AtsDsl__UserDefAssignment_1_1"
+    // $ANTLR end "rule__AtsDsl__UserDefAssignment_0_1"
 
 
-    // $ANTLR start "rule__AtsDsl__TeamDefAssignment_2_1"
-    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11600:1: rule__AtsDsl__TeamDefAssignment_2_1 : ( ruleTeamDef ) ;
-    public final void rule__AtsDsl__TeamDefAssignment_2_1() throws RecognitionException {
+    // $ANTLR start "rule__AtsDsl__TeamDefAssignment_1_1"
+    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11585:1: rule__AtsDsl__TeamDefAssignment_1_1 : ( ruleTeamDef ) ;
+    public final void rule__AtsDsl__TeamDefAssignment_1_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11604:1: ( ( ruleTeamDef ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11605:1: ( ruleTeamDef )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11589:1: ( ( ruleTeamDef ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11590:1: ( ruleTeamDef )
             {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11605:1: ( ruleTeamDef )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11606:1: ruleTeamDef
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11590:1: ( ruleTeamDef )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11591:1: ruleTeamDef
             {
-             before(grammarAccess.getAtsDslAccess().getTeamDefTeamDefParserRuleCall_2_1_0()); 
-            pushFollow(FOLLOW_ruleTeamDef_in_rule__AtsDsl__TeamDefAssignment_2_123442);
+             before(grammarAccess.getAtsDslAccess().getTeamDefTeamDefParserRuleCall_1_1_0()); 
+            pushFollow(FOLLOW_ruleTeamDef_in_rule__AtsDsl__TeamDefAssignment_1_123411);
             ruleTeamDef();
 
             state._fsp--;
 
-             after(grammarAccess.getAtsDslAccess().getTeamDefTeamDefParserRuleCall_2_1_0()); 
+             after(grammarAccess.getAtsDslAccess().getTeamDefTeamDefParserRuleCall_1_1_0()); 
 
             }
 
@@ -31035,29 +31001,29 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__AtsDsl__TeamDefAssignment_2_1"
+    // $ANTLR end "rule__AtsDsl__TeamDefAssignment_1_1"
 
 
-    // $ANTLR start "rule__AtsDsl__ActionableItemDefAssignment_3_1"
-    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11615:1: rule__AtsDsl__ActionableItemDefAssignment_3_1 : ( ruleActionableItemDef ) ;
-    public final void rule__AtsDsl__ActionableItemDefAssignment_3_1() throws RecognitionException {
+    // $ANTLR start "rule__AtsDsl__ActionableItemDefAssignment_2_1"
+    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11600:1: rule__AtsDsl__ActionableItemDefAssignment_2_1 : ( ruleActionableItemDef ) ;
+    public final void rule__AtsDsl__ActionableItemDefAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11619:1: ( ( ruleActionableItemDef ) )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11620:1: ( ruleActionableItemDef )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11604:1: ( ( ruleActionableItemDef ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11605:1: ( ruleActionableItemDef )
             {
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11620:1: ( ruleActionableItemDef )
-            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11621:1: ruleActionableItemDef
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11605:1: ( ruleActionableItemDef )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11606:1: ruleActionableItemDef
             {
-             before(grammarAccess.getAtsDslAccess().getActionableItemDefActionableItemDefParserRuleCall_3_1_0()); 
-            pushFollow(FOLLOW_ruleActionableItemDef_in_rule__AtsDsl__ActionableItemDefAssignment_3_123473);
+             before(grammarAccess.getAtsDslAccess().getActionableItemDefActionableItemDefParserRuleCall_2_1_0()); 
+            pushFollow(FOLLOW_ruleActionableItemDef_in_rule__AtsDsl__ActionableItemDefAssignment_2_123442);
             ruleActionableItemDef();
 
             state._fsp--;
 
-             after(grammarAccess.getAtsDslAccess().getActionableItemDefActionableItemDefParserRuleCall_3_1_0()); 
+             after(grammarAccess.getAtsDslAccess().getActionableItemDefActionableItemDefParserRuleCall_2_1_0()); 
 
             }
 
@@ -31076,7 +31042,48 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
         }
         return ;
     }
-    // $ANTLR end "rule__AtsDsl__ActionableItemDefAssignment_3_1"
+    // $ANTLR end "rule__AtsDsl__ActionableItemDefAssignment_2_1"
+
+
+    // $ANTLR start "rule__AtsDsl__WorkDefAssignment_3_1"
+    // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11615:1: rule__AtsDsl__WorkDefAssignment_3_1 : ( ruleWorkDef ) ;
+    public final void rule__AtsDsl__WorkDefAssignment_3_1() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11619:1: ( ( ruleWorkDef ) )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11620:1: ( ruleWorkDef )
+            {
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11620:1: ( ruleWorkDef )
+            // ../org.eclipse.osee.ats.dsl.ui/src-gen/org/eclipse/osee/ats/dsl/ui/contentassist/antlr/internal/InternalAtsDsl.g:11621:1: ruleWorkDef
+            {
+             before(grammarAccess.getAtsDslAccess().getWorkDefWorkDefParserRuleCall_3_1_0()); 
+            pushFollow(FOLLOW_ruleWorkDef_in_rule__AtsDsl__WorkDefAssignment_3_123473);
+            ruleWorkDef();
+
+            state._fsp--;
+
+             after(grammarAccess.getAtsDslAccess().getWorkDefWorkDefParserRuleCall_3_1_0()); 
+
+            }
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end "rule__AtsDsl__WorkDefAssignment_3_1"
 
 
     // $ANTLR start "rule__UserDef__NameAssignment_0"
@@ -35436,7 +35443,7 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_82_in_rule__ReviewBlockingType__Alternatives5309 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__AtsDsl__Group__0__Impl_in_rule__AtsDsl__Group__05342 = new BitSet(new long[]{0x0000000000000000L,0x0000000000700000L});
     public static final BitSet FOLLOW_rule__AtsDsl__Group__1_in_rule__AtsDsl__Group__05345 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AtsDsl__Group_0__0_in_rule__AtsDsl__Group__0__Impl5372 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AtsDsl__Group_0__0_in_rule__AtsDsl__Group__0__Impl5372 = new BitSet(new long[]{0x0000000000000002L,0x0000000000080000L});
     public static final BitSet FOLLOW_rule__AtsDsl__Group__1__Impl_in_rule__AtsDsl__Group__15403 = new BitSet(new long[]{0x0000000000000000L,0x0000000000700000L});
     public static final BitSet FOLLOW_rule__AtsDsl__Group__2_in_rule__AtsDsl__Group__15406 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__AtsDsl__Group_1__0_in_rule__AtsDsl__Group__1__Impl5433 = new BitSet(new long[]{0x0000000000000002L,0x0000000000100000L});
@@ -35449,22 +35456,22 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_rule__AtsDsl__Group_0__1_in_rule__AtsDsl__Group_0__05594 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_83_in_rule__AtsDsl__Group_0__0__Impl5622 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__AtsDsl__Group_0__1__Impl_in_rule__AtsDsl__Group_0__15653 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AtsDsl__WorkDefAssignment_0_1_in_rule__AtsDsl__Group_0__1__Impl5680 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AtsDsl__UserDefAssignment_0_1_in_rule__AtsDsl__Group_0__1__Impl5680 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__AtsDsl__Group_1__0__Impl_in_rule__AtsDsl__Group_1__05714 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_rule__AtsDsl__Group_1__1_in_rule__AtsDsl__Group_1__05717 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_84_in_rule__AtsDsl__Group_1__0__Impl5745 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__AtsDsl__Group_1__1__Impl_in_rule__AtsDsl__Group_1__15776 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AtsDsl__UserDefAssignment_1_1_in_rule__AtsDsl__Group_1__1__Impl5803 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AtsDsl__TeamDefAssignment_1_1_in_rule__AtsDsl__Group_1__1__Impl5803 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__AtsDsl__Group_2__0__Impl_in_rule__AtsDsl__Group_2__05837 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_rule__AtsDsl__Group_2__1_in_rule__AtsDsl__Group_2__05840 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_85_in_rule__AtsDsl__Group_2__0__Impl5868 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__AtsDsl__Group_2__1__Impl_in_rule__AtsDsl__Group_2__15899 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AtsDsl__TeamDefAssignment_2_1_in_rule__AtsDsl__Group_2__1__Impl5926 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AtsDsl__ActionableItemDefAssignment_2_1_in_rule__AtsDsl__Group_2__1__Impl5926 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__AtsDsl__Group_3__0__Impl_in_rule__AtsDsl__Group_3__05960 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_rule__AtsDsl__Group_3__1_in_rule__AtsDsl__Group_3__05963 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_86_in_rule__AtsDsl__Group_3__0__Impl5991 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__AtsDsl__Group_3__1__Impl_in_rule__AtsDsl__Group_3__16022 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AtsDsl__ActionableItemDefAssignment_3_1_in_rule__AtsDsl__Group_3__1__Impl6049 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AtsDsl__WorkDefAssignment_3_1_in_rule__AtsDsl__Group_3__1__Impl6049 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__UserDef__Group__0__Impl_in_rule__UserDef__Group__06083 = new BitSet(new long[]{0x0000000000000810L,0x0000000000800000L});
     public static final BitSet FOLLOW_rule__UserDef__Group__1_in_rule__UserDef__Group__06086 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__UserDef__NameAssignment_0_in_rule__UserDef__Group__0__Impl6113 = new BitSet(new long[]{0x0000000000000002L});
@@ -35516,40 +35523,40 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_rule__TeamDef__Group__1__Impl_in_rule__TeamDef__Group__17197 = new BitSet(new long[]{0x0000000000000810L,0x0000000000800000L});
     public static final BitSet FOLLOW_rule__TeamDef__Group__2_in_rule__TeamDef__Group__17200 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__TeamDefOptionAssignment_1_in_rule__TeamDef__Group__1__Impl7227 = new BitSet(new long[]{0x0000000000000812L});
-    public static final BitSet FOLLOW_rule__TeamDef__Group__2__Impl_in_rule__TeamDef__Group__27258 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3080000L});
+    public static final BitSet FOLLOW_rule__TeamDef__Group__2__Impl_in_rule__TeamDef__Group__27258 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3400000L});
     public static final BitSet FOLLOW_rule__TeamDef__Group__3_in_rule__TeamDef__Group__27261 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_87_in_rule__TeamDef__Group__2__Impl7289 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__TeamDef__Group__3__Impl_in_rule__TeamDef__Group__37320 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3080000L});
+    public static final BitSet FOLLOW_rule__TeamDef__Group__3__Impl_in_rule__TeamDef__Group__37320 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3400000L});
     public static final BitSet FOLLOW_rule__TeamDef__Group__4_in_rule__TeamDef__Group__37323 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_3__0_in_rule__TeamDef__Group__3__Impl7350 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__TeamDef__Group__4__Impl_in_rule__TeamDef__Group__47381 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3080000L});
+    public static final BitSet FOLLOW_rule__TeamDef__Group__4__Impl_in_rule__TeamDef__Group__47381 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3400000L});
     public static final BitSet FOLLOW_rule__TeamDef__Group__5_in_rule__TeamDef__Group__47384 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_4__0_in_rule__TeamDef__Group__4__Impl7411 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__TeamDef__Group__5__Impl_in_rule__TeamDef__Group__57442 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3080000L});
+    public static final BitSet FOLLOW_rule__TeamDef__Group__5__Impl_in_rule__TeamDef__Group__57442 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3400000L});
     public static final BitSet FOLLOW_rule__TeamDef__Group__6_in_rule__TeamDef__Group__57445 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_5__0_in_rule__TeamDef__Group__5__Impl7472 = new BitSet(new long[]{0x0000000000000002L,0x0000000040000000L});
-    public static final BitSet FOLLOW_rule__TeamDef__Group__6__Impl_in_rule__TeamDef__Group__67503 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3080000L});
+    public static final BitSet FOLLOW_rule__TeamDef__Group__6__Impl_in_rule__TeamDef__Group__67503 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3400000L});
     public static final BitSet FOLLOW_rule__TeamDef__Group__7_in_rule__TeamDef__Group__67506 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_6__0_in_rule__TeamDef__Group__6__Impl7533 = new BitSet(new long[]{0x0000000000000002L,0x0000000080000000L});
-    public static final BitSet FOLLOW_rule__TeamDef__Group__7__Impl_in_rule__TeamDef__Group__77564 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3080000L});
+    public static final BitSet FOLLOW_rule__TeamDef__Group__7__Impl_in_rule__TeamDef__Group__77564 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3400000L});
     public static final BitSet FOLLOW_rule__TeamDef__Group__8_in_rule__TeamDef__Group__77567 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_7__0_in_rule__TeamDef__Group__7__Impl7594 = new BitSet(new long[]{0x0000000000000002L,0x0000000100000000L});
-    public static final BitSet FOLLOW_rule__TeamDef__Group__8__Impl_in_rule__TeamDef__Group__87625 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3080000L});
+    public static final BitSet FOLLOW_rule__TeamDef__Group__8__Impl_in_rule__TeamDef__Group__87625 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3400000L});
     public static final BitSet FOLLOW_rule__TeamDef__Group__9_in_rule__TeamDef__Group__87628 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_8__0_in_rule__TeamDef__Group__8__Impl7655 = new BitSet(new long[]{0x0000000000000002L,0x0000000200000000L});
-    public static final BitSet FOLLOW_rule__TeamDef__Group__9__Impl_in_rule__TeamDef__Group__97686 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3080000L});
+    public static final BitSet FOLLOW_rule__TeamDef__Group__9__Impl_in_rule__TeamDef__Group__97686 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3400000L});
     public static final BitSet FOLLOW_rule__TeamDef__Group__10_in_rule__TeamDef__Group__97689 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_9__0_in_rule__TeamDef__Group__9__Impl7716 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__TeamDef__Group__10__Impl_in_rule__TeamDef__Group__107747 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3080000L});
+    public static final BitSet FOLLOW_rule__TeamDef__Group__10__Impl_in_rule__TeamDef__Group__107747 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3400000L});
     public static final BitSet FOLLOW_rule__TeamDef__Group__11_in_rule__TeamDef__Group__107750 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_10__0_in_rule__TeamDef__Group__10__Impl7777 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__TeamDef__Group__11__Impl_in_rule__TeamDef__Group__117808 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3080000L});
+    public static final BitSet FOLLOW_rule__TeamDef__Group__11__Impl_in_rule__TeamDef__Group__117808 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3400000L});
     public static final BitSet FOLLOW_rule__TeamDef__Group__12_in_rule__TeamDef__Group__117811 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_11__0_in_rule__TeamDef__Group__11__Impl7838 = new BitSet(new long[]{0x0000000000000002L,0x0000000800000000L});
-    public static final BitSet FOLLOW_rule__TeamDef__Group__12__Impl_in_rule__TeamDef__Group__127869 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3080000L});
+    public static final BitSet FOLLOW_rule__TeamDef__Group__12__Impl_in_rule__TeamDef__Group__127869 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3400000L});
     public static final BitSet FOLLOW_rule__TeamDef__Group__13_in_rule__TeamDef__Group__127872 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_12__0_in_rule__TeamDef__Group__12__Impl7899 = new BitSet(new long[]{0x0000000000000002L,0x0000001000000000L});
-    public static final BitSet FOLLOW_rule__TeamDef__Group__13__Impl_in_rule__TeamDef__Group__137930 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3080000L});
+    public static final BitSet FOLLOW_rule__TeamDef__Group__13__Impl_in_rule__TeamDef__Group__137930 = new BitSet(new long[]{0x0000000000000000L,0x0000003FE3400000L});
     public static final BitSet FOLLOW_rule__TeamDef__Group__14_in_rule__TeamDef__Group__137933 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_13__0_in_rule__TeamDef__Group__13__Impl7960 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group__14__Impl_in_rule__TeamDef__Group__147991 = new BitSet(new long[]{0x0000000000000002L});
@@ -35586,7 +35593,7 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_rule__TeamDef__PrivilegedAssignment_8_1_in_rule__TeamDef__Group_8__1__Impl8784 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_9__0__Impl_in_rule__TeamDef__Group_9__08818 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_9__1_in_rule__TeamDef__Group_9__08821 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_83_in_rule__TeamDef__Group_9__0__Impl8849 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_86_in_rule__TeamDef__Group_9__0__Impl8849 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_9__1__Impl_in_rule__TeamDef__Group_9__18880 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__WorkDefinitionAssignment_9_1_in_rule__TeamDef__Group_9__1__Impl8907 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_10__0__Impl_in_rule__TeamDef__Group_10__08941 = new BitSet(new long[]{0x0000000000000010L});
@@ -35607,18 +35614,18 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_rule__TeamDef__Group_13__0__Impl_in_rule__TeamDef__Group_13__09310 = new BitSet(new long[]{0x0000000000000000L,0x0000000000800000L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_13__1_in_rule__TeamDef__Group_13__09313 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_101_in_rule__TeamDef__Group_13__0__Impl9341 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__TeamDef__Group_13__1__Impl_in_rule__TeamDef__Group_13__19372 = new BitSet(new long[]{0x0000000000000000L,0x0000000000200000L});
+    public static final BitSet FOLLOW_rule__TeamDef__Group_13__1__Impl_in_rule__TeamDef__Group_13__19372 = new BitSet(new long[]{0x0000000000000000L,0x0000000000100000L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_13__2_in_rule__TeamDef__Group_13__19375 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_87_in_rule__TeamDef__Group_13__1__Impl9403 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_13__2__Impl_in_rule__TeamDef__Group_13__29434 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_13__3_in_rule__TeamDef__Group_13__29437 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__TeamDef__Group_13_2__0_in_rule__TeamDef__Group_13__2__Impl9466 = new BitSet(new long[]{0x0000000000000002L,0x0000000000200000L});
-    public static final BitSet FOLLOW_rule__TeamDef__Group_13_2__0_in_rule__TeamDef__Group_13__2__Impl9478 = new BitSet(new long[]{0x0000000000000002L,0x0000000000200000L});
+    public static final BitSet FOLLOW_rule__TeamDef__Group_13_2__0_in_rule__TeamDef__Group_13__2__Impl9466 = new BitSet(new long[]{0x0000000000000002L,0x0000000000100000L});
+    public static final BitSet FOLLOW_rule__TeamDef__Group_13_2__0_in_rule__TeamDef__Group_13__2__Impl9478 = new BitSet(new long[]{0x0000000000000002L,0x0000000000100000L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_13__3__Impl_in_rule__TeamDef__Group_13__39511 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_88_in_rule__TeamDef__Group_13__3__Impl9539 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_13_2__0__Impl_in_rule__TeamDef__Group_13_2__09578 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_13_2__1_in_rule__TeamDef__Group_13_2__09581 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_85_in_rule__TeamDef__Group_13_2__0__Impl9609 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_84_in_rule__TeamDef__Group_13_2__0__Impl9609 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__Group_13_2__1__Impl_in_rule__TeamDef__Group_13_2__19640 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__TeamDef__ChildrenAssignment_13_2_1_in_rule__TeamDef__Group_13_2__1__Impl9667 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ActionableItemDef__Group__0__Impl_in_rule__ActionableItemDef__Group__09701 = new BitSet(new long[]{0x0000000000000810L,0x0000000000800000L});
@@ -35704,18 +35711,18 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_rule__ActionableItemDef__Group_2_9__0__Impl_in_rule__ActionableItemDef__Group_2_9__011562 = new BitSet(new long[]{0x0000000000000000L,0x0000000000800000L});
     public static final BitSet FOLLOW_rule__ActionableItemDef__Group_2_9__1_in_rule__ActionableItemDef__Group_2_9__011565 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_101_in_rule__ActionableItemDef__Group_2_9__0__Impl11593 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ActionableItemDef__Group_2_9__1__Impl_in_rule__ActionableItemDef__Group_2_9__111624 = new BitSet(new long[]{0x0000000000000000L,0x0000000000400000L});
+    public static final BitSet FOLLOW_rule__ActionableItemDef__Group_2_9__1__Impl_in_rule__ActionableItemDef__Group_2_9__111624 = new BitSet(new long[]{0x0000000000000000L,0x0000000000200000L});
     public static final BitSet FOLLOW_rule__ActionableItemDef__Group_2_9__2_in_rule__ActionableItemDef__Group_2_9__111627 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_87_in_rule__ActionableItemDef__Group_2_9__1__Impl11655 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ActionableItemDef__Group_2_9__2__Impl_in_rule__ActionableItemDef__Group_2_9__211686 = new BitSet(new long[]{0x0000000000000000L,0x0000000001000000L});
     public static final BitSet FOLLOW_rule__ActionableItemDef__Group_2_9__3_in_rule__ActionableItemDef__Group_2_9__211689 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__ActionableItemDef__Group_2_9_2__0_in_rule__ActionableItemDef__Group_2_9__2__Impl11718 = new BitSet(new long[]{0x0000000000000002L,0x0000000000400000L});
-    public static final BitSet FOLLOW_rule__ActionableItemDef__Group_2_9_2__0_in_rule__ActionableItemDef__Group_2_9__2__Impl11730 = new BitSet(new long[]{0x0000000000000002L,0x0000000000400000L});
+    public static final BitSet FOLLOW_rule__ActionableItemDef__Group_2_9_2__0_in_rule__ActionableItemDef__Group_2_9__2__Impl11718 = new BitSet(new long[]{0x0000000000000002L,0x0000000000200000L});
+    public static final BitSet FOLLOW_rule__ActionableItemDef__Group_2_9_2__0_in_rule__ActionableItemDef__Group_2_9__2__Impl11730 = new BitSet(new long[]{0x0000000000000002L,0x0000000000200000L});
     public static final BitSet FOLLOW_rule__ActionableItemDef__Group_2_9__3__Impl_in_rule__ActionableItemDef__Group_2_9__311763 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_88_in_rule__ActionableItemDef__Group_2_9__3__Impl11791 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ActionableItemDef__Group_2_9_2__0__Impl_in_rule__ActionableItemDef__Group_2_9_2__011830 = new BitSet(new long[]{0x0000000000000010L});
     public static final BitSet FOLLOW_rule__ActionableItemDef__Group_2_9_2__1_in_rule__ActionableItemDef__Group_2_9_2__011833 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_86_in_rule__ActionableItemDef__Group_2_9_2__0__Impl11861 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_85_in_rule__ActionableItemDef__Group_2_9_2__0__Impl11861 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ActionableItemDef__Group_2_9_2__1__Impl_in_rule__ActionableItemDef__Group_2_9_2__111892 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__ActionableItemDef__ChildrenAssignment_2_9_2_1_in_rule__ActionableItemDef__Group_2_9_2__1__Impl11919 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__VersionDef__Group__0__Impl_in_rule__VersionDef__Group__011953 = new BitSet(new long[]{0x0000000000000000L,0x0000000000800000L});
@@ -36218,10 +36225,10 @@ public class InternalAtsDslParser extends AbstractInternalContentAssistParser {
     public static final BitSet FOLLOW_120_in_rule__Composite__Group_5__0__Impl23283 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__Composite__Group_5__1__Impl_in_rule__Composite__Group_5__123314 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__Composite__OptionsAssignment_5_1_in_rule__Composite__Group_5__1__Impl23341 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleWorkDef_in_rule__AtsDsl__WorkDefAssignment_0_123380 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleUserDef_in_rule__AtsDsl__UserDefAssignment_1_123411 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleTeamDef_in_rule__AtsDsl__TeamDefAssignment_2_123442 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleActionableItemDef_in_rule__AtsDsl__ActionableItemDefAssignment_3_123473 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleUserDef_in_rule__AtsDsl__UserDefAssignment_0_123380 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleTeamDef_in_rule__AtsDsl__TeamDefAssignment_1_123411 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleActionableItemDef_in_rule__AtsDsl__ActionableItemDefAssignment_2_123442 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleWorkDef_in_rule__AtsDsl__WorkDefAssignment_3_123473 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleUSER_DEF_REFERENCE_in_rule__UserDef__NameAssignment_023504 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleUserDefOption_in_rule__UserDef__UserDefOptionAssignment_123535 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleBooleanDef_in_rule__UserDef__ActiveAssignment_2_1_123566 = new BitSet(new long[]{0x0000000000000002L});

@@ -64,13 +64,13 @@ protected class ThisRootNode extends RootToken {
 /************ begin Rule AtsDsl ****************
  *
  * AtsDsl:
- * 	("workDefinition" workDef=WorkDef)? ("userDefinition" userDef+=UserDef)* ("teamDefinition" teamDef+=TeamDef)*
- * 	("actionableItem" actionableItemDef+=ActionableItemDef)*;
+ * 	("userDefinition" userDef+=UserDef)* ("teamDefinition" teamDef+=TeamDef)* ("actionableItem"
+ * 	actionableItemDef+=ActionableItemDef)* ("workDefinition" workDef+=WorkDef)*;
  *
  **/
 
-// ("workDefinition" workDef=WorkDef)? ("userDefinition" userDef+=UserDef)* ("teamDefinition" teamDef+=TeamDef)*
-// ("actionableItem" actionableItemDef+=ActionableItemDef)*
+// ("userDefinition" userDef+=UserDef)* ("teamDefinition" teamDef+=TeamDef)* ("actionableItem"
+// actionableItemDef+=ActionableItemDef)* ("workDefinition" workDef+=WorkDef)*
 protected class AtsDsl_Group extends GroupToken {
 	
 	public AtsDsl_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -102,7 +102,7 @@ protected class AtsDsl_Group extends GroupToken {
 
 }
 
-// ("workDefinition" workDef=WorkDef)?
+// ("userDefinition" userDef+=UserDef)*
 protected class AtsDsl_Group_0 extends GroupToken {
 	
 	public AtsDsl_Group_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -117,97 +117,7 @@ protected class AtsDsl_Group_0 extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new AtsDsl_WorkDefAssignment_0_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "workDefinition"
-protected class AtsDsl_WorkDefinitionKeyword_0_0 extends KeywordToken  {
-	
-	public AtsDsl_WorkDefinitionKeyword_0_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getAtsDslAccess().getWorkDefinitionKeyword_0_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index, inst);
-		}	
-	}
-
-}
-
-// workDef=WorkDef
-protected class AtsDsl_WorkDefAssignment_0_1 extends AssignmentToken  {
-	
-	public AtsDsl_WorkDefAssignment_0_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getAtsDslAccess().getWorkDefAssignment_0_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new WorkDef_Group(this, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("workDef",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("workDef");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
-			IEObjectConsumer param = createEObjectConsumer((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getWorkDefRule().getType().getClassifier())) {
-				type = AssignmentType.PARSER_RULE_CALL;
-				element = grammarAccess.getAtsDslAccess().getWorkDefWorkDefParserRuleCall_0_1_0(); 
-				consumed = obj;
-				return param;
-			}
-		}
-		return null;
-	}
-
-    @Override
-	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
-		if(value == inst.getEObject() && !inst.isConsumed()) return null;
-		switch(index) {
-			case 0: return new AtsDsl_WorkDefinitionKeyword_0_0(lastRuleCallOrigin, next, actIndex, consumed);
-			default: return null;
-		}	
-	}	
-}
-
-
-// ("userDefinition" userDef+=UserDef)*
-protected class AtsDsl_Group_1 extends GroupToken {
-	
-	public AtsDsl_Group_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getAtsDslAccess().getGroup_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new AtsDsl_UserDefAssignment_1_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new AtsDsl_UserDefAssignment_0_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -215,38 +125,37 @@ protected class AtsDsl_Group_1 extends GroupToken {
 }
 
 // "userDefinition"
-protected class AtsDsl_UserDefinitionKeyword_1_0 extends KeywordToken  {
+protected class AtsDsl_UserDefinitionKeyword_0_0 extends KeywordToken  {
 	
-	public AtsDsl_UserDefinitionKeyword_1_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public AtsDsl_UserDefinitionKeyword_0_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getAtsDslAccess().getUserDefinitionKeyword_1_0();
+		return grammarAccess.getAtsDslAccess().getUserDefinitionKeyword_0_0();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new AtsDsl_Group_1(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new AtsDsl_Group_0(lastRuleCallOrigin, this, 1, inst);
-			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index - 2, inst);
+			case 0: return new AtsDsl_Group_0(lastRuleCallOrigin, this, 0, inst);
+			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index - 1, inst);
 		}	
 	}
 
 }
 
 // userDef+=UserDef
-protected class AtsDsl_UserDefAssignment_1_1 extends AssignmentToken  {
+protected class AtsDsl_UserDefAssignment_0_1 extends AssignmentToken  {
 	
-	public AtsDsl_UserDefAssignment_1_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public AtsDsl_UserDefAssignment_0_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getAtsDslAccess().getUserDefAssignment_1_1();
+		return grammarAccess.getAtsDslAccess().getUserDefAssignment_0_1();
 	}
 
     @Override
@@ -265,7 +174,7 @@ protected class AtsDsl_UserDefAssignment_1_1 extends AssignmentToken  {
 			IEObjectConsumer param = createEObjectConsumer((EObject)value);
 			if(param.isInstanceOf(grammarAccess.getUserDefRule().getType().getClassifier())) {
 				type = AssignmentType.PARSER_RULE_CALL;
-				element = grammarAccess.getAtsDslAccess().getUserDefUserDefParserRuleCall_1_1_0(); 
+				element = grammarAccess.getAtsDslAccess().getUserDefUserDefParserRuleCall_0_1_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -277,7 +186,7 @@ protected class AtsDsl_UserDefAssignment_1_1 extends AssignmentToken  {
 	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
 		if(value == inst.getEObject() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new AtsDsl_UserDefinitionKeyword_1_0(lastRuleCallOrigin, next, actIndex, consumed);
+			case 0: return new AtsDsl_UserDefinitionKeyword_0_0(lastRuleCallOrigin, next, actIndex, consumed);
 			default: return null;
 		}	
 	}	
@@ -285,21 +194,21 @@ protected class AtsDsl_UserDefAssignment_1_1 extends AssignmentToken  {
 
 
 // ("teamDefinition" teamDef+=TeamDef)*
-protected class AtsDsl_Group_2 extends GroupToken {
+protected class AtsDsl_Group_1 extends GroupToken {
 	
-	public AtsDsl_Group_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public AtsDsl_Group_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Group getGrammarElement() {
-		return grammarAccess.getAtsDslAccess().getGroup_2();
+		return grammarAccess.getAtsDslAccess().getGroup_1();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new AtsDsl_TeamDefAssignment_2_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new AtsDsl_TeamDefAssignment_1_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -307,39 +216,38 @@ protected class AtsDsl_Group_2 extends GroupToken {
 }
 
 // "teamDefinition"
-protected class AtsDsl_TeamDefinitionKeyword_2_0 extends KeywordToken  {
+protected class AtsDsl_TeamDefinitionKeyword_1_0 extends KeywordToken  {
 	
-	public AtsDsl_TeamDefinitionKeyword_2_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public AtsDsl_TeamDefinitionKeyword_1_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getAtsDslAccess().getTeamDefinitionKeyword_2_0();
+		return grammarAccess.getAtsDslAccess().getTeamDefinitionKeyword_1_0();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new AtsDsl_Group_2(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new AtsDsl_Group_1(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new AtsDsl_Group_0(lastRuleCallOrigin, this, 2, inst);
-			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index - 3, inst);
+			case 0: return new AtsDsl_Group_1(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new AtsDsl_Group_0(lastRuleCallOrigin, this, 1, inst);
+			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index - 2, inst);
 		}	
 	}
 
 }
 
 // teamDef+=TeamDef
-protected class AtsDsl_TeamDefAssignment_2_1 extends AssignmentToken  {
+protected class AtsDsl_TeamDefAssignment_1_1 extends AssignmentToken  {
 	
-	public AtsDsl_TeamDefAssignment_2_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public AtsDsl_TeamDefAssignment_1_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getAtsDslAccess().getTeamDefAssignment_2_1();
+		return grammarAccess.getAtsDslAccess().getTeamDefAssignment_1_1();
 	}
 
     @Override
@@ -358,7 +266,7 @@ protected class AtsDsl_TeamDefAssignment_2_1 extends AssignmentToken  {
 			IEObjectConsumer param = createEObjectConsumer((EObject)value);
 			if(param.isInstanceOf(grammarAccess.getTeamDefRule().getType().getClassifier())) {
 				type = AssignmentType.PARSER_RULE_CALL;
-				element = grammarAccess.getAtsDslAccess().getTeamDefTeamDefParserRuleCall_2_1_0(); 
+				element = grammarAccess.getAtsDslAccess().getTeamDefTeamDefParserRuleCall_1_1_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -370,7 +278,7 @@ protected class AtsDsl_TeamDefAssignment_2_1 extends AssignmentToken  {
 	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
 		if(value == inst.getEObject() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new AtsDsl_TeamDefinitionKeyword_2_0(lastRuleCallOrigin, next, actIndex, consumed);
+			case 0: return new AtsDsl_TeamDefinitionKeyword_1_0(lastRuleCallOrigin, next, actIndex, consumed);
 			default: return null;
 		}	
 	}	
@@ -378,21 +286,21 @@ protected class AtsDsl_TeamDefAssignment_2_1 extends AssignmentToken  {
 
 
 // ("actionableItem" actionableItemDef+=ActionableItemDef)*
-protected class AtsDsl_Group_3 extends GroupToken {
+protected class AtsDsl_Group_2 extends GroupToken {
 	
-	public AtsDsl_Group_3(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public AtsDsl_Group_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Group getGrammarElement() {
-		return grammarAccess.getAtsDslAccess().getGroup_3();
+		return grammarAccess.getAtsDslAccess().getGroup_2();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new AtsDsl_ActionableItemDefAssignment_3_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new AtsDsl_ActionableItemDefAssignment_2_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -400,40 +308,39 @@ protected class AtsDsl_Group_3 extends GroupToken {
 }
 
 // "actionableItem"
-protected class AtsDsl_ActionableItemKeyword_3_0 extends KeywordToken  {
+protected class AtsDsl_ActionableItemKeyword_2_0 extends KeywordToken  {
 	
-	public AtsDsl_ActionableItemKeyword_3_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public AtsDsl_ActionableItemKeyword_2_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Keyword getGrammarElement() {
-		return grammarAccess.getAtsDslAccess().getActionableItemKeyword_3_0();
+		return grammarAccess.getAtsDslAccess().getActionableItemKeyword_2_0();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new AtsDsl_Group_3(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new AtsDsl_Group_2(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new AtsDsl_Group_1(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new AtsDsl_Group_0(lastRuleCallOrigin, this, 3, inst);
-			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index - 4, inst);
+			case 0: return new AtsDsl_Group_2(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new AtsDsl_Group_1(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new AtsDsl_Group_0(lastRuleCallOrigin, this, 2, inst);
+			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index - 3, inst);
 		}	
 	}
 
 }
 
 // actionableItemDef+=ActionableItemDef
-protected class AtsDsl_ActionableItemDefAssignment_3_1 extends AssignmentToken  {
+protected class AtsDsl_ActionableItemDefAssignment_2_1 extends AssignmentToken  {
 	
-	public AtsDsl_ActionableItemDefAssignment_3_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public AtsDsl_ActionableItemDefAssignment_2_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getAtsDslAccess().getActionableItemDefAssignment_3_1();
+		return grammarAccess.getAtsDslAccess().getActionableItemDefAssignment_2_1();
 	}
 
     @Override
@@ -452,7 +359,7 @@ protected class AtsDsl_ActionableItemDefAssignment_3_1 extends AssignmentToken  
 			IEObjectConsumer param = createEObjectConsumer((EObject)value);
 			if(param.isInstanceOf(grammarAccess.getActionableItemDefRule().getType().getClassifier())) {
 				type = AssignmentType.PARSER_RULE_CALL;
-				element = grammarAccess.getAtsDslAccess().getActionableItemDefActionableItemDefParserRuleCall_3_1_0(); 
+				element = grammarAccess.getAtsDslAccess().getActionableItemDefActionableItemDefParserRuleCall_2_1_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -464,7 +371,101 @@ protected class AtsDsl_ActionableItemDefAssignment_3_1 extends AssignmentToken  
 	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
 		if(value == inst.getEObject() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new AtsDsl_ActionableItemKeyword_3_0(lastRuleCallOrigin, next, actIndex, consumed);
+			case 0: return new AtsDsl_ActionableItemKeyword_2_0(lastRuleCallOrigin, next, actIndex, consumed);
+			default: return null;
+		}	
+	}	
+}
+
+
+// ("workDefinition" workDef+=WorkDef)*
+protected class AtsDsl_Group_3 extends GroupToken {
+	
+	public AtsDsl_Group_3(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getAtsDslAccess().getGroup_3();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new AtsDsl_WorkDefAssignment_3_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "workDefinition"
+protected class AtsDsl_WorkDefinitionKeyword_3_0 extends KeywordToken  {
+	
+	public AtsDsl_WorkDefinitionKeyword_3_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getAtsDslAccess().getWorkDefinitionKeyword_3_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new AtsDsl_Group_3(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new AtsDsl_Group_2(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new AtsDsl_Group_1(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new AtsDsl_Group_0(lastRuleCallOrigin, this, 3, inst);
+			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index - 4, inst);
+		}	
+	}
+
+}
+
+// workDef+=WorkDef
+protected class AtsDsl_WorkDefAssignment_3_1 extends AssignmentToken  {
+	
+	public AtsDsl_WorkDefAssignment_3_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getAtsDslAccess().getWorkDefAssignment_3_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new WorkDef_Group(this, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("workDef",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("workDef");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
+			IEObjectConsumer param = createEObjectConsumer((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getWorkDefRule().getType().getClassifier())) {
+				type = AssignmentType.PARSER_RULE_CALL;
+				element = grammarAccess.getAtsDslAccess().getWorkDefWorkDefParserRuleCall_3_1_0(); 
+				consumed = obj;
+				return param;
+			}
+		}
+		return null;
+	}
+
+    @Override
+	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
+		if(value == inst.getEObject() && !inst.isConsumed()) return null;
+		switch(index) {
+			case 0: return new AtsDsl_WorkDefinitionKeyword_3_0(lastRuleCallOrigin, next, actIndex, consumed);
 			default: return null;
 		}	
 	}	

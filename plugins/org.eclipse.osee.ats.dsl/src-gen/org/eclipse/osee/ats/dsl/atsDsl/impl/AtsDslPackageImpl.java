@@ -323,7 +323,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getAtsDsl_WorkDef()
+  public EReference getAtsDsl_UserDef()
   {
     return (EReference)atsDslEClass.getEStructuralFeatures().get(0);
   }
@@ -333,7 +333,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getAtsDsl_UserDef()
+  public EReference getAtsDsl_TeamDef()
   {
     return (EReference)atsDslEClass.getEStructuralFeatures().get(1);
   }
@@ -343,7 +343,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getAtsDsl_TeamDef()
+  public EReference getAtsDsl_ActionableItemDef()
   {
     return (EReference)atsDslEClass.getEStructuralFeatures().get(2);
   }
@@ -353,7 +353,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getAtsDsl_ActionableItemDef()
+  public EReference getAtsDsl_WorkDef()
   {
     return (EReference)atsDslEClass.getEStructuralFeatures().get(3);
   }
@@ -1679,10 +1679,10 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
 
     // Create classes and their features
     atsDslEClass = createEClass(ATS_DSL);
-    createEReference(atsDslEClass, ATS_DSL__WORK_DEF);
     createEReference(atsDslEClass, ATS_DSL__USER_DEF);
     createEReference(atsDslEClass, ATS_DSL__TEAM_DEF);
     createEReference(atsDslEClass, ATS_DSL__ACTIONABLE_ITEM_DEF);
+    createEReference(atsDslEClass, ATS_DSL__WORK_DEF);
 
     userDefEClass = createEClass(USER_DEF);
     createEAttribute(userDefEClass, USER_DEF__NAME);
@@ -1879,10 +1879,10 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
 
     // Initialize classes and features; add operations and parameters
     initEClass(atsDslEClass, AtsDsl.class, "AtsDsl", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getAtsDsl_WorkDef(), this.getWorkDef(), null, "workDef", null, 0, 1, AtsDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAtsDsl_UserDef(), this.getUserDef(), null, "userDef", null, 0, -1, AtsDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAtsDsl_TeamDef(), this.getTeamDef(), null, "teamDef", null, 0, -1, AtsDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAtsDsl_ActionableItemDef(), this.getActionableItemDef(), null, "actionableItemDef", null, 0, -1, AtsDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getAtsDsl_WorkDef(), this.getWorkDef(), null, "workDef", null, 0, -1, AtsDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(userDefEClass, UserDef.class, "UserDef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getUserDef_Name(), ecorePackage.getEString(), "name", null, 0, 1, UserDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

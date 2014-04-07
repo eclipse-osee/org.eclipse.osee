@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.LayoutType;
 import org.eclipse.osee.ats.dsl.atsDsl.StateDef;
 import org.eclipse.osee.ats.dsl.atsDsl.ToState;
 import org.eclipse.osee.ats.dsl.atsDsl.WidgetDef;
+import org.eclipse.osee.ats.dsl.atsDsl.WorkDef;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.xtext.validation.Check;
@@ -44,14 +45,16 @@ public class AtsDslJavaValidator extends AbstractAtsDslJavaValidator {
          return;
       }
       int weight = 0;
-      for (StateDef state : atsDsl.getWorkDef().getStates()) {
-         weight += state.getPercentWeight();
-      }
-      if (weight != 0 && weight != 100) {
-         for (StateDef state : atsDsl.getWorkDef().getStates()) {
-            String message = String.format("State Percent Weights must add to 0 or 100; currently [%s].", weight);
-            error(message, state, AtsDslPackage.Literals.STATE_DEF__PERCENT_WEIGHT,
-               AtsDslPackage.STATE_DEF__PERCENT_WEIGHT, "percent_weights");
+      for (WorkDef workDef : atsDsl.getWorkDef()) {
+         for (StateDef state : workDef.getStates()) {
+            weight += state.getPercentWeight();
+         }
+         if (weight != 0 && weight != 100) {
+            for (StateDef state : workDef.getStates()) {
+               String message = String.format("State Percent Weights must add to 0 or 100; currently [%s].", weight);
+               error(message, state, AtsDslPackage.Literals.STATE_DEF__PERCENT_WEIGHT,
+                  AtsDslPackage.STATE_DEF__PERCENT_WEIGHT, "percent_weights");
+            }
          }
       }
    }
@@ -62,13 +65,15 @@ public class AtsDslJavaValidator extends AbstractAtsDslJavaValidator {
          return;
       }
       Set<Integer> ordinals = new HashSet<Integer>();
-      for (StateDef state : atsDsl.getWorkDef().getStates()) {
-         if (ordinals.contains(state.getOrdinal())) {
-            String message = String.format("Ordinals must be unique [%s].", state.getOrdinal());
-            error(message, state, AtsDslPackage.Literals.STATE_DEF__ORDINAL, AtsDslPackage.STATE_DEF__ORDINAL,
-               "unique_ordinals");
-         } else {
-            ordinals.add(state.getOrdinal());
+      for (WorkDef workDef : atsDsl.getWorkDef()) {
+         for (StateDef state : workDef.getStates()) {
+            if (ordinals.contains(state.getOrdinal())) {
+               String message = String.format("Ordinals must be unique [%s].", state.getOrdinal());
+               error(message, state, AtsDslPackage.Literals.STATE_DEF__ORDINAL, AtsDslPackage.STATE_DEF__ORDINAL,
+                  "unique_ordinals");
+            } else {
+               ordinals.add(state.getOrdinal());
+            }
          }
       }
    }
@@ -78,25 +83,27 @@ public class AtsDslJavaValidator extends AbstractAtsDslJavaValidator {
       if (atsDsl.getWorkDef() == null) {
          return;
       }
-      for (StateDef state : atsDsl.getWorkDef().getStates()) {
-         ToState asDefaultToState = null;
-         for (ToState toState : state.getTransitionStates()) {
-            if (toState.getOptions().contains("AsDefault")) {
-               if (asDefaultToState != null) {
-                  String message =
-                     String.format("Only One AsDefault state allowed [%s].", toState.getState().getName());
-                  error(message, toState, AtsDslPackage.Literals.STATE_DEF__TRANSITION_STATES,
-                     AtsDslPackage.STATE_DEF__TRANSITION_STATES, "single_as_default");
-               } else {
-                  asDefaultToState = toState;
+      for (WorkDef workDef : atsDsl.getWorkDef()) {
+         for (StateDef state : workDef.getStates()) {
+            ToState asDefaultToState = null;
+            for (ToState toState : state.getTransitionStates()) {
+               if (toState.getOptions().contains("AsDefault")) {
+                  if (asDefaultToState != null) {
+                     String message =
+                        String.format("Only One AsDefault state allowed [%s].", toState.getState().getName());
+                     error(message, toState, AtsDslPackage.Literals.STATE_DEF__TRANSITION_STATES,
+                        AtsDslPackage.STATE_DEF__TRANSITION_STATES, "single_as_default");
+                  } else {
+                     asDefaultToState = toState;
+                  }
                }
-            }
-            if (toState.getState() != null && toState.getState().getName() != null && toState.getState().getName().equals(
-               state.getName())) {
-               String message =
-                  String.format("State should not transition to itself [%s].", toState.getState().getName());
-               error(message, toState, AtsDslPackage.Literals.STATE_DEF__TRANSITION_STATES,
-                  AtsDslPackage.STATE_DEF__TRANSITION_STATES, "no_transition_to_self");
+               if (toState.getState() != null && toState.getState().getName() != null && toState.getState().getName().equals(
+                  state.getName())) {
+                  String message =
+                     String.format("State should not transition to itself [%s].", toState.getState().getName());
+                  error(message, toState, AtsDslPackage.Literals.STATE_DEF__TRANSITION_STATES,
+                     AtsDslPackage.STATE_DEF__TRANSITION_STATES, "no_transition_to_self");
+               }
             }
          }
       }
@@ -107,15 +114,19 @@ public class AtsDslJavaValidator extends AbstractAtsDslJavaValidator {
       if (atsDsl.getWorkDef() == null) {
          return;
       }
-      for (WidgetDef widget : atsDsl.getWorkDef().getWidgetDefs()) {
-         String attributeName = widget.getAttributeName();
-         validateAttributeName(attributeName, widget, AtsDslPackage.Literals.WIDGET_DEF__ATTRIBUTE_NAME,
-            AtsDslPackage.WIDGET_DEF__ATTRIBUTE_NAME);
+      for (WorkDef workDef : atsDsl.getWorkDef()) {
+         for (WidgetDef widget : workDef.getWidgetDefs()) {
+            String attributeName = widget.getAttributeName();
+            validateAttributeName(attributeName, widget, AtsDslPackage.Literals.WIDGET_DEF__ATTRIBUTE_NAME,
+               AtsDslPackage.WIDGET_DEF__ATTRIBUTE_NAME);
+         }
       }
-      for (StateDef state : atsDsl.getWorkDef().getStates()) {
-         LayoutType layout = state.getLayout();
-         if (layout instanceof LayoutDef) {
-            validateAttributeNames(((LayoutDef) layout).getLayoutItems());
+      for (WorkDef workDef : atsDsl.getWorkDef()) {
+         for (StateDef state : workDef.getStates()) {
+            LayoutType layout = state.getLayout();
+            if (layout instanceof LayoutDef) {
+               validateAttributeNames(((LayoutDef) layout).getLayoutItems());
+            }
          }
       }
    }

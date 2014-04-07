@@ -22,10 +22,10 @@
       <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//ReviewBlockingType/Commit"/>
     </genEnums>
     <genClasses ecoreClass="AtsDsl.ecore#//AtsDsl">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/workDef"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/userDef"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/teamDef"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/actionableItemDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/workDef"/>
     </genClasses>
     <genClasses ecoreClass="AtsDsl.ecore#//UserDef">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//UserDef/name"/>

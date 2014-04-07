@@ -56,6 +56,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserByUserId;
 import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
 import org.eclipse.osee.ats.dsl.atsDsl.WidgetDef;
 import org.eclipse.osee.ats.dsl.atsDsl.WidgetRef;
+import org.eclipse.osee.ats.dsl.atsDsl.WorkDef;
 import org.eclipse.osee.ats.impl.internal.workdef.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.impl.internal.workdef.model.DecisionReviewDefinition;
 import org.eclipse.osee.ats.impl.internal.workdef.model.DecisionReviewOption;
@@ -86,118 +87,120 @@ public class ConvertAtsDslToWorkDefinition {
       this.userService = userService;
    }
 
-   public IAtsWorkDefinition convert() {
-      if (atsDsl.getWorkDef() == null) {
-         return null;
-      }
-      WorkDefinition workDef = new WorkDefinition(Strings.unquote(atsDsl.getWorkDef().getName()));
-      workDef.setId(atsDsl.getWorkDef().getId().iterator().next());
+   public Collection<IAtsWorkDefinition> convert() {
+      List<IAtsWorkDefinition> workDefs = new ArrayList<IAtsWorkDefinition>();
+      for (WorkDef dslWorkDef : atsDsl.getWorkDef()) {
+         WorkDefinition workDef = new WorkDefinition(Strings.unquote(dslWorkDef.getName()));
+         workDef.setId(dslWorkDef.getId().iterator().next());
 
-      List<IAtsWidgetDefinition> widgetDefs = retrieveWigetDefs(atsDsl, name);
-      Map<IAtsStateDefinition, String> copyLayoutFromMap = new HashMap<IAtsStateDefinition, String>();
+         List<IAtsWidgetDefinition> widgetDefs = retrieveWigetDefs(atsDsl, dslWorkDef, name);
+         Map<IAtsStateDefinition, String> copyLayoutFromMap = new HashMap<IAtsStateDefinition, String>();
 
-      // Process and define all states
-      for (StateDef dslState : atsDsl.getWorkDef().getStates()) {
-         String stateName = Strings.unquote(dslState.getName());
-         StateDefinition stateDef = new StateDefinition(stateName);
-         workDef.addState(stateDef);
+         // Process and define all states
+         for (StateDef dslState : dslWorkDef.getStates()) {
+            String stateName = Strings.unquote(dslState.getName());
+            StateDefinition stateDef = new StateDefinition(stateName);
+            workDef.addState(stateDef);
 
-         stateDef.setWorkDefinition(workDef);
+            stateDef.setWorkDefinition(workDef);
 
-         // Process state settings
-         stateDef.setOrdinal(dslState.getOrdinal());
-         StateType stateType = StateType.Working;
-         try {
-            stateType = StateType.valueOf(dslState.getPageType());
-         } catch (IllegalArgumentException ex) {
-            // do nothing
-         }
-         stateDef.setStateType(stateType);
-         stateDef.setStateWeight(dslState.getPercentWeight());
-         stateDef.setRecommendedPercentComplete(dslState.getRecommendedPercentComplete());
-         StateColor color = StateColor.BLACK;
-         try {
-            if (Strings.isValid(dslState.getColor())) {
-               color = StateColor.valueOf(dslState.getColor());
+            // Process state settings
+            stateDef.setOrdinal(dslState.getOrdinal());
+            StateType stateType = StateType.Working;
+            try {
+               stateType = StateType.valueOf(dslState.getPageType());
+            } catch (IllegalArgumentException ex) {
+               // do nothing
             }
-         } catch (IllegalArgumentException ex) {
-            // do nothing
-         }
-         stateDef.setColor(color);
-
-         // Process widgets
-         LayoutType layout = dslState.getLayout();
-         if (layout instanceof LayoutDef) {
-            processLayoutItems(name, widgetDefs, stateDef.getLayoutItems(), ((LayoutDef) layout).getLayoutItems());
-         } else if (layout instanceof LayoutCopy) {
-            copyLayoutFromMap.put(stateDef, Strings.unquote(((LayoutCopy) layout).getState().getName()));
-         }
-
-         // process rules
-         for (String ruleName : dslState.getRules()) {
-            stateDef.addRule(Strings.unquote(ruleName));
-         }
-
-      }
-
-      // Process States needing layoutCopy
-      for (Entry<IAtsStateDefinition, String> entry : copyLayoutFromMap.entrySet()) {
-         IAtsStateDefinition fromStateDef = workDef.getStateByName(entry.getValue());
-         IAtsStateDefinition toStateDef = entry.getKey();
-         for (IAtsLayoutItem item : fromStateDef.getLayoutItems()) {
-            toStateDef.getLayoutItems().add(item);
-         }
-      }
-
-      // Process and define all transitions
-      for (StateDef dslState : atsDsl.getWorkDef().getStates()) {
-         StateDefinition stateDef = (StateDefinition) workDef.getStateByName(Strings.unquote(dslState.getName()));
-         // Process transitions
-         for (ToState dslToState : dslState.getTransitionStates()) {
-            IAtsStateDefinition toStateDef = workDef.getStateByName(Strings.unquote(dslToState.getState().getName()));
-            stateDef.getToStates().add(toStateDef);
-            for (String dslTransOption : dslToState.getOptions()) {
-               if ("AsDefault".equals(dslTransOption)) {
-                  stateDef.setDefaultToState(toStateDef);
+            stateDef.setStateType(stateType);
+            stateDef.setStateWeight(dslState.getPercentWeight());
+            stateDef.setRecommendedPercentComplete(dslState.getRecommendedPercentComplete());
+            StateColor color = StateColor.BLACK;
+            try {
+               if (Strings.isValid(dslState.getColor())) {
+                  color = StateColor.valueOf(dslState.getColor());
                }
-               if ("OverrideAttributeValidation".equals(dslTransOption)) {
-                  stateDef.getOverrideAttributeValidationStates().add(toStateDef);
+            } catch (IllegalArgumentException ex) {
+               // do nothing
+            }
+            stateDef.setColor(color);
+
+            // Process widgets
+            LayoutType layout = dslState.getLayout();
+            if (layout instanceof LayoutDef) {
+               processLayoutItems(name, widgetDefs, stateDef.getLayoutItems(), ((LayoutDef) layout).getLayoutItems());
+            } else if (layout instanceof LayoutCopy) {
+               copyLayoutFromMap.put(stateDef, Strings.unquote(((LayoutCopy) layout).getState().getName()));
+            }
+
+            // process rules
+            for (String ruleName : dslState.getRules()) {
+               stateDef.addRule(Strings.unquote(ruleName));
+            }
+
+         }
+
+         // Process States needing layoutCopy
+         for (Entry<IAtsStateDefinition, String> entry : copyLayoutFromMap.entrySet()) {
+            IAtsStateDefinition fromStateDef = workDef.getStateByName(entry.getValue());
+            IAtsStateDefinition toStateDef = entry.getKey();
+            for (IAtsLayoutItem item : fromStateDef.getLayoutItems()) {
+               toStateDef.getLayoutItems().add(item);
+            }
+         }
+
+         // Process and define all transitions
+         for (StateDef dslState : dslWorkDef.getStates()) {
+            StateDefinition stateDef = (StateDefinition) workDef.getStateByName(Strings.unquote(dslState.getName()));
+            // Process transitions
+            for (ToState dslToState : dslState.getTransitionStates()) {
+               IAtsStateDefinition toStateDef =
+                  workDef.getStateByName(Strings.unquote(dslToState.getState().getName()));
+               stateDef.getToStates().add(toStateDef);
+               for (String dslTransOption : dslToState.getOptions()) {
+                  if ("AsDefault".equals(dslTransOption)) {
+                     stateDef.setDefaultToState(toStateDef);
+                  }
+                  if ("OverrideAttributeValidation".equals(dslTransOption)) {
+                     stateDef.getOverrideAttributeValidationStates().add(toStateDef);
+                  }
                }
             }
          }
-      }
 
-      // Process all decision reviews
-      for (StateDef dslState : atsDsl.getWorkDef().getStates()) {
-         IAtsStateDefinition stateDef = workDef.getStateByName(Strings.unquote(dslState.getName()));
-         for (DecisionReviewRef dslRevRef : dslState.getDecisionReviews()) {
-            DecisionReviewDef dslRevDef = dslRevRef.getDecisionReview();
-            DecisionReviewDefinition revDef = (DecisionReviewDefinition) convertDslDecisionReview(dslRevDef);
-            if (!Strings.isValid(revDef.getRelatedToState())) {
-               revDef.setRelatedToState(stateDef.getName());
+         // Process all decision reviews
+         for (StateDef dslState : dslWorkDef.getStates()) {
+            IAtsStateDefinition stateDef = workDef.getStateByName(Strings.unquote(dslState.getName()));
+            for (DecisionReviewRef dslRevRef : dslState.getDecisionReviews()) {
+               DecisionReviewDef dslRevDef = dslRevRef.getDecisionReview();
+               DecisionReviewDefinition revDef = (DecisionReviewDefinition) convertDslDecisionReview(dslRevDef);
+               if (!Strings.isValid(revDef.getRelatedToState())) {
+                  revDef.setRelatedToState(stateDef.getName());
+               }
+               stateDef.getDecisionReviews().add(revDef);
             }
-            stateDef.getDecisionReviews().add(revDef);
          }
-      }
 
-      // Process all peer reviews
-      for (StateDef dslState : atsDsl.getWorkDef().getStates()) {
-         IAtsStateDefinition stateDef = workDef.getStateByName(Strings.unquote(dslState.getName()));
-         for (PeerReviewRef peerRevRef : dslState.getPeerReviews()) {
-            PeerReviewDef dslRevDef = peerRevRef.getPeerReview();
-            PeerReviewDefinition revDef = (PeerReviewDefinition) convertDslPeerReview(dslRevDef);
-            if (!Strings.isValid(revDef.getRelatedToState())) {
-               revDef.setRelatedToState(stateDef.getName());
+         // Process all peer reviews
+         for (StateDef dslState : dslWorkDef.getStates()) {
+            IAtsStateDefinition stateDef = workDef.getStateByName(Strings.unquote(dslState.getName()));
+            for (PeerReviewRef peerRevRef : dslState.getPeerReviews()) {
+               PeerReviewDef dslRevDef = peerRevRef.getPeerReview();
+               PeerReviewDefinition revDef = (PeerReviewDefinition) convertDslPeerReview(dslRevDef);
+               if (!Strings.isValid(revDef.getRelatedToState())) {
+                  revDef.setRelatedToState(stateDef.getName());
+               }
+               stateDef.getPeerReviews().add(revDef);
             }
-            stateDef.getPeerReviews().add(revDef);
          }
-      }
 
-      // Set the start state
-      workDef.setStartState(workDef.getStateByName(Strings.unquote(atsDsl.getWorkDef().getStartState().getName())));
-      workDef.setName(name);
-      workDef.setId(name);
-      return workDef;
+         // Set the start state
+         workDef.setStartState(workDef.getStateByName(Strings.unquote(dslWorkDef.getStartState().getName())));
+         workDef.setName(name);
+         workDef.setId(name);
+         workDefs.add(workDef);
+      }
+      return workDefs;
    }
 
    private IAtsDecisionReviewDefinition convertDslDecisionReview(DecisionReviewDef dslRevDef) {
@@ -360,9 +363,9 @@ public class ConvertAtsDslToWorkDefinition {
       return userIds;
    }
 
-   private List<IAtsWidgetDefinition> retrieveWigetDefs(AtsDsl atsDsl, String SHEET_NAME) {
+   private List<IAtsWidgetDefinition> retrieveWigetDefs(AtsDsl atsDsl, WorkDef dslWorkDef, String SHEET_NAME) {
       List<IAtsWidgetDefinition> widgetDefs = new ArrayList<IAtsWidgetDefinition>();
-      for (WidgetDef dslWidgetDef : atsDsl.getWorkDef().getWidgetDefs()) {
+      for (WidgetDef dslWidgetDef : dslWorkDef.getWidgetDefs()) {
          IAtsWidgetDefinition widgetDef = convertDslWidgetDef(dslWidgetDef, SHEET_NAME);
          widgetDefs.add(widgetDef);
       }

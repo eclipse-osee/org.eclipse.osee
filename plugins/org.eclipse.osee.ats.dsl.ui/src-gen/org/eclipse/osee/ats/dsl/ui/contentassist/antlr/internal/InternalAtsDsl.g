@@ -2457,7 +2457,7 @@ rule__AtsDsl__Group__0__Impl
 :
 (
 { before(grammarAccess.getAtsDslAccess().getGroup_0()); }
-(rule__AtsDsl__Group_0__0)?
+(rule__AtsDsl__Group_0__0)*
 { after(grammarAccess.getAtsDslAccess().getGroup_0()); }
 )
 
@@ -2579,11 +2579,11 @@ rule__AtsDsl__Group_0__0__Impl
     }
 :
 (
-{ before(grammarAccess.getAtsDslAccess().getWorkDefinitionKeyword_0_0()); }
+{ before(grammarAccess.getAtsDslAccess().getUserDefinitionKeyword_0_0()); }
 
-	'workDefinition' 
+	'userDefinition' 
 
-{ after(grammarAccess.getAtsDslAccess().getWorkDefinitionKeyword_0_0()); }
+{ after(grammarAccess.getAtsDslAccess().getUserDefinitionKeyword_0_0()); }
 )
 
 ;
@@ -2609,9 +2609,9 @@ rule__AtsDsl__Group_0__1__Impl
     }
 :
 (
-{ before(grammarAccess.getAtsDslAccess().getWorkDefAssignment_0_1()); }
-(rule__AtsDsl__WorkDefAssignment_0_1)
-{ after(grammarAccess.getAtsDslAccess().getWorkDefAssignment_0_1()); }
+{ before(grammarAccess.getAtsDslAccess().getUserDefAssignment_0_1()); }
+(rule__AtsDsl__UserDefAssignment_0_1)
+{ after(grammarAccess.getAtsDslAccess().getUserDefAssignment_0_1()); }
 )
 
 ;
@@ -2642,11 +2642,11 @@ rule__AtsDsl__Group_1__0__Impl
     }
 :
 (
-{ before(grammarAccess.getAtsDslAccess().getUserDefinitionKeyword_1_0()); }
+{ before(grammarAccess.getAtsDslAccess().getTeamDefinitionKeyword_1_0()); }
 
-	'userDefinition' 
+	'teamDefinition' 
 
-{ after(grammarAccess.getAtsDslAccess().getUserDefinitionKeyword_1_0()); }
+{ after(grammarAccess.getAtsDslAccess().getTeamDefinitionKeyword_1_0()); }
 )
 
 ;
@@ -2672,9 +2672,9 @@ rule__AtsDsl__Group_1__1__Impl
     }
 :
 (
-{ before(grammarAccess.getAtsDslAccess().getUserDefAssignment_1_1()); }
-(rule__AtsDsl__UserDefAssignment_1_1)
-{ after(grammarAccess.getAtsDslAccess().getUserDefAssignment_1_1()); }
+{ before(grammarAccess.getAtsDslAccess().getTeamDefAssignment_1_1()); }
+(rule__AtsDsl__TeamDefAssignment_1_1)
+{ after(grammarAccess.getAtsDslAccess().getTeamDefAssignment_1_1()); }
 )
 
 ;
@@ -2705,11 +2705,11 @@ rule__AtsDsl__Group_2__0__Impl
     }
 :
 (
-{ before(grammarAccess.getAtsDslAccess().getTeamDefinitionKeyword_2_0()); }
+{ before(grammarAccess.getAtsDslAccess().getActionableItemKeyword_2_0()); }
 
-	'teamDefinition' 
+	'actionableItem' 
 
-{ after(grammarAccess.getAtsDslAccess().getTeamDefinitionKeyword_2_0()); }
+{ after(grammarAccess.getAtsDslAccess().getActionableItemKeyword_2_0()); }
 )
 
 ;
@@ -2735,9 +2735,9 @@ rule__AtsDsl__Group_2__1__Impl
     }
 :
 (
-{ before(grammarAccess.getAtsDslAccess().getTeamDefAssignment_2_1()); }
-(rule__AtsDsl__TeamDefAssignment_2_1)
-{ after(grammarAccess.getAtsDslAccess().getTeamDefAssignment_2_1()); }
+{ before(grammarAccess.getAtsDslAccess().getActionableItemDefAssignment_2_1()); }
+(rule__AtsDsl__ActionableItemDefAssignment_2_1)
+{ after(grammarAccess.getAtsDslAccess().getActionableItemDefAssignment_2_1()); }
 )
 
 ;
@@ -2768,11 +2768,11 @@ rule__AtsDsl__Group_3__0__Impl
     }
 :
 (
-{ before(grammarAccess.getAtsDslAccess().getActionableItemKeyword_3_0()); }
+{ before(grammarAccess.getAtsDslAccess().getWorkDefinitionKeyword_3_0()); }
 
-	'actionableItem' 
+	'workDefinition' 
 
-{ after(grammarAccess.getAtsDslAccess().getActionableItemKeyword_3_0()); }
+{ after(grammarAccess.getAtsDslAccess().getWorkDefinitionKeyword_3_0()); }
 )
 
 ;
@@ -2798,9 +2798,9 @@ rule__AtsDsl__Group_3__1__Impl
     }
 :
 (
-{ before(grammarAccess.getAtsDslAccess().getActionableItemDefAssignment_3_1()); }
-(rule__AtsDsl__ActionableItemDefAssignment_3_1)
-{ after(grammarAccess.getAtsDslAccess().getActionableItemDefAssignment_3_1()); }
+{ before(grammarAccess.getAtsDslAccess().getWorkDefAssignment_3_1()); }
+(rule__AtsDsl__WorkDefAssignment_3_1)
+{ after(grammarAccess.getAtsDslAccess().getWorkDefAssignment_3_1()); }
 )
 
 ;
@@ -11567,14 +11567,14 @@ finally {
 
 
 
-rule__AtsDsl__WorkDefAssignment_0_1
+rule__AtsDsl__UserDefAssignment_0_1
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getAtsDslAccess().getWorkDefWorkDefParserRuleCall_0_1_0()); }
-	ruleWorkDef{ after(grammarAccess.getAtsDslAccess().getWorkDefWorkDefParserRuleCall_0_1_0()); }
+{ before(grammarAccess.getAtsDslAccess().getUserDefUserDefParserRuleCall_0_1_0()); }
+	ruleUserDef{ after(grammarAccess.getAtsDslAccess().getUserDefUserDefParserRuleCall_0_1_0()); }
 )
 
 ;
@@ -11582,14 +11582,14 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__AtsDsl__UserDefAssignment_1_1
+rule__AtsDsl__TeamDefAssignment_1_1
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getAtsDslAccess().getUserDefUserDefParserRuleCall_1_1_0()); }
-	ruleUserDef{ after(grammarAccess.getAtsDslAccess().getUserDefUserDefParserRuleCall_1_1_0()); }
+{ before(grammarAccess.getAtsDslAccess().getTeamDefTeamDefParserRuleCall_1_1_0()); }
+	ruleTeamDef{ after(grammarAccess.getAtsDslAccess().getTeamDefTeamDefParserRuleCall_1_1_0()); }
 )
 
 ;
@@ -11597,14 +11597,14 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__AtsDsl__TeamDefAssignment_2_1
+rule__AtsDsl__ActionableItemDefAssignment_2_1
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getAtsDslAccess().getTeamDefTeamDefParserRuleCall_2_1_0()); }
-	ruleTeamDef{ after(grammarAccess.getAtsDslAccess().getTeamDefTeamDefParserRuleCall_2_1_0()); }
+{ before(grammarAccess.getAtsDslAccess().getActionableItemDefActionableItemDefParserRuleCall_2_1_0()); }
+	ruleActionableItemDef{ after(grammarAccess.getAtsDslAccess().getActionableItemDefActionableItemDefParserRuleCall_2_1_0()); }
 )
 
 ;
@@ -11612,14 +11612,14 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__AtsDsl__ActionableItemDefAssignment_3_1
+rule__AtsDsl__WorkDefAssignment_3_1
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getAtsDslAccess().getActionableItemDefActionableItemDefParserRuleCall_3_1_0()); }
-	ruleActionableItemDef{ after(grammarAccess.getAtsDslAccess().getActionableItemDefActionableItemDefParserRuleCall_3_1_0()); }
+{ before(grammarAccess.getAtsDslAccess().getWorkDefWorkDefParserRuleCall_3_1_0()); }
+	ruleWorkDef{ after(grammarAccess.getAtsDslAccess().getWorkDefWorkDefParserRuleCall_3_1_0()); }
 )
 
 ;

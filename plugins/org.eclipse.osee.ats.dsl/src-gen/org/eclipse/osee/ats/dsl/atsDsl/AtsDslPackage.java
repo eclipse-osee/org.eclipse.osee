@@ -68,22 +68,13 @@ public interface AtsDslPackage extends EPackage
   int ATS_DSL = 0;
 
   /**
-   * The feature id for the '<em><b>Work Def</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ATS_DSL__WORK_DEF = 0;
-
-  /**
    * The feature id for the '<em><b>User Def</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ATS_DSL__USER_DEF = 1;
+  int ATS_DSL__USER_DEF = 0;
 
   /**
    * The feature id for the '<em><b>Team Def</b></em>' containment reference list.
@@ -92,7 +83,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ATS_DSL__TEAM_DEF = 2;
+  int ATS_DSL__TEAM_DEF = 1;
 
   /**
    * The feature id for the '<em><b>Actionable Item Def</b></em>' containment reference list.
@@ -101,7 +92,16 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ATS_DSL__ACTIONABLE_ITEM_DEF = 3;
+  int ATS_DSL__ACTIONABLE_ITEM_DEF = 2;
+
+  /**
+   * The feature id for the '<em><b>Work Def</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATS_DSL__WORK_DEF = 3;
 
   /**
    * The number of structural features of the '<em>Ats Dsl</em>' class.
@@ -1528,17 +1528,6 @@ public interface AtsDslPackage extends EPackage
   EClass getAtsDsl();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getWorkDef <em>Work Def</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Work Def</em>'.
-   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getWorkDef()
-   * @see #getAtsDsl()
-   * @generated
-   */
-  EReference getAtsDsl_WorkDef();
-
-  /**
    * Returns the meta object for the containment reference list '{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getUserDef <em>User Def</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1570,6 +1559,17 @@ public interface AtsDslPackage extends EPackage
    * @generated
    */
   EReference getAtsDsl_ActionableItemDef();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getWorkDef <em>Work Def</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Work Def</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getWorkDef()
+   * @see #getAtsDsl()
+   * @generated
+   */
+  EReference getAtsDsl_WorkDef();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.UserDef <em>User Def</em>}'.
@@ -2997,14 +2997,6 @@ public interface AtsDslPackage extends EPackage
     EClass ATS_DSL = eINSTANCE.getAtsDsl();
 
     /**
-     * The meta object literal for the '<em><b>Work Def</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference ATS_DSL__WORK_DEF = eINSTANCE.getAtsDsl_WorkDef();
-
-    /**
      * The meta object literal for the '<em><b>User Def</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3027,6 +3019,14 @@ public interface AtsDslPackage extends EPackage
      * @generated
      */
     EReference ATS_DSL__ACTIONABLE_ITEM_DEF = eINSTANCE.getAtsDsl_ActionableItemDef();
+
+    /**
+     * The meta object literal for the '<em><b>Work Def</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ATS_DSL__WORK_DEF = eINSTANCE.getAtsDsl_WorkDef();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.UserDefImpl <em>User Def</em>}' class.

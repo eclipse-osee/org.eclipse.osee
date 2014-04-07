@@ -80,7 +80,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       // Convert back to WorkDefinition
       ConvertAtsDslToWorkDefinition converter2 =
          new ConvertAtsDslToWorkDefinition(newName, atsDsl, resultData, attrResolver, userService);
-      IAtsWorkDefinition newWorkDef = converter2.convert();
+      IAtsWorkDefinition newWorkDef = converter2.convert().iterator().next();
       return newWorkDef;
    }
 
@@ -113,7 +113,12 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       AtsDsl atsDsl = ModelUtil.loadModel(workDefId + ".ats", workDefStr);
       ConvertAtsDslToWorkDefinition convert =
          new ConvertAtsDslToWorkDefinition(workDefId, atsDsl, resultData, attrResolver, userService);
-      return convert.convert();
+      for (IAtsWorkDefinition workDef : convert.convert()) {
+         if (workDef.getId().equals(workDefId)) {
+            return workDef;
+         }
+      }
+      return null;
    }
 
    @Override
@@ -209,12 +214,12 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       AtsDsl atsDsl = ModelUtil.loadModel("model.ats", workDefinitionDsl);
       XResultData result = new XResultData(false);
       ConvertAtsDslToWorkDefinition convert =
-         new ConvertAtsDslToWorkDefinition(Strings.unquote(atsDsl.getWorkDef().getName()), atsDsl, result,
-            attrResolver, userService);
+         new ConvertAtsDslToWorkDefinition(Strings.unquote(atsDsl.getWorkDef().iterator().next().getName()), atsDsl,
+            result, attrResolver, userService);
       if (!result.isEmpty()) {
          throw new IllegalStateException(result.toString());
       }
-      return convert.convert();
+      return convert.convert().iterator().next();
    }
 
    @Override
@@ -250,8 +255,9 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          AtsDsl atsDsl = ModelUtil.loadModel(name + ".ats", workDefStr);
          ConvertAtsDslToWorkDefinition convert =
             new ConvertAtsDslToWorkDefinition(name, atsDsl, resultData, attrResolver, userService);
-         IAtsWorkDefinition workDef = convert.convert();
-         workDefs.add(workDef);
+         for (IAtsWorkDefinition workDef : convert.convert()) {
+            workDefs.add(workDef);
+         }
       }
       return workDefs;
    }

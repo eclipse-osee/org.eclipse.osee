@@ -22,78 +22,78 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "AtsDsl");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Group cGroup_0 = (Group)cGroup.eContents().get(0);
-		private final Keyword cWorkDefinitionKeyword_0_0 = (Keyword)cGroup_0.eContents().get(0);
-		private final Assignment cWorkDefAssignment_0_1 = (Assignment)cGroup_0.eContents().get(1);
-		private final RuleCall cWorkDefWorkDefParserRuleCall_0_1_0 = (RuleCall)cWorkDefAssignment_0_1.eContents().get(0);
+		private final Keyword cUserDefinitionKeyword_0_0 = (Keyword)cGroup_0.eContents().get(0);
+		private final Assignment cUserDefAssignment_0_1 = (Assignment)cGroup_0.eContents().get(1);
+		private final RuleCall cUserDefUserDefParserRuleCall_0_1_0 = (RuleCall)cUserDefAssignment_0_1.eContents().get(0);
 		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Keyword cUserDefinitionKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final Assignment cUserDefAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
-		private final RuleCall cUserDefUserDefParserRuleCall_1_1_0 = (RuleCall)cUserDefAssignment_1_1.eContents().get(0);
+		private final Keyword cTeamDefinitionKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
+		private final Assignment cTeamDefAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
+		private final RuleCall cTeamDefTeamDefParserRuleCall_1_1_0 = (RuleCall)cTeamDefAssignment_1_1.eContents().get(0);
 		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
-		private final Keyword cTeamDefinitionKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
-		private final Assignment cTeamDefAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
-		private final RuleCall cTeamDefTeamDefParserRuleCall_2_1_0 = (RuleCall)cTeamDefAssignment_2_1.eContents().get(0);
+		private final Keyword cActionableItemKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cActionableItemDefAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cActionableItemDefActionableItemDefParserRuleCall_2_1_0 = (RuleCall)cActionableItemDefAssignment_2_1.eContents().get(0);
 		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
-		private final Keyword cActionableItemKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
-		private final Assignment cActionableItemDefAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
-		private final RuleCall cActionableItemDefActionableItemDefParserRuleCall_3_1_0 = (RuleCall)cActionableItemDefAssignment_3_1.eContents().get(0);
+		private final Keyword cWorkDefinitionKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
+		private final Assignment cWorkDefAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final RuleCall cWorkDefWorkDefParserRuleCall_3_1_0 = (RuleCall)cWorkDefAssignment_3_1.eContents().get(0);
 		
 		//AtsDsl:
-		//	("workDefinition" workDef=WorkDef)? ("userDefinition" userDef+=UserDef)* ("teamDefinition" teamDef+=TeamDef)*
-		//	("actionableItem" actionableItemDef+=ActionableItemDef)*;
+		//	("userDefinition" userDef+=UserDef)* ("teamDefinition" teamDef+=TeamDef)* ("actionableItem"
+		//	actionableItemDef+=ActionableItemDef)* ("workDefinition" workDef+=WorkDef)*;
 		public ParserRule getRule() { return rule; }
 
-		//("workDefinition" workDef=WorkDef)? ("userDefinition" userDef+=UserDef)* ("teamDefinition" teamDef+=TeamDef)*
-		//("actionableItem" actionableItemDef+=ActionableItemDef)*
+		//("userDefinition" userDef+=UserDef)* ("teamDefinition" teamDef+=TeamDef)* ("actionableItem"
+		//actionableItemDef+=ActionableItemDef)* ("workDefinition" workDef+=WorkDef)*
 		public Group getGroup() { return cGroup; }
 
-		//("workDefinition" workDef=WorkDef)?
+		//("userDefinition" userDef+=UserDef)*
 		public Group getGroup_0() { return cGroup_0; }
 
-		//"workDefinition"
-		public Keyword getWorkDefinitionKeyword_0_0() { return cWorkDefinitionKeyword_0_0; }
-
-		//workDef=WorkDef
-		public Assignment getWorkDefAssignment_0_1() { return cWorkDefAssignment_0_1; }
-
-		//WorkDef
-		public RuleCall getWorkDefWorkDefParserRuleCall_0_1_0() { return cWorkDefWorkDefParserRuleCall_0_1_0; }
-
-		//("userDefinition" userDef+=UserDef)*
-		public Group getGroup_1() { return cGroup_1; }
-
 		//"userDefinition"
-		public Keyword getUserDefinitionKeyword_1_0() { return cUserDefinitionKeyword_1_0; }
+		public Keyword getUserDefinitionKeyword_0_0() { return cUserDefinitionKeyword_0_0; }
 
 		//userDef+=UserDef
-		public Assignment getUserDefAssignment_1_1() { return cUserDefAssignment_1_1; }
+		public Assignment getUserDefAssignment_0_1() { return cUserDefAssignment_0_1; }
 
 		//UserDef
-		public RuleCall getUserDefUserDefParserRuleCall_1_1_0() { return cUserDefUserDefParserRuleCall_1_1_0; }
+		public RuleCall getUserDefUserDefParserRuleCall_0_1_0() { return cUserDefUserDefParserRuleCall_0_1_0; }
 
 		//("teamDefinition" teamDef+=TeamDef)*
-		public Group getGroup_2() { return cGroup_2; }
+		public Group getGroup_1() { return cGroup_1; }
 
 		//"teamDefinition"
-		public Keyword getTeamDefinitionKeyword_2_0() { return cTeamDefinitionKeyword_2_0; }
+		public Keyword getTeamDefinitionKeyword_1_0() { return cTeamDefinitionKeyword_1_0; }
 
 		//teamDef+=TeamDef
-		public Assignment getTeamDefAssignment_2_1() { return cTeamDefAssignment_2_1; }
+		public Assignment getTeamDefAssignment_1_1() { return cTeamDefAssignment_1_1; }
 
 		//TeamDef
-		public RuleCall getTeamDefTeamDefParserRuleCall_2_1_0() { return cTeamDefTeamDefParserRuleCall_2_1_0; }
+		public RuleCall getTeamDefTeamDefParserRuleCall_1_1_0() { return cTeamDefTeamDefParserRuleCall_1_1_0; }
 
 		//("actionableItem" actionableItemDef+=ActionableItemDef)*
-		public Group getGroup_3() { return cGroup_3; }
+		public Group getGroup_2() { return cGroup_2; }
 
 		//"actionableItem"
-		public Keyword getActionableItemKeyword_3_0() { return cActionableItemKeyword_3_0; }
+		public Keyword getActionableItemKeyword_2_0() { return cActionableItemKeyword_2_0; }
 
 		//actionableItemDef+=ActionableItemDef
-		public Assignment getActionableItemDefAssignment_3_1() { return cActionableItemDefAssignment_3_1; }
+		public Assignment getActionableItemDefAssignment_2_1() { return cActionableItemDefAssignment_2_1; }
 
 		//ActionableItemDef
-		public RuleCall getActionableItemDefActionableItemDefParserRuleCall_3_1_0() { return cActionableItemDefActionableItemDefParserRuleCall_3_1_0; }
+		public RuleCall getActionableItemDefActionableItemDefParserRuleCall_2_1_0() { return cActionableItemDefActionableItemDefParserRuleCall_2_1_0; }
+
+		//("workDefinition" workDef+=WorkDef)*
+		public Group getGroup_3() { return cGroup_3; }
+
+		//"workDefinition"
+		public Keyword getWorkDefinitionKeyword_3_0() { return cWorkDefinitionKeyword_3_0; }
+
+		//workDef+=WorkDef
+		public Assignment getWorkDefAssignment_3_1() { return cWorkDefAssignment_3_1; }
+
+		//WorkDef
+		public RuleCall getWorkDefWorkDefParserRuleCall_3_1_0() { return cWorkDefWorkDefParserRuleCall_3_1_0; }
 	}
 
 	public class USER_DEF_REFERENCEElements extends AbstractParserRuleElementFinder {
@@ -2884,8 +2884,8 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 
 	
 	//AtsDsl:
-	//	("workDefinition" workDef=WorkDef)? ("userDefinition" userDef+=UserDef)* ("teamDefinition" teamDef+=TeamDef)*
-	//	("actionableItem" actionableItemDef+=ActionableItemDef)*;
+	//	("userDefinition" userDef+=UserDef)* ("teamDefinition" teamDef+=TeamDef)* ("actionableItem"
+	//	actionableItemDef+=ActionableItemDef)* ("workDefinition" workDef+=WorkDef)*;
 	public AtsDslElements getAtsDslAccess() {
 		return (pAtsDsl != null) ? pAtsDsl : (pAtsDsl = new AtsDslElements());
 	}

@@ -14,10 +14,10 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getWorkDef <em>Work Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getUserDef <em>User Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getTeamDef <em>Team Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getActionableItemDef <em>Actionable Item Def</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getWorkDef <em>Work Def</em>}</li>
  * </ul>
  * </p>
  *
@@ -27,32 +27,6 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface AtsDsl extends EObject
 {
-  /**
-   * Returns the value of the '<em><b>Work Def</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Work Def</em>' containment reference isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Work Def</em>' containment reference.
-   * @see #setWorkDef(WorkDef)
-   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getAtsDsl_WorkDef()
-   * @model containment="true"
-   * @generated
-   */
-  WorkDef getWorkDef();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getWorkDef <em>Work Def</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Work Def</em>' containment reference.
-   * @see #getWorkDef()
-   * @generated
-   */
-  void setWorkDef(WorkDef value);
-
   /**
    * Returns the value of the '<em><b>User Def</b></em>' containment reference list.
    * The list contents are of type {@link org.eclipse.osee.ats.dsl.atsDsl.UserDef}.
@@ -100,5 +74,21 @@ public interface AtsDsl extends EObject
    * @generated
    */
   EList<ActionableItemDef> getActionableItemDef();
+
+  /**
+   * Returns the value of the '<em><b>Work Def</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.osee.ats.dsl.atsDsl.WorkDef}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Work Def</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Work Def</em>' containment reference list.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getAtsDsl_WorkDef()
+   * @model containment="true"
+   * @generated
+   */
+  EList<WorkDef> getWorkDef();
 
 } // AtsDsl

@@ -140,10 +140,10 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getLayoutCopyAccess().getGroup(), "rule__LayoutCopy__Group__0");
 					put(grammarAccess.getCompositeAccess().getGroup(), "rule__Composite__Group__0");
 					put(grammarAccess.getCompositeAccess().getGroup_5(), "rule__Composite__Group_5__0");
-					put(grammarAccess.getAtsDslAccess().getWorkDefAssignment_0_1(), "rule__AtsDsl__WorkDefAssignment_0_1");
-					put(grammarAccess.getAtsDslAccess().getUserDefAssignment_1_1(), "rule__AtsDsl__UserDefAssignment_1_1");
-					put(grammarAccess.getAtsDslAccess().getTeamDefAssignment_2_1(), "rule__AtsDsl__TeamDefAssignment_2_1");
-					put(grammarAccess.getAtsDslAccess().getActionableItemDefAssignment_3_1(), "rule__AtsDsl__ActionableItemDefAssignment_3_1");
+					put(grammarAccess.getAtsDslAccess().getUserDefAssignment_0_1(), "rule__AtsDsl__UserDefAssignment_0_1");
+					put(grammarAccess.getAtsDslAccess().getTeamDefAssignment_1_1(), "rule__AtsDsl__TeamDefAssignment_1_1");
+					put(grammarAccess.getAtsDslAccess().getActionableItemDefAssignment_2_1(), "rule__AtsDsl__ActionableItemDefAssignment_2_1");
+					put(grammarAccess.getAtsDslAccess().getWorkDefAssignment_3_1(), "rule__AtsDsl__WorkDefAssignment_3_1");
 					put(grammarAccess.getUserDefAccess().getNameAssignment_0(), "rule__UserDef__NameAssignment_0");
 					put(grammarAccess.getUserDefAccess().getUserDefOptionAssignment_1(), "rule__UserDef__UserDefOptionAssignment_1");
 					put(grammarAccess.getUserDefAccess().getActiveAssignment_2_1_1(), "rule__UserDef__ActiveAssignment_2_1_1");

@@ -3,10 +3,10 @@ grammar org.eclipse.osee.ats.dsl.AtsDsl with org.eclipse.xtext.common.Terminals
 generate atsDsl "http://www.eclipse.org/osee/ats/dsl/AtsDsl"
 
 AtsDsl:
-	('workDefinition' workDef=WorkDef)?
 	('userDefinition' userDef+=UserDef)*
 	('teamDefinition' teamDef+=TeamDef)*
-	('actionableItem' actionableItemDef+=ActionableItemDef)*;
+	('actionableItem' actionableItemDef+=ActionableItemDef)*
+	('workDefinition' workDef+=WorkDef)*;
 
 USER_DEF_REFERENCE:
 	STRING;

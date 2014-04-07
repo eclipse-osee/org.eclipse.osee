@@ -176,7 +176,7 @@ public class AtsConfigOperation extends AbstractOperation {
          try {
             String workDefXml = AtsClientService.get().getWorkDefinitionAdmin().getStorageString(workDef, resultData);
             Artifact workDefArt =
-               AtsWorkDefinitionImporter.get().importWorkDefinitionToDb(workDefXml, workDef.getName(), name,
+               AtsWorkDefinitionImporter.get().importWorkDefinitionToDb(workDefXml, workDef.getName(), name, null,
                   resultData, changes);
             Artifact folder = AtsUtilClient.getFromToken(AtsArtifactToken.WorkDefinitionsFolder);
             folder.addChild(workDefArt);
