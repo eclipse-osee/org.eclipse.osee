@@ -98,11 +98,11 @@ public class AtsServerImpl implements IAtsServer {
       AtsServerImpl.orcsApi = orcsApi;
    }
 
-   public static void setWorkDefService(IAtsWorkDefinitionService workDefService) {
+   public void setWorkDefService(IAtsWorkDefinitionService workDefService) {
       AtsServerImpl.workDefService = workDefService;
    }
 
-   public static void setUserService(IAtsUserService userService) {
+   public void setUserService(IAtsUserService userService) {
       AtsServerImpl.userService = userService;
    }
 
