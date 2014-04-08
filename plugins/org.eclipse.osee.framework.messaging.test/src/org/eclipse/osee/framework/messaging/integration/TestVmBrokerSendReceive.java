@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.messaging.internal.MessageServiceController.Br
 import org.eclipse.osee.framework.messaging.rules.MessageBroker;
 import org.eclipse.osee.framework.messaging.rules.MessageConnection;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -63,7 +62,7 @@ public class TestVmBrokerSendReceive {
       messageListener = new TestMessageListener(MESSAGE_COUNT);
    }
 
-   @Ignore("Intermittent failure")
+   @SuppressWarnings("deprecation")
    @Test
    public void testSendingAndReceivingUsingVM() throws InterruptedException {
       synchronized (subscribeCallback) {
@@ -90,7 +89,7 @@ public class TestVmBrokerSendReceive {
       });
       synchronized (messageListener) {
          sending.start();
-         messageListener.wait(500);
+         messageListener.wait(3000);
       }
 
       verify(sendCallback, times(MESSAGE_COUNT)).success();
