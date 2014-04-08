@@ -38,15 +38,15 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
    }
 
    @Override
-   public JSONArray getDiscrepanciesList() {
-      String discrepanciesJson = artifact.getSoleAttributeAsString(DispoConstants.DispoDiscrepanciesJson, "[]");
-      return DispoUtil.asJSONArray(discrepanciesJson);
+   public JSONObject getDiscrepanciesList() {
+      String discrepanciesJson = artifact.getSoleAttributeAsString(DispoConstants.DispoDiscrepanciesJson, "{}");
+      return DispoUtil.asJSONObject(discrepanciesJson);
    }
 
    @Override
-   public JSONObject getAnnotationsList() {
+   public JSONArray getAnnotationsList() {
       String annotationsList = artifact.getSoleAttributeAsString(DispoConstants.DispoAnnotationsJson, "[]");
-      return DispoUtil.asJSONOjbect(annotationsList);
+      return DispoUtil.asJSONArray(annotationsList);
    }
 
    @Override
@@ -56,12 +56,7 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
 
    @Override
    public String getAssignee() {
-      ArtifactReadable assignee = artifact.getRelated(DispoConstants.DispoAssigned_Item).getAtMostOneOrNull();
-      if (assignee == null) {
-         return "unassigned";
-      } else {
-         return assignee.getName();
-      }
+      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemAssignee, "");
    }
 
    @Override
@@ -78,6 +73,11 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
    @Override
    public String getStatus() {
       return artifact.getSoleAttributeAsString(DispoConstants.DispoItemStatus);
+   }
+
+   @Override
+   public String getVersion() {
+      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemVersion);
    }
 
    @Override

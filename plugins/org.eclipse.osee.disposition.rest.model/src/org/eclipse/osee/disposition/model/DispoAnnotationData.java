@@ -24,7 +24,8 @@ import org.json.JSONArray;
 public class DispoAnnotationData implements Identifiable<String> {
 
    private String id;
-   private JSONArray notesList;
+   private int index;
+   private String notes;
    private String locationRefs;
    private boolean isConnected;
    private JSONArray idsOfCoveredDiscrepancies;
@@ -37,7 +38,7 @@ public class DispoAnnotationData implements Identifiable<String> {
 
    @Override
    public String getGuid() {
-      return id;
+      return String.valueOf(id);
    }
 
    @Override
@@ -49,8 +50,12 @@ public class DispoAnnotationData implements Identifiable<String> {
       return id;
    }
 
-   public JSONArray getNotesList() {
-      return notesList;
+   public int getIndex() {
+      return index;
+   }
+
+   public String getNotes() {
+      return notes;
    }
 
    public String getLocationRefs() {
@@ -77,12 +82,16 @@ public class DispoAnnotationData implements Identifiable<String> {
       this.locationRefs = locationRefs;
    }
 
-   public void setNotesList(JSONArray notesList) {
-      this.notesList = notesList;
+   public void setNotes(String notes) {
+      this.notes = notes;
    }
 
    public void setId(String id) {
       this.id = id;
+   }
+
+   public void setIndex(int index) {
+      this.index = index;
    }
 
    public void setIsConnected(boolean isConnected) {
@@ -107,6 +116,11 @@ public class DispoAnnotationData implements Identifiable<String> {
 
    public boolean isValid() {
       return isConnected && isResolutionValid;
+   }
+
+   public void disconnect() {
+      this.isConnected = false;
+      this.idsOfCoveredDiscrepancies = new JSONArray();
    }
 
    @Override

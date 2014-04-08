@@ -29,8 +29,9 @@ public class DispoItemData implements DispoItem {
    private Date creationDate;
    private Date lastUpdate;
    private String status;
-   private JSONArray discrepanciesList;
-   private JSONObject annotationsList;
+   private String version;
+   private JSONObject discrepanciesList;
+   private JSONArray annotationsList;
 
    public DispoItemData() {
 
@@ -67,12 +68,17 @@ public class DispoItemData implements DispoItem {
    }
 
    @Override
-   public JSONArray getDiscrepanciesList() {
+   public String getVersion() {
+      return version;
+   }
+
+   @Override
+   public JSONObject getDiscrepanciesList() {
       return discrepanciesList;
    }
 
    @Override
-   public JSONObject getAnnotationsList() {
+   public JSONArray getAnnotationsList() {
       return annotationsList;
    }
 
@@ -80,16 +86,20 @@ public class DispoItemData implements DispoItem {
       this.name = name;
    }
 
-   public void setDiscrepanciesList(JSONArray discrepanciesList) {
+   public void setDiscrepanciesList(JSONObject discrepanciesList) {
       this.discrepanciesList = discrepanciesList;
    }
 
-   public void setAnnotationsList(JSONObject annotationsList) {
+   public void setAnnotationsList(JSONArray annotationsList) {
       this.annotationsList = annotationsList;
    }
 
    public void setStatus(String status) {
       this.status = status;
+   }
+
+   public void setVersion(String version) {
+      this.version = version;
    }
 
    public void setLastUpdate(Date lastUpdate) {

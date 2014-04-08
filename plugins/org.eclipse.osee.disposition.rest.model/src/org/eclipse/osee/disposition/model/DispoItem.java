@@ -30,7 +30,9 @@ public interface DispoItem extends Identifiable<String> {
 
    String getStatus();
 
-   JSONArray getDiscrepanciesList();
+   String getVersion();
 
-   JSONObject getAnnotationsList();
+   JSONObject getDiscrepanciesList();
+
+   JSONArray getAnnotationsList();
 }

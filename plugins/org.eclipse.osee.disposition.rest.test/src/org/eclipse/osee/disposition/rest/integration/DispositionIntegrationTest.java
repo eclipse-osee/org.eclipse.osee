@@ -10,19 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.integration;
 
-import static org.eclipse.osee.disposition.rest.integration.util.DispositionTestUtil.SAW_Bld_1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import java.util.List;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
-import org.eclipse.osee.disposition.model.DispoItemData;
+import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoProgram;
-import org.eclipse.osee.disposition.model.DispoSetData;
+import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.integration.util.DispositionInitializer;
 import org.eclipse.osee.disposition.rest.integration.util.DispositionIntegrationRule;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.disposition.rest.integration.util.DispositionTestUtil;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.junit.Before;
@@ -33,7 +32,7 @@ import org.junit.rules.TestRule;
 /**
  * @author Angel Avila
  */
-public class DispositionApiTest {
+public class DispositionIntegrationTest {
 
    @Rule
    public TestRule rule = DispositionIntegrationRule.integrationRule(this, "osee.demo.hsql");
@@ -54,16 +53,14 @@ public class DispositionApiTest {
    public void testDispositionApi() {
       // We have one item with discrepancies: 1-10, 12-20, 23, 25, 32-90
 
-      DispoProgram sawProgram = dispoApi.getDispoFactory().createProgram(SAW_Bld_1);
-      IOseeBranch dispoProgramBranch = dispoApi.getDispoProgramById(sawProgram);
-      DispoProgram program = dispoApi.getDispoFactory().createProgram(dispoProgramBranch);
+      DispoProgram program = dispoApi.getDispoFactory().createProgram(DispositionTestUtil.SAW_Bld_1_FOR_DISPO);
 
-      ResultSet<DispoSetData> dispoSets = dispoApi.getDispoSets(program);
-      DispoSetData devSet = dispoSets.getExactlyOne();
+      List<DispoSet> dispoSets = dispoApi.getDispoSets(program);
+      DispoSet devSet = dispoSets.get(0);
       String devSetId = devSet.getGuid();
 
-      ResultSet<DispoItemData> dispoItems = dispoApi.getDispoItems(program, devSetId);
-      DispoItemData itemOne = dispoItems.getExactlyOne();
+      List<DispoItem> dispoItems = dispoApi.getDispoItems(program, devSetId);
+      DispoItem itemOne = dispoItems.get(0);
       String itemOneId = itemOne.getGuid();
 
       assertEquals(5, itemOne.getDiscrepanciesList().length());
@@ -100,10 +97,10 @@ public class DispositionApiTest {
       assertEquals(5, itemOne.getDiscrepanciesList().length());
       assertEquals(2, itemOne.getAnnotationsList().length());
 
-      DispoAnnotationData actualAnnotation = dispoApi.getDispoAnnotationByIndex(program, itemOneId, createdThreeId);
+      DispoAnnotationData actualAnnotation = dispoApi.getDispoAnnotationById(program, itemOneId, createdThreeId);
       assertEquals("23,25,32-90", actualAnnotation.getLocationRefs());
 
-      actualAnnotation = dispoApi.getDispoAnnotationByIndex(program, itemOneId, createdOneId);
+      actualAnnotation = dispoApi.getDispoAnnotationById(program, itemOneId, createdOneId);
       assertEquals("1-10", actualAnnotation.getLocationRefs());
    }
 

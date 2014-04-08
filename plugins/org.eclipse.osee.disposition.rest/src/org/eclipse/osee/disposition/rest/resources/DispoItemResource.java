@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.resources;
 
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -20,26 +21,27 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.util.HtmlWriter;
+import org.eclipse.osee.disposition.rest.util.DispoHtmlWriter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
  * @author Angel Avila
  */
 public class DispoItemResource {
    private final DispoApi dispoApi;
-   private final HtmlWriter writer;
+   private final DispoHtmlWriter writer;
    private final DispoProgram program;
    private final String setId;
 
-   public DispoItemResource(DispoApi dispoApi, HtmlWriter writer, DispoProgram program, String setId) {
+   public DispoItemResource(DispoApi dispoApi, DispoHtmlWriter writer, DispoProgram program, String setId) {
       this.dispoApi = dispoApi;
       this.program = program;
       this.setId = setId;
@@ -56,23 +58,17 @@ public class DispoItemResource {
     * Get all Dispositionable Items under the Disposition Set
     * 
     * @return The Dispositionable Items found under the Disposition Set
+    * @throws Exception
     * @response.representation.200.doc OK, Found Dispositionable Items
     * @response.representation.404.doc Not Found, Could not find any Dispositionable Items
     */
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public Response getAllDispoItems() {
-      ResultSet<DispoItemData> dispoItems = dispoApi.getDispoItems(program, setId);
-      Response.Status status;
-      String html;
-      if (dispoItems.isEmpty()) {
-         status = Status.NOT_FOUND;
-         html = "There are currently no disposition items available under this set";
-      } else {
-         status = Status.OK;
-         html = writer.createDispositionPage("Dispositionable Items", "item/", dispoItems);
-      }
-      return Response.status(status).entity(html).build();
+   public Response getAllDispoItems() throws Exception {
+      List<DispoItem> dispoItems = dispoApi.getDispoItems(program, setId);
+      StreamingOutput streamingOutput = new DispoHtmlOutputStream(dispoItems);
+      ResponseBuilder builder = Response.ok(streamingOutput);
+      return builder.build();
    }
 
    /**
@@ -95,33 +91,6 @@ public class DispoItemResource {
          response = Response.status(Response.Status.OK).entity(result).build();
       }
       return response;
-   }
-
-   /**
-    * Get a specific Dispositionable Item given a itemId
-    * 
-    * @param itemId The Id of the Dispositionable Item to search for
-    * @return The found Dispositionable Item if successful. Error Code otherwise
-    * @response.representation.200.doc OK, Found Dispositionable Item
-    * @response.representation.404.doc Not Found, Could not find any Dispositionable Items
-    */
-   @Path("{itemId}")
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   public Response getDispoItemsByIdHtml(@PathParam("itemId") String itemId) {
-      String html;
-      Response.Status status;
-      DispoItem dispoItem = dispoApi.getDispoItemById(program, itemId);
-      if (dispoItem == null) {
-         status = Status.NOT_FOUND;
-         html = DispoMessages.Item_NotFound;
-      } else {
-         status = Status.OK;
-         String title = "Annotations";
-         String prefixPath = itemId + "/annotation";
-         html = writer.createDispoPage(dispoItem.getName(), prefixPath, title, "[]");
-      }
-      return Response.status(status).entity(html).build();
    }
 
    /**

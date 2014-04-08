@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest;
 
+import java.util.List;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
+import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoProgram;
+import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.rest.util.DispoFactory;
@@ -26,22 +29,19 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 public interface DispoApi {
 
    // Queries
-
-   IOseeBranch getDispoProgramById(DispoProgram program);
-
    ResultSet<IOseeBranch> getDispoPrograms();
 
-   ResultSet<DispoSetData> getDispoSets(DispoProgram program);
+   List<DispoSet> getDispoSets(DispoProgram program);
 
-   DispoSetData getDispoSetById(DispoProgram program, String dispoSetId);
+   DispoSet getDispoSetById(DispoProgram program, String dispoSetId);
 
-   ResultSet<DispoItemData> getDispoItems(DispoProgram program, String dispoSetId);
+   List<DispoItem> getDispoItems(DispoProgram program, String dispoSetId);
 
-   DispoItemData getDispoItemById(DispoProgram program, String itemId);
+   DispoItem getDispoItemById(DispoProgram program, String itemId);
 
-   ResultSet<DispoAnnotationData> getDispoAnnotations(DispoProgram program, String itemId);
+   List<DispoAnnotationData> getDispoAnnotations(DispoProgram program, String itemId);
 
-   DispoAnnotationData getDispoAnnotationByIndex(DispoProgram program, String itemId, String annotationId);
+   DispoAnnotationData getDispoAnnotationById(DispoProgram program, String itemId, String annotationId);
 
    // Writes
    Identifiable<String> createDispoSet(DispoProgram program, DispoSetDescriptorData descriptor);

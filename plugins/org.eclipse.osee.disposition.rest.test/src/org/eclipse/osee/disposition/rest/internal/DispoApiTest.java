@@ -18,6 +18,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -40,7 +41,6 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
@@ -49,10 +49,12 @@ import org.mockito.stubbing.Answer;
 /**
  * @author Angel Avila
  */
-public class DispositionApiTest {
+public class DispoApiTest {
 
    @Mock
    private Storage storage;
+   @Mock
+   private DispoResolutionValidator validator;
    @Mock
    private StorageProvider storageProvider;
    @Mock
@@ -78,7 +80,7 @@ public class DispositionApiTest {
    @Mock
    private JSONObject jsonObject;
    @Mock
-   private JSONObject mockAnnotations;
+   private JSONArray mockAnnotations;
    @Mock
    private Iterator<String> mockKeys;
    @Mock
@@ -105,14 +107,8 @@ public class DispositionApiTest {
       dispoApi.setStorageProvider(storageProvider);
       dispoApi.setDataFactory(dataFactory);
       dispoApi.setDispoConnector(dispoConnector);
+      dispoApi.setResolutionValidator(validator);
 
-   }
-
-   @Test
-   public void testGetDispoProgramById() {
-      when(storage.findProgramId(program)).thenAnswer(newAnswer(mockBranch));
-      IOseeBranch actual = dispoApi.getDispoProgramById(program);
-      assertEquals(mockBranch, actual);
    }
 
    private <T> Answer<T> newAnswer(final T object) {
@@ -128,29 +124,27 @@ public class DispositionApiTest {
    @Test
    public void testGetDispoPrograms() {
       ResultSet<IOseeBranch> programsSet = ResultSets.singleton(mockBranch);
-      when(storage.findBaselineBranches()).thenAnswer(newAnswer(programsSet));
+      when(storage.getDispoBranches()).thenAnswer(newAnswer(programsSet));
       ResultSet<IOseeBranch> actual = dispoApi.getDispoPrograms();
       assertEquals(programsSet.iterator().next(), actual.iterator().next());
    }
 
    @Test
    public void testGetDispoSets() {
-      ResultSet<DispoSet> dispoSetArts = ResultSets.singleton(dispoSet);
+      List<DispoSet> dispoSetArts = Collections.singletonList(dispoSet);
       when(storage.findDispoSets(program)).thenAnswer(newAnswer(dispoSetArts));
 
       when(dispoSet.getName()).thenReturn("name");
       when(dispoSet.getImportPath()).thenReturn("path");
       when(dispoSet.getNotesList()).thenReturn(jsonArray);
       when(dispoSet.getGuid()).thenReturn("setGuid");
-      when(dispoSet.getStatusCount()).thenReturn("count");
 
-      ResultSet<DispoSetData> actualResultSet = dispoApi.getDispoSets(program);
-      DispoSetData actualData = actualResultSet.iterator().next();
+      List<DispoSet> actualResultSet = dispoApi.getDispoSets(program);
+      DispoSet actualData = actualResultSet.iterator().next();
       assertEquals("setGuid", actualData.getGuid());
       assertEquals("name", actualData.getName());
       assertEquals("path", actualData.getImportPath());
       assertEquals(jsonArray, actualData.getNotesList());
-      assertEquals("count", actualData.getStatusCount());
    }
 
    @Test
@@ -160,36 +154,34 @@ public class DispositionApiTest {
       when(dispoSet.getImportPath()).thenReturn("path");
       when(dispoSet.getNotesList()).thenReturn(jsonArray);
       when(dispoSet.getGuid()).thenReturn("setGuid");
-      when(dispoSet.getStatusCount()).thenReturn("count");
 
-      DispoSetData actual = dispoApi.getDispoSetById(program, setId.getGuid());
+      DispoSet actual = dispoApi.getDispoSetById(program, setId.getGuid());
       assertEquals("setGuid", actual.getGuid());
       assertEquals("name", actual.getName());
       assertEquals("path", actual.getImportPath());
       assertEquals(jsonArray, actual.getNotesList());
-      assertEquals("count", actual.getStatusCount());
    }
 
    @Test
    public void testGetDispoItems() {
-      ResultSet<DispoItem> dispoItemArts = ResultSets.singleton(dispoItem);
+      List<DispoItem> dispoItemArts = Collections.singletonList(dispoItem);
       when(storage.findDipoItems(program, setId.getGuid())).thenReturn(dispoItemArts);
       when(dispoItem.getName()).thenReturn("name");
       when(dispoItem.getGuid()).thenReturn("itemGuid");
       when(dispoItem.getCreationDate()).thenReturn(mockDate);
       when(dispoItem.getLastUpdate()).thenReturn(mockDate);
       when(dispoItem.getStatus()).thenReturn("status");
-      when(dispoItem.getDiscrepanciesList()).thenReturn(jsonArray);
+      when(dispoItem.getDiscrepanciesList()).thenReturn(jsonObject);
       when(dispoItem.getAnnotationsList()).thenReturn(mockAnnotations);
 
-      ResultSet<DispoItemData> actualResultSet = dispoApi.getDispoItems(program, setId.getGuid());
-      DispoItemData actualData = actualResultSet.iterator().next();
+      List<DispoItem> actualResultSet = dispoApi.getDispoItems(program, setId.getGuid());
+      DispoItem actualData = actualResultSet.iterator().next();
       assertEquals("itemGuid", actualData.getGuid());
       assertEquals("name", actualData.getName());
       assertEquals(mockDate, actualData.getCreationDate());
       assertEquals(mockDate, actualData.getLastUpdate());
       assertEquals("status", actualData.getStatus());
-      assertEquals(jsonArray, actualData.getDiscrepanciesList());
+      assertEquals(jsonObject, actualData.getDiscrepanciesList());
       assertEquals(mockAnnotations, actualData.getAnnotationsList());
    }
 
@@ -201,34 +193,33 @@ public class DispositionApiTest {
       when(dispoItem.getCreationDate()).thenReturn(mockDate);
       when(dispoItem.getLastUpdate()).thenReturn(mockDate);
       when(dispoItem.getStatus()).thenReturn("status");
-      when(dispoItem.getDiscrepanciesList()).thenReturn(jsonArray);
+      when(dispoItem.getDiscrepanciesList()).thenReturn(jsonObject);
       when(dispoItem.getAnnotationsList()).thenReturn(mockAnnotations);
 
-      DispoItemData actualData = dispoApi.getDispoItemById(program, itemId.getGuid());
+      DispoItem actualData = dispoApi.getDispoItemById(program, itemId.getGuid());
       assertEquals("itemGuid", actualData.getGuid());
       assertEquals("name", actualData.getName());
       assertEquals(mockDate, actualData.getCreationDate());
       assertEquals(mockDate, actualData.getLastUpdate());
       assertEquals("status", actualData.getStatus());
-      assertEquals(jsonArray, actualData.getDiscrepanciesList());
+      assertEquals(jsonObject, actualData.getDiscrepanciesList());
       assertEquals(mockAnnotations, actualData.getAnnotationsList());
    }
 
    @Test
    public void getDispoAnnotations() throws JSONException {
-      String annotId = "id";
+      String annotId = "dsf";
+      int indexOfAnnot = 0;
       when(storage.findDispoItemById(program, itemId.getGuid())).thenReturn(dispoItem);
       when(dispoItem.getAnnotationsList()).thenReturn(mockAnnotations);
-      when(mockAnnotations.keys()).thenReturn(mockKeys);
-      when(mockKeys.hasNext()).thenReturn(true, false);
-      when(mockKeys.next()).thenReturn(annotId);
-      when(mockAnnotations.getJSONObject(annotId)).thenReturn(jsonObject);
+      when(mockAnnotations.length()).thenReturn(1);
+      when(mockAnnotations.getJSONObject(indexOfAnnot)).thenReturn(jsonObject);
       when(jsonObject.has("id")).thenReturn(true);
       when(jsonObject.getString("id")).thenReturn(annotId);
       when(jsonObject.has("locationRefs")).thenReturn(true);
       when(jsonObject.getString("locationRefs")).thenReturn("1-10");
 
-      ResultSet<DispoAnnotationData> actualResultSet = dispoApi.getDispoAnnotations(program, itemId.getGuid());
+      List<DispoAnnotationData> actualResultSet = dispoApi.getDispoAnnotations(program, itemId.getGuid());
       DispoAnnotationData actualData = actualResultSet.iterator().next();
 
       assertEquals(annotId, actualData.getId());
@@ -237,16 +228,18 @@ public class DispositionApiTest {
 
    @Test
    public void getDispoAnnotationByIndex() throws JSONException {
-      String idOfAnnot = "idW";
+      String idOfAnnot = "432";
+      int indexOfAnnot = 0;
       when(storage.findDispoItemById(program, itemId.getGuid())).thenReturn(dispoItem);
       when(dispoItem.getAnnotationsList()).thenReturn(mockAnnotations);
-      when(mockAnnotations.has(idOfAnnot)).thenReturn(true);
-      when(mockAnnotations.getJSONObject(idOfAnnot)).thenReturn(jsonObject);
+      when(mockAnnotations.length()).thenReturn(1);
+      when(mockAnnotations.getJSONObject(indexOfAnnot)).thenReturn(jsonObject);
       when(jsonObject.has("id")).thenReturn(true);
       when(jsonObject.getString("id")).thenReturn(idOfAnnot);
       when(jsonObject.has("locationRefs")).thenReturn(true);
       when(jsonObject.getString("locationRefs")).thenReturn("1-10");
-      DispoAnnotationData actualData = dispoApi.getDispoAnnotationByIndex(program, itemId.getGuid(), idOfAnnot);
+      DispoAnnotationData actualData = dispoApi.getDispoAnnotationById(program, itemId.getGuid(), idOfAnnot);
+      dispoApi.getDispoAnnotationById(program, itemId.getGuid(), idOfAnnot);
 
       assertEquals(idOfAnnot, actualData.getId());
       assertEquals("1-10", actualData.getLocationRefs());
@@ -286,33 +279,32 @@ public class DispositionApiTest {
    }
 
    @Test
-   public void testCreateDispositionAnnotation() {
-      ArgumentCaptor<Boolean> captor = ArgumentCaptor.forClass(Boolean.class);
+   public void testCreateDispositionAnnotation() throws JSONException {
       String expectedId = "dfs";
       DispoAnnotationData annotationToCreate = new DispoAnnotationData();
       when(storage.findDispoItemById(program, itemId.getGuid())).thenReturn(dispoItem);
       when(dataFactory.getNewId()).thenReturn(expectedId);
       when(dispoItem.getAnnotationsList()).thenReturn(mockAnnotations);
-      when(dispoItem.getDiscrepanciesList()).thenReturn(jsonArray);
-      when(dataFactory.createUpdatedItem(eq(jsonObject), eq(jsonArray), Matchers.anyBoolean())).thenReturn(dispoItem);
-      when(dispoConnector.connectAnnotation(annotationToCreate, jsonArray)).thenReturn(false);
+      when(dispoItem.getDiscrepanciesList()).thenReturn(jsonObject);
+      when(dataFactory.createUpdatedItem(eq(jsonArray), eq(jsonObject))).thenReturn(dispoItem);
+      when(dispoConnector.connectAnnotation(annotationToCreate, jsonObject)).thenReturn(false);
       annotationToCreate.setIsConnected(true); //Assume this Annotation was connected 
 
       // Only need to createUpdatedItem with updateStatus = True when annotation is valid and current status is INCOMPLETE 
       annotationToCreate.setResolution("VALID");
-      when(dispoItem.getStatus()).thenReturn("COMPLETE"); // captor(0)
+      when(dispoItem.getStatus()).thenReturn("COMPLETE");
       String acutal = dispoApi.createDispoAnnotation(program, itemId.getGuid(), annotationToCreate);
       assertEquals(expectedId, acutal);
 
-      when(dispoItem.getStatus()).thenReturn("PASS"); // captor(1)
+      when(dispoItem.getStatus()).thenReturn("PASS");
       acutal = dispoApi.createDispoAnnotation(program, itemId.getGuid(), annotationToCreate);
       assertEquals(expectedId, acutal);
 
-      when(dispoItem.getStatus()).thenReturn("INCOMPLETE"); // captor(2)
+      when(dispoItem.getStatus()).thenReturn("INCOMPLETE");
       acutal = dispoApi.createDispoAnnotation(program, itemId.getGuid(), annotationToCreate);
       assertEquals(expectedId, acutal);
 
-      annotationToCreate.setResolution("INVALID"); // captor(3)
+      annotationToCreate.setResolution("INVALID");
       acutal = dispoApi.createDispoAnnotation(program, itemId.getGuid(), annotationToCreate);
       assertEquals(expectedId, acutal);
 
@@ -320,13 +312,7 @@ public class DispositionApiTest {
       acutal = dispoApi.createDispoAnnotation(program, itemId.getGuid(), annotationToCreate);
       assertEquals("", acutal);
 
-      verify(dispoConnector, times(3)).connectAnnotation(annotationToCreate, jsonArray);// Only tried to connect 3 times, excluded when annotations was invalid
-      verify(dataFactory, times(4)).createUpdatedItem(eq(mockAnnotations), eq(jsonArray), captor.capture());
-      List<Boolean> booleanList = captor.getAllValues();
-      assertFalse(booleanList.get(0));
-      assertFalse(booleanList.get(1));
-      assertTrue(booleanList.get(2));
-      assertFalse(booleanList.get(3));
+      verify(dispoConnector, times(4)).connectAnnotation(annotationToCreate, jsonObject);// Only tried to connect 3 times, excluded when annotations was invalid
    }
 
    @Test
@@ -354,23 +340,20 @@ public class DispositionApiTest {
 
    @Test
    public void testEditDispoItem() {
-      ArgumentCaptor<JSONArray> captor = ArgumentCaptor.forClass(JSONArray.class);
       DispoItemData newItem = new DispoItemData();
 
       when(storage.findDispoItemById(program, itemId.getGuid())).thenReturn(dispoItem);
-      when(dispoItem.getDiscrepanciesList()).thenReturn(jsonArray);
+      when(dispoItem.getDiscrepanciesList()).thenReturn(jsonObject);
 
       boolean actual = dispoApi.editDispoItem(program, itemId.getGuid(), newItem);
       assertTrue(actual);
 
-      JSONArray discrepanciesList = new JSONArray();
+      JSONObject discrepanciesList = new JSONObject();
       newItem.setDiscrepanciesList(discrepanciesList);
       actual = dispoApi.editDispoItem(program, itemId.getGuid(), newItem);
-      assertTrue(actual);
-      // Only should have merged Json Arrays once since the first newSet didn't have a Json Array
-      verify(dataFactory, times(1)).mergeJsonArrays(eq(jsonArray), captor.capture());
+      assertFalse(actual);
 
-      newItem.setAnnotationsList(jsonObject);
+      newItem.setAnnotationsList(jsonArray);
       actual = dispoApi.editDispoItem(program, itemId.getGuid(), newItem);
       assertFalse(actual);
    }
@@ -380,14 +363,18 @@ public class DispositionApiTest {
       DispoAnnotationData newAnnotation = new DispoAnnotationData();
       DispoProgram programUuid = program;
       String itemUuid = itemId.getGuid();
-      String expectedId = "1";
+      String expectedId = "faf";
 
       when(storage.findDispoItemById(programUuid, itemUuid)).thenReturn(dispoItem);
-      when(dispoItem.getAnnotationsList()).thenReturn(jsonObject);
-      when(dispoItem.getDiscrepanciesList()).thenReturn(jsonArray);
+      when(dispoItem.getAnnotationsList()).thenReturn(jsonArray);
+      when(dispoItem.getDiscrepanciesList()).thenReturn(jsonObject);
       when(jsonObject.getJSONObject(expectedId)).thenReturn(jsonObject);
+      when(jsonArray.length()).thenReturn(1);
+      when(jsonArray.getJSONObject(0)).thenReturn(jsonObject);
       // mocks for data util translation
-      when(jsonObject.has("id")).thenReturn(false);
+      when(jsonObject.has("id")).thenReturn(true);
+      when(jsonObject.getString("id")).thenReturn(expectedId);
+      when(jsonObject.has("index")).thenReturn(false);
       when(jsonObject.has("locationRefs")).thenReturn(false);
       when(jsonObject.has("idsOfCoveredDiscrepancies")).thenReturn(false);
       when(jsonObject.has("notesList")).thenReturn(false);
@@ -395,18 +382,17 @@ public class DispositionApiTest {
       when(jsonObject.getBoolean("isResolutionValid")).thenReturn(true); // We'll have the old annotation have a valid resolution to start
       // end
 
-      // add location Ref to newAnnotation so that disconnect and connect are invoked
       newAnnotation.setLocationRefs("1-10");
       boolean actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation);
       assertTrue(actual);
 
       // reset loc ref to null and set new (invalid) resolution 
       newAnnotation.setLocationRefs(null);
-      newAnnotation.setResolution("PCR 13"); // Since PCR validation isn't hooked up yet, only valid resolution is "VALID" 
+      when(validator.validate(newAnnotation)).thenReturn(true);
+      newAnnotation.setResolution("PCR 13");
       actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation);
       assertTrue(actual);
 
-      // set to invalid, make sure connect is not invoked
       newAnnotation.setResolution("VALID"); // Since PCR validation isn't hooked up yet, only valid resolution is "VALID" 
       actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation);
       assertTrue(actual);
@@ -414,14 +400,11 @@ public class DispositionApiTest {
       //  notes are the only thing being modified, no need to disconnect or connect
       newAnnotation.setLocationRefs(null);
       newAnnotation.setResolution(null);
-      JSONArray newNotes = new JSONArray();
-      newAnnotation.setNotesList(newNotes);
+      newAnnotation.setNotes("");
       actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation);
       assertTrue(actual);
 
-      verify(dispoConnector, times(3)).disconnectAnnotation(any(DispoAnnotationData.class), eq(jsonArray));
-      verify(dispoConnector, times(2)).connectAnnotation(any(DispoAnnotationData.class), eq(jsonArray));
-      verify(dataFactory, times(1)).mergeJsonArrays(any(JSONArray.class), any(JSONArray.class));
+      verify(dispoConnector, times(3)).connectAnnotation(any(DispoAnnotationData.class), eq(jsonObject));
    }
 
    @Test
@@ -431,10 +414,14 @@ public class DispositionApiTest {
       String expectedId = "1";
 
       when(storage.findDispoItemById(programUuid, itemUuid)).thenReturn(dispoItem);
-      when(dispoItem.getAnnotationsList()).thenReturn(jsonObject);
-      when(dispoItem.getDiscrepanciesList()).thenReturn(jsonArray);
+      when(dispoItem.getAnnotationsList()).thenReturn(jsonArray);
+      when(dispoItem.getDiscrepanciesList()).thenReturn(jsonObject);
+      when(jsonArray.length()).thenReturn(1);
+      when(jsonArray.getJSONObject(0)).thenReturn(jsonObject);
       // mocks for data util translation
-      when(jsonObject.has("id")).thenReturn(false);
+      when(jsonObject.has("id")).thenReturn(true);
+      when(jsonObject.getString("id")).thenReturn(expectedId);
+      when(jsonObject.has("index")).thenReturn(false);
       when(jsonObject.has("locationRefs")).thenReturn(false);
       when(jsonObject.has("idsOfCoveredDiscrepancies")).thenReturn(false);
       when(jsonObject.has("isValid")).thenReturn(false);
@@ -446,17 +433,13 @@ public class DispositionApiTest {
       when(jsonObject.getJSONObject(expectedId)).thenReturn(annotationInvalid);
 
       boolean actual = dispoApi.deleteDispoAnnotation(program, itemId.getGuid(), expectedId);
-      verify(dispoConnector).disconnectAnnotation(any(DispoAnnotationData.class), eq(jsonArray));
-      verify(jsonObject).remove(expectedId);
-      verify(dataFactory).createUpdatedItem(eq(jsonObject), eq(jsonArray), eq(false));
       assertTrue(actual);
 
-      // 
       JSONObject annotationValid = new JSONObject();
       annotationValid.put("isValid", true);
       when(jsonObject.getJSONObject(expectedId)).thenReturn(annotationValid);
       actual = dispoApi.deleteDispoAnnotation(program, itemId.getGuid(), expectedId);
-      verify(dataFactory).createUpdatedItem(eq(jsonObject), eq(jsonArray), eq(true));
+      verify(dataFactory, times(2)).createUpdatedItem(any(JSONArray.class), eq(jsonObject));
       assertTrue(actual);
    }
 }

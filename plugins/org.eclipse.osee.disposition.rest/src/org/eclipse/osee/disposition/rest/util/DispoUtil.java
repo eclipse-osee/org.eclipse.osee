@@ -16,8 +16,8 @@ import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
-import org.eclipse.osee.disposition.model.DispoSetData.DispositionOperationsEnum;
 import org.eclipse.osee.disposition.model.LocationRange;
+import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,12 +32,30 @@ public final class DispoUtil {
       //
    }
 
-   public static JSONObject asJSONOjbect(String value) {
+   public static JSONObject asJSONObject(String value) {
       try {
          return new JSONObject(value);
       } catch (JSONException ex) {
          throw new OseeCoreException(ex);
       }
+   }
+
+   public static JSONObject getById(JSONArray list, String id) {
+      try {
+         for (int i = 0; i < list.length(); i++) {
+            JSONObject object;
+            object = list.getJSONObject(i);
+            if (object.has("id")) {
+               if (object.getString("id").equals(id)) {
+                  return object;
+               }
+            }
+         }
+      } catch (JSONException ex) {
+         throw new OseeCoreException(ex);
+      }
+
+      return null;
    }
 
    public static JSONArray asJSONArray(String value) {
@@ -74,7 +92,6 @@ public final class DispoUtil {
          dispoSetData.setImportPath(dispoSet.getImportPath());
          dispoSetData.setNotesList(dispoSet.getNotesList());
          dispoSetData.setGuid(dispoSet.getGuid());
-         dispoSetData.setStatusCount(dispoSet.getStatusCount());
       } else {
          dispoSetData = null;
       }
@@ -82,14 +99,22 @@ public final class DispoUtil {
    }
 
    public static DispoItemData itemArtToItemData(DispoItem dispoItemArt) {
+      return itemArtToItemData(dispoItemArt, false);
+   }
+
+   public static DispoItemData itemArtToItemData(DispoItem dispoItemArt, boolean withDetails) {
       DispoItemData dispoItemData = new DispoItemData();
       dispoItemData.setName(dispoItemArt.getName());
       dispoItemData.setGuid(dispoItemArt.getGuid());
       dispoItemData.setCreationDate(dispoItemArt.getCreationDate());
+      dispoItemData.setAssignee(dispoItemArt.getAssignee());
+      dispoItemData.setVersion(dispoItemArt.getVersion());
       dispoItemData.setLastUpdate(dispoItemArt.getLastUpdate());
       dispoItemData.setStatus(dispoItemArt.getStatus());
-      dispoItemData.setAnnotationsList(dispoItemArt.getAnnotationsList());
       dispoItemData.setDiscrepanciesList(dispoItemArt.getDiscrepanciesList());
+      if (withDetails) {
+         dispoItemData.setAnnotationsList(dispoItemArt.getAnnotationsList());
+      }
       return dispoItemData;
    }
 
@@ -105,11 +130,17 @@ public final class DispoUtil {
          if (jsonObject.has("itemStatus")) {
             dispoItem.setStatus(jsonObject.getString("itemStatus"));
          }
+         if (jsonObject.has("itemVersion")) {
+            dispoItem.setVersion(jsonObject.getString("itemVersion"));
+         }
+         if (jsonObject.has("assignee")) {
+            dispoItem.setAssignee(jsonObject.getString("assignee"));
+         }
          if (jsonObject.has("discrepanciesList")) {
-            dispoItem.setDiscrepanciesList(jsonObject.getJSONArray("discrepanciesList"));
+            dispoItem.setDiscrepanciesList(jsonObject.getJSONObject("discrepanciesList"));
          }
          if (jsonObject.has("annotationsList")) {
-            dispoItem.setAnnotationsList(jsonObject.getJSONObject("annotationsList"));
+            dispoItem.setAnnotationsList(jsonObject.getJSONArray("annotationsList"));
          }
       } catch (JSONException ex) {
          throw new OseeCoreException("Error deserializing a Dispositionable Item.", ex);
@@ -128,7 +159,7 @@ public final class DispoUtil {
             dispoSet.setName(jsonObject.getString("name"));
          }
          if (jsonObject.has("operation")) {
-            dispoSet.setOperation((DispositionOperationsEnum) jsonObject.get("operation"));
+            dispoSet.setOperation(jsonObject.getString("operation"));
          }
          if (jsonObject.has("notesList")) {
             dispoSet.setNotesList(jsonObject.getJSONArray("notesList"));
@@ -153,11 +184,6 @@ public final class DispoUtil {
 
    public static JSONObject discrepancyToJsonObj(Discrepancy discrepancy) {
       JSONObject toReturn = new JSONObject(discrepancy);
-      try {
-         toReturn.put("idsOfCoveringAnnotations", discrepancy.getIdsOfCoveringAnnotations());
-      } catch (JSONException ex) {
-         throw new OseeCoreException(ex);
-      }
       return toReturn;
    }
 
@@ -176,7 +202,6 @@ public final class DispoUtil {
       JSONObject toReturn = new JSONObject(annotation);
       try {
          toReturn.put("idsOfCoveredDiscrepancies", annotation.getIdsOfCoveredDiscrepancies());
-         toReturn.put("notesList", annotation.getNotesList());
       } catch (JSONException ex) {
          throw new OseeCoreException(ex);
       }
@@ -189,6 +214,9 @@ public final class DispoUtil {
          if (object.has("id")) {
             dispoAnnotation.setId(object.getString("id"));
          }
+         if (object.has("index")) {
+            dispoAnnotation.setIndex(object.getInt("index"));
+         }
          if (object.has("locationRefs")) {
             dispoAnnotation.setLocationRefs(object.getString("locationRefs"));
          }
@@ -198,11 +226,14 @@ public final class DispoUtil {
          if (object.has("isValid")) {
             dispoAnnotation.setIsConnected(object.getBoolean("isValid"));
          }
-         if (object.has("notesList")) {
-            dispoAnnotation.setNotesList(object.getJSONArray("notesList"));
+         if (object.has("notes")) {
+            dispoAnnotation.setNotes(object.getString("notes"));
          }
          if (object.has("resolution")) {
             dispoAnnotation.setResolution(object.getString("resolution"));
+         }
+         if (object.has("isConnected")) {
+            dispoAnnotation.setIsConnected(object.getBoolean("isConnected"));
          }
          if (object.has("isResolutionValid")) {
             dispoAnnotation.setIsResolutionValid(object.getBoolean("isResolutionValid"));
@@ -215,10 +246,9 @@ public final class DispoUtil {
 
    public static Discrepancy jsonObjToDiscrepancy(JSONObject object) throws JSONException {
       Discrepancy discrepancy = new Discrepancy();
-      discrepancy.setLocationRange(jsonObjToLocationRagne(object.getJSONObject("locationRange")));
+      discrepancy.setLocation(object.getInt("location"));
       discrepancy.setText(object.getString("text"));
-      discrepancy.setId(object.getInt("id"));
-      discrepancy.setIdsOfCoveringAnnotations(object.getJSONArray("idsOfCoveringAnnotations"));
+      discrepancy.setId(object.getString("id"));
       return discrepancy;
    }
 
@@ -227,5 +257,13 @@ public final class DispoUtil {
       range.setStart(object.getInt("start"));
       range.setEnd(object.getInt("end"));
       return range;
+   }
+
+   public static Note jsonObjToNote(JSONObject object) throws JSONException {
+      Note note = new Note();
+      note.setContent(object.getString("content"));
+      note.setDateString(object.getString("dateString"));
+      note.setType(object.getString("type"));
+      return note;
    }
 }

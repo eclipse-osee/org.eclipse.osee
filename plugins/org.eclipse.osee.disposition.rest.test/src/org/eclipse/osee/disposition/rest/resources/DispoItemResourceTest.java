@@ -12,16 +12,20 @@ package org.eclipse.osee.disposition.rest.resources;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.disposition.model.DispoAnnotationData;
+
+import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.util.HtmlWriter;
+import org.eclipse.osee.disposition.rest.util.DispoHtmlWriter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +40,7 @@ public class DispoItemResourceTest {
    @Mock
    private DispoApi dispositionApi;
    @Mock
-   private HtmlWriter htmlWriter;
+   private DispoHtmlWriter htmlWriter;
    @Mock
    private Identifiable<String> id1;
    @Mock
@@ -58,26 +62,19 @@ public class DispoItemResourceTest {
    }
 
    @Test
-   public void testGetAllAsHtml() {
+   public void testGetAllAsHtml() throws Exception {
       // No Items
-      ResultSet<DispoItemData> emptyResultSet = ResultSets.emptyResultSet();
+      List<DispoItem> emptyResultSet = new ArrayList<DispoItem>();
       when(dispositionApi.getDispoItems(program, "setId")).thenReturn(emptyResultSet);
       Response noItemsResponse = resource.getAllDispoItems();
-      String messageActual = (String) noItemsResponse.getEntity();
-      assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noItemsResponse.getStatus());
-      assertEquals(DispoMessages.Item_NoneFound, messageActual);
+      assertEquals(Response.Status.OK.getStatusCode(), noItemsResponse.getStatus());
 
-      DispoItemData item = new DispoItemData();
-      item.setGuid(id1.getGuid());
-      item.setName("Item");
-      ResultSet<DispoItemData> resultSet = ResultSets.singleton(item);
+      DispoItem item = new DispoItemData();
+      List<DispoItem> resultSet = Collections.singletonList(item);
 
       when(dispositionApi.getDispoItems(program, "setId")).thenReturn(resultSet);
-      when(htmlWriter.createDispositionPage("Dispositionable Items", "item/", resultSet)).thenReturn("htmlFromWriter");
       Response oneSetResponse = resource.getAllDispoItems();
-      String html = (String) oneSetResponse.getEntity();
       assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());
-      assertEquals("htmlFromWriter", html);
    }
 
    @Test
@@ -97,31 +94,6 @@ public class DispoItemResourceTest {
       DispoItemData returnedItem = (DispoItemData) oneSetResponse.getEntity();
       assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());
       assertEquals(expectedItem, returnedItem);
-   }
-
-   @Test
-   public void testGetSingleSetAsHtml() {
-      // No Items
-      when(dispositionApi.getDispoItemById(program, id2.getGuid())).thenReturn(null);
-      Response noItemsResponse = resource.getDispoItemsByIdHtml(id2.getGuid());
-      String messageActual = (String) noItemsResponse.getEntity();
-      assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noItemsResponse.getStatus());
-      assertEquals(DispoMessages.Item_NotFound, messageActual);
-
-      DispoItemData item = new DispoItemData();
-      item.setGuid(id1.getGuid());
-      item.setName("item");
-      ResultSet<DispoAnnotationData> emptyResultSet = ResultSets.emptyResultSet();
-      ResultSet<DispoAnnotationData> resultAnnotations = emptyResultSet;
-      when(dispositionApi.getDispoItemById(program, item.getGuid())).thenReturn(item);
-      when(dispositionApi.getDispoAnnotations(program, id1.getGuid())).thenReturn(resultAnnotations);
-      String prefixPath = item.getGuid() + "/annotation";
-      String subTitle = "Annotations";
-      when(htmlWriter.createDispoPage(item.getName(), prefixPath, subTitle, "[]")).thenReturn("htmlFromWriter");
-      Response response = resource.getDispoItemsByIdHtml(item.getGuid());
-      String returnedHtml = (String) response.getEntity();
-      assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-      assertEquals("htmlFromWriter", returnedHtml);
    }
 
    @Test

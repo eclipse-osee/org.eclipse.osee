@@ -22,10 +22,7 @@ public interface DispoSet extends Identifiable<String> {
 
    String getImportPath();
 
-   String getStatusCount();
-
    JSONArray getNotesList();
 
    String getImportState();
-
 }

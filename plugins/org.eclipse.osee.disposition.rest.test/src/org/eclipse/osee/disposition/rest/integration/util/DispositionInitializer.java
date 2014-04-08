@@ -13,14 +13,13 @@ package org.eclipse.osee.disposition.rest.integration.util;
 import static org.eclipse.osee.disposition.rest.integration.util.DispositionTestUtil.SAW_Bld_1;
 import static org.eclipse.osee.disposition.rest.integration.util.DispositionTestUtil.SAW_Bld_1_FOR_DISPO;
 import static org.eclipse.osee.disposition.rest.util.DispoUtil.discrepancyToJsonObj;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.model.DispoStrings;
-import org.eclipse.osee.disposition.model.LocationRange;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -34,7 +33,6 @@ import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -97,45 +95,40 @@ public class DispositionInitializer {
    }
 
    private void createDiscrepancies(DispoProgram program, String itemId) {
-      List<JSONObject> discrepanciesToInit = new ArrayList<JSONObject>();
+      Map<String, JSONObject> discrepanciesToInit = new HashMap<String, JSONObject>();
       Discrepancy one = new Discrepancy();
-      one.setId(0);
-      one.setIdsOfCoveringAnnotations(new JSONArray());
+      one.setId("idafd");
       one.setText("one");
-      one.setLocationRange(new LocationRange(1, 10));
-      discrepanciesToInit.add(discrepancyToJsonObj(one));
+      one.setLocation(1);
+      discrepanciesToInit.put(one.getId(), discrepancyToJsonObj(one));
 
       Discrepancy two = new Discrepancy();
-      two.setId(1);
-      two.setIdsOfCoveringAnnotations(new JSONArray());
+      two.setId("iddf");
       two.setText("two");
-      two.setLocationRange(new LocationRange(12, 20));
-      discrepanciesToInit.add(discrepancyToJsonObj(two));
+      two.setLocation(12);
+      discrepanciesToInit.put(two.getId(), discrepancyToJsonObj(two));
 
       Discrepancy three = new Discrepancy();
-      three.setId(2);
-      three.setIdsOfCoveringAnnotations(new JSONArray());
+      three.setId("absc");
       three.setText("three");
-      three.setLocationRange(new LocationRange(23));
-      discrepanciesToInit.add(discrepancyToJsonObj(three));
+      three.setLocation(23);
+      discrepanciesToInit.put(three.getId(), discrepancyToJsonObj(three));
 
       Discrepancy four = new Discrepancy();
-      four.setId(3);
-      four.setIdsOfCoveringAnnotations(new JSONArray());
+      four.setId("cddg");
       four.setText("four");
-      four.setLocationRange(new LocationRange(25));
-      discrepanciesToInit.add(discrepancyToJsonObj(four));
+      four.setLocation(25);
+      discrepanciesToInit.put(four.getId(), discrepancyToJsonObj(four));
 
       Discrepancy five = new Discrepancy();
-      five.setId(4);
-      five.setIdsOfCoveringAnnotations(new JSONArray());
+      five.setId("yoj");
       five.setText("five");
-      five.setLocationRange(new LocationRange(32, 90));
-      discrepanciesToInit.add(discrepancyToJsonObj(five));
+      five.setLocation(90);
+      discrepanciesToInit.put(five.getId(), discrepancyToJsonObj(five));
 
-      JSONArray array = new JSONArray(discrepanciesToInit);
+      JSONObject discrepanciesList = new JSONObject(discrepanciesToInit);
       DispoItemData item = new DispoItemData();
-      item.setDiscrepanciesList(array);
+      item.setDiscrepanciesList(discrepanciesList);
       dispoApi.editDispoItem(program, itemId, item);
    }
 

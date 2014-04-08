@@ -12,6 +12,9 @@ package org.eclipse.osee.disposition.rest.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import java.util.StringTokenizer;
@@ -20,11 +23,9 @@ import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.LocationRange;
-import org.eclipse.osee.disposition.rest.util.DiscrepancyComperator;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.disposition.rest.util.LocationRangeComparator;
 import org.eclipse.osee.disposition.rest.util.LocationRangeUtil;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,91 +51,139 @@ public class DispoConnector {
       logger.trace("Stopping DispoConnector...");
    }
 
-   public String allDiscrepanciesAnnotated(DispoItem item) {
+   public String allDiscrepanciesAnnotated(DispoItem item) throws JSONException {
       String toReturn;
-      JSONArray discrepancies = item.getDiscrepanciesList();
-      JSONObject annotations = item.getAnnotationsList();
+      JSONObject discrepancies = item.getDiscrepanciesList();
+      JSONArray annotatinos = item.getAnnotationsList();
+      HashSet<Integer> allCoveredDiscrepancies = getAllCoveredDiscrepanciesFromAnnotations(discrepancies, annotatinos);
+      ArrayList<Integer> allDiscrepancies = createDiscrepanciesList(discrepancies);
 
-      int discrepanciesSize = discrepancies.length();
-      if (discrepanciesSize == 0) {
-         toReturn = DispoStrings.Item_Pass;
+      allDiscrepancies.removeAll(allCoveredDiscrepancies);
+
+      boolean allDiscrepanciesCovered = false;
+      if (allDiscrepancies.isEmpty()) {
+         allDiscrepanciesCovered = true;
       } else {
-         boolean allDiscrepanciesCovered = true; // Assume everything is covered, on first false we break and return false
-         for (int i = 0; i < discrepanciesSize; i++) {
-            try {
-               JSONObject discrepancyObject = discrepancies.getJSONObject(i);
-               Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancyObject);
-               List<LocationRange> locRefsAsSortedList = getAllLocRefsAsSortedList(annotations, discrepancy);
-               if (!LocationRangeUtil.isCovered(discrepancy.getLocationRange(), locRefsAsSortedList)) {
-                  allDiscrepanciesCovered = false;
-                  // We found a discrepancy that hasn't been fully covered
-                  break;
-               }
-            } catch (JSONException ex) {
-               throw new OseeCoreException(ex);
-            }
-         }
+         allDiscrepanciesCovered = false;
+      }
 
-         if (allDiscrepanciesCovered) {
-            toReturn = DispoStrings.Item_Complete;
-         } else {
-            toReturn = DispoStrings.Item_InComplete;
+      if (allAnnotationsValid(annotatinos) && allDiscrepanciesCovered) {
+         toReturn = DispoStrings.Item_Complete;
+      } else {
+         toReturn = DispoStrings.Item_InComplete;
+      }
+
+      return toReturn;
+   }
+
+   private boolean allAnnotationsValid(JSONArray annotatinos) throws JSONException {
+      int length = annotatinos.length();
+      for (int i = 0; i < length; i++) {
+         JSONObject annotationAsJson = annotatinos.getJSONObject(i);
+         DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(annotationAsJson);
+         if (!annotation.isValid()) {
+            return false;
+         }
+      }
+
+      return true;
+   }
+
+   @SuppressWarnings("unchecked")
+   private ArrayList<Integer> createDiscrepanciesList(JSONObject discrepancies) throws JSONException {
+      ArrayList<Integer> toReturn = new ArrayList<Integer>();
+      Iterator<String> iterator = discrepancies.keys();
+      while (iterator.hasNext()) {
+         String key = iterator.next();
+         JSONObject discrepancyAsJson = discrepancies.getJSONObject(key);
+         Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancyAsJson);
+         toReturn.add(discrepancy.getLocation());
+      }
+
+      return toReturn;
+   }
+
+   private HashSet<Integer> getAllCoveredDiscrepanciesFromAnnotations(JSONObject discrepancies, JSONArray annotations) throws JSONException {
+      HashSet<Integer> toReturn = new HashSet<Integer>();
+      int length = annotations.length();
+      for (int j = 0; j < length; j++) {
+         JSONObject annotationAsObject = annotations.getJSONObject(j);
+         DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(annotationAsObject);
+         JSONArray idsOfCoveredDiscrepancies = annotation.getIdsOfCoveredDiscrepancies();
+         for (int i = 0; i < idsOfCoveredDiscrepancies.length(); i++) {
+            String id = idsOfCoveredDiscrepancies.getString(i);
+            if (discrepancies.has(id)) {
+               JSONObject discrepancyAsJson = discrepancies.getJSONObject(id);
+               Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancyAsJson);
+               toReturn.add(discrepancy.getLocation());
+            } else {
+               String justTestPoint = id.replaceAll(DispoStrings.DeletedDiscrepancy, "");
+               toReturn.add(Integer.valueOf(justTestPoint));
+            }
          }
       }
 
       return toReturn;
    }
 
-   public boolean connectAnnotation(DispoAnnotationData annotation, JSONArray discrepanciesArray) {
+   public boolean connectAnnotation(DispoAnnotationData annotation, JSONObject discrepanciesList) throws JSONException {
       boolean isAllLocRefValid = true;
-      List<Discrepancy> sortedDiscrepanciesList = arrayToSortedList(discrepanciesArray);
+      HashMap<Integer, String> testPointNumberToId = getPointNumbersToIds(discrepanciesList);
       List<LocationRange> listOfLocationRefs = sortList(annotation.getLocationRefs());
-      int startIndexForNextMatch = 0;
-      int idOfPreviousMatched = -1;
+      List<String> workingIdsOfCovered = new ArrayList<String>();
 
       for (LocationRange singleLocationRef : listOfLocationRefs) {
-         try {
-            Discrepancy matchedDiscrepancy =
-               matchToDiscrepancy(annotation, singleLocationRef, sortedDiscrepanciesList, startIndexForNextMatch);
-            if (matchedDiscrepancy == null) {
-               isAllLocRefValid = false;
-               break;
-            } else {
-               int idOfMatched = matchedDiscrepancy.getId();
-               // only update discrepancy and annotation if we found a different matching discrepancy
-               if (idOfPreviousMatched != idOfMatched) {
-                  idOfPreviousMatched = idOfMatched;
-                  startIndexForNextMatch = idOfMatched;
-                  matchedDiscrepancy.addCoveringAnnotation(annotation);
-                  JSONObject discrepancyAsObject = DispoUtil.discrepancyToJsonObj(matchedDiscrepancy);
-                  annotation.addCoveredDiscrepancyIndex(matchedDiscrepancy);
-                  discrepanciesArray.put(idOfMatched, discrepancyAsObject);
-                  //on next search start at the previously matched one since both discrepancies and annotations are in order
+         if (singleLocationRef.getStart() != singleLocationRef.getEnd()) {
+            for (int i = singleLocationRef.getStart(); i <= singleLocationRef.getEnd(); i++) {
+               if (!tryToAddDiscrepancyForTestPoint(testPointNumberToId, i, workingIdsOfCovered)) {
+                  isAllLocRefValid = false;
+                  break;
                }
             }
-         } catch (JSONException ex) {
-            throw new OseeCoreException(ex);
+         } else {
+            if (!tryToAddDiscrepancyForTestPoint(testPointNumberToId, singleLocationRef.getStart(), workingIdsOfCovered)) {
+               isAllLocRefValid = false;
+               break;
+            }
          }
       }
 
+      // Do this every time, if nothing else will ensure Loc Refs are always ordered
       annotation.setLocationRefs(getLocRefsAsString(listOfLocationRefs));
-      annotation.setIsConnected(isAllLocRefValid);
+
+      if (isAllLocRefValid) {
+         annotation.setIsConnected(true);
+         annotation.setIdsOfCoveredDiscrepancies(new JSONArray(workingIdsOfCovered));
+      } else {
+         annotation.setIsConnected(false);
+      }
       return isAllLocRefValid;
    }
 
-   public void disconnectAnnotation(DispoAnnotationData annotation, JSONArray discrepanciesList) throws JSONException {
-      JSONArray discrepanciesConnected = annotation.getIdsOfCoveredDiscrepancies();
-      int size = discrepanciesConnected.length();
-      for (int i = 0; i < size; i++) {
-         int indexOfDiscrepancy = discrepanciesConnected.getInt(i); // the discrepancy to remove the annotation from, index in discrepanciesList
-         JSONObject discrepancyAsObject = discrepanciesList.getJSONObject(indexOfDiscrepancy);
-         Discrepancy discrepancyAsData = DispoUtil.jsonObjToDiscrepancy(discrepancyAsObject);
-         JSONArray indexesOfAnnotations = discrepancyAsData.getIdsOfCoveringAnnotations();
-         removeElementFromArray(indexesOfAnnotations, annotation.getId());
+   private boolean tryToAddDiscrepancyForTestPoint(HashMap<Integer, String> testPointNumberToId, int testPoint, List<String> workingList) {
+      String idOfMatched = testPointNumberToId.get(testPoint);
+      if (idOfMatched == null) {
+         return false;
+      } else {
+         workingList.add(idOfMatched);
       }
-      // clear list of connected discrepancies for this annotation
-      annotation.setIdsOfCoveredDiscrepancies(new JSONArray());
-      annotation.setIsConnected(false);
+
+      return true;
+   }
+
+   @SuppressWarnings("unchecked")
+   private HashMap<Integer, String> getPointNumbersToIds(JSONObject discrepancies) throws JSONException {
+      HashMap<Integer, String> toReturn = new HashMap<Integer, String>();
+      Iterator<String> iterator = discrepancies.keys();
+      while (iterator.hasNext()) {
+         String key = iterator.next();
+         JSONObject discrepancyAsJson = discrepancies.getJSONObject(key);
+         Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancyAsJson);
+         int pointNumber = discrepancy.getLocation();
+         toReturn.put(pointNumber, discrepancy.getId());
+      }
+
+      return toReturn;
    }
 
    // Not currently used.  May implement if users want to see what discrepancies are left to cover
@@ -183,42 +232,6 @@ public class DispoConnector {
       return allUncovered;
    }
 
-   private List<LocationRange> getAllLocRefsAsSortedList(JSONObject annotations, Discrepancy discrepancy) {
-      StringBuilder sb = new StringBuilder();
-      JSONArray indexesOfCoveringAnnotations = discrepancy.getIdsOfCoveringAnnotations();
-      int size = indexesOfCoveringAnnotations.length();
-      for (int i = 0; i < size; i++) {
-         try {
-            if (sb.length() > 0) {
-               sb.append(",");
-            }
-            String annotationId = indexesOfCoveringAnnotations.getString(i);
-            JSONObject annotationAsJsonObj = annotations.getJSONObject(annotationId);
-            DispoAnnotationData annotationAsData = DispoUtil.jsonObjToDispoAnnotationData(annotationAsJsonObj);
-            sb.append(annotationAsData.getLocationRefs());
-         } catch (JSONException ex) {
-            throw new OseeCoreException(ex);
-         }
-      }
-
-      return sortList(sb.toString());
-
-   }
-
-   private void removeElementFromArray(JSONArray listToRemoveFrom, String element) throws JSONException {
-      int size = listToRemoveFrom.length();
-      List<Integer> indexOfElementsToRemove = new ArrayList<Integer>();
-      for (int i = 0; i < size; i++) {
-         if (listToRemoveFrom.getString(i).equals(element)) {
-            indexOfElementsToRemove.add(i);
-         }
-      }
-
-      for (Integer index : indexOfElementsToRemove) {
-         listToRemoveFrom.remove(index);
-      }
-   }
-
    private static String getLocRefsAsString(List<LocationRange> list) {
       StringBuilder sb = new StringBuilder();
       for (LocationRange range : list) {
@@ -245,38 +258,4 @@ public class DispoConnector {
       return toReturn;
    }
 
-   private List<Discrepancy> arrayToSortedList(JSONArray array) {
-      List<Discrepancy> discrepanciesAsList = new ArrayList<Discrepancy>();
-      int size = array.length();
-      for (int i = 0; i < size; i++) {
-         try {
-            discrepanciesAsList.add(DispoUtil.jsonObjToDiscrepancy(array.getJSONObject(i)));
-         } catch (JSONException ex) {
-            throw new OseeCoreException(ex);
-         }
-      }
-      Collections.sort(discrepanciesAsList, new DiscrepancyComperator());
-      return discrepanciesAsList;
-   }
-
-   private Discrepancy matchToDiscrepancy(DispoAnnotationData annotation, LocationRange singleLocationRangeRef, List<Discrepancy> discrepanciesList, int startIndex) {
-      Discrepancy matchedDiscrepancy = null;
-      int sizeOfList = discrepanciesList.size();
-      int firstUnCovered = singleLocationRangeRef.getStart();
-
-      for (int i = startIndex; i < sizeOfList; i++) {
-         // want to guarantee that the discrepancy we're starting at has starting index <= to the first uncovered part of the location ref
-         Discrepancy discrepancy = discrepanciesList.get(i);
-         if (discrepancy.getLocationRange().getStart() > firstUnCovered) {
-            break;
-         } else {
-            if (LocationRangeUtil.isLocRefWithinRange(discrepancy.getLocationRange(), singleLocationRangeRef)) {
-               matchedDiscrepancy = discrepancy;
-               break;
-            }
-         }
-      }
-
-      return matchedDiscrepancy;
-   }
 }

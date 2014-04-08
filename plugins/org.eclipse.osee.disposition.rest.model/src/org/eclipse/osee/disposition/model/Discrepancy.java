@@ -11,22 +11,20 @@
 package org.eclipse.osee.disposition.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import org.json.JSONArray;
 
 /**
  * @author Angel Avila
  */
 @XmlRootElement
 public class Discrepancy {
-   private int id;
+   private String id;
    private String text;
-   private LocationRange locationRange;
-   private JSONArray idsOfCoveringAnnotations;
+   private int location;
 
    public Discrepancy() {
    }
 
-   public int getId() {
+   public String getId() {
       return id;
    }
 
@@ -34,16 +32,12 @@ public class Discrepancy {
       return text;
    }
 
-   public LocationRange getLocationRange() {
-      return locationRange;
-   }
-
-   public JSONArray getIdsOfCoveringAnnotations() {
-      return idsOfCoveringAnnotations;
+   public int getLocation() {
+      return location;
    }
 
    // Setters
-   public void setId(int id) {
+   public void setId(String id) {
       this.id = id;
    }
 
@@ -51,17 +45,8 @@ public class Discrepancy {
       this.text = text;
    }
 
-   public void setLocationRange(LocationRange locationRange) {
-      this.locationRange = locationRange;
-   }
-
-   public void setIdsOfCoveringAnnotations(JSONArray idsOfCoveringAnnotations) {
-      this.idsOfCoveringAnnotations = idsOfCoveringAnnotations;
-   }
-
-   // Utils
-   public void addCoveringAnnotation(DispoAnnotationData annotation) {
-      idsOfCoveringAnnotations.put(annotation.getId());
+   public void setLocation(int location) {
+      this.location = location;
    }
 
 }

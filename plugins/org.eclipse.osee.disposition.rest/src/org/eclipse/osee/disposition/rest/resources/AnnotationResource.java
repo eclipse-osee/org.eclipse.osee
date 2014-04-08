@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.resources;
 
+import java.io.IOException;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -22,22 +24,22 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
+import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.util.HtmlWriter;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.disposition.rest.util.DispoHtmlWriter;
 
 /**
  * @author Angel Avila
  */
 public class AnnotationResource {
    private final DispoApi dispoApi;
-   private final HtmlWriter writer;
+   private final DispoHtmlWriter writer;
    private final DispoProgram program;
    private final String itemId;
 
-   public AnnotationResource(DispoApi dispoApi, HtmlWriter writer, DispoProgram program, String setUuid, String dispResourceId) {
+   public AnnotationResource(DispoApi dispoApi, DispoHtmlWriter writer, DispoProgram program, String setUuid, String dispResourceId) {
       this.dispoApi = dispoApi;
       this.program = program;
       this.itemId = dispResourceId;
@@ -60,14 +62,12 @@ public class AnnotationResource {
       if (!annotation.getLocationRefs().isEmpty()) {
          String createdAnnotationId = dispoApi.createDispoAnnotation(program, itemId, annotation);
          status = Status.CREATED;
-         DispoAnnotationData createdAnnotation =
-            dispoApi.getDispoAnnotationByIndex(program, itemId, createdAnnotationId);
+         DispoAnnotationData createdAnnotation = dispoApi.getDispoAnnotationById(program, itemId, createdAnnotationId);
          response = Response.status(status).entity(createdAnnotation).build();
       } else {
          status = Status.BAD_REQUEST;
          response = Response.status(status).entity(DispoMessages.Annotation_EmptyLocRef).build();
       }
-
       return response;
    }
 
@@ -75,23 +75,19 @@ public class AnnotationResource {
     * Get all Annotations for the DisposionableItem
     * 
     * @return The Annotation found for the DisposionableItem
+    * @throws IOException
     * @response.representation.200.doc OK, Found Annotations
     * @response.representation.404.doc Not Found, Could not find any Annotations
     */
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public Response getAllDispoAnnotations() {
+   public Response getAllDispoAnnotations() throws IOException {
       Response.Status status;
       String html;
-      ResultSet<DispoAnnotationData> dispositionAnnotations = dispoApi.getDispoAnnotations(program, itemId);
+      List<DispoAnnotationData> dispositionAnnotations = dispoApi.getDispoAnnotations(program, itemId);
 
-      if (dispositionAnnotations.isEmpty()) {
-         status = Status.NOT_FOUND;
-         html = DispoMessages.Annotation_NoneFound;
-      } else {
-         status = Status.OK;
-         html = writer.createDispositionPage("Annotations", "annotation/", dispositionAnnotations);
-      }
+      status = Status.OK;
+      html = writer.createSubTable(dispositionAnnotations);
       return Response.status(status).entity(html).build();
    }
 
@@ -108,39 +104,13 @@ public class AnnotationResource {
    @Produces(MediaType.APPLICATION_JSON)
    public Response getAnnotationByIdJson(@PathParam("annotationId") String annotationId) {
       Response response;
-      DispoAnnotationData result = dispoApi.getDispoAnnotationByIndex(program, itemId, annotationId);
+      DispoAnnotationData result = dispoApi.getDispoAnnotationById(program, itemId, annotationId);
       if (result == null) {
          response = Response.status(Response.Status.NOT_FOUND).entity(DispoMessages.Annotation_NotFound).build();
       } else {
          response = Response.status(Response.Status.OK).entity(result).build();
       }
       return response;
-   }
-
-   /**
-    * Get a specific Annotation given an Id
-    * 
-    * @param id The Id of the Annotation to search for
-    * @return The found Annotation if successful. Error Code otherwise
-    * @response.representation.200.doc OK, found Annotation
-    * @response.representation.404.doc Not Found, Could not find the Annotation
-    */
-   @Path("{annotationId}")
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   public Response getAnnotationByIdHtml(@PathParam("annotationId") String annotationId) {
-      Response.Status status;
-      String html;
-      DispoAnnotationData dispositionAnnotation = dispoApi.getDispoAnnotationByIndex(program, itemId, annotationId);
-      if (dispositionAnnotation == null) {
-         status = Status.NOT_FOUND;
-         html = DispoMessages.Annotation_NotFound;
-      } else {
-         String notes = dispositionAnnotation.getNotesList().toString();
-         status = Status.OK;
-         html = writer.createDispoPage(dispositionAnnotation.getLocationRefs(), "", "", notes);
-      }
-      return Response.status(status).entity(html).build();
    }
 
    /**
@@ -159,7 +129,9 @@ public class AnnotationResource {
       Response response;
       boolean wasEdited = dispoApi.editDispoAnnotation(program, itemId, annotationId, newAnnotation);
       if (wasEdited) {
-         response = Response.status(Response.Status.OK).build();
+         DispoItem dispoItemById = dispoApi.getDispoItemById(program, itemId);
+         response = Response.status(Response.Status.OK).entity(dispoItemById.getStatus()).build();
+
       } else {
          response = Response.status(Response.Status.NOT_FOUND).entity(DispoMessages.Annotation_NotFound).build();
       }
@@ -180,7 +152,8 @@ public class AnnotationResource {
       Response response;
       boolean wasEdited = dispoApi.deleteDispoAnnotation(program, itemId, annotationId);
       if (wasEdited) {
-         response = Response.status(Response.Status.OK).build();
+         DispoItem dispoItemById = dispoApi.getDispoItemById(program, itemId);
+         response = Response.status(Response.Status.OK).entity(dispoItemById.getStatus()).build();
       } else {
          response = Response.status(Response.Status.NOT_FOUND).entity(DispoMessages.Annotation_NotFound).build();
       }

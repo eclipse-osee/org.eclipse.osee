@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal;
 
+import java.util.List;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -30,9 +30,11 @@ public interface DispoWriter {
 
    Identifiable<String> createDispoItem(ArtifactReadable author, DispoProgram program, DispoSet parentSet, DispoItem itemToCreate, ArtifactReadable assigneeId);
 
-   void updateDispoItem(ArtifactReadable author, DispoProgram program, String itemToEditId, DispoItem itemToCreate);
+   void createDispoItems(ArtifactReadable author, DispoProgram program, DispoSet parentSet, List<DispoItem> data, String assignee);
+
+   void updateDispoItems(ArtifactReadable author, DispoProgram program, String itemToEditId, List<DispoItem> itemsToUpdate);
 
    boolean deleteDispoItem(ArtifactReadable author, DispoProgram program, String itemId);
 
-   void createAnnotation(ArtifactReadable author, DispoProgram program, ArtifactId dispoItem, String annotationsJson);
+   void updateDispoItem(ArtifactReadable author, DispoProgram program, String dispoItemId, DispoItem data);
 }

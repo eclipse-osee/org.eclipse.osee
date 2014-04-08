@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.resources;
 
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -27,8 +28,8 @@ import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.util.HtmlWriter;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.disposition.rest.util.DispoHtmlWriter;
+import org.eclipse.osee.disposition.rest.util.DispoUtil;
 
 /**
  * @author Angel Avila
@@ -36,10 +37,10 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 public class DispoSetResource {
 
    private final DispoApi dispoApi;
-   private final HtmlWriter writer;
+   private final DispoHtmlWriter writer;
    private final DispoProgram program;
 
-   public DispoSetResource(DispoApi dispoApi, HtmlWriter writer, DispoProgram program) {
+   public DispoSetResource(DispoApi dispoApi, DispoHtmlWriter writer, DispoProgram program) {
       this.dispoApi = dispoApi;
       this.writer = writer;
       this.program = program;
@@ -67,9 +68,9 @@ public class DispoSetResource {
          boolean isUniqueSetName = dispoApi.isUniqueSetName(program, name);
          if (isUniqueSetName) {
             String createdSetId = dispoApi.createDispoSet(program, descriptor).getGuid();
-            DispoSetData createdSet = dispoApi.getDispoSetById(program, createdSetId);
+            DispoSet createdSet = dispoApi.getDispoSetById(program, createdSetId);
             status = Status.CREATED;
-            response = Response.status(status).entity(createdSet).build();
+            response = Response.status(status).entity(DispoUtil.setArtToSetData(createdSet)).build();
          } else {
             status = Status.CONFLICT;
             response = Response.status(status).entity(DispoMessages.Set_ConflictingNames).build();
@@ -91,7 +92,7 @@ public class DispoSetResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public Response getAllDispoSets() {
-      ResultSet<DispoSetData> allDispoSets = dispoApi.getDispoSets(program);
+      List<DispoSet> allDispoSets = dispoApi.getDispoSets(program);
       Response.Status status;
       String html;
       if (allDispoSets.isEmpty()) {
@@ -99,7 +100,7 @@ public class DispoSetResource {
          html = DispoMessages.Set_NoneFound;
       } else {
          status = Status.OK;
-         html = writer.createDispositionPage("Disposition Sets", "set/", allDispoSets);
+         html = writer.createSelectSet(allDispoSets);
       }
       return Response.status(status).entity(html).build();
    }
@@ -121,7 +122,7 @@ public class DispoSetResource {
       if (result == null) {
          response = Response.status(Response.Status.NOT_FOUND).entity(DispoMessages.Set_NotFound).build();
       } else {
-         response = Response.status(Response.Status.OK).entity(result).build();
+         response = Response.status(Response.Status.OK).entity(DispoUtil.setArtToSetData(result)).build();
       }
       return response;
    }
@@ -129,28 +130,20 @@ public class DispoSetResource {
    /**
     * Get a specific Disposition Set given a setId
     * 
-    * @param setId The Id of the Disposition Set to search for
     * @return The found Disposition Set if successful. Error Code otherwise
     * @response.representation.200.doc OK, Found Disposition Set
     * @response.representation.404.doc Not Found, Could not find any Disposition Sets
     */
-   @Path("{setId}")
+   // Will go away once we implement the angular stuff
+   @Path("/admin")
    @GET
-   @Produces(MediaType.TEXT_HTML)
-   public Response getDispoSetByIdHtml(@PathParam("setId") String setId) {
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getAllDispoSetsAdmin() {
+      List<DispoSet> allDispoSets = dispoApi.getDispoSets(program);
       Response.Status status;
       String html;
-      DispoSet dispoSetArt = dispoApi.getDispoSetById(program, setId);
-      if (dispoSetArt == null) {
-         status = Status.NOT_FOUND;
-         html = DispoMessages.Set_NotFound;
-      } else {
-         String notesJsonString = dispoSetArt.getNotesList().toString();
-         status = Status.OK;
-         String title = "Dispositionable Items";
-         String prefixPath = setId + "/item";
-         html = writer.createDispoPage(dispoSetArt.getName(), prefixPath, title, notesJsonString);
-      }
+      status = Status.OK;
+      html = writer.createAllSetsTableHTML(allDispoSets);
       return Response.status(status).entity(html).build();
    }
 
@@ -202,4 +195,5 @@ public class DispoSetResource {
    public DispoItemResource getDispositionableItems(@PathParam("setId") String setId) {
       return new DispoItemResource(dispoApi, writer, program, setId);
    }
+
 }

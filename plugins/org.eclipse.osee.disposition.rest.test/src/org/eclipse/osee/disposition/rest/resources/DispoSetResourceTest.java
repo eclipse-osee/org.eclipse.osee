@@ -12,18 +12,18 @@ package org.eclipse.osee.disposition.rest.resources;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoProgram;
+import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.util.HtmlWriter;
+import org.eclipse.osee.disposition.rest.util.DispoHtmlWriter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.type.ResultSets;
-import org.json.JSONArray;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -37,7 +37,7 @@ public class DispoSetResourceTest {
    @Mock
    private DispoApi dispositionApi;
    @Mock
-   private HtmlWriter htmlWriter;
+   private DispoHtmlWriter htmlWriter;
    @Mock
    private Identifiable<String> id1;
    @Mock
@@ -116,20 +116,18 @@ public class DispoSetResourceTest {
    @Test
    public void testGetAllAsHtml() {
       // No Sets
-      ResultSet<DispoSetData> emptyResultSet = ResultSets.emptyResultSet();
+      List<DispoSet> emptyResultSet = new ArrayList<DispoSet>();
       when(dispositionApi.getDispoSets(program)).thenReturn(emptyResultSet);
       Response noSetsResponse = resource.getAllDispoSets();
       String messageActual = (String) noSetsResponse.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noSetsResponse.getStatus());
       assertEquals(DispoMessages.Set_NoneFound, messageActual);
 
-      DispoSetData set = new DispoSetData();
-      set.setGuid(id1.getGuid());
-      set.setName("Set");
-      ResultSet<DispoSetData> resultSet = ResultSets.singleton(set);
+      DispoSet set = new DispoSetData();
+      List<DispoSet> resultSet = Collections.singletonList(set);
 
       when(dispositionApi.getDispoSets(program)).thenReturn(resultSet);
-      when(htmlWriter.createDispositionPage("Disposition Sets", "set/", resultSet)).thenReturn("htmlFromWriter");
+      when(htmlWriter.createSelectSet(resultSet)).thenReturn("htmlFromWriter");
       Response oneSetResponse = resource.getAllDispoSets();
       String html = (String) oneSetResponse.getEntity();
       assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());
@@ -152,34 +150,7 @@ public class DispoSetResourceTest {
       Response oneSetResponse = resource.getDispoSetByIdJson(expectedSet.getGuid());
       DispoSetData returnedSet = (DispoSetData) oneSetResponse.getEntity();
       assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());
-      assertEquals(expectedSet, returnedSet);
-   }
-
-   @Test
-   public void testGetSingleSetAsHtml() {
-      // No Sets
-      when(dispositionApi.getDispoSetById(program, id2.getGuid())).thenReturn(null);
-      Response noSetsResponse = resource.getDispoSetByIdHtml(id2.getGuid());
-      String messageActual = (String) noSetsResponse.getEntity();
-      assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noSetsResponse.getStatus());
-      assertEquals(DispoMessages.Set_NotFound, messageActual);
-
-      DispoSetData set = new DispoSetData();
-      set.setGuid(id1.getGuid());
-      set.setName("set");
-      JSONArray notesArray = new JSONArray();
-      set.setNotesList(notesArray);
-      ResultSet<DispoItemData> emptyResultSet = ResultSets.emptyResultSet();
-      ResultSet<DispoItemData> resultListItems = emptyResultSet;
-      when(dispositionApi.getDispoSetById(program, id1.getGuid())).thenReturn(set);
-      when(dispositionApi.getDispoItems(program, id1.getGuid())).thenReturn(resultListItems);
-      String prefixPath = set.getGuid() + "/item";
-      String subTitle = "Dispositionable Items";
-      when(htmlWriter.createDispoPage(set.getName(), prefixPath, subTitle, "[]")).thenReturn("htmlFromWriter");
-      Response response = resource.getDispoSetByIdHtml(set.getGuid());
-      String returnedHtml = (String) response.getEntity();
-      assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-      assertEquals("htmlFromWriter", returnedHtml);
+      assertEquals(expectedSet.getGuid(), returnedSet.getGuid());
    }
 
    @Test

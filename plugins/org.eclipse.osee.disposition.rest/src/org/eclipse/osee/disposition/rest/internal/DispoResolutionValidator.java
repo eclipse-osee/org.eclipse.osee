@@ -10,14 +10,30 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.eclipse.osee.disposition.model.DispoAnnotationData;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Angel Avila
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({DispoApiTest.class, DispoConnectorTest.class, LocationRangesCompressorTest.class})
-public class InternalTestSuite {
-   // Test Suite
+public class DispoResolutionValidator {
+
+   private Log logger;
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
+
+   public void start() {
+      logger.trace("Starting ResolutionValidator...");
+   }
+
+   public void stop() {
+      logger.trace("Stopping ResolutionValidator...");
+   }
+
+   public boolean validate(DispoAnnotationData annotation) {
+      String pcr = annotation.getResolution();
+      return pcr.matches("^\\s*[CTR]\\d{4,5}\\s*$");
+   }
 }

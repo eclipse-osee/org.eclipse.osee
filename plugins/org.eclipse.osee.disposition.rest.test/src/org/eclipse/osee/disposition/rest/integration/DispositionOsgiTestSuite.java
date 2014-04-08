@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Angel Avila
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({DispositionApiTest.class})
+@Suite.SuiteClasses({DispositionIntegrationTest.class})
 public class DispositionOsgiTestSuite {
    // Test Suite
 }

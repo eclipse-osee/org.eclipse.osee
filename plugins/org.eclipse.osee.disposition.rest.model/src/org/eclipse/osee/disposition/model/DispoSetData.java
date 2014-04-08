@@ -22,16 +22,10 @@ import org.json.JSONArray;
 @XmlRootElement(name = "DispoSetData")
 public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
 
-   public enum DispositionOperationsEnum {
-      NEW_IMPORT,
-      RE_IMPORT
-   }
-
    private String guid;
-   private DispositionOperationsEnum operation;
+   private String operation;
    private JSONArray notesList;
    private String importState;
-   private String statusCount;
 
    public DispoSetData() {
 
@@ -46,11 +40,11 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
       this.guid = guid;
    }
 
-   public DispositionOperationsEnum getOperation() {
+   public String getOperation() {
       return operation;
    }
 
-   public void setOperation(DispositionOperationsEnum operation) {
+   public void setOperation(String operation) {
       this.operation = operation;
    }
 
@@ -70,15 +64,6 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
 
    public void setImportState(String importState) {
       this.importState = importState;
-   }
-
-   @Override
-   public String getStatusCount() {
-      return statusCount;
-   }
-
-   public void setStatusCount(String statusCount) {
-      this.statusCount = statusCount;
    }
 
    @Override

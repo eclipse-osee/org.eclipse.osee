@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.json.JSONArray;
 import org.json.JSONException;
+
 /**
  * @author Angel Avila
  */
@@ -38,11 +39,6 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet, 
    @Override
    public String getImportPath() {
       return artifact.getSoleAttributeAsString(DispoConstants.ImportPath);
-   }
-
-   @Override
-   public String getStatusCount() {
-      return artifact.getSoleAttributeAsString(DispoConstants.StatusCount, "0/0");
    }
 
    @Override

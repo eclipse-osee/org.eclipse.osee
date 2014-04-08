@@ -20,7 +20,7 @@ import org.eclipse.osee.disposition.rest.messages.DispoItemMessageReader;
 import org.eclipse.osee.disposition.rest.messages.DispoItemMessageWriter;
 import org.eclipse.osee.disposition.rest.messages.DispoSetMessageReader;
 import org.eclipse.osee.disposition.rest.messages.DispoSetMessageWriter;
-import org.eclipse.osee.disposition.rest.util.HtmlWriter;
+import org.eclipse.osee.disposition.rest.util.DispoHtmlWriter;
 import org.eclipse.osee.disposition.rest.util.TemplateRegistry;
 
 /**
@@ -30,10 +30,18 @@ public final class DispoApplication extends Application {
 
    private DispoApi dispoApi;
 
+   private final Set<Object> singletons = new HashSet<Object>();
+
+   public void setDispoApi(DispoApi dispoApi) {
+      this.dispoApi = dispoApi;
+   }
+
    @Override
    public Set<Object> getSingletons() {
+      return singletons;
+   }
 
-      Set<Object> singletons = new HashSet<Object>();
+   public void start() {
       singletons.add(new DispoSetMessageReader());
       singletons.add(new DispoSetMessageWriter());
       singletons.add(new DispoItemMessageReader());
@@ -41,12 +49,13 @@ public final class DispoApplication extends Application {
       singletons.add(new DispoAnnotationMessageReader());
       singletons.add(new DispoAnnotationMessageWriter());
 
-      HtmlWriter writer = new HtmlWriter(TemplateRegistry.newRegistry());
+      DispoHtmlWriter writer = new DispoHtmlWriter(TemplateRegistry.newRegistry());
       singletons.add(new DispoProgramResource(dispoApi, writer, dispoApi.getDispoFactory()));
-      return singletons;
+      singletons.add(new DispoInitResource(writer));
+      singletons.add(new DispoAdminResource(writer));
    }
 
-   public void setDispoApi(DispoApi dispoApi) {
-      this.dispoApi = dispoApi;
+   public void stop() {
+      singletons.clear();
    }
 }

@@ -50,7 +50,8 @@ public final class LocationRangeUtil {
       locationRef = locationRef.trim();
       int startFromString;
       int endFromString;
-      if (locationRef.contains("-")) {
+
+      if (locationRef.matches("\\d+-\\d+")) {
          StringTokenizer tokenizer = new StringTokenizer(locationRef, "-");
          startFromString = Integer.valueOf(tokenizer.nextToken());
          endFromString = Integer.valueOf(tokenizer.nextToken());

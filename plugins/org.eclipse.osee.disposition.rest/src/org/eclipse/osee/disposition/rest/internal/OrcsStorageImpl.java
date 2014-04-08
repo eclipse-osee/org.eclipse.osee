@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -54,7 +55,6 @@ import org.json.JSONObject;
  * @author Angel Avila
  */
 public class OrcsStorageImpl implements Storage {
-
    private final Log logger;
    private final OrcsApi orcsApi;
 
@@ -134,12 +134,9 @@ public class OrcsStorageImpl implements Storage {
       return getQuery().fromBranch(getAdminBranch()).andGuid(userId).getResults().getExactlyOne();
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public ArtifactReadable findUnassignedUser() {
-      //      return getQuery().fromBranch(getAdminBranch()).andNameEquals("Unassigned").getResults().getExactlyOne(); COMMENTED OUT TEMP
-      return getQuery().fromBranch(getAdminBranch()).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
-
+      return getQuery().fromBranch(getAdminBranch()).andNameEquals("UnAssigned").andTypeEquals(CoreArtifactTypes.User).getResults().getExactlyOne();
    }
 
    @Override
@@ -161,7 +158,7 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public boolean isUniqueItemName(DispoProgram program, String setId, String name) {
       IOseeBranch branch = getProgramBranch(program);
-      ArtifactReadable setArt = findDispoArtifact(branch, setId, DispoConstants.DispoSet);
+      ArtifactReadable setArt = findDispoArtifact(program, setId, DispoConstants.DispoSet);
       ResultSet<ArtifactReadable> results = getQuery()//
       .fromBranch(branch)//
       .andRelatedTo(CoreRelationTypes.Default_Hierarchical__Parent, setArt)//
@@ -173,10 +170,9 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public ResultSet<DispoSet> findDispoSets(DispoProgram program) {
-      IOseeBranch branch = getProgramBranch(program);
+   public List<DispoSet> findDispoSets(DispoProgram program) {
       ResultSet<ArtifactReadable> results = getQuery()//
-      .fromBranch(branch)//
+      .fromBranch(TokenFactory.createBranch(program.getUuid(), program.getName()))//
       .andTypeEquals(DispoConstants.DispoSet)//
       .getResults();
 
@@ -184,44 +180,31 @@ public class OrcsStorageImpl implements Storage {
       for (ArtifactReadable art : results) {
          toReturn.add(new DispoSetArtifact(art));
       }
-      return ResultSets.newResultSet(toReturn);
+      return toReturn;
    }
 
    @Override
    public DispoSet findDispoSetsById(DispoProgram program, String setId) {
-      IOseeBranch branch = getProgramBranch(program);
-      ArtifactReadable result = findDispoArtifact(branch, setId, DispoConstants.DispoSet);
+      ArtifactReadable result = findDispoArtifact(program, setId, DispoConstants.DispoSet);
       return new DispoSetArtifact(result);
    }
 
-   private ArtifactReadable findDispoArtifact(IOseeBranch branch, String setId, IArtifactType type) {
+   private ArtifactReadable findDispoArtifact(DispoProgram program, String setId, IArtifactType type) {
       return getQuery()//
-      .fromBranch(branch)//
+      .fromBranch(TokenFactory.createBranch(program.getUuid(), program.getName()))//
       .andTypeEquals(type)//
       .andGuid(setId)//
       .getResults().getOneOrNull();
    }
 
    @Override
-   public ResultSet<DispoItem> findDipoItems(DispoProgram program, String setId) {
-      IOseeBranch branch = getProgramBranch(program);
-      ArtifactReadable setArt = findDispoArtifact(branch, setId, DispoConstants.DispoSet);
-      ResultSet<ArtifactReadable> results = setArt.getRelated(CoreRelationTypes.Default_Hierarchical__Child);
+   public List<DispoItem> findDipoItems(DispoProgram program, String setId) {
+      ArtifactReadable setArt = findDispoArtifact(program, setId, DispoConstants.DispoSet);
+      ResultSet<ArtifactReadable> results = setArt.getChildren();
 
       List<DispoItem> toReturn = new ArrayList<DispoItem>();
       for (ArtifactReadable art : results) {
          toReturn.add(new DispoItemArtifact(art));
-      }
-      return ResultSets.newResultSet(toReturn);
-   }
-
-   @Override
-   public DispoItem findDispoItemById(DispoProgram program, String itemId) {
-      DispoItem toReturn = null;
-      IOseeBranch branch = getProgramBranch(program);
-      ArtifactReadable dispoArtifact = findDispoArtifact(branch, itemId, DispoConstants.DispoItem);
-      if (dispoArtifact != null) {
-         toReturn = new DispoItemArtifact(dispoArtifact);
       }
       return toReturn;
    }
@@ -233,7 +216,6 @@ public class OrcsStorageImpl implements Storage {
       ArtifactId creatdArtId = tx.createArtifact(DispoConstants.DispoSet, descriptor.getName());
       tx.setSoleAttributeFromString(creatdArtId, DispoConstants.ImportPath, descriptor.getImportPath());
       tx.setSoleAttributeFromString(creatdArtId, DispoConstants.ImportState, descriptor.getImportState());
-      tx.setSoleAttributeFromString(creatdArtId, DispoConstants.StatusCount, descriptor.getStatusCount());
       tx.setSoleAttributeFromString(creatdArtId, DispoConstants.DispoNotesJson, descriptor.getNotesList().toString());
       tx.commit();
       return creatdArtId;
@@ -252,7 +234,7 @@ public class OrcsStorageImpl implements Storage {
    private boolean deleteDispoEntityArtifact(ArtifactReadable author, DispoProgram program, String entityId, IArtifactType type) {
       boolean toReturn = false;
       IOseeBranch branch = getProgramBranch(program);
-      ArtifactReadable dispoArtifact = findDispoArtifact(branch, entityId, type);
+      ArtifactReadable dispoArtifact = findDispoArtifact(program, entityId, type);
       if (dispoArtifact != null) {
          TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Delete Dispo Artifact");
          tx.deleteArtifact(dispoArtifact);
@@ -266,7 +248,7 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public void updateDispoSet(ArtifactReadable author, DispoProgram program, String setId, DispoSet newData) {
       IOseeBranch branch = getProgramBranch(program);
-      ArtifactReadable dispoSet = findDispoArtifact(branch, setId, DispoConstants.DispoSet);
+      ArtifactReadable dispoSet = findDispoArtifact(program, setId, DispoConstants.DispoSet);
 
       String name = newData.getName();
       String importPath = newData.getImportPath();
@@ -293,7 +275,7 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public Identifiable<String> createDispoItem(ArtifactReadable author, DispoProgram program, DispoSet parentSet, DispoItem data, ArtifactReadable assignee) {
       IOseeBranch branch = getProgramBranch(program);
-      ArtifactReadable parentSetArt = findDispoArtifact(branch, parentSet.getGuid(), DispoConstants.DispoSet);
+      ArtifactReadable parentSetArt = findDispoArtifact(program, parentSet.getGuid(), DispoConstants.DispoSet);
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Create Dispoable Item");
       ArtifactId createdItem = tx.createArtifact(DispoConstants.DispoItem, data.getName());
 
@@ -313,74 +295,125 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public void createAnnotation(ArtifactReadable author, DispoProgram program, ArtifactId disposition, String annotationsJson) {
-      IOseeBranch branch = getProgramBranch(program);
-      TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Create Dispo Annotation");
+   public void createDispoItems(ArtifactReadable author, DispoProgram program, DispoSet parentSet, List<DispoItem> data, String assignee) {
+      IOseeBranch branch = TokenFactory.createBranch(program.getUuid(), "");
+      ArtifactReadable parentSetArt = findDispoArtifact(program, parentSet.getGuid(), DispoConstants.DispoSet);
+      TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Create Dispoable Item");
 
-      tx.setSoleAttributeFromString(disposition, DispoConstants.DispoAnnotationsJson, annotationsJson);
+      for (DispoItem item : data) {
+         ArtifactId createdItem = tx.createArtifact(DispoConstants.DispoItem, item.getName());
+
+         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoDateCreated, item.getCreationDate());
+         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoLastUpdated, item.getLastUpdate());
+
+         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemStatus, item.getStatus());
+         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoDiscrepanciesJson,
+            item.getDiscrepanciesList().toString());
+         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoAnnotationsJson,
+            item.getAnnotationsList().toString());
+         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemVersion, item.getVersion());
+         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemAssignee, assignee);
+
+         tx.relate(parentSetArt, CoreRelationTypes.Default_Hierarchical__Child, createdItem);
+      }
       tx.commit();
    }
 
    @Override
    public void updateDispoItem(ArtifactReadable author, DispoProgram program, String dispoItemId, DispoItem data) {
-      boolean wasEdited = false;
       IOseeBranch branch = getProgramBranch(program);
-      ArtifactId dispoItemArt = findDispoArtifact(branch, dispoItemId, DispoConstants.DispoItem);
-      String assigneeId = data.getAssignee();
+      ArtifactId dispoItemArt = findDispoArtifact(program, dispoItemId, DispoConstants.DispoItem);
+      Date lastUpdate = data.getLastUpdate();
+      String name = data.getName();
+      JSONObject discrepanciesList = data.getDiscrepanciesList();
+      JSONArray annotationsList = data.getAnnotationsList();
+      String status = data.getStatus();
+      String assignee = data.getAssignee();
 
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Edit Dispoable Item");
-      String name = data.getName();
-      JSONArray discrepanciesList = data.getDiscrepanciesList();
-      JSONObject annotationsList = data.getAnnotationsList();
-      String status = data.getStatus();
+
       if (name != null) {
          tx.setName(dispoItemArt, name);
-         wasEdited = true;
       }
       if (discrepanciesList != null) {
          tx.setSoleAttributeFromString(dispoItemArt, DispoConstants.DispoDiscrepanciesJson,
             discrepanciesList.toString());
-         wasEdited = true;
       }
       if (annotationsList != null) {
          tx.setSoleAttributeFromString(dispoItemArt, DispoConstants.DispoAnnotationsJson, annotationsList.toString());
-         wasEdited = true;
       }
-      if (assigneeId != null) {
-         ArtifactReadable userAsArt = findUser(assigneeId);
-         tx.relate(dispoItemArt, DispoConstants.DispoAssigned_Assignee, userAsArt);
-         wasEdited = true;
+      if (assignee != null) {
+         tx.setSoleAttributeFromString(dispoItemArt, DispoConstants.DispoItemAssignee, assignee);
       }
       if (status != null) {
          tx.setSoleAttributeFromString(dispoItemArt, DispoConstants.DispoItemStatus, status);
-         wasEdited = true;
       }
-      if (wasEdited) {
-         tx.setSoleAttributeValue(dispoItemArt, DispoConstants.DispoLastUpdated, new Date());
+      if (lastUpdate != null) {
+         tx.setSoleAttributeValue(dispoItemArt, DispoConstants.DispoLastUpdated, lastUpdate);
       }
       tx.commit();
    }
 
    @Override
-   public IOseeBranch findProgramId(DispoProgram program) {
-      IOseeBranch toReturn = null;
+   public void updateDispoItems(ArtifactReadable author, DispoProgram program, String dispoItemId, List<DispoItem> data) {
+      IOseeBranch branch = TokenFactory.createBranch(program.getUuid(), "");
+      TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Edit Dispoable Item");
+
+      for (DispoItem item : data) {
+         ArtifactId dispoItemArt = findDispoArtifact(program, dispoItemId, DispoConstants.DispoItem);
+         String assignee = item.getAssignee();
+         Date lastUpdate = item.getLastUpdate();
+         String name = item.getName();
+         JSONObject discrepanciesList = item.getDiscrepanciesList();
+         JSONArray annotationsList = item.getAnnotationsList();
+         String status = item.getStatus();
+
+         if (name != null) {
+            tx.setName(dispoItemArt, name);
+         }
+         if (discrepanciesList != null) {
+            tx.setSoleAttributeFromString(dispoItemArt, DispoConstants.DispoDiscrepanciesJson,
+               discrepanciesList.toString());
+         }
+         if (annotationsList != null) {
+            tx.setSoleAttributeFromString(dispoItemArt, DispoConstants.DispoAnnotationsJson, annotationsList.toString());
+         }
+         if (assignee != null) {
+            tx.setSoleAttributeFromString(dispoItemArt, DispoConstants.DispoItemAssignee, assignee);
+         }
+         if (status != null) {
+            tx.setSoleAttributeFromString(dispoItemArt, DispoConstants.DispoItemStatus, status);
+         }
+         if (lastUpdate != null) {
+            tx.setSoleAttributeValue(dispoItemArt, DispoConstants.DispoLastUpdated, lastUpdate);
+         }
+      }
+
+      tx.commit();
+   }
+
+   private String getDispoConfigContents() {
       BranchReadable branchRead = getQuery().branchQuery().andIds(CoreBranches.COMMON).getResults().getExactlyOne();
 
       ArtifactReadable configArt =
          getQuery().fromBranch(branchRead).andNameEquals(Dispo_Config_Art).getResults().getExactlyOne();
 
-      String configContents = configArt.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
+      return configArt.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
+   }
 
-      Pattern regex = Pattern.compile(program.getUuid() + "\\s*:\\s*.*");
+   private IOseeBranch convertToDispoBranch(String configContents, IOseeBranch baselineBranch) {
+      IOseeBranch toReturn = null;
+
+      Pattern regex = Pattern.compile(baselineBranch.getUuid() + "\\s*:\\s*.*");
       Matcher matcher = regex.matcher(configContents);
       String guid = null;
       if (matcher.find()) {
          String match = matcher.group();
          String[] split = match.split(":");
-         guid = split[1];
+         toReturn = TokenFactory.createBranch(split[1], baselineBranch.getName());
       }
 
-      regex = Pattern.compile(program.getUuid() + "\\s*:\\s*.*");
+      regex = Pattern.compile(baselineBranch.getGuid() + "\\s*:\\s*.*");
       matcher = regex.matcher(configContents);
       Long uuid = null;
       if (matcher.find()) {
@@ -393,7 +426,29 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public ResultSet<? extends IOseeBranch> findBaselineBranches() {
-      return getQuery().branchQuery().andIsOfType(BranchType.BASELINE).getResults();
+   public ResultSet<IOseeBranch> getDispoBranches() {
+      ResultSet<BranchReadable> baselineBranches =
+         getQuery().branchQuery().andIsOfType(BranchType.BASELINE).getResults();
+
+      String configContents = getDispoConfigContents();
+
+      List<IOseeBranch> results = new ArrayList<IOseeBranch>();
+      for (BranchReadable baselineBranch : baselineBranches) {
+         IOseeBranch dispoBranch = convertToDispoBranch(configContents, baselineBranch);
+         if (dispoBranch != null) {
+            results.add(dispoBranch);
+         }
+      }
+      return ResultSets.newResultSet(results);
+   }
+
+   @Override
+   public DispoItem findDispoItemById(DispoProgram program, String itemId) {
+      DispoItem toReturn = null;
+      ArtifactReadable dispoArtifact = findDispoArtifact(program, itemId, DispoConstants.DispoItem);
+      if (dispoArtifact != null) {
+         toReturn = new DispoItemArtifact(dispoArtifact);
+      }
+      return toReturn;
    }
 }

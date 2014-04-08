@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal;
 
+import java.util.List;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
@@ -32,15 +33,14 @@ public interface DispoQuery {
 
    boolean isUniqueItemName(DispoProgram program, String setId, String name);
 
-   ResultSet<DispoSet> findDispoSets(DispoProgram program);
+   List<DispoSet> findDispoSets(DispoProgram program);
 
    DispoSet findDispoSetsById(DispoProgram program, String id);
 
-   ResultSet<DispoItem> findDipoItems(DispoProgram program, String setId);
+   List<DispoItem> findDipoItems(DispoProgram program, String setId);
 
    DispoItem findDispoItemById(DispoProgram program, String itemId);
 
-   ResultSet<? extends IOseeBranch> findBaselineBranches();
+   ResultSet<IOseeBranch> getDispoBranches();
 
-   IOseeBranch findProgramId(DispoProgram program);
 }

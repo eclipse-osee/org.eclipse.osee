@@ -7,8 +7,8 @@ artifactType "Disposition Set" extends "Artifact" {
    attribute "dispo.Import Path"
    attribute "dispo.Notes JSON"
    attribute "dispo.Date Created"
-   attribute "dispo.Status Count"
    attribute "dispo.Import State"
+   attribute "dispo.Summary Count"
 }
 
 artifactType "dispo.Dispositionable Item" extends "Artifact" {
@@ -18,7 +18,9 @@ artifactType "dispo.Dispositionable Item" extends "Artifact" {
    attribute "dispo.Discrepancies JSON"
    attribute "dispo.Date Created"
    attribute "dispo.Item Status"
+   attribute "dispo.Item Version"
    attribute "dispo.Last Updated"
+   attribute "dispo.Assignee"
 }
 
 attributeType "dispo.Annotations JSON" extends StringAttribute {
@@ -27,7 +29,7 @@ attributeType "dispo.Annotations JSON" extends StringAttribute {
    min 1
    max 1
    taggerId DefaultAttributeTaggerProvider
-   defaultValue "[]"
+   defaultValue "{}"
    fileExtension "txt"
 	mediaType "text/plain"
 }
@@ -64,12 +66,12 @@ attributeType "dispo.Import Path" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "dispo.Status Count" extends StringAttribute {
-	uuid 0x1000000000000390
+attributeType "dispo.Summary Count" extends StringAttribute {
+	uuid 0x1000000000000203
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   fileExtension "txt"
+   defaultValue "0/0"
 	mediaType "text/plain"
 }
 
@@ -102,8 +104,29 @@ attributeType "dispo.Item Status" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   taggerId DefaultAttributeTaggerProvider
    enumType "enum.dispo.item status"
-   defaultValue "No Import"
+   defaultValue "Unspecified"
+	mediaType "text/plain"
+}
+
+attributeType "dispo.Item Version" extends StringAttribute {
+	uuid 0x3000000000000200
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+   defaultValue "0.0"
+	mediaType "text/plain"
+}
+
+attributeType "dispo.Assignee" extends StringAttribute {
+	uuid 0x3000000000000201
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+   defaultValue "UnAssinged"
 	mediaType "text/plain"
 }
 
@@ -134,14 +157,4 @@ attributeType "dispo.Last Updated" extends DateAttribute {
    min 0
    max 1
    mediaType "text/calendar"
-}
-
-relationType "dispo.Assigned" {
-	uuid 0x2000000000000181
-	sideAName "dispoableItem"
-	sideAArtifactType "dispo.Dispositionable Item"
-	sideBName "user"
-	sideBArtifactType "User"
-	defaultOrderType Unordered
-	multiplicity MANY_TO_ONE
 }

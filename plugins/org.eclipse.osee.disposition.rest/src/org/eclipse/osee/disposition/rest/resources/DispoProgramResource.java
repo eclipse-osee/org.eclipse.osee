@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.util.DispoFactory;
-import org.eclipse.osee.disposition.rest.util.HtmlWriter;
+import org.eclipse.osee.disposition.rest.util.DispoHtmlWriter;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
@@ -31,13 +31,13 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 public class DispoProgramResource {
 
    private final DispoApi dispoApi;
-   private final HtmlWriter writer;
+   private final DispoHtmlWriter writer;
    private final DispoFactory dispoFactory;
 
-   public DispoProgramResource(DispoApi dispoApi, HtmlWriter writer, DispoFactory factory) {
+   public DispoProgramResource(DispoApi dispoApi, DispoHtmlWriter writer, DispoFactory dispoFactory) {
       this.dispoApi = dispoApi;
       this.writer = writer;
-      this.dispoFactory = factory;
+      this.dispoFactory = dispoFactory;
    }
 
    /**
@@ -58,36 +58,8 @@ public class DispoProgramResource {
          html = DispoMessages.Program_NoneFound;
       } else {
          status = Status.OK;
-         html = writer.createDispositionPage("Programs", "", allPrograms);
+         html = writer.createSelectPrograms(allPrograms);
       }
-      return Response.status(status).entity(html).build();
-   }
-
-   /**
-    * Get a specific Disposition Program given a programId
-    * 
-    * @param programId The Id of the Disposition Program to search for
-    * @return The found Disposition Program if successful. Error Code otherwise
-    * @response.representation.200.doc OK, Found Disposition Program
-    * @response.representation.404.doc Not Found, Could not find any Disposition Program
-    */
-   @Path("{programId}")
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   public Response getProgramById(@PathParam("programId") String programId) {
-      IOseeBranch dispoBranch = dispoApi.getDispoProgramById(dispoFactory.createProgram(programId));
-      Response.Status status;
-      String html;
-      if (dispoBranch == null) {
-         status = Status.NOT_FOUND;
-         html = DispoMessages.Program_NotFound;
-      } else {
-         status = Status.OK;
-         String subTitle = "Disposition Sets";
-         String prefixPath = programId + "/set";
-         html = writer.createDispoPage(dispoBranch.getName(), prefixPath, subTitle, "[]");
-      }
-
       return Response.status(status).entity(html).build();
    }
 
