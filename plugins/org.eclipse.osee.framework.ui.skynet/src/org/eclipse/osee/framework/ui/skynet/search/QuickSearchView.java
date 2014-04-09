@@ -67,7 +67,7 @@ public class QuickSearchView extends GenericViewPart {
 
    private static final String ENTRY_SEPARATOR = "##";
    private static final String LAST_QUERY_KEY_ID = "lastQuery";
-   private static final String LAST_BRANCH_GUID = "lastBranchUuid";
+   private static final String LAST_BRANCH_UUID = "lastBranchUuid";
    private static final String QUERY_HISTORY_KEY_ID = "queryHistory";
 
    private Label branchLabel;
@@ -96,7 +96,7 @@ public class QuickSearchView extends GenericViewPart {
             memento.putString(LAST_QUERY_KEY_ID, attrSearchComposite.getQuery());
             IOseeBranch branch = branchSelect.getData();
             if (branch != null) {
-               memento.putString(LAST_BRANCH_GUID, String.valueOf(branch.getGuid()));
+               memento.putString(LAST_BRANCH_UUID, String.valueOf(branch.getGuid()));
             }
             StringBuilder builder = new StringBuilder();
             String[] queries = attrSearchComposite.getQueryHistory();
@@ -140,10 +140,10 @@ public class QuickSearchView extends GenericViewPart {
             optionsComposite.loadState(memento);
          }
          if (branchSelect != null) {
-            Long value = Long.valueOf(memento.getString(LAST_BRANCH_GUID));
-            if (value != null) {
+            String uuid = memento.getString(LAST_BRANCH_UUID);
+            if (Strings.isValid(uuid) && uuid.matches("\\d+")) {
                try {
-                  Branch branch = BranchManager.getBranchByUuid(Long.valueOf(value));
+                  Branch branch = BranchManager.getBranchByUuid(Long.valueOf(uuid));
                   branchSelect.setSelection(branch);
                } catch (OseeCoreException ex) {
                   // do nothing
