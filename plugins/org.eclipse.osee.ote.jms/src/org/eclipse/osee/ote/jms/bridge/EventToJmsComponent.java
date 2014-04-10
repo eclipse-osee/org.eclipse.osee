@@ -40,9 +40,13 @@ public class EventToJmsComponent extends OseeMessagingListener implements EventH
 		MYID = UUID.randomUUID();
 	}
 
-	void start(){
+	public void start(){
 		
 	}
+	
+	public void stop(){
+      
+   }
 	
 	public synchronized void bindConnectionNode(OteServerJmsNodeProvider connectionNode){
 		this.connecitonNode = connectionNode;
