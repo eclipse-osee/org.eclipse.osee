@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
@@ -133,11 +132,7 @@ public class OrcsTypesIndexer {
    }
 
    private InputStream upConvertTo17(InputStream inputStream) throws Exception {
-      String typesStr = Lib.inputStreamToString(inputStream);
-      typesStr = typesStr.replaceAll("branchGuid \"AyH_fAj8lhQGmQw2iBAA\"", "branchUuid 423");
-      typesStr = typesStr.replaceAll("branchGuid \"AyH_e5wAblOqTdLkxqQA\"", "branchUuid 714");
-      typesStr = typesStr.replaceAll("branchGuid \"GyoL_rFqqBYbOcuGYzQA\"", "branchUuid 4312");
-      return new ByteArrayInputStream(typesStr.getBytes("UTF-8"));
+      return OseeDslResourceUtil.upConvertTo17(inputStream);
    }
 
    private void indexSuperTypes(ArtifactTypeIndex artifactTypeIndex, IArtifactType token, XArtifactType dslType) throws OseeCoreException {
