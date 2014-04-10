@@ -216,7 +216,7 @@ public final class FrameworkEventUtil {
    }
 
    public static ArtifactEvent getPersistEvent(RemotePersistEvent1 remEvent) {
-      ArtifactEvent event = new ArtifactEvent(Long.valueOf(remEvent.getBranchGuid()));
+      ArtifactEvent event = new ArtifactEvent(getBranchUuidFromRemoteEvent(remEvent.getBranchGuid()));
       event.setNetworkSender(getNetworkSender(remEvent.getNetworkSender()));
       event.setTransactionId(remEvent.getTransactionId());
       for (RemoteBasicGuidArtifact1 remGuidArt : remEvent.getArtifacts()) {

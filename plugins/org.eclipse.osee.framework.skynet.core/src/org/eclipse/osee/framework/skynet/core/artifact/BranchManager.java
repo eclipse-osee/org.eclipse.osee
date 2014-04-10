@@ -161,7 +161,7 @@ public class BranchManager {
    }
 
    public static long getBranchId(IOseeBranch branch) throws OseeCoreException {
-      return getBranch(branch).getId();
+      return branch.getUuid();
    }
 
    public static Branch getBranch(IOseeBranch branch) throws OseeCoreException {
@@ -232,7 +232,7 @@ public class BranchManager {
       return getCache().get(branchToken) != null;
    }
 
-   public static boolean branchExists(Long id) throws OseeCoreException {
+   public static boolean branchExists(long id) throws OseeCoreException {
       return getCache().getById(id) != null;
    }
 

@@ -85,9 +85,9 @@ public class BranchQueryResource {
    public Response searchBranchesFromQuery(@QueryParam("branchIds") String branchIds, @QueryParam("branchTypes") String branchTypes, @QueryParam("branchStates") String branchStates, @QueryParam("deleted") boolean deleted, @QueryParam("archived") boolean archived, @QueryParam("nameEquals") String nameEquals, @QueryParam("namePattern") String namePattern, @QueryParam("childOf") Long childOf, @QueryParam("ancestorOf") Long ancestorOf, @QueryParam("pretty") boolean pretty) {
       BranchQueryOptions options = new BranchQueryOptions();
       if (Strings.isValid(branchIds)) {
-         List<Integer> branchIdVals = new LinkedList<Integer>();
+         List<Long> branchIdVals = new LinkedList<Long>();
          for (String branchId : branchIds.split(",")) {
-            branchIdVals.add(Integer.parseInt(branchId));
+            branchIdVals.add(Long.parseLong(branchId));
          }
          options.setBranchIds(branchIdVals);
       }
@@ -169,7 +169,7 @@ public class BranchQueryResource {
    private List<BranchReadable> getResultsFromOptions(BranchQueryOptions options) {
       BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
       if (Conditions.hasValues(options.getBranchIds())) {
-         query.andLocalIds(options.getBranchIds());
+         query.andUuids(options.getBranchIds());
       }
 
       List<BranchState> branchStates = options.getBranchStates();
@@ -182,9 +182,9 @@ public class BranchQueryResource {
          query.andIsOfType(branchTypes.toArray(new BranchType[branchTypes.size()]));
       }
 
-      List<Integer> branchIds = options.getBranchIds();
+      List<Long> branchIds = options.getBranchIds();
       if (Conditions.hasValues(branchIds)) {
-         query.andLocalIds(branchIds);
+         query.andUuids(branchIds);
       }
 
       if (options.isIncludeArchived()) {

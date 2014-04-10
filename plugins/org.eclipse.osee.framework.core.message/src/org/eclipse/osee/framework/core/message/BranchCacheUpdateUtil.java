@@ -46,6 +46,7 @@ public final class BranchCacheUpdateUtil {
 
    private final BranchFactory factory;
    private final TransactionCache txCache;
+   public static final Long DEFAULT_UUID = -1L;
 
    public BranchCacheUpdateUtil(BranchFactory factory, TransactionCache txCache) {
       this.factory = factory;
@@ -153,8 +154,9 @@ public final class BranchCacheUpdateUtil {
    }
 
    private static void addMergeBranches(List<Triplet<Long, Long, Long>> srcDestMerge, MergeBranch mergeBranch) throws OseeCoreException {
-      Long src = mergeBranch.getSourceBranch() != null ? mergeBranch.getSourceBranch().getGuid() : null;
-      Long dest = mergeBranch.getDestinationBranch() != null ? mergeBranch.getDestinationBranch().getGuid() : null;
+      Long src = mergeBranch.getSourceBranch() != null ? mergeBranch.getSourceBranch().getGuid() : DEFAULT_UUID;
+      Long dest =
+         mergeBranch.getDestinationBranch() != null ? mergeBranch.getDestinationBranch().getGuid() : DEFAULT_UUID;
       Long merge = mergeBranch.getGuid();
       srcDestMerge.add(new Triplet<Long, Long, Long>(src, dest, merge));
    }
