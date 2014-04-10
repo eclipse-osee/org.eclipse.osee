@@ -19,27 +19,34 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.util.IColumn;
 import org.eclipse.osee.ats.core.client.ev.EarnedValueReportOperation;
 import org.eclipse.osee.ats.core.client.ev.EarnedValueReportResult;
 import org.eclipse.osee.ats.core.client.ev.WorkPackageArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerIColumnAdapter;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
+import org.eclipse.osee.framework.ui.skynet.results.table.xresults.IResultsEditorTableListener;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -121,11 +128,34 @@ public class EarnedValueWorkPacakgeReportBlam extends AbstractBlam {
          for (IColumn column : EarnedValueReportOperation.columns) {
             strs[x++] = result.getValue(column);
          }
-         rows.add(new ResultsXViewerRow(strs));
+         rows.add(new ResultsXViewerRow(strs, result));
       }
-      return new ResultsEditorTableTab("Data", columns, rows);
+      return new ResultsEditorTableTab("Data", columns, rows, null, null, Arrays.asList(listener));
 
    }
+
+   private static final IResultsEditorTableListener listener = new IResultsEditorTableListener() {
+
+      @Override
+      public void handleDoubleClick(ArrayList<ResultsXViewerRow> selectedRows) {
+         Object obj = selectedRows.iterator().next().getData();
+         if (obj instanceof EarnedValueReportResult) {
+            EarnedValueReportResult result = (EarnedValueReportResult) obj;
+            MessageDialog dialog =
+               new MessageDialog(Displays.getActiveShell(), "Open EV Item", null, "Select Item to Open",
+                  MessageDialog.NONE, new String[] {"Work Package", "Action", "Cancel"}, 2);
+            int sel = dialog.open();
+            if (sel < 2) {
+               Artifact openArt = result.getArtifact();
+               if (sel == 0) {
+                  openArt =
+                     ArtifactQuery.getArtifactFromId(result.getWorkPackage().getGuid(), AtsUtilCore.getAtsBranch());
+               }
+               RendererManager.openInJob(openArt, PresentationType.DEFAULT_OPEN);
+            }
+         }
+      }
+   };
 
    @Override
    public String getXWidgetsXml() {

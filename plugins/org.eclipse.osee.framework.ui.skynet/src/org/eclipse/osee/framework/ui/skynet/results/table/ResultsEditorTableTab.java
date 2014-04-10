@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
+import org.eclipse.osee.framework.ui.skynet.results.table.xresults.IResultsEditorTableListener;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewer;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewerContentProvider;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewerFactory;
@@ -61,14 +62,20 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
    private XViewerFactory xViewerFactory;
    private final ITreeContentProvider contentProvider;
    private final IResultsEditorLabelProvider labelProvider;
+   private final List<IResultsEditorTableListener> listeners;
 
    public ResultsEditorTableTab(String tabName, List<XViewerColumn> columns, Collection<IResultsXViewerRow> rows, ITreeContentProvider contentProvider, IResultsEditorLabelProvider labelProvider) {
+      this(tabName, columns, rows, contentProvider, labelProvider, null);
+   }
+
+   public ResultsEditorTableTab(String tabName, List<XViewerColumn> columns, Collection<IResultsXViewerRow> rows, ITreeContentProvider contentProvider, IResultsEditorLabelProvider labelProvider, List<IResultsEditorTableListener> listeners) {
       this.tabName = tabName;
       this.columns = columns;
       this.rows = rows;
       this.xViewerFactory = new ResultsXViewerFactory(columns);
-      this.contentProvider = contentProvider;
+      this.contentProvider = contentProvider == null ? new ResultsXViewerContentProvider() : contentProvider;
       this.labelProvider = labelProvider;
+      this.listeners = listeners == null ? new ArrayList<IResultsEditorTableListener>() : listeners;
    }
 
    public ResultsEditorTableTab(String tabName) {
@@ -76,7 +83,7 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
    }
 
    public ResultsEditorTableTab(String tabName, List<XViewerColumn> columns, Collection<IResultsXViewerRow> rows) {
-      this(tabName, columns, rows, new ResultsXViewerContentProvider(), null);
+      this(tabName, columns, rows, new ResultsXViewerContentProvider(), null, null);
    }
 
    public void addColumn(XViewerColumn xViewerColumn) {
@@ -115,6 +122,9 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
       resultsXViewer =
          new ResultsXViewer(comp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, getTableColumns(), xViewerFactory);
       resultsXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+      for (IResultsEditorTableListener listener : listeners) {
+         resultsXViewer.addListener(listener);
+      }
 
       resultsXViewer.setContentProvider(contentProvider);
       XViewerLabelProvider provider = null;

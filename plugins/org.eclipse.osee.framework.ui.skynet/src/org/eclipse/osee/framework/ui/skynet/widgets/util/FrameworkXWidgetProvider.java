@@ -319,6 +319,10 @@ public final class FrameworkXWidgetProvider {
                   combo.setDefaultSelectionAllowed(true);
                }
                xWidget = combo;
+               String defaultValue = xWidgetLayoutData.getDefaultValue();
+               if (Strings.isValid(defaultValue)) {
+                  combo.setDefaultValue(defaultValue);
+               }
             } else {
                throw new OseeArgumentException("Invalid XCombo.  Must be \"XCombo(option1,option2,option3)\"");
             }

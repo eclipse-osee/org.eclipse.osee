@@ -105,7 +105,6 @@ public class XCombo extends XButtonCommon {
       dataCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.V_SCROLL);
       dataCombo.setItems(displayArray);
       dataCombo.setVisibleItemCount(Math.min(displayArray.length, 45));
-
       gd = new GridData();
       if (fillHorizontally) {
          gd.grabExcessHorizontalSpace = true;
@@ -310,5 +309,9 @@ public class XCombo extends XButtonCommon {
    @Override
    public Object getData() {
       return dataCombo.getText();
+   }
+
+   public void setDefaultValue(String defaultValue) {
+      this.data = defaultValue;
    }
 }

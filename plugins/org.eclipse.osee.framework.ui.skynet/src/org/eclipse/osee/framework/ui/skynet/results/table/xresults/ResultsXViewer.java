@@ -31,16 +31,28 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class ResultsXViewer extends XViewer {
 
+   List<IResultsEditorTableListener> listeners = new ArrayList<IResultsEditorTableListener>();
+
    public ResultsXViewer(Composite parent, int style, List<XViewerColumn> xColumns, XViewerFactory xViewerFactory) {
       super(parent, style, xViewerFactory);
    }
 
+   public void addListener(IResultsEditorTableListener listener) {
+      listeners.add(listener);
+   }
+
    @Override
    public void handleDoubleClick() {
-      if (getSelectedRows().size() > 0) {
-         Object data = getSelectedRows().iterator().next().getData();
-         if (data instanceof Artifact) {
-            RendererManager.openInJob((Artifact) data, PresentationType.DEFAULT_OPEN);
+      if (listeners.isEmpty()) {
+         if (getSelectedRows().size() > 0) {
+            Object data = getSelectedRows().iterator().next().getData();
+            if (data instanceof Artifact) {
+               RendererManager.openInJob((Artifact) data, PresentationType.DEFAULT_OPEN);
+            }
+         }
+      } else {
+         for (IResultsEditorTableListener listener : listeners) {
+            listener.handleDoubleClick(getSelectedRows());
          }
       }
    }
