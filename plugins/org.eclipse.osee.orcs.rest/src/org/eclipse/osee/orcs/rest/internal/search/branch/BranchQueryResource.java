@@ -56,7 +56,7 @@ public class BranchQueryResource {
     * BranchQueryOptions} class
     * @return JSON representation of the branch query results
     */
-   @Path("/")
+   @Path("")
    @POST
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.APPLICATION_JSON)
@@ -79,7 +79,7 @@ public class BranchQueryResource {
     * @param pretty if the returned JSON should be pretty printed
     * @return JSON representation of the branch query results
     */
-   @Path("/")
+   @Path("")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public Response searchBranchesFromQuery(@QueryParam("branchIds") String branchIds, @QueryParam("branchTypes") String branchTypes, @QueryParam("branchStates") String branchStates, @QueryParam("deleted") boolean deleted, @QueryParam("archived") boolean archived, @QueryParam("nameEquals") String nameEquals, @QueryParam("namePattern") String namePattern, @QueryParam("childOf") Long childOf, @QueryParam("ancestorOf") Long ancestorOf, @QueryParam("pretty") boolean pretty) {
