@@ -67,11 +67,13 @@ public class OteBatchResource {
       File myBatchFolder = new File(rootBatches, path);
       File logFile = ote.getServerFolder().getBatchLogFile(myBatchFolder);
       
-      String url = uriInfo.getAbsolutePath().toASCIIString();
       HTMLBuilder builder = new HTMLBuilder();
       
       builder.open("OTE Batch Status");
-      builder.addLink(url, "content.zip", "Get Folder Contents");
+      if(uriInfo != null){
+         String url = uriInfo.getAbsolutePath().toASCIIString();
+         builder.addLink(url, "content.zip", "Get Folder Contents");
+      }
       builder.commonHeader(myBatchFolder);
 
       
