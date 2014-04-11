@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.presenter.internal;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.ats.ui.api.data.AtsSearchParameters;
 import org.eclipse.osee.ats.ui.api.view.AtsSearchHeaderComponent;
 import org.eclipse.osee.display.api.data.ViewId;
@@ -26,10 +25,12 @@ import org.eclipse.osee.display.presenter.mocks.MockSearchNavigator;
 import org.eclipse.osee.display.presenter.mocks.MockSearchResultsListComponent;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.UrlQuery;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -87,7 +88,7 @@ public class AtsSearchPresenterTest {
       Assert.assertEquals(3, headerComp.getPrograms().size());
 
       String programGuid = GUID.create();
-      String buildGuid = GUID.create();
+      String buildGuid = String.valueOf(Lib.generateUuid());
       String url =
          "/" + new UrlQuery().put("program", programGuid).put("build", buildGuid).put("nameOnly", "true").put("search",
             "phrase").put("verbose", "false").toString();

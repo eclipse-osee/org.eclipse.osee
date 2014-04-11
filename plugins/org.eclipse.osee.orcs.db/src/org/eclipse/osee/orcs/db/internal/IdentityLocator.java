@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -19,7 +18,5 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public interface IdentityLocator {
 
    Long parseToLocalId(String value) throws OseeCoreException;
-
-   IOseeBranch getBranch(long branchId) throws OseeCoreException;
 
 }

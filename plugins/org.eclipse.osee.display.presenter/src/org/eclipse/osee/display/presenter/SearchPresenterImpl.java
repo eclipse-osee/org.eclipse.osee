@@ -91,7 +91,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
 
       try {
          searchHandler.setSearchValues(searchResultsComp, params.isVerbose());
-         artifactProvider.getSearchResults(TokenFactory.createBranch(params.getBranchId(), ""), params.isNameOnly(),
+         artifactProvider.getSearchResults(TokenFactory.createBranch(params.getBranchUuid(), ""), params.isNameOnly(),
             params.getSearchPhrase(), searchHandler);
       } catch (Exception ex) {
          setErrorMessage(searchResultsComp, "Error loading search results", ex);
@@ -158,7 +158,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
          return;
       }
 
-      String branch = params.getBranchId();
+      long branch = params.getBranchUuid();
       String art = params.getArtifactId();
       ArtifactReadable displayArt = null;
       try {
@@ -228,7 +228,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       String relGuid = relation.getGuid();
 
       IRelationType type = TokenFactory.createRelationType(Long.parseLong(relGuid), relation.getName());
-      IOseeBranch branch = TokenFactory.createBranch(artifact.getBranch().getGuid(), "");
+      IOseeBranch branch = TokenFactory.createBranch(Long.valueOf(artifact.getBranch().getGuid()), "");
       ArtifactReadable sourceArt;
       ResultSet<ArtifactReadable> relatedSideA;
       ResultSet<ArtifactReadable> relatedSideB;
@@ -305,7 +305,11 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
    private ArtifactParameters decodeArtifactUrl(String url) throws UnsupportedEncodingException {
       UrlQuery query = new UrlQuery();
       query.parse(url);
-      String branch = query.getParameter("branch");
+      String branchId = query.getParameter("branch");
+      long branch = 0;
+      if (Strings.isValid(branchId)) {
+         branch = Long.valueOf(branchId);
+      }
       String artifact = query.getParameter("artifact");
       return new ArtifactParameters(branch, artifact);
    }
@@ -313,7 +317,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
    private SearchParameters decodeSearchUrl(String url) throws UnsupportedEncodingException {
       UrlQuery query = new UrlQuery();
       query.parse(url);
-      String branch = query.getParameter("branch");
+      long branch = Long.valueOf(query.getParameter("branch"));
       String vValue = query.getParameter("verbose");
       boolean verbose = vValue == null ? false : vValue.equalsIgnoreCase("true");
       String nValue = query.getParameter("nameOnly");
@@ -411,16 +415,16 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
    }
 
    private class ArtifactParameters {
-      private final String branchId;
+      private final long branchUuid;
       private final String artifactId;
 
-      public ArtifactParameters(String branchId, String artifactId) {
-         this.branchId = branchId;
+      public ArtifactParameters(long branchUuid, String artifactId) {
+         this.branchUuid = branchUuid;
          this.artifactId = artifactId;
       }
 
-      public String getBranchId() {
-         return branchId;
+      public long getBranchUuid() {
+         return branchUuid;
       }
 
       public String getArtifactId() {
@@ -428,18 +432,18 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       }
 
       public boolean isValid() {
-         return Strings.isValid(branchId) && Strings.isValid(artifactId);
+         return branchUuid > 0 && Strings.isValid(artifactId);
       }
    }
 
    private class SearchParameters {
 
-      private final String branchId;
+      private final long branchId;
       private final boolean nameOnly, verbose;
       private final String searchPhrase;
 
-      public SearchParameters(String branchId, boolean nameOnly, String searchPhrase, boolean verbose) {
-         this.branchId = branchId;
+      public SearchParameters(long branchUuid, boolean nameOnly, String searchPhrase, boolean verbose) {
+         this.branchId = branchUuid;
          this.nameOnly = nameOnly;
          this.searchPhrase = searchPhrase;
          this.verbose = verbose;
@@ -449,7 +453,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
          return verbose;
       }
 
-      public String getBranchId() {
+      public long getBranchUuid() {
          return branchId;
       }
 
@@ -462,7 +466,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       }
 
       public boolean isValid() {
-         return Strings.isValid(branchId);
+         return branchId > 0;
       }
    }
 

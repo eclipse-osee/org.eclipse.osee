@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.UrlQuery;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -208,7 +209,7 @@ public class SearchPresenterTest {
 
       provider.addArtifact(testArt);
 
-      ViewId branch = new ViewId(GUID.create(), "branchName");
+      ViewId branch = new ViewId(String.valueOf(Lib.generateUuid()), "branchName");
       ViewArtifact artifact = new ViewArtifact(artGuid, "artName", "artType", null, branch);
       ViewId relation = new ViewId(Long.toString(relGuid), relName);
       presenter.selectRelationType(artifact, relation, relComp);
@@ -247,7 +248,8 @@ public class SearchPresenterTest {
 
       relComp = new MockRelationComponent();
       ViewArtifact artifact =
-         new ViewArtifact(GUID.create(), "name", "type", null, new ViewId(GUID.create(), "branchName"));
+         new ViewArtifact(GUID.create(), "name", "type", null, new ViewId(String.valueOf(Lib.generateUuid()),
+            "branchName"));
       presenter.selectRelationType(artifact, null, relComp);
       Assert.assertNotNull(relComp.getErrorMessage());
 

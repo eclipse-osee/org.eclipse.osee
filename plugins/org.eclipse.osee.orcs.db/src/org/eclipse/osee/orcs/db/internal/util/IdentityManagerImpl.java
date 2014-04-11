@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.util;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.util.HexUtil;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
@@ -25,9 +22,6 @@ import org.eclipse.osee.orcs.db.internal.IdentityManager;
  * @author Roberto E. Escobar
  */
 public class IdentityManagerImpl implements IdentityManager {
-
-   private static final String SELECT_BRANCH_TOKEN_BY_ID =
-      "select branch_guid, branch_name from osee_branch where branch_id = ?";
 
    private final IOseeDatabaseService dbService;
 
@@ -77,23 +71,6 @@ public class IdentityManagerImpl implements IdentityManager {
    @Override
    public void invalidateIds() throws OseeDataStoreException {
       getSequence().clear();
-   }
-
-   @Override
-   public IOseeBranch getBranch(long branchId) throws OseeCoreException {
-      IOseeBranch toReturn = null;
-      IOseeStatement stmt = dbService.getStatement();
-      try {
-         stmt.runPreparedQuery(SELECT_BRANCH_TOKEN_BY_ID, branchId);
-         while (stmt.next()) {
-            String guid = stmt.getString("branch_guid");
-            String name = stmt.getString("branch_name");
-            toReturn = TokenFactory.createBranch(guid, name);
-         }
-      } finally {
-         stmt.close();
-      }
-      return toReturn;
    }
 
 }

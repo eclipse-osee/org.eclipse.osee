@@ -410,7 +410,7 @@ public class OrcsStorageImpl implements Storage {
       if (matcher.find()) {
          String match = matcher.group();
          String[] split = match.split(":");
-         toReturn = TokenFactory.createBranch(split[1], baselineBranch.getName());
+         toReturn = TokenFactory.createBranch(Long.valueOf(split[1]), baselineBranch.getName());
       }
 
       regex = Pattern.compile(baselineBranch.getGuid() + "\\s*:\\s*.*");

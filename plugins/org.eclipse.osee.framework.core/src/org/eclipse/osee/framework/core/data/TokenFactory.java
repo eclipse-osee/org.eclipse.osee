@@ -59,10 +59,6 @@ public final class TokenFactory {
       return createBranch(Lib.generateUuid(), name);
    }
 
-   public static IOseeBranch createBranch(String guid, String name) {
-      return createBranch(Lib.generateUuid(), name);
-   }
-
    public static IOseeBranch createBranch(Long uuid, String name) {
       return new BranchToken(uuid, name);
    }

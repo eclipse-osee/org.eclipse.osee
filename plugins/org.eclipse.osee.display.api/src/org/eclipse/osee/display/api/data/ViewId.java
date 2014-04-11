@@ -21,8 +21,8 @@ public class ViewId extends NamedIdentity<String> {
 
    Map<String, String> attributes = new HashMap<String, String>();
 
-   public ViewId(String guid, String name) {
-      super(guid, name);
+   public ViewId(String uuid, String name) {
+      super(uuid, name);
    }
 
    public void setAttribute(String key, String value) {

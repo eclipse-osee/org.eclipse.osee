@@ -168,7 +168,7 @@ public class BuildTraceReport {
          buildArt.getAttributes(AtsAttributeTypes.BaselineBranchUuid);
       Conditions.checkNotNull(branchUuids, "branchUuids");
       String baselineBranchUuid = branchUuids.getExactlyOne().getValue();
-      IOseeBranch branch = TokenFactory.createBranch(baselineBranchUuid, "TraceReport Branch");
+      IOseeBranch branch = TokenFactory.createBranch(Long.valueOf(baselineBranchUuid), "TraceReport Branch");
       return branch;
    }
 
