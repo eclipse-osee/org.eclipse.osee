@@ -453,7 +453,7 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
       memento = memento.createChild(INPUT);
       if (branch != null) {
          try {
-            memento.putString(BRANCH_ID, Long.toString(BranchManager.getBranchId(branch)));
+            memento.putString(BRANCH_ID, Long.toString(branch.getUuid()));
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

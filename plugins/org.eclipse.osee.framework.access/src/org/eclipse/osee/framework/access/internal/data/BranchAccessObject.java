@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Jeff C. Phillips
@@ -53,7 +52,7 @@ public class BranchAccessObject extends AccessObject {
    }
 
    public static BranchAccessObject getBranchAccessObject(IOseeBranch branch) throws OseeCoreException {
-      return getBranchAccessObject(BranchManager.getBranchId(branch));
+      return getBranchAccessObject(branch.getUuid());
    }
 
    public static BranchAccessObject getBranchAccessObject(long branchUuid) {
@@ -68,7 +67,7 @@ public class BranchAccessObject extends AccessObject {
    }
 
    public static BranchAccessObject getBranchAccessObjectFromCache(IOseeBranch branch) throws OseeCoreException {
-      return cache.get(BranchManager.getBranchId(branch));
+      return cache.get(branch.getUuid());
    }
 
    @Override

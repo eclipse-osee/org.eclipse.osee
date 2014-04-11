@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -137,7 +136,7 @@ public class TxCoveragePartitionsReportBlam extends AbstractBlam {
             IOseeStatement chStmt = null;
             try {
                chStmt = ConnectionHandler.getStatement();
-               chStmt.runPreparedQuery(SELECT_ARTS_BY_BRANCH_AND_TX, BranchManager.getBranchId(branch), txId);
+               chStmt.runPreparedQuery(SELECT_ARTS_BY_BRANCH_AND_TX, branch.getUuid(), txId);
 
                while (chStmt.next()) {
                   int artId = chStmt.getInt("art_id");
@@ -210,7 +209,7 @@ public class TxCoveragePartitionsReportBlam extends AbstractBlam {
          IOseeStatement chStmt = null;
          try {
             chStmt = ConnectionHandler.getStatement();
-            chStmt.runPreparedQuery(SELECT_TXS_BY_BRANCH, BranchManager.getBranchId(branch));
+            chStmt.runPreparedQuery(SELECT_TXS_BY_BRANCH, branch.getUuid());
             txIdListWidget.removeAll();
             while (chStmt.next()) {
                txIdListWidget.add(chStmt.getString("transaction_id") + TASKITEMDELIM + chStmt.getString("OSEE_COMMENT") + TASKITEMDELIM + chStmt.getString("time"));

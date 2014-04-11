@@ -73,7 +73,7 @@ public final class ArtifactLoader {
 
    public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionRecord transactionId) throws OseeCoreException {
       List<Pair<Integer, Long>> toLoad = new LinkedList<Pair<Integer, Long>>();
-      Long branchId = BranchManager.getBranchId(branch);
+      Long branchId = branch.getUuid();
       for (Integer artId : new HashSet<Integer>(artIds)) {
          toLoad.add(new Pair<Integer, Long>(artId, branchId));
       }
@@ -419,7 +419,7 @@ public final class ArtifactLoader {
          new CompositeKeyHashMap<Integer, Long, Artifact>(artifacts.size(), true);
 
       for (Artifact artifact : artifacts) {
-         key2 = historical ? transactionId.getId() : BranchManager.getBranchId(artifact.getBranch());
+         key2 = historical ? transactionId.getId() : artifact.getBranch().getUuid();
          tempCache.put(artifact.getArtId(), key2, artifact);
       }
 

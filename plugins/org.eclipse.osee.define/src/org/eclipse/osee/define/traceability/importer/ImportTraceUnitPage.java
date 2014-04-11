@@ -428,7 +428,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
          IOseeBranch branch = getSelectedBranch();
          if (branch != null) {
             try {
-               settings.put(BRANCH_KEY, BranchManager.getBranchId(branch));
+               settings.put(BRANCH_KEY, branch.getUuid());
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }

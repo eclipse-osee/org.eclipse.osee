@@ -168,7 +168,7 @@ public final class TransactionManager {
     * @return the largest (most recent) transaction on the given branch
     */
    public static TransactionRecord getHeadTransaction(IOseeBranch branch) throws OseeCoreException {
-      long branchId = BranchManager.getBranchId(branch);
+      long branchId = branch.getUuid();
       int transactionNumber =
          ConnectionHandler.runPreparedQueryFetchInt(-1, ClientSessionManager.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX),
             branchId);
@@ -194,7 +194,7 @@ public final class TransactionManager {
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
       TransactionRecordFactory factory = ServiceUtil.getTransactionFactory();
       TransactionRecord transactionId =
-         factory.createOrUpdate(getTransactionCache(), transactionNumber, BranchManager.getBranchId(branch), comment,
+         factory.createOrUpdate(getTransactionCache(), transactionNumber, branch.getUuid(), comment,
             transactionTime, authorArtId, 0, txType, getBranchCache());
       return transactionId;
    }
@@ -208,7 +208,7 @@ public final class TransactionManager {
    public static TransactionRecord getTransactionAtDate(IOseeBranch branch, Date maxDateExclusive) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(maxDateExclusive, "max date exclusive");
-      long branchId = BranchManager.getBranchId(branch);
+      long branchId = branch.getUuid();
 
       TransactionRecord txRecord = null;
 

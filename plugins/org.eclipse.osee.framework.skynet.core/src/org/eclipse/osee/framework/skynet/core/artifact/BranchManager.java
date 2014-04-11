@@ -160,10 +160,6 @@ public class BranchManager {
       return getCache().getByName(branchName);
    }
 
-   public static long getBranchId(IOseeBranch branch) throws OseeCoreException {
-      return branch.getUuid();
-   }
-
    public static Branch getBranch(IOseeBranch branch) throws OseeCoreException {
       if (branch instanceof Branch) {
          return (Branch) branch;
@@ -417,7 +413,12 @@ public class BranchManager {
       int mergeAddressingQueryId = ArtifactLoader.getNewQueryId();
       List<Object[]> datas = new LinkedList<Object[]>();
       for (int artId : expectedArtIds) {
-         datas.add(new Object[] {mergeAddressingQueryId, insertTime, artId, sourceBranch.getUuid(), SQL3DataType.INTEGER});
+         datas.add(new Object[] {
+            mergeAddressingQueryId,
+            insertTime,
+            artId,
+            sourceBranch.getUuid(),
+            SQL3DataType.INTEGER});
       }
       MergeBranch mergeBranch = null;
       try {

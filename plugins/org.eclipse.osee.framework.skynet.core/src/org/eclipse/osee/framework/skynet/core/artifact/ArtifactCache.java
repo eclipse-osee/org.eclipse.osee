@@ -172,7 +172,7 @@ public final class ArtifactCache {
    }
 
    public static Artifact getActive(Integer artId, IOseeBranch branch) throws OseeCoreException {
-      return getActive(artId, BranchManager.getBranchId(branch));
+      return getActive(artId, branch.getUuid());
    }
 
    public static Artifact getActive(Integer artId, Long branchId) {
@@ -180,7 +180,7 @@ public final class ArtifactCache {
    }
 
    public static Artifact getActive(String artGuid, IOseeBranch branch) throws OseeCoreException {
-      return ACTIVE_CACHE.getByGuid(artGuid, BranchManager.getBranchId(branch));
+      return ACTIVE_CACHE.getByGuid(artGuid, branch.getUuid());
    }
 
    /**

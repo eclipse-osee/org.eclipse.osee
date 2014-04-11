@@ -306,7 +306,7 @@ public class OutfileImportPage extends WizardDataTransferPage {
          IOseeBranch branch = branchSelect.getData();
          try {
             if (branch != null && BranchManager.getBranch(branch).hasParentBranch()) {
-               String lastBranchSelected = Long.toString(BranchManager.getBranchId(branch));
+               String lastBranchSelected = Long.toString(branch.getUuid());
                branchIds = addToHistory(branchIds, lastBranchSelected);
 
                settings.put(TestRunStorageKey.BRANCH_IDS, branchIds);

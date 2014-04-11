@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Jeff C. Phillips
@@ -70,7 +69,7 @@ public class ArtifactAccessObject extends AccessObject {
    }
 
    public static ArtifactAccessObject getArtifactAccessObject(Integer artId, IOseeBranch branch) throws OseeCoreException {
-      long branchId = BranchManager.getBranchId(branch);
+      long branchId = branch.getUuid();
       ArtifactAccessObject accessObject = cache.get(artId, branchId);
 
       if (accessObject == null) {
@@ -85,7 +84,7 @@ public class ArtifactAccessObject extends AccessObject {
    }
 
    public static AccessObject getArtifactAccessObjectFromCache(Integer artId2, IOseeBranch branch) throws OseeCoreException {
-      long branchId2 = BranchManager.getBranchId(branch);
+      long branchId2 = branch.getUuid();
       return cache.get(artId2, branchId2);
    }
 

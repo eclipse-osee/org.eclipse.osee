@@ -668,7 +668,7 @@ public class RelationManager {
       @Override
       public void updateCachedArtifact(int artId, IOseeBranch branch) {
          try {
-            ArtifactCache.updateCachedArtifact(artId, BranchManager.getBranchId(branch));
+            ArtifactCache.updateCachedArtifact(artId, branch.getUuid());
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
