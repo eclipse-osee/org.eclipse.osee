@@ -23,7 +23,6 @@ import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.db.internal.BranchIdProvider;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.engines.QueryEngineImpl;
@@ -70,10 +69,10 @@ public class QueryModule {
       return queryIndexer;
    }
 
-   public QueryEngine createQueryEngine(DataLoaderFactory objectLoader, BranchIdProvider branchIdProvider, AttributeTypes attrTypes) {
+   public QueryEngine createQueryEngine(DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
       QueryCallableFactory factory1 =
          newArtifactQueryEngine(logger, dbService, idService, sqlProvider, taggingEngine, executorAdmin, objectLoader,
-            branchIdProvider, attrTypes);
+            attrTypes);
       QueryCallableFactory factory2 = newBranchQueryEngine(logger, dbService, idService, sqlProvider, objectLoader);
       QueryCallableFactory factory3 = newTxQueryEngine(logger, dbService, idService, sqlProvider, objectLoader);
       return new QueryEngineImpl(factory1, factory2, factory3);

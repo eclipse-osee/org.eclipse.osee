@@ -16,7 +16,6 @@ import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.db.internal.BranchIdProvider;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
@@ -53,13 +52,13 @@ public class LoaderModule {
       return new DataFactoryImpl(idFactory, factory, artifactTypes);
    }
 
-   public DataLoaderFactory createDataLoaderFactory(OrcsObjectFactory objectFactory, BranchIdProvider branchIdProvider) {
+   public DataLoaderFactory createDataLoaderFactory(OrcsObjectFactory objectFactory) {
       SqlObjectLoader createSqlObjectLoader = createSqlObjectLoader(objectFactory);
-      return createDataLoaderFactory(createSqlObjectLoader, branchIdProvider);
+      return createDataLoaderFactory(createSqlObjectLoader);
    }
 
-   public DataLoaderFactory createDataLoaderFactory(SqlObjectLoader sqlObjectLoader, BranchIdProvider branchIdProvider) {
-      return new DataLoaderFactoryImpl(logger, dbService, sqlObjectLoader, branchIdProvider);
+   public DataLoaderFactory createDataLoaderFactory(SqlObjectLoader sqlObjectLoader) {
+      return new DataLoaderFactoryImpl(logger, dbService, sqlObjectLoader);
    }
 
    protected SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory) {

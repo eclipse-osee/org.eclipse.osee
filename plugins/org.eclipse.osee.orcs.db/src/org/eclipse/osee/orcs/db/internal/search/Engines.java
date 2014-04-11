@@ -28,7 +28,6 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandlerDecorator;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.db.internal.BranchIdProvider;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.engines.AbstractSimpleQueryCallableFactory;
@@ -65,11 +64,11 @@ public final class Engines {
       //
    }
 
-   public static ArtifactQueryCallableFactory newArtifactQueryEngine(Log logger, IOseeDatabaseService dbService, IdentityLocator idService, SqlProvider sqlProvider, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader, BranchIdProvider branchIdProvider, AttributeTypes attrTypes) {
+   public static ArtifactQueryCallableFactory newArtifactQueryEngine(Log logger, IOseeDatabaseService dbService, IdentityLocator idService, SqlProvider sqlProvider, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
       SqlHandlerFactory handlerFactory =
          createArtifactSqlHandlerFactory(logger, idService, taggingEngine.getTagProcessor());
       QuerySqlContextFactory sqlContextFactory =
-         new ArtifactQuerySqlContextFactoryImpl(logger, dbService, sqlProvider, branchIdProvider, handlerFactory);
+         new ArtifactQuerySqlContextFactoryImpl(logger, dbService, sqlProvider, handlerFactory);
       AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine, attrTypes);
       QueryFilterFactoryImpl filterFactory = new QueryFilterFactoryImpl(logger, executorAdmin, matcher);
       return new ArtifactQueryCallableFactory(logger, objectLoader, sqlContextFactory, filterFactory);

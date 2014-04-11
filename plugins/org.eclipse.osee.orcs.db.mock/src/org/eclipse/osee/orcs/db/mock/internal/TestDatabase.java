@@ -137,7 +137,7 @@ public class TestDatabase {
          }
       }
       // Add shutdown hook if folder was not deleted - most likely due to a 'busy' file/folder
-      if (tempFolder.exists()) {
+      if (tempFolder != null && tempFolder.exists()) {
          Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {

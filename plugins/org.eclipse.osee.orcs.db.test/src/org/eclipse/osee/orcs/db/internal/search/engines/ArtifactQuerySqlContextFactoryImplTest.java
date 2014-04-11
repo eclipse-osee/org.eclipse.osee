@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
@@ -51,7 +50,6 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranch;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
-import org.eclipse.osee.orcs.db.internal.BranchIdProvider;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideNotExists;
@@ -117,11 +115,10 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    @Mock private TagProcessor tagProcessor;
    
    @Mock private ExecutorAdmin executorAdmin;
-   @Mock private BranchIdProvider branchIdProvider;
    @Mock private OrcsSession session;
    // @formatter:on
 
-   private final static long EXPECTED_BRANCH_ID = 65;
+   private final static long EXPECTED_BRANCH_ID = 570;
    private final static int EXPECTED_TX_ID = 45678;
 
    private QuerySqlContextFactory queryEngine;
@@ -135,15 +132,13 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       when(session.getGuid()).thenReturn(sessionId);
 
       SqlHandlerFactory handlerFactory = createArtifactSqlHandlerFactory(logger, identityService, tagProcessor);
-      queryEngine =
-         new ArtifactQuerySqlContextFactoryImpl(logger, dbService, sqlProvider, branchIdProvider, handlerFactory);
+      queryEngine = new ArtifactQuerySqlContextFactoryImpl(logger, dbService, sqlProvider, handlerFactory);
 
       CriteriaSet criteriaSet = new CriteriaSet();
       Options options = OptionsUtil.createOptions();
       criteriaSet.add(new CriteriaBranch(CoreBranches.COMMON));
       queryData = new QueryData(criteriaSet, options);
 
-      when(branchIdProvider.getBranchId(CoreBranches.COMMON)).thenReturn(EXPECTED_BRANCH_ID);
       when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");
 
       doAnswer(new Answer<Void>() {
@@ -627,40 +622,36 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    @Test
    public void testQueryExistsNoBranch() throws OseeCoreException {
 
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("getTxBranchFilter: branch uuid must be > 0");
-
-      String expected = "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
-      " FROM \n" + //
-      "osee_join_id jid1, osee_artifact art1, osee_txs txs1, " + //
-      "osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, " + //
-      "osee_attribute att1, osee_txs txs3, " + //
-      "osee_txs txs4, osee_relation_link rel1\n" + //
-      " WHERE \n" + //
-      "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1\n" + //
-      " AND \n" + //
-      "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.tx_current = 1\n" + //
-      " AND \n" + //
-      "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
-      " AND \n" + //
-      "att1.attr_type_id = ?\n" + //
-      " AND \n" + //
-      "att1.art_id = art1.art_id AND att1.art_id = art2.art_id\n" + //
-      " AND \n" + //
-      "att1.gamma_id = txs3.gamma_id AND txs3.tx_current = 1\n" + //
-      " AND \n" + //
-      "rel1.rel_link_type_id = ?\n" + //
-      " AND \n" + //
-      "(rel1.a_art_id = art1.art_id OR rel1.b_art_id = art1.art_id)\n" + //
-      " AND \n" + //
-      "(rel1.a_art_id = art2.art_id OR rel1.b_art_id = art2.art_id)\n" + //
-      " AND \n" + // 
-      "rel1.gamma_id = txs4.gamma_id\n" + //
-      " AND \n" + //
-      "txs4.tx_current = 1\n" + //
-      " ORDER BY art1.art_id, txs1.branch_id";
-
-      when(branchIdProvider.getBranchId(CoreBranches.COMMON)).thenReturn(0L);
+      String expected =
+         "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
+         " FROM \n" + //
+         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, " + //
+         "osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, " + //
+         "osee_attribute att1, osee_txs txs3, " + //
+         "osee_txs txs4, osee_relation_link rel1\n" + //
+         " WHERE \n" + //
+         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+         " AND \n" + //
+         "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
+         " AND \n" + //
+         "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
+         " AND \n" + //
+         "att1.attr_type_id = ?\n" + //
+         " AND \n" + //
+         "att1.art_id = art1.art_id AND att1.art_id = art2.art_id\n" + //
+         " AND \n" + //
+         "att1.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
+         " AND \n" + //
+         "rel1.rel_link_type_id = ?\n" + //
+         " AND \n" + //
+         "(rel1.a_art_id = art1.art_id OR rel1.b_art_id = art1.art_id)\n" + //
+         " AND \n" + //
+         "(rel1.a_art_id = art2.art_id OR rel1.b_art_id = art2.art_id)\n" + //
+         " AND \n" + // 
+         "rel1.gamma_id = txs4.gamma_id\n" + //
+         " AND \n" + //
+         "txs4.tx_current = 1 AND txs4.branch_id = ?\n" + //
+         " ORDER BY art1.art_id, txs1.branch_id";
 
       queryData.addCriteria(GUIDS, TYPES, REL_TYPE_EXISTS, IDS, ATTR_TYPE_EXITS);
 
@@ -668,17 +659,20 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       Assert.assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
-      Assert.assertEquals(6, parameters.size());
+      Assert.assertEquals(10, parameters.size());
       List<AbstractJoinQuery> joins = context.getJoins();
       Assert.assertEquals(2, joins.size());
 
       Assert.assertEquals(joins.get(0).getQueryId(), parameters.get(0));
-      Assert.assertEquals(joins.get(1).getQueryId(), parameters.get(1));
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), parameters.get(2));
-      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), parameters.get(3));
+      Assert.assertEquals(joins.get(1).getQueryId(), parameters.get(2));
+      Assert.assertEquals(EXPECTED_BRANCH_ID, parameters.get(3));
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), parameters.get(4));
+      Assert.assertEquals(CoreArtifactTypes.CodeUnit.getGuid(), parameters.get(5));
 
-      Assert.assertEquals(CoreAttributeTypes.Name.getGuid(), parameters.get(4));
-      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), parameters.get(5));
+      Assert.assertEquals(CoreAttributeTypes.Name.getGuid(), parameters.get(6));
+      Assert.assertEquals(EXPECTED_BRANCH_ID, parameters.get(7));
+      Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), parameters.get(8));
+      Assert.assertEquals(EXPECTED_BRANCH_ID, parameters.get(9));
    }
 
    @Test

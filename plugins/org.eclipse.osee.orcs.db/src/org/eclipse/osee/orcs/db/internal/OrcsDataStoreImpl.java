@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal;
 import java.util.Collection;
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
@@ -149,14 +148,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
 
    @Override
    public DataModule createDataModule(ArtifactTypes artifactTypes, AttributeTypes attributeTypes) {
-      BranchIdProvider branchIdProvider = new BranchIdProvider() {
-
-         @Override
-         public long getBranchId(IOseeBranch branch) {
-            return branch.getUuid();
-         }
-      };
-      return dataModuleFactory.createDataModule(branchIdProvider, artifactTypes, attributeTypes);
+      return dataModuleFactory.createDataModule(artifactTypes, attributeTypes);
    }
 
    @Override

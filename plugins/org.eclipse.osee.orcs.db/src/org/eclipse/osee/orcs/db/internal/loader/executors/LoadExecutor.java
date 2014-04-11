@@ -21,7 +21,6 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
-import org.eclipse.osee.orcs.db.internal.BranchIdProvider;
 import org.eclipse.osee.orcs.db.internal.loader.LoadSqlContext;
 import org.eclipse.osee.orcs.db.internal.loader.LoadUtil;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
@@ -32,14 +31,12 @@ import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
  */
 public class LoadExecutor extends AbstractLoadExecutor {
 
-   private final BranchIdProvider branchIdProvider;
    private final OrcsSession session;
    private final IOseeBranch branch;
    private final Collection<Integer> artifactIds;
 
-   public LoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, BranchIdProvider branchIdProvider, OrcsSession session, IOseeBranch branch, Collection<Integer> artifactIds) {
+   public LoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, OrcsSession session, IOseeBranch branch, Collection<Integer> artifactIds) {
       super(loader, dbService);
-      this.branchIdProvider = branchIdProvider;
       this.session = session;
       this.branch = branch;
       this.artifactIds = artifactIds;
@@ -49,12 +46,10 @@ public class LoadExecutor extends AbstractLoadExecutor {
    public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) throws OseeCoreException {
       checkCancelled(cancellation);
 
-      long branchId = branchIdProvider.getBranchId(branch);
-
       ArtifactJoinQuery join = JoinUtility.createArtifactJoinQuery(getDatabaseService());
       Integer transactionId = OptionsUtil.getFromTransaction(options);
       for (Integer artId : artifactIds) {
-         join.add(artId, branchId, transactionId);
+         join.add(artId, branch.getUuid(), transactionId);
       }
 
       LoadSqlContext loadContext = new LoadSqlContext(session, options, branch);

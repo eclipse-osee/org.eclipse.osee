@@ -29,7 +29,6 @@ import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
-import org.eclipse.osee.orcs.db.internal.BranchIdProvider;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
@@ -52,36 +51,32 @@ public class DataLoaderImpl implements DataLoader {
 
    private final OrcsSession session;
    private final IOseeBranch branch;
-   private final BranchIdProvider branchIdProvider;
    private final SqlObjectLoader sqlLoader;
 
-   public DataLoaderImpl(Log logger, AbstractLoadExecutor loadExecutor, Options options, OrcsSession session, IOseeBranch branch, BranchIdProvider branchIdProvider, SqlObjectLoader sqlLoader) {
+   public DataLoaderImpl(Log logger, AbstractLoadExecutor loadExecutor, Options options, OrcsSession session, IOseeBranch branch, SqlObjectLoader sqlLoader) {
       this.logger = logger;
       this.loadExecutor = loadExecutor;
       this.options = options;
       this.session = session;
       this.branch = branch;
-      this.branchIdProvider = branchIdProvider;
       this.sqlLoader = sqlLoader;
    }
 
-   public DataLoaderImpl(Log logger, Collection<Integer> artifactIds, Options options, OrcsSession session, IOseeBranch branch, BranchIdProvider branchIdProvider, SqlObjectLoader sqlLoader) {
+   public DataLoaderImpl(Log logger, Collection<Integer> artifactIds, Options options, OrcsSession session, IOseeBranch branch, SqlObjectLoader sqlLoader) {
       this.logger = logger;
       this.options = options;
       this.session = session;
       this.branch = branch;
-      this.branchIdProvider = branchIdProvider;
       this.sqlLoader = sqlLoader;
 
       withArtifactIds(artifactIds);
    }
 
-   public DataLoaderImpl(Log logger, Options options, OrcsSession session, IOseeBranch branch, BranchIdProvider branchIdProvider, SqlObjectLoader sqlLoader, Collection<String> artifactIds) {
+   public DataLoaderImpl(Log logger, Options options, OrcsSession session, IOseeBranch branch, SqlObjectLoader sqlLoader, Collection<String> artifactIds) {
       this.logger = logger;
       this.options = options;
       this.session = session;
       this.branch = branch;
-      this.branchIdProvider = branchIdProvider;
       this.sqlLoader = sqlLoader;
 
       withArtifactGuids(artifactIds);
@@ -191,15 +186,12 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    private DataLoader withArtifactIds(Collection<Integer> artifactIds) {
-      loadExecutor =
-         new LoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), branchIdProvider, session, branch, artifactIds);
+      loadExecutor = new LoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), session, branch, artifactIds);
       return this;
    }
 
    private DataLoader withArtifactGuids(Collection<String> artifactGuids) {
-      loadExecutor =
-         new UuidsLoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), branchIdProvider, session, branch,
-            artifactGuids);
+      loadExecutor = new UuidsLoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), session, branch, artifactGuids);
       return this;
    }
 
