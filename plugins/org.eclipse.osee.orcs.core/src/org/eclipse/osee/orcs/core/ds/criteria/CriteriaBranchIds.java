@@ -34,7 +34,7 @@ public class CriteriaBranchIds extends Criteria {
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      Conditions.checkExpressionFailOnTrue(getIds().isEmpty(), "Branch Ids cannot be empty");
+      Conditions.checkExpressionFailOnTrue(getIds().isEmpty(), "Branch Uuids cannot be empty");
    }
 
    @Override

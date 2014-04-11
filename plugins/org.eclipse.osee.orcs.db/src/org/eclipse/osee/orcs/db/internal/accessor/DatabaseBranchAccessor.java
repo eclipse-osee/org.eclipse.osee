@@ -176,7 +176,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
          Branch childBranch = entry.getKey();
          Branch parentBranch = branchCache.getByUuid(entry.getValue());
          if (parentBranch == null) {
-            throw new BranchDoesNotExist("Parent Branch id:[%s] does not exist for child branch [%s]",
+            throw new BranchDoesNotExist("Parent Branch uuid:[%s] does not exist for child branch [%s]",
                entry.getValue(), entry.getKey());
          }
          childBranch.setParentBranch(parentBranch);

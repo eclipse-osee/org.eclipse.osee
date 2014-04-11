@@ -243,7 +243,7 @@ public final class ArtifactLoader {
    }
 
    /**
-    * loads or reloads artifacts based on artifact ids and branch ids
+    * loads or reloads artifacts based on artifact ids and branch uuids
     * 
     * @param artifacts
     * @param locks

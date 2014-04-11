@@ -69,13 +69,13 @@ public class BranchQueryResource {
    /**
     * Perform a branch query based on the input query parameters
     * 
-    * @param branchIds comma separated list of branch ids
+    * @param branchIds comma separated list of branch uuids
     * @param branchTypes comma separated list of {@link org.eclipse.osee.framework.core.enums.BranchType BranchType}
     * @param branchStates comma separated list of {@link org.eclipse.osee.framework.core.enums.BranchState BranchState}
     * @param deleted to include deleted branches in the search
     * @param archived to include archived branches in the search
-    * @param childOf branch id of the parent to search children of
-    * @param ancestorOf branch id of ancestor to search decendents of
+    * @param childOf branch uuid of the parent to search children of
+    * @param ancestorOf branch uuid of ancestor to search decendents of
     * @param pretty if the returned JSON should be pretty printed
     * @return JSON representation of the branch query results
     */

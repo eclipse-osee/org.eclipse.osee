@@ -38,7 +38,7 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
       "Associated Artifact", 100, SWT.LEFT, false, SortDataType.String, false, null);
    public final static XViewerColumn branchUuid = new XViewerColumn("framework.branch.uuid", "Branch UUID", 200,
       SWT.LEFT, false, SortDataType.String, false, null);
-   public final static XViewerColumn branchId = new XViewerColumn("framework.branch.id", "Branch Id", 80, SWT.LEFT,
+   public final static XViewerColumn branchId = new XViewerColumn("framework.branch.id", "Branch Uuid", 80, SWT.LEFT,
       false, SortDataType.Integer, false, null);
    public final static XViewerColumn parentBranch = new XViewerColumn("framework.branch.parentBranch", "Parent Branch",
       100, SWT.LEFT, false, SortDataType.String, false, null);

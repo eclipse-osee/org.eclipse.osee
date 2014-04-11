@@ -289,9 +289,9 @@ public class OrcsBranchQueryTest {
       assertEquals(1, query.getCount());
    }
 
-   private IOseeBranch createBranch(IOseeBranch parent, IOseeBranch id) throws Exception {
+   private IOseeBranch createBranch(IOseeBranch parent, IOseeBranch uuid) throws Exception {
       ArtifactReadable author = getSystemUser();
-      return getBranchOps().createWorkingBranch(id, author, parent, null).call();
+      return getBranchOps().createWorkingBranch(uuid, author, parent, null).call();
    }
 
    private ArtifactReadable getSystemUser() throws OseeCoreException {

@@ -62,7 +62,7 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
    private static final String[] COLUMN_HEADER = {
       "Gamma Id",
       "Transaction Id",
-      "Branch Id",
+      "Branch Uuid",
       "Art id",
       "Attribute Id",
       "Rel Link Id"};

@@ -202,7 +202,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                   final Branch sourceBranch = BranchManager.getBranch(sourceBranchId);
                   if (sourceBranch == null) {
                      OseeLog.log(Activator.class, Level.WARNING,
-                        "Merge View can't init due to invalid source branch id " + sourceBranchId);
+                        "Merge View can't init due to invalid source branch uuid " + sourceBranchId);
                      mergeXWidget.setLabel("Could not restore this Merge View");
                      return;
                   }
@@ -210,7 +210,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                   final Branch destBranch = BranchManager.getBranch(destBranchId);
                   if (destBranch == null) {
                      OseeLog.log(Activator.class, Level.WARNING,
-                        "Merge View can't init due to invalid destination branch id " + sourceBranchId);
+                        "Merge View can't init due to invalid destination branch uuid " + sourceBranchId);
                      mergeXWidget.setLabel("Could not restore this Merge View");
                      return;
                   }

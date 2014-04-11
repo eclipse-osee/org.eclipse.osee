@@ -479,7 +479,7 @@ public class AtsBranchManagerCore {
    public static IOseeBranch getConfiguredBranchForWorkflow(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       IOseeBranch parentBranch = null;
 
-      // Check for parent branch id in Version artifact
+      // Check for parent branch uuid in Version artifact
       if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
          IAtsVersion verArt = AtsVersionService.get().getTargetedVersion(teamArt);
          if (verArt != null) {

@@ -279,13 +279,13 @@ public class BranchManager {
 
    public static Branch getBranch(Long branchId) throws OseeCoreException {
       if (branchId == null) {
-         throw new BranchDoesNotExist("Branch Id is null");
+         throw new BranchDoesNotExist("Branch Uuid is null");
       }
 
       checkAndReload(branchId);
       Branch branch = getCache().getById(branchId);
       if (branch == null) {
-         throw new BranchDoesNotExist("Branch could not be acquired for branch id %d", branchId);
+         throw new BranchDoesNotExist("Branch could not be acquired for branch uuid %d", branchId);
       }
       return branch;
    }

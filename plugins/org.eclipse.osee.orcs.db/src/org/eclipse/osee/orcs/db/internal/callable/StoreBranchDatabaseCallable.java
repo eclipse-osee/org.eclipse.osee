@@ -142,7 +142,7 @@ public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISt
       int inheritAccessControl = branch.isInheritAccessControl() ? 1 : 0;
 
       getLogger().debug(
-         "Branch Name: [%s], Parent Branch Id: [%s], src trans: [%s], arch state: [%s], assoc art: [%s], branch type: [%s], branch state: [%s], baseline trans: [%s], branch id: [%s]",
+         "Branch Name: [%s], Parent Branch Uuid: [%s], src trans: [%s], arch state: [%s], assoc art: [%s], branch type: [%s], branch state: [%s], baseline trans: [%s], branch uuid: [%s]",
          branch.getName(), parentBranchId, branch.getSourceTransaction().getId(), branch.getArchiveState().getValue(),
          branch.getAssociatedArtifactId(), branch.getBranchType().getValue(), branch.getBranchState().getValue(),
          baselineTransaction, branch.getId());

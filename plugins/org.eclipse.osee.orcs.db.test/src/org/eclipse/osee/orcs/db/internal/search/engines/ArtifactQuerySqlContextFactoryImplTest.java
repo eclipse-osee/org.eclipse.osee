@@ -628,7 +628,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    public void testQueryExistsNoBranch() throws OseeCoreException {
 
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("getTxBranchFilter: branch id must be > 0");
+      thrown.expectMessage("getTxBranchFilter: branch uuid must be > 0");
 
       String expected = "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
       " FROM \n" + //

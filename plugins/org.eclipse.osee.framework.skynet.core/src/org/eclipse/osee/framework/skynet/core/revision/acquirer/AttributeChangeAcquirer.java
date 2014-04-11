@@ -165,7 +165,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
 
    private void loadAttributeWasValues(Branch sourceBranch, TransactionRecord transactionId, Set<Integer> artIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, boolean hasBranch) throws OseeCoreException, OseeDataStoreException {
       if (!artIds.isEmpty()) {
-         long sqlParamter; // Will either be a branch id or transaction id
+         long sqlParamter; // Will either be a branch uuid or transaction id
          Branch wasValueBranch;
          String sql;
 

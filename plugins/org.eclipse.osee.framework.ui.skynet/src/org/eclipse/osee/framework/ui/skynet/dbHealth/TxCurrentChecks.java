@@ -40,7 +40,7 @@ public class TxCurrentChecks extends DatabaseHealthOperation {
       ResultsEditorTableTab resultsTab = new ResultsEditorTableTab(tableName + " currents");
       getResultsProvider().addResultsTab(resultsTab);
       resultsTab.addColumn(new XViewerColumn("1", "Issue", 220, SWT.LEFT, true, SortDataType.String, false, ""));
-      resultsTab.addColumn(new XViewerColumn("2", "Branch Id", 80, SWT.LEFT, true, SortDataType.Integer, false, ""));
+      resultsTab.addColumn(new XViewerColumn("2", "Branch Uuid", 80, SWT.LEFT, true, SortDataType.Integer, false, ""));
       resultsTab.addColumn(new XViewerColumn("3", columnName, 80, SWT.LEFT, true, SortDataType.Integer, false, ""));
       resultsTab.addColumn(new XViewerColumn("4", "Transaction Id", 80, SWT.LEFT, true, SortDataType.Integer, false, ""));
       resultsTab.addColumn(new XViewerColumn("5", "Gamma Id", 80, SWT.LEFT, true, SortDataType.Integer, false, ""));

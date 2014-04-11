@@ -798,18 +798,18 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          Branch branch = BranchManager.getBranchByUuid(parentBranchUuid);
          if (branch.getArchiveState().isArchived()) {
             results.log("validateBranchUuid", String.format(
-               "Error: [%s][%s][%s] has Parent Branch Id attribute set to Archived Branch [%s] named [%s]",
+               "Error: [%s][%s][%s] has Parent Branch Uuid attribute set to Archived Branch [%s] named [%s]",
                name.getName(), name.getGuid(), name, parentBranchUuid, branch));
          } else if (!branch.getBranchType().isBaselineBranch()) {
             results.log(
                "validateBranchUuid",
                String.format(
-                  "Error: [%s][%s][%s] has Parent Branch Id attribute [%s][%s] that is a [%s] branch; should be a BASELINE branch",
+                  "Error: [%s][%s][%s] has Parent Branch Uuid attribute [%s][%s] that is a [%s] branch; should be a BASELINE branch",
                   name.getName(), name.getGuid(), name, branch.getBranchType().name(), parentBranchUuid, branch));
          }
       } catch (BranchDoesNotExist ex) {
          results.log("validateBranchUuid", String.format(
-            "Error: [%s][%s][%s] has Parent Branch Id attribute [%s] that references a non-existant", name.getName(),
+            "Error: [%s][%s][%s] has Parent Branch Uuid attribute [%s] that references a non-existant", name.getName(),
             name.getGuid(), name, parentBranchUuid));
       } catch (Exception ex) {
          results.log("validateBranchUuid",

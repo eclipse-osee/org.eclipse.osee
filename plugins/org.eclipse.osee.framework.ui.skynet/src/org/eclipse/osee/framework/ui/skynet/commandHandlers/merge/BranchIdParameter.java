@@ -26,7 +26,7 @@ public class BranchIdParameter implements IParameter {
 
    @Override
    public String getName() {
-      return "Branch Id";
+      return "Branch Uuid";
    }
 
    @Override

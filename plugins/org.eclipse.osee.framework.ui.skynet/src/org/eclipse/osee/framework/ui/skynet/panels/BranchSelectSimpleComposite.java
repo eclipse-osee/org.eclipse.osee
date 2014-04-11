@@ -216,7 +216,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
                   }
                }
             } catch (Exception ex) {
-               OseeLog.logf(Activator.class, Level.SEVERE, "Unable to add invalid branch id [%s] to selection list.",
+               OseeLog.logf(Activator.class, Level.SEVERE, "Unable to add invalid branch uuid [%s] to selection list.",
                   toStore);
             }
          }

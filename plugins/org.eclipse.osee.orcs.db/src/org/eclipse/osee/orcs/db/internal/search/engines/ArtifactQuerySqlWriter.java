@@ -95,7 +95,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
          sb.append(".branch_id = ?");
          addParameter(branchId);
       } else {
-         throw new OseeArgumentException("getTxBranchFilter: branch id must be > 0");
+         throw new OseeArgumentException("getTxBranchFilter: branch uuid must be > 0");
       }
       return sb.toString();
    }

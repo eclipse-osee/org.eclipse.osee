@@ -362,7 +362,7 @@ public class ConflictDeletionTest {
             chStmt.runPreparedQuery(GET_ARTIFACT_DEBUG, artifact.getFullBranch().getId(), artifact.getArtId());
             while (chStmt.next()) {
                System.out.println(String.format(
-                  "      Art Id = %d  Branch Id = %d TX_Current = %d mod_type = %d Transaction_id = %d Gamma_id = %d",
+                  "      Art Id = %d  Branch Uuid = %d TX_Current = %d mod_type = %d Transaction_id = %d Gamma_id = %d",
                   chStmt.getInt("art_id"), chStmt.getLong("branch_id"), chStmt.getInt("tx_current"),
                   chStmt.getInt("mod_type"), chStmt.getInt("transaction_id"), chStmt.getInt("gamma_id")));
             }
@@ -381,7 +381,7 @@ public class ConflictDeletionTest {
                attribute.getId());
             while (chStmt.next()) {
                System.out.println(String.format(
-                  "        Attribute Id = %d  Art_id = %d Branch Id = %d TX_Current = %d mod_type = %d Transaction_id = %d Gamma_id = %d",
+                  "        Attribute Id = %d  Art_id = %d Branch Uuid = %d TX_Current = %d mod_type = %d Transaction_id = %d Gamma_id = %d",
                   chStmt.getInt("attr_id"), chStmt.getInt("art_id"), chStmt.getLong("branch_id"),
                   chStmt.getInt("tx_current"), chStmt.getInt("mod_type"), chStmt.getInt("transaction_id"),
                   chStmt.getInt("gamma_id")));
@@ -400,7 +400,7 @@ public class ConflictDeletionTest {
             chStmt.runPreparedQuery(GET_RELATION_DEBUG, artifact.getFullBranch().getId(), relation.getId());
             while (chStmt.next()) {
                System.out.println(String.format(
-                  "        Relation Id = %d  a_art_id = %d b_art_id = %d Branch Id = %d TX_Current = %d mod_type = %d Transaction_id = %d Gamma_id = %d",
+                  "        Relation Id = %d  a_art_id = %d b_art_id = %d Branch Uuid = %d TX_Current = %d mod_type = %d Transaction_id = %d Gamma_id = %d",
                   chStmt.getInt("rel_link_id"), chStmt.getInt("a_art_id"), chStmt.getInt("b_art_id"),
                   chStmt.getLong("branch_id"), chStmt.getInt("tx_current"), chStmt.getInt("mod_type"),
                   chStmt.getInt("transaction_id"), chStmt.getInt("gamma_id")));

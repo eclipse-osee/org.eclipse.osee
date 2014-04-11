@@ -42,7 +42,7 @@ public class RelationCache {
    };
 
    // Indexed by ArtifactKey so that map does not hold strong reference to artifact which allows it to be garbage collected
-   // the branch is accounted for because artifact key includes the branch id
+   // the branch is accounted for because artifact key includes the branch uuid
    private final CompositeKeyHashMap<ArtifactKey, IRelationType, List<RelationLink>> relationsByType =
       new CompositeKeyHashMap<ArtifactKey, IRelationType, List<RelationLink>>(1024, true);
 

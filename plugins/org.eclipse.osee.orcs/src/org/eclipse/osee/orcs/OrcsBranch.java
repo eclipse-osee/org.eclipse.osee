@@ -32,10 +32,10 @@ import org.eclipse.osee.orcs.data.CreateBranchData;
 public interface OrcsBranch {
 
    // In Table
-   /// branch Id
+   /// branch Uuid
    /// branch guid
    /// parent txId
-   /// parent branch Id
+   /// parent branch Uuid
    /// isArchived
    /// baseline TxId
 
