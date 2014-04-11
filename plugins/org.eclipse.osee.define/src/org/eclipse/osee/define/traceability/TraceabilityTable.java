@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
  */
 public class TraceabilityTable {
    private static final Pattern TABLE_START_PATTERN = Pattern.compile("(<Table.*?>)");
+   private static final Pattern COLUMN_PATTERN = Pattern.compile("(\\s*<Column.*?/>\\s*)");
    private static final Pattern STYLE_PATTERN = Pattern.compile("<Styles>.*</Styles>\\s*", Pattern.DOTALL);
 
    private CharSequence result;
@@ -61,6 +62,7 @@ public class TraceabilityTable {
       ChangeSet changeSet = new ChangeSet(source);
       Matcher styleMatcher = STYLE_PATTERN.matcher(source);
       Matcher tableMatcher = TABLE_START_PATTERN.matcher(source);
+      Matcher columnMatcher = COLUMN_PATTERN.matcher(source);
 
       // if more than one style present, this will only apply once, so first style's header is applied
       if (styleMatcher.find()) {
@@ -71,6 +73,10 @@ public class TraceabilityTable {
          if (tableMatcher.find()) {
             changeSet.insertBefore(tableMatcher.end(), style.getHeader());
          }
+      }
+
+      while (columnMatcher.find()) {
+         changeSet.delete(columnMatcher.start(), columnMatcher.end());
       }
       result = changeSet.applyChangesToSelf();
    }
