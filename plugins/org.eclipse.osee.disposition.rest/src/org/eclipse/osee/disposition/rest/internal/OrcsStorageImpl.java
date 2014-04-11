@@ -406,14 +406,13 @@ public class OrcsStorageImpl implements Storage {
 
       Pattern regex = Pattern.compile(baselineBranch.getUuid() + "\\s*:\\s*.*");
       Matcher matcher = regex.matcher(configContents);
-      String guid = null;
       if (matcher.find()) {
          String match = matcher.group();
          String[] split = match.split(":");
          toReturn = TokenFactory.createBranch(Long.valueOf(split[1]), baselineBranch.getName());
       }
 
-      regex = Pattern.compile(baselineBranch.getGuid() + "\\s*:\\s*.*");
+      regex = Pattern.compile(baselineBranch.getUuid() + "\\s*:\\s*.*");
       matcher = regex.matcher(configContents);
       Long uuid = null;
       if (matcher.find()) {

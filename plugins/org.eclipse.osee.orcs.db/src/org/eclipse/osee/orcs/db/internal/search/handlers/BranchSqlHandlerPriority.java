@@ -17,7 +17,6 @@ public enum BranchSqlHandlerPriority {
    BRANCH_ANCESTOR_OF,
    BRANCH_CHILD_OF,
    BRANCH_ID,
-   BRANCH_GUID,
    BRANCH_TYPE,
    BRANCH_STATE,
    BRANCH_ARCHIVED,

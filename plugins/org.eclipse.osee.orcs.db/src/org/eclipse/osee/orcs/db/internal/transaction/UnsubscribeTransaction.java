@@ -59,17 +59,15 @@ public final class UnsubscribeTransaction extends DatabaseTxCallable<String> {
 
    @Override
    protected String handleTxWork(OseeConnection connection) throws OseeCoreException {
-      int branchId =
-         getDatabaseService().runPreparedQueryFetchObject(-2,
-            "select branch_id from osee_branch where branch_guid = ?", CoreBranches.COMMON.getGuid());
-      Conditions.checkExpressionFailOnTrue(branchId == -2, "Common branch was not found");
+      long branchUuid = CoreBranches.COMMON.getUuid();
+      Conditions.checkExpressionFailOnTrue(branchUuid == -2, "Common branch was not found");
 
-      if (getRelationTxData(branchId)) {
-         UpdatePreviousTxCurrent txc = new UpdatePreviousTxCurrent(getDatabaseService(), connection, branchId);
+      if (getRelationTxData(branchUuid)) {
+         UpdatePreviousTxCurrent txc = new UpdatePreviousTxCurrent(getDatabaseService(), connection, branchUuid);
          txc.addRelation(relationId);
          txc.updateTxNotCurrents();
 
-         createNewTxAddressing(connection, branchId);
+         createNewTxAddressing(connection, branchUuid);
       }
       return completionMethod;
    }
@@ -109,17 +107,17 @@ public final class UnsubscribeTransaction extends DatabaseTxCallable<String> {
    }
 
    @SuppressWarnings("unchecked")
-   private void createNewTxAddressing(OseeConnection connection, int branchId) throws OseeCoreException {
+   private void createNewTxAddressing(OseeConnection connection, long branchUuid) throws OseeCoreException {
       int transactionId = getDatabaseService().getSequence().getNextTransactionId();
       String comment =
          String.format("User %s requested unsubscribe from group %s", getUser().getLocalId(), getGroup().getLocalId());
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       int txType = TransactionDetailsType.NonBaselined.getId();
 
-      getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_TX_DETAILS, branchId, transactionId, comment,
+      getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_TX_DETAILS, branchUuid, transactionId, comment,
          timestamp, getUser().getLocalId(), txType);
       getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_TXS, ModificationType.DELETED.getValue(),
-         TxChange.DELETED.getValue(), transactionId, currentGammaId, branchId);
+         TxChange.DELETED.getValue(), transactionId, currentGammaId, branchUuid);
    }
 
 }

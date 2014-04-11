@@ -171,25 +171,25 @@ public class BranchManager {
    /**
     * Do not call this method unless absolutely neccessary due to performance impacts.
     */
-   public static synchronized void checkAndReload(Long id) throws OseeCoreException {
-      if (!branchExists(id)) {
-         loadBranchToCache(id);
+   public static synchronized void checkAndReload(Long uuid) throws OseeCoreException {
+      if (!branchExists(uuid)) {
+         loadBranchToCache(uuid);
       }
    }
 
-   private static void loadBranchToCache(long id) {
-      loadBranchToCache("select * from osee_branch where branch_id = ?", id);
+   private static void loadBranchToCache(long uuid) {
+      loadBranchToCache("select * from osee_branch where branch_id = ?", uuid);
    }
 
-   private static void loadBranchToCache(String sql, Object id) {
+   private static void loadBranchToCache(String sql, Object uuid) {
       IOseeDatabaseService databaseService = ServiceUtil.getOseeDatabaseService();
 
       IOseeStatement chStmt = null;
       try {
          chStmt = databaseService.getStatement();
-         chStmt.runPreparedQuery(1, sql, id);
+         chStmt.runPreparedQuery(1, sql, uuid);
          if (chStmt.next()) {
-            long branchId = chStmt.getLong("branch_id");
+            long branchUuid = chStmt.getLong("branch_id");
             String branchName = chStmt.getString("branch_name");
             BranchState branchState = BranchState.getBranchState(chStmt.getInt("branch_state"));
             BranchType branchType = BranchType.valueOf(chStmt.getInt("branch_type"));
@@ -201,7 +201,7 @@ public class BranchManager {
             int inheritAccessControl = chStmt.getInt("inherit_access_control");
 
             Branch created =
-               branchFactory.createOrUpdate(getCache(), branchId, branchName, branchType, branchState,
+               branchFactory.createOrUpdate(getCache(), branchUuid, branchName, branchType, branchState,
                   archiveState.isArchived(), StorageState.LOADED, inheritAccessControl == 1);
             created.setBaseTransaction(TransactionManager.getTransactionId(baseTx));
             created.setSourceTransaction(TransactionManager.getTransactionId(sourceTx));
@@ -218,7 +218,7 @@ public class BranchManager {
       checkAndReload(uuid);
       Branch branch = getCache().getByGuid(uuid);
       if (branch == null) {
-         throw new BranchDoesNotExist("Branch with guid [%s] does not exist", uuid);
+         throw new BranchDoesNotExist("Branch with uuid [%s] does not exist", uuid);
       }
       return branch;
    }
@@ -227,8 +227,8 @@ public class BranchManager {
       return getCache().get(branchToken) != null;
    }
 
-   public static boolean branchExists(long id) throws OseeCoreException {
-      return getCache().getById(id) != null;
+   public static boolean branchExists(long uuid) throws OseeCoreException {
+      return getCache().getById(uuid) != null;
    }
 
    /**
@@ -273,15 +273,15 @@ public class BranchManager {
       return getMergeBranch(sourceBranch, destBranch) != null;
    }
 
-   public static Branch getBranch(Long branchId) throws OseeCoreException {
-      if (branchId == null) {
+   public static Branch getBranch(Long branchUuid) throws OseeCoreException {
+      if (branchUuid == null) {
          throw new BranchDoesNotExist("Branch Uuid is null");
       }
 
-      checkAndReload(branchId);
-      Branch branch = getCache().getById(branchId);
+      checkAndReload(branchUuid);
+      Branch branch = getCache().getById(branchUuid);
       if (branch == null) {
-         throw new BranchDoesNotExist("Branch could not be acquired for branch uuid %d", branchId);
+         throw new BranchDoesNotExist("Branch could not be acquired for branch uuid %d", branchUuid);
       }
       return branch;
    }
@@ -316,18 +316,18 @@ public class BranchManager {
       Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(branch, false));
    }
 
-   public static void updateBranchType(IProgressMonitor monitor, final long branchId, final BranchType type) throws OseeCoreException {
-      IOperation operation = new UpdateBranchTypeHttpRequestOperation(branchId, type);
+   public static void updateBranchType(IProgressMonitor monitor, final long branchUuid, final BranchType type) throws OseeCoreException {
+      IOperation operation = new UpdateBranchTypeHttpRequestOperation(branchUuid, type);
       Operations.executeWorkAndCheckStatus(operation, monitor);
    }
 
-   public static void updateBranchState(IProgressMonitor monitor, final long branchId, final BranchState state) throws OseeCoreException {
-      IOperation operation = new UpdateBranchStateHttpRequestOperation(branchId, state);
+   public static void updateBranchState(IProgressMonitor monitor, final long branchUuid, final BranchState state) throws OseeCoreException {
+      IOperation operation = new UpdateBranchStateHttpRequestOperation(branchUuid, state);
       Operations.executeWorkAndCheckStatus(operation, monitor);
    }
 
-   public static void updateBranchArchivedState(IProgressMonitor monitor, final long branchId, final BranchArchivedState state) throws OseeCoreException {
-      IOperation operation = new UpdateBranchArchivedStateHttpRequestOperation(branchId, state);
+   public static void updateBranchArchivedState(IProgressMonitor monitor, final long branchUuid, final BranchArchivedState state) throws OseeCoreException {
+      IOperation operation = new UpdateBranchArchivedStateHttpRequestOperation(branchUuid, state);
       Operations.executeWorkAndCheckStatus(operation, monitor);
    }
 
