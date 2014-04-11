@@ -69,9 +69,9 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
             if (selectedBranch != null) {
                try {
                   Collection<Long> destBranches =
-                     ConflictManagerInternal.getDestinationBranchesMerged(selectedBranch.getId());
-                  if (selectedBranch.getParentBranch() != null && !destBranches.contains(selectedBranch.getParentBranch().getId())) {
-                     destBranches.add(selectedBranch.getParentBranch().getId());
+                     ConflictManagerInternal.getDestinationBranchesMerged(selectedBranch.getUuid());
+                  if (selectedBranch.getParentBranch() != null && !destBranches.contains(selectedBranch.getParentBranch().getUuid())) {
+                     destBranches.add(selectedBranch.getParentBranch().getUuid());
                   }
 
                   String commandId = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.mergeManager";

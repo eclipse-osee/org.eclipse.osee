@@ -132,7 +132,7 @@ public class BranchEventTest {
       Assert.assertNotNull(committedBranch);
       final Long uuid = committedBranch.getUuid();
       Assert.assertEquals(BranchArchivedState.ARCHIVED, committedBranch.getArchiveState());
-      BranchManager.updateBranchArchivedState(null, committedBranch.getId(), BranchArchivedState.UNARCHIVED);
+      BranchManager.updateBranchArchivedState(null, committedBranch.getUuid(), BranchArchivedState.UNARCHIVED);
 
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.ArchiveStateUpdated, uuid);
 
@@ -206,7 +206,7 @@ public class BranchEventTest {
       final Long uuid = workingBranch.getUuid();
       Assert.assertNotNull(workingBranch);
       Assert.assertEquals(BranchState.CREATED, workingBranch.getBranchState());
-      BranchManager.updateBranchState(null, workingBranch.getId(), BranchState.MODIFIED);
+      BranchManager.updateBranchState(null, workingBranch.getUuid(), BranchState.MODIFIED);
 
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.StateUpdated, uuid);
 
@@ -219,7 +219,7 @@ public class BranchEventTest {
       final Long uuid = workingBranch.getUuid();
       Assert.assertNotNull(workingBranch);
       Assert.assertEquals(BranchType.WORKING, workingBranch.getBranchType());
-      BranchManager.updateBranchType(null, workingBranch.getId(), BranchType.BASELINE);
+      BranchManager.updateBranchType(null, workingBranch.getUuid(), BranchType.BASELINE);
 
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.TypeUpdated, uuid);
 

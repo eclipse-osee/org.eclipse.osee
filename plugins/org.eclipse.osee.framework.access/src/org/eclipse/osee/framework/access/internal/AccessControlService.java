@@ -421,7 +421,7 @@ public class AccessControlService implements IAccessControlService {
 
       Integer artId = artifact.getArtId();
       Branch branch = artifact.getFullBranch();
-      Long branchId = branch.getId();
+      Long branchId = branch.getUuid();
 
       //      accessObject = accessObjectCache.get(artId, branchId);
       accessObject = ArtifactAccessObject.getArtifactAccessObjectFromCache(artId, branch);
@@ -672,7 +672,7 @@ public class AccessControlService implements IAccessControlService {
       for (Artifact object : objects) {
          Integer objectArtId = object.getArtId();
          Integer subjectArtId = subject.getArtId();
-         Long objectBranchId = object.getFullBranch().getId();
+         Long objectBranchId = object.getFullBranch().getUuid();
 
          if (!artifactLockCache.containsKey(objectBranchId, objectArtId)) {
             AccessObject accessObject = getAccessObject(object);
@@ -699,7 +699,7 @@ public class AccessControlService implements IAccessControlService {
       Set<Artifact> lockedArts = new HashSet<Artifact>();
       for (Artifact object : objects) {
          Integer objectArtId = object.getArtId();
-         Long branchId = object.getFullBranch().getId();
+         Long branchId = object.getFullBranch().getUuid();
 
          if (artifactLockCache.containsKey(branchId, objectArtId) && canUnlockObject(object, subject)) {
             AccessObject accessObject = getAccessObject(object);
@@ -721,8 +721,8 @@ public class AccessControlService implements IAccessControlService {
    @Override
    public void removePermissions(IOseeBranch branch) throws OseeCoreException {
       Branch theBranch = getBranchCache().get(branch);
-      getDatabaseService().runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, theBranch.getId());
-      getDatabaseService().runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, theBranch.getId());
+      getDatabaseService().runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, theBranch.getUuid());
+      getDatabaseService().runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, theBranch.getUuid());
    }
 
    public boolean hasLock(Artifact object) throws OseeCoreException {
@@ -731,12 +731,12 @@ public class AccessControlService implements IAccessControlService {
          return false;
       }
 
-      return artifactLockCache.containsKey(object.getFullBranch().getId(), object.getArtId());
+      return artifactLockCache.containsKey(object.getFullBranch().getUuid(), object.getArtId());
    }
 
    public boolean canUnlockObject(Artifact object, Artifact subject) throws OseeCoreException {
       ensurePopulated();
-      Integer subjectId = artifactLockCache.get(object.getFullBranch().getId(), object.getArtId());
+      Integer subjectId = artifactLockCache.get(object.getFullBranch().getUuid(), object.getArtId());
       return subjectId != null && subjectId.intValue() == subject.getArtId();
    }
 
@@ -746,7 +746,7 @@ public class AccessControlService implements IAccessControlService {
 
       if (object instanceof Artifact) {
          Artifact art = (Artifact) object;
-         Integer subjectArtId = artifactLockCache.get(art.getFullBranch().getId(), art.getArtId());
+         Integer subjectArtId = artifactLockCache.get(art.getFullBranch().getUuid(), art.getArtId());
 
          if (subjectArtId != null) {
             subject = UserManager.getUserByArtId(subjectArtId);
@@ -764,7 +764,7 @@ public class AccessControlService implements IAccessControlService {
       }
 
       if (hasLock(object)) {
-         long branchId = object.getFullBranch().getId();
+         long branchId = object.getFullBranch().getUuid();
          hasAccess = artifactLockCache.get(branchId, object.getArtId()) == UserManager.getUser().getArtId();
       }
       return hasAccess;

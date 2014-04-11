@@ -101,7 +101,7 @@ public class TransactionWriterTest {
       when(join2.getQueryId()).thenReturn(QUERY_ID_2);
 
       when(tx.getBranch()).thenReturn(branch);
-      when(branch.getId()).thenReturn(BRANCH_ID);
+      when(branch.getUuid()).thenReturn(BRANCH_ID);
       when(builder.getBinaryStores()).thenReturn(stores);
       when(builder.getTxNotCurrents()).thenAnswer(new Answer<Set<Entry<SqlOrderEnum, IdJoinQuery>>>() {
 

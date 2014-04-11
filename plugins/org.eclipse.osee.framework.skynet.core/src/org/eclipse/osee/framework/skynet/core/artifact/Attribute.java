@@ -203,7 +203,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
       this.dirty = dirty;
       try {
          Artifact artifact = getArtifact();
-         ArtifactCache.updateCachedArtifact(artifact.getArtId(), artifact.getFullBranch().getId());
+         ArtifactCache.updateCachedArtifact(artifact.getArtId(), artifact.getFullBranch().getUuid());
       } catch (OseeCoreException ex) {
          OseeLog.log(Attribute.class, Level.SEVERE, ex);
       }

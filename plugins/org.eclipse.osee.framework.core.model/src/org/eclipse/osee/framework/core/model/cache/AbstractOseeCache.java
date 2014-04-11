@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
+import org.eclipse.osee.framework.core.model.TypeUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -102,7 +103,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       guidToTypeMap.remove(type.getGuid());
       decacheByName(type);
       if (type.isIdValid()) {
-         idToTypeMap.remove(type.getId());
+         idToTypeMap.remove(TypeUtil.getId(type));
       }
    }
 
@@ -174,7 +175,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       Conditions.checkNotNull(type, "type to cache");
       ensurePopulated();
       if (type.isIdValid()) {
-         idToTypeMap.putIfAbsent(type.getId(), type);
+         idToTypeMap.putIfAbsent(TypeUtil.getId(type), type);
       }
    }
 

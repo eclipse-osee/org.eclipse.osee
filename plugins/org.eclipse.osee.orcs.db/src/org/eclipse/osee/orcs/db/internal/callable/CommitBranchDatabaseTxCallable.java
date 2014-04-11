@@ -106,7 +106,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
          insertCommitAddressing(newTx);
 
          getDatabaseService().runPreparedUpdate(connection, UPDATE_MERGE_COMMIT_TX, newTx.getId(),
-            sourceBranch.getId(), destinationBranch.getId());
+            sourceBranch.getUuid(), destinationBranch.getUuid());
 
          manageBranchStates();
       } catch (OseeCoreException ex) {
@@ -118,7 +118,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
    public synchronized void checkPreconditions() throws OseeCoreException {
       int count =
-         getDatabaseService().runPreparedQueryFetchObject(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch.getId(),
+         getDatabaseService().runPreparedQueryFetchObject(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch.getUuid(),
             BranchState.COMMIT_IN_PROGRESS.getValue());
       if (sourceBranch.getBranchState().isCommitInProgress() || sourceBranch.getArchiveState().isArchived() || count > 0) {
          throw new OseeStateException("Commit completed or in progress for [%s]", sourceBranch);
@@ -131,12 +131,12 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    }
 
    public void updateBranchState(BranchState state) throws OseeCoreException {
-      getDatabaseService().runPreparedUpdate(UPDATE_SOURCE_BRANCH_STATE, state.getValue(), sourceBranch.getId());
+      getDatabaseService().runPreparedUpdate(UPDATE_SOURCE_BRANCH_STATE, state.getValue(), sourceBranch.getUuid());
    }
 
    private void updatePreviousCurrentsOnDestinationBranch() throws OseeCoreException {
       UpdatePreviousTxCurrent updater =
-         new UpdatePreviousTxCurrent(getDatabaseService(), connection, destinationBranch.getId());
+         new UpdatePreviousTxCurrent(getDatabaseService(), connection, destinationBranch.getUuid());
       for (ChangeItem change : changes) {
          if (change instanceof ArtifactChangeItem) {
             updater.addArtifact(change.getItemId());
@@ -159,10 +159,10 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       String comment = COMMIT_COMMENT + sourceBranch.getName();
 
       getDatabaseService().runPreparedUpdate(connection, INSERT_COMMIT_TRANSACTION,
-         TransactionDetailsType.NonBaselined.getId(), destinationBranch.getId(), newTransactionNumber, comment,
+         TransactionDetailsType.NonBaselined.getId(), destinationBranch.getUuid(), newTransactionNumber, comment,
          timestamp, userArtId, sourceBranch.getAssociatedArtifactId());
       TransactionRecord record =
-         txFactory.create(newTransactionNumber, destinationBranch.getId(), comment, timestamp, userArtId,
+         txFactory.create(newTransactionNumber, destinationBranch.getUuid(), comment, timestamp, userArtId,
             sourceBranch.getAssociatedArtifactId(), TransactionDetailsType.NonBaselined, branchCache);
 
       return record;
@@ -174,7 +174,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
          ModificationType modType = change.getNetChange().getModType();
          insertData.add(new Object[] {
             newTx.getId(),
-            destinationBranch.getId(),
+            destinationBranch.getUuid(),
             change.getNetChange().getGammaId(),
             modType.getValue(),
             TxChange.getCurrent(modType).getValue()});
@@ -217,7 +217,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
          // update conflict status, if necessary
          if (mergeBranch != null) {
             getDatabaseService().runPreparedUpdate(UPDATE_CONFLICT_STATUS, ConflictStatus.COMMITTED.getValue(),
-               ConflictStatus.RESOLVED.getValue(), mergeBranch.getId());
+               ConflictStatus.RESOLVED.getValue(), mergeBranch.getUuid());
          }
       }
    }

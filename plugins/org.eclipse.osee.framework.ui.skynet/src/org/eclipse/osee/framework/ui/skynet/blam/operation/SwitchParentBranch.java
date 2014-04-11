@@ -34,7 +34,7 @@ public class SwitchParentBranch extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Branch branch = variableMap.getBranch("New Parent Branch");
       ConnectionHandler.runPreparedUpdate(UPDATE_PARENT_BRANCHES + variableMap.getString("Branch List") + ")",
-         branch.getId());
+         branch.getUuid());
    }
 
    @Override

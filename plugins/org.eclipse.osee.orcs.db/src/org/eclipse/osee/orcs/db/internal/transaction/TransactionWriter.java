@@ -124,7 +124,7 @@ public class TransactionWriter {
          }
          sqlBuilder.updateAfterBinaryStorePersist();
 
-         long branchId = tx.getBranch().getId();
+         long branchId = tx.getBranch().getUuid();
          List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
          for (Entry<SqlOrderEnum, ? extends AbstractJoinQuery> entry : sqlBuilder.getTxNotCurrents()) {
             fetchTxNotCurrent(connection, branchId, txNotCurrentData, entry.getKey().getTxsNotCurrentQuery(),

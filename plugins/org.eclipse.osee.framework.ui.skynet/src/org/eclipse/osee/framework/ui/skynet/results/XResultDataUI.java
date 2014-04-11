@@ -70,18 +70,18 @@ public class XResultDataUI {
     * Creates hyperlink using guid as name. Default editor will open.
     */
    public static String getHyperlink(Artifact art) throws OseeCoreException {
-      return getHyperlink(art.getGuid(), art.getGuid(), art.getFullBranch().getId());
+      return getHyperlink(art.getGuid(), art.getGuid(), art.getFullBranch().getUuid());
    }
 
    public static String getHyperlinkWithName(Artifact art) throws OseeCoreException {
-      return getHyperlink(art.toStringWithId(), art.getGuid(), art.getFullBranch().getId());
+      return getHyperlink(art.toStringWithId(), art.getGuid(), art.getFullBranch().getUuid());
    }
 
    /*
     * Creates hyperlink using name. Default editor will open.
     */
    public static String getHyperlink(String name, Artifact art) throws OseeCoreException {
-      return getHyperlink(name, art.getGuid(), art.getFullBranch().getId());
+      return getHyperlink(name, art.getGuid(), art.getFullBranch().getUuid());
    }
 
    public static String report(XResultData resultData, final String title) {
@@ -140,7 +140,7 @@ public class XResultDataUI {
             UserManager.getUser()));
 
          rd.log("Example of hyperlinked guid on another branch: " + getHyperlink(UserManager.getUser().getGuid(),
-            UserManager.getUser().getGuid(), BranchManager.getCommonBranch().getId()));
+            UserManager.getUser().getGuid(), BranchManager.getCommonBranch().getUuid()));
          rd.addRaw(AHTML.newline());
          rd.addRaw("Example of hyperlink that opens external browser " + getHyperlinkUrlExternal("Google",
             "http://www.google.com") + AHTML.newline());

@@ -96,10 +96,10 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       switch (transactionType) {
          case BASE:
             toReturn =
-               loadTransaction(cache, SELECT_BASE_TRANSACTION, branch.getId(), TransactionDetailsType.Baselined);
+               loadTransaction(cache, SELECT_BASE_TRANSACTION, branch.getUuid(), TransactionDetailsType.Baselined);
             break;
          case HEAD:
-            toReturn = loadTransaction(cache, SELECT_HEAD_TRANSACTION, branch.getId(), branch.getId());
+            toReturn = loadTransaction(cache, SELECT_HEAD_TRANSACTION, branch.getUuid(), branch.getUuid());
             break;
          default:
             throw new OseeStateException("Transaction Type [%s] is not supported", transactionType);
@@ -179,6 +179,6 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    @Override
    public TransactionRecord getHeadTransaction(TransactionCache cache, Branch branch) throws OseeCoreException {
       return cache.getOrLoad(oseeDatabaseService.runPreparedQueryFetchObject(-1,
-         OseeSql.TX_GET_MAX_AS_LARGEST_TX.getSql(), branch.getId()));
+         OseeSql.TX_GET_MAX_AS_LARGEST_TX.getSql(), branch.getUuid()));
    }
 }

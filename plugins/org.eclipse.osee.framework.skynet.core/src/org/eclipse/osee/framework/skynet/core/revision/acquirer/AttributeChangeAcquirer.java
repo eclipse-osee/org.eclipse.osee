@@ -75,7 +75,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             fromTransactionId = getSourceBranch().getBaseTransaction();
             toTransaction = TransactionManager.getHeadTransaction(getSourceBranch());
             chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_IS),
-               getSourceBranch().getId(), fromTransactionId.getId());
+               getSourceBranch().getUuid(), fromTransactionId.getId());
 
          }//Changes per transaction number
          else {
@@ -172,7 +172,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
          if (hasBranch) {
             wasValueBranch = sourceBranch;
             sql = ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_WAS);
-            sqlParamter = wasValueBranch.getId();
+            sqlParamter = wasValueBranch.getUuid();
          } else {
             wasValueBranch = transactionId.getBranch();
             sql = ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_WAS);
@@ -187,7 +187,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
          try {
             // insert into the artifact_join_table
             for (int artId : artIds) {
-               datas.add(new Object[] {queryId, insertTime, artId, wasValueBranch.getId(), SQL3DataType.INTEGER});
+               datas.add(new Object[] {queryId, insertTime, artId, wasValueBranch.getUuid(), SQL3DataType.INTEGER});
             }
             ArtifactLoader.insertIntoArtifactJoin(datas);
             chStmt.runPreparedQuery(sql, sqlParamter, queryId);

@@ -103,12 +103,12 @@ public class ConflictManagerInternal {
       }
       if (sourceBranch == null || destinationBranch == null) {
          throw new OseeArgumentException("Source Branch = %s Destination Branch = %s",
-            sourceBranch == null ? "NULL" : sourceBranch.getId(),
-            destinationBranch == null ? "NULL" : destinationBranch.getId());
+            sourceBranch == null ? "NULL" : sourceBranch.getUuid(),
+            destinationBranch == null ? "NULL" : destinationBranch.getUuid());
       }
       monitor.beginTask(
-         String.format("Loading Merge Manager for Branch %d into Branch %d", sourceBranch.getId(),
-            destinationBranch.getId()), 100);
+         String.format("Loading Merge Manager for Branch %d into Branch %d", sourceBranch.getUuid(),
+            destinationBranch.getUuid()), 100);
       monitor.subTask("Finding Database stored conflicts");
 
       TransactionRecord commonTransaction = findCommonTransaction(sourceBranch, destinationBranch);
@@ -145,7 +145,7 @@ public class ConflictManagerInternal {
             conflicts.add(conflict);
          }
       }
-      cleanUpConflictDB(conflicts, mergeBranch.getId(), monitor);
+      cleanUpConflictDB(conflicts, mergeBranch.getUuid(), monitor);
       return conflicts;
    }
 
@@ -178,8 +178,8 @@ public class ConflictManagerInternal {
          int commonTransactionNumber = transactionId != null ? transactionId.getId() : 0;
          long commonBranchId = transactionId != null ? transactionId.getBranchId() : 0;
 
-         chStmt.runPreparedQuery(sql, sourceBranch.getId(), sourceBranch.getBaseTransaction().getId(),
-            destinationBranch.getId(), commonBranchId, commonTransactionNumber);
+         chStmt.runPreparedQuery(sql, sourceBranch.getUuid(), sourceBranch.getBaseTransaction().getId(),
+            destinationBranch.getUuid(), commonBranchId, commonTransactionNumber);
 
          ArtifactConflictBuilder artifactConflictBuilder;
          int artId = 0;
@@ -230,8 +230,8 @@ public class ConflictManagerInternal {
          int commonTransactionNumber = transactionId != null ? transactionId.getId() : 0;
          long commonBranchId = transactionId != null ? transactionId.getBranchId() : 0;
 
-         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ATTRIBUTES), sourceBranch.getId(),
-            sourceBranch.getBaseTransaction().getId(), destinationBranch.getId(), commonBranchId,
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ATTRIBUTES), sourceBranch.getUuid(),
+            sourceBranch.getBaseTransaction().getId(), destinationBranch.getUuid(), commonBranchId,
             commonTransactionNumber);
 
          int attrId = 0;
@@ -298,7 +298,7 @@ public class ConflictManagerInternal {
    private static boolean isAttributeConflictValidOnBranch(int destinationGammaId, Branch branch, int endTransactionNumber) throws OseeCoreException {
       String sql =
          "SELECT count(1) FROM osee_txs txs WHERE txs.gamma_id = ? AND txs.branch_id = ? AND txs.transaction_id <= ?";
-      return ConnectionHandler.runPreparedQueryFetchInt(0, sql, destinationGammaId, branch.getId(),
+      return ConnectionHandler.runPreparedQueryFetchInt(0, sql, destinationGammaId, branch.getUuid(),
          endTransactionNumber) == 0;
    }
 
@@ -349,13 +349,13 @@ public class ConflictManagerInternal {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          if (sourceBranch != null && destBranch != null) {
-            chStmt.runPreparedQuery(GET_MERGE_DATA, sourceBranch.getId(), destBranch.getId());
+            chStmt.runPreparedQuery(GET_MERGE_DATA, sourceBranch.getUuid(), destBranch.getUuid());
             if (chStmt.next()) {
                transactionId = chStmt.getInt("commit_transaction_id");
             }
             if (transactionId == 0) {
                chStmt.runPreparedQuery(GET_COMMIT_TRANSACTION_COMMENT,
-                  BranchManager.COMMIT_COMMENT + sourceBranch.getName(), destBranch.getId());
+                  BranchManager.COMMIT_COMMENT + sourceBranch.getName(), destBranch.getUuid());
                if (chStmt.next()) {
                   transactionId = chStmt.getInt("transaction_id");
                }

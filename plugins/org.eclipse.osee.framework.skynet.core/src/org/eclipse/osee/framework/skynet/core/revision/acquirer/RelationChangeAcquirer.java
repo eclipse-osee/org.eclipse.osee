@@ -55,7 +55,7 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
             fromTransactionId = getSourceBranch().getBaseTransaction();
             toTransactionId = TransactionManager.getHeadTransaction(getSourceBranch());
             chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_RELATION),
-               getSourceBranch().getId(), fromTransactionId.getId());
+               getSourceBranch().getUuid(), fromTransactionId.getId());
          } else {//Changes per a transaction
             toTransactionId = getTransaction();
 

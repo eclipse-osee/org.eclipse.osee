@@ -81,7 +81,7 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
 
    @Override
    public long getBranchId() {
-      return branch.getId();
+      return branch.getUuid();
    }
 
    @Override
@@ -175,9 +175,9 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
       try {
          String query = ClientSessionManager.getSql(transactionData.getSelectTxNotCurrentSql());
 
-         chStmt.runPreparedQuery(query, transactionData.getItemId(), branch.getId());
+         chStmt.runPreparedQuery(query, transactionData.getItemId(), branch.getUuid());
          while (chStmt.next()) {
-            results.add(new Object[] {branch.getId(), chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
+            results.add(new Object[] {branch.getUuid(), chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
          }
       } finally {
          chStmt.close();

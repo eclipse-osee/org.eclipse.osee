@@ -107,12 +107,12 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Bran
 
          String creationComment = branchData.getCreationComment() + " and copied transaction " + savedTx.getId();
 
-         getDatabaseService().runPreparedUpdate(connection, INSERT_TX_DETAILS, internalBranch.getId(),
+         getDatabaseService().runPreparedUpdate(connection, INSERT_TX_DETAILS, internalBranch.getUuid(),
             nextTransactionId, creationComment, timestamp, branchData.getUserArtifactId(),
             TransactionDetailsType.NonBaselined.getId());
 
          TransactionRecord record =
-            txFactory.create(nextTransactionId, internalBranch.getId(), creationComment, timestamp,
+            txFactory.create(nextTransactionId, internalBranch.getUuid(), creationComment, timestamp,
                branchData.getUserArtifactId(), RelationalConstants.ART_ID_SENTINEL, TransactionDetailsType.Baselined,
                branchCache);
 
@@ -121,7 +121,7 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Bran
          populateTransaction(0.30, connection, record.getId(), internalBranch, savedTx);
 
          UpdatePreviousTxCurrent updater =
-            new UpdatePreviousTxCurrent(getDatabaseService(), connection, internalBranch.getId());
+            new UpdatePreviousTxCurrent(getDatabaseService(), connection, internalBranch.getUuid());
          updater.updateTxNotCurrentsFromTx(record.getId());
 
       } catch (Exception ex) {
@@ -135,7 +135,7 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Bran
       HashSet<Integer> gammas = new HashSet<Integer>(100000);
       long parentBranchId = RelationalConstants.BRANCH_SENTINEL;
       if (branch.hasParentBranch()) {
-         parentBranchId = branch.getParentBranch().getId();
+         parentBranchId = branch.getParentBranch().getUuid();
       }
       int copyTxId = copyTx.getId();
 
@@ -158,7 +158,7 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Bran
             if (!gammas.contains(gamma)) {
                ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
                TxChange txCurrent = TxChange.getCurrent(modType);
-               data.add(new Object[] {baseTxId, gamma, modType.getValue(), txCurrent.getValue(), internalBranch.getId()});
+               data.add(new Object[] {baseTxId, gamma, modType.getValue(), txCurrent.getValue(), internalBranch.getUuid()});
                gammas.add(gamma);
             }
          }

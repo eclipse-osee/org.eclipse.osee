@@ -89,7 +89,7 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
    private CommandContributionItem createCommand(Branch branch, String commandId) throws OseeCoreException {
 
       Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put(BranchView.BRANCH_ID, Long.toString(branch.getId()));
+      parameters.put(BranchView.BRANCH_ID, Long.toString(branch.getUuid()));
       parameters.put(CommitBranchParameter.ARCHIVE_PARENT_BRANCH, "true");
       CommandContributionItem contributionItem;
       String label = "Commit into Parent Branch: " + branch.getParentBranch().getName();

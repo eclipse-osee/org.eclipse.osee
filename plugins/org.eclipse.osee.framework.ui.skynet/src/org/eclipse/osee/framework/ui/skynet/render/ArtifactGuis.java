@@ -88,8 +88,8 @@ public final class ArtifactGuis {
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
             Branch branch = artifact.getFullBranch();
-            chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), branch.getId(),
-               branch.getParentBranch().getId(), BranchType.WORKING.getValue());
+            chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), branch.getUuid(),
+               branch.getParentBranch().getUuid(), BranchType.WORKING.getValue());
 
             while (chStmt.next()) {
                int modifiedAttrId = chStmt.getInt("attr_id");

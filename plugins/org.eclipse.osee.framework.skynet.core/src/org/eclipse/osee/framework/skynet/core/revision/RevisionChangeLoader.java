@@ -97,14 +97,14 @@ public final class RevisionChangeLoader {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_ATTR),
-            artifact.getArtId(), branch.getId(), transactionId.getId());
+            artifact.getArtId(), branch.getUuid(), transactionId.getId());
 
          while (chStmt.next()) {
             transactionIds.add(TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
          }
 
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_REL),
-            artifact.getArtId(), artifact.getArtId(), branch.getId(), transactionId.getId());
+            artifact.getArtId(), artifact.getArtId(), branch.getUuid(), transactionId.getId());
 
          while (chStmt.next()) {
             transactionIds.add(TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));

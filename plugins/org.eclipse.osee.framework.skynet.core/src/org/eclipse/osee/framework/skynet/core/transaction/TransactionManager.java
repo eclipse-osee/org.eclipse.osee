@@ -113,7 +113,7 @@ public final class TransactionManager {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
 
       try {
-         chStmt.runPreparedQuery(MAX_FETCH, SELECT_TRANSACTIONS, branch.getId());
+         chStmt.runPreparedQuery(MAX_FETCH, SELECT_TRANSACTIONS, branch.getUuid());
 
          while (chStmt.next()) {
             transactions.add(getTransactionId(chStmt.getInt("transaction_id"), chStmt));

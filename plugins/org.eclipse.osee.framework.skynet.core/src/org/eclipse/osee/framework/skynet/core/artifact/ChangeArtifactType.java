@@ -284,7 +284,7 @@ public class ChangeArtifactType {
       BranchFilter branchFilter = new BranchFilter(BranchArchivedState.UNARCHIVED);
       branchFilter.setNegatedBranchStates(BranchState.PURGED, BranchState.DELETED);
       for (Branch branch : BranchManager.getBranches(branchFilter)) {
-         branchJoin.add(branch.getId());
+         branchJoin.add(branch.getUuid());
       }
 
       branchJoin.store();

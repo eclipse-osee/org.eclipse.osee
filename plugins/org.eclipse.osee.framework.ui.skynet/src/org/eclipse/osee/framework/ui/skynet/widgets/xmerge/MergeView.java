@@ -100,7 +100,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                      IViewPart viewPart =
                         page.showView(
                            MergeView.VIEW_ID,
-                           String.valueOf(sourceBranch != null ? sourceBranch.getId() * 100000 + destBranch.getId() : commitTrans.getId()),
+                           String.valueOf(sourceBranch != null ? sourceBranch.getUuid() * 100000 + destBranch.getUuid() : commitTrans.getId()),
                            IWorkbenchPage.VIEW_ACTIVATE);
                      if (viewPart instanceof MergeView) {
                         MergeView mergeView = (MergeView) viewPart;
@@ -250,10 +250,10 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                childMemento.putInteger(COMMIT_NUMBER, commitTrans.getId());
             }
             if (sourceBranch != null) {
-               childMemento.putString(SOURCE_BRANCH_ID, Long.toString(sourceBranch.getId()));
+               childMemento.putString(SOURCE_BRANCH_ID, Long.toString(sourceBranch.getUuid()));
             }
             if (destBranch != null) {
-               childMemento.putString(DEST_BRANCH_ID, Long.toString(destBranch.getId()));
+               childMemento.putString(DEST_BRANCH_ID, Long.toString(destBranch.getUuid()));
             }
             if (transactionId != null) {
                childMemento.putInteger(TRANSACTION_NUMBER, transactionId.getId());

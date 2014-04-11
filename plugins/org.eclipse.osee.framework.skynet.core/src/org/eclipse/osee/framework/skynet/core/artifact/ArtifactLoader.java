@@ -394,7 +394,7 @@ public final class ArtifactLoader {
 
       try {
          ConnectionHandler.runPreparedUpdate(INSERT_JOIN_ARTIFACT, queryId, insertTime, artifact.getArtId(),
-            artifact.getFullBranch().getId(), SQL3DataType.INTEGER);
+            artifact.getFullBranch().getUuid(), SQL3DataType.INTEGER);
 
          List<Artifact> artifacts = new ArrayList<Artifact>(1);
          artifacts.add(artifact);
@@ -428,7 +428,7 @@ public final class ArtifactLoader {
 
       if (!historical) {
          for (Artifact artifact : artifacts) {
-            key2 = artifact.getFullBranch().getId();
+            key2 = artifact.getFullBranch().getUuid();
             removeAndUnlock(artifact.getArtId(), key2);
          }
       }

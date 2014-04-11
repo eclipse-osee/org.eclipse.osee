@@ -50,11 +50,10 @@ public final class Conflict implements IOseeStorable {
       return destinationGammaId;
    }
 
-   @Override
    public long getId() {
       return itemId;
    }
-
+   
    public MergeBranch getMergeBranch() {
       return mergeBranch;
    }
@@ -70,12 +69,7 @@ public final class Conflict implements IOseeStorable {
 
    @Override
    public boolean isIdValid() {
-      return IOseeStorable.UNPERSISTED_VALUE != getId();
-   }
-
-   @Override
-   public void setId(long uniqueId) {
-      throw new UnsupportedOperationException();
+      return IOseeStorable.UNPERSISTED_VALUE != itemId;
    }
 
    @Override

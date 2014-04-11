@@ -180,7 +180,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
                Object data = xWidget.getData();
                if (data instanceof IOseeBranch) {
                   Branch branch = (Branch) data;
-                  branchId = branch.getId();
+                  branchId = branch.getUuid();
                }
             }
          });

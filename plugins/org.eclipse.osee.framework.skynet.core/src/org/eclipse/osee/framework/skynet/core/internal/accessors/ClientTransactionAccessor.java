@@ -89,6 +89,6 @@ public class ClientTransactionAccessor implements ITransactionDataAccessor {
 
    @Override
    public TransactionRecord getHeadTransaction(TransactionCache cache, Branch branch) throws OseeCoreException {
-      return cache.getOrLoad(ConnectionHandler.runPreparedQueryFetchInt(-1, TX_GET_MAX_AS_LARGEST_TX, branch.getId()));
+      return cache.getOrLoad(ConnectionHandler.runPreparedQueryFetchInt(-1, TX_GET_MAX_AS_LARGEST_TX, branch.getUuid()));
    }
 }

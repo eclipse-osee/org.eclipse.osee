@@ -142,7 +142,7 @@ public final class SkyWalkerOptions {
    public String toXml() throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       sb.append(AXml.addTagData("guid", artifact.getGuid()));
-      sb.append(AXml.addTagData("branchId", artifact.getFullBranch().getId() + ""));
+      sb.append(AXml.addTagData("branchId", artifact.getFullBranch().getUuid() + ""));
       sb.append(AXml.addTagData("artTypes",
          org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", getSelectedArtTypes())));
       sb.append(AXml.addTagData("relTypes",

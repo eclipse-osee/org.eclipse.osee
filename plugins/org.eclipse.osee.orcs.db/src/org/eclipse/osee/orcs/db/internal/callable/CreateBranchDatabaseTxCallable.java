@@ -125,8 +125,8 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
    public void checkPreconditions(Branch parentBranch, Branch destinationBranch) throws OseeCoreException {
       if (newBranchData.getBranchType().isMergeBranch()) {
-         if (getDatabaseService().runPreparedQueryFetchObject(0, TEST_MERGE_BRANCH_EXISTENCE, parentBranch.getId(),
-            destinationBranch.getId()) > 0) {
+         if (getDatabaseService().runPreparedQueryFetchObject(0, TEST_MERGE_BRANCH_EXISTENCE, parentBranch.getUuid(),
+            destinationBranch.getUuid()) > 0) {
             throw new OseeStateException("Existing merge branch detected for [%s] and [%s]", parentBranch.getName(),
                destinationBranch.getName());
          }
@@ -212,12 +212,12 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
          copyAccessRules(connection, newBranchData.getUserArtifactId(), parentBranch, branch);
       }
 
-      getDatabaseService().runPreparedUpdate(connection, INSERT_TX_DETAILS, branch.getId(), nextTransactionId,
+      getDatabaseService().runPreparedUpdate(connection, INSERT_TX_DETAILS, branch.getUuid(), nextTransactionId,
          newBranchData.getCreationComment(), timestamp, newBranchData.getUserArtifactId(),
          TransactionDetailsType.Baselined.getId());
 
       TransactionRecord record =
-         txFactory.create(nextTransactionId, branch.getId(), newBranchData.getCreationComment(), timestamp,
+         txFactory.create(nextTransactionId, branch.getUuid(), newBranchData.getCreationComment(), timestamp,
             newBranchData.getUserArtifactId(), -1, TransactionDetailsType.Baselined, branchCache);
 
       if (branch.getBranchType().isSystemRootBranch()) {
@@ -254,9 +254,9 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
    private void addMergeBranchEntry(double workAmount, OseeConnection connection, Branch branch, long destinationBranchId) throws OseeCoreException {
       if (branch.getBranchType().isMergeBranch()) {
-         long parentBranchId = branch.hasParentBranch() ? branch.getParentBranch().getId() : -1;
+         long parentBranchId = branch.hasParentBranch() ? branch.getParentBranch().getUuid() : -1;
          getDatabaseService().runPreparedUpdate(connection, MERGE_BRANCH_INSERT, parentBranchId,
-            newBranchData.getMergeDestinationBranchId(), branch.getId(), 0);
+            newBranchData.getMergeDestinationBranchId(), branch.getUuid(), 0);
       }
       checkForCancelled();
    }
@@ -267,7 +267,7 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
          HashSet<Integer> gammas = new HashSet<Integer>(100000);
          long parentBranchId = -1;
          if (branch.hasParentBranch()) {
-            parentBranchId = branch.getParentBranch().getId();
+            parentBranchId = branch.getParentBranch().getUuid();
          }
          int baseTxId = branch.getBaseTransaction().getId();
          if (branch.getBranchType().isMergeBranch()) {
@@ -296,7 +296,7 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
             if (!gammas.contains(gamma)) {
                ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
                TxChange txCurrent = TxChange.getCurrent(modType);
-               data.add(new Object[] {baseTxId, gamma, modType.getValue(), txCurrent.getValue(), branch.getId()});
+               data.add(new Object[] {baseTxId, gamma, modType.getValue(), txCurrent.getValue(), branch.getUuid()});
                gammas.add(gamma);
             }
          }
@@ -306,14 +306,14 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    }
 
    private void copyAccessRules(OseeConnection connection, int userArtId, Branch parentBranch, Branch destinationBranch) {
-      Long branchId = destinationBranch.getId();
+      Long branchId = destinationBranch.getUuid();
       int owner = PermissionEnum.OWNER.getPermId();
       int deny = PermissionEnum.DENY.getPermId();
 
       List<Object[]> data = new ArrayList<Object[]>();
       IOseeStatement chStmt = getDatabaseService().getStatement(connection);
       try {
-         chStmt.runPreparedQuery(MAX_FETCH, GET_BRANCH_ACCESS_CONTROL_LIST, parentBranch.getId());
+         chStmt.runPreparedQuery(MAX_FETCH, GET_BRANCH_ACCESS_CONTROL_LIST, parentBranch.getUuid());
          while (chStmt.next()) {
             int permissionId = chStmt.getInt("permission_id");
             int priviledgeId = chStmt.getInt("privilege_entity_id");

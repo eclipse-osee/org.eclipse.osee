@@ -114,7 +114,7 @@ public final class ChangeManager {
          Branch branch = artifact.getFullBranch();
          artifactMap.put(artifact.getArtId(), branch, artifact);
          int transactionNumber = TransactionManager.getHeadTransaction(branch).getId();
-         insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branch.getId(), transactionNumber});
+         insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branch.getUuid(), transactionNumber});
 
          // for each combination of artifact and its branch hierarchy
          while (branch.hasParentBranch()) {
@@ -124,7 +124,7 @@ public final class ChangeManager {
                queryId,
                insertTime,
                artifact.getArtId(),
-               branch.getId(),
+               branch.getUuid(),
                transactionNumber});
          }
       }
@@ -174,7 +174,7 @@ public final class ChangeManager {
                   queryId,
                   insertTime,
                   artifact.getArtId(),
-                  workingBranch.getId(),
+                  workingBranch.getUuid(),
                   SQL3DataType.INTEGER});
             }
          }

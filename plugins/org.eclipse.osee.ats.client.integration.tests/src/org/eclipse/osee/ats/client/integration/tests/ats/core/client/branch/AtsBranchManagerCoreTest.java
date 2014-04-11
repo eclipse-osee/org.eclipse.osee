@@ -101,7 +101,7 @@ public class AtsBranchManagerCoreTest {
       BranchCache branchCache = Mockito.mock(BranchCache.class);
       Mockito.when(branchCache.getByUuid(Matchers.anyLong())).thenReturn(branch);
       TransactionRecord txRecord =
-         new TransactionRecord(1234, branch.getId(), "comment", new Date(), UserManager.getUser().getArtId(),
+         new TransactionRecord(1234, branch.getUuid(), "comment", new Date(), UserManager.getUser().getArtId(),
             UserManager.getUser().getArtId(), TransactionDetailsType.Baselined, branchCache);
       Collection<TransactionRecord> commitTxs = new ArrayList<TransactionRecord>();
       Collection<ICommitConfigItem> configArtSet = new HashSet<ICommitConfigItem>();

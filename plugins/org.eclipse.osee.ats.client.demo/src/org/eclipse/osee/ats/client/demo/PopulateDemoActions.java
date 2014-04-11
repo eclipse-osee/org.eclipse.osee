@@ -224,7 +224,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // need to update the branch type;
          ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, new Object[] {
             BranchType.BASELINE.getValue(),
-            childBranch.getId()});
+            childBranch.getUuid()});
          BranchManager.refreshBranches();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

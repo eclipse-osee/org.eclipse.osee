@@ -89,7 +89,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       OseeEventManager.kickBranchEvent(getClass(), branchEvent);
 
       BranchCommitRequest requestData =
-         new BranchCommitRequest(user.getArtId(), sourceBranch.getId(), destinationBranch.getId(), isArchiveAllowed);
+         new BranchCommitRequest(user.getArtId(), sourceBranch.getUuid(), destinationBranch.getUuid(), isArchiveAllowed);
 
       BranchCommitResponse response = null;
       try {

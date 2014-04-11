@@ -213,7 +213,7 @@ public class BranchStateTest {
          assertEquals("Check only 1 original branch", 1, branches.size());
 
          Branch newWorkingBranch = branches.iterator().next();
-         assertTrue(workingBranch.getId() != newWorkingBranch.getId());
+         assertTrue(workingBranch.getUuid() != newWorkingBranch.getUuid());
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch was not editable", newWorkingBranch.isEditable());
          assertFalse("New Working branch was editable", workingBranch.isEditable());
@@ -268,7 +268,7 @@ public class BranchStateTest {
          assertEquals("Check only 1 original branch", 1, branches.size());
 
          Branch newWorkingBranch = branches.iterator().next();
-         assertTrue(workingBranch.getId() != newWorkingBranch.getId());
+         assertTrue(workingBranch.getUuid() != newWorkingBranch.getUuid());
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch is editable", newWorkingBranch.isEditable());
       } finally {
@@ -345,12 +345,12 @@ public class BranchStateTest {
          assertEquals("Check only 1 original branch", 1, branches.size());
 
          Branch newWorkingBranch = branches.iterator().next();
-         assertTrue(workingBranch.getId() != newWorkingBranch.getId());
+         assertTrue(workingBranch.getUuid() != newWorkingBranch.getUuid());
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch is editable", newWorkingBranch.isEditable());
 
          // Swapped successfully
-         assertEquals(destinationBranch.getId(), newWorkingBranch.getId());
+         assertEquals(destinationBranch.getUuid(), newWorkingBranch.getUuid());
       } catch (Exception ex) {
          throw ex;
       } finally {

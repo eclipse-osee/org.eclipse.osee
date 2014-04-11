@@ -116,12 +116,12 @@ public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISt
    private Object[] toInsertValues(Branch branch) throws OseeCoreException {
       Branch parentBranch = branch.getParentBranch();
       TransactionRecord baseTxRecord = branch.getBaseTransaction();
-      long parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
+      long parentBranchId = parentBranch != null ? parentBranch.getUuid() : NULL_PARENT_BRANCH_ID;
       int baselineTransaction = baseTxRecord != null ? baseTxRecord.getId() : NULL_PARENT_BRANCH_ID;
       int inheritAccessControl = branch.isInheritAccessControl() ? 1 : 0;
 
       return new Object[] {
-         branch.getId(),
+         branch.getUuid(),
          branch.getUuid(),
          branch.getName(),
          parentBranchId,
@@ -137,7 +137,7 @@ public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISt
    private Object[] toUpdateValues(Branch branch) throws OseeCoreException {
       Branch parentBranch = branch.getParentBranch();
       TransactionRecord baseTxRecord = branch.getBaseTransaction();
-      long parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
+      long parentBranchId = parentBranch != null ? parentBranch.getUuid() : NULL_PARENT_BRANCH_ID;
       int baselineTransaction = baseTxRecord != null ? baseTxRecord.getId() : NULL_PARENT_BRANCH_ID;
       int inheritAccessControl = branch.isInheritAccessControl() ? 1 : 0;
 
@@ -145,7 +145,7 @@ public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISt
          "Branch Name: [%s], Parent Branch Uuid: [%s], src trans: [%s], arch state: [%s], assoc art: [%s], branch type: [%s], branch state: [%s], baseline trans: [%s], branch uuid: [%s]",
          branch.getName(), parentBranchId, branch.getSourceTransaction().getId(), branch.getArchiveState().getValue(),
          branch.getAssociatedArtifactId(), branch.getBranchType().getValue(), branch.getBranchState().getValue(),
-         baselineTransaction, branch.getId());
+         baselineTransaction, branch.getUuid());
 
       return new Object[] {
          branch.getName(),
@@ -157,11 +157,11 @@ public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISt
          branch.getBranchState().getValue(),
          baselineTransaction,
          inheritAccessControl,
-         branch.getId()};
+         branch.getUuid()};
    }
 
    private Object[] toDeleteValues(Branch branch) {
-      return new Object[] {branch.getId()};
+      return new Object[] {branch.getUuid()};
    }
 
    private boolean isDataDirty(Branch type) throws OseeCoreException {

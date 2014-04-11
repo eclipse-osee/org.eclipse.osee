@@ -85,7 +85,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
                   queryId,
                   insertTime,
                   art.getArtId(),
-                  branch.getId(),
+                  branch.getUuid(),
                   SQL3DataType.INTEGER});
             }
          }
@@ -133,7 +133,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
                queryId,
                insertTime,
                art.getArtId(),
-               art.getFullBranch().getId(),
+               art.getFullBranch().getUuid(),
                SQL3DataType.INTEGER});
          }
          ArtifactLoader.insertIntoArtifactJoin(connection, batchParameters);

@@ -12,10 +12,7 @@ package org.eclipse.osee.framework.core.model.type;
 
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
-import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.mocks.ModelAsserts;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 import org.junit.Test;
@@ -50,19 +47,6 @@ public class AbstractOseeTypeTest<K, T extends AbstractOseeType<K>> {
    @Test
    public void testSetGetGuid() {
       Assert.assertEquals(getExpectedGuid(), type.getGuid());
-   }
-
-   @Test
-   public void testGetId() {
-      Assert.assertEquals(IOseeStorable.UNPERSISTED_VALUE, Long.valueOf(type.getId()));
-   }
-
-   @Test(expected = OseeStateException.class)
-   public void testSetGetId() throws OseeCoreException {
-      type.setId(Integer.MAX_VALUE);
-      Assert.assertEquals(Integer.MAX_VALUE, type.getId());
-
-      type.setId(Integer.MAX_VALUE - 1);
    }
 
    @Test

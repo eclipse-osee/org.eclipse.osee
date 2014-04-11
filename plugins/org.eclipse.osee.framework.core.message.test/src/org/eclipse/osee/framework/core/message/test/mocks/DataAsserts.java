@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
 import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.model.TableData;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.TypeUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -161,7 +162,7 @@ public final class DataAsserts {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
-         Assert.assertEquals(expected.getId(), actual.getId());
+         Assert.assertEquals(TypeUtil.getId(expected), TypeUtil.getId(actual));
          Assert.assertEquals(expected.getGuid(), actual.getGuid());
          Assert.assertEquals(expected.getName(), actual.getName());
          Assert.assertEquals(expected.getStorageState(), actual.getStorageState());

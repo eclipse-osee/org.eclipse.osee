@@ -64,7 +64,7 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
 
       AcquireResult response = null;
       try {
-         PurgeBranchRequest requestData = new PurgeBranchRequest(branch.getId(), recursive);
+         PurgeBranchRequest requestData = new PurgeBranchRequest(branch.getUuid(), recursive);
          response =
             HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.PURGE_BRANCH_REQUEST,
                requestData, null);

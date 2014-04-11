@@ -118,7 +118,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
          TransactionRecord toDeleteTransaction = transactionCache.getOrLoad(txIdToDelete);
          changedTransactions.add(toDeleteTransaction);
          Conditions.checkNotNull(toDeleteTransaction, "transaction", " record [%s]", txIdToDelete);
-         txsToDelete.add(new Object[] {toDeleteTransaction.getBranch().getId(), txIdToDelete});
+         txsToDelete.add(new Object[] {toDeleteTransaction.getBranch().getUuid(), txIdToDelete});
 
          monitor.subTask("Find affected items");
          Map<Long, IdJoinQuery> arts = findAffectedItems(connection, "art_id", "osee_artifact", txsToDelete);

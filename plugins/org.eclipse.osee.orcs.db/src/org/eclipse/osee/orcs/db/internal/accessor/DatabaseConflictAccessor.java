@@ -50,7 +50,7 @@ public class DatabaseConflictAccessor {
    public void load(Collection<Conflict> conflicts, MergeBranch mergeBranch) throws OseeCoreException {
       IOseeStatement statement = getDatabaseService().getStatement();
       try {
-         statement.runPreparedQuery(SELECT_CONFLICTS, mergeBranch.getId());
+         statement.runPreparedQuery(SELECT_CONFLICTS, mergeBranch.getUuid());
          while (statement.next()) {
             int uniqueId = statement.getInt("conflict_id");
             Long sourceGammaId = statement.getLong("source_gamma_id");
@@ -97,7 +97,7 @@ public class DatabaseConflictAccessor {
    private Object[] toInsertValues(Conflict conflict) {
       return new Object[] {
          conflict.getId(),
-         conflict.getMergeBranch().getId(),
+         conflict.getMergeBranch().getUuid(),
          conflict.getSourceGammaId(),
          conflict.getDestinationGammaId(),
          conflict.getStatus().getValue(),
@@ -109,12 +109,12 @@ public class DatabaseConflictAccessor {
          conflict.getSourceGammaId(),
          conflict.getDestinationGammaId(),
          conflict.getStatus().getValue(),
-         conflict.getMergeBranch().getId(),
+         conflict.getMergeBranch().getUuid(),
          conflict.getId(),
          conflict.getType().getValue()};
    }
 
    private Object[] toDeleteValues(Conflict conflict) {
-      return new Object[] {conflict.getMergeBranch().getId(), conflict.getId(), conflict.getType().getValue()};
+      return new Object[] {conflict.getMergeBranch().getUuid(), conflict.getId(), conflict.getType().getValue()};
    }
 }

@@ -160,7 +160,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
             this.branchSelectCombo.setItems(newItems);
             selectionIndex = oldLength;
             branchSelectCombo.setData(branch.getName(), branch);
-            branchSelectCombo.setData(String.valueOf(branch.getId()), branch);
+            branchSelectCombo.setData(String.valueOf(branch.getUuid()), branch);
          }
          this.branchSelectCombo.select(selectionIndex);
       }
@@ -171,7 +171,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
 
       // Add stored directories into selector
       if (Strings.isValid(lastSelected) == false && currentBranch != null) {
-         lastSelected = Long.toString(currentBranch.getId());
+         lastSelected = Long.toString(currentBranch.getUuid());
       }
 
       if (branchIds == null) {
@@ -208,7 +208,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
                if (isBranchAllowed(branch) != false) {
                   String branchName = branch.getName();
                   branchSelectCombo.add(branchName);
-                  branchSelectCombo.setData(String.valueOf(branch.getId()), branch);
+                  branchSelectCombo.setData(String.valueOf(branch.getUuid()), branch);
                   branchSelectCombo.setData(branchName, branch);
                   if (toStore.equals(lastSelected)) {
                      toSelect = i;
@@ -236,7 +236,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
       for (String item : items) {
          Branch branch = (Branch) branchSelectCombo.getData(item);
          if (branch != null) {
-            toReturn.add(String.valueOf(branch.getId()));
+            toReturn.add(String.valueOf(branch.getUuid()));
          }
       }
       return toReturn.toArray(new String[toReturn.size()]);

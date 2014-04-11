@@ -86,7 +86,7 @@ public class AddRequirementData implements IDbInitializationTask {
          // need to update the branch type;
          ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, new Object[] {
             BranchType.BASELINE.getValue(),
-            childBranch.getId()});
+            childBranch.getUuid()});
          BranchManager.refreshBranches();
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);

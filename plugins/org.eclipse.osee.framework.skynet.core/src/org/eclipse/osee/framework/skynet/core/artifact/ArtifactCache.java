@@ -168,7 +168,7 @@ public final class ArtifactCache {
    }
 
    public static Artifact getActive(Integer artId, Branch branch) {
-      return getActive(artId, branch.getId());
+      return getActive(artId, branch.getUuid());
    }
 
    public static Artifact getActive(Integer artId, IOseeBranch branch) throws OseeCoreException {

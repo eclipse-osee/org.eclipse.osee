@@ -128,8 +128,8 @@ public class UpdateMergeBranch extends DbTransaction {
       int baselineTransaction = mergeBranch.getBaseTransaction().getId();
       for (Artifact artifact : goodMergeBranchArtifacts) {
          numberAttrUpdated +=
-            ConnectionHandler.runPreparedUpdate(connection, UPDATE_ARTIFACTS, baselineTransaction, mergeBranch.getId(),
-               artifact.getArtId(), sourceBranch.getId(), TxChange.NOT_CURRENT.getValue(), mergeBranch.getId(),
+            ConnectionHandler.runPreparedUpdate(connection, UPDATE_ARTIFACTS, baselineTransaction, mergeBranch.getUuid(),
+               artifact.getArtId(), sourceBranch.getUuid(), TxChange.NOT_CURRENT.getValue(), mergeBranch.getUuid(),
                baselineTransaction);
       }
       if (DEBUG) {
@@ -168,7 +168,7 @@ public class UpdateMergeBranch extends DbTransaction {
       Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
       for (int artId : artIds) {
-         datas.add(new Object[] {queryId, insertTime, artId, sourceBranch.getId(), SQL3DataType.INTEGER});
+         datas.add(new Object[] {queryId, insertTime, artId, sourceBranch.getUuid(), SQL3DataType.INTEGER});
       }
       try {
          ArtifactLoader.insertIntoArtifactJoin(datas);
@@ -185,7 +185,7 @@ public class UpdateMergeBranch extends DbTransaction {
 
    private static void insertGammas(OseeConnection connection, String sql, int baselineTransactionNumber, int queryId, Branch sourceBranch, Branch mergeBranch) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(connection, sql, baselineTransactionNumber, TxChange.CURRENT.getValue(),
-         mergeBranch.getId(), sourceBranch.getId(), queryId);
+         mergeBranch.getUuid(), sourceBranch.getUuid(), queryId);
    }
 
    private static Collection<Integer> getAllMergeArtifacts(Branch branch) throws OseeCoreException {
@@ -194,7 +194,7 @@ public class UpdateMergeBranch extends DbTransaction {
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_ARTIFACTS_FOR_BRANCH), branch.getId());
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_ARTIFACTS_FOR_BRANCH), branch.getUuid());
          while (chStmt.next()) {
             artSet.add(chStmt.getInt("art_id"));
          }
@@ -204,7 +204,7 @@ public class UpdateMergeBranch extends DbTransaction {
             time = System.currentTimeMillis();
          }
 
-         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_ATTRIBUTES_FOR_BRANCH), branch.getId());
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_ATTRIBUTES_FOR_BRANCH), branch.getUuid());
          while (chStmt.next()) {
             artSet.add(chStmt.getInt("art_id"));
          }
@@ -214,7 +214,7 @@ public class UpdateMergeBranch extends DbTransaction {
             time = System.currentTimeMillis();
          }
 
-         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_RELATIONS_FOR_BRANCH), branch.getId());
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_RELATIONS_FOR_BRANCH), branch.getUuid());
          while (chStmt.next()) {
             artSet.add(chStmt.getInt("a_art_id"));
             artSet.add(chStmt.getInt("b_art_id"));
@@ -241,7 +241,7 @@ public class UpdateMergeBranch extends DbTransaction {
     * will also be removed from the database only for the branch it is on).
     */
    private static void purgeArtifactFromBranch(OseeConnection connection, Branch branch, int artId) throws OseeCoreException {
-      long branchId = branch.getId();
+      long branchId = branch.getUuid();
 
       //Remove from Baseline
       ConnectionHandler.runPreparedUpdate(connection, PURGE_ATTRIBUTE_FROM_MERGE_BRANCH, branchId, artId);

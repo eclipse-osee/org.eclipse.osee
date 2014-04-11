@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.model.type;
 
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.model.AbstractOseeType;
+import org.eclipse.osee.framework.core.model.AbstractOseeIdType;
 import org.eclipse.osee.framework.core.model.OseeField;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public class AttributeType extends AbstractOseeType<Long> implements IAttributeType {
+public class AttributeType extends AbstractOseeIdType<Long> implements IAttributeType {
 
    private static final String ATTRIBUTE_BASE_TYPE_ID_FIELD_KEY = "osee.base.attribute.type.id.field";
    private static final String ATTRIBUTE_PROVIDER_ID_FIELD_KEY = "osee.attribute.provider.id.field";

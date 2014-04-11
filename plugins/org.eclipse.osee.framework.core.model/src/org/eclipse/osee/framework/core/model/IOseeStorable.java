@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.model;
 
 import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -19,10 +18,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public interface IOseeStorable {
 
    public final static Long UNPERSISTED_VALUE = (long) Short.MIN_VALUE;
-
-   long getId();
-
-   void setId(long uniqueId) throws OseeCoreException;
 
    boolean isIdValid();
 

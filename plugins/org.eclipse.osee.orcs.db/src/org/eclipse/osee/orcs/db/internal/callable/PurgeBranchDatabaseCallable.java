@@ -42,7 +42,7 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Bra
    private final BranchCache branchCache;
 
    public PurgeBranchDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, BranchCache branchCache, Branch branch) {
-      super(logger, session, databaseService, String.format("Purge Branch: [(%s)-%s]", branch.getId(),
+      super(logger, session, databaseService, String.format("Purge Branch: [(%s)-%s]", branch.getUuid(),
          branch.getShortName()));
       this.branch = branch;
       this.sourceTableName = branch.getArchiveState().isArchived() ? "osee_txs_archived" : "osee_txs";
@@ -58,14 +58,14 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Bra
                branch.getBranchType());
          }
 
-         long branchId = branch.getId();
+         long branchId = branch.getUuid();
          String sql = String.format("DELETE FROM %s WHERE branch_id = ?", sourceTableName);
          purgeFromTable(connection, sql, 0.20, branchId);
 
          purgeFromTable(connection, DELETE_FROM_TX_DETAILS, 0.09, branchId);
          purgeFromTable(connection, DELETE_FROM_CONFLICT, 0.01, branchId);
          if (branch.hasParentBranch()) {
-            purgeFromTable(connection, DELETE_FROM_MERGE, 0.01, branchId, branch.getParentBranch().getId());
+            purgeFromTable(connection, DELETE_FROM_MERGE, 0.01, branchId, branch.getParentBranch().getUuid());
          }
          purgeFromTable(connection, DELETE_FROM_BRANCH_TABLE, 0.01, branchId);
 

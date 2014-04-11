@@ -24,7 +24,7 @@ public class ArtifactUtil {
 
    public static String getUri(String artifactGuid, Branch branch) throws OseeCoreException {
       String sql = String.format(URI_BY_GUID, getTransactionTable(branch));
-      return ConnectionHandler.runPreparedQueryFetchString("", sql, artifactGuid, branch.getId(),
+      return ConnectionHandler.runPreparedQueryFetchString("", sql, artifactGuid, branch.getUuid(),
          TxChange.CURRENT.getValue());
    }
 

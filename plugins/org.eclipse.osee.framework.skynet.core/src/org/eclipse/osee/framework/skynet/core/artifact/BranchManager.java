@@ -291,7 +291,7 @@ public class BranchManager {
    }
 
    public static void reloadBranch(Branch toReload) {
-      loadBranchToCache(toReload.getId());
+      loadBranchToCache(toReload.getUuid());
    }
 
    public static Collection<Branch> getAll() {
@@ -417,7 +417,7 @@ public class BranchManager {
       int mergeAddressingQueryId = ArtifactLoader.getNewQueryId();
       List<Object[]> datas = new LinkedList<Object[]>();
       for (int artId : expectedArtIds) {
-         datas.add(new Object[] {mergeAddressingQueryId, insertTime, artId, sourceBranch.getId(), SQL3DataType.INTEGER});
+         datas.add(new Object[] {mergeAddressingQueryId, insertTime, artId, sourceBranch.getUuid(), SQL3DataType.INTEGER});
       }
       MergeBranch mergeBranch = null;
       try {
@@ -430,7 +430,7 @@ public class BranchManager {
          String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
          mergeBranch =
             (MergeBranch) createBranch(BranchType.MERGE, sourceBranch.getBaseTransaction(), branchName,
-               Lib.generateUuid(), UserManager.getUser(), creationComment, mergeAddressingQueryId, destBranch.getId());
+               Lib.generateUuid(), UserManager.getUser(), creationComment, mergeAddressingQueryId, destBranch.getUuid());
          mergeBranch.setSourceBranch(sourceBranch);
          mergeBranch.setDestinationBranch(destBranch);
       } finally {

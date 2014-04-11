@@ -56,11 +56,11 @@ public class MoveBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISta
       checkForCancelled();
 
       String sql = String.format(INSERT_ADDRESSING, destinationTableName, sourceTableName);
-      getDatabaseService().runPreparedUpdate(connection, sql, branch.getId());
+      getDatabaseService().runPreparedUpdate(connection, sql, branch.getUuid());
       checkForCancelled();
 
       sql = String.format(DELETE_ADDRESSING, sourceTableName);
-      getDatabaseService().runPreparedUpdate(connection, sql, branch.getId());
+      getDatabaseService().runPreparedUpdate(connection, sql, branch.getUuid());
       checkForCancelled();
 
       Map<String, Object> eventData = new HashMap<String, Object>();

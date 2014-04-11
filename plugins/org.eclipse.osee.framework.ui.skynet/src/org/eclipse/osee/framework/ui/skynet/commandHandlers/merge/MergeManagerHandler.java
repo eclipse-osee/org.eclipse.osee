@@ -59,7 +59,7 @@ public class MergeManagerHandler extends CommandHandler {
             Branch selectedBranch = branches.iterator().next();
             try {
                if (selectedBranch != null && !ConflictManagerInternal.getDestinationBranchesMerged(
-                  selectedBranch.getId()).isEmpty()) {
+                  selectedBranch.getUuid()).isEmpty()) {
                   enabled = true;
                } else {
                   enabled =

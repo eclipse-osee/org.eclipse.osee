@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
+import org.eclipse.osee.framework.core.model.TypeUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -76,7 +77,7 @@ public abstract class AbstractOseeCacheTest<K, T extends AbstractOseeType<K>> {
    @org.junit.Test
    public void testCacheById() throws OseeCoreException {
       for (T expected : data) {
-         T actual = cache.getById(expected.getId());
+         T actual = cache.getById(TypeUtil.getId(expected));
          Assert.assertNotNull(actual);
          checkEquals(expected, actual);
       }
@@ -118,12 +119,12 @@ public abstract class AbstractOseeCacheTest<K, T extends AbstractOseeType<K>> {
    private void checkCached(T item, boolean isInCacheExpected) throws OseeCoreException {
       if (isInCacheExpected) {
          Assert.assertEquals(item, cache.getByGuid(item.getGuid()));
-         Assert.assertEquals(item, cache.getById(item.getId()));
+         Assert.assertEquals(item, cache.getById(TypeUtil.getId(item)));
          Assert.assertEquals(item, cache.getUniqueByName(item.getName()));
          Assert.assertTrue(cache.getAll().contains(item));
       } else {
          Assert.assertNull(cache.getByGuid(item.getGuid()));
-         Assert.assertNull(cache.getById(item.getId()));
+         Assert.assertNull(cache.getById(TypeUtil.getId(item)));
          Assert.assertNull(cache.getUniqueByName(item.getName()));
          Assert.assertFalse(cache.getAll().contains(item));
       }

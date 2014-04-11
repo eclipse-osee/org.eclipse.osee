@@ -77,7 +77,7 @@ public class DeleteRelationDatabaseCallable extends AbstractDatastoreTxCallable<
 
       int modType = relIdModTypeGammaId.getSecond();
       if (modType != ModificationType.ARTIFACT_DELETED.getValue() && modType != ModificationType.DELETED.getValue()) {
-         UpdatePreviousTxCurrent txc = new UpdatePreviousTxCurrent(getDatabaseService(), connection, branch.getId());
+         UpdatePreviousTxCurrent txc = new UpdatePreviousTxCurrent(getDatabaseService(), connection, branch.getUuid());
          txc.addRelation(relIdModTypeGammaId.getFirst());
          txc.updateTxNotCurrents();
 
@@ -93,7 +93,7 @@ public class DeleteRelationDatabaseCallable extends AbstractDatastoreTxCallable<
       long relationTypeId = relationType.getGuid();
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
-         chStmt.runPreparedQuery(1, SELECT_RELATION_LINK, relationTypeId, aArtId, bArtId, commonBranch.getId(),
+         chStmt.runPreparedQuery(1, SELECT_RELATION_LINK, relationTypeId, aArtId, bArtId, commonBranch.getUuid(),
             TxChange.NOT_CURRENT.getValue());
          if (chStmt.next()) {
             int relationId = chStmt.getInt("rel_link_id");
@@ -116,9 +116,9 @@ public class DeleteRelationDatabaseCallable extends AbstractDatastoreTxCallable<
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       int txType = TransactionDetailsType.NonBaselined.getId();
-      getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_TX_DETAILS, commonBranch.getId(), transactionId,
+      getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_TX_DETAILS, commonBranch.getUuid(), transactionId,
          comment, timestamp, userId, txType);
       getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_TXS, ModificationType.DELETED.getValue(),
-         TxChange.DELETED.getValue(), transactionId, currentGammaId, commonBranch.getId());
+         TxChange.DELETED.getValue(), transactionId, currentGammaId, commonBranch.getUuid());
    }
 }

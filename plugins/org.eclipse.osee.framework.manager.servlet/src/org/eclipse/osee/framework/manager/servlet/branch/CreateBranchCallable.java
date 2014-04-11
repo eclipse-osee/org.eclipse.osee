@@ -63,7 +63,7 @@ public class CreateBranchCallable extends AbstractBranchCallable<BranchCreationR
 
       BranchReadable newBranch = callAndCheckForCancel(callable);
 
-      BranchCreationResponse creationResponse = new BranchCreationResponse(newBranch.getId());
+      BranchCreationResponse creationResponse = new BranchCreationResponse(newBranch.getUuid());
       return creationResponse;
    }
 

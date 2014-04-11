@@ -130,12 +130,12 @@ public final class BranchCacheUpdateUtil {
 
    public static void loadFromCache(AbstractBranchCacheMessage message, Collection<Branch> types) throws OseeCoreException {
       for (Branch br : types) {
-         Long branchId = br.getId();
+         Long branchId = br.getUuid();
          message.getBranchRows().add(
-            new BranchRow(br.getId(), br.getName(), br.getBranchType(), br.getBranchState(), br.getArchiveState(),
+            new BranchRow(br.getUuid(), br.getName(), br.getBranchType(), br.getBranchState(), br.getArchiveState(),
                br.getStorageState(), br.isInheritAccessControl()));
          if (br.hasParentBranch()) {
-            message.getChildToParent().put(branchId, br.getParentBranch().getId());
+            message.getChildToParent().put(branchId, br.getParentBranch().getUuid());
          }
          addTxRecord(message.getBranchToBaseTx(), branchId, br.getBaseTransaction());
          addTxRecord(message.getBranchToSourceTx(), branchId, br.getSourceTransaction());
