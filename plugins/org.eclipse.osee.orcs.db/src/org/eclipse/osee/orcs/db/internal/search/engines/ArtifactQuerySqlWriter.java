@@ -30,11 +30,11 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
  */
 public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
-   private final long branchId;
+   private final long branchUuid;
 
-   public ArtifactQuerySqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext context, QueryType queryType, long branchId) {
+   public ArtifactQuerySqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext context, QueryType queryType, long branchUuid) {
       super(logger, dbService, sqlProvider, context, queryType);
-      this.branchId = branchId;
+      this.branchUuid = branchUuid;
    }
 
    private void writeSelectHelper() throws OseeCoreException {
@@ -89,11 +89,11 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
       StringBuilder sb = new StringBuilder();
       writeTxFilter(txsAlias, sb, allowDeleted);
-      if (branchId > 0) {
+      if (branchUuid > 0) {
          sb.append(" AND ");
          sb.append(txsAlias);
          sb.append(".branch_id = ?");
-         addParameter(branchId);
+         addParameter(branchUuid);
       } else {
          throw new OseeArgumentException("getTxBranchFilter: branch uuid must be > 0");
       }
@@ -104,11 +104,11 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    public String getTxBranchFilter(String txsAlias, boolean allowDeleted) {
       StringBuilder sb = new StringBuilder();
       writeTxFilter(txsAlias, sb, allowDeleted);
-      if (branchId > 0) {
+      if (branchUuid > 0) {
          sb.append(" AND ");
          sb.append(txsAlias);
          sb.append(".branch_id = ?");
-         addParameter(branchId);
+         addParameter(branchUuid);
       }
       return sb.toString();
    }
@@ -150,11 +150,11 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
          sb.append(".transaction_id <= ?");
          addParameter(OptionsUtil.getFromTransaction(getOptions()));
       }
-      if (branchId > 0) {
+      if (branchUuid > 0) {
          sb.append(" AND ");
          sb.append(txsAlias);
          sb.append(".branch_id = ?");
-         addParameter(branchId);
+         addParameter(branchUuid);
       }
       return sb.toString();
    }

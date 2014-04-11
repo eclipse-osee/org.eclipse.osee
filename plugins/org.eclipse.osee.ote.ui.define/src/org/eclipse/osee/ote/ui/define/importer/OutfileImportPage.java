@@ -298,18 +298,18 @@ public class OutfileImportPage extends WizardDataTransferPage {
       IDialogSettings settings = getDialogSettings();
       if (settings != null) {
          // update source names history
-         String[] branchIds = settings.getArray(TestRunStorageKey.BRANCH_IDS);
-         if (branchIds == null) {
-            branchIds = new String[0];
+         String[] branchUuids = settings.getArray(TestRunStorageKey.BRANCH_IDS);
+         if (branchUuids == null) {
+            branchUuids = new String[0];
          }
 
          IOseeBranch branch = branchSelect.getData();
          try {
             if (branch != null && BranchManager.getBranch(branch).hasParentBranch()) {
                String lastBranchSelected = Long.toString(branch.getUuid());
-               branchIds = addToHistory(branchIds, lastBranchSelected);
+               branchUuids = addToHistory(branchUuids, lastBranchSelected);
 
-               settings.put(TestRunStorageKey.BRANCH_IDS, branchIds);
+               settings.put(TestRunStorageKey.BRANCH_IDS, branchUuids);
                settings.put(TestRunStorageKey.SELECTED_BRANCH_ID, lastBranchSelected);
                try {
                   settings.save(this.getClass().getName());

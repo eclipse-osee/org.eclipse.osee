@@ -157,18 +157,18 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                         }
                         try {
                            // commit all branches in order
-                           Map<Long, Branch> branchIdToBranchMap = new HashMap<Long, Branch>();
+                           Map<Long, Branch> branchUuidToBranchMap = new HashMap<Long, Branch>();
                            for (IOseeBranch destinationBranch : AtsBranchManagerCore.getBranchesLeftToCommit(teamArt)) {
-                              branchIdToBranchMap.put(destinationBranch.getUuid(), (Branch) destinationBranch);
+                              branchUuidToBranchMap.put(destinationBranch.getUuid(), (Branch) destinationBranch);
                            }
-                           List<Long> branchIds = new ArrayList<Long>();
-                           branchIds.addAll(branchIdToBranchMap.keySet());
-                           Arrays.sort(branchIds.toArray(new Integer[branchIds.size()]));
-                           for (Long branchId : branchIds) {
-                              Branch destinationBranch = branchIdToBranchMap.get(branchId);
+                           List<Long> branchUuids = new ArrayList<Long>();
+                           branchUuids.addAll(branchUuidToBranchMap.keySet());
+                           Arrays.sort(branchUuids.toArray(new Integer[branchUuids.size()]));
+                           for (Long branchUuid : branchUuids) {
+                              Branch destinationBranch = branchUuidToBranchMap.get(branchUuid);
                               IOperation operation =
                                  AtsBranchManager.commitWorkingBranch(teamArt, false, true, destinationBranch,
-                                    branchId == branchIds.get(branchIds.size() - 1));
+                                    branchUuid == branchUuids.get(branchUuids.size() - 1));
                               Operations.executeWorkAndCheckStatus(operation);
                            }
                         } catch (Exception ex) {

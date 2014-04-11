@@ -15,12 +15,12 @@ package org.eclipse.osee.framework.ui.skynet.dbHealth;
  */
 public class LocalTxData {
    public int dataId;
-   public int branchId;
+   public int branchUuid;
    public int number;
 
-   public LocalTxData(int dataId, int branchId, int number) {
+   public LocalTxData(int dataId, int branchUuid, int number) {
       super();
-      this.branchId = branchId;
+      this.branchUuid = branchUuid;
       this.dataId = dataId;
       this.number = number;
    }

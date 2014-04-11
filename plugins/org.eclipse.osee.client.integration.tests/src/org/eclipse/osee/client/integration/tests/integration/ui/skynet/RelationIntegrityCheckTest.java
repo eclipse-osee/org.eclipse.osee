@@ -114,7 +114,7 @@ public class RelationIntegrityCheckTest {
    private void applyFix() throws OseeCoreException {
       List<Object[]> rowsToDelete = new LinkedList<Object[]>();
       for (LocalRelationLink relLink : map.allValues()) {
-         rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId, relLink.branchId});
+         rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId, relLink.branchUuid});
       }
 
       if (!rowsToDelete.isEmpty()) {
@@ -131,7 +131,7 @@ public class RelationIntegrityCheckTest {
             int gammaId =              chStmt.getInt("gamma_id");
             int transactionId =        chStmt.getInt("transaction_id");
             int relationId =           chStmt.getInt("rel_link_id");
-            long branchId =             chStmt.getLong("branch_id");
+            long branchUuid =             chStmt.getLong("branch_id");
             int a_sideArtifactId =     chStmt.getInt("a_art_id");
             int b_sideArtifactId =     chStmt.getInt("b_art_id");
             int deletedTransaction =   chStmt.getInt("deleted_tran");
@@ -143,7 +143,7 @@ public class RelationIntegrityCheckTest {
 
             if (!map.containsKey(gammaId, transactionId)) {
                if (commitTransId > 0 && modType == 1) {
-                  map.put(gammaId, transactionId, new LocalRelationLink(relationId, gammaId, transactionId, branchId,
+                  map.put(gammaId, transactionId, new LocalRelationLink(relationId, gammaId, transactionId, branchUuid,
                      a_sideArtifactId, b_sideArtifactId, deletedTransaction, commitTransId, modType));
                }
             }

@@ -30,11 +30,11 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulatio
 public class XResultDataUI {
 
    /*
-    * Creates hyperlink using name. Default editor will open guid for branchId given
+    * Creates hyperlink using name. Default editor will open guid for branchUuid given
     */
-   public static String getHyperlink(String name, String guid, long branchId) {
+   public static String getHyperlink(String name, String guid, long branchUuid) {
       return AHTML.getHyperlink(
-         XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactBranch, guid + "(" + branchId + ")"),
+         XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactBranch, guid + "(" + branchUuid + ")"),
          name);
    }
 

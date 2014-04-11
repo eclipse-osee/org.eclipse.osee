@@ -70,7 +70,7 @@ public class SkyWalkerView extends GenericViewPart {
    protected GraphViewer viewer;
    private static final String INPUT_KEY = "input";
    private static final String GUID_KEY = "guid";
-   private static final String BRANCHID_KEY = "branchId";
+   private static final String BRANCHID_KEY = "branchUuid";
    private String storedGuid;
    private String storedBrandId;
    private final SkyWalkerOptions options = new SkyWalkerOptions();

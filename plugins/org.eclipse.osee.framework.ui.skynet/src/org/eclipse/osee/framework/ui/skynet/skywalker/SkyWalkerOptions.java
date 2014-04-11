@@ -142,7 +142,7 @@ public final class SkyWalkerOptions {
    public String toXml() throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       sb.append(AXml.addTagData("guid", artifact.getGuid()));
-      sb.append(AXml.addTagData("branchId", artifact.getFullBranch().getUuid() + ""));
+      sb.append(AXml.addTagData("branchUuid", artifact.getFullBranch().getUuid() + ""));
       sb.append(AXml.addTagData("artTypes",
          org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", getSelectedArtTypes())));
       sb.append(AXml.addTagData("relTypes",
@@ -159,8 +159,8 @@ public final class SkyWalkerOptions {
       try {
          String guid = AXml.getTagData(xml, "guid");
          if (Strings.isValid(guid)) {
-            String branchId = AXml.getTagData(xml, "branchId");
-            Branch branch = BranchManager.getBranch(Long.parseLong(branchId));
+            String branchUuid = AXml.getTagData(xml, "branchUuid");
+            Branch branch = BranchManager.getBranch(Long.parseLong(branchUuid));
             Artifact art = ArtifactQuery.getArtifactFromId(guid, branch);
             if (art != null) {
                setArtifact(art);

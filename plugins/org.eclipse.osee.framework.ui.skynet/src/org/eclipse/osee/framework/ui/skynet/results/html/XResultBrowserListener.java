@@ -66,8 +66,8 @@ public class XResultBrowserListener implements LocationListener {
                   java.util.regex.Matcher m = Pattern.compile("^(.*?)\\((.*?)\\)$").matcher(value);
                   if (m.find()) {
                      String guid = m.group(1);
-                     Long branchId = Long.parseLong(m.group(2));
-                     Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranch(branchId));
+                     Long branchUuid = Long.parseLong(m.group(2));
+                     Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranch(branchUuid));
                      RendererManager.openInJob(artifact, PresentationType.DEFAULT_OPEN);
                   }
                } catch (Exception ex) {
@@ -81,8 +81,8 @@ public class XResultBrowserListener implements LocationListener {
                break;
             case openBranch:
                event.doit = false;
-               long branchId = new Long(value);
-               Branch branch = BranchManager.getBranch(branchId);
+               long branchUuid = new Long(value);
+               Branch branch = BranchManager.getBranch(branchUuid);
                BranchView.revealBranch(branch);
                break;
             case browserInternal:

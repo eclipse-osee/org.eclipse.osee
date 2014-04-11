@@ -168,12 +168,12 @@ public final class TransactionManager {
     * @return the largest (most recent) transaction on the given branch
     */
    public static TransactionRecord getHeadTransaction(IOseeBranch branch) throws OseeCoreException {
-      long branchId = branch.getUuid();
+      long branchUuid = branch.getUuid();
       int transactionNumber =
          ConnectionHandler.runPreparedQueryFetchInt(-1, ClientSessionManager.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX),
-            branchId);
+            branchUuid);
       if (transactionNumber == -1) {
-         throw new TransactionDoesNotExist("No transactions where found in the database for branch: %d", branchId);
+         throw new TransactionDoesNotExist("No transactions where found in the database for branch: %d", branchUuid);
       }
       return getTransactionId(transactionNumber);
    }
@@ -208,13 +208,13 @@ public final class TransactionManager {
    public static TransactionRecord getTransactionAtDate(IOseeBranch branch, Date maxDateExclusive) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(maxDateExclusive, "max date exclusive");
-      long branchId = branch.getUuid();
+      long branchUuid = branch.getUuid();
 
       TransactionRecord txRecord = null;
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(SELECT_BRANCH_TRANSACTION_BY_DATE, branchId, new Timestamp(maxDateExclusive.getTime()));
+         chStmt.runPreparedQuery(SELECT_BRANCH_TRANSACTION_BY_DATE, branchUuid, new Timestamp(maxDateExclusive.getTime()));
          if (chStmt.next()) {
             int transactionId = chStmt.getInt("transaction_id");
             if (chStmt.wasNull()) {

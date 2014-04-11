@@ -15,22 +15,22 @@ package org.eclipse.osee.framework.core.message;
  */
 public class BranchCreationResponse {
 
-   private long branchId;
+   private long branchUuid;
 
-   public BranchCreationResponse(long branchId) {
-      this.branchId = branchId;
+   public BranchCreationResponse(long branchUuid) {
+      this.branchUuid = branchUuid;
    }
 
    public long getBranchId() {
-      return branchId;
+      return branchUuid;
    }
 
-   public void setBranchId(long branchId) {
-      this.branchId = branchId;
+   public void setBranchId(long branchUuid) {
+      this.branchUuid = branchUuid;
    }
 
    @Override
    public String toString() {
-      return "BranchCreationResponse [branchId=" + branchId + "]";
+      return "BranchCreationResponse [branchUuid=" + branchUuid + "]";
    }
 }

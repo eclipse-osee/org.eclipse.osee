@@ -61,20 +61,20 @@ public final class BranchCacheUpdateUtil {
       preLoadTransactions(cacheMessage);
 
       for (BranchRow srcItem : cacheMessage.getBranchRows()) {
-         long branchId = srcItem.getBranchId();
+         long branchUuid = srcItem.getBranchId();
          Branch updated =
-            factory.createOrUpdate(cache, branchId, srcItem.getBranchName(), srcItem.getBranchType(),
+            factory.createOrUpdate(cache, branchUuid, srcItem.getBranchName(), srcItem.getBranchType(),
                srcItem.getBranchState(), srcItem.getBranchArchived().isArchived(), srcItem.getStorageState(),
                srcItem.isInheritAccessControl());
          updatedItems.add(updated);
 
-         Integer artifactId = branchToAssocArt.get(branchId);
+         Integer artifactId = branchToAssocArt.get(branchUuid);
          if (artifactId != null) {
             updated.setAssociatedArtifactId(artifactId);
          }
 
-         updated.setBaseTransaction(getTx(cacheMessage.getBranchToBaseTx(), branchId));
-         updated.setSourceTransaction(getTx(cacheMessage.getBranchToSourceTx(), branchId));
+         updated.setBaseTransaction(getTx(cacheMessage.getBranchToBaseTx(), branchUuid));
+         updated.setSourceTransaction(getTx(cacheMessage.getBranchToSourceTx(), branchUuid));
       }
 
       for (Entry<Long, Long> entry : cacheMessage.getChildToParent().entrySet()) {
@@ -119,9 +119,9 @@ public final class BranchCacheUpdateUtil {
       }
    }
 
-   private TransactionRecord getTx(Map<Long, Integer> branchToTx, Long branchId) throws OseeCoreException {
+   private TransactionRecord getTx(Map<Long, Integer> branchToTx, Long branchUuid) throws OseeCoreException {
       TransactionRecord tx = null;
-      Integer txId = branchToTx.get(branchId);
+      Integer txId = branchToTx.get(branchUuid);
       if (txId != null && txId > 0) {
          tx = txCache.getOrLoad(txId);
       }
@@ -130,27 +130,27 @@ public final class BranchCacheUpdateUtil {
 
    public static void loadFromCache(AbstractBranchCacheMessage message, Collection<Branch> types) throws OseeCoreException {
       for (Branch br : types) {
-         Long branchId = br.getUuid();
+         Long branchUuid = br.getUuid();
          message.getBranchRows().add(
             new BranchRow(br.getUuid(), br.getName(), br.getBranchType(), br.getBranchState(), br.getArchiveState(),
                br.getStorageState(), br.isInheritAccessControl()));
          if (br.hasParentBranch()) {
-            message.getChildToParent().put(branchId, br.getParentBranch().getUuid());
+            message.getChildToParent().put(branchUuid, br.getParentBranch().getUuid());
          }
-         addTxRecord(message.getBranchToBaseTx(), branchId, br.getBaseTransaction());
-         addTxRecord(message.getBranchToSourceTx(), branchId, br.getSourceTransaction());
-         addAssocArtifact(message.getBranchToAssocArt(), branchId, br.getAssociatedArtifactId());
+         addTxRecord(message.getBranchToBaseTx(), branchUuid, br.getBaseTransaction());
+         addTxRecord(message.getBranchToSourceTx(), branchUuid, br.getSourceTransaction());
+         addAssocArtifact(message.getBranchToAssocArt(), branchUuid, br.getAssociatedArtifactId());
          if (br.getBranchType().isMergeBranch()) {
             addMergeBranches(message.getMergeBranches(), (MergeBranch) br);
          }
       }
    }
 
-   private static void addAssocArtifact(Map<Long, Integer> map, Long branchId, Integer artId) {
+   private static void addAssocArtifact(Map<Long, Integer> map, Long branchUuid, Integer artId) {
       if (artId != null) {
-         map.put(branchId, artId);
+         map.put(branchUuid, artId);
       } else {
-         map.put(branchId, -1);
+         map.put(branchUuid, -1);
       }
    }
 
@@ -162,11 +162,11 @@ public final class BranchCacheUpdateUtil {
       srcDestMerge.add(new Triplet<Long, Long, Long>(src, dest, merge));
    }
 
-   private static void addTxRecord(Map<Long, Integer> map, Long branchId, TransactionRecord toAdd) {
+   private static void addTxRecord(Map<Long, Integer> map, Long branchUuid, TransactionRecord toAdd) {
       if (toAdd != null) {
-         map.put(branchId, toAdd.getId());
+         map.put(branchUuid, toAdd.getId());
       } else {
-         map.put(branchId, -1);
+         map.put(branchUuid, -1);
       }
    }
 

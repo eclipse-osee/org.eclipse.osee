@@ -29,7 +29,7 @@ public interface VersionData extends Cloneable {
 
    long getBranchId();
 
-   void setBranchId(long branchId);
+   void setBranchId(long branchUuid);
 
    boolean isInStorage();
 

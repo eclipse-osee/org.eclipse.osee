@@ -60,10 +60,10 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
 
    @Override
    public Version applyTransform(ExchangeDataProcessor processor, OperationLogger logger) throws OseeCoreException {
-      List<Long> branchIds = convertBranchTable(processor);
+      List<Long> branchUuids = convertBranchTable(processor);
 
       Map<Long, Long> artifactGammaToNetGammaId = convertArtifactAndConflicts(processor);
-      consolidateTxsAddressing(processor, ExportItem.OSEE_TXS_DATA, branchIds, artifactGammaToNetGammaId);
+      consolidateTxsAddressing(processor, ExportItem.OSEE_TXS_DATA, branchUuids, artifactGammaToNetGammaId);
 
       HashCollection<String, String> tableToColumns = new HashCollection<String, String>();
       tableToColumns.put("osee_artifact", "<column id=\"gamma_id\" type=\"NUMERIC\" />\n");
@@ -106,7 +106,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
       return artifactGammaToNetGammaId;
    }
 
-   private void consolidateTxsAddressing(ExchangeDataProcessor processor, ExportItem exportItem, List<Long> branchIds, Map<Long, Long> artifactGammaToNetGammaId) throws OseeCoreException {
+   private void consolidateTxsAddressing(ExchangeDataProcessor processor, ExportItem exportItem, List<Long> branchUuids, Map<Long, Long> artifactGammaToNetGammaId) throws OseeCoreException {
       File targetFile = processor.getDataProvider().getFile(exportItem);
       File tempFile = new File(Lib.changeExtension(targetFile.getPath(), "temp"));
       Writer fileWriter = null;
@@ -116,8 +116,8 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
          fileWriter = processor.startTransform(targetFile, tempFile, transformer);
          ExchangeUtil.readExchange(tempFile, transformer);
 
-         for (long branchId : branchIds) {
-            transformer.setBranchId(branchId);
+         for (long branchUuid : branchUuids) {
+            transformer.setBranchId(branchUuid);
             ExchangeUtil.readExchange(tempFile, transformer);
 
             for (Long gammaId : addressMap.keySet()) {

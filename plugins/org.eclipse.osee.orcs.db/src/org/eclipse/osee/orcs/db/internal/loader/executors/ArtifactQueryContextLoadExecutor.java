@@ -78,8 +78,8 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
             while (chStmt.next()) {
                checkCancelled(cancellation);
                Integer artId = chStmt.getInt("art_id");
-               Long branchId = chStmt.getLong("branch_id");
-               artifactJoin.add(artId, branchId, transactionId);
+               Long branchUuid = chStmt.getLong("branch_id");
+               artifactJoin.add(artId, branchUuid, transactionId);
                checkCancelled(cancellation);
             }
          } finally {

@@ -35,7 +35,7 @@ public class TransactionRecordTest {
 
    private final TransactionRecord transaction;
    private final int transactionNumber;
-   private final int branchId;
+   private final int branchUuid;
    private final TransactionDetailsType txType;
 
    private final String comment;
@@ -43,9 +43,9 @@ public class TransactionRecordTest {
    private final int authorArtId;
    private final int commitArtId;
 
-   public TransactionRecordTest(int transactionNumber, int branchId, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
+   public TransactionRecordTest(int transactionNumber, int branchUuid, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
       this.transactionNumber = transactionNumber;
-      this.branchId = branchId;
+      this.branchUuid = branchUuid;
       this.comment = comment;
       this.time = time;
       this.authorArtId = authorArtId;
@@ -53,12 +53,12 @@ public class TransactionRecordTest {
       this.txType = txType;
 
       this.transaction =
-         new TransactionRecord(transactionNumber, branchId, comment, time, authorArtId, commitArtId, txType, null);
+         new TransactionRecord(transactionNumber, branchUuid, comment, time, authorArtId, commitArtId, txType, null);
    }
 
    @Test
    public void getBranch() {
-      Assert.assertEquals(branchId, transaction.getBranchId());
+      Assert.assertEquals(branchUuid, transaction.getBranchId());
    }
 
    @Test
@@ -143,7 +143,7 @@ public class TransactionRecordTest {
 
    @Test
    public void testToString() {
-      Assert.assertEquals(transactionNumber + ":" + branchId, transaction.toString());
+      Assert.assertEquals(transactionNumber + ":" + branchUuid, transaction.toString());
    }
 
    @Parameters
@@ -151,13 +151,13 @@ public class TransactionRecordTest {
       Collection<Object[]> data = new ArrayList<Object[]>();
       for (int index = 1; index <= 2; index++) {
          int transactionNumber = index * 11;
-         int branchId = index * 9;
+         int branchUuid = index * 9;
          String comment = GUID.create();
          Date time = new Date();
          int authorArtId = index * 47;
          int commitArtId = index * 37;
          TransactionDetailsType txType = TransactionDetailsType.toEnum(index % TransactionDetailsType.values().length);
-         data.add(new Object[] {transactionNumber, branchId, comment, time, authorArtId, commitArtId, txType});
+         data.add(new Object[] {transactionNumber, branchUuid, comment, time, authorArtId, commitArtId, txType});
       }
       return data;
    }

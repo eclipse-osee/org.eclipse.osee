@@ -25,8 +25,8 @@ public class BranchCreationResponseTranslator implements ITranslator<BranchCreat
 
    @Override
    public BranchCreationResponse convert(PropertyStore store) {
-      long branchId = store.getLong(Fields.BRANCH_ID.name());
-      return new BranchCreationResponse(branchId);
+      long branchUuid = store.getLong(Fields.BRANCH_ID.name());
+      return new BranchCreationResponse(branchUuid);
    }
 
    @Override

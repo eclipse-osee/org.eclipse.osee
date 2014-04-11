@@ -27,16 +27,16 @@ public class TransactionRecord extends BaseIdentity<Integer> implements ITransac
    private static final int NON_EXISTING_BRANCH = -1;
    private final TransactionDetailsType txType;
 
-   private final long branchId;
+   private final long branchUuid;
    private String comment;
    private Date time;
    private int authorArtId;
    private int commitArtId;
    private final BranchCache branchCache;
 
-   public TransactionRecord(int transactionNumber, long branchId, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) {
+   public TransactionRecord(int transactionNumber, long branchUuid, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) {
       super(transactionNumber);
-      this.branchId = branchId;
+      this.branchUuid = branchUuid;
       this.comment = Strings.intern(comment);
       this.time = time;
       this.authorArtId = authorArtId;
@@ -51,11 +51,11 @@ public class TransactionRecord extends BaseIdentity<Integer> implements ITransac
    }
 
    public boolean exists() {
-      return branchId != NON_EXISTING_BRANCH;
+      return branchUuid != NON_EXISTING_BRANCH;
    }
 
    public long getBranchId() {
-      return branchId;
+      return branchUuid;
    }
 
    public Branch getBranch() throws OseeCoreException {

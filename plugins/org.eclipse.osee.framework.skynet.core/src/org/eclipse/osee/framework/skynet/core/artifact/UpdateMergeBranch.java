@@ -241,12 +241,12 @@ public class UpdateMergeBranch extends DbTransaction {
     * will also be removed from the database only for the branch it is on).
     */
    private static void purgeArtifactFromBranch(OseeConnection connection, Branch branch, int artId) throws OseeCoreException {
-      long branchId = branch.getUuid();
+      long branchUuid = branch.getUuid();
 
       //Remove from Baseline
-      ConnectionHandler.runPreparedUpdate(connection, PURGE_ATTRIBUTE_FROM_MERGE_BRANCH, branchId, artId);
-      ConnectionHandler.runPreparedUpdate(connection, PURGE_RELATION_FROM_MERGE_BRANCH, branchId, artId, artId);
-      ConnectionHandler.runPreparedUpdate(connection, PURGE_ARTIFACT_FROM_MERGE_BRANCH, branchId, artId);
+      ConnectionHandler.runPreparedUpdate(connection, PURGE_ATTRIBUTE_FROM_MERGE_BRANCH, branchUuid, artId);
+      ConnectionHandler.runPreparedUpdate(connection, PURGE_RELATION_FROM_MERGE_BRANCH, branchUuid, artId, artId);
+      ConnectionHandler.runPreparedUpdate(connection, PURGE_ARTIFACT_FROM_MERGE_BRANCH, branchUuid, artId);
    }
 
 }

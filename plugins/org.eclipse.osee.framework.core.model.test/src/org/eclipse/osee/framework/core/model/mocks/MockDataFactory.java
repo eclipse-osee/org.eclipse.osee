@@ -92,7 +92,7 @@ public final class MockDataFactory {
       return new Branch(uuid, "branch_" + index, branchType, branchState, isArchived, false);
    }
 
-   public static TransactionRecord createTransaction(int index, int branchId) {
+   public static TransactionRecord createTransaction(int index, int branchUuid) {
       TransactionDetailsType type =
          TransactionDetailsType.values()[Math.abs(index % TransactionDetailsType.values().length)];
       int value = index;
@@ -101,7 +101,7 @@ public final class MockDataFactory {
       }
       MockOseeDataAccessor<Long, Branch> accessor = new MockOseeDataAccessor<Long, Branch>();
       BranchCache cache = new BranchCache(accessor);
-      return new TransactionRecord(value * 47, branchId, "comment_" + value, new Date(), value * 37, value * 42, type,
+      return new TransactionRecord(value * 47, branchUuid, "comment_" + value, new Date(), value * 37, value * 42, type,
          cache);
    }
 

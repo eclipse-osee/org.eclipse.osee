@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
  */
 public class BranchQueryOptions {
 
-   private List<Long> branchIds;
+   private List<Long> branchUuids;
    private List<BranchType> branchTypes;
    private List<BranchState> branchStates;
    private boolean includeDeleted;
@@ -30,11 +30,11 @@ public class BranchQueryOptions {
    private Long isAncestorOf = -1L;
 
    public List<Long> getBranchIds() {
-      return branchIds;
+      return branchUuids;
    }
 
-   public void setBranchIds(List<Long> branchIds) {
-      this.branchIds = branchIds;
+   public void setBranchIds(List<Long> branchUuids) {
+      this.branchUuids = branchUuids;
    }
 
    public List<BranchType> getBranchTypes() {

@@ -306,7 +306,7 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    }
 
    private void copyAccessRules(OseeConnection connection, int userArtId, Branch parentBranch, Branch destinationBranch) {
-      Long branchId = destinationBranch.getUuid();
+      Long branchUuid = destinationBranch.getUuid();
       int owner = PermissionEnum.OWNER.getPermId();
       int deny = PermissionEnum.DENY.getPermId();
 
@@ -320,7 +320,7 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
             if (priviledgeId == userArtId && permissionId < owner && permissionId != deny) {
                permissionId = owner;
             }
-            data.add(new Object[] {permissionId, priviledgeId, branchId});
+            data.add(new Object[] {permissionId, priviledgeId, branchUuid});
          }
       } finally {
          Lib.close(chStmt);

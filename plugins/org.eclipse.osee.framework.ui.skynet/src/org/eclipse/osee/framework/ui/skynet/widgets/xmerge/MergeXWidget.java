@@ -692,14 +692,14 @@ public class MergeXWidget extends GenericXWidget {
          if (conflicts.length != 0) {
             if (conflicts[0].getSourceBranch() != null) {
                ArrayList<String> selections = new ArrayList<String>();
-               ArrayList<Long> branchIds = new ArrayList<Long>();
+               ArrayList<Long> branchUuids = new ArrayList<Long>();
                try {
                   Collection<Long> destBranches =
                      ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch.getUuid());
-                  for (Long branchId : destBranches) {
-                     if (branchId.intValue() != destBranch.getUuid()) {
-                        selections.add(BranchManager.getBranch(branchId).getName());
-                        branchIds.add(branchId);
+                  for (Long branchUuid : destBranches) {
+                     if (branchUuid.intValue() != destBranch.getUuid()) {
+                        selections.add(BranchManager.getBranch(branchUuid).getName());
+                        branchUuids.add(branchUuid);
                      }
                   }
                   if (selections.size() > 0) {
@@ -710,8 +710,8 @@ public class MergeXWidget extends GenericXWidget {
                               "Apply",
                               "Cancel"}, 1);
                      if (dialog.open() == 0) {
-                        System.out.print("Applying the merge found for Branch " + branchIds.toArray()[dialog.getSelection()]);
-                        applyPreviousMerge(branchIds.get(dialog.getSelection()));
+                        System.out.print("Applying the merge found for Branch " + branchUuids.toArray()[dialog.getSelection()]);
+                        applyPreviousMerge(branchUuids.get(dialog.getSelection()));
                      }
                   }
                   if (selections.isEmpty()) {

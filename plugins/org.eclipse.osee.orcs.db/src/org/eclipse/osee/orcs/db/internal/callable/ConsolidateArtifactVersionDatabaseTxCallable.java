@@ -118,17 +118,17 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
          chStmt.runPreparedQuery(MAX_FETCH, FIND_ARTIFACT_MODS, artifactJoinQuery.getQueryId());
          while (chStmt.next()) {
             int artifactId = chStmt.getInt("art_id");
-            long branchId = chStmt.getLong("branch_id");
+            long branchUuid = chStmt.getLong("branch_id");
 
-            if (previousArtifactId != artifactId || previousBranchId != branchId) {
+            if (previousArtifactId != artifactId || previousBranchId != branchUuid) {
                if (!mods.isEmpty()) {
                   consolidateMods(mods);
                   mods.clear();
                }
                previousArtifactId = artifactId;
-               previousBranchId = branchId;
+               previousBranchId = branchUuid;
             }
-            mods.add(new Address(false, branchId, artifactId, chStmt.getInt("transaction_id"),
+            mods.add(new Address(false, branchUuid, artifactId, chStmt.getInt("transaction_id"),
                chStmt.getInt("gamma_id"), ModificationType.getMod(chStmt.getInt("mod_type")),
                TxChange.getChangeType(chStmt.getInt("tx_current"))));
          }
@@ -272,12 +272,12 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
          while (chStmt.next()) {
             long obsoleteGammaId = chStmt.getLong("gamma_id");
             int transactionId = chStmt.getInt("transaction_id");
-            long branchId = chStmt.getLong("branch_id");
+            long branchUuid = chStmt.getLong("branch_id");
             long netGammaId = chStmt.getLong("net_gamma_id");
             ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
             TxChange.getChangeType(chStmt.getInt("tx_current"));
 
-            if (isNextArtifactGroup(netGammaId, branchId)) {
+            if (isNextArtifactGroup(netGammaId, branchUuid)) {
                writeAddressingChanges(archived, false);
                if (modType == MODIFIED) {
                   addToUpdateAddresssing(NEW, netGammaId, modType, transactionId, obsoleteGammaId);
@@ -299,7 +299,7 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
             }
 
             previousNetGammaId = netGammaId;
-            previousBranchId = branchId;
+            previousBranchId = branchUuid;
             previuosTransactionId = transactionId;
          }
       } finally {
@@ -315,8 +315,8 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
       }
    }
 
-   private boolean isNextArtifactGroup(long netGammaId, long branchId) {
-      return previousNetGammaId != netGammaId || previousBranchId != branchId;
+   private boolean isNextArtifactGroup(long netGammaId, long branchUuid) {
+      return previousNetGammaId != netGammaId || previousBranchId != branchUuid;
    }
 
    private String prepareSql(String sql, boolean archived) {

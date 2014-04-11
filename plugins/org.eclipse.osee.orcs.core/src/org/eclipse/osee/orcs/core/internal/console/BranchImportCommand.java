@@ -55,13 +55,13 @@ public final class BranchImportCommand implements ConsoleCommand {
 
    @Override
    public String getUsage() {
-      return "uri=<EXCHANGE_FILE_LOCATION,...> [branchIds=<BRANCH_IDS,...>] [minTx=<TX_ID>] [maxTx=<TX_ID>] [excludeBaselineTxs=<TRUE|FALSE>] [allAsRootBranches=<TRUE|FALSE>] [clean=<TRUE|FALSE>]";
+      return "uri=<EXCHANGE_FILE_LOCATION,...> [branchUuids=<BRANCH_IDS,...>] [minTx=<TX_ID>] [maxTx=<TX_ID>] [excludeBaselineTxs=<TRUE|FALSE>] [allAsRootBranches=<TRUE|FALSE>] [clean=<TRUE|FALSE>]";
    }
 
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
       List<String> importFiles = Arrays.asList(params.getArray("uri"));
-      List<String> branchIds = Arrays.asList(params.getArray("branchIds"));
+      List<String> branchUuids = Arrays.asList(params.getArray("branchUuids"));
 
       PropertyStore options = new PropertyStore();
       if (params.exists("minTx")) {
@@ -76,7 +76,7 @@ public final class BranchImportCommand implements ConsoleCommand {
 
       OrcsBranch orcsBranch = getOrcsApi().getBranchOps(null);
       return new ImportBranchDelegateCallable(console, orcsBranch, getOrcsApi().getQueryFactory(null).branchQuery(),
-         options, importFiles, branchIds);
+         options, importFiles, branchUuids);
    }
 
    private static final class ImportBranchDelegateCallable extends CancellableCallable<Boolean> {
@@ -86,16 +86,16 @@ public final class BranchImportCommand implements ConsoleCommand {
       private final BranchQuery branchQuery;
       private final PropertyStore options;
       private final List<String> importFiles;
-      private final List<String> branchIds;
+      private final List<String> branchUuids;
 
-      public ImportBranchDelegateCallable(Console console, OrcsBranch orcsBranch, BranchQuery branchQuery, PropertyStore options, List<String> importFiles, List<String> branchIds) {
+      public ImportBranchDelegateCallable(Console console, OrcsBranch orcsBranch, BranchQuery branchQuery, PropertyStore options, List<String> importFiles, List<String> branchUuids) {
          super();
          this.console = console;
          this.orcsBranch = orcsBranch;
          this.branchQuery = branchQuery;
          this.options = options;
          this.importFiles = importFiles;
-         this.branchIds = branchIds;
+         this.branchUuids = branchUuids;
       }
 
       @Override
@@ -105,8 +105,8 @@ public final class BranchImportCommand implements ConsoleCommand {
          }
 
          List<IOseeBranch> branches = new LinkedList<IOseeBranch>();
-         for (String branchIdString : branchIds) {
-            IOseeBranch branch = branchQuery.andUuids(Long.valueOf(branchIdString)).getResults().getExactlyOne();
+         for (String branchUuidString : branchUuids) {
+            IOseeBranch branch = branchQuery.andUuids(Long.valueOf(branchUuidString)).getResults().getExactlyOne();
             branches.add(branch);
          }
 

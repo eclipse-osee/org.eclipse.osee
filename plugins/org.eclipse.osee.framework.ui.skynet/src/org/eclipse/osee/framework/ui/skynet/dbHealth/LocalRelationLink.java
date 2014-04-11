@@ -12,12 +12,12 @@ package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 public class LocalRelationLink {
    public int relLinkId, gammaId, relTransId, aArtId, bArtId, transIdForArtifactDeletion, commitTrans, modType;
-   public long branchId;
+   public long branchUuid;
 
-   public LocalRelationLink(int relLinkId, int gammaId, int transactionId, long branchId, int aArtId, int bArtId, int transIdForArtifactDeletion, int commitTrans, int modType) {
+   public LocalRelationLink(int relLinkId, int gammaId, int transactionId, long branchUuid, int aArtId, int bArtId, int transIdForArtifactDeletion, int commitTrans, int modType) {
       this.aArtId = aArtId;
       this.bArtId = bArtId;
-      this.branchId = branchId;
+      this.branchUuid = branchUuid;
       this.gammaId = gammaId;
       this.relLinkId = relLinkId;
       this.relTransId = transactionId;
@@ -28,7 +28,7 @@ public class LocalRelationLink {
 
    @Override
    public String toString() {
-      return String.format("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s", gammaId, relTransId, relLinkId, branchId, aArtId,
+      return String.format("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s", gammaId, relTransId, relLinkId, branchUuid, aArtId,
          bArtId, transIdForArtifactDeletion, commitTrans, modType);
    }
 }

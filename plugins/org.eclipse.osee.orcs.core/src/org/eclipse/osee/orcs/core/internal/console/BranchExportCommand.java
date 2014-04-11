@@ -124,16 +124,16 @@ public final class BranchExportCommand implements ConsoleCommand {
                branches.add(branch);
             }
          } else {
-            for (String branchIdString : includeBranchIds) {
-               branches.add(branchQuery.andUuids(Long.valueOf(branchIdString)).getResults().getExactlyOne());
+            for (String branchUuidString : includeBranchIds) {
+               branches.add(branchQuery.andUuids(Long.valueOf(branchUuidString)).getResults().getExactlyOne());
             }
          }
 
          branchQuery = orcsApi.getQueryFactory(null).branchQuery();
          if (!excludeBranchIds.isEmpty()) {
-            for (String branchIdString : excludeBranchIds) {
+            for (String branchUuidString : excludeBranchIds) {
                BranchReadable toExclude =
-                  branchQuery.andUuids(Long.valueOf(branchIdString)).getResults().getExactlyOne();
+                  branchQuery.andUuids(Long.valueOf(branchUuidString)).getResults().getExactlyOne();
                branches.remove(toExclude);
             }
          }

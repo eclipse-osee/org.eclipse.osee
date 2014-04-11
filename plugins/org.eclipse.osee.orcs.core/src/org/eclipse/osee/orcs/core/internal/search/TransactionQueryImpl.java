@@ -260,8 +260,8 @@ public class TransactionQueryImpl implements TransactionQuery {
    }
 
    @Override
-   public TransactionQuery andIsHead(long branchId) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.newGetHead(branchId);
+   public TransactionQuery andIsHead(long branchUuid) throws OseeCoreException {
+      Criteria criteria = criteriaFactory.newGetHead(branchUuid);
       addAndCheck(queryData, criteria);
       return this;
    }

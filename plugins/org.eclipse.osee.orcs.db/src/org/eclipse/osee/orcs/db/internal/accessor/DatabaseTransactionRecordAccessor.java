@@ -137,7 +137,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
          chStmt.runPreparedQuery(expectedCount, query, parameters);
          while (chStmt.next()) {
             count++;
-            long branchId = chStmt.getLong("branch_id");
+            long branchUuid = chStmt.getLong("branch_id");
             int transactionNumber = chStmt.getInt("transaction_id");
             String comment = chStmt.getString("osee_comment");
             Date timestamp = chStmt.getTimestamp("time");
@@ -146,7 +146,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
             TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
             record =
-               prepareTransactionRecord(cache, transactionNumber, branchId, comment, timestamp, authorArtId,
+               prepareTransactionRecord(cache, transactionNumber, branchUuid, comment, timestamp, authorArtId,
                   commitArtId, txType);
          }
          numberLoaded.setValue(count);
@@ -156,9 +156,9 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       return record;
    }
 
-   private TransactionRecord prepareTransactionRecord(TransactionCache cache, int transactionNumber, long branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
+   private TransactionRecord prepareTransactionRecord(TransactionCache cache, int transactionNumber, long branchUuid, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
       TransactionRecord record =
-         factory.createOrUpdate(cache, transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId,
+         factory.createOrUpdate(cache, transactionNumber, branchUuid, comment, timestamp, authorArtId, commitArtId,
             txType, branchCache);
       record.clearDirty();
       return record;
@@ -170,9 +170,9 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    }
 
    @Override
-   public TransactionRecord getOrLoadPriorTransaction(TransactionCache cache, int transactionNumber, long branchId) throws OseeCoreException {
+   public TransactionRecord getOrLoadPriorTransaction(TransactionCache cache, int transactionNumber, long branchUuid) throws OseeCoreException {
       int priorTransactionId =
-         oseeDatabaseService.runPreparedQueryFetchObject(-1, GET_PRIOR_TRANSACTION, branchId, transactionNumber);
+         oseeDatabaseService.runPreparedQueryFetchObject(-1, GET_PRIOR_TRANSACTION, branchUuid, transactionNumber);
       return cache.getOrLoad(priorTransactionId);
    }
 

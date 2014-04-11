@@ -72,13 +72,13 @@ public final class UnsubscribeTransaction extends DatabaseTxCallable<String> {
       return completionMethod;
    }
 
-   private boolean getRelationTxData(long branchId) throws OseeCoreException {
+   private boolean getRelationTxData(long branchUuid) throws OseeCoreException {
       long relationTypeId = CoreRelationTypes.Users_Artifact.getGuid();
       IOseeStatement chStmt = getDatabaseService().getStatement();
 
       try {
          chStmt.runPreparedQuery(1, SELECT_RELATION_LINK, getGroup().getLocalId(), getUser().getLocalId(),
-            relationTypeId, branchId, TxChange.NOT_CURRENT.getValue());
+            relationTypeId, branchUuid, TxChange.NOT_CURRENT.getValue());
          if (chStmt.next()) {
             currentGammaId = chStmt.getInt("gamma_id");
             relationId = chStmt.getInt("rel_link_id");

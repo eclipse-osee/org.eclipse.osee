@@ -17,20 +17,20 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
  */
 public class CriteriaTxGetHead extends Criteria {
 
-   private final long branchId;
+   private final long branchUuid;
 
-   public CriteriaTxGetHead(long branchId) {
+   public CriteriaTxGetHead(long branchUuid) {
       super();
-      this.branchId = branchId;
+      this.branchUuid = branchUuid;
    }
 
    public long getBranchid() {
-      return branchId;
+      return branchUuid;
    }
 
    @Override
    public String toString() {
-      return "CriteriaTxGetHead [branchId=" + branchId + "]";
+      return "CriteriaTxGetHead [branchUuid=" + branchUuid + "]";
    }
 
 }

@@ -205,7 +205,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
                commitOfNewRelationOnDeletedArtifactCases.add(new Object[] {
                   relLink.gammaId,
                   relLink.relTransId,
-                  relLink.branchId});
+                  relLink.branchUuid});
                newRelationOnDeletedArtifact.add(relLink);
             } else {
                unExpectedCases.add(relLink);
@@ -218,7 +218,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
             insertArtifactDeleted.add(new Object[] {
                relLink.gammaId,
                relLink.transIdForArtifactDeletion,
-               relLink.branchId});
+               relLink.branchUuid});
          }
       }
 
@@ -241,7 +241,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
    private void deleteInvalidRelationAddressing() throws OseeCoreException {
       List<Object[]> rowsToDelete = new LinkedList<Object[]>();
       for (LocalRelationLink relLink : deleteMap.allValues()) {
-         rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId, relLink.branchId});
+         rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId, relLink.branchUuid});
       }
 
       monitor.subTask("Deleting Relation Addressing with " + TxChange.DELETED + " Artifact");
@@ -294,7 +294,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
             Integer.toString(relLink.relLinkId),
             Integer.toString(relLink.gammaId),
             Integer.toString(relLink.relTransId),
-            Long.toString(relLink.branchId),
+            Long.toString(relLink.branchUuid),
             Integer.toString(relLink.aArtId),
             Integer.toString(relLink.bArtId),
             Integer.toString(relLink.transIdForArtifactDeletion)}));
@@ -317,7 +317,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
             int gamma_id =             chStmt.getInt("gamma_id");
             int transactionId =        chStmt.getInt("transaction_id");
             int relationId =           chStmt.getInt("rel_link_id");
-            long branchId =            chStmt.getLong("branch_id");
+            long branchUuid =            chStmt.getLong("branch_id");
             int a_sideArtifactId =     chStmt.getInt("a_art_id");
             int b_sideArtifactId =     chStmt.getInt("b_art_id");
             int deletedTransaction =   chStmt.getInt("deleted_tran");
@@ -328,7 +328,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
 
             if (!map.containsKey(gamma_id, transactionId) && (forDelete || !deleteMap.containsKey(gamma_id,
                transactionId))) {
-               map.put(gamma_id, transactionId, new LocalRelationLink(relationId, gamma_id, transactionId, branchId,
+               map.put(gamma_id, transactionId, new LocalRelationLink(relationId, gamma_id, transactionId, branchUuid,
                   a_sideArtifactId, b_sideArtifactId, deletedTransaction, commitTransId, modType));
             }
          }

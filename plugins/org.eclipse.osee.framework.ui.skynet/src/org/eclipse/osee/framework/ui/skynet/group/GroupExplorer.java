@@ -445,7 +445,7 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
    }
 
    private static final String INPUT = "input";
-   private static final String BRANCH_ID = "branchId";
+   private static final String BRANCH_ID = "branchUuid";
 
    @Override
    public void saveState(IMemento memento) {
@@ -464,15 +464,15 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
    public void init(IViewSite site, IMemento memento) throws PartInitException {
       super.init(site, memento);
       try {
-         Long branchId = null;
+         Long branchUuid = null;
 
          if (memento != null) {
             memento = memento.getChild(INPUT);
             if (memento != null) {
-               branchId = Long.parseLong(memento.getString(BRANCH_ID));
-               if (branchId != null) {
+               branchUuid = Long.parseLong(memento.getString(BRANCH_ID));
+               if (branchUuid != null) {
                   try {
-                     branch = BranchManager.getBranch(branchId);
+                     branch = BranchManager.getBranch(branchUuid);
                      if (branch.getBranchState().isDeleted() || branch.getArchiveState().isArchived()) {
                         branch = null;
                      }

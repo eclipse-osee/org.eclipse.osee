@@ -21,34 +21,34 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  * @author Jeff C. Phillips
  */
 public class BranchAccessObject extends AccessObject {
-   private final Long branchId;
+   private final Long branchUuid;
    private static final Map<Long, BranchAccessObject> cache = new HashMap<Long, BranchAccessObject>();
 
    @Override
    public int hashCode() {
       int result = 17;
-      result = 31 * result + branchId.hashCode();
+      result = 31 * result + branchUuid.hashCode();
       return result;
    }
 
-   public BranchAccessObject(long branchId) {
-      this.branchId = branchId;
+   public BranchAccessObject(long branchUuid) {
+      this.branchUuid = branchUuid;
    }
 
    @Override
    public long getId() {
-      return branchId;
+      return branchUuid;
    }
 
    @Override
    public void removeFromCache() {
-      cache.remove(branchId);
+      cache.remove(branchUuid);
    }
 
    @Override
    public void removeFromDatabase(int subjectId) throws OseeCoreException {
       final String DELETE_BRANCH_ACL = "DELETE FROM OSEE_BRANCH_ACL WHERE privilege_entity_id = ? AND branch_id =?";
-      ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, subjectId, branchId);
+      ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, subjectId, branchUuid);
    }
 
    public static BranchAccessObject getBranchAccessObject(IOseeBranch branch) throws OseeCoreException {
@@ -75,6 +75,6 @@ public class BranchAccessObject extends AccessObject {
       if (!(obj instanceof BranchAccessObject)) {
          return false;
       }
-      return branchId == ((BranchAccessObject) obj).branchId;
+      return branchUuid == ((BranchAccessObject) obj).branchUuid;
    }
 }

@@ -68,11 +68,11 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       return identityService;
    }
 
-   public void setSelectedBranchIds(long... branchIds) {
-      if (branchIds != null && branchIds.length > 0) {
+   public void setSelectedBranchIds(long... branchUuids) {
+      if (branchUuids != null && branchUuids.length > 0) {
          this.branchesToImport.clear();
-         for (long branchId : branchIds) {
-            this.branchesToImport.add(branchId);
+         for (long branchUuid : branchUuids) {
+            this.branchesToImport.add(branchUuid);
          }
       }
    }
@@ -110,9 +110,9 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       boolean process = true;
       try {
          if (!branchesToImport.isEmpty()) {
-            String branchIdString = fieldMap.get(ExportImportXml.PART_OF_BRANCH);
-            if (Strings.isValid(branchIdString)) {
-               if (!branchesToImport.contains(new Integer(branchIdString))) {
+            String branchUuidString = fieldMap.get(ExportImportXml.PART_OF_BRANCH);
+            if (Strings.isValid(branchUuidString)) {
+               if (!branchesToImport.contains(new Integer(branchUuidString))) {
                   process = false;
                }
             }

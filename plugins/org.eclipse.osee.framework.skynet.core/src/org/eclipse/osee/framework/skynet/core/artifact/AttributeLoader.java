@@ -76,7 +76,7 @@ public class AttributeLoader {
 
    private static final class AttrData {
       public int artifactId = -1;
-      public long branchId = -1;
+      public long branchUuid = -1;
       public int attrId = -1;
       public int gammaId = -1;
       public int modType = -1;
@@ -92,7 +92,7 @@ public class AttributeLoader {
 
       public AttrData(IOseeStatement chStmt, boolean historical) throws OseeCoreException {
          artifactId = chStmt.getInt("art_id");
-         branchId = chStmt.getLong("branch_id");
+         branchUuid = chStmt.getLong("branch_id");
          attrId = chStmt.getInt("attr_id");
          gammaId = chStmt.getInt("gamma_id");
          modType = chStmt.getInt("mod_type");
@@ -107,21 +107,21 @@ public class AttributeLoader {
       }
 
       public static boolean isDifferentArtifact(AttrData previous, AttrData current) {
-         return current.branchId != previous.branchId || current.artifactId != previous.artifactId;
+         return current.branchUuid != previous.branchUuid || current.artifactId != previous.artifactId;
       }
 
       public static boolean multipleVersionsExist(AttrData current, AttrData previous) {
-         return current.attrId == previous.attrId && current.branchId == previous.branchId && current.artifactId == previous.artifactId;
+         return current.attrId == previous.attrId && current.branchUuid == previous.branchUuid && current.artifactId == previous.artifactId;
       }
    }
 
    private static Artifact getArtifact(AttrData current, boolean historical, CompositeKeyHashMap<Integer, Long, Artifact> tempCache) {
       Artifact artifact = null;
-      long key2 = historical ? current.stripeId : current.branchId;
+      long key2 = historical ? current.stripeId : current.branchUuid;
       artifact = tempCache.get(current.artifactId, key2);
       if (artifact == null) {
          OseeLog.logf(ArtifactLoader.class, Level.WARNING, "Orphaned attribute id [%d] for artifact id[%d] branch[%d]",
-            current.attrId, current.artifactId, current.branchId);
+            current.attrId, current.artifactId, current.branchUuid);
       }
       return artifact;
    }
@@ -158,7 +158,7 @@ public class AttributeLoader {
             Level.WARNING,
 
             "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
-            current.attrId, current.artifactId, current.branchId, previous.gammaId, current.gammaId, previous.modType,
+            current.attrId, current.artifactId, current.branchUuid, previous.gammaId, current.gammaId, previous.modType,
             current.modType);
       }
    }

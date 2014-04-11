@@ -82,15 +82,15 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
    public Integer call() throws Exception {
       getLogger().info(getParamInfo());
 
-      Set<Long> branchIds = new HashSet<Long>();
+      Set<Long> branchUuids = new HashSet<Long>();
       for (BranchReadable branch : branches) {
-         branchIds.add((long) branch.getLocalId());
+         branchUuids.add((long) branch.getLocalId());
       }
 
       IdJoinQuery branchJoin = JoinUtility.createIdJoinQuery();
       IdJoinQuery typeJoin = JoinUtility.createIdJoinQuery();
       try {
-         Triplet<String, String, Object[]> data = createQueries(branchIds, branchJoin, typeJoin);
+         Triplet<String, String, Object[]> data = createQueries(branchUuids, branchJoin, typeJoin);
          String countQuery = data.getFirst();
          String searchQuery = data.getSecond();
          Object[] params = data.getThird();
@@ -114,7 +114,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
          typeJoin.delete();
          branchJoin.delete();
       }
-      return branchIds.size();
+      return branchUuids.size();
    }
 
    public void storeAndAddQueryId(TagQueueJoinQuery joinQuery) throws Exception {
@@ -158,11 +158,11 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
       return builder.toString();
    }
 
-   private Triplet<String, String, Object[]> createQueries(Collection<Long> branchIds, IdJoinQuery branchJoin, IdJoinQuery typeJoin) {
+   private Triplet<String, String, Object[]> createQueries(Collection<Long> branchUuids, IdJoinQuery branchJoin, IdJoinQuery typeJoin) {
       Object[] params;
       String countQuery;
       String searchQuery;
-      if (branchIds.isEmpty()) {
+      if (branchUuids.isEmpty()) {
          params = new Object[] {typeJoin.getQueryId()};
          if (tagOnlyMissingGammas) {
             countQuery = COUNT_MISSING;
@@ -172,7 +172,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
             searchQuery = FIND_ALL_TAGGABLE_ATTRIBUTES;
          }
       } else {
-         for (Long id : branchIds) {
+         for (Long id : branchUuids) {
             branchJoin.add(id);
          }
          params = new Object[] {branchJoin.getQueryId(), typeJoin.getQueryId()};

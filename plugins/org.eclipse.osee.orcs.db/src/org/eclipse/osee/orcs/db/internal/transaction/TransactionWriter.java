@@ -124,10 +124,10 @@ public class TransactionWriter {
          }
          sqlBuilder.updateAfterBinaryStorePersist();
 
-         long branchId = tx.getBranch().getUuid();
+         long branchUuid = tx.getBranch().getUuid();
          List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
          for (Entry<SqlOrderEnum, ? extends AbstractJoinQuery> entry : sqlBuilder.getTxNotCurrents()) {
-            fetchTxNotCurrent(connection, branchId, txNotCurrentData, entry.getKey().getTxsNotCurrentQuery(),
+            fetchTxNotCurrent(connection, branchUuid, txNotCurrentData, entry.getKey().getTxsNotCurrentQuery(),
                entry.getValue());
          }
 
@@ -145,14 +145,14 @@ public class TransactionWriter {
       }
    }
 
-   private void fetchTxNotCurrent(OseeConnection connection, long branchId, List<Object[]> results, String query, AbstractJoinQuery join) throws OseeCoreException {
+   private void fetchTxNotCurrent(OseeConnection connection, long branchUuid, List<Object[]> results, String query, AbstractJoinQuery join) throws OseeCoreException {
       try {
          join.store();
          IOseeStatement chStmt = dbService.getStatement(connection);
          try {
-            chStmt.runPreparedQuery(query, join.getQueryId(), branchId);
+            chStmt.runPreparedQuery(query, join.getQueryId(), branchUuid);
             while (chStmt.next()) {
-               results.add(new Object[] {branchId, chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
+               results.add(new Object[] {branchUuid, chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
             }
          } finally {
             chStmt.close();

@@ -16,17 +16,17 @@ import org.eclipse.osee.framework.core.enums.BranchState;
  * @author Megumi Telles
  */
 public class ChangeBranchStateRequest {
-   private final long branchId;
+   private final long branchUuid;
    private final BranchState state;
 
-   public ChangeBranchStateRequest(long branchId, BranchState state) {
+   public ChangeBranchStateRequest(long branchUuid, BranchState state) {
       super();
-      this.branchId = branchId;
+      this.branchUuid = branchUuid;
       this.state = state;
    }
 
    public long getBranchId() {
-      return branchId;
+      return branchUuid;
    }
 
    public BranchState getState() {

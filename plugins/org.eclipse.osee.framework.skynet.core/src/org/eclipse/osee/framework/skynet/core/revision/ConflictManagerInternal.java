@@ -302,11 +302,11 @@ public class ConflictManagerInternal {
          endTransactionNumber) == 0;
    }
 
-   private static void cleanUpConflictDB(Collection<Conflict> conflicts, long branchId, IProgressMonitor monitor) throws OseeCoreException {
+   private static void cleanUpConflictDB(Collection<Conflict> conflicts, long branchUuid, IProgressMonitor monitor) throws OseeCoreException {
       monitor.subTask("Cleaning up old conflict data");
       int queryId = ArtifactLoader.getNewQueryId();
       try {
-         if (conflicts != null && conflicts.size() != 0 && branchId != 0) {
+         if (conflicts != null && conflicts.size() != 0 && branchUuid != 0) {
             Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
             List<Object[]> insertParameters = new LinkedList<Object[]>();
@@ -315,11 +315,11 @@ public class ConflictManagerInternal {
                   queryId,
                   insertTime,
                   conflict.getObjectId(),
-                  branchId,
+                  branchUuid,
                   conflict.getConflictType().getValue()});
             }
             ArtifactLoader.insertIntoArtifactJoin(insertParameters);
-            ConnectionHandler.runPreparedUpdate(CONFLICT_CLEANUP, branchId, queryId);
+            ConnectionHandler.runPreparedUpdate(CONFLICT_CLEANUP, branchUuid, queryId);
          }
       } finally {
          ArtifactLoader.clearQuery(queryId);

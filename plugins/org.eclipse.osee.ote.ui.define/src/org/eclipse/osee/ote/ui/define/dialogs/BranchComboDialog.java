@@ -108,9 +108,9 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
    protected void restoreWidgetValues() {
       IDialogSettings settings = OteUiDefinePlugin.getInstance().getDialogSettings();
       if (settings != null) {
-         String[] branchIds = settings.getArray(TestRunStorageKey.BRANCH_IDS);
+         String[] branchUuids = settings.getArray(TestRunStorageKey.BRANCH_IDS);
          String lastSelected = settings.get(TestRunStorageKey.SELECTED_BRANCH_ID);
-         branchSelectComposite.restoreWidgetValues(branchIds, lastSelected);
+         branchSelectComposite.restoreWidgetValues(branchUuids, lastSelected);
       }
    }
 
@@ -118,9 +118,9 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
       IDialogSettings settings = OteUiDefinePlugin.getInstance().getDialogSettings();
       if (settings != null) {
          // update source names history
-         String[] branchIds = settings.getArray(TestRunStorageKey.BRANCH_IDS);
-         if (branchIds == null) {
-            branchIds = new String[0];
+         String[] branchUuids = settings.getArray(TestRunStorageKey.BRANCH_IDS);
+         if (branchUuids == null) {
+            branchUuids = new String[0];
          }
 
          try {
@@ -128,16 +128,16 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
             if (branch != null && branch.hasParentBranch()) {
                String lastBranchSelected = Long.toString(branch.getUuid());
 
-               List<String> history = new ArrayList<String>(Arrays.asList(branchIds));
+               List<String> history = new ArrayList<String>(Arrays.asList(branchUuids));
                history.remove(lastBranchSelected);
                history.add(0, lastBranchSelected);
                if (history.size() > COMBO_HISTORY_LENGTH) {
                   history.remove(COMBO_HISTORY_LENGTH);
                }
-               branchIds = new String[history.size()];
-               history.toArray(branchIds);
+               branchUuids = new String[history.size()];
+               history.toArray(branchUuids);
 
-               settings.put(TestRunStorageKey.BRANCH_IDS, branchIds);
+               settings.put(TestRunStorageKey.BRANCH_IDS, branchUuids);
                settings.put(TestRunStorageKey.SELECTED_BRANCH_ID, lastBranchSelected);
                try {
                   settings.save(this.getClass().getName());

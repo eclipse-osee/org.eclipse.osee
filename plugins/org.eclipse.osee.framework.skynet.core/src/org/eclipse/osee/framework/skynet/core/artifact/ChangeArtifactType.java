@@ -142,8 +142,8 @@ public class ChangeArtifactType {
 
          while (chStmt.next()) {
             int gammaId = chStmt.getInt("gamma_id");
-            long branchId = chStmt.getLong("branch_id");
-            IOseeBranch branch = BranchManager.getBranch(branchId);
+            long branchUuid = chStmt.getLong("branch_id");
+            IOseeBranch branch = BranchManager.getBranch(branchUuid);
             int artId = gammaToArtId.get(gammaId);
             Artifact artifact = ArtifactQuery.checkArtifactFromId(artId, branch, DeletionFlag.EXCLUDE_DELETED);
             if (artifact != null) {

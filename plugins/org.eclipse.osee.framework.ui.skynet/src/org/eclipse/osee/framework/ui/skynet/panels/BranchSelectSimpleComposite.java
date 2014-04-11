@@ -166,7 +166,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
       }
    }
 
-   public void restoreWidgetValues(String[] branchIds, String lastSelected) {
+   public void restoreWidgetValues(String[] branchUuids, String lastSelected) {
       Branch currentBranch = getCurrentBranch();
 
       // Add stored directories into selector
@@ -174,27 +174,27 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
          lastSelected = Long.toString(currentBranch.getUuid());
       }
 
-      if (branchIds == null) {
+      if (branchUuids == null) {
          if (Strings.isValid(lastSelected)) {
-            branchIds = new String[] {lastSelected};
+            branchUuids = new String[] {lastSelected};
          } else {
-            branchIds = new String[0];
+            branchUuids = new String[0];
          }
       }
 
-      List<String> branchIdsToUse = new ArrayList<String>();
-      for (String id : branchIds) {
+      List<String> branchUuidsToUse = new ArrayList<String>();
+      for (String id : branchUuids) {
          try {
             Branch branch = BranchManager.getBranch(Long.parseLong(id));
             if (branch != null) {
-               branchIdsToUse.add(id);
+               branchUuidsToUse.add(id);
             }
          } catch (Exception ex) {
             // Do nothing
          }
       }
 
-      setCombo(branchIdsToUse.toArray(new String[branchIdsToUse.size()]), lastSelected);
+      setCombo(branchUuidsToUse.toArray(new String[branchUuidsToUse.size()]), lastSelected);
    }
 
    private void setCombo(String[] values, String lastSelected) {

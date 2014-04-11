@@ -42,15 +42,15 @@ public class UpdatePreviousTxCurrent {
 // @formatter:on
 
    private final IOseeDatabaseService dbService;
-   private final long branchId;
+   private final long branchUuid;
    private final OseeConnection connection;
    private IdJoinQuery artifactJoin;
    private IdJoinQuery attributeJoin;
    private IdJoinQuery relationJoin;
 
-   public UpdatePreviousTxCurrent(IOseeDatabaseService dbService, OseeConnection connection, long branchId) {
+   public UpdatePreviousTxCurrent(IOseeDatabaseService dbService, OseeConnection connection, long branchUuid) {
       this.dbService = dbService;
-      this.branchId = branchId;
+      this.branchUuid = branchUuid;
       this.connection = connection;
    }
 
@@ -95,9 +95,9 @@ public class UpdatePreviousTxCurrent {
       List<Object[]> updateData = new ArrayList<Object[]>();
       IOseeStatement chStmt = dbService.getStatement(connection);
       try {
-         chStmt.runPreparedQuery(MAX_FETCH, query, queryId, branchId, TxChange.NOT_CURRENT.getValue());
+         chStmt.runPreparedQuery(MAX_FETCH, query, queryId, branchUuid, TxChange.NOT_CURRENT.getValue());
          while (chStmt.next()) {
-            updateData.add(new Object[] {branchId, chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id")});
+            updateData.add(new Object[] {branchUuid, chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id")});
          }
       } finally {
          chStmt.close();
@@ -110,10 +110,10 @@ public class UpdatePreviousTxCurrent {
       List<Object[]> updateData = new ArrayList<Object[]>();
       IOseeStatement chStmt = dbService.getStatement(connection);
       try {
-         chStmt.runPreparedQuery(MAX_FETCH, SELECT_TXS_AND_GAMMAS_FROM_TXS, branchId, transaction_id, branchId,
+         chStmt.runPreparedQuery(MAX_FETCH, SELECT_TXS_AND_GAMMAS_FROM_TXS, branchUuid, transaction_id, branchUuid,
             transaction_id, TxChange.NOT_CURRENT.getValue());
          while (chStmt.next()) {
-            updateData.add(new Object[] {branchId, chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id")});
+            updateData.add(new Object[] {branchUuid, chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id")});
          }
       } finally {
          chStmt.close();

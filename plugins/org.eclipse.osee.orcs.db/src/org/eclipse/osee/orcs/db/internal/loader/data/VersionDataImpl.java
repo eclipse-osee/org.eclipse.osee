@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
  */
 public class VersionDataImpl implements VersionData {
 
-   private Long branchId = RelationalConstants.BRANCH_SENTINEL;
+   private Long branchUuid = RelationalConstants.BRANCH_SENTINEL;
    private int txId = RelationalConstants.TRANSACTION_SENTINEL;
    private long gamma = RelationalConstants.GAMMA_SENTINEL;
    private boolean historical = RelationalConstants.IS_HISTORICAL_DEFAULT;
@@ -60,12 +60,12 @@ public class VersionDataImpl implements VersionData {
 
    @Override
    public long getBranchId() {
-      return branchId;
+      return branchUuid;
    }
 
    @Override
-   public void setBranchId(long branchId) {
-      this.branchId = branchId;
+   public void setBranchId(long branchUuid) {
+      this.branchUuid = branchUuid;
    }
 
    @Override
@@ -87,7 +87,7 @@ public class VersionDataImpl implements VersionData {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + branchId.hashCode();
+      result = prime * result + branchUuid.hashCode();
       result = prime * result + (int) (gamma ^ (gamma >>> 32));
       result = prime * result + (historical ? 1231 : 1237);
       result = prime * result + stripeId;
@@ -107,7 +107,7 @@ public class VersionDataImpl implements VersionData {
          return false;
       }
       VersionDataImpl other = (VersionDataImpl) obj;
-      if (branchId != other.branchId) {
+      if (branchUuid != other.branchUuid) {
          return false;
       }
       if (gamma != other.gamma) {
@@ -127,7 +127,7 @@ public class VersionDataImpl implements VersionData {
 
    @Override
    public String toString() {
-      return "Version [branchId=" + branchId + ", txId=" + txId + ", gamma=" + gamma + ", historical=" + historical + ", stripeId=" + stripeId + "]";
+      return "Version [branchUuid=" + branchUuid + ", txId=" + txId + ", gamma=" + gamma + ", historical=" + historical + ", stripeId=" + stripeId + "]";
    }
 
    @Override

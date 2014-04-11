@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 public final class BranchRow {
-   private final long branchId;
+   private final long branchUuid;
 
    private final String branchName;
    private final BranchType branchType;
@@ -35,8 +35,8 @@ public final class BranchRow {
       this.storageState = storageState;
    }
 
-   public BranchRow(long branchId, String branchName, BranchType branchType, BranchState branchState, BranchArchivedState branchArchived, StorageState storageState, boolean inheritAccessControl) {
-      this.branchId = branchId;
+   public BranchRow(long branchUuid, String branchName, BranchType branchType, BranchState branchState, BranchArchivedState branchArchived, StorageState storageState, boolean inheritAccessControl) {
+      this.branchUuid = branchUuid;
       this.branchName = branchName;
       this.branchType = branchType;
       this.branchState = branchState;
@@ -46,7 +46,7 @@ public final class BranchRow {
    }
 
    public long getBranchId() {
-      return branchId;
+      return branchUuid;
    }
 
    public String getBranchName() {
@@ -86,18 +86,19 @@ public final class BranchRow {
 
    public static BranchRow fromArray(String[] data) {
       BranchArchivedState archived = BranchArchivedState.valueOf(data[0]);
-      long branchId = 0;
+      long branchUuid = 0;
       if (GUID.isValid(data[1])) {
-         branchId = getBranchIdLegacy(data[1]);
+         branchUuid = getBranchIdLegacy(data[1]);
       } else {
-         branchId = Long.valueOf(data[1]);
+         branchUuid = Long.valueOf(data[1]);
       }
       String branchName = data[2];
       BranchState branchState = BranchState.valueOf(data[3]);
       BranchType branchType = BranchType.valueOf(data[4]);
       StorageState storageState = StorageState.valueOf(data[5]);
       boolean inheritAccessControl = Boolean.parseBoolean(data[6]);
-      return new BranchRow(branchId, branchName, branchType, branchState, archived, storageState, inheritAccessControl);
+      return new BranchRow(branchUuid, branchName, branchType, branchState, archived, storageState,
+         inheritAccessControl);
    }
    // Temporary cache till all code uses branch uuid. Remove after 0.17.0
    private static final String SELECT_BRANCH_ID_BY_GUID = "select branch_id from osee_branch where branch_guid = ?";

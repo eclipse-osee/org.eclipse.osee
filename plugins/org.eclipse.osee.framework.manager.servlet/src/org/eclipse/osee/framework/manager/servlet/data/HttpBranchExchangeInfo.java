@@ -58,7 +58,7 @@ public class HttpBranchExchangeInfo {
             this.deleteExportFile = Boolean.valueOf(value);
          } else if (name.equalsIgnoreCase("function")) {
             isFunctionValid(value);
-         } else if (name.equalsIgnoreCase("branchIds")) {
+         } else if (name.equalsIgnoreCase("branchUuids")) {
             for (String entry : value.split(",")) {
                selectedBranchIds.add(new Integer(entry));
             }

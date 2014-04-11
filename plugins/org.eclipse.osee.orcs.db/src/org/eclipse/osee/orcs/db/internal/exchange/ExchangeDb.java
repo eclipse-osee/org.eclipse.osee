@@ -72,11 +72,11 @@ public final class ExchangeDb {
       artIdAliases.addAll(Arrays.asList(ARTIFACT_ID_NEG_ONE_ALIASES));
       ARTIFACT_ID_ALIASES = artIdAliases.toArray(new String[artIdAliases.size()]);
 
-      Set<String> branchIdAliases = new HashSet<String>();
-      branchIdAliases.add(BRANCH_ID);
-      branchIdAliases.addAll(Arrays.asList(BRANCH_ID_REG_ALIASES));
-      branchIdAliases.addAll(Arrays.asList(BRANCH_ID_NEG_ONE_ALIASES));
-      BRANCH_ID_ALIASES = branchIdAliases.toArray(new String[branchIdAliases.size()]);
+      Set<String> branchUuidAliases = new HashSet<String>();
+      branchUuidAliases.add(BRANCH_ID);
+      branchUuidAliases.addAll(Arrays.asList(BRANCH_ID_REG_ALIASES));
+      branchUuidAliases.addAll(Arrays.asList(BRANCH_ID_NEG_ONE_ALIASES));
+      BRANCH_ID_ALIASES = branchUuidAliases.toArray(new String[branchUuidAliases.size()]);
 
       Set<String> gammaIdAliases = new HashSet<String>();
       gammaIdAliases.add(GAMMA_ID);

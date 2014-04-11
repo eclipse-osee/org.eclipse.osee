@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.enums.TxChange;
  * @author Ryan D. Brooks
  */
 public final class Address implements Comparable<Address> {
-   private final long branchId;
+   private final long branchUuid;
    private final int itemId;
    private final int transactionId;
    private final long gammaId;
@@ -27,9 +27,9 @@ public final class Address implements Comparable<Address> {
    private TxChange correctedTxCurrent;
    private boolean purge;
 
-   public Address(boolean isBaseline, long branchId, int itemId, int transactionId, long gammaId, ModificationType modType, TxChange txCurrent) {
+   public Address(boolean isBaseline, long branchUuid, int itemId, int transactionId, long gammaId, ModificationType modType, TxChange txCurrent) {
       super();
-      this.branchId = branchId;
+      this.branchUuid = branchUuid;
       this.itemId = itemId;
       this.transactionId = transactionId;
       this.gammaId = gammaId;
@@ -43,7 +43,7 @@ public final class Address implements Comparable<Address> {
    }
 
    public boolean isSimilar(Address other) {
-      return other != null && other.itemId == itemId && other.branchId == branchId;
+      return other != null && other.itemId == itemId && other.branchUuid == branchUuid;
    }
 
    public boolean isSameTransaction(Address other) {
@@ -92,7 +92,7 @@ public final class Address implements Comparable<Address> {
    }
 
    public long getBranchId() {
-      return branchId;
+      return branchUuid;
    }
 
    public int getItemId() {
@@ -125,7 +125,7 @@ public final class Address implements Comparable<Address> {
 
    @Override
    public String toString() {
-      return "Address [branchId=" + branchId + ", gammaId=" + gammaId + ", itemId=" + itemId + ", modType=" + modType + ", transactionId=" + transactionId + ", txCurrent=" + txCurrent + "]";
+      return "Address [branchUuid=" + branchUuid + ", gammaId=" + gammaId + ", itemId=" + itemId + ", modType=" + modType + ", transactionId=" + transactionId + ", txCurrent=" + txCurrent + "]";
    }
 
    @Override

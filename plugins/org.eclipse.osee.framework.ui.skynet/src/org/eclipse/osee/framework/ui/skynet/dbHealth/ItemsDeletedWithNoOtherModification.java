@@ -37,13 +37,13 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       public int attributeId;
       public int gammaId;
       public int transactionId;
-      public long branchId;
+      public long branchUuid;
 
-      public LocalValues(int artId, int attributeId, long branchId, int gammaId, int relLinkId, int transactionId) {
+      public LocalValues(int artId, int attributeId, long branchUuid, int gammaId, int relLinkId, int transactionId) {
          super();
          this.artId = artId;
          this.attributeId = attributeId;
-         this.branchId = branchId;
+         this.branchUuid = branchUuid;
          this.gammaId = gammaId;
          this.relLinkId = relLinkId;
          this.transactionId = transactionId;
@@ -161,7 +161,7 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
          sbFull.append(AHTML.addRowMultiColumnTable(new String[] {
             String.valueOf(value.gammaId),
             String.valueOf(value.transactionId),
-            String.valueOf(value.branchId),
+            String.valueOf(value.branchUuid),
             String.valueOf(value.artId),
             String.valueOf(value.attributeId),
             String.valueOf(value.relLinkId)}));

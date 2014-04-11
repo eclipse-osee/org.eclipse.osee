@@ -88,8 +88,8 @@ public class TransactionCriteriaFactory {
       return new CriteriaCommitIds(ids);
    }
 
-   public Criteria newGetHead(long branchId) {
-      return new CriteriaTxGetHead(branchId);
+   public Criteria newGetHead(long branchUuid) {
+      return new CriteriaTxGetHead(branchUuid);
    }
 
 }

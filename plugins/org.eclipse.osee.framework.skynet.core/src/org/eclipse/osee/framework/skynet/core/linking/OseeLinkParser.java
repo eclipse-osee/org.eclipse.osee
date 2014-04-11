@@ -45,18 +45,18 @@ public final class OseeLinkParser {
    }
 
    public int getId() throws OseeCoreException {
-      int branchId = -1;
+      int branchUuid = -1;
       if (parameterMap != null) {
-         String branchIdStr = parameterMap.get("branchId");
-         if (Strings.isValid(branchIdStr)) {
+         String branchUuidStr = parameterMap.get("branchUuid");
+         if (Strings.isValid(branchUuidStr)) {
             try {
-               branchId = Integer.parseInt(branchIdStr);
+               branchUuid = Integer.parseInt(branchUuidStr);
             } catch (Exception ex) {
                OseeExceptions.wrapAndThrow(ex);
             }
          }
       }
-      return branchId;
+      return branchUuid;
    }
 
    public String getGuid() throws OseeCoreException {

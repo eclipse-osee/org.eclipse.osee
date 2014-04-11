@@ -36,9 +36,9 @@ public class V0_9_2TxDetailsHandler extends AbstractSaxHandler {
          int txType = Integer.parseInt(attributes.getValue("tx_type"));
          TransactionDetailsType detailsType = TransactionDetailsType.toEnum(txType);
          if (detailsType.isBaseline()) {
-            Long branchId = Long.parseLong(attributes.getValue("branch_id"));
+            Long branchUuid = Long.parseLong(attributes.getValue("branch_id"));
             Integer baseTransaction = Integer.parseInt(attributes.getValue("transaction_id"));
-            branchToBaseTx.put(branchId, baseTransaction);
+            branchToBaseTx.put(branchUuid, baseTransaction);
          }
       }
    }

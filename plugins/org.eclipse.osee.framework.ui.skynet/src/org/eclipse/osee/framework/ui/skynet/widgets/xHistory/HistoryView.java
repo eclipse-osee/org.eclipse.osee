@@ -95,7 +95,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView";
    private static final String INPUT = "input";
    private static final String ART_GUID = "artifactGuid";
-   private static final String BRANCH_ID = "branchId";
+   private static final String BRANCH_ID = "branchUuid";
 
    private XHistoryWidget xHistoryWidget;
    private Artifact artifact;
@@ -331,10 +331,10 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
             if (memento != null) {
                if (SkynetViews.isSourceValid(memento)) {
                   String guid = memento.getString(ART_GUID);
-                  String branchIdStr = memento.getString(BRANCH_ID);
-                  if (Strings.isValid(branchIdStr)) {
-                     Long branchId = Long.valueOf(branchIdStr);
-                     Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranchByUuid(branchId));
+                  String branchUuidStr = memento.getString(BRANCH_ID);
+                  if (Strings.isValid(branchUuidStr)) {
+                     Long branchUuid = Long.valueOf(branchUuidStr);
+                     Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranchByUuid(branchUuid));
                      openViewUpon(artifact, false);
                   }
                } else {

@@ -141,12 +141,12 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       String query = String.format(FIND_NEW_TX_CURRENTS, tableName, itemId);
 
       for (Entry<Integer, IdJoinQuery> entry : affected.entrySet()) {
-         Integer branchId = entry.getKey();
+         Integer branchUuid = entry.getKey();
          IdJoinQuery joinQuery = entry.getValue();
          try {
             IOseeStatement statement = getDatabaseService().getStatement(connection);
             try {
-               statement.runPreparedQuery(MAX_FETCH, query, joinQuery.getQueryId(), branchId);
+               statement.runPreparedQuery(MAX_FETCH, query, joinQuery.getQueryId(), branchUuid);
                int previousItem = -1;
                while (statement.next()) {
                   int currentItem = statement.getInt("item_id");
@@ -156,7 +156,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
                      TxChange txCurrent = TxChange.getCurrent(modType);
                      updateData.add(new Object[] {
                         txCurrent.getValue(),
-                        branchId,
+                        branchUuid,
                         statement.getInt("transaction_id"),
                         statement.getLong("gamma_id")});
                      previousItem = currentItem;
@@ -177,11 +177,11 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
 
       try {
          for (Object[] bindData : bindDataList) {
-            Integer branchId = (Integer) bindData[0];
+            Integer branchUuid = (Integer) bindData[0];
             String query = String.format(SELECT_AFFECTED_ITEMS, itemId, itemTable);
             statement.runPreparedQuery(MAX_FETCH, query, bindData);
             IdJoinQuery joinId = JoinUtility.createIdJoinQuery();
-            items.put(branchId, joinId);
+            items.put(branchUuid, joinId);
 
             while (statement.next()) {
                Integer id = statement.getInt("item_id");

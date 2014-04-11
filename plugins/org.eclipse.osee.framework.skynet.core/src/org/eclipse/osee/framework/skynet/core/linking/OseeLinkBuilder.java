@@ -113,11 +113,11 @@ public class OseeLinkBuilder {
    public String getUnknownArtifactLink(String guid, Branch branch) {
       String processType = "unknown";
       return getArtifactLinkWithMessage(processType, guid, branch,
-         String.format("Invalid Link: artifact with guid:[%s] on branchId:[%s] does not exist", guid, branch.getUuid()));
+         String.format("Invalid Link: artifact with guid:[%s] on branchUuid:[%s] does not exist", guid, branch.getUuid()));
    }
 
    private String getArtifactLinkWithMessage(String processType, String guid, Branch branch, String message) {
-      String internalLink = String.format("http://none/%s?guid=%s&amp;branchId=%s", processType, guid, branch.getUuid());
+      String internalLink = String.format("http://none/%s?guid=%s&amp;branchUuid=%s", processType, guid, branch.getUuid());
       return String.format(WORDML_LINK_FORMAT, internalLink, message);
    }
 

@@ -66,7 +66,7 @@ import org.osgi.service.prefs.Preferences;
  */
 public class BranchView extends GenericViewPart implements IBranchEventListener, ITransactionEventListener, ITransactionRecordSelectionProvider, IPartListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView";
-   public static final String BRANCH_ID = "branchId";
+   public static final String BRANCH_ID = "branchUuid";
 
    private final Clipboard clipboard = new Clipboard(null);
 

@@ -32,10 +32,10 @@ public class OseeLinkParserTest {
    public void testNewSchoolLink() throws Exception {
       OseeLinkParser parser = new OseeLinkParser();
       String guid = GUID.create();
-      int branchId = 12;
-      parser.parse(String.format("http://127.0.0.1:8081/Define?guid=%s&branchId=%s", guid, branchId));
+      int branchUuid = 12;
+      parser.parse(String.format("http://127.0.0.1:8081/Define?guid=%s&branchUuid=%s", guid, branchUuid));
 
       Assert.assertEquals(guid, parser.getGuid());
-      Assert.assertEquals(branchId, parser.getId());
+      Assert.assertEquals(branchUuid, parser.getId());
    }
 }

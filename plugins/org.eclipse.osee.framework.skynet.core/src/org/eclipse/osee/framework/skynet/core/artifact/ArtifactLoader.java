@@ -73,9 +73,9 @@ public final class ArtifactLoader {
 
    public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionRecord transactionId) throws OseeCoreException {
       List<Pair<Integer, Long>> toLoad = new LinkedList<Pair<Integer, Long>>();
-      Long branchId = branch.getUuid();
+      Long branchUuid = branch.getUuid();
       for (Integer artId : new HashSet<Integer>(artIds)) {
-         toLoad.add(new Pair<Integer, Long>(artId, branchId));
+         toLoad.add(new Pair<Integer, Long>(artId, branchUuid));
       }
       List<Artifact> artifacts = loadSelectedArtifacts(toLoad, loadLevel, reload, allowDeleted, transactionId);
       return artifacts;
@@ -105,17 +105,17 @@ public final class ArtifactLoader {
          while (iterator.hasNext()) {
             Pair<Integer, Long> next = iterator.next();
             Integer artId = next.getFirst();
-            Long branchId = next.getSecond();
+            Long branchUuid = next.getSecond();
 
             Artifact active = null;
 
             if (reload == LoadType.INCLUDE_CACHE) {
                synchronized (ArtifactCache.class) {
-                  active = ArtifactCache.getActive(artId, branchId);
+                  active = ArtifactCache.getActive(artId, branchUuid);
                }
             }
 
-            boolean doNotLoad = determineIfIShouldLoad(artifacts, allowDeleted, locks, artId, branchId, active);
+            boolean doNotLoad = determineIfIShouldLoad(artifacts, allowDeleted, locks, artId, branchUuid, active);
 
             if (doNotLoad) {
                iterator.remove();
@@ -130,9 +130,9 @@ public final class ArtifactLoader {
             if (artifacts.size() != numRequested) {
                for (Pair<Integer, Long> loadPair : toLoad) {
                   Integer artId = loadPair.getFirst();
-                  Long branchId = loadPair.getSecond();
-                  removeAndUnlock(artId, branchId);
-                  locks.remove(artId, branchId);
+                  Long branchUuid = loadPair.getSecond();
+                  removeAndUnlock(artId, branchUuid);
+                  locks.remove(artId, branchUuid);
                }
             }
          }
@@ -140,30 +140,30 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void removeAndUnlock(Integer artId, Long branchId) {
+   private static void removeAndUnlock(Integer artId, Long branchUuid) {
       ReentrantLock lock = null;
       synchronized (loadingActiveMap) {
-         lock = loadingActiveMap.remove(artId, branchId);
+         lock = loadingActiveMap.remove(artId, branchUuid);
       }
       if (lock != null && lock.isLocked()) {
          lock.unlock();
       }
    }
 
-   private static boolean determineIfIShouldLoad(Set<Artifact> artifacts, DeletionFlag allowDeleted, CompositeKeyHashMap<Integer, Long, ReentrantLock> locks, Integer artId, Long branchId, Artifact active) {
+   private static boolean determineIfIShouldLoad(Set<Artifact> artifacts, DeletionFlag allowDeleted, CompositeKeyHashMap<Integer, Long, ReentrantLock> locks, Integer artId, Long branchUuid, Artifact active) {
       boolean doNotLoad = false;
       //not in the cache
       if (active == null) {
          synchronized (loadingActiveMap) {
-            ReentrantLock lock = loadingActiveMap.get(artId, branchId);
+            ReentrantLock lock = loadingActiveMap.get(artId, branchUuid);
             // this thread should load the artifact
             if (lock == null) {
                lock = new ReentrantLock();
                lock.lock();
-               loadingActiveMap.put(artId, branchId, lock);
+               loadingActiveMap.put(artId, branchUuid, lock);
             } else {
                // another thread is loading the artifact, do not load it
-               locks.put(artId, branchId, lock);
+               locks.put(artId, branchUuid, lock);
                doNotLoad = true;
             }
          }
@@ -182,10 +182,10 @@ public final class ArtifactLoader {
       while (iterator.hasNext()) {
          Entry<Pair<Integer, Long>, ReentrantLock> entry = iterator.next();
          Integer artId = entry.getKey().getFirst();
-         Long branchId = entry.getKey().getSecond();
+         Long branchUuid = entry.getKey().getSecond();
          entry.getValue().lock();
          entry.getValue().unlock();
-         Artifact active = ArtifactCache.getActive(artId, branchId);
+         Artifact active = ArtifactCache.getActive(artId, branchUuid);
          if (active != null) {
             artifacts.add(active);
          }
@@ -215,9 +215,9 @@ public final class ArtifactLoader {
             long previousBranchId = -1;
             while (chStmt.next()) {
                int artId = chStmt.getInt("art_id");
-               long branchId = chStmt.getLong("branch_id");
+               long branchUuid = chStmt.getLong("branch_id");
                // assumption: sql is returning rows ordered by branch_id, art_id, transaction_id in descending order
-               if (previousArtId != artId || previousBranchId != branchId) {
+               if (previousArtId != artId || previousBranchId != branchUuid) {
                   // assumption: sql is returning unwanted deleted artifacts only in the historical case
                   if (!historical || allowDeleted == DeletionFlag.INCLUDE_DELETED || ModificationType.getMod(chStmt.getInt("mod_type")) != ModificationType.DELETED) {
                      Artifact shallowArtifact = retrieveShallowArtifact(chStmt, reload, historical);
@@ -225,7 +225,7 @@ public final class ArtifactLoader {
                   }
                }
                previousArtId = artId;
-               previousBranchId = branchId;
+               previousBranchId = branchUuid;
             }
          } catch (OseeDataStoreException ex) {
             OseeLog.logf(Activator.class, Level.SEVERE, ex, "%s - %s", sqlKey, sql == null ? "SQL unknown" : sql);
@@ -333,7 +333,7 @@ public final class ArtifactLoader {
    }
 
    /**
-    * Determines the artIds and branchIds of artifacts to load based on sql and queryParameters
+    * Determines the artIds and branchUuids of artifacts to load based on sql and queryParameters
     */
    private static List<Pair<Integer, Long>> selectArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
@@ -345,8 +345,8 @@ public final class ArtifactLoader {
          chStmt.runPreparedQuery(artifactCountEstimate, sql, queryParameters);
          while (chStmt.next()) {
             int artId = chStmt.getInt("art_id");
-            long branchId = chStmt.getLong("branch_id");
-            toLoad.add(new Pair<Integer, Long>(artId, branchId));
+            long branchUuid = chStmt.getLong("branch_id");
+            toLoad.add(new Pair<Integer, Long>(artId, branchUuid));
          }
       } finally {
          chStmt.close();

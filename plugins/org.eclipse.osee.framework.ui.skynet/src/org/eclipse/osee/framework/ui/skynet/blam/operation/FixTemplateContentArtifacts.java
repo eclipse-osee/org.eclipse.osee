@@ -80,13 +80,13 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
 	private static final String AND_SPECIFIC_BRANCHES = " AND txs.branch_id = ?";
 	//@formatter:on
 
-   private long branchId;
+   private long branchUuid;
 
    public FixTemplateContentArtifacts() {
       super(null,
          "If branch not selected, this will scan through all NOT archived instances of WordTemplateContent attribute",
          BlamUiSource.FILE);
-      branchId = -1;
+      branchUuid = -1;
    }
 
    @Override
@@ -95,7 +95,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
       try {
          monitor.setTaskName("Performing query");
 
-         boolean allBranches = branchId == -1;
+         boolean allBranches = branchUuid == -1;
 
          StringBuilder query = new StringBuilder();
          query.append(GET_TRANS_DETAILS);
@@ -106,7 +106,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
          params[1] = TransactionDetailsType.NonBaselined.getId();
          params[2] = CoreAttributeTypes.WordTemplateContent.getGuid();
          if (!allBranches) {
-            params[3] = branchId;
+            params[3] = branchUuid;
          }
 
          chStmt.runPreparedQuery(query.toString(), params);
@@ -180,7 +180,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
                Object data = xWidget.getData();
                if (data instanceof IOseeBranch) {
                   Branch branch = (Branch) data;
-                  branchId = branch.getUuid();
+                  branchUuid = branch.getUuid();
                }
             }
          });

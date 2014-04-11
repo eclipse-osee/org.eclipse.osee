@@ -19,7 +19,7 @@ public enum BranchOptionsEnum {
    SHOW_MERGE_BRANCHES("show_merge_branches"),
    SHOW_TRANSACTIONS("show_transactions"),
    SHOW_ARCHIVED_BRANCHES("show_archived_branches"),
-   BRANCH_ID("branchId"),
+   BRANCH_ID("branchUuid"),
    SHOW_WORKING_BRANCHES_ONLY("show_working_branches");
 
    public String origKeyName;

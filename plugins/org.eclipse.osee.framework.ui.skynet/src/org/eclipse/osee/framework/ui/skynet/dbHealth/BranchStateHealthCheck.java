@@ -173,14 +173,14 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
       try {
          chStmt.runPreparedQuery("select * from osee_branch");
          while (chStmt.next()) {
-            long branchId = chStmt.getLong("branch_id");
+            long branchUuid = chStmt.getLong("branch_id");
             int branchType = chStmt.getInt("branch_type");
             int branchState = chStmt.getInt("branch_state");
             boolean isArchived = chStmt.getInt("archived") == 1 ? true : false;
             int numberOfTxs =
                ConnectionHandler.runPreparedQueryFetchInt(0,
-                  "select count(1) from osee_tx_details where branch_id = ?", branchId);
-            data.put(branchId, new BranchData(branchId, chStmt.getString("branch_name"),
+                  "select count(1) from osee_tx_details where branch_id = ?", branchUuid);
+            data.put(branchUuid, new BranchData(branchUuid, chStmt.getString("branch_name"),
                BranchType.valueOf(branchType), BranchState.getBranchState(branchState), isArchived, numberOfTxs));
          }
       } finally {
@@ -190,8 +190,8 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
       try {
          chStmt.runPreparedQuery("select * from osee_merge");
          while (chStmt.next()) {
-            Integer branchId = chStmt.getInt("merge_branch_id");
-            BranchData branchData = data.get(branchId);
+            Integer branchUuid = chStmt.getInt("merge_branch_id");
+            BranchData branchData = data.get(branchUuid);
             branchData.setHasCommitTransactionId(chStmt.getInt("commit_transaction_id") != -1);
          }
       } finally {
@@ -200,7 +200,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
       return data.values();
    }
    private final class BranchData {
-      private final long branchId;
+      private final long branchUuid;
       private final String branchName;
       private final BranchType branchType;
       private final BranchState originalBranchState;
@@ -210,9 +210,9 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
       private String reasonForChange;
       private boolean hasCommitTransactionId;
 
-      private BranchData(long branchId, String branchName, BranchType branchType, BranchState branchState, boolean isArchived, int numberOfTxs) {
+      private BranchData(long branchUuid, String branchName, BranchType branchType, BranchState branchState, boolean isArchived, int numberOfTxs) {
          super();
-         this.branchId = branchId;
+         this.branchUuid = branchUuid;
          this.branchName = branchName;
          this.branchType = branchType;
          this.branchState = branchState;
@@ -224,7 +224,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
       }
 
       public long getId() {
-         return branchId;
+         return branchUuid;
       }
 
       public String getBranchName() {

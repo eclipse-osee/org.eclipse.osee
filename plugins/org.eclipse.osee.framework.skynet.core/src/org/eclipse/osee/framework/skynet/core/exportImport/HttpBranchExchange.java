@@ -30,17 +30,17 @@ public class HttpBranchExchange {
    private static final String BRANCH_EXPORT = "exportBranch";
    private static final String BRANCH_IMPORT = "importBranch";
 
-   public static void exportBranches(String exportFileName, int... branchIds) throws OseeCoreException {
+   public static void exportBranches(String exportFileName, int... branchUuids) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", BRANCH_EXPORT);
       if (Strings.isValid(exportFileName)) {
          parameters.put("filename", exportFileName);
       }
-      addBranchIds(parameters, branchIds);
+      addBranchIds(parameters, branchUuids);
       execute(parameters);
    }
 
-   public static void importBranches(String path, boolean cleanAllBeforeImport, boolean allAsRootBranches, int... branchIds) throws OseeCoreException {
+   public static void importBranches(String path, boolean cleanAllBeforeImport, boolean allAsRootBranches, int... branchUuids) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("sessionId", ClientSessionManager.getSessionId());
       parameters.put("function", BRANCH_IMPORT);
@@ -54,7 +54,7 @@ public class HttpBranchExchange {
       if (cleanAllBeforeImport) {
          parameters.put("clean_before_import", Boolean.toString(cleanAllBeforeImport));
       }
-      addBranchIds(parameters, branchIds);
+      addBranchIds(parameters, branchUuids);
       execute(parameters);
    }
 
@@ -69,16 +69,16 @@ public class HttpBranchExchange {
       }
    }
 
-   private static void addBranchIds(Map<String, String> parameters, int... branchIds) {
-      if (branchIds != null && branchIds.length > 0) {
+   private static void addBranchIds(Map<String, String> parameters, int... branchUuids) {
+      if (branchUuids != null && branchUuids.length > 0) {
          StringBuffer ids = new StringBuffer();
-         for (int index = 0; index < branchIds.length; index++) {
-            ids.append(branchIds[index]);
-            if (index + 1 < branchIds.length) {
+         for (int index = 0; index < branchUuids.length; index++) {
+            ids.append(branchUuids[index]);
+            if (index + 1 < branchUuids.length) {
                ids.append(",");
             }
          }
-         parameters.put("branchIds", ids.toString());
+         parameters.put("branchUuids", ids.toString());
       }
    }
 }

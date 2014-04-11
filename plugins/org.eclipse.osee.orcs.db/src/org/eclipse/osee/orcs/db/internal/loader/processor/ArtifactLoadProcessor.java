@@ -33,10 +33,10 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
       ArtifactData toReturn = null;
 
       int artifactId = chStmt.getInt("art_id");
-      long branchId = chStmt.getLong("branch_id");
+      long branchUuid = chStmt.getLong("branch_id");
 
       CreateConditions onCreate = asConditions(conditions);
-      if (!onCreate.isSame(branchId, artifactId)) {
+      if (!onCreate.isSame(branchUuid, artifactId)) {
 
          ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
          // assumption: SQL is returning unwanted deleted artifacts only in the historical case
@@ -45,7 +45,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
             long gamma = chStmt.getInt("gamma_id");
             int txId = chStmt.getInt("transaction_id");
 
-            VersionData version = factory.createVersion(branchId, txId, gamma, historical);
+            VersionData version = factory.createVersion(branchUuid, txId, gamma, historical);
 
             if (historical) {
                version.setStripeId(chStmt.getInt("stripe_transaction_id"));
@@ -55,7 +55,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
             String guid = chStmt.getString("guid");
             toReturn = factory.createArtifactData(version, artifactId, typeId, modType, guid);
          }
-         onCreate.saveConditions(branchId, artifactId);
+         onCreate.saveConditions(branchUuid, artifactId);
       }
       return toReturn;
    }
@@ -73,12 +73,12 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
       int previousArtId = -1;
       long previousBranchId = -1;
 
-      boolean isSame(long branchId, int artifactId) {
-         return previousBranchId == branchId && previousArtId == artifactId;
+      boolean isSame(long branchUuid, int artifactId) {
+         return previousBranchId == branchUuid && previousArtId == artifactId;
       }
 
-      void saveConditions(long branchId, int artifactId) {
-         previousBranchId = branchId;
+      void saveConditions(long branchUuid, int artifactId) {
+         previousBranchId = branchUuid;
          previousArtId = artifactId;
       }
    }

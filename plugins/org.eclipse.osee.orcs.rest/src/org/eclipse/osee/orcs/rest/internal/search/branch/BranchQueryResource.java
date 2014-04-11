@@ -69,7 +69,7 @@ public class BranchQueryResource {
    /**
     * Perform a branch query based on the input query parameters
     * 
-    * @param branchIds comma separated list of branch uuids
+    * @param branchUuids comma separated list of branch uuids
     * @param branchTypes comma separated list of {@link org.eclipse.osee.framework.core.enums.BranchType BranchType}
     * @param branchStates comma separated list of {@link org.eclipse.osee.framework.core.enums.BranchState BranchState}
     * @param deleted to include deleted branches in the search
@@ -82,14 +82,14 @@ public class BranchQueryResource {
    @Path("")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Response searchBranchesFromQuery(@QueryParam("branchIds") String branchIds, @QueryParam("branchTypes") String branchTypes, @QueryParam("branchStates") String branchStates, @QueryParam("deleted") boolean deleted, @QueryParam("archived") boolean archived, @QueryParam("nameEquals") String nameEquals, @QueryParam("namePattern") String namePattern, @QueryParam("childOf") Long childOf, @QueryParam("ancestorOf") Long ancestorOf, @QueryParam("pretty") boolean pretty) {
+   public Response searchBranchesFromQuery(@QueryParam("branchUuids") String branchUuids, @QueryParam("branchTypes") String branchTypes, @QueryParam("branchStates") String branchStates, @QueryParam("deleted") boolean deleted, @QueryParam("archived") boolean archived, @QueryParam("nameEquals") String nameEquals, @QueryParam("namePattern") String namePattern, @QueryParam("childOf") Long childOf, @QueryParam("ancestorOf") Long ancestorOf, @QueryParam("pretty") boolean pretty) {
       BranchQueryOptions options = new BranchQueryOptions();
-      if (Strings.isValid(branchIds)) {
-         List<Long> branchIdVals = new LinkedList<Long>();
-         for (String branchId : branchIds.split(",")) {
-            branchIdVals.add(Long.parseLong(branchId));
+      if (Strings.isValid(branchUuids)) {
+         List<Long> branchUuidVals = new LinkedList<Long>();
+         for (String branchUuid : branchUuids.split(",")) {
+            branchUuidVals.add(Long.parseLong(branchUuid));
          }
-         options.setBranchIds(branchIdVals);
+         options.setBranchIds(branchUuidVals);
       }
 
       if (Strings.isValid(branchTypes)) {
@@ -182,9 +182,9 @@ public class BranchQueryResource {
          query.andIsOfType(branchTypes.toArray(new BranchType[branchTypes.size()]));
       }
 
-      List<Long> branchIds = options.getBranchIds();
-      if (Conditions.hasValues(branchIds)) {
-         query.andUuids(branchIds);
+      List<Long> branchUuids = options.getBranchIds();
+      if (Conditions.hasValues(branchUuids)) {
+         query.andUuids(branchUuids);
       }
 
       if (options.isIncludeArchived()) {

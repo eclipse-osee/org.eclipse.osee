@@ -30,7 +30,7 @@ public class BranchLoadProcessor extends LoadProcessor<BranchData, BranchObjectF
 
    @Override
    protected BranchData createData(Object conditions, BranchObjectFactory factory, IOseeStatement chStmt, Options options) throws OseeCoreException {
-      long branchId = chStmt.getLong("branch_id");
+      long branchUuid = chStmt.getLong("branch_id");
 
       String branchName = chStmt.getString("branch_name");
       BranchState branchState = BranchState.getBranchState(chStmt.getInt("branch_state"));
@@ -42,7 +42,7 @@ public class BranchLoadProcessor extends LoadProcessor<BranchData, BranchObjectF
       int baseTx = chStmt.getInt("baseline_transaction_id");
       int assocArtId = chStmt.getInt("associated_art_id");
 
-      return factory.createBranchData(branchId, branchType, branchName, parentBranchId, baseTx, sourceTx, archiveState,
+      return factory.createBranchData(branchUuid, branchType, branchName, parentBranchId, baseTx, sourceTx, archiveState,
          branchState, assocArtId);
    }
 }

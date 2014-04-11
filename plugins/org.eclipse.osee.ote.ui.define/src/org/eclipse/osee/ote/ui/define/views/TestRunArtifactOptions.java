@@ -37,9 +37,9 @@ public class TestRunArtifactOptions implements IPropertyStoreBasedControl {
    public void load(IPropertyStore propertyStore) {
       boolean widgetEnabled = propertyStore.getBoolean(TestRunStorageKey.STORAGE_ENABLED);
       String lastBranchSelected = propertyStore.get(TestRunStorageKey.SELECTED_BRANCH_ID);
-      String[] branchIds = propertyStore.getArray(TestRunStorageKey.BRANCH_IDS);
+      String[] branchUuids = propertyStore.getArray(TestRunStorageKey.BRANCH_IDS);
 
-      this.panel.restoreWidgetValues(widgetEnabled, branchIds, lastBranchSelected);
+      this.panel.restoreWidgetValues(widgetEnabled, branchUuids, lastBranchSelected);
    }
 
    @Override
@@ -48,11 +48,11 @@ public class TestRunArtifactOptions implements IPropertyStoreBasedControl {
       propertyStore.put(TestRunStorageKey.BRANCH_IDS, this.panel.getBranchIds());
 
       Branch branch = this.panel.getSelectedBranch();
-      long branchId = -1;
+      long branchUuid = -1;
       if (branch != null) {
-         branchId = branch.getUuid();
+         branchUuid = branch.getUuid();
       }
-      propertyStore.put(TestRunStorageKey.SELECTED_BRANCH_ID, branchId);
+      propertyStore.put(TestRunStorageKey.SELECTED_BRANCH_ID, branchUuid);
    }
 
    @Override

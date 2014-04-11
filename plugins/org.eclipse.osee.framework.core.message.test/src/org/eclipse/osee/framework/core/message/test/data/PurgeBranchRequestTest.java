@@ -29,24 +29,24 @@ import org.junit.runners.Parameterized.Parameters;
 public class PurgeBranchRequestTest {
 
    private final PurgeBranchRequest request;
-   private final int branchId;
+   private final int branchUuid;
 
    public PurgeBranchRequestTest(int expectedBranchId) {
       this.request = new PurgeBranchRequest(expectedBranchId, false);
-      this.branchId = expectedBranchId;
+      this.branchUuid = expectedBranchId;
    }
 
    @Test
    public void testGetBranchId() {
-      Assert.assertEquals(branchId, request.getBranchId());
+      Assert.assertEquals(branchUuid, request.getBranchId());
    }
 
    @Parameters
    public static Collection<Object[]> getData() {
       Collection<Object[]> data = new ArrayList<Object[]>();
       for (int index = 1; index <= 2; index++) {
-         int branchId = index * 7;
-         data.add(new Object[] {branchId});
+         int branchUuid = index * 7;
+         data.add(new Object[] {branchUuid});
       }
       return data;
    }

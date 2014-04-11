@@ -105,8 +105,8 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
       StringBuffer message = new StringBuffer();
 
       List<IOseeBranch> branches = new ArrayList<IOseeBranch>();
-      for (Integer branchIds : exchangeInfo.getSelectedBranchIds()) {
-         branches.add(orcsBranch.getBranchFromId(branchIds));
+      for (Integer branchUuids : exchangeInfo.getSelectedBranchIds()) {
+         branches.add(orcsBranch.getBranchFromId(branchUuids));
       }
 
       Callable<URI> callable =
@@ -153,8 +153,8 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
    private void executeImport(OrcsBranch orcsBranch, HttpBranchExchangeInfo exchangeInfo, HttpServletResponse response) throws Exception {
 
       List<IOseeBranch> branches = new ArrayList<IOseeBranch>();
-      for (Integer branchIds : exchangeInfo.getSelectedBranchIds()) {
-         branches.add(orcsBranch.getBranchFromId(branchIds));
+      for (Integer branchUuids : exchangeInfo.getSelectedBranchIds()) {
+         branches.add(orcsBranch.getBranchFromId(branchUuids));
       }
 
       IResourceLocator locator = resourceManager.getResourceLocator(exchangeInfo.getPath());

@@ -29,8 +29,8 @@ public class V0_9_2BranchTransformer extends SaxTransformer {
    public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws XMLStreamException {
       super.startElementFound(uri, localName, qName, attributes);
       if (localName.equals("entry")) {
-         Long branchId = Long.parseLong(attributes.getValue("branch_id"));
-         Integer baselineTransactionId = branchToBaseTx.get(branchId);
+         Long branchUuid = Long.parseLong(attributes.getValue("branch_id"));
+         Integer baselineTransactionId = branchToBaseTx.get(branchUuid);
          writer.writeAttribute("baseline_transaction_id", String.valueOf(baselineTransactionId));
       }
    }

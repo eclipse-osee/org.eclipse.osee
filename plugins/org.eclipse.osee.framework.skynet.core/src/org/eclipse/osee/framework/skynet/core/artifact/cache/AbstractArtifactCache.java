@@ -113,8 +113,8 @@ public abstract class AbstractArtifactCache {
    }
 
    @SuppressWarnings("unchecked")
-   public void updateReferenceType(int artId, long branchId) {
-      Object obj = idCache.get(artId, branchId);
+   public void updateReferenceType(int artId, long branchUuid) {
+      Object obj = idCache.get(artId, branchUuid);
       if (obj != null) {
          if (obj instanceof Artifact) {
             Artifact artifact = (Artifact) obj;

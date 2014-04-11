@@ -61,12 +61,12 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
       }
    }
 
-   public Artifact getById(Integer artId, Long branchId) {
-      return asArtifact(getObjectById(artId, branchId));
+   public Artifact getById(Integer artId, Long branchUuid) {
+      return asArtifact(getObjectById(artId, branchUuid));
    }
 
-   public Artifact getByGuid(String artGuid, Long branchId) {
-      return asArtifact(getObjectByGuid(artGuid, branchId));
+   public Artifact getByGuid(String artGuid, Long branchUuid) {
+      return asArtifact(getObjectByGuid(artGuid, branchUuid));
    }
 
    public List<Artifact> getByType(IArtifactType artifactType) {

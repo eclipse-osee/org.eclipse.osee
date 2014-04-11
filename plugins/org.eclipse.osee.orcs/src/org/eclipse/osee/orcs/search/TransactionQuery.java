@@ -78,7 +78,7 @@ public interface TransactionQuery {
 
    TransactionQuery andNullCommitId() throws OseeCoreException;
 
-   TransactionQuery andIsHead(long branchId) throws OseeCoreException;
+   TransactionQuery andIsHead(long branchUuid) throws OseeCoreException;
 
    TransactionQuery andIsHead(IOseeBranch branch) throws OseeCoreException;
 

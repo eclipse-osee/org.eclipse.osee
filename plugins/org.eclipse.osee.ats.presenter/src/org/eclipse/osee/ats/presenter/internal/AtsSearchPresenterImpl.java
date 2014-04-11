@@ -135,13 +135,13 @@ public class AtsSearchPresenterImpl<T extends AtsSearchHeaderComponent, K extend
       return builds;
    }
 
-   protected String encode(String url, AtsSearchParameters searchParams, String branchId) {
+   protected String encode(String url, AtsSearchParameters searchParams, String branchUuid) {
       UrlQuery query = new UrlQuery();
       try {
          query.parse(url);
 
-         if (Strings.isValid(branchId)) {
-            query.putInPlace("branch", branchId);
+         if (Strings.isValid(branchUuid)) {
+            query.putInPlace("branch", branchUuid);
          }
 
          query.putInPlace("program", searchParams.getProgram().getGuid());

@@ -51,9 +51,9 @@ public class RelationCache {
       return key.setKey(artifact);
    }
 
-   private ArtifactKey getKey(int artId, IOseeBranch branchId) {
+   private ArtifactKey getKey(int artId, IOseeBranch branchUuid) {
       ArtifactKey key = THREAD_SHARED_KEY.get();
-      return key.setKey(artId, branchId);
+      return key.setKey(artId, branchUuid);
    }
 
    public void deCache(IArtifact artifact) {
@@ -116,13 +116,13 @@ public class RelationCache {
       return linksFound;
    }
 
-   private void findRelations(Collection<RelationLink> linksFound, int artId, IOseeBranch branchId, IRelationType relationType, RelationMatcher matcher) {
-      List<RelationLink> sourceLink = relationsByType.get(getKey(artId, branchId), relationType);
+   private void findRelations(Collection<RelationLink> linksFound, int artId, IOseeBranch branchUuid, IRelationType relationType, RelationMatcher matcher) {
+      List<RelationLink> sourceLink = relationsByType.get(getKey(artId, branchUuid), relationType);
       RelationFilterUtil.filter(sourceLink, linksFound, matcher);
    }
 
-   private void findRelations(Collection<RelationLink> linksFound, int artId, IOseeBranch branchId, RelationMatcher matcher) {
-      ArtifactKey artifactKey = getKey(artId, branchId);
+   private void findRelations(Collection<RelationLink> linksFound, int artId, IOseeBranch branchUuid, RelationMatcher matcher) {
+      ArtifactKey artifactKey = getKey(artId, branchUuid);
       findRelations(linksFound, artifactKey, matcher);
    }
 
@@ -152,7 +152,7 @@ public class RelationCache {
       Set<RelationLink> itemsFound = new HashSet<RelationLink>();
 
       final int artifactId = artifact.getArtId();
-      final IOseeBranch branchId = artifact.getBranch();
+      final IOseeBranch branchUuid = artifact.getBranch();
       RelationMatcher artIdMatcher = new RelationMatcher() {
 
          @Override
@@ -167,7 +167,7 @@ public class RelationCache {
       };
 
       RelationMatcher matcher = RelationFilterUtil.createMatcher(deletionFlag, artIdMatcher);
-      findRelations(itemsFound, artifactId, branchId, relationType, matcher);
+      findRelations(itemsFound, artifactId, branchUuid, relationType, matcher);
 
       List<RelationLink> relations = new ArrayList<RelationLink>();
       for (RelationLink relation : itemsFound) {

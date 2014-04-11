@@ -438,12 +438,12 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
 
    private class SearchParameters {
 
-      private final long branchId;
+      private final long branchUuid;
       private final boolean nameOnly, verbose;
       private final String searchPhrase;
 
       public SearchParameters(long branchUuid, boolean nameOnly, String searchPhrase, boolean verbose) {
-         this.branchId = branchUuid;
+         this.branchUuid = branchUuid;
          this.nameOnly = nameOnly;
          this.searchPhrase = searchPhrase;
          this.verbose = verbose;
@@ -454,7 +454,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       }
 
       public long getBranchUuid() {
-         return branchId;
+         return branchUuid;
       }
 
       public boolean isNameOnly() {
@@ -466,7 +466,7 @@ public class SearchPresenterImpl<T extends SearchHeaderComponent, K extends View
       }
 
       public boolean isValid() {
-         return branchId > 0;
+         return branchUuid > 0;
       }
    }
 

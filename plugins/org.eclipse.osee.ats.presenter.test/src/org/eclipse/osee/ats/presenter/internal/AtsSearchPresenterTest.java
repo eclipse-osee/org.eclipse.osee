@@ -87,9 +87,9 @@ public class AtsSearchPresenterTest {
       Assert.assertEquals(3, headerComp.getPrograms().size());
 
       String programGuid = GUID.create();
-      String buildGuid = "70559324";
+      long buildUuid = 70559324;
       String url =
-         "/" + new UrlQuery().put("program", programGuid).put("build", buildGuid).put("nameOnly", "true").put("search",
+         "/" + new UrlQuery().put("program", programGuid).put("build", buildUuid).put("nameOnly", "true").put("search",
             "phrase").put("verbose", "false").toString();
       presenter.initSearchResults(url, headerComp, resultsComponent, optionsComp);
       Assert.assertEquals(1, resultsComponent.getSearchResults().size());

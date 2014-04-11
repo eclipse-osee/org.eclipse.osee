@@ -98,9 +98,9 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
                StringBuilder sb = new StringBuilder();
                while (chStmt.next()) {
                   int artId = chStmt.getInt("art_id");
-                  long branchId = chStmt.getLong("branch_id");
+                  long branchUuid = chStmt.getLong("branch_id");
                   if (recurseChildrenBranches) {
-                     Branch branch = BranchManager.getBranch(branchId);
+                     Branch branch = BranchManager.getBranch(branchUuid);
                      Artifact artifactFromId = ArtifactQuery.getArtifactFromId(artId, branch);
                      artifactsToPurge.add(artifactFromId);
                   } else {
@@ -108,7 +108,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
                      sb.append("ArtifactId[");
                      sb.append(artId);
                      sb.append("] BranchId[");
-                     sb.append(branchId);
+                     sb.append(branchUuid);
                      sb.append("]\n");
                   }
                }

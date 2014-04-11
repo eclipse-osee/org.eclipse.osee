@@ -36,7 +36,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
    protected AttributeData createData(Object conditions, AttributeObjectFactory factory, IOseeStatement chStmt, Options options) throws OseeCoreException {
       AttributeData toReturn = null;
 
-      long branchId = chStmt.getLong("branch_id");
+      long branchUuid = chStmt.getLong("branch_id");
       int artId = chStmt.getInt("art_id");
       int attrId = chStmt.getInt("attr_id");
       long gammaId = chStmt.getInt("gamma_id");
@@ -45,12 +45,12 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
       boolean historical = OptionsUtil.isHistorical(options);
 
       CreateConditions condition = asConditions(conditions);
-      if (!condition.isSame(branchId, artId, attrId)) {
-         condition.saveConditions(branchId, artId, attrId, gammaId, modType);
+      if (!condition.isSame(branchUuid, artId, attrId)) {
+         condition.saveConditions(branchUuid, artId, attrId, gammaId, modType);
 
          int txId = chStmt.getInt("transaction_id");
 
-         VersionData version = factory.createVersion(branchId, txId, gammaId, historical);
+         VersionData version = factory.createVersion(branchUuid, txId, gammaId, historical);
          if (historical) {
             version.setStripeId(chStmt.getInt("stripe_transaction_id"));
          }
@@ -66,7 +66,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
          if (!historical) {
             logger.warn(
                "multiple attribute versions for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
-               attrId, artId, branchId, condition.previousGammaId, gammaId, condition.previousModType, modType);
+               attrId, artId, branchUuid, condition.previousGammaId, gammaId, condition.previousModType, modType);
          }
       }
       return toReturn;
@@ -88,12 +88,12 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
       long previousGammaId = -1;
       ModificationType previousModType = null;
 
-      boolean isSame(long branchId, int artifactId, int attrId) {
-         return previousBranchId == branchId && previousArtId == artifactId && previousAttrId == attrId;
+      boolean isSame(long branchUuid, int artifactId, int attrId) {
+         return previousBranchId == branchUuid && previousArtId == artifactId && previousAttrId == attrId;
       }
 
-      void saveConditions(long branchId, int artifactId, int attrId, long gammaId, ModificationType modType) {
-         previousBranchId = branchId;
+      void saveConditions(long branchUuid, int artifactId, int attrId, long gammaId, ModificationType modType) {
+         previousBranchId = branchUuid;
          previousArtId = artifactId;
          previousAttrId = attrId;
          previousGammaId = gammaId;

@@ -38,8 +38,6 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
       "Associated Artifact", 100, SWT.LEFT, false, SortDataType.String, false, null);
    public final static XViewerColumn branchUuid = new XViewerColumn("framework.branch.uuid", "Branch UUID", 200,
       SWT.LEFT, false, SortDataType.String, false, null);
-   public final static XViewerColumn branchId = new XViewerColumn("framework.branch.id", "Branch Uuid", 80, SWT.LEFT,
-      false, SortDataType.Integer, false, null);
    public final static XViewerColumn parentBranch = new XViewerColumn("framework.branch.parentBranch", "Parent Branch",
       100, SWT.LEFT, false, SortDataType.String, false, null);
    public final static XViewerColumn archivedState = new XViewerColumn("framework.branch.archived", "Archived State",
@@ -53,7 +51,7 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
    public BranchXViewerFactory() {
       super(NAMESPACE);
       registerColumns(branchName, branchType, branchState, timeStamp, author, comment, associatedArtifact,
-         parentBranch, branchId, branchUuid, archivedState, inheritAccessControl);
+         parentBranch, branchUuid, branchUuid, archivedState, inheritAccessControl);
    }
 
    @Override

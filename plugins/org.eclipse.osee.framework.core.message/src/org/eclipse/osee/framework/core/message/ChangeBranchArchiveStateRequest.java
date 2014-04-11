@@ -16,17 +16,17 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
  * @author Megumi Telles
  */
 public class ChangeBranchArchiveStateRequest {
-   private final long branchId;
+   private final long branchUuid;
    private final BranchArchivedState state;
 
-   public ChangeBranchArchiveStateRequest(long branchId, BranchArchivedState state) {
+   public ChangeBranchArchiveStateRequest(long branchUuid, BranchArchivedState state) {
       super();
-      this.branchId = branchId;
+      this.branchUuid = branchUuid;
       this.state = state;
    }
 
    public long getBranchId() {
-      return branchId;
+      return branchUuid;
    }
 
    public BranchArchivedState getState() {

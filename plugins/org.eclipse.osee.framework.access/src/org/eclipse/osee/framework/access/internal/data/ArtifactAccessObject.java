@@ -23,21 +23,21 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class ArtifactAccessObject extends AccessObject {
 
    private final Integer artId;
-   private final Long branchId;
+   private final Long branchUuid;
    private static final DoubleKeyHashMap<Integer, Long, ArtifactAccessObject> cache =
       new DoubleKeyHashMap<Integer, Long, ArtifactAccessObject>();
 
-   public ArtifactAccessObject(Integer artId, Long branchId) {
+   public ArtifactAccessObject(Integer artId, Long branchUuid) {
       super();
       this.artId = artId;
-      this.branchId = branchId;
+      this.branchUuid = branchUuid;
    }
 
    @Override
    public int hashCode() {
       int result = 17;
       result = 31 * result + artId;
-      result = 31 * result + branchId.hashCode();
+      result = 31 * result + branchUuid.hashCode();
       return result;
    }
 
@@ -47,34 +47,34 @@ public class ArtifactAccessObject extends AccessObject {
 
    @Override
    public long getId() {
-      return branchId;
+      return branchUuid;
    }
 
    @Override
    public void removeFromCache() {
-      cache.remove(artId, branchId);
+      cache.remove(artId, branchUuid);
    }
 
    @Override
    public void removeFromDatabase(int subjectId) throws OseeCoreException {
       final String DELETE_ARTIFACT_ACL =
          "DELETE FROM OSEE_ARTIFACT_ACL WHERE privilege_entity_id = ? AND art_id =? AND branch_id =?";
-      ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, subjectId, artId, branchId);
+      ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, subjectId, artId, branchUuid);
    }
 
    public static ArtifactAccessObject getArtifactAccessObject(Artifact artifact) throws OseeCoreException {
       Integer artId = artifact.getArtId();
-      IOseeBranch branchId = artifact.getBranch();
-      return getArtifactAccessObject(artId, branchId);
+      IOseeBranch branchUuid = artifact.getBranch();
+      return getArtifactAccessObject(artId, branchUuid);
    }
 
    public static ArtifactAccessObject getArtifactAccessObject(Integer artId, IOseeBranch branch) throws OseeCoreException {
-      long branchId = branch.getUuid();
-      ArtifactAccessObject accessObject = cache.get(artId, branchId);
+      long branchUuid = branch.getUuid();
+      ArtifactAccessObject accessObject = cache.get(artId, branchUuid);
 
       if (accessObject == null) {
-         accessObject = new ArtifactAccessObject(artId, branchId);
-         cache.put(artId, branchId, accessObject);
+         accessObject = new ArtifactAccessObject(artId, branchUuid);
+         cache.put(artId, branchUuid, accessObject);
       }
       return accessObject;
    }
@@ -84,8 +84,8 @@ public class ArtifactAccessObject extends AccessObject {
    }
 
    public static AccessObject getArtifactAccessObjectFromCache(Integer artId2, IOseeBranch branch) throws OseeCoreException {
-      long branchId2 = branch.getUuid();
-      return cache.get(artId2, branchId2);
+      long branchUuid2 = branch.getUuid();
+      return cache.get(artId2, branchUuid2);
    }
 
    @Override
@@ -94,6 +94,6 @@ public class ArtifactAccessObject extends AccessObject {
          return false;
       }
       ArtifactAccessObject ao = (ArtifactAccessObject) obj;
-      return ao.artId.equals(this.artId) && ao.branchId.equals(this.branchId);
+      return ao.artId.equals(this.artId) && ao.branchUuid.equals(this.branchUuid);
    }
 }

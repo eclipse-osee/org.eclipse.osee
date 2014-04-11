@@ -27,9 +27,9 @@ public final class BranchChangeArchivedStateRequestTranslator implements ITransl
 
    @Override
    public ChangeBranchArchiveStateRequest convert(PropertyStore propertyStore) {
-      long branchId = propertyStore.getLong(Entry.BRANCH_ID.name());
+      long branchUuid = propertyStore.getLong(Entry.BRANCH_ID.name());
       BranchArchivedState state = BranchArchivedState.valueOf(propertyStore.get(Entry.BRANCH_ARCHIVED_STATE.name()));
-      ChangeBranchArchiveStateRequest data = new ChangeBranchArchiveStateRequest(branchId, state);
+      ChangeBranchArchiveStateRequest data = new ChangeBranchArchiveStateRequest(branchUuid, state);
       return data;
    }
 

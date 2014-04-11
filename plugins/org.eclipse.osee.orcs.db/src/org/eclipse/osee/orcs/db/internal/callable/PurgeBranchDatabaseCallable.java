@@ -58,18 +58,18 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Bra
                branch.getBranchType());
          }
 
-         long branchId = branch.getUuid();
+         long branchUuid = branch.getUuid();
          String sql = String.format("DELETE FROM %s WHERE branch_id = ?", sourceTableName);
-         purgeFromTable(connection, sql, 0.20, branchId);
+         purgeFromTable(connection, sql, 0.20, branchUuid);
 
-         purgeFromTable(connection, DELETE_FROM_TX_DETAILS, 0.09, branchId);
-         purgeFromTable(connection, DELETE_FROM_CONFLICT, 0.01, branchId);
+         purgeFromTable(connection, DELETE_FROM_TX_DETAILS, 0.09, branchUuid);
+         purgeFromTable(connection, DELETE_FROM_CONFLICT, 0.01, branchUuid);
          if (branch.hasParentBranch()) {
-            purgeFromTable(connection, DELETE_FROM_MERGE, 0.01, branchId, branch.getParentBranch().getUuid());
+            purgeFromTable(connection, DELETE_FROM_MERGE, 0.01, branchUuid, branch.getParentBranch().getUuid());
          }
-         purgeFromTable(connection, DELETE_FROM_BRANCH_TABLE, 0.01, branchId);
+         purgeFromTable(connection, DELETE_FROM_BRANCH_TABLE, 0.01, branchUuid);
 
-         purgeAccessControlTables(branchId);
+         purgeAccessControlTables(branchUuid);
 
          branch.setStorageState(StorageState.PURGED);
          branchCache.storeItems(branch);
@@ -79,10 +79,10 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Bra
       return branch;
    }
 
-   private void purgeAccessControlTables(long branchId) throws OseeCoreException {
-      getDatabaseService().runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, branchId);
+   private void purgeAccessControlTables(long branchUuid) throws OseeCoreException {
+      getDatabaseService().runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, branchUuid);
       checkForCancelled();
-      getDatabaseService().runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, branchId);
+      getDatabaseService().runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, branchUuid);
       checkForCancelled();
    }
 

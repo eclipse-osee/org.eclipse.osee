@@ -36,7 +36,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
    protected RelationData createData(Object conditions, RelationObjectFactory factory, IOseeStatement chStmt, Options options) throws OseeCoreException {
       RelationData toReturn = null;
 
-      long branchId = chStmt.getLong("branch_id");
+      long branchUuid = chStmt.getLong("branch_id");
       int aArtId = chStmt.getInt("a_art_id");
       int bArtId = chStmt.getInt("b_art_id");
       long typeId = chStmt.getLong("rel_link_type_id");
@@ -45,12 +45,12 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
       boolean historical = OptionsUtil.isHistorical(options);
 
       CreateConditions condition = asConditions(conditions);
-      if (!condition.isSame(branchId, aArtId, bArtId, typeId)) {
-         condition.saveConditions(branchId, aArtId, bArtId, typeId, gammaId);
+      if (!condition.isSame(branchUuid, aArtId, bArtId, typeId)) {
+         condition.saveConditions(branchUuid, aArtId, bArtId, typeId, gammaId);
 
          int txId = chStmt.getInt("transaction_id");
 
-         VersionData version = factory.createVersion(branchId, txId, gammaId, historical);
+         VersionData version = factory.createVersion(branchUuid, txId, gammaId, historical);
          if (historical) {
             version.setStripeId(chStmt.getInt("stripe_transaction_id"));
          }
@@ -66,7 +66,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
          if (!historical) {
             logger.warn(
                "multiple relation versions for branch[%d] rel_type [%d] a_artId[%d] b_artId[%s] previousGammaId[%s] currentGammaId[%s]",
-               branchId, typeId, aArtId, bArtId, condition.previousGammaId, gammaId);
+               branchUuid, typeId, aArtId, bArtId, condition.previousGammaId, gammaId);
          }
       }
       return toReturn;
@@ -88,12 +88,12 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
       long previousTypeId = -1;
       long previousGammaId = -1;
 
-      boolean isSame(long branchId, int aArtId, int bArtId, long typeId) {
-         return previousBranchId == branchId && previousArtIdA == aArtId && previousArtIdB == bArtId && previousTypeId == typeId;
+      boolean isSame(long branchUuid, int aArtId, int bArtId, long typeId) {
+         return previousBranchId == branchUuid && previousArtIdA == aArtId && previousArtIdB == bArtId && previousTypeId == typeId;
       }
 
-      void saveConditions(long branchId, int aArtId, int bArtId, long typeId, long gammaId) {
-         previousBranchId = branchId;
+      void saveConditions(long branchUuid, int aArtId, int bArtId, long typeId, long gammaId) {
+         previousBranchId = branchUuid;
          previousArtIdA = aArtId;
          previousArtIdB = bArtId;
          previousTypeId = typeId;

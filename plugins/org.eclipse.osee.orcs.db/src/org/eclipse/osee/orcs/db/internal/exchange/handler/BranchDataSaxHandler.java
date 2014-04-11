@@ -74,11 +74,11 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return toReturn;
    }
 
-   public boolean areAvailable(long... branchIds) {
+   public boolean areAvailable(long... branchUuids) {
       boolean toReturn = false;
-      if (branchIds != null && branchIds.length > 0) {
+      if (branchUuids != null && branchUuids.length > 0) {
          Set<Long> toCheck = new HashSet<Long>();
-         for (long entry : branchIds) {
+         for (long entry : branchUuids) {
             toCheck.add(entry);
          }
          toReturn = this.idToImportFileBranchData.keySet().containsAll(toCheck);
@@ -93,8 +93,8 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
    private List<BranchData> getSelectedBranchesToImport(long... branchesToImport) {
       List<BranchData> toReturn = new ArrayList<BranchData>();
       if (branchesToImport != null && branchesToImport.length > 0) {
-         for (long branchId : branchesToImport) {
-            BranchData data = this.idToImportFileBranchData.get(branchId);
+         for (long branchUuid : branchesToImport) {
+            BranchData data = this.idToImportFileBranchData.get(branchUuid);
             if (data != null) {
                toReturn.add(data);
             }
@@ -154,7 +154,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       List<BranchData> branches = getSelectedBranchesToImport(branchesStored);
       List<Object[]> data = new ArrayList<Object[]>();
       for (BranchData branchData : branches) {
-         int branchId = branchData.getId();
+         int branchUuid = branchData.getId();
          int parentTransactionId = translateId(ExchangeDb.TRANSACTION_ID, branchData.getParentTransactionId());
          if (parentTransactionId == 0) {
             parentTransactionId = 1;
@@ -164,7 +164,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          if (baselineTransactionId == 0) {
             baselineTransactionId = 1;
          }
-         data.add(new Object[] {parentTransactionId, baselineTransactionId, branchId});
+         data.add(new Object[] {parentTransactionId, baselineTransactionId, branchUuid});
       }
       if (!data.isEmpty()) {
          String query =
@@ -195,10 +195,10 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          chStmt.runPreparedQuery("select * from osee_branch");
          while (chStmt.next()) {
             String branchGuid = chStmt.getString(BranchData.BRANCH_GUID);
-            Long branchId = chStmt.getLong(BranchData.BRANCH_ID);
+            Long branchUuid = chStmt.getLong(BranchData.BRANCH_ID);
             BranchData branchData = guidToImportFileBranchData.get(branchGuid);
             if (branchData != null) {
-               getTranslator().checkIdMapping("branch_id", (long) branchData.getId(), branchId);
+               getTranslator().checkIdMapping("branch_id", (long) branchData.getId(), branchUuid);
                // Remove from to store list so we don't store duplicate information
                guidToImportFileBranchData.remove(branchGuid);
             }

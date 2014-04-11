@@ -177,9 +177,9 @@ public class GrayableBranchSelectionComposite extends Composite implements IAcce
       return branchSelectComposite.getBranchIds();
    }
 
-   public void restoreWidgetValues(boolean saveAsArtifact, String[] branchIds, String lastSelected) {
+   public void restoreWidgetValues(boolean saveAsArtifact, String[] branchUuids, String lastSelected) {
       branchSelectEnabled.setSelection(saveAsArtifact && ClientSessionManager.isSessionValid());
-      branchSelectComposite.restoreWidgetValues(branchIds, lastSelected);
+      branchSelectComposite.restoreWidgetValues(branchUuids, lastSelected);
    }
 
    private void setSelectable(final boolean isSelectable) {
