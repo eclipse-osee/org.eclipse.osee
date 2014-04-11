@@ -120,8 +120,8 @@ public class AttributeLoader {
       long key2 = historical ? current.stripeId : current.branchId;
       artifact = tempCache.get(current.artifactId, key2);
       if (artifact == null) {
-         OseeLog.logf(ArtifactLoader.class, Level.WARNING, "Orphaned attribute for artifact id[%d] branch[%d]",
-            current.artifactId, current.branchId);
+         OseeLog.logf(ArtifactLoader.class, Level.WARNING, "Orphaned attribute id [%d] for artifact id[%d] branch[%d]",
+            current.attrId, current.artifactId, current.branchId);
       }
       return artifact;
    }
