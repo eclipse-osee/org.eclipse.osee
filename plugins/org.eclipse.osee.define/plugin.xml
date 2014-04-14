@@ -132,7 +132,7 @@
        <action
              class="org.eclipse.osee.define.traceability.action.FindTraceUnitActionDelegate"
              icon="images/artifact_search.gif"
-             id="org.eclipse.osee.define.action.FindTraceUnitFromResource2"
+             id="org.eclipse.osee.define.action.FindTraceUnitFromResource"
              label="Find Trace Unit Artifact"
              menubarPath="org.eclipse.osee.main/main"
              state="true"
