@@ -46,12 +46,14 @@ public class WEEditorInputFactory implements IElementFactory {
    public static void saveState(IMemento memento, SMAEditorInput input) {
       String guid = null;
       String title = null;
-      if (input.isReload()) {
-         guid = input.getGuid();
-         title = input.getTitle();
-      } else {
-         guid = input.getArtifact().getGuid();
-         title = ((AbstractWorkflowArtifact) input.getArtifact()).getEditorTitle();
+      if (input.getArtifact() != null && !input.getArtifact().isDeleted()) {
+         if (input.isReload()) {
+            guid = input.getGuid();
+            title = input.getTitle();
+         } else {
+            guid = input.getArtifact().getGuid();
+            title = ((AbstractWorkflowArtifact) input.getArtifact()).getEditorTitle();
+         }
       }
       memento.putString(KEY, guid);
       memento.putString(TITLE, title);

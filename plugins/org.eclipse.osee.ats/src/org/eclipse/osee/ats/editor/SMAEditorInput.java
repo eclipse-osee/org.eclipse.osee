@@ -108,7 +108,7 @@ public class SMAEditorInput extends BaseArtifactEditorInput implements IPersista
    @Override
    public String getName() {
       String name = title;
-      if (getArtifact() != null) {
+      if (getArtifact() != null && !getArtifact().isDeleted()) {
          name = ((AbstractWorkflowArtifact) getArtifact()).getEditorTitle();
       }
       return name;
