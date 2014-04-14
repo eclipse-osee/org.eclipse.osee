@@ -120,9 +120,10 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
                BranchType branchType = BranchType.valueOf(chStmt.getInt("branch_type"));
                boolean isArchived = BranchArchivedState.valueOf(chStmt.getInt("archived")).isArchived();
                long branchUuid = chStmt.getLong("branch_id");
+               int inheritAccessControl = chStmt.getInt("inherit_access_control");
                Branch branch =
                   branchFactory.createOrUpdate(cache, branchUuid, branchName, branchType, branchState, isArchived,
-                     StorageState.LOADED);
+                     StorageState.LOADED, inheritAccessControl == 1);
 
                Integer parentBranchId = chStmt.getInt("parent_branch_id");
                if (parentBranchId != NULL_PARENT_BRANCH_ID) {

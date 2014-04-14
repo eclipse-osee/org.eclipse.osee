@@ -146,6 +146,8 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          } catch (OseeCoreException ex) {
             return XViewerCells.getCellExceptionString(ex);
          }
+      } else if (cCol.equals(BranchXViewerFactory.inheritAccessControl)) {
+         return String.valueOf(branch.isInheritAccessControl());
       }
       return "";
    }

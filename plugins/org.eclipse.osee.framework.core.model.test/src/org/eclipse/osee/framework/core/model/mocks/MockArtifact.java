@@ -30,7 +30,7 @@ public class MockArtifact extends NamedIdentity<String> implements IBasicArtifac
 
    public MockArtifact(String guid, String name, IOseeBranch branch, IArtifactType artifactType, int artId) {
       super(guid, name);
-      this.branch = new Branch(branch.getUuid(), branch.getName(), BranchType.WORKING, BranchState.MODIFIED, false);
+      this.branch = new Branch(branch.getUuid(), branch.getName(), BranchType.WORKING, BranchState.MODIFIED, false, false);
       this.artifactType = new ArtifactType(artifactType.getGuid(), artifactType.getName(), false);
       this.artId = artId;
    }

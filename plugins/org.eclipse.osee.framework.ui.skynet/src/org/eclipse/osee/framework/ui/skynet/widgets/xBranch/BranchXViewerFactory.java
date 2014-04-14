@@ -44,13 +44,16 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
       100, SWT.LEFT, false, SortDataType.String, false, null);
    public final static XViewerColumn archivedState = new XViewerColumn("framework.branch.archived", "Archived State",
       100, SWT.LEFT, false, SortDataType.String, true, null);
+   public final static XViewerColumn inheritAccessControl = new XViewerColumn(
+      "framework.branch.inherit.access.control", "Inherit Access Control", 100, SWT.LEFT, false, SortDataType.Boolean,
+      false, null);
 
    public final static String NAMESPACE = "osee.skynet.gui.BranchXViewer";
 
    public BranchXViewerFactory() {
       super(NAMESPACE);
       registerColumns(branchName, branchType, branchState, timeStamp, author, comment, associatedArtifact,
-         parentBranch, branchId, branchUuid, archivedState);
+         parentBranch, branchId, branchUuid, archivedState, inheritAccessControl);
    }
 
    @Override

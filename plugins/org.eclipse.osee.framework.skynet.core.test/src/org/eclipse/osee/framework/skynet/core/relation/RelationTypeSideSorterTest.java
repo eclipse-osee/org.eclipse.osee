@@ -241,7 +241,7 @@ public class RelationTypeSideSorterTest {
    private static IArtifact createArtifact(String name, String guid) {
       int uniqueId = randomGenerator.nextInt();
       Branch branch =
-         new Branch(Lib.generateUuid(), name + " - branch", BranchType.WORKING, BranchState.MODIFIED, false);
+         new Branch(Lib.generateUuid(), name + " - branch", BranchType.WORKING, BranchState.MODIFIED, false, false);
       return new MockArtifactWithRelations(uniqueId, name, guid, branch, CoreArtifactTypes.Artifact);
    }
 

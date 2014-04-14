@@ -40,10 +40,10 @@ public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISt
    protected static final int NULL_PARENT_BRANCH_ID = -1;
 
    private static final String INSERT_BRANCH =
-      "INSERT INTO osee_branch (branch_id, branch_guid, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state, baseline_transaction_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
+      "INSERT INTO osee_branch (branch_id, branch_guid, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state, baseline_transaction_id, inherit_access_control) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 
    private static final String UPDATE_BRANCH =
-      "UPDATE osee_branch SET branch_name = ?, parent_branch_id = ?, parent_transaction_id = ?, archived = ?, associated_art_id = ?, branch_type = ?, branch_state = ?, baseline_transaction_id = ? WHERE branch_id = ?";
+      "UPDATE osee_branch SET branch_name = ?, parent_branch_id = ?, parent_transaction_id = ?, archived = ?, associated_art_id = ?, branch_type = ?, branch_state = ?, baseline_transaction_id = ?, inherit_access_control = ? WHERE branch_id = ?";
 
    private static final String DELETE_BRANCH = "DELETE FROM osee_branch WHERE branch_id = ?";
 
@@ -118,6 +118,7 @@ public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISt
       TransactionRecord baseTxRecord = branch.getBaseTransaction();
       long parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
       int baselineTransaction = baseTxRecord != null ? baseTxRecord.getId() : NULL_PARENT_BRANCH_ID;
+      int inheritAccessControl = branch.isInheritAccessControl() ? 1 : 0;
 
       return new Object[] {
          branch.getId(),
@@ -129,7 +130,8 @@ public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISt
          branch.getAssociatedArtifactId(),
          branch.getBranchType().getValue(),
          branch.getBranchState().getValue(),
-         baselineTransaction};
+         baselineTransaction,
+         inheritAccessControl};
    }
 
    private Object[] toUpdateValues(Branch branch) throws OseeCoreException {
@@ -137,6 +139,7 @@ public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISt
       TransactionRecord baseTxRecord = branch.getBaseTransaction();
       long parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
       int baselineTransaction = baseTxRecord != null ? baseTxRecord.getId() : NULL_PARENT_BRANCH_ID;
+      int inheritAccessControl = branch.isInheritAccessControl() ? 1 : 0;
 
       getLogger().debug(
          "Branch Name: [%s], Parent Branch Id: [%s], src trans: [%s], arch state: [%s], assoc art: [%s], branch type: [%s], branch state: [%s], baseline trans: [%s], branch id: [%s]",
@@ -153,6 +156,7 @@ public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISt
          branch.getBranchType().getValue(),
          branch.getBranchState().getValue(),
          baselineTransaction,
+         inheritAccessControl,
          branch.getId()};
    }
 
@@ -168,7 +172,8 @@ public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISt
          BranchField.BRANCH_STATE_FIELD_KEY, //
          BranchField.BRANCH_TYPE_FIELD_KEY, //
          BranchField.BRANCH_ASSOCIATED_ARTIFACT_ID_FIELD_KEY, //
-         BranchField.BRANCH_BASE_TRANSACTION);
+         BranchField.BRANCH_BASE_TRANSACTION, //
+         BranchField.BRANCH_INHERIT_ACCESS_CONTROL);
    }
 
 }

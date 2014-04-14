@@ -28,19 +28,21 @@ public final class BranchRow {
    private final BranchState branchState;
    private final BranchArchivedState branchArchived;
    private StorageState storageState;
+   private final boolean inheritAccessControl;
 
    // TODO remove
    public void setStorageState(StorageState storageState) {
       this.storageState = storageState;
    }
 
-   public BranchRow(long branchId, String branchName, BranchType branchType, BranchState branchState, BranchArchivedState branchArchived, StorageState storageState) {
+   public BranchRow(long branchId, String branchName, BranchType branchType, BranchState branchState, BranchArchivedState branchArchived, StorageState storageState, boolean inheritAccessControl) {
       this.branchId = branchId;
       this.branchName = branchName;
       this.branchType = branchType;
       this.branchState = branchState;
       this.branchArchived = branchArchived;
       this.storageState = storageState;
+      this.inheritAccessControl = inheritAccessControl;
    }
 
    public long getBranchId() {
@@ -67,6 +69,10 @@ public final class BranchRow {
       return storageState;
    }
 
+   public boolean isInheritAccessControl() {
+      return inheritAccessControl;
+   }
+
    public String[] toArray() {
       return new String[] {
          getBranchArchived().name(),
@@ -74,7 +80,8 @@ public final class BranchRow {
          getBranchName(),
          getBranchState().name(),
          getBranchType().name(),
-         getStorageState().name()};
+         getStorageState().name(),
+         Boolean.toString(isInheritAccessControl())};
    }
 
    public static BranchRow fromArray(String[] data) {
@@ -89,7 +96,8 @@ public final class BranchRow {
       BranchState branchState = BranchState.valueOf(data[3]);
       BranchType branchType = BranchType.valueOf(data[4]);
       StorageState storageState = StorageState.valueOf(data[5]);
-      return new BranchRow(branchId, branchName, branchType, branchState, archived, storageState);
+      boolean inheritAccessControl = Boolean.parseBoolean(data[6]);
+      return new BranchRow(branchId, branchName, branchType, branchState, archived, storageState, inheritAccessControl);
    }
    // Temporary cache till all code uses branch uuid. Remove after 0.17.0
    private static final String SELECT_BRANCH_ID_BY_GUID = "select branch_id from osee_branch where branch_guid = ?";

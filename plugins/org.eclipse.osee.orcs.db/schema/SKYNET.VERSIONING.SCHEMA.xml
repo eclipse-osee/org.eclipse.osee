@@ -123,6 +123,7 @@
 		<Column id="ASSOCIATED_ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="BRANCH_TYPE" defaultValue="not null" type="smallint" />
 		<Column id="BASELINE_TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="INHERIT_ACCESS_CONTROL" defaultValue="not null" type="smallint" />
 		
 		<Constraint schema="OSEE" id="OSEE_BRANCH_B_PK" type="PRIMARY KEY" appliesTo="BRANCH_ID" />
 		<Constraint schema="OSEE" id="OSEE_BRANCH_G_IDX" type="UNIQUE" appliesTo="BRANCH_GUID" />

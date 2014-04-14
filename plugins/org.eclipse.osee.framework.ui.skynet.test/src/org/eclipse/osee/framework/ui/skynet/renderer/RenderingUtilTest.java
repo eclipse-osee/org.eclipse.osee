@@ -98,7 +98,7 @@ public class RenderingUtilTest {
    }
 
    private static Branch createBranch(AbstractOseeCache<Long, Branch> cache, String name, long uuid) throws OseeCoreException {
-      Branch branch = new BranchFactory().create(uuid, name, BranchType.WORKING, BranchState.MODIFIED, false);
+      Branch branch = new BranchFactory().create(uuid, name, BranchType.WORKING, BranchState.MODIFIED, false, false);
       Assert.assertNotNull(branch);
       return branch;
    }

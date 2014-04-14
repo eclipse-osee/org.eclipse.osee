@@ -89,7 +89,7 @@ public final class MockDataFactory {
       BranchState branchState = BranchState.values()[Math.abs(index % BranchState.values().length)];
       BranchType branchType = BranchType.values()[Math.abs(index % BranchType.values().length)];
       boolean isArchived = index % 2 == 0 ? true : false;
-      return new Branch(uuid, "branch_" + index, branchType, branchState, isArchived);
+      return new Branch(uuid, "branch_" + index, branchType, branchState, isArchived, false);
    }
 
    public static TransactionRecord createTransaction(int index, int branchId) {

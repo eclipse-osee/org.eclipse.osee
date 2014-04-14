@@ -23,6 +23,7 @@ public final class BranchField {
    public static final String PARENT_BRANCH = "osee.branch.parent";
    public static final String BRANCH_BASE_TRANSACTION = "osee.branch.base.transaction";
    public static final String BRANCH_SOURCE_TRANSACTION = "osee.branch.source.transaction";
+   public static final String BRANCH_INHERIT_ACCESS_CONTROL = "osee.branch.inherit.access.control";
 
    public static final String MERGE_BRANCH_SOURCE = "osee.merge.branch.source";
    public static final String MERGE_BRANCH_DESTINATION = "osee.merge.branch.destination";

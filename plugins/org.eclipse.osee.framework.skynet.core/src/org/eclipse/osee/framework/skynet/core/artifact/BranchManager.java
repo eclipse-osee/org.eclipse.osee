@@ -202,10 +202,11 @@ public class BranchManager {
             int sourceTx = chStmt.getInt("parent_transaction_id");
             int baseTx = chStmt.getInt("baseline_transaction_id");
             int assocArtId = chStmt.getInt("associated_art_id");
+            int inheritAccessControl = chStmt.getInt("inherit_access_control");
 
             Branch created =
                branchFactory.createOrUpdate(getCache(), branchId, branchName, branchType, branchState,
-                  archiveState.isArchived(), StorageState.LOADED);
+                  archiveState.isArchived(), StorageState.LOADED, inheritAccessControl == 1);
             created.setBaseTransaction(TransactionManager.getTransactionId(baseTx));
             created.setSourceTransaction(TransactionManager.getTransactionId(sourceTx));
             created.setAssociatedArtifactId(assocArtId);

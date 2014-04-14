@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public final class MergeBranch extends Branch {
 
-   public MergeBranch(long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived) {
-      super(uuid, name, branchType, branchState, isArchived);
+   public MergeBranch(long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritAccessControl) {
+      super(uuid, name, branchType, branchState, isArchived, inheritAccessControl);
    }
 
    @Override

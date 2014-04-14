@@ -178,9 +178,10 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       long uuid = newBranchData.getUuid();
 
       final String truncatedName = Strings.truncate(newBranchData.getName(), 195, true);
+      boolean inheritAccessControl = parentBranch == null ? false : parentBranch.isInheritAccessControl();
       branch =
          branchFactory.create(uuid, truncatedName, newBranchData.getBranchType(), BranchState.CREATION_IN_PROGRESS,
-            false);
+            false, inheritAccessControl);
 
       branch.setParentBranch(parentBranch);
       branch.setAssociatedArtifactId(newBranchData.getAssociatedArtifactId());
@@ -207,7 +208,7 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       branchCache.cache(branch);
       branchCache.storeItems(branch);
 
-      if (parentBranch != null) {
+      if (parentBranch != null && inheritAccessControl) {
          copyAccessRules(connection, newBranchData.getUserArtifactId(), parentBranch, branch);
       }
 

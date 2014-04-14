@@ -39,12 +39,13 @@ public class Branch extends AbstractOseeType<Long> implements WriteableBranch, I
 
    private final Collection<Branch> childBranches = new HashSet<Branch>();
 
-   public Branch(Long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived) {
+   public Branch(Long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritsAccessControl) {
       super(uuid, name);
       initializeFields();
       setFieldLogException(BranchField.BRANCH_TYPE_FIELD_KEY, branchType);
       setFieldLogException(BranchField.BRANCH_STATE_FIELD_KEY, branchState);
       setFieldLogException(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, BranchArchivedState.fromBoolean(isArchived));
+      setField(BranchField.BRANCH_INHERIT_ACCESS_CONTROL, inheritsAccessControl);
       if (uuid <= 0) {
          throw new OseeStateException("uuid [%d] must be > 0", uuid);
       }
@@ -58,6 +59,7 @@ public class Branch extends AbstractOseeType<Long> implements WriteableBranch, I
       addField(BranchField.BRANCH_TYPE_FIELD_KEY, new OseeField<BranchType>());
       addField(BranchField.BRANCH_STATE_FIELD_KEY, new OseeField<BranchState>());
       addField(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, new OseeField<BranchArchivedState>());
+      addField(BranchField.BRANCH_INHERIT_ACCESS_CONTROL, new OseeField<Boolean>());
 
       addField(BranchField.BRANCH_ASSOCIATED_ARTIFACT_ID_FIELD_KEY, new AssociatedArtifactField(null));
       addField(BranchField.BRANCH_CHILDREN, new CollectionField<Branch>(childBranches));
@@ -165,6 +167,14 @@ public class Branch extends AbstractOseeType<Long> implements WriteableBranch, I
 
    public void setSourceTransaction(TransactionRecord srcTx) throws OseeCoreException {
       setField(BranchField.BRANCH_SOURCE_TRANSACTION, srcTx);
+   }
+
+   public boolean isInheritAccessControl() {
+      return getFieldValue(BranchField.BRANCH_INHERIT_ACCESS_CONTROL);
+   }
+
+   public void setInheritAccessControl(boolean toInherit) {
+      setField(BranchField.BRANCH_INHERIT_ACCESS_CONTROL, toInherit);
    }
 
    @Override

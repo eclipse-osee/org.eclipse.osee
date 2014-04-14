@@ -24,40 +24,41 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public class BranchFactory implements IOseeTypeFactory {
 
-   public Branch create(long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
+   public Branch create(long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritAccessControl) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(name, "branch name");
       Conditions.checkNotNull(branchType, "branch type");
       Conditions.checkNotNull(branchState, "branch state");
 
       Branch toReturn;
       if (branchType.isMergeBranch()) {
-         toReturn = new MergeBranch(uuid, name, branchType, branchState, isArchived);
+         toReturn = new MergeBranch(uuid, name, branchType, branchState, isArchived, inheritAccessControl);
       } else {
-         toReturn = new Branch(uuid, name, branchType, branchState, isArchived);
+         toReturn = new Branch(uuid, name, branchType, branchState, isArchived, inheritAccessControl);
       }
       return toReturn;
    }
 
-   public Branch createOrUpdate(AbstractOseeCache<Long, Branch> cache, long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
+   public Branch createOrUpdate(AbstractOseeCache<Long, Branch> cache, long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritAccessControl) throws OseeCoreException {
       Conditions.checkNotNull(cache, "BranchCache");
       Branch branch = cache.getByGuid(uuid);
       if (branch == null) {
-         branch = create(uuid, name, branchType, branchState, isArchived);
+         branch = create(uuid, name, branchType, branchState, isArchived, inheritAccessControl);
          cache.cache(branch);
       } else {
          branch.setName(name);
          branch.setArchived(isArchived);
          branch.setBranchState(branchState);
          branch.setBranchType(branchType);
+         branch.setInheritAccessControl(inheritAccessControl);
       }
       return branch;
    }
 
-   public Branch createOrUpdate(IOseeCache<Long, Branch> cache, long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, StorageState storageState) throws OseeCoreException {
+   public Branch createOrUpdate(IOseeCache<Long, Branch> cache, long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, StorageState storageState, boolean inheritAccessControl) throws OseeCoreException {
       Conditions.checkNotNull(cache, "BranchCache");
       Branch branch = cache.getById(uuid);
       if (branch == null) {
-         branch = create(uuid, name, branchType, branchState, isArchived);
+         branch = create(uuid, name, branchType, branchState, isArchived, inheritAccessControl);
          branch.setStorageState(storageState);
          cache.cache(branch);
       } else {
@@ -66,6 +67,7 @@ public class BranchFactory implements IOseeTypeFactory {
          branch.setBranchState(branchState);
          branch.setBranchType(branchType);
          branch.setStorageState(storageState);
+         branch.setInheritAccessControl(inheritAccessControl);
       }
       return branch;
    }

@@ -29,37 +29,42 @@ public final class MockBranchProvider implements BranchProvider {
       Collection<Branch> branches = new ArrayList<Branch>();
       //create a root branch
       Branch root =
-         new Branch(Lib.generateUuid(), ROOT_BRANCH_NAME, BranchType.SYSTEM_ROOT, BranchState.COMMITTED, false);
+         new Branch(Lib.generateUuid(), ROOT_BRANCH_NAME, BranchType.SYSTEM_ROOT, BranchState.COMMITTED, false, false);
 
       //add a child to root (parent)
-      Branch parent = new Branch(Lib.generateUuid(), "parent", BranchType.SYSTEM_ROOT, BranchState.CREATED, false);
+      Branch parent =
+         new Branch(Lib.generateUuid(), "parent", BranchType.SYSTEM_ROOT, BranchState.CREATED, false, false);
       parent.setParentBranch(root);
 
       //add children branches to parent
-      Branch child1 = new Branch(Lib.generateUuid(), "child1", BranchType.SYSTEM_ROOT, BranchState.MODIFIED, false);
+      Branch child1 =
+         new Branch(Lib.generateUuid(), "child1", BranchType.SYSTEM_ROOT, BranchState.MODIFIED, false, false);
       child1.setParentBranch(parent);
       child1.setArchived(true);
       child1.setBranchState(BranchState.DELETED);
 
       //this branch should get deleted
-      Branch child2 = new Branch(Lib.generateUuid(), "child2", BranchType.WORKING, BranchState.DELETED, true);
+      Branch child2 = new Branch(Lib.generateUuid(), "child2", BranchType.WORKING, BranchState.DELETED, true, false);
       child2.setParentBranch(parent);
 
-      Branch child3 = new Branch(Lib.generateUuid(), "child3", BranchType.SYSTEM_ROOT, BranchState.CREATED, false);
+      Branch child3 =
+         new Branch(Lib.generateUuid(), "child3", BranchType.SYSTEM_ROOT, BranchState.CREATED, false, false);
       //make one a merge branch
       child3.setBranchType(BranchType.MERGE);
       child3.setParentBranch(parent);
 
-      Branch grandChild1 = new Branch(Lib.generateUuid(), "grandChild1", BranchType.MERGE, BranchState.DELETED, false);
+      Branch grandChild1 =
+         new Branch(Lib.generateUuid(), "grandChild1", BranchType.MERGE, BranchState.DELETED, false, false);
       grandChild1.setArchived(true);
       grandChild1.setParentBranch(child1);
 
       Branch grandChild2 =
-         new Branch(Lib.generateUuid(), "grandChild2", BranchType.SYSTEM_ROOT, BranchState.MODIFIED, false);
+         new Branch(Lib.generateUuid(), "grandChild2", BranchType.SYSTEM_ROOT, BranchState.MODIFIED, false, false);
       grandChild2.setParentBranch(child1);
 
       //this branch should get deleted
-      Branch grandChild3 = new Branch(Lib.generateUuid(), "grandChild3", BranchType.WORKING, BranchState.DELETED, true);
+      Branch grandChild3 =
+         new Branch(Lib.generateUuid(), "grandChild3", BranchType.WORKING, BranchState.DELETED, true, false);
       grandChild3.setParentBranch(child2);
 
       //add branches in a random order
