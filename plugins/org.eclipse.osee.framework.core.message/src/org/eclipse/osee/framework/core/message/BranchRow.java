@@ -10,10 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.StorageState;
+import org.eclipse.osee.framework.core.message.internal.DatabaseService;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 public final class BranchRow {
    private final long branchId;
@@ -74,11 +79,35 @@ public final class BranchRow {
 
    public static BranchRow fromArray(String[] data) {
       BranchArchivedState archived = BranchArchivedState.valueOf(data[0]);
-      long branchId = Long.valueOf(data[1]);
+      long branchId = 0;
+      if (GUID.isValid(data[1])) {
+         branchId = getBranchIdLegacy(data[1]);
+      } else {
+         branchId = Long.valueOf(data[1]);
+      }
       String branchName = data[2];
       BranchState branchState = BranchState.valueOf(data[3]);
       BranchType branchType = BranchType.valueOf(data[4]);
       StorageState storageState = StorageState.valueOf(data[5]);
       return new BranchRow(branchId, branchName, branchType, branchState, archived, storageState);
    }
+   // Temporary cache till all code uses branch uuid. Remove after 0.17.0
+   private static final String SELECT_BRANCH_ID_BY_GUID = "select branch_id from osee_branch where branch_guid = ?";
+   // Temporary cache till all code uses branch uuid. Remove after 0.17.0
+   private static final Map<String, Long> guidToLongCache = new HashMap<String, Long>(50);
+
+   /**
+    * Temporary method till all code uses branch uuid. Remove after 0.17.0
+    */
+   public static long getBranchIdLegacy(String branchGuid) {
+      Long longId = guidToLongCache.get(branchGuid);
+      if (longId == null) {
+         longId =
+            DatabaseService.getDatabaseService().runPreparedQueryFetchObject(0L, SELECT_BRANCH_ID_BY_GUID, branchGuid);
+         Conditions.checkExpressionFailOnTrue(longId <= 0, "Error getting branch_id for branch: [%s]", branchGuid);
+         guidToLongCache.put(branchGuid, longId);
+      }
+      return longId;
+   }
+
 }

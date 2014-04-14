@@ -19,5 +19,6 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.services,
  org.eclipse.osee.framework.core.translation,
  org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util
