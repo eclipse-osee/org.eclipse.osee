@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -37,10 +38,8 @@ import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.ITransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
@@ -54,7 +53,9 @@ import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.osgi.service.prefs.Preferences;
 
@@ -63,7 +64,7 @@ import org.osgi.service.prefs.Preferences;
  * 
  * @author Jeff C. Phillips
  */
-public class BranchView extends GenericViewPart implements IBranchEventListener, ITransactionEventListener, ITransactionRecordSelectionProvider {
+public class BranchView extends GenericViewPart implements IBranchEventListener, ITransactionEventListener, ITransactionRecordSelectionProvider, IPartListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView";
    public static final String BRANCH_ID = "branchId";
 
@@ -71,6 +72,8 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
 
    private BranchViewPresentationPreferences branchViewPresentationPreferences;
    private XBranchWidget xBranchWidget;
+   private final AtomicBoolean refreshNeeded = new AtomicBoolean(false);
+   private final AtomicBoolean processEvents = new AtomicBoolean(false);
 
    public BranchView() {
       super();
@@ -98,6 +101,8 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
       layout.marginHeight = 0;
       parent.setLayout(layout);
       parent.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+      AWorkbench.getActivePage().addPartListener(this);
 
       if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
@@ -164,18 +169,13 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
       }
    }
 
-   @Override
-   public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
-      if (isInitialized()) {
+   private void refreshIfNeeded() {
+      if (refreshNeeded.compareAndSet(true, false)) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
                try {
-                  if (branchEvent.getEventType() == BranchEventType.Renamed) {
-                     xBranchWidget.refresh();
-                  } else {
-                     xBranchWidget.loadData();
-                  }
+                  xBranchWidget.refresh();
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -185,20 +185,33 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
    }
 
    @Override
+   public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
+      refreshNeeded.set(true);
+      if (isInitialized() && processEvents.get()) {
+         refreshIfNeeded();
+      }
+   }
+
+   @Override
    public void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {
-      if (isInitialized()) {
-         if (transEvent.getEventType() == TransactionEventType.Purged) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  try {
-                     xBranchWidget.refresh();
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-                  }
-               }
-            });
-         }
+      refreshNeeded.set(true);
+      if (isInitialized() && processEvents.get()) {
+         refreshIfNeeded();
+      }
+   }
+
+   @Override
+   public void partActivated(IWorkbenchPart part) {
+      if (part == this) {
+         processEvents.set(true);
+         refreshIfNeeded();
+      }
+   }
+
+   @Override
+   public void partDeactivated(IWorkbenchPart part) {
+      if (part == this) {
+         processEvents.set(false);
       }
    }
 
@@ -232,6 +245,21 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
       if (isInitialized()) {
          xBranchWidget.getXViewer().update(records.toArray(new TransactionRecord[records.size()]), null);
       }
+   }
+
+   @Override
+   public void partBroughtToTop(IWorkbenchPart part) {
+      // do nothing
+   }
+
+   @Override
+   public void partClosed(IWorkbenchPart part) {
+      // do nothing
+   }
+
+   @Override
+   public void partOpened(IWorkbenchPart part) {
+      // do nothing
    }
 
 }

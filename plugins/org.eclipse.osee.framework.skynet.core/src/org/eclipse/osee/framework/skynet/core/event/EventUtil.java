@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.event;
 
 import java.util.logging.Level;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -54,12 +53,11 @@ public final class EventUtil {
                builder.append(ex.toString());
             }
             System.err.println(builder.toString());
-         } else if (isEventDebugErrorLog()) {
-            if (ex != null) {
-               OseeLog.log(Activator.class, Level.SEVERE, formatMessage(message, args), ex);
-            } else {
-               OseeLog.log(Activator.class, Level.FINE, formatMessage(message, args));
-            }
+         }
+         if (ex != null) {
+            OseeLog.log(Activator.class, Level.SEVERE, formatMessage(message, args), ex);
+         } else {
+            OseeLog.log(Activator.class, Level.FINE, formatMessage(message, args));
          }
       } catch (Throwable th) {
          OseeLog.log(Activator.class, Level.SEVERE, th);
@@ -83,11 +81,6 @@ public final class EventUtil {
    private static boolean isEventDebugConsole() {
       String debugConsole = System.getProperty("eventDebug", "");
       return "console".equals(debugConsole);
-   }
-
-   private static boolean isEventDebugErrorLog() {
-      String debugConsole = System.getProperty("eventDebug", "");
-      return "log".equals(debugConsole) || "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Events"));
    }
 
 }
