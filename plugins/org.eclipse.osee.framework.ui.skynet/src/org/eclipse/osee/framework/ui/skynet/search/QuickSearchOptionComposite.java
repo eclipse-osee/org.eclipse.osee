@@ -69,6 +69,8 @@ public class QuickSearchOptionComposite extends Composite {
 
    private final Map<String, IOptionConfigurationHandler<?>> configurableOptionSet;
 
+   private Text searchText;
+
    public QuickSearchOptionComposite(Composite parent, int style) {
       super(parent, style);
       this.optionsButtons = new LinkedHashMap<String, Button>();
@@ -171,13 +173,6 @@ public class QuickSearchOptionComposite extends Composite {
          Label label = new Label(mainComposite, SWT.NONE);
          label.setText(option + ":");
 
-         final Text text = new Text(mainComposite, SWT.READ_ONLY | SWT.BORDER);
-         text.setText(configHandler.toString());
-         GridData data = new GridData(SWT.FILL, SWT.FILL, true, false);
-         data.minimumWidth = 100;
-         text.setLayoutData(data);
-         textAreas.put(option, text);
-
          Button filterConfig = new Button(mainComposite, SWT.PUSH);
          String configToolTip = configHandler.getConfigToolTip();
          filterConfig.setToolTipText(Strings.isValid(configToolTip) ? configToolTip : CONFIG_BUTTON_TOOLTIP);
@@ -186,9 +181,17 @@ public class QuickSearchOptionComposite extends Composite {
             @Override
             public void widgetSelected(SelectionEvent e) {
                configHandler.configure();
-               text.setText(configHandler.toString());
+               searchText.setText(configHandler.toString());
             }
          });
+
+         searchText = new Text(mainComposite, SWT.READ_ONLY | SWT.BORDER);
+         searchText.setText(configHandler.toString());
+         GridData data = new GridData(SWT.FILL, SWT.FILL, true, false);
+         data.minimumWidth = 100;
+         searchText.setLayoutData(data);
+         textAreas.put(option, searchText);
+
       } else {
          toReturn.setText(option);
       }

@@ -62,6 +62,8 @@ public class BranchSelectComposite extends Composite {
       parent.setLayout(ALayout.getZeroMarginLayout(2, false));
       parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
+      createButton(parent);
+
       branchSelectTextWidget = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
       GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
       data.widthHint = SIZING_TEXT_FIELD_WIDTH;
@@ -77,6 +79,9 @@ public class BranchSelectComposite extends Composite {
          }
       });
 
+   }
+
+   private void createButton(Composite parent) {
       branchSelectButton = new Button(parent, SWT.PUSH);
       branchSelectButton.setText("Select Branch...");
       branchSelectButton.addListener(SWT.Selection, new Listener() {

@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -157,7 +158,12 @@ public class QuickSearchView extends GenericViewPart {
    public void createPartControl(Composite parent) {
       if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
-         Group group = new Group(parent, SWT.NONE);
+         ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+         sc.setExpandHorizontal(true);
+         sc.setExpandVertical(true);
+
+         Composite group = new Composite(sc, SWT.NONE);
+         sc.setContent(group);
          group.setLayout(new GridLayout());
          group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -210,6 +216,7 @@ public class QuickSearchView extends GenericViewPart {
 
          createClearHistoryAction();
 
+         sc.setMinSize(group.computeSize(SWT.DEFAULT, SWT.DEFAULT));
          setFocusWidget(attrSearchComposite);
       }
    }
