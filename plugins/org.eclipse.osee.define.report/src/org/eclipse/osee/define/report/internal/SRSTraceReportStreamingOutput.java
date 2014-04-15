@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
@@ -227,10 +226,10 @@ public final class SRSTraceReportStreamingOutput implements StreamingOutput {
       ArtifactReadable srsHeadingParent =
          queryFactory.fromBranch(branch).andNameEquals("SRS Headings").getResults().getExactlyOne();
 
-      ResultSet<ArtifactReadable> srsHeadings = null;
+      Iterable<ArtifactReadable> srsHeadings = null;
       for (ArtifactReadable folder : srsHeadingParent.getChildren()) {
          if (folder.getName().startsWith(csci)) {
-            srsHeadings = folder.getChildren();
+            srsHeadings = folder.getDescendants();
          }
       }
 
