@@ -11,6 +11,8 @@
 package org.eclipse.osee.ote.core.testPoint;
 
 import javax.print.attribute.EnumSyntax;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.eclipse.osee.framework.jdk.core.util.EnumBase;
 
 public class Operation extends EnumBase {
@@ -26,6 +28,7 @@ public class Operation extends EnumBase {
       super(value);
    }
 
+   @JsonCreator
    public static Operation toEnum(String str) {
       return (Operation) getEnum(str, stringTable, enumValueTable);
    }
@@ -42,5 +45,11 @@ public class Operation extends EnumBase {
    @Override
    protected EnumSyntax[] getEnumValueTable() {
       return enumValueTable;
+   }
+
+   @Override
+   @JsonProperty
+   public String getName() {
+      return super.getName();
    }
 }
