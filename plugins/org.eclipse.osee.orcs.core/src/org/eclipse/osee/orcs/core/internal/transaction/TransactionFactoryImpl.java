@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -45,6 +46,12 @@ public class TransactionFactoryImpl implements TransactionFactory {
    @Override
    public CancellableCallable<Integer> purgeTransaction(Collection<? extends ITransaction> transactions) {
       return txCallableFactory.purgeTransactions(session, transactions);
+   }
+
+   @Override
+   public TransactionBuilder createTransaction(long uuid, ArtifactReadable userArtifact, String comment) throws OseeCoreException {
+      IOseeBranch branch = TokenFactory.createBranch(uuid, "");
+      return createTransaction(branch, userArtifact, comment);
    }
 
    @Override

@@ -141,9 +141,8 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public boolean isUniqueSetName(DispoProgram program, String name) {
-      IOseeBranch branch = getProgramBranch(program);
       ResultSet<ArtifactReadable> results = getQuery()//
-      .fromBranch(branch)//
+      .fromBranch(program.getUuid())//
       .andTypeEquals(DispoConstants.DispoSet)//
       .andNameEquals(name)//
       .getResults();
@@ -151,16 +150,11 @@ public class OrcsStorageImpl implements Storage {
       return results.isEmpty();
    }
 
-   private IOseeBranch getProgramBranch(DispoProgram program) {
-      return TokenFactory.createBranch(program.getUuid(), program.getName());
-   }
-
    @Override
    public boolean isUniqueItemName(DispoProgram program, String setId, String name) {
-      IOseeBranch branch = getProgramBranch(program);
       ArtifactReadable setArt = findDispoArtifact(program, setId, DispoConstants.DispoSet);
       ResultSet<ArtifactReadable> results = getQuery()//
-      .fromBranch(branch)//
+      .fromBranch(program.getUuid())//
       .andRelatedTo(CoreRelationTypes.Default_Hierarchical__Parent, setArt)//
       .andTypeEquals(DispoConstants.DispoItem)//
       .andNameEquals(name)//
@@ -172,7 +166,7 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public List<DispoSet> findDispoSets(DispoProgram program) {
       ResultSet<ArtifactReadable> results = getQuery()//
-      .fromBranch(TokenFactory.createBranch(program.getUuid(), program.getName()))//
+      .fromBranch(program.getUuid())//
       .andTypeEquals(DispoConstants.DispoSet)//
       .getResults();
 
@@ -191,7 +185,7 @@ public class OrcsStorageImpl implements Storage {
 
    private ArtifactReadable findDispoArtifact(DispoProgram program, String setId, IArtifactType type) {
       return getQuery()//
-      .fromBranch(TokenFactory.createBranch(program.getUuid(), program.getName()))//
+      .fromBranch(program.getUuid())//
       .andTypeEquals(type)//
       .andGuid(setId)//
       .getResults().getOneOrNull();
@@ -211,8 +205,7 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public Identifiable<String> createDispoSet(ArtifactReadable author, DispoProgram program, DispoSet descriptor) {
-      IOseeBranch branch = getProgramBranch(program);
-      TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Create Dispo Set");
+      TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Create Dispo Set");
       ArtifactId creatdArtId = tx.createArtifact(DispoConstants.DispoSet, descriptor.getName());
       tx.setSoleAttributeFromString(creatdArtId, DispoConstants.ImportPath, descriptor.getImportPath());
       tx.setSoleAttributeFromString(creatdArtId, DispoConstants.ImportState, descriptor.getImportState());
@@ -233,10 +226,9 @@ public class OrcsStorageImpl implements Storage {
 
    private boolean deleteDispoEntityArtifact(ArtifactReadable author, DispoProgram program, String entityId, IArtifactType type) {
       boolean toReturn = false;
-      IOseeBranch branch = getProgramBranch(program);
       ArtifactReadable dispoArtifact = findDispoArtifact(program, entityId, type);
       if (dispoArtifact != null) {
-         TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Delete Dispo Artifact");
+         TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Delete Dispo Artifact");
          tx.deleteArtifact(dispoArtifact);
          tx.commit();
          toReturn = true;
@@ -247,7 +239,6 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public void updateDispoSet(ArtifactReadable author, DispoProgram program, String setId, DispoSet newData) {
-      IOseeBranch branch = getProgramBranch(program);
       ArtifactReadable dispoSet = findDispoArtifact(program, setId, DispoConstants.DispoSet);
 
       String name = newData.getName();
@@ -256,7 +247,7 @@ public class OrcsStorageImpl implements Storage {
       //      DispoOperationsEnum operationRequest = dispositionSet.getOperation(); //  Operation classes still not created
       JSONArray notesList = newData.getNotesList();
 
-      TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Delete Dispo Set");
+      TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Delete Dispo Set");
       if (name != null) {
          tx.setName(dispoSet, name);
       }
@@ -274,9 +265,8 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public Identifiable<String> createDispoItem(ArtifactReadable author, DispoProgram program, DispoSet parentSet, DispoItem data, ArtifactReadable assignee) {
-      IOseeBranch branch = getProgramBranch(program);
       ArtifactReadable parentSetArt = findDispoArtifact(program, parentSet.getGuid(), DispoConstants.DispoSet);
-      TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Create Dispoable Item");
+      TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Create Dispoable Item");
       ArtifactId createdItem = tx.createArtifact(DispoConstants.DispoItem, data.getName());
 
       tx.setSoleAttributeValue(createdItem, DispoConstants.DispoDateCreated, data.getCreationDate());
@@ -296,9 +286,8 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public void createDispoItems(ArtifactReadable author, DispoProgram program, DispoSet parentSet, List<DispoItem> data, String assignee) {
-      IOseeBranch branch = TokenFactory.createBranch(program.getUuid(), "");
       ArtifactReadable parentSetArt = findDispoArtifact(program, parentSet.getGuid(), DispoConstants.DispoSet);
-      TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Create Dispoable Item");
+      TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Create Dispoable Item");
 
       for (DispoItem item : data) {
          ArtifactId createdItem = tx.createArtifact(DispoConstants.DispoItem, item.getName());
@@ -321,7 +310,6 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public void updateDispoItem(ArtifactReadable author, DispoProgram program, String dispoItemId, DispoItem data) {
-      IOseeBranch branch = getProgramBranch(program);
       ArtifactId dispoItemArt = findDispoArtifact(program, dispoItemId, DispoConstants.DispoItem);
       Date lastUpdate = data.getLastUpdate();
       String name = data.getName();
@@ -330,7 +318,7 @@ public class OrcsStorageImpl implements Storage {
       String status = data.getStatus();
       String assignee = data.getAssignee();
 
-      TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Edit Dispoable Item");
+      TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Edit Dispoable Item");
 
       if (name != null) {
          tx.setName(dispoItemArt, name);
@@ -356,8 +344,7 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public void updateDispoItems(ArtifactReadable author, DispoProgram program, String dispoItemId, List<DispoItem> data) {
-      IOseeBranch branch = TokenFactory.createBranch(program.getUuid(), "");
-      TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Edit Dispoable Item");
+      TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Edit Dispoable Item");
 
       for (DispoItem item : data) {
          ArtifactId dispoItemArt = findDispoArtifact(program, dispoItemId, DispoConstants.DispoItem);
@@ -406,21 +393,16 @@ public class OrcsStorageImpl implements Storage {
 
       Pattern regex = Pattern.compile(baselineBranch.getUuid() + "\\s*:\\s*.*");
       Matcher matcher = regex.matcher(configContents);
-      if (matcher.find()) {
-         String match = matcher.group();
-         String[] split = match.split(":");
-         toReturn = TokenFactory.createBranch(Long.valueOf(split[1]), baselineBranch.getName());
-      }
 
-      regex = Pattern.compile(baselineBranch.getUuid() + "\\s*:\\s*.*");
-      matcher = regex.matcher(configContents);
       Long uuid = null;
       if (matcher.find()) {
          String match = matcher.group();
          String[] split = match.split(":");
          uuid = Long.valueOf(split[1]);
       }
-      toReturn = TokenFactory.createBranch(uuid, "");
+      if (uuid != null) {
+         toReturn = TokenFactory.createBranch(uuid, baselineBranch.getName());
+      }
       return toReturn;
    }
 

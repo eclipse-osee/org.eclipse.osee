@@ -24,6 +24,8 @@ public interface TransactionFactory {
 
    TransactionBuilder createTransaction(IOseeBranch branch, ArtifactReadable userArtifact, String comment) throws OseeCoreException;
 
+   TransactionBuilder createTransaction(long uuid, ArtifactReadable userArtifact, String comment) throws OseeCoreException;
+
    CancellableCallable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact);
 
    CancellableCallable<Integer> purgeTransaction(Collection<? extends ITransaction> transactions);
