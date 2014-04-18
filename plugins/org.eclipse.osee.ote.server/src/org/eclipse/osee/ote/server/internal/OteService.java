@@ -33,8 +33,6 @@ import org.eclipse.osee.ote.core.IUserSession;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
 import org.eclipse.osee.ote.core.OTESessionManager;
 import org.eclipse.osee.ote.core.ReturnStatus;
-import org.eclipse.osee.ote.core.environment.BundleConfigurationReport;
-import org.eclipse.osee.ote.core.environment.BundleDescription;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentConfig;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
@@ -99,7 +97,6 @@ public class OteService implements IHostTestEnvironment, IService {
             "received request for test environment from user " + session.getUser().getName());
          if (!isEnvironmentAvailable()) {
             createEnvironment();
-
          }
          
          oteSessions.add(sessionId, session);

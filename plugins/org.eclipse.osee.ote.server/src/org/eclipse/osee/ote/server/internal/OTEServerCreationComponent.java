@@ -36,7 +36,7 @@ public class OTEServerCreationComponent {
    }
    
    public void start() {
-      String oteServerFactoryClass = System.getProperty("osee.ote.server.factory.class");
+      final String oteServerFactoryClass = System.getProperty("osee.ote.server.factory.class");
       if (oteServerFactoryClass != null) {
          try{
             String outfileLocation = System.getProperty("osee.ote.outfiles");
@@ -50,7 +50,7 @@ public class OTEServerCreationComponent {
             if (keepEnvAliveWithNoUsersStr != null) {
                keepEnvAliveWithNoUsers = Boolean.parseBoolean(keepEnvAliveWithNoUsersStr);
             }
-            TestEnvironmentServiceConfigImpl config =
+            final TestEnvironmentServiceConfigImpl config =
                   new TestEnvironmentServiceConfigImpl(keepEnvAliveWithNoUsers, title, name, outfileLocation, null);
 
             String version = "unknown";
@@ -74,10 +74,19 @@ public class OTEServerCreationComponent {
 
             int index = oteServerFactoryClass.indexOf('.');
             String type = oteServerFactoryClass.substring(index > 0 ? index + 1 : 0);
-            PropertyParamter propertyParameter =
+            final PropertyParamter propertyParameter =
                   new PropertyParamter(version, comment, station, type, useJiniLookup, isLocalConnector);
 
-            oteServiceStart.start(new JiniServiceSideConnector(), config, propertyParameter, oteServerFactoryClass);
+            Thread th = new Thread(new Runnable(){
+               public void run(){
+                  try {
+                     oteServiceStart.start(new JiniServiceSideConnector(), config, propertyParameter, oteServerFactoryClass);
+                  } catch (Exception e) {
+                     e.printStackTrace();
+                  }
+               }
+            });
+            th.start();
          } catch (Exception ex){
             OseeLog.log(getClass(), Level.SEVERE, ex);
          }
