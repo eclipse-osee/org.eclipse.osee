@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.core.framework.saxparse;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Actual;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.AdditionalInfo;
@@ -60,10 +61,12 @@ import org.eclipse.osee.ote.core.framework.saxparse.elements.Summary;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Support;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.SystemInfo;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.TestCase;
+import org.eclipse.osee.ote.core.framework.saxparse.elements.TestEventElement;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.TestPoint;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.TestPointName;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.TestPointResults;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.TestScript;
+import org.eclipse.osee.ote.core.framework.saxparse.elements.ThrowableElement;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Time;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.TimeSummary;
 import org.eclipse.osee.ote.core.framework.saxparse.elements.Tracability;
@@ -139,6 +142,8 @@ public class OteSaxHandler extends AbstractSaxHandler {
       addHandlers(new SystemInfo());
       addHandlers(new TestCase());
       addHandlers(new TestPoint());
+      addHandlers(new ThrowableElement());
+      addHandlers(new TestEventElement());
       addHandlers(new TestPointName());
       addHandlers(new TestPointResults());
       addHandlers(new TestScript());
@@ -192,7 +197,7 @@ public class OteSaxHandler extends AbstractSaxHandler {
       if (handler != null) {
          handler.startElementFound(uri, localName, name, attributes);
       } else {
-         System.out.println("No Handler for ELEMENT type" + name);
+         System.out.println("No Handler for ELEMENT type " + name);
       }
    }
 

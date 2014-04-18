@@ -76,6 +76,7 @@ public class ScriptExecutionContribution implements IPropertyStoreBasedControl {
 
       this.optionsPanel.setKeepOldCopiesEnabled(propertyStore.getBoolean(TestManagerStorageKeys.KEEP_OLD_OUTFILE_COPIES_ENABLED_KEY));
       this.optionsPanel.setBatchModeEnabled(propertyStore.getBoolean(TestManagerStorageKeys.BATCH_MODE_ENABLED_KEY));
+      this.optionsPanel.setAbortOnFail(propertyStore.getBoolean(TestManagerStorageKeys.ABORT_ON_FAIL_KEY));
 
       this.loggingPanel.setSelected(propertyStore.get(TestManagerStorageKeys.LOGGING_LEVEL_KEY));
    }
@@ -89,6 +90,7 @@ public class ScriptExecutionContribution implements IPropertyStoreBasedControl {
       propertyStore.put(TestManagerStorageKeys.KEEP_OLD_OUTFILE_COPIES_ENABLED_KEY,
          this.optionsPanel.isKeepOldCopiesEnabled());
       propertyStore.put(TestManagerStorageKeys.BATCH_MODE_ENABLED_KEY, this.optionsPanel.isBatchModeEnabled());
+      propertyStore.put(TestManagerStorageKeys.ABORT_ON_FAIL_KEY, this.optionsPanel.isAbortOnFail());
    }
 
    @Override

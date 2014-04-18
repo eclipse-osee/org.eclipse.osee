@@ -84,6 +84,13 @@ public class RunTests implements ITestServerCommand, Serializable {
       
       environment.setupOutfileDir(batchFolder.getAbsolutePath());
       msgContext.resetScriptLoader(configuration, global.getArray(RunTestsKeys.classpath.name()));
+      
+      //Override the command line option only if batch abort has been selected in TestManager
+      boolean batchAbortFailMode = global.getBoolean(RunTestsKeys.batchFailAbortMode.name());
+      if(batchAbortFailMode){
+        System.setProperty("ote.abort.on.fail", "true");
+      }   
+      
       for (IPropertyStore store : scripts) {
          if (cancelAll) {
             statusBoard.onTestComplete(store.get(RunTestsKeys.testClass.name()),

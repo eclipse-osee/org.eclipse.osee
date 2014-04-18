@@ -21,6 +21,7 @@ public enum RunTestsKeys {
    executableArg1Array,
    executableArg2Array,
    spare1,
+   batchFailAbortMode,
    batchmode;
    
 }

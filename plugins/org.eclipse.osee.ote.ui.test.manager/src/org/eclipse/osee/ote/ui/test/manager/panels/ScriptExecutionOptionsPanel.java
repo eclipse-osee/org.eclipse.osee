@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 public class ScriptExecutionOptionsPanel extends Composite {
    private Button saveOutputCheck;
    private Button batchModeCheck;
+   private Button abortScriptOnFirstFail;
 
    public ScriptExecutionOptionsPanel(Composite parent, int style) {
       super(parent, style);
@@ -41,21 +42,34 @@ public class ScriptExecutionOptionsPanel extends Composite {
       batchModeCheck = new Button(parent, SWT.CHECK);
       batchModeCheck.setText("Run in batch mode");
       batchModeCheck.setToolTipText("If any prompts exist, they are skipped if this option is selected.");
+      
+      abortScriptOnFirstFail = new Button(parent, SWT.CHECK);
+      abortScriptOnFirstFail.setText("Abort script on first fail");
+      abortScriptOnFirstFail.setToolTipText("Any script fail will cause the current script to be aborted .");
    }
 
    public boolean isKeepOldCopiesEnabled() {
       return saveOutputCheck.getSelection();
    }
 
-   public boolean isBatchModeEnabled() {
-      return batchModeCheck.getSelection();
-   }
-
    public void setKeepOldCopiesEnabled(boolean isEnabled) {
       saveOutputCheck.setSelection(isEnabled);
+   }
+
+   public boolean isBatchModeEnabled() {
+      return batchModeCheck.getSelection();
    }
 
    public void setBatchModeEnabled(boolean isEnabled) {
       batchModeCheck.setSelection(isEnabled);
    }
+   
+   public boolean isAbortOnFail(){
+      return abortScriptOnFirstFail.getSelection();
+   }
+   
+   public void setAbortOnFail(boolean isEnabled){
+      abortScriptOnFirstFail.setSelection(isEnabled);
+   }
+   
 }
