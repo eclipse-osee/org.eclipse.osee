@@ -51,6 +51,11 @@ public final class PageFactory {
       return page.realizePage(templateResource);
    }
 
+   public static void realizePage(IResourceRegistry registry, ResourceToken templateResource, Appendable output, String... keyValues) {
+      PageCreator page = newPageCreator(registry, keyValues);
+      page.realizePage(templateResource, output);
+   }
+
    public static String realizePage(IResourceRegistry registry, ResourceToken templateResource, ResourceToken valuesResource, String... keyValues) {
       PageCreator page = newPageCreator(registry, valuesResource, keyValues);
       return page.realizePage(templateResource);

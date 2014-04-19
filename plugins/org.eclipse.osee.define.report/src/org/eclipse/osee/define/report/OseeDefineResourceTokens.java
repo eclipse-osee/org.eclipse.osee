@@ -32,7 +32,7 @@ public final class OseeDefineResourceTokens {
    // @formatter:on
 
    private static ResourceToken createToken(Long uuid, String name) {
-      ResourceToken token = new ClassBasedResourceToken(uuid, name, OseeDefineResourceTokens.class, "html/");
+      ResourceToken token = new ClassBasedResourceToken(uuid, name, OseeDefineResourceTokens.class);
       tokens.add(token);
       return token;
    }

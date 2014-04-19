@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Ryan D. Brooks
@@ -37,8 +36,7 @@ public final class OseeTemplateTestTokens {
    // @formatter:on
 
    private static ResourceToken createToken(Long uuid, String name) {
-      ResourceToken token =
-         new ClassBasedResourceToken(uuid, name, OseeTemplateTestTokens.class, Lib.getExtension(name) + "/");
+      ResourceToken token = new ClassBasedResourceToken(uuid, name, OseeTemplateTestTokens.class);
       tokens.add(token);
       return token;
    }

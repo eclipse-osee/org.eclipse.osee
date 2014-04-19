@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.jdk.core.type;
 
 import java.net.URL;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Ryan D. Brooks
@@ -28,7 +29,11 @@ public final class ClassBasedResourceToken extends ResourceToken {
    }
 
    public ClassBasedResourceToken(Long uuid, String name, Class<?> clazz) {
-      this(uuid, name, clazz, "");
+      this(uuid, name, clazz, Lib.getExtension(name) + "/");
+   }
+
+   public ClassBasedResourceToken(String name, Class<?> clazz) {
+      this(-1L, name, clazz);
    }
 
    @Override
