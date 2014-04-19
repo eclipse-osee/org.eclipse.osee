@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.rest.internal.resources.AtsUiResource;
 import org.eclipse.osee.ats.rest.internal.util.JaxRsExceptionMapper;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.template.engine.OseeTemplateTokens;
 
 /**
  * @author Donald G. Dunne
@@ -37,7 +36,6 @@ public class AtsUiApplication extends Application {
       IResourceRegistry registry = orcsApi.getResourceRegistry();
 
       AtsResourceTokens.register(registry);
-      OseeTemplateTokens.register(registry);
 
       singletons.add(new JaxRsExceptionMapper(registry));
       singletons.add(new AtsUiResource(orcsApi));

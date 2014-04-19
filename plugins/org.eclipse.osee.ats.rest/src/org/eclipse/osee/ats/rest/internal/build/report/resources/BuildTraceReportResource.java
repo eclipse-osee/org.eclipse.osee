@@ -114,8 +114,8 @@ public class BuildTraceReportResource {
       return Response.ok(new StreamingOutput() {
 
          @Override
-         public void write(OutputStream output) throws WebApplicationException, IOException {
-            soureFiles.getSourceFile(output, orcsApi, urlToSource, offline);
+         public void write(OutputStream output) throws WebApplicationException {
+            soureFiles.getSourceFile(output, orcsApi.getResourceRegistry(), urlToSource, offline);
          }
       }).build();
    }
@@ -128,7 +128,7 @@ public class BuildTraceReportResource {
 
          @Override
          public void write(OutputStream output) throws WebApplicationException, IOException {
-            soureFiles.getSupportFiles(output, orcsApi);
+            soureFiles.getSupportFiles(output);
          }
       }).build();
    }

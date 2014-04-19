@@ -36,7 +36,7 @@ public final class AtsResourceTokens {
    // @formatter:on
 
    private static ResourceToken createToken(Long uuid, String name) {
-      ResourceToken token = new ClassBasedResourceToken(uuid, name, AtsResourceTokens.class, "html/");
+      ResourceToken token = new ClassBasedResourceToken(uuid, name, AtsResourceTokens.class);
       tokens.add(token);
       return token;
    }
