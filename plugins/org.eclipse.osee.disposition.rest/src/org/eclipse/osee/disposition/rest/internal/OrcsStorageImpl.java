@@ -336,11 +336,11 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public void updateDispoItems(ArtifactReadable author, DispoProgram program, String dispoItemId, List<DispoItem> data) {
+   public void updateDispoItems(ArtifactReadable author, DispoProgram program, List<DispoItem> data) {
       TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Edit Multiple Dispo Items");
 
       for (DispoItem newItem : data) {
-         ArtifactId dispoItemArt = findDispoArtifact(program, dispoItemId, DispoConstants.DispoItem);
+         ArtifactId dispoItemArt = findDispoArtifact(program, newItem.getGuid(), DispoConstants.DispoItem);
          updateSingleItem(author, program, dispoItemArt, newItem, tx);
       }
 
@@ -359,7 +359,7 @@ public class OrcsStorageImpl implements Storage {
    private IOseeBranch convertToDispoBranch(String configContents, IOseeBranch baselineBranch) {
       IOseeBranch toReturn = null;
 
-      Pattern regex = Pattern.compile(baselineBranch.getUuid() + "\\s*:\\s*.*");
+      Pattern regex = Pattern.compile("(\\n|^+)" + baselineBranch.getUuid() + "\\s*:\\s*.*");
       Matcher matcher = regex.matcher(configContents);
 
       Long uuid = null;

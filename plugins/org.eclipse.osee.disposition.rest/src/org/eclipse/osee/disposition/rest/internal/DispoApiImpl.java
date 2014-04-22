@@ -197,9 +197,8 @@ public class DispoApiImpl implements DispoApi {
       return wasUpdated;
    }
 
-   private boolean editDispoItems(DispoProgram program, String itemId, List<DispoItem> dispoItems) {
+   private boolean editDispoItems(DispoProgram program, List<DispoItem> dispoItems) {
       boolean wasUpdated = false;
-      DispoItem dispoItemToEdit = getQuery().findDispoItemById(program, itemId);
 
       for (DispoItem dispoItem : dispoItems) {
          try {
@@ -210,7 +209,7 @@ public class DispoApiImpl implements DispoApi {
       }
 
       ArtifactReadable author = getQuery().findUser();
-      getWriter().updateDispoItems(author, program, dispoItemToEdit.getGuid(), dispoItems);
+      getWriter().updateDispoItems(author, program, dispoItems);
       wasUpdated = true;
       return wasUpdated;
    }
@@ -393,7 +392,7 @@ public class DispoApiImpl implements DispoApi {
                createDispoItems(program, setToEdit.getGuid(), itemsToCreate);
             }
             if (itemsToEdit.size() > 0) {
-               editDispoItems(program, setToEdit.getGuid(), itemsToEdit);
+               editDispoItems(program, itemsToEdit);
             }
 
          } catch (Exception ex) {
