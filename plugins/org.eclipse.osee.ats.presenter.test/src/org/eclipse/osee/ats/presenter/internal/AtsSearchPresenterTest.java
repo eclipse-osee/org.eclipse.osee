@@ -25,7 +25,6 @@ import org.eclipse.osee.display.presenter.mocks.MockSearchNavigator;
 import org.eclipse.osee.display.presenter.mocks.MockSearchResultsListComponent;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.UrlQuery;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -88,7 +87,7 @@ public class AtsSearchPresenterTest {
       Assert.assertEquals(3, headerComp.getPrograms().size());
 
       String programGuid = GUID.create();
-      String buildGuid = String.valueOf(Lib.generateUuid());
+      String buildGuid = "70559324";
       String url =
          "/" + new UrlQuery().put("program", programGuid).put("build", buildGuid).put("nameOnly", "true").put("search",
             "phrase").put("verbose", "false").toString();

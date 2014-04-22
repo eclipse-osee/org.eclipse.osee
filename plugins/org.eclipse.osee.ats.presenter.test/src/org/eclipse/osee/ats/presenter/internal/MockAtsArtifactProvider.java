@@ -67,7 +67,7 @@ public class MockAtsArtifactProvider extends MockArtifactProvider implements Ats
 
    @Override
    public long getBaselineBranchUuid(String buildArtGuid) throws OseeCoreException {
-      return buildArtGuid.hashCode();
+      return 12345;
    }
 
 }
