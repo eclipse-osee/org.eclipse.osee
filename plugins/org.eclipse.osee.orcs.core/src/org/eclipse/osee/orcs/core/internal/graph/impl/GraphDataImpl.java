@@ -125,4 +125,41 @@ public class GraphDataImpl implements GraphData {
          nodesById.size(), adjacenciesById.size());
    }
 
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      IOseeBranch branch = getBranch();
+      result = prime * result + ((branch == null) ? 0 : branch.hashCode());
+      result = prime * result + getTransaction();
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      GraphData other = (GraphData) obj;
+      IOseeBranch branch = getBranch();
+      IOseeBranch otherbranch = other.getBranch();
+      if (branch == null) {
+         if (otherbranch != null) {
+            return false;
+         }
+      } else if (!branch.equals(otherbranch)) {
+         return false;
+      }
+      if (getTransaction() != other.getTransaction()) {
+         return false;
+      }
+      return true;
+   }
+
 }

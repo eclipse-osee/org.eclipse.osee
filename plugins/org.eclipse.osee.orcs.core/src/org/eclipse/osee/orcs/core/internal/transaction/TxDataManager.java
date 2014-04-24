@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
@@ -34,8 +34,10 @@ import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
+import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
+import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
 import org.eclipse.osee.orcs.core.internal.transaction.TxData.TxState;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -75,8 +77,13 @@ public class TxDataManager {
    }
 
    public void txCommitSuccess(TxData txData) {
+      GraphData graph = txData.getGraph();
       for (Artifact writeable : txData.getAllWriteables()) {
          writeable.setNotDirty();
+         RelationNodeAdjacencies adjacencies = graph.getAdjacencies(writeable);
+         for (Relation relation : adjacencies.getDirties()) {
+            relation.clearDirty();
+         }
       }
       txData.setTxState(TxState.COMMITTED);
    }

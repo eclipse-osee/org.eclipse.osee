@@ -25,6 +25,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -46,8 +47,10 @@ import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
+import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
+import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
 import org.eclipse.osee.orcs.core.internal.transaction.TxData.TxState;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
 import org.eclipse.osee.orcs.core.internal.util.ValueProvider;
@@ -95,6 +98,7 @@ public class TxDataManagerTest {
    @Mock private Artifact artifact1;
    @Mock private Artifact artifact2;
    @Mock private Artifact artifact3;
+   @Mock private RelationNodeAdjacencies adjacencies;
    @Captor private ArgumentCaptor<Collection<ArtifactId>> idCaptor;
    @Captor private ArgumentCaptor<List<? extends RelationNode>> nodeCaptor;
    // @formatter:on
@@ -156,7 +160,12 @@ public class TxDataManagerTest {
    @Test
    public void testTxCommitSuccess() {
       Iterable<Artifact> writeables = Arrays.asList(artifact1);
+      List<Relation> empty = Collections.emptyList();
+
+      when(txData.getGraph()).thenReturn(graph);
       when(txData.getAllWriteables()).thenReturn(writeables);
+      when(graph.getAdjacencies(artifact1)).thenReturn(adjacencies);
+      when(adjacencies.getDirties()).thenReturn(empty);
 
       txDataManager.txCommitSuccess(txData);
       verify(txData).setTxState(TxState.COMMITTED);

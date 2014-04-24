@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.transaction;
 
-import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -23,7 +23,7 @@ import org.eclipse.osee.orcs.core.internal.artifact.ArtifactVisitor;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationVisitor;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * Collect all the dirty OrcsData's into a changeSet;
@@ -66,9 +66,9 @@ public class ChangeSetBuilder implements ArtifactVisitor, RelationVisitor, HasOr
 
    private static final class OrcsChangeSetImpl implements OrcsChangeSet {
 
-      private final List<ArtifactData> arts = Lists.newArrayList();
-      private final List<AttributeData> attrs = Lists.newArrayList();
-      private final List<RelationData> rels = Lists.newArrayList();
+      private final Set<ArtifactData> arts = Sets.newLinkedHashSet();
+      private final Set<AttributeData> attrs = Sets.newLinkedHashSet();
+      private final Set<RelationData> rels = Sets.newLinkedHashSet();
 
       @Override
       public void accept(OrcsVisitor visitor) throws OseeCoreException {
@@ -84,17 +84,17 @@ public class ChangeSetBuilder implements ArtifactVisitor, RelationVisitor, HasOr
       }
 
       @Override
-      public List<ArtifactData> getArtifactData() {
+      public Iterable<ArtifactData> getArtifactData() {
          return arts;
       }
 
       @Override
-      public List<AttributeData> getAttributeData() {
+      public Iterable<AttributeData> getAttributeData() {
          return attrs;
       }
 
       @Override
-      public List<RelationData> getRelationData() {
+      public Iterable<RelationData> getRelationData() {
          return rels;
       }
 
