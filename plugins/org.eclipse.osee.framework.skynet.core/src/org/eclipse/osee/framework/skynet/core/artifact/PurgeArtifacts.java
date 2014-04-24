@@ -127,6 +127,13 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
          queryId = ArtifactLoader.getNewQueryId();
          insertTime = GlobalTime.GreenwichMeanTimestamp();
 
+         Set<Artifact> childreArtifactsToPurge = new HashSet<Artifact>();
+         for (Artifact art : artifactsToPurge) {
+            childreArtifactsToPurge.addAll(art.getDescendants(DeletionFlag.INCLUDE_DELETED));
+         }
+
+         artifactsToPurge.addAll(childreArtifactsToPurge);
+
          // insert into the artifact_join_table
          for (Artifact art : artifactsToPurge) {
             batchParameters.add(new Object[] {
