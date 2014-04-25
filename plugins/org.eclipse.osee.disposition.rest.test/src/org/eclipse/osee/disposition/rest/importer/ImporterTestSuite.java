@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Angel Avila
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({DispoImporterTest.class})
+@Suite.SuiteClasses({DispoImporterTest.class, TmzImporterTest.class})
 public class ImporterTestSuite {
    // Test Suite
 }

@@ -17,39 +17,22 @@ import java.util.Date;
 import java.util.Iterator;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoItemData;
-import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.DiscrepancyParser;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.json.JSONObject;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 /**
  * @author Angel Avila
  */
 public class DispoImporterTest {
 
-   @Mock
-   private DispoDataFactory dataFactory;
-
-   @Before
-   public void setUp() {
-      MockitoAnnotations.initMocks(this);
-   }
-
    @Test
    public void testConnectAnnotationsSingleCompelete() throws Exception {
 
       DispoItemData dispoItem = new DispoItemData();
-
-      Mockito.when(dataFactory.getNewId()).thenReturn("id1");
-      Mockito.when(dataFactory.getNewId()).thenReturn("id2");
-
       boolean stoppedParsing = false;
 
       String name = "sampleTmo.tmo";

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -25,7 +26,9 @@ import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.internal.importer.DispoImporter;
+import org.eclipse.osee.disposition.rest.internal.importer.AbstractDispoImporter;
+import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory;
+import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory.ImportFormat;
 import org.eclipse.osee.disposition.rest.util.DispoFactory;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
@@ -53,6 +56,7 @@ public class DispoApiImpl implements DispoApi {
    private DispoConnector dispoConnector;
    private DispoFactory dispoFactory;
    private DispoResolutionValidator resolutionValidator;
+   private DispoImporterFactory importerFactory;
 
    public void setExecutor(ExecutorAdmin executor) {
       this.executor = executor;
@@ -81,6 +85,7 @@ public class DispoApiImpl implements DispoApi {
    public void start() {
       logger.trace("Starting DispoApiImpl...");
       dispoFactory = new DispoFactoryImpl();
+      importerFactory = new DispoImporterFactory(dataFactory, executor, logger);
    }
 
    public void stop() {
@@ -371,8 +376,9 @@ public class DispoApiImpl implements DispoApi {
       if (operation.equals(DispoStrings.Operation_Import)) {
          try {
             HashMap<String, DispoItem> nameToItemMap = getItemsMap(program, setToEdit);
+            AbstractDispoImporter importer = importerFactory.createImporter(ImportFormat.TMO);
             List<DispoItem> itemsFromParse =
-               DispoImporter.importDirectory(nameToItemMap, setToEdit.getImportPath(), dataFactory, executor);
+               importer.importDirectory(nameToItemMap, new File(setToEdit.getImportPath()));
 
             List<DispoItem> itemsToCreate = new ArrayList<DispoItem>();
             List<DispoItem> itemsToEdit = new ArrayList<DispoItem>();
