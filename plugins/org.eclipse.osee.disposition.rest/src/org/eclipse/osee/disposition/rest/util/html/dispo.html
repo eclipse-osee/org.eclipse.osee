@@ -16,7 +16,7 @@
                     		 <a href="admin">Admin</a>
  								 <a href="">User</a>
                     </li>
-                </ul>
+                </ul> 
             </div>
             <div id="userSection">
                 <div id="topSection">
@@ -34,7 +34,7 @@
                             </select>
                         </div>
                     </div>
-                </div>
+                </div> 
                 <div id="dispoSection">
                     <table id="dispoTable">
                         <tr>
@@ -104,7 +104,7 @@
                                 <td class="emptyCell"></td>
                                 <td class="emptyCell"></td>
                                 <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
+                                <td class="emptyCell"></td> 
                             </tr>
                             <tr class="itemRow">
                                 <td class="emptyCell"></td>
@@ -227,36 +227,41 @@
 </script>
 <script>
     function showAnnotations(currentRow) {
-        if (userName == "") {
-			            userName = getCookie("disponame");
-			            if(userName === undefined) {
-			            	var nameEnter=prompt("Please enter your name","");
-							   userName = nameEnter;
-							   addFieldToCookie("disponame", userName);
-			            } 
+        if (userName == "" || userName === undefined) {
+	          userName = getCookie("disponame");
+	          if(userName === undefined) {
+	          	 var nameEnter=prompt("Please enter your name","");
+	          	 if(nameEnter != null && nameEnter != "") {
+				 	    userName = nameEnter;
+				 	    addFieldToCookie("disponame", userName);
+				 	 }
+	          } 
         }
-
-        var pocCell = currentRow.cells[5];
-        var currentAssigned = pocCell.innerHTML;
-        if (userName == currentAssigned) {
-            var currentRowIndex = currentRow.rowIndex;
-            var nextRow = dispoTable.rows[currentRowIndex + 1];
-
-            if (nextRow === undefined) {
-                nextRow = dispoTable.insertRow(currentRowIndex + 1);
-            }
-            if (nextRow.className == "containerRow") {
-                if (nextRow.style.display == "none") {
-                    nextRow.style.display = "";
-                } else {
-                    nextRow.style.display = "none";
-                }
-            } else {
-                var itemId = currentRow.id;
-                getSubTableHTML(currentRow, itemId);
-            }
-        } else {
-            changePOC(currentRow, currentAssigned);
+        
+        
+        if(userName !== undefined) {
+	        var pocCell = currentRow.cells[5];
+	        var currentAssigned = pocCell.innerHTML;
+	        if (userName == currentAssigned) {
+	            var currentRowIndex = currentRow.rowIndex;
+	            var nextRow = dispoTable.rows[currentRowIndex + 1];
+	
+	            if (nextRow === undefined) {
+	                nextRow = dispoTable.insertRow(currentRowIndex + 1);
+	            }
+	            if (nextRow.className == "containerRow") {
+	                if (nextRow.style.display == "none") {
+	                    nextRow.style.display = "";
+	                } else {
+	                    nextRow.style.display = "none";
+	                }
+	            } else {
+	                var itemId = currentRow.id;
+	                getSubTableHTML(currentRow, itemId);
+	            }
+	        } else {
+	            changePOC(currentRow, currentAssigned);
+	        }
         }
     }
 </script>
