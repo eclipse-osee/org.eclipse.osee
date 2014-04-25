@@ -179,7 +179,7 @@ public final class TranslationUtil {
 
    private static String getStringBranchGuid(Long second) {
       String result = String.valueOf(second);
-      if (BranchRow.isOseeUsingGuidsForAppServerMessaging()) {
+      if (BranchRow.isOseeUsingGuidsForAppServerMessaging() && second > 0) {
          result = BranchRow.getBranchGuidLegacy(second);
       }
       return result;

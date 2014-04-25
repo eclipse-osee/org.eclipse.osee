@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.message.internal.DatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public final class BranchRow {
@@ -105,7 +104,7 @@ public final class BranchRow {
       BranchState branchState = null;
       BranchType branchType = null;
       StorageState storageState = null;
-      if (GUID.isValid(data[1])) {
+      if (isOseeUsingGuidsForAppServerMessaging()) {
          // skip guid
          branchUuid = Long.valueOf(data[2]);
          branchName = data[3];
@@ -167,9 +166,14 @@ public final class BranchRow {
    public static long getBranchIdLegacy(String branchGuid) {
       Long longId = guidToLongCache.get(branchGuid);
       if (longId == null) {
-         longId =
-            DatabaseService.getDatabaseService().runPreparedQueryFetchObject(0L, SELECT_BRANCH_ID_BY_GUID, branchGuid);
-         Conditions.checkExpressionFailOnTrue(longId <= 0, "Error getting branch_id for branch: [%s]", branchGuid);
+         if (branchGuid.equals("-1")) {
+            longId = -1L;
+         } else {
+            longId =
+               DatabaseService.getDatabaseService().runPreparedQueryFetchObject(0L, SELECT_BRANCH_ID_BY_GUID,
+                  branchGuid);
+            Conditions.checkExpressionFailOnTrue(longId <= 0, "Error getting branch_id for branch: [%s]", branchGuid);
+         }
          guidToLongCache.put(branchGuid, longId);
       }
       return longId;
