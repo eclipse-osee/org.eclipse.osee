@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -42,9 +41,5 @@ public abstract class GenericViewPart extends ViewPart {
    @Override
    public void init(IViewSite site) throws PartInitException {
       super.init(site);
-
-      // set the context (org.eclipse.ui.contexts) to osee to make the osee hotkeys available
-      IContextService contextService = (IContextService) getSite().getService(IContextService.class);
-      contextService.activateContext("org.eclipse.osee.contexts.window");
    }
 }

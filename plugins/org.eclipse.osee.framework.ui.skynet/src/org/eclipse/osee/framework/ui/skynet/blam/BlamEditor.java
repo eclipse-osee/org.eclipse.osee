@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 /**
@@ -147,9 +146,6 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
    @Override
    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
       super.init(site, input);
-      // set the context (org.eclipse.ui.contexts) to osee to make the osee hotkeys available
-      IContextService contextService = (IContextService) getSite().getService(IContextService.class);
-      contextService.activateContext("org.eclipse.osee.contexts.window");
    }
 
    public String getButtonText() {

@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 /**
@@ -75,9 +74,6 @@ public abstract class AbstractArtifactEditor extends FormEditor implements IDirt
       Object[] selected = artifact != null ? new Object[] {artifact} : EMPTY_ARRAY;
       defaultSelectionProvider.setSelection(new StructuredSelection(selected));
       getSite().setSelectionProvider(defaultSelectionProvider);
-      // set the context (org.eclipse.ui.contexts) to osee to make the osee hotkeys available
-      IContextService contextService = (IContextService) getSite().getService(IContextService.class);
-      contextService.activateContext("org.eclipse.osee.contexts.window");
    }
 
    public ISelectionProvider getDefaultSelectionProvider() {

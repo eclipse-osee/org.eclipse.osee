@@ -68,7 +68,6 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.UIJob;
 
@@ -290,10 +289,6 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
    public void init(IViewSite site, IMemento memento) throws PartInitException {
       super.init(site, memento);
       if (DbConnectionExceptionComposite.dbConnectionIsOk()) {
-
-         // set the context (org.eclipse.ui.contexts) to be osee to make the osee hotkeys available
-         IContextService contextService = (IContextService) getSite().getService(IContextService.class);
-         contextService.activateContext("org.eclipse.osee.contexts.window");
 
          try {
             if (memento != null) {

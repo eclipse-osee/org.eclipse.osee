@@ -568,6 +568,40 @@
      </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenSkywalkerEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command">
+     <activeWhen>
+        <or>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.search.ui.views.SearchView">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditor">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.results.ResultsEditor">
+              </equals>
+           </with>
+        </or>
+     </activeWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewWordChangeReportHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command">
      <enabledWhen>
@@ -610,14 +644,40 @@
      </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ShowArtifactInResourceHandler" commandId="org.eclipse.osee.framework.ui.skynet.resource.command">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
+     <activeWhen>
+        <or>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.search.ui.views.SearchView">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditor">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.results.ResultsEditor">
+              </equals>
+           </with>
+        </or>
+     </activeWhen>
       </handler>
 				<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ReplaceWithBaselineHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command">
      <enabledWhen>
@@ -632,14 +692,40 @@
   <handler
         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.RevealInArtifactExplorer"
         commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
+     <activeWhen>
+        <or>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.search.ui.views.SearchView">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditor">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.results.ResultsEditor">
+              </equals>
+           </with>
+        </or>
+     </activeWhen>
   </handler>
   <handler
         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.DeleteArtifactHandler"
@@ -1668,19 +1754,16 @@
 
       <key
             commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
-            contextId="org.eclipse.osee.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+R">
       </key>
       <key
             commandId="org.eclipse.osee.framework.ui.skynet.resource.command"
-            contextId="org.eclipse.osee.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+T">
       </key>
       <key
             commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command"
-            contextId="org.eclipse.osee.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+O">
       </key>
@@ -1747,15 +1830,6 @@
                tooltip="Open OSEE Configuration Details">
          </action>
       </actionSet>
-   </extension>
-   <extension
-         point="org.eclipse.ui.contexts">
-      <context
-            description="A context supporting key bindings for osee"
-            id="org.eclipse.osee.contexts.window"
-            name="OSEE Context"
-            parentId="org.eclipse.ui.contexts.window">
-      </context>
    </extension>
    <extension
          point="org.eclipse.osee.framework.skynet.core.OseeValidator">
