@@ -297,6 +297,7 @@ public class OrcsStorageImpl implements Storage {
       JSONArray annotationsList = newItemData.getAnnotationsList();
       String status = newItemData.getStatus();
       String assignee = newItemData.getAssignee();
+      String totalPoints = newItemData.getTotalPoints();
 
       if (name != null) {
          tx.setName(currentItemArt, name);
@@ -319,6 +320,9 @@ public class OrcsStorageImpl implements Storage {
       }
       if (needsRerun != null) {
          tx.setSoleAttributeValue(currentItemArt, DispoConstants.DispoItemNeedsRerun, needsRerun.booleanValue());
+      }
+      if (totalPoints != null) {
+         tx.setSoleAttributeValue(currentItemArt, DispoConstants.DispoItemTotalPoints, totalPoints);
       }
    }
 

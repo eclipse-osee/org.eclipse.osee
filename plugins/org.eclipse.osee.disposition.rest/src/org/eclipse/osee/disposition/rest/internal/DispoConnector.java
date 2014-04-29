@@ -63,11 +63,11 @@ public class DispoConnector {
       boolean allDiscrepanciesCovered = false;
       if (allDiscrepancies.isEmpty()) {
          allDiscrepanciesCovered = true;
-      } else {
-         allDiscrepanciesCovered = false;
       }
 
-      if (allAnnotationsValid(annotatinos) && allDiscrepanciesCovered) {
+      if (item.getDiscrepanciesList().length() == 0) {
+         toReturn = DispoStrings.Item_Pass;
+      } else if (allAnnotationsValid(annotatinos) && allDiscrepanciesCovered) {
          toReturn = DispoStrings.Item_Complete;
       } else {
          toReturn = DispoStrings.Item_InComplete;
@@ -116,9 +116,6 @@ public class DispoConnector {
                JSONObject discrepancyAsJson = discrepancies.getJSONObject(id);
                Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancyAsJson);
                toReturn.add(discrepancy.getLocation());
-            } else {
-               String justTestPoint = id.replaceAll(DispoStrings.DeletedDiscrepancy, "");
-               toReturn.add(Integer.valueOf(justTestPoint));
             }
          }
       }

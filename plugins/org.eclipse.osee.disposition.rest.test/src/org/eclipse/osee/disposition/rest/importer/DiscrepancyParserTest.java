@@ -27,10 +27,10 @@ import org.junit.Test;
 /**
  * @author Angel Avila
  */
-public class DispoImporterTest {
+public class DiscrepancyParserTest {
 
    @Test
-   public void testConnectAnnotationsSingleCompelete() throws Exception {
+   public void testNewImport() throws Exception {
 
       DispoItemData dispoItem = new DispoItemData();
       boolean stoppedParsing = false;
@@ -62,7 +62,7 @@ public class DispoImporterTest {
       }
       String actualText = discrepancy13.getText();
 
-      Assert.assertEquals("Failure at Test Point 13. Check Point: Boo_READY. Expected: WT[1]. Actual: WT [0]. ",
+      Assert.assertEquals("Failure at Test Point 13. Check Point: Boo_READY5. Expected: WT[1]. Actual: WT [0]. ",
          actualText);
 
       // Test Group Discrepancy

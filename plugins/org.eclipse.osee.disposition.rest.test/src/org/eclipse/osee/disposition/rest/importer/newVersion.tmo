@@ -406,9 +406,57 @@
    </CheckGroup>
   </TestPoint>
   
+  
+    <TestPoint>
+     <Number>9
+     </Number>
+     <Result>PASSED
+     </Result>
+     <Location id="31124466">
+      <Time>1389247262549
+      </Time>
+     </Location>
+     <CheckGroup Mode="AND">
+      <GroupName>ddddd TIME:401
+      </GroupName>
+      <Result>PASSED
+      </Result>
+      <CheckPoint>
+       <TestPointName>FsaafME
+       </TestPointName>
+       <Expected>data_version.new
+       </Expected>
+       <Actual>data_version.new
+       </Actual>
+       <Result>PASSED
+       </Result>
+      </CheckPoint>
+      <CheckPoint>
+       <TestPointName>BOMMDND
+       </TestPointName>
+       <Expected>LOOKUP
+       </Expected>
+       <Actual>LOOKUP
+       </Actual>
+       <Result>PASSED
+       </Result>
+      </CheckPoint>
+      <CheckPoint>
+       <TestPointName>OffT
+       </TestPointName>
+       <Expected>0
+       </Expected>
+       <Actual>0
+       </Actual>
+       <Result>PASSED
+       </Result>
+      </CheckPoint>
+     </CheckGroup>
+  </TestPoint>
+  
 
   <TestPoint>
-   <Number>9
+   <Number>10
    </Number>
    <Result>FAILED
    </Result>
@@ -429,7 +477,7 @@
   </TestPoint>
 
   <TestPoint>
-   <Number>10
+   <Number>11
    </Number>
    <Result>FAILED
    </Result>
@@ -450,7 +498,7 @@
   </TestPoint>
 
   <TestPoint>
-   <Number>11
+   <Number>12
    </Number>
    <Result>FAILED
    </Result>
@@ -471,7 +519,7 @@
   </TestPoint>
 
   <TestPoint>
-   <Number>12
+   <Number>13
    </Number>
    <Result>FAILED
    </Result>
@@ -492,7 +540,7 @@
   </TestPoint>
 
   <TestPoint>
-   <Number>13
+   <Number>14
    </Number>
    <Result>FAILED
    </Result>
@@ -513,7 +561,7 @@
   </TestPoint>
   
  <TestPoint>
-   <Number>14
+   <Number>15
    </Number>
    <Result>FAILED
    </Result>
@@ -580,7 +628,7 @@
  </TestCase>
  
  <OfpLoggingInfo>
-    <TimeSummary milliseconds="1068293" startDate="Wed Jan 09 23:22:53 MST 2014" endDate="Wed Jan 09 23:40:41 MST 2014" elapsed="0:17:48">
+    <TimeSummary milliseconds="1068293" startDate="Wed Jan 11 22:22:53 MST 2014" endDate="Wed Jan 11 22:40:41 MST 2014" elapsed="0:17:48">
     </TimeSummary>
     <TestPointResults pass="2593" fail="0" aborted="false" total="2593">
     </TestPointResults>

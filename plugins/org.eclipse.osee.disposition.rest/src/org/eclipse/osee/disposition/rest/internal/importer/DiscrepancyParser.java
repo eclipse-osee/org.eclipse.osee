@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xml.sax.InputSource;
@@ -67,7 +68,6 @@ public class DiscrepancyParser {
    public static boolean buildItemFromFile(DispoItemData dispoItem, String resourceName, InputStream inputStream, final boolean isNewImport, final Date lastUpdate) throws Exception {
       final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
       final MutableBoolean isWithinTestPointElement = new MutableBoolean(false);
-      final MutableBoolean isCheckGroup = new MutableBoolean(false);
       final MutableInteger idOfTestPoint = new MutableInteger(0);
       final StringBuilder textAppendable = new StringBuilder();
       final MutableBoolean isFailure = new MutableBoolean(false);
@@ -77,6 +77,8 @@ public class DiscrepancyParser {
       final MutableBoolean stoppedParsing = new MutableBoolean(false);
       final MutableString version = new MutableString();
       final MutableString totalPoints = new MutableString();
+      final MutableBoolean firstTestPointResultFound = new MutableBoolean(false);
+      final MutableString abortedFlag = new MutableString();
 
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
       DispoSaxHandler handler = new DispoSaxHandler();
@@ -147,6 +149,7 @@ public class DiscrepancyParser {
          @Override
          public void onStartElement(Object obj) {
             isWithinTestPointElement.setValue(true);
+            firstTestPointResultFound.setValue(false);
          }
       });
 
@@ -178,10 +181,11 @@ public class DiscrepancyParser {
 
          @Override
          public void onEndElement(Object obj) {
-            if (isWithinTestPointElement.getValue()) {
-               if (!isCheckGroup.getValue() && "PASSED".equals(obj)) {
+            if (isWithinTestPointElement.getValue() && !firstTestPointResultFound.getValue()) {
+               firstTestPointResultFound.setValue(true);
+               if (obj.equals("PASSED")) {
                   isFailure.setValue(false);
-               } else if ("FAILED".equals(obj)) {
+               } else {
                   isFailure.setValue(true);
                }
             }
@@ -191,7 +195,6 @@ public class DiscrepancyParser {
       handler.getHandler("CheckGroup").addListener(new SaxElementAdapter() {
          @Override
          public void onStartElement(Object obj) {
-            isCheckGroup.setValue(true);
             if (isFailure.getValue() && isWithinTestPointElement.getValue()) {
                textAppendable.append("Check Group with Checkpoint Failures: ");
             }
@@ -226,6 +229,7 @@ public class DiscrepancyParser {
                TestPointResultsData data = (TestPointResultsData) obj;
                String fail = data.getFail();
                String pass = data.getPass();
+               abortedFlag.setValue(data.getAborted());
                try {
                   int failedTestPoints = Integer.parseInt(fail);
                   int passedTestPoints = Integer.parseInt(pass);
@@ -240,7 +244,13 @@ public class DiscrepancyParser {
       });
 
       try {
-         xmlReader.parse(new InputSource(inputStream));
+         if (inputStream.available() > 0) {
+            xmlReader.parse(new InputSource(inputStream));
+         } else {
+            dispoItem.setVersion("EMPTY TMO");
+            dispoItem.setCreationDate(new Date(1));
+            dispoItem.setLastUpdate(new Date(1));
+         }
       } catch (Exception ex) {
          if (ex.getMessage().equals("Stopped Parsing")) {
             stoppedParsing.setValue(true);
@@ -250,19 +260,44 @@ public class DiscrepancyParser {
       }
 
       if (!stoppedParsing.getValue()) {
-         String normalizedName = resourceName.replaceAll("\\..*", "");
-         dispoItem.setName(normalizedName);
+         dispoItem.setName(resourceName);
+
+         if (abortedFlag.getValue() == null || totalPoints.getValue() == null) {
+            if (totalPoints.getValue() == null) {
+               totalPoints.setValue("-1");
+            }
+            String id = String.valueOf(Lib.generateUuid());
+            discrepancies.put(id,
+               createAdditionalDiscrepancy(id, "No Test Point Result Summary Tag, file may have been aborted"));
+         } else if (abortedFlag.getValue().equalsIgnoreCase("TRUE")) {
+            String id = String.valueOf(Lib.generateUuid());
+            discrepancies.put(id, createAdditionalDiscrepancy(id, "Aborted"));
+         }
+
+         dispoItem.setTotalPoints(totalPoints.getValue());
          dispoItem.setDiscrepanciesList(discrepancies);
-         if (version.getValue() == null) {
+
+         if (version.getValue() == null) { // version can be empty if not version control 
             version.setValue("No version control");
          }
          dispoItem.setVersion(version.getValue());
+
+         if (scriptRunDate.getValue() == null) {
+            scriptRunDate.setValue(new Date(0));
+         }
          if (isNewImport) {
             dispoItem.setCreationDate(scriptRunDate.getValue());
          }
-         dispoItem.setTotalPoints(totalPoints.getValue());
          dispoItem.setLastUpdate(scriptRunDate.getValue());
       }
       return stoppedParsing.getValue();
+   }
+
+   private static JSONObject createAdditionalDiscrepancy(String id, String message) {
+      Discrepancy discrepancy = new Discrepancy();
+      discrepancy.setText(message);
+      discrepancy.setLocation(0);
+      discrepancy.setId(id);
+      return DispoUtil.discrepancyToJsonObj(discrepancy);
    }
 }

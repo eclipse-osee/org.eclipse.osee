@@ -38,7 +38,7 @@ import org.json.JSONObject;
 /**
  * @author John Misinco
  */
-public class TmzImporter extends AbstractDispoImporter {
+public class TmzImporter implements AbstractDispoImporter {
 
    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM dd, yyyy H:mm:ss aa", Locale.US);
 
@@ -97,7 +97,7 @@ public class TmzImporter extends AbstractDispoImporter {
                   }
 
                   if (oldItem != null) {
-                     mergeDispoItems(itemToBuild, oldItem);
+                     DispoItemDataCopier.copyOldItemData(oldItem, itemToBuild);
                   } else {
                      dataFactory.initDispoItem(itemToBuild);
                   }

@@ -31,7 +31,7 @@ import org.eclipse.osee.logger.Log;
 /**
  * @author Angel Avila
  */
-public class TmoImporter extends AbstractDispoImporter {
+public class TmoImporter implements AbstractDispoImporter {
 
    private final DispoDataFactory dataFactory;
    private final ExecutorAdmin executor;
@@ -64,7 +64,7 @@ public class TmoImporter extends AbstractDispoImporter {
                endIndex += remainder;
             }
             List<File> sublist = listOfFiles.subList(startIndex, endIndex);
-            Worker worker = new Worker(sublist, dataFactory, exisitingItems, this);
+            Worker worker = new Worker(sublist, dataFactory, exisitingItems);
             Future<List<DispoItem>> future;
             try {
                future = executor.schedule(worker);
@@ -89,14 +89,12 @@ public class TmoImporter extends AbstractDispoImporter {
       private final List<File> sublist;
       private final DispoDataFactory dataFactory;
       Map<String, DispoItem> exisitingItems;
-      private final AbstractDispoImporter importer;
 
-      public Worker(List<File> sublist, DispoDataFactory dataFactory, Map<String, DispoItem> exisitingItems, AbstractDispoImporter importer) {
+      public Worker(List<File> sublist, DispoDataFactory dataFactory, Map<String, DispoItem> exisitingItems) {
          super();
          this.sublist = sublist;
          this.dataFactory = dataFactory;
          this.exisitingItems = exisitingItems;
-         this.importer = importer;
       }
 
       @Override
@@ -107,21 +105,21 @@ public class TmoImporter extends AbstractDispoImporter {
             try {
                inputStream = new FileInputStream(file);
 
-               String scriptName = file.getName().replaceAll("\\..*", "");
+               String sanitizedFileName = file.getName().replaceAll("\\..*", "");
 
                DispoItemData itemToBuild = new DispoItemData();
                // We already have an item with this name so we now have to check the dates
-               if (exisitingItems.containsKey(scriptName)) {
-                  DispoItem oldItem = exisitingItems.get(scriptName);
+               if (exisitingItems.containsKey(sanitizedFileName)) {
+                  DispoItem oldItem = exisitingItems.get(sanitizedFileName);
                   Date lastUpdate = oldItem.getLastUpdate();
                   boolean wasSameFile =
-                     DiscrepancyParser.buildItemFromFile(itemToBuild, file.getName(), inputStream, false, lastUpdate);
+                     DiscrepancyParser.buildItemFromFile(itemToBuild, sanitizedFileName, inputStream, false, lastUpdate);
                   if (!wasSameFile) {
-                     importer.mergeDispoItems(itemToBuild, oldItem);
+                     DispoItemDataCopier.copyOldItemData(oldItem, itemToBuild);
                      fromThread.add(itemToBuild);
                   }
                } else {
-                  DiscrepancyParser.buildItemFromFile(itemToBuild, file.getName(), inputStream, true, new Date());
+                  DiscrepancyParser.buildItemFromFile(itemToBuild, sanitizedFileName, inputStream, true, new Date());
                   dataFactory.initDispoItem(itemToBuild);
                   fromThread.add(itemToBuild);
                }
