@@ -112,7 +112,7 @@ public class AtsBranchCommitOperation extends AbstractOperation {
          if (commitPopup) {
             branchCommitted = CommitHandler.commitBranch(conflictManager, archiveWorkingBranch);
          } else {
-            BranchManager.commitBranch(null, conflictManager, archiveWorkingBranch, true);
+            BranchManager.commitBranch(null, conflictManager, archiveWorkingBranch, false);
             branchCommitted = true;
          }
          if (branchCommitted) {
