@@ -35,7 +35,9 @@ import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.json.JSONArray;
@@ -107,19 +109,6 @@ public class DispoApiImpl implements DispoApi {
       return getWriter().createDispoSet(author, program, newSet);
    }
 
-   @Override
-   public Identifiable<String> createDispoItem(DispoProgram program, String setId, DispoItemData dispoItem) {
-      DispoSet parentSet = getQuery().findDispoSetsById(program, setId);
-      Identifiable<String> itemId = null;
-      if (parentSet != null) {
-         ArtifactReadable author = getQuery().findUser();
-         ArtifactReadable unassignedUser = getQuery().findUnassignedUser();
-         dataFactory.initDispoItem(dispoItem);
-         itemId = getWriter().createDispoItem(author, program, parentSet, dispoItem, unassignedUser);
-      }
-      return itemId;
-   }
-
    private void createDispoItems(DispoProgram program, String setId, List<DispoItem> dispoItems) {
       DispoSet parentSet = getQuery().findDispoSetsById(program, setId);
       if (parentSet != null) {
@@ -142,12 +131,13 @@ public class DispoApiImpl implements DispoApi {
             int indexOfAnnotation = annotationsList.length();
             annotationToCreate.setIndex(indexOfAnnotation);
 
-            boolean isValidResolution = false;
             String resolution = annotationToCreate.getResolution();
+            Pair<Boolean, String> resolutionValidAndType = new Pair<Boolean, String>(false, "NONE");
             if (resolution != null) {
-               isValidResolution = validateResolution(annotationToCreate);
+               resolutionValidAndType = validateResolution(annotationToCreate);
             }
-            annotationToCreate.setIsResolutionValid(isValidResolution);
+            annotationToCreate.setIsResolutionValid(resolutionValidAndType.getFirst());
+            annotationToCreate.setResolutionType(resolutionValidAndType.getSecond());
 
             JSONObject discrepanciesList = dispoItem.getDiscrepanciesList();
 
@@ -245,9 +235,14 @@ public class DispoApiImpl implements DispoApi {
 
             DispoAnnotationData consolidatedAnnotation = oldAnnotation;
 
-            // Check if newAnnotation has notes, if it does then merge with old notes
-            String newNotes = newAnnotation.getNotes();
-            consolidatedAnnotation.setNotes(newNotes);
+            String newDeveloperNotes = newAnnotation.getDeveloperNotes();
+            if (Strings.isValid(newDeveloperNotes)) {
+               consolidatedAnnotation.setDeveloperNotes(newDeveloperNotes);
+            }
+            String newCustomerNotes = newAnnotation.getCustomerNotes();
+            if (Strings.isValid(newCustomerNotes)) {
+               consolidatedAnnotation.setCustomerNotes(newCustomerNotes);
+            }
 
             // now if the new Annotation modified the location Reference or resolution then disconnect the annotation and try to match it to discrepancies again
             String newLocationRefs = newAnnotation.getLocationRefs();
@@ -255,7 +250,9 @@ public class DispoApiImpl implements DispoApi {
             if (newLocationRefs != null || newResolution != null) {
                if (newResolution != null) {
                   consolidatedAnnotation.setResolution(newResolution);
-                  consolidatedAnnotation.setIsResolutionValid(validateResolution(consolidatedAnnotation));
+                  Pair<Boolean, String> resolutionValidAndType = validateResolution(consolidatedAnnotation);
+                  consolidatedAnnotation.setIsResolutionValid(resolutionValidAndType.getFirst());
+                  consolidatedAnnotation.setResolutionType(resolutionValidAndType.getSecond());
                }
                if (newLocationRefs != null) {
                   consolidatedAnnotation.setLocationRefs(newLocationRefs);
@@ -445,7 +442,7 @@ public class DispoApiImpl implements DispoApi {
       return newList;
    }
 
-   private boolean validateResolution(DispoAnnotationData annotation) {
+   private Pair<Boolean, String> validateResolution(DispoAnnotationData annotation) {
       return resolutionValidator.validate(annotation);
    }
 

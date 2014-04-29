@@ -28,8 +28,6 @@ public interface DispoWriter {
 
    boolean deleteDispoSet(ArtifactReadable author, DispoProgram program, String setId);
 
-   Identifiable<String> createDispoItem(ArtifactReadable author, DispoProgram program, DispoSet parentSet, DispoItem itemToCreate, ArtifactReadable assigneeId);
-
    void createDispoItems(ArtifactReadable author, DispoProgram program, DispoSet parentSet, List<DispoItem> data, String assignee);
 
    void updateDispoItems(ArtifactReadable author, DispoProgram program, String itemToEditId, List<DispoItem> itemsToUpdate);

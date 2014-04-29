@@ -74,7 +74,8 @@ public class DispoDataFactory {
 
    public void initAnnotation(DispoAnnotationData annotationToInit) {
       annotationToInit.setIdsOfCoveredDiscrepancies(new JSONArray());
-      annotationToInit.setNotes("--Enter Notes--");
+      annotationToInit.setCustomerNotes("--Enter Notes--");
+      annotationToInit.setDeveloperNotes("--Enter Notes--");
       annotationToInit.setResolution("");
    }
 

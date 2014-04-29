@@ -32,6 +32,8 @@ public class DispoItemData implements DispoItem {
    private String version;
    private JSONObject discrepanciesList;
    private JSONArray annotationsList;
+   private String totalPoints;
+   private Boolean needsRerun;
 
    public DispoItemData() {
 
@@ -82,6 +84,16 @@ public class DispoItemData implements DispoItem {
       return annotationsList;
    }
 
+   @Override
+   public String getTotalPoints() {
+      return totalPoints;
+   }
+
+   @Override
+   public Boolean getNeedsRerun() {
+      return needsRerun;
+   }
+
    public void setName(String name) {
       this.name = name;
    }
@@ -116,6 +128,14 @@ public class DispoItemData implements DispoItem {
 
    public void setAssignee(String assignee) {
       this.assignee = assignee;
+   }
+
+   public void setTotalPoints(String totalPoints) {
+      this.totalPoints = totalPoints;
+   }
+
+   public void setNeedsRerun(boolean needsRerun) {
+      this.needsRerun = needsRerun;
    }
 
    @Override

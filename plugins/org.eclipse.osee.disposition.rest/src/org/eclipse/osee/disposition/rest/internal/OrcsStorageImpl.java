@@ -264,27 +264,6 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public Identifiable<String> createDispoItem(ArtifactReadable author, DispoProgram program, DispoSet parentSet, DispoItem data, ArtifactReadable assignee) {
-      ArtifactReadable parentSetArt = findDispoArtifact(program, parentSet.getGuid(), DispoConstants.DispoSet);
-      TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Create Dispoable Item");
-      ArtifactId createdItem = tx.createArtifact(DispoConstants.DispoItem, data.getName());
-
-      tx.setSoleAttributeValue(createdItem, DispoConstants.DispoDateCreated, data.getCreationDate());
-      tx.setSoleAttributeValue(createdItem, DispoConstants.DispoLastUpdated, data.getLastUpdate());
-
-      tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemStatus, data.getStatus());
-      tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoDiscrepanciesJson,
-         data.getDiscrepanciesList().toString());
-      tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoAnnotationsJson,
-         data.getAnnotationsList().toString());
-
-      tx.relate(parentSetArt, CoreRelationTypes.Default_Hierarchical__Child, createdItem);
-      //      tx.relate(createdItem, DispoConstants.DispoAssigned_Assignee, assignee); // UNCOMMENT ONCE on production DB
-      tx.commit();
-      return createdItem;
-   }
-
-   @Override
    public void createDispoItems(ArtifactReadable author, DispoProgram program, DispoSet parentSet, List<DispoItem> data, String assignee) {
       ArtifactReadable parentSetArt = findDispoArtifact(program, parentSet.getGuid(), DispoConstants.DispoSet);
       TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Create Dispoable Item");
@@ -296,6 +275,8 @@ public class OrcsStorageImpl implements Storage {
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoLastUpdated, item.getLastUpdate());
 
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemStatus, item.getStatus());
+         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemTotalPoints, item.getTotalPoints());
+         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemNeedsRerun, item.getNeedsRerun());
          tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoDiscrepanciesJson,
             item.getDiscrepanciesList().toString());
          tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoAnnotationsJson,
@@ -308,72 +289,55 @@ public class OrcsStorageImpl implements Storage {
       tx.commit();
    }
 
-   @Override
-   public void updateDispoItem(ArtifactReadable author, DispoProgram program, String dispoItemId, DispoItem data) {
-      ArtifactId dispoItemArt = findDispoArtifact(program, dispoItemId, DispoConstants.DispoItem);
-      Date lastUpdate = data.getLastUpdate();
-      String name = data.getName();
-      JSONObject discrepanciesList = data.getDiscrepanciesList();
-      JSONArray annotationsList = data.getAnnotationsList();
-      String status = data.getStatus();
-      String assignee = data.getAssignee();
-
-      TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Edit Dispoable Item");
+   public void updateSingleItem(ArtifactReadable author, DispoProgram program, ArtifactId currentItemArt, DispoItem newItemData, TransactionBuilder tx) {
+      Date lastUpdate = newItemData.getLastUpdate();
+      Boolean needsRerun = newItemData.getNeedsRerun();
+      String name = newItemData.getName();
+      JSONObject discrepanciesList = newItemData.getDiscrepanciesList();
+      JSONArray annotationsList = newItemData.getAnnotationsList();
+      String status = newItemData.getStatus();
+      String assignee = newItemData.getAssignee();
 
       if (name != null) {
-         tx.setName(dispoItemArt, name);
+         tx.setName(currentItemArt, name);
       }
       if (discrepanciesList != null) {
-         tx.setSoleAttributeFromString(dispoItemArt, DispoConstants.DispoDiscrepanciesJson,
+         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoDiscrepanciesJson,
             discrepanciesList.toString());
       }
       if (annotationsList != null) {
-         tx.setSoleAttributeFromString(dispoItemArt, DispoConstants.DispoAnnotationsJson, annotationsList.toString());
+         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoAnnotationsJson, annotationsList.toString());
       }
       if (assignee != null) {
-         tx.setSoleAttributeFromString(dispoItemArt, DispoConstants.DispoItemAssignee, assignee);
+         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemAssignee, assignee);
       }
       if (status != null) {
-         tx.setSoleAttributeFromString(dispoItemArt, DispoConstants.DispoItemStatus, status);
+         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemStatus, status);
       }
       if (lastUpdate != null) {
-         tx.setSoleAttributeValue(dispoItemArt, DispoConstants.DispoLastUpdated, lastUpdate);
+         tx.setSoleAttributeValue(currentItemArt, DispoConstants.DispoLastUpdated, lastUpdate);
       }
+      if (needsRerun != null) {
+         tx.setSoleAttributeValue(currentItemArt, DispoConstants.DispoItemNeedsRerun, needsRerun.booleanValue());
+      }
+   }
+
+   @Override
+   public void updateDispoItem(ArtifactReadable author, DispoProgram program, String dispoItemId, DispoItem data) {
+      IOseeBranch branch = TokenFactory.createBranch(program.getUuid(), "");
+      TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Edit Dispo Item");
+      ArtifactId dispoItemArt = findDispoArtifact(program, dispoItemId, DispoConstants.DispoItem);
+      updateSingleItem(author, program, dispoItemArt, data, tx);
       tx.commit();
    }
 
    @Override
    public void updateDispoItems(ArtifactReadable author, DispoProgram program, String dispoItemId, List<DispoItem> data) {
-      TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Edit Dispoable Item");
+      TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Edit Multiple Dispo Items");
 
-      for (DispoItem item : data) {
+      for (DispoItem newItem : data) {
          ArtifactId dispoItemArt = findDispoArtifact(program, dispoItemId, DispoConstants.DispoItem);
-         String assignee = item.getAssignee();
-         Date lastUpdate = item.getLastUpdate();
-         String name = item.getName();
-         JSONObject discrepanciesList = item.getDiscrepanciesList();
-         JSONArray annotationsList = item.getAnnotationsList();
-         String status = item.getStatus();
-
-         if (name != null) {
-            tx.setName(dispoItemArt, name);
-         }
-         if (discrepanciesList != null) {
-            tx.setSoleAttributeFromString(dispoItemArt, DispoConstants.DispoDiscrepanciesJson,
-               discrepanciesList.toString());
-         }
-         if (annotationsList != null) {
-            tx.setSoleAttributeFromString(dispoItemArt, DispoConstants.DispoAnnotationsJson, annotationsList.toString());
-         }
-         if (assignee != null) {
-            tx.setSoleAttributeFromString(dispoItemArt, DispoConstants.DispoItemAssignee, assignee);
-         }
-         if (status != null) {
-            tx.setSoleAttributeFromString(dispoItemArt, DispoConstants.DispoItemStatus, status);
-         }
-         if (lastUpdate != null) {
-            tx.setSoleAttributeValue(dispoItemArt, DispoConstants.DispoLastUpdated, lastUpdate);
-         }
+         updateSingleItem(author, program, dispoItemArt, newItem, tx);
       }
 
       tx.commit();

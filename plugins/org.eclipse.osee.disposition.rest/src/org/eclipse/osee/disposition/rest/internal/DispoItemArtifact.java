@@ -81,10 +81,21 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
    }
 
    @Override
+   public Boolean getNeedsRerun() {
+      return artifact.getSoleAttributeValue(DispoConstants.DispoItemNeedsRerun, false);
+   }
+
+   @Override
+   public String getTotalPoints() {
+      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemTotalPoints, "0");
+   }
+
+   @Override
    public int compareTo(Named other) {
       if (other != null && other.getName() != null && getName() != null) {
          return getName().compareTo(other.getName());
       }
       return -1;
    }
+
 }

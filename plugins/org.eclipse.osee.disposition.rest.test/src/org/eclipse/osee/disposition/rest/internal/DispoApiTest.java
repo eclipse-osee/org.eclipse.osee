@@ -31,6 +31,7 @@ import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.orcs.data.ArtifactId;
@@ -41,6 +42,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
@@ -261,24 +263,6 @@ public class DispoApiTest {
    }
 
    @Test
-   public void testCreateDispositionItem() {
-      ArtifactReadable x = null;
-      DispoProgram programUuid = program;
-      String setUuid = setId.getGuid();
-
-      DispoItemData dispoItemData = new DispoItemData();
-      dispoItemData.setGuid("itemId");
-      dispoItemData.setName("Item Name");
-
-      when(storage.findDispoSetsById(programUuid, setUuid)).thenReturn(dispoSet);
-      when(storage.createDispoItem(author, programUuid, dispoSet, dispoItemData, x)).thenReturn(mockArtId);
-
-      Identifiable<String> actual = dispoApi.createDispoItem(programUuid, setUuid, dispoItemData);
-
-      assertEquals(mockArtId, actual);
-   }
-
-   @Test
    public void testCreateDispositionAnnotation() throws JSONException {
       String expectedId = "dfs";
       DispoAnnotationData annotationToCreate = new DispoAnnotationData();
@@ -293,6 +277,8 @@ public class DispoApiTest {
       // Only need to createUpdatedItem with updateStatus = True when annotation is valid and current status is INCOMPLETE 
       annotationToCreate.setResolution("VALID");
       when(dispoItem.getStatus()).thenReturn("COMPLETE");
+      Pair<Boolean, String> validationResults = new Pair<Boolean, String>(true, "CODE");
+      when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(validationResults);
       String acutal = dispoApi.createDispoAnnotation(program, itemId.getGuid(), annotationToCreate);
       assertEquals(expectedId, acutal);
 
@@ -388,8 +374,9 @@ public class DispoApiTest {
 
       // reset loc ref to null and set new (invalid) resolution 
       newAnnotation.setLocationRefs(null);
-      when(validator.validate(newAnnotation)).thenReturn(true);
-      newAnnotation.setResolution("PCR 13");
+      Pair<Boolean, String> valdiationResult = new Pair<Boolean, String>(true, "C");
+      when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(valdiationResult);
+      newAnnotation.setResolution("CPCR 13");
       actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation);
       assertTrue(actual);
 
@@ -400,7 +387,7 @@ public class DispoApiTest {
       //  notes are the only thing being modified, no need to disconnect or connect
       newAnnotation.setLocationRefs(null);
       newAnnotation.setResolution(null);
-      newAnnotation.setNotes("");
+      newAnnotation.setDeveloperNotes("");
       actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation);
       assertTrue(actual);
 

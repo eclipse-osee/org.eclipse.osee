@@ -36,6 +36,9 @@ public class DispoSaxHandler extends AbstractSaxHandler {
       addHandlers(new CheckGroup());
       addHandlers(new TestPointName());
       addHandlers(new ScriptVersion());
+      addHandlers(new TestPointResults());
+      addHandlers(new Time());
+      addHandlers(new TimeSummary());
    }
 
    @Override

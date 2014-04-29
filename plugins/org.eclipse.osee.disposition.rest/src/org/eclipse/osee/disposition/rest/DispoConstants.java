@@ -33,6 +33,8 @@ public final class DispoConstants {
    public static final IAttributeType DispoDateCreated = TokenFactory.createAttributeType(0x1000000000000391L, "dispo.Date Created");
    public static final IAttributeType DispoLastUpdated = TokenFactory.createAttributeType(0x1000000000000392L, "dispo.Last Updated");   
    public static final IAttributeType DispoItemStatus = TokenFactory.createAttributeType(0x3000000000000198L, "dispo.Item Status"); 
+   public static final IAttributeType DispoItemTotalPoints = TokenFactory.createAttributeType(0x3000000000000203L, "dispo.Total Points"); 
+   public static final IAttributeType DispoItemNeedsRerun = TokenFactory.createAttributeType(0x3000000000000204L, "dispo.Needs Rerun"); 
    public static final IAttributeType DispoItemVersion = TokenFactory.createAttributeType(0x3000000000000200L, "dispo.Item Version"); 
    public static final IAttributeType DispoItemAssignee = TokenFactory.createAttributeType(0x3000000000000201L, "dispo.Assignee"); 
    

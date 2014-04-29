@@ -41,7 +41,8 @@ public class DispoHtmlWriter {
    private final String subTableHeadersEnd ="\" width=\"20\"></th>"+
                                             "<th width=\"200\">Points</th>"+
                                             "<th width=\"100\">PCR</th>"+
-                                            "<th width=\"600\">Notes</th>"+
+                                            "<th width=\"500\">Developer Notes</th>"+
+                                            "<th width=\"500\">Customer Notes</th>"+
                                         "</tr>";
 // @formatter:on
 
@@ -160,7 +161,7 @@ public class DispoHtmlWriter {
    private void addItemData(Appendable appendable, DispoItem item) throws IOException, JSONException {
       addData(appendable, item.getName());
       addData(appendable, item.getStatus(), true);
-      addData(appendable, String.valueOf(item.getDiscrepanciesList().length())); // change to total points
+      addData(appendable, String.valueOf(item.getTotalPoints())); // change to total points
       addData(appendable, String.valueOf(item.getDiscrepanciesList().length()));
       addData(appendable, String.valueOf(getFailureLocations(item.getDiscrepanciesList())));
       addData(appendable, item.getAssignee());
@@ -228,13 +229,15 @@ public class DispoHtmlWriter {
          }
          addSubTableData(sb, annotation.getLocationRefs(), annotation.getIsConnected());
          addSubTableData(sb, annotation.getResolution(), isResolutionValid);
-         addSubTableData(sb, annotation.getNotes(), true);
+         addSubTableData(sb, annotation.getDeveloperNotes(), true);
+         addSubTableData(sb, annotation.getCustomerNotes(), true);
          addDeleteButton(sb);
          sb.append("</tr>");
       }
       // add on empty row
       sb.append("<tr>");
       sb.append("<td class=\"annotationData\"><textarea class=\"annotationInput\" onchange=\"submitAnnotationData(this);\" ondblclick=\"annotationDblClick(this);\"></textarea></d>");
+      sb.append("<td class=\"annotationData\"><textarea class=\"annotationInputDisabled\" onchange=\"submitAnnotationData(this);\" ondblclick=\"annotationDblClick(this);\" readonly=\"true\"></textarea></td>");
       sb.append("<td class=\"annotationData\"><textarea class=\"annotationInputDisabled\" onchange=\"submitAnnotationData(this);\" ondblclick=\"annotationDblClick(this);\" readonly=\"true\"></textarea></td>");
       sb.append("<td class=\"annotationData\"><textarea class=\"annotationInputDisabled\" onchange=\"submitAnnotationData(this);\" ondblclick=\"annotationDblClick(this);\" readonly=\"true\"></textarea></td>");
       sb.append("<td><button class=\"annotationDelete\" onclick=\"deleteAnnotation(this);\" disabled=\"true\">X</button></td>");

@@ -46,8 +46,6 @@ public interface DispoApi {
    // Writes
    Identifiable<String> createDispoSet(DispoProgram program, DispoSetDescriptorData descriptor);
 
-   Identifiable<String> createDispoItem(DispoProgram program, String setId, DispoItemData dispoItem);
-
    String createDispoAnnotation(DispoProgram program, String itemId, DispoAnnotationData annotation);
 
    boolean editDispoSet(DispoProgram program, String dispoSetId, DispoSetData newDispoSet);

@@ -35,6 +35,7 @@
             <div id="setControls">
                 <div id="setOperationContainer">
                     <button disabled="true" id="setOperation" onclick="doImport()">Import</button>
+                    <button id="setOperation" onclick="doReport()">Report</button>
                 </div>
                 <div id="setManageContainer">
                     <div id="createSetContainer">
@@ -90,6 +91,7 @@
        var waitBlanket = document.getElementById("waitBlanket");
        var lastFocusedSet = "";
        var path = "http://<?serverPort?>/dispo/program/";
+       var path2 = "http://<?serverPort?>/dispo/";
     </script>
     <script>
   		function setUpUndoCatch() {
@@ -129,6 +131,15 @@
               
               put(fullPath, jsonStringParam, putSetStatusHandler, lastFocusedRow);			 		
 			 }		 
+    	 }
+    </script>
+    <script>
+    	 function doReport() {
+    	        var programSelect = document.getElementById("programSelect");
+    	        var selectedProgramIndex = programSelect.selectedIndex;
+    	 		  var programId = programSelect.options[selectedProgramIndex].value;
+    	        var fullPath = path.concat(programId, "/report/");
+              post(fullPath, "", postReportStatusHandler, "");			 		
     	 }
     </script>
     <script>
@@ -285,6 +296,13 @@
              }
          };
         }
+    </script>
+    <script>
+    function postReportStatusHandler(unusedParam) {
+    	return function() {
+    		
+    	}
+    }
     </script>
 <script>
 	function putSetStatusHandler(rowImported) {

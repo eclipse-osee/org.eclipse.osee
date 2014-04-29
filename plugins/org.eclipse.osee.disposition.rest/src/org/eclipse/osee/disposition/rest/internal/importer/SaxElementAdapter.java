@@ -8,35 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
-package org.eclipse.osee.disposition.model;
-
-import java.util.Date;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.json.JSONArray;
-import org.json.JSONObject;
+package org.eclipse.osee.disposition.rest.internal.importer;
 
 /**
  * @author Angel Avila
  */
 
-public interface DispoItem extends Identifiable<String> {
+public abstract class SaxElementAdapter implements IBaseSaxElementListener {
+   @Override
+   public void onStartElement(Object obj) throws Exception {
+      //
+   }
 
-   String getAssignee();
+   @Override
+   public void onEndElement(Object obj) throws Exception {
+      //
+   }
 
-   Date getCreationDate();
-
-   Date getLastUpdate();
-
-   String getStatus();
-
-   String getVersion();
-
-   String getTotalPoints();
-
-   Boolean getNeedsRerun();
-
-   JSONObject getDiscrepanciesList();
-
-   JSONArray getAnnotationsList();
 }

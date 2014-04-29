@@ -99,10 +99,6 @@ public final class DispoUtil {
    }
 
    public static DispoItemData itemArtToItemData(DispoItem dispoItemArt) {
-      return itemArtToItemData(dispoItemArt, false);
-   }
-
-   public static DispoItemData itemArtToItemData(DispoItem dispoItemArt, boolean withDetails) {
       DispoItemData dispoItemData = new DispoItemData();
       dispoItemData.setName(dispoItemArt.getName());
       dispoItemData.setGuid(dispoItemArt.getGuid());
@@ -111,10 +107,10 @@ public final class DispoUtil {
       dispoItemData.setVersion(dispoItemArt.getVersion());
       dispoItemData.setLastUpdate(dispoItemArt.getLastUpdate());
       dispoItemData.setStatus(dispoItemArt.getStatus());
+      dispoItemData.setTotalPoints(dispoItemArt.getTotalPoints());
+      dispoItemData.setNeedsRerun(dispoItemArt.getNeedsRerun());
       dispoItemData.setDiscrepanciesList(dispoItemArt.getDiscrepanciesList());
-      if (withDetails) {
-         dispoItemData.setAnnotationsList(dispoItemArt.getAnnotationsList());
-      }
+      dispoItemData.setAnnotationsList(dispoItemArt.getAnnotationsList());
       return dispoItemData;
    }
 
@@ -129,6 +125,12 @@ public final class DispoUtil {
          }
          if (jsonObject.has("itemStatus")) {
             dispoItem.setStatus(jsonObject.getString("itemStatus"));
+         }
+         if (jsonObject.has("totalPoints")) {
+            dispoItem.setTotalPoints(jsonObject.getString("totalPoints"));
+         }
+         if (jsonObject.has("needsRerun")) {
+            dispoItem.setNeedsRerun(jsonObject.getBoolean("needsRerun"));
          }
          if (jsonObject.has("itemVersion")) {
             dispoItem.setVersion(jsonObject.getString("itemVersion"));
@@ -226,8 +228,11 @@ public final class DispoUtil {
          if (object.has("isValid")) {
             dispoAnnotation.setIsConnected(object.getBoolean("isValid"));
          }
-         if (object.has("notes")) {
-            dispoAnnotation.setNotes(object.getString("notes"));
+         if (object.has("developerNotes")) {
+            dispoAnnotation.setDeveloperNotes(object.getString("developerNotes"));
+         }
+         if (object.has("customerNotes")) {
+            dispoAnnotation.setCustomerNotes(object.getString("customerNotes"));
          }
          if (object.has("resolution")) {
             dispoAnnotation.setResolution(object.getString("resolution"));
@@ -237,6 +242,9 @@ public final class DispoUtil {
          }
          if (object.has("isResolutionValid")) {
             dispoAnnotation.setIsResolutionValid(object.getBoolean("isResolutionValid"));
+         }
+         if (object.has("resolutionType")) {
+            dispoAnnotation.setResolutionType(object.getString("resolutionType"));
          }
       } catch (JSONException ex) {
          throw new OseeCoreException(ex);

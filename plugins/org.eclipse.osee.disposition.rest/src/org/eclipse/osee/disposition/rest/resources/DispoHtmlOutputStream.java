@@ -17,10 +17,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
-
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoStrings;
@@ -68,16 +66,27 @@ public final class DispoHtmlOutputStream implements StreamingOutput {
    private void addItemData(Appendable appendable, DispoItem item) throws IOException, JSONException {
       addData(appendable, item.getName());
       addData(appendable, item.getStatus(), true);
-      addData(appendable, String.valueOf(item.getDiscrepanciesList().length())); // change to total points
+      addData(appendable, String.valueOf(item.getTotalPoints()));
       addData(appendable, String.valueOf(item.getDiscrepanciesList().length()));
       addData(appendable, String.valueOf(getFailureLocations(item.getDiscrepanciesList())));
       addData(appendable, item.getAssignee());
-      addData(appendable, item.getVersion()); // Change to Version
+      addData(appendable, item.getVersion());
+      addDataAsButton(appendable, item.getNeedsRerun());
    }
 
    private void addData(Appendable appendable, String data) throws IOException {
       appendable.append("<td class=\"itemData\">");
       appendable.append(data);
+      appendable.append("</td>");
+   }
+
+   private void addDataAsButton(Appendable appendable, boolean data) throws IOException {
+      appendable.append("<td class=\"itemData\">");
+      appendable.append("<input type=\"checkbox\" onclick=\"toggleRerun(this)\"");
+      if (data) {
+         appendable.append(" checked");
+      }
+      appendable.append("></input>");
       appendable.append("</td>");
    }
 

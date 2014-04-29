@@ -25,12 +25,14 @@ public class DispoAnnotationData implements Identifiable<String> {
 
    private String id;
    private int index;
-   private String notes;
+   private String developerNotes;
+   private String customerNotes;
    private String locationRefs;
    private boolean isConnected;
    private JSONArray idsOfCoveredDiscrepancies;
    private String resolution;
    private boolean isResolutionValid;
+   private String resolutionType;
 
    public DispoAnnotationData() {
 
@@ -54,8 +56,12 @@ public class DispoAnnotationData implements Identifiable<String> {
       return index;
    }
 
-   public String getNotes() {
-      return notes;
+   public String getDeveloperNotes() {
+      return developerNotes;
+   }
+
+   public String getCustomerNotes() {
+      return customerNotes;
    }
 
    public String getLocationRefs() {
@@ -78,12 +84,20 @@ public class DispoAnnotationData implements Identifiable<String> {
       return isResolutionValid;
    }
 
+   public String getResolutionType() {
+      return resolutionType;
+   }
+
    public void setLocationRefs(String locationRefs) {
       this.locationRefs = locationRefs;
    }
 
-   public void setNotes(String notes) {
-      this.notes = notes;
+   public void setDeveloperNotes(String developerNotes) {
+      this.developerNotes = developerNotes;
+   }
+
+   public void setCustomerNotes(String customerNotes) {
+      this.customerNotes = customerNotes;
    }
 
    public void setId(String id) {
@@ -108,6 +122,10 @@ public class DispoAnnotationData implements Identifiable<String> {
 
    public void setIsResolutionValid(boolean isResolutionValid) {
       this.isResolutionValid = isResolutionValid;
+   }
+
+   public void setResolutionType(String resolutionType) {
+      this.resolutionType = resolutionType;
    }
 
    public void addCoveredDiscrepancyIndex(Discrepancy discrepancy) {
