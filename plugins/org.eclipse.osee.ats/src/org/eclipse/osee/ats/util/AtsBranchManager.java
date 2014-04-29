@@ -283,7 +283,7 @@ public final class AtsBranchManager {
     * @param commitConfigArt that configures commit or null
     */
    public static ChangeData getChangeData(TeamWorkFlowArtifact teamArt, ICommitConfigItem commitConfigArt) throws OseeCoreException {
-      if (commitConfigArt != null && isBaselinBranchConfigured(commitConfigArt)) {
+      if (commitConfigArt != null && !isBaselinBranchConfigured(commitConfigArt)) {
          throw new OseeArgumentException("Parent Branch not configured for [%s]", commitConfigArt);
       }
       Collection<Change> changes = new ArrayList<Change>();
