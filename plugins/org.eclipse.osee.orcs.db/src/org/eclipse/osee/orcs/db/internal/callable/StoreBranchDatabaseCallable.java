@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsConstants;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -122,7 +123,7 @@ public class StoreBranchDatabaseCallable extends AbstractDatastoreTxCallable<ISt
 
       return new Object[] {
          branch.getUuid(),
-         branch.getUuid(),
+         GUID.create(),
          branch.getName(),
          parentBranchId,
          branch.getSourceTransaction().getId(),
