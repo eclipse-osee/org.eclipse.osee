@@ -14,5 +14,5 @@ package org.eclipse.osee.framework.database;
  * @author Roberto E. Escobar
  */
 public interface IOseeDatabaseService extends HasSequence, DatabaseService {
-   //
+   public static final int MAX_VARCHAR_LENGTH = 4000;
 }

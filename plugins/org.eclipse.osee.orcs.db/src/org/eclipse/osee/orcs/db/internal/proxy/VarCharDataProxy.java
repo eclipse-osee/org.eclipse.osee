@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.proxy;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -23,8 +24,6 @@ import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
  * @author Roberto E. Escobar
  */
 public class VarCharDataProxy extends AbstractDataProxy implements CharacterDataProxy {
-
-   public static final int MAX_VARCHAR_LENGTH = 4000;
    private String rawStringValue;
 
    public VarCharDataProxy() {
@@ -78,7 +77,7 @@ public class VarCharDataProxy extends AbstractDataProxy implements CharacterData
    }
 
    private void storeValue(String value) throws OseeCoreException {
-      if (value != null && value.length() > MAX_VARCHAR_LENGTH) {
+      if (value != null && value.length() > IOseeDatabaseService.MAX_VARCHAR_LENGTH) {
          ResourceNameResolver resolver = getResolver();
          Conditions.checkNotNull(resolver, "ResourceNameResolver", "Unable to determine internal file name");
          try {

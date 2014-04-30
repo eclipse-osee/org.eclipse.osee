@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.internal.core;
 
+import static org.eclipse.osee.framework.database.IOseeDatabaseService.MAX_VARCHAR_LENGTH;
 import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -28,14 +29,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Roberto E. Escobar
  */
 public final class StatementUtil {
-   private static final int MAX_COLUMN_WIDTH = 4000;
-
    private StatementUtil() {
       // Utility class
    }
 
    public static <O extends Object> String getBatchErrorMessage(Iterable<O[]> dataList) {
-      StringBuilder details = new StringBuilder(MAX_COLUMN_WIDTH);
+      StringBuilder details = new StringBuilder(MAX_VARCHAR_LENGTH);
       details.append("[ DATA OBJECT: \n");
       for (Object[] data : dataList) {
          for (int i = 0; i < data.length; i++) {
@@ -58,7 +57,7 @@ public final class StatementUtil {
             }
          }
          details.append("---------\n");
-         if (details.length() > MAX_COLUMN_WIDTH) {
+         if (details.length() > MAX_VARCHAR_LENGTH) {
             break;
          }
       }
@@ -97,9 +96,9 @@ public final class StatementUtil {
             preparedIndex++;
             if (dataValue instanceof String) {
                int length = ((String) dataValue).length();
-               if (length > MAX_COLUMN_WIDTH) {
+               if (length > MAX_VARCHAR_LENGTH) {
                   throw new OseeDataStoreException("SQL data value length must be <= %d not %d\nValue: %s",
-                     MAX_COLUMN_WIDTH, length, dataValue);
+                     MAX_VARCHAR_LENGTH, length, dataValue);
                }
             }
 

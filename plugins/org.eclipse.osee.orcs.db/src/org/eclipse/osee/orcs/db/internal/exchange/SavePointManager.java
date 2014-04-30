@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.exchange;
 
+import static org.eclipse.osee.framework.database.IOseeDatabaseService.MAX_VARCHAR_LENGTH;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,10 +64,10 @@ public class SavePointManager {
             for (Throwable ex : savePoint.getErrors()) {
                builder.append(Lib.exceptionToString(ex).replaceAll("\n", " "));
             }
-            if (builder.length() < 4000) {
+            if (builder.length() < MAX_VARCHAR_LENGTH) {
                comment = builder.toString();
             } else {
-               comment = builder.substring(0, 3999);
+               comment = builder.substring(0, MAX_VARCHAR_LENGTH);
             }
          }
          data.add(new Object[] {importIdIndex, savePoint.getName(), status, comment});
