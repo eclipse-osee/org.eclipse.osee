@@ -11,7 +11,6 @@
 package org.eclipse.osee.account.rest.client.internal;
 
 import org.eclipse.osee.account.rest.client.AccountClient;
-import org.eclipse.osee.framework.core.services.URIProvider;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.AbstractMatcher;
@@ -43,7 +42,6 @@ public class AccountClientModule extends AbstractModule {
          }
       };
       bindListener(subtypeOf(AccountClientImpl.class), listener);
-      bind(URIProvider.class).to(StandadloneUriProviderImpl.class);
    }
 
    private static Matcher<? super TypeLiteral<?>> subtypeOf(Class<?> superclass) {

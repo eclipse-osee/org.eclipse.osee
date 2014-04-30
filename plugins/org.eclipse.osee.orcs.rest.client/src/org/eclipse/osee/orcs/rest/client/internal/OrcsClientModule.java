@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.client.internal;
 
-import org.eclipse.osee.framework.core.services.URIProvider;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
@@ -43,7 +42,6 @@ public class OrcsClientModule extends AbstractModule {
          }
       };
       bindListener(subtypeOf(OseeClientImpl.class), listener);
-      bind(URIProvider.class).to(StandadloneUriProviderImpl.class);
    }
 
    private static Matcher<? super TypeLiteral<?>> subtypeOf(Class<?> superclass) {

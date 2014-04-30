@@ -15,7 +15,6 @@ import java.util.List;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.services.URIProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.model.search.artifact.OutputFormat;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
@@ -33,11 +32,11 @@ import com.sun.jersey.api.client.WebResource;
 public class QueryExecutorV1 implements QueryExecutor {
 
    private final WebClientProvider clientProvider;
-   private final URIProvider uriProvider;
+   private final URI serverUri;
 
-   public QueryExecutorV1(URIProvider uriProvider, WebClientProvider clientProvider) {
+   public QueryExecutorV1(URI serverUri, WebClientProvider clientProvider) {
       super();
-      this.uriProvider = uriProvider;
+      this.serverUri = serverUri;
       this.clientProvider = clientProvider;
    }
 
@@ -68,8 +67,7 @@ public class QueryExecutorV1 implements QueryExecutor {
          new SearchRequest(branch.getUuid(), predicates, outputFormat.name().toLowerCase(),
             requestType.name().toLowerCase(), fromTx, includeDeleted);
 
-      UriBuilder path =
-         UriBuilder.fromUri(uriProvider.getApplicationServerURI()).path("oseex/branch/{branch-uuid}/artifact/search/v1");
+      UriBuilder path = UriBuilder.fromUri(serverUri).path("oseex/branch/{branch-uuid}/artifact/search/v1");
       URI uri = path.build(branch.getUuid());
 
       WebResource resource = clientProvider.createResource(uri);

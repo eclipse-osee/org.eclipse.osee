@@ -16,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.account.rest.client.AccountClient;
-import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.AccountActiveData;
 import org.eclipse.osee.account.rest.model.AccountContexts;
 import org.eclipse.osee.account.rest.model.AccountDetailsData;
@@ -26,7 +25,8 @@ import org.eclipse.osee.account.rest.model.AccountLoginData;
 import org.eclipse.osee.account.rest.model.AccountPreferencesData;
 import org.eclipse.osee.account.rest.model.AccountPreferencesInput;
 import org.eclipse.osee.account.rest.model.AccountSessionData;
-import org.eclipse.osee.framework.core.services.URIProvider;
+import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.rest.client.WebClientProvider;
@@ -40,21 +40,17 @@ import com.sun.jersey.api.client.WebResource;
  */
 public class AccountClientImpl implements AccountClient {
 
-   private URIProvider uriProvider;
    private WebClientProvider clientProvider;
+   private URI serverUri;
 
    @Inject
    public void setWebClientProvider(WebClientProvider clientProvider) {
       this.clientProvider = clientProvider;
    }
 
-   @Inject
-   public void setUriProvider(URIProvider uriProvider) {
-      this.uriProvider = uriProvider;
-   }
-
    public void start() {
       //
+      serverUri = URI.create(OseeClientProperties.getOseeApplicationServer());
    }
 
    public void stop() {
@@ -62,7 +58,7 @@ public class AccountClientImpl implements AccountClient {
    }
 
    private UriBuilder newBuilder() {
-      return UriBuilder.fromUri(uriProvider.getApplicationServerURI()).path(AccountContexts.ACCOUNTS_BASE);
+      return UriBuilder.fromUri(serverUri).path(AccountContexts.ACCOUNTS_BASE);
    }
 
    private <T> T get(URI uri, Class<T> clazz) {
