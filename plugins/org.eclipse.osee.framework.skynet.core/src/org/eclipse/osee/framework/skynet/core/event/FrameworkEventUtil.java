@@ -86,48 +86,6 @@ public final class FrameworkEventUtil {
       return null;
    }
 
-   //   public static RemoteBroadcastEvent1 getRemoteBroadcastEvent(BroadcastEvent broadcastEvent) {
-   //      RemoteBroadcastEvent1 event = new RemoteBroadcastEvent1();
-   //      event.setNetworkSender(getRemoteNetworkSender(broadcastEvent.getNetworkSender()));
-   //      event.setMessage(broadcastEvent.getMessage());
-   //      event.setEventTypeGuid(broadcastEvent.getBroadcastEventType().getGuid());
-   //      for (User user : broadcastEvent.getUsers()) {
-   //         try {
-   //            if (Strings.isValid(user.getUserId())) {
-   //               event.getUserIds().add(user.getUserId());
-   //            }
-   //         } catch (OseeCoreException ex) {
-   //            OseeLog.log(Activator.class, Level.SEVERE, ex);
-   //         }
-   //      }
-   //      return event;
-   //   }
-
-   //   public static BroadcastEvent getBroadcastEvent(RemoteBroadcastEvent1 remEvent) {
-   //      BroadcastEventType broadcastEventType = BroadcastEventType.getByGuid(remEvent.getEventTypeGuid());
-   //      if (broadcastEventType != null) {
-   //         BroadcastEvent broadcastEvent = new BroadcastEvent(broadcastEventType, null, remEvent.getMessage());
-   //         for (String userId : remEvent.getUserIds()) {
-   //            try {
-   //               User user = UserManager.getUserByUserId(userId);
-   //               if (user != null) {
-   //                  broadcastEvent.addUser(user);
-   //               }
-   //            } catch (UserNotInDatabase ex) {
-   //               // do nothing
-   //            } catch (OseeCoreException ex) {
-   //               OseeLog.log(Activator.class, Level.SEVERE, ex);
-   //            }
-   //         }
-   //         broadcastEvent.setNetworkSender(getNetworkSender(remEvent.getNetworkSender()));
-   //         return broadcastEvent;
-   //      } else {
-   //         OseeLog.log(Activator.class, Level.WARNING,
-   //            "Unhandled broadcast event type guid " + remEvent.getEventTypeGuid());
-   //      }
-   //      return null;
-   //   }
-
    public static RemoteBranchEvent1 getRemoteBranchEvent(BranchEvent branchEvent) {
       RemoteBranchEvent1 event = new RemoteBranchEvent1();
       event.setEventTypeGuid(branchEvent.getEventType().getGuid());
