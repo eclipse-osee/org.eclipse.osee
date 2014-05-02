@@ -41,7 +41,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
-import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.XVersionList;
@@ -602,7 +601,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    }
 
    private void loadTasksFromWorkflow(TeamWorkFlowArtifact workflow) throws OseeCoreException {
-      Collection<TaskArtifact> tasks = workflow.getTaskArtifacts(TeamState.Implement);
+      Collection<TaskArtifact> tasks = workflow.getTaskArtifacts();
       AtsTaskCache.decache(workflow);
 
       String legacyId = workflow.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
