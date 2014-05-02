@@ -27,6 +27,7 @@ import org.junit.runners.Suite;
    XmlTestSuite.class,
    CollectionsTest.class,
    CompareTest.class,
+   EncryptUtilityTest.class,
    GUIDTest.class,
    HashCollectionTest.class,
    ReservedCharactersTest.class,
