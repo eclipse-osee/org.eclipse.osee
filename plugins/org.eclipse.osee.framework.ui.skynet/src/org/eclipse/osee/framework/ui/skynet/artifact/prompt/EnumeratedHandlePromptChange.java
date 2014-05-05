@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -77,62 +78,70 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
    }
 
    private boolean storeSingleton() throws OseeCoreException {
+      boolean result = false;
       String selected = singletonDialog.getSelectedOption();
       boolean isRemoveAll = singletonDialog.isRemoveAllSelected();
-      if (artifacts.size() > 0) {
-         SkynetTransaction transaction =
-            !persist ? null : TransactionManager.createTransaction(artifacts.iterator().next().getBranch(),
-               "Change enumerated attribute");
-         for (Artifact artifact : artifacts) {
-            if (isRemoveAll) {
-               artifact.deleteAttributes(attributeType);
-            } else {
-               artifact.setSoleAttributeValue(attributeType, selected);
+      if (isRemoveAll || Strings.isValid(selected)) {
+         if (artifacts.size() > 0) {
+            SkynetTransaction transaction =
+               !persist ? null : TransactionManager.createTransaction(artifacts.iterator().next().getBranch(),
+                  "Change enumerated attribute");
+            for (Artifact artifact : artifacts) {
+               if (isRemoveAll) {
+                  artifact.deleteAttributes(attributeType);
+               } else {
+                  artifact.setSoleAttributeValue(attributeType, selected);
+               }
+               if (persist) {
+                  artifact.persist(transaction);
+               }
             }
             if (persist) {
-               artifact.persist(transaction);
+               transaction.execute();
             }
          }
-         if (persist) {
-            transaction.execute();
-         }
+         result = true;
       }
-      return true;
+      return result;
    }
 
    private boolean storeNonSingleton() throws OseeCoreException {
+      boolean result = false;
       Set<String> selected = new HashSet<String>();
       for (Object obj : dialog.getResult()) {
          selected.add((String) obj);
       }
-      if (artifacts.size() > 0) {
-         SkynetTransaction transaction =
-            !persist ? null : TransactionManager.createTransaction(artifacts.iterator().next().getBranch(),
-               "Change enumerated attribute");
-         for (Artifact artifact : artifacts) {
-            List<String> current = artifact.getAttributesToStringList(attributeType);
-            if (dialog.getSelected() == Selection.AddSelection) {
-               current.addAll(selected);
-               artifact.setAttributeValues(attributeType, current);
-            } else if (dialog.getSelected() == Selection.DeleteSelected) {
-               current.removeAll(selected);
-               artifact.setAttributeValues(attributeType, current);
-            } else if (dialog.getSelected() == Selection.ReplaceAll) {
-               artifact.setAttributeValues(attributeType, selected);
-            } else if (dialog.getSelected() == Selection.RemoveAll) {
-               artifact.deleteAttributes(attributeType);
-            } else {
-               AWorkbench.popup("ERROR", "Unhandled selection type => " + dialog.getSelected().name());
-               return false;
+      if (selected.isEmpty()) {
+         if (artifacts.size() > 0) {
+            SkynetTransaction transaction =
+               !persist ? null : TransactionManager.createTransaction(artifacts.iterator().next().getBranch(),
+                  "Change enumerated attribute");
+            for (Artifact artifact : artifacts) {
+               List<String> current = artifact.getAttributesToStringList(attributeType);
+               if (dialog.getSelected() == Selection.AddSelection) {
+                  current.addAll(selected);
+                  artifact.setAttributeValues(attributeType, current);
+               } else if (dialog.getSelected() == Selection.DeleteSelected) {
+                  current.removeAll(selected);
+                  artifact.setAttributeValues(attributeType, current);
+               } else if (dialog.getSelected() == Selection.ReplaceAll) {
+                  artifact.setAttributeValues(attributeType, selected);
+               } else if (dialog.getSelected() == Selection.RemoveAll) {
+                  artifact.deleteAttributes(attributeType);
+               } else {
+                  AWorkbench.popup("ERROR", "Unhandled selection type => " + dialog.getSelected().name());
+                  return false;
+               }
+               if (persist) {
+                  artifact.persist(transaction);
+               }
             }
             if (persist) {
-               artifact.persist(transaction);
+               transaction.execute();
             }
-         }
-         if (persist) {
-            transaction.execute();
+            result = true;
          }
       }
-      return true;
+      return result;
    }
 }
