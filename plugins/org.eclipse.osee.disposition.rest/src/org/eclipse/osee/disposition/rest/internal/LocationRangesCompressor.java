@@ -13,7 +13,6 @@ package org.eclipse.osee.disposition.rest.internal;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
 import org.eclipse.osee.disposition.model.LocationRange;
 
 /**
@@ -37,7 +36,7 @@ public class LocationRangesCompressor {
          boolean isLastElement = !iterator.hasNext();
 
          // Starting a Range
-         if (previous == (currentTestPoint - 1) && startOfRange == -1) { // if the previous is 1 less than our current we are in a range
+         if (currentTestPoint != 0 && previous == (currentTestPoint - 1) && startOfRange == -1) { // if the previous is 1 less than our current we are in a range
             isRange = true;
             endOfRange = false;
             startOfRange = previous;
@@ -57,12 +56,12 @@ public class LocationRangesCompressor {
          if (!isRange) { // If we are not in a range just add the single point
             toAppend.append(currentTestPoint);
          } else if (endOfRange) { // other wise check to see if we ended the range
-            if (isLastElement) {
-               toAppend.append(new LocationRange(startOfRange, currentTestPoint).toString()); // append the range ending with the previous point and append this current point
-            } else {
+            if (previous != (currentTestPoint - 1)) {
                toAppend.append(new LocationRange(startOfRange, previous).toString()); // append the range ending with the previous point and append this current point
                toAppend.append(", ");
                toAppend.append(currentTestPoint);
+            } else {
+               toAppend.append(new LocationRange(startOfRange, currentTestPoint).toString()); // append the range ending with the previous point and append this current point
             }
 
             isRange = false;

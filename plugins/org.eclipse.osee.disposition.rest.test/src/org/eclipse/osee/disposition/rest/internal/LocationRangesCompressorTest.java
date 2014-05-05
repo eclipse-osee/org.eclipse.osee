@@ -34,5 +34,20 @@ public class LocationRangesCompressorTest {
       locationPoints.add(2);
       result = LocationRangesCompressor.compress(locationPoints);
       Assert.assertEquals("1-4, 21, 83-84", result);
+
+      locationPoints.add(89);
+      result = LocationRangesCompressor.compress(locationPoints);
+      Assert.assertEquals("1-4, 21, 83-84, 89", result);
+
+      locationPoints.add(92);
+      locationPoints.add(93);
+      locationPoints.add(5);
+      result = LocationRangesCompressor.compress(locationPoints);
+      Assert.assertEquals("1-5, 21, 83-84, 89, 92-93", result);
+
+      List<Integer> locationPointsZero = new ArrayList<Integer>();
+      locationPointsZero.add(0);
+      result = LocationRangesCompressor.compress(locationPointsZero);
+      Assert.assertEquals("0", result);
    }
 }
