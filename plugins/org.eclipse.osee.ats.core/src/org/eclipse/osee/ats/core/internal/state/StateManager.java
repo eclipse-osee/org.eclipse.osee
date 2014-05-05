@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -53,7 +54,7 @@ public class StateManager implements IAtsStateManager {
 
    private final IAtsWorkItem workItem;
    private String currentStateName;
-   private final List<WorkState> states = new LinkedList<WorkState>();
+   private final List<WorkState> states = new CopyOnWriteArrayList<WorkState>();
    private final WorkStateFactory factory;
    private Integer percentCompleteValue = 0;
    private final List<IAtsUser> initialAssignees = new ArrayList<IAtsUser>();
