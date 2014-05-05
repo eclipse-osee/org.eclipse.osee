@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.core.util;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
@@ -25,9 +25,9 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    protected String comment;
-   protected final Set<Object> objects = new HashSet<Object>();
-   protected final Set<Object> deleteObjects = new HashSet<Object>();
-   protected final Set<IExecuteListener> listeners = new HashSet<IExecuteListener>();
+   protected final Set<Object> objects = new CopyOnWriteArraySet<Object>();
+   protected final Set<Object> deleteObjects = new CopyOnWriteArraySet<Object>();
+   protected final Set<IExecuteListener> listeners = new CopyOnWriteArraySet<IExecuteListener>();
    protected final IAtsUser user;
 
    public AbstractAtsChangeSet(String comment, IAtsUser user) {

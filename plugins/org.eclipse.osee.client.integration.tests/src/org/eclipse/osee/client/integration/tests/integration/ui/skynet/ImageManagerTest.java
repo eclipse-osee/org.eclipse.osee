@@ -16,8 +16,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -60,13 +60,13 @@ public abstract class ImageManagerTest {
    @org.junit.AfterClass
    public static void testCleanup() throws Exception {
       List<IHealthStatus> stats = monitorLog.getAllLogs();
-      for (IHealthStatus stat : new CopyOnWriteArrayList<IHealthStatus>(stats)) {
+      for (IHealthStatus stat : new ArrayList<IHealthStatus>(stats)) {
          if (stat.getException() != null) {
             fail("Exception: " + Lib.exceptionToString(stat.getException()));
          }
       }
       StringBuffer sb = new StringBuffer();
-      for (IHealthStatus stat : new CopyOnWriteArrayList<IHealthStatus>(stats)) {
+      for (IHealthStatus stat : new ArrayList<IHealthStatus>(stats)) {
          if (stat.getMessage().contains("Unable to load the image for") && !stat.getMessage().contains("nothere")) {
             sb.append(stat.getMessage() + "\n");
          }

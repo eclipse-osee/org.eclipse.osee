@@ -60,7 +60,7 @@ import org.osgi.framework.BundleContext;
 public class CoverageEventManager implements IArtifactEventListener, OseeMessagingStatusCallback {
 
    public static CoverageEventManager instance = new CoverageEventManager();
-   private final List<CoverageEditor> editors = new ArrayList<CoverageEditor>();
+   private final List<CoverageEditor> editors = new CopyOnWriteArrayList<CoverageEditor>();
    private ArtifactTypeEventFilter artifactTypeEventFilter;
    private ConnectionNode connectionNode;
    private OseeMessagingTracker oseeMessagingTracker;
@@ -153,7 +153,7 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      for (CoverageEditor editor : new CopyOnWriteArrayList<CoverageEditor>(editors)) {
+      for (CoverageEditor editor : editors) {
          try {
             if (ServiceProvider.getOseeCmService().getCmBranchToken().getGuid().equals(artifactEvent.getBranchUuid())) {
                boolean updatedWorkProductTab = false;
@@ -285,7 +285,7 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
          //         System.out.println(String.format("Receiving coverageEvent [%s]", coverageEvent.getPackage().getName()));
          CoverageChange packageCoverage = coverageEvent.getPackage();
          CoverageEventType packageModType = packageCoverage.getEventType();
-         for (CoverageEditor editor : new CopyOnWriteArrayList<CoverageEditor>(editors)) {
+         for (CoverageEditor editor : editors) {
             try {
                if (coverageEvent.getPackage().getGuid().equals(editor.getCoveragePackageBase().getGuid())) {
                   if (packageModType == CoverageEventType.Deleted) {

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +49,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class SMAEditorArtifactEventManager implements IArtifactEventListener {
 
-   List<ISMAEditorEventHandler> handlers = new ArrayList<ISMAEditorEventHandler>();
+   List<ISMAEditorEventHandler> handlers = new CopyOnWriteArrayList<ISMAEditorEventHandler>();
    static SMAEditorArtifactEventManager instance = new SMAEditorArtifactEventManager();
 
    private SMAEditorArtifactEventManager() {
@@ -74,7 +73,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
 
    @Override
    public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
-      for (ISMAEditorEventHandler handler : new CopyOnWriteArrayList<ISMAEditorEventHandler>(handlers)) {
+      for (ISMAEditorEventHandler handler : handlers) {
          if (handler.isDisposed()) {
             handlers.remove(handler);
          }
@@ -86,7 +85,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
       } catch (OseeCoreException ex) {
          return;
       }
-      for (final ISMAEditorEventHandler handler : new CopyOnWriteArrayList<ISMAEditorEventHandler>(handlers)) {
+      for (final ISMAEditorEventHandler handler : handlers) {
          try {
             safelyProcessHandler(artifactEvent, handler);
          } catch (Exception ex) {

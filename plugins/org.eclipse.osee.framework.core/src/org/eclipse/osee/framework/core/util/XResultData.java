@@ -11,8 +11,8 @@
 
 package org.eclipse.osee.framework.core.util;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
@@ -75,7 +75,7 @@ public class XResultData {
 
    public void reportSevereLoggingMonitor(SevereLoggingMonitor monitorLog) {
       List<IHealthStatus> stats = monitorLog.getAllLogs();
-      for (IHealthStatus stat : new CopyOnWriteArrayList<IHealthStatus>(stats)) {
+      for (IHealthStatus stat : new ArrayList<IHealthStatus>(stats)) {
          if (stat.getException() != null) {
             logError("Exception: " + Lib.exceptionToString(stat.getException()));
          }

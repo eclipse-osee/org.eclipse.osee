@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -36,7 +35,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class MassXViewerEventManager implements IArtifactEventListener {
 
-   List<IMassViewerEventHandler> handlers = new ArrayList<IMassViewerEventHandler>();
+   List<IMassViewerEventHandler> handlers = new CopyOnWriteArrayList<IMassViewerEventHandler>();
    static MassXViewerEventManager instance;
 
    public static void add(IMassViewerEventHandler iWorldEventHandler) {
@@ -55,7 +54,7 @@ public class MassXViewerEventManager implements IArtifactEventListener {
 
    @Override
    public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
-      for (IMassViewerEventHandler handler : new CopyOnWriteArrayList<IMassViewerEventHandler>(handlers)) {
+      for (IMassViewerEventHandler handler : handlers) {
          if (handler.isDisposed()) {
             handlers.remove(handler);
          }

@@ -12,12 +12,13 @@ package org.eclipse.osee.framework.logging;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 
 public class SevereLoggingMonitor implements ILoggerListener {
 
    private boolean ignore;
-   private final List<IHealthStatus> status = new ArrayList<IHealthStatus>();
+   private final List<IHealthStatus> status = new CopyOnWriteArrayList<IHealthStatus>();
 
    @Override
    public void log(String loggerName, Level level, String message, Throwable th) {

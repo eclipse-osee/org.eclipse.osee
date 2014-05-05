@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.util;
 
-import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
@@ -63,7 +62,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (objects.isEmpty() && deleteObjects.isEmpty()) {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");
       }
-      for (Object obj : new CopyOnWriteArrayList<Object>(objects)) {
+      for (Object obj : objects) {
          if (obj instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) obj;
             IAtsStateManager stateMgr = workItem.getStateMgr();

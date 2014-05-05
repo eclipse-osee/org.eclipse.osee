@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class SMAEditorBranchEventManager implements IBranchEventListener {
 
-   List<ISMAEditorEventHandler> handlers = new ArrayList<ISMAEditorEventHandler>();
+   List<ISMAEditorEventHandler> handlers = new CopyOnWriteArrayList<ISMAEditorEventHandler>();
    static SMAEditorBranchEventManager instance = new SMAEditorBranchEventManager();
 
    private SMAEditorBranchEventManager() {
@@ -63,7 +63,7 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
 
    @Override
    public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
-      for (ISMAEditorEventHandler handler : new CopyOnWriteArrayList<ISMAEditorEventHandler>(handlers)) {
+      for (ISMAEditorEventHandler handler : new ArrayList<ISMAEditorEventHandler>(handlers)) {
          if (handler.isDisposed()) {
             handlers.remove(handler);
          }

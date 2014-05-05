@@ -12,9 +12,8 @@ package org.eclipse.osee.ats.task;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -64,7 +63,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IAtsMetricsPro
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.TaskEditor";
    private int mainPageIndex, metricsPageIndex;
    private TaskEditorXWidgetActionPage taskActionPage;
-   private final Collection<TaskArtifact> tasks = new HashSet<TaskArtifact>();
+   private final Collection<TaskArtifact> tasks = new CopyOnWriteArraySet<TaskArtifact>();
    private boolean loading = false;
    public final static int TITLE_MAX_LENGTH = WorldEditor.TITLE_MAX_LENGTH;
 
@@ -134,7 +133,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IAtsMetricsPro
 
    @Override
    public boolean isDirty() {
-      for (TaskArtifact taskArt : new CopyOnWriteArrayList<TaskArtifact>(tasks)) {
+      for (TaskArtifact taskArt : tasks) {
          if (taskArt.isDeleted()) {
             continue;
          } else if (taskArt.isSMAEditorDirty().isTrue()) {

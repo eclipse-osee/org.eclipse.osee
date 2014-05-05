@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -45,7 +44,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class ArtifactEditorEventManager implements IArtifactEventListener, IBranchEventListener, IAccessControlEventListener {
 
-   List<IArtifactEditorEventHandler> handlers = new ArrayList<IArtifactEditorEventHandler>();
+   List<IArtifactEditorEventHandler> handlers = new CopyOnWriteArrayList<IArtifactEditorEventHandler>();
    static ArtifactEditorEventManager instance;
 
    public static void add(IArtifactEditorEventHandler iWorldEventHandler) {
@@ -70,7 +69,7 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
 
    @Override
    public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
-      for (IArtifactEditorEventHandler handler : new CopyOnWriteArrayList<IArtifactEditorEventHandler>(handlers)) {
+      for (IArtifactEditorEventHandler handler : handlers) {
          if (handler.isDisposed()) {
             handlers.remove(handler);
          }

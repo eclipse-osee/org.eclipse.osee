@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -54,7 +53,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       }
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), comment);
       // First, create or update any artifacts that changed
-      for (Object obj : new CopyOnWriteArrayList<Object>(objects)) {
+      for (Object obj : objects) {
          if (obj instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) obj;
             if (workItem.getStateMgr().isDirty()) {
