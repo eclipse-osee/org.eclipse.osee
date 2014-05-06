@@ -26,6 +26,7 @@ public class AtsDatabaseConversions {
    public static List<IAtsDatabaseConversion> getConversions(OrcsApi orcsApi) {
       List<IAtsDatabaseConversion> conversions = new ArrayList<IAtsDatabaseConversion>();
       conversions.add(new ConvertBaselineGuidToBaselineUuid(OseeDatabaseService.getDbService(), orcsApi));
+      conversions.add(new ConvertFavoriteBranchGuidToUuid(OseeDatabaseService.getDbService(), orcsApi));
       return conversions;
    }
 }
