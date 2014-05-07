@@ -19,27 +19,27 @@ import org.eclipse.osee.orcs.core.ds.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaBranchIds extends Criteria {
+public class CriteriaBranchUuids extends Criteria {
 
-   private final Collection<Long> ids;
+   private final Collection<Long> uuids;
 
-   public CriteriaBranchIds(Collection<Long> ids) {
+   public CriteriaBranchUuids(Collection<Long> ids) {
       super();
-      this.ids = ids;
+      this.uuids = ids;
    }
 
-   public Collection<Long> getIds() {
-      return ids;
+   public Collection<Long> getUuids() {
+      return uuids;
    }
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      Conditions.checkExpressionFailOnTrue(getIds().isEmpty(), "Branch Uuids cannot be empty");
+      Conditions.checkExpressionFailOnTrue(getUuids().isEmpty(), "Branch Uuids cannot be empty");
    }
 
    @Override
    public String toString() {
-      return "CriteriaBranchIds [ids=" + ids + "]";
+      return "CriteriaBranchUuids [uuids=" + uuids + "]";
    }
 
 }

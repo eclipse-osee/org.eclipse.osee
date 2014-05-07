@@ -41,7 +41,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllBranches;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchAncestorOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchArchived;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchIds;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
@@ -423,11 +423,11 @@ public class BranchQuerySqlContextFactoryImplTest {
    }
 
    private static Criteria uuid(Long... values) {
-      return new CriteriaBranchIds(Arrays.asList(values));
+      return new CriteriaBranchUuids(Arrays.asList(values));
    }
 
    private static Criteria id(Long... values) {
-      return new CriteriaBranchIds(Arrays.asList(values));
+      return new CriteriaBranchUuids(Arrays.asList(values));
    }
 
    private static Criteria type(BranchType... values) {

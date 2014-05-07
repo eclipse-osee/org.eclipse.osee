@@ -120,7 +120,7 @@ public class BranchQueryImpl implements BranchQuery {
 
    @Override
    public BranchQuery andUuids(Collection<Long> uuids) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.createBranchIdsCriteria(uuids);
+      Criteria criteria = criteriaFactory.createBranchUuidsCriteria(uuids);
       return addAndCheck(getQueryData(), criteria);
    }
 
@@ -135,8 +135,7 @@ public class BranchQueryImpl implements BranchQuery {
       for (IOseeBranch token : ids) {
          allIds.add(token.getUuid());
       }
-      Criteria criteria = criteriaFactory.createBranchIdsCriteria(allIds);
-      return addAndCheck(getQueryData(), criteria);
+      return andUuids(allIds);
    }
 
    @Override

@@ -10,7 +10,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllBranches;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchAncestorOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchArchived;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchIds;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
@@ -24,8 +24,8 @@ public class BranchCriteriaFactory {
       return new CriteriaAllBranches();
    }
 
-   public Criteria createBranchIdsCriteria(Collection<Long> ids) {
-      return new CriteriaBranchIds(ids);
+   public Criteria createBranchUuidsCriteria(Collection<Long> ids) {
+      return new CriteriaBranchUuids(ids);
    }
 
    public Criteria createBranchTypeCriteria(Collection<BranchType> types) {
