@@ -15,6 +15,8 @@ import java.io.InputStream;
 import java.net.URLConnection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -27,12 +29,13 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.manager.servlet.data.ArtifactUtil;
 import org.eclipse.osee.framework.manager.servlet.data.DefaultOseeArtifact;
-import org.eclipse.osee.framework.manager.servlet.data.HttpArtifactFileInfo;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -41,42 +44,59 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
 
    private static final long serialVersionUID = -6334080268467740905L;
 
+   private static final String GUID_KEY = "guid";
+   private static final String BRANCH_NAME_KEY = "branch";
+   private static final String BRANCH_UUID_KEY = "branchUuid";
+   private static final String BRANCH_GUID_KEY = "branchGuid";
+   private static final String MAPPING_ART = "ABKY9QDQLSaHQBiRC7wA";
+
    private final IResourceManager resourceManager;
    private final BranchCache branchCache;
+   private final OrcsApi orcs;
 
-   public ArtifactFileServlet(Log logger, IResourceManager resourceManager, BranchCache branchCache) {
+   public ArtifactFileServlet(Log logger, IResourceManager resourceManager, BranchCache branchCache, OrcsApi orcs) {
       super(logger);
       this.resourceManager = resourceManager;
       this.branchCache = branchCache;
+      this.orcs = orcs;
    }
 
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       try {
-         HttpArtifactFileInfo artifactFileInfo = null;
+
+         String branchName = null, artifactGuid = null;
+         Long branchUuid = null;
 
          String servletPath = request.getServletPath();
          if (!Strings.isValid(servletPath) || "/".equals(servletPath) || "/index".equals(servletPath)) {
             Pair<String, Long> defaultArtifact = DefaultOseeArtifact.get();
             if (defaultArtifact != null) {
-               artifactFileInfo =
-                  new HttpArtifactFileInfo(defaultArtifact.getFirst(), null, defaultArtifact.getSecond());
+               artifactGuid = defaultArtifact.getFirst();
+               branchUuid = defaultArtifact.getSecond();
             }
          } else {
-            artifactFileInfo = new HttpArtifactFileInfo(request);
+            artifactGuid = request.getParameter(GUID_KEY);
+            branchName = request.getParameter(BRANCH_NAME_KEY);
+            String branchGuid = request.getParameter(BRANCH_GUID_KEY);
+            if (branchGuid != null) {
+               getLogger().warn("Request with branch guid instead of uuid [%s]",
+                  request.getRequestURL().append('?').append(request.getQueryString()));
+               branchUuid = extractBranchUuid(branchGuid);
+            } else {
+               branchUuid = Long.parseLong(request.getParameter(BRANCH_UUID_KEY));
+            }
          }
 
          String uri = null;
-         if (artifactFileInfo != null) {
-            Branch branch = null;
-            if (artifactFileInfo.isBranchNameValid()) {
-               branch = branchCache.getBySoleName(artifactFileInfo.getBranchName());
-            } else if (artifactFileInfo.isBranchUuidValid()) {
-               branch = branchCache.getByGuid(artifactFileInfo.getBranchUuid());
-            }
-            Conditions.checkNotNull(branch, "branch", "Unable to determine branch");
-            uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), branch);
+         Branch branch = null;
+         if (branchName != null) {
+            branch = branchCache.getBySoleName(branchName);
+         } else if (branchUuid != null) {
+            branch = branchCache.getByGuid(branchUuid);
          }
+         Conditions.checkNotNull(branch, "branch", "Unable to determine branch");
+         uri = ArtifactUtil.getUri(artifactGuid, branch);
          handleArtifactUri(resourceManager, request.getQueryString(), uri, response);
       } catch (NumberFormatException ex) {
          handleError(response, HttpServletResponse.SC_BAD_REQUEST,
@@ -87,6 +107,22 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
       } finally {
          response.flushBuffer();
       }
+   }
+
+   private Long extractBranchUuid(String branchGuid) {
+      Long branchUuid = null;
+      ArtifactReadable mapArtifact =
+         orcs.getQueryFactory(null).fromBranch(CoreBranches.COMMON).andGuid(MAPPING_ART).getResults().getExactlyOne();
+      String map = mapArtifact.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
+      int start = map.indexOf(branchGuid);
+      if (start > 0) {
+         int separator = map.indexOf(":", start);
+         int end = map.indexOf(";", separator);
+         branchUuid = Long.parseLong(map.substring(separator + 1, end));
+      } else {
+         getLogger().error("BranchGuid [%s] not found in lookup artifact", branchGuid);
+      }
+      return branchUuid;
    }
 
    public static void handleArtifactUri(IResourceManager resourceManager, String request, String uri, HttpServletResponse response) throws OseeCoreException {

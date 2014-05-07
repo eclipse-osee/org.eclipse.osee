@@ -119,9 +119,11 @@ public class ServletRegistrationHandler {
       BranchCache branchCache = caching.getBranchCache();
       register(new SystemManagerServlet(logger, sessionManager), OseeServerContext.MANAGER_CONTEXT);
       register(new ResourceManagerServlet(logger, sessionManager, resourceManager), OseeServerContext.RESOURCE_CONTEXT);
-      register(new ArtifactFileServlet(logger, resourceManager, branchCache), OseeServerContext.PROCESS_CONTEXT);
-      register(new ArtifactFileServlet(logger, resourceManager, branchCache), OseeServerContext.ARTIFACT_CONTEXT);
-      register(new ArtifactFileServlet(logger, resourceManager, branchCache), "index");
+      register(new ArtifactFileServlet(logger, resourceManager, branchCache, orcsApi),
+         OseeServerContext.PROCESS_CONTEXT);
+      register(new ArtifactFileServlet(logger, resourceManager, branchCache, orcsApi),
+         OseeServerContext.ARTIFACT_CONTEXT);
+      register(new ArtifactFileServlet(logger, resourceManager, branchCache, orcsApi), "index");
       register(new BranchExchangeServlet(logger, sessionManager, resourceManager, orcsApi),
          OseeServerContext.BRANCH_EXCHANGE_CONTEXT);
       register(new BranchManagerServlet(logger, sessionManager, translationService, orcsApi),
