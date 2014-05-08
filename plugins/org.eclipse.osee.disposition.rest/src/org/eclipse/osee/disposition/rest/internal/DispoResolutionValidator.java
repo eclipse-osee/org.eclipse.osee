@@ -37,7 +37,7 @@ public class DispoResolutionValidator {
       String pcr = annotation.getResolution().toUpperCase().trim();
       boolean isValid = false;
       String type = "NONE";
-      if (pcr.matches("^\\s*[CTR]\\d{4,5}\\s*$")) {
+      if (pcr.matches("^\\s*[CTROU]\\d{4,6}\\s*$")) {
          isValid = true;
          if (pcr.startsWith("C")) {
             type = "CODE";
@@ -45,8 +45,10 @@ public class DispoResolutionValidator {
             type = "TEST";
          } else if (pcr.startsWith("R")) {
             type = "REQ";
-         } else {
+         } else if (pcr.startsWith("O")) {
             type = "OTHER";
+         } else if (pcr.startsWith("U")) {
+            type = "UNDETERMINED";
          }
       }
 
