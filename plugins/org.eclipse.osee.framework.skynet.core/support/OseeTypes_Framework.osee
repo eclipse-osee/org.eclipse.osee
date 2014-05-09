@@ -640,6 +640,40 @@ oseeEnumType "enum.req.test.frequency" {
 	entryGuid "AS7RJUFz2EPIYq+sQvwA"
 }
 
+attributeType "Data Rights Classification" extends EnumeratedAttribute {
+	uuid 0x1000000000000155
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	enumType "enum.data.rights.classification"
+	description "Restricted Rights:  Rights are retained by the company\n\nRestricted Rights Mixed:  contains some Restricted Rights that need separation of content with other rights\n\nOther:  does not contain content with Restricted Rights\n\nUnspecified: not yet specified"
+	defaultValue "Unspecified"
+	mediaType "text/plain"
+}
+
+attributeType "Data Rights Basis" extends StringAttribute {
+	uuid 0x100000000000154
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	description "The basis or rationale for the Data Rights Classification selected such as developed under program X"
+	mediaType "text/plain"
+}
+
+oseeEnumType "enum.data.rights.classification" {
+	uuid 0x3000000000000205
+	entry "Restricted Rights"
+	entryGuid "ABcLZ6zfUUzjdDa8p7wA"
+	entry "Restricted Rights Mixed"
+	entryGuid "ABeBnUCzzG2WDzJfSRgA"
+	entry "Other"
+	entryGuid "ABeCYxypz1fic5Sg52QA"
+	entry "Unspecified"
+	entryGuid "ABeDQMSA8Hs_1dxoYIgA"
+}
+
 abstract artifactType "Direct Software Requirement" extends "Abstract Software Requirement" {
 	uuid 0x0000000000000016
 }
@@ -650,6 +684,8 @@ abstract artifactType "Abstract Software Requirement" extends "Requirement" {
 	attribute "Partition"
 	attribute "Category"
 	attribute "System Security Requirement"
+	attribute "Data Rights Classification"
+	attribute "Data Rights Basis"
 }
 
 artifactType "Software Requirement" extends "MS Word Template" , "Direct Software Requirement" {
@@ -782,6 +818,8 @@ artifactType "Design" extends "MS Word Template" {
 	uuid 0x000000000000015A
 	attribute "Development Assurance Level"
 	attribute "Safety Criticality"
+	attribute "Data Rights Classification"
+	attribute "Data Rights Basis"
 }
 
 artifactType "Subsystem Design" extends "Design" {
