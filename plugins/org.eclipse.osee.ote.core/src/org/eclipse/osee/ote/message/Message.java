@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 
@@ -85,11 +86,11 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    private T defaultMessageData;
 
-   private final List<IMemSourceChangeListener> preMemSourceChangeListeners = new ArrayList<IMemSourceChangeListener>();
+   private final List<IMemSourceChangeListener> preMemSourceChangeListeners = new CopyOnWriteArrayList<IMemSourceChangeListener>();
    private final List<IMemSourceChangeListener> postMemSourceChangeListeners =
-      new ArrayList<IMemSourceChangeListener>();
-   private final List<IMessageDisposeListener> preMessageDisposeListeners = new ArrayList<IMessageDisposeListener>();
-   private final List<IMessageDisposeListener> postMessageDisposeListeners = new ArrayList<IMessageDisposeListener>();
+      new CopyOnWriteArrayList<IMemSourceChangeListener>();
+   private final List<IMessageDisposeListener> preMessageDisposeListeners = new CopyOnWriteArrayList<IMessageDisposeListener>();
+   private final List<IMessageDisposeListener> postMessageDisposeListeners = new CopyOnWriteArrayList<IMessageDisposeListener>();
 
    private final int defaultByteSize;
    private final int defaultOffset;
