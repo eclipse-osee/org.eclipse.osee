@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.eclipse.core.commands.Command;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -144,4 +145,10 @@ public class PlainTextRenderer extends FileSystemRenderer {
       return comparator;
    }
 
+   @Override
+   public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+      for (Artifact artifact : artifacts) {
+         super.open(Arrays.asList(artifact), presentationType);
+      }
+   }
 }
