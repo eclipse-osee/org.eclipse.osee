@@ -47,6 +47,7 @@ import org.eclipse.xtext.validation.ComposedChecks;
 @ComposedChecks(validators = {org.eclipse.xtext.validation.ImportUriValidator.class, OseeNamesAreUniqueValidator.class})
 public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
 
+   private static final String UNLIMITED = "unlimited";
    public static final String NON_UNIQUE_HIERARCHY = "non_unique_hierarchy";
    public static final String NON_UNIQUE_ARTIFACT_INSTANCE_RESTRICTION = "non_unique_artifact_instance_restriction";
    public static final String NON_UNIQUE_ARTIFACT_TYPE_RESTRICTION = "non_unique_artifact_type_restriction";
@@ -71,7 +72,11 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
       String max = attribute.getMax();
       int maxOccurrences = 0;
       if (!Strings.isEmpty(max)) {
-         maxOccurrences = Integer.parseInt(max);
+         if (org.eclipse.osee.framework.jdk.core.util.Strings.isNumeric(max)) {
+            maxOccurrences = Integer.parseInt(max);
+         } else if (max.equals(UNLIMITED)) {
+            maxOccurrences = Integer.MAX_VALUE;
+         }
       }
       if (minOccurrences > maxOccurrences) {
          error("min must not be greater than max", attribute, OseeDslPackage.Literals.XATTRIBUTE_TYPE__MAX);
