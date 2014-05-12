@@ -1242,6 +1242,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          unAssignedUser = AtsCoreUsers.UNASSIGNED_USER;
          oseeSystemUser = AtsCoreUsers.SYSTEM_USER;
       }
+      AtsChangeSet changes = new AtsChangeSet("Validate ATS Database - testStateMachineAssignees");
       for (Artifact artifact : artifacts) {
          if (artifact.isDeleted()) {
             continue;
@@ -1256,8 +1257,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      "testStateMachineAssignees",
                      "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " cancel/complete with attribute assignees");
                   if (fixAssignees) {
-                     awa.getStateMgr().clearAssignees();
-                     awa.persist(getClass().getSimpleName());
+                     awa.setSoleAttributeValue(AtsAttributeTypes.CurrentState,
+                        ((String) awa.getSoleAttributeValue(AtsAttributeTypes.CurrentState)).replaceAll("<.*>", ""));
+                     changes.add(awa);
                      results.log(artifact, "testStateMachineAssignees", "Fixed");
                   }
                }
@@ -1269,6 +1271,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                         "; ", assignees));
                   if (fixAssignees) {
                      awa.getStateMgr().removeAssignee(unAssignedUser);
+                     changes.add(awa);
                      results.log(artifact, "testStateMachineAssignees", "Fixed");
                   }
                }
@@ -1290,6 +1293,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
+      }
+      if (!changes.isEmpty()) {
+         changes.execute();
       }
       results.logTestTimeSpent(date, "testStateMachineAssignees");
    }
