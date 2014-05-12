@@ -105,7 +105,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    "WHERE art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ? " + //
    "ORDER BY art1.art_id, txs1.branch_id ";
    private boolean fixAssignees = true;
-   private boolean fixAttributeValues = true;
+   private boolean fixAttributeValues = false;
    private final Set<String> atsIds = new HashSet<String>();
    private final Map<String, String> legacyPcrIdToParentId = new HashMap<String, String>(50000);
    private String emailOnComplete = null;
