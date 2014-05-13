@@ -11,13 +11,13 @@
 package org.eclipse.osee.orcs.db.internal.accessor;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsConstants;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.callable.StoreBranchDatabaseCallable;
 
@@ -207,9 +208,16 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
          new StoreBranchDatabaseCallable(getLogger(), session, getDatabaseService(), getExecutorAdmin(),
             getEventService(), branches);
       try {
-         Future<IStatus> future = getExecutorAdmin().schedule(task);
-         IStatus status = future.get();
-         if (!status.isOK()) {
+         IStatus status = task.call();
+         if (status.isOK()) {
+            for (Branch branch : branches) {
+               branch.clearDirty();
+            }
+            Map<String, Object> eventData = new HashMap<String, Object>();
+            eventData.put(OrcsConstants.ORCS_BRANCH_EVENT_DATA, Collections.unmodifiableCollection(branches));
+
+            getEventService().sendEvent(OrcsConstants.ORCS_BRANCH_MODIFIED_EVENT, eventData);
+         } else {
             throw new OseeStateException("Error storing branches");
          }
       } catch (Exception ex) {
