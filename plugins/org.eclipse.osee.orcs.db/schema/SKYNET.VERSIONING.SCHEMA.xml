@@ -113,7 +113,6 @@
 	
 	
 	<Table name="OSEE_BRANCH" schema="OSEE" tablespace="osee_data">
-		<Column id="BRANCH_GUID"  defaultValue="not null" limits="28" type="VARCHAR" />
 		<Column id="BRANCH_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="BRANCH_NAME" defaultValue="not null" limits="200" type="VARCHAR" />		
 		<Column id="PARENT_BRANCH_ID" defaultValue="not null" type="BIGINT" />
@@ -126,7 +125,6 @@
 		<Column id="INHERIT_ACCESS_CONTROL" defaultValue="not null" type="smallint" />
 		
 		<Constraint schema="OSEE" id="OSEE_BRANCH_B_PK" type="PRIMARY KEY" appliesTo="BRANCH_ID" />
-		<Constraint schema="OSEE" id="OSEE_BRANCH_G_IDX" type="UNIQUE" appliesTo="BRANCH_GUID" />
 		<Index id="OSEE_BRANCH_A_IDX" tablespace="osee_index">
 			<AppliesTo id="ARCHIVED" />
 		</Index>
@@ -134,7 +132,6 @@
 
 	<TableDescription referenceTable="OSEE_BRANCH">
 		<Note purpose="Core table describing instances of OSEE Branches."/>
-		<Column id="BRANCH_GUID" 					description="self-explanatory" />
 		<Column id="BRANCH_ID" 						description="self-explanatory" />
 		<Column id="BRANCH_NAME" 					description="Simple string name" />
 		<Column id="PARENT_BRANCH_ID" 			description="self-explanatory" />
