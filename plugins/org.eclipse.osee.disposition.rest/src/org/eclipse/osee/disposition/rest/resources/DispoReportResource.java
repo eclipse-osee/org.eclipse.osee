@@ -13,6 +13,7 @@ package org.eclipse.osee.disposition.rest.resources;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
+import javax.ws.rs.Encoded;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -41,7 +42,7 @@ public class DispoReportResource {
 
    @GET
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response postDispoSetReport(@QueryParam("primarySet") String primarySet, @QueryParam("secondarySet") String secondarySet) {
+   public Response postDispoSetReport(@Encoded @QueryParam("primarySet") String primarySet, @Encoded @QueryParam("secondarySet") String secondarySet) {
       final DispoSet dispoSet = dispoApi.getDispoSetById(program, primarySet);
       final DispoSet dispoSet2 = dispoApi.getDispoSetById(program, secondarySet);
       final STRSReport writer = new STRSReport(dispoApi);
