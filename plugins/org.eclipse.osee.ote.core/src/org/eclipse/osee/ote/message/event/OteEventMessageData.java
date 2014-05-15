@@ -20,12 +20,12 @@ public class OteEventMessageData extends MessageData{
    
    public OteEventMessageData(OteEventMessage msg, String topic, int dataByteSize) {
       super(msg.getName(), OteEventMessageHeader.HEADER_SIZE + dataByteSize, OteEventMessageHeader.HEADER_SIZE, OteEventMessageType.OTE_EVENT_MESSAGE);
-      this.header = new OteEventMessageHeader(msg, topic, getMem().slice(0, OteEventMessageHeader.HEADER_SIZE));
+      this.header = new OteEventMessageHeader(msg, topic, 0, getMem().slice(0, OteEventMessageHeader.HEADER_SIZE));
    }
    
    public OteEventMessageData(OteEventMessage msg, int dataByteSize) {
 	   super("default", OteEventMessageHeader.HEADER_SIZE + dataByteSize, OteEventMessageHeader.HEADER_SIZE, OteEventMessageType.OTE_EVENT_MESSAGE);
-	   this.header = new OteEventMessageHeader(msg, "", getMem().slice(0, OteEventMessageHeader.HEADER_SIZE));
+	   this.header = new OteEventMessageHeader(msg, "", 0, getMem().slice(0, OteEventMessageHeader.HEADER_SIZE));
    }
 
 @Override

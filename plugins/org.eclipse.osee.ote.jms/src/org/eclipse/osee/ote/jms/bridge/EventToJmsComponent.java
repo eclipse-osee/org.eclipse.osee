@@ -32,7 +32,7 @@ public class EventToJmsComponent extends OseeMessagingListener implements EventH
 
 	private OteServerJmsNodeProvider connecitonNode;
 	private EventAdmin eventAdmin;
-	private List<Event> eventQueue;
+	private final List<Event> eventQueue;
 	private final UUID MYID;
 	
 	public EventToJmsComponent(){
@@ -80,7 +80,7 @@ public class EventToJmsComponent extends OseeMessagingListener implements EventH
 	}
 	
 	private void sendEvent(Event event){
-		OteEventMessage message = OteEventMessageUtil.getOteByteMessage(event);
+		OteEventMessage message = OteEventMessageUtil.getOteEventMessage(event);
 		if(message != null){
 			try {
 				UUID id = OteEventMessageUtil.getUUID(message);

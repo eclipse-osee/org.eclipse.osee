@@ -175,7 +175,11 @@ public class OTEBundleLoader implements IRuntimeLibraryManager{
 			public int compare(Bundle arg0, Bundle arg1) {
 				int startLevel0 = getStartLevel(arg0);
 				int startLevel1 = getStartLevel(arg1);
+				if(startLevel0 != 0 || startLevel1 != 0){
 				return startLevel0 - startLevel1;
+				} else {
+				   return arg0.getSymbolicName().compareTo(arg1.getSymbolicName());
+				}
 			}
 			
 			private int getStartLevel(Bundle arg0) {
@@ -206,6 +210,7 @@ public class OTEBundleLoader implements IRuntimeLibraryManager{
       }
       installedBundles.clear();
 
+      int count = 0;
       for (Bundle bundle : runningBundles) {
          try {
             String entry = bundle.getHeaders().get("Fragment-Host");
@@ -217,6 +222,7 @@ public class OTEBundleLoader implements IRuntimeLibraryManager{
             result = false;
             statusCallback.error("Failed to stop and uninstall " + bundle.getSymbolicName(), ex);
          }
+         count++;
       }
       runningBundles.clear();
       
@@ -294,8 +300,8 @@ public class OTEBundleLoader implements IRuntimeLibraryManager{
        Bundle[] bundles = ServiceUtility.getContext().getBundles();
        List<String> versions = new ArrayList<String>();
        for(Bundle bundle: bundles ){
-           String version = (String) bundle.getHeaders().get("Bundle-Version");
-           String implVersion = (String) bundle.getHeaders().get("Implementation-Version");
+           String version = bundle.getHeaders().get("Bundle-Version");
+           String implVersion = bundle.getHeaders().get("Implementation-Version");
            if (version != null && implVersion != null) {
                versions.add(String.format("%s_%s_%s", bundle.getSymbolicName(), version, implVersion));
            } else if (version != null){

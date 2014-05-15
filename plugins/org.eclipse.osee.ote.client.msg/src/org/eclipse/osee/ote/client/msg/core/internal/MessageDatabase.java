@@ -20,6 +20,7 @@ import org.eclipse.osee.ote.client.msg.core.db.MessageInstance;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.enums.DataType;
+import org.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 
 /**
@@ -27,7 +28,8 @@ import org.eclipse.osee.ote.message.tool.MessageMode;
  */
 public class MessageDatabase extends AbstractMessageDataBase {
 
-   public MessageDatabase() {
+   public MessageDatabase(IMsgToolServiceClient service) {
+      super(service);
    }
 
    @Override

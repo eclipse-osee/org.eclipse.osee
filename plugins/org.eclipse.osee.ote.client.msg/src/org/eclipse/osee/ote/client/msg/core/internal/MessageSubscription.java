@@ -23,7 +23,6 @@ import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.commands.SetElementValue;
 import org.eclipse.osee.ote.message.commands.ZeroizeElement;
 import org.eclipse.osee.ote.message.enums.DataType;
-import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 
 /**
@@ -96,11 +95,11 @@ public class MessageSubscription implements IMessageSubscription {
       currentState = currentState.onMessageDbClosing(msgDb);
    }
 
-   public synchronized void attachService(IRemoteMessageService service) {
+   public synchronized void attachService() {
       currentState = currentState.onActivated();
    }
 
-   public synchronized void detachService(IRemoteMessageService service) {
+   public synchronized void detachService() {
       currentState = currentState.onDeactivated();
    }
 
@@ -157,8 +156,8 @@ public class MessageSubscription implements IMessageSubscription {
    private void progressState() {
       if (msgService.getMsgDatabase() != null) {
          attachMessageDb(msgService.getMsgDatabase());
-         if (msgService.getService() != null) {
-            attachService(msgService.getService());
+         if(msgService.isConnected()){
+            attachService();
          }
       }
    }
@@ -166,26 +165,26 @@ public class MessageSubscription implements IMessageSubscription {
    @Override
    public void setElementValue(List<Object> path, String value) throws Exception {
       final SetElementValue cmd = new SetElementValue(getMessageClassName(), getMemType(), path, value, true);
-      msgService.getService().setElementValue(cmd);
+      MessageServiceSupport.setElementValue(cmd);
    }
 
    @Override
    public void setElementValueNoSend(List<Object> path, String value)
 		   throws Exception {
 	   final SetElementValue cmd = new SetElementValue(getMessageClassName(), getMemType(), path, value, false);
-	   msgService.getService().setElementValue(cmd);
+	   MessageServiceSupport.setElementValue(cmd);
    }
 
    @Override
    public void send() throws Exception {
       final SetElementValue cmd = new SetElementValue(getMessageClassName(), getMemType(), null, null, true);
-      msgService.getService().setElementValue(cmd);
+      MessageServiceSupport.setElementValue(cmd);
    }
 
    @Override
    public void zeroize(List<Object> path) throws Exception {
       final ZeroizeElement cmd = new ZeroizeElement(getMessageClassName(), getMemType(), path);
-      msgService.getService().zeroizeElement(cmd);
+      MessageServiceSupport.zeroizeElement(cmd);
    }
 
    public void notifyCanceled() {

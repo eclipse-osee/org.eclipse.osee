@@ -5,6 +5,7 @@ import java.util.concurrent.Future;
 
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
 import org.eclipse.osee.ote.core.model.IModelManager;
+import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 
 /**
  * This is an API that exposes some of the key test environment interfaces and operations.  It is expected
@@ -51,6 +52,13 @@ public interface OTEApi {
     */
    TestEnvironmentInterface getTestEnvironment();
    
+   /**
+    * Returns a reference to the Environment implementation of the Remote message service, which allows clients
+    * to view environment message data.
+    * 
+    * @return null or a valid IRemoteMessageService
+    */
+   IRemoteMessageService getRemoteMessageService();
    
    /**
     * This method will make sure that the requested configuration is available to the server and then install them.  

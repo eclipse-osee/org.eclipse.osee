@@ -1,7 +1,9 @@
 package org.eclipse.osee.ote.internal;
 
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
 
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.Configuration;
 import org.eclipse.osee.ote.ConfigurationStatus;
 import org.eclipse.osee.ote.OTEStatusCallback;
@@ -21,6 +23,7 @@ public class Configure implements Callable<ConfigurationStatus> {
 
    @Override
    public ConfigurationStatus call() throws Exception {
+      long startTime = System.currentTimeMillis();
       ConfigurationStatus status = new ConfigurationStatus(configuration, true, "");
       try{
          boolean completedUninstall = true;
@@ -45,6 +48,8 @@ public class Configure implements Callable<ConfigurationStatus> {
       } finally {
          callable.complete(status);
       }
+      long elapsedTime = System.currentTimeMillis() - startTime;
+      OseeLog.log(getClass(), Level.INFO, String.format("Took %d ms to load and start the test environment.", elapsedTime));
       return status;
    }
 

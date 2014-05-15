@@ -14,8 +14,9 @@ import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
+
 import org.eclipse.osee.ote.message.enums.DataType;
-import org.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient;
 
 /**
  * @author Ken J. Aguilar
@@ -75,12 +76,12 @@ public class RecordCommand implements Serializable {
 
    private final List<MessageRecordDetails> list;
    private final InetSocketAddress destAddress;
-   private final IMsgToolServiceClient client;
+   private final UUID key;
 
-   public RecordCommand(final IMsgToolServiceClient client, InetSocketAddress destAddress, List<MessageRecordDetails> list) {
-      this.client = client;
+   public RecordCommand(UUID key, InetSocketAddress destAddress, List<MessageRecordDetails> list) {
       this.list = list;
       this.destAddress = destAddress;
+      this.key = key;
    }
 
    /**
@@ -93,9 +94,9 @@ public class RecordCommand implements Serializable {
    public Collection<MessageRecordDetails> getMsgsToRecord() {
       return list;
    }
-
-   public IMsgToolServiceClient getClient() {
-      return client;
+   
+   public UUID getKey(){
+      return key;
    }
 
 }

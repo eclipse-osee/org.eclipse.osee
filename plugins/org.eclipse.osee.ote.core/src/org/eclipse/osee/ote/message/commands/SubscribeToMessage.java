@@ -11,8 +11,10 @@
 package org.eclipse.osee.ote.message.commands;
 
 import java.io.Serializable;
+import java.net.InetSocketAddress;
+import java.util.UUID;
+
 import org.eclipse.osee.ote.message.enums.DataType;
-import org.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 
 /**
@@ -25,18 +27,16 @@ public class SubscribeToMessage implements Serializable {
    private final String message;
    private final DataType type;
    private final MessageMode mode;
-   private final IMsgToolServiceClient callback;
+   private final InetSocketAddress address;
+   private final UUID key;
 
-   public SubscribeToMessage(String message, DataType type, MessageMode mode, IMsgToolServiceClient callback) {
+   public SubscribeToMessage(String message, DataType type, MessageMode mode, InetSocketAddress address, UUID key) {
       super();
       this.message = message;
       this.type = type;
       this.mode = mode;
-      this.callback = callback;
-   }
-
-   public IMsgToolServiceClient getCallback() {
-      return callback;
+      this.address = address;
+      this.key = key;
    }
 
    /**
@@ -52,5 +52,13 @@ public class SubscribeToMessage implements Serializable {
 
    public MessageMode getMode() {
       return mode;
+   }
+   
+   public InetSocketAddress getAddress(){
+      return address;
+   }
+   
+   public UUID getKey(){
+      return key;
    }
 }

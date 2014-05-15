@@ -304,9 +304,12 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 			}
 		}
 		if(oteServerEntry != null) {
-		   lookupRegistration.stop();
-		   taskToCancel.cancel(true);
-		   masterServer.removeServer(masterURI, oteServerEntry);
+		   try{
+		      lookupRegistration.stop();
+		      taskToCancel.cancel(true);
+		   } finally {
+		      masterServer.removeServer(masterURI, oteServerEntry);
+		   }
 		}
 		brokerService = null;
 	}
@@ -370,11 +373,11 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 	
 	private static class LookupRegistration implements Runnable {
 
-      private OTEMasterServer masterServer;
-      private OTEServer server;
-      private URI uri;
+      private final OTEMasterServer masterServer;
+      private final OTEServer server;
+      private final URI uri;
       private volatile boolean run = true;
-      private OteService service;
+      private final OteService service;
 
       public LookupRegistration(URI uri, OTEMasterServer masterServer, OTEServer server, OteService service) {
          this.masterServer = masterServer;

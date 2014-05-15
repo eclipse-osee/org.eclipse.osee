@@ -11,10 +11,9 @@
 package org.eclipse.osee.ote.message.interfaces;
 
 import java.net.InetSocketAddress;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.Set;
+
 import org.eclipse.osee.ote.message.commands.RecordCommand;
 import org.eclipse.osee.ote.message.commands.SetElementValue;
 import org.eclipse.osee.ote.message.commands.SubscribeToMessage;
@@ -29,39 +28,37 @@ import org.eclipse.osee.ote.message.tool.rec.IMessageEntryFactory;
  * 
  * @author Andrew M. Finkbeiner
  */
-public interface IRemoteMessageService extends Remote {
+public interface IRemoteMessageService {
 
-   void unsubscribeToMessage(UnSubscribeToMessage cmd) throws RemoteException;
+   void unsubscribeToMessage(UnSubscribeToMessage cmd);
 
    /**
     * Sets a message element to a specified value
     */
-   void setElementValue(SetElementValue cmd) throws RemoteException;
+   void setElementValue(SetElementValue cmd);
 
-   void zeroizeElement(ZeroizeElement cmd) throws RemoteException;
-
-   //  int changeSubscription(ChangeSubscription cmd) throws RemoteException;
+   void zeroizeElement(ZeroizeElement cmd);
 
    /**
     * Notifies service to send message updates to the specified ip address
     */
-   SubscriptionDetails subscribeToMessage(SubscribeToMessage cmd) throws RemoteException;
+   SubscriptionDetails subscribeToMessage(SubscribeToMessage cmd);
 
-   Set<? extends DataType> getAvailablePhysicalTypes() throws RemoteException;
+   Set<? extends DataType> getAvailablePhysicalTypes();
 
-   boolean startRecording(RecordCommand cmd) throws RemoteException;
+   boolean startRecording(RecordCommand cmd);
 
-   InetSocketAddress getRecorderSocketAddress() throws RemoteException;
+   InetSocketAddress getRecorderSocketAddress();
 
-   InetSocketAddress getMsgUpdateSocketAddress() throws RemoteException;
+   InetSocketAddress getMsgUpdateSocketAddress();
 
-   void stopRecording() throws RemoteException;
+   void stopRecording();
 
-   void terminateService() throws RemoteException;
+   void terminateService();
 
-   void reset() throws RemoteException;
+   void reset();
 
-   void setupRecorder(IMessageEntryFactory factory) throws RemoteException;
+   void setupRecorder(IMessageEntryFactory factory);
 
-   public Map<String, Throwable> getCancelledSubscriptions() throws RemoteException;
+   public Map<String, Throwable> getCancelledSubscriptions();
 }

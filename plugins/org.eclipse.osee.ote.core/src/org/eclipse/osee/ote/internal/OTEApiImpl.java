@@ -16,6 +16,7 @@ import org.eclipse.osee.ote.OTEStatusCallback;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
 import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.osee.ote.core.model.IModelManager;
+import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 
 public final class OTEApiImpl implements OTEApi {
 
@@ -29,6 +30,7 @@ public final class OTEApiImpl implements OTEApi {
    private OTEServerRuntimeCache serverRuntimeCache;
    private TestEnvironmentInterface env;
    private IModelManager modelManager;
+   private IRemoteMessageService remoteMessageService;
    
    /**
     * ds component method
@@ -112,6 +114,20 @@ public final class OTEApiImpl implements OTEApi {
       this.modelManager = null;
    }
    
+   /**
+    * ds component method
+    */
+   public void bindIRemoteMessageService(IRemoteMessageService remoteMessageService){
+      this.remoteMessageService = remoteMessageService;
+   }
+   
+   /**
+    * ds component method
+    */
+   public void unbindIRemoteMessageService(IRemoteMessageService remoteMessageService){
+      this.remoteMessageService = null;
+   }
+   
    public OTEApiImpl(){
       this.configurationLock = new ReentrantLock();
       this.emptyConfiguration = new Configuration();
@@ -190,6 +206,11 @@ public final class OTEApiImpl implements OTEApi {
    @Override
    public Class<?> loadFromRuntimeLibraryLoader(String clazz) throws ClassNotFoundException {
       return runtimeLibraryManager.loadFromScriptClassLoader(clazz);
+   }
+
+   @Override
+   public IRemoteMessageService getRemoteMessageService() {
+	   return remoteMessageService;
    }
 
 }

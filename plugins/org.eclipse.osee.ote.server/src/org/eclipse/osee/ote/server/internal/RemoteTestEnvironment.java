@@ -31,7 +31,6 @@ import org.eclipse.osee.ote.core.model.ModelKey;
 import org.eclipse.osee.ote.core.model.ModelState;
 import org.eclipse.osee.ote.message.IInstrumentationRegistrationListener;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
-import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystem;
 import org.eclipse.osee.ote.server.RemoteShell;
 
@@ -44,7 +43,7 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       new HashMap<IRemoteCommandConsole, RemoteShell>(32);
 
    private final ReentrantLock lock = new ReentrantLock();
-   private IRemoteMessageService exportedRemoteMessageService;
+//   private IRemoteMessageService exportedRemoteMessageService;
 
    public RemoteTestEnvironment(MessageSystemTestEnvironment currentEnvironment, IServiceConnector serviceConnector, boolean keepEnvAliveWithNoUsers) {
       if (serviceConnector == null) {
@@ -79,14 +78,14 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       env.removeInstrumentationRegistrationListener(listener);
    }
 
-   @Override
-   public IRemoteMessageService getMessageToolServiceProxy() throws RemoteException {
-      if(exportedRemoteMessageService == null){
-         IRemoteMessageService service = ServiceUtility.getService(IRemoteMessageService.class, 30000);
-         exportedRemoteMessageService = (IRemoteMessageService)this.serviceConnector.export(service);
-      }
-      return exportedRemoteMessageService;
-   }
+//   @Override
+//   public IRemoteMessageService getMessageToolServiceProxy() throws RemoteException {
+//      if(exportedRemoteMessageService == null){
+//         IRemoteMessageService service = ServiceUtility.getService(IRemoteMessageService.class, 30000);
+//         exportedRemoteMessageService = (IRemoteMessageService)this.serviceConnector.export(service);
+//      }
+//      return exportedRemoteMessageService;
+//   }
 
    @Override
    public IRemoteCommandConsole getCommandConsole() throws RemoteException {

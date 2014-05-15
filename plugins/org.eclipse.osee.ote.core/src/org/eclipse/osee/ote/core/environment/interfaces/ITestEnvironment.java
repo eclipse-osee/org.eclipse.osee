@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.ote.core.cmd.Command;
 import org.eclipse.osee.ote.core.model.IModelManagerRemote;
+import org.eclipse.osee.ote.message.IInstrumentationRegistrationListener;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -38,5 +39,10 @@ public interface ITestEnvironment extends Remote {
    public void sendCommand(Command command) throws RemoteException;
 
    public void sendMessage(Message message) throws RemoteException;
+   
+   void addInstrumentationRegistrationListener(IInstrumentationRegistrationListener listener) throws RemoteException;
+
+   void removeInstrumentationRegistrationListener(IInstrumentationRegistrationListener listener) throws RemoteException;
+
 
 }

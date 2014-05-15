@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.client.msg.core.db;
 
-import java.rmi.RemoteException;
+import java.net.InetSocketAddress;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.osee.ote.client.msg.core.internal.MessageServiceSupport;
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.commands.SubscribeToMessage;
 import org.eclipse.osee.ote.message.commands.UnSubscribeToMessage;
 import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient;
-import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 import org.eclipse.osee.ote.message.tool.SubscriptionDetails;
 import org.eclipse.osee.ote.message.tool.SubscriptionKey;
@@ -35,8 +35,8 @@ public class MessageInstance {
    private SubscriptionKey serverSubscriptionKey = null;
    private int refcount = 0;
    private boolean supported = true;
-   private volatile IRemoteMessageService service;
-
+   private volatile boolean connected = false;
+   
    public MessageInstance(Message msg, MessageMode mode, DataType type) {
       this.msg = msg;
       this.mode = mode;
@@ -59,26 +59,32 @@ public class MessageInstance {
       return serverSubscriptionKey != null;
    }
 
-   public Integer attachToService(IRemoteMessageService service, IMsgToolServiceClient client) throws Exception {
-      SubscriptionDetails details =
-         service.subscribeToMessage(new SubscribeToMessage(msg.getClass().getName(), type, mode, client));
+   public Integer attachToService(IMsgToolServiceClient client) throws Exception {
+      InetSocketAddress address = client.getAddressByType(msg.getClass().getName(), type);
+      SubscriptionDetails details;
+      if(address == null){
+         details = null;
+      } else {
+         details = MessageServiceSupport.subscribeToMessage(new SubscribeToMessage(msg.getClass().getName(), type, mode,
+               client.getAddressByType(msg.getClass().getName(), type), client.getTestSessionKey()));
+      }
       if (details == null) {
          supported = false;
          return null;
       }
       supported = true;
       msg.setData(details.getCurrentData());
-      this.service = service;
+      connected = true;
       serverSubscriptionKey = details.getKey();
       return serverSubscriptionKey.getId();
    }
 
-   public void detachService(IRemoteMessageService service, IMsgToolServiceClient client) throws Exception {
-      if (service != null && supported) {
-         service.unsubscribeToMessage(new UnSubscribeToMessage(msg.getClass().getName(), mode, type,
+   public void detachService(IMsgToolServiceClient client) throws Exception {
+      if (supported) {
+         MessageServiceSupport.unsubscribeToMessage(new UnSubscribeToMessage(msg.getClass().getName(), mode, type,
             client.getAddressByType(msg.getClass().getName(), type)));
       }
-      this.service = null;
+      connected = false;
       serverSubscriptionKey = null;
    }
 
@@ -108,19 +114,16 @@ public class MessageInstance {
 
    public Set<DataType> getAvailableTypes() {
 	  HashSet<DataType> set = new HashSet<DataType>();
-	  if(service != null){
-		  try {
-			  Set<? extends DataType> envSet = service.getAvailablePhysicalTypes();
-			  Set<DataType> available = msg.getAssociatedMessages().keySet();
-			  for(DataType type : available.toArray(new DataType[available.size()])){
-				  if(envSet.contains(type)){
-					  set.add(type);
-				  }
-			  }
-		  } catch (RemoteException e) {
-		  }
-	  } 
-      return set;
+	  if(connected){
+	     Set<? extends DataType> envSet = MessageServiceSupport.getAvailablePhysicalTypes();
+	     Set<DataType> available = msg.getAssociatedMessages().keySet();
+	     for(DataType type : available.toArray(new DataType[available.size()])){
+	        if(envSet.contains(type)){
+	           set.add(type);
+	        }
+	     }
+	  }
+     return set;
    }
 
    public boolean isSupported() {

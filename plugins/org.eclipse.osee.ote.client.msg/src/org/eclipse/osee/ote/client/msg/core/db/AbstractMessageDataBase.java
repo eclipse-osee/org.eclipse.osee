@@ -24,7 +24,6 @@ import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MessageData;
 import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IMsgToolServiceClient;
-import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 import org.eclipse.osee.ote.message.tool.MessageMode;
 import org.eclipse.osee.ote.messaging.dds.entity.DataReader;
 import org.eclipse.osee.ote.messaging.dds.entity.EntityFactory;
@@ -40,7 +39,7 @@ public abstract class AbstractMessageDataBase {
 			new ConcurrentHashMap<Integer, MessageInstance>();
 
 	private IMsgToolServiceClient client;
-	private IRemoteMessageService service;
+	private volatile boolean connected = false;
 	private final DataReader reader = new DataReader(null, null, true, null, new EntityFactory() {
 
 		@Override
@@ -50,8 +49,8 @@ public abstract class AbstractMessageDataBase {
 
 	});
 
-	protected AbstractMessageDataBase() {
-
+	protected AbstractMessageDataBase(IMsgToolServiceClient service) {
+	   client = service;
 	}
 
 	public MessageInstance findInstance(String name, MessageMode mode, DataType type) {
@@ -84,8 +83,8 @@ public abstract class AbstractMessageDataBase {
 			referenceToMsgMap.put(reference, instance);
 		}
 		instance.incrementReferenceCount();
-		if (service != null && !instance.isAttached()) {
-			doInstanceAttach(instance, service);
+		if (connected && !instance.isAttached()) {
+			doInstanceAttach(instance);
 		}
 		return instance;
 	}
@@ -118,8 +117,8 @@ public abstract class AbstractMessageDataBase {
 			referenceToMsgMap.put(reference, instance);
 		}
 		instance.incrementReferenceCount();
-		if (service != null && !instance.isAttached()) {
-			doInstanceAttach(instance, service);
+		if (connected && !instance.isAttached()) {
+			doInstanceAttach(instance);
 		}
 		return instance;
 	}
@@ -129,7 +128,7 @@ public abstract class AbstractMessageDataBase {
 		instance.decrementReferenceCount();
 		if (!instance.hasReferences()) {
 			if (instance.isAttached()) {
-				doInstanceDetach(instance, service);
+				doInstanceDetach(instance);
 			}
 			MessageReference reference =
 					new MessageReference(instance.getType(), instance.getMode(), instance.getMessage().getClass().getName());
@@ -143,12 +142,12 @@ public abstract class AbstractMessageDataBase {
 
 	protected abstract void destroyMessage(Message message) throws Exception;
 
-	public void attachToService(IRemoteMessageService service, IMsgToolServiceClient client) {
-		this.service = service;
+	public void attachToService(IMsgToolServiceClient client) {
+	   connected = true;
 		this.client = client;
 		for (MessageInstance instance : referenceToMsgMap.values()) {
 			try {
-				doInstanceAttach(instance, service);
+				doInstanceAttach(instance);
 			} catch (Exception e) {
 				OseeLog.log(AbstractMessageDataBase.class, Level.SEVERE,
 						"could not attach instance for " + instance.toString(), e);
@@ -156,11 +155,11 @@ public abstract class AbstractMessageDataBase {
 		}
 	}
 
-	public void detachService(IRemoteMessageService service) {
+	public void detachService() {
 		for (MessageInstance instance : referenceToMsgMap.values()) {
-			doInstanceDetach(instance, service);
+			doInstanceDetach(instance);
 		}
-		this.service = null;
+		connected = false;
 		this.client = null;
 	}
 
@@ -168,8 +167,8 @@ public abstract class AbstractMessageDataBase {
 		return idToMsgMap.get(id);
 	}
 
-	private boolean doInstanceAttach(MessageInstance instance, IRemoteMessageService service) throws Exception {
-		Integer id = instance.attachToService(service, client);
+	private boolean doInstanceAttach(MessageInstance instance) throws Exception {
+		Integer id = instance.attachToService(client);
 		if (id == null) {
 			// can't subscribe because environment does not support this type
 			return false;
@@ -178,13 +177,13 @@ public abstract class AbstractMessageDataBase {
 		return true;
 	}
 
-	private void doInstanceDetach(MessageInstance instance, IRemoteMessageService service) {
+	private void doInstanceDetach(MessageInstance instance) {
 		try {
 			Integer id = instance.getId();
 			if (id != null) {
 				idToMsgMap.remove(id);
 			}
-			instance.detachService(service, client);
+			instance.detachService(client);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

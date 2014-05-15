@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.message.event;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
@@ -58,7 +57,7 @@ public class SerializedClassMessage<T> extends OteEventMessage {
 	public T getObject() throws IOException, ClassNotFoundException{
 		int offset = OBJECT.getByteOffset() + getHeaderSize();
 		ByteArrayInputStream bis = new ByteArrayInputStream(getData(), offset, getData().length - offset);
-		ObjectInputStream ois = new ObjectInputStream(bis);
+		MyObjectInputStream ois = new MyObjectInputStream(bis);
 		return (T)ois.readObject();
 	}
 	
