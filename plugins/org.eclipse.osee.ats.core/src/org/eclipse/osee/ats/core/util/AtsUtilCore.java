@@ -13,7 +13,9 @@ package org.eclipse.osee.ats.core.util;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.AttributeId;
 
@@ -23,9 +25,17 @@ import org.eclipse.osee.orcs.data.AttributeId;
 public class AtsUtilCore {
 
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
+   private static IOseeBranch commonBranch = null;
 
    public static IOseeBranch getAtsBranch() {
-      return CoreBranches.COMMON;
+      if (commonBranch == null) {
+         if (Strings.isValid(System.getProperty("ats.branch"))) {
+            commonBranch = TokenFactory.createBranch(Long.valueOf(System.getProperty("ats.branch")), "ATS Branch");
+         } else {
+            commonBranch = CoreBranches.COMMON;
+         }
+      }
+      return commonBranch;
    }
 
    public static boolean isInTest() {
