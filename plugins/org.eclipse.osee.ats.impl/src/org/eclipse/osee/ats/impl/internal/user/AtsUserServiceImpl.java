@@ -10,15 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.user;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.util.AtsUserNameComparator;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.internal.util.AtsUtilServer;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -141,5 +146,25 @@ public class AtsUserServiceImpl implements IAtsUserService {
       return orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
          CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, org.eclipse.osee.framework.core.enums.Operator.EQUAL,
          SystemUser.OseeSystem.getUserId()).getResults().getExactlyOne();
+   }
+
+   @Override
+   public List<IAtsUser> getUsers(Active active) {
+      List<IAtsUser> users = new ArrayList<IAtsUser>();
+      for (ArtifactReadable userArt : orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(
+         AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).getResults()) {
+         Boolean activeFlag = userArt.getSoleAttributeValue(AtsAttributeTypes.Active, true);
+         if (active == Active.Both || ((active == Active.Active) && activeFlag) || ((active == Active.InActive) && !activeFlag)) {
+            users.add(new AtsUser(userArt));
+         }
+      }
+      return users;
+   }
+
+   @Override
+   public List<IAtsUser> getUsersSortedByName(Active active) {
+      List<IAtsUser> users = getUsers(active);
+      Collections.sort(users, new AtsUserNameComparator(false));
+      return users;
    }
 }

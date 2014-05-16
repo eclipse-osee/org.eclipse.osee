@@ -24,11 +24,13 @@ import org.eclipse.nebula.widgets.xviewer.XPromptChange.Option;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.EnumStringSingleSelectionDialog;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -481,7 +483,9 @@ public class DefectXViewer extends XViewer {
    }
 
    private boolean handleUserCol(Collection<ReviewDefectItem> defectItems, boolean modified) throws OseeCoreException {
-      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New User", Active.Active);
+      UserListDialog ld =
+         new UserListDialog(Displays.getActiveShell(), "Select New User",
+            AtsClientService.get().getUserAdmin().getOseeUsers(AtsCore.getUserService().getUsers(Active.Active)));
       int result = ld.open();
       if (result == 0) {
          modified = setUser(defectItems, ld.getSelection());
@@ -559,7 +563,8 @@ public class DefectXViewer extends XViewer {
 
    public boolean executeTransaction(Collection<ReviewDefectItem> defectItems) throws OseeCoreException {
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(xDefectViewer.getReviewArt().getArtifact().getBranch(), "Modify Review Defects");
+         TransactionManager.createTransaction(xDefectViewer.getReviewArt().getArtifact().getBranch(),
+            "Modify Review Defects");
       for (ReviewDefectItem defectItem : defectItems) {
          xDefectViewer.getDefectManager().addOrUpdateDefectItem(defectItem);
          update(defectItem, null);

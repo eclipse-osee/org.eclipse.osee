@@ -34,8 +34,8 @@ public class UserCheckTreeDialog extends FullyNamedCheckTreeDialog {
 
    private Collection<User> teamMembers;
 
-   public UserCheckTreeDialog(Collection<? extends User> artifacts) {
-      super(artifacts);
+   public UserCheckTreeDialog(Collection<? extends User> users) {
+      super(users);
    }
 
    public UserCheckTreeDialog() throws OseeCoreException {

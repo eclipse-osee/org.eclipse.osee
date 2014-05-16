@@ -21,10 +21,12 @@ import org.eclipse.nebula.widgets.xviewer.XPromptChange;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.EnumStringSingleSelectionDialog;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.review.role.Role;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -239,7 +241,9 @@ public class UserRoleXViewer extends XViewer {
          } else if (xCol.equals(UserRoleXViewerFactory.Completed_Col)) {
             modified = setCompleted(userRoles);
          } else if (xCol.equals(UserRoleXViewerFactory.User_Col)) {
-            UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New User", Active.Active);
+            UserListDialog ld =
+               new UserListDialog(Displays.getActiveShell(), "Select New User",
+                  AtsClientService.get().getUserAdmin().getOseeUsers(AtsCore.getUserService().getUsers(Active.Active)));
             int result = ld.open();
             if (result == 0) {
                modified = setUser(userRoles, ld.getSelection());

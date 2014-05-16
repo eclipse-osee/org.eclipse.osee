@@ -46,6 +46,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.ats.workdef.StateDefinitionLabelProvider;
 import org.eclipse.osee.ats.workdef.StateDefinitionViewSorter;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -423,7 +424,9 @@ public class WETransitionComposite extends Composite {
          AWorkbench.popup("ERROR", "No Assignees in Completed and Cancelled states");
          return;
       }
-      UserCheckTreeDialog uld = new UserCheckTreeDialog();
+      UserCheckTreeDialog uld =
+         new UserCheckTreeDialog(AtsClientService.get().getUserAdmin().getOseeUsers(
+            AtsCore.getUserService().getUsers(Active.Active)));
       uld.setMessage("Select users to transition to.");
       uld.setInitialSelections(AtsClientService.get().getUserAdmin().getOseeUsers(aba.getTransitionAssignees()));
       if (awa.getParentTeamWorkflow() != null) {

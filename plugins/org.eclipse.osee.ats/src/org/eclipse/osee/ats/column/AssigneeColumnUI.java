@@ -21,6 +21,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
@@ -30,6 +31,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -121,7 +123,9 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
             return false;
          }
       }
-      UserCheckTreeDialog uld = new UserCheckTreeDialog();
+      UserCheckTreeDialog uld =
+         new UserCheckTreeDialog(AtsClientService.get().getUserAdmin().getOseeUsers(
+            AtsCore.getUserService().getUsers(Active.Active)));
       uld.setMessage("Select to assign.\nDeSelect to un-assign.");
       if (awas.iterator().next().getParentTeamWorkflow() != null) {
          uld.setTeamMembers(AtsClientService.get().getUserAdmin().getOseeUsers(

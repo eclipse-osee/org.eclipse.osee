@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
@@ -25,9 +27,15 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection {
 
    Set<User> selectedUsers = new HashSet<User>();
+   private final Collection<User> users;
 
    public XHyperlabelMemberSelection(String label) {
+      this(label, UserManager.getUsers());
+   }
+
+   public XHyperlabelMemberSelection(String label, Collection<User> users) {
       super(label, false, 80);
+      this.users = users;
    }
 
    public Set<User> getSelectedUsers() {
@@ -52,7 +60,7 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
    @Override
    public boolean handleSelection() {
       try {
-         UserCheckTreeDialog uld = new UserCheckTreeDialog();
+         UserCheckTreeDialog uld = new UserCheckTreeDialog(users);
          uld.setMessage("Select to assign.\nDeSelect to un-assign.");
          uld.setInitialSelections(selectedUsers);
          if (uld.open() != 0) {

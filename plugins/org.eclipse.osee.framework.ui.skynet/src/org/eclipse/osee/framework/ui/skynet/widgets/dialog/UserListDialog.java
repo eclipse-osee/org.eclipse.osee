@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -32,19 +33,11 @@ public class UserListDialog extends ListDialog {
    }
 
    public UserListDialog(Shell parent, String title, Active active) throws OseeCoreException {
-      super(parent);
-      setTitle(title);
-      setMessage(title);
-      setContentProvider(new ArtifactContentProvider());
-      setLabelProvider(new ArtifactLabelProvider() {
-         @Override
-         public String getText(Object element) {
-            if (element instanceof User) {
-               return ((User) element).getName();
-            }
-            return "Unknown Object";
-         }
-      });
+      this(parent, title, getDefaultUsers(active));
+
+   }
+
+   private static Collection<User> getDefaultUsers(Active active) {
       List<User> users = null;
       if (active == Active.Both) {
          users = UserManager.getUsersAllSortedByName();
@@ -58,6 +51,24 @@ public class UserListDialog extends ListDialog {
             }
          }
       }
+      return users;
+   }
+
+   public UserListDialog(Shell parent, String title, Iterable<User> users) throws OseeCoreException {
+
+      super(parent);
+      setTitle(title);
+      setMessage(title);
+      setContentProvider(new ArtifactContentProvider());
+      setLabelProvider(new ArtifactLabelProvider() {
+         @Override
+         public String getText(Object element) {
+            if (element instanceof User) {
+               return ((User) element).getName();
+            }
+            return "Unknown Object";
+         }
+      });
       setInput(users);
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }

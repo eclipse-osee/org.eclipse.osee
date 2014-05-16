@@ -10,18 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal.user;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.util.AtsUserNameComparator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * Non-artifact base user service
@@ -101,6 +110,25 @@ public class AtsUserServiceImpl implements IAtsUserService {
    @Override
    public boolean isAssigneeMe(IAtsWorkItem workItem) throws OseeCoreException {
       return workItem.getStateMgr().getAssignees().contains(AtsClientService.get().getUserAdmin().getCurrentUser());
+   }
+
+   @Override
+   public List<IAtsUser> getUsers(Active active) {
+      List<IAtsUser> users = new ArrayList<IAtsUser>();
+      for (Artifact user : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, AtsUtilCore.getAtsBranch())) {
+         Boolean activeFlag = user.getSoleAttributeValue(AtsAttributeTypes.Active, true);
+         if (active == Active.Both || ((active == Active.Active) && activeFlag) || ((active == Active.InActive) && !activeFlag)) {
+            users.add(new AtsUser((User) user));
+         }
+      }
+      return users;
+   }
+
+   @Override
+   public List<IAtsUser> getUsersSortedByName(Active active) {
+      List<IAtsUser> users = getUsers(active);
+      Collections.sort(users, new AtsUserNameComparator());
+      return users;
    }
 
 }

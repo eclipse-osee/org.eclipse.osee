@@ -13,8 +13,10 @@ package org.eclipse.osee.ats.util.widgets.role;
 import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.review.role.Role;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelection;
@@ -51,7 +53,9 @@ public class NewRoleDialog extends MessageDialog {
       roleCombo.setDataStrings(Role.strValues().toArray(new String[Role.strValues().size()]));
       roleCombo.createWidgets(comp, 2);
 
-      users = new XHyperlabelMemberSelection("Select User(s)");
+      users =
+         new XHyperlabelMemberSelection("Select User(s)", AtsClientService.get().getUserAdmin().getOseeUsers(
+            AtsCore.getUserService().getUsers(Active.Active)));
       users.createWidgets(comp, 2);
 
       return customArea;
