@@ -49,7 +49,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -346,7 +345,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          items.add("Review Blocks: " + ((IAtsPeerReviewDefinition) element).getBlockingType().name());
          for (String userId : ((IAtsPeerReviewDefinition) element).getAssignees()) {
             try {
-               items.add(UserManager.getUserByUserId(userId));
+               items.add(AtsClientService.get().getUserAdmin().getUserById(userId));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
                items.add(String.format("Exception loading user from id [%s] [%s]", userId, ex.getLocalizedMessage()));
@@ -367,7 +366,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          items.add("Auto Transition to Decision: " + ((IAtsDecisionReviewDefinition) element).isAutoTransitionToDecision());
          for (String userId : ((IAtsDecisionReviewDefinition) element).getAssignees()) {
             try {
-               items.add(UserManager.getUserByUserId(userId));
+               items.add(AtsClientService.get().getUserAdmin().getUserById(userId));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
                items.add(String.format("Exception loading user from id [%s] [%s]", userId, ex.getLocalizedMessage()));

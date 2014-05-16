@@ -24,8 +24,11 @@ import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -41,7 +44,7 @@ public class AtsUserServiceImpl implements IAtsUserService {
 
    @Override
    public IAtsUser getCurrentUser() throws OseeCoreException {
-      return getUserById(UserManager.getUser().getUserId());
+      return getUserById(ClientSessionManager.getCurrentUserToken().getUserId());
    }
 
    @Override
@@ -51,6 +54,11 @@ public class AtsUserServiceImpl implements IAtsUserService {
          atsUser = AtsCoreUsers.getAtsCoreUserByUserId(userId);
          if (atsUser == null) {
             User user = UserManager.getUserByUserId(userId);
+            if (!AtsUtilCore.getAtsBranch().equals(CoreBranches.COMMON)) {
+               user =
+                  (User) ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User,
+                     CoreAttributeTypes.UserId, userId, AtsUtilCore.getAtsBranch());
+            }
             atsUser = new AtsUser(user);
          }
       }
@@ -79,7 +87,15 @@ public class AtsUserServiceImpl implements IAtsUserService {
 
    @Override
    public IAtsUser getUserByName(String name) throws OseeCoreException {
-      return getUserFromOseeUser(UserManager.getUserByName(name));
+      User user = null;
+      if (AtsUtilCore.getAtsBranch().equals(CoreBranches.COMMON)) {
+         user = UserManager.getUserByName(name);
+      } else {
+         user =
+            (User) ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Name, name,
+               AtsUtilCore.getAtsBranch());
+      }
+      return getUserFromOseeUser(user);
    }
 
    @Override

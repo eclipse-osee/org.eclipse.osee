@@ -16,11 +16,18 @@ import java.util.List;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.IAtsUserAdmin;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IUserToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * Artifact-based user service. This brings the User artifact dependency with it.
@@ -32,6 +39,11 @@ public class AtsUserAdminImpl implements IAtsUserAdmin {
    @Override
    public Collection<IAtsUser> getUsers() throws OseeCoreException {
       List<User> users = UserManager.getUsers();
+      if (!AtsUtilCore.getAtsBranch().equals(CoreBranches.COMMON)) {
+         users =
+            Collections.castAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User,
+               AtsUtilCore.getAtsBranch()));
+      }
       return getAtsUsers(users);
    }
 
@@ -42,6 +54,11 @@ public class AtsUserAdminImpl implements IAtsUserAdmin {
          atsUser = AtsCoreUsers.getAtsCoreUserByUserId(userId);
          if (atsUser == null) {
             User user = UserManager.getUserByUserId(userId);
+            if (!AtsUtilCore.getAtsBranch().equals(CoreBranches.COMMON)) {
+               user =
+                  (User) ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User,
+                     CoreAttributeTypes.UserId, userId, AtsUtilCore.getAtsBranch());
+            }
             atsUser = new AtsUser(user);
          }
       }
@@ -62,12 +79,18 @@ public class AtsUserAdminImpl implements IAtsUserAdmin {
 
    @Override
    public IAtsUser getCurrentUser() throws OseeCoreException {
-      return getUserById(getCurrentOseeUser().getUserId());
+      return getUserById(ClientSessionManager.getCurrentUserToken().getUserId());
    }
 
    @Override
    public IAtsUser getUserByName(String name) throws OseeCoreException {
-      return getUserFromOseeUser(UserManager.getUserByName(name));
+      User userByName = UserManager.getUserByName(name);
+      if (!AtsUtilCore.getAtsBranch().equals(CoreBranches.COMMON)) {
+         userByName =
+            (User) ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Name, name,
+               AtsUtilCore.getAtsBranch());
+      }
+      return getUserFromOseeUser(userByName);
    }
 
    @Override
@@ -77,7 +100,13 @@ public class AtsUserAdminImpl implements IAtsUserAdmin {
 
    @Override
    public User getOseeUser(IAtsUser user) throws OseeCoreException {
-      return UserManager.getUserByUserId(user.getUserId());
+      User oseeUser = UserManager.getUserByUserId(user.getUserId());
+      if (!AtsUtilCore.getAtsBranch().equals(CoreBranches.COMMON)) {
+         oseeUser =
+            (User) ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.UserId,
+               user.getUserId(), AtsUtilCore.getAtsBranch());
+      }
+      return oseeUser;
    }
 
    @Override
@@ -91,7 +120,7 @@ public class AtsUserAdminImpl implements IAtsUserAdmin {
 
    @Override
    public User getCurrentOseeUser() throws OseeCoreException {
-      return UserManager.getUser();
+      return getOseeUserById(ClientSessionManager.getCurrentUserToken().getUserId());
    }
 
    @Override
@@ -139,7 +168,7 @@ public class AtsUserAdminImpl implements IAtsUserAdmin {
 
    @Override
    public User getOseeUserById(String userId) throws OseeCoreException {
-      return UserManager.getUserByUserId(userId);
+      return (User) getUserById(userId).getStoreObject();
    }
 
 }
