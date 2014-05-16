@@ -466,8 +466,8 @@ public class BranchManager {
       final String truncatedName = Strings.truncate(childBranchName, 195, true);
 
       CreateBranchHttpRequestOperation operation =
-         new CreateBranchHttpRequestOperation(BranchType.WORKING, parentTransactionId, truncatedName, -1,
-            associatedArtifact, creationComment, -1, -1);
+         new CreateBranchHttpRequestOperation(BranchType.WORKING, parentTransactionId, truncatedName,
+            Lib.generateUuid(), associatedArtifact, creationComment, -1, -1);
       operation.setTxCopyBranchType(true);
       Operations.executeWorkAndCheckStatus(operation);
       return operation.getNewBranch();
@@ -481,7 +481,7 @@ public class BranchManager {
       final String truncatedName = Strings.truncate(childBranchName, 195, true);
 
       CreateBranchHttpRequestOperation operation =
-         new CreateBranchHttpRequestOperation(BranchType.PORT, parentTransactionId, truncatedName, -1,
+         new CreateBranchHttpRequestOperation(BranchType.PORT, parentTransactionId, truncatedName, Lib.generateUuid(),
             associatedArtifact, creationComment, -1, -1);
       operation.setTxCopyBranchType(true);
       Operations.executeWorkAndCheckStatus(operation);
