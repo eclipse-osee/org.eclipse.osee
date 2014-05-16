@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.access.AtsBranchAccessContextId;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -42,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -232,7 +232,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
    private synchronized static List<IEventFilter> getAtsObjectEventFilters() {
       try {
          if (atsObjectEventFilter.isEmpty()) {
-            atsObjectEventFilter.add(EventUtil.getCommonBranchFilter());
+            atsObjectEventFilter.add(AtsUtilClient.getAtsBranchFilter());
             atsObjectEventFilter.add(atsArtifactTypesFilter);
          }
       } catch (Exception ex) {

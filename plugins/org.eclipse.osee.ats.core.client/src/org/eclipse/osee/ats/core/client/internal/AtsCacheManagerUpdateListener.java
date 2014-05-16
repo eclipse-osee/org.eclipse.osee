@@ -23,13 +23,13 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -63,7 +63,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return Arrays.asList(EventUtil.getCommonBranchFilter());
+      return Arrays.asList(AtsUtilClient.getAtsBranchFilter());
    }
 
    @Override

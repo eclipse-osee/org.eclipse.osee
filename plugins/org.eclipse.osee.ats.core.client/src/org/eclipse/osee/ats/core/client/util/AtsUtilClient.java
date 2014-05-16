@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
@@ -44,6 +44,7 @@ public class AtsUtilClient {
       AtsArtifactTypes.TeamWorkflow);
    private static List<IEventFilter> atsObjectEventFilter = new ArrayList<IEventFilter>(2);
    private static boolean emailEnabled = true;
+   private static BranchUuidEventFilter commonBranchGuidEventFilter;
 
    public static boolean isEmailEnabled() {
       return emailEnabled;
@@ -54,6 +55,13 @@ public class AtsUtilClient {
          OseeLog.log(Activator.class, Level.INFO, "Email " + (enabled ? "Enabled" : "Disabled"));
       }
       emailEnabled = enabled;
+   }
+
+   public static BranchUuidEventFilter getAtsBranchFilter() {
+      if (commonBranchGuidEventFilter == null) {
+         commonBranchGuidEventFilter = new BranchUuidEventFilter(AtsUtilCore.getAtsBranch());
+      }
+      return commonBranchGuidEventFilter;
    }
 
    /**
@@ -116,7 +124,7 @@ public class AtsUtilClient {
    public synchronized static List<IEventFilter> getAtsObjectEventFilters() {
       try {
          if (atsObjectEventFilter.isEmpty()) {
-            atsObjectEventFilter.add(EventUtil.getCommonBranchFilter());
+            atsObjectEventFilter.add(AtsUtilClient.getAtsBranchFilter());
             atsObjectEventFilter.add(getAtsObjectArtifactTypeEventFilter());
          }
       } catch (Exception ex) {

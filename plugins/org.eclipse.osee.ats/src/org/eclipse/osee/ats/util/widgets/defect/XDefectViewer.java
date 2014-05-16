@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -570,7 +569,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return Arrays.asList(EventUtil.getCommonBranchFilter(), AtsUtilClient.getReviewArtifactTypeEventFilter());
+      return Arrays.asList(AtsUtilClient.getAtsBranchFilter(), AtsUtilClient.getReviewArtifactTypeEventFilter());
    }
 
    @Override
