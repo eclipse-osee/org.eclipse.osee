@@ -39,7 +39,7 @@ public class RunTests implements ITestServerCommand, Serializable {
    private final UUID sessionKey;
    private final String guid;
    private TestEnvironment environment;
-   private Configuration configuration;
+   private final Configuration configuration;
 
    public RunTests(String guid, UUID uuid, Configuration configuration, IPropertyStore global, List<IPropertyStore> scripts) {
       this.global = global;
@@ -68,9 +68,10 @@ public class RunTests implements ITestServerCommand, Serializable {
       OTEApi ote = ServiceUtility.getService(OTEApi.class);
       OTEServerFolder serverFolder = ote.getServerFolder();
       
-      File batchFolder = serverFolder.getNewBatchFolder();
+      String testType = getTestType();
+      File batchFolder = serverFolder.getNewBatchFolder(testType);
       batchFolder.mkdirs();
-      if(!isFolderToKeep()){
+      if(!isFolderToKeep(testType)){
          serverFolder.markFolderForDelete(batchFolder);
       }
       BatchLog batchLog = new BatchLog(serverFolder.getBatchLogFile(batchFolder));
@@ -180,10 +181,13 @@ public class RunTests implements ITestServerCommand, Serializable {
       return String.format("%s,%s,%s", overview.getScriptName(), overview.getResults(), overview.getElapsedTime());
    }
 
-   private boolean isFolderToKeep() {
+   private String getTestType(){
       IPropertyStore props = scripts.get(0);
-      String formalTestType = props.get("FormalTestType");
-      if(formalTestType != null && formalTestType.equalsIgnoreCase(DEVELOPMENT)){
+      return props.get("FormalTestType");
+   }
+   
+   private boolean isFolderToKeep(String testType) {
+      if(testType != null && testType.equalsIgnoreCase(DEVELOPMENT)){
          return false;
       } else {
          return true;

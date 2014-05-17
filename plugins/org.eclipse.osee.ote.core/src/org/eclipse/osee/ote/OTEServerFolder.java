@@ -46,6 +46,14 @@ public interface OTEServerFolder {
     */
    public File getNewBatchFolder();
    
+   /**
+    * Generates a new File at the batches root folder with the current time as it's name and the suffix appended to it.  This method does 
+    * not call mkdirs.
+    * 
+    * @return
+    */
+   public File getNewBatchFolder(String suffix);
+   
    public void markFolderForDelete(File folder);
    
    public void unmarkFolderForDelete(File folder);
@@ -77,4 +85,5 @@ public interface OTEServerFolder {
     * @return
     */
    public File getBatchRunList(File batchFolder);
+
 }
