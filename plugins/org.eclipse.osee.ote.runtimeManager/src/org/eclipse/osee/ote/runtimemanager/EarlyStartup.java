@@ -11,12 +11,11 @@
 package org.eclipse.osee.ote.runtimemanager;
 
 import java.util.logging.Level;
-import org.eclipse.core.runtime.Platform;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.ote.core.ServiceUtility;
 import org.eclipse.ui.IStartup;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -31,11 +30,9 @@ public class EarlyStartup implements IStartup {
          @Override
          public void run() {
             try {
-               Bundle bundle = Platform.getBundle("org.eclipse.osee.ote.runtimeManager");
-               bundle.start();
-               workspaceTracker = new SafeWorkspaceTracker(bundle.getBundleContext());
+               workspaceTracker = new SafeWorkspaceTracker(ServiceUtility.getContext());
                workspaceTracker.open(true);
-            } catch (BundleException ex) {
+            } catch (Throwable ex) {
                OseeLog.log(RuntimeManager.class, Level.SEVERE, ex);
             }
          }
