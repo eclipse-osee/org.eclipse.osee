@@ -47,7 +47,7 @@ public class OteBatchResource {
    UriInfo uriInfo;
    @Context
    Request request;
-   private String path;
+   private final String path;
 
    public OteBatchResource(UriInfo uriInfo, Request request, String path) {
       this.uriInfo = uriInfo;
@@ -70,10 +70,13 @@ public class OteBatchResource {
       HTMLBuilder builder = new HTMLBuilder();
       
       builder.open("OTE Batch Status");
+      /**
+       * Disaled till we figure out security 
       if(uriInfo != null){
          String url = uriInfo.getAbsolutePath().toASCIIString();
          builder.addLink(url, "content.zip", "Get Folder Contents");
       }
+      */
       builder.commonHeader(myBatchFolder);
 
       
@@ -182,6 +185,7 @@ public class OteBatchResource {
    @Produces({"application/zip"})
    public StreamingOutput getZip() throws Exception {
       return new StreamingOutput() {
+         @Override
          public void write(OutputStream output) throws IOException, WebApplicationException {
             try {
                OTEApi ote = ServiceUtility.getService(OTEApi.class);
