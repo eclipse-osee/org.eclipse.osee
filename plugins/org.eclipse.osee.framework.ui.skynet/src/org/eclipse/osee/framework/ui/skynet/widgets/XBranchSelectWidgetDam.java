@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
@@ -23,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
  * @author Donald G. Dunne
  */
 public class XBranchSelectWidgetDam extends XBranchSelectWidget implements IAttributeWidget {
-   public static final String WIDGET_ID = XBranchSelectByWidgetDam.class.getSimpleName();
+   public static final String WIDGET_ID = XBranchSelectWidgetDam.class.getSimpleName();
 
    private Artifact artifact;
    private IAttributeType attributeType;
@@ -38,7 +39,12 @@ public class XBranchSelectWidgetDam extends XBranchSelectWidget implements IAttr
    }
 
    public Long getStoredUuid() throws OseeCoreException {
-      return Long.valueOf(artifact.getSoleAttributeValue(attributeType, ""));
+      long resultUuid = 0;
+      String uuidStr = artifact.getSoleAttributeValue(attributeType, null);
+      if (Strings.isValid(uuidStr)) {
+         resultUuid = Long.valueOf(uuidStr);
+      }
+      return resultUuid;
    }
 
    @Override
