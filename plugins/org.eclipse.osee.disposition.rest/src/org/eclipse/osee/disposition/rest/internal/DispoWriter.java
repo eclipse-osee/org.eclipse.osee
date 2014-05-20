@@ -34,5 +34,5 @@ public interface DispoWriter {
 
    void updateDispoItem(ArtifactReadable author, DispoProgram program, String dispoItemId, DispoItem data);
 
-   void updateDispoItems(ArtifactReadable author, DispoProgram program, List<DispoItem> data);
+   void updateDispoItems(ArtifactReadable author, DispoProgram program, List<DispoItem> data, boolean resetRerunFlag);
 }

@@ -289,15 +289,21 @@ public class OrcsStorageImpl implements Storage {
       tx.commit();
    }
 
-   public void updateSingleItem(ArtifactReadable author, DispoProgram program, ArtifactId currentItemArt, DispoItem newItemData, TransactionBuilder tx) {
+   private void updateSingleItem(ArtifactReadable author, DispoProgram program, ArtifactId currentItemArt, DispoItem newItemData, TransactionBuilder tx, boolean resetRerunFlag) {
       Date lastUpdate = newItemData.getLastUpdate();
-      Boolean needsRerun = newItemData.getNeedsRerun();
       String name = newItemData.getName();
       JSONObject discrepanciesList = newItemData.getDiscrepanciesList();
       JSONArray annotationsList = newItemData.getAnnotationsList();
       String status = newItemData.getStatus();
       String assignee = newItemData.getAssignee();
       String totalPoints = newItemData.getTotalPoints();
+
+      Boolean needsRerun;
+      if (resetRerunFlag) {
+         needsRerun = false;
+      } else {
+         needsRerun = newItemData.getNeedsRerun();
+      }
 
       if (name != null) {
          tx.setName(currentItemArt, name);
@@ -331,17 +337,17 @@ public class OrcsStorageImpl implements Storage {
       IOseeBranch branch = TokenFactory.createBranch(program.getUuid(), "");
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Edit Dispo Item");
       ArtifactId dispoItemArt = findDispoArtifact(program, dispoItemId, DispoConstants.DispoItem);
-      updateSingleItem(author, program, dispoItemArt, data, tx);
+      updateSingleItem(author, program, dispoItemArt, data, tx, false);
       tx.commit();
    }
 
    @Override
-   public void updateDispoItems(ArtifactReadable author, DispoProgram program, List<DispoItem> data) {
+   public void updateDispoItems(ArtifactReadable author, DispoProgram program, List<DispoItem> data, boolean resetRerunFlag) {
       TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Edit Multiple Dispo Items");
 
       for (DispoItem newItem : data) {
          ArtifactId dispoItemArt = findDispoArtifact(program, newItem.getGuid(), DispoConstants.DispoItem);
-         updateSingleItem(author, program, dispoItemArt, newItem, tx);
+         updateSingleItem(author, program, dispoItemArt, newItem, tx, resetRerunFlag);
       }
 
       tx.commit();
