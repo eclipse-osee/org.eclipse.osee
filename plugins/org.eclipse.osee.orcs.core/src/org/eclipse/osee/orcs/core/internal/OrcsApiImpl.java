@@ -18,8 +18,6 @@ import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
@@ -67,6 +65,7 @@ import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesModule;
 import org.eclipse.osee.orcs.core.internal.util.ValueProviderFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -126,17 +125,16 @@ public class OrcsApiImpl implements OrcsApi {
          @Override
          public Iterable<? extends IOseeBranch> getParentHierarchy(IOseeBranch branch) throws OseeCoreException {
             Set<IOseeBranch> branches = Sets.newLinkedHashSet();
-            BranchCache branchCache = cacheService.getBranchCache();
+            BranchQuery branchQuery = getQueryFactory(null).branchQuery();
+            branchQuery.andIsAncestorOf(branch);
+            branches.add(branch);
 
-            Branch branchPtr = branchCache.get(branch);
-            while (branchPtr != null) {
-               if (!branches.add(branchPtr)) {
-                  logger.error("Cycle detected with branch: [%s]", branchPtr);
+            for (IOseeBranch parent : branchQuery.getResults()) {
+               if (!branches.add(parent)) {
+                  logger.error("Cycle detected with branch: [%s]", parent);
                   return Collections.emptyList();
                }
-               branchPtr = branchPtr.getParentBranch();
             }
-
             return branches;
          }
       };
