@@ -171,6 +171,9 @@ public class OseeDatabaseServiceImpl implements DatabaseService {
                toReturn = chStmt.getString(1);
             } else if (classValue.isAssignableFrom(Long.class)) {
                toReturn = chStmt.getLong(1);
+            } else if (classValue.isAssignableFrom(Boolean.class)) {
+               String value = chStmt.getObject(1).toString();
+               toReturn = Boolean.parseBoolean(value);
             } else {
                toReturn = chStmt.getObject(1);
             }
