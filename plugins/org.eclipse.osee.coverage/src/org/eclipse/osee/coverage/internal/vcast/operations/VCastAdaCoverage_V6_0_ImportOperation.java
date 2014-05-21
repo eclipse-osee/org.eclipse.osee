@@ -107,7 +107,7 @@ public class VCastAdaCoverage_V6_0_ImportOperation extends AbstractOperation {
          monitor.setTaskName(String.format("File:%s ", sourceFile.getDisplayName()));
          CoverageUnit sourceFileCoverageUnit = coverageImport.createCoverageUnit(null, sourceFile.getDisplayName(), "");
 
-         fileNumToCoverageUnit.put(String.valueOf(sourceFile.getId()), sourceFileCoverageUnit);
+         fileNumToCoverageUnit.put(String.valueOf(sourceFile.getUnitIndex()), sourceFileCoverageUnit);
 
          String lisFileName_badPath = instrumentedFile.getLISFile();
          if (!Strings.isValid(lisFileName_badPath)) {

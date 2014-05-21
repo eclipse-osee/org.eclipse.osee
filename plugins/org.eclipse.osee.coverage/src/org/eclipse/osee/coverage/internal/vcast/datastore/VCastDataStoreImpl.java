@@ -383,11 +383,12 @@ public class VCastDataStoreImpl implements VCastDataStore {
          stmt.runPreparedQuery("SELECT * FROM source_files");
          while (stmt.next()) {
             Integer id = stmt.getInt("id");
+            Integer unit_index = stmt.getInt("unit_index");
             String path = stmt.getString("path");
             String display_name = stmt.getString("display_name");
             Integer checksum = stmt.getInt("checksum");
             String display_path = stmt.getString("display_path");
-            toReturn.add(new VCastSourceFile(id, path, display_name, checksum, display_path));
+            toReturn.add(new VCastSourceFile(id, path, display_name, checksum, display_path, unit_index));
          }
 
       } finally {
@@ -482,14 +483,17 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
       IOseeStatement stmt = getStatement();
       try {
-         stmt.runPreparedQuery("SELECT * FROM source_files sf WHERE id=?", instrumentedFile.getSourceFileId());
+         stmt.runPreparedQuery(
+            "SELECT sf.id, sf.path, sf.display_name, sf.checksum, sf.display_path, ifs.unit_index FROM source_files sf join instrumented_files ifs WHERE  sf.id = ifs.source_file_id AND sf.id=?",
+            instrumentedFile.getSourceFileId());
          if (stmt.next()) {
             Integer id = stmt.getInt("id");
+            Integer unit_index = stmt.getInt("unit_index");
             String path = stmt.getString("path");
             String display_name = stmt.getString("display_name");
             Integer checksum = stmt.getInt("checksum");
             String display_path = stmt.getString("display_path");
-            toReturn = new VCastSourceFile(id, path, display_name, checksum, display_path);
+            toReturn = new VCastSourceFile(id, path, display_name, checksum, display_path, unit_index);
          }
 
       } finally {
