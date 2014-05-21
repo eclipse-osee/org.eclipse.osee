@@ -129,10 +129,7 @@ public class BranchDataImpl extends OrcsObjectImpl<Long> implements BranchData, 
 
    @Override
    public int hashCode() {
-      final int prime = 31;
-      int result = super.hashCode();
-      result = prime * result + (int) (uuid ^ (uuid >>> 32));
-      return result;
+      return getGuid().hashCode();
    }
 
    @Override
