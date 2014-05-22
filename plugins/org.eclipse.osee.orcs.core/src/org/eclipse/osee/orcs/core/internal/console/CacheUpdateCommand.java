@@ -78,21 +78,17 @@ public class CacheUpdateCommand implements ConsoleCommand {
 
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
-      return new CacheUpdateCallable(console, params, true);
+      return new CacheUpdateCallable(console, params);
    }
 
    private class CacheUpdateCallable extends CancellableCallable<Boolean> {
 
       private final Console console;
       private final ConsoleParameters params;
-      private final boolean reload;
-      private final String verb;
 
-      public CacheUpdateCallable(Console console, ConsoleParameters params, boolean reload) {
+      public CacheUpdateCallable(Console console, ConsoleParameters params) {
          this.console = console;
          this.params = params;
-         this.reload = reload;
-         this.verb = reload ? "Reloaded" : "Cleared";
       }
 
       private Set<CacheType> getSelectedType() {
@@ -134,16 +130,13 @@ public class CacheUpdateCommand implements ConsoleCommand {
 
             if (cacheId != null) {
                IOseeCache<?, ?> cache = cachingService.getCache(cacheId);
-               if (reload) {
-                  cache.reloadCache();
-               } else {
-                  cache.decacheAll();
-               }
+               cache.decacheAll();
+               cache.reloadCache();
             } else {
                orcsTypes.invalidateAll();
             }
          }
-         console.writeln("%s %s", verb, selectedType);
+         console.writeln("Reloaded %s", selectedType);
          return Boolean.TRUE;
       }
    }
