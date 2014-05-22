@@ -67,6 +67,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
@@ -542,7 +543,8 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
          Collections.reverse(droppedArtifacts);
          final Artifact dropTarget = getSelectedArtifact(event);
          try {
-            if (isDropValid() && ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
+            boolean dropValid = isDropValid();
+            if (dropValid && ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
 
                Collections.reverse(droppedArtifacts);
                List<Artifact> members = goalArtifact.getMembers();
@@ -562,9 +564,11 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
                if (dropTarget != null) {
                   worldComposite.getXViewer().update(dropTarget, null);
                }
+            } else if (!dropValid) {
+               AWorkbench.popup("Drag/Drop is disabled when table is filtered or sorted.\n\nSwitch to default table customization and try again.");
             }
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.WARNING, Lib.exceptionToString(ex));
+            OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
          }
       }
 
