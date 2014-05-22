@@ -117,11 +117,6 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public BranchReadable getBranchFromId(long id) throws OseeCoreException {
-      return branchCache.getByUuid(id);
-   }
-
-   @Override
    public Callable<URI> exportBranch(List<IOseeBranch> branches, PropertyStore options, String exportName) {
       return branchStore.exportBranch(session, orcsTypes, branches, options, exportName);
    }

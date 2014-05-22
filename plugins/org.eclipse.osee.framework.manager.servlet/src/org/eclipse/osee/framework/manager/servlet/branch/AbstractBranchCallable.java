@@ -15,6 +15,7 @@ import java.util.concurrent.Callable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
@@ -24,6 +25,7 @@ import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -106,6 +108,12 @@ public abstract class AbstractBranchCallable<REQ_TYPE, RESP_TYPE> extends Cancel
 
    protected OrcsBranch getBranchOps() {
       return branchOps;
+   }
+
+   protected IOseeBranch getBranchFromUuid(long uuid) {
+      BranchQuery branchQuery = orcsApi.getQueryFactory(getContext()).branchQuery();
+      branchQuery.andUuids(uuid);
+      return branchQuery.getResultsAsId().getExactlyOne();
    }
 
    protected ApplicationContext getContext() {

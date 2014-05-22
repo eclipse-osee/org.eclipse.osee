@@ -122,8 +122,7 @@ public class HtmlWriter {
       data.put("Archived", branch.getArchiveState());
       if (branch.hasParentBranch()) {
          try {
-            IOseeBranch parent =
-               OrcsApplication.getOrcsApi().getBranchOps(null).getBranchFromId(branch.getParentBranch());
+            IOseeBranch parent = getBranchFromUuid(branch.getParentBranch());
 
             URI uri;
             if (isAtEndOfPath(uriInfo.getPath(), "branch")) {
@@ -147,6 +146,10 @@ public class HtmlWriter {
       return data;
    }
 
+   private IOseeBranch getBranchFromUuid(long uuid) {
+      return OrcsApplication.getOrcsApi().getQueryFactory(null).branchQuery().andUuids(uuid).getResultsAsId().getExactlyOne();
+   }
+
    public Map<String, Object> toData(TransactionReadable txRecord) throws OseeCoreException {
       Map<String, Object> data = new LinkedHashMap<String, Object>();
       data.put("TxId", txRecord.getLocalId());
@@ -154,7 +157,7 @@ public class HtmlWriter {
       data.put("Date", txRecord.getDate());
       data.put("Comment", txRecord.getComment());
       data.put("Author", txRecord.getAuthorId());
-      IOseeBranch branch = OrcsApplication.getOrcsApi().getBranchOps(null).getBranchFromId(txRecord.getBranchId());
+      IOseeBranch branch = getBranchFromUuid(txRecord.getBranchId());
 
       URI uri;
       if (isAtEndOfPath(uriInfo.getPath(), "branch")) {

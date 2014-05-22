@@ -34,7 +34,7 @@ public class ArchiveBranchCallable extends AbstractBranchCallable<ChangeBranchAr
 
    @Override
    protected Object executeCall(ChangeBranchArchiveStateRequest request) throws Exception {
-      IOseeBranch toArchive = getBranchOps().getBranchFromId(request.getBranchId());
+      IOseeBranch toArchive = getBranchFromUuid(request.getBranchId());
       ArchiveOperation archiveOp =
          request.getState().isArchived() ? ArchiveOperation.ARCHIVE : ArchiveOperation.UNARCHIVE;
 

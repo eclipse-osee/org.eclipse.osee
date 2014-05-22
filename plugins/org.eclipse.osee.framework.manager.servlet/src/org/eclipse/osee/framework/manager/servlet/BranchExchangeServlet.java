@@ -13,8 +13,7 @@ package org.eclipse.osee.framework.manager.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.concurrent.Callable;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +32,8 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
+import org.eclipse.osee.orcs.search.BranchQuery;
+import com.google.common.collect.Lists;
 
 /**
  * @author Roberto E. Escobar
@@ -54,23 +55,29 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
       return ApplicationContextFactory.createContext(getSessionId(req));
    }
 
-   private OrcsBranch getBranchOps(HttpServletRequest req) {
-      return orcsApi.getBranchOps(getContext(req));
+   private OrcsBranch getBranchOps(ApplicationContext context) {
+      return orcsApi.getBranchOps(context);
+   }
+
+   private BranchQuery getBranchQuery(ApplicationContext context) {
+      return orcsApi.getQueryFactory(context).branchQuery();
    }
 
    @Override
    protected void doPost(HttpServletRequest req, HttpServletResponse response) throws IOException {
       try {
          HttpBranchExchangeInfo exchangeInfo = new HttpBranchExchangeInfo(req);
+         ApplicationContext context = getContext(req);
+         OrcsBranch branchOps = getBranchOps(context);
          switch (exchangeInfo.getFunction()) {
             case exportBranch:
-               executeExport(getBranchOps(req), exchangeInfo, response);
+               executeExport(branchOps, getBranchQuery(context), exchangeInfo, response);
                break;
             case importBranch:
-               executeImport(getBranchOps(req), exchangeInfo, response);
+               executeImport(branchOps, getBranchQuery(context), exchangeInfo, response);
                break;
             case checkExchange:
-               executeCheckExchange(getBranchOps(req), exchangeInfo, response);
+               executeCheckExchange(branchOps, exchangeInfo, response);
             default:
                break;
          }
@@ -100,14 +107,12 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
       response.getWriter().write(message.toString());
    }
 
-   private void executeExport(OrcsBranch orcsBranch, HttpBranchExchangeInfo exchangeInfo, HttpServletResponse response) throws Exception {
+   private void executeExport(OrcsBranch orcsBranch, BranchQuery branchQuery, HttpBranchExchangeInfo exchangeInfo, HttpServletResponse response) throws Exception {
       int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
       StringBuffer message = new StringBuffer();
 
-      List<IOseeBranch> branches = new ArrayList<IOseeBranch>();
-      for (Integer branchUuids : exchangeInfo.getSelectedBranchIds()) {
-         branches.add(orcsBranch.getBranchFromId(branchUuids));
-      }
+      branchQuery.andUuids(exchangeInfo.getSelectedBranchUuids()).includeArchived().includeDeleted();
+      LinkedList<IOseeBranch> branches = Lists.newLinkedList(branchQuery.getResultsAsId());
 
       Callable<URI> callable =
          orcsBranch.exportBranch(branches, exchangeInfo.getOptions(), exchangeInfo.getExchangeFileName());
@@ -150,12 +155,10 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
       response.getWriter().write(message.toString());
    }
 
-   private void executeImport(OrcsBranch orcsBranch, HttpBranchExchangeInfo exchangeInfo, HttpServletResponse response) throws Exception {
+   private void executeImport(OrcsBranch orcsBranch, BranchQuery branchQuery, HttpBranchExchangeInfo exchangeInfo, HttpServletResponse response) throws Exception {
 
-      List<IOseeBranch> branches = new ArrayList<IOseeBranch>();
-      for (Integer branchUuids : exchangeInfo.getSelectedBranchIds()) {
-         branches.add(orcsBranch.getBranchFromId(branchUuids));
-      }
+      branchQuery.andUuids(exchangeInfo.getSelectedBranchUuids()).includeArchived().includeDeleted();
+      LinkedList<IOseeBranch> branches = Lists.newLinkedList(branchQuery.getResultsAsId());
 
       IResourceLocator locator = resourceManager.getResourceLocator(exchangeInfo.getPath());
       Callable<URI> callable = orcsBranch.importBranch(locator.getLocation(), branches, exchangeInfo.getOptions());

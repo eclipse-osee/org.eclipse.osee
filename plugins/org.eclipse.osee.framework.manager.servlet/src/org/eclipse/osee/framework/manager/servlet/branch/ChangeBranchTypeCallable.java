@@ -33,7 +33,7 @@ public class ChangeBranchTypeCallable extends AbstractBranchCallable<ChangeBranc
 
    @Override
    protected Object executeCall(ChangeBranchTypeRequest request) throws Exception {
-      IOseeBranch toModify = getBranchOps().getBranchFromId(request.getBranchId());
+      IOseeBranch toModify = getBranchFromUuid(request.getBranchId());
       BranchType newBranchType = request.getType();
 
       Callable<BranchReadable> callable = getBranchOps().changeBranchType(toModify, newBranchType);

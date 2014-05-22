@@ -30,7 +30,7 @@ public class HttpBranchExchangeInfo {
    private BranchExchangeFunctions function;
    private String exchangeFileName;
    private String path;
-   private final List<Integer> selectedBranchIds;
+   private final List<Long> selectedBranchUuids;
    private boolean sendExportFile;
    private boolean deleteExportFile;
    private final PropertyStore options;
@@ -38,7 +38,7 @@ public class HttpBranchExchangeInfo {
    public HttpBranchExchangeInfo(HttpServletRequest request) throws Exception {
       this.options = new PropertyStore();
       this.function = null;
-      this.selectedBranchIds = new ArrayList<Integer>();
+      this.selectedBranchUuids = new ArrayList<Long>();
       this.sendExportFile = false;
       this.deleteExportFile = false;
       this.exchangeFileName = null;
@@ -60,7 +60,7 @@ public class HttpBranchExchangeInfo {
             isFunctionValid(value);
          } else if (name.equalsIgnoreCase("branchUuids")) {
             for (String entry : value.split(",")) {
-               selectedBranchIds.add(new Integer(entry));
+               selectedBranchUuids.add(new Long(entry));
             }
          } else {
             options.put(name.toUpperCase(), value);
@@ -88,8 +88,8 @@ public class HttpBranchExchangeInfo {
       return this.path;
    }
 
-   public List<Integer> getSelectedBranchIds() {
-      return this.selectedBranchIds;
+   public List<Long> getSelectedBranchUuids() {
+      return this.selectedBranchUuids;
    }
 
    public PropertyStore getOptions() {

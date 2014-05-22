@@ -31,7 +31,7 @@ public class PurgeBranchCallable extends AbstractBranchCallable<PurgeBranchReque
 
    @Override
    public Object executeCall(PurgeBranchRequest request) throws Exception {
-      IOseeBranch toPurge = getBranchOps().getBranchFromId(request.getBranchId());
+      IOseeBranch toPurge = getBranchFromUuid(request.getBranchId());
       boolean recurse = request.isRecursive();
 
       Callable<?> callable = getBranchOps().purgeBranch(toPurge, recurse);

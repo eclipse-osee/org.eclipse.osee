@@ -84,7 +84,4 @@ public interface OrcsBranch {
 
    Callable<URI> checkBranchExchangeIntegrity(URI fileToCheck);
 
-   // For backwards compatibility - should be removed in the future or added to branchQuery
-   BranchReadable getBranchFromId(long id) throws OseeCoreException;
-
 }

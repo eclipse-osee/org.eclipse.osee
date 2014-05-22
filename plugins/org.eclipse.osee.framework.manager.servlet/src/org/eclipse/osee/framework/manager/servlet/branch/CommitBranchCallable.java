@@ -37,8 +37,8 @@ public class CommitBranchCallable extends AbstractBranchCallable<BranchCommitReq
 
    @Override
    protected BranchCommitResponse executeCall(BranchCommitRequest request) throws Exception {
-      IOseeBranch source = getBranchOps().getBranchFromId(request.getSourceBranchId());
-      IOseeBranch destination = getBranchOps().getBranchFromId(request.getDestinationBranchId());
+      IOseeBranch source = getBranchFromUuid(request.getSourceBranchId());
+      IOseeBranch destination = getBranchFromUuid(request.getDestinationBranchId());
 
       ArtifactReadable committer = getArtifactById(request.getUserArtId());
 
