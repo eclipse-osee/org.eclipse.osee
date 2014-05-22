@@ -67,4 +67,9 @@ public class DispoProgramResource {
    public DispoSetResource getAnnotation(@PathParam("programId") String programId) {
       return new DispoSetResource(dispoApi, writer, dispoFactory.createProgram(programId, Long.parseLong(programId)));
    }
+
+   @Path("{programId}/report")
+   public DispoReportResource getDispoSetReport(@PathParam("programId") String programId) {
+      return new DispoReportResource(dispoApi, writer, dispoFactory.createProgram(programId, Long.parseLong(programId)));
+   }
 }

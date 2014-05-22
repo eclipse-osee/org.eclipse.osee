@@ -5,88 +5,108 @@
         <style>
             <?include path="4000000000000029 dispoAdminStyles.css"?>
         </style>
-    </head>
+    </head> 
 
 <body onload="setUpUndoCatch(); getPrograms();">
 	<div id="blanket" style="display:none"></div>
 		<div id="waitBlanket" style="display:none"><div id="waitText">Please Wait...</div></div>
 	<div id="setCreateDiv" style="display:none;">
-			Set Name: <input id="setNameInput" type="text" name="setName" value=""><br>
-			Set Path: <input id="setPathInput" type="text" name="path" value=""><br>
-			<button id="submitCreateSet" value="Submit" onclick="setCreateSubmit();">Submit</button>
-			<button id="cancelCreateSet" value="Cancel" onclick="setCreateClose();">Cancel</button>
+			Set Name: <input id="setNameInput" type="text" value=""><br>
+			Set Path: <input id="setPathInput" type="text" value=""><br>
+			<button id="namePromptSubmit" value="Submit">Submit</button>
+			<button id="cancelCreateSet" value="Cancel" onclick="namePromptClose();">Cancel</button>
 	</div>
     <div id="all">
         <div id="choices">
             <ul style="list-style-type: none;">
                 <li> <a href="">Admin</a>
- <a href="init">User</a>
-
+ 					 <a href="init">User</a>
                 </li>
             </ul>
         </div>
         <div id="userInput">
             <div id="programSelectDiv">
-                <p id="programSelectPrompt">Select ATS Version</p>
-                <select id="programSelect" onchange="getProgramDetails(this);">
-                       <option selected disabled>Choose one</option>
-                </select>
+	                 <p>Select ATS Version</p>
+	                 <select id="programSelect" onchange="getProgramDetails(this);">
+	                        <option selected disabled>Choose one</option>
+	                 </select>
             </div>
             <div id="setControls">
-                <div id="setOperationContainer">
-                    <button disabled="true" id="setOperation" onclick="doImport()">Import</button>
-                    <button id="setOperation" onclick="doReport()">Report</button>
+            	<div id="topHalfSetControls">
+						<div id="setOperationContainer">
+	                      <button id="setOperation" onclick="doImport()">Import</button>
+	                      <button id="rename" onclick="getSetForUpdate()">Rename/Update Path</button>
+	                      <button id="delete" onclick="doSetDelete()">Delete Set</button>
+	                </div>
+	                <div id="setManageContainer">
+	                    <div id="createSetContainer">
+	                        <button disabled="true" id="setCreate" onclick="bringUpNamePromptCreate();">Create New Set</button>
+	                    </div>
+	                    <div id="setsTableContainer">
+	                        <table class="emptySetsTable" id="setsTable">
+	                            <tbody>
+	                                <tr id="headerRow">
+	                                    <th>Name</th>
+	                                    <th>Summary</th>
+	                                </tr>
+	                            </tbody>
+	                            <tbody id="setsTableBody">
+	                                <tr>
+	                                    <td class="setsTableData"></td>
+	                                    <td class="setsTableData"></td>
+	                                </tr>
+	                                <tr>
+	                                    <td class="setsTableData"></td>
+	                                    <td class="setsTableData"></td>
+	                                </tr>
+	                                <tr>
+	                                    <td class="setsTableData"></td>
+	                                    <td class="setsTableData"></td>
+	                                </tr>
+	                                <tr>
+	                                    <td class="setsTableData"></td>
+	                                    <td class="setsTableData"></td>
+	                                </tr>
+	                                <tr>
+	                                    <td class="setsTableData"></td>
+	                                    <td class="setsTableData"></td>
+	                                </tr>
+	                                <tr>
+	                                    <td class="setsTableData"></td>
+	                                    <td class="setsTableData"></td>
+	                                </tr>
+	                                <tr>
+	                                    <td class="setsTableData"></td>
+	                                    <td class="setsTableData"></td>
+	                                </tr>
+	                            </tbody>
+	                        </table>
+	                    </div>
+	                 </div>
                 </div>
-                <div id="setManageContainer">
-                    <div id="createSetContainer">
-                        <button disabled="true" id="setCreate" onclick="bringUpNamePrompt();">Create New Set</button>
-                    </div>
-                    <div id="setsTableContainer">
-                        <table class="emptySetsTable" id="setsTable">
-                            <tbody>
-                                <tr id="headerRow">
-                                    <th>Name</th>
-                                    <th>Summary</th>
-                                </tr>
-                            </tbody>
-                            <tbody id="setsTableBody">
-                                <tr>
-                                    <td class="setsTableData"></td>
-                                    <td class="setsTableData"></td>
-                                </tr>
-                                <tr>
-                                    <td class="setsTableData"></td>
-                                    <td class="setsTableData"></td>
-                                </tr>
-                                <tr>
-                                    <td class="setsTableData"></td>
-                                    <td class="setsTableData"></td>
-                                </tr>
-                                <tr>
-                                    <td class="setsTableData"></td>
-                                    <td class="setsTableData"></td>
-                                </tr>
-                                <tr>
-                                    <td class="setsTableData"></td>
-                                    <td class="setsTableData"></td>
-                                </tr>
-                                <tr>
-                                    <td class="setsTableData"></td>
-                                    <td class="setsTableData"></td>
-                                </tr>
-                                <tr>
-                                    <td class="setsTableData"></td>
-                                    <td class="setsTableData"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <div id="reportDiv">
+                	 <div id="generateReportDiv">
+                	 		<button id="generateReport" onclick="generateReport()">Generate Report</button>
+                	 </div>
+                	 <div id="reportSupportDiv">
+							  <p>Select Primary Set (Demo)</p>
+							  <select id="setSelectPrimary">
+							    <option selected disabled>Choose one</option>
+							  </select>
+							    <p>Select Secondary Set (Dry Run)</p>
+							  <select id="setSelectSecondary">
+							    <option selected disabled>Choose one</option>
+							  </select>
+						  </div>
+                 </div>
             </div>
         </div>
     </div>
     <script>
+    	 var namePromptSumbit = document.getElementById("namePromptSubmit");
        var programSelect = document.getElementById("programSelect");
+       var setSelectPrimary = document.getElementById("setSelectPrimary");
+       var setSelectSecondary = document.getElementById("setSelectSecondary");
     	 var createSetDiv = document.getElementById("setCreateDiv");
        var waitBlanket = document.getElementById("waitBlanket");
        var lastFocusedSet = "";
@@ -111,7 +131,6 @@
     </script>
     <script>
     	 function doImport() {
-    	 	var focuesedRow = document.activeElement;
     	 	var lastFocusedRow = lastFocusedSet.parentNode.parentNode;
 			 var setToImportId = lastFocusedRow.id;
 			 
@@ -143,6 +162,21 @@
     	 }
     </script>
     <script>
+       function doSetDelete() {
+    	 	  var lastFocusedRow = lastFocusedSet.parentNode.parentNode;
+			  var setToImportId = lastFocusedRow.id;
+			 
+			 if(setToImportId != "") {
+              var selectedProgramIndex = programSelect.selectedIndex;
+              var programId = programSelect.options[selectedProgramIndex].value;
+
+              var fullPath = path.concat(programId, "/set/", setToImportId);
+              
+              doDelete(fullPath, deleteSetStatusHandler, lastFocusedRow);		 
+        	 }
+      }
+    </script>
+    <script>
     function getPrograms() {
         if (programSelect.length < 2) {
             get(path, getAllProgramsStatusHandler, programSelect);
@@ -158,8 +192,17 @@
         get(fullPath, getProgramAdminStatusHandler, programSelect);
     }
 </script>
+<script>
+      function populateReportSetSelects() {
+          var selectedIndex = programSelect.selectedIndex;
+          var programId = programSelect.options[selectedIndex].value;
+
+          var fullPath = path.concat(programId, "/set/");
+          get(fullPath, populateSetSelectsStatusHandler, "");
+      }
+  </script>
     <script>
-        function setCreateClose() {
+        function namePromptClose() {
             var blanketEl = document.getElementById("blanket");
             blanketEl.removeChild(createSetDiv);
 				blanketEl.style.display = 'none';
@@ -167,7 +210,7 @@
         }
     </script>
     <script>
-        function bringUpNamePrompt() {
+        function bringUpNamePromptCreate() {
             var blanketEl = document.getElementById("blanket");
             blanketEl.appendChild(createSetDiv);
 				blanketEl.style.display = 'block';
@@ -176,9 +219,95 @@
            var setName = document.getElementById("setNameInput");
     	 	  var setPath = document.getElementById("setPathInput");
     	 	  
+    	 	  namePromptSumbit.setAttribute('onclick', 'setCreateSubmit()');
+    	 	  
     	 	  setName.value = "";
     	 	  setPath.value = "";
         }
+    </script>
+    <script>
+        function getSetForUpdate() {
+           var lastFocusedRow = lastFocusedSet.parentNode.parentNode;
+           var setId = lastFocusedRow.id;
+			  		     
+			  var selectedProgramIndex = programSelect.selectedIndex;
+			  var programId = programSelect.options[selectedProgramIndex].value;
+			
+			  var fullPath = path.concat(programId, "/set/", setId);
+			  
+			  get(fullPath, getSetStatusHandlerForUpdate, lastFocusedRow);		
+        }
+    </script>
+     <script>
+     	  function generateReport() {
+     	  	   var setSelectPrimaryIndex = setSelectPrimary.selectedIndex;
+     	  	   var setSelectPrimaryId = setSelectPrimary.options[setSelectPrimaryIndex].value;
+     	  	   
+     	  	   var setSelectSecondaryIndex = setSelectSecondary.selectedIndex;
+     	  	   var setSelectSecondaryId = setSelectSecondary.options[setSelectSecondaryIndex].value;
+     	  	   
+     	  	   var selectedProgramIndex = programSelect.selectedIndex;
+ 			   var programId = programSelect.options[selectedProgramIndex].value;
+     	  	   
+     	  	   var fullPath = path.concat(programId, "/report?primarySet=", setSelectPrimaryId, "&secondarySet=", setSelectSecondaryId);
+ 			   window.location.href = fullPath;
+     	  }
+     </script>
+    <script>
+        function bringUpNamePromptUpdate(setName, setPath, setRow) {
+            var blanketEl = document.getElementById("blanket");
+            blanketEl.appendChild(createSetDiv);
+				blanketEl.style.display = 'block';
+            createSetDiv.style.display = 'block';
+            
+           var setNameInput = document.getElementById("setNameInput");
+    	 	  var setPathInput = document.getElementById("setPathInput");
+
+    	 	  setNameInput.value = setName;
+    	 	  setPathInput.value = setPath;
+    	 	  
+ 	 	     namePromptSumbit.onclick = (function() {
+			      var setRowParam = setRow;
+			      var oldNameParam = setName; 
+			      var oldPathParam = setPath;
+			      return function() { 
+			          setUpdateSubmit(oldNameParam, oldPathParam, setRowParam);
+			      }
+			   })();
+        }
+    </script>
+    <script>
+    	 function setUpdateSubmit(oldName, oldPath, setRow) {
+    	 	  var setName = document.getElementById("setNameInput").value;
+    	 	  var setPath = document.getElementById("setPathInput").value;
+    	 	  
+    	 	  if(oldName == setName && oldPath == setPath) {
+    	 	  		// do nothing
+    	 	  }
+    	 	  else {
+    	 	  	  namePromptClose();
+    	 	     var nameKey = "name";
+    	 	     var pathKey = "importPath";
+
+				  var jsonObject  = {};
+				  if(oldName != setName) {
+			     	 jsonObject[nameKey] = setName;
+			     }
+			     if(oldPath != setPath) {
+			     	  jsonObject[pathKey] = setPath;	
+			     }
+			     		     
+              var jsonStringParam = JSON.stringify(jsonObject);
+              
+              var programSelect = document.getElementById("programSelect");
+              var selectedProgramIndex = programSelect.selectedIndex;
+              var programId = programSelect.options[selectedProgramIndex].value;
+
+              var fullPath = path.concat(programId, "/set/", setRow.id);
+              
+              put(fullPath, jsonStringParam, putSetStatusHandler, setRow);
+    	 	  }
+    	 }
     </script>
     <script>
     	 function setCreateSubmit() {
@@ -186,10 +315,10 @@
     	 	  var setPath = document.getElementById("setPathInput").value;
     	 	  
     	 	  if(setName == "" || setPath == "") {
-    	 	  
+    	 	  		// do nothing
     	 	  }
     	 	  else {
-    	 	  	  setCreateClose();
+    	 	  	  namePromptClose();
     	 	     var nameKey = "name";
     	 	     var pathKey = "importPath";
 
@@ -235,6 +364,8 @@
                 setCreateButton.disabled=false;
                 var setOperationButton = document.getElementById("setOperation");
                 setOperationButton.disabled=false;
+                
+                populateReportSetSelects();
             }
         };
     }
@@ -305,18 +436,21 @@
     }
     </script>
 <script>
-	function putSetStatusHandler(rowImported) {
+	function putSetStatusHandler(setRow) {
 		return function() {
-				var selectedInput = rowImported.cells[0].firstChild;
+				var selectedInput = setRow.cells[0].firstChild;
 		      if(this.readyState == 1) {
 						selectedInput.className = "setsTableDataInputImporting";
 						selectedInput.setAttribute('onclick', '');
-						rowImported.cells[1].innerHTML = "...IMPORTING...";
+						setRow.cells[1].innerHTML = "...WORKING...";
         		} 
         		if(this.readyState == 4) {	
         			 selectedInput.className = "setsTableDataInput";
         			 selectedInput.setAttribute('onclick', 'setFocused(this)');
-					 getSet(rowImported);
+					 getSet(setRow);
+        		} 
+        		if(this.readyState == 4 && this.status != 200) {
+        			 setRow.cells[1].innerHTML = "Error Importing.";
         		}
         	};
 	}
@@ -347,9 +481,30 @@
 	        return function() {
 	            if (this.readyState == 4 && this.status==200) {
 	                var setObject = eval('(' + this.responseText + ')');
+	                setRow.cells[0].firstChild.value = setObject.name;
+	                setRow.cells[1].innerHTML = "No Summary Available";
+	            }
+	        };
+	    }
+	</script>
+	<script>
+		 function populateSetSelectsStatusHandler(emptyParam) {
+		 	  return function() {
+	            if (this.readyState == 4) {
+	                var responseHTML = this.responseText;
+	                setSelectPrimary.innerHTML = responseHTML;
+	                setSelectSecondary.innerHTML = responseHTML;
+	            }
+		 	  }
+		 }
+	</script>
+	<script>
+	    function getSetStatusHandlerForUpdate(setRow) {
+	        return function() {
+	            if (this.readyState == 4 && this.status==200) {
+	                var setObject = eval('(' + this.responseText + ')');
 	                
-	                var summary = "".concat(setObject.itemsIncomplete, " left");
-	                setRow.cells[1].innerHTML = summary;
+	                bringUpNamePromptUpdate(setObject.name, setObject.importPath, setRow);
 	            }
 	        };
 	    }
@@ -363,6 +518,34 @@
             }
         };
     }
+</script>
+   <script>
+    function deleteSetStatusHandler(deletedRow) {
+        return function() {
+            if (this.readyState == 4) {
+                var rowIndex = deletedRow.sectionRowIndex;
+                var setsTableBody = document.getElementById("setsTableBody");
+                setsTableBody.deleteRow(rowIndex);
+                
+                var rowsCount = setsTableBody.rows.length;
+                if(rowsCount < 7) {
+                	 var newRow = setsTableBody.insertRow(rowsCount-1);
+                	 var newCell1 =  newRow.insertCell(0);
+                	 var newCell2 = newRow.insertCell(1);
+                	 
+                	 newCell1.className = "setsTableData";
+                	 newCell2.className = "setsTableData";
+                }
+            }
+        };
+    }
+</script>
+<script>
+	 function getGenerateReportStatusHandler(unusedParam) {
+	 	 return {
+	 	 
+	 	 }
+	 }
 </script>
 <script>
     function put(url, params, statusHandler, callbackParam) {
@@ -379,6 +562,11 @@
             httpRequestWithParams("POST", url, params, statusHandler, callbackParam);
         }
     </script>
+     <script>
+         function doDelete(url, statusHandler, callbackParam) {
+             httpRequest("DELETE", url, statusHandler, callbackParam);
+         }
+     </script>
     <script>
         function httpRequestWithParams(httpVerb, url, params, statusHandler, callbackParam) {
             var httpRequest = new XMLHttpRequest()

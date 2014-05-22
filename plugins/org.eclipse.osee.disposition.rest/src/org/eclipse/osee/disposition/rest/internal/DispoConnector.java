@@ -51,23 +51,24 @@ public class DispoConnector {
       logger.trace("Stopping DispoConnector...");
    }
 
-   public String allDiscrepanciesAnnotated(DispoItem item) throws JSONException {
-      String toReturn;
+   public List<Integer> getAllUncoveredDiscprepancies(DispoItem item) throws JSONException {
       JSONObject discrepancies = item.getDiscrepanciesList();
-      JSONArray annotatinos = item.getAnnotationsList();
-      HashSet<Integer> allCoveredDiscrepancies = getAllCoveredDiscrepanciesFromAnnotations(discrepancies, annotatinos);
+      JSONArray annotations = item.getAnnotationsList();
+      HashSet<Integer> allCoveredDiscrepancies = getAllCoveredDiscrepanciesFromAnnotations(discrepancies, annotations);
       ArrayList<Integer> allDiscrepancies = createDiscrepanciesList(discrepancies);
 
       allDiscrepancies.removeAll(allCoveredDiscrepancies);
+      return allDiscrepancies;
+   }
 
-      boolean allDiscrepanciesCovered = false;
-      if (allDiscrepancies.isEmpty()) {
-         allDiscrepanciesCovered = true;
-      }
+   public String allDiscrepanciesAnnotated(DispoItem item) throws JSONException {
+      String toReturn;
+      JSONArray annotations = item.getAnnotationsList();
+      List<Integer> allUncoveredDiscprepancies = getAllUncoveredDiscprepancies(item);
 
       if (item.getDiscrepanciesList().length() == 0) {
          toReturn = DispoStrings.Item_Pass;
-      } else if (allAnnotationsValid(annotatinos) && allDiscrepanciesCovered) {
+      } else if (allAnnotationsValid(annotations) && allUncoveredDiscprepancies.isEmpty()) {
          toReturn = DispoStrings.Item_Complete;
       } else {
          toReturn = DispoStrings.Item_InComplete;

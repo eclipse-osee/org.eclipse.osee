@@ -14,7 +14,7 @@ body{
 	background-color: rgba(45, 45, 51, 0.61);
 	position: absolute;
 	z-index: 9001;
-	top: 0px;
+	top: 0px; 
 	left: 0px;
 	height: 100%;
 	width: 100%;
@@ -29,7 +29,6 @@ body{
 	position: relative;
 }
 #programSelect {
-    width: 250px;
     margin:-20px 0px 0px 0px;
     background-color: rgb(145, 198, 200);
 }
@@ -43,14 +42,29 @@ th {
 	width: 400px;
 	height: 110px;
 }
-#submitCreateSet {
+#namePromptSubmit {
     height: 30px;
     width: 70px;
     float: left;
 	 margin-left: 120px;
 }
+p {
+    margin: 0px;
+}
 #cancelCreateSet {
     height: 30px;  width: 70px;  float: left;  margin-left: 10px;
+}
+#topHalfSetControls {
+	height: 250px;
+}
+#reportDiv {
+    width: 500px;
+    height: 200px;
+}
+#generateReport {
+    width: 200px;  height: 51px;
+    margin-left: 40px;
+    margin-top: 25px
 }
 #setNameInput {
 	margin-top: 20px;
@@ -60,11 +74,11 @@ th {
     width: 300px;
     margin-left: 10px;
 }
-#userInput {
-    height: 300px;
+#generateReportDiv {
+	 float: left;
 }
-#programSelectPrompt {
-    margin: 0px;
+#reportSupportDiv {
+	 float: right;
 }
 #programSelectDiv {
 	 margin-left: 120px;
@@ -75,24 +89,37 @@ th {
     width: 1800px;
 }
 #setControls {
-    max-height: 300px;
     float: right;
-    height: 100%;
-    width: 70%;
+	    width: 70%;
+}
+#rename {  
+	 width: 200px;  
+    height: 51px;
+}
+select {
+	 width: 250px;
+}
+#updatePath {
+    width: 200px;  height: 51px;
 }
 #setOperation {
-    margin-top: 60px;
-    width: 200px;
-    height: 51px;
+	margin-top: 60px;
+	width: 200px;
+	height: 51px;
 }
 #setCreate {
     margin-top: 10px;
     width: 200px;
     height: 30px;
 }
+#delete {
+	margin-top: 20px;
+	margin-left: 147px;
+}
 #setOperationContainer {
     margin-left: 40px;
     float: left;
+    width:160px;
 }
 #setManageContainer {
     float: right;
