@@ -52,7 +52,7 @@ public class AtsWorkDefinitionStore implements IAtsWorkDefinitionStore {
    private String loadWorkDefinitionFromArtifact(String name) throws OseeCoreException {
       Artifact artifact =
          ArtifactQuery.getArtifactFromTypeAndNameNoException(AtsArtifactTypes.WorkDefinition, name,
-            BranchManager.getCommonBranch());
+            AtsUtilCore.getAtsBranch());
       return loadWorkDefinitionFromArtifact(artifact);
    }
 
