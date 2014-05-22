@@ -28,7 +28,7 @@ import org.eclipse.osee.coverage.internal.vcast.datastore.VCastDataStoreFactory;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastFunction;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastInstrumentedFile;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastResult;
-import org.eclipse.osee.coverage.internal.vcast.model.VCastSourceFile;
+import org.eclipse.osee.coverage.internal.vcast.model.VCastSourceFileJoin;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastStatementCoverage;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
@@ -95,9 +95,9 @@ public class VCastAdaCoverage_V6_0_ImportOperation extends AbstractOperation {
    }
 
    private void processInstrumented(IProgressMonitor monitor, VCastDataStore dataStore, Map<String, CoverageUnit> fileNumToCoverageUnit, VCastInstrumentedFile instrumentedFile) throws Exception {
-      VCastSourceFile sourceFile = null;
+      VCastSourceFileJoin sourceFile = null;
       try {
-         sourceFile = dataStore.getSourceFile(instrumentedFile);
+         sourceFile = dataStore.getSourceFileJoin(instrumentedFile);
       } catch (OseeDataStoreException ex) {
          coverageImport.getLog().logError(
             "SQL error while reading source_files for instrumented_file id:" + instrumentedFile.getId() + " " + ex.getMessage());

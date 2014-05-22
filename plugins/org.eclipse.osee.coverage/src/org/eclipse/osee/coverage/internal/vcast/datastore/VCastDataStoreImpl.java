@@ -29,6 +29,7 @@ import org.eclipse.osee.coverage.internal.vcast.model.VCastProjectFile;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastResult;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastSetting;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastSourceFile;
+import org.eclipse.osee.coverage.internal.vcast.model.VCastSourceFileJoin;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastStatementCoverage;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastStatementData;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastVersion;
@@ -383,12 +384,11 @@ public class VCastDataStoreImpl implements VCastDataStore {
          stmt.runPreparedQuery("SELECT * FROM source_files");
          while (stmt.next()) {
             Integer id = stmt.getInt("id");
-            Integer unit_index = stmt.getInt("unit_index");
             String path = stmt.getString("path");
             String display_name = stmt.getString("display_name");
             Integer checksum = stmt.getInt("checksum");
             String display_path = stmt.getString("display_path");
-            toReturn.add(new VCastSourceFile(id, path, display_name, checksum, display_path, unit_index));
+            toReturn.add(new VCastSourceFile(id, path, display_name, checksum, display_path));
          }
 
       } finally {
@@ -478,8 +478,8 @@ public class VCastDataStoreImpl implements VCastDataStore {
    }
 
    @Override
-   public VCastSourceFile getSourceFile(VCastInstrumentedFile instrumentedFile) throws OseeCoreException {
-      VCastSourceFile toReturn = null;
+   public VCastSourceFileJoin getSourceFileJoin(VCastInstrumentedFile instrumentedFile) throws OseeCoreException {
+      VCastSourceFileJoin toReturn = null;
 
       IOseeStatement stmt = getStatement();
       try {
@@ -493,7 +493,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
             String display_name = stmt.getString("display_name");
             Integer checksum = stmt.getInt("checksum");
             String display_path = stmt.getString("display_path");
-            toReturn = new VCastSourceFile(id, path, display_name, checksum, display_path, unit_index);
+            toReturn = new VCastSourceFileJoin(id, path, display_name, checksum, display_path, unit_index);
          }
 
       } finally {

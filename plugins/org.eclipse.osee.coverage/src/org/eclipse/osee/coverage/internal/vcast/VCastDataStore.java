@@ -26,6 +26,7 @@ import org.eclipse.osee.coverage.internal.vcast.model.VCastProjectFile;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastResult;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastSetting;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastSourceFile;
+import org.eclipse.osee.coverage.internal.vcast.model.VCastSourceFileJoin;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastStatementCoverage;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastStatementData;
 import org.eclipse.osee.coverage.internal.vcast.model.VCastVersion;
@@ -75,7 +76,7 @@ public interface VCastDataStore {
 
    VCastWritable getWritable() throws OseeCoreException;
 
-   VCastSourceFile getSourceFile(VCastInstrumentedFile instrumentedFile) throws OseeCoreException;
+   VCastSourceFileJoin getSourceFileJoin(VCastInstrumentedFile instrumentedFile) throws OseeCoreException;
 
    Collection<VCastFunction> getFunctions(VCastInstrumentedFile instrumentedFile) throws OseeCoreException;
 

@@ -13,20 +13,22 @@ package org.eclipse.osee.coverage.internal.vcast.model;
 /**
  * @author Shawn F. Cook
  */
-public class VCastSourceFile {
+public class VCastSourceFileJoin {
 
    private final int id;
+   private final int unit_index;
    private final String path;
    private final String displayName;
    private final int checksum;
    private final String displayPath;
 
-   public VCastSourceFile(int id, String path, String displayName, int checksum, String displayPath) {
+   public VCastSourceFileJoin(int id, String path, String displayName, int checksum, String displayPath, int unitIndex) {
       this.id = id;
       this.path = path;
       this.displayName = displayName;
       this.checksum = checksum;
       this.displayPath = displayPath;
+      this.unit_index = unitIndex;
    }
 
    public int getId() {
@@ -47,6 +49,10 @@ public class VCastSourceFile {
 
    public String getDisplayPath() {
       return displayPath;
+   }
+
+   public int getUnitIndex() {
+      return unit_index;
    }
 
 }
