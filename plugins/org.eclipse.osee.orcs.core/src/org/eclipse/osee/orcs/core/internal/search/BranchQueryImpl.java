@@ -53,6 +53,8 @@ public class BranchQueryImpl implements BranchQuery {
       this.criteriaFactory = criteriaFactory;
       this.session = session;
       this.queryData = queryData;
+      includeDeleted();
+      includeArchived();
    }
 
    private QueryData getQueryData() {
