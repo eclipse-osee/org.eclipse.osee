@@ -59,7 +59,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
                AtsChangeSet changes = new AtsChangeSet("New Stand-alone Peer To Peer Review");
                PeerToPeerReviewArtifact peerArt =
                   PeerToPeerReviewManager.createNewPeerToPeerReview(ld.getSelected().iterator().next(), ed.getEntry(),
-                     null, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+                     null, new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
                changes.execute();
 
                AtsUtil.openATSAction(peerArt, AtsOpenOption.OpenAll);

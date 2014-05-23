@@ -361,10 +361,10 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
    }
 
    private IAtsUser getSelectedUser() throws OseeCoreException {
-      if (assigneeCombo == null) {
+      if (assigneeCombo == null || assigneeCombo.getUser() == null) {
          return null;
       }
-      return AtsClientService.get().getUserAdmin().getUserFromOseeUser(assigneeCombo.getUser());
+      return AtsClientService.get().getUserServiceClient().getUserFromOseeUser(assigneeCombo.getUser());
    }
 
    public void setSelectedUser(User user) {

@@ -74,7 +74,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), implement.getName(),
-            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null, changes, TransitionOption.None);
+            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes, TransitionOption.None);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAllAndPersist();
 
@@ -120,7 +120,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       MockTransitionHelper helper =
          new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), implement.getName(),
-            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null, changes, TransitionOption.None);
+            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes, TransitionOption.None);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAllAndPersist();
 

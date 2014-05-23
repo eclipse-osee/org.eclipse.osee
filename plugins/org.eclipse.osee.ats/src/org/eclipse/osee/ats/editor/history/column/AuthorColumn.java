@@ -10,12 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.history.column;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.swt.SWT;
 
@@ -24,6 +29,7 @@ import org.eclipse.swt.SWT;
  */
 public class AuthorColumn extends XViewerValueColumn {
    private static AuthorColumn instance = new AuthorColumn();
+   private final Map<Integer, String> artIdToName = new HashMap<Integer, String>(40);
 
    public static AuthorColumn getInstance() {
       return instance;
@@ -46,13 +52,26 @@ public class AuthorColumn extends XViewerValueColumn {
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
+      String name = "";
       if (element instanceof Change) {
          try {
-            return UserManager.getSafeUserNameById(((Change) element).getTxDelta().getEndTx().getAuthor());
+            int author = ((Change) element).getTxDelta().getEndTx().getAuthor();
+            name = artIdToName.get(author);
+            if (name == null) {
+               Artifact art =
+                  ArtifactQuery.getArtifactFromId(author, AtsUtilCore.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED);
+               if (art != null) {
+                  name = art.getName();
+               } else {
+                  name = "unknown for " + author;
+               }
+            }
+            return name;
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
+            name = "exception " + ex.getLocalizedMessage();
          }
       }
-      return "";
+      return name;
    }
 }

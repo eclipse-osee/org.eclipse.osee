@@ -164,7 +164,7 @@ public class TaskManagerTest extends TaskManager {
       // transition back to InWork
       changes = new AtsChangeSet(getClass().getSimpleName() + " testTransitionToCompletedThenInWork() 2");
       result =
-         TaskManager.transitionToInWork(taskArt, AtsClientService.get().getUserAdmin().getCurrentUser(), 45, .5,
+         TaskManager.transitionToInWork(taskArt, AtsClientService.get().getUserService().getCurrentUser(), 45, .5,
             changes);
       Assert.assertEquals(Result.TrueResult, result);
       changes.execute();

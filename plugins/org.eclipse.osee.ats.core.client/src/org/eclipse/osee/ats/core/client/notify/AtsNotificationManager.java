@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.email.EmailGroup;
 import org.eclipse.osee.framework.skynet.core.utility.INotificationManager;
 import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
@@ -70,7 +69,7 @@ public class AtsNotificationManager {
          if (subscribedUsers.size() > 0) {
             getNotificationManager().addNotificationEvent(
                new OseeNotificationEvent(
-                  AtsClientService.get().getUserAdmin().getOseeUsers(subscribedUsers),
+                  AtsClientService.get().getUserServiceClient().getOseeUsers(subscribedUsers),
                   getIdString(teamArt),
                   "Workflow Creation",
                   "You have subscribed for email notification for Team \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getName() + "\""));
@@ -82,7 +81,7 @@ public class AtsNotificationManager {
             if (subscribedUsers.size() > 0) {
                getNotificationManager().addNotificationEvent(
                   new OseeNotificationEvent(
-                     AtsClientService.get().getUserAdmin().getOseeUsers(subscribedUsers),
+                     AtsClientService.get().getUserServiceClient().getOseeUsers(subscribedUsers),
                      getIdString(teamArt),
                      "Workflow Creation",
                      "You have subscribed for email notification for Actionable Item \"" + teamArt.getTeamName() + "\"; New Team Workflow created with title \"" + teamArt.getName() + "\""));
@@ -128,14 +127,12 @@ public class AtsNotificationManager {
    public static List<EmailGroup> getEmailableGroups(AbstractWorkflowArtifact workflow) throws OseeCoreException {
       ArrayList<EmailGroup> groupNames = new ArrayList<EmailGroup>();
       ArrayList<String> emails = new ArrayList<String>();
-      User oseeUser = AtsClientService.get().getUserAdmin().getOseeUser(workflow.getCreatedBy());
-      emails.add(oseeUser.getEmail());
+      emails.add(workflow.getCreatedBy().getEmail());
       groupNames.add(new EmailGroup("Originator", emails));
       if (workflow.getStateMgr().getAssignees().size() > 0) {
          emails = new ArrayList<String>();
-         for (IAtsUser u : workflow.getStateMgr().getAssignees()) {
-            User oseeUser2 = AtsClientService.get().getUserAdmin().getOseeUser(u);
-            emails.add(oseeUser2.getEmail());
+         for (IAtsUser user : workflow.getStateMgr().getAssignees()) {
+            emails.add(user.getEmail());
          }
          groupNames.add(new EmailGroup("Assignees", emails));
       }

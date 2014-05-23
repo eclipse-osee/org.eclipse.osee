@@ -56,7 +56,7 @@ public class TaskManager {
       // Assign current user if unassigned
       try {
          if (taskArt.getStateMgr().isUnAssigned()) {
-            taskArt.getStateMgr().setAssignee(AtsClientService.get().getUserAdmin().getCurrentUser());
+            taskArt.getStateMgr().setAssignee(AtsClientService.get().getUserService().getCurrentUser());
          }
          taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, 100, true,
             AtsCore.getUserService().getCurrentUser());

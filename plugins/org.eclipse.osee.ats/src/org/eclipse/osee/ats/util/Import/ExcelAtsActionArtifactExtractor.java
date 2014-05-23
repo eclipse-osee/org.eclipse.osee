@@ -155,7 +155,7 @@ public class ExcelAtsActionArtifactExtractor {
                try {
                   assignee = assignee.replaceFirst("^ *", "");
                   assignee = assignee.replaceFirst(" *$", "");
-                  IAtsUser user = AtsClientService.get().getUserAdmin().getUserByName(assignee);
+                  IAtsUser user = AtsClientService.get().getUserService().getUserByName(assignee);
                   if (user == null) {
                      rd.logError("Row " + rowNum + ": Couldn't retrieve user \"" + assignee + "\"");
                   } else {
@@ -175,7 +175,7 @@ public class ExcelAtsActionArtifactExtractor {
       Set<TeamWorkFlowArtifact> teamWfs = new HashSet<TeamWorkFlowArtifact>();
       Date createdDate = new Date();
       try {
-         IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
+         IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
          for (ActionData aData : actionDatas) {
             Artifact actionArt = actionNameToAction.get(aData.title);
             Collection<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();

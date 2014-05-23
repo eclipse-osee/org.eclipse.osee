@@ -57,7 +57,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
                SystemGroup.OseeAdmin.setTemporaryOverride(true);
             } else {
                AtsGroup.AtsAdmin.removeTemporaryOverride();
-               SystemGroup.OseeAdmin.addMember(AtsClientService.get().getUserAdmin().getCurrentOseeUser());
+               SystemGroup.OseeAdmin.addMember(AtsClientService.get().getUserServiceClient().getCurrentOseeUser());
             }
             AtsNavigateViewItems.getInstance().clearCaches();
             for (SMAEditor editor : SMAEditor.getSmaEditors()) {

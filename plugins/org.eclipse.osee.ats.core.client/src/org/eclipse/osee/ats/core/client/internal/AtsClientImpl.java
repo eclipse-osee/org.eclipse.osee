@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.client.IAtsClient;
-import org.eclipse.osee.ats.core.client.IAtsUserAdmin;
+import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.client.IAtsVersionAdmin;
 import org.eclipse.osee.ats.core.client.internal.config.ActionableItemFactory;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
@@ -53,7 +53,6 @@ import org.eclipse.osee.ats.core.client.internal.store.TeamDefinitionArtifactRea
 import org.eclipse.osee.ats.core.client.internal.store.TeamDefinitionArtifactWriter;
 import org.eclipse.osee.ats.core.client.internal.store.VersionArtifactReader;
 import org.eclipse.osee.ats.core.client.internal.store.VersionArtifactWriter;
-import org.eclipse.osee.ats.core.client.internal.user.AtsUserAdminImpl;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkItemArtifactProviderImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverServiceImpl;
@@ -93,9 +92,9 @@ public class AtsClientImpl implements IAtsClient {
    private ITeamDefinitionFactory teamDefFactory;
    private IVersionFactory versionFactory;
    private CacheProvider<AtsWorkDefinitionCache> workDefCacheProvider;
-   private IAtsUserAdmin atsUserAdmin;
    private IAtsEarnedValueService earnedValueService;
    private IAtsUserService userService;
+   private IAtsUserServiceClient userServiceClient;
    private IAtsWorkItemService workItemService;
    private IAtsBranchService branchService;
    private IAtsReviewService reviewService;
@@ -109,6 +108,7 @@ public class AtsClientImpl implements IAtsClient {
 
    public void setAtsUserService(IAtsUserService atsUserService) {
       this.userService = atsUserService;
+      this.userServiceClient = (IAtsUserServiceClient) userService;
    }
 
    public void start() throws OseeCoreException {
@@ -135,12 +135,10 @@ public class AtsClientImpl implements IAtsClient {
       teamDefFactory = new TeamDefinitionFactory();
       versionFactory = new VersionFactory(versionService);
 
-      atsUserAdmin = new AtsUserAdminImpl();
-
       readers.put(AtsArtifactTypes.ActionableItem, new ActionableItemArtifactReader(actionableItemFactory,
-         teamDefFactory, versionFactory, atsUserAdmin));
+         teamDefFactory, versionFactory, userServiceClient));
       readers.put(AtsArtifactTypes.TeamDefinition, new TeamDefinitionArtifactReader(actionableItemFactory,
-         teamDefFactory, versionFactory, versionService, atsUserAdmin));
+         teamDefFactory, versionFactory, versionService, userServiceClient));
       readers.put(AtsArtifactTypes.Version, new VersionArtifactReader(actionableItemFactory, teamDefFactory,
          versionFactory, versionService));
 
@@ -180,7 +178,6 @@ public class AtsClientImpl implements IAtsClient {
       teamDefFactory = null;
       versionFactory = null;
 
-      atsUserAdmin = null;
       started = false;
    }
 
@@ -243,6 +240,7 @@ public class AtsClientImpl implements IAtsClient {
    public void reloadAllCaches() throws OseeCoreException {
       reloadConfigCache();
       reloadWorkDefinitionCache();
+      getUserService().clearCache();
    }
 
    @Override
@@ -308,9 +306,15 @@ public class AtsClientImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsUserAdmin getUserAdmin() throws OseeStateException {
+   public IAtsUserServiceClient getUserServiceClient() throws OseeStateException {
       checkStarted();
-      return atsUserAdmin;
+      return userServiceClient;
+   }
+
+   @Override
+   public IAtsUserService getUserService() throws OseeStateException {
+      checkStarted();
+      return userService;
    }
 
    @Override
@@ -394,11 +398,6 @@ public class AtsClientImpl implements IAtsClient {
    public IAtsEarnedValueService getEarnedValueService() throws OseeStateException {
       checkStarted();
       return earnedValueService;
-   }
-
-   public IAtsUserService getUserService() throws OseeStateException {
-      checkStarted();
-      return userService;
    }
 
    @Override

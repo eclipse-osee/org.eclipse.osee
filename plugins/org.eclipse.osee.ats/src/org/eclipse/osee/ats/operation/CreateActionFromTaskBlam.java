@@ -130,7 +130,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
          }
          ActionArtifact action =
             ActionManager.createAction(monitor, useTitle, getDescription(task), changeType, priority, false, null,
-               aias, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
+               aias, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
 
          for (TeamWorkFlowArtifact teamArt : action.getTeams()) {
             newTeamArts.add(teamArt);

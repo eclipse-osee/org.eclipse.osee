@@ -72,7 +72,7 @@ public class ReviewNavigateViewItems implements XNavigateViewItems, IXNavigateCo
 
    public void addOseePeerSectionChildren(XNavigateItem item) throws OseeCoreException {
       try {
-         IAtsUser user = AtsClientService.get().getUserAdmin().getCurrentUser();
+         IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
          items.add(new SearchNavigateItem(item, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
          items.add(new SearchNavigateItem(item, new MyReviewWorkflowItem("User's Reviews", null, ReviewState.InWork)));
       } catch (OseeCoreException ex) {

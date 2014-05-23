@@ -28,11 +28,11 @@ public class SubscribedActionTest extends AbstractAtsActionTest {
    public void test() throws Exception {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
-      Assert.assertFalse(AtsClientService.get().getUserAdmin().getCurrentOseeUser().getRelatedArtifacts(
+      Assert.assertFalse(AtsClientService.get().getUserServiceClient().getCurrentOseeUser().getRelatedArtifacts(
          AtsRelationTypes.SubscribedUser_Artifact).contains(AtsTestUtil.getTeamWf()));
       SubscribedAction action = createAction();
       action.runWithException();
-      Assert.assertTrue(AtsClientService.get().getUserAdmin().getCurrentOseeUser().getRelatedArtifacts(
+      Assert.assertTrue(AtsClientService.get().getUserServiceClient().getCurrentOseeUser().getRelatedArtifacts(
          AtsRelationTypes.SubscribedUser_Artifact).contains(AtsTestUtil.getTeamWf()));
       TestUtil.severeLoggingEnd(monitor);
    }

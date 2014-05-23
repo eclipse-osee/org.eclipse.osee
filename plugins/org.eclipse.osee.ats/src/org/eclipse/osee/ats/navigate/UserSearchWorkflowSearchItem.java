@@ -251,12 +251,12 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       if (userCombo == null) {
          return null;
       }
-      return AtsClientService.get().getUserAdmin().getUserFromOseeUser(userCombo.getUser());
+      return AtsClientService.get().getUserServiceClient().getUserFromOseeUser(userCombo.getUser());
    }
 
    public void setSelectedUser(IAtsUser user) throws OseeCoreException {
       if (userCombo != null) {
-         userCombo.set(AtsClientService.get().getUserAdmin().getOseeUser(user));
+         userCombo.set(AtsClientService.get().getUserServiceClient().getOseeUser(user));
       }
    }
 

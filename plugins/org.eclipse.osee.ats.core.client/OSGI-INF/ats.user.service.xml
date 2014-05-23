@@ -3,5 +3,6 @@
    <implementation class="org.eclipse.osee.ats.core.client.internal.user.AtsUserServiceImpl"/>
    <service>
       <provide interface="org.eclipse.osee.ats.api.user.IAtsUserService"/>
+      <provide interface="org.eclipse.osee.ats.core.client.IAtsUserServiceClient"/>
    </service>
 </scr:component>

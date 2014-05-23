@@ -152,7 +152,7 @@ public class DecisionOption {
          m = Pattern.compile("<(.*?)>").matcher(m.group(3));
          while (m.find()) {
             try {
-               assignees.add(AtsClientService.get().getUserAdmin().getUserById(m.group(1)));
+               assignees.add(AtsClientService.get().getUserService().getUserById(m.group(1)));
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }

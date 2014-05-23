@@ -11,16 +11,13 @@
 package org.eclipse.osee.ats.impl.internal.user;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
+import java.util.Map;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUserService;
-import org.eclipse.osee.ats.api.util.AtsUserNameComparator;
+import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.internal.util.AtsUtilServer;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -31,7 +28,6 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -40,9 +36,14 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  * 
  * @author Donald G Dunne
  */
-public class AtsUserServiceImpl implements IAtsUserService {
+public class AtsUserServiceImpl extends AbstractAtsUserService {
 
    private static OrcsApi orcsApi;
+   private static Map<String, IAtsUser> userIdToAtsUser = new HashMap<String, IAtsUser>(300);
+   private static Map<String, Boolean> userIdToAdmin = new HashMap<String, Boolean>(300);
+   private static Map<String, IAtsUser> nameToAtsUser = new HashMap<String, IAtsUser>(300);
+   private static IAtsUser currentUser = null;
+   private boolean loaded = false;
 
    public static void setOrcsApi(OrcsApi orcsApi) {
       AtsUserServiceImpl.orcsApi = orcsApi;
@@ -53,92 +54,61 @@ public class AtsUserServiceImpl implements IAtsUserService {
       System.out.println("ATS - AtsUserService started");
    }
 
+   // TODO Replace this once server has user account
    @Override
    public IAtsUser getCurrentUser() throws OseeCoreException {
-      return getUserById(SystemUser.OseeSystem.getUserId());
+      if (currentUser == null) {
+         currentUser = getUserById(SystemUser.OseeSystem.getUserId());
+      }
+      return currentUser;
    }
 
    @Override
-   public IAtsUser getUserById(String userId) throws OseeCoreException {
+   protected IAtsUser loadUserByUserIdFromDb(String userId) {
       IAtsUser atsUser = null;
-      if (Strings.isValid(userId)) {
-         ResultSet<ArtifactReadable> results =
-            orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
-               CoreArtifactTypes.User).and(CoreAttributeTypes.UserId,
-               org.eclipse.osee.framework.core.enums.Operator.EQUAL, userId).getResults();
-         if (!results.isEmpty()) {
-            ArtifactReadable userArt = results.getExactlyOne();
-            atsUser = new AtsUser(userArt);
-         }
+      ResultSet<ArtifactReadable> results =
+         orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
+            CoreArtifactTypes.User).and(CoreAttributeTypes.UserId,
+            org.eclipse.osee.framework.core.enums.Operator.EQUAL, userId).getResults();
+      if (!results.isEmpty()) {
+         ArtifactReadable userArt = results.getExactlyOne();
+         atsUser = new AtsUser(userArt);
       }
       return atsUser;
    }
 
    @Override
-   public Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds) throws OseeCoreException {
-      List<IAtsUser> users = new LinkedList<IAtsUser>();
-      for (String userId : userIds) {
-         IAtsUser user = getUserById(userId);
-         if (user != null) {
-            users.add(user);
-         }
-      }
-      return users;
-   }
-
-   @Override
-   public IAtsUser getUserByName(String name) throws OseeCoreException {
+   protected IAtsUser loadUserByUserNameFromDb(String name) {
       IAtsUser atsUser = null;
-      if (Strings.isValid(name)) {
-         ArtifactReadable userArt =
-            orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
-               CoreArtifactTypes.User).and(CoreAttributeTypes.Name,
-               org.eclipse.osee.framework.core.enums.Operator.EQUAL, name).getResults().getExactlyOne();
-         if (userArt != null) {
-            atsUser = new AtsUser(userArt);
-         }
+      ArtifactReadable userArt =
+         orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
+            CoreArtifactTypes.User).and(CoreAttributeTypes.Name, org.eclipse.osee.framework.core.enums.Operator.EQUAL,
+            name).getResults().getExactlyOne();
+      if (userArt != null) {
+         atsUser = new AtsUser(userArt);
       }
       return atsUser;
-   }
-
-   @Override
-   public boolean isUserIdValid(String userId) throws OseeCoreException {
-      return getUserById(userId) != null;
-   }
-
-   @Override
-   public boolean isUserNameValid(String name) throws OseeCoreException {
-      return getUserByName(name) != null;
-   }
-
-   @Override
-   public String getUserIdByName(String name) throws OseeCoreException {
-      String userId = null;
-      IAtsUser userByName = getUserByName(name);
-      if (userByName != null) {
-         userId = userByName.getUserId();
-      }
-      return userId;
    }
 
    @Override
    public boolean isAtsAdmin(IAtsUser user) {
-      boolean admin =
-         orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(
-            AtsArtifactToken.AtsAdmin.getGuid()).andRelatedTo(CoreRelationTypes.Users_User, getUserArt(user)).getCount() == 1;
+      ensureLoaded();
+      Boolean admin = userIdToAdmin.get(user.getUserId());
+      if (admin == null) {
+         admin =
+            orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(
+               AtsArtifactToken.AtsAdmin.getGuid()).andRelatedTo(CoreRelationTypes.Users_User, getUserArt(user)).getCount() == 1;
+         userIdToAdmin.put(user.getUserId(), admin);
+      }
       return admin;
    }
 
    private ArtifactReadable getUserArt(IAtsUser user) {
+      ensureLoaded();
       if (user.getStoreObject() instanceof ArtifactReadable) {
          return (ArtifactReadable) user.getStoreObject();
       }
       return orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(user.getGuid()).getResults().getExactlyOne();
-   }
-
-   @Override
-   public boolean isAssigneeMe(IAtsWorkItem workItem) throws OseeCoreException {
-      return workItem.getStateMgr().getAssignees().contains(getCurrentUser());
    }
 
    public static ArtifactReadable getCurrentUserArt() throws OseeCoreException {
@@ -150,6 +120,7 @@ public class AtsUserServiceImpl implements IAtsUserService {
 
    @Override
    public List<IAtsUser> getUsers(Active active) {
+      ensureLoaded();
       List<IAtsUser> users = new ArrayList<IAtsUser>();
       for (ArtifactReadable userArt : orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(
          AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).getResults()) {
@@ -162,9 +133,16 @@ public class AtsUserServiceImpl implements IAtsUserService {
    }
 
    @Override
-   public List<IAtsUser> getUsersSortedByName(Active active) {
-      List<IAtsUser> users = getUsers(active);
-      Collections.sort(users, new AtsUserNameComparator(false));
-      return users;
+   protected synchronized void ensureLoaded() {
+      if (!loaded) {
+         for (ArtifactReadable art : orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
+            CoreArtifactTypes.User).getResults()) {
+            AtsUser atsUser = new AtsUser(art);
+            userIdToAtsUser.put(art.getSoleAttributeValue(CoreAttributeTypes.UserId, ""), atsUser);
+            nameToAtsUser.put(art.getName(), atsUser);
+         }
+         loaded = true;
+      }
    }
+
 }

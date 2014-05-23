@@ -47,7 +47,7 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
       try {
          List<IAtsActionableItem> objs = new ArrayList<IAtsActionableItem>();
          objs.addAll(AtsClientService.get().getConfigObjects(
-            AtsClientService.get().getUserAdmin().getCurrentOseeUser().getRelatedArtifacts(
+            AtsClientService.get().getUserServiceClient().getCurrentOseeUser().getRelatedArtifacts(
                AtsRelationTypes.SubscribedUser_Artifact), IAtsActionableItem.class));
          diag.setInitialAias(objs);
          if (diag.open() != 0) {
@@ -56,7 +56,7 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
          Collection<IAtsActionableItem> selected = diag.getChecked();
          Collection<Artifact> arts = AtsClientService.get().getConfigArtifacts(selected);
 
-         SubscribeUtility.setSubcriptionsAndPersist(AtsClientService.get().getUserAdmin().getCurrentOseeUser(),
+         SubscribeUtility.setSubcriptionsAndPersist(AtsClientService.get().getUserServiceClient().getCurrentOseeUser(),
             AtsRelationTypes.SubscribedUser_Artifact, arts, AtsArtifactTypes.ActionableItem, getClass().getSimpleName());
          AWorkbench.popup(getName(), "Subscriptions updated.");
       } catch (Exception ex) {

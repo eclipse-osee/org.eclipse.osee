@@ -54,7 +54,7 @@ public class NewRoleDialog extends MessageDialog {
       roleCombo.createWidgets(comp, 2);
 
       users =
-         new XHyperlabelMemberSelection("Select User(s)", AtsClientService.get().getUserAdmin().getOseeUsers(
+         new XHyperlabelMemberSelection("Select User(s)", AtsClientService.get().getUserServiceClient().getOseeUsers(
             AtsCore.getUserService().getUsers(Active.Active)));
       users.createWidgets(comp, 2);
 
@@ -72,7 +72,7 @@ public class NewRoleDialog extends MessageDialog {
    }
 
    public Collection<IAtsUser> getUsers() throws OseeCoreException {
-      return AtsClientService.get().getUserAdmin().getAtsUsers(users.getSelectedUsers());
+      return AtsClientService.get().getUserServiceClient().getAtsUsers(users.getSelectedUsers());
    }
 
 }

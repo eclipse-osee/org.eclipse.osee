@@ -63,7 +63,7 @@ public class FavoritesManager {
                SkynetTransaction transaction =
                   TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Toggle Favorites");
                for (AbstractWorkflowArtifact awa : awas) {
-                  removeFavorite(awa, AtsClientService.get().getUserAdmin().getCurrentUser(), transaction);
+                  removeFavorite(awa, AtsClientService.get().getUserService().getCurrentUser(), transaction);
                }
                transaction.execute();
             }
@@ -78,7 +78,7 @@ public class FavoritesManager {
                SkynetTransaction transaction =
                   TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Toggle Favorites");
                for (AbstractWorkflowArtifact awa : awas) {
-                  addFavorite(awa, AtsClientService.get().getUserAdmin().getCurrentUser(), transaction);
+                  addFavorite(awa, AtsClientService.get().getUserService().getCurrentUser(), transaction);
                }
                transaction.execute();
             }
@@ -90,7 +90,7 @@ public class FavoritesManager {
 
    public static boolean amIFavorite(AbstractWorkflowArtifact workflow) {
       try {
-         return isFavorite(workflow, AtsClientService.get().getUserAdmin().getCurrentUser());
+         return isFavorite(workflow, AtsClientService.get().getUserService().getCurrentUser());
       } catch (OseeCoreException ex) {
          return false;
       }
@@ -99,14 +99,14 @@ public class FavoritesManager {
    public static void addFavorite(AbstractWorkflowArtifact workflow, IAtsUser user, SkynetTransaction transaction) throws OseeCoreException {
       if (!workflow.getRelatedArtifacts(AtsRelationTypes.FavoriteUser_User).contains(user)) {
          workflow.addRelation(AtsRelationTypes.FavoriteUser_User,
-            AtsClientService.get().getUserAdmin().getOseeUser(user));
+            AtsClientService.get().getUserServiceClient().getOseeUser(user));
          workflow.persist(transaction);
       }
    }
 
    public static void removeFavorite(AbstractWorkflowArtifact workflow, IAtsUser user, SkynetTransaction transaction) throws OseeCoreException {
       workflow.deleteRelation(AtsRelationTypes.FavoriteUser_User,
-         AtsClientService.get().getUserAdmin().getOseeUser(user));
+         AtsClientService.get().getUserServiceClient().getOseeUser(user));
       workflow.persist(transaction);
    }
 

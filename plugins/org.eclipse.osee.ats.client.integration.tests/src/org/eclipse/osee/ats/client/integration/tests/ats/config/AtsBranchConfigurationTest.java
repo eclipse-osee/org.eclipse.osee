@@ -166,7 +166,7 @@ public class AtsBranchConfigurationTest {
       Artifact actionArt =
          ActionManager.createAction(null, BRANCH_VIA_VERSIONS.getName() + " Req Changes", "description",
             ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(),
-            AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
+            AtsClientService.get().getUserService().getCurrentUser(), null, changes);
       TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
       AtsVersionService.get().setTargetedVersionAndStore(teamWf, versionToTarget);
       changes.execute();
@@ -178,7 +178,7 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Transitioning to Implement state");
       }
 
-      dtwm.transitionTo(TeamState.Implement, AtsClientService.get().getUserAdmin().getCurrentUser(), false, changes);
+      dtwm.transitionTo(TeamState.Implement, AtsClientService.get().getUserService().getCurrentUser(), false, changes);
       teamWf.persist("Branch Configuration Test");
 
       SMAEditor.editArtifact(teamWf);
@@ -278,7 +278,7 @@ public class AtsBranchConfigurationTest {
       changes.clear();
       Artifact actionArt =
          ActionManager.createAction(null, actionTitle, "description", ChangeType.Problem, "1", false, null,
-            selectedActionableItems, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
+            selectedActionableItems, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
       changes.execute();
 
       final TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
@@ -289,7 +289,7 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Transitioning to Implement state");
       }
       changes.reset("Test branch via team definition: create action");
-      dtwm.transitionTo(TeamState.Implement, AtsClientService.get().getUserAdmin().getCurrentUser(), false, changes);
+      dtwm.transitionTo(TeamState.Implement, AtsClientService.get().getUserService().getCurrentUser(), false, changes);
       changes.execute();
 
       // create branch

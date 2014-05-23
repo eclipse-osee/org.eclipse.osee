@@ -69,7 +69,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                final List<IAtsUser> assignees = new ArrayList<IAtsUser>();
                for (Artifact art : variableMap.getArtifacts(ASSIGNEES)) {
                   if (art instanceof User) {
-                     IAtsUser atsUser = AtsClientService.get().getUserAdmin().getUserFromOseeUser((User) art);
+                     IAtsUser atsUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser((User) art);
                      assignees.add(atsUser);
                   }
                }
@@ -102,7 +102,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   final TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                   AtsChangeSet changes = new AtsChangeSet("Import Tasks from Simple List");
                   Date createdDate = new Date();
-                  IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
+                  IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
                   teamArt.createTasks(titles, assignees, createdDate, createdBy, stateCombo.get(), changes);
                   changes.add(teamArt);
                   changes.execute();

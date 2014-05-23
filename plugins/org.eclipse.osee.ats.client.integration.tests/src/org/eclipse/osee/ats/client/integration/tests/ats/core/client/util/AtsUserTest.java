@@ -35,7 +35,7 @@ public class AtsUserTest {
    @Before
    public void setUp() throws OseeCoreException {
       user = UserManager.getUser();
-      atsUser = AtsClientService.get().getUserAdmin().getCurrentUser();
+      atsUser = AtsClientService.get().getUserService().getCurrentUser();
    }
 
    @org.junit.Test
@@ -66,16 +66,16 @@ public class AtsUserTest {
    @org.junit.Test
    public void testRemove() throws OseeCoreException {
       Collection<IAtsUser> assignees = new HashSet<IAtsUser>();
-      assignees.add(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay));
-      assignees.add(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith));
+      assignees.add(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay));
+      assignees.add(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
       Assert.assertTrue(Collections.isEqual(
          assignees,
-         Arrays.asList(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay),
-            AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith))));
+         Arrays.asList(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay),
+            AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith))));
 
-      assignees.remove(AtsClientService.get().getUserAdmin().getCurrentUser());
+      assignees.remove(AtsClientService.get().getUserService().getCurrentUser());
       Assert.assertTrue(Collections.isEqual(assignees,
-         Arrays.asList(AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Alex_Kay))));
+         Arrays.asList(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay))));
    }
 
 }

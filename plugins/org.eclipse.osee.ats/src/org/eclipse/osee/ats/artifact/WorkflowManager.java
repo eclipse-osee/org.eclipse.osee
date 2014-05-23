@@ -58,7 +58,7 @@ public class WorkflowManager {
       // and access control writeable
       awa.isAccessControlWrite() && //
 
-      (WorkflowManagerCore.isEditable(AtsClientService.get().getUserAdmin().getCurrentUser(), awa,
+      (WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), awa,
          awa.getStateDefinition(), privilegedEditEnabled) || //
          // page is define to allow anyone to edit
          awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll.name()) ||

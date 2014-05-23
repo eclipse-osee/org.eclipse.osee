@@ -132,7 +132,7 @@ public class AtsOseeCmService implements IOseeCmService {
          AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName() + " - Create Work Task");
          if (artifact instanceof AbstractTaskableArtifact) {
             return ((AbstractTaskableArtifact) artifact).createNewTask(name, new Date(),
-               AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+               AtsClientService.get().getUserService().getCurrentUser(), changes);
          }
          changes.execute();
       } catch (OseeCoreException ex) {

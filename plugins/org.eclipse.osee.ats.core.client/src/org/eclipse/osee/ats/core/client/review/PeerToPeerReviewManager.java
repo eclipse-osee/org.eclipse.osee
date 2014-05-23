@@ -149,12 +149,12 @@ public class PeerToPeerReviewManager {
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, IAtsChangeSet changes) throws OseeCoreException {
       return createNewPeerToPeerReview(teamArt, reviewTitle, againstState, new Date(),
-         AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+         AtsClientService.get().getUserService().getCurrentUser(), changes);
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, IAtsChangeSet changes) throws OseeCoreException {
       return createNewPeerToPeerReview(workDefinition, teamArt, reviewTitle, againstState, new Date(),
-         AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+         AtsClientService.get().getUserService().getCurrentUser(), changes);
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {

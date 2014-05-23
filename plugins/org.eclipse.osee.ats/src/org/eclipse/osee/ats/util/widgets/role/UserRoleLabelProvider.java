@@ -46,7 +46,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
       UserRole roleItem = (UserRole) element;
       try {
          if (dCol.equals(UserRoleXViewerFactory.User_Col)) {
-            return ArtifactImageManager.getImage(AtsClientService.get().getUserAdmin().getOseeUser(roleItem.getUser()));
+            return ArtifactImageManager.getImage(AtsClientService.get().getUserServiceClient().getOseeUser(roleItem.getUser()));
          } else if (dCol.equals(UserRoleXViewerFactory.Role_Col)) {
             return ImageManager.getImage(AtsImage.ROLE);
          } else if (dCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {

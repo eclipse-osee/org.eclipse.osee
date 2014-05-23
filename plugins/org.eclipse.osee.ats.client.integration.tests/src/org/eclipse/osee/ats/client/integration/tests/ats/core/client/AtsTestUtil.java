@@ -322,7 +322,7 @@ public class AtsTestUtil {
       teamDef = AtsClientService.get().createTeamDefinition(GUID.create(), getTitle("Team Def", postFixName));
       teamDef.setWorkflowDefinition(WORK_DEF_NAME);
       teamDef.setActive(true);
-      teamDef.getLeads().add(AtsClientService.get().getUserAdmin().getCurrentUser());
+      teamDef.getLeads().add(AtsClientService.get().getUserService().getCurrentUser());
 
       testAi.setTeamDefinition(teamDef);
       testAi2.setTeamDefinition(teamDef);
@@ -343,7 +343,7 @@ public class AtsTestUtil {
 
       actionArt =
          ActionManager.createAction(null, getTitle("Team WF", postFixName), "description", ChangeType.Improvement, "1",
-            false, null, Arrays.asList(testAi), new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(),
+            false, null, Arrays.asList(testAi), new Date(), AtsClientService.get().getUserService().getCurrentUser(),
             null, changes);
 
       teamArt = actionArt.getFirstTeam();
@@ -356,7 +356,7 @@ public class AtsTestUtil {
       if (taskArtWf1 == null) {
          taskArtWf1 =
             teamArt.createNewTask(getTitle("Task", postFixName), new Date(),
-               AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+               AtsClientService.get().getUserService().getCurrentUser(), changes);
          taskArtWf1.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
       }
       return taskArtWf1;
@@ -367,7 +367,7 @@ public class AtsTestUtil {
       if (taskArtWf2 == null) {
          taskArtWf2 =
             teamArt.createNewTask(getTitle("Task", postFixName), new Date(),
-               AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+               AtsClientService.get().getUserService().getCurrentUser(), changes);
          taskArtWf2.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
       }
       return taskArtWf2;
@@ -379,12 +379,12 @@ public class AtsTestUtil {
          List<IAtsDecisionReviewOption> options = new ArrayList<IAtsDecisionReviewOption>();
          options.add(new SimpleDecisionReviewOption(DecisionReviewState.Completed.getName(), false, null));
          options.add(new SimpleDecisionReviewOption(DecisionReviewState.Followup.getName(), true,
-            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser().getUserId())));
+            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser().getUserId())));
          decRevArt =
             DecisionReviewManager.createNewDecisionReview(teamArt, reviewBlockType,
                AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getName(),
-               "Decision Review", options, Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()),
-               new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+               "Decision Review", options, Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()),
+               new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
       }
       return decRevArt;
    }
@@ -599,7 +599,7 @@ public class AtsTestUtil {
          actionArt2 =
             ActionManager.createAction(null, getTitle("Team WF2", postFixName), "description", ChangeType.Improvement,
                "1", false, null, Arrays.asList(testAi2), new Date(),
-               AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
+               AtsClientService.get().getUserService().getCurrentUser(), null, changes);
          teamArt2 = actionArt2.getFirstTeam();
          changes.execute();
       }
@@ -618,7 +618,7 @@ public class AtsTestUtil {
          actionArt3 =
             ActionManager.createAction(null, getTitle("Team WF3", postFixName), "description", ChangeType.Improvement,
                "1", false, null, Arrays.asList(testAi3), new Date(),
-               AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
+               AtsClientService.get().getUserService().getCurrentUser(), null, changes);
          teamArt3 = actionArt3.getFirstTeam();
          changes.execute();
       }
@@ -637,7 +637,7 @@ public class AtsTestUtil {
          actionArt4 =
             ActionManager.createAction(null, getTitle("Team WF4", postFixName), "description", ChangeType.Improvement,
                "1", false, null, Arrays.asList(testAi4), new Date(),
-               AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
+               AtsClientService.get().getUserService().getCurrentUser(), null, changes);
 
          teamArt4 = actionArt4.getFirstTeam();
          AtsVersionService.get().setTargetedVersion(teamArt4, verArt4);

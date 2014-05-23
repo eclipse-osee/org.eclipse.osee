@@ -57,16 +57,16 @@ public class ReviewNavigateItemsToWorldViewTest {
    public void testOtherUsersWorld_KayJones() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's Reviews").iterator().next();
       runGeneralLoadingTest(item, AtsArtifactTypes.PeerToPeerReview, 1,
-         AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Kay_Jones));
+         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Kay_Jones));
    }
 
    @org.junit.Test
    public void testOtherUsersWorld_JoeSmith() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's Reviews").iterator().next();
       runGeneralLoadingTest(item, AtsArtifactTypes.DecisionReview, 2,
-         AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith));
+         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
       runGeneralLoadingTest(item, AtsArtifactTypes.PeerToPeerReview, 2,
-         AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith));
+         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
    }
 
    @org.junit.Test
@@ -94,7 +94,7 @@ public class ReviewNavigateItemsToWorldViewTest {
       MassArtifactEditor.closeAll();
       XNavigateItem item =
          NavigateTestUtil.getAtsNavigateItems("Generate Review Participation Report").iterator().next();
-      ((GenerateReviewParticipationReport) item).setSelectedUser(AtsClientService.get().getUserAdmin().getUserFromToken(
+      ((GenerateReviewParticipationReport) item).setSelectedUser(AtsClientService.get().getUserServiceClient().getUserFromToken(
          DemoUsers.Joe_Smith));
 
       item.run(TableLoadOption.ForcePend);

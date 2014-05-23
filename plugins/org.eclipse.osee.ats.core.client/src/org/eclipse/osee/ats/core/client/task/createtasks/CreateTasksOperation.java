@@ -179,7 +179,7 @@ public class CreateTasksOperation extends AbstractOperation {
     */
    private TeamWorkFlowArtifact ensureDestTeamWfExists(TeamWorkFlowArtifact reqTeamWf, IAtsActionableItem actionableItemArt, IAtsVersion destVersion, IAtsChangeSet changes, boolean reportOnly) throws OseeCoreException {
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
+      IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
 
       TeamWorkFlowArtifact destTeamWf = findDestTeamWf(reqTeamWf, actionableItemArt, destVersion);
 
@@ -190,7 +190,7 @@ public class CreateTasksOperation extends AbstractOperation {
 
          destTeamWf =
             ActionManager.createTeamWorkflow(actionArt, teamDef, Collections.singleton(actionableItemArt),
-               Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), changes, createdDate, createdBy,
+               Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), changes, createdDate, createdBy,
                null, CreateTeamOption.Duplicate_If_Exists);
          if (destTeamWf != null) {
             AtsVersionService.get().setTargetedVersionAndStore(destTeamWf, destVersion);

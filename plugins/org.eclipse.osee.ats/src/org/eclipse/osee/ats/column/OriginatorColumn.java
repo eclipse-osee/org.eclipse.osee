@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -36,10 +37,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -113,11 +112,13 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
 
    public static boolean promptChangeOriginator(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) throws OseeCoreException {
       UserListDialog ld =
-         new UserListDialog(Displays.getActiveShell(), "Select New Originator",
-            AtsClientService.get().getUserAdmin().getOseeUsers(AtsCore.getUserService().getUsers(Active.Active)));
+         new UserListDialog(
+            Displays.getActiveShell(),
+            "Select New Originator",
+            AtsClientService.get().getUserServiceClient().getOseeUsers(AtsCore.getUserService().getUsers(Active.Active)));
       int result = ld.open();
       if (result == 0) {
-         IAtsUser selectedUser = AtsClientService.get().getUserAdmin().getUserFromOseeUser(ld.getSelection());
+         IAtsUser selectedUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(ld.getSelection());
          AtsChangeSet changes = new AtsChangeSet("ATS Prompt Change Originator");
          for (AbstractWorkflowArtifact awa : awas) {
             awa.setCreatedBy(selectedUser, true, new Date(), changes);
@@ -154,16 +155,14 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       try {
          if (element instanceof AbstractWorkflowArtifact) {
-            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) element;
-            User origUser = AtsClientService.get().getUserAdmin().getOseeUser(awa.getCreatedBy());
-            return FrameworkArtifactImageProvider.getUserImage(Arrays.asList(origUser));
+            return AtsUtil.getImage(Arrays.asList(((AbstractWorkflowArtifact) element).getCreatedBy()));
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<User> users = new HashSet<User>();
+            Set<IAtsUser> users = new HashSet<IAtsUser>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
-               users.add(AtsClientService.get().getUserAdmin().getOseeUser(team.getCreatedBy()));
+               users.add(team.getCreatedBy());
             }
-            return FrameworkArtifactImageProvider.getUserImage(users);
+            return AtsUtil.getImage(users);
          }
 
       } catch (Exception ex) {

@@ -104,7 +104,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
       AtsDecisionReviewDecisionStateItem stateItem = new AtsDecisionReviewDecisionStateItem();
       Collection<IAtsUser> users = stateItem.getOverrideTransitionToAssignees(decRevArt, decisionComboDam.get());
       Assert.assertEquals(1, users.size());
-      Assert.assertEquals(AtsClientService.get().getUserAdmin().getCurrentUser(), users.iterator().next());
+      Assert.assertEquals(AtsClientService.get().getUserService().getCurrentUser(), users.iterator().next());
 
       // Set No
       decisionComboDam.set(2);

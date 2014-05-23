@@ -224,7 +224,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             AtsChangeSet changes = new AtsChangeSet("Create New Task");
             taskArt =
                ((AbstractTaskableArtifact) iXTaskViewer.getAwa()).createNewTask(ed.getEntry(), new Date(),
-                  AtsClientService.get().getUserAdmin().getCurrentUser(), ed.getSelection(), changes);
+                  AtsClientService.get().getUserService().getCurrentUser(), ed.getSelection(), changes);
             changes.execute();
             AtsTaskCache.decache((AbstractTaskableArtifact) iXTaskViewer.getAwa());
          }

@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionToOperation;
@@ -424,19 +425,18 @@ public class WETransitionComposite extends Composite {
          AWorkbench.popup("ERROR", "No Assignees in Completed and Cancelled states");
          return;
       }
+      IAtsUserServiceClient userServiceClient = AtsClientService.get().getUserServiceClient();
       UserCheckTreeDialog uld =
-         new UserCheckTreeDialog(AtsClientService.get().getUserAdmin().getOseeUsers(
-            AtsCore.getUserService().getUsers(Active.Active)));
+         new UserCheckTreeDialog(userServiceClient.getOseeUsers(AtsCore.getUserService().getUsers(Active.Active)));
       uld.setMessage("Select users to transition to.");
-      uld.setInitialSelections(AtsClientService.get().getUserAdmin().getOseeUsers(aba.getTransitionAssignees()));
+      uld.setInitialSelections(userServiceClient.getOseeUsers(aba.getTransitionAssignees()));
       if (awa.getParentTeamWorkflow() != null) {
-         uld.setTeamMembers(AtsClientService.get().getUserAdmin().getOseeUsers(
-            awa.getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));
+         uld.setTeamMembers(userServiceClient.getOseeUsers(awa.getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));
       }
       if (uld.open() != 0) {
          return;
       }
-      Collection<IAtsUser> users = AtsClientService.get().getUserAdmin().getAtsUsers(uld.getUsersSelected());
+      Collection<IAtsUser> users = userServiceClient.getAtsUsers(uld.getUsersSelected());
       if (users.isEmpty()) {
          AWorkbench.popup("ERROR", "Must have at least one assignee");
          return;

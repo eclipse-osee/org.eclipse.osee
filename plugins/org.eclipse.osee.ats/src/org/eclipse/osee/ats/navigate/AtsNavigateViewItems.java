@@ -142,7 +142,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
 
    public void addAtsSectionChildren(XNavigateItem item) {
       try {
-         IAtsUser user = AtsClientService.get().getUserAdmin().getCurrentUser();
+         IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
 
          items.add(new SearchNavigateItem(item, new MyWorldSearchItem("My World", user)));
          items.add(new SearchNavigateItem(item, new MyFavoritesSearchItem("My Favorites", user)));
@@ -309,7 +309,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
             false, null));
          new SearchNavigateItem(goalItem, new GoalSearchWorkflowSearchItem());
          new SearchNavigateItem(goalItem, new MyFavoritesGoalsSearchItem("Favorites",
-            AtsClientService.get().getUserAdmin().getCurrentUser()));
+            AtsClientService.get().getUserService().getCurrentUser()));
          items.add(goalItem);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");

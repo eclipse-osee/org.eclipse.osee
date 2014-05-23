@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.api.user;
 
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -31,18 +30,16 @@ public interface IAtsUserService {
 
    boolean isUserNameValid(String name) throws OseeCoreException;
 
-   String getUserIdByName(String name) throws OseeCoreException;
-
    IAtsUser getUserByName(String name) throws OseeCoreException;
 
    Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds) throws OseeCoreException;
-
-   boolean isAssigneeMe(IAtsWorkItem workItem) throws OseeCoreException;
 
    boolean isAtsAdmin(IAtsUser user);
 
    List<IAtsUser> getUsers(Active active);
 
    List<IAtsUser> getUsersSortedByName(Active active);
+
+   void clearCache();
 
 }

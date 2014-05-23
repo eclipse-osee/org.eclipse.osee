@@ -153,8 +153,8 @@ public class SMADetailsSection extends SectionPart {
             try {
                ids =
                   accessControl.getContextId(
-                     AtsClientService.get().getUserAdmin().getOseeUser(
-                        AtsClientService.get().getUserAdmin().getCurrentUser()), workingBranch);
+                     AtsClientService.get().getUserServiceClient().getOseeUser(
+                        AtsClientService.get().getUserService().getCurrentUser()), workingBranch);
                message = ids.toString();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

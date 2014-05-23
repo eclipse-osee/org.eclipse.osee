@@ -28,7 +28,7 @@ public class GoalLabelProvider extends ArtifactLabelProvider {
    public String getText(Object element) {
       GoalArtifact goal = (GoalArtifact) element;
       try {
-         if (FavoritesManager.isFavorite(goal, AtsClientService.get().getUserAdmin().getCurrentUser())) {
+         if (FavoritesManager.isFavorite(goal, AtsClientService.get().getUserService().getCurrentUser())) {
             return "(Favorite) " + goal.toString();
          } else if (goal.isAssigneeMe()) {
             return "(Assignee) " + goal.toString();

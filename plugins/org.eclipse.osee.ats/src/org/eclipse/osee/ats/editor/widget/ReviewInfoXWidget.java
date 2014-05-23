@@ -144,7 +144,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      NewDecisionReviewJob job =
                         new NewDecisionReviewJob(teamArt, null, dialog.getReviewTitle(), dialog.getSelectedState(),
                            null, DecisionReviewManager.getDefaultDecisionReviewOptions(), null, new Date(),
-                           AtsClientService.get().getUserAdmin().getCurrentUser());
+                           AtsClientService.get().getUserService().getCurrentUser());
                      job.setUser(true);
                      job.setPriority(Job.LONG);
                      job.schedule();
@@ -310,7 +310,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                            (AbstractReviewArtifact) AtsClientService.get().getArtifact(review);
                         if (!revArt.isCompletedOrCancelled()) {
                            if (revArt.getStateMgr().isUnAssigned()) {
-                              revArt.getStateMgr().setAssignee(AtsClientService.get().getUserAdmin().getCurrentUser());
+                              revArt.getStateMgr().setAssignee(AtsClientService.get().getUserService().getCurrentUser());
                            }
                            awas.add(revArt);
                         }

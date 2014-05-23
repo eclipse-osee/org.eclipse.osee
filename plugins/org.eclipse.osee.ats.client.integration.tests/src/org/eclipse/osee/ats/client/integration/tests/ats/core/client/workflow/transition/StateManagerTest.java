@@ -51,7 +51,7 @@ public class StateManagerTest {
       ITransitionHelper helper =
          new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
             AtsTestUtil.getImplementStateDef().getName(),
-            Collections.singleton(AtsClientService.get().getUserAdmin().getCurrentUser()), null, changes);
+            Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()), null, changes);
       IAtsTransitionManager manager = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = manager.handleAllAndPersist();
       Assert.assertTrue(results.isEmpty());
@@ -62,7 +62,7 @@ public class StateManagerTest {
       helper =
          new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
             AtsTestUtil.getCompletedStateDef().getName(),
-            Collections.singleton(AtsClientService.get().getUserAdmin().getCurrentUser()), null, changes);
+            Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()), null, changes);
       manager = TransitionFactory.getTransitionManager(helper);
       results = manager.handleAllAndPersist();
 

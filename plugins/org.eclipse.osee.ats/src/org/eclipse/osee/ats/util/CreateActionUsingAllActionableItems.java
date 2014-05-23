@@ -74,7 +74,7 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
       AtsChangeSet changes = new AtsChangeSet("Create Action using all AIs");
       ActionArtifact action =
          ActionManager.createAction(null, "Big Action Test - Delete Me", "Description", ChangeType.Improvement, "1",
-            false, null, aias, new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
+            false, null, aias, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
       changes.execute();
       return action;
    }

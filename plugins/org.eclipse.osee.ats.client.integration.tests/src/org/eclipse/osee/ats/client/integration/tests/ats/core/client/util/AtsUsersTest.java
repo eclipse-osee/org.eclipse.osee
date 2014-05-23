@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.core.client.util;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -28,21 +28,21 @@ public class AtsUsersTest {
    @Test
    public void testGetUser() throws OseeCoreException {
       Assert.assertEquals(AtsCoreUsers.SYSTEM_USER,
-         AtsClientService.get().getUserAdmin().getUserById(AtsCoreUsers.SYSTEM_USER.getUserId()));
+         AtsClientService.get().getUserService().getUserById(AtsCoreUsers.SYSTEM_USER.getUserId()));
       Assert.assertEquals(AtsCoreUsers.GUEST_USER,
-         AtsClientService.get().getUserAdmin().getUserById(AtsCoreUsers.GUEST_USER.getUserId()));
+         AtsClientService.get().getUserService().getUserById(AtsCoreUsers.GUEST_USER.getUserId()));
       Assert.assertEquals(AtsCoreUsers.UNASSIGNED_USER,
-         AtsClientService.get().getUserAdmin().getUserById(AtsCoreUsers.UNASSIGNED_USER.getUserId()));
+         AtsClientService.get().getUserService().getUserById(AtsCoreUsers.UNASSIGNED_USER.getUserId()));
    }
 
-   @Test(expected = UserNotInDatabase.class)
+   @Test(expected = ArtifactDoesNotExist.class)
    public void testGetUserException() throws OseeCoreException {
-      Assert.assertNull(AtsClientService.get().getUserAdmin().getUserById("2345"));
+      Assert.assertNull(AtsClientService.get().getUserService().getUserById("2345"));
    }
 
    @Test
    public void testGetUserWithNull() throws OseeCoreException {
-      Assert.assertNull(AtsClientService.get().getUserAdmin().getUserById(null));
+      Assert.assertNull(AtsClientService.get().getUserService().getUserById(null));
    }
 
    @Test
@@ -64,15 +64,15 @@ public class AtsUsersTest {
    public void testGetCurrentUser() throws OseeCoreException {
       User currentUser = UserManager.getUser();
 
-      Assert.assertEquals(currentUser, AtsClientService.get().getUserAdmin().getCurrentOseeUser());
+      Assert.assertEquals(currentUser, AtsClientService.get().getUserServiceClient().getCurrentOseeUser());
 
-      IAtsUser atsUser = AtsClientService.get().getUserAdmin().getUserById(currentUser.getUserId());
+      IAtsUser atsUser = AtsClientService.get().getUserService().getUserById(currentUser.getUserId());
 
       Assert.assertEquals(currentUser.getUserId(), atsUser.getUserId());
       Assert.assertEquals(currentUser.getEmail(), atsUser.getEmail());
       Assert.assertEquals(currentUser.isActive(), atsUser.isActive());
       Assert.assertEquals(currentUser.getName(), atsUser.getName());
-      Assert.assertEquals(atsUser, AtsClientService.get().getUserAdmin().getCurrentUser());
+      Assert.assertEquals(atsUser, AtsClientService.get().getUserService().getCurrentUser());
    }
 
 }

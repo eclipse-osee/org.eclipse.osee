@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
@@ -193,15 +194,15 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    }
 
    public IAtsUser getSelectedUser() throws OseeCoreException {
-      if (assigneeCombo == null) {
+      if (assigneeCombo == null || assigneeCombo.getUser() == null) {
          return null;
       }
-      return AtsClientService.get().getUserAdmin().getUserFromOseeUser(assigneeCombo.getUser());
+      return AtsClientService.get().getUserService().getUserById(assigneeCombo.getUser().getUserId());
    }
 
    public void setSelectedUser(IAtsUser user) throws OseeCoreException {
       if (assigneeCombo != null) {
-         assigneeCombo.set(AtsClientService.get().getUserAdmin().getOseeUser(user));
+         assigneeCombo.set((User) AtsClientService.get().getUserService().getUserById(user.getUserId()).getStoreObject());
       }
    }
 

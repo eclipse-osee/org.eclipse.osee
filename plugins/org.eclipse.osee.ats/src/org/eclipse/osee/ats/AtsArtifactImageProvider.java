@@ -72,11 +72,11 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
 
       if (artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact stateMachine = (AbstractWorkflowArtifact) artifact;
-         if (SubscribeManager.isSubscribed(stateMachine, AtsClientService.get().getUserAdmin().getCurrentUser())) {
+         if (SubscribeManager.isSubscribed(stateMachine, AtsClientService.get().getUserService().getCurrentUser())) {
             // was 8,6
             return ArtifactImageManager.setupImage(aArtifact, AtsImage.SUBSCRIBED_OVERLAY, Location.BOT_RIGHT);
          }
-         if (FavoritesManager.isFavorite(stateMachine, AtsClientService.get().getUserAdmin().getCurrentUser())) {
+         if (FavoritesManager.isFavorite(stateMachine, AtsClientService.get().getUserService().getCurrentUser())) {
             // was 7,0
             return ArtifactImageManager.setupImage(aArtifact, AtsImage.FAVORITE_OVERLAY, Location.TOP_RIGHT);
          }

@@ -288,7 +288,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          }
          int x = 0;
          Date createdDate = new Date();
-         IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
+         IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
 
          for (String prefixTitle : aData.prefixTitles) {
             ActionArtifact actionArt =

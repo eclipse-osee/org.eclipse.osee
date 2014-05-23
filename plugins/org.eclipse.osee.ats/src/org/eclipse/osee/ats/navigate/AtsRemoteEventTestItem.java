@@ -140,7 +140,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(actionArt);
 
       // Make current user assignee for convenience to developer
-      teamArt.getStateMgr().addAssignee(AtsClientService.get().getUserAdmin().getCurrentUser());
+      teamArt.getStateMgr().addAssignee(AtsClientService.get().getUserService().getCurrentUser());
       teamArt.persist(getClass().getSimpleName());
 
       validateActionAtStart(actionArt);
@@ -196,7 +196,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       AtsChangeSet changes = new AtsChangeSet("Remote Event Test");
       TransitionHelper helper =
          new TransitionHelper("Remote Event Test", Arrays.asList(teamArt), TeamState.Analyze.getName(),
-            Collections.singleton(AtsClientService.get().getUserAdmin().getCurrentUser()), null, changes,
+            Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()), null, changes,
             TransitionOption.None);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAllAndPersist();

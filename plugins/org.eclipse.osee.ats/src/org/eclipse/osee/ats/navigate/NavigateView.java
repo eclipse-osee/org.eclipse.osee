@@ -233,7 +233,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
 
    private String getWhoAmI() {
       try {
-         String userName = AtsClientService.get().getUserAdmin().getCurrentUser().getName();
+         String userName = AtsClientService.get().getUserService().getCurrentUser().getName();
          return String.format("%s - [%s]", userName, BranchManager.getBranch(AtsUtilCore.getAtsBranch()).getName());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

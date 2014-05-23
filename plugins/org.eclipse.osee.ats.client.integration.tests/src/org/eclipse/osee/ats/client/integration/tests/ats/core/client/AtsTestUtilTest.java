@@ -150,13 +150,13 @@ public class AtsTestUtilTest extends AtsTestUtil {
       AtsChangeSet changes = new AtsChangeSet("test");
 
       Result result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsClientService.get().getUserAdmin().getCurrentUser(),
+         AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsClientService.get().getUserService().getCurrentUser(),
             changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Implement.getName());
 
       result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsClientService.get().getUserAdmin().getCurrentUser(),
+         AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsClientService.get().getUserService().getCurrentUser(),
             changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Completed.getName());
@@ -179,7 +179,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
       AtsChangeSet changes = new AtsChangeSet("test");
 
       Result result =
-         AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled, AtsClientService.get().getUserAdmin().getCurrentUser(),
+         AtsTestUtil.transitionTo(AtsTestUtilState.Cancelled, AtsClientService.get().getUserService().getCurrentUser(),
             changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
       Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Cancelled.getName());

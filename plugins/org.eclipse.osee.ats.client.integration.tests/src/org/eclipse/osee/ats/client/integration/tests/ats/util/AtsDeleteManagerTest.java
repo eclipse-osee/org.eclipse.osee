@@ -198,7 +198,7 @@ public class AtsDeleteManagerTest {
 
    private TeamWorkFlowArtifact createAction(TestNames testName, Collection<IAtsActionableItem> actionableItems, IAtsChangeSet changes) throws OseeCoreException {
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
+      IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       Artifact actionArt =
          ActionManager.createAction(null, testName.name(), "Description", ChangeType.Improvement, "2", false, null,
             actionableItems, createdDate, createdBy, null, changes);
@@ -216,7 +216,7 @@ public class AtsDeleteManagerTest {
       DecisionReviewArtifact decRev =
          DecisionReviewManager.createNewDecisionReview(teamArt, ReviewBlockType.None, testName.name(),
             TeamState.Endorse.getName(), "Description", DecisionReviewManager.getDefaultDecisionReviewOptions(),
-            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), createdDate, createdBy, changes);
+            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), createdDate, createdBy, changes);
       changes.add(decRev);
 
       return teamArt;

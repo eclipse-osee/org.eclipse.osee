@@ -55,7 +55,7 @@ public class PrivilegedEditAction extends AbstractAtsAction {
       } else {
          Set<IAtsUser> users = PrivilegedUserManager.getPrivilegedUsers(sma);
          if (AtsUtilClient.isAtsAdmin()) {
-            users.add(AtsClientService.get().getUserAdmin().getCurrentUser());
+            users.add(AtsClientService.get().getUserService().getCurrentUser());
          }
          StringBuffer stringBuffer = new StringBuffer();
          for (IAtsUser user : users) {
@@ -63,7 +63,7 @@ public class PrivilegedEditAction extends AbstractAtsAction {
             stringBuffer.append("\n");
          }
          String buttons[];
-         boolean iAmPrivileged = users.contains(AtsClientService.get().getUserAdmin().getCurrentUser());
+         boolean iAmPrivileged = users.contains(AtsClientService.get().getUserService().getCurrentUser());
          if (iAmPrivileged) {
             buttons = new String[] {"Override and Edit", "Cancel"};
          } else {

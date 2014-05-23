@@ -269,7 +269,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    private void markWorkingBranchAsFavorite() {
       try {
          User user =
-            AtsClientService.get().getUserAdmin().getOseeUser(AtsClientService.get().getUserAdmin().getCurrentUser());
+            AtsClientService.get().getUserServiceClient().getOseeUser(AtsClientService.get().getUserService().getCurrentUser());
          if (user.isSystemUser()) {
             AWorkbench.popup("Can't set preference as System User = " + user);
             return;

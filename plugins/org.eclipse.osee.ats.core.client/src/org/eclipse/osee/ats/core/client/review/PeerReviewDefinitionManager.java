@@ -64,7 +64,7 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
          peerArt.setSoleAttributeFromString(AtsAttributeTypes.Location, peerRevDef.getLocation());
       }
       Collection<IAtsUser> assignees =
-         AtsClientService.get().getUserAdmin().getUsersByUserIds(peerRevDef.getAssignees());
+         AtsClientService.get().getUserService().getUsersByUserIds(peerRevDef.getAssignees());
       if (assignees.size() > 0) {
          peerArt.getStateMgr().setAssignees(assignees);
       }

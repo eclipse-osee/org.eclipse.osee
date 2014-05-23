@@ -333,7 +333,7 @@ public class ConvertAtsDslToWorkDefinition {
             }
             try {
                if (userService.isUserNameValid(name)) {
-                  userIds.add(userService.getUserIdByName(name));
+                  userIds.add(userService.getUserByName(name).getUserId());
                } else {
                   resultData.logWarningWithFormat("No user by name [%s]", name);
                }

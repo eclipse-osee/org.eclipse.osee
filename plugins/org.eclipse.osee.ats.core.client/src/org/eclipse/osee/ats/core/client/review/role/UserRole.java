@@ -35,7 +35,7 @@ public class UserRole {
    private Boolean completed = false;
 
    public UserRole() throws OseeCoreException {
-      this(Role.Reviewer, AtsClientService.get().getUserAdmin().getCurrentUser().getUserId(), null, false);
+      this(Role.Reviewer, AtsClientService.get().getUserService().getCurrentUser().getUserId(), null, false);
    }
 
    public UserRole(Role role, IAtsUser user) throws OseeCoreException {
@@ -125,7 +125,7 @@ public class UserRole {
    }
 
    public IAtsUser getUser() throws OseeCoreException {
-      return AtsClientService.get().getUserAdmin().getUserById(userId);
+      return AtsClientService.get().getUserService().getUserById(userId);
    }
 
    public void setUser(User user) throws OseeCoreException {

@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -48,12 +49,14 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -66,6 +69,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
@@ -363,6 +367,14 @@ public final class AtsUtil {
          return ((Artifact) object).isOfType(AtsArtifactTypes.AbstractWorkflowArtifact, AtsArtifactTypes.Action);
       }
       return false;
+   }
+
+   public static Image getImage(Collection<IAtsUser> atsUsers) {
+      Set<User> users = new HashSet<User>();
+      for (IAtsUser user : atsUsers) {
+         users.add((User) AtsClientService.get().getUserService().getUserById(user.getUserId()).getStoreObject());
+      }
+      return FrameworkArtifactImageProvider.getUserImage(users);
    }
 
 }

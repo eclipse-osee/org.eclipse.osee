@@ -165,7 +165,7 @@ public class DecisionReviewManager {
    public static List<IAtsDecisionReviewOption> getDefaultDecisionReviewOptions() throws OseeCoreException {
       List<IAtsDecisionReviewOption> options = new ArrayList<IAtsDecisionReviewOption>();
       options.add(new SimpleDecisionReviewOption("Yes", true,
-         Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser().getUserId())));
+         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser().getUserId())));
       options.add(new SimpleDecisionReviewOption("No", false, null));
       return options;
    }

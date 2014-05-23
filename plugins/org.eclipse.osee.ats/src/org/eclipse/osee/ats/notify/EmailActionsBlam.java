@@ -124,9 +124,9 @@ public class EmailActionsBlam extends AbstractBlam {
          return;
       }
 
-      if (!EmailUtil.isEmailValid(AtsClientService.get().getUserAdmin().getCurrentOseeUser())) {
+      if (!EmailUtil.isEmailValid(AtsClientService.get().getUserServiceClient().getCurrentOseeUser())) {
          logf("Can't email from user account [%s] cause email not valid.",
-            AtsClientService.get().getUserAdmin().getCurrentUser());
+            AtsClientService.get().getUserService().getCurrentUser());
          return;
       }
 
@@ -142,7 +142,7 @@ public class EmailActionsBlam extends AbstractBlam {
       List<User> recipients = new ArrayList<User>();
       if (emailRecipient == EmailRecipient.Assignees) {
          try {
-            recipients.addAll(AtsClientService.get().getUserAdmin().getOseeUsers(awa.getAssignees()));
+            recipients.addAll(AtsClientService.get().getUserServiceClient().getOseeUsers(awa.getAssignees()));
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -150,7 +150,7 @@ public class EmailActionsBlam extends AbstractBlam {
          try {
             IAtsUser createdBy = awa.getCreatedBy();
             if (createdBy.isActive()) {
-               recipients.add(AtsClientService.get().getUserAdmin().getOseeUser(awa.getCreatedBy()));
+               recipients.add(AtsClientService.get().getUserServiceClient().getOseeUser(awa.getCreatedBy()));
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -158,7 +158,7 @@ public class EmailActionsBlam extends AbstractBlam {
       }
       if (recipients.isEmpty()) {
          try {
-            recipients.add(AtsClientService.get().getUserAdmin().getCurrentOseeUser());
+            recipients.add(AtsClientService.get().getUserServiceClient().getCurrentOseeUser());
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

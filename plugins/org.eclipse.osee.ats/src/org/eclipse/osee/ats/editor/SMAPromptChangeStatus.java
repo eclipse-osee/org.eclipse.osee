@@ -115,7 +115,7 @@ public class SMAPromptChangeStatus {
       for (IAtsWorkItem workItem : workItems) {
          if (workItem.getStateMgr().isUnAssigned()) {
             workItem.getStateMgr().removeAssignee(AtsCoreUsers.UNASSIGNED_USER);
-            workItem.getStateMgr().addAssignee(AtsClientService.get().getUserAdmin().getCurrentUser());
+            workItem.getStateMgr().addAssignee(AtsClientService.get().getUserService().getCurrentUser());
          }
          workItem.getStateMgr().updateMetrics(workItem.getStateDefinition(), hours, percent, true,
             AtsCore.getUserService().getCurrentUser());

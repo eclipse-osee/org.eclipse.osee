@@ -75,7 +75,7 @@ public class CompletedDateColumnTest {
 
       helper =
          new TransitionHelper("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getName(),
-            Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), null, changes,
+            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes,
             TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
       transitionMgr = TransitionFactory.getTransitionManager(helper);
       results = transitionMgr.handleAll();

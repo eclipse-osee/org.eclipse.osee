@@ -43,7 +43,7 @@ public class MyFavoritesGoalsSearchItem extends UserSearchItem {
 
    @Override
    protected Collection<Artifact> searchIt(IAtsUser user) throws OseeCoreException {
-      return Collections.castAll(AtsClientService.get().getUserAdmin().getOseeUser(user).getRelatedArtifactsOfType(
+      return Collections.castAll(AtsClientService.get().getUserServiceClient().getOseeUser(user).getRelatedArtifactsOfType(
          AtsRelationTypes.FavoriteUser_Artifact, GoalArtifact.class));
    }
 

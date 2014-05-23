@@ -54,7 +54,7 @@ public class ReviewDefectItem {
    };
 
    public ReviewDefectItem() throws OseeCoreException {
-      userId = AtsClientService.get().getUserAdmin().getCurrentUser().getUserId();
+      userId = AtsClientService.get().getUserService().getCurrentUser().getUserId();
    }
 
    public ReviewDefectItem(IAtsUser user, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date) throws OseeCoreException {
@@ -187,7 +187,7 @@ public class ReviewDefectItem {
    }
 
    public IAtsUser getUser() throws OseeCoreException {
-      return AtsClientService.get().getUserAdmin().getUserById(userId);
+      return AtsClientService.get().getUserService().getUserById(userId);
    }
 
    public String getUserId() {

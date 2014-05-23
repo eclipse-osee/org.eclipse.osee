@@ -345,7 +345,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          items.add("Review Blocks: " + ((IAtsPeerReviewDefinition) element).getBlockingType().name());
          for (String userId : ((IAtsPeerReviewDefinition) element).getAssignees()) {
             try {
-               items.add(AtsClientService.get().getUserAdmin().getUserById(userId));
+               items.add(AtsClientService.get().getUserService().getUserById(userId));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
                items.add(String.format("Exception loading user from id [%s] [%s]", userId, ex.getLocalizedMessage()));
@@ -366,7 +366,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          items.add("Auto Transition to Decision: " + ((IAtsDecisionReviewDefinition) element).isAutoTransitionToDecision());
          for (String userId : ((IAtsDecisionReviewDefinition) element).getAssignees()) {
             try {
-               items.add(AtsClientService.get().getUserAdmin().getUserById(userId));
+               items.add(AtsClientService.get().getUserService().getUserById(userId));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
                items.add(String.format("Exception loading user from id [%s] [%s]", userId, ex.getLocalizedMessage()));
@@ -410,7 +410,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       private void getUsersFromDecisionReviewOpt(IAtsDecisionReviewOption revOpt, List<Object> items) {
          for (String userId : revOpt.getUserIds()) {
             try {
-               IAtsUser user = AtsClientService.get().getUserAdmin().getUserById(userId);
+               IAtsUser user = AtsClientService.get().getUserService().getUserById(userId);
                items.add(user);
             } catch (OseeCoreException ex) {
                items.add(String.format("Erroring getting user by id [%s] : [%s]", userId, ex.getLocalizedMessage()));
@@ -419,7 +419,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          }
          for (String userName : revOpt.getUserNames()) {
             try {
-               IAtsUser user = AtsClientService.get().getUserAdmin().getUserByName(userName);
+               IAtsUser user = AtsClientService.get().getUserService().getUserByName(userName);
                items.add(user);
             } catch (OseeCoreException ex) {
                items.add(String.format("Erroring getting user by name [%s] : [%s]", userName, ex.getLocalizedMessage()));

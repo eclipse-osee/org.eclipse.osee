@@ -102,7 +102,7 @@ public class DemoTestUtil {
       Artifact actionArt =
          ActionManager.createAction(null, title, "Description", ChangeType.Improvement, "2", false, null,
             ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())), new Date(),
-            AtsClientService.get().getUserAdmin().getCurrentUser(), null, changes);
+            AtsClientService.get().getUserService().getCurrentUser(), null, changes);
 
       TeamWorkFlowArtifact teamArt = null;
       for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
@@ -126,8 +126,8 @@ public class DemoTestUtil {
       Collection<IAtsTeamDefinition> teamDefs = TeamDefinitions.getImpactedTeamDefs(actionableItems);
 
       ActionManager.createTeamWorkflow(actionArt, teamDefs.iterator().next(), actionableItems,
-         Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), changes, new Date(),
-         AtsClientService.get().getUserAdmin().getCurrentUser(), null);
+         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), changes, new Date(),
+         AtsClientService.get().getUserService().getCurrentUser(), null);
 
       TeamWorkFlowArtifact teamArt = null;
       for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
@@ -146,8 +146,8 @@ public class DemoTestUtil {
       for (int x = 1; x < numTasks + 1; x++) {
          names.add(title + " " + x);
       }
-      return teamArt.createTasks(names, Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()),
-         new Date(), AtsClientService.get().getUserAdmin().getCurrentUser(), relatedToState, changes);
+      return teamArt.createTasks(names, Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()),
+         new Date(), AtsClientService.get().getUserService().getCurrentUser(), relatedToState, changes);
    }
 
    public static TeamWorkFlowArtifact getToolsTeamWorkflow() throws OseeCoreException {
@@ -213,7 +213,7 @@ public class DemoTestUtil {
          // Confirm user is Joe Smith
          assertTrue(
             "Authenticated user should be \"Joe Smith\" and is not.  Check that Demo Application Server is being run.",
-            AtsClientService.get().getUserAdmin().getCurrentUser().getUserId().equals("Joe Smith"));
+            AtsClientService.get().getUserService().getCurrentUser().getUserId().equals("Joe Smith"));
       } catch (OseeAuthenticationException ex) {
          OseeLog.log(DemoTestUtil.class, Level.SEVERE, ex);
          fail("Can't authenticate, either Demo Application Server is not running or Demo DbInit has not been performed");

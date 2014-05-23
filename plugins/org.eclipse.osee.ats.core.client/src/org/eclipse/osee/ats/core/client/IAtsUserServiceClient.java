@@ -1,33 +1,26 @@
-/*
- * Created on Apr 9, 2013
+/*******************************************************************************
+ * Copyright (c) 2014 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.ats.core.client;
 
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
-public interface IAtsUserAdmin {
-
-   IAtsUser getCurrentUser() throws OseeCoreException;
-
-   Collection<IAtsUser> getUsers() throws OseeCoreException;
-
-   IAtsUser getUserById(String userId) throws OseeCoreException;
-
-   IAtsUser getUserByName(String name) throws OseeCoreException;
-
-   Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds) throws OseeCoreException;
-
-   ////////////////////////////
-
-   IAtsUser getUserFromToken(IUserToken token) throws OseeCoreException;
+/**
+ * @author Donald G. Dunne
+ */
+public interface IAtsUserServiceClient {
 
    User getOseeUser(IAtsUser user) throws OseeCoreException;
 
@@ -39,10 +32,10 @@ public interface IAtsUserAdmin {
 
    Collection<? extends User> toOseeUsers(Collection<? extends IAtsUser> users) throws OseeCoreException;
 
-   Collection<IAtsUser> getUsers(List<? extends Artifact> artifacts) throws OseeCoreException;
+   Collection<IAtsUser> getAtsUsers(Collection<? extends Artifact> artifacts) throws OseeCoreException;
 
    Collection<User> getOseeUsers(Collection<? extends IAtsUser> users) throws OseeCoreException;
 
-   Collection<IAtsUser> getAtsUsers(Collection<User> users) throws OseeCoreException;
+   IAtsUser getUserFromToken(IUserToken userToken);
 
 }

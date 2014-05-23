@@ -200,7 +200,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       }
       for (User user : users) {
          UserRelatedToAtsObjectSearch srch =
-            new UserRelatedToAtsObjectSearch(AtsClientService.get().getUserAdmin().getUserFromOseeUser(user), false);
+            new UserRelatedToAtsObjectSearch(AtsClientService.get().getUserServiceClient().getUserFromOseeUser(user), false);
          if (srch.getResults().size() > 0) {
             return createStatus(String.format(
                "User name: \"%s\" userId: \"%s\" selected to delete has related ATS Objects; Un-relate to ATS first before deleting.",

@@ -128,12 +128,12 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
       AtsChangeSet changes = new AtsChangeSet("Duplicate Workflow");
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
+      IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          List<IAtsUser> assignees = new LinkedList<IAtsUser>();
          assignees.addAll(teamArt.getStateMgr().getAssignees());
-         if (!assignees.contains(AtsClientService.get().getUserAdmin().getCurrentUser())) {
-            assignees.add(AtsClientService.get().getUserAdmin().getCurrentUser());
+         if (!assignees.contains(AtsClientService.get().getUserService().getCurrentUser())) {
+            assignees.add(AtsClientService.get().getUserService().getCurrentUser());
          }
          TeamWorkFlowArtifact newTeamArt =
             ActionManager.createTeamWorkflow(teamArt.getParentActionArtifact(), teamArt.getTeamDefinition(),

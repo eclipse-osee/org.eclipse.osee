@@ -123,8 +123,8 @@ public class AtsConfigOperation extends AbstractOperation {
 
    private IAtsTeamDefinition createTeamDefinition(IAtsChangeSet changes) throws OseeCoreException {
       IAtsTeamDefinition teamDef = AtsClientService.get().createTeamDefinition(GUID.create(), teamDefName);
-      teamDef.getLeads().add(AtsClientService.get().getUserAdmin().getCurrentUser());
-      teamDef.getMembers().add(AtsClientService.get().getUserAdmin().getCurrentUser());
+      teamDef.getLeads().add(AtsClientService.get().getUserService().getCurrentUser());
+      teamDef.getMembers().add(AtsClientService.get().getUserService().getCurrentUser());
       TeamDefinitions.getTopTeamDefinition().getChildrenTeamDefinitions().add(teamDef);
       AtsClientService.get().storeConfigObject(teamDef, changes);
       return teamDef;

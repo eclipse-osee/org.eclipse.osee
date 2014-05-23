@@ -31,14 +31,14 @@ public class SubscribeManager {
    public static void addSubscribed(AbstractWorkflowArtifact workflow, IAtsUser user, IAtsChangeSet changes) throws OseeCoreException {
       if (!workflow.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User).contains(user)) {
          workflow.addRelation(AtsRelationTypes.SubscribedUser_User,
-            AtsClientService.get().getUserAdmin().getOseeUser(user));
+            AtsClientService.get().getUserServiceClient().getOseeUser(user));
          changes.add(workflow);
       }
    }
 
    public static void removeSubscribed(AbstractWorkflowArtifact workflow, IAtsUser user, IAtsChangeSet changes) throws OseeCoreException {
       workflow.deleteRelation(AtsRelationTypes.SubscribedUser_User,
-         AtsClientService.get().getUserAdmin().getOseeUser(user));
+         AtsClientService.get().getUserServiceClient().getOseeUser(user));
       changes.add(workflow);
    }
 
@@ -49,14 +49,14 @@ public class SubscribeManager {
    public static List<IAtsUser> getSubscribed(AbstractWorkflowArtifact workflow) throws OseeCoreException {
       ArrayList<IAtsUser> arts = new ArrayList<IAtsUser>();
       for (Artifact art : workflow.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User)) {
-         arts.add(AtsClientService.get().getUserAdmin().getUserFromOseeUser((User) art));
+         arts.add(AtsClientService.get().getUserServiceClient().getUserFromOseeUser((User) art));
       }
       return arts;
    }
 
    public static boolean amISubscribed(AbstractWorkflowArtifact workflow) {
       try {
-         return isSubscribed(workflow, AtsClientService.get().getUserAdmin().getCurrentUser());
+         return isSubscribed(workflow, AtsClientService.get().getUserService().getCurrentUser());
       } catch (OseeCoreException ex) {
          return false;
       }
@@ -70,13 +70,13 @@ public class SubscribeManager {
       if (SubscribeManager.amISubscribed(awas.iterator().next())) {
          AtsChangeSet changes = new AtsChangeSet("Toggle Subscribed");
          for (AbstractWorkflowArtifact awa : awas) {
-            SubscribeManager.removeSubscribed(awa, AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+            SubscribeManager.removeSubscribed(awa, AtsClientService.get().getUserService().getCurrentUser(), changes);
          }
          changes.execute();
       } else {
          AtsChangeSet changes = new AtsChangeSet("Toggle Subscribed");
          for (AbstractWorkflowArtifact awa : awas) {
-            SubscribeManager.addSubscribed(awa, AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+            SubscribeManager.addSubscribed(awa, AtsClientService.get().getUserService().getCurrentUser(), changes);
          }
          changes.execute();
       }

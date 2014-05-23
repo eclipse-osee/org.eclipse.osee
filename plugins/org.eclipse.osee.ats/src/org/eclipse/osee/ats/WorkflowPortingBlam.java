@@ -62,7 +62,7 @@ public class WorkflowPortingBlam extends AbstractBlam {
    private List<Artifact> createDestinationWorkflows(IAtsChangeSet changes, List<IAtsActionableItem> actionableItems) throws OseeCoreException {
       IAtsTeamDefinition teamDefinition = actionableItems.get(0).getTeamDefinition();
       List<Artifact> destinationWorkflows = new ArrayList<Artifact>();
-      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
+      IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       Date createdDate = new Date();
 
       for (TeamWorkFlowArtifact sourceWorkflow : sourceWorkflows) {

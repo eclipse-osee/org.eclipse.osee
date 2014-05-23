@@ -29,7 +29,7 @@ public class ResourceHistoryActionTest extends AbstractAtsActionTest {
    public void test() throws Exception {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
-      Assert.assertFalse(AtsClientService.get().getUserAdmin().getCurrentOseeUser().getRelatedArtifacts(
+      Assert.assertFalse(AtsClientService.get().getUserServiceClient().getCurrentOseeUser().getRelatedArtifacts(
          AtsRelationTypes.FavoriteUser_Artifact).contains(AtsTestUtil.getTeamWf()));
       ResourceHistoryAction action = createAction();
       action.runWithException();

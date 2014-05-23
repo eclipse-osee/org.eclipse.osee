@@ -123,22 +123,22 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
          }
       }
       UserCheckTreeDialog uld =
-         new UserCheckTreeDialog(AtsClientService.get().getUserAdmin().getOseeUsers(
+         new UserCheckTreeDialog(AtsClientService.get().getUserServiceClient().getOseeUsers(
             AtsCore.getUserService().getUsers(Active.Active)));
       uld.setMessage("Select to assign.\nDeSelect to un-assign.");
       if (awas.iterator().next().getParentTeamWorkflow() != null) {
-         uld.setTeamMembers(AtsClientService.get().getUserAdmin().getOseeUsers(
+         uld.setTeamMembers(AtsClientService.get().getUserServiceClient().getOseeUsers(
             awas.iterator().next().getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));
       }
 
       if (awas.size() == 1) {
-         uld.setInitialSelections(AtsClientService.get().getUserAdmin().getOseeUsers(
+         uld.setInitialSelections(AtsClientService.get().getUserServiceClient().getOseeUsers(
             awas.iterator().next().getStateMgr().getAssignees()));
       }
       if (uld.open() != 0) {
          return false;
       }
-      Collection<IAtsUser> users = AtsClientService.get().getUserAdmin().getAtsUsers(uld.getUsersSelected());
+      Collection<IAtsUser> users = AtsClientService.get().getUserServiceClient().getAtsUsers(uld.getUsersSelected());
       if (users.isEmpty()) {
          AWorkbench.popup("ERROR", "Must have at least one assignee");
          return false;
@@ -208,7 +208,7 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
          return null;
       }
       if (artifact instanceof AbstractWorkflowArtifact) {
-         return FrameworkArtifactImageProvider.getUserImage(AtsClientService.get().getUserAdmin().getOseeUsers(
+         return FrameworkArtifactImageProvider.getUserImage(AtsClientService.get().getUserServiceClient().getOseeUsers(
             ((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees()));
       }
       if (artifact.isOfType(AtsArtifactTypes.Action)) {

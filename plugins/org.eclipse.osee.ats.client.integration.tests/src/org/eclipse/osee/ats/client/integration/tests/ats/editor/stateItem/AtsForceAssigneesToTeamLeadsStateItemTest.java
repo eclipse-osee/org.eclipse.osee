@@ -72,14 +72,14 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
 
       // assignee should be Joe Smith
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(AtsClientService.get().getUserAdmin().getUserByName(JOE_SMITH),
+      Assert.assertEquals(AtsClientService.get().getUserService().getUserByName(JOE_SMITH),
          teamArt.getStateMgr().getAssignees().iterator().next());
 
       // set assignee to Alex Kay
-      teamArt.getStateMgr().setAssignee(AtsClientService.get().getUserAdmin().getUserByName(ALEX_KAY));
+      teamArt.getStateMgr().setAssignee(AtsClientService.get().getUserService().getUserByName(ALEX_KAY));
       teamArt.persist(getClass().getSimpleName());
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(AtsClientService.get().getUserAdmin().getUserByName(ALEX_KAY),
+      Assert.assertEquals(AtsClientService.get().getUserService().getUserByName(ALEX_KAY),
          teamArt.getStateMgr().getAssignees().iterator().next());
 
       IStateToken fromState = teamArt.getWorkDefinition().getStateByName(TeamState.Analyze.getName());
@@ -92,12 +92,12 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
       AtsForceAssigneesToTeamLeadsStateItem stateItem = new AtsForceAssigneesToTeamLeadsStateItem();
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       stateItem.transitioned(teamArt, fromState, toState,
-         Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), changes);
+         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), changes);
       changes.execute();
 
       // assignee should be Joe Smith
       Assert.assertEquals(1, teamArt.getStateMgr().getAssignees().size());
-      Assert.assertEquals(AtsClientService.get().getUserAdmin().getUserByName(JOE_SMITH),
+      Assert.assertEquals(AtsClientService.get().getUserService().getUserByName(JOE_SMITH),
          teamArt.getStateMgr().getAssignees().iterator().next());
    }
 }

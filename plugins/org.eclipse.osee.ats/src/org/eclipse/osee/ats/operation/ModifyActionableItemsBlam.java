@@ -288,7 +288,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          }
          currWorkflowDesiredAIs = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(wfTree.getChecked());
          newAIs = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(newTree.getChecked());
-         IAtsUser modifiedBy = AtsClientService.get().getUserAdmin().getCurrentUser();
+         IAtsUser modifiedBy = AtsClientService.get().getUserService().getCurrentUser();
 
          ModifyActionableItems job =
             new ModifyActionableItems(results, teamWf, currAIsForAllWfs, currWorkflowDesiredAIs, newAIs, modifiedBy,

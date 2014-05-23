@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.IAtsUserAdmin;
+import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class ActionableItemArtifactReader extends AbstractAtsArtifactReader<IAtsActionableItem> {
 
-   private final IAtsUserAdmin userAdmin;
+   private final IAtsUserServiceClient userAdmin;
 
-   public ActionableItemArtifactReader(IActionableItemFactory actionableItemFactory, ITeamDefinitionFactory teamDefFactory, IVersionFactory versionFactory, IAtsUserAdmin userAdmin) {
+   public ActionableItemArtifactReader(IActionableItemFactory actionableItemFactory, ITeamDefinitionFactory teamDefFactory, IVersionFactory versionFactory, IAtsUserServiceClient userAdmin) {
       super(actionableItemFactory, teamDefFactory, versionFactory);
       this.userAdmin = userAdmin;
    }

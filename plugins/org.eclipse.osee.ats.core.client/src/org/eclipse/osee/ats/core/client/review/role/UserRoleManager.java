@@ -255,6 +255,6 @@ public class UserRoleManager {
       AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
       awa.getStateMgr().setMetrics(awa.getStateDefinition(), hoursSpent,
          awa.getStateMgr().getPercentComplete(awa.getCurrentStateName()), true,
-         AtsClientService.get().getUserAdmin().getCurrentUser(), new Date());
+         AtsClientService.get().getUserService().getCurrentUser(), new Date());
    }
 }

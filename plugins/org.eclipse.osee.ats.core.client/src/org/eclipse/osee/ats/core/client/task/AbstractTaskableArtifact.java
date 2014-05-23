@@ -90,7 +90,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    }
 
    public TaskArtifact createNewTask(String title, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
-      return createNewTask(Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), title, createdDate,
+      return createNewTask(Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), title, createdDate,
          createdBy, null, changes);
    }
 
@@ -99,7 +99,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    }
 
    public TaskArtifact createNewTask(String title, Date createdDate, IAtsUser createdBy, String relatedToState, IAtsChangeSet changes) throws OseeCoreException {
-      return createNewTask(Arrays.asList(AtsClientService.get().getUserAdmin().getCurrentUser()), title, createdDate,
+      return createNewTask(Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), title, createdDate,
          createdBy, relatedToState, changes);
    }
 
@@ -110,7 +110,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
 
       addRelation(AtsRelationTypes.TeamWfToTask_Task, taskArt);
       taskArt.initializeNewStateMachine(assignees, new Date(),
-         (createdBy == null ? AtsClientService.get().getUserAdmin().getCurrentUser() : createdBy), changes);
+         (createdBy == null ? AtsClientService.get().getUserService().getCurrentUser() : createdBy), changes);
 
       // Set parent state task is related to if set
       if (Strings.isValid(relatedToState)) {

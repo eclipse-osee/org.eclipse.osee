@@ -102,7 +102,7 @@ public class PopulateSawBuild2Actions {
       Collection<IAtsActionableItem> aias =
          DemoDbUtil.getActionableItems(new String[] {DemoDbAIs.SAW_Requirements.getAIName()});
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
+      IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       String priority = "3";
 
       ActionArtifact actionArt =
@@ -141,7 +141,7 @@ public class PopulateSawBuild2Actions {
             DemoDbAIs.SAW_Requirements.getAIName(),
             DemoDbAIs.SAW_Test.getAIName()});
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
+      IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       String priority = "3";
 
       ActionArtifact actionArt =
@@ -213,7 +213,7 @@ public class PopulateSawBuild2Actions {
             DemoDbAIs.SAW_Requirements.getAIName(),
             DemoDbAIs.SAW_Test.getAIName()});
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
+      IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       String priority = "3";
 
       ActionArtifact actionArt =
@@ -286,7 +286,7 @@ public class PopulateSawBuild2Actions {
             DemoDbAIs.SAW_Code.getAIName(),
             DemoDbAIs.SAW_Test.getAIName()});
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
+      IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       String priority = "1";
 
       ActionArtifact actionArt =

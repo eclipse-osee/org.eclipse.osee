@@ -47,7 +47,7 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
             Active.Active, false);
       try {
          List<IAtsTeamDefinition> objs = new ArrayList<IAtsTeamDefinition>();
-         for (Artifact art : AtsClientService.get().getUserAdmin().getCurrentOseeUser().getRelatedArtifacts(
+         for (Artifact art : AtsClientService.get().getUserServiceClient().getCurrentOseeUser().getRelatedArtifacts(
             AtsRelationTypes.SubscribedUser_Artifact)) {
             if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
                objs.add((IAtsTeamDefinition) AtsClientService.get().getConfigObject(art));
@@ -60,7 +60,7 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
          Collection<IAtsTeamDefinition> selected = diag.getChecked();
          Collection<Artifact> arts = AtsClientService.get().getConfigArtifacts(selected);
 
-         SubscribeUtility.setSubcriptionsAndPersist(AtsClientService.get().getUserAdmin().getCurrentOseeUser(),
+         SubscribeUtility.setSubcriptionsAndPersist(AtsClientService.get().getUserServiceClient().getCurrentOseeUser(),
             AtsRelationTypes.SubscribedUser_Artifact, arts, AtsArtifactTypes.TeamDefinition, getClass().getSimpleName());
          AWorkbench.popup(getName(), "Subscriptions updated.");
       } catch (Exception ex) {

@@ -61,7 +61,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
       }
       createdDate = new Date();
       AtsChangeSet changes = new AtsChangeSet(getName());
-      createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
+      createdBy = AtsClientService.get().getUserService().getCurrentUser();
       GoalArtifact sawCodeGoal = GoalManager.createGoal("SAW Code", changes);
       GoalArtifact sawTestGoal = GoalManager.createGoal("SAW Test", changes);
       GoalArtifact toolsTeamGoal = GoalManager.createGoal("Tools Team", changes);

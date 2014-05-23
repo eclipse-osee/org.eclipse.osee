@@ -32,8 +32,8 @@ public class GoalViewerSorter extends ViewerSorter {
          try {
             GoalArtifact g1 = (GoalArtifact) o1;
             GoalArtifact g2 = (GoalArtifact) o2;
-            boolean g1Fav = FavoritesManager.isFavorite(g1, AtsClientService.get().getUserAdmin().getCurrentUser());
-            boolean g2Fav = FavoritesManager.isFavorite(g2, AtsClientService.get().getUserAdmin().getCurrentUser());
+            boolean g1Fav = FavoritesManager.isFavorite(g1, AtsClientService.get().getUserService().getCurrentUser());
+            boolean g2Fav = FavoritesManager.isFavorite(g2, AtsClientService.get().getUserService().getCurrentUser());
             if (g1Fav && g2Fav) {
                return compare(g1, g2);
             } else if (g1Fav && !g2Fav) {

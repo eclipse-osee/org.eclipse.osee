@@ -53,9 +53,9 @@ public class AtsNotifyUsers {
             if (!EmailUtil.isEmailValid(originator.getEmail()) && !AtsCoreUsers.isAtsCoreUser(originator)) {
                OseeLog.logf(Activator.class, Level.INFO, "Email [%s] invalid for user [%s]", originator.getEmail(),
                   originator.getName());
-            } else if (!AtsClientService.get().getUserAdmin().getCurrentUser().equals(originator)) {
+            } else if (!AtsClientService.get().getUserService().getCurrentUser().equals(originator)) {
                oseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
-                  Arrays.asList(AtsClientService.get().getUserAdmin().getOseeUser(originator)),
+                  Arrays.asList(AtsClientService.get().getUserServiceClient().getOseeUser(originator)),
                   AtsNotificationManager.getIdString(awa), AtsNotifyType.Originator.name(), String.format(
                      "You have been set as the originator of [%s] state [%s] titled [%s]", awa.getArtifactTypeName(),
                      awa.getStateMgr().getCurrentStateName(), awa.getName())));
@@ -69,12 +69,12 @@ public class AtsNotifyUsers {
          } else {
             assignees.addAll(awa.getStateMgr().getAssignees());
          }
-         assignees.remove(AtsClientService.get().getUserAdmin().getCurrentUser());
+         assignees.remove(AtsClientService.get().getUserService().getCurrentUser());
          assignees = AtsUsersUtility.getValidEmailUsers(assignees);
          assignees = AtsUsersUtility.getActiveEmailUsers(assignees);
          if (assignees.size() > 0) {
             oseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
-               AtsClientService.get().getUserAdmin().getOseeUsers(assignees),
+               AtsClientService.get().getUserServiceClient().getOseeUsers(assignees),
                AtsNotificationManager.getIdString(awa), AtsNotifyType.Assigned.name(), String.format(
                   "You have been set as the assignee of [%s] in state [%s] titled [%s]", awa.getArtifactTypeName(),
                   awa.getStateMgr().getCurrentStateName(), awa.getName())));
@@ -87,7 +87,7 @@ public class AtsNotifyUsers {
          subscribed = AtsUsersUtility.getActiveEmailUsers(subscribed);
          if (subscribed.size() > 0) {
             oseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
-               AtsClientService.get().getUserAdmin().getOseeUsers(subscribed),
+               AtsClientService.get().getUserServiceClient().getOseeUsers(subscribed),
                AtsNotificationManager.getIdString(awa), AtsNotifyType.Subscribed.name(), String.format(
                   "[%s] titled [%s] transitioned to [%s] and you subscribed for notification.",
                   awa.getArtifactTypeName(), awa.getName(), awa.getStateMgr().getCurrentStateName())));
@@ -99,17 +99,17 @@ public class AtsNotifyUsers {
             if (!EmailUtil.isEmailValid(originator.getEmail())) {
                OseeLog.logf(Activator.class, Level.INFO, "Email [%s] invalid for user [%s]", originator.getEmail(),
                   originator.getName());
-            } else if (!AtsClientService.get().getUserAdmin().getCurrentUser().equals(originator)) {
+            } else if (!AtsClientService.get().getUserService().getCurrentUser().equals(originator)) {
                if (awa.isCompleted()) {
                   oseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
-                     Arrays.asList(AtsClientService.get().getUserAdmin().getOseeUser(originator)),
+                     Arrays.asList(AtsClientService.get().getUserServiceClient().getOseeUser(originator)),
                      AtsNotificationManager.getIdString(awa), awa.getCurrentStateName(),
                      String.format("[%s] titled [%s] is [%s]", awa.getArtifactTypeName(), awa.getName(),
                         awa.getCurrentStateName())));
                }
                if (awa.isCancelled()) {
                   oseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
-                     Arrays.asList(AtsClientService.get().getUserAdmin().getOseeUser(originator)),
+                     Arrays.asList(AtsClientService.get().getUserServiceClient().getOseeUser(originator)),
                      AtsNotificationManager.getIdString(awa), awa.getCurrentStateName(), String.format(
                         "[%s] titled [%s] was [%s] from the [%s] state on [%s].<br>Reason: [%s]",
                         awa.getArtifactTypeName(), awa.getName(), awa.getCurrentStateName(),
@@ -131,7 +131,7 @@ public class AtsNotifyUsers {
          authorModerator = AtsUsersUtility.getActiveEmailUsers(authorModerator);
          if (authorModerator.size() > 0) {
             oseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
-               AtsClientService.get().getUserAdmin().getOseeUsers(authorModerator),
+               AtsClientService.get().getUserServiceClient().getOseeUsers(authorModerator),
                AtsNotificationManager.getIdString(awa), AtsNotifyType.Peer_Reviewers_Completed.name(), String.format(
                   "You are Author/Moderator of [%s] titled [%s] which has been reviewed by all reviewers",
                   awa.getArtifactTypeName(), awa.getName())));

@@ -219,7 +219,7 @@ public class ReviewDefectManager {
          builder.append("<TD>" + item.getSeverity() + "</TD>");
          builder.append("<TD>" + item.getDisposition() + "</TD>");
          builder.append("<TD>" + item.getInjectionActivity() + "</TD>");
-         if (user != null && user.equals(AtsClientService.get().getUserAdmin().getCurrentUser())) {
+         if (user != null && user.equals(AtsClientService.get().getUserService().getCurrentUser())) {
             builder.append("<TD bgcolor=\"#CCCCCC\">" + user.getName() + "</TD>");
          } else {
             builder.append("<TD>NONE</TD>");

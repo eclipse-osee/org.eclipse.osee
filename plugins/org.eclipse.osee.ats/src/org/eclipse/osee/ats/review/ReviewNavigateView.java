@@ -191,7 +191,7 @@ public class ReviewNavigateView extends ViewPart implements IXNavigateEventListe
 
    private String getWhoAmI() {
       try {
-         String userName = AtsClientService.get().getUserAdmin().getCurrentUser().getName();
+         String userName = AtsClientService.get().getUserService().getCurrentUser().getName();
          return String.format("%s - %s:%s", userName, ClientSessionManager.getDataStoreName(),
             ClientSessionManager.getDataStoreLoginName());
       } catch (Exception ex) {

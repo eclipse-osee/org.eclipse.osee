@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.column.LegacyPcrIdColumn;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.column.StateColumn;
 import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerReviewRoleColumn;
@@ -67,16 +68,17 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       if (selectedUser != null) {
          useUser = selectedUser;
       } else {
+         IAtsUserServiceClient userServiceClient = AtsClientService.get().getUserServiceClient();
          UserListDialog ld =
             new UserListDialog(Displays.getActiveShell(), "Select User",
-               AtsClientService.get().getUserAdmin().getOseeUsers(AtsCore.getUserService().getUsers(Active.Active)));
+               userServiceClient.getOseeUsers(AtsCore.getUserService().getUsers(Active.Active)));
          int result = ld.open();
          if (result == 0) {
             if (ld.getResult().length == 0) {
                AWorkbench.popup("ERROR", "Must select user");
                return;
             }
-            useUser = AtsClientService.get().getUserAdmin().getUserFromOseeUser(ld.getSelection());
+            useUser = userServiceClient.getUserFromOseeUser(ld.getSelection());
          }
       }
 

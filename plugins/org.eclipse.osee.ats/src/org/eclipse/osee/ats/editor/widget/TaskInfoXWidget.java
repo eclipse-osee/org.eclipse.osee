@@ -132,7 +132,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
                            if (!taskArt.isCompletedOrCancelled()) {
                               if (taskArt.getStateMgr().isUnAssigned()) {
                                  taskArt.getStateMgr().setAssignee(
-                                    AtsClientService.get().getUserAdmin().getCurrentUser());
+                                    AtsClientService.get().getUserService().getCurrentUser());
                               }
                               TransitionHelper helper =
                                  new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),

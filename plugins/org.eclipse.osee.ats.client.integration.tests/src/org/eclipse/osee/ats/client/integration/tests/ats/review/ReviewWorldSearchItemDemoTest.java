@@ -43,7 +43,7 @@ public class ReviewWorldSearchItemDemoTest {
 
    @org.junit.Test
    public void testAiSearch() throws Exception {
-      IAtsUser joe = AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith);
+      IAtsUser joe = AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith);
       Set<IAtsActionableItem> aias = ActionableItems.getActionableItems(Arrays.asList("SAW Code"));
       ReviewWorldSearchItem search =
          new ReviewWorldSearchItem("", aias, false, false, false, null, joe, null, null, null);
@@ -54,7 +54,7 @@ public class ReviewWorldSearchItemDemoTest {
 
    @org.junit.Test
    public void testState() throws Exception {
-      IAtsUser joe = AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith);
+      IAtsUser joe = AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith);
       Set<IAtsActionableItem> aias = ActionableItems.getActionableItems(Arrays.asList("SAW Code"));
       ReviewWorldSearchItem search =
          new ReviewWorldSearchItem("", aias, false, false, false, null, joe, null, null, "Prepare");
@@ -75,7 +75,7 @@ public class ReviewWorldSearchItemDemoTest {
 
    @org.junit.Test
    public void testAssignee_Kay() throws Exception {
-      IAtsUser Kay_Jones = AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Kay_Jones);
+      IAtsUser Kay_Jones = AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Kay_Jones);
       Set<IAtsActionableItem> aias = ActionableItems.getActionableItems(Arrays.asList("SAW Code"));
       ReviewWorldSearchItem search =
          new ReviewWorldSearchItem("", aias, false, false, false, null, Kay_Jones, null, null, null);
@@ -86,7 +86,7 @@ public class ReviewWorldSearchItemDemoTest {
 
    @org.junit.Test
    public void testAssignee_Joe() throws Exception {
-      IAtsUser Joe_Smith = AtsClientService.get().getUserAdmin().getUserFromToken(DemoUsers.Joe_Smith);
+      IAtsUser Joe_Smith = AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith);
       ReviewWorldSearchItem search =
          new ReviewWorldSearchItem("", new ArrayList<IAtsActionableItem>(), false, false, false, null, Joe_Smith, null,
             null, null);

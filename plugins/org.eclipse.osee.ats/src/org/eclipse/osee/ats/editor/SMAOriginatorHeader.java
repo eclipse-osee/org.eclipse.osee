@@ -81,7 +81,7 @@ public class SMAOriginatorHeader extends Composite {
                Label errorLabel = editor.getToolkit().createLabel(this, "Error: No originator identified.");
                errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
             } else {
-               User origUser = AtsClientService.get().getUserAdmin().getOseeUser(sma.getCreatedBy());
+               User origUser = AtsClientService.get().getUserServiceClient().getOseeUser(sma.getCreatedBy());
                userIconLabel = editor.getToolkit().createLabel(this, "");
                userIconLabel.setImage(FrameworkArtifactImageProvider.getUserImage(Arrays.asList(origUser)));
                origLabel = editor.getToolkit().createLabel(this, sma.getCreatedBy().getName());
@@ -95,7 +95,7 @@ public class SMAOriginatorHeader extends Composite {
                Label origLabel = editor.getToolkit().createLabel(this, ORIGINATOR);
                origLabel.setLayoutData(new GridData());
 
-               User origUser = AtsClientService.get().getUserAdmin().getOseeUser(sma.getCreatedBy());
+               User origUser = AtsClientService.get().getUserServiceClient().getOseeUser(sma.getCreatedBy());
                userIconLabel = editor.getToolkit().createLabel(this, "");
                userIconLabel.setImage(FrameworkArtifactImageProvider.getUserImage(Arrays.asList(origUser)));
                origLabel = editor.getToolkit().createLabel(this, sma.getCreatedBy().getName());

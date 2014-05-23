@@ -51,7 +51,7 @@ public class UserRelatedToAtsObjectSearch {
             AtsAttributeTypes.State, AtsAttributeTypes.Log));
       }
 
-      User user = AtsClientService.get().getUserAdmin().getOseeUser(atsUser);
+      User user = AtsClientService.get().getUserServiceClient().getOseeUser(atsUser);
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamLead_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamMember_Team));
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.FavoriteUser_Artifact));

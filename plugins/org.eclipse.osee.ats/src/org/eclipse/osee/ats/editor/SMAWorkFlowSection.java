@@ -85,7 +85,7 @@ public class SMAWorkFlowSection extends SectionPart {
       this.editor = editor;
 
       isEditable =
-         WorkflowManagerCore.isEditable(AtsClientService.get().getUserAdmin().getCurrentUser(), sma,
+         WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), sma,
             page.getStateDefinition(), editor.isPrivilegedEditModeEnabled());
       isGlobalEditable = !sma.isReadOnly() && sma.isAccessControlWrite() && editor.isPrivilegedEditModeEnabled();
       isCurrentState = sma.isInState(page);
@@ -432,7 +432,7 @@ public class SMAWorkFlowSection extends SectionPart {
                      editor.getToolkit(),
                      sma.getStateDefinition(),
                      sma,
-                     WorkflowManagerCore.isEditable(AtsClientService.get().getUserAdmin().getCurrentUser(), sma,
+                     WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), sma,
                         sma.getStateDefinition(), false));
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);

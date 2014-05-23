@@ -53,11 +53,11 @@ public class EstimatedHoursColumnTest {
          DemoTestUtil.addTeamWorkflow(actionArt, EstimatedHoursColumnTest.class.getSimpleName(), changes);
       TaskArtifact taskArt1 =
          teamArt1.createNewTask(EstimatedHoursColumnTest.class.getSimpleName(), new Date(),
-            AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+            AtsClientService.get().getUserService().getCurrentUser(), changes);
       changes.add(taskArt1);
       TaskArtifact taskArt2 =
          teamArt1.createNewTask(EstimatedHoursColumnTest.class.getSimpleName(), new Date(),
-            AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+            AtsClientService.get().getUserService().getCurrentUser(), changes);
       changes.add(taskArt2);
       PeerToPeerReviewArtifact peerArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt1, getClass().getSimpleName(),

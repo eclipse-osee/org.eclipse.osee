@@ -29,7 +29,7 @@ public class WorldAssigneeFilter extends ViewerFilter {
    Pattern p;
 
    public WorldAssigneeFilter() throws OseeCoreException {
-      p = Pattern.compile(AtsClientService.get().getUserAdmin().getCurrentUser().getName());
+      p = Pattern.compile(AtsClientService.get().getUserService().getCurrentUser().getName());
    }
 
    @Override

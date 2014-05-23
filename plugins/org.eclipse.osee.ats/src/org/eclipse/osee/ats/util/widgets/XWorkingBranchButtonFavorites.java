@@ -56,7 +56,7 @@ public class XWorkingBranchButtonFavorites extends XWorkingBranchButtonAbstract 
 
    private void markWorkingBranchAsFavorite() {
       try {
-         User user = AtsClientService.get().getUserAdmin().getOseeUser(AtsClientService.get().getUserAdmin().getCurrentUser());
+         User user = AtsClientService.get().getUserServiceClient().getOseeUser(AtsClientService.get().getUserService().getCurrentUser());
          if (user.isSystemUser()) {
             AWorkbench.popup("Can't set preference as System User = " + user);
             return;

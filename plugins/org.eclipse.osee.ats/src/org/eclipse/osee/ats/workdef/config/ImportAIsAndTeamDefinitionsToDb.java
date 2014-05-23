@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.client.IAtsUserAdmin;
+import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
@@ -113,8 +113,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
                   dslTeamDef);
             }
             newTeam =
-               ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition, AtsUtilCore.getAtsBranch(), dslTeamName,
-                  guid);
+               ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition, AtsUtilCore.getAtsBranch(),
+                  dslTeamName, guid);
          }
          if (parentArtifact != null && !parentArtifact.equals(newTeam)) {
             parentArtifact.addChild(newTeam);
@@ -155,9 +155,9 @@ public class ImportAIsAndTeamDefinitionsToDb {
    private Set<Artifact> getUsers(EList<UserRef> userRefs) throws OseeCoreException {
       Set<Artifact> users = new HashSet<Artifact>();
       if (userRefs != null) {
-         IAtsUserAdmin userAdmin = AtsClientService.get().getUserAdmin();
+         IAtsUserServiceClient userServiceClient = AtsClientService.get().getUserServiceClient();
          for (String userId : UserRefUtil.getUserIds(userRefs)) {
-            User user = userAdmin.getOseeUserById(userId);
+            User user = userServiceClient.getOseeUserById(userId);
             users.add(user);
          }
          for (String userName : UserRefUtil.getUserNames(userRefs)) {
@@ -233,7 +233,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
                   guid, dslAIDef);
             }
             newAi =
-               ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem, AtsUtilCore.getAtsBranch(), dslAIName, guid);
+               ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem, AtsUtilCore.getAtsBranch(), dslAIName,
+                  guid);
          }
          if (parentArtifact != null && !parentArtifact.equals(newAi)) {
             parentArtifact.addChild(newAi);

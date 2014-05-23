@@ -49,9 +49,9 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
       }
       // Add current user if no valid users specified
       List<IAtsUser> users = new LinkedList<IAtsUser>();
-      users.addAll(AtsClientService.get().getUserAdmin().getUsersByUserIds(revDef.getAssignees()));
+      users.addAll(AtsClientService.get().getUserService().getUsersByUserIds(revDef.getAssignees()));
       if (users.isEmpty()) {
-         users.add(AtsClientService.get().getUserAdmin().getCurrentUser());
+         users.add(AtsClientService.get().getUserService().getCurrentUser());
       }
       if (!Strings.isValid(revDef.getReviewTitle())) {
          throw new OseeStateException("ReviewDefinition must specify title for Team Workflow [%s] WorkDefinition [%s]",

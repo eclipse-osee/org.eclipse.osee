@@ -114,7 +114,7 @@ public class NoteItem {
             for (int i = 0; i < nodes.getLength(); i++) {
                Element element = (Element) nodes.item(i);
                try {
-                  IAtsUser user = AtsClientService.get().getUserAdmin().getUserById(element.getAttribute("userId"));
+                  IAtsUser user = AtsClientService.get().getUserService().getUserById(element.getAttribute("userId"));
                   NoteItem item = new NoteItem(element.getAttribute("type"), element.getAttribute("state"), // NOPMD by b0727536 on 9/29/10 8:52 AM
                      element.getAttribute("date"), user, element.getAttribute("msg"));
                   logItems.add(item);

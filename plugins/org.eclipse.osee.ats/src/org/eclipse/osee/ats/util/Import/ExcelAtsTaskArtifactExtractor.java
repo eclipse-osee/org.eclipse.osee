@@ -115,7 +115,7 @@ public class ExcelAtsTaskArtifactExtractor {
          this.emailPOCs = emailPOCs;
          this.sma = sma;
          createdDate = new Date();
-         createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
+         createdBy = AtsClientService.get().getUserService().getCurrentUser();
       }
 
       @Override
@@ -305,10 +305,10 @@ public class ExcelAtsTaskArtifactExtractor {
             userName = userName.replaceAll("\\+$", "");
             IAtsUser user = null;
             if (!Strings.isValid(userName)) {
-               user = AtsClientService.get().getUserAdmin().getCurrentUser();
+               user = AtsClientService.get().getUserService().getCurrentUser();
             } else {
                try {
-                  user = AtsClientService.get().getUserAdmin().getUserByName(userName);
+                  user = AtsClientService.get().getUserService().getUserByName(userName);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
@@ -316,7 +316,7 @@ public class ExcelAtsTaskArtifactExtractor {
             if (user == null) {
                OseeLog.logf(Activator.class, Level.SEVERE, "Invalid Assignee \"%s\" for row %d.  Using current user.",
                   userName, rowNum);
-               user = AtsClientService.get().getUserAdmin().getCurrentUser();
+               user = AtsClientService.get().getUserService().getCurrentUser();
             }
             assignees.add(user);
          }
@@ -327,9 +327,9 @@ public class ExcelAtsTaskArtifactExtractor {
          String userName = row[i];
          IAtsUser user = null;
          if (!Strings.isValid(userName)) {
-            user = AtsClientService.get().getUserAdmin().getCurrentUser();
+            user = AtsClientService.get().getUserService().getCurrentUser();
          } else {
-            user = AtsClientService.get().getUserAdmin().getUserByName(userName);
+            user = AtsClientService.get().getUserService().getUserByName(userName);
          }
          if (user == null) {
             OseeLog.logf(Activator.class, Level.SEVERE,

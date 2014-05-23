@@ -70,7 +70,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
 
             // Validate team lead status
             if (!AtsUtilClient.isAtsAdmin() && !AtsVersionService.get().getTeamDefinition(verArt).getLeads().contains(
-               AtsClientService.get().getUserAdmin().getCurrentUser())) {
+               AtsClientService.get().getUserService().getCurrentUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
             }

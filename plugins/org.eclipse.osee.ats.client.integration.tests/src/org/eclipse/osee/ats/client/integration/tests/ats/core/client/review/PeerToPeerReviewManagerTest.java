@@ -68,7 +68,7 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
       PeerToPeerReviewArtifact peerArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, reviewTitle,
             AtsTestUtil.getAnalyzeStateDef().getName(), new Date(),
-            AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+            AtsClientService.get().getUserService().getCurrentUser(), changes);
       changes.execute();
 
       Assert.assertNotNull(peerArt);
@@ -119,7 +119,7 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
 
       PeerToPeerReviewArtifact peerArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(testAi, reviewTitle, null, new Date(),
-            AtsClientService.get().getUserAdmin().getCurrentUser(), changes);
+            AtsClientService.get().getUserService().getCurrentUser(), changes);
       changes.execute();
 
       Assert.assertNotNull(peerArt);

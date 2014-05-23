@@ -37,8 +37,9 @@ public class AtsNotificationServiceImpl implements IAtsNotificationService, IAts
    @Override
    public void addNotificationEvent(AtsNotificationEvent notificationEvent) throws OseeCoreException {
       OseeNotificationManager.getInstance().addNotificationEvent(
-         new OseeNotificationEvent(AtsClientService.get().getUserAdmin().getOseeUsers(notificationEvent.getUsers()),
-            notificationEvent.getId(), notificationEvent.getType(), notificationEvent.getDescription()));
+         new OseeNotificationEvent(AtsClientService.get().getUserServiceClient().getOseeUsers(
+            notificationEvent.getUsers()), notificationEvent.getId(), notificationEvent.getType(),
+            notificationEvent.getDescription()));
    }
 
    @Override
@@ -50,8 +51,9 @@ public class AtsNotificationServiceImpl implements IAtsNotificationService, IAts
    public List<AtsNotificationEvent> getNotificationEvents() throws OseeCoreException {
       List<AtsNotificationEvent> events = new ArrayList<AtsNotificationEvent>();
       for (OseeNotificationEvent event : OseeNotificationManager.getInstance().getNotificationEvents()) {
-         events.add(new AtsNotificationEvent(AtsClientService.get().getUserAdmin().getAtsUsers(event.getUsers()),
-            event.getId(), event.getType(), event.getDescription()));
+         events.add(new AtsNotificationEvent(
+            AtsClientService.get().getUserServiceClient().getAtsUsers(event.getUsers()), event.getId(),
+            event.getType(), event.getDescription()));
       }
       return events;
    }

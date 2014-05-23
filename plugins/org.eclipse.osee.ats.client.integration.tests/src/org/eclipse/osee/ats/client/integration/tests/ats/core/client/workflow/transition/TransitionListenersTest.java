@@ -44,7 +44,7 @@ public class TransitionListenersTest {
             getClass().getSimpleName(),
             Arrays.asList(teamArt),
             AtsTestUtil.getImplementStateDef().getName(),
-            Arrays.asList(org.eclipse.osee.ats.client.integration.tests.AtsClientService.get().getUserAdmin().getCurrentUser()),
+            Arrays.asList(org.eclipse.osee.ats.client.integration.tests.AtsClientService.get().getUserService().getCurrentUser()),
             null, new AtsChangeSet(getClass().getSimpleName()), TransitionOption.None);
       IAtsTransitionManager transMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = new TransitionResults();

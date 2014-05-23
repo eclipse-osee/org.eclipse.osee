@@ -69,7 +69,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
                resultData.logError("user name can't be blank");
             }
             try {
-               if (AtsClientService.get().getUserAdmin().getUserByName(newUserName) != null) {
+               if (AtsClientService.get().getUserService().getUserByName(newUserName) != null) {
                   resultData.logError(String.format("User [%s] already exists", newUserName));
                }
             } catch (UserNotInDatabase ex) {

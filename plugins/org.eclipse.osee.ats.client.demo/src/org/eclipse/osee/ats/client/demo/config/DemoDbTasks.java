@@ -34,18 +34,18 @@ public class DemoDbTasks {
          OseeLog.log(Activator.class, Level.INFO, "Create tasks off code workflows");
       }
       Date createdDate = new Date();
-      IAtsUser createdBy = AtsClientService.get().getUserAdmin().getCurrentUser();
+      IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       AtsChangeSet changes = new AtsChangeSet("Populate Demo DB - Create Tasks");
       boolean firstTaskWorkflow = true;
       for (TeamWorkFlowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
          List<IAtsUser> demoUsers = new ArrayList<IAtsUser>();
          if (firstTaskWorkflow) {
-            demoUsers.add(AtsClientService.get().getUserAdmin().getUserFromOseeUser(
+            demoUsers.add(AtsClientService.get().getUserServiceClient().getUserFromOseeUser(
                DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith)));
-            demoUsers.add(AtsClientService.get().getUserAdmin().getUserFromOseeUser(
+            demoUsers.add(AtsClientService.get().getUserServiceClient().getUserFromOseeUser(
                DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)));
          } else {
-            demoUsers.add(AtsClientService.get().getUserAdmin().getUserFromOseeUser(
+            demoUsers.add(AtsClientService.get().getUserServiceClient().getUserFromOseeUser(
                DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith)));
          }
          for (String title : getTaskTitles(firstTaskWorkflow)) {

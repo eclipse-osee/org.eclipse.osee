@@ -104,8 +104,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       Conditions.checkNotNull(changes, "changes");
       IAtsStateDefinition startState = getWorkDefinition().getStartState();
       StateManagerUtility.initializeStateMachine(getStateMgr(), startState, assignees,
-         (createdBy == null ? AtsClientService.get().getUserAdmin().getCurrentUser() : createdBy), changes);
-      IAtsUser user = createdBy == null ? AtsClientService.get().getUserAdmin().getCurrentUser() : createdBy;
+         (createdBy == null ? AtsClientService.get().getUserService().getCurrentUser() : createdBy), changes);
+      IAtsUser user = createdBy == null ? AtsClientService.get().getUserService().getCurrentUser() : createdBy;
       setCreatedBy(user, true, createdDate, changes);
       TransitionManager.logStateStartedEvent(this, startState, createdDate, user);
    }
@@ -515,7 +515,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          getLog().addLog(LogType.Originated, "", "", date, user.getUserId());
       } else {
          getLog().addLog(LogType.Originated, "",
-            "Changed by " + AtsClientService.get().getUserAdmin().getCurrentUser().getName(), date, user.getUserId());
+            "Changed by " + AtsClientService.get().getUserService().getCurrentUser().getName(), date, user.getUserId());
          getLog().internalResetOriginator(user);
       }
    }
@@ -545,7 +545,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public IAtsUser getCreatedBy() throws OseeCoreException {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null);
       if (Strings.isValid(userId)) {
-         return AtsClientService.get().getUserAdmin().getUserById(userId);
+         return AtsClientService.get().getUserService().getUserById(userId);
       }
       return null;
    }
@@ -557,7 +557,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public IAtsUser getCancelledBy() throws OseeCoreException {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CancelledBy, null);
       if (Strings.isValid(userId)) {
-         return AtsClientService.get().getUserAdmin().getUserById(userId);
+         return AtsClientService.get().getUserService().getUserById(userId);
       }
       return null;
    }
@@ -589,7 +589,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public IAtsUser getCompletedBy() throws OseeCoreException {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CompletedBy, null);
       if (Strings.isValid(userId)) {
-         return AtsClientService.get().getUserAdmin().getUserById(userId);
+         return AtsClientService.get().getUserService().getUserById(userId);
       }
       return null;
    }
@@ -645,7 +645,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public boolean isAssigneeMe() throws OseeCoreException {
-      return getStateMgr().getAssignees().contains(AtsClientService.get().getUserAdmin().getCurrentUser());
+      return getStateMgr().getAssignees().contains(AtsClientService.get().getUserService().getCurrentUser());
    }
 
    /*

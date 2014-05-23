@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
@@ -78,7 +79,7 @@ public interface IAtsClient extends IAttributeResolverProvider, IAtsReviewServic
    @Override
    IAtsVersionAdmin getAtsVersionService() throws OseeStateException;
 
-   IAtsUserAdmin getUserAdmin() throws OseeStateException;
+   IAtsUserService getUserService() throws OseeStateException;
 
    @Override
    IAtsWorkItemService getWorkItemService() throws OseeStateException;
@@ -91,4 +92,6 @@ public interface IAtsClient extends IAttributeResolverProvider, IAtsReviewServic
 
    @Override
    IAtsReviewService getReviewService() throws OseeCoreException;
+
+   IAtsUserServiceClient getUserServiceClient();
 }

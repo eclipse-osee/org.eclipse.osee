@@ -131,12 +131,12 @@ public class UserWorldSearchItem {
    }
 
    private Collection<AbstractWorkflowArtifact> getSubscribedArtifacts() throws OseeCoreException {
-      return AtsClientService.get().getUserAdmin().getOseeUser(user).getRelatedArtifactsOfType(AtsRelationTypes.SubscribedUser_Artifact,
+      return AtsClientService.get().getUserServiceClient().getOseeUser(user).getRelatedArtifactsOfType(AtsRelationTypes.SubscribedUser_Artifact,
          AbstractWorkflowArtifact.class);
    }
 
    private Collection<AbstractWorkflowArtifact> getFavoritesArtifacts() throws OseeCoreException {
-      return AtsClientService.get().getUserAdmin().getOseeUser(user).getRelatedArtifactsOfType(AtsRelationTypes.FavoriteUser_Artifact,
+      return AtsClientService.get().getUserServiceClient().getOseeUser(user).getRelatedArtifactsOfType(AtsRelationTypes.FavoriteUser_Artifact,
          AbstractWorkflowArtifact.class);
    }
 
